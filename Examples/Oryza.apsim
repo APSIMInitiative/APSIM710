@@ -1,4 +1,4 @@
-<folder version="28" name="Simulations">
+<folder version="32" name="Simulations">
   <simulation name="Rice">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%\Examples\MetFiles\bhola.met</filename>
@@ -9,29 +9,6 @@
     </clock>
     <summaryfile />
     <area name="paddock">
-      <folder name="Manager folder">
-        <manager name="Rice sowing rule">
-          <script name="init">
-            <text>
-            </text>
-            <event>init</event>
-          </script>
-          <script name="start_of_day">
-            <text>if (day = 288) then
-  rice sow cultivar = experimental, establishment = direct-seed, nplds = 180 (p/m2)
-endif
-</text>
-            <event>start_of_day</event>
-          </script>
-          <script name="end_of_day">
-            <text>
-if (rice.plant_status = 'dead') then
-  rice end_crop
-endif</text>
-            <event>end_of_day</event>
-          </script>
-        </manager>
-      </folder>
       <micromet name="Micromet">
         <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
         <a_interception type="text" description="a_interception">0</a_interception>
@@ -39,32 +16,25 @@ endif</text>
         <c_interception type="text" description="c_interception">0</c_interception>
         <d_interception type="text" description="d_interception">0</d_interception>
       </micromet>
-      <irrigation name="Irrigation">
-        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
-        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
-        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
-        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
-        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
-        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
-        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
-      </irrigation>
       <soil name="Soil">
-        <Country />
-        <Site>Generic</Site>
-        <Region>South East Queensland</Region>
+        <Comment type="multiedit" description="Comments">estimated cotton LL</Comment>
+        <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description">Black Vertosol</SoilType>
         <LocalName />
-        <SoilType description="Classification">Black Vertosol</SoilType>
+        <Site>Generic</Site>
         <NearestTown description="Nearest town">Generic</NearestTown>
-        <NaturalVegetation description="Natural vegetation" />
+        <Region>South East Queensland</Region>
         <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation" />
         <ApsoilNumber description="Apsoil number" />
         <Latitude description="Latitude (WGS84)">999999</Latitude>
         <Longitude>999999</Longitude>
         <LocationAccuracy description="Location accuracy">Regional Soil Type</LocationAccuracy>
         <DataSource type="multiedit" description="Data source" />
         <Comments />
-        <Comment type="multiedit" description="Comments">estimated cotton LL</Comment>
-        <Langitude description="Longitude (WGS84)" />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -1996,52 +1966,84 @@ endif</text>
           </Layer>
         </Sample>
       </soil>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
       <rice />
+      <folder name="Manager folder">
+        <manager name="Rice sowing rule">
+          <script name="init">
+            <text>
+            </text>
+            <event>init</event>
+          </script>
+          <script name="start_of_day">
+            <text>if (day = 288) then
+  rice sow cultivar = experimental, establishment = direct-seed, nplds = 180 (p/m2)
+endif
+</text>
+            <event>start_of_day</event>
+          </script>
+          <script name="end_of_day">
+            <text>
+if (rice.plant_status = 'dead') then
+  rice end_crop
+endif</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+      </folder>
       <outputfile name="Outputfile">
         <filename output="yes">Rice.out</filename>
         <title>Rice</title>
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-          <variable name="ancr" array="No" description="Amount of N in crop (live and dead material)  !kg N ha-1 " />
-          <variable name="anlv" array="No" description="Amount of N in leaves  !kg N ha-1" />
-          <variable name="anso" array="No" description="Amount of N in storage organs  !kg N ha-1 " />
-          <variable name="cover_green" array="No" description="green cover from crop" />
-          <variable name="cover_tot" array="No" description="total cover from crop" />
-          <variable name="crop_type" array="No" description="usually rice" />
-          <variable name="cropsta" array="No" description="Crop stage(0-4)" />
-          <variable name="dae" array="No" description="Days after emergence (days)" />
-          <variable name="dtga" array="No" description="Daily total gross CO2 assimilation of crop  !kg CO2 ha-1 d-1 " />
-          <variable name="dvr" array="No" description="Development rate of crop   (oCd-1)" />
-          <variable name="dvs" array="No" description="Development stage of crop (0-2)" />
-          <variable name="eff" array="No" description="Initial light-use efficiency (kg CO2 ha-1 leaf h-1)(W m-2 leaf )-1 " />
-          <variable name="etae" array="No" description="Dryness-driven part of reference evapotranspiration rate  !mm d-1 " />
-          <variable name="etd" array="No" description="Reference evapotranspiration (mm d-1)" />
-          <variable name="etrd" array="No" description="Radiation-driven part of reference evapotranspiration rate  !mm d-1 " />
-          <variable name="fnlv" array="No" description="Fraction of N in leaves on weight basis  !kg N kg-1 DM" />
-          <variable name="gcr" array="No" description="Gross growth rate of crop  !kg DM ha-1 d-1" />
-          <variable name="height" array="No" description="height of crop" />
-          <variable name="hu" array="No" description="Daily heat units effective for phenological development  (oCd d-1) " />
-          <variable name="ldstrs" array="No" description="Drought stress factor accelerating leaf death   !-" />
-          <variable name="lestrs" array="No" description="Drought stress factor reducing leaf expansion  !-" />
-          <variable name="lrstrs" array="No" description="Drought stress factor causing leaf rolling   " />
-          <variable name="nacr" array="No" description="Actual nitrogen uptake rate by crop  !kg N ha-1 d-1 " />
-          <variable name="nflv" array="No" description="Nitrogen fraction in leaves on leaf area basis  !g N m-2 leaf" />
-          <variable name="pcew" array="No" description="Effect of drought stress on daily total gross CO2 assimilation of crop; reduction in potential transpiration rate  !-" />
-          <variable name="plant_status" array="No" description="out, alive, or dead" />
-          <variable name="rlai" array="No" description="Rice leaf area index" />
-          <variable name="rnstrs" array="No" description="Reduction factor on relative leaf growth rate caused by N stress  !-" />
-          <variable name="ssga" array="No" description="Specific green stem area  !ha stem kg-1 stem" />
-          <variable name="tnsoil" array="No" description="Daily amount of N available for uptake from soil  !kg N ha-1 d-1 " />
-          <variable name="trc" array="No" description="Potential transpiration rate of crop with given LAI  !mm d-1" />
-          <variable name="wagt" array="No" description="Total aboveground dry matter kg/ha" />
-          <variable name="wlvd" array="No" description="Dry weight of dead leaves kg/ha" />
-          <variable name="wlvg" array="No" description="Dry weight of green leaves kg/ha" />
-          <variable name="wso" array="No" description="Dry weight of storage organs kg/ha" />
-          <variable name="wst" array="No" description="Dry weight of stems kg/ha" />
-          <variable name="zrt" array="No" description="Root length or rooting depth" />
+          <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
+          <variable array="No" description="Amount of N in crop (live and dead material)  !kg N ha-1 ">ancr</variable>
+          <variable array="No" description="Amount of N in leaves  !kg N ha-1">anlv</variable>
+          <variable array="No" description="Amount of N in storage organs  !kg N ha-1 ">anso</variable>
+          <variable array="No" description="green cover from crop">cover_green</variable>
+          <variable array="No" description="total cover from crop">cover_tot</variable>
+          <variable array="No" description="usually rice">crop_type</variable>
+          <variable array="No" description="Crop stage(0-4)">cropsta</variable>
+          <variable array="No" description="Days after emergence (days)">dae</variable>
+          <variable array="No" description="Daily total gross CO2 assimilation of crop  !kg CO2 ha-1 d-1 ">dtga</variable>
+          <variable array="No" description="Development rate of crop   (oCd-1)">dvr</variable>
+          <variable array="No" description="Development stage of crop (0-2)">dvs</variable>
+          <variable array="No" description="Initial light-use efficiency (kg CO2 ha-1 leaf h-1)(W m-2 leaf )-1 ">eff</variable>
+          <variable array="No" description="Dryness-driven part of reference evapotranspiration rate  !mm d-1 ">etae</variable>
+          <variable array="No" description="Reference evapotranspiration (mm d-1)">etd</variable>
+          <variable array="No" description="Radiation-driven part of reference evapotranspiration rate  !mm d-1 ">etrd</variable>
+          <variable array="No" description="Fraction of N in leaves on weight basis  !kg N kg-1 DM">fnlv</variable>
+          <variable array="No" description="Gross growth rate of crop  !kg DM ha-1 d-1">gcr</variable>
+          <variable array="No" description="height of crop">height</variable>
+          <variable array="No" description="Daily heat units effective for phenological development  (oCd d-1) ">hu</variable>
+          <variable array="No" description="Drought stress factor accelerating leaf death   !-">ldstrs</variable>
+          <variable array="No" description="Drought stress factor reducing leaf expansion  !-">lestrs</variable>
+          <variable array="No" description="Drought stress factor causing leaf rolling   ">lrstrs</variable>
+          <variable array="No" description="Actual nitrogen uptake rate by crop  !kg N ha-1 d-1 ">nacr</variable>
+          <variable array="No" description="Nitrogen fraction in leaves on leaf area basis  !g N m-2 leaf">nflv</variable>
+          <variable array="No" description="Effect of drought stress on daily total gross CO2 assimilation of crop; reduction in potential transpiration rate  !-">pcew</variable>
+          <variable array="No" description="out, alive, or dead">plant_status</variable>
+          <variable array="No" description="Rice leaf area index">rlai</variable>
+          <variable array="No" description="Reduction factor on relative leaf growth rate caused by N stress  !-">rnstrs</variable>
+          <variable array="No" description="Specific green stem area  !ha stem kg-1 stem">ssga</variable>
+          <variable array="No" description="Daily amount of N available for uptake from soil  !kg N ha-1 d-1 ">tnsoil</variable>
+          <variable array="No" description="Potential transpiration rate of crop with given LAI  !mm d-1">trc</variable>
+          <variable array="No" description="Total aboveground dry matter kg/ha">wagt</variable>
+          <variable array="No" description="Dry weight of dead leaves kg/ha">wlvd</variable>
+          <variable array="No" description="Dry weight of green leaves kg/ha">wlvg</variable>
+          <variable array="No" description="Dry weight of storage organs kg/ha">wso</variable>
+          <variable array="No" description="Dry weight of stems kg/ha">wst</variable>
+          <variable array="No" description="Root length or rooting depth">zrt</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="Daily" description="End of daily simulation time step" />
+          <event description="End of daily simulation time step">Daily</event>
         </events>
         <Graph name="XY Chart">
           <Plot>
@@ -2068,48 +2070,7 @@ endif</text>
     </clock>
     <summaryfile />
     <area name="paddock">
-      <outputfile name="Outputfile">
-        <filename output="yes">Ponding Simulation.out</filename>
-        <title>Ponding Simulation</title>
-        <variables name="Variables">
-          <variable name="dd/mmm/yyyy as Date" />
-          <variable name="Watering.pond_depth" />
-          <variable name="irrigation" array="No" description="Irrigation entering the profile (mm)" />
-          <variable name="wagt" array="No" description="Total aboveground dry matter kg/ha" />
-        </variables>
-        <events name="Reporting Frequency">
-          <event name="Daily" description="End of daily simulation time step" />
-        </events>
-        <Graph name="XY Chart">
-          <Plot>
-            <SeriesType>Solid line</SeriesType>
-            <PointType>None</PointType>
-            <X>Date</X>
-            <Y>no3(1)</Y>
-            <Y>nh4(1)</Y>
-            <Y>dnit(1)</Y>
-            <YRight>wagt</YRight>
-            <GDApsimFileReader name="OutputFile">
-              <FileName>Ponding Rice Simulation.out</FileName>
-            </GDApsimFileReader>
-          </Plot>
-        </Graph>
-      </outputfile>
       <soil name="Soil">
-        <Country />
-        <Site>Jerilderie</Site>
-        <Region>Riverina</Region>
-        <LocalName />
-        <SoilType description="Classification">Wunnamurra Clay</SoilType>
-        <NearestTown description="Nearest town">Jerilderie</NearestTown>
-        <NaturalVegetation description="Natural vegetation" />
-        <State>New South Wales</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)">-35.35664</Latitude>
-        <Longitude>145.72891</Longitude>
-        <LocationAccuracy description="Location accuracy">Regional Soil Type</LocationAccuracy>
-        <DataSource type="multiedit" description="Data source"><![CDATA[From Maize Man with permission from Liz Humphries, CSIRO L&W using some grower data (2005)]]></DataSource>
-        <Comments />
         <Langitude description="Longitude (WGS84)" />
         <Comment type="multiedit" description="Comments" />
         <InitNitrogen name="Initial nitrogen">
@@ -2117,6 +2078,22 @@ endif</text>
             <Percent>0</Percent>
           </PercentMethod>
         </InitNitrogen>
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description">Wunnamurra Clay</SoilType>
+        <LocalName />
+        <Site>Jerilderie</Site>
+        <NearestTown description="Nearest town">Jerilderie</NearestTown>
+        <Region>Riverina</Region>
+        <State>New South Wales</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation" />
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)">-35.35664</Latitude>
+        <Longitude>145.72891</Longitude>
+        <LocationAccuracy description="Location accuracy">Regional Soil Type</LocationAccuracy>
+        <DataSource type="multiedit" description="Data source"><![CDATA[From Maize Man with permission from Liz Humphries, CSIRO L&W using some grower data (2005)]]></DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <PercentMethod>
             <Percent>0</Percent>
@@ -2503,6 +2480,7 @@ endif</text>
           </Layer>
         </Sample>
       </soil>
+      <fertiliser name="Fertiliser" />
       <irrigation name="Irrigation">
         <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">off</automatic_irrigation>
         <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
@@ -2512,8 +2490,9 @@ endif</text>
         <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
       </irrigation>
+      <rice />
       <manager name="Watering">
-        <script name="init">
+        <script>
           <text>
 
 max_pond = 0.0
@@ -2522,15 +2501,15 @@ top_dress = 0
           </text>
           <event>init</event>
         </script>
-        <script name="start_of_day">
-          <text><![CDATA[!
+        <script>
+          <text>!
 
 if day = 1 then 
 'Soil Water' set max_pond = 50
 endif
 
 
-if rice.plant_status = 'alive' and pond_depth < 50 then
+if rice.plant_status = 'alive' and pond_depth &lt; 50 then
 irrig_amount = 50-pond_depth
 Irrigation apply amount = irrig_amount
 tot_irrig = tot_irrig + irrig_amount
@@ -2542,7 +2521,7 @@ if (day = 288) then
 fertiliser apply amount = 200, type=urea_n
 endif
 
-if rice.dvs >0.3 and top_dress = 0 then
+if rice.dvs &gt;0.3 and top_dress = 0 then
   fertiliser apply amount = 800, type = no3_n
   top_dress = 1
 endif
@@ -2556,10 +2535,10 @@ if (rice.plant_status = 'dead') then
   tot_irrig = 0
   top_dress = 0
 endif
-]]></text>
+</text>
           <event>start_of_day</event>
         </script>
-        <script name="end_of_day">
+        <script>
           <text>
 
 pond_depth = pond
@@ -2567,8 +2546,33 @@ pond_depth = pond
           <event>end_of_day</event>
         </script>
       </manager>
-      <fertiliser name="Fertiliser" />
-      <rice />
+      <outputfile name="Outputfile">
+        <filename output="yes">Ponding Simulation.out</filename>
+        <title>Ponding Simulation</title>
+        <variables name="Variables">
+          <variable>dd/mmm/yyyy as Date</variable>
+          <variable>Watering.pond_depth</variable>
+          <variable array="No" description="Irrigation entering the profile (mm)">irrigation</variable>
+          <variable array="No" description="Total aboveground dry matter kg/ha">wagt</variable>
+        </variables>
+        <events name="Reporting Frequency">
+          <event description="End of daily simulation time step">Daily</event>
+        </events>
+        <Graph name="XY Chart">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>no3(1)</Y>
+            <Y>nh4(1)</Y>
+            <Y>dnit(1)</Y>
+            <YRight>wagt</YRight>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>Ponding Rice Simulation.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+      </outputfile>
     </area>
   </simulation>
 </folder>

@@ -1,0 +1,687 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.5
+Title                  = agpasturePaddock
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component "Regular harvest or grazing (with return)" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component            "SoilLismore Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component         "SoilLismore Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/07/1980
+     Simulation end date   = 30/06/1981
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        AboveGroundLiveWt
+        HerbageGrowthWt
+        HarvestWt
+        SpeciesLiveWt
+        LAI_total
+        surfaceom_wt
+
+     Output file = agpasturePaddock pad.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Regular harvest or grazing (with return) Initialisation ---------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     account = account + 1
+     dm_som = 0
+     dm_removed = 0
+     n_returned =0
+     n_removed =0
+     n_som = 0
+     n_urine = 0
+     n_urine1 = 0
+     n_urine2 = 0
+     if ( (today = date('01/07/1900')) or
+          (today >date('01/07/1900') and account = 21 )) then
+       account = 0
+       'agpasture' graze type = 'residue', amount = 1000 (kg/ha)
+       digest = defoliateddigestibility
+       dm_som = harvestwt * (1-digest)
+       n_removed  = harvestn *(1.0-0.85)
+       n_returned = harvestn * 0.85
+       n_som      = n_returned * ( 1.0 - 0.6 )
+       n_urine    = n_returned *  0.6
+       n_urine1 = 0.6 * n_urine
+       n_urine2 = 0.4 * n_urine
+        'surfaceorganicmatter' add_surfaceom name = 'agpasture', type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+       'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
+       'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
+      endif
+     
+     SECTION:- init
+     account = 0
+     END of rules
+     
+     Manager creating a new local real variable : account = 0.00000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- SoilLismore Water Initialisation --------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.060  0.140  0.320  0.450  0.320  1.250  0.613  0.400
+          100.-  300.  0.060  0.140  0.320  0.450  0.320  1.310  0.340  0.500
+          300.-  600.  0.030  0.030  0.070  0.150  0.070  1.230  0.048  0.600
+          600.-  900.  0.030  0.030  0.050  0.080  0.050  1.240  0.000  0.600
+          900.- 1200.  0.030  0.030  0.050  0.080  0.050  1.250  0.000  0.800
+         1200.- 1500.  0.030  0.030  0.050  0.080  0.050  1.260  0.000  0.800
+         1500.- 1800.  0.030  0.030  0.050  0.080  0.047  1.290  0.000  0.800
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      14.00      18.00      18.00      13.00
+          100.-  300.      28.00      36.00      36.00      26.00
+          300.-  600.       9.00      12.00      12.00      24.00
+          600.-  900.       9.00       6.00       6.00       9.00
+          900.- 1200.       9.00       6.00       6.00       9.00
+         1200.- 1500.       9.00       6.00       6.00       9.00
+         1500.- 1800.       9.00       5.10       6.00       9.00
+          ---------------------------------------------------------
+               Totals      87.00      89.10      90.00      99.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-apr
+            Eo from priestly-taylor
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          AgPasture grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- SoilLismore Nitrogen Initialisation -----------------------------------
+     
+        - Reading Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: SoilLismore Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: SoilLismore Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type 0
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     5.90  4.00    9.52    0.16    0.00
+             2     5.90  2.50   19.05    0.35    0.00
+             3     5.90  0.50   14.28    0.49    0.00
+             4     5.90  0.10   14.28    0.49    0.00
+             5     5.90  0.10   14.29    0.49    0.00
+             6     5.90  0.00   14.28    0.50    0.00
+             7     5.90  0.00   14.28    0.51    0.00
+          ------------------------------------------------
+           Totals              100.00    2.99    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      48653.8  4305.7  1346.2   168.3   117.2     2.9
+             2      64857.8  5739.6   642.2    80.3    84.0     2.1
+             3      18305.3  1619.9   144.7    18.1    50.9     1.3
+             4       3712.6   328.6     7.4     0.9    30.9     0.8
+             5       3750.0   331.9     0.0     0.0    18.7     0.5
+             6          0.0     0.0     0.0     0.0    11.4     0.3
+             7          0.0     0.0     0.0     0.0     6.9     0.2
+          ---------------------------------------------------------
+           Totals  139279.6 12325.6  2140.4   267.5   320.0     8.0
+          ---------------------------------------------------------
+
+------- AgPasture Initialisation ----------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : dm_som = 0.00000
+     Manager creating a new local real variable : dm_removed = 0.00000
+     Manager creating a new local real variable : n_returned = 0.00000
+     Manager creating a new local real variable : n_removed = 0.00000
+     Manager creating a new local real variable : n_som = 0.00000
+     Manager creating a new local real variable : n_urine = 0.00000
+     Manager creating a new local real variable : n_urine1 = 0.00000
+     Manager creating a new local real variable : n_urine2 = 0.00000
+21 July 1980(Day of year=203), Regular harvest or grazing (with return): 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager creating a new local real variable : digest = 0.65169
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 259.57965 (kg/ha), n = 8.30702 (kg/ha)
+21 July 1980(Day of year=203): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: SurfaceOrganicMatter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 7.47631 (kg/ha), depth = 50 (mm), type = urea_n
+21 July 1980(Day of year=203), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.48 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.98421 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.98 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+11 August 1980(Day of year=224), Regular harvest or grazing (with return): 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 79.37407 (kg/ha), n = 3.21600 (kg/ha)
+11 August 1980(Day of year=224): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: SurfaceOrganicMatter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 2.89440 (kg/ha), depth = 50 (mm), type = urea_n
+11 August 1980(Day of year=224), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.89 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 1.92960 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         1.93 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+1 September 1980(Day of year=245), Regular harvest or grazing (with return): 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 146.49480 (kg/ha), n = 6.54446 (kg/ha)
+1 September 1980(Day of year=245): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: SurfaceOrganicMatter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 5.89002 (kg/ha), depth = 50 (mm), type = urea_n
+1 September 1980(Day of year=245), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.89 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 3.92668 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         3.93 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+22 September 1980(Day of year=266), Regular harvest or grazing (with return): 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 277.08496 (kg/ha), n = 12.99418 (kg/ha)
+22 September 1980(Day of year=266): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: SurfaceOrganicMatter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 11.69476 (kg/ha), depth = 50 (mm), type = urea_n
+22 September 1980(Day of year=266), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        11.69 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.79650 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.80 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+13 October 1980(Day of year=287), Regular harvest or grazing (with return): 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 319.83185 (kg/ha), n = 13.55168 (kg/ha)
+13 October 1980(Day of year=287): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: SurfaceOrganicMatter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 12.19651 (kg/ha), depth = 50 (mm), type = urea_n
+13 October 1980(Day of year=287), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.20 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.13101 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.13 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+3 November 1980(Day of year=308), Regular harvest or grazing (with return): 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 433.85995 (kg/ha), n = 15.98168 (kg/ha)
+3 November 1980(Day of year=308): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: SurfaceOrganicMatter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 14.38352 (kg/ha), depth = 50 (mm), type = urea_n
+3 November 1980(Day of year=308), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        14.38 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.58901 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.59 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+24 November 1980(Day of year=329), Regular harvest or grazing (with return): 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 424.30481 (kg/ha), n = 15.55984 (kg/ha)
+24 November 1980(Day of year=329): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: SurfaceOrganicMatter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 14.00386 (kg/ha), depth = 50 (mm), type = urea_n
+24 November 1980(Day of year=329), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        14.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.33590 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.34 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+15 December 1980(Day of year=350), Regular harvest or grazing (with return): 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 430.34338 (kg/ha), n = 15.17494 (kg/ha)
+15 December 1980(Day of year=350): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: SurfaceOrganicMatter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 13.65745 (kg/ha), depth = 50 (mm), type = urea_n
+15 December 1980(Day of year=350), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.66 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.10497 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.10 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+5 January 1981(Day of year=5), Regular harvest or grazing (with return): 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 507.11160 (kg/ha), n = 17.90571 (kg/ha)
+5 January 1981(Day of year=5): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: SurfaceOrganicMatter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 16.11514 (kg/ha), depth = 50 (mm), type = urea_n
+5 January 1981(Day of year=5), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.12 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 10.74342 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        10.74 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+26 January 1981(Day of year=26), Regular harvest or grazing (with return): 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 413.17914 (kg/ha), n = 15.73069 (kg/ha)
+26 January 1981(Day of year=26): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: SurfaceOrganicMatter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 14.15762 (kg/ha), depth = 50 (mm), type = urea_n
+26 January 1981(Day of year=26), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        14.16 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.43842 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.44 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+16 February 1981(Day of year=47), Regular harvest or grazing (with return): 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 330.65677 (kg/ha), n = 13.18138 (kg/ha)
+16 February 1981(Day of year=47): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: SurfaceOrganicMatter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 11.86325 (kg/ha), depth = 50 (mm), type = urea_n
+16 February 1981(Day of year=47), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        11.86 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.90883 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.91 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+9 March 1981(Day of year=68), Regular harvest or grazing (with return): 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 250.58604 (kg/ha), n = 10.48947 (kg/ha)
+9 March 1981(Day of year=68): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: SurfaceOrganicMatter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 9.44052 (kg/ha), depth = 50 (mm), type = urea_n
+9 March 1981(Day of year=68), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.44 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 6.29368 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.29 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+30 March 1981(Day of year=89), Regular harvest or grazing (with return): 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 240.32745 (kg/ha), n = 10.64578 (kg/ha)
+30 March 1981(Day of year=89): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: SurfaceOrganicMatter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 9.58120 (kg/ha), depth = 50 (mm), type = urea_n
+30 March 1981(Day of year=89), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.58 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 6.38746 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.39 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+20 April 1981(Day of year=110), Regular harvest or grazing (with return): 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 188.49265 (kg/ha), n = 8.33105 (kg/ha)
+20 April 1981(Day of year=110): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: SurfaceOrganicMatter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 7.49795 (kg/ha), depth = 50 (mm), type = urea_n
+20 April 1981(Day of year=110), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.50 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.99863 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.00 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+11 May 1981(Day of year=131), Regular harvest or grazing (with return): 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 120.04846 (kg/ha), n = 5.36554 (kg/ha)
+11 May 1981(Day of year=131): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: SurfaceOrganicMatter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 4.82899 (kg/ha), depth = 50 (mm), type = urea_n
+11 May 1981(Day of year=131), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.83 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 3.21933 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         3.22 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+1 June 1981(Day of year=152), Regular harvest or grazing (with return): 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 53.94879 (kg/ha), n = 2.62600 (kg/ha)
+1 June 1981(Day of year=152): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: SurfaceOrganicMatter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 2.36341 (kg/ha), depth = 50 (mm), type = urea_n
+1 June 1981(Day of year=152), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.36 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 1.57560 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         1.58 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+22 June 1981(Day of year=173), Regular harvest or grazing (with return): 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 12.68652 (kg/ha), n = 0.60004 (kg/ha)
+22 June 1981(Day of year=173): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: SurfaceOrganicMatter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 0.54004 (kg/ha), depth = 50 (mm), type = urea_n
+22 June 1981(Day of year=173), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.54 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 0.36002 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         0.36 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+30 June 1981(Day of year=181), clock: 
+     Simulation is terminating due to end criteria being met.

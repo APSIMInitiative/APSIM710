@@ -1,4 +1,4 @@
-<folder version="28" name="simulations">
+<folder version="32" name="simulations">
   <simulation name="Millet">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
@@ -9,104 +9,25 @@
     </clock>
     <summaryfile />
     <area name="paddock">
-      <millet />
-      <canopy name="Canopy">
-        <intercrop type="text" description="Enter crop names to intercrop">millet millet1 millet2 millet3 millet4 millet5</intercrop>
-      </canopy>
-      <surfaceom name="SurfaceOrganicMatter">
-        <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
-        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">wheat</type>
-        <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
-        <cnr type="text" description="C:N ratio of initial residue">80</cnr>
-        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
-      </surfaceom>
-      <fertiliser />
-      <folder name="Manager folder">
-        <manager name="Sow on a fixed date">
-          <ui>
-            <category description="Sowing criteria" type="category" />
-            <date type="text" description="Enter sowing date (dd-mmm) : ">1-dec</date>
-            <category description="Sowing parameters" type="category" />
-            <crop type="crop" description="Enter name of crop to sow : ">millet</crop>
-            <density type="text" description="Enter sowing density  (plants/m2) : ">7.5</density>
-            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
-            <cultivar type="cultivars" description="Enter cultivar : ">wrajpop</cultivar>
-          </ui>
-          <script>
-            <text>
-        if (today = date('[date]') then
-            [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar]
-         endif
-               </text>
-            <event>start_of_day</event>
-          </script>
-        </manager>
-        <manager name="Harvesting rule">
-          <ui>
-            <category description="Harvesting criteria" type="category" />
-            <crop type="crop" description="Enter name of crop to harvest when ripe : ">millet</crop>
-          </ui>
-          <script>
-            <text>
-
-if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
-   [crop] harvest
-   [crop]1 harvest
-   [crop]2 harvest
-   [crop]3 harvest
-   [crop]4 harvest
-   [crop]5 harvest
-   [crop] end_crop
-   [crop]1 end_crop
-   [crop]2 end_crop
-   [crop]3 end_crop
-   [crop]4 end_crop
-   [crop]5 end_crop
-   
-endif
-
-            </text>
-            <event>end_of_day</event>
-          </script>
-        </manager>
-        <manager name="Tiller Aggregation">
-          <script>
-            <text>millet_yield = 0.0
-millet_lai = 0.0
-millet_biomass = 0.0</text>
-            <event>init</event>
-          </script>
-          <script>
-            <text>
-            </text>
-            <event>start_of_day</event>
-          </script>
-          <script>
-            <text>millet_yield = millet.yield + millet1.yield + millet2.yield + millet3.yield + millet4.yield + millet5.yield
-millet_lai = millet.lai + millet1.lai + millet2.lai + millet3.lai + millet4.lai + millet5.lai
-millet_biomass = millet.biomass + millet1.biomass + millet2.biomass + millet3.biomass + millet4.biomass + millet5.biomass
-</text>
-            <event>end_of_day</event>
-          </script>
-        </manager>
-      </folder>
       <soil name="Soil">
-        <Country />
-        <Site>Jimbour</Site>
-        <Region>South East Queensland</Region>
+        <Langitude description="Longitude (WGS84)" />
+        <Comment type="multiedit" description="Comments" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description">Black Vertosol</SoilType>
         <LocalName>Waco</LocalName>
-        <SoilType description="Classification">Black Vertosol</SoilType>
+        <Site>Jimbour</Site>
         <NearestTown description="Nearest town">Jimbour, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
+        <Region>South East Queensland</Region>
         <State />
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
         <ApsoilNumber description="Apsoil number" />
         <Latitude description="Latitude (WGS84)" />
         <Longitude />
         <LocationAccuracy description="Location accuracy" />
         <DataSource type="multiedit" description="Data source" />
         <Comments />
-        <Langitude description="Longitude (WGS84)" />
-        <Comment type="multiedit" description="Comments" />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -1222,22 +1143,103 @@ millet_biomass = millet.biomass + millet1.biomass + millet2.biomass + millet3.bi
           </Layer>
         </Sample>
       </soil>
+      <surfaceom name="SurfaceOrganicMatter">
+        <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">wheat</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
+        <cnr type="text" description="C:N ratio of initial residue">80</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <fertiliser />
+      <millet />
+      <canopy name="Canopy">
+        <intercrop type="text" description="Enter crop names to intercrop">millet millet1 millet2 millet3 millet4 millet5</intercrop>
+      </canopy>
+      <folder name="Manager folder">
+        <manager name="Sow on a fixed date">
+          <ui>
+            <category description="Sowing criteria" type="category" />
+            <date type="text" description="Enter sowing date (dd-mmm) : ">1-dec</date>
+            <category description="Sowing parameters" type="category" />
+            <crop type="crop" description="Enter name of crop to sow : ">millet</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">7.5</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">wrajpop</cultivar>
+          </ui>
+          <script>
+            <text>
+        if (today = date('[date]') then
+            [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar]
+         endif
+               </text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Harvesting rule">
+          <ui>
+            <category description="Harvesting criteria" type="category" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">millet</crop>
+          </ui>
+          <script>
+            <text>
+
+if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+   [crop] harvest
+   [crop]1 harvest
+   [crop]2 harvest
+   [crop]3 harvest
+   [crop]4 harvest
+   [crop]5 harvest
+   [crop] end_crop
+   [crop]1 end_crop
+   [crop]2 end_crop
+   [crop]3 end_crop
+   [crop]4 end_crop
+   [crop]5 end_crop
+   
+endif
+
+            </text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="Tiller Aggregation">
+          <script>
+            <text>millet_yield = 0.0
+millet_lai = 0.0
+millet_biomass = 0.0</text>
+            <event>init</event>
+          </script>
+          <script>
+            <text>
+            </text>
+            <event>start_of_day</event>
+          </script>
+          <script>
+            <text>millet_yield = millet.yield + millet1.yield + millet2.yield + millet3.yield + millet4.yield + millet5.yield
+millet_lai = millet.lai + millet1.lai + millet2.lai + millet3.lai + millet4.lai + millet5.lai
+millet_biomass = millet.biomass + millet1.biomass + millet2.biomass + millet3.biomass + millet4.biomass + millet5.biomass
+</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+      </folder>
       <outputfile>
         <filename output="yes">Millet.out</filename>
         <title>Millet</title>
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" />
-          <variable name="stage" />
-          <variable name="plant_status" />
-          <variable name="millet_biomass" />
-          <variable name="millet_yield" />
-          <variable name="millet_lai" />
-          <variable name="biomass" />
-          <variable name="yield" />
-          <variable name="lai" />
+          <variable>dd/mm/yyyy as Date</variable>
+          <variable>stage</variable>
+          <variable>plant_status</variable>
+          <variable>millet_biomass</variable>
+          <variable>millet_yield</variable>
+          <variable>millet_lai</variable>
+          <variable>biomass</variable>
+          <variable>yield</variable>
+          <variable>lai</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="daily" />
+          <event>daily</event>
         </events>
       </outputfile>
     </area>

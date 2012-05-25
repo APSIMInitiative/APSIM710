@@ -1,32 +1,34 @@
-<folder version="28" name="simulations">
+<folder version="32" name="simulations">
   <simulation name="Continuous Maize and Weeds">
+    <metfile name="met">
+      <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
+    </metfile>
     <clock>
       <start_date name="start_date" description="Enter the start date of the simulation" type="date" lbound="2/11/1961" ubound="31/01/2001">1/06/1985</start_date>
       <end_date name="end_date" description="Enter the end date of the simulation" type="date" lbound="2/11/1961" ubound="31/01/2001">1/05/1989</end_date>
     </clock>
     <summaryfile />
-    <metfile name="met">
-      <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
-    </metfile>
     <area name="paddock">
       <soil name="Soil">
-        <Country />
-        <Site />
-        <Region />
+        <WaterFormat>VolumetricPercent</WaterFormat>
+        <Langitude description="Longitude (WGS84)" />
+        <Comment type="multiedit" description="Comments" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
         <LocalName />
-        <SoilType description="Classification" />
+        <Site />
         <NearestTown description="Nearest town" />
-        <NaturalVegetation description="Natural vegetation" />
+        <Region />
         <State />
+        <Country />
+        <NaturalVegetation description="Natural vegetation" />
         <ApsoilNumber description="Apsoil number" />
         <Latitude description="Latitude (WGS84)" />
         <Longitude />
         <LocationAccuracy description="Location accuracy" />
         <DataSource type="multiedit" description="Data source" />
         <Comments />
-        <WaterFormat>VolumetricPercent</WaterFormat>
-        <Langitude description="Longitude (WGS84)" />
-        <Comment type="multiedit" description="Comments" />
         <InitWater name="Initial water">
           <PercentMethod>
             <Percent>0.00</Percent>
@@ -1531,7 +1533,7 @@
             <crop type="crop" description="Enter name of crop to output at harvest : ">maize</crop>
             <outputfile type="modulename" description="Name of outputfile component : ">outputfile</outputfile>
           </ui>
-          <script name="end_of_day">
+          <script>
             <text>
          if ([crop]_to_harvest = 1) then
             '[outputfile]' do_output
@@ -1546,13 +1548,13 @@
             <crop type="crop" description="Enter name of crop to harvest when ripe : ">maize</crop>
             <fraction_to_remove type="text" description="Enter fraction of stover to remove (not for maize): ">0.95</fraction_to_remove>
           </ui>
-          <script name="init">
+          <script>
             <text>
           [crop]_to_harvest = 0
             </text>
             <event>init</event>
           </script>
-          <script name="end_of_day">
+          <script>
             <text>
          if ([crop]_to_harvest = 1) then
             [crop] harvest, remove=[fraction_to_remove]
@@ -1595,23 +1597,23 @@
             <f_incorp type="text" description="Enter fraction of surface residues incorporated into soil (0-1) : ">0.1</f_incorp>
             <tillage_depth type="text" description="Enter depth of incorporation of surface residues (mm) : ">25</tillage_depth>
           </ui>
-          <script name="init">
+          <script>
             <text>
           daemerge = 0
       </text>
             <event>init</event>
           </script>
-          <script name="end_of_day">
-            <text><![CDATA[
-         if ((crop_in >= 1)
-            AND (weed.plant_status <> 'out')) then
-            if (weed.stage >= 3.0) then
+          <script>
+            <text>
+         if ((crop_in &gt;= 1)
+            AND (weed.plant_status &lt;&gt; 'out')) then
+            if (weed.stage &gt;= 3.0) then
                daemerge = daemerge + 1
             endif
 
-            if (weed.biomass > [weed_biomass] OR daemerge >= [weed_interval]) then
-               if ((crop_in > 1 AND [weed_maxno_in] > weed_count_in) OR (crop_in = 1 AND [weed_maxno_out] > weed_count_out)) then
-                  if (crop_in > 1) then
+            if (weed.biomass &gt; [weed_biomass] OR daemerge &gt;= [weed_interval]) then
+               if ((crop_in &gt; 1 AND [weed_maxno_in] &gt; weed_count_in) OR (crop_in = 1 AND [weed_maxno_out] &gt; weed_count_out)) then
+                  if (crop_in &gt; 1) then
                      weed_count_in = weed_count_in + 1
                   elseif (crop_in = 1) then
                      weed_count_out = weed_count_out + 1
@@ -1648,17 +1650,22 @@
          endif
 
          if (((crop_in = 1)
-            AND (weed.plant_status <> 'out'))
+            AND (weed.plant_status &lt;&gt; 'out'))
             OR (crop_in = 0)) then
             weed_count_in = 0
          else
             weed_count_out = 0
          endif
-      ]]></text>
+      </text>
             <event>end_of_day</event>
           </script>
         </manager>
         <manager name="Remove all residues on a fixed date">
+          <ui>
+            <category type="category" description="Removal criteria" />
+            <date description="Date to remove residues (dd-mmm) :" type="ddmmmdate">8-may</date>
+            <surfaceommodule type="modulename" description="Name of your surface organic matter module : ">SurfaceOrganicMatter</surfaceommodule>
+          </ui>
           <script>
             <text>
          if today = date('[date]') then
@@ -1667,24 +1674,19 @@
             </text>
             <event>start_of_day</event>
           </script>
-          <ui>
-            <category type="category" description="Removal criteria" />
-            <date description="Date to remove residues (dd-mmm) :" type="ddmmmdate">8-may</date>
-            <surfaceommodule type="modulename" description="Name of your surface organic matter module : ">SurfaceOrganicMatter</surfaceommodule>
-          </ui>
         </manager>
       </folder>
       <outputfile>
         <filename name="filename" output="yes">Continuous Maize and Weeds.out</filename>
         <title>Continuous Maize and Weeds</title>
         <variables name="My Variables">
-          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-          <variable name="esw" array="?" description="Extractable Soil Water (mm)" />
-          <variable name="day" array="?" description="Day" />
-          <variable name="year" array="?" description="Year" />
-          <variable name="yield" array="?" description="Yield (kg/ha)" />
-          <variable name="stover" array="?" description="Stover (kg/ha)" />
-          <variable name="biomass" array="?" description="Total Above Ground Biomass (kg/ha)" />
+          <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
+          <variable array="?" description="Extractable Soil Water (mm)">esw</variable>
+          <variable array="?" description="Day">day</variable>
+          <variable array="?" description="Year">year</variable>
+          <variable array="?" description="Yield (kg/ha)">yield</variable>
+          <variable array="?" description="Stover (kg/ha)">stover</variable>
+          <variable array="?" description="Total Above Ground Biomass (kg/ha)">biomass</variable>
         </variables>
         <events name="My Variables Events" />
       </outputfile>

@@ -18,8 +18,8 @@ Paddock:
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                  "Sowing rule" = %apsim%\Model\Manager.dll
-   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
    Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
    Component                   "Loam Water" = %apsim%\Model\SoilWat.dll
    Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
    Component                "Loam Nitrogen" = %apsim%\Model\SoilN.dll
@@ -98,6 +98,14 @@ Paddock:
      END of rules
      
 
+------- Sowing fertiliser Initialisation --------------------------------------
+     Manager rules:
+     
+     SECTION:- potato.sowing
+             fertiliser apply amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+     END of rules
+     
+
 ------- Harvesting rule Initialisation ----------------------------------------
      Manager rules:
      
@@ -106,14 +114,6 @@ Paddock:
        potato  harvest
        potato  end_crop
                 endif
-     END of rules
-     
-
-------- Sowing fertiliser Initialisation --------------------------------------
-     Manager rules:
-     
-     SECTION:- potato.sowing
-             fertiliser apply amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
      END of rules
      
 

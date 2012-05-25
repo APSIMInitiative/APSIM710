@@ -1,4 +1,4 @@
-<folder version="28" name="Simulations">
+<folder version="32" name="Simulations">
   <simulation name="Canopy">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Dalby.met</filename>
@@ -9,79 +9,25 @@
     </clock>
     <summaryfile />
     <area name="paddock">
-      <outputfile name="Outputfile">
-        <filename output="yes">Canopy.out</filename>
-        <title>Canopy</title>
-        <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
-          <variable name="sw_dep()" array="Yes" description="Soil water - layered (mm)" />
-          <variable name="cowpea.lai as lai_cowpea" array="No" description="Leaf area index" />
-          <variable name="maize.lai as lai_maize" array="No" description="Maize Leaf area index" />
-          <variable name="canopy.cover_tot_sum" array="" description="" />
-          <variable name="cowpea.biomass as biom_cowpea" array="No" description="Biomass" />
-          <variable name="maize.biomass as biom_maize" array="No" description="Maize Total Above Ground Biomass (kg/ha)" />
-        </variables>
-        <events name="Reporting Frequency">
-          <event name="Daily" description="End of daily simulation time step" />
-        </events>
-      </outputfile>
-      <manager name="Logic">
-        <script>
-          <event>init</event>
-          <text>
-          </text>
-        </script>
-        <script>
-          <event>start_of_day</event>
-          <text> ! MAIZE SOWING AND HARVEST ************
-if day = 10 and year = 1988 then
-      maize sow cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
-endif
-
-if (maize.stage = 11) then
-      maize harvest
-      maize end_crop
-endif
-
-! COWPEA SOWING AND HARVEST**********
-if day = 10 and year  = 1988 then
-   cowpea sow cultivar = banjo, plants = 25 (/m2), sowing_depth = 40 (mm)
-endif
-
-if cowpea.StageName = 'harvest_ripe' or cowpea.plant_status = 'dead' then
-   cowpea harvest
-   cowpea end_crop   
-endif
-</text>
-        </script>
-        <script>
-          <event>end_of_day</event>
-          <text>
-          </text>
-        </script>
-      </manager>
-      <canopy name="Canopy">
-        <intercrop name="intercrop" description="Enter crop names to intercrop" type="text">maize cowpea</intercrop>
-      </canopy>
-      <cowpea />
-      <maize />
       <soil name="No000 SampleBlackVertosol (No000)">
-        <Country />
-        <Site>Generic</Site>
-        <Region>South East Queensland</Region>
+        <Comment type="multiedit" description="Comments">estimated cotton LL</Comment>
+        <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description">Black Vertosol</SoilType>
         <LocalName />
-        <SoilType description="Classification">Black Vertosol</SoilType>
+        <Site>Generic</Site>
         <NearestTown description="Nearest town">Generic</NearestTown>
-        <NaturalVegetation description="Natural vegetation" />
+        <Region>South East Queensland</Region>
         <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation" />
         <ApsoilNumber description="Apsoil number" />
         <Latitude description="Latitude (WGS84)" />
         <Longitude />
         <LocationAccuracy description="Location accuracy" />
         <DataSource type="multiedit" description="Data source" />
         <Comments />
-        <Comment type="multiedit" description="Comments">estimated cotton LL</Comment>
-        <Langitude description="Longitude (WGS84)" />
         <Water>
           <Layer>
             <Thickness units="mm">150</Thickness>
@@ -2076,6 +2022,62 @@ endif
           </Layer>
         </Sample>
       </soil>
+      <canopy name="Canopy">
+        <intercrop name="intercrop" description="Enter crop names to intercrop" type="text">maize cowpea</intercrop>
+      </canopy>
+      <cowpea />
+      <maize />
+      <manager name="Logic">
+        <script>
+          <text>
+          </text>
+          <event>init</event>
+        </script>
+        <script>
+          <text> ! MAIZE SOWING AND HARVEST ************
+if day = 10 and year = 1988 then
+      maize sow cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+endif
+
+if (maize.stage = 11) then
+      maize harvest
+      maize end_crop
+endif
+
+! COWPEA SOWING AND HARVEST**********
+if day = 10 and year  = 1988 then
+   cowpea sow cultivar = banjo, plants = 25 (/m2), sowing_depth = 40 (mm)
+endif
+
+if cowpea.StageName = 'harvest_ripe' or cowpea.plant_status = 'dead' then
+   cowpea harvest
+   cowpea end_crop   
+endif
+</text>
+          <event>start_of_day</event>
+        </script>
+        <script>
+          <text>
+          </text>
+          <event>end_of_day</event>
+        </script>
+      </manager>
+      <outputfile name="Outputfile">
+        <filename output="yes">Canopy.out</filename>
+        <title>Canopy</title>
+        <variables name="Variables">
+          <variable description="Date (dd/mm/yyyy)" array="?">dd/mm/yyyy as Date</variable>
+          <variable array="Yes" description="Soil water - layered (mm)">sw_dep()</variable>
+          <variable array="No" description="Leaf area index">cowpea.lai as lai_cowpea</variable>
+          <variable array="No" description="Maize Leaf area index">maize.lai as lai_maize</variable>
+          <variable array="" description="">canopy.cover_tot_sum</variable>
+          <variable array="No" description="Biomass">cowpea.biomass as biom_cowpea</variable>
+          <variable array="No" description="Maize Total Above Ground Biomass (kg/ha)">maize.biomass as biom_maize</variable>
+        </variables>
+        <events name="Reporting Frequency">
+          <event description="End of daily simulation time step">Daily</event>
+        </events>
+      </outputfile>
     </area>
   </simulation>
 </folder>

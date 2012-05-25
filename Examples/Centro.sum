@@ -18,8 +18,8 @@ Paddock:
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                  "Sowing rule" = %apsim%\Model\Manager.dll
-   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
    Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
    Component "Grey Vertosol-Kupunn (Kupunn No009) Water" = %apsim%\Model\SoilWat.dll
    Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
    Component "Grey Vertosol-Kupunn (Kupunn No009) Nitrogen" = %apsim%\Model\SoilN.dll
@@ -82,6 +82,14 @@ Paddock:
      END of rules
      
 
+------- Sowing fertiliser Initialisation --------------------------------------
+     Manager rules:
+     
+     SECTION:- centro.sowing
+             fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = urea_n
+     END of rules
+     
+
 ------- Harvesting rule Initialisation ----------------------------------------
      Manager rules:
      
@@ -90,14 +98,6 @@ Paddock:
        centro  harvest
        centro  end_crop
                 endif
-     END of rules
-     
-
-------- Sowing fertiliser Initialisation --------------------------------------
-     Manager rules:
-     
-     SECTION:- centro.sowing
-             fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = urea_n
      END of rules
      
 

@@ -1,31 +1,33 @@
-<folder version="28" name="simulations">
+<folder version="32" name="simulations">
   <simulation name="Sugar">
+    <metfile name="met">
+      <filename name="filename" input="yes">MetFiles/Ingham.met</filename>
+    </metfile>
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">01/01/1990</start_date>
       <end_date type="date" description="Enter the end date of the simulation">31/12/2000</end_date>
     </clock>
     <summaryfile />
-    <metfile name="met">
-      <filename name="filename" input="yes">MetFiles/Ingham.met</filename>
-    </metfile>
     <area name="paddock">
       <soil name="Soil">
-        <Country />
-        <Site>Jimbour</Site>
-        <Region>South East Queensland</Region>
+        <Langitude description="Longitude (WGS84)" />
+        <Comment type="multiedit" description="Comments" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description">Black Vertosol</SoilType>
         <LocalName>Waco</LocalName>
-        <SoilType description="Classification">Black Vertosol</SoilType>
+        <Site>Jimbour</Site>
         <NearestTown description="Nearest town">Jimbour, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
+        <Region>South East Queensland</Region>
         <State />
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
         <ApsoilNumber description="Apsoil number" />
         <Latitude description="Latitude (WGS84)" />
         <Longitude />
         <LocationAccuracy description="Location accuracy" />
         <DataSource type="multiedit" description="Data source" />
         <Comments />
-        <Langitude description="Longitude (WGS84)" />
-        <Comment type="multiedit" description="Comments" />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>0.5004617</percent>
@@ -1241,27 +1243,27 @@
         <filename output="yes">Sugar.out</filename>
         <title>Sugar</title>
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
-          <variable name="biomass" description="Sugar total above-ground biomass (green + trash) (g/m2)" array="?" />
-          <variable name="cane_wt" description="Sugar cane dry weight (g/m2)" array="?" />
-          <variable name="sucrose_wt" description="Sugar sucrose weight (g/m2)" array="?" />
-          <variable name="sw_demand" description="Sugar crop demand for water (potential uptake) (mm)" array="?" />
-          <variable name="DaysAfterSowing" description="Sugar days after sowing" array="?" />
-          <variable name="ratoon_no" description="Sugar Ratoon number" array="?" />
-          <variable name="crop_status" description="Sugar Crop status (dead,alive,out)" array="?" />
-          <variable name="esw" array="?" description="Extractable Soil Water (mm)" VariableType="Water" />
-          <variable name="lai" description="Sugar green leaf area index" array="?" />
-          <variable name="nfact_photo" description="Sugar Nitrogen stress factor on photosynthesis (0-1)" array="?" />
-          <variable name="root_depth" description="Sugar depth of roots (mm)" array="?" />
-          <variable name="swdef_photo" description="Sugar water stress factor on photosynthesis (0-1)" array="?" />
-          <variable name="canefw" description="Sugar cane fresh weight (t/ha)" array="?" />
-          <variable name="radn" description="Solar Radiation (MJ/m2/day)" array="?" />
-          <variable name="rain" description="Rainfall (mm)" array="?" />
-          <variable name="maxt" description="Maximum temperature (oC)" array="?" />
-          <variable name="mint" description="Minimum temperature (oC)" array="?" />
+          <variable description="Date (dd/mm/yyyy)" array="?">dd/mm/yyyy as Date</variable>
+          <variable description="Sugar total above-ground biomass (green + trash) (g/m2)" array="?">biomass</variable>
+          <variable description="Sugar cane dry weight (g/m2)" array="?">cane_wt</variable>
+          <variable description="Sugar sucrose weight (g/m2)" array="?">sucrose_wt</variable>
+          <variable description="Sugar crop demand for water (potential uptake) (mm)" array="?">sw_demand</variable>
+          <variable description="Sugar days after sowing" array="?">DaysAfterSowing</variable>
+          <variable description="Sugar Ratoon number" array="?">ratoon_no</variable>
+          <variable description="Sugar Crop status (dead,alive,out)" array="?">crop_status</variable>
+          <variable array="?" description="Extractable Soil Water (mm)" VariableType="Water">esw</variable>
+          <variable description="Sugar green leaf area index" array="?">lai</variable>
+          <variable description="Sugar Nitrogen stress factor on photosynthesis (0-1)" array="?">nfact_photo</variable>
+          <variable description="Sugar depth of roots (mm)" array="?">root_depth</variable>
+          <variable description="Sugar water stress factor on photosynthesis (0-1)" array="?">swdef_photo</variable>
+          <variable description="Sugar cane fresh weight (t/ha)" array="?">canefw</variable>
+          <variable description="Solar Radiation (MJ/m2/day)" array="?">radn</variable>
+          <variable description="Rainfall (mm)" array="?">rain</variable>
+          <variable description="Maximum temperature (oC)" array="?">maxt</variable>
+          <variable description="Minimum temperature (oC)" array="?">mint</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="post" description="End of daily simulation time step" />
+          <event description="End of daily simulation time step">post</event>
         </events>
       </outputfile>
     </area>

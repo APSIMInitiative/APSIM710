@@ -1,4 +1,4 @@
-<folder version="28" name="Simulations">
+<folder version="32" name="Simulations">
   <simulation name="TemperateGrass">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
@@ -9,167 +9,25 @@
     </clock>
     <summaryfile />
     <area name="paddock">
-      <folder name="Manager">
-        <manager name="Area">
-          <ui>
-            <area type="text" description="Area of paddock (ha) :">100</area>
-          </ui>
-          <script name="Init">
-            <text>area = [area]</text>
-            <event>Init</event>
-          </script>
-        </manager>
-        <manager name="Reset">
-          <ui>
-            <category description="When should a reset be done" type="category" />
-            <reset_date type="ddmmmdate" description="Enter date of reset (dd-mmm) : ">1-jan</reset_date>
-            <category description="Reset details" type="category" />
-            <soilmodule type="modulename" description="Name of your soil module : ">SandyLoam</soilmodule>
-            <surfaceommodule type="modulename" description="Name of your surface organic matter module : ">SurfaceOrganicMatter</surfaceommodule>
-            <resetWater type="yesno" description="Reset soil water?">no</resetWater>
-            <resetNitrogen type="yesno" description="Reset soil nitrogen?">yes</resetNitrogen>
-            <resetSurfaceOM type="yesno" description="Reset surface organic matter?">no</resetSurfaceOM>
-          </ui>
-          <script name="start_of_day">
-            <text>
-         if (today = date('[reset_date]')) then
-            resetWater = '[resetWater]'
-            resetNitrogen  = '[resetNitrogen]'
-            resetSurfaceOM = '[resetSurfaceOM]'
-            if (resetWater = 'yes') then
-                '[soilmodule] Water' reset
-            endif
-            if (resetNitrogen = 'yes') then
-                '[soilmodule] Nitrogen' reset
-            endif
-            if (resetSurfaceOM = 'yes') then
-                '[surfaceommodule]' reset
-            endif
-            act_mods reseting
-         endif
-      </text>
-            <event>start_of_day</event>
-          </script>
-        </manager>
-        <manager name="Fertilise on fixed date">
-          <ui>
-            <category description="When should fertiliser be applied" type="category" />
-            <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">1-apr</fert_date>
-            <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">500</fert_criteria>
-            <category description="Fertiliser application details" type="category" />
-            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
-            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">20</fert_amount>
-            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Fertiliser type : ">NO3_N</fert_type>
-          </ui>
-          <script name="start_of_day">
-            <text><![CDATA[
-         if (today = date('[fert_date]') then
-            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
-            if (N_topsoil < [fert_criteria]) then
-               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
-            endif
-         endif ]]></text>
-            <event>start_of_day</event>
-          </script>
-        </manager>
-        <manager name="Sow">
-          <ui>
-            <category description="Sowing criteria" type="category" />
-            <date type="text" description="Enter sowing date (dd-mmm):">15-May</date>
-            <category description="Sowing details" type="category" />
-            <pasturemodel type="crop" description="Enter name of pasture module:">AusfarmPasture</pasturemodel>
-            <rate type="text" description="Enter sowing rate (kg/ha):">100</rate>
-          </ui>
-          <script name="start_of_day">
-            <text>if (today = date('[date]')) then
-  '[pasturemodel]' sowpasture rate = [rate]
- endif
-</text>
-            <event>start_of_day</event>
-          </script>
-        </manager>
-        <manager name="CutOnDMThreshold">
-          <ui>
-            <category description="When should a cut be done?" type="category" />
-            <availdmthreshold type="text" description="Enter DM threshold after which a cut should be performed (kg/ha):">1500</availdmthreshold>
-            <category description="Cut details" type="category" />
-            <pasturemodel type="crop" description="Enter name of pasture module:">AusfarmPasture</pasturemodel>
-            <height type="text" description="Enter height of cut (mm):">80</height>
-            <gathered type="text" description="Proportion of cut forage gathered in (remainder becomes litter):">0.5</gathered>
-            <dmdloss type="text" description="Loss of DMD during cutting, drying and storage:">0.1</dmdloss>
-            <dmdcontent type="text" description="Dry matter content when stored (kg/kg):">0.9</dmdcontent>
-          </ui>
-          <script name="start_of_day">
-            <text><![CDATA[if ([pasturemodel]Model.avail_dm > [availdmthreshold]) then
-      standing_DM = [pasturemodel]Model.avail_dm
-      '[pasturemodel]' cutpasture cut_height = [height], gathered = [gathered], dmd_loss = [dmdloss], dm_content = [dmdcontent]
-      resid_DM = [pasturemodel]Model.avail_dm
-      removed_DM = standing_DM - resid_DM
-endif
-
-
-
-]]></text>
-            <event>start_of_day</event>
-          </script>
-        </manager>
-      </folder>
-      <surfaceom name="SurfaceOrganicMatter">
-        <PoolName type="text" description="Organic Matter pool name">wheat_stubble</PoolName>
-        <type type="list" listvalues="inert,manure,fym,bambatsi,barley,broccoli,camaldulensis,canola,chickpea,cowpea,danthonia,globulus,grandis,fababean,fieldpea,grass,lablab,lucerne,lupin,maize,millet,mucuna,mungbean,horsegram,navybean,cotton,orobanche,peanut,pigeonpea,rice,soybean,sorghum,stylo,sugar,sunflower,sweetcorn,sweetsorghum,weed,wheat" description="Organic Matter type">wheat</type>
-        <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
-        <cnr type="text" description="C:N ratio of initial residue">80</cnr>
-        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
-      </surfaceom>
-      <fertiliser name="Fertiliser" />
-      <outputfile name="daily">
-        <filename name="filename" output="yes">TemperateGrass daily.out</filename>
-        <title>TemperateGrass daily</title>
-        <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="Day" />
-          <variable name="phenology" array="No" />
-          <variable name="growth" array="No" />
-          <variable name="leaf_dm" array="No" />
-          <variable name="stem_dm" array="No" />
-          <variable name="litter_dm" array="No" />
-          <variable name="rtdep" array="No" />
-          <variable name="urea()" array="Yes" />
-          <variable name="cover_tot" />
-          <variable name="uptake_nh4()" array="Yes" />
-          <variable name="nh4()" array="Yes" />
-          <variable name="uptake_no3()" array="Yes" />
-          <variable name="no3()" array="Yes" />
-          <variable name="nit_tot()" array="Yes" />
-          <variable name="glf_nitr" array="No" />
-          <variable name="glf_sm" array="No" />
-          <variable name="glf_tmp" array="No" />
-          <variable name="glf_vpd" array="No" />
-          <variable name="removed_dm" />
-          <variable name="avail_dm" />
-        </variables>
-        <events name="Reporting Frequency">
-          <event name="Daily" array="No" description="End of day" />
-        </events>
-      </outputfile>
       <soil name="SandyLoam">
-        <Country />
-        <Site>Hopetoun</Site>
-        <Region>sth Mallee</Region>
+        <Comment type="multiedit" description="Comments">Hopetoun Landcare site 2005; lower slope; OC estimated for all layers; OC*1.3; CLL field measured; Observed rooting depth 70cm</Comment>
+        <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description">Sandy Loam</SoilType>
         <LocalName />
-        <SoilType description="Classification">Sandy Loam</SoilType>
+        <Site>Hopetoun</Site>
         <NearestTown description="Nearest town">Hopetoun</NearestTown>
-        <NaturalVegetation description="Natural vegetation" />
+        <Region>sth Mallee</Region>
         <State>Victoria</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation" />
         <ApsoilNumber description="Apsoil number">717</ApsoilNumber>
         <Latitude description="Latitude (WGS84)">-35.733</Latitude>
         <Longitude>142.237</Longitude>
         <LocationAccuracy description="Location accuracy">+-1000m</LocationAccuracy>
         <DataSource type="multiedit" description="Data source">Based on Soil Characterisation undertaken by Birchip Cropping Group during 2005</DataSource>
         <Comments />
-        <Comment type="multiedit" description="Comments">Hopetoun Landcare site 2005; lower slope; OC estimated for all layers; OC*1.3; CLL field measured; Observed rooting depth 70cm</Comment>
-        <Langitude description="Longitude (WGS84)" />
         <InitWater name="Initial water">
           <PercentMethod>
             <Percent>0</Percent>
@@ -708,6 +566,14 @@ endif
           </Layer>
         </Sample>
       </soil>
+      <surfaceom name="SurfaceOrganicMatter">
+        <PoolName type="text" description="Organic Matter pool name">wheat_stubble</PoolName>
+        <type type="list" listvalues="inert,manure,fym,bambatsi,barley,broccoli,camaldulensis,canola,chickpea,cowpea,danthonia,globulus,grandis,fababean,fieldpea,grass,lablab,lucerne,lupin,maize,millet,mucuna,mungbean,horsegram,navybean,cotton,orobanche,peanut,pigeonpea,rice,soybean,sorghum,stylo,sugar,sunflower,sweetcorn,sweetsorghum,weed,wheat" description="Organic Matter type">wheat</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
+        <cnr type="text" description="C:N ratio of initial residue">80</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <fertiliser name="Fertiliser" />
       <AusfarmPasture>
         <debug type="list" listvalues="on,off" description="debug">off</debug>
         <sand type="text" description="sand">0.1 0.1 0.1 0.1 0.1</sand>
@@ -715,6 +581,142 @@ endif
         <co2_ppm type="text" description="co2 (ppm)">400</co2_ppm>
         <species type="list" description="Name of the pasture species" listvalues="Perennial Ryegrass,Phalaris,Cocksfoot,Annual Ryegrass,Annual Grass - Early,Sub Clover - Mt Barker,Sub Clover - Leura,Sub Clover - Seaton Park,Sub Clover - Dalkeith,Medic - Paraggio,White Clover (beta),Lucerne - Hunter River (beta),Lucerne - winter active (beta),Capeweed">Cocksfoot</species>
       </AusfarmPasture>
+      <folder name="Manager">
+        <manager name="Area">
+          <ui>
+            <area type="text" description="Area of paddock (ha) :">100</area>
+          </ui>
+          <script name="Init">
+            <text>area = [area]</text>
+            <event>Init</event>
+          </script>
+        </manager>
+        <manager name="Reset">
+          <ui>
+            <category description="When should a reset be done" type="category" />
+            <reset_date type="ddmmmdate" description="Enter date of reset (dd-mmm) : ">1-jan</reset_date>
+            <category description="Reset details" type="category" />
+            <soilmodule type="modulename" description="Name of your soil module : ">SandyLoam</soilmodule>
+            <surfaceommodule type="modulename" description="Name of your surface organic matter module : ">SurfaceOrganicMatter</surfaceommodule>
+            <resetWater type="yesno" description="Reset soil water?">no</resetWater>
+            <resetNitrogen type="yesno" description="Reset soil nitrogen?">yes</resetNitrogen>
+            <resetSurfaceOM type="yesno" description="Reset surface organic matter?">no</resetSurfaceOM>
+          </ui>
+          <script name="start_of_day">
+            <text>
+         if (today = date('[reset_date]')) then
+            resetWater = '[resetWater]'
+            resetNitrogen  = '[resetNitrogen]'
+            resetSurfaceOM = '[resetSurfaceOM]'
+            if (resetWater = 'yes') then
+                '[soilmodule] Water' reset
+            endif
+            if (resetNitrogen = 'yes') then
+                '[soilmodule] Nitrogen' reset
+            endif
+            if (resetSurfaceOM = 'yes') then
+                '[surfaceommodule]' reset
+            endif
+            act_mods reseting
+         endif
+      </text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Fertilise on fixed date">
+          <ui>
+            <category description="When should fertiliser be applied" type="category" />
+            <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">1-apr</fert_date>
+            <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">500</fert_criteria>
+            <category description="Fertiliser application details" type="category" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">20</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Fertiliser type : ">NO3_N</fert_type>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[
+         if (today = date('[fert_date]') then
+            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+            if (N_topsoil < [fert_criteria]) then
+               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
+            endif
+         endif ]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Sow">
+          <ui>
+            <category description="Sowing criteria" type="category" />
+            <date type="text" description="Enter sowing date (dd-mmm):">15-May</date>
+            <category description="Sowing details" type="category" />
+            <pasturemodel type="crop" description="Enter name of pasture module:">AusfarmPasture</pasturemodel>
+            <rate type="text" description="Enter sowing rate (kg/ha):">100</rate>
+          </ui>
+          <script name="start_of_day">
+            <text>if (today = date('[date]')) then
+  '[pasturemodel]' sowpasture rate = [rate]
+ endif
+</text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="CutOnDMThreshold">
+          <ui>
+            <category description="When should a cut be done?" type="category" />
+            <availdmthreshold type="text" description="Enter DM threshold after which a cut should be performed (kg/ha):">1500</availdmthreshold>
+            <category description="Cut details" type="category" />
+            <pasturemodel type="crop" description="Enter name of pasture module:">AusfarmPasture</pasturemodel>
+            <height type="text" description="Enter height of cut (mm):">80</height>
+            <gathered type="text" description="Proportion of cut forage gathered in (remainder becomes litter):">0.5</gathered>
+            <dmdloss type="text" description="Loss of DMD during cutting, drying and storage:">0.1</dmdloss>
+            <dmdcontent type="text" description="Dry matter content when stored (kg/kg):">0.9</dmdcontent>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[if ([pasturemodel]Model.avail_dm > [availdmthreshold]) then
+      standing_DM = [pasturemodel]Model.avail_dm
+      '[pasturemodel]' cutpasture cut_height = [height], gathered = [gathered], dmd_loss = [dmdloss], dm_content = [dmdcontent]
+      resid_DM = [pasturemodel]Model.avail_dm
+      removed_DM = standing_DM - resid_DM
+endif
+
+
+
+]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+      </folder>
+      <outputfile name="daily">
+        <filename name="filename" output="yes">TemperateGrass daily.out</filename>
+        <title>TemperateGrass daily</title>
+        <variables name="Variables">
+          <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
+          <variable array="No" description="Year">year</variable>
+          <variable array="Day">day</variable>
+          <variable array="No">phenology</variable>
+          <variable array="No">growth</variable>
+          <variable array="No">leaf_dm</variable>
+          <variable array="No">stem_dm</variable>
+          <variable array="No">litter_dm</variable>
+          <variable array="No">rtdep</variable>
+          <variable array="Yes">urea()</variable>
+          <variable>cover_tot</variable>
+          <variable array="Yes">uptake_nh4()</variable>
+          <variable array="Yes">nh4()</variable>
+          <variable array="Yes">uptake_no3()</variable>
+          <variable array="Yes">no3()</variable>
+          <variable array="Yes">nit_tot()</variable>
+          <variable array="No">glf_nitr</variable>
+          <variable array="No">glf_sm</variable>
+          <variable array="No">glf_tmp</variable>
+          <variable array="No">glf_vpd</variable>
+          <variable>removed_dm</variable>
+          <variable>avail_dm</variable>
+        </variables>
+        <events name="Reporting Frequency">
+          <event array="No" description="End of day">Daily</event>
+        </events>
+      </outputfile>
     </area>
   </simulation>
 </folder>

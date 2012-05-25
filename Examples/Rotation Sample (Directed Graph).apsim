@@ -1,31 +1,33 @@
-<folder version="28" name="simulations">
+<folder version="32" name="simulations">
   <simulation name="Rotation Sample (Directed Graph)">
+    <metfile name="met">
+      <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
+    </metfile>
     <clock>
       <start_date name="start_date" description="Enter the start date of the simulation" type="date" lbound="1/01/1940" ubound="31/12/1989">1/01/1940</start_date>
       <end_date name="end_date" description="Enter the end date of the simulation" type="date" lbound="1/01/1940" ubound="31/12/1989">31/12/1950</end_date>
     </clock>
     <summaryfile />
-    <metfile name="met">
-      <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
-    </metfile>
     <area name="Paddock">
       <soil name="Soil">
-        <Country />
-        <Site>Kupunn</Site>
-        <Region>South East Queensland</Region>
+        <Comment type="multiedit" description="Comments">oc and ph not measured</Comment>
+        <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description">Grey Vertosol</SoilType>
         <LocalName>Brigalow</LocalName>
-        <SoilType description="Classification">Grey Vertosol</SoilType>
+        <Site>Kupunn</Site>
         <NearestTown description="Nearest town">Dalby, Q 4405</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Brigalow, belah, wilga</NaturalVegetation>
+        <Region>South East Queensland</Region>
         <State />
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Brigalow, belah, wilga</NaturalVegetation>
         <ApsoilNumber description="Apsoil number" />
         <Latitude description="Latitude (WGS84)" />
         <Longitude />
         <LocationAccuracy description="Location accuracy" />
         <DataSource type="multiedit" description="Data source" />
         <Comments />
-        <Comment type="multiedit" description="Comments">oc and ph not measured</Comment>
-        <Langitude description="Longitude (WGS84)" />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -1337,12 +1339,12 @@ proc sow_[crop] {} {
         <filename output="yes">Rotation Sample (Directed Graph).out</filename>
         <title>Rotation Sample (Directed Graph)</title>
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-          <variable name="yield" />
-          <variable name="biomass" />
+          <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
+          <variable>yield</variable>
+          <variable>biomass</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="" />
+          <event description="">harvesting</event>
         </events>
       </outputfile>
     </area>
