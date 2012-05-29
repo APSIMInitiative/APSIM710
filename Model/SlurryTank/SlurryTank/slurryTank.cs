@@ -8,15 +8,12 @@ using System.Collections.Generic;
         double Ash = 0;
         double Tan = 0;
 
-        double orgN = 0;
         double N_Inert = 0;
         double NFast = 0;
         double C_Inert = 0;
-
-        double CRP = 0;
+        double C_Lignin = 0;
 
         double CSlow = 0;
-        double CRL = 0;
         double CVFA = 0;
 
         double CFast = 0;
@@ -27,6 +24,7 @@ using System.Collections.Generic;
         double SFast = 0;
         double S_S04 = 0;
         double CGas=0;
+        double pH = 7.0;
 
         //const
         double E = 2.718281828459045;
@@ -52,6 +50,15 @@ using System.Collections.Generic;
         [Param]
         double b = 0;
 
+        [Param]
+        double pHmin = 0;
+        [Param]
+        double pHopt_lo = 0;
+        [Param]
+        double pHmax = 0;
+        [Param]
+        double pHopt_hi = 0;
+
         //gas
   
         //other
@@ -63,7 +70,6 @@ using System.Collections.Generic;
         double slurrypH = 0;
         double HInert = 0;
         double OInert=0;
-        double CLignin = 0.0;
         double S2_S = 0;
         double CCH4S = 0;
         double NN2O=0;
@@ -116,12 +122,12 @@ using System.Collections.Generic;
         [EventHandler]
         public void OnInitialised()
         {
-
+            Console.Out.WriteLine("Entered OnInitialised in Slurry Tank");
         }
         [EventHandler]
         public void OnPrepare()
         {
-
+            Console.Out.WriteLine("Entered OnPrepare in Slurry Tank");
         }
 
         private double GetOM()
@@ -139,6 +145,7 @@ using System.Collections.Generic;
         [EventHandler]
         public void OnAddSlurry(ManureType input)
         {
+          
                 slurrypH = input.pH;
                 double amount = input.amount;
                 double DM = amount * input.DM;
@@ -148,36 +155,42 @@ using System.Collections.Generic;
                 double RP = DM * input.RP;
                 //org N is obtained by dividing CP by 6.25
                 double orgNAdded = RP / 6.25; // 1.5	//kg
-                orgN += orgNAdded; //kg
                 //Partition org N between inert and Fast pools
-                N_Inert += input.fInert * orgNAdded; //1.4 //kg //fInert should be between 0 and 1
-                NFast += (1 - input.fInert) * orgNAdded; //1.5 /kg
+                double N_InertAdded = input.fInert * orgNAdded; //1.4
+                N_Inert += N_InertAdded; //kg //fInert should be between 0 and 1
+                double NFastAdded = (1 - input.fInert) * orgNAdded; // 1.5
+                NFast += NFastAdded; //kg
                 //! calculate the carbon content of the inert pool
                 double C_InertAdded = 10 * input.fInert * orgNAdded;
                 C_Inert += C_InertAdded; //1.6 //kg
                 HInert += 0.055 * C_InertAdded;//1.34
                 OInert += 0.444 * C_InertAdded;// 1.35
                 //! Calculate the carbon content of the raw protein
-                CRP = 4.28 * (1-input.fInert)*orgNAdded; //1.6 //kg
+                double CIn_RP = 4.28 * NFastAdded; //1.6 //kg
                 //! Calculate the carbon content of the lignin
-                CLignin = DM * 0.55 * input.ADL; //1.8 //kg
+                double CIn_Lignin = DM * 0.55 * input.ADL; //1.8 //kg
+                C_Lignin += CIn_Lignin;
                 //! Calculate the carbon content of the slow pool
-                CSlow += DM * 0.44 * (input.NDF - input.ADL); //1.9 //kg
+                double CIn_Slow = DM *0.44 * (input.NDF - input.ADL); //1.9
+                CSlow += CIn_Slow;  //kg
                 //! Calculate the carbon content of the raw lipid
-                CRL = DM * 0.77 * input.RL; //1.10 //kg
+                double CIn_RL = DM * 0.77 * input.RL; //1.10 //kg
                 //! calculate the carbon content of the volatile fatty acids
-                CVFA += DM * 0.4 * input.VFA; //1.11 //kg
-                HVFA += DM * 0.167 * input.VFA;//1.16 // kg
-                OVFA += DM * 0.889 * input.VFA;//1.19 // kg
+                double CIn_VFA = DM * 0.4 * input.VFA; //1.11 //kg
+                CVFA += CIn_VFA;
+                double HIn_VFA = DM * 0.167 * input.VFA;//1.16 // kg
+                HVFA += HIn_VFA;
+                double OIn_VFA = DM * 0.889 * input.VFA;//1.19 // kg
+                OVFA += OIn_VFA;
                 //! Calculate the carbon content of the starch and sugar
-                double CStarch = DM * 0.44 * input.Rem; //1.12 //kg
+                double CIn_Starch = DM * 0.44 * input.Rem; //1.12 //kg
                 //! Calculate the carbon content of the Fast pool
-                CFast += CRP + CRL + CStarch; //1.13
+                CFast += CIn_RP + CIn_RL + CIn_Starch; //1.13
                 //! Calculate the hydrogen in the Fast and Slow pools
-                HFast += 0.117 * CRP + 0.152 * CRL + 0.139 * CStarch;//1.14
-                HSlow += 0.139 * CSlow;//1.15
+                HFast += 0.117 * CIn_RP + 0.152 * CIn_RL + 0.139 * CIn_Starch;//1.14
+                HSlow += 0.139 * CIn_Slow;//1.15
                 //! Calculate the oxygen in the Fast and Slow
-                OFast += 0.533 * CRP + 0.14 * CRL + 1.111 * CStarch;//1.17
+                OFast += 0.533 * CIn_RP + 0.14 * CIn_RL + 1.111 * CIn_Starch;//1.17
                 OSlow += 1.111 * CSlow;//1.18
                 //! Calculate the sulphur in the Fast and Sulphate pools
                 SFast += amount * (input.TotalS - (input.SulphS + input.SulphS));//1.20
@@ -185,22 +198,31 @@ using System.Collections.Generic;
                 S2_S += amount * input.TotalS; // 1.22
                 Water += amount * (1 - input.DM); // 1.1 //kg
 
+
              
         }
 
         [EventHandler]
         public void OnProcess()
         {
-            if (Water != 0)
-            {
 
-      
+            if (Water > 0)
+            {
                 temperatureInKelvin = 283.0;
                 double temperatureInCelsius = temperatureInKelvin - 273.15;
                 //! Calculate the normalised temperature effect
                 double FTheta = Math.Pow(E, ThetaA + ThetaB * temperatureInCelsius * (1 - 0.5 * (temperatureInCelsius / ThetaC)));  //1.26
-                double FpH = 1.0; //need to implement this
-
+                double FpH = 1.0; //new equations, appear after 1.27
+                if (pH <= pHmin)
+                    FpH = 0;
+                if ((pH > pHmin) && (pH < pHopt_lo))
+                    FpH = (pHopt_lo - pH) / (pHopt_lo - pHmin);
+                if ((pH >= pHopt_lo) && (pH <= pHopt_hi))
+                    FpH = 1.0;
+                if ((pH > pHopt_hi) && (pH < pHmax))
+                    FpH = (pH - pHopt_hi) / (pHmax - pHopt_hi);
+                if (pH >= pHmax)
+                    FpH = 0;
                 //! Calculate the degradation rates of the Fast and Slow pools
                 double k1act = FpH * FTheta * k1;//1.25 //should be 0 to 1
                 double k2act = FpH * FTheta * k2;//1.25
@@ -278,38 +300,27 @@ using System.Collections.Generic;
                 double NAddInert = 0.1 * GInert * hydrolysedCpool;
                 N_Inert += NAddInert;//1.51
                 Tan += k2act * NFast - (NAddInert + ENH3);// 1.52
-                
-                if (NFast < 0)
-                    throw new System.ArgumentException("NFast is below 0");
                 NFast *= (1 - k2act); //1.50
-                if (NFast < 0)
-                    throw new System.ArgumentException("NFast is below 0");
-              
 
-               DoubleType value = new DoubleType();
+                if (Tan < 0.0)
+                {
+
+                    StringType message = new StringType("Not enough TAN to enable the inert to be created or too much volatilisation");
+                    panic.Invoke(message);
+                }
+
+                DoubleType value = new DoubleType();
                 value.Value = CCH4S;
-                if (CCH4S < 0)
-                    throw new System.ArgumentException("CCH4S is below 0");
                 CCH4SEvent.Invoke(value);
-                if (CCO2_S < 0)
-                    throw new System.ArgumentException("CCO2_S is below 0");
                 value.Value = CCO2_S;
                 CCO2_SEvent.Invoke(value);
                 value.Value = CGas;
-                if (CCH4S < 0)
-                    throw new System.ArgumentException("CCH4S is below 0");
                 CGasEvent.Invoke(value);
                 value.Value = ENH3;
-                if (ENH3 < 0)
-                    throw new System.ArgumentException("ENH3 is below 0");
                 ENH3Event.Invoke(value);
                 value.Value = CH4EM;
-                if (CH4EM < 0)
-                    throw new System.ArgumentException("CH4EM is below 0");
                 CH4EMEvent.Invoke(value);
                 value.Value = NN2O;
-                if (NN2O < 0)
-                    throw new System.ArgumentException("NN2O is below 0");
                 NN2OEvent.Invoke(value);
                 for (int i = 0; i < MyPaddock.Children.Count; i++)
                 {
@@ -317,32 +328,22 @@ using System.Collections.Generic;
 
                     if (item.Name.CompareTo("SurfaceOrganicMatter") == 0)
                     {
-                  
+                        Console.WriteLine("Sending manure to soil");
 
                         AddFaecesType faeces = new AddFaecesType();
                         faeces.VolumePerDefaecation = GetMass();
-                        if(faeces.VolumePerDefaecation<0)
-                         throw new System.ArgumentException("VolumePerDefaecation is below 0");
                         faeces.AreaPerDefaecation = 0.0;
                         faeces.NO3N = 0;
                         faeces.AreaPerDefaecation = 0;
                         faeces.Defaecations = 0;
                         faeces.Eccentricity = 0;
                         faeces.NH4N = Tan;
-                         if(faeces.NH4N<0)
-                         throw new System.ArgumentException("NH4N is below 0");
                         faeces.NO3N = 0;
                         faeces.OMAshAlk = 0;
                         faeces.OMN = N_Inert + NFast;
-                             if(faeces.OMN<0)
-                         throw new System.ArgumentException("OMN is below 0");
                         faeces.OMP = 0;
                         faeces.OMS = SFast;
-                             if(faeces.OMS<0)
-                         throw new System.ArgumentException("OMS is below 0");
                         faeces.OMWeight = GetOM();
-                             if(faeces.OMWeight<0)
-                         throw new System.ArgumentException("OMWeight is below 0");
                         faeces.POXP = 0;
                         faeces.SO4S = S_S04;
                         item.Publish("add_faeces", faeces);
