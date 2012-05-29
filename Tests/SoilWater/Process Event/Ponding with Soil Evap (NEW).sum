@@ -10,7 +10,7 @@
              Copyright(c) APSRU               
 
 Version                = 7.5
-Title                  = Ponding Only using MWCON (NEW)
+Title                  = Ponding with Soil Evap (NEW)
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
@@ -51,18 +51,19 @@ Paddock:
         air_dry_dep
         dd/mm/yyyy as Date
         rain
+        eos
+        es
         pond_evap
         pond
         total_pond
         runoff
         sw_dep(1-3) as sw_top
-        es
         drain
         flux
         flow
         sw_dep
 
-     Output file = Ponding Only using MWCON (NEW).out
+     Output file = Ponding with Soil Evap (NEW).out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -236,8 +237,12 @@ Initial soilwater distributed using "sw" parameter.
 
 
       Using Ritchie evaporation model
-       Cuml evap (U):             0.00  (mm^0.5)
-       CONA:                      0.00  ()
+        Stage 1 Duration (U): Summer         6.00  (mm)
+                              Winter         5.00  (mm)
+        Stage 2       (CONA): Summer         3.50  (mm^0.5)
+                              Winter         2.50  (mm^0.5)
+       Critical Dates:       Summer        1-Nov
+                             Winter        1-Apr
 
        Eo from priestly-taylor
 
