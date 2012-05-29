@@ -301,8 +301,8 @@ namespace CPIUserInterface
         /// <param name="e"></param>
         private void treeView1_KeyDown(object sender, KeyEventArgs e)
         {
-            // display text editor when "enter" is pressed
-            if (e.KeyCode == Keys.Enter)
+            // display text editor when "enter" or F2 is pressed
+            if ( (e.KeyCode == Keys.Enter) || (e.KeyCode == Keys.F2) )
             {
                 if (sender is TreeView)
                 {

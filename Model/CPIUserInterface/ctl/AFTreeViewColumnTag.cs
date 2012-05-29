@@ -137,11 +137,9 @@ namespace CPIUserInterface
                 value = DefaultValue;
             }
 
-            if ((_typedValue.isScalar())
-                && (!_typedValue.isTextType()))
+            //when this is a numeric value check it's range
+            if ((_typedValue.isScalar()) && (!_typedValue.isTextType()) && (_typedValue.baseType() != TTypedValue.TBaseType.ITYPE_BOOL))
             {
-                Console.WriteLine("he");
-
                 try
                 {
                     double dValue = Convert.ToDouble(value);
