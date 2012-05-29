@@ -14823,7 +14823,6 @@ nb. The squewing of the top layers in the graph for 1 Jan is caused by the layer
         <manager name="set setable variables">
           <script>
             <text>
-total_pond = pond + pond_evap
 
 if day = 2 and year = 1940 then
    'Soil Water' set max_pond = 100
@@ -14857,6 +14856,14 @@ endif</text>
             <event>start_of_day</event>
           </script>
         </manager>
+        <manager name="calculate total_pond">
+          <script>
+            <text>
+total_pond = pond + pond_evap
+</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
         <outputfile>
           <filename output="yes">Setable Variables - Erosion (OLD).out</filename>
           <title>Setable Variables - Erosion (OLD)</title>
@@ -14883,6 +14890,14 @@ endif</text>
           </events>
         </outputfile>
         <Graph name="_dep variables (y axis in mm)">
+          <Legend>
+            <CheckedTitles> total_pond</CheckedTitles>
+            <CheckedTitles> dlayer(1)</CheckedTitles>
+            <CheckedTitles> sat_dep(1)</CheckedTitles>
+            <CheckedTitles> dul_dep(1)</CheckedTitles>
+            <CheckedTitles> ll15_dep(1)</CheckedTitles>
+            <CheckedTitles> air_dry(1)</CheckedTitles>
+          </Legend>
           <Plot>
             <SeriesType>Solid line</SeriesType>
             <PointType>None</PointType>
@@ -14899,6 +14914,12 @@ endif</text>
           </Plot>
         </Graph>
         <Graph name="Fraction variables">
+          <Legend>
+            <CheckedTitles> sat(1)</CheckedTitles>
+            <CheckedTitles> dul(1)</CheckedTitles>
+            <CheckedTitles> ll15(1)</CheckedTitles>
+            <CheckedTitles> air_dry(1)</CheckedTitles>
+          </Legend>
           <Plot>
             <SeriesType>Solid line</SeriesType>
             <PointType>None</PointType>
@@ -14914,6 +14935,12 @@ endif</text>
         </Graph>
         <Graph name="Depth-1 Day (1 Jan)">
           <Format>AAEAAAD/////AQAAAAAAAAAMAgAAAFhUZWVDaGFydC5DbGllbnQsIFZlcnNpb249NC4xLjIwMTEuNzI4MywgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj05YzgxMjYyNzZjNzdiZGI3DAMAAABXU3lzdGVtLldpbmRvd3MuRm9ybXMsIFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5DAQAAABRU3lzdGVtLkRyYXdpbmcsIFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iMDNmNWY3ZjExZDUwYTNhBQEAAAAVU3RlZW1hLlRlZUNoYXJ0LkNoYXJ0pwAAAA4uWm9vbS5BbmltYXRlZBMuWm9vbS5BbmltYXRlZFN0ZXBzFC5QYW5uaW5nLk1vdXNlQnV0dG9uEC5DdXN0b21DaGFydFJlY3QXLlBhbmVsLkltYWdlQmV2ZWwuV2lkdGgbLlBhbmVsLkJldmVsLlN0cmluZ0NvbG9yT25lGy5QYW5lbC5CZXZlbC5TdHJpbmdDb2xvclR3bxIuUGFuZWwuQmV2ZWwuT3V0ZXISLlBhbmVsLkJydXNoLkNvbG9yEi5MZWdlbmQuQ2hlY2tCb3hlcxEuTGVnZW5kLkFsaWdubWVudCIuTGVnZW5kLlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yT25lIi5MZWdlbmQuVGl0bGUuQmV2ZWwuU3RyaW5nQ29sb3JUd28cLkxlZ2VuZC5CZXZlbC5TdHJpbmdDb2xvck9uZRwuTGVnZW5kLkJldmVsLlN0cmluZ0NvbG9yVHdvFi5MZWdlbmQuU2hhZG93LlZpc2libGUTLkxlZ2VuZC5UcmFuc3BhcmVudA0uSGVhZGVyLkxpbmVzES5IZWFkZXIuRm9udC5OYW1lES5IZWFkZXIuRm9udC5TaXplFi5IZWFkZXIuRm9udC5TaXplRmxvYXQcLkhlYWRlci5CZXZlbC5TdHJpbmdDb2xvck9uZRwuSGVhZGVyLkJldmVsLlN0cmluZ0NvbG9yVHdvHy5TdWJIZWFkZXIuQmV2ZWwuU3RyaW5nQ29sb3JPbmUfLlN1YkhlYWRlci5CZXZlbC5TdHJpbmdDb2xvclR3bxwuRm9vdGVyLkJldmVsLlN0cmluZ0NvbG9yT25lHC5Gb290ZXIuQmV2ZWwuU3RyaW5nQ29sb3JUd28fLlN1YkZvb3Rlci5CZXZlbC5TdHJpbmdDb2xvck9uZR8uU3ViRm9vdGVyLkJldmVsLlN0cmluZ0NvbG9yVHdvGS5Bc3BlY3QuQ29sb3JQYWxldHRlSW5kZXgOLkFzcGVjdC5WaWV3M0QIU2VyaWVzLjAVLlNlcmllcy4wLkJydXNoLkNvbG9yFy5TZXJpZXMuMC5Qb2ludGVyLlN0eWxlFy5TZXJpZXMuMC5MaW5lUGVuLldpZHRoEy5TZXJpZXMuMC5Db2xvckVhY2gTLlNlcmllcy4wLkhvcml6QXhpcw8uU2VyaWVzLjAuQ29sb3IPLlNlcmllcy4wLlRpdGxlCFNlcmllcy4xFS5TZXJpZXMuMS5CcnVzaC5Db2xvchcuU2VyaWVzLjEuUG9pbnRlci5TdHlsZRcuU2VyaWVzLjEuTGluZVBlbi5XaWR0aBMuU2VyaWVzLjEuQ29sb3JFYWNoEy5TZXJpZXMuMS5Ib3JpekF4aXMPLlNlcmllcy4xLkNvbG9yDy5TZXJpZXMuMS5UaXRsZQhTZXJpZXMuMhUuU2VyaWVzLjIuQnJ1c2guQ29sb3IXLlNlcmllcy4yLlBvaW50ZXIuU3R5bGUXLlNlcmllcy4yLkxpbmVQZW4uV2lkdGgTLlNlcmllcy4yLkNvbG9yRWFjaBMuU2VyaWVzLjIuSG9yaXpBeGlzDy5TZXJpZXMuMi5Db2xvcg8uU2VyaWVzLjIuVGl0bGUIU2VyaWVzLjMVLlNlcmllcy4zLkJydXNoLkNvbG9yFy5TZXJpZXMuMy5Qb2ludGVyLlN0eWxlFy5TZXJpZXMuMy5MaW5lUGVuLldpZHRoEy5TZXJpZXMuMy5Db2xvckVhY2gTLlNlcmllcy4zLkhvcml6QXhpcw8uU2VyaWVzLjMuQ29sb3IPLlNlcmllcy4zLlRpdGxlCFNlcmllcy40FS5TZXJpZXMuNC5CcnVzaC5Db2xvchcuU2VyaWVzLjQuUG9pbnRlci5TdHlsZRcuU2VyaWVzLjQuTGluZVBlbi5XaWR0aBMuU2VyaWVzLjQuQ29sb3JFYWNoEy5TZXJpZXMuNC5Ib3JpekF4aXMPLlNlcmllcy40LkNvbG9yDy5TZXJpZXMuNC5UaXRsZSAuV2FsbHMuTGVmdC5CZXZlbC5TdHJpbmdDb2xvck9uZSAuV2FsbHMuTGVmdC5CZXZlbC5TdHJpbmdDb2xvclR3byEuV2FsbHMuUmlnaHQuQmV2ZWwuU3RyaW5nQ29sb3JPbmUhLldhbGxzLlJpZ2h0LkJldmVsLlN0cmluZ0NvbG9yVHdvIC5XYWxscy5CYWNrLkJldmVsLlN0cmluZ0NvbG9yT25lIC5XYWxscy5CYWNrLkJldmVsLlN0cmluZ0NvbG9yVHdvIi5XYWxscy5Cb3R0b20uQmV2ZWwuU3RyaW5nQ29sb3JPbmUiLldhbGxzLkJvdHRvbS5CZXZlbC5TdHJpbmdDb2xvclR3bw4uV2FsbHMuVmlzaWJsZRwuQXhlcy5MZWZ0LkxhYmVscy5TZXBhcmF0aW9uHS5BeGVzLkxlZnQuTGFiZWxzLlZhbHVlRm9ybWF0Gy5BeGVzLkxlZnQuTGFiZWxzLkZvbnQuTmFtZRsuQXhlcy5MZWZ0LkxhYmVscy5Gb250LlNpemUgLkF4ZXMuTGVmdC5MYWJlbHMuRm9udC5TaXplRmxvYXQmLkF4ZXMuTGVmdC5MYWJlbHMuQmV2ZWwuU3RyaW5nQ29sb3JPbmUmLkF4ZXMuTGVmdC5MYWJlbHMuQmV2ZWwuU3RyaW5nQ29sb3JUd28YLkF4ZXMuTGVmdC5BeGlzUGVuLldpZHRoGS5BeGVzLkxlZnQuQXhpc1Blbi5FbmRDYXAXLkF4ZXMuTGVmdC5HcmlkLlZpc2libGUTLkF4ZXMuTGVmdC5JbnZlcnRlZBguQXhlcy5MZWZ0Lk1heGltdW1PZmZzZXQdLkF4ZXMuTGVmdC5NaW5vclRpY2tzLlZpc2libGUWLkF4ZXMuTGVmdC5UaWNrcy5Db2xvchouQXhlcy5MZWZ0LlRpdGxlLkZvbnQuTmFtZRouQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2l6ZR8uQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2l6ZUZsb2F0KC5BeGVzLkxlZnQuVGl0bGUuRm9udC5TaGFkb3cuQnJ1c2guQ29sb3IhLkF4ZXMuTGVmdC5UaXRsZS5Gb250LkJydXNoLkNvbG9yJS5BeGVzLkxlZnQuVGl0bGUuQmV2ZWwuU3RyaW5nQ29sb3JPbmUlLkF4ZXMuTGVmdC5UaXRsZS5CZXZlbC5TdHJpbmdDb2xvclR3bxsuQXhlcy5Ub3AuTGFiZWxzLlNlcGFyYXRpb24cLkF4ZXMuVG9wLkxhYmVscy5WYWx1ZUZvcm1hdBouQXhlcy5Ub3AuTGFiZWxzLkZvbnQuTmFtZRouQXhlcy5Ub3AuTGFiZWxzLkZvbnQuU2l6ZR8uQXhlcy5Ub3AuTGFiZWxzLkZvbnQuU2l6ZUZsb2F0JS5BeGVzLlRvcC5MYWJlbHMuQmV2ZWwuU3RyaW5nQ29sb3JPbmUlLkF4ZXMuVG9wLkxhYmVscy5CZXZlbC5TdHJpbmdDb2xvclR3bxcuQXhlcy5Ub3AuQXhpc1Blbi5XaWR0aBguQXhlcy5Ub3AuQXhpc1Blbi5FbmRDYXAWLkF4ZXMuVG9wLkdyaWQuVmlzaWJsZRwuQXhlcy5Ub3AuTWlub3JUaWNrcy5WaXNpYmxlFS5BeGVzLlRvcC5UaWNrcy5Db2xvchkuQXhlcy5Ub3AuVGl0bGUuRm9udC5OYW1lGS5BeGVzLlRvcC5UaXRsZS5Gb250LlNpemUeLkF4ZXMuVG9wLlRpdGxlLkZvbnQuU2l6ZUZsb2F0IC5BeGVzLlRvcC5UaXRsZS5Gb250LkJydXNoLkNvbG9yJC5BeGVzLlRvcC5UaXRsZS5CZXZlbC5TdHJpbmdDb2xvck9uZSQuQXhlcy5Ub3AuVGl0bGUuQmV2ZWwuU3RyaW5nQ29sb3JUd28dLkF4ZXMuUmlnaHQuTGFiZWxzLlNlcGFyYXRpb24eLkF4ZXMuUmlnaHQuTGFiZWxzLlZhbHVlRm9ybWF0HC5BeGVzLlJpZ2h0LkxhYmVscy5Gb250Lk5hbWUcLkF4ZXMuUmlnaHQuTGFiZWxzLkZvbnQuU2l6ZSEuQXhlcy5SaWdodC5MYWJlbHMuRm9udC5TaXplRmxvYXQnLkF4ZXMuUmlnaHQuTGFiZWxzLkJldmVsLlN0cmluZ0NvbG9yT25lJy5BeGVzLlJpZ2h0LkxhYmVscy5CZXZlbC5TdHJpbmdDb2xvclR3bxkuQXhlcy5SaWdodC5BeGlzUGVuLldpZHRoGi5BeGVzLlJpZ2h0LkF4aXNQZW4uRW5kQ2FwGC5BeGVzLlJpZ2h0LkdyaWQuVmlzaWJsZR4uQXhlcy5SaWdodC5NaW5vclRpY2tzLlZpc2libGUXLkF4ZXMuUmlnaHQuVGlja3MuQ29sb3IbLkF4ZXMuUmlnaHQuVGl0bGUuRm9udC5OYW1lGy5BeGVzLlJpZ2h0LlRpdGxlLkZvbnQuU2l6ZSAuQXhlcy5SaWdodC5UaXRsZS5Gb250LlNpemVGbG9hdCIuQXhlcy5SaWdodC5UaXRsZS5Gb250LkJydXNoLkNvbG9yJi5BeGVzLlJpZ2h0LlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yT25lJi5BeGVzLlJpZ2h0LlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yVHdvEy5BeGVzLlJpZ2h0LlZpc2libGUeLkF4ZXMuQm90dG9tLkxhYmVscy5TZXBhcmF0aW9uIi5BeGVzLkJvdHRvbS5MYWJlbHMuRGF0ZVRpbWVGb3JtYXQfLkF4ZXMuQm90dG9tLkxhYmVscy5WYWx1ZUZvcm1hdB0uQXhlcy5Cb3R0b20uTGFiZWxzLkZvbnQuTmFtZR0uQXhlcy5Cb3R0b20uTGFiZWxzLkZvbnQuU2l6ZSIuQXhlcy5Cb3R0b20uTGFiZWxzLkZvbnQuU2l6ZUZsb2F0KC5BeGVzLkJvdHRvbS5MYWJlbHMuQmV2ZWwuU3RyaW5nQ29sb3JPbmUoLkF4ZXMuQm90dG9tLkxhYmVscy5CZXZlbC5TdHJpbmdDb2xvclR3bxouQXhlcy5Cb3R0b20uQXhpc1Blbi5XaWR0aBsuQXhlcy5Cb3R0b20uQXhpc1Blbi5FbmRDYXAZLkF4ZXMuQm90dG9tLkdyaWQuVmlzaWJsZRouQXhlcy5Cb3R0b20uTWF4aW11bU9mZnNldBouQXhlcy5Cb3R0b20uTWluaW11bU9mZnNldB8uQXhlcy5Cb3R0b20uTWlub3JUaWNrcy5WaXNpYmxlGC5BeGVzLkJvdHRvbS5UaWNrcy5Db2xvchwuQXhlcy5Cb3R0b20uVGl0bGUuRm9udC5OYW1lHC5BeGVzLkJvdHRvbS5UaXRsZS5Gb250LlNpemUhLkF4ZXMuQm90dG9tLlRpdGxlLkZvbnQuU2l6ZUZsb2F0Iy5BeGVzLkJvdHRvbS5UaXRsZS5Gb250LkJydXNoLkNvbG9yJy5BeGVzLkJvdHRvbS5UaXRsZS5CZXZlbC5TdHJpbmdDb2xvck9uZScuQXhlcy5Cb3R0b20uVGl0bGUuQmV2ZWwuU3RyaW5nQ29sb3JUd28qLkF4ZXMuRGVwdGhUb3AuTGFiZWxzLkJldmVsLlN0cmluZ0NvbG9yT25lKi5BeGVzLkRlcHRoVG9wLkxhYmVscy5CZXZlbC5TdHJpbmdDb2xvclR3bykuQXhlcy5EZXB0aFRvcC5UaXRsZS5CZXZlbC5TdHJpbmdDb2xvck9uZSkuQXhlcy5EZXB0aFRvcC5UaXRsZS5CZXZlbC5TdHJpbmdDb2xvclR3bycuQXhlcy5EZXB0aC5MYWJlbHMuQmV2ZWwuU3RyaW5nQ29sb3JPbmUnLkF4ZXMuRGVwdGguTGFiZWxzLkJldmVsLlN0cmluZ0NvbG9yVHdvJi5BeGVzLkRlcHRoLlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yT25lJi5BeGVzLkRlcHRoLlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yVHdvAAAEAAABAQQEAAQBAQEBAAAGAQAAAQEBAQEBAQEAAAEEBAAABAQBAQQEAAAEBAEBBAQAAAQEAQEEBAAABAQBAQQEAAAEBAEBAQEBAQEBAQAAAQEAAAEBAAQAAAAABAEAAAQEAQEAAQEAAAEBAAQAAAQBAAAEAQEAAQEAAAEBAAQAAAQBAAAEAQEAAAEBAQAAAQEABAAAAAAEAQAABAEBAQEBAQEBAQEBCCFTeXN0ZW0uV2luZG93cy5Gb3Jtcy5Nb3VzZUJ1dHRvbnMDAAAAAQgjU3RlZW1hLlRlZUNoYXJ0LkRyYXdpbmcuQmV2ZWxTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEgU3RlZW1hLlRlZUNoYXJ0LkxlZ2VuZEFsaWdubWVudHMCAAAAAQEICwgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAACRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAACAElU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Ib3Jpem9udGFsQXhpcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAACRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAACAElU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Ib3Jpem9udGFsQXhpcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAACRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAACAElU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Ib3Jpem9udGFsQXhpcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAACRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAACAElU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Ib3Jpem9udGFsQXhpcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAACRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAACAElU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Ib3Jpem9udGFsQXhpcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAQgICwggU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkxpbmVDYXAEAAAAAQEIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAICxRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAgLCCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAABARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAICxRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAICAsIIFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwBAAAAAEBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgLFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEICAsIIFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwBAAAAAEICAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAsUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAgAAAAEEAAAABfv///8hU3lzdGVtLldpbmRvd3MuRm9ybXMuTW91c2VCdXR0b25zAQAAAAd2YWx1ZV9fAAgDAAAAAABAAAABAAAABgYAAAAIRkZGRkZGRkYGBwAAAAhGRjgwODA4MAX4////I1N0ZWVtYS5UZWVDaGFydC5EcmF3aW5nLkJldmVsU3R5bGVzAQAAAAd2YWx1ZV9fAAgCAAAAAAAAAAX3////FFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAARuYW1lBXZhbHVlCmtub3duQ29sb3IFc3RhdGUBAAAACQcHBAAAAAr/////AAAAAAAAAgABBfb///8gU3RlZW1hLlRlZUNoYXJ0LkxlZ2VuZEFsaWdubWVudHMBAAAAB3ZhbHVlX18ACAIAAAADAAAABgsAAAAIRkZGRkZGRkYGDAAAAAhGRjgwODA4MAYNAAAACEZGRkZGRkZGBg4AAAAIRkY4MDgwODAAAQkPAAAABhAAAAAGVGFob21hDAAAAAAAQEEGEQAAAAhGRkZGRkZGRgYSAAAACEZGODA4MDgwBhMAAAAIRkZGRkZGRkYGFAAAAAhGRjgwODA4MAYVAAAACEZGRkZGRkZGBhYAAAAIRkY4MDgwODAGFwAAAAhGRkZGRkZGRgYYAAAACEZGODA4MDgwAwAAAAAGGQAAABtTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkxpbmUB5v////f///8KAAAAAAAAAAAlAAEABeX///8kU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAQAAAAd2YWx1ZV9fAAgCAAAACQAAAAIAAAAABeT///8lU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Ib3Jpem9udGFsQXhpcwEAAAAHdmFsdWVfXwAIAgAAAAAAAAAB4/////f///8KAAAAAAAAAAAlAAEABh4AAAAIIHNhdF9kZXAJGQAAAAHg////9////woAAAAAAAAAAI0AAQAB3////+X///8JAAAAAgAAAAAB3v///+T///8AAAAAAd3////3////CgAAAAAAAAAAjQABAAYkAAAACCBkdWxfZGVwCRkAAAAB2v////f///8KAAAAAAAAAABPAAEAAdn////l////CQAAAAIAAAAAAdj////k////AAAAAAHX////9////woAAAAAAAAAAE8AAQAGKgAAAAcgc3dfZGVwCRkAAAAB1P////f///8KAAAAAAAAAAB/AAEAAdP////l////CQAAAAIAAAAAAdL////k////AAAAAAHR////9////woAAAAAAAAAAH8AAQAGMAAAAAkgbGwxNV9kZXAJGQAAAAHO////9////woAAAAAAAAAAGsAAQABzf///+X///8JAAAAAgAAAAABzP///+T///8AAAAAAcv////3////CgAAAAAAAAAAawABAAY2AAAADCBhaXJfZHJ5X2RlcAY3AAAACEZGRkZGRkZGBjgAAAAIRkY4MDgwODAGOQAAAAhGRkZGRkZGRgY6AAAACEZGODA4MDgwBjsAAAAIRkZGRkZGRkYGPAAAAAhGRjgwODA4MAY9AAAACEZGRkZGRkZGBj4AAAAIRkY4MDgwODAAUAAAAAY/AAAACCMjIzAuIyMjCRAAAAAJAAAAAAAQQQZBAAAACEZGRkZGRkZGBkIAAAAIRkY4MDgwODABAAAABb3///8gU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkxpbmVDYXABAAAAB3ZhbHVlX18ACAQAAAACAAAAAAEKAAAAAAG8////9////woAAAD/AAAAAAAAAgAJEAAAAAsAAAAAADBBAbr////3////CsAAAP8AAAAAAAACAAG5////9////wr/AAD/AAAAAAAAAgAGSAAAAAhGRkZGRkZGRgZJAAAACEZGODA4MDgwUAAAAAk/AAAACRAAAAAJAAAAAAAQQQZMAAAACEZGRkZGRkZGBk0AAAAIRkY4MDgwODABAAAAAbL///+9////AgAAAAAAAbH////3////CgAAAP8AAAAAAAACAAkQAAAACwAAAAAAMEEBr/////f///8K/wAA/wAAAAAAAAIABlIAAAAIRkZGRkZGRkYGUwAAAAhGRjgwODA4MFAAAAAJPwAAAAkQAAAACQAAAAAAEEEGVgAAAAhGRkZGRkZGRgZXAAAACEZGODA4MDgwAQAAAAGo////vf///wIAAAAAAAGn////9////woAAAD/AAAAAAAAAgAJEAAAAAsAAAAAADBBAaX////3////Cv8AAP8AAAAAAAACAAZcAAAACEZGRkZGRkZGBl0AAAAIRkY4MDgwODAAUAAAAAZeAAAACWQvTU0veXl5eQk/AAAACRAAAAAJAAAAAAAQQQZhAAAACEZGRkZGRkZGBmIAAAAIRkY4MDgwODABAAAAAZ3///+9////AgAAAAAKAAAACgAAAAABnP////f///8KAAAA/wAAAAAAAAIACRAAAAALAAAAAAAwQQGa////9////wr/AAD/AAAAAAAAAgAGZwAAAAhGRkZGRkZGRgZoAAAACEZGODA4MDgwBmkAAAAIRkZGRkZGRkYGagAAAAhGRjgwODA4MAZrAAAACEZGRkZGRkZGBmwAAAAIRkY4MDgwODAGbQAAAAhGRkZGRkZGRgZuAAAACEZGODA4MDgwBm8AAAAIRkZGRkZGRkYGcAAAAAhGRjgwODA4MBEPAAAAAQAAAAZxAAAAAAs=</Format>
+          <Legend>
+            <CheckedTitles> sat_dep</CheckedTitles>
+            <CheckedTitles> dul_dep</CheckedTitles>
+            <CheckedTitles> ll15_dep</CheckedTitles>
+            <CheckedTitles> air_dry_dep</CheckedTitles>
+          </Legend>
           <Plot>
             <SeriesType>Solid line</SeriesType>
             <PointType>None</PointType>
@@ -14932,6 +14959,12 @@ endif</text>
           </Plot>
         </Graph>
         <Graph name="Depth-2 Days (2 Jan)">
+          <Legend>
+            <CheckedTitles> sat_dep</CheckedTitles>
+            <CheckedTitles> dul_dep</CheckedTitles>
+            <CheckedTitles> ll15_dep</CheckedTitles>
+            <CheckedTitles> air_dry_dep</CheckedTitles>
+          </Legend>
           <Plot>
             <SeriesType>Solid line</SeriesType>
             <PointType>None</PointType>
@@ -14968,6 +15001,12 @@ endif</text>
           </Plot>
         </Graph>
         <Graph name="Depth-8 Days (8 Jan)">
+          <Legend>
+            <CheckedTitles> sat_dep</CheckedTitles>
+            <CheckedTitles> dul_dep</CheckedTitles>
+            <CheckedTitles> ll15_dep</CheckedTitles>
+            <CheckedTitles> air_dry_dep</CheckedTitles>
+          </Legend>
           <Plot>
             <SeriesType>Solid line</SeriesType>
             <PointType>None</PointType>
@@ -14986,6 +15025,12 @@ endif</text>
           </Plot>
         </Graph>
         <Graph name="Depth-11 Days (11 Jan)">
+          <Legend>
+            <CheckedTitles> sat_dep</CheckedTitles>
+            <CheckedTitles> dul_dep</CheckedTitles>
+            <CheckedTitles> ll15_dep</CheckedTitles>
+            <CheckedTitles> air_dry_dep</CheckedTitles>
+          </Legend>
           <Plot>
             <SeriesType>Solid line</SeriesType>
             <PointType>None</PointType>
@@ -15004,6 +15049,12 @@ endif</text>
           </Plot>
         </Graph>
         <Graph name="Depth-14 Days (14 Jan)">
+          <Legend>
+            <CheckedTitles> sat_dep</CheckedTitles>
+            <CheckedTitles> dul_dep</CheckedTitles>
+            <CheckedTitles> ll15_dep</CheckedTitles>
+            <CheckedTitles> air_dry_dep</CheckedTitles>
+          </Legend>
           <Plot>
             <SeriesType>Solid line</SeriesType>
             <PointType>None</PointType>
@@ -15174,6 +15225,7 @@ endif</text>
           <Analysis shortcut="/simulations/Manager Set Variables/Setable Variables - Erosion (OLD)/paddock/Soil/Analysis" />
         </soil>
         <manager name="set setable variables" shortcut="/simulations/Manager Set Variables/Setable Variables - Erosion (OLD)/paddock/set setable variables" />
+        <manager name="calculate total_pond" shortcut="/simulations/Manager Set Variables/Setable Variables - Erosion (OLD)/paddock/calculate total_pond" />
         <outputfile>
           <filename output="yes">Setable Variables - Erosion (NEW).out</filename>
           <title>Setable Variables - Erosion (NEW)</title>

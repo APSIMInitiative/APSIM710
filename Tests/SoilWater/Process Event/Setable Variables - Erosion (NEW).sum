@@ -17,6 +17,7 @@ Paddock:
    Component                   "outputfile" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component        "set setable variables" = %apsim%\Model\Manager.dll
+   Component         "calculate total_pond" = %apsim%\Model\Manager.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWater.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
 
@@ -71,7 +72,6 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-     total_pond = pond + pond_evap
      if day = 2 and year = 1940 then
         'soil water' set max_pond = 100
           'soil water' set dlayer = 50 50 50 50 50 50 50 50 50 50 50
@@ -94,6 +94,14 @@ Paddock:
      if day = 14 and year = 1940 then
         'soil water' reset
      endif
+     END of rules
+     
+
+------- calculate total_pond Initialisation -----------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     total_pond = pond + pond_evap
      END of rules
      
 
@@ -552,7 +560,6 @@ Initial soilwater distributed using "sw" parameter.
            Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager creating a new local real variable : total_pond = 0.00000
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -853,6 +860,7 @@ Initial soilwater distributed using "sw" parameter.
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     Manager creating a new local real variable : total_pond = 200.00000
 2 January 1940(Day of year=2): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
