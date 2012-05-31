@@ -6,26 +6,48 @@ using System.Collections.Generic;
     {
         [Input]
         int day;
+        [Output]
         double Water = 0;
+        [Output]
         double Ash = 0;
+        [Output]
         double Tan = 0;
-        
+        [Output]
         double N_Inert = 0;
+        [Output]
         double NFast = 0;
+        [Output]
         double C_Inert = 0;
+        [Output]
         double C_Lignin = 0;
-
+        [Output]
         double CSlow = 0;
+        [Output]
         double CVFA = 0;
-
+        [Output]
         double CFast = 0;
+        [Output]
         double HFast = 0;
+        [Output]
         double HSlow = 0;
+        [Output]
         double OFast = 0;
+        [Output]
         double OSlow = 0;
+        [Output]
         double SFast = 0;
+        [Output]
         double S_S04 = 0;
+        [Output]
         double CGas=0;
+        [Output]
+        double TotalNInput = 0;
+        [Output]
+        double TotalNOutput = 0;
+        [Output]
+        double TotalCInput = 0;
+        [Output]
+        double TotalCOutput = 0;
 
         //const
         double E = 2.718281828459045;
@@ -64,18 +86,27 @@ using System.Collections.Generic;
   
         //other
 
-
+        [Output]
         double HVFA = 0.0;
+        [Output]
         double OVFA = 0.0;
         [Output]
         double slurrypH = 0;
+        [Output]
         double HInert = 0;
+        [Output]
         double OInert=0;
+        [Output]
         double S2_S = 0;
+        [Output]
         double CCH4S = 0;
+        [Output]
         double NN2O=0;
+        [Output]
         double CH4EM = 0;
+        [Output]
         double CCO2_S=0;
+        [Output]
         double ENH3 = 0;
         //water
         [Link]
@@ -164,10 +195,12 @@ using System.Collections.Generic;
                 double DM = amount * input.DM;
                 Ash += DM * input.Ash; // formel 1.2 AshContent  //kg
                 double TanAdded = amount * input.Tan; //1.3  // kg
+                TotalNInput += TanAdded;
                 Tan += TanAdded;
                 double RP = DM * input.RP;
                 //org N is obtained by dividing CP by 6.25
                 double orgNAdded = RP / 6.25; // 1.5	//kg
+                TotalNInput += orgNAdded;
                 //Partition org N between inert and Fast pools
                 double N_InertAdded = input.fInert * orgNAdded; //1.4
                 N_Inert += N_InertAdded; //kg //fInert should be between 0 and 1
@@ -175,6 +208,7 @@ using System.Collections.Generic;
                 NFast += NFastAdded; //kg
                 //! calculate the carbon content of the inert pool
                 double C_InertAdded = 10 * input.fInert * orgNAdded;
+                TotalCInput += C_InertAdded;
                 C_Inert += C_InertAdded; //1.6 //kg
                 HInert += 0.055 * C_InertAdded;//1.34
                 OInert += 0.444 * C_InertAdded;// 1.35
@@ -182,14 +216,17 @@ using System.Collections.Generic;
                 double CIn_RP = 4.28 * NFastAdded; //1.6 //kg
                 //! Calculate the carbon content of the lignin
                 double CIn_Lignin = DM * 0.55 * input.ADL; //1.8 //kg
+                TotalCInput += CIn_Lignin;
                 C_Lignin += CIn_Lignin;
                 //! Calculate the carbon content of the slow pool
                 double CIn_Slow = DM *0.44 * (input.NDF - input.ADL); //1.9
+                TotalCInput += CIn_Slow;
                 CSlow += CIn_Slow;  //kg
                 //! Calculate the carbon content of the raw lipid
                 double CIn_RL = DM * 0.77 * input.RL; //1.10 //kg
                 //! calculate the carbon content of the volatile fatty acids
                 double CIn_VFA = DM * 0.4 * input.VFA; //1.11 //kg
+                TotalCInput += CIn_VFA;
                 CVFA += CIn_VFA;
                 double HIn_VFA = DM * 0.167 * input.VFA;//1.16 // kg
                 HVFA += HIn_VFA;
@@ -199,6 +236,7 @@ using System.Collections.Generic;
                 double CIn_Starch = DM * 0.44 * input.Rem; //1.12 //kg
                 //! Calculate the carbon content of the Fast pool
                 CFast += CIn_RP + CIn_RL + CIn_Starch; //1.13
+                TotalCInput += CIn_RP + CIn_RL + CIn_Starch;
                 //! Calculate the hydrogen in the Fast and Slow pools
                 HFast += 0.117 * CIn_RP + 0.152 * CIn_RL + 0.139 * CIn_Starch;//1.14
                 HSlow += 0.139 * CIn_Slow;//1.15
@@ -210,15 +248,13 @@ using System.Collections.Generic;
                 S_S04 += amount * input.TotalS;//1.21
                 S2_S += amount * input.TotalS; // 1.22
                 Water += amount * (1 - input.DM); // 1.1 //kg
-
-
-             
+           
         }
 
         [EventHandler]
         public void OnProcess()
         {
-  
+
             if (Water > 0)
             {
                 temperatureInKelvin = 283.0;
@@ -251,11 +287,12 @@ using System.Collections.Generic;
 
                 //calculate C in CH4S. This will be instantaneously lost as CH4-C
                 CCH4S = 0.375 * k2act * SFast; //1.28
+                TotalCOutput += CCH4S;
                 //calculate the H in CH4S
                 double HCH4S = 0.333 * CCH4S;//1.39
 
                 CGas = k3act * CVFA;//1.35	//anaerobic degradation of VFA by methanogens
-
+                TotalCOutput += CGas;
                 double Hgas = k3act * HVFA; //1.44
                 double Ogas = k3act * OVFA;//1.45
                 double CHCH4M = 12 * (CGas / 24 + Hgas / 8 - Ogas / 64); //1.46
@@ -274,7 +311,7 @@ using System.Collections.Generic;
                     ENH3 = 24 * 60 * 60 * surfaceArea * Tan / (Water * KH * (1 + Math.Pow(10, -slurrypH) / KN) * RA); //1.57
                 else
                     ENH3 = 0.0;
-
+                TotalNOutput += ENH3;
                 //update C state variables
                 //! Update the carbon in the Inert pool
                 //GInert=0.0;
@@ -341,7 +378,7 @@ using System.Collections.Generic;
 
                     if (item.Name.CompareTo("SurfaceOrganicMatter") == 0)
                     {
-                     
+                        Console.WriteLine("Sending manure to soil");
 
                         AddFaecesType faeces = new AddFaecesType();
                         faeces.VolumePerDefaecation = GetMass();
@@ -359,11 +396,9 @@ using System.Collections.Generic;
                         NFast=0;
                         faeces.OMP = 0;
                         faeces.OMS = SFast;
-                        SFast=0;
                         faeces.OMWeight = GetOM();
                         faeces.POXP = 0;
                         faeces.SO4S = S_S04;
-                        S_S04 = 0;
                         item.Publish("add_faeces", faeces);
                     }
                 }
