@@ -4,10 +4,12 @@ using System.Collections.Generic;
 
     public class SlurryTank
     {
+        [Input]
+        int day;
         double Water = 0;
         double Ash = 0;
         double Tan = 0;
-
+        
         double N_Inert = 0;
         double NFast = 0;
         double C_Inert = 0;
@@ -24,7 +26,6 @@ using System.Collections.Generic;
         double SFast = 0;
         double S_S04 = 0;
         double CGas=0;
-        double pH = 7.0;
 
         //const
         double E = 2.718281828459045;
@@ -66,7 +67,7 @@ using System.Collections.Generic;
 
         double HVFA = 0.0;
         double OVFA = 0.0;
-
+        [Output]
         double slurrypH = 0;
         double HInert = 0;
         double OInert=0;
@@ -82,8 +83,7 @@ using System.Collections.Generic;
 
         double CO2M = 0;
         //from File
-        [Param]
-         string TankName = "nothing";
+   
 
      
 
@@ -102,6 +102,8 @@ using System.Collections.Generic;
         double k4 = 0;
         [Param]
         double surfaceArea = 0;
+        [Param]
+        double dayOfEmpty = -1;
 
         [Event]
         public event DoubleDelegate CCH4SEvent;
@@ -122,23 +124,34 @@ using System.Collections.Generic;
         [EventHandler]
         public void OnInitialised()
         {
-            Console.Out.WriteLine("Entered OnInitialised in Slurry Tank");
+
         }
         [EventHandler]
         public void OnPrepare()
         {
-            Console.Out.WriteLine("Entered OnPrepare in Slurry Tank");
+
         }
 
         private double GetOM()
         {
             double OM = N_Inert + NFast + OInert + OFast + OSlow + HFast + HSlow + HInert;
+            N_Inert = 0;
+            NFast = 0;
+            OInert = 0;
+            OFast = 0;
+            OSlow = 0;
+            HFast = 0;
+            HSlow = 0;
+            HInert = 0; 
             return OM;
         }
 
         private double GetMass()
         {
             double mass = Water + Ash + GetOM() + Tan;
+            Water = 0;
+            Ash = 0;
+            Tan = 0;
             return mass;
         }
 
@@ -205,7 +218,7 @@ using System.Collections.Generic;
         [EventHandler]
         public void OnProcess()
         {
-
+  
             if (Water > 0)
             {
                 temperatureInKelvin = 283.0;
@@ -213,15 +226,15 @@ using System.Collections.Generic;
                 //! Calculate the normalised temperature effect
                 double FTheta = Math.Pow(E, ThetaA + ThetaB * temperatureInCelsius * (1 - 0.5 * (temperatureInCelsius / ThetaC)));  //1.26
                 double FpH = 1.0; //new equations, appear after 1.27
-                if (pH <= pHmin)
+                if (slurrypH <= pHmin)
                     FpH = 0;
-                if ((pH > pHmin) && (pH < pHopt_lo))
-                    FpH = (pHopt_lo - pH) / (pHopt_lo - pHmin);
-                if ((pH >= pHopt_lo) && (pH <= pHopt_hi))
+                if ((slurrypH > pHmin) && (slurrypH < pHopt_lo))
+                    FpH = (pHopt_lo - slurrypH) / (pHopt_lo - pHmin);
+                if ((slurrypH >= pHopt_lo) && (slurrypH <= pHopt_hi))
                     FpH = 1.0;
-                if ((pH > pHopt_hi) && (pH < pHmax))
-                    FpH = (pH - pHopt_hi) / (pHmax - pHopt_hi);
-                if (pH >= pHmax)
+                if ((slurrypH > pHopt_hi) && (slurrypH < pHmax))
+                    FpH = (slurrypH - pHopt_hi) / (pHmax - pHopt_hi);
+                if (slurrypH >= pHmax)
                     FpH = 0;
                 //! Calculate the degradation rates of the Fast and Slow pools
                 double k1act = FpH * FTheta * k1;//1.25 //should be 0 to 1
@@ -328,7 +341,7 @@ using System.Collections.Generic;
 
                     if (item.Name.CompareTo("SurfaceOrganicMatter") == 0)
                     {
-                        Console.WriteLine("Sending manure to soil");
+                     
 
                         AddFaecesType faeces = new AddFaecesType();
                         faeces.VolumePerDefaecation = GetMass();
@@ -338,16 +351,56 @@ using System.Collections.Generic;
                         faeces.Defaecations = 0;
                         faeces.Eccentricity = 0;
                         faeces.NH4N = Tan;
+                        Tan = 0;
                         faeces.NO3N = 0;
                         faeces.OMAshAlk = 0;
                         faeces.OMN = N_Inert + NFast;
+                        N_Inert = 0;
+                        NFast=0;
                         faeces.OMP = 0;
                         faeces.OMS = SFast;
+                        SFast=0;
                         faeces.OMWeight = GetOM();
                         faeces.POXP = 0;
                         faeces.SO4S = S_S04;
+                        S_S04 = 0;
                         item.Publish("add_faeces", faeces);
                     }
+                }
+                if (day == dayOfEmpty)
+                {
+                    Water = 0;
+                    Ash = 0;
+                    Tan = 0;
+
+                    N_Inert = 0;
+                    NFast = 0;
+                    C_Inert = 0;
+                    C_Lignin = 0;
+
+                    CSlow = 0;
+                    CVFA = 0;
+
+                    CFast = 0;
+                    HFast = 0;
+                    HSlow = 0;
+                    OFast = 0;
+                    OSlow = 0;
+                    SFast = 0;
+                    S_S04 = 0;
+                    CGas = 0;
+                    HVFA = 0.0;
+                    OVFA = 0.0;
+
+                    slurrypH = 0;
+                    HInert = 0;
+                     OInert = 0;
+                    S2_S = 0;
+                    CCH4S = 0;
+                    NN2O = 0;
+                    CH4EM = 0;
+                    CCO2_S = 0;
+                    ENH3 = 0;
                 }
                 /*
         AddFaecesType faeces1 = new AddFaecesType();
