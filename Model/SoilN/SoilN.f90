@@ -4988,8 +4988,10 @@ subroutine OnNitrogenChanged (variant)
    call unpack_NitrogenChanged(variant, NitrogenChanged)
    do layer = 1,NitrogenChanged%num_DeltaNO3
       g%no3(layer) = g%no3(layer) + NitrogenChanged%DeltaNO3(layer)
-      g%nh4(layer) = g%nh4(layer) + NitrogenChanged%DeltaNH4(layer)
       call bound_check_real_var (g%no3(layer), g%no3_min(layer), g%no3(layer), 'g%NO3(layer)')
+   enddo
+   do layer = 1,NitrogenChanged%num_DeltaNH4
+      g%nh4(layer) = g%nh4(layer) + NitrogenChanged%DeltaNH4(layer)
       call bound_check_real_var (g%nh4(layer), g%nh4_min(layer), g%nh4(layer), 'g%NH4(layer)')
    enddo
    return
