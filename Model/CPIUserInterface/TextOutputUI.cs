@@ -35,6 +35,7 @@ namespace CPIUserInterface
         {
             InitializeComponent();
             typedvals = new List<TTypedValue>();
+            comboBox1.SelectedIndex = 3;
         }
         //=====================================================================
         /// <summary>
@@ -62,12 +63,17 @@ namespace CPIUserInterface
             FileName = FileName.Trim();
             ApsimFile.Component me = Controller.ApsimData.Find(NodePath);
             FileName = Path.GetFileNameWithoutExtension(FileName) + "_" + me.Name + ".out";
+            String aVersion = Configuration.Instance.ApsimVersion();
             
             int i = 0;
             while (i < propertyList.Count)
             {
                 if (propertyList[i].InitValue.Name == "title")
                     propertyList[i].InitValue.setValue(FileName);
+                if (propertyList[i].InitValue.Name == "interval")
+                    textBox1.Text = propertyList[i].InitValue.asInt().ToString();
+                if (propertyList[i].InitValue.Name == "intervaluni")
+                    comboBox1.Text = propertyList[i].InitValue.asStr();
                 i++;
             }
         }
@@ -158,7 +164,8 @@ namespace CPIUserInterface
         {
             string[] VariableNames = DataTableUtility.GetColumnAsStrings((DataTable)Grid.DataSource, Grid.Columns[0].Name);
             string[] AliasNames = DataTableUtility.GetColumnAsStrings((DataTable)Grid.DataSource, Grid.Columns[1].Name);
-            string[] DecPlaces = DataTableUtility.GetColumnAsStrings((DataTable)Grid.DataSource, Grid.Columns[2].Name);
+            string[] Aggreg = DataTableUtility.GetColumnAsStrings((DataTable)Grid.DataSource, Grid.Columns[2].Name);
+            string[] DecPlaces = DataTableUtility.GetColumnAsStrings((DataTable)Grid.DataSource, Grid.Columns[3].Name);
 
             uint count = 0;
             int i = 0;
@@ -169,6 +176,12 @@ namespace CPIUserInterface
 
                 if (propertyList[i].InitValue.Name == "filename")
                     propertyList[i].InitValue.setValue(FileName);
+                
+                if (propertyList[i].InitValue.Name == "interval")
+                    propertyList[i].InitValue.setValue(Convert.ToInt32(textBox1.Text));
+
+                if (propertyList[i].InitValue.Name == "intervalunit")
+                    propertyList[i].InitValue.setValue(comboBox1.Text);
 
                 if (propertyList[i].InitValue.Name == "outputs")
                 {
@@ -183,6 +196,7 @@ namespace CPIUserInterface
                             sdmlinit.setElementCount(sdmlinit.count() + 1);
                             sdmlinit.item(count).member("varname").setValue(VariableNames[v]);
                             sdmlinit.item(count).member("alias").setValue(AliasNames[v]);
+                            sdmlinit.item(count).member("aggreg").setValue(Aggreg[v]);
                             sdmlinit.item(count).member("decplaces").setValue(DecPlaces[v]);
                         }
                     }
@@ -207,6 +221,7 @@ namespace CPIUserInterface
                 Table.Columns.Clear();
                 Table.Columns.Add("Variable name", System.Type.GetType("System.String"));
                 Table.Columns.Add("Alias", System.Type.GetType("System.String"));
+                Table.Columns.Add("Aggreg.", System.Type.GetType("System.String"));
                 Table.Columns.Add("Dec. Places", System.Type.GetType("System.String"));
             }
 
@@ -222,7 +237,8 @@ namespace CPIUserInterface
                         DataRow NewRow = Table.NewRow();
                         NewRow[0] = typedVal.member("varname").asStr();
                         NewRow[1] = typedVal.member("alias").asStr();
-                        NewRow[2] = typedVal.member("decplaces").asStr();
+                        NewRow[2] = typedVal.member("aggreg").asStr();
+                        NewRow[3] = typedVal.member("decplaces").asStr();
                         Table.Rows.Add(NewRow);
                     }
                     i = propertyList.Count; //terminate loop
@@ -242,17 +258,16 @@ namespace CPIUserInterface
             PopulateVariableListView();
             //UserChange = true;
 
-            if (XmlHelper.Type(Data).ToLower() != "variables")
-            {
-                VariableListView.Columns[1].Width = 0;
-            }
-            else
-            {
-                VariableListView.Columns[1].Width = 45;
-            }
+            VariableListView.Columns[1].Width = 45;
+            VariableListView.Columns[2].Width = 45;
 
+            Grid.Columns[2].Width = 60;
+            Grid.Columns[3].Width = 60;
             Grid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Grid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             Grid.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            DataGridViewColumn thirdColumn = Grid.Columns[2];
+            thirdColumn.ToolTipText = "max, min, average, total";
         }
         //=====================================================================
         /// <summary>
@@ -323,6 +338,14 @@ namespace CPIUserInterface
                 ListViewItem ListItem = new ListViewItem(Variable.Name);
                 ListItem.Group = NewGroup;
                 if (Variable.IsArray)
+                {
+                    ListItem.SubItems.Add("Yes");
+                }
+                else
+                {
+                    ListItem.SubItems.Add("No");
+                }
+                if (Variable.IsRecord)
                 {
                     ListItem.SubItems.Add("Yes");
                 }
@@ -444,7 +467,8 @@ namespace CPIUserInterface
                     DataRow NewRow = ((DataTable)Grid.DataSource).NewRow();
                     NewRow[0] = SelectedItem.Text;
                     NewRow[1] = SelectedItem.Text;
-                    NewRow[2] = "0";
+                    NewRow[2] = "";
+                    NewRow[3] = "0";
                     Table.Rows.Add(NewRow);
                 }
                 else
@@ -453,7 +477,10 @@ namespace CPIUserInterface
                 }
             }
             //Grid.PopulateGrid();
-            Grid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Grid.Columns[2].Width = 60;
+            Grid.Columns[3].Width = 60;
+            //Grid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            //Grid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             Grid.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             //UserChange = true;
         }

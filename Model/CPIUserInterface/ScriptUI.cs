@@ -71,18 +71,40 @@ namespace CPIUserInterface
         //=====================================================================
         private void ScriptUI_Load(object sender, EventArgs e)
         {
+            //find the full path to the dll for the component (normally use InitFromComponentDescription() )
+            String ComponentType = Controller.ApsimData.Find(NodePath).Type;
+            List<String> DllFileNames = Types.Instance.Dlls(ComponentType);
+            FDllFileName = DllFileNames[0];
+            FDllFileName = Configuration.RemoveMacros(FDllFileName);
+
             //Fill the property fields
             XmlNode initSection = XmlHelper.Find(Data, "initsection");
 
             if (initSection != null)
             {
-                TInitParser initPsr = new TInitParser(initSection.OuterXml);
+                InitFromInitSection(initSection.OuterXml);
+            }
+        }
+        //=======================================================================
+        /// <summary>
+        /// Initialise the list of properties with values from the init section
+        /// SDML. 
+        /// </summary>
+        /// <param name="initXML">The init section which is <code><initsection>...</initsection></code></param>
+        //=======================================================================
+        private Boolean InitFromInitSection(String initXML)
+        {
+            if (initXML.Length > 0)
+            {
+                typedvals.Clear();
+                TInitParser initPsr = new TInitParser(initXML);
 
                 for (int i = 1; i <= initPsr.initCount(); i++)
                 {
                     String initText = initPsr.initText((uint)i);
                     TSDMLValue sdmlinit = new TSDMLValue(initText, "");
                     typedvals.Add(sdmlinit);
+
                     if (sdmlinit.Name == "rules")
                     {
                         StringBuilder str = new StringBuilder();
@@ -95,13 +117,15 @@ namespace CPIUserInterface
                     if (sdmlinit.Name == "logfile")
                     {
                         textBox1.Text = sdmlinit.asStr();
+                        checkBox1.Checked = (textBox1.Text.Length > 0);
                     }
                     if (sdmlinit.Name == "log_set")
                     {
-                        checkBox1.Checked = sdmlinit.asBool();
+                        
                     }
                 }
             }
+            return (initXML.Length > 0); 
         }
         //=====================================================================
         /// <summary>
@@ -160,11 +184,14 @@ namespace CPIUserInterface
                 }
                 if (sdmlinit.Name == "logfile")
                 {
-                    sdmlinit.setValue(textBox1.Text);
+                    if (checkBox1.Checked)
+                        sdmlinit.setValue(textBox1.Text);
+                    else
+                        sdmlinit.setValue("");
                 }
                 if (sdmlinit.Name == "log_set")
                 {
-                    sdmlinit.setValue(checkBox1.Checked);
+                    
                 }
             }
         }
@@ -377,5 +404,20 @@ namespace CPIUserInterface
                     MessageBox.Show("Cannot find help file " + helpFileName);
             }
         }
+        //=========================================================================
+        /// <summary>
+        /// Opens the component's initialising dialog.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        //=========================================================================
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            StoreControls();
+            String sInitSDML = WriteInitsectionXml(); //with no subscribed events in the SDML
+            if (Initialise(FDllFileName, ref sInitSDML))
+                InitFromInitSection(sInitSDML);
+        }
+        
     }
 }

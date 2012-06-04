@@ -31,6 +31,10 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.Grid = new System.Windows.Forms.DataGridView();
             this.Variable = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -39,6 +43,7 @@
             this.VariableListView = new System.Windows.Forms.ListView();
             this.ColumnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ColumnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ColumnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ComponentFilter = new System.Windows.Forms.ComboBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -51,6 +56,7 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Grid)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -58,7 +64,7 @@
             // 
             // MyHelpLabel
             // 
-            this.MyHelpLabel.Size = new System.Drawing.Size(843, 16);
+            this.MyHelpLabel.Size = new System.Drawing.Size(780, 16);
             // 
             // tabControl1
             // 
@@ -70,7 +76,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 19);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(843, 332);
+            this.tabControl1.Size = new System.Drawing.Size(780, 358);
             this.tabControl1.TabIndex = 21;
             this.tabControl1.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabControl1_Selected);
             // 
@@ -80,7 +86,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(835, 306);
+            this.tabPage1.Size = new System.Drawing.Size(772, 332);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Variables";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -93,6 +99,7 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.panel2);
             this.splitContainer1.Panel1.Controls.Add(this.Grid);
             // 
             // splitContainer1.Panel2
@@ -101,24 +108,71 @@
             this.splitContainer1.Panel2.Controls.Add(this.Label1);
             this.splitContainer1.Panel2.Controls.Add(this.VariableListView);
             this.splitContainer1.Panel2.Controls.Add(this.ComponentFilter);
-            this.splitContainer1.Size = new System.Drawing.Size(829, 300);
-            this.splitContainer1.SplitterDistance = 481;
+            this.splitContainer1.Size = new System.Drawing.Size(766, 326);
+            this.splitContainer1.SplitterDistance = 451;
             this.splitContainer1.TabIndex = 21;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.comboBox1);
+            this.panel2.Controls.Add(this.textBox1);
+            this.panel2.Controls.Add(this.label3);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel2.Location = new System.Drawing.Point(0, 293);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(451, 33);
+            this.panel2.TabIndex = 1;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "Second",
+            "Minute",
+            "Hour",
+            "Day",
+            "Month",
+            "Year"});
+            this.comboBox1.Location = new System.Drawing.Point(154, 9);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(67, 21);
+            this.comboBox1.TabIndex = 2;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(114, 9);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(29, 20);
+            this.textBox1.TabIndex = 1;
+            this.textBox1.Text = "1";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 12);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(104, 13);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "Record results every";
             // 
             // Grid
             // 
             this.Grid.AllowDrop = true;
+            this.Grid.AllowUserToResizeRows = false;
+            this.Grid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.Grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.Grid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Variable,
             this.Column1});
-            this.Grid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Grid.Location = new System.Drawing.Point(0, 0);
             this.Grid.MultiSelect = false;
             this.Grid.Name = "Grid";
             this.Grid.RowHeadersVisible = false;
             this.Grid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.Grid.Size = new System.Drawing.Size(481, 300);
+            this.Grid.Size = new System.Drawing.Size(449, 292);
             this.Grid.TabIndex = 0;
             this.Grid.DragDrop += new System.Windows.Forms.DragEventHandler(this.Grid_DragDrop);
             this.Grid.DragEnter += new System.Windows.Forms.DragEventHandler(this.Grid_DragEnter);
@@ -129,11 +183,13 @@
             // 
             this.Variable.HeaderText = "Name";
             this.Variable.Name = "Variable";
+            this.Variable.Width = 60;
             // 
             // Column1
             // 
             this.Column1.HeaderText = "Column1";
             this.Column1.Name = "Column1";
+            this.Column1.Width = 73;
             // 
             // DictionaryLabel
             // 
@@ -143,7 +199,7 @@
             this.DictionaryLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.DictionaryLabel.Location = new System.Drawing.Point(0, 0);
             this.DictionaryLabel.Name = "DictionaryLabel";
-            this.DictionaryLabel.Size = new System.Drawing.Size(344, 36);
+            this.DictionaryLabel.Size = new System.Drawing.Size(311, 36);
             this.DictionaryLabel.TabIndex = 25;
             this.DictionaryLabel.Text = "Variables to drag onto grid:";
             this.DictionaryLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -165,11 +221,12 @@
             this.VariableListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ColumnHeader1,
             this.ColumnHeader4,
+            this.columnHeader2,
             this.ColumnHeader3});
             this.VariableListView.FullRowSelect = true;
-            this.VariableListView.Location = new System.Drawing.Point(0, 82);
+            this.VariableListView.Location = new System.Drawing.Point(0, 71);
             this.VariableListView.Name = "VariableListView";
-            this.VariableListView.Size = new System.Drawing.Size(348, 210);
+            this.VariableListView.Size = new System.Drawing.Size(311, 253);
             this.VariableListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.VariableListView.TabIndex = 24;
             this.VariableListView.UseCompatibleStateImageBehavior = false;
@@ -179,20 +236,26 @@
             // ColumnHeader1
             // 
             this.ColumnHeader1.Text = "Variable name";
-            this.ColumnHeader1.Width = 201;
+            this.ColumnHeader1.Width = 133;
             // 
             // ColumnHeader4
             // 
-            this.ColumnHeader4.Text = "Array?";
-            this.ColumnHeader4.Width = 45;
+            this.ColumnHeader4.Text = "Array";
+            this.ColumnHeader4.Width = 40;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Record";
+            this.columnHeader2.Width = 40;
             // 
             // ColumnHeader3
             // 
             this.ColumnHeader3.Text = "Description";
-            this.ColumnHeader3.Width = 437;
+            this.ColumnHeader3.Width = 300;
             // 
             // ComponentFilter
             // 
+            this.ComponentFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ComponentFilter.FormattingEnabled = true;
             this.ComponentFilter.Location = new System.Drawing.Point(95, 44);
             this.ComponentFilter.Name = "ComponentFilter";
@@ -207,7 +270,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(835, 306);
+            this.tabPage2.Size = new System.Drawing.Size(772, 332);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Output";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -219,7 +282,7 @@
             this.FileContentsBox.Location = new System.Drawing.Point(3, 26);
             this.FileContentsBox.Name = "FileContentsBox";
             this.FileContentsBox.ReadOnly = true;
-            this.FileContentsBox.Size = new System.Drawing.Size(829, 277);
+            this.FileContentsBox.Size = new System.Drawing.Size(766, 303);
             this.FileContentsBox.TabIndex = 4;
             this.FileContentsBox.Text = "";
             this.FileContentsBox.WordWrap = false;
@@ -230,7 +293,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(829, 23);
+            this.panel1.Size = new System.Drawing.Size(766, 23);
             this.panel1.TabIndex = 0;
             // 
             // label2
@@ -242,13 +305,13 @@
             this.label2.TabIndex = 0;
             this.label2.Text = "label2";
             // 
-            // TextOutUI
+            // TextOutputUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tabControl1);
-            this.Name = "TextOutUI";
-            this.Size = new System.Drawing.Size(843, 351);
+            this.Name = "TextOutputUI";
+            this.Size = new System.Drawing.Size(780, 377);
             this.Load += new System.EventHandler(this.TextOutUI_Load);
             this.Controls.SetChildIndex(this.tabControl1, 0);
             this.Controls.SetChildIndex(this.MyHelpLabel, 0);
@@ -259,6 +322,8 @@
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Grid)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
@@ -286,6 +351,11 @@
         internal System.Windows.Forms.RichTextBox FileContentsBox;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label3;
+        internal System.Windows.Forms.ColumnHeader columnHeader2;
 
 
     }

@@ -110,6 +110,7 @@ public class Types
         public string Name;
         public string Description;
         public bool IsArray;
+        public bool IsRecord;
     }
     public List<MetaDataInfo> Variables(string TypeName)
     {
@@ -132,6 +133,7 @@ public class Types
                     Info.Name = Property.Name;
                     Info.Description = Description;
                     Info.IsArray = Property.DeclaringType.IsArray;
+                    Info.IsRecord = (Property.GetType().IsValueType && !Property.GetType().IsEnum && !Property.GetType().IsPrimitive && Property.GetType() != typeof(decimal));
                     Names.Add(Info);
                 }
             }
@@ -166,6 +168,7 @@ public class Types
                             Info.Name = newProperty.Name;
                             Info.Description = newProperty.sDescr;
                             Info.IsArray = newProperty.InitValue.isArray();
+                            Info.IsRecord = newProperty.InitValue.isRecord();
                             Names.Add(Info);
                         }
                         propertySDML = comp.nextProperty();
