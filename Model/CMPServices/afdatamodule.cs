@@ -4,7 +4,7 @@ using System.Text;
 using System.Data;
 using CMPServices;
 
-namespace output
+namespace outputComp
 {
     //============================================================================
     /// <summary>

@@ -7,7 +7,7 @@ using FirebirdSql.Data.FirebirdClient;
 using FirebirdSql.Data;
 using CMPServices;
 
-namespace output
+namespace outputComp
 {
     //============================================================================
     /// <summary>
@@ -363,7 +363,7 @@ namespace output
 #if DEBUG_WITH_STRINGS
                 valueDA.InsertCommand.Parameters.Add("@stringval", FbDbType.VarChar, line.Length, "string_val").Value = line;
 #else
-                    valueDA.InsertCommand.Parameters.Add("@blobval", FbDbType.Binary, (int)dataSize, "blob_val").Value = data;
+                valueDA.InsertCommand.Parameters.Add("@blobval", FbDbType.Binary, data.Length, "blob_val").Value = data;
 #endif
                 //now write the values
                 valueDA.InsertCommand.Connection = fbConn;

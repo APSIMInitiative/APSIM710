@@ -462,6 +462,25 @@ namespace CMPServices
         }
         //=======================================================================
         /// <summary>
+        /// Finds the first child component or system from the rootNode
+        /// </summary>
+        /// <param name="domNode">The starting node.</param>
+        /// <returns>The DOM node of the component element.</returns>
+        //=======================================================================
+        public XmlNode firstChildCompNode(XmlNode domNode)
+        {
+            XmlNode anode;
+
+            anode = firstChild(domNode);
+            while ((anode != null) && (!isElement(anode, systemElement))
+                                   && (!isElement(anode, componentElement)))
+            {
+                anode = nextSibling(anode);
+            }
+            return anode;
+        }
+        //=======================================================================
+        /// <summary>
         /// Finds the next child which is the sibling of currNode.
         /// </summary>
         /// <returns>The DOM node of the next sibling node.</returns>
@@ -471,6 +490,25 @@ namespace CMPServices
             XmlNode anode;
 
             anode = nextSibling(currNode);
+            while ((anode != null) && (!isElement(anode, systemElement))
+                                   && (!isElement(anode, componentElement)))
+            {
+                anode = nextSibling(anode);
+            }
+            return anode;
+        }
+        //=======================================================================
+        /// <summary>
+        /// Finds the next child which is the sibling of currNode.
+        /// </summary>
+        /// <param name="domNode">The starting node.</param>
+        /// <returns>The DOM node of the next sibling node.</returns>
+        //=======================================================================
+        public XmlNode nextSiblingCompNode(XmlNode domNode)
+        {
+            XmlNode anode;
+
+            anode = nextSibling(domNode);
             while ((anode != null) && (!isElement(anode, systemElement))
                                    && (!isElement(anode, componentElement)))
             {

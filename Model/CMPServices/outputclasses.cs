@@ -547,7 +547,10 @@ namespace outputComp
         /// 
         /// </summary>
         protected TTimeValue FNextOutputTime;                                   //Start of next reporting interval      
-
+        /// <summary>
+        /// 
+        /// </summary>
+        public Boolean ApsimFMT;
         //============================================================================
         /// <summary>
         /// 
@@ -568,6 +571,7 @@ namespace outputComp
             FWriting = false;
             FFirstTime = true;
             FTitle = new String(' ', 0);
+            ApsimFMT = false;
         }
         //============================================================================
         /// <summary>
@@ -727,51 +731,32 @@ namespace outputComp
         public virtual void writeValues()
         {
         }
-
-        //==============================================================================
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="currTime"></param>
-        //==============================================================================
-        public void writeVariables(TTimeValue currTime)
-        {
-
-            aggregateValues();
-
-            FCurrOutputTime.Set(currTime);
-            writeValues();
-            FNextOutputTime.Set(FCurrOutputTime);
-            FNextOutputTime.advTime(ReportInterval, IntervalUnit);
-
-       }
-
         ////==============================================================================
         ///// <summary>
         ///// 
         ///// </summary>
         ///// <param name="currTime"></param>
         ////==============================================================================
-        //public void writeVariables(TTimeValue currTime)
-        //{
-        //    if (FCurrOutputTime.getDay() == 0)   //First time      
-        //    {
-        //        FCurrOutputTime.Set(currTime);
-        //        FNextOutputTime.Set(FCurrOutputTime);
-        //        FNextOutputTime.advTime(ReportInterval, IntervalUnit);
-        //    }
-        //    else
-        //    {
-        //        if (FNextOutputTime <= currTime)   //Store outputs from previous period
-        //        {
-        //            writeValues();
-        //            FCurrOutputTime.Set(currTime);
-        //            FNextOutputTime.Set(FCurrOutputTime);
-        //            FNextOutputTime.advTime(ReportInterval, IntervalUnit);
-        //        }
-        //    }
-        //    aggregateValues();
-        //}
+        public void writeVariables(TTimeValue currTime)
+        {
+            if (FCurrOutputTime.getDay() == 0)   //First time      
+            {
+                FCurrOutputTime.Set(currTime);
+                FNextOutputTime.Set(FCurrOutputTime);
+                FNextOutputTime.advTime(ReportInterval, IntervalUnit);
+            }
+            else
+            {
+                if (FNextOutputTime <= currTime)   //Store outputs from previous period
+                {
+                    writeValues();
+                    FCurrOutputTime.Set(currTime);
+                    FNextOutputTime.Set(FCurrOutputTime);
+                    FNextOutputTime.advTime(ReportInterval, IntervalUnit);
+                }
+            }
+            aggregateValues();
+        }
         //==============================================================================
         /// <summary>
         /// 
@@ -928,6 +913,5 @@ namespace outputComp
 
             return result;
         }
-
     }
 }

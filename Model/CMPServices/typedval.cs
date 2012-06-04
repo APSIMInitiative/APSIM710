@@ -594,10 +594,10 @@ namespace CMPServices
             //   FDataSize = 0;
 
             Name = sName;
-            setUnits("");
             FIsScalar = true;
             FIsArray = false;
             FIsRecord = false;
+			setUnits("");
 
             createScalar();              //allocates memory and initialises
         }
@@ -1383,11 +1383,11 @@ namespace CMPServices
             uint i;
 
             Name = typedValue.Name;
-            setUnits(typedValue.units());
             FBaseType = typedValue.baseType();
             FIsScalar = typedValue.isScalar();
             FIsArray = typedValue.isArray();
             FIsRecord = typedValue.isRecord();
+            setUnits(typedValue.units());
 
             if (typedValue.isScalar())
             {

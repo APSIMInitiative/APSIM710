@@ -957,13 +957,16 @@ namespace CMPServices
         /// <param name="srcCompID"></param>
         /// <param name="srcPropertyID"></param>
         /// <param name="srcFQN"></param>
+        /// <param name="srcDDML"></param>
         //============================================================================
         public void addPropertyConnection(uint driverCompID, uint driverPropertyID, uint srcCompID,
-                                          uint srcPropertyID, string srcFQN)
+                                          uint srcPropertyID, string srcFQN, string srcDDML)
         {
             int foundAt = 0;
             TDrvProperty drvProperty = (TDrvProperty)getConnectEntity(drvPropList, driverCompID, driverPropertyID, ref foundAt);
-            if ((drvProperty != null) && (drvProperty.connects != null) && drvProperty.autoConn)
+            if ((drvProperty != null) && (drvProperty.connects != null) && drvProperty.autoConn &&
+                     (getCompatibleType(drvProperty.sType, srcDDML) & 1) == 1)
+
             {
                 drvProperty.connects.add(srcCompID, srcPropertyID, srcFQN, 0, "", true);
                 //recalc the connections that match the connection rule

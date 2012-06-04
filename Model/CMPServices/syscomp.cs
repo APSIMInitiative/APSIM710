@@ -2960,7 +2960,9 @@ namespace CMPServices
                             registrar.addPropertyConnection(theTask.requestingCompID,
                                                              theTask.requestingRegID,
                                                              ownerID,
-                                                             entityID, sEntityName);
+                                                             entityID, 
+                                                             sEntityName,
+                                                             sDDML);
                         }
                     }
                     break;

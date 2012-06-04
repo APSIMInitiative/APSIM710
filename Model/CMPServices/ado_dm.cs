@@ -7,7 +7,7 @@ using System.Data.OleDb;
 using System.IO;
 using System.Threading;
 
-namespace output
+namespace outputComp
 {
     //============================================================================
     /// <summary>
