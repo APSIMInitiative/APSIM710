@@ -7,6 +7,8 @@ using ApsimFile;
 using CSGeneral;
 using System.IO;
 using System.Data.SQLite;
+using System.Data.OleDb;
+using System.Data.Common;
 
 public class DataProcessor
 {
@@ -103,6 +105,8 @@ public class DataProcessor
             Data = ProcessFilter(Node);
         else if (Node.Name.ToLower() == "reportdb")
             Data = ProcessReportDb(Node);
+        else if (Node.Name.ToLower() == "rems")
+            Data = REMS(Node);
         if (Data != null)
             Data.TableName = XmlHelper.Name(Node);
         return Data;
@@ -578,6 +582,78 @@ public class DataProcessor
         }
         else
             return null;
+    }
+
+    private DataTable REMS(XmlNode Node)
+    {
+        string FileName = XmlHelper.Value(Node, "FileName");
+        string Experiment = XmlHelper.Value(Node, "Experiment");
+        string Treatment = XmlHelper.Value(Node, "Treatment");
+        string DataSource = XmlHelper.Value(Node, "DataSource");
+        if (File.Exists(FileName) && Experiment != "" && Treatment != "" && DataSource != "")
+        {
+            OleDbConnection con = null;
+            try
+            {
+                string provider = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + FileName + ";Persist Security Info=False";
+                con = new OleDbConnection(provider);
+                con.Open();
+
+                string SQL = null;
+                SQL = "SELECT Experiments.Experiment, Treatments.TreatmentName, Treatments.TreatmentID " +
+                      "FROM Experiments INNER JOIN Treatments ON Experiments.ExpID = Treatments.ExpID " +
+                      "WHERE (((Experiments.Experiment)=\"" + Experiment + "\") AND ((Treatments.TreatmentName)=\"" + Treatment + "\"))";
+
+                OleDbCommand cmd = new OleDbCommand(SQL, con); 
+                OleDbDataReader reader = cmd.ExecuteReader();
+                string TreatmentID;
+                if (reader.Read()) // if can read row from database
+                {
+                    TreatmentID = reader.GetValue(2).ToString();
+                }
+                else
+                    return null;
+
+                if (DataSource == "Plot")
+                {
+                    SQL = "TRANSFORM Min(PlotData.Value) AS MinOfValue " +
+                           "SELECT Plots.TreatmentID, PlotData.Date, Plots.Rep " +
+                           "FROM Traits INNER JOIN (Plots INNER JOIN PlotData ON Plots.PlotID = PlotData.PlotID) ON " +
+                           "Traits.TraitID = PlotData.TraitID " +
+                           "WHERE (((Plots.TreatmentID)=" + TreatmentID + ")) " +
+                           "GROUP BY Plots.TreatmentID, PlotData.Date, Plots.Rep " +
+                           "ORDER BY PlotData.Date, Plots.Rep PIVOT Traits.Trait;";
+                }
+                else if (DataSource == "Crop")
+                {
+                    SQL = "TRANSFORM Avg(PlotData.Value) AS AvgOfValue " +
+                            "SELECT Plots.TreatmentID, PlotData.Date " +
+                            "FROM Plots INNER JOIN (Traits INNER JOIN PlotData ON Traits.TraitID = " +
+                            "PlotData.TraitID) ON Plots.PlotID = PlotData.PlotID " +
+                            "WHERE (((Plots.TreatmentID)=" + TreatmentID + ")) " +
+                            "GROUP BY Plots.TreatmentID, PlotData.Date " +
+                            "ORDER BY PlotData.Date PIVOT Traits.Trait;";
+                }
+
+                cmd = new OleDbCommand(SQL, con); 
+                reader = cmd.ExecuteReader(); 
+                DataTable Table = new DataTable();
+                Table.Load(reader);
+                Table.Columns.Add("Title", typeof(string));
+                foreach (DataRow Row in Table.Rows)
+                    Row["Title"] = Experiment + "-" + Treatment;
+                return Table;
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                con.Close();  // finally closes connection
+            }
+        }
+        return null;
     }
 
     #endregion
