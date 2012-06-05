@@ -503,7 +503,7 @@ namespace ApsimFile
                else
                   {
                   xf[i] = 2.06 / (1 + 2 * EC[i]) - 0.351;
-                  xf[i] = CSGeneral.MathUtility.Constrain(0.0, 1.0, xf[i]);
+                  xf[i] = CSGeneral.MathUtility.Constrain(xf[i], 0.0, 1.0);
                   }
                }
             }
@@ -530,7 +530,7 @@ namespace ApsimFile
                      {
                      double Proportion = (RootingDepth - PreviousCumThickness) / Thickness[i];
                      xf[i] = xf[i] * Proportion;
-                     xf[i] = CSGeneral.MathUtility.Constrain(0.0, 1.0, xf[i]);
+                     xf[i] = CSGeneral.MathUtility.Constrain(xf[i], 0.0, 1.0);
                      }
                   }
                }

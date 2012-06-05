@@ -498,6 +498,8 @@ namespace ApsimFile
                     for (int LayerNo = 1; LayerNo <= NumValues; LayerNo++)
                         Values[LayerNo - 1] = LayerNo.ToString();
                 }
+                else if (Name == "RecordNo")
+                    Values = StringManip.CreateStringArray(XmlHelper.Value(SoilNode, Name), NumValues);
                 else if (Name.Contains(" "))
                 {
                     // Only put crop variable values into the table where we have crop variables.
