@@ -186,7 +186,8 @@ public class Types
             string DLLFileName = Configuration.RemoveMacros(FileName);
             string ClassName = ProxyClassName(TypeName, DLLFileName);
 
-            Type T = GetProbeInfoAssembly().GetType("ModelFramework." + StringManip.CamelCase(TypeName));
+            //Type T = GetProbeInfoAssembly().GetType("ModelFramework." + StringManip.CamelCase(TypeName));
+            Type T = GetProbeInfoAssembly().GetType("ModelFramework." + ClassName);
             if (T != null)
             {
                 foreach (EventInfo Event in T.GetEvents())
