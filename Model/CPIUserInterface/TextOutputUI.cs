@@ -64,16 +64,21 @@ namespace CPIUserInterface
             ApsimFile.Component me = Controller.ApsimData.Find(NodePath);
             FileName = Path.GetFileNameWithoutExtension(FileName) + "_" + me.Name + ".out";
             String aVersion = Configuration.Instance.ApsimVersion();
+            String Title = "ApsimVersion = " + aVersion + "\r\nTitle = " + FileName;
             
             int i = 0;
             while (i < propertyList.Count)
             {
                 if (propertyList[i].InitValue.Name == "title")
-                    propertyList[i].InitValue.setValue(FileName);
+                    propertyList[i].InitValue.setValue(Title);
                 if (propertyList[i].InitValue.Name == "interval")
                     textBox1.Text = propertyList[i].InitValue.asInt().ToString();
-                if (propertyList[i].InitValue.Name == "intervaluni")
-                    comboBox1.Text = propertyList[i].InitValue.asStr();
+                if (propertyList[i].InitValue.Name == "intervalunit")
+                {
+                    comboBox1.SelectedIndex = comboBox1.Items.IndexOf( propertyList[i].InitValue.asStr() );
+                    if (comboBox1.SelectedIndex < 0) 
+                        comboBox1.SelectedIndex = comboBox1.Items.IndexOf( "day" );
+                }
                 i++;
             }
         }
@@ -167,7 +172,9 @@ namespace CPIUserInterface
             string[] Aggreg = DataTableUtility.GetColumnAsStrings((DataTable)Grid.DataSource, Grid.Columns[2].Name);
             string[] DecPlaces = DataTableUtility.GetColumnAsStrings((DataTable)Grid.DataSource, Grid.Columns[3].Name);
 
-            uint count = 0;
+            string[] EventNames = DataTableUtility.GetColumnAsStrings((DataTable)EventGrid.DataSource, EventGrid.Columns[0].Name);
+
+            uint count;
             int i = 0;
             while (i < propertyList.Count)
             {
@@ -187,6 +194,7 @@ namespace CPIUserInterface
                 {
                     TTypedValue sdmlinit = propertyList[i].InitValue;
                     sdmlinit.setElementCount(0);
+                    count = 0;
                     //loop through each row and add it to the outputs list
                     for (int v = 0; v < VariableNames.Length; v++)
                     {
@@ -201,18 +209,70 @@ namespace CPIUserInterface
                         }
                     }
                 }
+                if (propertyList[i].InitValue.Name == "outputfrequency")
+                {
+                    TTypedValue sdmlinit = propertyList[i].InitValue;
+                    count = 0;
+                    sdmlinit.setElementCount(0);
+                    if (EventNames.Length == 0)
+                    {
+                        count = 1;
+                        sdmlinit.setElementCount(1);
+                        sdmlinit.item(count).setValue("post");  //add the default post event (overrides update_outputs)
+                    }
+                    else
+                    {
+                        //loop through each row and add it to the outputfrequency array
+                        for (int v = 0; v < EventNames.Length; v++)
+                        {
+                            if (EventNames[v].Length > 0)
+                            {
+                                count++;
+                                sdmlinit.setElementCount(sdmlinit.count() + 1);
+                                sdmlinit.item(count).setValue(EventNames[v]);
+                            }
+                        }
+                    }
+                }
                 i++;
             }
         }
         //=====================================================================
         /// <summary>
-        /// Refresh the variable grid
+        /// Refresh the variable and events grid
         /// </summary>
         //=====================================================================
         public override void OnRefresh()
         {
             base.OnRefresh();
 
+            PopulateEventsGrid();       //Restore the chosen events into the events grid
+            PopulateVariablesGrid();    //Restore the chosen variables into the variables grid
+
+            // We want to find the component that is a child of our paddock.
+            ApsimFile.Component Paddock = Controller.ApsimData.Find(NodePath).FindContainingPaddock();
+            GetSiblingComponents(Paddock, ref ComponentNames, ref ComponentTypes);
+
+            //populate the events tab
+            PopulateEventComponentFilter();
+            PopulateEventsListView();
+
+            //populate the variable tab
+            //UserChange = false;
+            PopulateComponentFilter();
+            PopulateVariableListView();
+            //UserChange = true;
+
+            VariableListView.Columns[1].Width = 45;
+            VariableListView.Columns[2].Width = 45;
+        }
+        //=====================================================================
+        /// <summary>
+        /// Restore the chosen variables into the variables grid
+        /// </summary>
+        //=====================================================================
+        private void PopulateVariablesGrid()
+        {
             DataTable Table = new DataTable();
             //if (XmlHelper.Type(Data).ToLower() == "variables")
             {
@@ -249,25 +309,49 @@ namespace CPIUserInterface
             Grid.Columns.Clear();
             Grid.DataSource = Table;     // Give data table to grid.
 
-            // We want to find the component that is a child of our paddock.
-            ApsimFile.Component Paddock = Controller.ApsimData.Find(NodePath).FindContainingPaddock();
-            GetSiblingComponents(Paddock, ref ComponentNames, ref ComponentTypes);
-
-            //UserChange = false;
-            PopulateComponentFilter();
-            PopulateVariableListView();
-            //UserChange = true;
-
-            VariableListView.Columns[1].Width = 45;
-            VariableListView.Columns[2].Width = 45;
-
             Grid.Columns[2].Width = 60;
-            Grid.Columns[3].Width = 60;
+            Grid.Columns[3].Width = 75;
             Grid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             Grid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             Grid.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             DataGridViewColumn thirdColumn = Grid.Columns[2];
             thirdColumn.ToolTipText = "max, min, average, total";
+            DataGridViewColumn firstColumn = Grid.Columns[0];
+            firstColumn.ToolTipText = "Ctrl+Up, Ctrl+Down to reorder";
+        }
+        //=====================================================================
+        /// <summary>
+        /// Restore the chosen events into the events grid
+        /// </summary>
+        //=====================================================================
+        private void PopulateEventsGrid()
+        {
+            DataTable Table = new DataTable();
+            Table.Columns.Clear();
+            Table.Columns.Add("Event name", System.Type.GetType("System.String"));
+
+            // Fill data table.
+            int i = 0;
+            while (i < propertyList.Count)
+            {
+                if (propertyList[i].InitValue.Name == "outputfrequency")
+                {
+                    for (uint v = 1; v <= propertyList[i].InitValue.count(); v++)
+                    {
+                        TTypedValue typedVal = propertyList[i].InitValue.item(v);
+                        DataRow NewRow = Table.NewRow();
+                        NewRow[0] = typedVal.asStr();
+                        Table.Rows.Add(NewRow);
+                    }
+                    i = propertyList.Count; //terminate loop
+                }
+                i++;
+            }
+            EventGrid.Columns.Clear();
+            EventGrid.DataSource = Table;     // Give data table to grid.
+
+            Grid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Grid.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
         }
         //=====================================================================
         /// <summary>
@@ -309,6 +393,49 @@ namespace CPIUserInterface
 
                 VariableListView.EndUpdate();
                 VariableListView.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+                Cursor.Current = Cursors.Default;
+            }
+        }
+        //=====================================================================
+        /// <summary>
+        /// 
+        /// </summary>
+        //=====================================================================
+        private void PopulateEventComponentFilter()
+        {
+            ComponentEventsFilter.Items.Clear();
+            foreach (string ComponentName in ComponentNames)
+            {
+                ComponentEventsFilter.Items.Add(ComponentName);
+            }
+
+            if (ComponentEventsFilter.Items.Count > 0)
+            {
+                ComponentEventsFilter.SelectedIndex = 0;
+            }
+        }
+        //=====================================================================
+        /// <summary>
+        /// Fill the listview with event names
+        /// </summary>
+        //=====================================================================
+        private void PopulateEventsListView()
+        {
+            if (ComponentEventsFilter.SelectedIndex >= 0 & ComponentEventsFilter.SelectedIndex < ComponentNames.Count)
+            {
+                Cursor.Current = Cursors.WaitCursor;
+                EventsListView.BeginUpdate();
+                EventsListView.Groups.Clear();
+                EventsListView.Items.Clear();
+
+                string ComponentType = ComponentTypes[ComponentEventsFilter.SelectedIndex];
+                string ComponentName = ComponentNames[ComponentEventsFilter.SelectedIndex];
+                string PropertyGroup = XmlHelper.Type(Data);
+                // e.g. variables or events
+                AddEventsToListView(ComponentName, ComponentType, PropertyGroup);
+
+                EventsListView.EndUpdate();
+                EventsListView.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
                 Cursor.Current = Cursors.Default;
             }
         }
@@ -359,6 +486,36 @@ namespace CPIUserInterface
         }
         //=====================================================================
         /// <summary>
+        /// Add component events to the listview.
+        /// </summary>
+        /// <param name="ComponentName"></param>
+        /// <param name="ComponentType"></param>
+        /// <param name="PropertyGroup"></param>
+        //=====================================================================
+        private void AddEventsToListView(string ComponentName, string ComponentType, string PropertyGroup)
+        {
+            List<Types.MetaDataInfo> ModelInfo = null;
+            ModelInfo = Types.Instance.Events(ComponentType);
+           
+            string GroupName = ComponentName;
+            if (string.IsNullOrEmpty(GroupName))
+            {
+                GroupName = ComponentName + " " + PropertyGroup;
+            }
+            ListViewGroup NewGroup = new ListViewGroup(GroupName);
+
+            foreach (Types.MetaDataInfo Variable in ModelInfo)
+            {
+                EventsListView.Groups.Add(NewGroup);
+                ListViewItem ListItem = new ListViewItem(Variable.Name);
+                ListItem.Group = NewGroup;
+                ListItem.SubItems.Add(Variable.Description);
+                EventsListView.Items.Add(ListItem);
+            }
+        }
+
+        //=====================================================================
+        /// <summary>
         /// Return a list of sibling component names and types for the specified data component 
         /// </summary>
         /// <param name="Paddock"></param>
@@ -395,6 +552,17 @@ namespace CPIUserInterface
         private void ComponentFilter_TextChanged(object sender, EventArgs e)
         {
             PopulateVariableListView();
+        }
+        //=====================================================================
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        //=====================================================================
+        private void ComponentEventsFilter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            PopulateEventsListView();
         }
         //=====================================================================
         /// <summary>
@@ -493,15 +661,24 @@ namespace CPIUserInterface
         //=====================================================================
         private void tabControl1_Selected(object sender, TabControlEventArgs e)
         {
-            if (e.TabPageIndex == 1)
+            if (e.TabPageIndex == 2)
             {
-                label2.Text = Path.GetFullPath(FileName);
-                if (File.Exists(Path.GetFullPath(FileName)))
+                Cursor.Current = Cursors.WaitCursor;
+                try
                 {
-                    FileContentsBox.Clear();
-                    StreamReader outfile = new StreamReader(Path.GetFullPath(FileName));
-                    FileContentsBox.AppendText(outfile.ReadToEnd());
-                    outfile.Close();
+                    label2.Text = Path.GetFullPath(FileName);
+                    if (File.Exists(Path.GetFullPath(FileName)))
+                    {
+                        FileContentsBox.Clear();
+                        StreamReader outfile = new StreamReader(Path.GetFullPath(FileName));
+                        FileContentsBox.AppendText(outfile.ReadToEnd());
+                        outfile.Close();
+                        labelLines.Text = FileContentsBox.Lines.Length.ToString() + " lines";
+                    }
+                }
+                finally
+                {
+                    Cursor.Current = Cursors.Default;
                 }
             }
         }
@@ -568,15 +745,111 @@ namespace CPIUserInterface
         //=====================================================================
         private void OnDelete(object sender, KeyEventArgs e)
         {
-            if (!Grid.IsCurrentCellInEditMode)
+            if (!((DataGridView)sender).IsCurrentCellInEditMode)
             {
                 //delete the whole row
-                foreach (DataGridViewRow dr in Grid.SelectedRows)
+                foreach (DataGridViewRow dr in ((DataGridView)sender).SelectedRows)
                 {
                     if (dr.Cells[0].Value.ToString() != null) //Cells[0] - primary key
                         dr.Cells[0].Value = ""; //Grid.Rows.Remove(dr);
                 }
             }
         }
+        //=====================================================================
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        //=====================================================================
+        private void EventGrid_DragDrop(object sender, DragEventArgs e)
+        {
+            AddEventsToGrid(EventsListView.SelectedItems);
+        }
+        //=====================================================================
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        //=====================================================================
+        private void EventGrid_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Copy;
+        }
+        //=====================================================================
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        //=====================================================================
+        private void EventGrid_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Copy;
+        }
+        //=====================================================================
+        /// <summary>
+        /// Respond to key clicks on the Events grid
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        //=====================================================================
+        private void EventGrid_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                OnDelete(sender, e);
+            }
+        }
+        //=====================================================================
+        /// <summary>
+        /// Add the event names to the grid
+        /// </summary>
+        /// <param name="EventNames"></param>
+        //=====================================================================
+        private void AddEventsToGrid(ListView.SelectedListViewItemCollection EventNames)
+        {
+            //UserChange = false;
+            DataTable Table = (DataTable)EventGrid.DataSource;
+
+            foreach (ListViewItem SelectedItem in EventNames)
+            {
+                int Row = 0;
+                for (Row = 0; Row <= Table.Rows.Count - 1; Row++)
+                {
+                    /*if ( Information.IsDBNull(Table.Rows[Row][0]) || (string.IsNullOrEmpty(Table.Rows[Row][0])) )
+                    {
+                        break; // TODO: might not be correct. Was : Exit For
+                    }*/
+                }
+                if (Row == Table.Rows.Count)
+                {
+                    DataRow NewRow = ((DataTable)EventGrid.DataSource).NewRow();
+                    NewRow[0] = SelectedItem.Text;
+                    Table.Rows.Add(NewRow);
+                }
+                else
+                {
+                    Table.Rows[Row][0] = SelectedItem.Text;
+                }
+            }
+            EventGrid.Columns[0].Width = 360;
+            EventGrid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            EventGrid.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        }
+        //=====================================================================
+        /// <summary>
+        /// User is trying to initiate a drag - allow drag operation
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        //=====================================================================
+        private void EventsListView_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            EventsListView.DoDragDrop("xx", DragDropEffects.All);
+        }
+
     }
+
 }

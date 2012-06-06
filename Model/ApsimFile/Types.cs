@@ -181,8 +181,9 @@ public class Types
     public List<MetaDataInfo> Events(string TypeName)
     {
         List<MetaDataInfo> Names = new List<MetaDataInfo>();
-        foreach (string DLLFileName in Dlls(TypeName))
+        foreach (string FileName in Dlls(TypeName))
         {
+            string DLLFileName = Configuration.RemoveMacros(FileName);
             string ClassName = ProxyClassName(TypeName, DLLFileName);
 
             Type T = GetProbeInfoAssembly().GetType("ModelFramework." + StringManip.CamelCase(TypeName));
@@ -200,6 +201,40 @@ public class Types
                     Info.Name = Event.Name;
                     Info.Description = Description;
                     Names.Add(Info);
+                }
+            }
+            else
+            {
+                //attempt to get these details from getDescription() (works for CPI components)
+                String descr = "";
+                TOSInterface.CompilationMode mode = TOSInterface.isManaged(DLLFileName);
+                if ((mode == TOSInterface.CompilationMode.Native) || (mode == TOSInterface.CompilationMode.Mixed))
+                {
+                    //now I can probe this dll for it's description.
+                    descr = getNativeDescription(DLLFileName);
+                }
+                else if (mode == TOSInterface.CompilationMode.CLR)
+                    descr = getDotNetDescription(DLLFileName);
+
+                if (descr.Length > 0)
+                {
+                    TComponentDescrParser comp = new TComponentDescrParser(descr);
+                    //need to read all the event information
+                    String eventSDML = comp.firstEvent();
+                    while (eventSDML.Length > 0)
+                    {
+                        //create an event attribute of this class
+                        TCompEvent newEvent;
+                        newEvent = new TCompEvent(eventSDML);
+                        if (newEvent.sKind == "published")
+                        {
+                            MetaDataInfo Info = new MetaDataInfo();
+                            Info.Name = newEvent.Name;
+                            Info.Description = newEvent.sDescr;
+                            Names.Add(Info);
+                        }
+                        eventSDML = comp.nextEvent();
+                    }
                 }
             }
         }
