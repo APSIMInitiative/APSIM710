@@ -378,7 +378,7 @@ using System.Collections.Generic;
 
                     if (item.Name.CompareTo("SurfaceOrganicMatter") == 0)
                     {
-                        Console.WriteLine("Sending manure to soil");
+                       
 
                         AddFaecesType faeces = new AddFaecesType();
                         faeces.VolumePerDefaecation = GetMass();
