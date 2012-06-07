@@ -132,7 +132,7 @@ public class Types
                     MetaDataInfo Info = new MetaDataInfo();
                     Info.Name = Property.Name;
                     Info.Description = Description;
-                    Info.IsArray = Property.DeclaringType.IsArray;
+                    Info.IsArray = Property.PropertyType.IsArray;
                     Info.IsRecord = (Property.GetType().IsValueType && !Property.GetType().IsEnum && !Property.GetType().IsPrimitive && Property.GetType() != typeof(decimal));
                     Names.Add(Info);
                 }
