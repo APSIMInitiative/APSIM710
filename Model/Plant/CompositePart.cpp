@@ -566,6 +566,20 @@ void CompositePart::removeBiomass2(float chop_fr)
       (*part)->removeBiomass2(chop_fr);
 }
 
+void  CompositePart::get_AvailableToAnimal(protocol::AvailableToAnimalType &avail)
+{
+   vector <plantPart *>::iterator part;
+   for (part =  myParts.begin(); part != myParts.end(); part++)
+      (*part)->get_AvailableToAnimal(avail);
+}
+void  CompositePart::set_RemovedByAnimal(const protocol::RemovedByAnimalType &removed)
+{
+   vector <plantPart *>::iterator part;
+   for (part =  myParts.begin(); part != myParts.end(); part++)
+      (*part)->set_RemovedByAnimal(removed);
+}
+
+   
 void CompositePart::onHarvest(float cutting_height, float remove_fr,
                            vector<string> &dm_type,
                            vector<float> &dlt_crop_dm,

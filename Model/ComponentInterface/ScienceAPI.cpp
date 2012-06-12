@@ -537,6 +537,16 @@ void ScienceAPI::exposeWritable(const std::string& name, const std::string& unit
 
    component->addSettableVar(name.c_str(), protocol::DTstring, wrapper->DDML(), fn, units.c_str(), description.c_str());
    }
+void ScienceAPI::exposeWritable(const std::string& name, const std::string& units, const std::string& description, boost::function1<void, const protocol::RemovedByAnimalType&> handler)
+   {
+   typedef CMPSetter<boost::function1<void, const protocol::RemovedByAnimalType&>, protocol::RemovedByAnimalType> WrapperType;
+   WrapperType* wrapper = new WrapperType (handler, name, protocol::DTunknown);
+   stuffToDelete.push_back(wrapper);
+   boost::function2<bool, protocol::Component*, protocol::QuerySetValueData &> fn;
+   fn = boost::bind(&WrapperType::CMPFunction, wrapper, _1, _2);
+
+   component->addSettableVar(name.c_str(), protocol::DTunknown, wrapper->DDML(), fn, units.c_str(), description.c_str());
+   }
 
 // -------------------------------------------------------------------
 // A wrapper class for CMP events, gets and sets that take a single

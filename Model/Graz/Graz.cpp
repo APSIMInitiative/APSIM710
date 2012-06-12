@@ -1,4 +1,3 @@
-#pragma hdrstop
 #include <sstream>
 #include <math.h>
 
@@ -85,6 +84,7 @@ void grazComponent::onInit2(void)
    scienceAPI.read("winter_lwg",            "", 0, winter_lwg,           (float)  0.0, (float)200.0);
    scienceAPI.read("spring_lwg",            "", 0, spring_lwg,           (float)  0.0, (float)200.0);
    scienceAPI.read("leaf_diet",             "", 0, leaf_diet,            (float)  0.0, (float)100.0);
+   scienceAPI.read("min_alw",               "", 0, MIN_ALW,              (float)  0.0, (float)1000.0);
    scienceAPI.read("std_alw",               "", 0, std_alw,              (float)  0.0, (float)1000.0);
    scienceAPI.read("metabol_expon",         "", 0, metabol_expon,        (float)  0.0, (float)100.0);
    scienceAPI.read("prop_can_eat",          "", 0, prop_can_eat,         (float)  0.0, (float)100.0);
@@ -114,25 +114,46 @@ void grazComponent::onPrepare(void)
    scienceAPI.get("day", "", 0, jday, 1, 366);
    scienceAPI.get("month", "", 0, month, 1, 12);
 
-   std::string prefix;
-   if (pasture_source == "")
-      prefix = "";
+   if (stocking_rate <= 0.0)
+      {
+      green_leaf = green_stem = dead_leaf = dead_stem = 0.0;
+      grass_growth = 0.0;
+      }
    else
-      prefix = pasture_source + ".";
+      {
+      std::string prefix;
+      if (pasture_source == "")
+         prefix = "";
+      else
+         prefix = pasture_source + ".";
 
-   scienceAPI.get(prefix + "LeafGreenWt",    "g/m2", false, green_leaf,   (float)0.0, (float)10000.0);
-   green_leaf *= gm2kg / sm2ha;
-   scienceAPI.get(prefix + "StemGreenWt",    "g/m2", false, green_stem,   (float)0.0, (float)10000.0);
-   green_stem *= gm2kg / sm2ha;
+      AvailableToAnimalType avail;
+      scienceAPI.get(prefix + "AvailableToAnimal", false, avail);
 
-   scienceAPI.get(prefix + "LeafSenescedWt", "g/m2", false, dead_leaf,    (float)0.0, (float)10000.0);
-   dead_leaf *= gm2kg / sm2ha;
-   scienceAPI.get(prefix + "StemSenescedWt", "g/m2", false, dead_stem,    (float)0.0, (float)10000.0);
-   dead_stem *= gm2kg / sm2ha;
+      green_leaf = green_stem = dead_leaf = dead_stem = -1.0;
+//        cout << "getAvail:" << endl;
+      for (unsigned cohort = 0; cohort < avail.Cohorts.size(); cohort++) 
+        {
+//        cout << avail.Cohorts[cohort].Organ << " " << avail.Cohorts[cohort].AgeID << endl;
+        if (Str_i_Eq(avail.Cohorts[cohort].Organ , "leaf") &&
+            Str_i_Eq(avail.Cohorts[cohort].AgeID , "live")) 
+           green_leaf = avail.Cohorts[cohort].Weight;        // comes in kg/ha
+        else if (Str_i_Eq(avail.Cohorts[cohort].Organ , "stem") &&
+                 Str_i_Eq(avail.Cohorts[cohort].AgeID , "live"))
+           green_stem = avail.Cohorts[cohort].Weight;
+        else if (Str_i_Eq(avail.Cohorts[cohort].Organ , "leaf") &&
+                 Str_i_Eq(avail.Cohorts[cohort].AgeID , "dead"))
+           dead_leaf = avail.Cohorts[cohort].Weight;
+        else if (Str_i_Eq(avail.Cohorts[cohort].Organ , "stem") &&
+                 Str_i_Eq(avail.Cohorts[cohort].AgeID , "dead")) 
+           dead_stem = avail.Cohorts[cohort].Weight;
+        }
+      if (green_leaf < 0 || green_stem < 0 || dead_leaf < 0 || dead_stem < 0 )
+         throw std::runtime_error("Missing parts in AvailableToAnimalType??");
 
-   scienceAPI.get(prefix + "dlt_dm",         "g/m2", false, grass_growth, (float)0.0, (float)10000.0);
-   grass_growth *= gm2kg / sm2ha;
-
+      scienceAPI.get(prefix + "dlt_dm",         "g/m2", false, grass_growth, (float)0.0, (float)10000.0);
+      grass_growth *= gm2kg / sm2ha;
+   }
    // Set deltas
    green_leaf_eaten = 0.0;
    green_stem_eaten = 0.0;
@@ -178,7 +199,6 @@ void grazComponent::eat(void)
    float trampled_leaf;        // trampled dead leaf
    float stock_equiv;          // stock equivalent
 
-//   const float MIN_ALW = 10.0;
    green_pool = green_leaf + green_stem;
    dead_pool = dead_leaf + dead_stem;
    tsdm = max(green_pool + dead_pool, 0.0);
@@ -232,8 +252,8 @@ void grazComponent::eat(void)
    }
 
    //  Restrict the lwg, so that alw never goes below minimum
-// not in spaghetti !!!
-//      dlt_lwg = max (MIN_ALW - alw, dlt_lwg)
+   // not in spaghetti !!!
+   dlt_lwg = max (MIN_ALW - alw, dlt_lwg);
 
    curve_factor = divide (0.5 * leaf_diet - leaf_diet,
                           0.5 * leaf_diet - 0.5, 0.0);
@@ -335,35 +355,37 @@ void grazComponent::update (void)
    if (dead_leaf_eaten + green_leaf_eaten +
        dead_stem_eaten + green_stem_eaten > 0.0 )
       {
-      RemoveCropBiomassType dmEaten;
-      RemoveCropBiomassdmType greenEaten;
+      RemovedByAnimalType dmEaten;
+      RemovedByAnimalCohortsType pool;
 
-      greenEaten.pool = "green";
-      greenEaten.part.push_back("leaf");
-      greenEaten.dlt.push_back(green_leaf_eaten * kg2gm / ha2sm);
-      greenEaten.part.push_back("stem");
-      greenEaten.dlt.push_back(green_stem_eaten * kg2gm / ha2sm);
-      dmEaten.dm.push_back(greenEaten);
-
-      // NB. our "dead pool" is the plant "senesced pool".. Ideally, we should treat
-      //  senesced and dead pools equally.
-      RemoveCropBiomassdmType deadEaten;
-      deadEaten.pool = "senesced";
-      deadEaten.part.push_back("leaf");
-      deadEaten.dlt.push_back(
-           (dead_leaf_eaten - dead_leaf_tramp) * kg2gm / ha2sm);   // send in g/sm
-      deadEaten.part.push_back("stem");
-      deadEaten.dlt.push_back(
-           (dead_stem_eaten - dead_stem_tramp) * kg2gm / ha2sm);
-      dmEaten.dm.push_back(deadEaten);
-
+      pool.CohortID = pasture_source;
+      pool.Organ = "leaf";
+      pool.AgeID = "live";
+      pool.WeightRemoved = green_leaf_eaten;
+      pool.Top = 0;
+      pool.Bottom = 0;
+      pool.Chem = "";
+      dmEaten.Cohorts.push_back(pool);
+      pool.AgeID = "dead";
+      pool.WeightRemoved = dead_leaf_eaten;
+      dmEaten.Cohorts.push_back(pool);
+      pool.Organ = "stem";
+      pool.AgeID = "live";
+      pool.WeightRemoved = green_stem_eaten;
+      dmEaten.Cohorts.push_back(pool);
+      pool.AgeID = "dead";
+      pool.WeightRemoved = dead_stem_eaten;
+      dmEaten.Cohorts.push_back(pool);
       string s;
       if (pasture_source == "")
-         s = "remove_crop_biomass";
+         s = "RemovedByAnimal";
       else
-         s = pasture_source + ".remove_crop_biomass";
-
-      scienceAPI.publish(s, dmEaten);
+         s = pasture_source + ".RemovedByAnimal";
+//cout << " eating green leaf = " << green_leaf_eaten << endl;
+//cout << " eating green stem = " << green_stem_eaten << endl;
+//cout << " eating dead leaf = " << dead_leaf_eaten << endl;
+//cout << " eating dead stem = " << dead_stem_eaten << endl;
+      scienceAPI.set(s, dmEaten);
       }
 
    if (dead_leaf_tramp + dead_stem_tramp > 0.0 )

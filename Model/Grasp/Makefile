@@ -2,19 +2,24 @@ include $(APSIM)/Model/Build/Platform.make
 
 PROJECT = Grasp
 
-SRC = Registrations.f90 Grasp.for 
+SRC =  Grasp.for 
 ifeq ($(PLATFORM),Linux)
-SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
-DEF = ../Build/gfcomp.ldscript
+SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux2.for 
+DEF = Grasp.ldscript
 else
-SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
-DEF = ../Build/gfcomp.def
+SRC := $(SRC) ../FortranInfrastructure/EntryPoints2.for 
+DEF = Grasp.def
 endif
 
 STATICLIBS = FortranInfrastructure
-LIBS = FortranComponentInterface
+LIBS = FortranComponentInterface2
+EXPORTS = OnTick,OnNewProfile,OnApply,getDescription,getDescriptionLength
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll
 
+ifeq ($(PLATFORM),Linux)
 include $(APSIM)/Model/Build/$(PLATFORM)FOR.make
+else
+include $(APSIM)/Model/Build/$(PLATFORM)FOR.make
+endif

@@ -14,7 +14,6 @@ Title                  = Site 67
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
-   Component                        "Daily" = %apsim%\Model\Report.dll
    Component                       "Annual" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "operations" = %apsim%\Model\Operations.dll
@@ -25,7 +24,7 @@ Paddock:
    Component                 "Site67 Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component              "Site67 Nitrogen" = %apsim%\Model\SoilN.dll
-   Component                        "grasp" = %apsim%\Model\Grasp.dll
+   Component                        "Grasp" = %apsim%\Model\Grasp.dll
    Component                      "tracker" = %apsim%\Model\Tracker.dll
 
 ------- clock Initialisation --------------------------------------------------
@@ -47,18 +46,6 @@ Paddock:
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
      INPUT File name: Site67.met
-
-------- Daily Initialisation --------------------------------------------------
-     Output frequency:
-        post
-     Output variables:
-        dd/mm/yyyy as Date
-        tsdm
-        cover_tot
-        crop_status
-
-     Output file = Site 67 Daily.out
-     Format = normal
 
 ------- Annual Initialisation -------------------------------------------------
      Output frequency:
@@ -90,7 +77,7 @@ Paddock:
      
      SECTION:- start_of_day
               if (date('1-feb') = today) and grasp.crop_status = 3 then
-        grasp establish init_section = established
+        grasp establish init_section = establishment
               endif
      END of rules
      
@@ -249,8 +236,7 @@ Paddock:
           ---------------------------------------------------------
            Totals  221997.8 18499.8  1290.5   161.3   400.0    10.0
           ---------------------------------------------------------
-
-------- grasp Initialisation --------------------------------------------------
+Grasp: 
      Initialising:
      Parameters:
        Transpiration Efficiency:     25.00 kg/ha/mm at 20.0 hPa
@@ -268,8 +254,8 @@ Paddock:
                2      20.000       0.500       15.00
                3      30.000       1.000        5.00
                4       3.000       0.000        0.00
-         --------------------------------------------
-     
+         --------------------------------------------                                                                                                                                                        
+
 
 ------- tracker Initialisation ------------------------------------------------
      Tracker variables:
@@ -281,8 +267,8 @@ Paddock:
      Manager creating a new local real variable : cover_green_pcnt = 0.00000
      Manager creating a new local real variable : grasp_dlt_dm = 0.00000
 1 February 1957(Day of year=32), Planting rule: 
-     Manager sending message :- grasp establish  init_section = established
-1 February 1957(Day of year=32), grasp: 
+     Manager sending message :- grasp establish  init_section = establishment
+1 February 1957(Day of year=32), Grasp: 
      Establishing Sward
      Initial conditions:
        Basal area :    4.40 %
@@ -293,8 +279,8 @@ Paddock:
       dead   |      0.0      0.0      0.0
              +--------+--------+--------+
        Root depth :   950.0 mm
-       Using vpd from .MasterPM.met module.
-       Using Pan evap from .MasterPM.met module.
+       Using vpd from system.
+       Pan evap from system
 11 October 1991(Day of year=284), operations: 
       Sending set message to grasp
       Sending set message to grasp

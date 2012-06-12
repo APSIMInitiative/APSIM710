@@ -451,6 +451,43 @@ void SimplePart::removeBiomass(void)
    Green = Green - GreenRemoved;
    Senesced = Senesced - SenescedRemoved;
    }
+void  SimplePart::get_AvailableToAnimal(protocol::AvailableToAnimalType &avail) 
+{
+   protocol::AvailableToAnimalCohortsType cohort;
+   
+   cohort.CohortID = plant->Name();
+   cohort.Organ = myName;
+   cohort.AgeID = "live";
+   cohort.Bottom = 0.0;
+   cohort.Top =    height();
+   cohort.Chem =   "digestible";
+   cohort.Weight = Green.DM() * gm2kg / sm2ha;
+   cohort.N =      Green.N()* gm2kg / sm2ha;
+   cohort.P =      Green.P()* gm2kg / sm2ha;
+//   cohort.S =      0.0
+//   cohort.AshAlk = 0.0
+   avail.Cohorts.push_back(cohort);
+   cohort.AgeID = "dead";
+   cohort.Weight = Senesced.DM()* gm2kg / sm2ha;
+   cohort.N =      Senesced.N()* gm2kg / sm2ha;
+   cohort.P =      Senesced.P()* gm2kg / sm2ha;
+   avail.Cohorts.push_back(cohort);
+   }
+void  SimplePart::set_RemovedByAnimal(const protocol::RemovedByAnimalType &dm) 
+{
+   for (vector<protocol::RemovedByAnimalCohortsType>::const_iterator cohort = dm.Cohorts.begin(); cohort != dm.Cohorts.end(); cohort++)
+   {
+      if (Str_i_Eq(cohort->Organ, myName) )
+         {
+         if (Str_i_Eq(cohort->AgeID, "live") )
+            {//cout << myName << " avail = " << Green.DM() << ", wt removed = " << cohort->WeightRemoved << endl;
+            giveDmGreenRemoved(  cohort->WeightRemoved * kg2gm / ha2sm);}
+         else if (Str_i_Eq(cohort->AgeID, "dead") )
+             {//cout << myName << " avail = " << Senesced.DM() << ", wt removed = " << cohort->WeightRemoved << endl;
+             giveDmSenescedRemoved( cohort->WeightRemoved * kg2gm / ha2sm);}
+         }
+   }
+}
 
 void SimplePart::doRemoveBiomass(protocol::RemoveCropBiomassType dmRemoved, bool c_remove_biomass_report)
 //=======================================================================================

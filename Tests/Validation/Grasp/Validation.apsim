@@ -1,35 +1,38 @@
-<folder version="25" name="Simulations">
+<folder version="32" name="Simulations">
   <simulation name="Site 67">
     <metfile name="met">
-      <filename name="filename">Site67.met</filename>
+      <filename name="filename" input="yes">Site67.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Select the start date of the simulation">1/01/1957</start_date>
       <end_date type="date" description="Select the end date of the simulation">31/12/1999</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Site 67.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <folder name="Manager folder">
         <manager name="Planting rule">
           <ui>
-            <category description="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date1 type="ddmmmdate" description="Enter planting date (dd-mmm) : ">1-feb</date1>
-            <category description="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="crop" description="Enter name of growth module to sow : ">grasp</crop>
-            <density type="text" description="Enter sowing density  (plants/m2) : ">400</density>
           </ui>
-          <script name="start_of_day">
+          <script>
             <text>
          if (date('[date1]') = today) and [crop].crop_status = 3 then
-               [crop] establish init_section = established
+               [crop] establish init_section = establishment
          endif
             </text>
             <event>start_of_day</event>
           </script>
         </manager>
         <manager name="Burning rule">
+          <ui>
+            <category type="category" description="Burn criteria" />
+            <date1 type="ddmmmdate" description="Enter burn date (dd-mmm) : ">1-sep</date1>
+            <category type="category" description="Burn parameters" />
+            <crop type="crop" description="Enter name of module to burn : ">grasp</crop>
+          </ui>
           <script>
             <text>
  if ((date('[date1]') = today) AND ([crop].crop_status = 1)) then
@@ -39,25 +42,19 @@
             </text>
             <event>start_of_day</event>
           </script>
-          <ui>
-            <category name="Burn criteria" />
-            <date1 type="ddmmmdate" description="Enter burn date (dd-mmm) : ">1-sep</date1>
-            <category name="Burn parameters" />
-            <crop type="crop" description="Enter name of module to burn : ">grasp</crop>
-          </ui>
         </manager>
         <manager name="Scratch">
-          <script name="init">
+          <script>
             <text>
             </text>
             <event>init</event>
           </script>
-          <script name="start_of_day">
+          <script>
             <text>
             </text>
             <event>start_of_day</event>
           </script>
-          <script name="end_of_day">
+          <script>
             <text>swdep = sw_dep() - sw_dep(4)
 no3avail = no3() - no3(4)
 swdep1_2 = sw_dep(1) + sw_dep(2)
@@ -69,14 +66,6 @@ grasp_dlt_dm = grasp.dlt_dm * 10.0
           </script>
         </manager>
       </folder>
-      <grasp>
-        <ini name="Standard ini file">
-          <filename>%apsim%/Model/Grasp.xml</filename>
-        </ini>
-        <ini name="Site ini file">
-          <filename>Site67.ini</filename>
-        </ini>
-      </grasp>
       <fertiliser />
       <surfaceom name="surface organic matter">
         <PoolName description="Organic Matter pool name">wheat</PoolName>
@@ -86,20 +75,6 @@ grasp_dlt_dm = grasp.dlt_dm * 10.0
         <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
       </surfaceom>
       <soil name="Site67">
-        <Country />
-        <Site />
-        <Region />
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town" />
-        <NaturalVegetation description="Natural vegetation" />
-        <State />
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source" />
-        <Comments />
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
             <Percent>0</Percent>
@@ -107,6 +82,22 @@ grasp_dlt_dm = grasp.dlt_dm * 10.0
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
         <Comment type="multiedit" description="Comments" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown description="Nearest town" />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation description="Natural vegetation" />
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source" />
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -268,7 +259,6 @@ grasp_dlt_dm = grasp.dlt_dm * 10.0
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -429,29 +419,82 @@ grasp_dlt_dm = grasp.dlt_dm * 10.0
           </Layer>
         </Sample>
       </soil>
-      <outputfile name="Daily">
-        <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
-          <variable name="tsdm" description="" array="" units="kg/ha" />
-          <variable name="cover_tot" description="" array="" units="kg/ha" />
-          <variable name="crop_status" description="" array="" units="kg/ha" />
-        </variables>
-        <events name="Reporting Frequency">
-          <event name="Daily" description="End of day" array="No" />
-        </events>
-      </outputfile>
+      <grasp name="Grasp">
+        <category type="category" />
+        <root_depth_init type="text" description="Initial depth of roots (mm)">950</root_depth_init>
+        <dm_dead_leaf_init type="text" description="Initial Dead Leaf weight (kg/ha)">0</dm_dead_leaf_init>
+        <dm_dead_stem_init type="text" description="Initial Dead Stem weight (kg/ha)">0</dm_dead_stem_init>
+        <dm_dead_root_init type="text" description="Initial Dead Root weight (kg/ha)">0</dm_dead_root_init>
+        <dm_green_leaf_init type="text" description="Initial Green Leaf weight (p135, kg/ha)">0</dm_green_leaf_init>
+        <dm_green_stem_init type="text" description="Initial Green Stem weight (p136, kg/ha)">0</dm_green_stem_init>
+        <dm_green_root_init type="text" description="Initial Green Root weight (kg/ha)">0</dm_green_root_init>
+        <basal_area_init type="text" description="Initial Basal area of tussocks (p005, %)">4.4</basal_area_init>
+        <acc_trans_for_n_init type="text" description="Initial accumulated transpiration, used for N uptake (mm)">0</acc_trans_for_n_init>
+        <acc_growth_for_n_init type="text" description="Initial accumulated growth, used for N uptake (kg/ha)">0</acc_growth_for_n_init>
+        <category type="category" />
+        <max_n_avail type="text" description="Limit to total N (p099, kg/year)">50</max_n_avail>
+        <max_n_avail_dist type="text" description="Distribution of N in profile">0.6    0.3  0.1  0.0</max_n_avail_dist>
+        <ll type="text" description="Lower limit (ll) of water extraction (mm/mm)">0.06     0.05     0.06     0.06 </ll>
+        <kl type="text" description="Rate of water extraction (kl)">0.5      0.5      1.0    0.0  0.0</kl>
+        <kl2rlv type="text" description="kl2rlv">1.0</kl2rlv>
+        <category type="category" />
+        <crop_type type="text" description="crop_type">grass</crop_type>
+        <uptake_source type="text" description="uptake_source">calc</uptake_source>
+        <height_max type="text" description="Maximum canopy height (mm)">1200</height_max>
+        <hgt_vpd_screen type="text" description="Height at which surface effects on vpd are 0 (p095*10, mm)">200</hgt_vpd_screen>
+        <height_1000kg type="text" description="Sward Height per tonne (p096*10, mm)">100</height_1000kg>
+        <et_use_efficiency type="text" description="Evapotranspiration use efficiency used in BA calc (p288, kg/ha/mm) (p288)">0</et_use_efficiency>
+        <frac_leaf2total type="text" description="Fraction of total dm produced that goes into leaf pool (p123,0-1)">0.5</frac_leaf2total>
+        <yld_cover_slope type="text" description="Shape of exponential curve relating yield and cover">0.693147</yld_cover_slope>
+        <yld_fpc50 type="text" description="yld_fpc50 (p046)">1600</yld_fpc50>
+        <yld_cov50 type="text" description="Yield transpiring at 50% of pan evap (p045)">1600</yld_cov50>
+        <yld_tcov50 type="text" description="Tsdm yield at which cover for runoff is 50% (p271)">1150</yld_tcov50>
+        <swi_fullgreen type="text" description="Min soil water for 100% green (p009)">0.8</swi_fullgreen>
+        <swi_nogrow type="text" description="SWI when growth stops (swi_nogrow)">0.01</swi_nogrow>
+        <pot_regrow type="text" description="Max rate regrowth from tussocks (p006, kg/ha/unit grass ba)">10</pot_regrow>
+        <te_std type="text" description="Transpiration efficiency at vpd=20mb (p007)">25</te_std>
+        <rad_factor type="text" description="rad_factor">8.97</rad_factor>
+        <residual_plant_N type="text" description="Always this much n in plant (p097, kg/ha)">5</residual_plant_N>
+        <litter_n type="text" description="N conc of detached stems and roots ((p110-p111)/2)">0.3</litter_n>
+        <n_uptk_per100 type="text" description="Nitrogen uptake per 100mm water (p098, kg/ha)">50</n_uptk_per100>
+        <frost_start type="text" description="Minimum screen temp at which green cover=100% (p125, oC)">2</frost_start>
+        <frost_kill type="text" description="Minimum screen temp at which frost kills all green (p011, oC)">0</frost_kill>
+        <death_slope type="text" description="Rate of green death per soil water (p051)">0.013</death_slope>
+        <death_intercept type="text" description="Background death rate (p010)">0.002</death_intercept>
+        <leaf_death_ratio type="text" description="Proportion of leaf death to total death (p133)">1</leaf_death_ratio>
+        <stem_death_ratio type="text" description="Proportion of stem death to total death (p134)">1</stem_death_ratio>
+        <n_conc_dm_crit type="text" description="Level of plant N at which no N stress occurs (p102)">2.5</n_conc_dm_crit>
+        <n_conc_dm_min type="text" description="Level of soil N at which no N stress occurs (p101)">0.4</n_conc_dm_min>
+        <n_conc_dm_max type="text" description="Level of soil N at which soil N to high for growth (p100)">0.5</n_conc_dm_max>
+        <stem_thresh type="text" description="stem_thresh (p124)">0</stem_thresh>
+        <detach_dryseason type="text" description="detach_dryseason: root, leaf, stem">0.0   0.005     0.005</detach_dryseason>
+        <detach_wetseason type="text" description="detach_wetseason: root, leaf, stem">0.0   0.0     0.0</detach_wetseason>
+        <category type="category" />
+        <day_start_summer type="text" description="day_start_summer">305</day_start_summer>
+        <day_end_summer type="text" description="day_end_summer">120</day_end_summer>
+        <acc_et_reset type="text" description="acc_et_reset">120</acc_et_reset>
+        <acc_growth_reset type="text" description="acc_growth_reset">334</acc_growth_reset>
+        <trans_for_n_reset type="text" description="trans_for_n_reset">258</trans_for_n_reset>
+        <growth_for_n_reset type="text" description="growth_for_n_reset">258</growth_for_n_reset>
+        <day_start_wet type="text" description="day_start_wet">334</day_start_wet>
+        <day_start_dry type="text" description="day_start_dry">121</day_start_dry>
+        <enr_a_coeff type="text" description="enr_a_coeff">7.4</enr_a_coeff>
+        <enr_b_coeff type="text" description="enr_b_coeff">0.2</enr_b_coeff>
+      </grasp>
       <outputfile name="Annual">
+        <filename output="yes">Site 67 Annual.out</filename>
+        <title>Site 67 Annual</title>
         <variables name="Variables">
-          <variable name="year as Year" description="Date (dd/mm/yyyy)" array="?" />
-          <variable name="grasp.n_uptake" description="" array="" units="kg/ha" />
-          <variable name="tracker.dlt_dm as total_growth" description="" array="" units="kg/ha" />
+          <variable description="Date (dd/mm/yyyy)" array="?">year as Year</variable>
+          <variable description="" array="" units="kg/ha">grasp.n_uptake</variable>
+          <variable description="" array="" units="kg/ha">tracker.dlt_dm as total_growth</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="End_year" description="End of year" array="No" />
+          <event description="End of year" array="No">End_year</event>
         </events>
       </outputfile>
       <tracker>
-        <variable name="sum of Scratch.grasp_dlt_dm on end_of_day from Annual.reported to now as dlt_dm" />
+        <variable>sum of Scratch.grasp_dlt_dm on end_of_day from Annual.reported to now as dlt_dm</variable>
       </tracker>
       <operations>
         <operation condition="end_of_day">

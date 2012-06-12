@@ -2264,14 +2264,13 @@ Economics:
      Manager rules:
      
      SECTION:- init
-     pasture_in = 0
      ready_to_graze = 0
      
+     SECTION:- start_simulation
+     buffel establish init_section = establishment
+     pasture_in = 1
+     
      SECTION:- start_of_day
-     if pasture_in = 0 then
-        buffel establish init_section = establishment
-        pasture_in = 1
-     endif
      if (day = 273) then
         ready_to_graze = 1
      endif
@@ -2279,7 +2278,6 @@ Economics:
      SECTION:- end_of_day
      END of rules
      
-     Manager creating a new local real variable : pasture_in = 0.00000
      Manager creating a new local real variable : ready_to_graze = 0.00000
 
 ------- soil Water Initialisation ---------------------------------------------
@@ -2446,8 +2444,7 @@ Economics:
           ---------------------------------------------------------
            Totals   96215.4  8017.9   788.1    98.5   400.0    10.0
           ---------------------------------------------------------
-
-------- Buffel Initialisation -------------------------------------------------
+Buffel: 
      Initialising:
      Parameters:
        Transpiration Efficiency:     17.00 kg/ha/mm at 20.0 hPa
@@ -2468,8 +2465,8 @@ Economics:
                5      78.000       0.000        0.00
                6      90.000       0.000        0.00
                7     102.000       0.000        0.00
-         --------------------------------------------
-     
+         --------------------------------------------                                                                                                                                                        
+
 
 ------- tracker Initialisation ------------------------------------------------
      Tracker variables:
@@ -2718,11 +2715,11 @@ Economics:
      pasture_in = 0
      ready_to_graze = 0
      
+     SECTION:- start_simulation
+     leucaena establish init_section = establishment
+     pasture_in = 1
+     
      SECTION:- start_of_day
-     if pasture_in = 0 then
-        leucaena establish init_section = establishment
-        pasture_in = 1
-     endif
      if (day = 273) then
         ready_to_graze = 1
      endif
@@ -2897,8 +2894,7 @@ Economics:
           ---------------------------------------------------------
            Totals   96215.4  8017.9   788.1    98.5   400.0    10.0
           ---------------------------------------------------------
-
-------- leucaena Initialisation -----------------------------------------------
+leucaena: 
      Initialising:
      Parameters:
        Transpiration Efficiency:     17.00 kg/ha/mm at 20.0 hPa
@@ -2919,8 +2915,8 @@ Economics:
                5      78.000       0.000        0.00
                6      90.000       0.000        0.00
                7     102.000       0.000        0.00
-         --------------------------------------------
-     
+         --------------------------------------------                                                                                                                                                        
+
 
 ------- tracker Initialisation ------------------------------------------------
      Tracker variables:
@@ -4081,7 +4077,7 @@ Economics:
              +--------+--------+--------+
        Root depth :   750.0 mm
        Using vpd approximated from maxt, mint.
-       NB. Pan evap approximated by .MasterPM.BuffelPaddock.soil Water.eo
+       NB. Pan evap approximated from eo
      Establishing Sward
      Initial conditions:
        Basal area :    2.50 %
@@ -4093,7 +4089,7 @@ Economics:
              +--------+--------+--------+
        Root depth :   750.0 mm
        Using vpd approximated from maxt, mint.
-       NB. Pan evap approximated by .MasterPM.LeucaenaGrassPaddock.soil Water.eo
+       NB. Pan evap approximated from eo
      01/01/1980: animals:In: mob mob1 is class steers, weight=250
      01/01/1980: animals:moveStockTo mob=mob1 from=. to=BuffelPaddock.buffel wt=250 sr=0.05
      01/01/1980: animals:In: mob mob2 is class steers, weight=250
@@ -4130,8 +4126,8 @@ Implements=planter sprayrig
              +--------+--------+--------+
        Root depth :   750.0 mm
        Using vpd approximated from maxt, mint.
-       NB. Pan evap approximated by .MasterPM.BuffelPaddock.soil Water.eo
-     Manager creating a new local real variable : sowingoats = 0.00000
+       NB. Pan evap approximated from eo
+     Manager creating a new local real variable : pasture_in = 1.00000
      Manager sending message :- leucaena establish  init_section = establishment
      Establishing Sward
      Initial conditions:
@@ -4144,7 +4140,8 @@ Implements=planter sprayrig
              +--------+--------+--------+
        Root depth :   750.0 mm
        Using vpd approximated from maxt, mint.
-       NB. Pan evap approximated by .MasterPM.LeucaenaGrassPaddock.soil Water.eo
+       NB. Pan evap approximated from eo
+     Manager creating a new local real variable : sowingoats = 0.00000
      Manager creating a new local real variable : sowingsorghum = 0.00000
 1 January 1980(Day of year=1): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -4301,7 +4298,7 @@ Implements=planter sprayrig
      30/05/1980: animals:moveStockTo mob=mob3 from=BuffelPaddock.buffel to=OatsPaddock.oats wt=392 sr=0.33
 4 June 1980(Day of year=156), oats: 
       stage 5.0 floral_initiation
-                     biomass =         482.43 (g/m^2)   lai          =   7.990 (m^2/m^2)
+                     biomass =         482.41 (g/m^2)   lai          =   7.990 (m^2/m^2)
                      stover N conc =     2.00 (%)    extractable sw =  132.01 (mm)
 16 June 1980(Day of year=168), Machinery: 
      Machinery job "tractor1 + sprayrig" is queued
@@ -4340,11 +4337,11 @@ Implements=planter sprayrig
      08/07/1980: animals:moveStockTo mob=mob1 from=BuffelPaddock.buffel to=OatsPaddock.oats wt=347 sr=0.33
 19 July 1980(Day of year=201), oats: 
       stage 6.0 flowering
-                     biomass =         949.37 (g/m^2)   lai          =   6.897 (m^2/m^2)
+                     biomass =         949.28 (g/m^2)   lai          =   6.897 (m^2/m^2)
                      stover N conc =     0.96 (%)    extractable sw =   60.29 (mm)
 29 July 1980(Day of year=211), oats: 
       stage 7.0 start_grain_fill
-                     biomass =        1061.27 (g/m^2)   lai          =   6.579 (m^2/m^2)
+                     biomass =        1061.16 (g/m^2)   lai          =   6.579 (m^2/m^2)
                      stover N conc =     0.69 (%)    extractable sw =   39.33 (mm)
 5 August 1980(Day of year=218), Farm Manager: 
      05/08/1980: animals:Out: removing 100 of mob mob3 (steers)  at 450 kg
@@ -4362,15 +4359,15 @@ Implements=planter sprayrig
      30/08/1980: animals:moveStockTo mob=mob9 from=BuffelPaddock.buffel to=OatsPaddock.oats wt=302 sr=0.33
 1 September 1980(Day of year=245), oats: 
       stage 8.0 end_grain_fill
-                     biomass =        1172.29 (g/m^2)   lai          =   4.695 (m^2/m^2)
+                     biomass =        1172.06 (g/m^2)   lai          =   4.695 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   10.61 (mm)
 2 September 1980(Day of year=246), endcrop: 
      Manager sending message :- oats end_crop
 2 September 1980(Day of year=246), oats: 
      Crop ended. Yield (dw) =  2367.5  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =               11714.2                  2363.4
-                          N  (kg/ha) =                  87.97                   23.74
+                          DM (kg/ha) =               11711.9                  2363.4
+                          N  (kg/ha) =                  87.95                   23.74
      
 2 September 1980(Day of year=246), soil Nitrogen: 
      
@@ -4561,7 +4558,7 @@ Implements=planter sprayrig
      Weeds germinating in CropPaddock5
 11 December 1980(Day of year=346), SweetSorghum: 
       stage 6.0 flag_to_flower
-                     biomass =         750.12 (g/m^2)   lai          =   2.815 (m^2/m^2)
+                     biomass =         750.11 (g/m^2)   lai          =   2.815 (m^2/m^2)
                      stover N conc =     1.38 (%)    extractable sw =  131.90 (mm)
 16 December 1980(Day of year=351), Machinery: 
      Machinery job "tractor1 + sprayrig" is queued
@@ -4578,7 +4575,7 @@ Implements=planter sprayrig
      Machinery job 'tractor1 + sprayrig' in croppaddock1 has finished
 16 December 1980(Day of year=351), SweetSorghum: 
       stage 7.0 flowering
-                     biomass =         901.26 (g/m^2)   lai          =   2.704 (m^2/m^2)
+                     biomass =         901.24 (g/m^2)   lai          =   2.704 (m^2/m^2)
                      stover N conc =     1.16 (%)    extractable sw =  103.29 (mm)
 17 December 1980(Day of year=352), Machinery: 
      Machinery job 'tractor1 + sprayrig' in croppaddock2 has finished
@@ -4597,7 +4594,7 @@ Implements=planter sprayrig
      25/12/1980: animals:moveStockTo mob=mob2 from=LeucaenaGrassPaddock.leucaena to=SorghumPaddock.SweetSorghum wt=424 sr=1.00
 28 December 1980(Day of year=363), SweetSorghum: 
       stage 8.0 start_grain_fill
-                     biomass =        1030.46 (g/m^2)   lai          =   1.775 (m^2/m^2)
+                     biomass =        1030.42 (g/m^2)   lai          =   1.775 (m^2/m^2)
                      stover N conc =     1.04 (%)    extractable sw =   64.83 (mm)
 31 December 1980(Day of year=366), Farm Manager: 
      Weeds germinating in CropPaddock1
@@ -4628,15 +4625,15 @@ Implements=planter sprayrig
      Machinery job 'tractor1 + sprayrig' in croppaddock5 has finished
 15 January 1981(Day of year=15), SweetSorghum: 
       stage 9.0 end_grain_fill
-                     biomass =        1007.75 (g/m^2)   lai          =   1.547 (m^2/m^2)
-                     stover N conc =     1.45 (%)    extractable sw =   81.07 (mm)
+                     biomass =        1007.59 (g/m^2)   lai          =   1.547 (m^2/m^2)
+                     stover N conc =     1.45 (%)    extractable sw =   81.06 (mm)
 16 January 1981(Day of year=16), SweetSorghum: 
       stage 10.0 maturity
-                     biomass =        1006.49 (g/m^2)   lai          =   1.534 (m^2/m^2)
-                     stover N conc =     1.45 (%)    extractable sw =   80.53 (mm)
+                     biomass =        1006.32 (g/m^2)   lai          =   1.534 (m^2/m^2)
+                     stover N conc =     1.45 (%)    extractable sw =   80.52 (mm)
 17 January 1981(Day of year=17), SweetSorghum: 
       stage 11.0 harvest_ripe
-                     biomass =        1005.23 (g/m^2)   lai          =   0.329 (m^2/m^2)
+                     biomass =        1005.05 (g/m^2)   lai          =   0.329 (m^2/m^2)
                      stover N conc =     1.53 (%)    extractable sw =   80.01 (mm)
 18 January 1981(Day of year=18), Farm Manager: 
      18/01/1981: animals:Out: removing 100 of mob mob2 (steers)  at 450 kg
@@ -4832,8 +4829,8 @@ Implements=planter sprayrig
 12 May 1981(Day of year=132), SweetSorghum: 
      Crop ended. Yield (dw) =  3691.7  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                8897.9                   887.6
-                          N  (kg/ha) =                  79.29                   26.93
+                          DM (kg/ha) =                8876.9                   887.6
+                          N  (kg/ha) =                  79.15                   26.93
      
 13 May 1981(Day of year=133), Farm Manager: 
      13/05/1981: animals:moveStockTo mob=mob7 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=418 sr=0.33
@@ -4877,8 +4874,8 @@ Implements=planter sprayrig
      25/06/1981: animals:moveStockTo mob=mob6 from=BuffelPaddock.buffel to=OatsPaddock.oats wt=418 sr=0.33
 27 June 1981(Day of year=178), oats: 
       stage 5.0 floral_initiation
-                     biomass =         496.62 (g/m^2)   lai          =   8.084 (m^2/m^2)
-                     stover N conc =     2.14 (%)    extractable sw =  144.03 (mm)
+                     biomass =         496.60 (g/m^2)   lai          =   8.084 (m^2/m^2)
+                     stover N conc =     2.14 (%)    extractable sw =  144.02 (mm)
 30 June 1981(Day of year=181), Farm Manager: 
      30/06/1981: animals:Out: removing 100 of mob mob8 (steers)  at 450 kg
      30/06/1981: animals:Out: mob mob8 is gone
@@ -4942,7 +4939,7 @@ Implements=planter sprayrig
      11/08/1981: animals:moveStockTo mob=mob2 from=BuffelPaddock.buffel to=OatsPaddock.oats wt=330 sr=0.33
 13 August 1981(Day of year=225), oats: 
       stage 6.0 flowering
-                     biomass =        1052.04 (g/m^2)   lai          =   6.980 (m^2/m^2)
+                     biomass =        1051.94 (g/m^2)   lai          =   6.980 (m^2/m^2)
                      stover N conc =     0.93 (%)    extractable sw =  145.01 (mm)
 16 August 1981(Day of year=228), Machinery: 
      Machinery job "tractor1 + sprayrig" is queued
@@ -4974,19 +4971,19 @@ Implements=planter sprayrig
      Machinery job 'tractor1 + sprayrig' in croppaddock5 has finished
 22 August 1981(Day of year=234), oats: 
       stage 7.0 start_grain_fill
-                     biomass =        1220.06 (g/m^2)   lai          =   6.804 (m^2/m^2)
+                     biomass =        1219.94 (g/m^2)   lai          =   6.804 (m^2/m^2)
                      stover N conc =     0.66 (%)    extractable sw =  113.52 (mm)
 24 September 1981(Day of year=267), oats: 
       stage 8.0 end_grain_fill
-                     biomass =        1670.29 (g/m^2)   lai          =   4.677 (m^2/m^2)
+                     biomass =        1670.11 (g/m^2)   lai          =   4.677 (m^2/m^2)
                      stover N conc =     0.29 (%)    extractable sw =   27.65 (mm)
 25 September 1981(Day of year=268), endcrop: 
      Manager sending message :- oats end_crop
 25 September 1981(Day of year=268), oats: 
      Crop ended. Yield (dw) =  2092.5  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =               16694.2                  2549.0
-                          N  (kg/ha) =                  97.35                   26.45
+                          DM (kg/ha) =               16692.4                  2549.0
+                          N  (kg/ha) =                  97.34                   26.45
      
 25 September 1981(Day of year=268), soil Nitrogen: 
      
@@ -5117,7 +5114,7 @@ Implements=planter sprayrig
 15 November 1981(Day of year=319), SweetSorghum: 
       stage 4.0 endjuv_to_fi
                      biomass =           0.81 (g/m^2)   lai          =   0.025 (m^2/m^2)
-                     stover N conc =     5.79 (%)    extractable sw =  102.96 (mm)
+                     stover N conc =     5.79 (%)    extractable sw =  102.95 (mm)
 16 November 1981(Day of year=320), Machinery: 
      Machinery job 'tractor1 + sprayrig' in croppaddock2 has finished
 17 November 1981(Day of year=321), Machinery: 
@@ -5191,7 +5188,7 @@ Implements=planter sprayrig
 8 December 1981(Day of year=342), SweetSorghum: 
       stage 5.0 fi_to_flag
                      biomass =         138.60 (g/m^2)   lai          =   2.207 (m^2/m^2)
-                     stover N conc =     2.75 (%)    extractable sw =  148.41 (mm)
+                     stover N conc =     2.75 (%)    extractable sw =  148.42 (mm)
 14 December 1981(Day of year=348), Farm Manager: 
      14/12/1981: animals:moveStockTo mob=mob1 from=LeucaenaGrassPaddock.leucaena to=SorghumPaddock.SweetSorghum wt=431 sr=1.00
 18 December 1981(Day of year=352), Farm Manager: 
@@ -5219,8 +5216,8 @@ Implements=planter sprayrig
      Machinery job 'tractor1 + sprayrig' in croppaddock3 has finished
 30 December 1981(Day of year=364), SweetSorghum: 
       stage 6.0 flag_to_flower
-                     biomass =         698.75 (g/m^2)   lai          =   2.987 (m^2/m^2)
-                     stover N conc =     0.97 (%)    extractable sw =  128.76 (mm)
+                     biomass =         699.15 (g/m^2)   lai          =   2.988 (m^2/m^2)
+                     stover N conc =     0.97 (%)    extractable sw =  128.71 (mm)
 31 December 1981(Day of year=365), Machinery: 
      Machinery job 'tractor1 + sprayrig' in croppaddock4 has finished
 1 January 1982(Day of year=1), Farm Manager: 
@@ -5234,12 +5231,12 @@ Implements=planter sprayrig
      02/01/1982: animals:moveStockTo mob=mob2 from=LeucaenaGrassPaddock.leucaena to=SorghumPaddock.SweetSorghum wt=415 sr=1.00
 4 January 1982(Day of year=4), SweetSorghum: 
       stage 7.0 flowering
-                     biomass =         833.75 (g/m^2)   lai          =   2.512 (m^2/m^2)
-                     stover N conc =     0.84 (%)    extractable sw =   95.28 (mm)
+                     biomass =         834.05 (g/m^2)   lai          =   2.512 (m^2/m^2)
+                     stover N conc =     0.84 (%)    extractable sw =   95.22 (mm)
 14 January 1982(Day of year=14), SweetSorghum: 
       stage 8.0 start_grain_fill
-                     biomass =         910.45 (g/m^2)   lai          =   1.771 (m^2/m^2)
-                     stover N conc =     0.80 (%)    extractable sw =   57.04 (mm)
+                     biomass =         910.68 (g/m^2)   lai          =   1.771 (m^2/m^2)
+                     stover N conc =     0.80 (%)    extractable sw =   57.03 (mm)
 20 January 1982(Day of year=20), Farm Manager: 
      Weeds germinating in CropPaddock1
      Weeds germinating in CropPaddock2
@@ -5263,20 +5260,20 @@ Implements=planter sprayrig
      Machinery job 'tractor1 + sprayrig' in croppaddock2 has finished
 31 January 1982(Day of year=31), SweetSorghum: 
       stage 9.0 end_grain_fill
-                     biomass =         888.98 (g/m^2)   lai          =   1.542 (m^2/m^2)
-                     stover N conc =     0.89 (%)    extractable sw =   88.96 (mm)
+                     biomass =         889.05 (g/m^2)   lai          =   1.542 (m^2/m^2)
+                     stover N conc =     0.89 (%)    extractable sw =   88.92 (mm)
 1 February 1982(Day of year=32), Machinery: 
      Machinery job 'tractor1 + sprayrig' in croppaddock3 has finished
 1 February 1982(Day of year=32), SweetSorghum: 
       stage 10.0 maturity
-                     biomass =         887.70 (g/m^2)   lai          =   1.528 (m^2/m^2)
-                     stover N conc =     0.89 (%)    extractable sw =   88.21 (mm)
+                     biomass =         887.75 (g/m^2)   lai          =   1.528 (m^2/m^2)
+                     stover N conc =     0.89 (%)    extractable sw =   88.18 (mm)
 2 February 1982(Day of year=33), Machinery: 
      Machinery job 'tractor1 + sprayrig' in croppaddock4 has finished
 2 February 1982(Day of year=33), SweetSorghum: 
       stage 11.0 harvest_ripe
-                     biomass =         886.41 (g/m^2)   lai          =   0.028 (m^2/m^2)
-                     stover N conc =     0.92 (%)    extractable sw =   87.53 (mm)
+                     biomass =         886.46 (g/m^2)   lai          =   0.029 (m^2/m^2)
+                     stover N conc =     0.92 (%)    extractable sw =   87.49 (mm)
 3 February 1982(Day of year=34), Machinery: 
      Machinery job 'tractor1 + sprayrig' in croppaddock5 has finished
 3 February 1982(Day of year=34), SweetSorghum: 
@@ -5454,9 +5451,9 @@ Implements=planter sprayrig
      20/04/1982: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=450 sr=0.33
      20/04/1982: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=450 sr=1.00
 21 April 1982(Day of year=111), Farm Manager: 
-     21/04/1982: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=451 sr=0.33
-     21/04/1982: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=451 sr=1.00
-     21/04/1982: animals:Out: removing 100 of mob mob9 (steers)  at 451 kg
+     21/04/1982: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=450 sr=0.33
+     21/04/1982: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=450 sr=1.00
+     21/04/1982: animals:Out: removing 100 of mob mob9 (steers)  at 450 kg
      21/04/1982: animals:Out: mob mob9 is gone
      21/04/1982: animals:In: mob mob9 is class steers, weight=250
      21/04/1982: animals:moveStockTo mob=mob9 from=. to=BuffelPaddock.buffel wt=250 sr=0.05
@@ -5918,10 +5915,10 @@ Implements=planter sprayrig
 23 May 1982(Day of year=143), endcrop: 
      Manager sending message :- sweetsorghum end_crop
 23 May 1982(Day of year=143), SweetSorghum: 
-     Crop ended. Yield (dw) =  2926.5  (kg/ha)
+     Crop ended. Yield (dw) =  2927.1  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                7773.2                   899.0
-                          N  (kg/ha) =                  52.50                   12.68
+                          DM (kg/ha) =                7744.3                   899.5
+                          N  (kg/ha) =                  52.32                   12.69
      
 24 May 1982(Day of year=144), Farm Manager: 
      24/05/1982: animals:moveStockTo mob=mob7 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=418 sr=0.33
@@ -5942,7 +5939,7 @@ Implements=planter sprayrig
      02/07/1982: animals:moveStockTo mob=mob6 from=BuffelPaddock.buffel to=OatsPaddock.oats wt=416 sr=0.33
 4 July 1982(Day of year=185), oats: 
       stage 6.0 flowering
-                     biomass =         949.15 (g/m^2)   lai          =   5.871 (m^2/m^2)
+                     biomass =         948.96 (g/m^2)   lai          =   5.871 (m^2/m^2)
                      stover N conc =     1.05 (%)    extractable sw =   21.62 (mm)
 9 July 1982(Day of year=190), Farm Manager: 
      09/07/1982: animals:Out: removing 100 of mob mob8 (steers)  at 451 kg
@@ -5963,7 +5960,7 @@ Implements=planter sprayrig
                      stover N conc =     2.59 (%)    extractable sw =   47.57 (mm)
 15 July 1982(Day of year=196), oats: 
       stage 7.0 start_grain_fill
-                     biomass =         988.00 (g/m^2)   lai          =   4.564 (m^2/m^2)
+                     biomass =         987.71 (g/m^2)   lai          =   4.564 (m^2/m^2)
                      stover N conc =     0.86 (%)    extractable sw =   18.74 (mm)
 15 July 1982(Day of year=196), wheat: 
       stage 5.0 floral_initiation
@@ -5991,18 +5988,18 @@ Implements=planter sprayrig
      10/08/1982: animals:In: mob mob6 is class steers, weight=250
      10/08/1982: animals:moveStockTo mob=mob6 from=. to=BuffelPaddock.buffel wt=250 sr=0.05
 11 August 1982(Day of year=223), Farm Manager: 
-     11/08/1982: animals:moveStockTo mob=mob10 from=BuffelPaddock.buffel to=OatsPaddock.oats wt=417 sr=0.33
+     11/08/1982: animals:moveStockTo mob=mob10 from=BuffelPaddock.buffel to=OatsPaddock.oats wt=416 sr=0.33
 17 August 1982(Day of year=229), oats: 
       stage 8.0 end_grain_fill
-                     biomass =        1032.36 (g/m^2)   lai          =   1.230 (m^2/m^2)
+                     biomass =        1031.36 (g/m^2)   lai          =   1.230 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =    5.39 (mm)
 18 August 1982(Day of year=230), endcrop: 
      Manager sending message :- oats end_crop
 18 August 1982(Day of year=230), oats: 
      Crop ended. Yield (dw) =  2295.6  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =               10312.4                  2232.6
-                          N  (kg/ha) =                  91.11                   25.13
+                          DM (kg/ha) =               10302.2                  2232.6
+                          N  (kg/ha) =                  91.06                   25.13
      
 18 August 1982(Day of year=230), soil Nitrogen: 
      
@@ -6434,15 +6431,15 @@ Implements=planter sprayrig
       stage 4.0 endjuv_to_fi
                      biomass =           1.14 (g/m^2)   lai          =   0.035 (m^2/m^2)
                      stover N conc =     5.79 (%)    extractable sw =  103.98 (mm)
-12 November 1982(Day of year=316), Farm Manager: 
-     12/11/1982: animals:Out: removing 100 of mob mob10 (steers)  at 450 kg
-     12/11/1982: animals:Out: mob mob10 is gone
-     12/11/1982: animals:In: mob mob10 is class steers, weight=250
-     12/11/1982: animals:moveStockTo mob=mob10 from=. to=BuffelPaddock.buffel wt=250 sr=0.05
 13 November 1982(Day of year=317), SweetSorghum: 
       stage 5.0 fi_to_flag
                      biomass =          62.07 (g/m^2)   lai          =   0.884 (m^2/m^2)
-                     stover N conc =     3.35 (%)    extractable sw =  130.67 (mm)
+                     stover N conc =     3.35 (%)    extractable sw =  130.66 (mm)
+14 November 1982(Day of year=318), Farm Manager: 
+     14/11/1982: animals:Out: removing 100 of mob mob10 (steers)  at 450 kg
+     14/11/1982: animals:Out: mob mob10 is gone
+     14/11/1982: animals:In: mob mob10 is class steers, weight=250
+     14/11/1982: animals:moveStockTo mob=mob10 from=. to=BuffelPaddock.buffel wt=250 sr=0.05
 21 November 1982(Day of year=325), Farm Manager: 
      21/11/1982: animals:moveStockTo mob=mob1 from=BuffelPaddock.buffel to=SorghumPaddock.SweetSorghum wt=388 sr=1.00
 2 December 1982(Day of year=336), endcrop: 
@@ -6488,8 +6485,8 @@ Implements=planter sprayrig
      Weeds germinating in CropPaddock5
 6 December 1982(Day of year=340), SweetSorghum: 
       stage 6.0 flag_to_flower
-                     biomass =         694.32 (g/m^2)   lai          =   2.181 (m^2/m^2)
-                     stover N conc =     1.09 (%)    extractable sw =  123.74 (mm)
+                     biomass =         694.58 (g/m^2)   lai          =   2.182 (m^2/m^2)
+                     stover N conc =     1.09 (%)    extractable sw =  123.72 (mm)
 12 December 1982(Day of year=346), Machinery: 
      Machinery job "tractor1 + sprayrig" is queued
 12 December 1982(Day of year=346), Farm Manager: 
@@ -6505,8 +6502,8 @@ Implements=planter sprayrig
      Machinery job 'tractor1 + sprayrig' in croppaddock1 has finished
 12 December 1982(Day of year=346), SweetSorghum: 
       stage 7.0 flowering
-                     biomass =         867.17 (g/m^2)   lai          =   1.969 (m^2/m^2)
-                     stover N conc =     0.90 (%)    extractable sw =   89.13 (mm)
+                     biomass =         867.38 (g/m^2)   lai          =   1.969 (m^2/m^2)
+                     stover N conc =     0.90 (%)    extractable sw =   89.10 (mm)
 13 December 1982(Day of year=347), Machinery: 
      Machinery job 'tractor1 + sprayrig' in croppaddock2 has finished
 14 December 1982(Day of year=348), Machinery: 
@@ -6517,8 +6514,8 @@ Implements=planter sprayrig
      Machinery job 'tractor1 + sprayrig' in croppaddock5 has finished
 23 December 1982(Day of year=357), SweetSorghum: 
       stage 8.0 start_grain_fill
-                     biomass =         960.88 (g/m^2)   lai          =   1.531 (m^2/m^2)
-                     stover N conc =     0.83 (%)    extractable sw =   64.78 (mm)
+                     biomass =         960.99 (g/m^2)   lai          =   1.530 (m^2/m^2)
+                     stover N conc =     0.83 (%)    extractable sw =   64.73 (mm)
 3 January 1983(Day of year=3), Farm Manager: 
      Weeds germinating in CropPaddock1
      Weeds germinating in CropPaddock2
@@ -6527,16 +6524,16 @@ Implements=planter sprayrig
      Weeds germinating in CropPaddock5
 8 January 1983(Day of year=8), SweetSorghum: 
       stage 9.0 end_grain_fill
-                     biomass =         941.01 (g/m^2)   lai          =   1.342 (m^2/m^2)
-                     stover N conc =     0.95 (%)    extractable sw =   87.96 (mm)
+                     biomass =         940.99 (g/m^2)   lai          =   1.342 (m^2/m^2)
+                     stover N conc =     0.95 (%)    extractable sw =   87.88 (mm)
 9 January 1983(Day of year=9), SweetSorghum: 
       stage 10.0 maturity
-                     biomass =         939.75 (g/m^2)   lai          =   1.330 (m^2/m^2)
-                     stover N conc =     0.95 (%)    extractable sw =   86.74 (mm)
+                     biomass =         939.72 (g/m^2)   lai          =   1.330 (m^2/m^2)
+                     stover N conc =     0.95 (%)    extractable sw =   86.66 (mm)
 10 January 1983(Day of year=10), SweetSorghum: 
       stage 11.0 harvest_ripe
-                     biomass =         938.48 (g/m^2)   lai          =   0.262 (m^2/m^2)
-                     stover N conc =     0.98 (%)    extractable sw =   90.62 (mm)
+                     biomass =         938.44 (g/m^2)   lai          =   0.263 (m^2/m^2)
+                     stover N conc =     0.98 (%)    extractable sw =   90.54 (mm)
 11 January 1983(Day of year=11), SweetSorghum: 
       stage 12.0 end_crop
 13 January 1983(Day of year=13), Machinery: 
@@ -6594,13 +6591,13 @@ Implements=planter sprayrig
      Machinery job 'tractor1 + sprayrig' in croppaddock4 has finished
 9 February 1983(Day of year=40), Machinery: 
      Machinery job 'tractor1 + sprayrig' in croppaddock5 has finished
-11 March 1983(Day of year=70), Farm Manager: 
-     11/03/1983: animals:Out: removing 100 of mob mob2 (steers)  at 450 kg
-     11/03/1983: animals:Out: mob mob2 is gone
-     11/03/1983: animals:In: mob mob2 is class steers, weight=250
-     11/03/1983: animals:moveStockTo mob=mob2 from=. to=BuffelPaddock.buffel wt=250 sr=0.05
 12 March 1983(Day of year=71), Farm Manager: 
-     12/03/1983: animals:moveStockTo mob=mob9 from=BuffelPaddock.buffel to=SorghumPaddock.SweetSorghum wt=391 sr=1.00
+     12/03/1983: animals:Out: removing 100 of mob mob2 (steers)  at 450 kg
+     12/03/1983: animals:Out: mob mob2 is gone
+     12/03/1983: animals:In: mob mob2 is class steers, weight=250
+     12/03/1983: animals:moveStockTo mob=mob2 from=. to=BuffelPaddock.buffel wt=250 sr=0.05
+13 March 1983(Day of year=72), Farm Manager: 
+     13/03/1983: animals:moveStockTo mob=mob9 from=BuffelPaddock.buffel to=SorghumPaddock.SweetSorghum wt=391 sr=1.00
 18 March 1983(Day of year=77), Farm Manager: 
      Weeds germinating in CropPaddock1
      Weeds germinating in CropPaddock2
@@ -6737,32 +6734,32 @@ Implements=planter sprayrig
      Weeds germinating in CropPaddock4
      Weeds germinating in CropPaddock5
 30 April 1983(Day of year=120), Farm Manager: 
-     30/04/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=422 sr=0.33
-     30/04/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=422 sr=1.00
+     30/04/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=421 sr=0.33
+     30/04/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=421 sr=1.00
 1 May 1983(Day of year=121), Farm Manager: 
      01/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=422 sr=0.33
      01/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=422 sr=1.00
 2 May 1983(Day of year=122), Farm Manager: 
-     02/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=423 sr=0.33
-     02/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=423 sr=1.00
+     02/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=422 sr=0.33
+     02/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=422 sr=1.00
 3 May 1983(Day of year=123), Farm Manager: 
      03/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=423 sr=0.33
      03/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=423 sr=1.00
 4 May 1983(Day of year=124), Farm Manager: 
-     04/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=424 sr=0.33
-     04/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=424 sr=1.00
+     04/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=423 sr=0.33
+     04/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=423 sr=1.00
 5 May 1983(Day of year=125), Farm Manager: 
      05/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=424 sr=0.33
      05/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=424 sr=1.00
 6 May 1983(Day of year=126), Farm Manager: 
-     06/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=425 sr=0.33
-     06/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=425 sr=1.00
+     06/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=424 sr=0.33
+     06/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=424 sr=1.00
 7 May 1983(Day of year=127), Farm Manager: 
      07/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=425 sr=0.33
      07/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=425 sr=1.00
 8 May 1983(Day of year=128), Farm Manager: 
-     08/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=426 sr=0.33
-     08/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=426 sr=1.00
+     08/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=425 sr=0.33
+     08/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=425 sr=1.00
 9 May 1983(Day of year=129), Farm Manager: 
      09/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=426 sr=0.33
      09/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=426 sr=1.00
@@ -7144,8 +7141,8 @@ Implements=planter sprayrig
                      biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
                      stover N conc =     5.85 (%)    extractable sw =   20.74 (mm)
 20 May 1983(Day of year=140), Farm Manager: 
-     20/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=432 sr=0.33
-     20/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=432 sr=1.00
+     20/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=431 sr=0.33
+     20/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=431 sr=1.00
 20 May 1983(Day of year=140), wheat: 
       stage 4.0 end_of_juvenile
                      biomass =           0.52 (g/m^2)   lai          =   0.021 (m^2/m^2)
@@ -7162,8 +7159,8 @@ Implements=planter sprayrig
                      biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
                      stover N conc =     5.85 (%)    extractable sw =   32.09 (mm)
 22 May 1983(Day of year=142), Farm Manager: 
-     22/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=433 sr=0.33
-     22/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=433 sr=1.00
+     22/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=432 sr=0.33
+     22/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=432 sr=1.00
 22 May 1983(Day of year=142), wheat: 
       stage 4.0 end_of_juvenile
                      biomass =           0.56 (g/m^2)   lai          =   0.022 (m^2/m^2)
@@ -7176,8 +7173,8 @@ Implements=planter sprayrig
                      biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
                      stover N conc =     5.85 (%)    extractable sw =   31.44 (mm)
 24 May 1983(Day of year=144), Farm Manager: 
-     24/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=434 sr=0.33
-     24/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=434 sr=1.00
+     24/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=433 sr=0.33
+     24/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=433 sr=1.00
 24 May 1983(Day of year=144), wheat: 
       stage 4.0 end_of_juvenile
                      biomass =           0.57 (g/m^2)   lai          =   0.022 (m^2/m^2)
@@ -7186,20 +7183,20 @@ Implements=planter sprayrig
      25/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=434 sr=0.33
      25/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=434 sr=1.00
 26 May 1983(Day of year=146), Farm Manager: 
-     26/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=435 sr=0.33
-     26/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=435 sr=1.00
+     26/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=434 sr=0.33
+     26/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=434 sr=1.00
 27 May 1983(Day of year=147), Farm Manager: 
      27/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=435 sr=0.33
      27/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=435 sr=1.00
 28 May 1983(Day of year=148), Farm Manager: 
-     28/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=436 sr=0.33
-     28/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=436 sr=1.00
+     28/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=435 sr=0.33
+     28/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=435 sr=1.00
 29 May 1983(Day of year=149), Farm Manager: 
      29/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=436 sr=0.33
      29/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=436 sr=1.00
 30 May 1983(Day of year=150), Farm Manager: 
-     30/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=437 sr=0.33
-     30/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=437 sr=1.00
+     30/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=436 sr=0.33
+     30/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=436 sr=1.00
 31 May 1983(Day of year=151), Farm Manager: 
      31/05/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=437 sr=0.33
      31/05/1983: animals:moveStockTo mob=mob9 from=OatsPaddock.oats to=SorghumPaddock.SweetSorghum wt=437 sr=1.00
@@ -7233,10 +7230,10 @@ Implements=planter sprayrig
 9 June 1983(Day of year=160), endcrop: 
      Manager sending message :- sweetsorghum end_crop
 9 June 1983(Day of year=160), SweetSorghum: 
-     Crop ended. Yield (dw) =  3224.2  (kg/ha)
+     Crop ended. Yield (dw) =  3224.6  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                7931.2                   706.5
-                          N  (kg/ha) =                  54.40                   15.44
+                          DM (kg/ha) =                7903.0                   706.8
+                          N  (kg/ha) =                  54.23                   15.47
      
 10 June 1983(Day of year=161), Farm Manager: 
      10/06/1983: animals:moveStockTo mob=mob9 from=SorghumPaddock.SweetSorghum to=OatsPaddock.oats wt=436 sr=0.33
@@ -7254,13 +7251,13 @@ Implements=planter sprayrig
       stage 4.0 end_of_juvenile
                      biomass =           7.40 (g/m^2)   lai          =   0.037 (m^2/m^2)
                      stover N conc =     5.38 (%)    extractable sw =  103.52 (mm)
-30 June 1983(Day of year=181), Farm Manager: 
-     30/06/1983: animals:Out: removing 100 of mob mob9 (steers)  at 450 kg
-     30/06/1983: animals:Out: mob mob9 is gone
-     30/06/1983: animals:In: mob mob9 is class steers, weight=250
-     30/06/1983: animals:moveStockTo mob=mob9 from=. to=BuffelPaddock.buffel wt=250 sr=0.05
 1 July 1983(Day of year=182), Farm Manager: 
-     01/07/1983: animals:moveStockTo mob=mob5 from=BuffelPaddock.buffel to=OatsPaddock.oats wt=418 sr=0.33
+     01/07/1983: animals:Out: removing 100 of mob mob9 (steers)  at 451 kg
+     01/07/1983: animals:Out: mob mob9 is gone
+     01/07/1983: animals:In: mob mob9 is class steers, weight=250
+     01/07/1983: animals:moveStockTo mob=mob9 from=. to=BuffelPaddock.buffel wt=250 sr=0.05
+2 July 1983(Day of year=183), Farm Manager: 
+     02/07/1983: animals:moveStockTo mob=mob5 from=BuffelPaddock.buffel to=OatsPaddock.oats wt=418 sr=0.33
 6 July 1983(Day of year=187), wheat: 
       stage 5.0 floral_initiation
                      biomass =          49.34 (g/m^2)   lai          =   0.714 (m^2/m^2)
@@ -7293,7 +7290,7 @@ Implements=planter sprayrig
      22/07/1983: animals:moveStockTo mob=mob3 from=BuffelPaddock.buffel to=OatsPaddock.oats wt=416 sr=0.33
 28 July 1983(Day of year=209), oats: 
       stage 6.0 flowering
-                     biomass =        1027.47 (g/m^2)   lai          =   5.571 (m^2/m^2)
+                     biomass =        1027.30 (g/m^2)   lai          =   5.571 (m^2/m^2)
                      stover N conc =     1.05 (%)    extractable sw =  176.17 (mm)
 30 July 1983(Day of year=211), chickpea: 
       stage 5.0 floral_initiation
@@ -7303,17 +7300,17 @@ Implements=planter sprayrig
       stage 6.0 flowering
                      biomass =          24.12 (g/m^2)   lai          =   0.417 (m^2/m^2)
                      stover N conc =     3.49 (%)    extractable sw =  103.59 (mm)
-7 August 1983(Day of year=219), Farm Manager: 
-     07/08/1983: animals:Out: removing 100 of mob mob5 (steers)  at 451 kg
-     07/08/1983: animals:Out: mob mob5 is gone
-     07/08/1983: animals:In: mob mob5 is class steers, weight=250
-     07/08/1983: animals:moveStockTo mob=mob5 from=. to=BuffelPaddock.buffel wt=250 sr=0.05
 7 August 1983(Day of year=219), oats: 
       stage 7.0 start_grain_fill
-                     biomass =        1158.37 (g/m^2)   lai          =   4.563 (m^2/m^2)
+                     biomass =        1158.12 (g/m^2)   lai          =   4.563 (m^2/m^2)
                      stover N conc =     0.77 (%)    extractable sw =  174.49 (mm)
 8 August 1983(Day of year=220), Farm Manager: 
-     08/08/1983: animals:moveStockTo mob=mob4 from=BuffelPaddock.buffel to=OatsPaddock.oats wt=417 sr=0.33
+     08/08/1983: animals:Out: removing 100 of mob mob5 (steers)  at 451 kg
+     08/08/1983: animals:Out: mob mob5 is gone
+     08/08/1983: animals:In: mob mob5 is class steers, weight=250
+     08/08/1983: animals:moveStockTo mob=mob5 from=. to=BuffelPaddock.buffel wt=250 sr=0.05
+9 August 1983(Day of year=221), Farm Manager: 
+     09/08/1983: animals:moveStockTo mob=mob4 from=BuffelPaddock.buffel to=OatsPaddock.oats wt=417 sr=0.33
 21 August 1983(Day of year=233), wheat: 
       stage 6.0 flowering
                      biomass =         175.14 (g/m^2)   lai          =   0.515 (m^2/m^2)
@@ -7328,7 +7325,7 @@ Implements=planter sprayrig
                      biomass =         379.82 (g/m^2)   lai          =   1.383 (m^2/m^2)
                      stover N conc =     0.76 (%)    extractable sw =   77.58 (mm)
 28 August 1983(Day of year=240), Farm Manager: 
-     28/08/1983: animals:moveStockTo mob=mob10 from=BuffelPaddock.buffel to=OatsPaddock.oats wt=387 sr=0.33
+     28/08/1983: animals:moveStockTo mob=mob10 from=BuffelPaddock.buffel to=OatsPaddock.oats wt=386 sr=0.33
 28 August 1983(Day of year=240), wheat: 
       stage 6.0 flowering
                      biomass =         172.42 (g/m^2)   lai          =   0.508 (m^2/m^2)
@@ -7441,15 +7438,15 @@ Implements=planter sprayrig
       stage 2.0 germination
 13 September 1983(Day of year=256), oats: 
       stage 8.0 end_grain_fill
-                     biomass =        1500.05 (g/m^2)   lai          =   0.916 (m^2/m^2)
-                     stover N conc =     0.30 (%)    extractable sw =  172.40 (mm)
+                     biomass =        1499.35 (g/m^2)   lai          =   0.917 (m^2/m^2)
+                     stover N conc =     0.30 (%)    extractable sw =  172.38 (mm)
 14 September 1983(Day of year=257), endcrop: 
      Manager sending message :- oats end_crop
 14 September 1983(Day of year=257), oats: 
-     Crop ended. Yield (dw) =  2326.3  (kg/ha)
+     Crop ended. Yield (dw) =  2326.2  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =               14991.2                  2284.4
-                          N  (kg/ha) =                 103.53                   28.88
+                          DM (kg/ha) =               14984.1                  2284.4
+                          N  (kg/ha) =                 103.49                   28.88
      
 14 September 1983(Day of year=257), soil Nitrogen: 
      
@@ -7477,8 +7474,8 @@ Implements=planter sprayrig
      
 15 September 1983(Day of year=258), Farm Manager: 
      15/09/1983: animals:moveStockTo mob=mob1 from=OatsPaddock.oats to=LeucaenaGrassPaddock.leucaena wt=342 sr=0.17
-     15/09/1983: animals:moveStockTo mob=mob4 from=OatsPaddock.oats to=LeucaenaGrassPaddock.leucaena wt=446 sr=0.17
-     15/09/1983: animals:moveStockTo mob=mob10 from=OatsPaddock.oats to=LeucaenaGrassPaddock.leucaena wt=398 sr=0.17
+     15/09/1983: animals:moveStockTo mob=mob4 from=OatsPaddock.oats to=LeucaenaGrassPaddock.leucaena wt=445 sr=0.17
+     15/09/1983: animals:moveStockTo mob=mob10 from=OatsPaddock.oats to=LeucaenaGrassPaddock.leucaena wt=397 sr=0.17
 16 September 1983(Day of year=259), SweetSorghum: 
       stage 3.0 emergence
                      biomass =           0.09 (g/m^2)   lai          =   0.004 (m^2/m^2)
@@ -7487,15 +7484,15 @@ Implements=planter sprayrig
       stage 4.0 endjuv_to_fi
                      biomass =           0.96 (g/m^2)   lai          =   0.030 (m^2/m^2)
                      stover N conc =     5.79 (%)    extractable sw =  102.69 (mm)
-29 September 1983(Day of year=272), Farm Manager: 
-     29/09/1983: animals:Out: removing 100 of mob mob4 (steers)  at 450 kg
-     29/09/1983: animals:Out: mob mob4 is gone
-     29/09/1983: animals:In: mob mob4 is class steers, weight=250
-     29/09/1983: animals:moveStockTo mob=mob4 from=. to=BuffelPaddock.buffel wt=250 sr=0.05
 29 September 1983(Day of year=272), wheat: 
       stage 8.0 end_grain_fill
                      biomass =         234.67 (g/m^2)   lai          =   0.106 (m^2/m^2)
                      stover N conc =     0.33 (%)    extractable sw =   87.13 (mm)
+1 October 1983(Day of year=274), Farm Manager: 
+     01/10/1983: animals:Out: removing 100 of mob mob4 (steers)  at 450 kg
+     01/10/1983: animals:Out: mob mob4 is gone
+     01/10/1983: animals:In: mob mob4 is class steers, weight=250
+     01/10/1983: animals:moveStockTo mob=mob4 from=. to=BuffelPaddock.buffel wt=250 sr=0.05
 1 October 1983(Day of year=274), wheat: 
       stage 9.0 maturity
                      biomass =         234.72 (g/m^2)   lai          =   0.080 (m^2/m^2)
@@ -7770,7 +7767,7 @@ Implements=planter sprayrig
                           N  (kg/ha) =                   0.00                   10.35
      
 28 October 1983(Day of year=301), Farm Manager: 
-     28/10/1983: animals:moveStockTo mob=mob10 from=LeucaenaGrassPaddock.leucaena to=SorghumPaddock.SweetSorghum wt=412 sr=1.00
+     28/10/1983: animals:moveStockTo mob=mob10 from=LeucaenaGrassPaddock.leucaena to=SorghumPaddock.SweetSorghum wt=411 sr=1.00
 2 November 1983(Day of year=306), Machinery: 
      Machinery job "tractor1 + sprayrig" is queued
 2 November 1983(Day of year=306), Farm Manager: 
@@ -7778,12 +7775,12 @@ Implements=planter sprayrig
      Machinery job 'tractor1 + sprayrig' in croppaddock5 has finished
 7 November 1983(Day of year=311), SweetSorghum: 
       stage 6.0 flag_to_flower
-                     biomass =         574.67 (g/m^2)   lai          =   1.918 (m^2/m^2)
-                     stover N conc =     0.90 (%)    extractable sw =  170.38 (mm)
+                     biomass =         574.70 (g/m^2)   lai          =   1.919 (m^2/m^2)
+                     stover N conc =     0.90 (%)    extractable sw =  170.30 (mm)
 13 November 1983(Day of year=317), SweetSorghum: 
       stage 7.0 flowering
-                     biomass =         753.06 (g/m^2)   lai          =   1.840 (m^2/m^2)
-                     stover N conc =     0.74 (%)    extractable sw =  135.29 (mm)
+                     biomass =         753.11 (g/m^2)   lai          =   1.841 (m^2/m^2)
+                     stover N conc =     0.74 (%)    extractable sw =  135.19 (mm)
 21 November 1983(Day of year=325), Farm Manager: 
      Weeds germinating in CropPaddock1
      Weeds germinating in CropPaddock2
@@ -7792,8 +7789,8 @@ Implements=planter sprayrig
      Weeds germinating in CropPaddock5
 1 December 1983(Day of year=335), SweetSorghum: 
       stage 8.0 start_grain_fill
-                     biomass =         908.35 (g/m^2)   lai          =   1.637 (m^2/m^2)
-                     stover N conc =     0.68 (%)    extractable sw =  182.16 (mm)
+                     biomass =         908.45 (g/m^2)   lai          =   1.638 (m^2/m^2)
+                     stover N conc =     0.68 (%)    extractable sw =  181.97 (mm)
 2 December 1983(Day of year=336), endcrop: 
      Manager sending message :- oats end_crop
 2 December 1983(Day of year=336): 
@@ -7856,13 +7853,11 @@ Implements=planter sprayrig
      Machinery job 'tractor1 + sprayrig' in croppaddock4 has finished
 7 December 1983(Day of year=341), Machinery: 
      Machinery job 'tractor1 + sprayrig' in croppaddock5 has finished
-15 December 1983(Day of year=349), Farm Manager: 
-     15/12/1983: animals:Out: removing 100 of mob mob10 (steers)  at 450 kg
-     15/12/1983: animals:Out: mob mob10 is gone
-     15/12/1983: animals:In: mob mob10 is class steers, weight=250
-     15/12/1983: animals:moveStockTo mob=mob10 from=. to=BuffelPaddock.buffel wt=250 sr=0.05
 16 December 1983(Day of year=350), Farm Manager: 
-     16/12/1983: animals:moveStockTo mob=mob1 from=LeucaenaGrassPaddock.leucaena to=SorghumPaddock.SweetSorghum wt=381 sr=1.00
+     16/12/1983: animals:Out: removing 100 of mob mob10 (steers)  at 450 kg
+     16/12/1983: animals:Out: mob mob10 is gone
+     16/12/1983: animals:In: mob mob10 is class steers, weight=250
+     16/12/1983: animals:moveStockTo mob=mob10 from=. to=BuffelPaddock.buffel wt=250 sr=0.05
 16 December 1983(Day of year=350), Machinery: 
      Machinery job "tractor1 + sprayrig" is queued
      Weeds mature in CropPaddock1 - sprayed out.
@@ -7875,6 +7870,8 @@ Implements=planter sprayrig
      Machinery job "tractor1 + sprayrig" is queued
      Weeds mature in CropPaddock5 - sprayed out.
      Machinery job 'tractor1 + sprayrig' in croppaddock1 has finished
+17 December 1983(Day of year=351), Farm Manager: 
+     17/12/1983: animals:moveStockTo mob=mob1 from=LeucaenaGrassPaddock.leucaena to=SorghumPaddock.SweetSorghum wt=382 sr=1.00
 17 December 1983(Day of year=351), Machinery: 
      Machinery job 'tractor1 + sprayrig' in croppaddock2 has finished
 18 December 1983(Day of year=352), Machinery: 
@@ -7885,16 +7882,16 @@ Implements=planter sprayrig
      Machinery job 'tractor1 + sprayrig' in croppaddock5 has finished
 21 December 1983(Day of year=355), SweetSorghum: 
       stage 9.0 end_grain_fill
-                     biomass =         884.61 (g/m^2)   lai          =   1.310 (m^2/m^2)
-                     stover N conc =     0.80 (%)    extractable sw =  202.16 (mm)
+                     biomass =         884.58 (g/m^2)   lai          =   1.309 (m^2/m^2)
+                     stover N conc =     0.80 (%)    extractable sw =  201.89 (mm)
 22 December 1983(Day of year=356), SweetSorghum: 
       stage 10.0 maturity
-                     biomass =         883.44 (g/m^2)   lai          =   1.293 (m^2/m^2)
-                     stover N conc =     0.79 (%)    extractable sw =  201.58 (mm)
+                     biomass =         883.42 (g/m^2)   lai          =   1.292 (m^2/m^2)
+                     stover N conc =     0.80 (%)    extractable sw =  201.31 (mm)
 23 December 1983(Day of year=357), SweetSorghum: 
       stage 11.0 harvest_ripe
-                     biomass =         882.28 (g/m^2)   lai          =   0.360 (m^2/m^2)
-                     stover N conc =     0.80 (%)    extractable sw =  201.03 (mm)
+                     biomass =         882.25 (g/m^2)   lai          =   0.359 (m^2/m^2)
+                     stover N conc =     0.80 (%)    extractable sw =  200.76 (mm)
 24 December 1983(Day of year=358), SweetSorghum: 
       stage 12.0 end_crop
 31 December 1983(Day of year=365), clock: 

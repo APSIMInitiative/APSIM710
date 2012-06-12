@@ -112,6 +112,8 @@ public:                                             // member functions
    virtual void  update(void);
    virtual float dmGreenDemand(void);
    virtual void  zeroDltNSenescedTrans(void);
+   virtual void  get_AvailableToAnimal(protocol::AvailableToAnimalType &cohort);
+   virtual void  set_RemovedByAnimal(const protocol::RemovedByAnimalType &removed);
 
    virtual void onEndCrop(vector<string> &dm_type,
                           vector<float> &dlt_crop_dm,

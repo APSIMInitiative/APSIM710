@@ -307,29 +307,30 @@ class DualMethod : public Packable
    private:
       FT getter;
       FT setter;
-      T variable;
+      T *variable;
    public:
-      DualMethod(FT& get, FT& set) : getter(get), setter(set) { }
+      DualMethod(FT& get, FT& set) : getter(get), setter(set) { variable = new T; }
+      ~DualMethod() { delete variable; }
 
       virtual unsigned memorySize()
          {
-         getter(variable);
-         return ::memorySize(variable);
+         getter(*variable);
+         return ::memorySize(*variable);
          }
       virtual void pack(MessageData& messageData)
          {
          // Assumes that memorySize was called immediately before this method.
          // No need to call it again.
-         ::pack(messageData, variable);
+         ::pack(messageData, *variable);
          }
       virtual void unpack(MessageData& messageData, const std::string& sourceDDML)
          {
-         ::unpack(messageData, variable);
-         setter(variable);
+         ::unpack(messageData, *variable);
+         setter(*variable);
          }
       virtual std::string ddml()
          {
-         return DDML(variable);
+         return DDML(*variable);
          }
    };
 // -------------------------------------------------------------------

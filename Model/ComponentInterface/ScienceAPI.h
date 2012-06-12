@@ -173,6 +173,9 @@ class EXPORT ScienceAPI
       void publish(const std::string& name, protocol::ApsimVariant& value);
       void subscribe(const std::string& name, ApsimVariantFunctionType handler);
 
+      #define RemovedByAnimalSetter(address) boost::function1<void, const protocol::RemovedByAnimalType&>(boost::bind(address, this, _1))
+      void exposeWritable(const std::string& name, const std::string& units, const std::string& description, boost::function1<void, const protocol::RemovedByAnimalType&> fn);
+
    private:
       std::string currentClass1;
       std::string currentClass2;

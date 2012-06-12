@@ -1042,7 +1042,8 @@ unsigned int Component::getReg(const char *systemName,
    	case DTsingle: {buffer += "single"; break;}
    	case DTboolean:{buffer += "boolean"; break;}
    	case DTstring: {buffer += "string"; break;}
-      case DTdouble: {buffer += "double"; break;}
+    case DTdouble: {buffer += "double"; break;}
+    case DTunknown: {buffer += "unknown"; break;}
    	default: {throw "Undefined gettable var type";}
       }
    buffer += "\" array=\"";
@@ -1065,6 +1066,17 @@ unsigned int Component::getReg(const char *systemName,
                                 0,
                                 systemName,
                                 buffer);
+   }
+unsigned int Component::getReg(const char *systemName,
+                               std::string &ddml)
+   {
+   // It's important that any old registration / function pointers are removed before adding a new one
+   removeGettableVar(systemName);
+
+   return this->addRegistration(::respondToGet,
+                                0,
+                                systemName,
+                                ddml);
    }
 
 // Build the xml fragment that describes this variable and publish to system

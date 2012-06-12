@@ -16,6 +16,8 @@
 using namespace std;
 
 // C routines from fortran infrastructure 
+extern "C" void EXPORT STDCALL notifyFutureVariable(const char* Name, const char* Units, const char* Description, 
+                                                    unsigned NameLength, unsigned UnitsLength, unsigned DescriptionLength);
 extern "C" void EXPORT STDCALL ExposeReal(const char* Name, const char* Units, const char* Description, int* Writable, float* Data,
                                           unsigned NameLength, unsigned UnitsLength, unsigned DescriptionLength);
 extern "C" void EXPORT STDCALL ExposeRealArray(const char* Name, const char* Units, const char* Description, 

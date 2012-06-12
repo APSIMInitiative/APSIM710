@@ -59,6 +59,7 @@ class grazComponent
       float spring_lwg;         // potential lwg for season
       float leaf_diet;          // something to do with competition
                                 //  curve. see "curve_factor"
+      float MIN_ALW;
       float std_alw;            // standard alw for beast (200 kg)
       float metabol_expon;      // ???
       float prop_can_eat;       // ???

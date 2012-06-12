@@ -10,6 +10,7 @@
 #include <General/platform.h>
 #include <string>
 #include <vector>
+#include <stdexcept>
 
 class MessageData;
 
@@ -39,6 +40,12 @@ class MessageData;
    void EXPORT unpack(MessageData& messageData, [type.name]Type& data, const std::string& sourceDDML);
    unsigned EXPORT memorySize(const [type.name]Type& data);
    std::string EXPORT DDML(const [type.name]Type& data);
+   inline void Convert(bool , [type.name]Type&) {throw std::runtime_error("Cannot convert from a scalar to a structure");};
+   inline void Convert(int , [type.name]Type&)  {throw std::runtime_error("Cannot convert from a scalar to a structure");};
+   inline void Convert(const std::string& , [type.name]Type&)  {throw std::runtime_error("Cannot convert from a scalar to a structure");};
+   inline void Convert(float , [type.name]Type&) {throw std::runtime_error("Cannot convert from a scalar to a structure");};
+   inline void Convert(double , [type.name]Type&) {throw std::runtime_error("Cannot convert from a scalar to a structure");};
+   inline void Convert(std::string&, [type.name]Type&) {throw std::runtime_error("Cannot convert from a scalar to a structure");};
 
 [endfor]
 
@@ -218,7 +225,11 @@ class EXPORT ScienceAPI2
       [endfor]
       [foreach types.type]
       // [type.name]
+      virtual bool get(const std::string& name, bool optional, [type.name]Type& data) = 0;
+      virtual void set(const std::string& name, [type.name]Type& data) = 0;
+      virtual void expose(const std::string& name, const std::string &description, bool writeable, [type.name]Type& data) = 0;
       #define [type.name]Function(address) boost::function1<void, [type.name]Type& >(boost::bind(address, this, _1))
+      virtual void expose(const std::string& name, const std::string &description, boost::function1<void, [type.name]Type&> getter, boost::function1<void, [type.name]Type&> setter) = 0;
       virtual void subscribe(const std::string& name, boost::function1<void, [type.name]Type&> handler) = 0;
       virtual void publish(const std::string& name, [type.name]Type& data) = 0;
 
@@ -306,6 +317,10 @@ class EXPORT ScienceAPI2Impl : public ScienceAPI2
 
       [endfor]
       [foreach types.type]
+      virtual bool get(const std::string& name,  bool optional, [type.name]Type& data);
+      virtual void set(const std::string& name, [type.name]Type& data);
+      virtual void expose(const std::string& name, const std::string &description, bool writeable, [type.name]Type& data);
+      virtual void expose(const std::string& name, const std::string &description, boost::function1<void, [type.name]Type&> getter, boost::function1<void, [type.name]Type&> setter);
       virtual void subscribe(const std::string& name, boost::function1<void, [type.name]Type&> handler);
       virtual void publish(const std::string& name, [type.name]Type& data);
 
@@ -452,6 +467,15 @@ void ScienceAPI2Impl::publish(const std::string& name, [builtin.cpptype]& data)
 
 [endfor]
 [foreach types.type]
+bool ScienceAPI2Impl::get(const std::string& name, bool optional, [type.name]Type& data)
+   {std::string units = ""; return componentInterface.get(name, units, optional, new PackableWrapper<[type.name]Type& >(data));}
+void ScienceAPI2Impl::set(const std::string& name, [type.name]Type& data)
+   {std::string units = ""; componentInterface.set(name, units, new PackableWrapper<[type.name]Type& >(data));}
+void ScienceAPI2Impl::expose(const std::string& name, const std::string& description, bool writable, [type.name]Type & variable)
+   {componentInterface.expose(name, "", description, writable, new PackableWrapper<[type.name]Type& >(variable));}
+void ScienceAPI2Impl::expose(const std::string& name, const std::string& description, boost::function1<void, [type.name]Type&> getter, boost::function1<void, [type.name]Type&> setter)
+   {componentInterface.expose(name, "", description, 1,  
+                              new DualMethod<boost::function1<void, [type.name]Type&>, [type.name]Type > (getter, setter));}
 void ScienceAPI2Impl::subscribe(const std::string& name, boost::function1<void, [type.name]Type&> handler)
      {componentInterface.subscribe(name, new MethodWithStructureConverter<boost::function1<void, [type.name]Type&>, [type.name]Type > (handler));}
 void ScienceAPI2Impl::publish(const std::string& name, [type.name]Type& data)
@@ -554,9 +578,9 @@ void unpack(MessageData& messageData, const std::string& ddml, F[type.name]Type&
    unpack(messageData, data.num_[field.name]);
    for (int i = 0; i != data.num_[field.name]; i++)
       {
-      FortranString [field.name]String(&data.[field.name][i*max_array_size], max_array_size);
-      FortranString [field.name]Alias;
+      std::string [field.name]Alias;
       unpack(messageData, [field.name]Alias);
+      FortranString [field.name]String(&data.[field.name][i*max_array_size], max_array_size);
       [field.name]String = [field.name]Alias;
       }
    [elseif [field.arrayofstructures] = T]
@@ -615,9 +639,11 @@ std::string EXPORT DDML(const F[type.name]Type& value)
 // ------------------------------------------------------------------
 
 #include <General/platform.h>
+#include <boost/function.hpp>
 #include <FortranComponentInterface2/DataTypes.h>
 #include <FortranComponentInterface2/FortranComponentWrapper.h>
 #include <ComponentInterface2/FortranString.h>
+#include <ComponentInterface2/CMPComponentInterface.h>
 #include <ComponentInterface2/CMPComponentInterface.h>
 #include "FortranTemplates.h"
 
@@ -633,7 +659,7 @@ extern "C" void EXPORT STDCALL SubscribeNullType(const char* EventName,
                                                   new FortranNullMethod<FNullTypeFunction > (currentWrapper, F));
    }
 
-extern "C" void EXPORT STDCALL PublishNull(const char* EventName, unsigned EventNameLength)
+extern "C" void EXPORT STDCALL PublishNullType(const char* EventName, unsigned EventNameLength)
    {
    currentWrapper->componentInterface().publish(FortranString(EventName, EventNameLength).toString(), NULL);
    }
@@ -641,6 +667,49 @@ extern "C" void EXPORT STDCALL PublishNull(const char* EventName, unsigned Event
 [foreach types.type]
 // ------ [type.name] ------
 typedef  void (STDCALL F[type.name]TypeFunction)(F[type.name]Type* Data);
+extern "C" void EXPORT STDCALL Set[type.name]Type(const char* variableName,
+                                                  F[type.name]Type* Data,
+                                                  unsigned variableNameLength)
+   {
+   string units = "";
+   currentWrapper->componentInterface().set(FortranString(variableName, variableNameLength).toString(), units, new PackableWrapper2< F[type.name]Type & >(*Data));
+   }
+extern "C" void EXPORT STDCALL Get[type.name]Type(const char* variableName,
+                                                  bool optional,
+                                                  F[type.name]Type* Data,
+                                                  unsigned variableNameLength)
+   {
+   string units = "";
+   currentWrapper->componentInterface().get(FortranString(variableName, variableNameLength).toString(), units, optional, new PackableWrapper2< F[type.name]Type & >(*Data));
+   }
+extern "C" void EXPORT STDCALL Expose[type.name]Type(const char* variableName, 
+                                                     const char* description,
+                                                     bool writeable,
+                                                     F[type.name]Type* Data,
+                                                     unsigned variableNameLength,
+                                                     unsigned descriptionLength)
+   {
+   currentWrapper->componentInterface().expose(FortranString(variableName, variableNameLength).toString(), 
+                                               "", 
+                                               FortranString(description, descriptionLength).toString(), 
+                                               writeable, 
+                                               new PackableWrapper2< F[type.name]Type & >(*Data));
+   }
+extern "C" void EXPORT STDCALL Expose[type.name]TypeFunction(const char* variableName, 
+                                                     const char* description,
+                                                     F[type.name]TypeFunction* Getter,
+                                                     F[type.name]TypeFunction* Setter,
+                                                     unsigned variableNameLength,
+                                                     unsigned descriptionLength)
+   {
+   currentWrapper->componentInterface().expose(FortranString(variableName, variableNameLength).toString(), 
+                                               "", 
+                                               FortranString(description, descriptionLength).toString(), 
+                                               Setter != NULL,   
+                                               new FortranDualMethod<F[type.name]TypeFunction, F[type.name]Type > (currentWrapper, Getter, Setter));
+
+   }
+
 extern "C" void EXPORT STDCALL Subscribe[type.name]Type(const char* EventName,
                                                  F[type.name]TypeFunction* F,
                                                  unsigned EventNameLength)
@@ -686,6 +755,12 @@ module ScienceAPI2
       ml_external AppendSearchOrder
 !STDCALL(AppendSearchOrder)
       character (len=*) :: SectionName
+      end subroutine
+
+      subroutine GetComponentName(name)
+      ml_external GetComponentName
+!STDCALL(GetComponentName)
+      character (len=*) :: name
       end subroutine
 
    end interface
@@ -879,8 +954,20 @@ module ScienceAPI2
       integer           :: MaxValues
       logical           :: GetStringArray
       end function
+    [foreach types.type]
+      ! ------ [type.name] ------
+      function Get[type.name]Type(Name, OptionalFlag, F)
+      IMPORT :: [type.name]Type
+      ml_external Get[type.name]Type
+!STDCALL(Get[type.name]Type)
+      character (len=*), intent(in) :: Name
+      integer       :: OptionalFlag
+      type([type.name]Type) :: F
+      logical       :: Get[type.name]Type
+      end function
+     [endfor]
    end interface
-
+ 
    interface Set
       subroutine SetInteger(Name, Units, Value)
       ml_external SetInteger
@@ -942,6 +1029,16 @@ module ScienceAPI2
       character (len=*) :: Value(*)
       integer           :: NumValues
       end subroutine
+   [foreach types.type]
+      ! ------ [type.name] ------
+      subroutine Set[type.name]Type(Name, F)
+      IMPORT :: [type.name]Type
+      ml_external Set[type.name]Type
+!STDCALL(Set[type.name]Type)
+      character (len=*), intent(in) :: Name
+      type([type.name]Type) :: F
+      end subroutine
+   [endfor]
    end interface
 
    interface Expose
@@ -1025,6 +1122,40 @@ module ScienceAPI2
       integer           :: numvalues
       integer           :: maxvalues	  
       end subroutine
+!!! Ugh. This is a blight. Assumes it will call a fortran function with 2 arguments - variable name and value.
+      subroutine ExposeRealFunction(Name, Units, Description, Getter, Setter)
+!STDCALL(ExposeRealFunction)
+      character (len=*) :: Name
+      character (len=*) :: Units
+      character (len=*) :: Description
+      external :: Getter
+      external :: Setter
+      end subroutine
+!!! Ugh. This is a blight ^^^^^^^^^
+    [foreach types.type]
+      ! ------ [type.name] ------
+      subroutine Expose[type.name]Type(Name, Desc, WriteableFlag, F)
+      IMPORT :: [type.name]Type
+!STDCALL(Expose[type.name]Type)
+      character (len=*), intent(in) :: Name
+      character (len=*), intent(in) :: Desc
+      logical       :: WriteableFlag
+      type([type.name]Type) :: F
+!      external :: F
+      end subroutine
+     [endfor]
+   end interface
+
+   interface
+    [foreach types.type]
+      ! ------ [type.name] ------
+      subroutine Expose[type.name]TypeFunction(Name, Desc, Getter, Setter)
+!STDCALL(Expose[type.name]TypeFunction)
+      character (len=*), intent(in) :: Name
+      character (len=*), intent(in) :: Desc
+      external :: Getter, Setter
+      end subroutine
+     [endfor]
    end interface
 
    interface
@@ -1038,9 +1169,10 @@ module ScienceAPI2
       [foreach types.type]
       ! ------ [type.name] ------
       subroutine Subscribe[type.name]Type(Name, F)
-      ml_external Subscribe[type.name]Type
+!      IMPORT :: [type.name]Type
 !STDCALL(Subscribe[type.name]Type)
       character (len=*), intent(in) :: Name
+!      type([type.name]Type) :: F
       external :: F
       end subroutine
 
@@ -1048,6 +1180,11 @@ module ScienceAPI2
    end interface
 
    interface Publish
+      subroutine PublishNullType(name)
+      ml_external PublishNullType
+!STDCALL(PublishNullType)
+      character (len=*), intent(in) :: name
+      end subroutine PublishNullType
       [foreach types.type]
       ! ------ [type.name] ------
       subroutine Publish[type.name]Type(Name, Data)
@@ -1088,6 +1225,9 @@ EXPORTS
   ExposeReal = _ExposeReal@32
   _exposereal = _ExposeReal@32
   _exposereal@32 = _ExposeReal@32
+  ExposeRealFunction = _ExposeRealFunction@32
+  _exposerealfunction = _ExposeRealFunction@32
+  _exposerealfunction@32 = _ExposeRealFunction@32
   ExposeRealArray = _ExposeRealArray@40
   _exposerealarray = _ExposeRealArray@40
   _exposerealarray@40 = _ExposeRealArray@40
@@ -1100,6 +1240,9 @@ EXPORTS
   Fatal = _Fatal@8
   _fatal = _Fatal@8
   _fatal@8 = _Fatal@8
+  GetComponentName = _GetComponentName@8
+  _getcomponentname = _GetComponentName@8
+  _getcomponentname@8 = _GetComponentName@8
   GetDouble = _GetDouble@32
   _getdouble = _GetDouble@32
   _getdouble@32 = _GetDouble@32
@@ -1196,9 +1339,9 @@ EXPORTS
   messageToLogic = _messageToLogic@12
   _messagetologic = _messageToLogic@12
   _messagetologic@12 = _messageToLogic@12
-  PublishNull = _PublishNull@8
-  _publishnull = _PublishNull@8
-  _publishnull@8 = _PublishNull@8
+  PublishNullType = _PublishNullType@8
+  _publishnulltype = _PublishNullType@8
+  _publishnulltype@8 = _PublishNullType@8
   publish_null = _publish_null@8
   _publish_null = _publish_null@8
   string_to_float = _string_to_float@12
@@ -1207,6 +1350,18 @@ EXPORTS
   _subscribenulltype = _SubscribeNullType@12
   _subscribenulltype@12 = _SubscribeNullType@12
 [foreach types.type]
+  Get[type.name]Type = _Get[type.name]Type@16
+[tolower]  _get[type.name]type[endtolower] = _Get[type.name]Type@16
+[tolower]  _get[type.name]type[endtolower]@12 = _Get[type.name]Type@16
+  Set[type.name]Type = _Set[type.name]Type@12
+[tolower]  _set[type.name]type[endtolower] = _Set[type.name]Type@12
+[tolower]  _set[type.name]type[endtolower]@12 = _Set[type.name]Type@12
+  Expose[type.name]Type = _Expose[type.name]Type@24
+[tolower]  _expose[type.name]type[endtolower] = _Expose[type.name]Type@24
+[tolower]  _expose[type.name]type[endtolower]@24 = _Expose[type.name]Type@24
+  Expose[type.name]TypeFunction = _Expose[type.name]TypeFunction@24
+[tolower]  _expose[type.name]typefunction[endtolower] = _Expose[type.name]TypeFunction@24
+[tolower]  _expose[type.name]typefunction[endtolower]@24 = _Expose[type.name]TypeFunction@24
   Publish[type.name]Type = _Publish[type.name]Type@12
 [tolower]  _publish[type.name]type[endtolower] = _Publish[type.name]Type@12
 [tolower]  _publish[type.name]type[endtolower]@12 = _Publish[type.name]Type@12
@@ -1230,9 +1385,11 @@ SECTIONS {
     exposeintegerarray = ExposeIntegerArray;
     exposereal = ExposeReal;
     exposerealarray = ExposeRealArray;
+    exposerealfunction = ExposeRealFunction
     exposestring = ExposeString;
     exposestringarray = ExposeStringArray;
     fatal = Fatal;
+    getcomponentname = GetComponentName;
     getdouble = GetDouble;
     getdoublearray = GetDoubleArray;
     getinteger = GetInteger;
@@ -1265,9 +1422,13 @@ SECTIONS {
     fci2_getdescriptioninternal = FCI2_getDescriptionInternal;
     fci2_getdescriptionlengthinternal = FCI2_getDescriptionLengthInternal;
     messagetologic = messageToLogic;
-    publishnull = PublishNull;
+    publishnulltype = PublishNullType;
     subscribenulltype = SubscribeNullType;
 [foreach types.type]
+[tolower]    get[type.name]type[endtolower] = Get[type.name]Type;
+[tolower]    set[type.name]type[endtolower] = Set[type.name]Type;
+[tolower]    expose[type.name]type[endtolower] = Expose[type.name]Type;
+[tolower]    expose[type.name]typefunction[endtolower] = Expose[type.name]TypeFunction;
 [tolower]    publish[type.name]type[endtolower] = Publish[type.name]Type;
 [tolower]    subscribe[type.name]type[endtolower] = Subscribe[type.name]Type;
 [endfor]

@@ -534,3 +534,32 @@ extern "C" double EXPORT STDCALL string_to_float(const char* str, bool* ok, unsi
 	*ok = (endPtr != buf) && ((*endPtr == '\0') || isspace(*endPtr));
 	return result;
 }
+
+extern "C" void EXPORT STDCALL GetComponentName
+   (const char* Name,  unsigned NameLength)
+   {
+   string myName = currentWrapper->componentInterface().getName();
+   FortranString(Name, NameLength) = myName;
+   }
+
+typedef void (STDCALL FFloatFunction2)(const char *, float *, unsigned);
+extern "C" void EXPORT STDCALL ExposeRealFunction(const char *name, 
+                                                   const char *units, 
+                                                   const char *description,
+                                                   FFloatFunction2 *getter, 
+                                                   FFloatFunction2 *setter,
+                                                   int nameLength, int unitsLength, int descriptionLength)
+   {
+   float initialValue = 0.0;
+   string myName = FortranString(name, nameLength).toString();
+   string myUnits = FortranString(units, unitsLength).toString();
+   string myDesc = FortranString(description, descriptionLength).toString();
+   FortranNamedDualMethod<boost::function3<void, const char *, float *, unsigned>, float > *m = 
+      new FortranNamedDualMethod<boost::function3<void, const char *, float *, unsigned>, float >  
+          (currentWrapper, myName, initialValue, getter, setter);
+   currentWrapper->componentInterface().expose(myName,
+                                               myUnits,
+                                               myDesc, 
+                                               true, 
+                                               m);
+   }

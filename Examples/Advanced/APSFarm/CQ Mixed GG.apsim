@@ -1,4 +1,4 @@
-<folder version="28" name="Grazing simulations">
+<folder version="32" name="Grazing simulations">
   <memo name="notes for CQ Mixed GG simulations"><![CDATA[* 4000 ha property size
 * cattle numbers: 1100 to 1500
 * all cattle are on adjistment
@@ -52,22 +52,24 @@ sell rule - sell in lotsof 120 when weight > 400kg.
       <filename name="filename" input="yes">%apsim%\Examples\MetFiles\Goond.met</filename>
     </metfile>
     <soil name="Grey Vertosol-Belah-Brigalow (Inglestone No093)">
-      <Country />
-      <Site>+</Site>
-      <Region>Maranoa</Region>
+      <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
+      <Langitude description="Longitude (WGS84)" />
+      <ASC_Order description="Australian Soil Classification Order" />
+      <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+      <SoilType description="Soil description">Grey Vertosol</SoilType>
       <LocalName />
-      <SoilType description="Classification">Grey Vertosol</SoilType>
+      <Site>+</Site>
       <NearestTown description="Nearest town">Meandarra, Q 4422</NearestTown>
-      <NaturalVegetation description="Natural vegetation">Belah, Brigalow</NaturalVegetation>
+      <Region>Maranoa</Region>
       <State>Queensland</State>
+      <Country />
+      <NaturalVegetation description="Natural vegetation">Belah, Brigalow</NaturalVegetation>
       <ApsoilNumber description="Apsoil number">93</ApsoilNumber>
       <Latitude description="Latitude (WGS84)">-27.723</Latitude>
       <Longitude>149.813</Longitude>
       <LocationAccuracy description="Location accuracy">+-20m</LocationAccuracy>
       <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
       <Comments />
-      <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
-      <Langitude description="Longitude (WGS84)" />
       <Water>
         <Layer>
           <Thickness units="mm">150</Thickness>
@@ -757,22 +759,24 @@ sell rule - sell in lotsof 120 when weight > 400kg.
       </InitWater>
     </soil>
     <soil name="Grey Vertosol Brigalow (Wallumbilla No100)">
-      <Country />
-      <Site>Wallumbilla</Site>
-      <Region>Maranoa</Region>
+      <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
+      <Langitude description="Longitude (WGS84)" />
+      <ASC_Order description="Australian Soil Classification Order" />
+      <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+      <SoilType description="Soil description">Grey Vertosol</SoilType>
       <LocalName />
-      <SoilType description="Classification">Grey Vertosol</SoilType>
+      <Site>Wallumbilla</Site>
       <NearestTown description="Nearest town">Wallumbilla, Q 4428</NearestTown>
-      <NaturalVegetation description="Natural vegetation">Brigalow, Belah scrub</NaturalVegetation>
+      <Region>Maranoa</Region>
       <State>Queensland</State>
+      <Country />
+      <NaturalVegetation description="Natural vegetation">Brigalow, Belah scrub</NaturalVegetation>
       <ApsoilNumber description="Apsoil number">100</ApsoilNumber>
       <Latitude description="Latitude (WGS84)">-26.647</Latitude>
       <Longitude>149.047</Longitude>
       <LocationAccuracy description="Location accuracy">+-20m</LocationAccuracy>
       <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
       <Comments />
-      <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
-      <Langitude description="Longitude (WGS84)" />
       <Water>
         <Layer>
           <Thickness units="mm">150</Thickness>
@@ -4238,6 +4242,22 @@ foreach paddock $config(paddocks) {
       </surfaceom>
       <fertiliser />
       <soil name="Soil" shortcut="/Grazing simulations/common stuff/Grey Vertosol Brigalow (Wallumbilla No100)">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/Grazing simulations/common stuff/Grey Vertosol Brigalow (Wallumbilla No100)/Water">
           <SoilCrop name="wheat" shortcut="/Grazing simulations/common stuff/Grey Vertosol Brigalow (Wallumbilla No100)/Water/wheat" />
           <SoilCrop name="chickpea" shortcut="/Grazing simulations/common stuff/Grey Vertosol Brigalow (Wallumbilla No100)/Water/chickpea" />
@@ -4265,13 +4285,13 @@ foreach paddock $config(paddocks) {
         <minimum_depth type="text" description="If the profile erodes to this depth, the simulation is stopped (mm)">100</minimum_depth>
       </erosion>
       <tracker>
-        <variable name="sum of rain on newmet from sowing to harvesting as incroprain" />
-        <variable name="sum of rain on newmet from harvesting to sowing  as fallowrain" />
-        <variable name="sum of es on post from blork to now as es_sum" />
-        <variable name="sum of runoff on post from blork to now as runoff_sum" />
-        <variable name="sum of drain on post from blork to now as drainage_sum" />
-        <variable name="sum of soil_loss on post from blork to now as soil_loss_sum" />
-        <variable name="sum of dlt_n_min_tot() on post from blork to now as n_mineralisation_sum" />
+        <variable>sum of rain on newmet from sowing to harvesting as incroprain</variable>
+        <variable>sum of rain on newmet from harvesting to sowing  as fallowrain</variable>
+        <variable>sum of es on post from blork to now as es_sum</variable>
+        <variable>sum of runoff on post from blork to now as runoff_sum</variable>
+        <variable>sum of drain on post from blork to now as drainage_sum</variable>
+        <variable>sum of soil_loss on post from blork to now as soil_loss_sum</variable>
+        <variable>sum of dlt_n_min_tot() on post from blork to now as n_mineralisation_sum</variable>
       </tracker>
     </area>
     <tclmanager name="Economics">
@@ -4907,6 +4927,22 @@ foreach {mob size num paddock crop} {
     <tclmanager name="Economics" shortcut="/Grazing simulations/common stuff/Economics" />
     <area name="BuffelPaddock">
       <soil shortcut="/Grazing simulations/common stuff/Grey Vertosol-Belah-Brigalow (Inglestone No093)">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/Grazing simulations/common stuff/Grey Vertosol-Belah-Brigalow (Inglestone No093)/Water">
           <SoilCrop name="wheat" shortcut="/Grazing simulations/common stuff/Grey Vertosol-Belah-Brigalow (Inglestone No093)/Water/wheat" />
           <SoilCrop name="oats" shortcut="/Grazing simulations/common stuff/Grey Vertosol-Belah-Brigalow (Inglestone No093)/Water/oats" />
@@ -4933,16 +4969,19 @@ foreach {mob size num paddock crop} {
       <folder name="Manager folder">
         <manager name="Grasp Managment">
           <script name="init">
-            <text>pasture_in = 0
+            <text>
 ready_to_graze = 0</text>
             <event>init</event>
           </script>
+          <script name="start_simulation">
+            <text>
+buffel establish init_section = establishment 
+pasture_in = 1
+</text>
+            <event>start_simulation</event>
+          </script>
           <script name="start_of_day">
-            <text>if pasture_in = 0 then
-   buffel establish init_section = establishment 
-   pasture_in = 1
-endif
-
+            <text>
 if (day = 273) then
    ready_to_graze = 1
 endif</text>
@@ -4956,8 +4995,8 @@ endif</text>
         </manager>
       </folder>
       <tracker>
-        <variable name="sum of  growth on end_of_day from reported to now as TotalGrowthMonthly" />
-        <variable name="sum of rain on end_of_day from start_month to end_month as TotalRain" />
+        <variable>sum of  growth on end_of_day from reported to now as TotalGrowthMonthly</variable>
+        <variable>sum of rain on end_of_day from start_month to end_month as TotalRain</variable>
       </tracker>
       <grasp name="Buffel">
         <category description="Initial values at establishment" />
@@ -5045,6 +5084,22 @@ Use 0.5 for kl - in GRASP GMK uses p106:
     </area>
     <area name="OatsPaddock">
       <soil shortcut="/Grazing simulations/common stuff/Grey Vertosol-Belah-Brigalow (Inglestone No093)">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/Grazing simulations/common stuff/Grey Vertosol-Belah-Brigalow (Inglestone No093)/Water">
           <SoilCrop name="wheat" shortcut="/Grazing simulations/common stuff/Grey Vertosol-Belah-Brigalow (Inglestone No093)/Water/wheat" />
           <SoilCrop name="oats" shortcut="/Grazing simulations/common stuff/Grey Vertosol-Belah-Brigalow (Inglestone No093)/Water/oats" />
@@ -5174,6 +5229,22 @@ Use 0.5 for kl - in GRASP GMK uses p106:
     </area>
     <area name="LeucaenaGrassPaddock">
       <soil shortcut="/Grazing simulations/common stuff/Grey Vertosol-Belah-Brigalow (Inglestone No093)">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/Grazing simulations/common stuff/Grey Vertosol-Belah-Brigalow (Inglestone No093)/Water">
           <SoilCrop name="wheat" shortcut="/Grazing simulations/common stuff/Grey Vertosol-Belah-Brigalow (Inglestone No093)/Water/wheat" />
           <SoilCrop name="oats" shortcut="/Grazing simulations/common stuff/Grey Vertosol-Belah-Brigalow (Inglestone No093)/Water/oats" />
@@ -5204,12 +5275,15 @@ Use 0.5 for kl - in GRASP GMK uses p106:
 ready_to_graze = 0</text>
             <event>init</event>
           </script>
+          <script name="start_simulation">
+            <text>
+leucaena establish init_section = establishment 
+pasture_in = 1
+</text>
+            <event>start_simulation</event>
+          </script>
           <script name="start_of_day">
-            <text>if pasture_in = 0 then
-   leucaena establish init_section = establishment 
-   pasture_in = 1
-endif
-
+            <text>
 if (day = 273) then
    ready_to_graze = 1
 endif</text>
@@ -5305,6 +5379,22 @@ At CQ Mixed GG, the pasture under the Leucaena is: silk sorghum ,green panic and
     </area>
     <area name="SorghumPaddock">
       <soil shortcut="/Grazing simulations/common stuff/Grey Vertosol-Belah-Brigalow (Inglestone No093)">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/Grazing simulations/common stuff/Grey Vertosol-Belah-Brigalow (Inglestone No093)/Water">
           <SoilCrop name="wheat" shortcut="/Grazing simulations/common stuff/Grey Vertosol-Belah-Brigalow (Inglestone No093)/Water/wheat" />
           <SoilCrop name="oats" shortcut="/Grazing simulations/common stuff/Grey Vertosol-Belah-Brigalow (Inglestone No093)/Water/oats" />
@@ -5429,6 +5519,22 @@ At CQ Mixed GG, the pasture under the Leucaena is: silk sorghum ,green panic and
       <surfaceom name="surface organic matter" shortcut="/Grazing simulations/common stuff/Crop Paddock/surface organic matter" />
       <fertiliser shortcut="/Grazing simulations/common stuff/Crop Paddock/fertiliser" />
       <soil name="Soil" shortcut="/Grazing simulations/common stuff/Grey Vertosol Brigalow (Wallumbilla No100)">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/Grazing simulations/common stuff/Grey Vertosol Brigalow (Wallumbilla No100)/Water">
           <SoilCrop name="wheat" shortcut="/Grazing simulations/common stuff/Grey Vertosol Brigalow (Wallumbilla No100)/Water/wheat" />
           <SoilCrop name="chickpea" shortcut="/Grazing simulations/common stuff/Grey Vertosol Brigalow (Wallumbilla No100)/Water/chickpea" />
@@ -5453,6 +5559,22 @@ At CQ Mixed GG, the pasture under the Leucaena is: silk sorghum ,green panic and
       <surfaceom name="surface organic matter" shortcut="/Grazing simulations/common stuff/Crop Paddock/surface organic matter" />
       <fertiliser shortcut="/Grazing simulations/common stuff/Crop Paddock/fertiliser" />
       <soil name="Soil" shortcut="/Grazing simulations/common stuff/Grey Vertosol Brigalow (Wallumbilla No100)">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/Grazing simulations/common stuff/Grey Vertosol Brigalow (Wallumbilla No100)/Water">
           <SoilCrop name="wheat" shortcut="/Grazing simulations/common stuff/Grey Vertosol Brigalow (Wallumbilla No100)/Water/wheat" />
           <SoilCrop name="chickpea" shortcut="/Grazing simulations/common stuff/Grey Vertosol Brigalow (Wallumbilla No100)/Water/chickpea" />
@@ -5477,6 +5599,22 @@ At CQ Mixed GG, the pasture under the Leucaena is: silk sorghum ,green panic and
       <surfaceom name="surface organic matter" shortcut="/Grazing simulations/common stuff/Crop Paddock/surface organic matter" />
       <fertiliser shortcut="/Grazing simulations/common stuff/Crop Paddock/fertiliser" />
       <soil name="Soil" shortcut="/Grazing simulations/common stuff/Crop Paddock/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/Grazing simulations/common stuff/Crop Paddock/Soil/Water">
           <SoilCrop name="wheat" shortcut="/Grazing simulations/common stuff/Crop Paddock/Soil/Water/wheat" />
           <SoilCrop name="chickpea" shortcut="/Grazing simulations/common stuff/Crop Paddock/Soil/Water/chickpea" />
@@ -5497,6 +5635,22 @@ At CQ Mixed GG, the pasture under the Leucaena is: silk sorghum ,green panic and
       <surfaceom name="surface organic matter" shortcut="/Grazing simulations/common stuff/Crop Paddock/surface organic matter" />
       <fertiliser shortcut="/Grazing simulations/common stuff/Crop Paddock/fertiliser" />
       <soil name="Soil" shortcut="/Grazing simulations/common stuff/Crop Paddock/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/Grazing simulations/common stuff/Crop Paddock/Soil/Water">
           <SoilCrop name="wheat" shortcut="/Grazing simulations/common stuff/Crop Paddock/Soil/Water/wheat" />
           <SoilCrop name="chickpea" shortcut="/Grazing simulations/common stuff/Crop Paddock/Soil/Water/chickpea" />
@@ -5517,6 +5671,22 @@ At CQ Mixed GG, the pasture under the Leucaena is: silk sorghum ,green panic and
       <surfaceom name="surface organic matter" shortcut="/Grazing simulations/common stuff/Crop Paddock/surface organic matter" />
       <fertiliser shortcut="/Grazing simulations/common stuff/Crop Paddock/fertiliser" />
       <soil name="Soil" shortcut="/Grazing simulations/common stuff/Crop Paddock/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/Grazing simulations/common stuff/Crop Paddock/Soil/Water">
           <SoilCrop name="wheat" shortcut="/Grazing simulations/common stuff/Crop Paddock/Soil/Water/wheat" />
           <SoilCrop name="chickpea" shortcut="/Grazing simulations/common stuff/Crop Paddock/Soil/Water/chickpea" />
@@ -5540,7 +5710,7 @@ At CQ Mixed GG, the pasture under the Leucaena is: silk sorghum ,green panic and
       <winter_lwg type="text" description="Expected winter lwg @ low SR (p147)">10</winter_lwg>
       <spring_lwg type="text" description="Expected spring lwg @ low SR (p148)">25</spring_lwg>
       <leaf_diet type="text" description="Proportion of leaf in diet (p132/100)">0.85</leaf_diet>
-      <std_alw type="text" description="std_alw">200</std_alw>
+      <std_alw type="text" description="std_alw">200</std_alw><min_alw>100</min_alw>
       <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
       <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
       <prop_can_eat type="text" description="prop_can_eat">0.75</prop_can_eat>
@@ -5555,7 +5725,7 @@ At CQ Mixed GG, the pasture under the Leucaena is: silk sorghum ,green panic and
       <winter_lwg type="text" description="Expected winter lwg @ low SR (p147)">10</winter_lwg>
       <spring_lwg type="text" description="Expected spring lwg @ low SR (p148)">25</spring_lwg>
       <leaf_diet type="text" description="Proportion of leaf in diet (p132/100)">0.85</leaf_diet>
-      <std_alw type="text" description="std_alw">200</std_alw>
+      <std_alw type="text" description="std_alw">200</std_alw><min_alw>100</min_alw>
       <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
       <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
       <prop_can_eat type="text" description="prop_can_eat">0.75</prop_can_eat>
@@ -5570,7 +5740,7 @@ At CQ Mixed GG, the pasture under the Leucaena is: silk sorghum ,green panic and
       <winter_lwg type="text" description="Expected winter lwg @ low SR (p147)">10</winter_lwg>
       <spring_lwg type="text" description="Expected spring lwg @ low SR (p148)">25</spring_lwg>
       <leaf_diet type="text" description="Proportion of leaf in diet (p132/100)">0.85</leaf_diet>
-      <std_alw type="text" description="std_alw">200</std_alw>
+      <std_alw type="text" description="std_alw">200</std_alw><min_alw>100</min_alw>
       <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
       <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
       <prop_can_eat type="text" description="prop_can_eat">0.75</prop_can_eat>
@@ -5585,7 +5755,7 @@ At CQ Mixed GG, the pasture under the Leucaena is: silk sorghum ,green panic and
       <winter_lwg type="text" description="Expected winter lwg @ low SR (p147)">10</winter_lwg>
       <spring_lwg type="text" description="Expected spring lwg @ low SR (p148)">25</spring_lwg>
       <leaf_diet type="text" description="Proportion of leaf in diet (p132/100)">0.85</leaf_diet>
-      <std_alw type="text" description="std_alw">200</std_alw>
+      <std_alw type="text" description="std_alw">200</std_alw><min_alw>100</min_alw>
       <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
       <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
       <prop_can_eat type="text" description="prop_can_eat">0.75</prop_can_eat>
@@ -5600,7 +5770,7 @@ At CQ Mixed GG, the pasture under the Leucaena is: silk sorghum ,green panic and
       <winter_lwg type="text" description="Expected winter lwg @ low SR (p147)">10</winter_lwg>
       <spring_lwg type="text" description="Expected spring lwg @ low SR (p148)">25</spring_lwg>
       <leaf_diet type="text" description="Proportion of leaf in diet (p132/100)">0.85</leaf_diet>
-      <std_alw type="text" description="std_alw">200</std_alw>
+      <std_alw type="text" description="std_alw">200</std_alw><min_alw>100</min_alw>
       <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
       <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
       <prop_can_eat type="text" description="prop_can_eat">0.75</prop_can_eat>
@@ -5615,7 +5785,7 @@ At CQ Mixed GG, the pasture under the Leucaena is: silk sorghum ,green panic and
       <winter_lwg type="text" description="Expected winter lwg @ low SR (p147)">10</winter_lwg>
       <spring_lwg type="text" description="Expected spring lwg @ low SR (p148)">25</spring_lwg>
       <leaf_diet type="text" description="Proportion of leaf in diet (p132/100)">0.85</leaf_diet>
-      <std_alw type="text" description="std_alw">200</std_alw>
+      <std_alw type="text" description="std_alw">200</std_alw><min_alw>100</min_alw>
       <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
       <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
       <prop_can_eat type="text" description="prop_can_eat">0.75</prop_can_eat>
@@ -5630,7 +5800,7 @@ At CQ Mixed GG, the pasture under the Leucaena is: silk sorghum ,green panic and
       <winter_lwg type="text" description="Expected winter lwg @ low SR (p147)">10</winter_lwg>
       <spring_lwg type="text" description="Expected spring lwg @ low SR (p148)">25</spring_lwg>
       <leaf_diet type="text" description="Proportion of leaf in diet (p132/100)">0.85</leaf_diet>
-      <std_alw type="text" description="std_alw">200</std_alw>
+      <std_alw type="text" description="std_alw">200</std_alw><min_alw>100</min_alw>
       <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
       <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
       <prop_can_eat type="text" description="prop_can_eat">0.75</prop_can_eat>
@@ -5645,7 +5815,7 @@ At CQ Mixed GG, the pasture under the Leucaena is: silk sorghum ,green panic and
       <winter_lwg type="text" description="Expected winter lwg @ low SR (p147)">10</winter_lwg>
       <spring_lwg type="text" description="Expected spring lwg @ low SR (p148)">25</spring_lwg>
       <leaf_diet type="text" description="Proportion of leaf in diet (p132/100)">0.85</leaf_diet>
-      <std_alw type="text" description="std_alw">200</std_alw>
+      <std_alw type="text" description="std_alw">200</std_alw><min_alw>100</min_alw>
       <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
       <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
       <prop_can_eat type="text" description="prop_can_eat">0.75</prop_can_eat>
@@ -5660,7 +5830,7 @@ At CQ Mixed GG, the pasture under the Leucaena is: silk sorghum ,green panic and
       <winter_lwg type="text" description="Expected winter lwg @ low SR (p147)">10</winter_lwg>
       <spring_lwg type="text" description="Expected spring lwg @ low SR (p148)">25</spring_lwg>
       <leaf_diet type="text" description="Proportion of leaf in diet (p132/100)">0.85</leaf_diet>
-      <std_alw type="text" description="std_alw">200</std_alw>
+      <std_alw type="text" description="std_alw">200</std_alw><min_alw>100</min_alw>
       <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
       <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
       <prop_can_eat type="text" description="prop_can_eat">0.75</prop_can_eat>
@@ -5675,7 +5845,7 @@ At CQ Mixed GG, the pasture under the Leucaena is: silk sorghum ,green panic and
       <winter_lwg type="text" description="Expected winter lwg @ low SR (p147)">10</winter_lwg>
       <spring_lwg type="text" description="Expected spring lwg @ low SR (p148)">25</spring_lwg>
       <leaf_diet type="text" description="Proportion of leaf in diet (p132/100)">0.85</leaf_diet>
-      <std_alw type="text" description="std_alw">200</std_alw>
+      <std_alw type="text" description="std_alw">200</std_alw><min_alw>100</min_alw>
       <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
       <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
       <prop_can_eat type="text" description="prop_can_eat">0.75</prop_can_eat>

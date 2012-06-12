@@ -40,12 +40,12 @@
       <field name="row_spacing" kind="double" />
       <field name="SkipRow" kind="double" />       
       <field name="SkipPlant" kind="double" />       
+      <field name="Establishment" kind="string" />
       <field name="crop_class" kind="string" />      
       <field name="tiller_no_fertile" kind="string" />
       <field name="Skip" kind="string" />    
       <field name="plants_pm" kind="double" />	  
       <field name="Ratoon" kind="integer4" />
-      <field name="Establishment" kind="string" />
       <field name="sbdur" kind="integer4" />
       <field name="nplh" kind="double" />
       <field name="nh" kind="double" />
@@ -60,6 +60,10 @@
       <field name="RowSpacing" kind="double" />
       <field name="MaxCover" kind="double" />
       <field name="BudNumber" kind="double" />
+   </type>   
+
+   <type name="Establish">
+      <field name="init_section" kind="string" />
    </type>   
 
    <type name="Harvest">
@@ -864,5 +868,33 @@
       <field name="component" descr="" kind="string" /> 
       <field name="dlt" descr="" kind="double" unit="m/s" /> 
    </type>
-   
+
+   <!--!   !!!!! Grazing types  !!!!!!!!!!!!!!!!!!!!!!-->
+   <!-- http://www.apsim.info/Wiki/Inter-component-communications.ashx -->
+   <type name="AvailableToAnimal">
+     <field name="Cohorts" array="T" >
+      <field name="CohortID"         kind="string"/>   
+      <field name="Organ"            kind="string" /> 
+      <field name="AgeID"            kind="string" /> 
+      <field name="Bottom"           kind="double" unit="mm"  />
+      <field name="Top"              kind="double" unit="mm"  />
+      <field name="Chem"             kind="string" /> 
+      <field name="Weight"           kind="double" unit="kg/ha" />    
+      <field name="N"                kind="double" unit="kg/ha" />    
+      <field name="P"                kind="double" unit="kg/ha" />    
+      <field name="S"                kind="double" unit="kg/ha" />    
+      <field name="AshAlk"           kind="double" unit="mol/ha" />    
+     </field> 
+   </type>
+   <type name="RemovedByAnimal">
+     <field name="Cohorts" array="T" >
+      <field name="CohortID"         kind="string"/> 
+      <field name="Organ"            kind="string" />
+      <field name="AgeID"            kind="string" />
+      <field name="Bottom"           kind="double" unit="mm"  />
+      <field name="Top"              kind="double" unit="mm"  />
+      <field name="Chem"             kind="string" />
+      <field name="WeightRemoved"    kind="double" unit="kg/ha" />    
+     </field> 
+   </type>
  </types>

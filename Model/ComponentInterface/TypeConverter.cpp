@@ -423,20 +423,16 @@ void protocol::getTypeConverter(const FString& name,
                                 TypeConverter*& converter)
    {
    converter = NULL;
-   if (sourceTypeCode == DTunknown && destTypeCode == DTunknown)
+   if (sourceTypeCode == DTunknown || destTypeCode == DTunknown)
       converter = NULL;
    else
       {
       if (sourceTypeCode == destTypeCode &&
-          isSourceArray == isDestArray &&
-          sourceTypeCode != DTunknown)
+          isSourceArray == isDestArray)
          converter = NULL;
       else
          {
-         if (sourceTypeCode == DTunknown || destTypeCode == DTunknown)
-            converter = NULL;
-
-         else if (isSourceArray)
+         if (isSourceArray)
             {
             // source is an array - we support only array to array converters.
             // or array to string converters.

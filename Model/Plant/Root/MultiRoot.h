@@ -32,7 +32,6 @@ class MultiRoot : public RootBase
       float nUptake();
       float fasw(int depth);
 
-
    private:
       float SWDemand;
       float NDemand;

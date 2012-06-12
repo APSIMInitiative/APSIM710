@@ -32,6 +32,7 @@ class NoRoot : public RootBase
       float nUptake();
       float fasw(int depth);
 
+      void  get_AvailableToAnimal(protocol::AvailableToAnimalType &avail) {};
 
    private:
       float SWDemand;

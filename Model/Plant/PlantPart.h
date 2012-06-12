@@ -151,6 +151,8 @@ public:
                           vector<float> &dlt_dm_p,
                           vector<float> &fraction_to_residue) = 0;
 
+   virtual void  get_AvailableToAnimal(protocol::AvailableToAnimalType &cohort) = 0;
+   virtual void  set_RemovedByAnimal(const protocol::RemovedByAnimalType &removed) = 0;
 
    virtual void  onEndCrop(vector<string> &dm_type,
                   vector<float> &dlt_crop_dm,

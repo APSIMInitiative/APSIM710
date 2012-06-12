@@ -40,6 +40,11 @@ void Leaf::onEndCrop(vector<string> &dm_type,
 
    TEFactor = 1.0;
 }
+//void  Leaf::get_AvailableToAnimal(protocol::AvailableToAnimalType &avail) 
+//{
+//   SimplePart::get_AvailableToAnimal(avail);
+//};
+
 
 void Leaf::onCanopyWaterBalance(protocol::CanopyWaterBalanceType &CWB)
 //=======================================================================================

@@ -264,6 +264,8 @@ public:
    void get_p_uptake_stover(protocol::Component *, protocol::QueryValueData &qd);
    void get_ll_dep(protocol::Component *systemInterface, protocol::QueryValueData &qd);
    void get_ll(protocol::Component *systemInterface, protocol::QueryValueData &qd);
+   void get_AvailableToAnimal(protocol::Component *systemInterface, protocol::QueryValueData &qd);
+   void set_RemovedByAnimal(const protocol::RemovedByAnimalType &dm);
 
    //Phosporousy things:
    void doPInit();

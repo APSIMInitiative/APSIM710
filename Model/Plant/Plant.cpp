@@ -255,6 +255,15 @@ void Plant::onInit1(void)
 
 #undef setupGetVar
 #undef setupGetFunction
+#define setupGetFunction2(s,name,ddml,address,units,desc) {\
+   boost::function2<void, protocol::Component *, protocol::QueryValueData &> fn;\
+   fn = boost::bind(address, this, _1, _2); \
+   s->addGettableVar(name, ddml, fn, units, desc);\
+   }
+   setupGetFunction2(parent, "AvailableToAnimal", DDML(protocol::AvailableToAnimalType()),
+                     &Plant::get_AvailableToAnimal, "", "Plant material available to animal");
+
+   scienceAPI.exposeWritable("removedbyanimal", "", "Biomass removed by animals", RemovedByAnimalSetter(&Plant::set_RemovedByAnimal));
 
    scienceAPI.exposeWritable("crop_class", "", "Crop class", StringSetter(&Plant::onSetCropClass));
 
@@ -613,7 +622,55 @@ void Plant::onDetachCropBiomass(float detachRate)
       }
    plant_remove_biomass_update(dmRemoved);
    }
+void Plant::get_AvailableToAnimal(protocol::Component *systemInterface, protocol::QueryValueData &q)
+   {
+   protocol::AvailableToAnimalType dm;
+   Tops().get_AvailableToAnimal(dm);
+   systemInterface->sendVariable(q, dm);
+   }
 
+// NB. This follows the same procedures as remove_crop_biomass, but uses a different data structure. 
+void Plant::set_RemovedByAnimal(const protocol::RemovedByAnimalType &dm)
+   {
+   Tops().set_RemovedByAnimal(dm);
+
+   // Update biomass and N pools.  Different types of plant pools are affected in different ways.
+   // Calculate Root Die Back
+   float chop_fr_green_leaf = (float)divide(leaf().GreenRemoved.DM(), leaf().Green.DM(), 0.0);
+
+   root().removeBiomass2(chop_fr_green_leaf);
+   float biomassGreenTops    = Tops().Green.DM();
+   float dmRemovedGreenTops  = Tops().GreenRemoved.DM();
+
+   Tops().removeBiomass();
+   stem().removeBiomass2(-1.0); // the values calculated here are overwritten in plantPart::morphology(void)
+
+   // now update new canopy covers
+   plantSpatial.setPlants(population().Density());
+   plantSpatial.setCanopyWidth(leaf().width());
+
+   plant.doCover(plantSpatial);
+   UpdateCanopy();
+
+   if (c.remove_biomass_affects_phenology)
+      {
+      g.remove_biom_pheno = (float)divide (dmRemovedGreenTops, biomassGreenTops, 0.0);
+      phenology().onRemoveBiomass(g.remove_biom_pheno);
+      }
+   plant.doNConccentrationLimits(co2Modifier->n_conc() );
+
+   protocol::ExternalMassFlowType EMF;
+   EMF.PoolClass = "crop";
+   EMF.FlowType = "loss";
+   EMF.DM = (Tops().GreenRemoved.DM() + Tops().SenescedRemoved.DM()) * gm2kg/sm2ha;
+   EMF.N  = (Tops().GreenRemoved.N() + Tops().SenescedRemoved.N()) * gm2kg/sm2ha;
+   EMF.P  = (Tops().GreenRemoved.P() + Tops().SenescedRemoved.P()) * gm2kg/sm2ha;
+   EMF.C = 0.0; // ?????
+   EMF.SW = 0.0;
+   scienceAPI.publish("ExternalMassFlow", EMF);
+   }
+
+   
 void Plant::onAction(const string& eventName)
    {
    //=======================================================================================

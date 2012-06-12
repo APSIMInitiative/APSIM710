@@ -499,6 +499,9 @@ class EXPORT Component
                           const char *units,
                           const char *desc);
 
+      unsigned int getReg(const char *systemName,
+                          std::string &DDML);
+
  protected:
       vector<ReturnInfoData*> returnInfos;
 
@@ -660,7 +663,7 @@ class EXPORT Component
 
       // 2. Convert it
       try { value = boost::lexical_cast<T> (datastring); }
-      catch(boost::bad_lexical_cast &e)
+      catch(boost::bad_lexical_cast &)
          {
          string msg = string("Problem converting variable to ") +
                              string(typeid(T).name()) + string(" type.\n"
@@ -715,7 +718,7 @@ class EXPORT Component
         {
         T value;
         try { value = boost::lexical_cast<T> (value_strings[i]); }
-        catch(boost::bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &)
            {
            string msg = string("Problem converting variable to ") +
                                string(typeid(T).name()) + string(" type.\n"
@@ -840,6 +843,20 @@ class EXPORT Component
           fnInfo *v = new fnInfo(systemName, type, isArray, ptr, units, desc);
           getVarMap.insert(UInt2InfoMap::value_type(id,v));
           };
+     // Function with DDML
+     void addGettableVar(const char *systemName,
+                          std::string &ddml,
+                          boost::function2<void, Component *, QueryValueData &> ptr,
+                          const char *units,
+                          const char *desc)
+          {
+          // Get a system ID for it
+          unsigned int id = getReg(systemName, ddml);
+          // Add to variable map
+          fnInfo *v = new fnInfo(systemName, protocol::DTunknown, 0, ptr, units, desc);
+          getVarMap.insert(UInt2InfoMap::value_type(id,v));
+          };
+
 
       // scalar
       template <class T>

@@ -311,7 +311,6 @@ bool CMPComponentInterface::read(const std::string& parName, Convertable* value,
    XMLNode::iterator initData = find_if(simScript->documentElement().begin(),
                                         simScript->documentElement().end(),
                                         EqualToName<XMLNode>("initdata"));
-
    if (initData == simScript->documentElement().end())
       throw runtime_error("Cannot find <initdata> element for component: " + name);
 

@@ -1063,6 +1063,11 @@ cpdev. One of these next two is right. I don't know which...
      :        'sw_demand',
      :        '(mm)', g%out_sw_demand)
 
+      elseif (variable_name .eq. 'tree_sw_demand') then
+         call respond2get_real_var (
+     :        'sw_demand',
+     :        '(mm)', g%out_sw_demand)
+
       elseif (variable_name .eq. 'rlv') then
          num_layers = count_of_real_vals (g%dlayer, max_layer)
          call respond2get_real_array (

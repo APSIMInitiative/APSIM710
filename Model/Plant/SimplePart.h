@@ -167,6 +167,8 @@ protected:
    virtual void doPDemand(void);
    virtual void doPSenescence(void);
 
+   virtual void  get_AvailableToAnimal(protocol::AvailableToAnimalType &avail); 
+   virtual void  set_RemovedByAnimal(const protocol::RemovedByAnimalType &dm);
 
    virtual void collectDetachedForResidue(vector<string> &part_name
                                           , vector<float> &dm_residue

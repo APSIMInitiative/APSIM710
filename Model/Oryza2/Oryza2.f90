@@ -834,7 +834,7 @@
            return
       end if
 
-      call publishNull('sowing')
+      call publishNullType('sowing')
 
       ! Some of the strings in a sow structure seem not be initialised correctly, and 
       ! copying the structure gives garbage. So keep a copy of whatever parameters are passed in. 
@@ -945,7 +945,7 @@
 
 !+  Purpose
 !     Start the crop
-      call publishNull('transplanting')
+      call publishNullType('transplanting')
 
 	  call fatal_error(err_user, "FIXME - not sure how to do transplanting")
 
@@ -970,7 +970,7 @@
 !+  Purpose
 !     Harvest the crop
       call writeLine('Harvesting')
-      call publishNull('harvesting')
+      call publishNullType('harvesting')
 	  g%harvestFraction = harvest%remove
 
       return
