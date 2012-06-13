@@ -22,22 +22,28 @@ echo wd= `pwd` file = $file
     # Convert to sim; run apsim and collect summary file
     case "$ext" in
       apsim)
-        "$APSIM/ApsimToSim.exe" "$file" | cut -b 9- | while read simfile
+        simfiles=`basename "$file" .apsim`.simfiles 
+        "$APSIM/ApsimToSim.exe" "$file" &> "$simfiles"
+        cut -b 9- "$simfiles"  | while read simfile
         do 
           if [ -f "$simfile" ] ; then
              "$APSIM/Apsim.x" "$simfile" > `basename "$simfile" .sim`.sum
              rm -f "$simfile"
           fi
         done
+        rm -f "$simfiles"
       ;;
       con)
-        "$APSIM/ConToSim.x" "$file" | cut -b 9- | while read simfile
+        simfiles=`basename "$file" .apsim`.simfiles 
+        "$APSIM/ConToSim.x" "$file" &> "$simfiles"
+        cut -b 9- "$simfiles" | while read simfile
         do 
           if [ -f "$simfile" ] ; then
              "$APSIM/Apsim.x" "$simfile" > `basename "$simfile" .sim`.sum
              rm -f "$simfile"
           fi
         done
+        rm -f "$simfiles"
       ;;
       sim)
         "$APSIM/Apsim.x" "$file" > `basename "$file" .sim`.sum
