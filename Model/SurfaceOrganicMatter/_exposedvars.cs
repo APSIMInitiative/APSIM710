@@ -209,8 +209,12 @@ public partial class SurfaceOM
     [Units("kg/ha")]
     public float surfaceom_wt { get { return SumSurfOMStandingLying(g.SurfOM, x => x.amount); } }
 
+    [Output]
+    [Units("kg/ha")]
     public float carbonbalance { get { return 0 - (surfaceom_c - g.DailyInitialC); } }
 
+    [Output]
+    [Units("kg/ha")]
     public float nitrogenbalance { get { return 0 - (surfaceom_n - g.DailyInitialN); } }
 
     ///<summary>
