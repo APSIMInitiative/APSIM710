@@ -512,6 +512,20 @@ C     Last change:  E     5 Dec 2000    8:52 am
          call Respond2get_char_var
      .        (variable_name, '(dd/mm/yyyy)', str)
 
+      else if (variable_name .eq. 'dd_mm_yyyy') then
+         write (str, '(i2,a,i2,a,i4)')
+     .        thisdate(1), '_', thisdate(2), '_', thisdate(3)
+
+         if (str(1:1) .eq. Blank) then
+            str(1:1) = '0'
+         endif
+
+         if (str(4:4) .eq. Blank) then
+            str(4:4) = '0'
+         endif
+         call Respond2get_char_var
+     .        (variable_name, '(dd_mm_yyyy)', str)
+
       else if (variable_name .eq. 'mm/dd/yyyy') then
          write (str, '(i2,a,i2,a,i4)')
      .        thisdate(2), '/', thisdate(1), '/', thisdate(3)
