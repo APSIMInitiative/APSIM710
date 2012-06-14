@@ -1230,6 +1230,8 @@ end subroutine
        SOM%Pool(residue)%no3 = g%SurfOM(residue)%no3
        SOM%Pool(residue)%nh4 = g%SurfOM(residue)%nh4
        SOM%Pool(residue)%po4 = g%SurfOM(residue)%po4
+       SOM%Pool(residue)%num_StandingFraction = MaxFr
+       SOM%Pool(residue)%num_LyingFraction = MaxFr
 
        do pool = 1, MaxFr
 
@@ -2766,6 +2768,7 @@ subroutine surfom_Send_my_variable (Variable_name)
    else if (Variable_name .eq. 'surface_organic_matter') then
 
       call respond2get_SurfaceOrganicMatter ()
+      call respond2get_integer_var (variable_name, '', 0)
 
    else
       call Message_unused ()

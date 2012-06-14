@@ -50,6 +50,7 @@ module Registrations
          id%dummy = add_reg(respondToGetReg, 'wf', floatTypeDDML, '0-1', '')
          id%dummy = add_reg(respondToGetReg, 'cf', floatTypeDDML, '0-1', '')
          id%dummy = add_reg(respondToGetReg, 'leaching_fr', floatTypeDDML, '0-1', '')
+         id%dummy = add_reg(respondToGetReg, 'surface_organic_matter', intTypeDDML, '', '')
 		 id%dummy = add_reg(respondToGetReg, 'carbonbalance', floatTypeDDML, '', 'Carbon Balance')   
 		 id%dummy = add_reg(respondToGetReg, 'nitrogenbalance', floatTypeDDML, '', 'Nitrogen Balance')   
          id%potentialresiduedecompositioncalculated = add_registration(eventReg, 'potentialresiduedecompositioncalculated', SurfaceOrganicMatterDecompTypeDDML, '')

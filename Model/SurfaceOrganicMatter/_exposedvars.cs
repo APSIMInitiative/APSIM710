@@ -293,6 +293,10 @@ public partial class SurfaceOM
     [Units("")]
     public float leaching_fr { get { return g.leaching_fr; } }
 
+    [Output]
+    [Units("")]
+    public int surface_organic_matter { get { respond2get_SurfaceOrganicMatter(); return 0; } }
+
     ///<summary>
     ///Mass of organic matter named wheat
     ///</summary>

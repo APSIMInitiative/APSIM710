@@ -932,6 +932,9 @@ public partial class SurfaceOM
                 po4 = g.SurfOM[residue].po4
             };
 
+            SOM.Pool[residue].StandingFraction = new FOMType[MaxFr];
+            SOM.Pool[residue].LyingFraction = new FOMType[MaxFr];
+
             for (int pool = 0; pool < MaxFr; pool++)
             {
                 SOM.Pool[residue].StandingFraction[pool] = new FOMType()
