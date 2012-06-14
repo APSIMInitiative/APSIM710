@@ -30,6 +30,7 @@ Public Class OutputFileDescUI
    Friend WithEvents HelpPanel As System.Windows.Forms.Panel
     Friend WithEvents BottomPanel As System.Windows.Forms.Panel
     Friend WithEvents TitleLabel As System.Windows.Forms.Label
+    Friend WithEvents ColumnHeader2 As System.Windows.Forms.ColumnHeader
    Private ComponentTypes As New StringCollection
 
 #Region " Windows Form Designer generated code "
@@ -93,13 +94,14 @@ Public Class OutputFileDescUI
         Me.ComponentFilter = New System.Windows.Forms.ComboBox()
         Me.ConstantsPanel = New System.Windows.Forms.Panel()
         Me.ConstantsBox = New System.Windows.Forms.TextBox()
+        Me.TitleLabel = New System.Windows.Forms.Label()
         Me.ConstantsLabel = New System.Windows.Forms.Label()
         Me.GridContextMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.MoveUpMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MoveDownMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeleteVariablesMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BottomPanel = New System.Windows.Forms.Panel()
-        Me.TitleLabel = New System.Windows.Forms.Label()
+        Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.GridPanel.SuspendLayout()
         CType(Me.Grid, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.HelpPanel.SuspendLayout()
@@ -228,7 +230,7 @@ Public Class OutputFileDescUI
         Me.VariableListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.VariableListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader4, Me.ColumnHeader3})
+        Me.VariableListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader4, Me.ColumnHeader2, Me.ColumnHeader3})
         Me.VariableListView.FullRowSelect = True
         Me.VariableListView.Location = New System.Drawing.Point(11, 59)
         Me.VariableListView.Name = "VariableListView"
@@ -291,6 +293,17 @@ Public Class OutputFileDescUI
         Me.ConstantsBox.Size = New System.Drawing.Size(753, 43)
         Me.ConstantsBox.TabIndex = 19
         '
+        'TitleLabel
+        '
+        Me.TitleLabel.AutoSize = True
+        Me.TitleLabel.BackColor = System.Drawing.SystemColors.ActiveCaption
+        Me.TitleLabel.Dock = System.Windows.Forms.DockStyle.Top
+        Me.TitleLabel.Location = New System.Drawing.Point(0, 30)
+        Me.TitleLabel.Name = "TitleLabel"
+        Me.TitleLabel.Size = New System.Drawing.Size(39, 13)
+        Me.TitleLabel.TabIndex = 21
+        Me.TitleLabel.Text = "Label2"
+        '
         'ConstantsLabel
         '
         Me.ConstantsLabel.BackColor = System.Drawing.SystemColors.ActiveCaption
@@ -341,16 +354,9 @@ Public Class OutputFileDescUI
         Me.BottomPanel.Size = New System.Drawing.Size(753, 419)
         Me.BottomPanel.TabIndex = 28
         '
-        'TitleLabel
+        'ColumnHeader2
         '
-        Me.TitleLabel.AutoSize = True
-        Me.TitleLabel.BackColor = System.Drawing.SystemColors.ActiveCaption
-        Me.TitleLabel.Dock = System.Windows.Forms.DockStyle.Top
-        Me.TitleLabel.Location = New System.Drawing.Point(0, 30)
-        Me.TitleLabel.Name = "TitleLabel"
-        Me.TitleLabel.Size = New System.Drawing.Size(39, 13)
-        Me.TitleLabel.TabIndex = 21
-        Me.TitleLabel.Text = "Label2"
+        Me.ColumnHeader2.Text = "Units"
         '
         'OutputFileDescUI
         '
@@ -500,34 +506,35 @@ Public Class OutputFileDescUI
       End If
    End Sub
 
-   Private Sub AddVariablesToListView(ByVal ComponentName As String, ByVal ComponentType As String, ByVal PropertyGroup As String)
-      Dim ModelInfo As List(Of Types.MetaDataInfo)
-      If PropertyGroup = "variables" Then
-         ModelInfo = Types.Instance.Variables(ComponentType)
-      Else
-         ModelInfo = Types.Instance.Events(ComponentType)
-      End If
+    Private Sub AddVariablesToListView(ByVal ComponentName As String, ByVal ComponentType As String, ByVal PropertyGroup As String)
+        Dim ModelInfo As List(Of Types.MetaDataInfo)
+        If PropertyGroup = "variables" Then
+            ModelInfo = Types.Instance.Variables(ComponentType)
+        Else
+            ModelInfo = Types.Instance.Events(ComponentType)
+        End If
 
-      Dim GroupName As String = ComponentName
-      If GroupName = "" Then
-         GroupName = ComponentName + " " + PropertyGroup
-      End If
-      Dim NewGroup As New ListViewGroup(GroupName)
+        Dim GroupName As String = ComponentName
+        If GroupName = "" Then
+            GroupName = ComponentName + " " + PropertyGroup
+        End If
+        Dim NewGroup As New ListViewGroup(GroupName)
 
-      For Each Variable As Types.MetaDataInfo In ModelInfo
-         VariableListView.Groups.Add(NewGroup)
-         Dim ListItem As New ListViewItem(Variable.Name)
-         ListItem.Group = NewGroup
-         If Variable.IsArray Then
-            ListItem.SubItems.Add("Yes")
-         Else
-            ListItem.SubItems.Add("No")
-         End If
-         ListItem.SubItems.Add(Variable.Description)
-         VariableListView.Items.Add(ListItem)
-      Next
-   End Sub
-   Public Overrides Sub OnSave()
+        For Each Variable As Types.MetaDataInfo In ModelInfo
+            VariableListView.Groups.Add(NewGroup)
+            Dim ListItem As New ListViewItem(Variable.Name)
+            ListItem.Group = NewGroup
+            If Variable.IsArray Then
+                ListItem.SubItems.Add("Yes")
+            Else
+                ListItem.SubItems.Add("No")
+            End If
+            ListItem.SubItems.Add(Variable.Units)
+            ListItem.SubItems.Add(Variable.Description)
+            VariableListView.Items.Add(ListItem)
+        Next
+    End Sub
+    Public Overrides Sub OnSave()
       ' --------------------------------------------------
       ' Save the variable grid back to the selected data.
       ' --------------------------------------------------

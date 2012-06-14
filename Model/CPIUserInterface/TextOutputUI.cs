@@ -480,6 +480,7 @@ namespace CPIUserInterface
                 {
                     ListItem.SubItems.Add("No");
                 }
+                ListItem.SubItems.Add(Variable.Units);
                 ListItem.SubItems.Add(Variable.Description);
                 VariableListView.Items.Add(ListItem);
             }

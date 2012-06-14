@@ -44,6 +44,7 @@
             this.ColumnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ColumnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ColumnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ComponentFilter = new System.Windows.Forms.ComboBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -241,9 +242,10 @@
             this.ColumnHeader1,
             this.ColumnHeader4,
             this.columnHeader2,
+            this.columnHeader6,
             this.ColumnHeader3});
             this.VariableListView.FullRowSelect = true;
-            this.VariableListView.Location = new System.Drawing.Point(0, 71);
+            this.VariableListView.Location = new System.Drawing.Point(0, 69);
             this.VariableListView.Name = "VariableListView";
             this.VariableListView.Size = new System.Drawing.Size(311, 253);
             this.VariableListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
@@ -255,7 +257,7 @@
             // ColumnHeader1
             // 
             this.ColumnHeader1.Text = "Variable name";
-            this.ColumnHeader1.Width = 133;
+            this.ColumnHeader1.Width = 98;
             // 
             // ColumnHeader4
             // 
@@ -265,7 +267,12 @@
             // columnHeader2
             // 
             this.columnHeader2.Text = "Record";
-            this.columnHeader2.Width = 40;
+            this.columnHeader2.Width = 47;
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "Units";
+            this.columnHeader6.Width = 47;
             // 
             // ColumnHeader3
             // 
@@ -529,6 +536,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.Label labelLines;
+        private System.Windows.Forms.ColumnHeader columnHeader6;
 
 
     }

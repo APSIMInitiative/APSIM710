@@ -109,6 +109,7 @@ public class Types
     {
         public string Name;
         public string Description;
+        public string Units;
         public bool IsArray;
         public bool IsRecord;
     }
@@ -127,11 +128,18 @@ public class Types
                 foreach (PropertyInfo Property in T.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public))
                 {
                     string Description = "";
+                    string Units = "";
                     foreach (object Attribute in Property.GetCustomAttributes(false))
-                        Description = Attribute.ToString();
+                    {
+                        if (Attribute.GetType().Name == "Description")
+                          Description = Attribute.ToString();
+                        if (Attribute.GetType().Name == "Units")
+                          Units = Attribute.ToString();
+                    }
                     MetaDataInfo Info = new MetaDataInfo();
                     Info.Name = Property.Name;
                     Info.Description = Description;
+                    Info.Units = Units;
                     Info.IsArray = Property.PropertyType.IsArray;
                     Info.IsRecord = (Property.GetType().IsValueType && !Property.GetType().IsEnum && !Property.GetType().IsPrimitive && Property.GetType() != typeof(decimal));
                     Names.Add(Info);
@@ -167,6 +175,7 @@ public class Types
                             MetaDataInfo Info = new MetaDataInfo();
                             Info.Name = newProperty.Name;
                             Info.Description = newProperty.sDescr;
+                            Info.Units = newProperty.InitValue.units();
                             Info.IsArray = newProperty.InitValue.isArray();
                             Info.IsRecord = newProperty.InitValue.isRecord();
                             Names.Add(Info);

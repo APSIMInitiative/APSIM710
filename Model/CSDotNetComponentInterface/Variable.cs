@@ -91,6 +91,12 @@ namespace ModelFramework
             return Data.Value;
         }
 
+        public void Set(bool Value)
+        {
+            WrapBuiltInVariable<bool> Data = new WrapBuiltInVariable<bool>();
+            Data.Value = Value;
+            Component.Set(Name, Data);
+        }
         public void Set(int Value)
         {
             WrapBuiltInVariable<int> Data = new WrapBuiltInVariable<int>();
@@ -116,6 +122,12 @@ namespace ModelFramework
             Component.Set(Name, Data);
         }
 
+        public void Set(bool[] Values)
+        {
+            WrapBuiltInVariable<bool[]> Data = new WrapBuiltInVariable<bool[]>();
+            Data.Value = Values;
+            Component.Set(Name, Data);
+        }
         public void Set(int[] Values)
         {
             WrapBuiltInVariable<int[]> Data = new WrapBuiltInVariable<int[]>();

@@ -163,7 +163,7 @@ class DLLProber
                     if (XmlHelper.Attribute(Node, "access") == "none")
                         continue;
                     if (XmlHelper.Attribute(Node, "access") == "read")
-                        PropertyCode = "$DESCRIPTION$   public $TYPE$ $NAME$ {$GETTER$}\r\n";
+                        PropertyCode = "$DESCRIPTION$ $UNITS$ public $TYPE$ $NAME$ {$GETTER$}\r\n";
                     else
                         PropertyCode = "   public $TYPE$ $NAME$ \r\n" +
                                        "      {\r\n" +
@@ -180,6 +180,9 @@ class DLLProber
                         string Description = XmlHelper.Attribute(TypeNode, "description");
                         if (Description != "")
                             Description = "   [Description(\"" + Description + "\")]";
+                        string Units = XmlHelper.Attribute(TypeNode, "unit");
+                        if (Units != "")
+                            Units = "   [Units(\"" + Units + "\")]";
                         if (XmlHelper.Attribute(Node, "access") == "read" ||
                             XmlHelper.Attribute(Node, "access") == "both")
                             PropertyCode = PropertyCode.Replace("$GETTER$", GetterCode);
@@ -195,6 +198,7 @@ class DLLProber
                         PropertyCode = PropertyCode.Replace("$DOTNETTYPE$", GetDotNetTypeName(TypeNode));
                         PropertyCode = PropertyCode.Replace("$NAME$", XmlHelper.Name(Node));
                         PropertyCode = PropertyCode.Replace("$DESCRIPTION$", Description);
+                        PropertyCode = PropertyCode.Replace("$UNITS$", Units);
                         ClassCode += PropertyCode;
                     }
                 }
