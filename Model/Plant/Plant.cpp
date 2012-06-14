@@ -260,7 +260,8 @@ void Plant::onInit1(void)
    fn = boost::bind(address, this, _1, _2); \
    s->addGettableVar(name, ddml, fn, units, desc);\
    }
-   setupGetFunction2(parent, "AvailableToAnimal", DDML(protocol::AvailableToAnimalType()),
+   std::string tmpDDML = DDML(protocol::AvailableToAnimalType());
+   setupGetFunction2(parent, "AvailableToAnimal", tmpDDML,
                      &Plant::get_AvailableToAnimal, "", "Plant material available to animal");
 
    scienceAPI.exposeWritable("removedbyanimal", "", "Biomass removed by animals", RemovedByAnimalSetter(&Plant::set_RemovedByAnimal));

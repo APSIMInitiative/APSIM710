@@ -1,7 +1,10 @@
-#! /bin/sh
+#! /bin/bash
+
+export MONO_PREFIX=/usr
 
 while 1 ; do
   export APSIM=/home/bob/apsim
+  export LD_LIBRARY_PATH=$APSIM/Model
   svn revert -R $APSIM
   svn update $APSIM
   cd $APSIM/Model
@@ -10,9 +13,11 @@ while 1 ; do
   # At this point the development tree will be clean
   $APSIM/Model/Build/RunMake.sh RunTime
   $APSIM/Model/Build/RunMake.sh JobScheduler
-  $APSIM/Model/JobSchedulerWaitForPatch.exe |  -d =
+  $APSIM/Model/JobSchedulerWaitForPatch.exe | while read line; do
+    nv=( $line )
+    export ${nv[0]}="${nv[@]:1}"
+  done
 
-  #??????????for /f "tokens=1,2" %%i in ('%APSIM%\Model\JobSchedulerWaitForPatch.exe') do set %%i=%%j
   echo Patch file: $PatchFileName
   $APSIM/Model/JobSchedulerApplyPatch.exe $APSIM http://bob.apsim.info/Files/${PatchFileName}.zip
 
