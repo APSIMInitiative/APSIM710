@@ -503,13 +503,20 @@
 		<WorkingDirectory>%APSIM%/Model/SlurryTank</WorkingDirectory>
 		<CommandLine>make.exe</CommandLine>
 	</Job>
-<Job name="atmosphere">
+        <Job name="atmosphere">
 		<WorkingDirectory>%APSIM%/Model/atmosphere</WorkingDirectory>
 		<CommandLine>make.exe</CommandLine>
 	</Job>
-<Job name="simpleBuilding">
+        <Job name="simpleBuilding">
 		<WorkingDirectory>%APSIM%/Model/simpleBuilding</WorkingDirectory>
 		<CommandLine>make.exe</CommandLine>
+	</Job>
+    <!-- The first run of this fails due to missing assemblies, the second run (here) will fail as some
+         programs (JobScheduler) will already be running. Luckily it's ignored -->
+    <Job name="Compile JobScheduler" wait="yes">
+		<WorkingDirectory>%APSIM%/Model/JobScheduler</WorkingDirectory>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
    </Folder>
    <Folder name="GUI">
@@ -532,11 +539,6 @@
 	<Job name="Compile ApsimRun" wait="yes">
 		<WorkingDirectory>%APSIM%/Model/ApsimRun</WorkingDirectory>
 		<CommandLine>make.exe</CommandLine>
-	</Job>
-	<Job name="Compile JobSchedulerFindJobs" wait="yes">
-		<WorkingDirectory>%APSIM%/Model/JobScheduler/JobSchedulerFindJobs</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile CreatePatch" wait="yes">
 		<WorkingDirectory>%APSIM%/Model/JobScheduler/CreatePatch</WorkingDirectory>

@@ -30,15 +30,22 @@ class Program
             int JobID;
             do
             {
-                JobID = BuildsDB.FindNextJob();
+                string prefix = "";
+                if (System.Environment.MachineName != "Bob")
+                    prefix = System.Environment.MachineName;
+                JobID = BuildsDB.FindNextJob(prefix);
 
                 if (JobID != -1)
                 {
+                    string svnName = "svn";
+                    int p = (int) Environment.OSVersion.Platform;
+                    if (p != 4 && p != 128) // Either 4 or 128 indicates Unix
+                        svnName += ".exe";
                     // Need to get the tip revision.
-                    string SVNFileName = Utility.FindFileOnPath("svn.exe");
+                    string SVNFileName = Utility.FindFileOnPath(svnName);
                     if (SVNFileName == "")
-                        throw new Exception("Cannot find svn.exe on PATH");
-                    Process P = Utility.RunProcess(SVNFileName, "info http://apsrunet.apsim.info/svn/apsim/trunk", "c:\\");
+                        throw new Exception("Cannot find svn executable on PATH");
+                    Process P = Utility.RunProcess(SVNFileName, "info http://apsrunet.apsim.info/svn/apsim/trunk", ".");
                     string StdOut = Utility.CheckProcessExitedProperly(P);
                     string[] StdOutLines = StdOut.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                     if (StdOutLines.Length < 6)
@@ -52,25 +59,28 @@ class Program
                     Console.WriteLine("PatchFileName " + Path.GetFileNameWithoutExtension(PatchFileName));
                     Console.WriteLine("JobID " + JobID.ToString());
 
-                    // NB *******************
-                    // Increments the TipRevisionNumber
-                    // Explanation: Because Bob does a commit at the end of
-                    // a build (causing the revision number to increment by 1), Bob writes the revision number + 1
-                    // to the apsim.xml file in anticipation of the pending commit.
-                    TipRevisionNumber = TipRevisionNumber + 1;
+                    if (prefix == "")
+                    {
+                       // NB *******************
+                       // Increments the TipRevisionNumber
+                       // Explanation: Because Bob does a commit at the end of
+                       // a build (causing the revision number to increment by 1), Bob writes the revision number + 1
+                       // to the apsim.xml file in anticipation of the pending commit.
+                       TipRevisionNumber = TipRevisionNumber + 1;
+                       BuildsDB.UpdateRevisionNumber(JobID, TipRevisionNumber);
+                       BuildsDB.UpdateStartDateToNow(JobID);
+                    }
 
                     // Update the builds database.
-                    BuildsDB.UpdateStatus(JobID, "Running");
-                    BuildsDB.UpdateStartDateToNow(JobID);
-                    BuildsDB.UpdateRevisionNumber(JobID, TipRevisionNumber);
-
+                    BuildsDB.UpdateStatus(JobID, prefix + "Running");
+                    
                     // Check the previous job to see if it has stalled. If so then set it's 
                     // status accordingly. Otherwise we get multiple "Running" status'.
-                    if (JobID > 0)
+                    if (prefix == "" && JobID > 0)
                     {
-                        Dictionary<string, object> PreviousJob = BuildsDB.GetDetails(JobID-1);
-                        if (PreviousJob != null && PreviousJob["Status"].ToString() == "Running")
-                            BuildsDB.UpdateStatus(JobID - 1, "Aborted");
+                       Dictionary<string, object> PreviousJob = BuildsDB.GetDetails(JobID-1);
+                       if (PreviousJob != null && PreviousJob["Status"].ToString() == "Running")
+                          BuildsDB.UpdateStatus(JobID - 1, "Aborted");
                     }
                 }
                 else

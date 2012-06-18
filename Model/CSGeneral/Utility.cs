@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Net;
+using System.Text;
 //using System.Drawing;
 //using System.Drawing.Imaging;
 using System.Xml;
@@ -244,6 +246,12 @@ namespace CSGeneral
                 // If the 16th byte is 3, it's a shared object; 2 means it's an executable
                 // If it's a Mono/.Net assembly, we should the the "Windows" header
 
+                // If we're on Linux, see if it's a hash bang script. Should really
+                // check executable flag via Mono.Unix.Native.Syscall.stat() too
+                if (Path.VolumeSeparatorChar == '/' &&
+                    Convert.ToChar(data[0]) == '#' &&
+                    Convert.ToChar(data[1]) == '!')
+                    return CompilationMode.Native;
                 // For now, if we're on Linux just see if it has an "ELF" header
                 if (Path.VolumeSeparatorChar == '/' && data[0] == 0x7f && data[1] == 'E' && data[2] == 'L' && data[3] == 'F')
                     return CompilationMode.Native;
@@ -333,6 +341,37 @@ namespace CSGeneral
             list.AddRange(type.GetFields(flags | BindingFlags.DeclaredOnly));
             return list;
         }
+        /// <summary>
+        ///  Upload a file via ftp
+        /// </summary>
+        /// <param name="localFileName">Name of the file to be uploaded</param>
+        /// <param name="username">remote username</param>
+        /// <param name="password">remote password</param>
+        /// <param name="hostname">remote hostname</param>
+        /// <param name="remoteFileName">Full path and name of where the file goes</param>
+        /// <returns></returns>
+        public static bool UploadFtp(string localFileName, string username, string password, string hostname, string remoteFileName)
+        {
+            // Get the object used to communicate with the server.
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + hostname + remoteFileName);
+            request.Method = WebRequestMethods.Ftp.UploadFile;
+            request.Credentials = new NetworkCredential();
 
+            // Copy the contents of the file to the request stream.
+            StreamReader sourceStream = new StreamReader(localFileName);
+            byte[] fileContents = Encoding.UTF8.GetBytes(sourceStream.ReadToEnd());
+            sourceStream.Close();
+            request.ContentLength = fileContents.Length;
+
+            Stream requestStream = request.GetRequestStream();
+            requestStream.Write(fileContents, 0, fileContents.Length);
+            requestStream.Close();
+
+            FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+            string retVal = response.StatusDescription;
+            response.Close();
+
+            return retVal != "200";
+        }
     }
 }

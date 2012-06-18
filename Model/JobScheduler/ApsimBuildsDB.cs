@@ -233,10 +233,10 @@ public class ApsimBuildsDB
     /// <summary>
     /// Find the next job to run.
     /// </summary>
-    public int FindNextJob()
+    public int FindNextJob(string prefix)
     {
         int JobID = -1;
-        string SQL = "SELECT ID FROM BuildJobs WHERE Status = 'Queued' ORDER BY ID";
+        string SQL = "SELECT ID FROM BuildJobs WHERE " + prefix + "Status = 'Queued' ORDER BY ID";
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
         SqlDataReader Reader = ExecuteReader(Command);
@@ -245,8 +245,6 @@ public class ApsimBuildsDB
         Reader.Close();
         return JobID;
     }
-
-
 
     /// <summary>
     /// A dummy method for altering the database structure.

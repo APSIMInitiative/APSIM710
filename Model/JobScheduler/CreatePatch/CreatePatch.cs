@@ -26,7 +26,7 @@ public partial class MainForm : Form
         else
         {
             string CWD = Directory.GetCurrentDirectory();
-            if (!File.Exists(Path.Combine(CWD, "apsim.xml")))
+            if (!File.Exists(Path.Combine(CWD, "Apsim.xml")))
             {
                 // Look up to parent.
                 string Parent = Path.GetDirectoryName(CWD);  // parent dir.

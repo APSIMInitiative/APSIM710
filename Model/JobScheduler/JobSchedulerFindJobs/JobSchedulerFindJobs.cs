@@ -7,8 +7,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Xml;
-using CSGeneral;
 using ApsimFile;
+using CSGeneral;
 
 class Program
 {
@@ -192,7 +192,7 @@ class Program
         {
             string SumFileName = Path.ChangeExtension(SimFileName, ".sum");
             XmlNode JobNode = Node.AppendChild(Node.OwnerDocument.CreateElement("Job"));
-            XmlHelper.SetName(JobNode, "Apsim.exe " + SimFileName);
+            XmlHelper.SetName(JobNode, "Apsim " + SimFileName);
             XmlHelper.SetValue(JobNode, "WorkingDirectory", Path.GetDirectoryName(FileName));
             XmlHelper.SetValue(JobNode, "CommandLine", ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", "Apsim.exe")) + " " + StringManip.DQuote(SimFileName) + " > " + StringManip.DQuote(SumFileName)));
             XmlHelper.SetValue(JobNode, "CommandLineUnix", ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", "Apsim.x")) + " " + StringManip.DQuote(SimFileName) + " > " + StringManip.DQuote(SumFileName)));
@@ -247,7 +247,7 @@ class Program
         string SumFileName = Path.ChangeExtension(SimFileName, ".sum");
 
         XmlNode JobNode = Node.AppendChild(Node.OwnerDocument.CreateElement("Job"));
-        XmlHelper.SetName(JobNode, "Apsim.exe " + SimFileName);
+        XmlHelper.SetName(JobNode, "Apsim " + SimFileName);
         XmlHelper.SetValue(JobNode, "WorkingDirectory", Path.GetDirectoryName(SimFileName));
         XmlHelper.SetValue(JobNode, "CommandLine", ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", "Apsim.exe")) + " " + StringManip.DQuote(SimFileName) + " > " + StringManip.DQuote(SumFileName)));
         XmlHelper.SetValue(JobNode, "CommandLineUnix", ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", "Apsim.x")) + " " + StringManip.DQuote(SimFileName) + " > " + StringManip.DQuote(SumFileName)));

@@ -65,9 +65,11 @@ class JobSchedulerApplyPatch
         File.Delete(RevisionsFileName);
 
         // Find SVN.exe on the path.
-        string SVNFileName = Utility.FindFileOnPath("svn.exe");
+        string SVNFileName;
+        if (Path.DirectorySeparatorChar == '/') SVNFileName = Utility.FindFileOnPath("svn");
+        else SVNFileName = Utility.FindFileOnPath("svn.exe");
         if (SVNFileName == "")
-            throw new Exception("Cannot find svn.exe on PATH");
+            throw new Exception("Cannot find svn on PATH");
 
         // Get a list of files currently known to SVN and their tip revision numbers.
         Process SVN = Utility.RunProcess(SVNFileName, "-v stat", ApsimDirectoryName);
@@ -139,7 +141,7 @@ class JobSchedulerApplyPatch
     {
         if (!Directory.Exists(Path.Combine(DirectoryName, ".svn")))
         {
-            int PosSlash = DirectoryName.LastIndexOf('\\');
+            int PosSlash = DirectoryName.LastIndexOf(Path.DirectorySeparatorChar);
             if (PosSlash == -1)
                 throw new Exception("Invalid directory found: " + DirectoryName);
             string ParentName = DirectoryName.Substring(0, PosSlash);

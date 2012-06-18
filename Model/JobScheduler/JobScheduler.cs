@@ -63,7 +63,7 @@ public class JobScheduler
     {
         try
         {
-    
+
             if (args.Length >= 1)
             {
                 JobScheduler Scheduler = new JobScheduler();
@@ -148,8 +148,14 @@ public class JobScheduler
         string NumberOfProcesses = Environment.GetEnvironmentVariable("NUMBER_OF_PROCESSORS");
         if (NumberOfProcesses != null && NumberOfProcesses != "")
             NumCPUsToUse = Convert.ToInt32(NumberOfProcesses);
-        NumCPUsToUse = Math.Max(NumCPUsToUse, 0);
+        else 
+           {
+           Process P = Utility.RunProcess("/bin/sh", "-c \"cat /proc/cpuinfo | grep processor | wc -l\"", ".");
+           NumCPUsToUse = Convert.ToInt32(Utility.CheckProcessExitedProperly(P));
+           }
+        NumCPUsToUse = Math.Max(NumCPUsToUse, 1);
 
+        Console.WriteLine("Managing " + NumCPUsToUse + " Process" + (NumCPUsToUse > 1 ? "es" : ""));
         Console.WriteLine("Menu: ");
         Console.WriteLine("   ESC - shut down JobScheduler when possible.");
         Console.WriteLine("     S - signal a shutdown to caller of JobScheduler when all jobs complete.");
@@ -206,6 +212,7 @@ public class JobScheduler
                     StopSignal = true;
                 }
             }
+            TotalJobs = Doc.GetElementsByTagName("Job").Count;
         }
 
         // Wait until all jobs have finished.
@@ -556,7 +563,9 @@ public class JobScheduler
             }
             NumberJobsRunning--;
             JobsCompleted++;
-            Console.Out.Write("\rJobs Completed = " + JobsCompleted + " of " + TotalJobs + " [" + JobNode.Attributes.GetNamedItem("name").Value + "]" + "                                   ");
+            string msg = "Jobs Completed = " + JobsCompleted + " of " + TotalJobs + 
+                    " [" + JobNode.Attributes.GetNamedItem("name").Value + (StatusOfJob(JobNode) == "Fail" ? "*FAILED*]" : "]");
+            Console.WriteLine(msg);
         }
     }
 

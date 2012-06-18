@@ -3,13 +3,23 @@
 <Folder name="RunAll">
 	<Job name="FindExamples">
 		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-		<CommandLine>JobSchedulerFindJobs.exe "%APSIM%\Examples\*.apsim?" "%JobPath%/../Examples"</CommandLine>
-		<CommandLineUnix>JobSchedulerFindJobs.exe "%APSIM%/Examples/*.apsim?" "%JobPath%/../Examples"</CommandLineUnix>
+		<CommandLine>JobSchedulerFindJobs.exe "%APSIM%\Examples\*.apsim" "%JobPath%/../Examples"</CommandLine>
+		<CommandLineUnix>JobSchedulerFindJobs.exe "%APSIM%/Examples/*.apsim" "%JobPath%/../Examples"</CommandLineUnix>
+	</Job>
+	<Job name="FindXExamples">
+		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+		<CommandLine>JobSchedulerFindJobs.exe "%APSIM%\Examples\*.apsimx" "%JobPath%/../Examples"</CommandLine>
+		<CommandLineUnix>JobSchedulerFindJobs.exe "%APSIM%/Examples/*.apsimx" "%JobPath%/../Examples"</CommandLineUnix>
 	</Job>
 	<Job name="FindTests" >
 		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-		<CommandLine>JobSchedulerFindJobs.exe "%APSIM%\Tests\*.apsim?" "%JobPath%/../Tests"</CommandLine>
-		<CommandLineUnix>JobSchedulerFindJobs.exe "%APSIM%/Tests/*.apsim?" "%JobPath%/../Tests"</CommandLineUnix>
+		<CommandLine>JobSchedulerFindJobs.exe "%APSIM%\Tests\*.apsim" "%JobPath%/../Tests"</CommandLine>
+		<CommandLineUnix>JobSchedulerFindJobs.exe "%APSIM%/Tests/*.apsim" "%JobPath%/../Tests"</CommandLineUnix>
+	</Job>      
+	<Job name="FindXTests" >
+		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+		<CommandLine>JobSchedulerFindJobs.exe "%APSIM%\Tests\*.apsimx" "%JobPath%/../Tests"</CommandLine>
+		<CommandLineUnix>JobSchedulerFindJobs.exe "%APSIM%/Tests/*.apsimx" "%JobPath%/../Tests"</CommandLineUnix>
 	</Job>      
 	<Job name="FindControlFiles" >
 		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
@@ -19,8 +29,7 @@
 	<Folder name="Examples" wait="yes">
 	  <Folder name="CreateSims"  />
    	  <Folder name="RunApsim"  IgnoreErrors="yes"/>
-    </Folder>
-
+        </Folder>
 	<Folder name="Tests" wait="yes">
 	  <Folder name="CreateSims"  />
    	  <Folder name="RunApsim"  IgnoreErrors="yes"/>

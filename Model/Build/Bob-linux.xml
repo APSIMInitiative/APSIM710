@@ -11,7 +11,7 @@
 
 -->
 <Folder name="Bob" LoopForever="no">
-	<Folder name="BuildAndRun" wait="yes">
+	<Folder name="Build" >
 		<Job name="Remove all example .out and .sum files" wait="yes">
 			<WorkingDirectory>%APSIM%/Examples</WorkingDirectory>
 			<CommandLineUnix>find . -name \*.out -or -name \*.sum -exec rm {} \; </CommandLineUnix>
@@ -25,14 +25,14 @@
 			<CommandLineUnix>tclsh8.5 VersionStamper.tcl Increment</CommandLineUnix>
 		</Job>
 		<!-- Build APSIM -->
-		<Job name="Load in Build.xml">
+		<Job name="Load in Build.xml" wait="yes">
 			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
 			<CommandLineUnix>JobSchedulerSendCommand.exe "AddXMLFile~%JobPath%/../Build~%APSIM%/Model/Build/BuildAll.xml"</CommandLineUnix>
 		</Job>
-		<Folder name="Build" wait="yes"/>
-        <Job name="Create release">
+		<Folder name="Build" wait="yes" IgnoreErrors="yes"/>
+                <Job name="Create release" wait="yes" >
 			<WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-			<CommandLineUnix>Release.sh %PatchFileName%</CommandLineUnix>
+			<CommandLineUnix>/bin/sh Release.sh %PatchFileName%</CommandLineUnix>
 		</Job>	
 		<Job name="Update DB Release" wait="yes">
 			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
@@ -41,14 +41,14 @@
 	</Folder>
 
 	<!-- Run all APSIM tests -->
-	<Job name="Load in Run.xml">
+	<Job name="Load in Run.xml" >
 		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
 		<CommandLineUnix>JobSchedulerSendCommand.exe "AddXMLFile~%JobPath%/../Run~%APSIM%/Model/Build/RunAll.xml"</CommandLineUnix>
 	</Job>
-   <Folder name="Run" wait="yes"/>
+        <Folder name="Run" wait="yes" IgnoreErrors="yes"/>
 	<!--  Finish up by collecting diffs and sending the email. -->	
-	<Job name="CreateDiffsZip">
+	<Job name="CreateDiffsZip" wait="yes">
 		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-		<CommandLine>JobSchedulerCreateDiffZip.exe %APSIM% C:\Upload\%PatchFileName%.zip</CommandLine>
+		<CommandLineUnix>JobSchedulerCreateDiffZip.exe %APSIM% %PatchFileName%</CommandLineUnix>
 	</Job>
 </Folder>
