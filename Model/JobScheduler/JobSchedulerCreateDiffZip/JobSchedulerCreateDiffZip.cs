@@ -289,25 +289,22 @@ class Program
         string[] PatchFileNames;
         PatchFileNames = Zip.FileNamesInZip(PatchFileName, "");
 
-        for (int i = 0; i < PatchFileNames.Length; i++)
-            PatchFileNames[i] = Path.Combine(ApsimDirectoryName, PatchFileNames[i]).Replace('\\','/');
-
         foreach (string FileNameInPatch in PatchFileNames)
         {
-            string RelativeFileName = FileNameInPatch.Replace(ApsimDirectoryName + '/', "");
-            Stream PatchContents = Zip.UnZipFile(PatchFileName, RelativeFileName, "");
+            Stream PatchContents = Zip.UnZipFile(PatchFileName, FileNameInPatch, "");
             if (PatchContents == null)
-                throw new Exception("missing file " + RelativeFileName + " in patchfile");
+                throw new Exception("missing file " + FileNameInPatch + " in patchfile");
 
+            string localVersionOfPatchedFile = Path.Combine(ApsimDirectoryName,FileNameInPatch).Replace('\\', '/');
             bool AreEqual;
             if (Path.GetFileName(FileNameInPatch) == "DotNetProxies.cs")
                 AreEqual = true;
             else
-                AreEqual = FilesAreIdentical(PatchContents, FileNameInPatch);
+                AreEqual = FilesAreIdentical(PatchContents, localVersionOfPatchedFile);
 
             // If the files are identical then remove it from the list of ModifiedFiles,
             // otherwise make sure it is in the list.
-            int I = StringManip.IndexOfCaseInsensitive(ModifiedFiles, FileNameInPatch /*.Replace('/', '\\')*/);
+            int I = StringManip.IndexOfCaseInsensitive(ModifiedFiles, localVersionOfPatchedFile);
             if (AreEqual)
             {
                 if (I != -1)
@@ -316,7 +313,7 @@ class Program
             else
             {
                 if (I == -1 && Path.GetFileName(FileNameInPatch) != "patch.revisions")
-                    ModifiedFiles.Add(FileNameInPatch);
+                    ModifiedFiles.Add(localVersionOfPatchedFile);
             }
         }
 
