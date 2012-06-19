@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Text;
-using CSGeneral;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
+using CSGeneral;
 
 class Program
 {
@@ -31,21 +31,18 @@ class Program
             do
             {
                 string prefix = "";
-                if (System.Environment.MachineName != "Bob")
+                if (System.Environment.MachineName.ToUpper() != "BOB")
                     prefix = System.Environment.MachineName;
                 JobID = BuildsDB.FindNextJob(prefix);
 
                 if (JobID != -1)
                 {
-                    string svnName = "svn";
-                    int p = (int) Environment.OSVersion.Platform;
-                    if (p != 4 && p != 128) // Either 4 or 128 indicates Unix
-                        svnName += ".exe";
-                    // Need to get the tip revision.
-                    string SVNFileName = Utility.FindFileOnPath(svnName);
-                    if (SVNFileName == "")
-                        throw new Exception("Cannot find svn executable on PATH");
-                    Process P = Utility.RunProcess(SVNFileName, "info http://apsrunet.apsim.info/svn/apsim/trunk", ".");
+                    string SVNExeName;
+                    if (Path.DirectorySeparatorChar == '/') SVNExeName = Utility.FindFileOnPath("svn");
+                    else SVNExeName = Utility.FindFileOnPath("svn.exe");
+                    if (SVNExeName == "")
+                        throw new Exception("Cannot find svn on PATH");
+                    Process P = Utility.RunProcess(SVNExeName, "info http://apsrunet.apsim.info/svn/apsim/trunk", ".");
                     string StdOut = Utility.CheckProcessExitedProperly(P);
                     string[] StdOutLines = StdOut.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                     if (StdOutLines.Length < 6)

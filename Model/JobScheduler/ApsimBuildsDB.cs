@@ -256,7 +256,8 @@ public class ApsimBuildsDB
         //string SQL = "ALTER TABLE BuildJobs ADD BuildTreeFileName varchar";
         //string SQL = "ALTER TABLE BuildJobs DROP COLUMN RevisionNumber";
         //string SQL = "DELETE FROM BuildJobs";
-        string SQL = "ALTER TABLE BuildJobs ADD DoCommit int";
+        //string SQL = "ALTER TABLE BuildJobs ADD DoCommit int";
+        string SQL = "ALTER TABLE BuildJobs ADD linuxStatus char(30)";
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
         ExecuteNonQuery(Command);
