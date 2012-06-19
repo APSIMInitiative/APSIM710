@@ -31,9 +31,13 @@ rem ------------------------------------------------------------------------
 echo ----- Copy the Bootstrap.xml file to the build directory                      >> %TEMP%\Bootstrap.xml
 copy %TEMP%\Bootstrap.xml %APSIM%\Model\Build
 
-echo ----- Compile the JobScheduler -----                                          >> %APSIM%\Model\Build\Bootstrap.xml
+echo ----- Install runtimes         -----                                          >> %APSIM%\Model\Build\Bootstrap.xml
 call %APSIM%\Model\Build\RunMake.bat %APSIM%\Model\RunTime                         >> %APSIM%\Model\Build\Bootstrap.xml
+if ERRORLEVEL 1 goto CleanUp
+
+echo ----- Compile the JobScheduler -----                                          >> %APSIM%\Model\Build\Bootstrap.xml
 call %APSIM%\Model\Build\RunMake.bat %APSIM%\Model\JobScheduler                    >> %APSIM%\Model\Build\Bootstrap.xml
+if ERRORLEVEL 1 goto CleanUp
 
 rem ------------------------------------------------------------------------
 rem Go wait for a patch. JobSchedulerWaitForPatch needs to
