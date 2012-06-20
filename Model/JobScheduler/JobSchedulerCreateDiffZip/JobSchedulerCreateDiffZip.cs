@@ -112,7 +112,7 @@ class Program
             Utility.CheckProcessExitedProperly(P);
 
             if (Environment.MachineName.ToUpper() == "BOB")
-                File.Move(outZip, "C:\\inetpub\\wwwroot\\Files\\" + Path.GetFileName(outZip));
+                File.Copy(outZip, "C:\\inetpub\\wwwroot\\Files\\" + Path.GetFileName(outZip));
             else
             {
                 try
@@ -123,9 +123,9 @@ class Program
                 {
                     Console.WriteLine("Upload failed " + e.Message);
                 }
-                File.Delete(outZip);
             }
             // Now get rid of our temporary directory.
+            File.Delete(outZip);
             Directory.Delete(TempDirectory, true);
         }
 
