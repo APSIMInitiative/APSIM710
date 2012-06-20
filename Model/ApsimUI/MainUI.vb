@@ -665,7 +665,7 @@ Public Class MainUI
                 ' Get the image attribute from the root node of the loaded xml file
                 Dim ImageFileName As String = XmlHelper.Attribute(Doc.DocumentElement, "image")
                 If ImageFileName = "" Then
-                    ImageFileName = "%apsim%\UserInterface\Images\Toolbox24.png"
+                    ImageFileName = "%apsim%\UserInterface\Images\toolbox24.png"
                 End If
                 ImageFileName = Configuration.RemoveMacros(ImageFileName)
 
