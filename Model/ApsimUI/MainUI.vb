@@ -121,31 +121,6 @@ Public Class MainUI
             MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
 
-        ' Position window correctly.
-        Try
-            Dim inifile As New IniFile
-            WindowState = Convert.ToInt32(Configuration.Instance.Setting("windowstate"))
-            Top = Convert.ToInt32(Configuration.Instance.Setting("top"))
-            Left = Convert.ToInt32(Configuration.Instance.Setting("left"))
-            If (Left < 0 Or Left > Width) Then
-                Left = 1
-            End If
-            If (Top < 0 Or Top > Height) Then
-                Top = 1
-            End If
-            Height = Convert.ToInt32(Configuration.Instance.Setting("height"))
-            Width = Convert.ToInt32(Configuration.Instance.Setting("width"))
-
-            If (Height = 0 Or Width = 0) Then
-                Height = 600
-                Width = 400
-            End If
-            Me.Height = Height
-            Me.Width = Width
-        Catch ex As System.Exception
-            Me.WindowState = FormWindowState.Maximized
-        End Try
-
     End Sub
     Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing Then
@@ -504,6 +479,33 @@ Public Class MainUI
             Assembly.Load("Graph")
             'Assembly.Load("Soils")
 
+            ' Position window correctly after the scaling has been done.
+            Try
+                Dim inifile As New IniFile
+                Dim _Height As Integer
+                Dim _Width As Integer
+                WindowState = Convert.ToInt32(Configuration.Instance.Setting("windowstate"))
+                Top = Convert.ToInt32(Configuration.Instance.Setting("top"))
+                Left = Convert.ToInt32(Configuration.Instance.Setting("left"))
+                If (Left < 0 Or Left > Me.Width) Then
+                    Left = 1
+                End If
+                If (Top < 0 Or Top > Me.Height) Then
+                    Top = 1
+                End If
+                _Height = Convert.ToInt32(Configuration.Instance.Setting("height"))
+                _Width = Convert.ToInt32(Configuration.Instance.Setting("width"))
+
+                If (_Height = 0 Or _Width = 0) Then
+                    _Height = 400
+                    _Width = 600
+                End If
+                Me.Height = _Height
+                Me.Width = _Width
+            Catch ex As System.Exception
+                Me.WindowState = FormWindowState.Maximized
+            End Try
+
             'Try and load an icon from configuration. (Splash Screen?)
             Dim IconFileName As String = Configuration.Instance.Setting("Icon")
             If IconFileName <> "" AndAlso File.Exists(IconFileName) Then
@@ -698,7 +700,7 @@ Public Class MainUI
             ' that was just clicked.
             For i As Integer = 2 To ToolBoxesToolStrip.Items.Count - 1
                 Dim Button As ToolStripButton = ToolBoxesToolStrip.Items(i)
-                    Button.Checked = False
+                Button.Checked = False
             Next
             ButtonThatWasClicked.Checked = True
 
