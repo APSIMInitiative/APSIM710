@@ -3,6 +3,7 @@
 // pass c++ classes as arguments - the name mangling and memory managers are incompatible.
 // It requires RTools (from CRAN) to compile.
 
+#include <unistd.h>
 #include <RInside.h>
 #include "REmbedder.h"
 #include "RDataTypes.h"
@@ -138,6 +139,11 @@ extern "C" bool EmbeddedR_Start(const char *R_Home, const char *UserLibs)
    std::replace(newPath.begin(), newPath.end(), '\\', '/'); 
    newPath = std::string(R_Home) + "/bin/i386;" + newPath;
    setenv("PATH", newPath.c_str(), 1);
+
+   char oldWD [8192];
+   getcwd(oldWD, 8192);
+   std::string newWD = std::string(R_Home) + "/bin/i386";
+   chdir(newWD.c_str());
 #endif
 
    if (R_Home != NULL && strlen(R_Home) > 0) { setenv("R_HOME", R_Home, 1) ; }
@@ -160,7 +166,11 @@ extern "C" bool EmbeddedR_Start(const char *R_Home, const char *UserLibs)
         std::cerr << msg << std::endl; std::cerr.flush();
 		return false; 
    } 	 
-  
+
+#ifdef WIN32
+   chdir(oldWD);
+#endif
+   
    return true;
 }
 

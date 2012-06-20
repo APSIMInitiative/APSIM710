@@ -123,7 +123,7 @@ void REvalQ(const char *s) ;
 void StopR(void);
 extern "C" bool EmbeddedR_Start(const char *R_Home, const char *UserLibs);
 extern "C" bool EmbeddedR_SetComponent(void *fPtr);
-bool StartR (const char *R_Home, const char *UserLibs) 
+bool StartR (const char *R_Home, const char *UserLibs, const char *) 
 {
   EmbeddedR_SetComponent((void *)&componentCallback);
   return (EmbeddedR_Start(R_Home, UserLibs));
@@ -215,12 +215,6 @@ void RComponent::onInit2(void)
          throw std::runtime_error("No R install info in " + installPathKey);
      }		
 
-   char pathBuffer[8192];
-   GetEnvironmentVariable("PATH", pathBuffer, 8192);
-   std::string newPath = installPath + "\\bin\\i386;" + pathBuffer;
-   SetEnvironmentVariable("PATH", newPath.c_str());
-   //apsimAPI.write("Setting path:" + newPath + "\n");
-   
    replace(installPath.begin(), installPath.end(), '\\', '/'); 
    apsimAPI.write("Loading R from " + installPath + "\n");
    string Rdll = installPath + "/bin/i386/R.dll";
@@ -256,8 +250,7 @@ void RComponent::onInit2(void)
 		       EXE.c_str()))
 		throw std::runtime_error("Cant Start R");
 #else
-   string EXE = fileDirName(apsimDLL) + "/REmbed.so";;
-   StartR(NULL, NULL);
+   StartR(NULL, NULL, NULL);
 #endif
 
    // write copyright notice(s).
