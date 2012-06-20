@@ -217,7 +217,9 @@ public class ApsimBuildsDB
     /// </summary>
     public void SetNumDiffs(int JobID, int NumDiffs)
     {
-        string SQL = "UPDATE BuildJobs SET NumDiffs = " + NumDiffs.ToString() + " WHERE ID = " + JobID.ToString();
+        string prefix = "";
+        if (Environment.MachineName.ToUpper() != "BOB") prefix = Environment.MachineName;
+        string SQL = "UPDATE BuildJobs SET " + prefix + "NumDiffs = " + NumDiffs.ToString() + " WHERE ID = " + JobID.ToString();
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
         ExecuteNonQuery(Command);
