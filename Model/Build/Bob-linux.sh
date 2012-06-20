@@ -2,7 +2,7 @@
 
 export MONO_PREFIX=/usr
 
-while 1 ; do
+while [ : ] ; do
   export APSIM=/home/bob/apsim
   export LD_LIBRARY_PATH=$APSIM/Model
   svn revert -R $APSIM
@@ -19,7 +19,7 @@ while 1 ; do
   done
 
   echo Patch file: $PatchFileName
-  $APSIM/Model/JobSchedulerApplyPatch.exe $APSIM http://bob.apsim.info/Files/${PatchFileName}.zip
+  $APSIM/Model/JobSchedulerApplyPatch.exe $APSIM http://bob.apsim.info/Files/Upload/${PatchFileName}.zip
 
   cd $APSIM/Model/Build
   $APSIM/Model/JobScheduler.exe Bob-linux.xml
