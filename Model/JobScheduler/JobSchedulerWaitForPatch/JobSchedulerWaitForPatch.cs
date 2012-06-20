@@ -51,6 +51,7 @@ class Program
 
                     Dictionary<string, object> Details = BuildsDB.GetDetails(JobID);
                     string PatchFileName = Details["PatchFileName"].ToString();
+                    PatchFileName = PatchFileName.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
 
                     // Let the jobscheduler have a new variable called PatchFileName and JobID.
                     Console.WriteLine("PatchFileName " + Path.GetFileNameWithoutExtension(PatchFileName));
