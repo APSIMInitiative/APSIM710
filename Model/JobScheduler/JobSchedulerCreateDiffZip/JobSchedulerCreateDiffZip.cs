@@ -19,18 +19,18 @@ class Program
     /// </summary>
     static int Main(string[] args)
     {
-//        try
-//        {
+        try
+        {
            if (args.Length != 2)
                 throw new Exception("Usage: JobSchedulerCreateDiffZip DirectoryName PatchFileName");
 
             Go(args[0], args[1]);
-//        }
-//        catch (Exception err)
-//        {
-//            Console.WriteLine(err.Message);
-//            return 1;
-//        }
+        }
+        catch (Exception err)
+        {
+            Console.WriteLine(err.Message);
+            return 1;
+        }
         return 0;
     }
 
@@ -111,13 +111,13 @@ class Program
             P = Utility.RunProcess(zipExe, "a -tzip \"" + outZip + "\" \"" + TempDirectory + "\"", Path.GetTempPath());
             Utility.CheckProcessExitedProperly(P);
 
-            if (Environment.MachineName == "Bob")
-                File.Move(outZip, "C:\\inetpub\\wwwroot\\Files\\");
+            if (Environment.MachineName.ToUpper() == "BOB")
+                File.Move(outZip, "C:\\inetpub\\wwwroot\\Files\\" + Path.GetFileName(outZip));
             else
             {
                 try
                 {
-                    Utility.UploadFtp(outZip, Environment.MachineName, Environment.MachineName, "bob.apsim.info", "/pub/wwwroot/Files/" + Path.GetFileName(outZip));
+                    Utility.UploadFtp(outZip, Environment.MachineName, Environment.MachineName, "bob.apsim.info", "/Files/" + Path.GetFileName(outZip));
                 }
                 catch (Exception e)
                 {
@@ -333,7 +333,12 @@ class Program
             foreach (string FileName in ModifiedFiles)
                 Console.WriteLine(FileName);
             Db.UpdateStatus(JobID, "Fail");
-            string DiffsFileName = "http://bob.apsim.info/files/" + Path.GetFileNameWithoutExtension(PatchFileName) + ".diffs.zip";
+
+            string prefix = "";
+            if (Environment.MachineName.ToUpper() != "BOB") prefix = Environment.MachineName;
+
+            string DiffsFileName = "http://bob.apsim.info/files/" + Path.GetFileNameWithoutExtension(PatchFileName) + 
+                (prefix != "" ? "." + prefix : "") + ".diffs.zip";
             Db.UpdateDiffFileName(JobID, DiffsFileName);
             Db.Close();
             throw new Exception("Build is not clean");
@@ -422,4 +427,3 @@ class Program
 
 
 }
-

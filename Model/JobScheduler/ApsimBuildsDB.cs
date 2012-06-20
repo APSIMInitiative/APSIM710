@@ -104,7 +104,7 @@ public class ApsimBuildsDB
     public void Add(string UserName, string Password, string PatchFileName, string Description, int BugID, bool DoCommit)
     {
         string SQL = "INSERT INTO BuildJobs (UserName, Password, PatchFileName, Description, BugID, DoCommit, Status) " +
-                     "VALUES (@UserName, @Password, @PatchFileName, @Description, @BugID, @DoCommit, @Status)";
+                     "VALUES (@UserName, @Password, @PatchFileName, @Description, @BugID, @DoCommit, @Status, @linuxStatus)";
 
         SqlCommand Cmd = new SqlCommand(SQL, Connection);
 
@@ -113,11 +113,12 @@ public class ApsimBuildsDB
         Cmd.Parameters.Add(new SqlParameter("@PatchFileName", PatchFileName));
         Cmd.Parameters.Add(new SqlParameter("@Description", Description));
         Cmd.Parameters.Add(new SqlParameter("@BugID", BugID));
-        Cmd.Parameters.Add(new SqlParameter("@Status", "Queued"));
         if (DoCommit)
             Cmd.Parameters.Add(new SqlParameter("@DoCommit", "1"));
         else
             Cmd.Parameters.Add(new SqlParameter("@DoCommit", "0"));
+        Cmd.Parameters.Add(new SqlParameter("@Status", "Queued"));
+        Cmd.Parameters.Add(new SqlParameter("@linuxStatus", "Queued"));
         ExecuteNonQuery(Cmd);
     }
 
@@ -152,7 +153,10 @@ public class ApsimBuildsDB
     /// </summary>
     public void UpdateStatus(int JobID, string NewStatus)
     {
-        string SQL = "UPDATE BuildJobs SET Status = '" + NewStatus + "' WHERE ID = " + JobID.ToString();
+        string prefix = "";
+        if (Environment.MachineName.ToUpper() != "BOB") prefix = Environment.MachineName;
+        
+        string SQL = "UPDATE BuildJobs SET " + prefix + "Status = '" + NewStatus + "' WHERE ID = " + JobID.ToString();
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
         ExecuteNonQuery(Command);
@@ -198,7 +202,10 @@ public class ApsimBuildsDB
     /// </summary>
     public void UpdateDiffFileName(int JobID, string DiffsFileName)
     {
-        string SQL = "UPDATE BuildJobs SET DiffsFileName = '" + DiffsFileName + "'" +
+        string prefix = "";
+        if (Environment.MachineName.ToUpper() != "BOB") prefix = Environment.MachineName;
+
+        string SQL = "UPDATE BuildJobs SET " + prefix + "DiffsFileName = '" + DiffsFileName + "'" +
                                             " WHERE ID = " + JobID.ToString();
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
@@ -257,7 +264,7 @@ public class ApsimBuildsDB
         //string SQL = "ALTER TABLE BuildJobs DROP COLUMN RevisionNumber";
         //string SQL = "DELETE FROM BuildJobs";
         //string SQL = "ALTER TABLE BuildJobs ADD DoCommit int";
-        string SQL = "ALTER TABLE BuildJobs ADD linuxStatus char(30)";
+        string SQL = "ALTER TABLE BuildJobs ADD linuxDiffsFileName varchar";
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
         ExecuteNonQuery(Command);

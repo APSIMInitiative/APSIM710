@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Net;
 using System.Diagnostics;
 using CSGeneral;
 using System.IO;
@@ -28,8 +29,16 @@ class JobSchedulerApplyPatch
         {
             if (args.Length != 2)
                 throw new Exception("Usage: JobSchedulerApplyPatch DirectoryName PatchFileName");
-
-            Go(args[0], args[1]);
+            string PatchFileName = args[1];
+            if (!File.Exists(PatchFileName))
+            {
+                WebClient Client = new WebClient();
+                string localfile = Path.Combine(Path.GetTempPath(), Path.GetFileName(PatchFileName));
+                Console.WriteLine("Downloading " + PatchFileName + " to " + localfile);
+                Client.DownloadFile(PatchFileName, localfile);
+                PatchFileName = localfile;
+            }
+            Go(args[0], PatchFileName);
         }
         catch (Exception err)
         {

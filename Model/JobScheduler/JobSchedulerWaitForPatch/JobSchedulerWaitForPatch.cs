@@ -69,14 +69,14 @@ class Program
                     }
 
                     // Update the builds database.
-                    BuildsDB.UpdateStatus(JobID, prefix + "Running");
+                    BuildsDB.UpdateStatus(JobID, "Running");
                     
                     // Check the previous job to see if it has stalled. If so then set it's 
                     // status accordingly. Otherwise we get multiple "Running" status'.
                     if (prefix == "" && JobID > 0)
                     {
                        Dictionary<string, object> PreviousJob = BuildsDB.GetDetails(JobID-1);
-                       if (PreviousJob != null && PreviousJob["Status"].ToString() == "Running")
+                       if (PreviousJob != null && PreviousJob[prefix + "Status"].ToString() == "Running")
                           BuildsDB.UpdateStatus(JobID - 1, "Aborted");
                     }
                 }
