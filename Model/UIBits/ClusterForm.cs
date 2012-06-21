@@ -38,7 +38,7 @@ namespace UIBits
              FolderTextBox.Text = FolderLocation;
 
          DropBoxFolder.Text = DropBoxLocation;
-         FolderTextBox.Enabled = false;
+         FolderTextBox.Enabled = (FolderLocation != "");
          BrowseButton.Enabled = false;
          if (File.Exists(VersionBox.Text))
          {
@@ -103,7 +103,7 @@ namespace UIBits
         private void AllSimsCheckBox_Click(object sender, EventArgs e)
         {
             AllFilesCheckBox.Checked = false;
-            FolderTextBox.Enabled = false;
+            FolderTextBox.Enabled = false; FolderTextBox.Text = "";
             BrowseButton.Enabled = false;
 
         }
@@ -154,6 +154,7 @@ namespace UIBits
             BootlegSelector.Enabled = false;
             custom_select.Checked = false;
             release_select.Checked = true;
+            VersionBox.Text = Path.GetFileName(Configuration.ApsimDirectory());
         }
 
         private void custom_select_Click(object sender, EventArgs e)
@@ -179,6 +180,11 @@ namespace UIBits
         private void ClusterForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             Configuration.Instance.SetSetting("ClusterSimulationFolder", FolderTextBox.Text);
+        }
+
+        private void release_select_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

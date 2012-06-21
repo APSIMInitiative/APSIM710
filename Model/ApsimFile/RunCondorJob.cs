@@ -211,8 +211,8 @@ namespace ApsimFile
             if (arch == Configuration.architecture.unix)
             {
                 TopLevelExe = new StreamWriter(Path.Combine(WorkingFolder, "Apsim.sh"));
-                TopLevelExe.NewLine = "\r";
-                TopLevelExe.WriteLine("sh $1.sh");
+                TopLevelExe.NewLine = "\n";
+                TopLevelExe.WriteLine("/bin/sh $1.sh");
                 SubWriter.WriteLine("executable = Apsim.sh");
             }
             else
@@ -233,7 +233,7 @@ namespace ApsimFile
                         inputfiles.Add("Apsim.sh");
                         inputfiles.Add("Apsim" + jobCounter.ToString() + ".sh");
                         exeWriter = new StreamWriter(Path.Combine(WorkingFolder, "Apsim" + jobCounter.ToString() + ".sh"));
-                exeWriter.NewLine = "\r";
+                exeWriter.NewLine = "\n";
                 exeWriter.WriteLine("#! /bin/sh");
                 exeWriter.WriteLine("export HOME=/tmp");
                 if (File.Exists(ApsimVersion))
@@ -283,9 +283,11 @@ namespace ApsimFile
 				string summaryFileName = XmlHelper.Attribute (simNode, "name") + ".sum";
 				if (arch == Configuration.architecture.unix) {
 					exeWriter.WriteLine ("$APSIM/Model/Apsim.x \"" + simFileName + "\" > \"" + summaryFileName + "\"");
+                    exeWriter.WriteLine("rm -f \"" + simFileName + "\"");
 				} else {
 					exeWriter.WriteLine ("\"%APSIM%\\Model\\Apsim.exe\" \"" + simFileName + "\" > \"" + summaryFileName + "\"");
-				}
+                    exeWriter.WriteLine("del /f /q  \"" + simFileName + "\"");
+                }
 				numSims++;
 				if (numSims >= numberSimsPerJob) {
 					if (exeWriter != null) 
