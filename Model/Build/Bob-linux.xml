@@ -12,10 +12,10 @@
 -->
 <Folder name="Bob" LoopForever="no">
 	<Job name="Bootstrap" IgnoreErrors="yes">
-		<WorkingDirectory>%apsim%/Model</WorkingDirectory>
-		<CommandLineUnix>JobSchedulerSendCommand.exe AddXMLFile~%JobPath%/../Bootstrap~/tmp/Bootstrap.xml"</CommandLineUnix>
+		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+		<CommandLineUnix>JobSchedulerSendCommand.exe AddXMLFile~%JobPath%/../Bootstrap~/tmp/Bootstrap.xml</CommandLineUnix>
 	</Job>
-	<Folder name="Build" >
+	<Folder name="Build" wait="yes">
 		<Job name="Remove all example .out and .sum files">
 			<WorkingDirectory>%APSIM%/Examples</WorkingDirectory>
 			<CommandLineUnix>find . -name \*.out -or -name \*.sum -exec rm {} \; </CommandLineUnix>
@@ -34,41 +34,41 @@
 			<CommandLineUnix>JobSchedulerSendCommand.exe "AddXMLFile~%JobPath%/../Build~%APSIM%/Model/Build/BuildAll.xml"</CommandLineUnix>
 		</Job>
 		<Folder name="Build" wait="yes" IgnoreErrors="yes"/>
-        <Job name="Create release" wait="yes"  IgnoreErrors="yes">
+        	<Job name="Create release" wait="yes"  IgnoreErrors="yes">
 			<WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-			<CommandLineUnix>/bin/sh Release.sh %PatchFileName%</CommandLineUnix>
-        </Job>	
-        <Job name="Upload release" wait="yes"  IgnoreErrors="yes">
+			<CommandLineUnix>/bin/sh -c "Release.sh \"${PatchFileName}\""</CommandLineUnix>
+	        </Job>	
+        	<Job name="Upload release" wait="yes"  IgnoreErrors="yes">
 			<WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-			<CommandLineUnix>/bin/sh -c "curl -T `basename %PatchFileName% .zip`.binaries.Linux.x -u linux:linux ftp://bob.apsim.info/Files/"</CommandLineUnix>
-        </Job>	
-        <Job name="Update DB Release" IgnoreErrors="yes">
-	        <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-			<CommandLineUnix>/bin/sh -c "JobSchedulerUpdateFieldInDB.exe linuxBinariesFileName http://bob.apsim.info/Files/`basename %PatchFileName% .zip`.binaries.Linux.x"</CommandLineUnix>
+			<CommandLineUnix>/bin/sh -c "curl -T \"${PatchFileName}.binaries.Linux.x\" -u bob:seg ftp://bob.apsim.info/Files/"</CommandLineUnix>
+        	</Job>	
+        	<Job name="Update DB Release" IgnoreErrors="yes">
+		        <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+			<CommandLineUnix>/bin/sh -c "JobSchedulerUpdateFieldInDB.exe linuxBinariesFileName \"http://bob.apsim.info/Files/${PatchFileName}.binaries.Linux.x\""</CommandLineUnix>
 		</Job>		
 	</Folder>
 
 	<!-- Run all APSIM tests -->
 	<Job name="Load in Run.xml" >
 		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-		<CommandLineUnix>JobSchedulerSendCommand.exe "AddXMLFile~%JobPath%/../Run~%APSIM%/Model/Build/RunAll.xml"</CommandLineUnix>
+		<CommandLineUnix>XXJobSchedulerSendCommand.exe "AddXMLFile~%JobPath%/../Run~%APSIM%/Model/Build/RunAll.xml"</CommandLineUnix>
 	</Job>
         <Folder name="Run" wait="yes" IgnoreErrors="yes"/>
 	<!--  Finish up by collecting diffs and sending the email. -->	
 	<Job name="CreateDiffsZip" wait="yes" IgnoreErrors="yes">
 		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-		<CommandLineUnix>JobSchedulerCreateDiffZip.exe %APSIM% /tmp/%PatchFileName%.zip</CommandLineUnix>
+		<CommandLineUnix>/bin/sh -c "$APSIM/Model/JobSchedulerCreateDiffZip.exe $APSIM \"/tmp/${PatchFileName}.zip\""</CommandLineUnix>
 	</Job>
-    <Job name="Update DB Details" IgnoreErrors="yes">
-		<WorkingDirectory>%Apsim%/Model</WorkingDirectory>
-		<CommandLineUnix>JobSchedulerUpdateFieldInDB.exe linuxDetailsFileName http://bob.apsim.info/files/%PatchFileName%.Linux.xml</CommandLineUnix>
+	<Job name="Update DB Details" IgnoreErrors="yes">
+		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+		<CommandLineUnix>/bin/sh -c "$APSIM/Model/JobSchedulerUpdateFieldInDB.exe linuxDetailsFileName \"http://bob.apsim.info/Files/${PatchFileName}.Linux.xml\""</CommandLineUnix>
 	</Job>		
 	<Job name="Save the XML to a file" IgnoreErrors="yes">
-		<WorkingDirectory>%apsim%\Model</WorkingDirectory>
-		<CommandLineUnix>JobSchedulerSendCommand.exe "SaveXMLToFile~%PatchFileName%.Linux.xml"</CommandLineUnix>
+		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+		<CommandLineUnix>JobSchedulerSendCommand.exe "SaveXMLToFile~%APSIM%/Model/%PatchFileName%.Linux.xml"</CommandLineUnix>
 	</Job>
-    <Job name="Upload XML" wait="yes" IgnoreErrors="yes">
-		<WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-		<CommandLineUnix>/bin/sh -c "curl -T `basename %PatchFileName%.Linux.xml -u linux:linux ftp://bob.apsim.info/Files/"</CommandLineUnix>
+	<Job name="Upload XML" wait="yes" IgnoreErrors="yes">
+		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+		<CommandLineUnix>/bin/sh -c "curl -T \"${APSIM}/Model/${PatchFileName}.Linux.xml\" -u bob:seg ftp://bob.apsim.info/Files/"</CommandLineUnix>
        </Job>	
 </Folder>

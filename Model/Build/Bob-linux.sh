@@ -3,7 +3,7 @@
 export MONO_PREFIX=/usr
 
 while [ : ] ; do
-  echo \<StdOut\>\<StdOut\>                      > /tmp/Bootstrap.xml
+  echo \<Junk\>\<StdOut\>\<\!\[CDATA\[           > /tmp/Bootstrap.xml
 
   export APSIM=/home/bob/apsim
   export LD_LIBRARY_PATH=$APSIM/Model
@@ -26,11 +26,12 @@ while [ : ] ; do
     export ${nv[0]}="${nv[@]:1}"
   done
 
-  echo Patch file = $PatchFileName               >> /tmp/Bootstrap.xml
+  echo Downloading patch file = $PatchFileName   >> /tmp/Bootstrap.xml
+  wget -nd "http://bob.apsim.info/Files/Upload/${PatchFileName}.zip" >> /tmp/Bootstrap.xml
   echo ----- JobSchedulerApplyPatch -----        >> /tmp/Bootstrap.xml
-  $APSIM/Model/JobSchedulerApplyPatch.exe $APSIM http://bob.apsim.info/Files/Upload/${PatchFileName}.zip  >> /tmp/Bootstrap.xml
+  $APSIM/Model/JobSchedulerApplyPatch.exe $APSIM "${PatchFileName}.zip"  >> /tmp/Bootstrap.xml
 
-  echo \</StdOut\>\</StdOut\>                    >> /tmp/Bootstrap.xml
+  echo \]\]\>\</StdOut\>\</Junk\>                >> /tmp/Bootstrap.xml
   cd $APSIM/Model/Build
   $APSIM/Model/JobScheduler.exe Bob-linux.xml
 done
