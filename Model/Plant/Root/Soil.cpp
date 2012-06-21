@@ -628,7 +628,7 @@ void Soil::getOtherVariables()
     for (int i = 0; i < num_layers; i++)
        nh4gsm[i] = values[i] * kg2gm /ha2sm;
 
-   scienceAPI.getOptional("cl", "(mg/kg)", cl, 0.0f, 100000.0f);
+   scienceAPI.getOptional("cl_ppm", "(mg/kg)", cl, 0.0f, 100000.0f);
    if (cl.size() > 0 && cl.size() != num_layers)
       throw std::runtime_error("The number of CL values in root does not equal the number of layers");
    }
