@@ -38,6 +38,6 @@ while [ : ] ; do
 
   echo \]\]\>\</StdOut\>\</Junk\>                >> /tmp/Bootstrap.xml
   cd $APSIM/Model/Build
-  $APSIM/Model/JobScheduler.exe Bob-linux.xml
+  $APSIM/Model/JobScheduler.exe Bob-linux.xml PatchFileName=${PatchFileName}
 done
 
