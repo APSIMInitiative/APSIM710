@@ -21,12 +21,17 @@ while [ : ] ; do
   echo ----- JobScheduler -----                  >> /tmp/Bootstrap.xml
   $APSIM/Model/Build/RunMake.sh JobScheduler     >> /tmp/Bootstrap.xml
   echo ----- JobSchedulerWaitForPatch -----      >> /tmp/Bootstrap.xml
-  $APSIM/Model/JobSchedulerWaitForPatch.exe | while read line; do
-    nv=( $line )
-    export ${nv[0]}="${nv[@]:1}"
-  done
+  unset PatchFileName; unset JobID
+  patchInfo=`$APSIM/Model/JobSchedulerWaitForPatch.exe`
+  while read -a nv; do
+    vname=${nv[0]}
+    value=${nv[@]:1}
+    eval ${vname}=\"${value}\"
+    echo Patch : ${vname}=${value}
+  done <<< "$patchInfo"
 
-  echo Downloading patch file = $PatchFileName   >> /tmp/Bootstrap.xml
+  echo Downloading patch ${PatchFileName}.
+  echo Downloading patch ${PatchFileName}   >> /tmp/Bootstrap.xml
   wget -nd "http://bob.apsim.info/Files/Upload/${PatchFileName}.zip" >> /tmp/Bootstrap.xml
   echo ----- JobSchedulerApplyPatch -----        >> /tmp/Bootstrap.xml
   $APSIM/Model/JobSchedulerApplyPatch.exe $APSIM "${PatchFileName}.zip"  >> /tmp/Bootstrap.xml
