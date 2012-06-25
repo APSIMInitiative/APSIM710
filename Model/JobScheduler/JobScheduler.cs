@@ -67,7 +67,6 @@ public class JobScheduler
             if (args.Length >= 1)
             {
                 JobScheduler Scheduler = new JobScheduler();
-                Scheduler.InterpretSocketData("GetVariable~JobID", null);
                 Scheduler.StoreMacros(args);
                 Scheduler.StoreOptions(args);
 
@@ -772,9 +771,6 @@ public class JobScheduler
             }
             else if (CommandBits.Length == 2 && CommandBits[0] == "GetVariable")
             {
-                // Whats wrong with:??
-                //if (Macros.ContainsKey (CommandBits[1]))
-                //    return Macros[CommandBits[1]];
                 // try and look for an environment variable first.
                 string Value = ReplaceEnvironmentVariables("%" + CommandBits[1] + "%");
                 if (Value != "%" + CommandBits[1] + "%")
@@ -789,6 +785,8 @@ public class JobScheduler
                 else
                     return "Not found";
             }
+            else
+                throw new Exception("Dont know about socket command: " + CommandBits[0]);
         }
         return "OK";
     }
@@ -822,7 +820,3 @@ public class JobScheduler
         return enc.GetString(bytes, 0, NumBytes);
     }
 }
-
-
-
-

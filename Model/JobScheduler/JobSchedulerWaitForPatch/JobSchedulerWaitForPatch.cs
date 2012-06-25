@@ -74,7 +74,7 @@ class Program
                     
                     // Check the previous job to see if it has stalled. If so then set it's 
                     // status accordingly. Otherwise we get multiple "Running" status'.
-                    if (prefix == "" && JobID > 0)
+                    if (JobID > 0)
                     {
                        Dictionary<string, object> PreviousJob = BuildsDB.GetDetails(JobID-1);
                        if (PreviousJob != null && PreviousJob[prefix + "Status"].ToString() == "Running")
