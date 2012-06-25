@@ -157,12 +157,10 @@ class JobSchedulerApplyPatch
             string ChildName = DirectoryName.Substring(PosSlash + 1);
             if (!Directory.Exists(Path.Combine(ParentName, ".svn")))
                 EnsureDirectoryIsUnderSVN(ParentName, SVNFileName);  // parent dir.
-            else
-            {
-                Console.WriteLine(SVNFileName + " add ", DirectoryName);
-                Process P = Utility.RunProcess(SVNFileName, "add " + StringManip.DQuote(DirectoryName), DirectoryName);
-                Console.WriteLine(Utility.CheckProcessExitedProperly(P));
-            }
+            Directory.CreateDirectory(DirectoryName);
+            Console.WriteLine(SVNFileName + " add " + StringManip.DQuote(DirectoryName));
+            Process P = Utility.RunProcess(SVNFileName, "add " + StringManip.DQuote(DirectoryName), DirectoryName);
+            Console.WriteLine(Utility.CheckProcessExitedProperly(P));
         }
     }
 
