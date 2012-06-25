@@ -117,11 +117,12 @@ class Program
             {
                 try
                 {
-                    Utility.UploadFtp(outZip, Environment.MachineName, Environment.MachineName, "bob.apsim.info", "/Files/" + Path.GetFileName(outZip));
+                    string RemoteName = Path.GetFileNameWithoutExtension(PatchFileName) + "." + Environment.MachineName + ".diffs.zip";
+                    Utility.UploadFtp(outZip, "bob", "seg", "bob.apsim.info", "/Files/" + RemoteName);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Upload failed " + e.Message);
+                    Console.WriteLine("Upload failed: " + e.Message);
                 }
             }
             // Now get rid of our temporary directory.
