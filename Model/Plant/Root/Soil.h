@@ -142,6 +142,7 @@ class Soil
       float ECB;
       bool ModifyKL;
       bool HaveModifiedKLValues;
+      bool DynamicCL;
    protected:
       ScienceAPI& scienceAPI;
       plantInterface& plant;

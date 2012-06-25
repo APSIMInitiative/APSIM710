@@ -392,9 +392,11 @@ namespace CSGeneral
             // -----------------------------------------------------------------
             if (Node.Attributes != null)
             {
-                XmlNode A = Node.Attributes.GetNamedItem(AttributeName);
-                if (A != null)
-                    return A.InnerText;
+                foreach (XmlAttribute A in Node.Attributes)
+                {
+                    if (string.Equals(A.Name, AttributeName, StringComparison.CurrentCultureIgnoreCase))
+                        return A.Value;
+                }
             }
             return "";
         }

@@ -102,11 +102,14 @@ void Soil::Read(void)
 
    scienceAPI.readOptional("esp", esp, 0.0f, 100000.0f);
    scienceAPI.readOptional("ec", ec, 0.0f, 100000.0f);
+   scienceAPI.readOptional("cl", cl, 0.0f, 100000.0f);
    if (esp.size() > 0 && esp.size() != num_layers)
       throw std::runtime_error("The number of ESP values in root does not equal the number of layers");
    if (ec.size() > 0 && ec.size() != num_layers)
       throw std::runtime_error("The number of EC values in root does not equal the number of layers");
-   
+   if (cl.size() > 0 && cl.size() != num_layers)
+      throw std::runtime_error("The number of CL values in root does not equal the number of layers");
+   DynamicCL = cl.size() == 0;
 
    if (ModifyKL)
       {
@@ -628,7 +631,8 @@ void Soil::getOtherVariables()
     for (int i = 0; i < num_layers; i++)
        nh4gsm[i] = values[i] * kg2gm /ha2sm;
 
-   scienceAPI.getOptional("cl_ppm", "(mg/kg)", cl, 0.0f, 100000.0f);
+    if (DynamicCL)
+       scienceAPI.getOptional("cl_ppm", "(mg/kg)", cl, 0.0f, 100000.0f);
    if (cl.size() > 0 && cl.size() != num_layers)
       throw std::runtime_error("The number of CL values in root does not equal the number of layers");
    }
