@@ -101,12 +101,15 @@ void RComponent::subscribe(const std::string &event, const std::string &type, co
    if (boost::iequals(type, "Null")) {
      boost::function0<void > m = boost::bind(myApsimNullEvent, handler);
      apsimAPI.subscribe(event, m);
-   } [foreach types.type] else if (boost::iequals(type, "[type.name]")) {
-     boost::function1<void, [type.name]Type&> m = boost::bind(myApsim[type.name]Event, handler, _1);
-     apsimAPI.subscribe(event, m);
-   } [endfor] else {
-     throw std::runtime_error(std::string("Unknown event type " + type + "in RComponent"));   
-   }
+     return;
+   } 
+[foreach types.type]  if (boost::iequals(type, "[type.name]")) {
+     boost::function1<void, [type.name]Type&> [type.name]Ptr = boost::bind(myApsim[type.name]Event, handler, _1);
+     apsimAPI.subscribe(event, [type.name]Ptr);
+     return;
+   } 
+[endfor]
+   throw std::runtime_error(std::string("Unknown event type " + type + "in RComponent"));   
 }
 
 // std::XXX converters
@@ -191,12 +194,13 @@ void componentCallback(const char *what, const char *e, char *t, void *payload)
       if (t == NULL) type = "Null"; else type = t;
       if (boost::iequals(type, "Null")) 
           {
-          currentRComponent->apsimAPI.publish(std::string(e));
-          } [foreach types.type] else if (boost::iequals(type, "[type.name]")) {
+          currentRComponent->apsimAPI.publish(std::string(e)); return;
+          } [foreach types.type] if (boost::iequals(type, "[type.name]")) {
             [type.name]Type * converted = new [type.name]Type;
             GCCToMS((R[type.name]Type *) payload, converted);
             currentRComponent->apsimAPI.publish(std::string(e), *converted);
             delete converted;
+            return;
           } [endfor]
       }
 	else if (Str_i_Eq(what, "subscribe"))
@@ -459,12 +463,15 @@ void apsimPublish( std::string eventName, std::string type, Rcpp::List data  )
   if (apsimCallback == NULL) {return;}
   if (!strcasecmp(type.c_str(), "Null")) {
      apsimCallback("publish", eventName.c_str(), NULL, NULL);
-  } [foreach types.type]else if (!strcasecmp(type.c_str(), "[type.name]")) {
+     return;
+  }
+[foreach types.type]  if (!strcasecmp(type.c_str(), "[type.name]")) {
      R[type.name]Type *payload = make[type.name]Type(data);
      apsimCallback("publish", eventName.c_str(), "[type.name]", payload);
      delete payload;
-  } [endfor] else {
-     apsimCallback("fatal", (type + std::string(" is an unknown type")).c_str(), NULL, NULL);
+     return;
   }
+[endfor]
+  apsimCallback("fatal", (type + std::string(" is an unknown type")).c_str(), NULL, NULL);
 }
 [endfile]
