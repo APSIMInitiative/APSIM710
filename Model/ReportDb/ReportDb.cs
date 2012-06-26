@@ -92,23 +92,29 @@ public class ReportDb
                 Simulation.Get("Title", out Title);
         }
 
-
-        // Make sure we have a Simulations table.
-        if (!TableNames.Contains("Simulations"))
+        using (SQLiteTransaction dbTrans = Connection.BeginTransaction())
         {
-            string Cmd = "CREATE TABLE Simulations (ID INTEGER PRIMARY KEY ASC, Title TEXT)";
-            sql_cmd = Connection.CreateCommand();
-            sql_cmd.CommandText = Cmd;
-            sql_cmd.ExecuteNonQuery();
+            // Make sure we have a Simulations table.
+            if (!TableNames.Contains("Simulations"))
+            {
+                sql_cmd = Connection.CreateCommand();
+                sql_cmd.CommandText = "CREATE TABLE Simulations (ID INTEGER PRIMARY KEY ASC, Title TEXT)"; ;
+                sql_cmd.ExecuteNonQuery();
+            }
+            dbTrans.Commit();
         }
 
-        // Make sure we have a Data table.
-        if (!TableNames.Contains("Data"))
+        using (SQLiteTransaction dbTrans = Connection.BeginTransaction())
         {
-            string Cmd = "CREATE TABLE Data (SimulationID INTEGER)";
-            sql_cmd = Connection.CreateCommand();
-            sql_cmd.CommandText = Cmd;
-            sql_cmd.ExecuteNonQuery();
+            // Make sure we have a Data table.
+            if (!TableNames.Contains("Data"))
+            {
+                string Cmd = "CREATE TABLE Data (SimulationID INTEGER)";
+                sql_cmd = Connection.CreateCommand();
+                sql_cmd.CommandText = Cmd;
+                sql_cmd.ExecuteNonQuery();
+            }
+            dbTrans.Commit();
         }
 
         // Try and get our SimulationID. If it's not in the Simulations table
