@@ -154,7 +154,7 @@ class Program
             {
                 SimFileName = FileName;
                 Executable = "ApsimX.exe";
-                LinuxExecutable = "ApsimX.x";
+                LinuxExecutable = "ApsimX.exe";
             }
             else
             {
