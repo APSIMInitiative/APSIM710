@@ -183,8 +183,6 @@ namespace Actions
 		private static int ComponentsToPrintIndex;
 		private static BaseController Contr;
 
-		private static System.Drawing.Printing.PrinterSettings PrintSettings = null;
-
 		public static void Print(BaseController Controller)
 		{
 			PrintDocument pd = new PrintDocument();

@@ -1,29 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{988E68C0-5735-4849-9447-BEABDEE5BCBA}</ProjectGuid>
+    <ProjectGuid>{E8AB262C-A67A-4089-A0BF-DE59B3510A1A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Controllers</RootNamespace>
     <AssemblyName>Controllers</AssemblyName>
     <MyType>Console</MyType>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
+    <FileUpgradeFlags />
     <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <UpgradeBackupLocation />
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>..\</OutputPath>
-    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <PlatformTarget>x86</PlatformTarget>
     <AdditionalParameters />
   </PropertyGroup>
@@ -33,17 +31,10 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>..\</OutputPath>
-    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <PlatformTarget>x86</PlatformTarget>
     <AdditionalParameters />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
     <Reference Include="ApsimFile, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ApsimFile.dll</HintPath>
@@ -52,6 +43,40 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\CSGeneral.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Build\VersionInfo.cs">
+      <Link>VersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="BaseController.cs" />
+    <Compile Include="BaseView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BaseView.Designer.cs">
+      <DependentUpon>BaseView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataTree.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ExplorerUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ExplorerUI.Designer.cs">
+      <DependentUpon>ExplorerUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FactorTree.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FactorTree.Designer.cs">
+      <DependentUpon>FactorTree.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -59,55 +84,27 @@
     <Import Include="System.Collections" />
     <Import Include="System.Collections.Generic" />
     <Import Include="System.Data" />
-    <Import Include="System.Drawing" />
     <Import Include="System.Diagnostics" />
+    <Import Include="System.Drawing" />
     <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseController.vb" />
-    <Compile Include="..\Build\VersionInfo.vb" />
-    <Compile Include="BaseView.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DataTree.vb">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ExplorerUI.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="FactorTree.Designer.vb">
-      <DependentUpon>FactorTree.vb</DependentUpon>
-    </Compile>
-    <Compile Include="FactorTree.vb">
-      <SubType>Component</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="BaseView.resx">
-      <DependentUpon>BaseView.vb</DependentUpon>
+      <DependentUpon>BaseView.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="DataTree.resx">
-      <DependentUpon>DataTree.vb</DependentUpon>
+      <DependentUpon>DataTree.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ExplorerUI.resx">
-      <DependentUpon>ExplorerUI.vb</DependentUpon>
+      <DependentUpon>ExplorerUI.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{94E38DFF-614B-4CBD-B67C-F211BB35CE8B}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="My Project\" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>
