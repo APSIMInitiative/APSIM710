@@ -39,7 +39,7 @@ namespace CSUserInterface
             this.Splitter = new System.Windows.Forms.Splitter();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.Properties = new VBUserInterface.GenericUI();
+            this.Properties = new CSUserInterface.GenericUI();
             this.TopPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Grid)).BeginInit();
             this.TotalPanel.SuspendLayout();
@@ -194,7 +194,7 @@ namespace CSUserInterface
         private System.Windows.Forms.Panel TopPanel;
         private System.Windows.Forms.Splitter Splitter;
         private System.Windows.Forms.Splitter splitter1;
-        private VBUserInterface.GenericUI Properties;
+        private CSUserInterface.GenericUI Properties;
         private System.Windows.Forms.Panel TotalPanel;
         private System.Windows.Forms.DataGridView TotalGrid;
         private System.Windows.Forms.VScrollBar DummyScrollBar;

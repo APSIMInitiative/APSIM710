@@ -33,7 +33,7 @@
          this.Chart = new Steema.TeeChart.TChart();
          this.Line = new Steema.TeeChart.Styles.Line();
          this.panel1 = new System.Windows.Forms.Panel();
-         this.Properties = new VBUserInterface.GenericUI();
+         this.Properties = new CSUserInterface.GenericUI();
          this.Grid = new System.Windows.Forms.DataGridView();
          this.splitter2 = new System.Windows.Forms.Splitter();
          this.panel1.SuspendLayout();
@@ -732,7 +732,7 @@
       private Steema.TeeChart.TChart Chart;
       private Steema.TeeChart.Styles.Line Line;
       private System.Windows.Forms.Panel panel1;
-      private VBUserInterface.GenericUI Properties;
+      private CSUserInterface.GenericUI Properties;
       private System.Windows.Forms.DataGridView Grid;
       private System.Windows.Forms.Splitter splitter2;
       }

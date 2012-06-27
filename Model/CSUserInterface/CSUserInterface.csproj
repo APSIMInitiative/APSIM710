@@ -39,6 +39,10 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CMPServices, Version=1.0.4548.28333, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CMPServices.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="QWhale.Common, Version=1.62.4104.36375, Culture=neutral, PublicKeyToken=da632fd1713dff10, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -67,7 +71,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AreaUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AreaUI.Designer.cs">
+      <DependentUpon>AreaUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="BezierCurve.cs" />
+    <Compile Include="EmptyUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EmptyUI.Designer.cs">
+      <DependentUpon>EmptyUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="Factor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -92,8 +108,23 @@
     <Compile Include="FactorTargets.Designer.cs">
       <DependentUpon>FactorTargets.cs</DependentUpon>
     </Compile>
+    <Compile Include="FileUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FileUI.Designer.cs">
+      <DependentUpon>FileUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GenericUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GenericUI.Designer.cs">
+      <DependentUpon>GenericUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="InitWaterUI.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="InitWaterUI.Designer.cs">
+      <DependentUpon>InitWaterUI.cs</DependentUpon>
     </Compile>
     <Compile Include="MemoControl.cs">
       <SubType>UserControl</SubType>
@@ -104,7 +135,31 @@
     <Compile Include="MemoUI.Designer.cs">
       <DependentUpon>MemoUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="MetGraphControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MetGraphControl.Designer.cs">
+      <DependentUpon>MetGraphControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MetUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MetUI.Designer.cs">
+      <DependentUpon>MetUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="netcdfCSwrapper.cs" />
+    <Compile Include="OperationsUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OperationsUI.Designer.cs">
+      <DependentUpon>OperationsUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OutputFileDescUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OutputFileDescUI.Designer.cs">
+      <DependentUpon>OutputFileDescUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plant2Function.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -127,6 +182,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="RGraphicsUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RGraphicsUI.Designer.cs">
+      <DependentUpon>RGraphicsUI.cs</DependentUpon>
     </Compile>
     <Compile Include="RotPlotUI.cs">
       <SubType>UserControl</SubType>
@@ -154,9 +215,29 @@
     <Compile Include="RugPlotUI.Designer.cs">
       <DependentUpon>RugPlotUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="RuleUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RuleUI.Designer.cs">
+      <DependentUpon>RuleUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScriptUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ScriptUI.Designer.cs">
+      <DependentUpon>ScriptUI.cs</DependentUpon>
+    </Compile>
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AreaUI.resx">
+      <DependentUpon>AreaUI.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EmptyUI.resx">
+      <DependentUpon>EmptyUI.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Factor.resx">
       <DependentUpon>Factor.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -177,6 +258,14 @@
       <DependentUpon>FactorTargets.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="FileUI.resx">
+      <DependentUpon>FileUI.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GenericUI.resx">
+      <DependentUpon>GenericUI.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="InitWaterUI.resx">
       <DependentUpon>InitWaterUI.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -188,6 +277,22 @@
     <EmbeddedResource Include="MemoUI.resx">
       <SubType>Designer</SubType>
       <DependentUpon>MemoUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MetGraphControl.resx">
+      <DependentUpon>MetGraphControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MetUI.resx">
+      <DependentUpon>MetUI.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OperationsUI.resx">
+      <DependentUpon>OperationsUI.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OutputFileDescUI.resx">
+      <DependentUpon>OutputFileDescUI.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Plant2Function.resx">
       <DependentUpon>Plant2Function.cs</DependentUpon>
@@ -207,6 +312,10 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="RGraphicsUI.resx">
+      <DependentUpon>RGraphicsUI.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="RotPlotUI.resx">
       <DependentUpon>RotPlotUI.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -217,6 +326,14 @@
     </EmbeddedResource>
     <EmbeddedResource Include="RugPlotUI.resx">
       <DependentUpon>RugPlotUI.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RuleUI.resx">
+      <DependentUpon>RuleUI.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ScriptUI.resx">
+      <DependentUpon>ScriptUI.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
@@ -245,17 +362,8 @@
       <Project>{BD0D614A-2EF9-411B-9884-F1EBD349A0C8}</Project>
       <Name>UIUtility</Name>
     </ProjectReference>
-    <ProjectReference Include="..\VBUserInterface\VBUserInterface.vbproj">
-      <Project>{E78183EC-403E-4ED6-B6B0-9F60013FFEF4}</Project>
-      <Name>VBUserInterface</Name>
-    </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

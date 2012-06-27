@@ -116,7 +116,7 @@
             this.txtHarvestCost = new System.Windows.Forms.TextBox();
             this.label80 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.GenericUI = new VBUserInterface.GenericUI();
+            this.GenericUI = new CSUserInterface.GenericUI();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.syntaxEdit1 = new QWhale.Editor.SyntaxEdit(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
@@ -186,7 +186,7 @@
             this.label72 = new System.Windows.Forms.Label();
             this.label73 = new System.Windows.Forms.Label();
             this.tabPage9 = new System.Windows.Forms.TabPage();
-            this.ruleUI2 = new VBUserInterface.RuleUI();
+            this.ruleUI2 = new CSUserInterface.RuleUI();
             this.tabPage10 = new System.Windows.Forms.TabPage();
             this.syntaxEdit2 = new QWhale.Editor.SyntaxEdit(this.components);
             this.tabControl1.SuspendLayout();
@@ -1968,10 +1968,10 @@
         private System.Windows.Forms.Label label72;
         private System.Windows.Forms.Label label73;
         private System.Windows.Forms.TabPage tabPage9;
-        private VBUserInterface.RuleUI ruleUI2;
+        private CSUserInterface.RuleUI ruleUI2;
         private System.Windows.Forms.TabPage tabPage10;
         private QWhale.Editor.SyntaxEdit syntaxEdit2;
-        private VBUserInterface.GenericUI GenericUI;
+        private CSUserInterface.GenericUI GenericUI;
         private System.Windows.Forms.TabPage tabPage11;
         private System.Windows.Forms.Label label75;
         private System.Windows.Forms.Label label76;
