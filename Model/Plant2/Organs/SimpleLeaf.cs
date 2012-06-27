@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using CSGeneral;
 
 class SimpleLeaf : BaseOrgan
 {
@@ -92,10 +93,10 @@ class SimpleLeaf : BaseOrgan
         {
             const double SVPfrac = 0.66;
 
-            double VPDmint = VBMet.Humidity.svp(MetData.mint) - MetData.vp;
+            double VPDmint = MetUtility.svp(MetData.mint) - MetData.vp;
             VPDmint = Math.Max(VPDmint, 0.0);
 
-            double VPDmaxt = VBMet.Humidity.svp(MetData.maxt) - MetData.vp;
+            double VPDmaxt = MetUtility.svp(MetData.maxt) - MetData.vp;
             VPDmaxt = Math.Max(VPDmaxt, 0.0);
 
             double VPD = SVPfrac * VPDmaxt + (1.0 - SVPfrac) * VPDmint;

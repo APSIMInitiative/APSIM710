@@ -7,7 +7,6 @@ Imports System.Xml
 Imports ApsimFile
 Imports Controllers
 Imports CSGeneral
-Imports VBMet
 Imports Steema.TeeChart.Styles
 
 
@@ -2062,9 +2061,9 @@ Public Class MetGraphControl
         For Row As Integer = 0 To YearlyData.Count - 1
             doy = doy + 1
             If HaveVPColumn AndAlso Not Convert.IsDBNull(YearlyData(Row)("vp")) Then
-                YearlyData(Row)("Qmax") = QMax(doy + 1, Latitude, VBMet.Taz, VBMet.Alpha, YearlyData(Row)("vp"))
+                YearlyData(Row)("Qmax") = MetUtility.QMax(doy + 1, Latitude, MetUtility.Taz, MetUtility.Alpha, YearlyData(Row)("vp"))
             Else
-                YearlyData(Row)("Qmax") = QMax(doy + 1, Latitude, VBMet.Taz, VBMet.Alpha, svp(YearlyData(Row)("mint")))
+                YearlyData(Row)("Qmax") = MetUtility.QMax(doy + 1, Latitude, MetUtility.Taz, MetUtility.Alpha, MetUtility.svp(YearlyData(Row)("mint")))
             End If
         Next
 

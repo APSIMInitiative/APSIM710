@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using CSGeneral;
 
 public class RUEModel
 {
@@ -42,10 +43,10 @@ public class RUEModel
         {
             const double SVPfrac = 0.66;
 
-            double VPDmint = VBMet.Humidity.svp((float)MetData.mint) - MetData.vp;
+            double VPDmint = MetUtility.svp((float)MetData.mint) - MetData.vp;
             VPDmint = Math.Max(VPDmint, 0.0);
 
-            double VPDmaxt = VBMet.Humidity.svp((float)MetData.maxt) - MetData.vp;
+            double VPDmaxt = MetUtility.svp((float)MetData.maxt) - MetData.vp;
             VPDmaxt = Math.Max(VPDmaxt, 0.0);
 
             return SVPfrac * VPDmaxt + (1 - SVPfrac) * VPDmint;

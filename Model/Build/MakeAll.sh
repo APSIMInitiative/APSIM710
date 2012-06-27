@@ -37,7 +37,6 @@ if [ "$1" != "clean" ]; then tclsh VersionStamper.tcl; fi
 ./MakeProject.sh FortranComponentInterface2 $1
 ./MakeProject.sh ProtocolManager $1
 ./MakeProject.sh CropTemplate $1
-./MakeProject.sh VBMet $1
 ./MakeProject.sh DotNetProxies $1
 ./MakeProject.sh ConToSim         $1
 ./MakeProject.sh ConToApsim       $1

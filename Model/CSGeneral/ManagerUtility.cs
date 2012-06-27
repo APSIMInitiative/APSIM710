@@ -34,7 +34,7 @@ namespace CSGeneral
 
                 return hascrops;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new Exception("Error in 'PaddockIsFallow', check that you are passing in a 'Paddock' that has Property 'Crops', each of which contain 'plant_status'");
             }

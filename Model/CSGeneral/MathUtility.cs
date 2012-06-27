@@ -609,6 +609,12 @@ namespace CSGeneral
             return Maximum;
         }
 
+        // ------------------------------------------------------------------------
+        public static double Bound(double x, double x1, double x2)
+        {
+            return Math.Min(Math.Max(x, x1), x2);
+        }
+
         public static double[] CreateArrayOfValues(double Value, int NumValues)
         {
             double[] Values = new double[NumValues];
