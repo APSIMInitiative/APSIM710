@@ -92,8 +92,12 @@ public class ReportDb
                 Simulation.Get("Title", out Title);
         }
 
+#if __MonoCS__
+        using (SqliteTransaction dbTrans = Connection.BeginTransaction())
+#else
         using (SQLiteTransaction dbTrans = Connection.BeginTransaction())
-        {
+#endif
+		{
             // Make sure we have a Simulations table.
             if (!TableNames.Contains("Simulations"))
             {
@@ -104,7 +108,11 @@ public class ReportDb
             dbTrans.Commit();
         }
 
+#if __MonoCS__
+        using (SqliteTransaction dbTrans = Connection.BeginTransaction())
+#else
         using (SQLiteTransaction dbTrans = Connection.BeginTransaction())
+#endif
         {
             // Make sure we have a Data table.
             if (!TableNames.Contains("Data"))
