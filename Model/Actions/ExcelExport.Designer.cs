@@ -1,4 +1,3 @@
-using Microsoft.VisualBasic;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +5,6 @@ using System.Data;
 using System.Diagnostics;
 namespace Actions
 {
-	[Microsoft.VisualBasic.CompilerServices.DesignerGenerated()]
 	partial class ExcelExport : System.Windows.Forms.Form
 	{
         /// <summary>

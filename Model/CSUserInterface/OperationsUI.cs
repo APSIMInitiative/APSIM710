@@ -86,10 +86,10 @@ namespace CSUserInterface
 			foreach (DataRow Row in StartOfDayGrid.DataSourceTable.Rows) {
 				XmlNode NewNode = XmlHelper.CreateNode(Data.OwnerDocument, "operation", "");
 				XmlHelper.SetAttribute(NewNode, "condition", "start_of_day");
-				if ((!(Information.IsDBNull(Row[0])))) {
+				if ((!(Convert.IsDBNull(Row[0])))) {
 					XmlHelper.SetValue(NewNode, "date", Row[0].ToString());
 				}
-				if ((!(Information.IsDBNull(Row[1])))) {
+				if ((!(Convert.IsDBNull(Row[1])))) {
 					XmlHelper.SetValue(NewNode, "action", Row[1].ToString());
 				}
 				Data.AppendChild(NewNode);
@@ -97,10 +97,10 @@ namespace CSUserInterface
 			foreach (DataRow Row in EndOfDayGrid.DataSourceTable.Rows) {
 				XmlNode NewNode = XmlHelper.CreateNode(Data.OwnerDocument, "operation", "");
 				XmlHelper.SetAttribute(NewNode, "condition", "end_of_day");
-				if ((!(Information.IsDBNull(Row[0])))) {
+				if ((!(Convert.IsDBNull(Row[0])))) {
 					XmlHelper.SetValue(NewNode, "date", Row[0].ToString());
 				}
-				if ((!(Information.IsDBNull(Row[1])))) {
+				if ((!(Convert.IsDBNull(Row[1])))) {
 					XmlHelper.SetValue(NewNode, "action", Row[1].ToString());
 				}
 				Data.AppendChild(NewNode);

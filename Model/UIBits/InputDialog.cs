@@ -2,7 +2,7 @@
 
 //This is used in in UIBits project in ReorderForm.cs, OptionsForm.cs 
 //in CSUserInterface project in SoilUI
-//in VBUserInterface project in RuleUI
+//in CSUserInterface project in RuleUI
 //in GraphUserInterface project in ChartPageUI
 //in Actions project in BaseActions.vb
 

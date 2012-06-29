@@ -192,7 +192,7 @@ namespace Actions
 				XmlNode ThisSoil = Soil.CreateFromXML(Data.FullXML());
 				string Errors = Soil.CheckForErrors(ThisSoil, true);
 				if (!string.IsNullOrEmpty(Errors)) {
-					ErrorMessage += Constants.vbCr + Constants.vbLf + XmlHelper.Name(ThisSoil) + Constants.vbCr + Constants.vbLf + StringManip.IndentText(Errors, 6);
+					ErrorMessage += Environment.NewLine + XmlHelper.Name(ThisSoil) + Environment.NewLine + StringManip.IndentText(Errors, 6);
 				}
 			} else if (Data.Type.ToLower() == "folder") {
 				foreach (ApsimFile.Component Child in Data.ChildNodes) {

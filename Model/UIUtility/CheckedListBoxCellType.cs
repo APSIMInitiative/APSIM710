@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.Drawing;
 
 
-//This is used in VBUserInterface project in GenericUI
+//This is used in CSUserInterface project in GenericUI
 
 namespace UIUtility
 {

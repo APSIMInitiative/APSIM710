@@ -82,7 +82,7 @@ namespace CSUserInterface
 		{
 			int desiredImageWidth = this.TabControl.Size.Width - 5;
 			int desiredImageHeight = this.TabControl.Size.Height - 5;
-			string[] fullpath = Strings.Split(NodePath, "/");
+			string[] fullpath = NodePath.Split(new char[] {'/'});
 			string nodeName = fullpath[fullpath.Length - 1];
 			string imageFileName = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + nodeName + ".png";
 			string scriptFileName = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + nodeName + ".R";
@@ -95,7 +95,7 @@ namespace CSUserInterface
 			newScript.WriteLine("# Automatically generated - do not edit");
 			newScript.WriteLine("width<- " + desiredImageWidth.ToString());
 			newScript.WriteLine("height<- " + desiredImageHeight.ToString());
-			newScript.WriteLine("imageFileName <- \"" + Strings.Replace(imageFileName, "\\", "/") + "\"");
+			newScript.WriteLine("imageFileName <- \"" + imageFileName.Replace("\\", "/") + "\"");
 			newScript.Write("inputFiles <- c(");
 
 			bool first = true;
@@ -103,7 +103,7 @@ namespace CSUserInterface
 				if ((!(first))) {
 					newScript.Write(",");
 				}
-				newScript.Write("\"" + Strings.Replace(outputfile, "\\", "/") + "\"");
+				newScript.Write("\"" + outputfile.Replace("\\", "/") + "\"");
 				first = false;
 			}
 			newScript.WriteLine(")");
@@ -177,16 +177,16 @@ namespace CSUserInterface
 					string rcmd = rpath + "\\bin\\Rscript.exe";
 					string args = "--slave --vanilla \"" + scriptFileName + "\"";
 
-					string consoleMsg = "Command:   " + rcmd + Constants.vbCrLf + Constants.vbCrLf;
-					consoleMsg += "Arguments: " + args + Constants.vbCrLf + Constants.vbCrLf;
+					string consoleMsg = "Command:   " + rcmd + Environment.NewLine + Environment.NewLine;
+					consoleMsg += "Arguments: " + args + Environment.NewLine + Environment.NewLine;
 					this.ConsoleBox.Text = consoleMsg;
 
 					System.Diagnostics.Process p = Utility.RunProcess(rcmd, args, Directory.GetCurrentDirectory());
 					p.WaitForExit();
 
-					consoleMsg += "stdout: " + Constants.vbCrLf + p.StandardOutput.ReadToEnd() + Constants.vbCrLf + Constants.vbCrLf;
-					consoleMsg += "stderr: " + Constants.vbCrLf + p.StandardError.ReadToEnd() + Constants.vbCrLf + Constants.vbCrLf;
-					consoleMsg += "script: " + Constants.vbCrLf + newScript.ToString();
+					consoleMsg += "stdout: " + Environment.NewLine + p.StandardOutput.ReadToEnd() + Environment.NewLine + Environment.NewLine;
+					consoleMsg += "stderr: " + Environment.NewLine + p.StandardError.ReadToEnd() + Environment.NewLine + Environment.NewLine;
+					consoleMsg += "script: " + Environment.NewLine + newScript.ToString();
 					this.ConsoleBox.Text = consoleMsg;
 				}
 

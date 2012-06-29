@@ -223,8 +223,8 @@ namespace CSUserInterface
 			foreach (string Line in ConstantsBox.Lines) {
 				int PosEquals = Line.IndexOf("=");
 				if (PosEquals != -1) {
-					string ConstantName = Strings.Trim(Line.Substring(0, PosEquals));
-					string ConstantValue = Strings.Trim(Line.Substring(PosEquals + 1));
+                    string ConstantName = Line.Substring(0, PosEquals).Trim();
+					string ConstantValue = Line.Substring(PosEquals + 1).Trim();
 					if ((ConstantName == "Title")) {
 						MessageBox.Show("You cannot specify a title. It is set automatically to the name of the simulation", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 					} else {
@@ -253,7 +253,7 @@ namespace CSUserInterface
 				// Go look for a blank cell.
 				int Row = 0;
 				for (Row = 0; Row <= Table.Rows.Count - 1; Row++) {
-					if (Information.IsDBNull(Table.Rows[Row][0]) || string.IsNullOrEmpty((string)Table.Rows[Row][0])) {
+					if (Convert.IsDBNull(Table.Rows[Row][0]) || string.IsNullOrEmpty((string)Table.Rows[Row][0])) {
 						break; // TODO: might not be correct. Was : Exit For
 					}
 				}
@@ -332,19 +332,15 @@ namespace CSUserInterface
 			}
 		}
 
-
-
-
-
 		private void OnHelpClick(System.Object sender, System.EventArgs e)
 		{
 			string HelpText = null;
 			if (XmlHelper.Type(Data).ToLower() == "variables") {
-				HelpText = "Syntax of variables:" + Constants.vbCrLf + "  ModuleName.VariableName as Alias units kg/ha format dd/mm/yyy" + Constants.vbCrLf + "Examples:" + Constants.vbCrLf + "  yield                  - Yields from all crops" + Constants.vbCrLf + "  wheat.yield            - 'yield' for just wheat" + Constants.vbCrLf + "  wheat.yield as whtyld  - 'yield' from wheat renamed as 'whtyld'" + Constants.vbCrLf + "  yield units kg/ha      - 'yield' reported as kg/ha" + Constants.vbCrLf + "  yield format 0         - 'yield' reported with no decimal places" + Constants.vbCrLf + "  today format dd/mm/yyyy  - 'today' reported in dd/mm/yyyy format" + Constants.vbCrLf + "  sw()                   - Sum of 'sw' for all layers" + Constants.vbCrLf + "  sw(2)                  - 'sw' for the second layer" + Constants.vbCrLf + "  sw(2-4)                - 'sw' for layers 2 through to 4";
+				HelpText = "Syntax of variables:" + Environment.NewLine + "  ModuleName.VariableName as Alias units kg/ha format dd/mm/yyy" + Environment.NewLine + "Examples:" + Environment.NewLine + "  yield                  - Yields from all crops" + Environment.NewLine + "  wheat.yield            - 'yield' for just wheat" + Environment.NewLine + "  wheat.yield as whtyld  - 'yield' from wheat renamed as 'whtyld'" + Environment.NewLine + "  yield units kg/ha      - 'yield' reported as kg/ha" + Environment.NewLine + "  yield format 0         - 'yield' reported with no decimal places" + Environment.NewLine + "  today format dd/mm/yyyy  - 'today' reported in dd/mm/yyyy format" + Environment.NewLine + "  sw()                   - Sum of 'sw' for all layers" + Environment.NewLine + "  sw(2)                  - 'sw' for the second layer" + Environment.NewLine + "  sw(2-4)                - 'sw' for layers 2 through to 4";
 			} else if (XmlHelper.Type(Data).ToLower() == "tracker") {
-				HelpText = "Syntax of tracker variables:" + Constants.vbCrLf + "  [stat] of [VariableName] on [EventName] [from [From] to [To]] as [Alias]" + Constants.vbCrLf + "Where:" + Constants.vbCrLf + "  [stat] can be sum, value, maximum or minimum" + Constants.vbCrLf + "  [VariableName] can be any APSIM variable name" + Constants.vbCrLf + "  [EventName] is the APSIM event name to collect the value" + Constants.vbCrLf + "  [From] is the APSIM event name to start collecting the values" + Constants.vbCrLf + "  [To] is the APSIM event name to stop collecting the values" + Constants.vbCrLf + "  [Alias] is the name the variable will be known as within APSIM";
+				HelpText = "Syntax of tracker variables:" + Environment.NewLine + "  [stat] of [VariableName] on [EventName] [from [From] to [To]] as [Alias]" + Environment.NewLine + "Where:" + Environment.NewLine + "  [stat] can be sum, value, maximum or minimum" + Environment.NewLine + "  [VariableName] can be any APSIM variable name" + Environment.NewLine + "  [EventName] is the APSIM event name to collect the value" + Environment.NewLine + "  [From] is the APSIM event name to start collecting the values" + Environment.NewLine + "  [To] is the APSIM event name to stop collecting the values" + Environment.NewLine + "  [Alias] is the name the variable will be known as within APSIM";
 			} else {
-				HelpText = "Example output frequencies:" + Constants.vbCrLf + "  Daily       - reporting will be done daily" + Constants.vbCrLf + "  end_week    - reporting will be done at the end of each week" + Constants.vbCrLf + "  end_month   - reporting will be done at the end of each month" + Constants.vbCrLf + "  end_year    - reporting will be done at the end of each year" + Constants.vbCrLf + "  harvesting  - reporting will be done at harvest of a crop";
+				HelpText = "Example output frequencies:" + Environment.NewLine + "  Daily       - reporting will be done daily" + Environment.NewLine + "  end_week    - reporting will be done at the end of each week" + Environment.NewLine + "  end_month   - reporting will be done at the end of each month" + Environment.NewLine + "  end_year    - reporting will be done at the end of each year" + Environment.NewLine + "  harvesting  - reporting will be done at harvest of a crop";
 			}
 			MessageBox.Show(HelpText, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}

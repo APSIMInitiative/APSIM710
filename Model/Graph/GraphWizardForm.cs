@@ -130,7 +130,7 @@ namespace Graph
                return;
                }
             BaseView View = Controller.CreateUI(Comp.Type);
-            if (View != null && View.GetType().ToString() != "VBUserInterface.EmptyUI")
+            if (View != null && View.GetType().ToString() != "CSUserInterface.EmptyUI")
                {
                Views.Add(View);
                Components.Add(Comp);

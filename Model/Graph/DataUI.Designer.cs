@@ -30,7 +30,7 @@ namespace Graph
          {
          this.DataGrid = new System.Windows.Forms.DataGridView();
          this.MainPanel = new System.Windows.Forms.Panel();
-         this.Properties = new VBUserInterface.GenericUI();
+         this.Properties = new CSUserInterface.GenericUI();
          this.splitter1 = new System.Windows.Forms.Splitter();
          ((System.ComponentModel.ISupportInitialize)(this.DataGrid)).BeginInit();
          this.SuspendLayout();
@@ -107,7 +107,7 @@ namespace Graph
 
       protected System.Windows.Forms.Panel MainPanel;
       public System.Windows.Forms.DataGridView DataGrid;
-      private VBUserInterface.GenericUI Properties;
+      private CSUserInterface.GenericUI Properties;
       private System.Windows.Forms.Splitter splitter1;
       }
    }

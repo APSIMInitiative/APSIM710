@@ -196,7 +196,7 @@ namespace CSUserInterface
 								}
 								if (!string.IsNullOrEmpty(Row["Value"].ToString())) {
 									// Make sure we save date rows as dd/mm/yyyy.
-									if (!Information.IsDBNull(Row["Type"]) && Row["Type"].ToString() == "date") {
+									if (!Convert.IsDBNull(Row["Type"]) && Row["Type"].ToString() == "date") {
 										// Try converting to date.
 										try {
 											DateTime DateValue = DateTime.Parse(Row["Value"].ToString());
@@ -237,7 +237,7 @@ namespace CSUserInterface
 			ListItemTextBox.MaxInputLength = 5000;
 
 			// Now create the correct type of cell in the value field for this row.
-			if (!Information.IsDBNull(NewRow.Cells[1].Value)) {
+			if (!Convert.IsDBNull(NewRow.Cells[1].Value)) {
 				switch ((string)NewRow.Cells[1].Value) {
 
                     case "yesno":
@@ -332,7 +332,7 @@ namespace CSUserInterface
                             }
 
                             // If we found a crop row then go and get all cultivars for that crop.
-                            if (CropRow < Grid.RowCount && !Information.IsDBNull(Grid.Rows[CropRow].Cells[4].Value))
+                            if (CropRow < Grid.RowCount && !Convert.IsDBNull(Grid.Rows[CropRow].Cells[4].Value))
                             {
                                 string CropName = (string)Grid.Rows[CropRow].Cells[4].Value;
                                 Component CropComponent = Controller.ApsimData.Find(NodePath).FindComponentInPaddock(Controller.ApsimData.Find(NodePath), CropName);
@@ -359,7 +359,7 @@ namespace CSUserInterface
                             }
 
                             // If we found a crop row then go and get all cultivars for that crop.
-                            if (CropRow < Grid.RowCount && !Information.IsDBNull(Grid.Rows[CropRow].Cells[4].Value))
+                            if (CropRow < Grid.RowCount && !Convert.IsDBNull(Grid.Rows[CropRow].Cells[4].Value))
                             {
                                 string CropName = (string)Grid.Rows[CropRow].Cells[4].Value;
                                 Component CropComponent = Controller.ApsimData.Find(NodePath).FindComponentInPaddock(Controller.ApsimData.Find(NodePath), CropName);
@@ -375,7 +375,7 @@ namespace CSUserInterface
                         }
                     case "date":
                         {
-                            if (InRefresh && !Information.IsDBNull(NewRow.Cells[4].Value) && !string.IsNullOrEmpty((string)NewRow.Cells[4].Value))
+                            if (InRefresh && !Convert.IsDBNull(NewRow.Cells[4].Value) && !string.IsNullOrEmpty((string)NewRow.Cells[4].Value))
                             {
                                 try
                                 {
@@ -453,7 +453,7 @@ namespace CSUserInterface
 				if (Dialog.ShowDialog() == DialogResult.OK) {
 					string Text = "";
 					foreach (string FileName in Dialog.FileNames) {
-						Text += FileName + Constants.vbCrLf;
+						Text += FileName + Environment.NewLine;
 					}
 					Grid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = Text;
 				}

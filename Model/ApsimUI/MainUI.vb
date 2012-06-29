@@ -475,7 +475,6 @@ Public Class MainUI
             Assembly.Load("Actions")
             Assembly.Load("CSUserInterface")
             Assembly.Load("CPIUserInterface")
-            Assembly.Load("VBUserInterface")
             Assembly.Load("Graph")
             'Assembly.Load("Soils")
 
