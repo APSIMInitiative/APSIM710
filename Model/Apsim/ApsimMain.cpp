@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
          Path simFile(simPath);
          simFile.Change_directory();
 		 simulation.go(simPath);
-         cerr << "100%" << endl;
+         cerr << "%100" << endl;
          }
       else
          {

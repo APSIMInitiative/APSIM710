@@ -5,12 +5,16 @@ me="`readlink -f $0`"
 APSIM=`dirname "$me"`
 
 # Set up dynamic libraries
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$APSIM
+if [ -n "${LD_LIBRARY_PATH:-x}" ] ; then
+  export LD_LIBRARY_PATH=$APSIM:$LD_LIBRARY_PATH
+else
+  export LD_LIBRARY_PATH=$APSIM
+fi
 
 for file in "$@" ; do
   if [ -d "$file" ] ; then
     # Try and run every file in that directory
-    for f in $file/* ; do
+    for f in $file/*.apsim $file/*.con $file/*.sim ; do
       $0 "$f"
     done
   else
@@ -18,12 +22,12 @@ for file in "$@" ; do
     cd "`dirname \"$file\"`"
     file=`basename "$file"`
     ext=`echo $file | awk -F . '{print $NF}'`
-echo wd= `pwd` file = $file
+
     # Convert to sim; run apsim and collect summary file
     case "$ext" in
       apsim)
         simfiles=`basename "$file" .apsim`.simfiles 
-        "$APSIM/ApsimToSim.exe" "$file" &> "$simfiles"
+        "$APSIM/ApsimToSim.exe" "$file" 2> "$simfiles"
         cut -b 9- "$simfiles"  | while read simfile
         do 
           if [ -f "$simfile" ] ; then
@@ -35,7 +39,7 @@ echo wd= `pwd` file = $file
       ;;
       con)
         simfiles=`basename "$file" .apsim`.simfiles 
-        "$APSIM/ConToSim.x" "$file" &> "$simfiles"
+        "$APSIM/ConToSim.x" "$file" 2> "$simfiles"
         cut -b 9- "$simfiles" | while read simfile
         do 
           if [ -f "$simfile" ] ; then

@@ -84,8 +84,12 @@ public class RunApsimJob : RunExternalJob
          if (e.Text.Length > 0)
             {
             if (e.Text[0] == '%')
+				{
                _PercentComplete = Convert.ToInt32(e.Text.Substring(1));
-
+				int posEol = e.Text.IndexOf('\n');
+				if (posEol > 0) 
+   					_StdErr += e.Text.Substring(posEol); // Append trailing message, if any
+				}
             else
                _StdErr += e.Text;
             }
@@ -97,6 +101,9 @@ public class RunApsimJob : RunExternalJob
       // and attempt to run the next simulation
       lock (this)
          {
+         if (_StdErr.Length > 0) {
+            _SumFile.Write(_StdErr);
+         }
          _SumFile.Close();
          _SumFile = null;
          _PercentComplete = 100;
