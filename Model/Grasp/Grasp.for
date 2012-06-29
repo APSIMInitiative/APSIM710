@@ -3442,6 +3442,16 @@ cpdev  bound required?..
          g%dm_green(leaf) = variable_value
          g%n_green(leaf) = variable_value * n_conc
 
+      elseif (variable_name .eq. 'dlt_green_leaf') then
+        ! Need to set N_green
+         if (g%dm_green(leaf) .gt. 0.0) then
+            n_conc = g%n_green(leaf) / g%dm_green(leaf)
+         else
+            n_conc = c%litter_n / 100.0
+         endif
+         g%dm_green(leaf) = g%dm_green(leaf) + variable_value
+         g%n_green(leaf) = g%n_green(leaf) + variable_value * n_conc
+
       elseif (variable_name .eq. 'green_stem') then
         ! Need to set N_green
          if (g%dm_green(stem) .gt. 0.0) then
@@ -3451,6 +3461,16 @@ cpdev  bound required?..
          endif
          g%dm_green(stem) = variable_value
          g%n_green(stem) = variable_value * n_conc
+
+      elseif (variable_name .eq. 'dlt_green_stem') then
+        ! Need to set N_green
+         if (g%dm_green(stem) .gt. 0.0) then
+            n_conc = g%n_green(stem) / g%dm_green(stem)
+         else
+            n_conc = c%litter_n / 100.0
+         endif
+         g%dm_green(stem) = g%dm_green(stem) + variable_value
+         g%n_green(stem) = g%n_green(stem) + variable_value * n_conc
 
       elseif (variable_name .eq. 'green_root') then
          ! Need to set N_green
@@ -3472,6 +3492,16 @@ cpdev  bound required?..
          g%dm_dead(leaf) = variable_value
          g%n_dead(leaf) = variable_value * n_conc
 
+      elseif (variable_name .eq. 'dlt_dead_leaf') then
+         ! Need to set N_dead
+         if (g%dm_dead(leaf) .gt. 0.0) then
+            n_conc = g%n_dead(leaf) / g%dm_dead(leaf)
+         else
+            n_conc = c%litter_n / 100.0
+         endif
+         g%dm_dead(leaf) = g%dm_dead(leaf) + variable_value
+         g%n_dead(leaf) = g%n_dead(leaf) + variable_value * n_conc
+
       elseif (variable_name .eq. 'dead_stem') then
          ! Need to set N_dead
          if (g%dm_dead(stem) .gt. 0.0) then
@@ -3482,6 +3512,15 @@ cpdev  bound required?..
          g%dm_dead(stem) = variable_value
          g%n_dead(stem) = variable_value * n_conc
 
+      elseif (variable_name .eq. 'dlt_dead_stem') then
+         ! Need to set N_dead
+         if (g%dm_dead(stem) .gt. 0.0) then
+            n_conc = g%n_dead(stem) / g%dm_dead(stem)
+         else
+            n_conc = c%litter_n / 100.0
+         endif
+         g%dm_dead(stem) = g%dm_dead(stem) + variable_value
+         g%n_dead(stem) = g%n_dead(stem) + variable_value * n_conc
 
       elseif (variable_name .eq. 'dead_root') then
         ! Need to set N_dead
@@ -3817,10 +3856,22 @@ c     real       N_demand              ! sum N demand for plant parts (g/plant)
      :                        'Weight of green stem', 
      :                        grasp_get_real_variable, 
      :                        grasp_set_real_variable)
+
+      call ExposeRealFunction('dlt_green_leaf', 'kg/ha', 
+     :                        'Change in weight of green leaves', 
+     :                        grasp_get_real_variable, 
+     :                        grasp_set_real_variable)
+
+      call ExposeRealFunction('dlt_green_stem', 'kg/ha', 
+     :                        'Change in weight of green stem', 
+     :                        grasp_get_real_variable, 
+     :                        grasp_set_real_variable )
+
       call ExposeRealFunction('green_root', 'kg/ha', 
      :                        'Weight of green roots', 
      :                        grasp_get_real_variable, 
      :                        grasp_set_real_variable)
+
       call ExposeRealFunction('dead_leaf', 'kg/ha', 
      :                        'Weight of dead leaves', 
      :                        grasp_get_real_variable, 
@@ -3831,6 +3882,14 @@ c     real       N_demand              ! sum N demand for plant parts (g/plant)
      :                        grasp_set_real_variable)
       call ExposeRealFunction('dead_root', 'kg/ha', 
      :                        'Weight of dead roots', 
+     :                        grasp_get_real_variable, 
+     :                        grasp_set_real_variable)
+      call ExposeRealFunction('dlt_dead_leaf', 'kg/ha', 
+     :                        'Change in weight of dead leaves', 
+     :                        grasp_get_real_variable, 
+     :                        grasp_set_real_variable)
+      call ExposeRealFunction('dlt_dead_stem', 'kg/ha', 
+     :                        'Change in weight of dead stem', 
      :                        grasp_get_real_variable, 
      :                        grasp_set_real_variable)
       call ExposeRealFunction('root_depth', 'mm', 

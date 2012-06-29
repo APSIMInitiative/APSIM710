@@ -20,8 +20,8 @@ class TclComponent {
       virtual void onError(void);
       virtual void onInit2(void);
 
-      void exposeReadable(const std::string &variableName);
-      void exposeReadWrite(const std::string &variableName);
+      void exposeReadable(const std::string &variableName, const std::string &units);
+      void exposeReadWrite(const std::string &variableName, const std::string &units);
       	
       void respondToGet(const std::string &variableName, std::vector<std::string> &result);
       void respondToSet(const std::string &variableName, std::vector<std::string> &value);

@@ -99,7 +99,7 @@ else
 OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.obj
 endif
 
-#PRECOMPILE = StdPlant.h
+PRECOMPILE = StdPlant.h
 
 PROJECTTYPE = dll
 

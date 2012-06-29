@@ -199,14 +199,14 @@ void TclComponent::onError(void)
    }
    
 // Allow apsim to read (and/ or write) one of our variables. 
-void TclComponent::exposeReadable(const std::string &variableName)
+void TclComponent::exposeReadable(const std::string &variableName, const std::string &units)
   {
-  apsimAPI.exposeFunction2(variableName, "", "", StringArrayFunction2(variableName, &TclComponent::respondToGet));
+  apsimAPI.exposeFunction2(variableName, units, "", StringArrayFunction2(variableName, &TclComponent::respondToGet));
   }
 
-void TclComponent::exposeReadWrite(const std::string &variableName)
+void TclComponent::exposeReadWrite(const std::string &variableName, const std::string &units)
   {
-  apsimAPI.exposeFunction2(variableName, "", "", 
+  apsimAPI.exposeFunction2(variableName, units, "", 
                            StringArrayFunction2(variableName, &TclComponent::respondToGet),
                            StringArrayFunction2(variableName, &TclComponent::respondToSet));
   }
@@ -328,23 +328,21 @@ int TclComponent::apsimGet(Tcl_Interp *interp, const string &varName, bool optio
 
    apsimAPI.get(varName, "", optional, resultArray);
 
-   if (optional || resultArray.size() > 0) 
+   if (resultArray.size() > 1) 
       {
-      if (resultArray.size() > 1) 
-      	 {
-         Tcl_Obj *result = Tcl_GetObjResult(interp);
-         Tcl_SetListObj(result, 0, NULL);
-         for (std::vector<string>::iterator p = resultArray.begin(); p != resultArray.end(); p++)
-            Tcl_ListObjAppendElement(interp, result, Tcl_NewStringObj((char *)(*p).c_str(), -1));
-         }
-      else if (resultArray.size() == 1) 
-      	 {
-         string s = resultArray[0];
-         Tcl_SetObjResult(interp, Tcl_NewStringObj((char *)s.c_str(),-1));
-      	 }    
+      Tcl_Obj *result = Tcl_GetObjResult(interp);
+      Tcl_SetListObj(result, 0, NULL);
+      for (std::vector<string>::iterator p = resultArray.begin(); p != resultArray.end(); p++)
+         Tcl_ListObjAppendElement(interp, result, Tcl_NewStringObj((char *)(*p).c_str(), -1));
+      return TCL_OK;
+      }
+   else if (resultArray.size() == 1) 
+      {
+      string s = resultArray[0]; 
+      Tcl_SetObjResult(interp, Tcl_NewStringObj((char *)s.c_str(),-1));
       return TCL_OK;
       }    
-   return TCL_ERROR;
+   return (optional ? TCL_OK : TCL_ERROR);
    }
 
 // (Called from TCL interpreter.) Set an apsim value
@@ -395,27 +393,33 @@ bool TclComponent::apsimSet(Tcl_Interp *interp, const string &varName, Tcl_Obj *
 // Called from TCL script. Tell apsim of something we own
 int apsimRegisterGetProc(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[])
    {
-   if (objc == 2)
+   string units = "";
+   if (objc == 3)
+       units = Tcl_GetStringFromObj(objv[2], NULL);
+   if (objc == 2 || objc == 3)
       {
       TclComponent *component = (TclComponent *) cd;
       string name = Tcl_GetStringFromObj(objv[1], NULL);
-      component->exposeReadable(name);
+      component->exposeReadable(name, units);
       return TCL_OK;
       }
-   Tcl_SetResult(interp, "Wrong num args: apsimRegisterGet <variableName>", NULL);
+   Tcl_SetResult(interp, "Wrong num args: apsimRegisterGet <variableName> [<units>]", NULL);
    return TCL_ERROR;
    }
 
 int apsimRegisterGetSetProc(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[])
    {
-   if (objc == 2)
+   string units = "";
+   if (objc == 3)
+       units = Tcl_GetStringFromObj(objv[2], NULL);
+   if (objc == 2 || objc == 3)
       {
       TclComponent *component = (TclComponent *) cd;
       string name = Tcl_GetStringFromObj(objv[1], NULL);
-      component->exposeReadWrite(name);
+      component->exposeReadWrite(name, units);
       return TCL_OK;
       }
-   Tcl_SetResult(interp, "Wrong num args: apsimRegisterGetSet <variableName>", NULL);
+   Tcl_SetResult(interp, "Wrong num args: apsimRegisterGetSet <variableName> [<units>]", NULL);
    return TCL_ERROR;
    }
 
