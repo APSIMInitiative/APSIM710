@@ -588,252 +588,236 @@
       <cotton />
       <wheat />
       <tclmanager name="Manager">
-        <tclui name="Rotation Initialisation">
-          <rule name="Rotation Sample (Directed Graph) Rotation Initialisation.out - Rotation Initialisation UI1" condition="init" invisible="yes">source $apsuite/UserInterface/APSFarm/RotationInitialisation.tcl
+        <rule name="Rotation Initialisation">
+          <script>
+            <text>
+source $apsuite/UserInterface/APSFarm/RotationInitialisation.tcl
 set state "WinterFallow"
-</rule>
-          <rule name="Rotation Sample (Directed Graph) Rotation Initialisation.out - Rotation Initialisation UI2" condition="process" invisible="yes">checkSetup
+</text>
+            <event>init</event>
+          </script>
+          <script>
+            <text>
+checkSetup
 doProcess
-</rule>
-          <rule name="Rotation Sample (Directed Graph) Rotation Initialisation.out - Rotation Initialisation UI3" condition="exit" invisible="yes">exit
-</rule>
-          <uiscript>source $apsuite/UserInterface/APSFarm/RotationInitialisationUI.tcl</uiscript>
-          <initialState>WinterFallow</initialState>
-          <simpleLogging>0</simpleLogging>
-        </tclui>
-        <tclui name="Rotation Management">
-          <uiscript><![CDATA[source $apsuite/UserInterface/APSFarm/RotationsUI.tcl]]></uiscript>
-          <canvas_height>496</canvas_height>
-          <rules_height>40</rules_height>
+</text>
+            <event>process</event>
+          </script>
+        </rule>
+        <rotplot name="Rotation Management">
+          <canvas_height>401</canvas_height>
+          <rules_height>227</rules_height>
           <graph_name>stateGraph</graph_name>
           <node>
-            <x1>238.0</x1>
             <name>SummerFallow2</name>
-            <y1>325.0</y1>
-            <x2>338.0</x2>
+            <x1>68</x1>
+            <y1>331</y1>
             <desc>New state</desc>
-            <fill>gray</fill>
-            <y2>425.0</y2>
+            <fill>-657956</fill>
           </node>
           <node>
-            <x1>560.0</x1>
             <name>Chickpea</name>
-            <y1>21.0</y1>
-            <x2>660.0</x2>
+            <x1>390</x1>
+            <y1>27</y1>
             <desc>Chickpea</desc>
-            <fill>lightgreen</fill>
-            <y2>121.0</y2>
+            <fill>-657956</fill>
           </node>
           <node>
-            <x1>445.0</x1>
             <name>Wheat</name>
-            <y1>326.0</y1>
-            <x2>545.0</x2>
+            <x1>275</x1>
+            <y1>332</y1>
             <desc>Wheat Crop</desc>
-            <fill>darkgreen</fill>
-            <y2>426.0</y2>
+            <fill>-657956</fill>
           </node>
           <node>
-            <x1>180.0</x1>
             <name>WinterFallow</name>
-            <y1>192.0</y1>
-            <x2>280.0</x2>
+            <x1>10</x1>
+            <y1>198</y1>
             <desc>New state</desc>
-            <fill>gray</fill>
-            <y2>292.0</y2>
+            <fill>-657956</fill>
           </node>
           <node>
-            <x1>508.0</x1>
             <name>SummerFallow1</name>
-            <y1>195.0</y1>
-            <x2>608.0</x2>
+            <x1>338</x1>
+            <y1>201</y1>
             <desc>New state</desc>
-            <fill>maroon</fill>
-            <y2>295.0</y2>
+            <fill>-657956</fill>
           </node>
           <node>
-            <x1>368.0</x1>
             <name>F1</name>
-            <y1>4.0</y1>
-            <x2>468.0</x2>
+            <x1>198</x1>
+            <y1>10</y1>
             <desc>New state</desc>
-            <fill>gray</fill>
-            <y2>104.0</y2>
+            <fill>-657956</fill>
           </node>
           <node>
-            <x1>204.0</x1>
             <name>Cotton</name>
-            <y1>32.0</y1>
-            <x2>304.0</x2>
+            <x1>34</x1>
+            <y1>38</y1>
             <desc>A Cotton Crop</desc>
-            <fill>purple</fill>
-            <y2>132.0</y2>
+            <fill>-657956</fill>
           </node>
           <arc>
             <name>arc2</name>
             <source>SummerFallow1</source>
             <target>WinterFallow</target>
-            <x>388.5</x>
-            <y>362.0</y>
+            <x>218</x>
+            <y>368</y>
             <rules>[apsimGet day]  == 192</rules>
-            <rules />
-            <actions />
           </arc>
           <arc>
             <name>arc6</name>
             <source>WinterFallow</source>
             <target>Cotton</target>
-            <x>197.5</x>
+            <x>27</x>
+            <y>161</y>
             <actions>sow_cotton</actions>
-            <y>155.5</y>
             <rules>[canPlant_cotton]</rules>
-            <rules />
-            <actions />
           </arc>
           <arc>
             <name>arc3</name>
             <source>Wheat</source>
             <target>SummerFallow2</target>
-            <x>394.0</x>
+            <x>224</x>
+            <y>422</y>
             <actions>apsimSendMessage wheat harvest</actions>
             <actions>apsimSendMessage wheat end_crop</actions>
-            <y>416.5</y>
             <rules>{[apsimGet wheat.stageName] == "harvest_ripe" || [apsimGet wheat.plant_status] == "dead"}</rules>
-            <rules />
-            <actions />
           </arc>
           <arc>
             <name>arc7</name>
             <source>F1</source>
             <target>SummerFallow1</target>
-            <x>542.5</x>
-            <y>78.0</y>
+            <x>372</x>
+            <y>84</y>
             <rules>[apsimGet day]  == 192</rules>
-            <rules />
-            <actions />
           </arc>
           <arc>
             <name>arc0</name>
             <source>F1</source>
             <target>Chickpea</target>
-            <x>500.0</x>
+            <x>330</x>
+            <y>35</y>
             <actions>sow_chickpea</actions>
-            <y>29.0</y>
             <rules>[canPlant_chickpea]</rules>
-            <rules />
-            <actions />
           </arc>
           <arc>
             <name>arc8</name>
             <source>Chickpea</source>
             <target>SummerFallow1</target>
-            <x>633.0</x>
+            <x>463</x>
+            <y>168</y>
             <actions>apsimSendMessage chickpea harvest</actions>
             <actions>apsimSendMessage chickpea end_crop</actions>
-            <y>162.5</y>
             <rules>{[apsimGet chickpea.stageName] == "harvest_ripe" || [apsimGet chickpea.plant_status] == "dead"}</rules>
-            <rules />
-            <actions />
           </arc>
           <arc>
             <name>arc1</name>
             <source>SummerFallow1</source>
             <target>Wheat</target>
-            <x>550.5</x>
+            <x>380</x>
+            <y>327</y>
             <actions>sow_wheat</actions>
-            <y>321.5</y>
             <rules>[canPlant_wheat]</rules>
-            <rules />
-            <actions />
           </arc>
           <arc>
             <name>arc5</name>
             <source>Cotton</source>
             <target>F1</target>
-            <x>326.5</x>
+            <x>156</x>
+            <y>43</y>
             <actions>apsimSendMessage cotton harvest</actions>
-            <y>37.5</y>
             <rules>[apsimGet ozcot_status] &gt; 0</rules>
-            <rules />
-            <actions />
           </arc>
           <arc>
             <name>arc9</name>
             <source>SummerFallow2</source>
             <target>WinterFallow</target>
-            <x>244.0</x>
-            <y>319.5</y>
+            <x>74</x>
+            <y>325</y>
             <rules>[apsimGet day]  == 74</rules>
-            <rules />
-            <actions />
           </arc>
-          <paddock>
-            <name>toplevel</name>
-            <isManaged>0</isManaged>
-            <initialState>
-            </initialState>
-          </paddock>
-          <paddock>
-            <name>Paddock</name>
-            <isManaged>0</isManaged>
-            <initialState>
-            </initialState>
-          </paddock>
-          <rule name="Rotation Management Init rule" invisible="yes" condition="init"><![CDATA[package require struct
+          <rule name="stateGraph Init rule" invisible="yes" condition="init"><![CDATA[package require struct
 ::struct::graph stateGraph
 stateGraph node insert "SummerFallow2"
-set colour(SummerFallow2) "gray"
+set colour(SummerFallow2) "-657956"
 stateGraph node insert "Chickpea"
-set colour(Chickpea) "lightgreen"
+set colour(Chickpea) "-657956"
 stateGraph node insert "Wheat"
-set colour(Wheat) "darkgreen"
+set colour(Wheat) "-657956"
 stateGraph node insert "WinterFallow"
-set colour(WinterFallow) "gray"
+set colour(WinterFallow) "-657956"
 stateGraph node insert "SummerFallow1"
-set colour(SummerFallow1) "maroon"
+set colour(SummerFallow1) "-657956"
 stateGraph node insert "F1"
-set colour(F1) "gray"
+set colour(F1) "-657956"
 stateGraph node insert "Cotton"
-set colour(Cotton) "purple"
+set colour(Cotton) "-657956"
 stateGraph arc insert "SummerFallow1" "WinterFallow" "arc2"
-stateGraph arc lappend "arc2" rules {[apsimGet day]  == 192}
 stateGraph arc lappend "arc2" actions {}
+stateGraph arc lappend "arc2" rules {[apsimGet day]  == 192}
 stateGraph arc insert "WinterFallow" "Cotton" "arc6"
 stateGraph arc lappend "arc6" actions {sow_cotton}
 stateGraph arc lappend "arc6" rules {[canPlant_cotton]}
-stateGraph arc lappend "arc6" actions {}
 stateGraph arc insert "Wheat" "SummerFallow2" "arc3"
 stateGraph arc lappend "arc3" actions {apsimSendMessage wheat harvest}
 stateGraph arc lappend "arc3" actions {apsimSendMessage wheat end_crop}
 stateGraph arc lappend "arc3" rules {{[apsimGet wheat.stageName] == "harvest_ripe" || [apsimGet wheat.plant_status] == "dead"}}
-stateGraph arc lappend "arc3" actions {}
 stateGraph arc insert "F1" "SummerFallow1" "arc7"
-stateGraph arc lappend "arc7" rules {[apsimGet day]  == 192}
 stateGraph arc lappend "arc7" actions {}
+stateGraph arc lappend "arc7" rules {[apsimGet day]  == 192}
 stateGraph arc insert "F1" "Chickpea" "arc0"
 stateGraph arc lappend "arc0" actions {sow_chickpea}
 stateGraph arc lappend "arc0" rules {[canPlant_chickpea]}
-stateGraph arc lappend "arc0" actions {}
 stateGraph arc insert "Chickpea" "SummerFallow1" "arc8"
 stateGraph arc lappend "arc8" actions {apsimSendMessage chickpea harvest}
 stateGraph arc lappend "arc8" actions {apsimSendMessage chickpea end_crop}
 stateGraph arc lappend "arc8" rules {{[apsimGet chickpea.stageName] == "harvest_ripe" || [apsimGet chickpea.plant_status] == "dead"}}
-stateGraph arc lappend "arc8" actions {}
 stateGraph arc insert "SummerFallow1" "Wheat" "arc1"
 stateGraph arc lappend "arc1" actions {sow_wheat}
 stateGraph arc lappend "arc1" rules {[canPlant_wheat]}
-stateGraph arc lappend "arc1" actions {}
 stateGraph arc insert "Cotton" "F1" "arc5"
 stateGraph arc lappend "arc5" actions {apsimSendMessage cotton harvest}
 stateGraph arc lappend "arc5" rules {[apsimGet ozcot_status] > 0}
-stateGraph arc lappend "arc5" actions {}
 stateGraph arc insert "SummerFallow2" "WinterFallow" "arc9"
-stateGraph arc lappend "arc9" rules {[apsimGet day]  == 74}
 stateGraph arc lappend "arc9" actions {}
+stateGraph arc lappend "arc9" rules {[apsimGet day]  == 74}
 ]]></rule>
-        </tclui>
-        <tclui name="Cotton Sowing Rule">
-          <rule name="Rotation Sample (Directed Graph) Cotton Sowing Rule.out - Sowing rule - initialisation" condition="init" invisible="yes">
+        </rotplot>
+        <rule name="Cotton Sowing Rule">
+          <ui>
+            <state>Cotton</state>
+            <crop>cotton</crop>
+            <date1>15-oct</date1>
+            <date2>15-dec</date2>
+            <raincrit>10</raincrit>
+            <rainnumdays>3</rainnumdays>
+            <esw_amount>100</esw_amount>
+            <must_sow>yes</must_sow>
+            <cultivar>Siok</cultivar>
+            <plants>100</plants>
+            <sowing_depth>30</sowing_depth>
+            <row_spacing>1000</row_spacing>
+            <sowing_costs />
+            <sow_tractor />
+            <sow_implement />
+            <fert_type />
+            <fert_cost>???</fert_cost>
+            <target_n />
+            <harvest_costs />
+            <price />
+            <moisture />
+            <harv_tractor />
+            <harv_implement />
+            <criteria>variable</criteria>
+            <plants_pm>10</plants_pm>
+            <skiprow>0</skiprow>
+            <module>ozcot</module>
+            <skipplant>0</skipplant>
+            <class>plant</class>
+          </ui>
+          <script>
+            <text>
 # Support procedures
 # Can we plant a crop today?
 proc canPlant_cotton {} {
@@ -889,14 +873,44 @@ proc sow_cotton {} {
   }
 }
 
-
-
-
-
-
-
-</rule>
-          <ruletemplate name="Sowing rule - initialisation" condition="init">
+</text>
+            <event>init</event>
+          </script>
+        </rule>
+        <rule name="Chickpea Sowing Rule">
+          <ui>
+            <state>Chickpea</state>
+            <crop>chickpea</crop>
+            <date1>15-may</date1>
+            <date2>10-jul</date2>
+            <raincrit>15</raincrit>
+            <rainnumdays>3</rainnumdays>
+            <esw_amount>50</esw_amount>
+            <must_sow>no</must_sow>
+            <cultivar>amethyst</cultivar>
+            <plants>25</plants>
+            <sowing_depth>30</sowing_depth>
+            <row_spacing>500</row_spacing>
+            <sowing_costs />
+            <sow_tractor />
+            <sow_implement />
+            <fert_type />
+            <fert_cost>???</fert_cost>
+            <target_n />
+            <harvest_costs />
+            <price />
+            <moisture />
+            <harv_tractor />
+            <harv_implement />
+            <criteria>variable</criteria>
+            <skipplant>0</skipplant>
+            <skiprow>0</skiprow>
+            <class>plant</class>
+            <module>plant</module>
+            <plants_pm />
+          </ui>
+          <script>
+            <text>
 # Support procedures
 # Can we plant a crop today?
 proc canPlant_[crop] {} {
@@ -952,118 +966,43 @@ proc sow_[crop] {} {
   }
 }
 
-
-
-
-
-
-
-</ruletemplate>
-          <uiscript>source $apsuite/UserInterface/APSFarm/GenericSowingUI.tcl</uiscript>
-          <state>Cotton</state>
-          <crop>cotton</crop>
-          <date1>15-oct</date1>
-          <date2>15-dec</date2>
-          <raincrit>10</raincrit>
-          <rainnumdays>3</rainnumdays>
-          <esw_amount>100</esw_amount>
-          <must_sow>yes</must_sow>
-          <cultivar>Siok</cultivar>
-          <plants>100</plants>
-          <sowing_depth>30</sowing_depth>
-          <row_spacing>1000</row_spacing>
-          <sowing_costs>
-          </sowing_costs>
-          <sow_tractor>
-          </sow_tractor>
-          <sow_implement>
-          </sow_implement>
-          <fert_type>
-          </fert_type>
-          <fert_cost>???</fert_cost>
-          <target_n>
-          </target_n>
-          <harvest_costs>
-          </harvest_costs>
-          <price>
-          </price>
-          <moisture>
-          </moisture>
-          <harv_tractor>
-          </harv_tractor>
-          <harv_implement>
-          </harv_implement>
-          <criteria>variable</criteria>
-          <plants_pm>10</plants_pm>
-          <skiprow>0</skiprow>
-          <module>ozcot</module>
-          <skipplant>0</skipplant>
-          <class>plant</class>
-        </tclui>
-        <tclui name="Chickpea Sowing Rule">
-          <rule name="Rotation Sample (Directed Graph) Chickpea Sowing Rule.out - Sowing rule - initialisation" condition="init" invisible="yes">
-# Support procedures
-# Can we plant a crop today?
-proc canPlant_chickpea {} {
-  if {"variable" == "variable"} {
-     set year [apsimGet year]; set day [apsimGet day]
-     set d1 [clock format [clock scan "15-may-$year"] -format %j]
-     set d2 [clock format [clock scan "10-jul-$year"] -format %j]
-
-     if {"no" == "yes" &amp;&amp; $day == $d2} {return 1}
-
-     if {$d1 &gt; $d2} {
-        set dateOK [expr $day &gt;= $d1 || $day &lt;= $d2]
-     } else {
-        set dateOK [expr $day &gt;= $d1 &amp;&amp; $day &lt;= $d2]
-     }
-     set rainOK [expr [apsimGet rain\[3\]] &gt;= 15]
-     set eswOK [expr [apsimGet esw] &gt;= 50]
-     return [expr $dateOK &amp;&amp; $rainOK &amp;&amp; $eswOK]
-  } elseif {"variable" == "fixed"} {
-     set year [apsimGet year]; set day [apsimGet day]
-     set d1 [clock format [clock scan "15-may-$year"] -format %j]
-     return [expr $day == $d1]
-  } else {
-     error "Unknown sowing criteria \"variable\"."
-  }
-  return "notreached"
-}
-
-# Plant a crop now
-proc sow_chickpea {} {
-  if {"plant" == "plant"} {
-     apsimSendMessage chickpea sow {plants 25} {sowing_depth 30} \
-             {cultivar amethyst} {row_spacing 500} \
-             {skipplant 0} {skiprow 0} {crop_class plant}
-  } elseif {"plant" == "cropmod"} {
-     apsimSendMessage chickpea sow {plants [density]} {sowing_depth [depth]} \
-             {cultivar amethyst} {row_spacing 500} {skiprow 0}
-  } elseif {"plant" == "growth"} {
-     apsimSendMessage chickpea ???
-  } elseif {"plant" == "ozcot"} {
-     apsimSendMessage chickpea sow {plants_pm } {sowing_depth 30} \
-             {row_spacing 500} {skiprow 0} {cultivar amethyst}
-  } elseif {"plant" == "oryza"} {
-     apsimSendMessage chickpea sow {cultivar amethyst}
-  } elseif {"plant" == "sorghum"} {
-     apsimSendMessage chickpea sow {plants 25} {sowing_depth 30} \
-             {cultivar amethyst} {row_spacing 500} {skiprow 0} \
-             {tiller_no_fertile [tiller_no_fertile]}
-  } elseif {"plant" == "sugar"} {
-     apsimSendMessage chickpea sow {plants 25} {cultivar amethyst} {sowing_depth 30}
-  } else {
-    error "Unknown crop module \"plant\"."
-  }
-}
-
-
-
-
-
-
-</rule>
-          <ruletemplate name="Sowing rule - initialisation" condition="init">
+</text>
+            <event>init</event>
+          </script>
+        </rule>
+        <rule name="Wheat Sowing Rule">
+          <ui>
+            <state>Wheat</state>
+            <crop>wheat</crop>
+            <date1>15-may</date1>
+            <date2>10-jul</date2>
+            <raincrit>25</raincrit>
+            <rainnumdays>3</rainnumdays>
+            <esw_amount>50</esw_amount>
+            <must_sow>no</must_sow>
+            <cultivar>hartog</cultivar>
+            <plants>100</plants>
+            <sowing_depth>30</sowing_depth>
+            <row_spacing>250</row_spacing>
+            <sowing_costs />
+            <sow_tractor />
+            <sow_implement />
+            <fert_type />
+            <fert_cost>???</fert_cost>
+            <target_n />
+            <harvest_costs />
+            <price />
+            <moisture />
+            <harv_tractor />
+            <harv_implement />
+            <criteria>variable</criteria>
+            <skipplant>0</skipplant>
+            <skiprow>0</skiprow>
+            <class>plant</class>
+            <module>plant</module>
+          </ui>
+          <script>
+            <text>
 # Support procedures
 # Can we plant a crop today?
 proc canPlant_[crop] {} {
@@ -1118,222 +1057,10 @@ proc sow_[crop] {} {
     error "Unknown crop module \"[module]\"."
   }
 }
-
-
-
-
-
-
-</ruletemplate>
-          <uiscript>source $apsuite/UserInterface/APSFarm/GenericSowingUI.tcl</uiscript>
-          <state>Chickpea</state>
-          <crop>chickpea</crop>
-          <date1>15-may</date1>
-          <date2>10-jul</date2>
-          <raincrit>15</raincrit>
-          <rainnumdays>3</rainnumdays>
-          <esw_amount>50</esw_amount>
-          <must_sow>no</must_sow>
-          <cultivar>amethyst</cultivar>
-          <plants>25</plants>
-          <sowing_depth>30</sowing_depth>
-          <row_spacing>500</row_spacing>
-          <sowing_costs>
-          </sowing_costs>
-          <sow_tractor>
-          </sow_tractor>
-          <sow_implement>
-          </sow_implement>
-          <fert_type>
-          </fert_type>
-          <fert_cost>???</fert_cost>
-          <target_n>
-          </target_n>
-          <harvest_costs>
-          </harvest_costs>
-          <price>
-          </price>
-          <moisture>
-          </moisture>
-          <harv_tractor>
-          </harv_tractor>
-          <harv_implement>
-          </harv_implement>
-          <criteria>variable</criteria>
-          <skipplant>0</skipplant>
-          <skiprow>0</skiprow>
-          <class>plant</class>
-          <module>plant</module>
-          <plants_pm>
-          </plants_pm>
-        </tclui>
-        <tclui name="Wheat Sowing Rule">
-          <rule name="Rotation Sample (Directed Graph) Wheat Sowing Rule.out - Sowing rule - initialisation" condition="init" invisible="yes">
-# Support procedures
-# Can we plant a crop today?
-proc canPlant_wheat {} {
-  if {"variable" == "variable"} {
-     set year [apsimGet year]; set day [apsimGet day]
-     set d1 [clock format [clock scan "15-may-$year"] -format %j]
-     set d2 [clock format [clock scan "10-jul-$year"] -format %j]
-
-     if {"no" == "yes" &amp;&amp; $day == $d2} {return 1}
-
-     if {$d1 &gt; $d2} {
-        set dateOK [expr $day &gt;= $d1 || $day &lt;= $d2]
-     } else {
-        set dateOK [expr $day &gt;= $d1 &amp;&amp; $day &lt;= $d2]
-     }
-     set rainOK [expr [apsimGet rain\[3\]] &gt;= 25]
-     set eswOK [expr [apsimGet esw] &gt;= 50]
-     return [expr $dateOK &amp;&amp; $rainOK &amp;&amp; $eswOK]
-  } elseif {"variable" == "fixed"} {
-     set year [apsimGet year]; set day [apsimGet day]
-     set d1 [clock format [clock scan "15-may-$year"] -format %j]
-     return [expr $day == $d1]
-  } else {
-     error "Unknown sowing criteria \"variable\"."
-  }
-  return "notreached"
-}
-
-# Plant a crop now
-proc sow_wheat {} {
-  if {"plant" == "plant"} {
-     apsimSendMessage wheat sow {plants 100} {sowing_depth 30} \
-             {cultivar hartog} {row_spacing 250} \
-             {skipplant 0} {skiprow 0} {crop_class plant}
-  } elseif {"plant" == "cropmod"} {
-     apsimSendMessage wheat sow {plants [density]} {sowing_depth [depth]} \
-             {cultivar hartog} {row_spacing 250} {skiprow 0}
-  } elseif {"plant" == "growth"} {
-     apsimSendMessage wheat ???
-  } elseif {"plant" == "ozcot"} {
-     apsimSendMessage wheat sow {plants_pm [plants_pm]} {sowing_depth 30} \
-             {row_spacing 250} {skiprow 0} {cultivar hartog}
-  } elseif {"plant" == "oryza"} {
-     apsimSendMessage wheat sow {cultivar hartog}
-  } elseif {"plant" == "sorghum"} {
-     apsimSendMessage wheat sow {plants 100} {sowing_depth 30} \
-             {cultivar hartog} {row_spacing 250} {skiprow 0} \
-             {tiller_no_fertile [tiller_no_fertile]}
-  } elseif {"plant" == "sugar"} {
-     apsimSendMessage wheat sow {plants 100} {cultivar hartog} {sowing_depth 30}
-  } else {
-    error "Unknown crop module \"plant\"."
-  }
-}
-
-
-
-
-
-
-
-</rule>
-          <ruletemplate name="Sowing rule - initialisation" condition="init">
-# Support procedures
-# Can we plant a crop today?
-proc canPlant_[crop] {} {
-  if {"[criteria]" == "variable"} {
-     set year [apsimGet year]; set day [apsimGet day]
-     set d1 [clock format [clock scan "[date1]-$year"] -format %j]
-     set d2 [clock format [clock scan "[date2]-$year"] -format %j]
-
-     if {"[must_sow]" == "yes" &amp;&amp; $day == $d2} {return 1}
-
-     if {$d1 &gt; $d2} {
-        set dateOK [expr $day &gt;= $d1 || $day &lt;= $d2]
-     } else {
-        set dateOK [expr $day &gt;= $d1 &amp;&amp; $day &lt;= $d2]
-     }
-     set rainOK [expr [apsimGet rain\[[rainnumdays]\]] &gt;= [raincrit]]
-     set eswOK [expr [apsimGet esw] &gt;= [esw_amount]]
-     return [expr $dateOK &amp;&amp; $rainOK &amp;&amp; $eswOK]
-  } elseif {"[criteria]" == "fixed"} {
-     set year [apsimGet year]; set day [apsimGet day]
-     set d1 [clock format [clock scan "[date1]-$year"] -format %j]
-     return [expr $day == $d1]
-  } else {
-     error "Unknown sowing criteria \"[criteria]\"."
-  }
-  return "notreached"
-}
-
-# Plant a crop now
-proc sow_[crop] {} {
-  if {"[module]" == "plant"} {
-     apsimSendMessage [crop] sow {plants [plants]} {sowing_depth [sowing_depth]} \
-             {cultivar [cultivar]} {row_spacing [row_spacing]} \
-             {skipplant [skipplant]} {skiprow [skiprow]} {crop_class [class]}
-  } elseif {"[module]" == "cropmod"} {
-     apsimSendMessage [crop] sow {plants [density]} {sowing_depth [depth]} \
-             {cultivar [cultivar]} {row_spacing [row_spacing]} {skiprow [skiprow]}
-  } elseif {"[module]" == "growth"} {
-     apsimSendMessage [crop] ???
-  } elseif {"[module]" == "ozcot"} {
-     apsimSendMessage [crop] sow {plants_pm [plants_pm]} {sowing_depth [sowing_depth]} \
-             {row_spacing [row_spacing]} {skiprow [skiprow]} {cultivar [cultivar]}
-  } elseif {"[module]" == "oryza"} {
-     apsimSendMessage [crop] sow {cultivar [cultivar]}
-  } elseif {"[module]" == "sorghum"} {
-     apsimSendMessage [crop] sow {plants [plants]} {sowing_depth [sowing_depth]} \
-             {cultivar [cultivar]} {row_spacing [row_spacing]} {skiprow [skiprow]} \
-             {tiller_no_fertile [tiller_no_fertile]}
-  } elseif {"[module]" == "sugar"} {
-     apsimSendMessage [crop] sow {plants [plants]} {cultivar [cultivar]} {sowing_depth [sowing_depth]}
-  } else {
-    error "Unknown crop module \"[module]\"."
-  }
-}
-
-
-
-
-
-
-
-</ruletemplate>
-          <uiscript>source $apsuite/UserInterface/APSFarm/GenericSowingUI.tcl</uiscript>
-          <state>Wheat</state>
-          <crop>wheat</crop>
-          <date1>15-may</date1>
-          <date2>10-jul</date2>
-          <raincrit>25</raincrit>
-          <rainnumdays>3</rainnumdays>
-          <esw_amount>50</esw_amount>
-          <must_sow>no</must_sow>
-          <cultivar>hartog</cultivar>
-          <plants>100</plants>
-          <sowing_depth>30</sowing_depth>
-          <row_spacing>250</row_spacing>
-          <sowing_costs>
-          </sowing_costs>
-          <sow_tractor>
-          </sow_tractor>
-          <sow_implement>
-          </sow_implement>
-          <fert_type>
-          </fert_type>
-          <fert_cost>???</fert_cost>
-          <target_n>
-          </target_n>
-          <harvest_costs>
-          </harvest_costs>
-          <price>
-          </price>
-          <moisture>
-          </moisture>
-          <harv_tractor>
-          </harv_tractor>
-          <harv_implement>
-          </harv_implement>
-          <criteria>variable</criteria>
-          <skipplant>0</skipplant>
-          <skiprow>0</skiprow>
-          <class>plant</class>
-          <module>plant</module>
-        </tclui>
+</text>
+            <event>init</event>
+          </script>
+        </rule>
       </tclmanager>
       <outputfile>
         <filename output="yes">Rotation Sample (Directed Graph).out</filename>

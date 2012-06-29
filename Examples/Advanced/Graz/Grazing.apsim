@@ -4327,288 +4327,172 @@ doProcess
             <event>process</event>
           </script>
         </rule>
-        <tclui name="Wheat Lucerne Rotation">
-          <uiscript><![CDATA[source $apsuite/UserInterface/APSFarm/RotationsUI.tcl]]></uiscript>
-          <canvas_height>487</canvas_height>
-          <rules_height>40</rules_height>
+        <rotplot name="Wheat Lucerne Rotation">
+          <canvas_height>401</canvas_height>
+          <rules_height>227</rules_height>
           <graph_name>stateGraph</graph_name>
           <node>
-            <x1>661.0</x1>
             <name>Wheat</name>
-            <y1>174.0</y1>
-            <x2>761.0</x2>
+            <x1>356</x1>
+            <y1>159</y1>
             <desc>A wheat crop</desc>
-            <fill>green</fill>
-            <y2>274.0</y2>
+            <fill>-657956</fill>
           </node>
           <node>
-            <x1>481.0</x1>
             <name>Reestablish</name>
-            <y1>161.0</y1>
-            <x2>581.0</x2>
+            <x1>176</x1>
+            <y1>146</y1>
             <desc>Lucerne has died - wait 5 days and re-plant</desc>
-            <fill>purple</fill>
-            <y2>261.0</y2>
+            <fill>-657956</fill>
           </node>
           <node>
-            <x1>315.0</x1>
             <name>Lucerne</name>
-            <y1>158.0</y1>
-            <x2>415.0</x2>
+            <x1>10</x1>
+            <y1>143</y1>
             <desc>A lucerne crop</desc>
-            <fill>white</fill>
-            <y2>258.0</y2>
+            <fill>-657956</fill>
           </node>
           <node>
-            <x1>506.0</x1>
             <name>wheatPrepn</name>
-            <y1>312.0</y1>
-            <x2>606.0</x2>
+            <x1>201</x1>
+            <y1>297</y1>
             <desc>wheat seedbed preparation</desc>
-            <fill>gray</fill>
-            <y2>412.0</y2>
+            <fill>-657956</fill>
           </node>
           <node>
-            <x1>497.0</x1>
             <name>lucernePrepn</name>
-            <y1>25.0</y1>
-            <x2>597.0</x2>
+            <x1>192</x1>
+            <y1>10</y1>
             <desc>Lucerne seedbed preparation</desc>
-            <fill>gray</fill>
-            <y2>125.0</y2>
+            <fill>-657956</fill>
           </node>
           <arc>
             <name>arc2</name>
             <source>Lucerne</source>
             <target>Reestablish</target>
-            <x>447.5</x>
+            <x>142</x>
+            <y>241</y>
             <actions>apsimSendMessage lucerne end_crop</actions>
             <actions>set waiting 0</actions>
-            <y>256.0</y>
             <rules>[string match [apsimGet lucerne.plant_status]  dead] </rules>
-            <rules />
-            <actions />
           </arc>
           <arc>
             <name>arc11</name>
             <source>wheatPrepn</source>
             <target>Wheat</target>
-            <x>715.5</x>
+            <x>410</x>
+            <y>353</y>
             <actions>sow_wheat</actions>
-            <y>368.5</y>
             <rules>[canPlant_wheat]</rules>
-            <rules />
-            <actions />
           </arc>
           <arc>
             <name>arc3</name>
             <source>Reestablish</source>
             <target>Lucerne</target>
-            <x>451.5</x>
+            <x>146</x>
+            <y>134</y>
             <actions>sow_lucerne</actions>
-            <y>149.0</y>
             <rules>[incr waiting] == 2</rules>
-            <rules />
-            <actions />
           </arc>
           <arc>
             <name>arc12</name>
             <source>Lucerne</source>
             <target>wheatPrepn</target>
-            <x>369.5</x>
+            <x>64</x>
+            <y>349</y>
             <actions>apsimSendMessage lucerne end_crop</actions>
             <actions>set nLucerneDays 0</actions>
-            <y>364.5</y>
             <rules>[incr nLucerneDays] &gt; 700</rules>
-            <rules />
-            <actions />
           </arc>
           <arc>
             <name>arc8</name>
             <source>lucernePrepn</source>
             <target>Lucerne</target>
-            <x>386.5</x>
+            <x>81</x>
+            <y>44</y>
             <actions>sow_lucerne</actions>
             <actions>set nLucerneDays 0</actions>
-            <y>59.0</y>
             <rules>[canPlant_lucerne]</rules>
-            <rules />
-            <actions />
           </arc>
           <arc>
             <name>arc0</name>
             <source>Wheat</source>
             <target>lucernePrepn</target>
-            <x>720.5</x>
+            <x>415</x>
+            <y>59</y>
             <actions>apsimSendMessage wheat harvest</actions>
             <actions>apsimSendMessage wheat end_crop</actions>
-            <y>74.0</y>
             <rules>[canHarvest_wheat]</rules>
-            <rules />
-            <actions />
           </arc>
-          <paddock>
-            <name>toplevel</name>
-            <isManaged>0</isManaged>
-            <initialState>
-            </initialState>
-          </paddock>
-          <paddock>
-            <name>paddock</name>
-            <isManaged>0</isManaged>
-            <initialState>
-            </initialState>
-          </paddock>
-          <paddock>
-            <name>Paddock</name>
-            <isManaged>0</isManaged>
-            <initialState>
-            </initialState>
-          </paddock>
-          <paddock>
-            <name>p1</name>
-            <isManaged>0</isManaged>
-            <initialState>
-            </initialState>
-          </paddock>
-          <paddock>
-            <name>p2</name>
-            <isManaged>0</isManaged>
-            <initialState>
-            </initialState>
-          </paddock>
-          <paddock>
-            <name>p3</name>
-            <isManaged>0</isManaged>
-            <initialState>
-            </initialState>
-          </paddock>
-          <paddock>
-            <name>p4</name>
-            <isManaged>0</isManaged>
-            <initialState>
-            </initialState>
-          </paddock>
-          <paddock>
-            <name>BCS</name>
-            <isManaged>0</isManaged>
-            <initialState>
-            </initialState>
-          </paddock>
-          <rule name="Wheat Lucerne Rotation Init rule" invisible="yes" condition="init"><![CDATA[package require struct
+          <rule name="stateGraph Init rule" invisible="yes" condition="init"><![CDATA[package require struct
 ::struct::graph stateGraph
 stateGraph node insert "Wheat"
-set colour(Wheat) "green"
+set colour(Wheat) "-657956"
 stateGraph node insert "Reestablish"
-set colour(Reestablish) "purple"
+set colour(Reestablish) "-657956"
 stateGraph node insert "Lucerne"
-set colour(Lucerne) "white"
+set colour(Lucerne) "-657956"
 stateGraph node insert "wheatPrepn"
-set colour(wheatPrepn) "gray"
+set colour(wheatPrepn) "-657956"
 stateGraph node insert "lucernePrepn"
-set colour(lucernePrepn) "gray"
+set colour(lucernePrepn) "-657956"
 stateGraph arc insert "Lucerne" "Reestablish" "arc2"
 stateGraph arc lappend "arc2" actions {apsimSendMessage lucerne end_crop}
 stateGraph arc lappend "arc2" actions {set waiting 0}
 stateGraph arc lappend "arc2" rules {[string match [apsimGet lucerne.plant_status]  dead] }
-stateGraph arc lappend "arc2" actions {}
 stateGraph arc insert "wheatPrepn" "Wheat" "arc11"
 stateGraph arc lappend "arc11" actions {sow_wheat}
 stateGraph arc lappend "arc11" rules {[canPlant_wheat]}
-stateGraph arc lappend "arc11" actions {}
 stateGraph arc insert "Reestablish" "Lucerne" "arc3"
 stateGraph arc lappend "arc3" actions {sow_lucerne}
 stateGraph arc lappend "arc3" rules {[incr waiting] == 2}
-stateGraph arc lappend "arc3" actions {}
 stateGraph arc insert "Lucerne" "wheatPrepn" "arc12"
 stateGraph arc lappend "arc12" actions {apsimSendMessage lucerne end_crop}
 stateGraph arc lappend "arc12" actions {set nLucerneDays 0}
 stateGraph arc lappend "arc12" rules {[incr nLucerneDays] > 700}
-stateGraph arc lappend "arc12" actions {}
 stateGraph arc insert "lucernePrepn" "Lucerne" "arc8"
 stateGraph arc lappend "arc8" actions {sow_lucerne}
 stateGraph arc lappend "arc8" actions {set nLucerneDays 0}
 stateGraph arc lappend "arc8" rules {[canPlant_lucerne]}
-stateGraph arc lappend "arc8" actions {}
 stateGraph arc insert "Wheat" "lucernePrepn" "arc0"
 stateGraph arc lappend "arc0" actions {apsimSendMessage wheat harvest}
 stateGraph arc lappend "arc0" actions {apsimSendMessage wheat end_crop}
 stateGraph arc lappend "arc0" rules {[canHarvest_wheat]}
-stateGraph arc lappend "arc0" actions {}
 ]]></rule>
-        </tclui>
-        <tclui name="Wheat Sowing Rule">
-          <rule name="Wheat Lucerne Rotation Wheat Sowing Rule.out - Sowing rule - initialisation" condition="init" invisible="yes">
-# Support procedures
-# Can we plant a crop today?
-proc canPlant_wheat {} {
-  if {"variable" == "variable"} {
-     set year [apsimGet year]; set day [apsimGet day]
-     set d1 [clock format [clock scan "15-may-$year"] -format %j]
-     set d2 [clock format [clock scan "10-jul-$year"] -format %j]
-
-     if {"yes" == "yes" &amp;&amp; $day == $d2} {return 1}
-
-     if {$d1 &gt; $d2} {
-        set dateOK [expr $day &gt;= $d1 || $day &lt;= $d2]
-     } else {   
-        set dateOK [expr $day &gt;= $d1 &amp;&amp; $day &lt;= $d2]
-     }
-     set rainOK [expr [apsimGet rain\[3\]] &gt;= 25]
-     set eswOK [expr [apsimGet esw] &gt;= 50]
-     return [expr $dateOK &amp;&amp; $rainOK &amp;&amp; $eswOK]
-  } elseif {"variable" == "fixed"} {
-     set year [apsimGet year]; set day [apsimGet day]
-     set d1 [clock format [clock scan "15-may-$year"] -format %j]
-     return [expr $day == $d1]
-  } else {
-     error "Unknown sowing criteria \"variable\"."
-  }
-  return "notreached"
-}
-
-# Plant a crop now
-proc sow_wheat {} {
-  if {"plant" == "plant"} {
-     apsimSendMessage wheat sow {plants 100} {sowing_depth 30} \
-             {cultivar hartog} {row_spacing 250} \
-             {skipplant 0} {skiprow 0} {crop_class plant} 
-  } elseif {"plant" == "cropmod"} {
-     apsimSendMessage wheat sow {plants [density]} {sowing_depth [depth]} \
-             {cultivar hartog} {row_spacing 250} {skiprow 0} 
-  } elseif {"plant" == "growth"} {
-     apsimSendMessage wheat ???
-  } elseif {"plant" == "ozcot"} {
-     apsimSendMessage wheat sow {plants_pm [plants_pm]} {sowing_depth 30} \
-             {row_spacing 250} {skiprow 0} {cultivar hartog}
-  } elseif {"plant" == "oryza"} {
-     apsimSendMessage wheat sow {cultivar hartog} 
-  } elseif {"plant" == "sorghum"} {
-     apsimSendMessage wheat sow {plants 100} {sowing_depth 30} \
-             {cultivar hartog} {row_spacing 250} {skiprow 0} \
-             {tiller_no_fertile [tiller_no_fertile]}
-  } elseif {"plant" == "sugar"} {
-     apsimSendMessage wheat sow {plants 100} {cultivar hartog} {sowing_depth 30}
-  } else {
-    error "Unknown crop module \"plant\"."
-  }
-}
-
-
-proc canHarvest_wheat {} {
-   return [expr [string match [apsimGet wheat.stagename] "harvest_ripe"] &amp;&amp;\
-                [string match [apsimGet wheat.plant_status] "dead"]]
-}
-
-
-
-
-
-
-
-
-</rule>
-          <ruletemplate name="Sowing rule - initialisation" condition="init">
+        </rotplot>
+        <rule name="Wheat Sowing Rule">
+          <ui>
+            <state>Wheat</state>
+            <crop>wheat</crop>
+            <date1>15-may</date1>
+            <date2>10-jul</date2>
+            <raincrit>25</raincrit>
+            <rainnumdays>3</rainnumdays>
+            <esw_amount>50</esw_amount>
+            <must_sow>yes</must_sow>
+            <cultivar>hartog</cultivar>
+            <plants>100</plants>
+            <sowing_depth>30</sowing_depth>
+            <row_spacing>250</row_spacing>
+            <sowing_costs />
+            <sow_tractor />
+            <sow_implement />
+            <fert_type />
+            <fert_cost>???</fert_cost>
+            <target_n />
+            <harvest_costs />
+            <price />
+            <moisture />
+            <harv_tractor />
+            <harv_implement />
+            <criteria>variable</criteria>
+            <skipplant>0</skipplant>
+            <skiprow>0</skiprow>
+            <class>plant</class>
+            <module>plant</module>
+          </ui>
+          <script>
+            <text>
 # Support procedures
 # Can we plant a crop today?
 proc canPlant_[crop] {} {
@@ -4670,113 +4554,43 @@ proc canHarvest_[crop] {} {
                 [string match [apsimGet [crop].plant_status] "dead"]]
 }
 
-
-
-
-
-
-
-
-</ruletemplate>
-          <uiscript>source $apsuite/UserInterface/APSFarm/GenericSowingUI.tcl</uiscript>
-          <state>Wheat</state>
-          <crop>wheat</crop>
-          <date1>15-may</date1>
-          <date2>10-jul</date2>
-          <raincrit>25</raincrit>
-          <rainnumdays>3</rainnumdays>
-          <esw_amount>50</esw_amount>
-          <must_sow>yes</must_sow>
-          <cultivar>hartog</cultivar>
-          <plants>100</plants>
-          <sowing_depth>30</sowing_depth>
-          <row_spacing>250</row_spacing>
-          <sowing_costs>
-          </sowing_costs>
-          <sow_tractor>
-          </sow_tractor>
-          <sow_implement>
-          </sow_implement>
-          <fert_type>
-          </fert_type>
-          <fert_cost>???</fert_cost>
-          <target_n>
-          </target_n>
-          <harvest_costs>
-          </harvest_costs>
-          <price>
-          </price>
-          <moisture>
-          </moisture>
-          <harv_tractor>
-          </harv_tractor>
-          <harv_implement>
-          </harv_implement>
-          <criteria>variable</criteria>
-          <skipplant>0</skipplant>
-          <skiprow>0</skiprow>
-          <class>plant</class>
-          <module>plant</module>
-        </tclui>
-        <tclui name="Lucerne Sowing Rule">
-          <rule name="Wheat Lucerne Rotation Lucerne Sowing Rule.out - Sowing rule - initialisation" condition="init" invisible="yes">
-# Support procedures
-# Can we plant a crop today?
-proc canPlant_lucerne {} {
-  if {"variable" == "variable"} {
-     set year [apsimGet year]; set day [apsimGet day]
-     set d1 [clock format [clock scan "15-oct-$year"] -format %j]
-     set d2 [clock format [clock scan "10-jul-$year"] -format %j]
-
-     if {"yes" == "yes" &amp;&amp; $day == $d2} {return 1}
-
-     if {$d1 &gt; $d2} {
-        set dateOK [expr $day &gt;= $d1 || $day &lt;= $d2]
-     } else {   
-        set dateOK [expr $day &gt;= $d1 &amp;&amp; $day &lt;= $d2]
-     }
-     set rainOK [expr [apsimGet rain\[3\]] &gt;= 25]
-     set eswOK [expr [apsimGet esw] &gt;= 50]
-     return [expr $dateOK &amp;&amp; $rainOK &amp;&amp; $eswOK]
-  } elseif {"variable" == "fixed"} {
-     set year [apsimGet year]; set day [apsimGet day]
-     set d1 [clock format [clock scan "15-oct-$year"] -format %j]
-     return [expr $day == $d1]
-  } else {
-     error "Unknown sowing criteria \"variable\"."
-  }
-  return "notreached"
-}
-
-# Plant a crop now
-proc sow_lucerne {} {
-  if {"plant" == "plant"} {
-     apsimSendMessage lucerne sow {plants 200} {sowing_depth 10} \
-             {cultivar hunter_river} {row_spacing 250} \
-             {skipplant 0} {skiprow 0} {crop_class plant} 
-  } elseif {"plant" == "cropmod"} {
-     apsimSendMessage lucerne sow {plants [density]} {sowing_depth [depth]} \
-             {cultivar hunter_river} {row_spacing 250} {skiprow 0} 
-  } elseif {"plant" == "growth"} {
-     apsimSendMessage lucerne ???
-  } elseif {"plant" == "ozcot"} {
-     apsimSendMessage lucerne sow {plants_pm [plants_pm]} {sowing_depth 10} \
-             {row_spacing 250} {skiprow 0} {cultivar hunter_river}
-  } elseif {"plant" == "oryza"} {
-     apsimSendMessage lucerne sow {cultivar hunter_river} 
-  } elseif {"plant" == "sorghum"} {
-     apsimSendMessage lucerne sow {plants 200} {sowing_depth 10} \
-             {cultivar hunter_river} {row_spacing 250} {skiprow 0} \
-             {tiller_no_fertile [tiller_no_fertile]}
-  } elseif {"plant" == "sugar"} {
-     apsimSendMessage lucerne sow {plants 200} {cultivar hunter_river} {sowing_depth 10}
-  } else {
-    error "Unknown crop module \"plant\"."
-  }
-}
-
-</rule>
-          <ruletemplate name="Sowing rule - initialisation" condition="init">
+</text>
+            <event>init</event>
+          </script>
+        </rule>
+        <rule name="Lucerne Sowing Rule">
+          <ui>
+            <state>Lucerne</state>
+            <crop>lucerne</crop>
+            <date1>15-oct</date1>
+            <date2>10-jul</date2>
+            <raincrit>25</raincrit>
+            <rainnumdays>3</rainnumdays>
+            <esw_amount>50</esw_amount>
+            <must_sow>yes</must_sow>
+            <cultivar>hunter_river</cultivar>
+            <plants>200</plants>
+            <sowing_depth>10</sowing_depth>
+            <row_spacing>250</row_spacing>
+            <sowing_costs />
+            <sow_tractor />
+            <sow_implement />
+            <fert_type />
+            <fert_cost>???</fert_cost>
+            <target_n />
+            <harvest_costs />
+            <price />
+            <moisture />
+            <harv_tractor />
+            <harv_implement />
+            <criteria>variable</criteria>
+            <skipplant>0</skipplant>
+            <skiprow>0</skiprow>
+            <class>plant</class>
+            <module>plant</module>
+          </ui>
+          <script>
+            <text>
 # Support procedures
 # Can we plant a crop today?
 proc canPlant_[crop] {} {
@@ -4831,50 +4645,12 @@ proc sow_[crop] {} {
     error "Unknown crop module \"[module]\"."
   }
 }
-
-</ruletemplate>
-          <uiscript>source $apsuite/UserInterface/APSFarm/GenericSowingUI.tcl</uiscript>
-          <state>Lucerne</state>
-          <crop>lucerne</crop>
-          <date1>15-oct</date1>
-          <date2>10-jul</date2>
-          <raincrit>25</raincrit>
-          <rainnumdays>3</rainnumdays>
-          <esw_amount>50</esw_amount>
-          <must_sow>yes</must_sow>
-          <cultivar>hunter_river</cultivar>
-          <plants>200</plants>
-          <sowing_depth>10</sowing_depth>
-          <row_spacing>250</row_spacing>
-          <sowing_costs>
-          </sowing_costs>
-          <sow_tractor>
-          </sow_tractor>
-          <sow_implement>
-          </sow_implement>
-          <fert_type>
-          </fert_type>
-          <fert_cost>???</fert_cost>
-          <target_n>
-          </target_n>
-          <harvest_costs>
-          </harvest_costs>
-          <price>
-          </price>
-          <moisture>
-          </moisture>
-          <harv_tractor>
-          </harv_tractor>
-          <harv_implement>
-          </harv_implement>
-          <criteria>variable</criteria>
-          <skipplant>0</skipplant>
-          <skiprow>0</skiprow>
-          <class>plant</class>
-          <module>plant</module>
-        </tclui>
+</text>
+            <event>init</event>
+          </script>
+        </rule>
         <rule name="Grazing management">
-          <script name="init">
+          <script>
             <text># Initialisation
 set nLucerneDays 0
 set annual_lwg  0.0
@@ -4889,10 +4665,10 @@ apsimSet graz.pasture_source "lucerne"
 </text>
             <event>init</event>
           </script>
-          <script name="prepare">
-            <text><![CDATA[
+          <script>
+            <text>
 # Start grazing 90 days after sowing
-if {$paddockState == "empty"  && $nLucerneDays > 90} {
+if {$paddockState == "empty"  &amp;&amp; $nLucerneDays &gt; 90} {
    apsimSet graz.stocking_rate 0.4
    apsimSet graz.alw  200.0
    set annual_lwg 0.0
@@ -4900,7 +4676,7 @@ if {$paddockState == "empty"  && $nLucerneDays > 90} {
 }
 
 # Stop grazing when the crop comes off
-if { $paddockState != "empty"  && $nLucerneDays == 0} {
+if { $paddockState != "empty"  &amp;&amp; $nLucerneDays == 0} {
    apsimSet graz.stocking_rate 0.0
    apsimSet graz.alw  0.0
    set annual_lwg 0.0
@@ -4912,10 +4688,10 @@ if { $paddockState != "empty" } {
   set growth [apsimGet lucerne.dlt_dm]
 }
 
-]]></text>
+</text>
             <event>prepare</event>
           </script>
-          <script name="post">
+          <script>
             <text>if  {[apsimGet day_of_month] == 1}  {
   apsimSendMessage outputfile do_output
 }
@@ -5603,7 +5379,7 @@ P3 &P4 are grazed
       <spring_lwg type="text" description="Expected spring lwg @ low SR (p148)">40</spring_lwg>
       <leaf_diet type="text" description="Proportion of leaf in diet (p132/100)">0.85</leaf_diet>
       <std_alw type="text" description="std_alw">200</std_alw>
-        <min_alw type="text" description="Minimum ALW">100</min_alw>
+      <min_alw type="text" description="Minimum ALW">100</min_alw>
       <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
       <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
       <prop_can_eat type="text" description="prop_can_eat">1</prop_can_eat>

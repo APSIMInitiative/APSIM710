@@ -303,43 +303,37 @@ proc doProcess {} {
 package require struct
 ::struct::graph stateGraph
 stateGraph node insert "Wheat"
-set colour(Wheat) "green"
+set colour(Wheat) "-657956"
 stateGraph node insert "Reestablish"
-set colour(Reestablish) "purple"
+set colour(Reestablish) "-657956"
 stateGraph node insert "Lucerne"
-set colour(Lucerne) "white"
+set colour(Lucerne) "-657956"
 stateGraph node insert "wheatPrepn"
-set colour(wheatPrepn) "gray"
+set colour(wheatPrepn) "-657956"
 stateGraph node insert "lucernePrepn"
-set colour(lucernePrepn) "gray"
+set colour(lucernePrepn) "-657956"
 stateGraph arc insert "Lucerne" "Reestablish" "arc2"
 stateGraph arc lappend "arc2" actions {apsimSendMessage lucerne end_crop}
 stateGraph arc lappend "arc2" actions {set waiting 0}
 stateGraph arc lappend "arc2" rules {[string match [apsimGet lucerne.plant_status]  dead] }
-stateGraph arc lappend "arc2" actions {}
 stateGraph arc insert "wheatPrepn" "Wheat" "arc11"
 stateGraph arc lappend "arc11" actions {sow_wheat}
 stateGraph arc lappend "arc11" rules {[canPlant_wheat]}
-stateGraph arc lappend "arc11" actions {}
 stateGraph arc insert "Reestablish" "Lucerne" "arc3"
 stateGraph arc lappend "arc3" actions {sow_lucerne}
 stateGraph arc lappend "arc3" rules {[incr waiting] == 2}
-stateGraph arc lappend "arc3" actions {}
 stateGraph arc insert "Lucerne" "wheatPrepn" "arc12"
 stateGraph arc lappend "arc12" actions {apsimSendMessage lucerne end_crop}
 stateGraph arc lappend "arc12" actions {set nLucerneDays 0}
 stateGraph arc lappend "arc12" rules {[incr nLucerneDays] > 700}
-stateGraph arc lappend "arc12" actions {}
 stateGraph arc insert "lucernePrepn" "Lucerne" "arc8"
 stateGraph arc lappend "arc8" actions {sow_lucerne}
 stateGraph arc lappend "arc8" actions {set nLucerneDays 0}
 stateGraph arc lappend "arc8" rules {[canPlant_lucerne]}
-stateGraph arc lappend "arc8" actions {}
 stateGraph arc insert "Wheat" "lucernePrepn" "arc0"
 stateGraph arc lappend "arc0" actions {apsimSendMessage wheat harvest}
 stateGraph arc lappend "arc0" actions {apsimSendMessage wheat end_crop}
 stateGraph arc lappend "arc0" rules {[canHarvest_wheat]}
-stateGraph arc lappend "arc0" actions {}
 
 # Support procedures
 # Can we plant a crop today?
@@ -403,13 +397,6 @@ proc canHarvest_wheat {} {
 }
 
 
-
-
-
-
-
-
-
 # Support procedures
 # Can we plant a crop today?
 proc canPlant_lucerne {} {
@@ -464,7 +451,6 @@ proc sow_lucerne {} {
     error "Unknown crop module \"plant\"."
   }
 }
-
 # Initialisation
 set nLucerneDays 0
 set annual_lwg  0.0

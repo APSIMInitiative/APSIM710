@@ -210,63 +210,55 @@ Manager:
      Copyright (C) 1991-1994 The Regents of the University of California.
      Copyright (C) 1996-1997 Sun Microsystems, Inc.
      Copyright (C) 2001      ActiveState.
-     --->Section: exit
-exit
-
      --->Section: init
+
 source $apsuite/UserInterface/APSFarm/RotationInitialisation.tcl
 set state "WinterFallow"
 package require struct
 ::struct::graph stateGraph
 stateGraph node insert "SummerFallow2"
-set colour(SummerFallow2) "gray"
+set colour(SummerFallow2) "-657956"
 stateGraph node insert "Chickpea"
-set colour(Chickpea) "lightgreen"
+set colour(Chickpea) "-657956"
 stateGraph node insert "Wheat"
-set colour(Wheat) "darkgreen"
+set colour(Wheat) "-657956"
 stateGraph node insert "WinterFallow"
-set colour(WinterFallow) "gray"
+set colour(WinterFallow) "-657956"
 stateGraph node insert "SummerFallow1"
-set colour(SummerFallow1) "maroon"
+set colour(SummerFallow1) "-657956"
 stateGraph node insert "F1"
-set colour(F1) "gray"
+set colour(F1) "-657956"
 stateGraph node insert "Cotton"
-set colour(Cotton) "purple"
+set colour(Cotton) "-657956"
 stateGraph arc insert "SummerFallow1" "WinterFallow" "arc2"
-stateGraph arc lappend "arc2" rules {[apsimGet day]  == 192}
 stateGraph arc lappend "arc2" actions {}
+stateGraph arc lappend "arc2" rules {[apsimGet day]  == 192}
 stateGraph arc insert "WinterFallow" "Cotton" "arc6"
 stateGraph arc lappend "arc6" actions {sow_cotton}
 stateGraph arc lappend "arc6" rules {[canPlant_cotton]}
-stateGraph arc lappend "arc6" actions {}
 stateGraph arc insert "Wheat" "SummerFallow2" "arc3"
 stateGraph arc lappend "arc3" actions {apsimSendMessage wheat harvest}
 stateGraph arc lappend "arc3" actions {apsimSendMessage wheat end_crop}
 stateGraph arc lappend "arc3" rules {{[apsimGet wheat.stageName] == "harvest_ripe" || [apsimGet wheat.plant_status] == "dead"}}
-stateGraph arc lappend "arc3" actions {}
 stateGraph arc insert "F1" "SummerFallow1" "arc7"
-stateGraph arc lappend "arc7" rules {[apsimGet day]  == 192}
 stateGraph arc lappend "arc7" actions {}
+stateGraph arc lappend "arc7" rules {[apsimGet day]  == 192}
 stateGraph arc insert "F1" "Chickpea" "arc0"
 stateGraph arc lappend "arc0" actions {sow_chickpea}
 stateGraph arc lappend "arc0" rules {[canPlant_chickpea]}
-stateGraph arc lappend "arc0" actions {}
 stateGraph arc insert "Chickpea" "SummerFallow1" "arc8"
 stateGraph arc lappend "arc8" actions {apsimSendMessage chickpea harvest}
 stateGraph arc lappend "arc8" actions {apsimSendMessage chickpea end_crop}
 stateGraph arc lappend "arc8" rules {{[apsimGet chickpea.stageName] == "harvest_ripe" || [apsimGet chickpea.plant_status] == "dead"}}
-stateGraph arc lappend "arc8" actions {}
 stateGraph arc insert "SummerFallow1" "Wheat" "arc1"
 stateGraph arc lappend "arc1" actions {sow_wheat}
 stateGraph arc lappend "arc1" rules {[canPlant_wheat]}
-stateGraph arc lappend "arc1" actions {}
 stateGraph arc insert "Cotton" "F1" "arc5"
 stateGraph arc lappend "arc5" actions {apsimSendMessage cotton harvest}
 stateGraph arc lappend "arc5" rules {[apsimGet ozcot_status] > 0}
-stateGraph arc lappend "arc5" actions {}
 stateGraph arc insert "SummerFallow2" "WinterFallow" "arc9"
-stateGraph arc lappend "arc9" rules {[apsimGet day]  == 74}
 stateGraph arc lappend "arc9" actions {}
+stateGraph arc lappend "arc9" rules {[apsimGet day]  == 74}
 
 # Support procedures
 # Can we plant a crop today?
@@ -322,12 +314,6 @@ proc sow_cotton {} {
     error "Unknown crop module \"ozcot\"."
   }
 }
-
-
-
-
-
-
 
 
 # Support procedures
@@ -386,11 +372,6 @@ proc sow_chickpea {} {
 }
 
 
-
-
-
-
-
 # Support procedures
 # Can we plant a crop today?
 proc canPlant_wheat {} {
@@ -446,14 +427,8 @@ proc sow_wheat {} {
   }
 }
 
-
-
-
-
-
-
-
      --->Section: process
+
 checkSetup
 doProcess
 
