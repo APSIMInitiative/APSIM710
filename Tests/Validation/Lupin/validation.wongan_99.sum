@@ -11,18 +11,18 @@
 
 Version                = 7.5
 Title                  = wongan_99
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
    Component                   "Operations" = %apsim%\Model\Operations.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                        "lupin" = %apsim%\Model\plant.dll
+   Component                        "lupin" = %apsim%\Model\Plant.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -38,7 +38,7 @@ Title                  = wongan_99
      Simulation end date   = 31/12/1999
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.year
         clock.day
@@ -78,7 +78,7 @@ Title                  = wongan_99
      ===================
       12/5/1999  Prepare         lupin sow plants = 40, row_spacing = 200, sowing_depth = 40, cultivar = myallie
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- init
@@ -370,7 +370,7 @@ Title                  = wongan_99
                       -------------------
      Uninitialised variable "dlt_dm_green_leaf".
      Variables should have a value before they are used in an expression.
-     Component name: manager
+     Component name: Manager
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
@@ -487,7 +487,7 @@ Title                  = wongan_99
       stage 10.0 harvest_ripe
                      biomass =        1147.44 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.73 (%)    extractable sw =   29.81 (mm)
-31 October 1999(Day of year=304), manager: 
+31 October 1999(Day of year=304), Manager: 
      Manager sending message :- lupin harvest
      
       flowering day          =  225                           stover (kg/ha)         =     8605.8
@@ -532,5 +532,5 @@ Title                  = wongan_99
                           DM (kg/ha) =                   0.0                  3138.4
                           N  (kg/ha) =                   0.00                   64.61
      
-31 December 1999(Day of year=365), clock: 
+31 December 1999(Day of year=365), Clock: 
      Simulation is terminating due to end criteria being met.

@@ -11,17 +11,17 @@
 
 Version                = 7.5
 Title                  = Biboohra
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "Met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "Met" = %apsim%\Model\Input.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
    Component                 "sweetsorghum" = %apsim%\Model\Plant.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -37,7 +37,7 @@ Title                  = Biboohra
      Simulation end date   = 30/06/2003
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.dd/mmm/yyyy as Date
         met.rain as rain
@@ -74,7 +74,7 @@ Title                  = Biboohra
      Sparse data is not allowed
      INPUT File name: Biboohra.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -343,7 +343,7 @@ Fertiliser:
       stage 11.0 harvest_ripe
                      biomass =         783.13 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.43 (%)    extractable sw =  118.98 (mm)
-13 November 2002(Day of year=317), manager: 
+13 November 2002(Day of year=317), Manager: 
      Manager sending message :- sweetsorghum harvest
      
       flowering day          =  285                           stover (kg/ha)         =     4609.6
@@ -386,5 +386,5 @@ Fertiliser:
                           DM (kg/ha) =                   0.0                   957.8
                           N  (kg/ha) =                   0.00                   21.80
      
-30 June 2003(Day of year=181), clock: 
+30 June 2003(Day of year=181), Clock: 
      Simulation is terminating due to end criteria being met.

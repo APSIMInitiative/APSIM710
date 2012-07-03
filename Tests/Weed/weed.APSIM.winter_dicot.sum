@@ -11,17 +11,17 @@
 
 Version                = 7.5
 Title                  = Winter dicot fallow Simulation
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
    Component                         "weed" = %apsim%\Model\Plant.dll
-   Component                       "sysbal" = %apsim%\Model\sysbal.dll
+   Component                       "SysBal" = %apsim%\Model\SysBal.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -37,7 +37,7 @@ Title                  = Winter dicot fallow Simulation
      Simulation end date   = 30/05/1989
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.day
         clock.year
@@ -50,9 +50,9 @@ Title                  = Winter dicot fallow Simulation
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+     INPUT File name: %apsim%\Examples\MetFiles\Dalby.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -214,7 +214,7 @@ Title                  = Winter dicot fallow Simulation
            Totals  149295.9 10296.3   926.1   115.8   400.0    20.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-29 April 1988(Day of year=120), manager: 
+29 April 1988(Day of year=120), Manager: 
      Manager sending message :- weed sow  cultivar = late, plants = 15 (/m2), crop_class = winter_dicot, sowing_depth = 40 (mm)
 29 April 1988(Day of year=120), weed: 
      Crop Sow
@@ -307,7 +307,7 @@ Title                  = Winter dicot fallow Simulation
 14 September 1988(Day of year=258), weed: 
      Crop failure because of total leaf senescence.
      Plant death. standing above-ground dm = 10945.83 (kg/ha)
-15 September 1988(Day of year=259), manager: 
+15 September 1988(Day of year=259), Manager: 
      Manager sending message :- weed kill_crop
 15 September 1988(Day of year=259), weed: 
      Plant kill. 100.00% crop killed because of external action.
@@ -317,5 +317,5 @@ Title                  = Winter dicot fallow Simulation
                           DM (kg/ha) =               10954.7                  2965.8
                           N  (kg/ha) =                 108.84                   10.93
      
-30 May 1989(Day of year=150), clock: 
+30 May 1989(Day of year=150), Clock: 
      Simulation is terminating due to end criteria being met.

@@ -11,18 +11,18 @@
 
 Version                = 7.5
 Title                  = Pacific Seeds Planting One
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "Met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "Met" = %apsim%\Model\Input.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
    Component                 "sweetsorghum" = %apsim%\Model\Plant.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -38,7 +38,7 @@ Title                  = Pacific Seeds Planting One
      Simulation end date   = 31/01/2005
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.dd/mmm/yyyy as Date
         met.rain as rain
@@ -87,7 +87,7 @@ Title                  = Pacific Seeds Planting One
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -356,7 +356,7 @@ Fertiliser:
       stage 11.0 harvest_ripe
                      biomass =         803.99 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.53 (%)    extractable sw =  259.16 (mm)
-21 December 2004(Day of year=356), manager: 
+21 December 2004(Day of year=356), Manager: 
      Manager sending message :- sweetsorghum harvest
      
       flowering day          =  319                           stover (kg/ha)         =     4525.3
@@ -399,5 +399,5 @@ Fertiliser:
                           DM (kg/ha) =                   0.0                   945.7
                           N  (kg/ha) =                   0.00                   21.89
      
-31 January 2005(Day of year=31), clock: 
+31 January 2005(Day of year=31), Clock: 
      Simulation is terminating due to end criteria being met.
