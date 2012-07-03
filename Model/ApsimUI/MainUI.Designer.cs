@@ -299,6 +299,7 @@
             this.SimulationContainer.BottomToolStripPanel.BackColor = System.Drawing.SystemColors.ControlLight;
             this.SimulationContainer.BottomToolStripPanel.Controls.Add(this.StatusStrip1);
             this.SimulationContainer.BottomToolStripPanel.Controls.Add(this.ToolBoxesToolStrip);
+            this.SimulationContainer.BottomToolStripPanel.MinimumSize = new System.Drawing.Size(100, 44);
             // 
             // SimulationContainer.ContentPanel
             // 
@@ -320,6 +321,7 @@
             this.SimulationContainer.TopToolStripPanel.BackColor = System.Drawing.SystemColors.ControlLight;
             this.SimulationContainer.TopToolStripPanel.Controls.Add(this.SimulationToolStrip);
             this.SimulationContainer.TopToolStripPanel.Controls.Add(this.RunToolStrip);
+            this.SimulationContainer.TopToolStripPanel.MinimumSize = new System.Drawing.Size(100, 44);
             // 
             // SimulationExplorer
             // 
