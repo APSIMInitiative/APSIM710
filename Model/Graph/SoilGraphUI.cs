@@ -62,10 +62,10 @@ namespace Graph
             Chart.Series.Clear();
 
             // Try and load an appropriate template.
-            if (Directory.Exists(Configuration.ApsimDirectory() + "\\UserInterface"))
-                FileName = Configuration.ApsimDirectory() + "\\UserInterface\\" + CurrentChartType + ".xml";
+            if (Directory.Exists(Path.Combine(Configuration.ApsimDirectory(), "UserInterface")))
+                FileName = Path.Combine(Configuration.ApsimDirectory(), "UserInterface", CurrentChartType + ".xml");
             else
-                FileName = Configuration.ApsimDirectory() + "\\" + CurrentChartType + ".xml";
+                FileName = Path.Combine(Configuration.ApsimDirectory(), CurrentChartType + ".xml");
             XmlDocument Doc = new XmlDocument();
             if (File.Exists(FileName))
                 Doc.Load(FileName);

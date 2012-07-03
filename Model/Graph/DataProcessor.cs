@@ -205,7 +205,7 @@ public class DataProcessor
                 {
                     if (FileName != "" && File.Exists(FileName))
                     {
-                        string CheckPointFile = Path.GetDirectoryName(Path.GetFullPath(FileName)) + "\\CheckPoint\\" + Path.GetFileName(FileName);
+                        string CheckPointFile = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(FileName)), "CheckPoint", Path.GetFileName(FileName));
                         if (File.Exists(FileName))
                         {
                             int StartRow = Data.Rows.Count;

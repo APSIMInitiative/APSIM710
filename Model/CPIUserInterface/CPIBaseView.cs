@@ -59,14 +59,16 @@ namespace CPIUserInterface
         /// 
         /// </summary>
         //=======================================================================
-        public CPIBaseView()
+        public CPIBaseView() : base()
         {
+            InitializeComponent();
             disposed = false;
             miDelInstance = null;
             FDllFileName = "";
             FDllHandle = IntPtr.Zero;
             propertyList = new List<TCompProperty>();
         }
+
         //=======================================================================
         /// <summary> 
         /// Clean up any resources being used.
@@ -97,6 +99,10 @@ namespace CPIUserInterface
                     base.Dispose(disposing);
                 }
             }
+        }
+        private void InitializeComponent()
+        {
+            this.Name = "CPIBaseView";
         }
         //=======================================================================
         /// <summary>

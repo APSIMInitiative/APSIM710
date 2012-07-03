@@ -386,7 +386,7 @@ namespace APSIMUI
                     string ImageFileName = XmlHelper.Attribute(Doc.DocumentElement, "image");
                     if (string.IsNullOrEmpty(ImageFileName))
                     {
-                        ImageFileName = "%apsim%\\UserInterface\\Images\\Toolbox24.png";
+                        ImageFileName = Path.Combine("%apsim%", "UserInterface", "Images", "Toolbox24.png");
                     }
                     ImageFileName = Configuration.RemoveMacros(ImageFileName);
 
