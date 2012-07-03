@@ -66,7 +66,7 @@ namespace CSUserInterface
          {
          base.OnSave();
          SoilGraph.OnSave();
-         Data = OurNode;
+         Data = OurNode.Clone();
          }
       /// <summary>
       /// Populate all controls from the soil

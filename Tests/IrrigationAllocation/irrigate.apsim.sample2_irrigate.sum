@@ -11,14 +11,14 @@
 
 Version                = 7.5
 Title                  = Irrigate Sample2 Simulation
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -34,7 +34,7 @@ Title                  = Irrigate Sample2 Simulation
      Simulation end date   = 30/01/1988
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.day
         clock.year
@@ -47,7 +47,7 @@ Title                  = Irrigate Sample2 Simulation
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+     INPUT File name: %apsim%\Examples\MetFiles\Dalby.met
 
 ------- Irrigation Initialisation ---------------------------------------------
       Initialising
@@ -61,7 +61,7 @@ Title                  = Irrigate Sample2 Simulation
            Irrigation Allocation Budget (Enabled)
           -----------------------------------------------
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -153,7 +153,7 @@ Title                  = Irrigate Sample2 Simulation
             Eo from priestly-taylor
 ------- Start of simulation  --------------------------------------------------
      Manager creating a new local real variable : deficit = 39.75000
-10 January 1988(Day of year=10), manager: 
+10 January 1988(Day of year=10), Manager: 
      Manager sending message :- irrigation apply  amount = 30 (mm)
-30 January 1988(Day of year=30), clock: 
+30 January 1988(Day of year=30), Clock: 
      Simulation is terminating due to end criteria being met.

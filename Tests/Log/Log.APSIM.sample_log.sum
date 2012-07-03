@@ -12,17 +12,17 @@
 Version                = 7.5
 Title                  = Log Sample Simulation
    Component                          "Log" = %apsim%\Model\Log.dll
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
-   Component                    "surfaceom" = %apsim%\Model\surfaceom.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                       "canola" = %apsim%\Model\plant.dll
+   Component                       "canola" = %apsim%\Model\Plant.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -38,7 +38,7 @@ Title                  = Log Sample Simulation
      Simulation end date   = 20/05/1988
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.day
         clock.year
@@ -50,9 +50,9 @@ Title                  = Log Sample Simulation
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+     INPUT File name: %apsim%\Examples\MetFiles\Dalby.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -142,7 +142,7 @@ Title                  = Log Sample Simulation
             CONA:                     2.50 ()
             Eo from priestly-taylor
 
-------- surfaceom Initialisation ----------------------------------------------
+------- SurfaceOM Initialisation ----------------------------------------------
      
          - Reading constants
      
@@ -289,5 +289,5 @@ Fertiliser:
       stage 3.0 emergence
                      biomass =           1.20 (g/m^2)   lai          =   0.004 (m^2/m^2)
                      stover N conc =     6.50 (%)    extractable sw =   19.44 (mm)
-20 May 1988(Day of year=141), clock: 
+20 May 1988(Day of year=141), Clock: 
      Simulation is terminating due to end criteria being met.

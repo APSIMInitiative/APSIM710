@@ -11,20 +11,20 @@
 
 Version                = 7.5
 Title                  = Greenmount B0_SWIM
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
-   Component                       "canopy" = %apsim%\Model\canopy.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                       "Canopy" = %apsim%\Model\Canopy.dll
    Component                   "Operations" = %apsim%\Model\Operations.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                        "SWIM2" = %apsim%\Model\SWIM2.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
-   Component                      "erosion" = %apsim%\Model\erosion.dll
+   Component                      "Erosion" = %apsim%\Model\Erosion.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                      "surface" = %apsim%\Model\surface.dll
-   Component                        "grasp" = %apsim%\Model\grasp.dll
+   Component                      "Surface" = %apsim%\Model\Surface.dll
+   Component                        "Grasp" = %apsim%\Model\Grasp.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -40,7 +40,7 @@ Title                  = Greenmount B0_SWIM
      Simulation end date   = 31/12/1989
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.dd/mm/yyyy as date
         erosion.soil_loss
@@ -53,7 +53,7 @@ Title                  = Greenmount B0_SWIM
      Sparse data is not allowed
      INPUT File name: gmtapsim.dat
 
-------- canopy Initialisation -------------------------------------------------
+------- Canopy Initialisation -------------------------------------------------
       Initialising
       No module rotation for intercropping
 
@@ -61,7 +61,7 @@ Title                  = Greenmount B0_SWIM
      Operations Schedule
      ===================
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- init
@@ -206,7 +206,7 @@ Title                  = Greenmount B0_SWIM
                       Effective Cover from Surface Materials =   0.0
      
 
-------- erosion Initialisation ------------------------------------------------
+------- Erosion Initialisation ------------------------------------------------
       Initialising:
      
         - Reading Parameters
@@ -280,11 +280,11 @@ Title                  = Greenmount B0_SWIM
            Totals   77112.0  4862.0   610.5    76.3    40.0     1.0
           ---------------------------------------------------------
 
-------- surface Initialisation ------------------------------------------------
+------- Surface Initialisation ------------------------------------------------
      Initialising
      
         - Reading Parameters
-grasp: 
+Grasp: 
      Initialising:
      Parameters:
        Transpiration Efficiency:     15.00 kg/ha/mm at 20.0 hPa
@@ -1637,5 +1637,5 @@ grasp:
           1500.0  soil6         0.4308491   -802.461      0.000     -5.707     -5.707
           ------------------------------------------------------------------------------
      ApsimSwim|apswim_swim -  Changing dt value from:   0.71886817437057138      to:   0.35943408718528569
-31 December 1989(Day of year=365), clock: 
+31 December 1989(Day of year=365), Clock: 
      Simulation is terminating due to end criteria being met.

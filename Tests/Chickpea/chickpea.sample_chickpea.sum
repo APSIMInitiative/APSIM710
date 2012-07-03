@@ -11,16 +11,16 @@
 
 Version                = 7.5
 Title                  = chickpea Sample Simulation
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
    Component                     "chickpea" = %apsim%\Model\Plant.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -36,7 +36,7 @@ Title                  = chickpea Sample Simulation
      Simulation end date   = 26/10/1988
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.day
         clock.year
@@ -49,9 +49,9 @@ Title                  = chickpea Sample Simulation
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+     INPUT File name: %apsim%\Examples\MetFiles\Dalby.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -309,7 +309,7 @@ Title                  = chickpea Sample Simulation
       stage 10.0 harvest_ripe
                      biomass =         572.46 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.79 (%)    extractable sw =  178.82 (mm)
-7 October 1988(Day of year=281), manager: 
+7 October 1988(Day of year=281), Manager: 
      Manager sending message :- chickpea harvest
 7 October 1988(Day of year=281), chickpea: 
      
@@ -353,5 +353,5 @@ Title                  = chickpea Sample Simulation
                           DM (kg/ha) =                   0.0                   809.3
                           N  (kg/ha) =                   0.00                   12.28
      
-26 October 1988(Day of year=300), clock: 
+26 October 1988(Day of year=300), Clock: 
      Simulation is terminating due to end criteria being met.

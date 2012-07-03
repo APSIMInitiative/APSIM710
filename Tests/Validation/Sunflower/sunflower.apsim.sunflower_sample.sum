@@ -11,17 +11,17 @@
 
 Version                = 7.5
 Title                  = Sunflower sample simulation
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "Met" = %apsim%\Model\input.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "Met" = %apsim%\Model\Input.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                       "sysbal" = %apsim%\Model\sysbal.dll
+   Component                       "SysBal" = %apsim%\Model\SysBal.dll
    Component                    "sunflower" = %apsim%\Model\CropMod.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -37,7 +37,7 @@ Title                  = Sunflower sample simulation
      Simulation end date   = 30/06/1989
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.year
         clock.dd/mm/yyyy
@@ -64,9 +64,9 @@ Title                  = Sunflower sample simulation
 
 ------- Met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+     INPUT File name: %apsim%\Examples\MetFiles\Dalby.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -230,7 +230,7 @@ Title                  = Sunflower sample simulation
      
          - Reading constants
 ------- Start of simulation  --------------------------------------------------
-14 December 1988(Day of year=349), manager: 
+14 December 1988(Day of year=349), Manager: 
      Manager sending message :- sunflower sow  cultivar = sunfola68-2, plants = 5, sowing_depth = 50 (mm)
 14 December 1988(Day of year=349), sunflower: 
      Sowing initiate
@@ -346,7 +346,7 @@ Title                  = Sunflower sample simulation
       stage   11.0 harvest_ripe
                           biomass =           900.7389       lai =     0.000000
                           stover N conc =    1.476311       extractable sw =    20.35371
-16 March 1989(Day of year=75), manager: 
+16 March 1989(Day of year=75), Manager: 
      Manager sending message :- sunflower harvest
 16 March 1989(Day of year=75), sunflower: 
      
@@ -389,5 +389,5 @@ Title                  = Sunflower sample simulation
                           N  (kg/ha) =                 76.65                   20.97
                           P  (kg/ha) =                  0.00                    0.00
      
-30 June 1989(Day of year=181), clock: 
+30 June 1989(Day of year=181), Clock: 
      Simulation is terminating due to end criteria being met.

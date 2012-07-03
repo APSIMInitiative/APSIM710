@@ -11,17 +11,17 @@
 
 Version                = 7.5
 Title                  = cowpea Sample Simulation
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
    Component                        "SoilP" = %apsim%\Model\SoilP.dll
    Component                       "cowpea" = %apsim%\Model\Plant.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -37,7 +37,7 @@ Title                  = cowpea Sample Simulation
      Simulation end date   =  1/03/1989
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.day
         clock.year
@@ -77,9 +77,9 @@ Title                  = cowpea Sample Simulation
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+     INPUT File name: %apsim%\Examples\MetFiles\Dalby.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -270,7 +270,7 @@ Title                  = cowpea Sample Simulation
         - Module is set phosphorus aware
      
 ------- Start of simulation  --------------------------------------------------
-25 November 1988(Day of year=330), manager: 
+25 November 1988(Day of year=330), Manager: 
      Manager sending message :- cowpea sow  cultivar = banjo, plants = 25 (/m2), sowing_depth = 40 (mm)
 25 November 1988(Day of year=330), cowpea: 
      Crop Sow
@@ -372,7 +372,7 @@ Title                  = cowpea Sample Simulation
       stage 10.0 harvest_ripe
                      biomass =         224.65 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     2.23 (%)    extractable sw =  274.88 (mm)
-12 February 1989(Day of year=43), manager: 
+12 February 1989(Day of year=43), Manager: 
      Manager sending message :- cowpea harvest
 12 February 1989(Day of year=43), cowpea: 
      
@@ -422,5 +422,5 @@ Title                  = cowpea Sample Simulation
                           N  (kg/ha) =                   0.00                   14.16
                           P  (kg/ha) =                  0.00                    1.20
      
-1 March 1989(Day of year=60), clock: 
+1 March 1989(Day of year=60), Clock: 
      Simulation is terminating due to end criteria being met.

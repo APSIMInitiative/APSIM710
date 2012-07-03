@@ -11,20 +11,20 @@
 
 Version                = 7.5
 Title                  = 
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
    Component                        "SoilP" = %apsim%\Model\SoilP.dll
-   Component                        "maize" = %apsim%\Model\maize.dll
-   Component                       "sysbal" = %apsim%\Model\sysbal.dll
+   Component                        "Maize" = %apsim%\Model\Maize.dll
+   Component                       "SysBal" = %apsim%\Model\SysBal.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -40,7 +40,7 @@ Title                  =
      Simulation end date   = 30/12/1993
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.dd/mm/yyyy as date
         maize.DaysAfterSowing
@@ -158,7 +158,7 @@ Title                  =
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- init
@@ -382,7 +382,7 @@ Title                  =
            Dissolution rate of rock P :    0.00061   (/yr)
            Root C:P :                    200.0
 
-------- maize Initialisation --------------------------------------------------
+------- Maize Initialisation --------------------------------------------------
       Initialising, V1.0 2000.01.21
      
          - Reading constants
@@ -391,9 +391,9 @@ Title                  =
      
          - Module is set phosphorus aware
 ------- Start of simulation  --------------------------------------------------
-31 October 1992(Day of year=305), manager: 
+31 October 1992(Day of year=305), Manager: 
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
-31 October 1992(Day of year=305), maize: 
+31 October 1992(Day of year=305), Maize: 
      Sowing initiate
      
      
@@ -449,47 +449,47 @@ Title                  =
      
      
      
-1 November 1992(Day of year=306), maize: 
+1 November 1992(Day of year=306), Maize: 
       stage    2.0 germination
-3 November 1992(Day of year=308), maize: 
+3 November 1992(Day of year=308), Maize: 
       stage    3.0 emergence
                           biomass =          0.2000000       lai =    0.3800000E-02
                           stover N conc =    4.400000       extractable sw =    23.83536
-18 November 1992(Day of year=323), maize: 
+18 November 1992(Day of year=323), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           3.049744       lai =    0.3892657E-01
                           stover N conc =    3.597824       extractable sw =    57.48120
-23 November 1992(Day of year=328), maize: 
+23 November 1992(Day of year=328), Maize: 
       stage    5.0 floral_initiation
                           biomass =           7.727930       lai =    0.9712359E-01
                           stover N conc =    3.216136       extractable sw =    114.4104
-4 January 1993(Day of year=4), maize: 
+4 January 1993(Day of year=4), Maize: 
       stage    6.0 flag_leaf
                           biomass =           726.1813       lai =     4.464487
                           stover N conc =    1.731983       extractable sw =    160.9415
-10 January 1993(Day of year=10), maize: 
+10 January 1993(Day of year=10), Maize: 
       stage    7.0 flowering
                           biomass =           867.3586       lai =     4.321976
                           stover N conc =    1.524521       extractable sw =    183.9795
-20 January 1993(Day of year=20), maize: 
+20 January 1993(Day of year=20), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           1090.926       lai =     3.976502
                           stover N conc =    1.267974       extractable sw =    139.2540
-7 March 1993(Day of year=66), maize: 
+7 March 1993(Day of year=66), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1426.998       lai =     1.665884
                           stover N conc =    1.050153       extractable sw =    47.56718
-8 March 1993(Day of year=67), maize: 
+8 March 1993(Day of year=67), Maize: 
       stage   10.0 maturity
                           biomass =           1428.089       lai =     1.610173
                           stover N conc =    1.050194       extractable sw =    47.28943
-9 March 1993(Day of year=68), maize: 
+9 March 1993(Day of year=68), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1428.089       lai =    0.3800154E-02
                           stover N conc =    1.074572       extractable sw =    46.98492
-10 March 1993(Day of year=69), manager: 
+10 March 1993(Day of year=69), Manager: 
      Manager sending message :- maize harvest
-10 March 1993(Day of year=69), maize: 
+10 March 1993(Day of year=69), Maize: 
      
      
      
@@ -533,7 +533,7 @@ Title                  =
                           N  (kg/ha) =                 86.61                   18.71
                           P  (kg/ha) =                 24.13                   21.42
      
-1 May 1993(Day of year=121), manager: 
+1 May 1993(Day of year=121), Manager: 
      Manager sending message :- surfaceom tillage  type = chisel
 1 May 1993(Day of year=121), SurfaceOM: 
      
@@ -541,7 +541,7 @@ Title                  =
      Residue removed using chisel
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =   100.00
-31 May 1993(Day of year=151), manager: 
+31 May 1993(Day of year=151), Manager: 
      Manager sending message :- surfaceom tillage  type = burn_95
 31 May 1993(Day of year=151), SurfaceOM: 
      
@@ -549,5 +549,5 @@ Title                  =
      Residue removed using burn_95
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-30 December 1993(Day of year=364), clock: 
+30 December 1993(Day of year=364), Clock: 
      Simulation is terminating due to end criteria being met.

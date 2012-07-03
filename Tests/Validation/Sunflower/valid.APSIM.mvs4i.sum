@@ -11,19 +11,19 @@
 
 Version                = 7.5
 Title                  = MYALL VALE 1980 SOW 4, 3 IRRIG, SUNCROSS52
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                       "SYSBAL" = %apsim%\Model\SYSBAL.dll
+   Component                       "SysBal" = %apsim%\Model\SysBal.dll
    Component                    "sunflower" = %apsim%\Model\CropMod.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -39,7 +39,7 @@ Title                  = MYALL VALE 1980 SOW 4, 3 IRRIG, SUNCROSS52
      Simulation end date   =  5/05/1981
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.year as year
         sunflower.das_int as DaysAfterSowing
@@ -67,7 +67,7 @@ Title                  = MYALL VALE 1980 SOW 4, 3 IRRIG, SUNCROSS52
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- init
@@ -444,7 +444,7 @@ Fertiliser:
       stage   11.0 harvest_ripe
                           biomass =           843.9756       lai =     0.000000
                           stover N conc =    2.320456       extractable sw =    14.54029
-21 March 1981(Day of year=80), manager: 
+21 March 1981(Day of year=80), Manager: 
      Manager sending message :- sunflower harvest
 21 March 1981(Day of year=80), sunflower: 
      
@@ -494,5 +494,5 @@ Fertiliser:
                           N  (kg/ha) =                136.03                   50.70
                           P  (kg/ha) =                  0.00                    0.00
      
-5 May 1981(Day of year=125), clock: 
+5 May 1981(Day of year=125), Clock: 
      Simulation is terminating due to end criteria being met.
