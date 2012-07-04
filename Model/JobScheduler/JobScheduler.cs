@@ -405,167 +405,180 @@ public class JobScheduler
     private void RunJob(object xmlNode)
     {
         XmlNode JobNode = (XmlNode)xmlNode;
-        string NodePath = "/" + XmlHelper.FullPath(JobNode);
-        if (NodePath[NodePath.Length - 1] == '/')
-            NodePath = NodePath.Remove(NodePath.Length - 1);
-
-        // Get and break up the command line. First "word" on command line will be the
-        // executable name, the rest will be the argments.
-        string CommandLine;
-        string WorkingDirectory;
-        lock (this)
-        {
-            if (Path.DirectorySeparatorChar == '/')
-                CommandLine = XmlHelper.Value(JobNode, "CommandLineUnix");
-            else
-                CommandLine = XmlHelper.Value(JobNode, "CommandLine");
-            WorkingDirectory = XmlHelper.Value(JobNode, "WorkingDirectory");
-        }
-
-        // Replace any environment variables on commandline and workingdirectory.
-        CommandLine = ReplaceEnvironmentVariables(CommandLine);
-        CommandLine = CommandLine.Replace("%JobPath%", NodePath);
-        WorkingDirectory = ReplaceEnvironmentVariables(WorkingDirectory);
-
-        // Strip of any redirection character.
-        string StdOutFile = "";
-        CommandLine = CommandLine.Replace("&gt;", ">");
-        int PosRedirect = CommandLine.IndexOf('>');
-        if (PosRedirect != -1)
-        {
-            StdOutFile = CommandLine.Substring(PosRedirect + 1).Trim();
-            StdOutFile = StdOutFile.Replace("\"", "");
-            if (!Path.IsPathRooted(StdOutFile) && StdOutFile != "nul")
-                StdOutFile = Path.Combine(WorkingDirectory, StdOutFile);
-            CommandLine = CommandLine.Remove(PosRedirect);
-        }
-
-
-        StringCollection CommandLineBits = StringManip.SplitStringHonouringQuotes(CommandLine, " ");
-        string Executable = "";
-        if (CommandLineBits.Count >= 1)
-            Executable = CommandLineBits[0].Replace("\"", "");
-
-        // If no path is specified on the Executable - go find the executable on the path if possible.
-        if (!Path.IsPathRooted(Executable))
-        {
-            if (File.Exists(Path.Combine(WorkingDirectory, Executable)))
-            {
-                Executable = Path.Combine(WorkingDirectory, Executable);
-            }
-            else
-            {
-                string FullFileName = Utility.FindFileOnPath(Executable);
-                if (FullFileName != "")
-                    Executable = FullFileName;
-            }
-        }
-        string Arguments = "";
-        for (int i = 1; i < CommandLineBits.Count; i++)
-        {
-            if (i > 1)
-                Arguments += " ";
-            if (CommandLineBits[i].Contains(" "))
-                Arguments += StringManip.DQuote(CommandLineBits[i]);
-            else
-                Arguments += CommandLineBits[i];
-        }
-        lock (this) { XmlHelper.SetValue(JobNode, "StdOutFile", StdOutFile); XmlHelper.SetValue(JobNode, "Executable", Executable); XmlHelper.SetValue(JobNode, "Arguments", Arguments); } // only needed for debugging
-
-        // Create a process object, configure it and then start it.
-        DateTime StartTime = DateTime.Now;
-
-        OutputReader stdoutReader = null;
-        OutputReader stderrReader = null;
         try
         {
-            int ExitCode = 0;
-            if (Executable != "")
-            {
-                Process process = new Process();
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.ErrorDialog = false;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.RedirectStandardError = true;
-                process.StartInfo.RedirectStandardInput = true;
-                process.StartInfo.CreateNoWindow = true;
-                process.StartInfo.FileName = Executable;
-                process.StartInfo.Arguments = Arguments;
-                process.StartInfo.WorkingDirectory = WorkingDirectory;
+            string NodePath = "/" + XmlHelper.FullPath(JobNode);
+            if (NodePath[NodePath.Length - 1] == '/')
+                NodePath = NodePath.Remove(NodePath.Length - 1);
 
-                process.Start();
-
-                ManualResetEvent _setStdOutFinished = new ManualResetEvent(false);
-                stdoutReader = new OutputReader(process.StandardOutput, _setStdOutFinished);
-
-                ManualResetEvent _setStdErrFinished = new ManualResetEvent(false);
-                stderrReader = new OutputReader(process.StandardError, _setStdErrFinished);
-
-                process.StandardInput.Close();
-                process.WaitForExit();
-                _setStdOutFinished.WaitOne();
-                _setStdErrFinished.WaitOne();
-                ExitCode = process.ExitCode;
-            }
-            TimeSpan ElapsedTime = DateTime.Now - StartTime;
+            // Get and break up the command line. First "word" on command line will be the
+            // executable name, the rest will be the argments.
+            string CommandLine;
+            string WorkingDirectory;
             lock (this)
             {
-                if (ExitCode == 0)
-                    SetStatusOfJob(JobNode, "Pass");
+                if (Path.DirectorySeparatorChar == '/')
+                    CommandLine = XmlHelper.Value(JobNode, "CommandLineUnix");
                 else
-                    SetStatusOfJob(JobNode, "Fail");
+                    CommandLine = XmlHelper.Value(JobNode, "CommandLine");
+                WorkingDirectory = XmlHelper.Value(JobNode, "WorkingDirectory");
+            }
 
-                XmlHelper.SetValue(JobNode, "ExitCode", ExitCode.ToString());
-                XmlHelper.SetAttribute(JobNode, "ElapsedTime", ElapsedTime.TotalSeconds.ToString("f0"));
-                if (stdoutReader != null && stdoutReader.buffer.Length > 0)
+            // Replace any environment variables on commandline and workingdirectory.
+            CommandLine = ReplaceEnvironmentVariables(CommandLine);
+            CommandLine = CommandLine.Replace("%JobPath%", NodePath);
+            WorkingDirectory = ReplaceEnvironmentVariables(WorkingDirectory);
+
+            // Strip of any redirection character.
+            string StdOutFile = "";
+            CommandLine = CommandLine.Replace("&gt;", ">");
+            int PosRedirect = CommandLine.IndexOf('>');
+            if (PosRedirect != -1)
+            {
+                StdOutFile = CommandLine.Substring(PosRedirect + 1).Trim();
+                StdOutFile = StdOutFile.Replace("\"", "");
+                if (!Path.IsPathRooted(StdOutFile) && StdOutFile != "nul")
+                    StdOutFile = Path.Combine(WorkingDirectory, StdOutFile);
+                CommandLine = CommandLine.Remove(PosRedirect);
+            }
+
+
+            StringCollection CommandLineBits = StringManip.SplitStringHonouringQuotes(CommandLine, " ");
+            string Executable = "";
+            if (CommandLineBits.Count >= 1)
+                Executable = CommandLineBits[0].Replace("\"", "");
+
+            // If no path is specified on the Executable - go find the executable on the path if possible.
+            if (!Path.IsPathRooted(Executable))
+            {
+                if (File.Exists(Path.Combine(WorkingDirectory, Executable)))
                 {
-                    if (StdOutFile != "")
-                    {
-                        if (StdOutFile.ToLower() != "nul")
-                        {
-                            StreamWriter StdOutStream = new StreamWriter(StdOutFile);
-                            StdOutStream.Write(stdoutReader.buffer);
-                            StdOutStream.Close();
-                        }
-                    }
-
-                    else
-                        XmlHelper.SetValue(JobNode, "StdOut", stdoutReader.buffer.ToString());
+                    Executable = Path.Combine(WorkingDirectory, Executable);
                 }
-                if (stderrReader != null && stderrReader.buffer.Length > 0)
-                    XmlHelper.SetValue(JobNode, "StdErr", stderrReader.buffer.ToString());
+                else
+                {
+                    string FullFileName = Utility.FindFileOnPath(Executable);
+                    if (FullFileName != "")
+                        Executable = FullFileName;
+                }
+            }
+            string Arguments = "";
+            for (int i = 1; i < CommandLineBits.Count; i++)
+            {
+                if (i > 1)
+                    Arguments += " ";
+                if (CommandLineBits[i].Contains(" "))
+                    Arguments += StringManip.DQuote(CommandLineBits[i]);
+                else
+                    Arguments += CommandLineBits[i];
+            }
+
+            // Create a process object, configure it and then start it.
+            DateTime StartTime = DateTime.Now;
+
+            OutputReader stdoutReader = null;
+            OutputReader stderrReader = null;
+            try
+            {
+                int ExitCode = 0;
+                if (Executable != "")
+                {
+                    Process process = new Process();
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.ErrorDialog = false;
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.StartInfo.RedirectStandardError = true;
+                    process.StartInfo.RedirectStandardInput = true;
+                    process.StartInfo.CreateNoWindow = true;
+                    process.StartInfo.FileName = Executable;
+                    process.StartInfo.Arguments = Arguments;
+                    process.StartInfo.WorkingDirectory = WorkingDirectory;
+
+                    process.Start();
+
+                    ManualResetEvent _setStdOutFinished = new ManualResetEvent(false);
+                    stdoutReader = new OutputReader(process.StandardOutput, _setStdOutFinished);
+
+                    ManualResetEvent _setStdErrFinished = new ManualResetEvent(false);
+                    stderrReader = new OutputReader(process.StandardError, _setStdErrFinished);
+
+                    process.StandardInput.Close();
+                    process.WaitForExit();
+                    _setStdOutFinished.WaitOne();
+                    _setStdErrFinished.WaitOne();
+                    ExitCode = process.ExitCode;
+                }
+                TimeSpan ElapsedTime = DateTime.Now - StartTime;
+                lock (this)
+                {
+                    if (ExitCode == 0)
+                        SetStatusOfJob(JobNode, "Pass");
+                    else
+                        SetStatusOfJob(JobNode, "Fail");
+
+                    XmlHelper.SetValue(JobNode, "ExitCode", ExitCode.ToString());
+                    XmlHelper.SetAttribute(JobNode, "ElapsedTime", ElapsedTime.TotalSeconds.ToString("f0"));
+                    if (stdoutReader != null && stdoutReader.buffer.Length > 0)
+                    {
+                        if (StdOutFile != "")
+                        {
+                            if (StdOutFile.ToLower() != "nul")
+                            {
+                                StreamWriter StdOutStream = new StreamWriter(StdOutFile);
+                                StdOutStream.Write(stdoutReader.buffer);
+                                StdOutStream.Close();
+                            }
+                        }
+
+                        else
+                            XmlHelper.SetValue(JobNode, "StdOut", stdoutReader.buffer.ToString());
+                    }
+                    if (stderrReader != null && stderrReader.buffer.Length > 0)
+                        XmlHelper.SetValue(JobNode, "StdErr", stderrReader.buffer.ToString());
+                }
+            }
+            catch (Exception err)
+            {
+                lock (this)
+                {
+                    SetStatusOfJob(JobNode, "Fail");
+                    XmlHelper.SetValue(JobNode, "ExitCode", "1");
+                    XmlHelper.SetAttribute(JobNode, "ElapsedTime", "0");
+                    if (stdoutReader != null)
+                        XmlHelper.SetValue(JobNode, "StdOut", stdoutReader.buffer.ToString());
+                    if (stderrReader != null)
+                        XmlHelper.SetValue(JobNode, "StdErr", stderrReader.buffer.ToString() + "\n" + err + err.Message);
+                    else
+                        XmlHelper.SetValue(JobNode, "StdErr", err + err.Message);
+                }
+            }
+
+            lock (this)
+            {
+                XmlNode Node = JobNode.ParentNode;
+                while (Node != null)
+                {
+                    SetStatusOfFolder(Node);
+                    Node = Node.ParentNode;
+                }
+                NumberJobsRunning--;
+                JobsCompleted++;
+                string msg = "Jobs Completed = " + JobsCompleted + " of " + TotalJobs +
+                        " [" + JobNode.Attributes.GetNamedItem("name").Value + (StatusOfJob(JobNode) == "Fail" ? "*FAILED*]" : "]");
+                Console.WriteLine(msg);
             }
         }
         catch (Exception err)
         {
             lock (this)
             {
-                SetStatusOfJob(JobNode, "Fail");
+                SetStatusOfJob(JobNode, "Fail (internal)");
                 XmlHelper.SetValue(JobNode, "ExitCode", "1");
                 XmlHelper.SetAttribute(JobNode, "ElapsedTime", "0");
-                if (stdoutReader != null)
-                    XmlHelper.SetValue(JobNode, "StdOut", stdoutReader.buffer.ToString());
-                if (stderrReader != null)
-                    XmlHelper.SetValue(JobNode, "StdErr", stderrReader.buffer.ToString() + "\n" + err + err.Message);
-                else
-                    XmlHelper.SetValue(JobNode, "StdErr", err + err.Message);
+                XmlHelper.SetValue(JobNode, "InternalErrorMessage", err.Message + "\n" + err.Source + "\n" + err.StackTrace);
             }
         }
 
-        lock (this)
-        {
-            XmlNode Node = JobNode.ParentNode;
-            while (Node != null)
-            {
-                SetStatusOfFolder(Node);
-                Node = Node.ParentNode;
-            }
-            NumberJobsRunning--;
-            JobsCompleted++;
-            string msg = "Jobs Completed = " + JobsCompleted + " of " + TotalJobs + 
-                    " [" + JobNode.Attributes.GetNamedItem("name").Value + (StatusOfJob(JobNode) == "Fail" ? "*FAILED*]" : "]");
-            Console.WriteLine(msg);
-        }
     }
 
     /// <summary>
