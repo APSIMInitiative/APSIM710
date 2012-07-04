@@ -11,20 +11,20 @@
 
 Version                = 7.5
 Title                  = p40N13
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
-   Component                        "accum" = %apsim%\Model\accum.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                        "Accum" = %apsim%\Model\Accum.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                        "soilp" = %apsim%\Model\soilp.dll
-   Component                        "maize" = %apsim%\Model\maize.dll
-   Component                     "tracker1" = %apsim%\Model\tracker.dll
+   Component                        "SoilP" = %apsim%\Model\SoilP.dll
+   Component                        "Maize" = %apsim%\Model\Maize.dll
+   Component                     "tracker1" = %apsim%\Model\Tracker.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -40,7 +40,7 @@ Title                  = p40N13
      Simulation end date   = 30/05/1999
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.year
         clock.day
@@ -87,10 +87,10 @@ Title                  = p40N13
      Sparse data is not allowed
      INPUT File name: har_mar.met
 
-------- accum Initialisation --------------------------------------------------
+------- Accum Initialisation --------------------------------------------------
      Initialising
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- init
@@ -318,7 +318,7 @@ Title                  = p40N13
            Totals  132450.3  9134.5   549.7    68.7   160.0     3.6
           ---------------------------------------------------------
 
-------- soilp Initialisation --------------------------------------------------
+------- SoilP Initialisation --------------------------------------------------
      Initialising
      
         - Reading Constants
@@ -351,7 +351,7 @@ Title                  = p40N13
            Dissolution rate of rock P :    0.00140   (/yr)
            Root C:P :                    200.0
 
-------- maize Initialisation --------------------------------------------------
+------- Maize Initialisation --------------------------------------------------
       Initialising, V1.0 2000.01.21
      
          - Reading constants
@@ -371,22 +371,22 @@ Title                  = p40N13
         average of maize.pfact_photo on end_of_day from report.reported to now as avg@maize_pfact_photo
         sum of SoilWat.flow_no3(5) on end_of_day from report.reported to now as sum@soilwat2_flow_no3[5]
 ------- Start of simulation  --------------------------------------------------
-31 October 1975(Day of year=304), manager: 
+31 October 1975(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 31 October 1975(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-17 November 1975(Day of year=321), manager: 
+17 November 1975(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 17 November 1975(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-29 November 1975(Day of year=333), manager: 
+29 November 1975(Day of year=333), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-29 November 1975(Day of year=333), maize: 
+29 November 1975(Day of year=333), Maize: 
      Sowing initiate
      
      
@@ -446,59 +446,59 @@ Title                  = p40N13
      
      
      Manager creating a new local real variable : mz_sowdate = 333.00000
-30 November 1975(Day of year=334), manager: 
+30 November 1975(Day of year=334), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 30 November 1975(Day of year=334), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-30 November 1975(Day of year=334), maize: 
+30 November 1975(Day of year=334), Maize: 
       stage    2.0 germination
-3 December 1975(Day of year=337), maize: 
+3 December 1975(Day of year=337), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    7.818714
-21 December 1975(Day of year=355), maize: 
+21 December 1975(Day of year=355), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           2.389962       lai =    0.2749623E-01
                           stover N conc =    3.376156       extractable sw =    36.79723
-23 December 1975(Day of year=357), maize: 
+23 December 1975(Day of year=357), Maize: 
       stage    5.0 floral_initiation
                           biomass =           3.255599       lai =    0.3724305E-01
                           stover N conc =    3.221483       extractable sw =    37.56341
-10 January 1976(Day of year=10), manager: 
+10 January 1976(Day of year=10), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 10 January 1976(Day of year=10), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-11 February 1976(Day of year=42), maize: 
+11 February 1976(Day of year=42), Maize: 
       stage    6.0 flag_leaf
                           biomass =           328.7126       lai =     2.001058
                           stover N conc =   0.9638720       extractable sw =    103.7911
-12 February 1976(Day of year=43), maize: 
+12 February 1976(Day of year=43), Maize: 
       stage    7.0 flowering
                           biomass =           335.1403       lai =     1.995061
                           stover N conc =   0.9537419       extractable sw =    109.5882
-25 February 1976(Day of year=56), maize: 
+25 February 1976(Day of year=56), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           422.0252       lai =     1.902480
                           stover N conc =   0.8159747       extractable sw =    108.9413
-10 April 1976(Day of year=101), maize: 
+10 April 1976(Day of year=101), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           584.3470       lai =     1.228738
                           stover N conc =   0.7103092       extractable sw =    121.6508
-11 April 1976(Day of year=102), maize: 
+11 April 1976(Day of year=102), Maize: 
       stage   10.0 maturity
                           biomass =           586.3873       lai =     1.208941
                           stover N conc =   0.7108012       extractable sw =    123.2884
-12 April 1976(Day of year=103), maize: 
+12 April 1976(Day of year=103), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           586.3873       lai =    0.1596093E-02
                           stover N conc =   0.7313020       extractable sw =    120.8200
-12 April 1976(Day of year=103), manager: 
+12 April 1976(Day of year=103), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -543,28 +543,28 @@ Title                  = p40N13
                           N  (kg/ha) =                 20.21                    5.31
                           P  (kg/ha) =                 36.03                   10.24
      
-12 May 1976(Day of year=133), manager: 
+12 May 1976(Day of year=133), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 12 May 1976(Day of year=133), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-30 October 1976(Day of year=304), manager: 
+30 October 1976(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 30 October 1976(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-16 November 1976(Day of year=321), manager: 
+16 November 1976(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 16 November 1976(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-9 December 1976(Day of year=344), manager: 
+9 December 1976(Day of year=344), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-9 December 1976(Day of year=344), maize: 
+9 December 1976(Day of year=344), Maize: 
      Sowing initiate
      
      
@@ -623,59 +623,59 @@ Title                  = p40N13
      
      
      
-10 December 1976(Day of year=345), manager: 
+10 December 1976(Day of year=345), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 10 December 1976(Day of year=345), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-10 December 1976(Day of year=345), maize: 
+10 December 1976(Day of year=345), Maize: 
       stage    2.0 germination
-13 December 1976(Day of year=348), maize: 
+13 December 1976(Day of year=348), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    1.441927
-31 December 1976(Day of year=366), maize: 
+31 December 1976(Day of year=366), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           2.014214       lai =    0.2790157E-01
                           stover N conc =    3.467787       extractable sw =    38.79589
-2 January 1977(Day of year=2), maize: 
+2 January 1977(Day of year=2), Maize: 
       stage    5.0 floral_initiation
                           biomass =           3.088017       lai =    0.3694931E-01
                           stover N conc =    3.165189       extractable sw =    37.44117
-20 January 1977(Day of year=20), manager: 
+20 January 1977(Day of year=20), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 20 January 1977(Day of year=20), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-19 February 1977(Day of year=50), maize: 
+19 February 1977(Day of year=50), Maize: 
       stage    6.0 flag_leaf
                           biomass =           212.5876       lai =     1.657742
                           stover N conc =   0.9851678       extractable sw =    130.4383
-20 February 1977(Day of year=51), maize: 
+20 February 1977(Day of year=51), Maize: 
       stage    7.0 flowering
                           biomass =           220.2323       lai =     1.652399
                           stover N conc =   0.9569805       extractable sw =    129.8700
-5 March 1977(Day of year=64), maize: 
+5 March 1977(Day of year=64), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           289.7977       lai =     1.563522
                           stover N conc =   0.7928790       extractable sw =    129.7286
-20 April 1977(Day of year=110), maize: 
+20 April 1977(Day of year=110), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           419.7488       lai =     1.004380
                           stover N conc =   0.6954492       extractable sw =    102.2698
-21 April 1977(Day of year=111), maize: 
+21 April 1977(Day of year=111), Maize: 
       stage   10.0 maturity
                           biomass =           421.3549       lai =    0.9908378
                           stover N conc =   0.6943797       extractable sw =    101.6734
-22 April 1977(Day of year=112), maize: 
+22 April 1977(Day of year=112), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           421.3549       lai =    0.1596510E-02
                           stover N conc =   0.7112048       extractable sw =    101.0981
-22 April 1977(Day of year=112), manager: 
+22 April 1977(Day of year=112), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -720,28 +720,28 @@ Title                  = p40N13
                           N  (kg/ha) =                 13.12                    3.73
                           P  (kg/ha) =                 23.47                    6.80
      
-22 May 1977(Day of year=142), manager: 
+22 May 1977(Day of year=142), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 22 May 1977(Day of year=142), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-31 October 1977(Day of year=304), manager: 
+31 October 1977(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 31 October 1977(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-17 November 1977(Day of year=321), manager: 
+17 November 1977(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 17 November 1977(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-29 November 1977(Day of year=333), manager: 
+29 November 1977(Day of year=333), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-29 November 1977(Day of year=333), maize: 
+29 November 1977(Day of year=333), Maize: 
      Sowing initiate
      
      
@@ -800,59 +800,59 @@ Title                  = p40N13
      
      
      
-30 November 1977(Day of year=334), manager: 
+30 November 1977(Day of year=334), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 30 November 1977(Day of year=334), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-30 November 1977(Day of year=334), maize: 
+30 November 1977(Day of year=334), Maize: 
       stage    2.0 germination
-3 December 1977(Day of year=337), maize: 
+3 December 1977(Day of year=337), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    4.368269
-20 December 1977(Day of year=354), maize: 
+20 December 1977(Day of year=354), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           2.410662       lai =    0.2694875E-01
                           stover N conc =    3.422911       extractable sw =    24.63627
-22 December 1977(Day of year=356), maize: 
+22 December 1977(Day of year=356), Maize: 
       stage    5.0 floral_initiation
                           biomass =           3.104779       lai =    0.3623281E-01
                           stover N conc =    3.290469       extractable sw =    46.22969
-10 January 1978(Day of year=10), manager: 
+10 January 1978(Day of year=10), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 10 January 1978(Day of year=10), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-8 February 1978(Day of year=39), maize: 
+8 February 1978(Day of year=39), Maize: 
       stage    6.0 flag_leaf
                           biomass =           275.4451       lai =     2.034146
                           stover N conc =   0.9369365       extractable sw =    110.9314
-9 February 1978(Day of year=40), maize: 
+9 February 1978(Day of year=40), Maize: 
       stage    7.0 flowering
                           biomass =           283.8117       lai =     2.027069
                           stover N conc =   0.9183425       extractable sw =    114.6041
-21 February 1978(Day of year=52), maize: 
+21 February 1978(Day of year=52), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           361.7383       lai =     1.926186
                           stover N conc =   0.7990238       extractable sw =    129.7598
-5 April 1978(Day of year=95), maize: 
+5 April 1978(Day of year=95), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           512.7652       lai =     1.210255
                           stover N conc =   0.7216607       extractable sw =    119.6765
-6 April 1978(Day of year=96), maize: 
+6 April 1978(Day of year=96), Maize: 
       stage   10.0 maturity
                           biomass =           515.9826       lai =     1.191562
                           stover N conc =   0.7203206       extractable sw =    117.1034
-7 April 1978(Day of year=97), maize: 
+7 April 1978(Day of year=97), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           515.9826       lai =    0.1595736E-02
                           stover N conc =   0.7397794       extractable sw =    114.0406
-7 April 1978(Day of year=97), manager: 
+7 April 1978(Day of year=97), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -897,28 +897,28 @@ Title                  = p40N13
                           N  (kg/ha) =                 16.37                    4.93
                           P  (kg/ha) =                 29.99                    8.74
      
-7 May 1978(Day of year=127), manager: 
+7 May 1978(Day of year=127), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 7 May 1978(Day of year=127), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-31 October 1978(Day of year=304), manager: 
+31 October 1978(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 31 October 1978(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-17 November 1978(Day of year=321), manager: 
+17 November 1978(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 17 November 1978(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-7 December 1978(Day of year=341), manager: 
+7 December 1978(Day of year=341), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-7 December 1978(Day of year=341), maize: 
+7 December 1978(Day of year=341), Maize: 
      Sowing initiate
      
      
@@ -977,59 +977,59 @@ Title                  = p40N13
      
      
      
-8 December 1978(Day of year=342), manager: 
+8 December 1978(Day of year=342), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 8 December 1978(Day of year=342), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-8 December 1978(Day of year=342), maize: 
+8 December 1978(Day of year=342), Maize: 
       stage    2.0 germination
-11 December 1978(Day of year=345), maize: 
+11 December 1978(Day of year=345), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    1.603910
-30 December 1978(Day of year=364), maize: 
+30 December 1978(Day of year=364), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           2.987462       lai =    0.2669328E-01
                           stover N conc =    3.376252       extractable sw =    35.09078
-1 January 1979(Day of year=1), maize: 
+1 January 1979(Day of year=1), Maize: 
       stage    5.0 floral_initiation
                           biomass =           3.874801       lai =    0.3621918E-01
                           stover N conc =    3.337244       extractable sw =    34.40778
-18 January 1979(Day of year=18), manager: 
+18 January 1979(Day of year=18), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 18 January 1979(Day of year=18), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-17 February 1979(Day of year=48), maize: 
+17 February 1979(Day of year=48), Maize: 
       stage    6.0 flag_leaf
                           biomass =           265.9602       lai =     1.813541
                           stover N conc =   0.8479811       extractable sw =    83.30610
-18 February 1979(Day of year=49), maize: 
+18 February 1979(Day of year=49), Maize: 
       stage    7.0 flowering
                           biomass =           271.0671       lai =     1.805789
                           stover N conc =   0.8366622       extractable sw =    82.25092
-2 March 1979(Day of year=61), maize: 
+2 March 1979(Day of year=61), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           324.2514       lai =     1.714243
                           stover N conc =   0.7697659       extractable sw =    130.3454
-16 April 1979(Day of year=106), maize: 
+16 April 1979(Day of year=106), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           468.2859       lai =     1.122699
                           stover N conc =   0.6627561       extractable sw =    105.5055
-17 April 1979(Day of year=107), maize: 
+17 April 1979(Day of year=107), Maize: 
       stage   10.0 maturity
                           biomass =           470.4623       lai =     1.105764
                           stover N conc =   0.6619435       extractable sw =    103.9987
-18 April 1979(Day of year=108), maize: 
+18 April 1979(Day of year=108), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           470.4623       lai =    0.1595974E-02
                           stover N conc =   0.6787435       extractable sw =    103.0602
-18 April 1979(Day of year=108), manager: 
+18 April 1979(Day of year=108), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -1074,21 +1074,21 @@ Title                  = p40N13
                           N  (kg/ha) =                 17.94                    4.06
                           P  (kg/ha) =                 32.75                    8.24
      
-18 May 1979(Day of year=138), manager: 
+18 May 1979(Day of year=138), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 18 May 1979(Day of year=138), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-31 October 1979(Day of year=304), manager: 
+31 October 1979(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 31 October 1979(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-15 November 1979(Day of year=319), manager: 
+15 November 1979(Day of year=319), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-15 November 1979(Day of year=319), maize: 
+15 November 1979(Day of year=319), Maize: 
      Sowing initiate
      
      
@@ -1147,66 +1147,66 @@ Title                  = p40N13
      
      
      
-16 November 1979(Day of year=320), manager: 
+16 November 1979(Day of year=320), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 16 November 1979(Day of year=320), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-16 November 1979(Day of year=320), maize: 
+16 November 1979(Day of year=320), Maize: 
       stage    2.0 germination
-17 November 1979(Day of year=321), manager: 
+17 November 1979(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 17 November 1979(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-19 November 1979(Day of year=323), maize: 
+19 November 1979(Day of year=323), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    6.529097
-5 December 1979(Day of year=339), maize: 
+5 December 1979(Day of year=339), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           2.043193       lai =    0.2567392E-01
                           stover N conc =    3.530650       extractable sw =    29.36664
-8 December 1979(Day of year=342), maize: 
+8 December 1979(Day of year=342), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.840345       lai =    0.3896388E-01
                           stover N conc =    3.308837       extractable sw =    49.27557
-27 December 1979(Day of year=361), manager: 
+27 December 1979(Day of year=361), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 27 December 1979(Day of year=361), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-26 January 1980(Day of year=26), maize: 
+26 January 1980(Day of year=26), Maize: 
       stage    6.0 flag_leaf
                           biomass =           229.6445       lai =     1.659111
                           stover N conc =   0.8621854       extractable sw =    113.7114
-27 January 1980(Day of year=27), maize: 
+27 January 1980(Day of year=27), Maize: 
       stage    7.0 flowering
                           biomass =           234.5817       lai =     1.653422
                           stover N conc =   0.8539166       extractable sw =    111.5193
-8 February 1980(Day of year=39), maize: 
+8 February 1980(Day of year=39), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           296.0659       lai =     1.572200
                           stover N conc =   0.7481893       extractable sw =    96.81650
-20 March 1980(Day of year=80), maize: 
+20 March 1980(Day of year=80), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           430.2383       lai =     1.001670
                           stover N conc =   0.6982521       extractable sw =    104.2410
-21 March 1980(Day of year=81), maize: 
+21 March 1980(Day of year=81), Maize: 
       stage   10.0 maturity
                           biomass =           432.9690       lai =    0.9858145
                           stover N conc =   0.6956515       extractable sw =    103.3418
-22 March 1980(Day of year=82), maize: 
+22 March 1980(Day of year=82), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           432.9690       lai =    0.1596391E-02
                           stover N conc =   0.7140465       extractable sw =    102.6987
-22 March 1980(Day of year=82), manager: 
+22 March 1980(Day of year=82), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -1251,21 +1251,21 @@ Title                  = p40N13
                           N  (kg/ha) =                 15.94                    3.98
                           P  (kg/ha) =                 27.45                    7.29
      
-21 April 1980(Day of year=112), manager: 
+21 April 1980(Day of year=112), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 21 April 1980(Day of year=112), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-30 October 1980(Day of year=304), manager: 
+30 October 1980(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 30 October 1980(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-16 November 1980(Day of year=321), manager: 
+16 November 1980(Day of year=321), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-16 November 1980(Day of year=321), maize: 
+16 November 1980(Day of year=321), Maize: 
      Sowing initiate
      
      
@@ -1330,59 +1330,59 @@ Title                  = p40N13
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-17 November 1980(Day of year=322), manager: 
+17 November 1980(Day of year=322), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 17 November 1980(Day of year=322), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-17 November 1980(Day of year=322), maize: 
+17 November 1980(Day of year=322), Maize: 
       stage    2.0 germination
-19 November 1980(Day of year=324), maize: 
+19 November 1980(Day of year=324), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    1.169104
-9 December 1980(Day of year=344), maize: 
+9 December 1980(Day of year=344), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           2.362928       lai =    0.2511686E-01
                           stover N conc =    3.448941       extractable sw =    24.17239
-12 December 1980(Day of year=347), maize: 
+12 December 1980(Day of year=347), Maize: 
       stage    5.0 floral_initiation
                           biomass =           3.491164       lai =    0.3867955E-01
                           stover N conc =    3.236075       extractable sw =    42.32136
-28 December 1980(Day of year=363), manager: 
+28 December 1980(Day of year=363), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 28 December 1980(Day of year=363), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-28 January 1981(Day of year=28), maize: 
+28 January 1981(Day of year=28), Maize: 
       stage    6.0 flag_leaf
                           biomass =           251.9960       lai =     1.787363
                           stover N conc =   0.9721712       extractable sw =    128.1796
-29 January 1981(Day of year=29), maize: 
+29 January 1981(Day of year=29), Maize: 
       stage    7.0 flowering
                           biomass =           256.7486       lai =     1.780986
                           stover N conc =   0.9663265       extractable sw =    128.0241
-11 February 1981(Day of year=42), maize: 
+11 February 1981(Day of year=42), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           326.7856       lai =     1.685981
                           stover N conc =   0.8557404       extractable sw =    131.2166
-26 March 1981(Day of year=85), maize: 
+26 March 1981(Day of year=85), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           487.5940       lai =     1.079152
                           stover N conc =   0.7405196       extractable sw =    106.0511
-27 March 1981(Day of year=86), maize: 
+27 March 1981(Day of year=86), Maize: 
       stage   10.0 maturity
                           biomass =           490.5225       lai =     1.064391
                           stover N conc =   0.7377324       extractable sw =    104.8918
-28 March 1981(Day of year=87), maize: 
+28 March 1981(Day of year=87), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           490.5225       lai =    0.1595736E-02
                           stover N conc =   0.7581229       extractable sw =    103.8161
-28 March 1981(Day of year=87), manager: 
+28 March 1981(Day of year=87), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -1427,28 +1427,28 @@ Title                  = p40N13
                           N  (kg/ha) =                 17.83                    4.76
                           P  (kg/ha) =                 29.74                    8.00
      
-27 April 1981(Day of year=117), manager: 
+27 April 1981(Day of year=117), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 27 April 1981(Day of year=117), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-31 October 1981(Day of year=304), manager: 
+31 October 1981(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 31 October 1981(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-17 November 1981(Day of year=321), manager: 
+17 November 1981(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 17 November 1981(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-25 November 1981(Day of year=329), manager: 
+25 November 1981(Day of year=329), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-25 November 1981(Day of year=329), maize: 
+25 November 1981(Day of year=329), Maize: 
      Sowing initiate
      
      
@@ -1507,59 +1507,59 @@ Title                  = p40N13
      
      
      
-26 November 1981(Day of year=330), manager: 
+26 November 1981(Day of year=330), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 26 November 1981(Day of year=330), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-26 November 1981(Day of year=330), maize: 
+26 November 1981(Day of year=330), Maize: 
       stage    2.0 germination
-29 November 1981(Day of year=333), maize: 
+29 November 1981(Day of year=333), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    2.610922
-16 December 1981(Day of year=350), maize: 
+16 December 1981(Day of year=350), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           2.466958       lai =    0.2488776E-01
                           stover N conc =    3.360001       extractable sw =    17.67755
-18 December 1981(Day of year=352), maize: 
+18 December 1981(Day of year=352), Maize: 
       stage    5.0 floral_initiation
                           biomass =           3.370389       lai =    0.3545693E-01
                           stover N conc =    3.291573       extractable sw =    36.21354
-6 January 1982(Day of year=6), manager: 
+6 January 1982(Day of year=6), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 6 January 1982(Day of year=6), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-3 February 1982(Day of year=34), maize: 
+3 February 1982(Day of year=34), Maize: 
       stage    6.0 flag_leaf
                           biomass =           277.6671       lai =     1.894987
                           stover N conc =   0.9554911       extractable sw =    97.48919
-4 February 1982(Day of year=35), maize: 
+4 February 1982(Day of year=35), Maize: 
       stage    7.0 flowering
                           biomass =           285.1586       lai =     1.887625
                           stover N conc =   0.9350460       extractable sw =    95.66032
-16 February 1982(Day of year=47), maize: 
+16 February 1982(Day of year=47), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           355.6050       lai =     1.789237
                           stover N conc =   0.8252215       extractable sw =    118.9708
-31 March 1982(Day of year=90), maize: 
+31 March 1982(Day of year=90), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           509.8053       lai =     1.088509
                           stover N conc =   0.6945379       extractable sw =    93.80994
-1 April 1982(Day of year=91), maize: 
+1 April 1982(Day of year=91), Maize: 
       stage   10.0 maturity
                           biomass =           511.7514       lai =     1.068984
                           stover N conc =   0.6933154       extractable sw =    93.29769
-2 April 1982(Day of year=92), maize: 
+2 April 1982(Day of year=92), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           511.7514       lai =    0.1596212E-02
                           stover N conc =   0.7092912       extractable sw =    92.78925
-2 April 1982(Day of year=92), manager: 
+2 April 1982(Day of year=92), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -1604,28 +1604,28 @@ Title                  = p40N13
                           N  (kg/ha) =                 16.94                    4.50
                           P  (kg/ha) =                 19.36                    8.77
      
-2 May 1982(Day of year=122), manager: 
+2 May 1982(Day of year=122), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 2 May 1982(Day of year=122), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-31 October 1982(Day of year=304), manager: 
+31 October 1982(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 31 October 1982(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-17 November 1982(Day of year=321), manager: 
+17 November 1982(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 17 November 1982(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-9 December 1982(Day of year=343), manager: 
+9 December 1982(Day of year=343), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-9 December 1982(Day of year=343), maize: 
+9 December 1982(Day of year=343), Maize: 
      Sowing initiate
      
      
@@ -1684,59 +1684,59 @@ Title                  = p40N13
      
      
      
-10 December 1982(Day of year=344), manager: 
+10 December 1982(Day of year=344), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 10 December 1982(Day of year=344), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-10 December 1982(Day of year=344), maize: 
+10 December 1982(Day of year=344), Maize: 
       stage    2.0 germination
-13 December 1982(Day of year=347), maize: 
+13 December 1982(Day of year=347), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    5.966211
-29 December 1982(Day of year=363), maize: 
+29 December 1982(Day of year=363), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           2.175852       lai =    0.2653868E-01
                           stover N conc =    3.266928       extractable sw =    34.76667
-31 December 1982(Day of year=365), maize: 
+31 December 1982(Day of year=365), Maize: 
       stage    5.0 floral_initiation
                           biomass =           3.334938       lai =    0.3700459E-01
                           stover N conc =    3.133884       extractable sw =    34.06704
-20 January 1983(Day of year=20), manager: 
+20 January 1983(Day of year=20), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 20 January 1983(Day of year=20), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-13 February 1983(Day of year=44), maize: 
+13 February 1983(Day of year=44), Maize: 
       stage    6.0 flag_leaf
                           biomass =           231.9261       lai =     1.657500
                           stover N conc =    1.205946       extractable sw =    113.2172
-14 February 1983(Day of year=45), maize: 
+14 February 1983(Day of year=45), Maize: 
       stage    7.0 flowering
                           biomass =           240.3988       lai =     1.654089
                           stover N conc =    1.178503       extractable sw =    111.4758
-26 February 1983(Day of year=57), maize: 
+26 February 1983(Day of year=57), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           348.1589       lai =     1.609103
                           stover N conc =   0.8719640       extractable sw =    85.37016
-6 April 1983(Day of year=96), maize: 
+6 April 1983(Day of year=96), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           509.2371       lai =     1.325228
                           stover N conc =   0.7155092       extractable sw =    83.71558
-7 April 1983(Day of year=97), maize: 
+7 April 1983(Day of year=97), Maize: 
       stage   10.0 maturity
                           biomass =           510.8108       lai =     1.312383
                           stover N conc =   0.7147473       extractable sw =    83.23997
-8 April 1983(Day of year=98), maize: 
+8 April 1983(Day of year=98), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           510.8109       lai =    0.1595497E-02
                           stover N conc =   0.7307941       extractable sw =    82.78343
-8 April 1983(Day of year=98), manager: 
+8 April 1983(Day of year=98), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -1781,28 +1781,28 @@ Title                  = p40N13
                           N  (kg/ha) =                 13.13                    4.79
                           P  (kg/ha) =                  7.69                    7.87
      
-8 May 1983(Day of year=128), manager: 
+8 May 1983(Day of year=128), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 8 May 1983(Day of year=128), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-31 October 1983(Day of year=304), manager: 
+31 October 1983(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 31 October 1983(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-17 November 1983(Day of year=321), manager: 
+17 November 1983(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 17 November 1983(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-9 December 1983(Day of year=343), manager: 
+9 December 1983(Day of year=343), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-9 December 1983(Day of year=343), maize: 
+9 December 1983(Day of year=343), Maize: 
      Sowing initiate
      
      
@@ -1861,59 +1861,59 @@ Title                  = p40N13
      
      
      
-10 December 1983(Day of year=344), manager: 
+10 December 1983(Day of year=344), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 10 December 1983(Day of year=344), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-10 December 1983(Day of year=344), maize: 
+10 December 1983(Day of year=344), Maize: 
       stage    2.0 germination
-13 December 1983(Day of year=347), maize: 
+13 December 1983(Day of year=347), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    2.248314
-30 December 1983(Day of year=364), maize: 
+30 December 1983(Day of year=364), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.998595       lai =    0.2646464E-01
                           stover N conc =    3.372271       extractable sw =    16.50911
-1 January 1984(Day of year=1), maize: 
+1 January 1984(Day of year=1), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.821814       lai =    0.3562761E-01
                           stover N conc =    3.238510       extractable sw =    38.35030
-20 January 1984(Day of year=20), manager: 
+20 January 1984(Day of year=20), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 20 January 1984(Day of year=20), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-21 February 1984(Day of year=52), maize: 
+21 February 1984(Day of year=52), Maize: 
       stage    6.0 flag_leaf
                           biomass =           297.7288       lai =     1.887056
                           stover N conc =    1.039556       extractable sw =    120.1136
-22 February 1984(Day of year=53), maize: 
+22 February 1984(Day of year=53), Maize: 
       stage    7.0 flowering
                           biomass =           302.4427       lai =     1.880787
                           stover N conc =    1.037349       extractable sw =    128.4414
-6 March 1984(Day of year=66), maize: 
+6 March 1984(Day of year=66), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           400.4168       lai =     1.774306
                           stover N conc =   0.8592875       extractable sw =    125.3659
-18 April 1984(Day of year=109), maize: 
+18 April 1984(Day of year=109), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           580.4732       lai =     1.325605
                           stover N conc =   0.7378757       extractable sw =    98.60559
-19 April 1984(Day of year=110), maize: 
+19 April 1984(Day of year=110), Maize: 
       stage   10.0 maturity
                           biomass =           583.2049       lai =     1.312317
                           stover N conc =   0.7354835       extractable sw =    97.75954
-20 April 1984(Day of year=111), maize: 
+20 April 1984(Day of year=111), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           583.2049       lai =    0.1596212E-02
                           stover N conc =   0.7590249       extractable sw =    97.19287
-20 April 1984(Day of year=111), manager: 
+20 April 1984(Day of year=111), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -1958,28 +1958,28 @@ Title                  = p40N13
                           N  (kg/ha) =                 18.36                    5.48
                           P  (kg/ha) =                 23.22                    9.48
      
-20 May 1984(Day of year=141), manager: 
+20 May 1984(Day of year=141), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 20 May 1984(Day of year=141), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-30 October 1984(Day of year=304), manager: 
+30 October 1984(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 30 October 1984(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-16 November 1984(Day of year=321), manager: 
+16 November 1984(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 16 November 1984(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-26 November 1984(Day of year=331), manager: 
+26 November 1984(Day of year=331), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-26 November 1984(Day of year=331), maize: 
+26 November 1984(Day of year=331), Maize: 
      Sowing initiate
      
      
@@ -2038,59 +2038,59 @@ Title                  = p40N13
      
      
      
-27 November 1984(Day of year=332), manager: 
+27 November 1984(Day of year=332), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 27 November 1984(Day of year=332), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-27 November 1984(Day of year=332), maize: 
+27 November 1984(Day of year=332), Maize: 
       stage    2.0 germination
-30 November 1984(Day of year=335), maize: 
+30 November 1984(Day of year=335), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    1.687855
-16 December 1984(Day of year=351), maize: 
+16 December 1984(Day of year=351), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.817602       lai =    0.2391965E-01
                           stover N conc =    3.491864       extractable sw =    27.61502
-19 December 1984(Day of year=354), maize: 
+19 December 1984(Day of year=354), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.900714       lai =    0.3686230E-01
                           stover N conc =    3.239485       extractable sw =    47.27623
-7 January 1985(Day of year=7), manager: 
+7 January 1985(Day of year=7), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 7 January 1985(Day of year=7), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-6 February 1985(Day of year=37), maize: 
+6 February 1985(Day of year=37), Maize: 
       stage    6.0 flag_leaf
                           biomass =           272.6152       lai =     1.910097
                           stover N conc =   0.9371095       extractable sw =    130.8005
-7 February 1985(Day of year=38), maize: 
+7 February 1985(Day of year=38), Maize: 
       stage    7.0 flowering
                           biomass =           279.5249       lai =     1.903878
                           stover N conc =   0.9215215       extractable sw =    130.3356
-20 February 1985(Day of year=51), maize: 
+20 February 1985(Day of year=51), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           368.7055       lai =     1.806953
                           stover N conc =   0.7568345       extractable sw =    103.3346
-3 April 1985(Day of year=93), maize: 
+3 April 1985(Day of year=93), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           516.6183       lai =     1.108449
                           stover N conc =   0.7037047       extractable sw =    106.1253
-4 April 1985(Day of year=94), maize: 
+4 April 1985(Day of year=94), Maize: 
       stage   10.0 maturity
                           biomass =           519.2515       lai =     1.089395
                           stover N conc =   0.7017339       extractable sw =    105.0156
-5 April 1985(Day of year=95), maize: 
+5 April 1985(Day of year=95), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           519.2516       lai =    0.1595855E-02
                           stover N conc =   0.7196749       extractable sw =    104.0155
-5 April 1985(Day of year=95), manager: 
+5 April 1985(Day of year=95), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -2135,28 +2135,28 @@ Title                  = p40N13
                           N  (kg/ha) =                 16.48                    4.82
                           P  (kg/ha) =                 29.00                    8.70
      
-5 May 1985(Day of year=125), manager: 
+5 May 1985(Day of year=125), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 5 May 1985(Day of year=125), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-31 October 1985(Day of year=304), manager: 
+31 October 1985(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 31 October 1985(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-17 November 1985(Day of year=321), manager: 
+17 November 1985(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 17 November 1985(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-5 December 1985(Day of year=339), manager: 
+5 December 1985(Day of year=339), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-5 December 1985(Day of year=339), maize: 
+5 December 1985(Day of year=339), Maize: 
      Sowing initiate
      
      
@@ -2215,59 +2215,59 @@ Title                  = p40N13
      
      
      
-6 December 1985(Day of year=340), manager: 
+6 December 1985(Day of year=340), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 6 December 1985(Day of year=340), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-6 December 1985(Day of year=340), maize: 
+6 December 1985(Day of year=340), Maize: 
       stage    2.0 germination
-9 December 1985(Day of year=343), maize: 
+9 December 1985(Day of year=343), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    3.708038
-27 December 1985(Day of year=361), maize: 
+27 December 1985(Day of year=361), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           2.008537       lai =    0.2702627E-01
                           stover N conc =    3.339885       extractable sw =    23.30366
-29 December 1985(Day of year=363), maize: 
+29 December 1985(Day of year=363), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.708131       lai =    0.3703262E-01
                           stover N conc =    3.266922       extractable sw =    45.22227
-16 January 1986(Day of year=16), manager: 
+16 January 1986(Day of year=16), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 16 January 1986(Day of year=16), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-17 February 1986(Day of year=48), maize: 
+17 February 1986(Day of year=48), Maize: 
       stage    6.0 flag_leaf
                           biomass =           264.7916       lai =     1.985386
                           stover N conc =   0.9886517       extractable sw =    112.7658
-18 February 1986(Day of year=49), maize: 
+18 February 1986(Day of year=49), Maize: 
       stage    7.0 flowering
                           biomass =           272.2198       lai =     1.978845
                           stover N conc =   0.9689149       extractable sw =    110.6556
-3 March 1986(Day of year=62), maize: 
+3 March 1986(Day of year=62), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           355.2018       lai =     1.883032
                           stover N conc =   0.8123890       extractable sw =    112.4967
-15 April 1986(Day of year=105), maize: 
+15 April 1986(Day of year=105), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           499.9978       lai =     1.229466
                           stover N conc =   0.7000099       extractable sw =    99.00905
-16 April 1986(Day of year=106), maize: 
+16 April 1986(Day of year=106), Maize: 
       stage   10.0 maturity
                           biomass =           501.9903       lai =     1.208000
                           stover N conc =   0.6986498       extractable sw =    98.30415
-17 April 1986(Day of year=107), maize: 
+17 April 1986(Day of year=107), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           501.9903       lai =    0.1595855E-02
                           stover N conc =   0.7163043       extractable sw =    97.79675
-17 April 1986(Day of year=107), manager: 
+17 April 1986(Day of year=107), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -2312,28 +2312,28 @@ Title                  = p40N13
                           N  (kg/ha) =                 15.79                    4.48
                           P  (kg/ha) =                 24.23                    8.42
      
-17 May 1986(Day of year=137), manager: 
+17 May 1986(Day of year=137), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 17 May 1986(Day of year=137), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-31 October 1986(Day of year=304), manager: 
+31 October 1986(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 31 October 1986(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-17 November 1986(Day of year=321), manager: 
+17 November 1986(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 17 November 1986(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-1 December 1986(Day of year=335), manager: 
+1 December 1986(Day of year=335), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-1 December 1986(Day of year=335), maize: 
+1 December 1986(Day of year=335), Maize: 
      Sowing initiate
      
      
@@ -2392,59 +2392,59 @@ Title                  = p40N13
      
      
      
-2 December 1986(Day of year=336), manager: 
+2 December 1986(Day of year=336), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 2 December 1986(Day of year=336), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-2 December 1986(Day of year=336), maize: 
+2 December 1986(Day of year=336), Maize: 
       stage    2.0 germination
-5 December 1986(Day of year=339), maize: 
+5 December 1986(Day of year=339), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    7.926760
-23 December 1986(Day of year=357), maize: 
+23 December 1986(Day of year=357), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           2.406418       lai =    0.2666780E-01
                           stover N conc =    3.358890       extractable sw =    35.45101
-25 December 1986(Day of year=359), maize: 
+25 December 1986(Day of year=359), Maize: 
       stage    5.0 floral_initiation
                           biomass =           3.534557       lai =    0.3757258E-01
                           stover N conc =    3.164008       extractable sw =    34.74814
-12 January 1987(Day of year=12), manager: 
+12 January 1987(Day of year=12), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 12 January 1987(Day of year=12), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-10 February 1987(Day of year=41), maize: 
+10 February 1987(Day of year=41), Maize: 
       stage    6.0 flag_leaf
                           biomass =           251.5444       lai =     1.899033
                           stover N conc =    1.037853       extractable sw =    113.4042
-11 February 1987(Day of year=42), maize: 
+11 February 1987(Day of year=42), Maize: 
       stage    7.0 flowering
                           biomass =           257.1741       lai =     1.891686
                           stover N conc =    1.027130       extractable sw =    130.8546
-23 February 1987(Day of year=54), maize: 
+23 February 1987(Day of year=54), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           350.3564       lai =     1.803742
                           stover N conc =   0.8133670       extractable sw =    96.54173
-3 April 1987(Day of year=93), maize: 
+3 April 1987(Day of year=93), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           486.2007       lai =     1.272066
                           stover N conc =   0.6904889       extractable sw =    102.9521
-4 April 1987(Day of year=94), maize: 
+4 April 1987(Day of year=94), Maize: 
       stage   10.0 maturity
                           biomass =           489.5545       lai =     1.250528
                           stover N conc =   0.6883547       extractable sw =    101.2090
-5 April 1987(Day of year=95), maize: 
+5 April 1987(Day of year=95), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           489.5545       lai =    0.1595736E-02
                           stover N conc =   0.7053894       extractable sw =    99.57206
-5 April 1987(Day of year=95), manager: 
+5 April 1987(Day of year=95), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -2489,28 +2489,28 @@ Title                  = p40N13
                           N  (kg/ha) =                 14.54                    4.57
                           P  (kg/ha) =                 27.40                    8.28
      
-5 May 1987(Day of year=125), manager: 
+5 May 1987(Day of year=125), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 5 May 1987(Day of year=125), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-31 October 1987(Day of year=304), manager: 
+31 October 1987(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 31 October 1987(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-17 November 1987(Day of year=321), manager: 
+17 November 1987(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 17 November 1987(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-2 December 1987(Day of year=336), manager: 
+2 December 1987(Day of year=336), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-2 December 1987(Day of year=336), maize: 
+2 December 1987(Day of year=336), Maize: 
      Sowing initiate
      
      
@@ -2569,59 +2569,59 @@ Title                  = p40N13
      
      
      
-3 December 1987(Day of year=337), manager: 
+3 December 1987(Day of year=337), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 3 December 1987(Day of year=337), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-3 December 1987(Day of year=337), maize: 
+3 December 1987(Day of year=337), Maize: 
       stage    2.0 germination
-6 December 1987(Day of year=340), maize: 
+6 December 1987(Day of year=340), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    6.446163
-22 December 1987(Day of year=356), maize: 
+22 December 1987(Day of year=356), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           2.025816       lai =    0.2736774E-01
                           stover N conc =    3.215340       extractable sw =    41.94514
-24 December 1987(Day of year=358), maize: 
+24 December 1987(Day of year=358), Maize: 
       stage    5.0 floral_initiation
                           biomass =           3.088171       lai =    0.3833999E-01
                           stover N conc =    3.080378       extractable sw =    39.69437
-13 January 1988(Day of year=13), manager: 
+13 January 1988(Day of year=13), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 13 January 1988(Day of year=13), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-7 February 1988(Day of year=38), maize: 
+7 February 1988(Day of year=38), Maize: 
       stage    6.0 flag_leaf
                           biomass =           280.3297       lai =     1.918532
                           stover N conc =   0.9927890       extractable sw =    96.17006
-8 February 1988(Day of year=39), maize: 
+8 February 1988(Day of year=39), Maize: 
       stage    7.0 flowering
                           biomass =           287.7386       lai =     1.911570
                           stover N conc =   0.9725302       extractable sw =    94.20759
-21 February 1988(Day of year=52), maize: 
+21 February 1988(Day of year=52), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           361.0400       lai =     1.808503
                           stover N conc =   0.8672760       extractable sw =    130.7850
-2 April 1988(Day of year=93), maize: 
+2 April 1988(Day of year=93), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           528.3380       lai =     1.173473
                           stover N conc =   0.7403543       extractable sw =    100.3011
-3 April 1988(Day of year=94), maize: 
+3 April 1988(Day of year=94), Maize: 
       stage   10.0 maturity
                           biomass =           531.1436       lai =     1.152491
                           stover N conc =   0.7377030       extractable sw =    99.49552
-4 April 1988(Day of year=95), maize: 
+4 April 1988(Day of year=95), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           531.1436       lai =    0.1595616E-02
                           stover N conc =   0.7583717       extractable sw =    101.1930
-4 April 1988(Day of year=95), manager: 
+4 April 1988(Day of year=95), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -2666,28 +2666,28 @@ Title                  = p40N13
                           N  (kg/ha) =                 19.52                    5.10
                           P  (kg/ha) =                 29.97                    8.85
      
-4 May 1988(Day of year=125), manager: 
+4 May 1988(Day of year=125), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 4 May 1988(Day of year=125), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-30 October 1988(Day of year=304), manager: 
+30 October 1988(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 30 October 1988(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-16 November 1988(Day of year=321), manager: 
+16 November 1988(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 16 November 1988(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-30 November 1988(Day of year=335), manager: 
+30 November 1988(Day of year=335), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-30 November 1988(Day of year=335), maize: 
+30 November 1988(Day of year=335), Maize: 
      Sowing initiate
      
      
@@ -2746,59 +2746,59 @@ Title                  = p40N13
      
      
      
-1 December 1988(Day of year=336), manager: 
+1 December 1988(Day of year=336), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 1 December 1988(Day of year=336), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-1 December 1988(Day of year=336), maize: 
+1 December 1988(Day of year=336), Maize: 
       stage    2.0 germination
-4 December 1988(Day of year=339), maize: 
+4 December 1988(Day of year=339), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    4.530956
-22 December 1988(Day of year=357), maize: 
+22 December 1988(Day of year=357), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           2.022626       lai =    0.2480729E-01
                           stover N conc =    3.329199       extractable sw =    38.52479
-25 December 1988(Day of year=360), maize: 
+25 December 1988(Day of year=360), Maize: 
       stage    5.0 floral_initiation
                           biomass =           3.755560       lai =    0.4004273E-01
                           stover N conc =    3.117007       extractable sw =    36.44481
-11 January 1989(Day of year=11), manager: 
+11 January 1989(Day of year=11), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 11 January 1989(Day of year=11), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-11 February 1989(Day of year=42), maize: 
+11 February 1989(Day of year=42), Maize: 
       stage    6.0 flag_leaf
                           biomass =           246.0737       lai =     1.924319
                           stover N conc =    1.057113       extractable sw =    114.1680
-12 February 1989(Day of year=43), maize: 
+12 February 1989(Day of year=43), Maize: 
       stage    7.0 flowering
                           biomass =           253.1945       lai =     1.917695
                           stover N conc =    1.033805       extractable sw =    111.7040
-25 February 1989(Day of year=56), maize: 
+25 February 1989(Day of year=56), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           324.7483       lai =     1.821540
                           stover N conc =   0.8961198       extractable sw =    131.0534
-11 April 1989(Day of year=101), maize: 
+11 April 1989(Day of year=101), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           488.1833       lai =     1.157328
                           stover N conc =   0.7253454       extractable sw =    100.8626
-12 April 1989(Day of year=102), maize: 
+12 April 1989(Day of year=102), Maize: 
       stage   10.0 maturity
                           biomass =           490.9117       lai =     1.140117
                           stover N conc =   0.7224854       extractable sw =    100.0681
-13 April 1989(Day of year=103), maize: 
+13 April 1989(Day of year=103), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           490.9117       lai =    0.1596689E-02
                           stover N conc =   0.7414907       extractable sw =    99.34436
-13 April 1989(Day of year=103), manager: 
+13 April 1989(Day of year=103), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -2843,21 +2843,21 @@ Title                  = p40N13
                           N  (kg/ha) =                 16.99                    4.50
                           P  (kg/ha) =                 28.80                    7.80
      
-13 May 1989(Day of year=133), manager: 
+13 May 1989(Day of year=133), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 13 May 1989(Day of year=133), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-31 October 1989(Day of year=304), manager: 
+31 October 1989(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 31 October 1989(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-15 November 1989(Day of year=319), manager: 
+15 November 1989(Day of year=319), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-15 November 1989(Day of year=319), maize: 
+15 November 1989(Day of year=319), Maize: 
      Sowing initiate
      
      
@@ -2916,66 +2916,66 @@ Title                  = p40N13
      
      
      
-16 November 1989(Day of year=320), manager: 
+16 November 1989(Day of year=320), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 16 November 1989(Day of year=320), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-16 November 1989(Day of year=320), maize: 
+16 November 1989(Day of year=320), Maize: 
       stage    2.0 germination
-17 November 1989(Day of year=321), manager: 
+17 November 1989(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 17 November 1989(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-19 November 1989(Day of year=323), maize: 
+19 November 1989(Day of year=323), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    2.524570
-10 December 1989(Day of year=344), maize: 
+10 December 1989(Day of year=344), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           2.532517       lai =    0.2788820E-01
                           stover N conc =    3.429854       extractable sw =    16.64599
-12 December 1989(Day of year=346), maize: 
+12 December 1989(Day of year=346), Maize: 
       stage    5.0 floral_initiation
                           biomass =           3.466756       lai =    0.3797012E-01
                           stover N conc =    3.255843       extractable sw =    39.41544
-27 December 1989(Day of year=361), manager: 
+27 December 1989(Day of year=361), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 27 December 1989(Day of year=361), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-27 January 1990(Day of year=27), maize: 
+27 January 1990(Day of year=27), Maize: 
       stage    6.0 flag_leaf
                           biomass =           248.4137       lai =     1.863265
                           stover N conc =   0.9647824       extractable sw =    119.3941
-28 January 1990(Day of year=28), maize: 
+28 January 1990(Day of year=28), Maize: 
       stage    7.0 flowering
                           biomass =           254.3134       lai =     1.856081
                           stover N conc =   0.9514167       extractable sw =    118.5265
-10 February 1990(Day of year=41), maize: 
+10 February 1990(Day of year=41), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           325.2180       lai =     1.757339
                           stover N conc =   0.8344545       extractable sw =    130.6415
-24 March 1990(Day of year=83), maize: 
+24 March 1990(Day of year=83), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           472.9614       lai =     1.141946
                           stover N conc =   0.6847979       extractable sw =    91.24043
-25 March 1990(Day of year=84), maize: 
+25 March 1990(Day of year=84), Maize: 
       stage   10.0 maturity
                           biomass =           474.3844       lai =     1.125642
                           stover N conc =   0.6840944       extractable sw =    90.68205
-26 March 1990(Day of year=85), maize: 
+26 March 1990(Day of year=85), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           474.3843       lai =    0.1596212E-02
                           stover N conc =   0.7008395       extractable sw =    98.76031
-26 March 1990(Day of year=85), manager: 
+26 March 1990(Day of year=85), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -3020,28 +3020,28 @@ Title                  = p40N13
                           N  (kg/ha) =                 16.00                    4.07
                           P  (kg/ha) =                 20.36                    7.91
      
-25 April 1990(Day of year=115), manager: 
+25 April 1990(Day of year=115), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 25 April 1990(Day of year=115), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-31 October 1990(Day of year=304), manager: 
+31 October 1990(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 31 October 1990(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-17 November 1990(Day of year=321), manager: 
+17 November 1990(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 17 November 1990(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-22 November 1990(Day of year=326), manager: 
+22 November 1990(Day of year=326), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-22 November 1990(Day of year=326), maize: 
+22 November 1990(Day of year=326), Maize: 
      Sowing initiate
      
      
@@ -3100,59 +3100,59 @@ Title                  = p40N13
      
      
      
-23 November 1990(Day of year=327), manager: 
+23 November 1990(Day of year=327), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 23 November 1990(Day of year=327), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-23 November 1990(Day of year=327), maize: 
+23 November 1990(Day of year=327), Maize: 
       stage    2.0 germination
-26 November 1990(Day of year=330), maize: 
+26 November 1990(Day of year=330), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    8.699184
-13 December 1990(Day of year=347), maize: 
+13 December 1990(Day of year=347), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           2.363475       lai =    0.2823523E-01
                           stover N conc =    3.372395       extractable sw =    18.77430
-15 December 1990(Day of year=349), maize: 
+15 December 1990(Day of year=349), Maize: 
       stage    5.0 floral_initiation
                           biomass =           3.236820       lai =    0.3945476E-01
                           stover N conc =    3.220876       extractable sw =    44.75007
-3 January 1991(Day of year=3), manager: 
+3 January 1991(Day of year=3), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 3 January 1991(Day of year=3), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-30 January 1991(Day of year=30), maize: 
+30 January 1991(Day of year=30), Maize: 
       stage    6.0 flag_leaf
                           biomass =           283.2766       lai =     1.983027
                           stover N conc =   0.9839057       extractable sw =    95.51915
-31 January 1991(Day of year=31), maize: 
+31 January 1991(Day of year=31), Maize: 
       stage    7.0 flowering
                           biomass =           292.7043       lai =     1.975583
                           stover N conc =   0.9563834       extractable sw =    93.68811
-12 February 1991(Day of year=43), maize: 
+12 February 1991(Day of year=43), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           361.5827       lai =     1.876786
                           stover N conc =   0.8693379       extractable sw =    117.3409
-23 March 1991(Day of year=82), maize: 
+23 March 1991(Day of year=82), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           529.5228       lai =     1.217985
                           stover N conc =   0.7487984       extractable sw =    125.1800
-24 March 1991(Day of year=83), maize: 
+24 March 1991(Day of year=83), Maize: 
       stage   10.0 maturity
                           biomass =           531.9991       lai =     1.196597
                           stover N conc =   0.7504652       extractable sw =    122.7762
-25 March 1991(Day of year=84), maize: 
+25 March 1991(Day of year=84), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           531.9991       lai =    0.1596212E-02
                           stover N conc =   0.7725392       extractable sw =    120.2916
-25 March 1991(Day of year=84), manager: 
+25 March 1991(Day of year=84), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -3197,28 +3197,28 @@ Title                  = p40N13
                           N  (kg/ha) =                 20.19                    5.28
                           P  (kg/ha) =                 33.87                    9.00
      
-24 April 1991(Day of year=114), manager: 
+24 April 1991(Day of year=114), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 24 April 1991(Day of year=114), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-31 October 1991(Day of year=304), manager: 
+31 October 1991(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 31 October 1991(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-17 November 1991(Day of year=321), manager: 
+17 November 1991(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 17 November 1991(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-22 November 1991(Day of year=326), manager: 
+22 November 1991(Day of year=326), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-22 November 1991(Day of year=326), maize: 
+22 November 1991(Day of year=326), Maize: 
      Sowing initiate
      
      
@@ -3277,59 +3277,59 @@ Title                  = p40N13
      
      
      
-23 November 1991(Day of year=327), manager: 
+23 November 1991(Day of year=327), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 23 November 1991(Day of year=327), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-23 November 1991(Day of year=327), maize: 
+23 November 1991(Day of year=327), Maize: 
       stage    2.0 germination
-26 November 1991(Day of year=330), maize: 
+26 November 1991(Day of year=330), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    6.711229
-12 December 1991(Day of year=346), maize: 
+12 December 1991(Day of year=346), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           2.399662       lai =    0.2765589E-01
                           stover N conc =    3.374637       extractable sw =    44.32924
-14 December 1991(Day of year=348), maize: 
+14 December 1991(Day of year=348), Maize: 
       stage    5.0 floral_initiation
                           biomass =           3.470435       lai =    0.3997650E-01
                           stover N conc =    3.179787       extractable sw =    43.76408
-3 January 1992(Day of year=3), manager: 
+3 January 1992(Day of year=3), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 3 January 1992(Day of year=3), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-22 January 1992(Day of year=22), maize: 
+22 January 1992(Day of year=22), Maize: 
       stage    6.0 flag_leaf
                           biomass =           259.3300       lai =     1.943632
                           stover N conc =   0.9453585       extractable sw =    48.84549
-23 January 1992(Day of year=23), maize: 
+23 January 1992(Day of year=23), Maize: 
       stage    7.0 flowering
                           biomass =           267.8355       lai =     1.935963
                           stover N conc =   0.9411883       extractable sw =    55.17406
-2 February 1992(Day of year=33), maize: 
+2 February 1992(Day of year=33), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           342.7061       lai =     1.835958
                           stover N conc =   0.8284754       extractable sw =    38.76418
-6 March 1992(Day of year=66), maize: 
+6 March 1992(Day of year=66), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           437.0861       lai =    0.9659764
                           stover N conc =   0.6793550       extractable sw =    12.27487
-7 March 1992(Day of year=67), maize: 
+7 March 1992(Day of year=67), Maize: 
       stage   10.0 maturity
                           biomass =           437.9435       lai =    0.9273472
                           stover N conc =   0.6786128       extractable sw =    11.95891
-8 March 1992(Day of year=68), maize: 
+8 March 1992(Day of year=68), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           437.9435       lai =    0.1595855E-02
                           stover N conc =   0.6933340       extractable sw =    11.65631
-8 March 1992(Day of year=68), manager: 
+8 March 1992(Day of year=68), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -3374,28 +3374,28 @@ Title                  = p40N13
                           N  (kg/ha) =                 16.16                    3.64
                           P  (kg/ha) =                  8.34                    8.54
      
-7 April 1992(Day of year=98), manager: 
+7 April 1992(Day of year=98), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 7 April 1992(Day of year=98), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-30 October 1992(Day of year=304), manager: 
+30 October 1992(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 30 October 1992(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-16 November 1992(Day of year=321), manager: 
+16 November 1992(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 16 November 1992(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-26 November 1992(Day of year=331), manager: 
+26 November 1992(Day of year=331), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-26 November 1992(Day of year=331), maize: 
+26 November 1992(Day of year=331), Maize: 
      Sowing initiate
      
      
@@ -3454,59 +3454,59 @@ Title                  = p40N13
      
      
      
-27 November 1992(Day of year=332), manager: 
+27 November 1992(Day of year=332), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 27 November 1992(Day of year=332), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-27 November 1992(Day of year=332), maize: 
+27 November 1992(Day of year=332), Maize: 
       stage    2.0 germination
-30 November 1992(Day of year=335), maize: 
+30 November 1992(Day of year=335), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    3.102497
-13 December 1992(Day of year=348), maize: 
+13 December 1992(Day of year=348), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.487648       lai =    0.2293150E-01
                           stover N conc =    3.201663       extractable sw =    14.75856
-16 December 1992(Day of year=351), maize: 
+16 December 1992(Day of year=351), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.955750       lai =    0.3680127E-01
                           stover N conc =    3.077190       extractable sw =    22.20742
-7 January 1993(Day of year=7), manager: 
+7 January 1993(Day of year=7), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 7 January 1993(Day of year=7), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-28 January 1993(Day of year=28), maize: 
+28 January 1993(Day of year=28), Maize: 
       stage    6.0 flag_leaf
                           biomass =           183.3402       lai =     1.555313
                           stover N conc =    1.012666       extractable sw =    94.86539
-29 January 1993(Day of year=29), maize: 
+29 January 1993(Day of year=29), Maize: 
       stage    7.0 flowering
                           biomass =           190.9898       lai =     1.548175
                           stover N conc =   0.9956933       extractable sw =    91.71322
-10 February 1993(Day of year=41), maize: 
+10 February 1993(Day of year=41), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           265.5403       lai =     1.451740
                           stover N conc =   0.9212869       extractable sw =    110.5770
-26 March 1993(Day of year=85), maize: 
+26 March 1993(Day of year=85), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           422.4940       lai =    0.8996842
                           stover N conc =   0.7392195       extractable sw =    90.32132
-27 March 1993(Day of year=86), maize: 
+27 March 1993(Day of year=86), Maize: 
       stage   10.0 maturity
                           biomass =           424.3165       lai =    0.8836325
                           stover N conc =   0.7377932       extractable sw =    89.79883
-28 March 1993(Day of year=87), maize: 
+28 March 1993(Day of year=87), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           424.3165       lai =    0.1595795E-02
                           stover N conc =   0.7550672       extractable sw =    89.22696
-28 March 1993(Day of year=87), manager: 
+28 March 1993(Day of year=87), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -3551,21 +3551,21 @@ Title                  = p40N13
                           N  (kg/ha) =                 12.56                    3.85
                           P  (kg/ha) =                  7.34                    6.08
      
-27 April 1993(Day of year=117), manager: 
+27 April 1993(Day of year=117), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 27 April 1993(Day of year=117), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-31 October 1993(Day of year=304), manager: 
+31 October 1993(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 31 October 1993(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-15 November 1993(Day of year=319), manager: 
+15 November 1993(Day of year=319), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-15 November 1993(Day of year=319), maize: 
+15 November 1993(Day of year=319), Maize: 
      Sowing initiate
      
      
@@ -3624,66 +3624,66 @@ Title                  = p40N13
      
      
      
-16 November 1993(Day of year=320), manager: 
+16 November 1993(Day of year=320), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 16 November 1993(Day of year=320), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-16 November 1993(Day of year=320), maize: 
+16 November 1993(Day of year=320), Maize: 
       stage    2.0 germination
-17 November 1993(Day of year=321), manager: 
+17 November 1993(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 17 November 1993(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-18 November 1993(Day of year=322), maize: 
+18 November 1993(Day of year=322), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    5.238483
-4 December 1993(Day of year=338), maize: 
+4 December 1993(Day of year=338), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.659681       lai =    0.2621099E-01
                           stover N conc =    3.510799       extractable sw =    28.96995
-7 December 1993(Day of year=341), maize: 
+7 December 1993(Day of year=341), Maize: 
       stage    5.0 floral_initiation
                           biomass =           3.146144       lai =    0.4120730E-01
                           stover N conc =    3.038648       extractable sw =    41.36059
-27 December 1993(Day of year=361), manager: 
+27 December 1993(Day of year=361), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 27 December 1993(Day of year=361), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-22 January 1994(Day of year=22), maize: 
+22 January 1994(Day of year=22), Maize: 
       stage    6.0 flag_leaf
                           biomass =           235.4893       lai =     1.677527
                           stover N conc =    1.037284       extractable sw =    97.29028
-23 January 1994(Day of year=23), maize: 
+23 January 1994(Day of year=23), Maize: 
       stage    7.0 flowering
                           biomass =           241.3063       lai =     1.671679
                           stover N conc =    1.019120       extractable sw =    95.37354
-5 February 1994(Day of year=36), maize: 
+5 February 1994(Day of year=36), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           327.2810       lai =     1.604113
                           stover N conc =   0.8013448       extractable sw =    77.75533
-21 March 1994(Day of year=80), maize: 
+21 March 1994(Day of year=80), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           449.3883       lai =     1.251657
                           stover N conc =   0.6323625       extractable sw =    49.71373
-22 March 1994(Day of year=81), maize: 
+22 March 1994(Day of year=81), Maize: 
       stage   10.0 maturity
                           biomass =           450.7817       lai =     1.225361
                           stover N conc =   0.6311443       extractable sw =    49.43838
-23 March 1994(Day of year=82), maize: 
+23 March 1994(Day of year=82), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           450.7817       lai =    0.1596451E-02
                           stover N conc =   0.6439961       extractable sw =    49.09800
-23 March 1994(Day of year=82), manager: 
+23 March 1994(Day of year=82), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -3728,28 +3728,28 @@ Title                  = p40N13
                           N  (kg/ha) =                 12.40                    3.53
                           P  (kg/ha) =                  7.88                    7.63
      
-22 April 1994(Day of year=112), manager: 
+22 April 1994(Day of year=112), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 22 April 1994(Day of year=112), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-31 October 1994(Day of year=304), manager: 
+31 October 1994(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 31 October 1994(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-17 November 1994(Day of year=321), manager: 
+17 November 1994(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 17 November 1994(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-10 December 1994(Day of year=344), manager: 
+10 December 1994(Day of year=344), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-10 December 1994(Day of year=344), maize: 
+10 December 1994(Day of year=344), Maize: 
      Sowing initiate
      
      
@@ -3808,59 +3808,59 @@ Title                  = p40N13
      
      
      
-11 December 1994(Day of year=345), manager: 
+11 December 1994(Day of year=345), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 11 December 1994(Day of year=345), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-11 December 1994(Day of year=345), maize: 
+11 December 1994(Day of year=345), Maize: 
       stage    2.0 germination
-14 December 1994(Day of year=348), maize: 
+14 December 1994(Day of year=348), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    1.840809
-4 January 1995(Day of year=4), maize: 
+4 January 1995(Day of year=4), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.990759       lai =    0.2362530E-01
                           stover N conc =    3.328765       extractable sw =    17.57837
-7 January 1995(Day of year=7), maize: 
+7 January 1995(Day of year=7), Maize: 
       stage    5.0 floral_initiation
                           biomass =           3.503634       lai =    0.3779627E-01
                           stover N conc =    3.142051       extractable sw =    35.93896
-21 January 1995(Day of year=21), manager: 
+21 January 1995(Day of year=21), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 21 January 1995(Day of year=21), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-26 February 1995(Day of year=57), maize: 
+26 February 1995(Day of year=57), Maize: 
       stage    6.0 flag_leaf
                           biomass =           216.6050       lai =     1.507567
                           stover N conc =    1.101196       extractable sw =    96.17805
-27 February 1995(Day of year=58), maize: 
+27 February 1995(Day of year=58), Maize: 
       stage    7.0 flowering
                           biomass =           223.1240       lai =     1.499833
                           stover N conc =    1.076145       extractable sw =    94.77657
-12 March 1995(Day of year=71), maize: 
+12 March 1995(Day of year=71), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           303.3508       lai =     1.406308
                           stover N conc =   0.8361281       extractable sw =    77.57951
-25 April 1995(Day of year=115), maize: 
+25 April 1995(Day of year=115), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           439.2985       lai =    0.9329419
                           stover N conc =   0.7284769       extractable sw =    92.98429
-26 April 1995(Day of year=116), maize: 
+26 April 1995(Day of year=116), Maize: 
       stage   10.0 maturity
                           biomass =           441.6570       lai =    0.9260846
                           stover N conc =   0.7258375       extractable sw =    91.97543
-27 April 1995(Day of year=117), maize: 
+27 April 1995(Day of year=117), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           441.6570       lai =    0.1595914E-02
                           stover N conc =   0.7454764       extractable sw =    92.87083
-27 April 1995(Day of year=117), manager: 
+27 April 1995(Day of year=117), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -3905,28 +3905,28 @@ Title                  = p40N13
                           N  (kg/ha) =                 14.68                    4.06
                           P  (kg/ha) =                 18.74                    6.97
      
-27 May 1995(Day of year=147), manager: 
+27 May 1995(Day of year=147), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 27 May 1995(Day of year=147), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-31 October 1995(Day of year=304), manager: 
+31 October 1995(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 31 October 1995(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-17 November 1995(Day of year=321), manager: 
+17 November 1995(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 17 November 1995(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-21 November 1995(Day of year=325), manager: 
+21 November 1995(Day of year=325), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-21 November 1995(Day of year=325), maize: 
+21 November 1995(Day of year=325), Maize: 
      Sowing initiate
      
      
@@ -3985,59 +3985,59 @@ Title                  = p40N13
      
      
      
-22 November 1995(Day of year=326), manager: 
+22 November 1995(Day of year=326), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 22 November 1995(Day of year=326), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-22 November 1995(Day of year=326), maize: 
+22 November 1995(Day of year=326), Maize: 
       stage    2.0 germination
-24 November 1995(Day of year=328), maize: 
+24 November 1995(Day of year=328), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    5.738655
-10 December 1995(Day of year=344), maize: 
+10 December 1995(Day of year=344), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.860887       lai =    0.2678791E-01
                           stover N conc =    3.453473       extractable sw =    23.58292
-13 December 1995(Day of year=347), maize: 
+13 December 1995(Day of year=347), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.566594       lai =    0.4061052E-01
                           stover N conc =    3.295177       extractable sw =    42.69231
-2 January 1996(Day of year=2), manager: 
+2 January 1996(Day of year=2), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 2 January 1996(Day of year=2), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-22 January 1996(Day of year=22), maize: 
+22 January 1996(Day of year=22), Maize: 
       stage    6.0 flag_leaf
                           biomass =           214.6845       lai =     1.735228
                           stover N conc =   0.9041469       extractable sw =    76.20847
-23 January 1996(Day of year=23), maize: 
+23 January 1996(Day of year=23), Maize: 
       stage    7.0 flowering
                           biomass =           218.9599       lai =     1.727827
                           stover N conc =   0.8932486       extractable sw =    74.79239
-4 February 1996(Day of year=35), maize: 
+4 February 1996(Day of year=35), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           298.7469       lai =     1.632614
                           stover N conc =   0.8483034       extractable sw =    79.76866
-11 March 1996(Day of year=71), maize: 
+11 March 1996(Day of year=71), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           439.1831       lai =     1.052940
                           stover N conc =   0.7950387       extractable sw =    126.8159
-12 March 1996(Day of year=72), maize: 
+12 March 1996(Day of year=72), Maize: 
       stage   10.0 maturity
                           biomass =           443.3488       lai =     1.031065
                           stover N conc =   0.7931984       extractable sw =    130.1582
-13 March 1996(Day of year=73), maize: 
+13 March 1996(Day of year=73), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           443.3488       lai =    0.1595736E-02
                           stover N conc =   0.8165817       extractable sw =    124.5008
-13 March 1996(Day of year=73), manager: 
+13 March 1996(Day of year=73), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -4082,28 +4082,28 @@ Title                  = p40N13
                           N  (kg/ha) =                 17.26                    4.79
                           P  (kg/ha) =                 26.07                    7.13
      
-12 April 1996(Day of year=103), manager: 
+12 April 1996(Day of year=103), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 12 April 1996(Day of year=103), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-30 October 1996(Day of year=304), manager: 
+30 October 1996(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 30 October 1996(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-16 November 1996(Day of year=321), manager: 
+16 November 1996(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 16 November 1996(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-29 November 1996(Day of year=334), manager: 
+29 November 1996(Day of year=334), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-29 November 1996(Day of year=334), maize: 
+29 November 1996(Day of year=334), Maize: 
      Sowing initiate
      
      
@@ -4162,59 +4162,59 @@ Title                  = p40N13
      
      
      
-30 November 1996(Day of year=335), manager: 
+30 November 1996(Day of year=335), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 30 November 1996(Day of year=335), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-30 November 1996(Day of year=335), maize: 
+30 November 1996(Day of year=335), Maize: 
       stage    2.0 germination
-3 December 1996(Day of year=338), maize: 
+3 December 1996(Day of year=338), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    3.927593
-21 December 1996(Day of year=356), maize: 
+21 December 1996(Day of year=356), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           2.220643       lai =    0.2547585E-01
                           stover N conc =    3.334086       extractable sw =    38.46534
-23 December 1996(Day of year=358), maize: 
+23 December 1996(Day of year=358), Maize: 
       stage    5.0 floral_initiation
                           biomass =           3.251879       lai =    0.3672596E-01
                           stover N conc =    3.193851       extractable sw =    37.05125
-10 January 1997(Day of year=10), manager: 
+10 January 1997(Day of year=10), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 10 January 1997(Day of year=10), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-7 February 1997(Day of year=38), maize: 
+7 February 1997(Day of year=38), Maize: 
       stage    6.0 flag_leaf
                           biomass =           307.0628       lai =     1.969589
                           stover N conc =    1.035572       extractable sw =    129.9182
-8 February 1997(Day of year=39), maize: 
+8 February 1997(Day of year=39), Maize: 
       stage    7.0 flowering
                           biomass =           316.0386       lai =     1.963232
                           stover N conc =    1.016556       extractable sw =    123.9608
-21 February 1997(Day of year=52), maize: 
+21 February 1997(Day of year=52), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           389.8194       lai =     1.868217
                           stover N conc =   0.9051414       extractable sw =    105.6849
-9 April 1997(Day of year=99), maize: 
+9 April 1997(Day of year=99), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           629.1818       lai =     1.314535
                           stover N conc =   0.7223822       extractable sw =    102.3315
-10 April 1997(Day of year=100), maize: 
+10 April 1997(Day of year=100), Maize: 
       stage   10.0 maturity
                           biomass =           633.0768       lai =     1.296174
                           stover N conc =   0.7188050       extractable sw =    101.4613
-11 April 1997(Day of year=101), maize: 
+11 April 1997(Day of year=101), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           633.0768       lai =    0.1596093E-02
                           stover N conc =   0.7365838       extractable sw =    100.7543
-11 April 1997(Day of year=101), manager: 
+11 April 1997(Day of year=101), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -4259,28 +4259,28 @@ Title                  = p40N13
                           N  (kg/ha) =                 24.71                    5.89
                           P  (kg/ha) =                 38.50                    9.56
      
-11 May 1997(Day of year=131), manager: 
+11 May 1997(Day of year=131), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 11 May 1997(Day of year=131), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-31 October 1997(Day of year=304), manager: 
+31 October 1997(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 31 October 1997(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-17 November 1997(Day of year=321), manager: 
+17 November 1997(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 17 November 1997(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-28 November 1997(Day of year=332), manager: 
+28 November 1997(Day of year=332), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-28 November 1997(Day of year=332), maize: 
+28 November 1997(Day of year=332), Maize: 
      Sowing initiate
      
      
@@ -4339,59 +4339,59 @@ Title                  = p40N13
      
      
      
-29 November 1997(Day of year=333), manager: 
+29 November 1997(Day of year=333), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 29 November 1997(Day of year=333), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-29 November 1997(Day of year=333), maize: 
+29 November 1997(Day of year=333), Maize: 
       stage    2.0 germination
-2 December 1997(Day of year=336), maize: 
+2 December 1997(Day of year=336), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    3.014889
-21 December 1997(Day of year=355), maize: 
+21 December 1997(Day of year=355), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           2.414958       lai =    0.2528128E-01
                           stover N conc =    3.458925       extractable sw =    15.96240
-24 December 1997(Day of year=358), maize: 
+24 December 1997(Day of year=358), Maize: 
       stage    5.0 floral_initiation
                           biomass =           4.131959       lai =    0.3804196E-01
                           stover N conc =    3.190339       extractable sw =    33.14603
-9 January 1998(Day of year=9), manager: 
+9 January 1998(Day of year=9), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 9 January 1998(Day of year=9), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-12 February 1998(Day of year=43), maize: 
+12 February 1998(Day of year=43), Maize: 
       stage    6.0 flag_leaf
                           biomass =           253.4090       lai =     1.757182
                           stover N conc =   0.8663353       extractable sw =    100.8651
-13 February 1998(Day of year=44), maize: 
+13 February 1998(Day of year=44), Maize: 
       stage    7.0 flowering
                           biomass =           260.2657       lai =     1.751177
                           stover N conc =   0.8465777       extractable sw =    99.73647
-26 February 1998(Day of year=57), maize: 
+26 February 1998(Day of year=57), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           332.7437       lai =     1.655226
                           stover N conc =   0.7225474       extractable sw =    92.51224
-10 April 1998(Day of year=100), maize: 
+10 April 1998(Day of year=100), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           454.8391       lai =     1.024524
                           stover N conc =   0.6650207       extractable sw =    99.33315
-11 April 1998(Day of year=101), maize: 
+11 April 1998(Day of year=101), Maize: 
       stage   10.0 maturity
                           biomass =           456.5472       lai =     1.009130
                           stover N conc =   0.6637763       extractable sw =    98.95681
-12 April 1998(Day of year=102), maize: 
+12 April 1998(Day of year=102), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           456.5472       lai =    0.1596332E-02
                           stover N conc =   0.6784163       extractable sw =    98.52382
-12 April 1998(Day of year=102), manager: 
+12 April 1998(Day of year=102), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -4436,28 +4436,28 @@ Title                  = p40N13
                           N  (kg/ha) =                 14.36                    3.94
                           P  (kg/ha) =                 20.88                    8.05
      
-12 May 1998(Day of year=132), manager: 
+12 May 1998(Day of year=132), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 12 May 1998(Day of year=132), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-31 October 1998(Day of year=304), manager: 
+31 October 1998(Day of year=304), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.9, tillage_depth = 100
 31 October 1998(Day of year=304), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
-17 November 1998(Day of year=321), manager: 
+17 November 1998(Day of year=321), Manager: 
      Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = broadcast_p
 17 November 1998(Day of year=321), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         40.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
-21 November 1998(Day of year=325), manager: 
+21 November 1998(Day of year=325), Manager: 
      Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
-21 November 1998(Day of year=325), maize: 
+21 November 1998(Day of year=325), Maize: 
      Sowing initiate
      
      
@@ -4516,59 +4516,59 @@ Title                  = p40N13
      
      
      
-22 November 1998(Day of year=326), manager: 
+22 November 1998(Day of year=326), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 22 November 1998(Day of year=326), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-22 November 1998(Day of year=326), maize: 
+22 November 1998(Day of year=326), Maize: 
       stage    2.0 germination
-25 November 1998(Day of year=329), maize: 
+25 November 1998(Day of year=329), Maize: 
       stage    3.0 emergence
                           biomass =          0.8399999E-01   lai =    0.1596000E-02
                           stover N conc =    4.400000       extractable sw =    6.758514
-15 December 1998(Day of year=349), maize: 
+15 December 1998(Day of year=349), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           2.150834       lai =    0.2638645E-01
                           stover N conc =    3.380852       extractable sw =    43.06958
-18 December 1998(Day of year=352), maize: 
+18 December 1998(Day of year=352), Maize: 
       stage    5.0 floral_initiation
                           biomass =           3.278251       lai =    0.4004559E-01
                           stover N conc =    3.246145       extractable sw =    45.30384
-2 January 1999(Day of year=2), manager: 
+2 January 1999(Day of year=2), Manager: 
      Manager sending message :- fertiliser apply  amount = 6.25, type = nh4no3, depth = 5
 2 January 1999(Day of year=2), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          6.25 of ammonium nitrate (nh4no3)
                                          added at depth    5.00 (layer   1)
-9 February 1999(Day of year=40), maize: 
+9 February 1999(Day of year=40), Maize: 
       stage    6.0 flag_leaf
                           biomass =           226.4369       lai =     1.786303
                           stover N conc =   0.9177789       extractable sw =    125.7303
-11 February 1999(Day of year=42), maize: 
+11 February 1999(Day of year=42), Maize: 
       stage    7.0 flowering
                           biomass =           235.9124       lai =     1.776820
                           stover N conc =   0.8945584       extractable sw =    118.9820
-26 February 1999(Day of year=57), maize: 
+26 February 1999(Day of year=57), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           315.8428       lai =     1.676225
                           stover N conc =   0.7527601       extractable sw =    123.2125
-16 April 1999(Day of year=106), maize: 
+16 April 1999(Day of year=106), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           452.6670       lai =     1.039807
                           stover N conc =   0.6809693       extractable sw =    101.6899
-17 April 1999(Day of year=107), maize: 
+17 April 1999(Day of year=107), Maize: 
       stage   10.0 maturity
                           biomass =           453.6775       lai =     1.025179
                           stover N conc =   0.6804671       extractable sw =    101.1388
-18 April 1999(Day of year=108), maize: 
+18 April 1999(Day of year=108), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           453.6775       lai =    0.1596212E-02
                           stover N conc =   0.6961859       extractable sw =    100.8038
-18 April 1999(Day of year=108), manager: 
+18 April 1999(Day of year=108), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -4613,11 +4613,11 @@ Title                  = p40N13
                           N  (kg/ha) =                 14.72                    3.84
                           P  (kg/ha) =                 26.68                    7.26
      
-18 May 1999(Day of year=138), manager: 
+18 May 1999(Day of year=138), Manager: 
      Manager sending message :- surfaceom tillage  type = user_defined, f_incorp = 0.50, tillage_depth = 0 (mm)
 18 May 1999(Day of year=138), SurfaceOM: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =     0.00
-30 May 1999(Day of year=150), clock: 
+30 May 1999(Day of year=150), Clock: 
      Simulation is terminating due to end criteria being met.

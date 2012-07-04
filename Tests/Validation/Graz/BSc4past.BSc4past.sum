@@ -11,19 +11,19 @@
 
 Version                = 7.5
 Title                  = 
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "annual" = %apsim%\Model\report.dll
-   Component                        "daily" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "annual" = %apsim%\Model\Report.dll
+   Component                        "daily" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                        "grasp" = %apsim%\Model\grasp.dll
-   Component                      "tracker" = %apsim%\Model\tracker.dll
-   Component                         "graz" = %apsim%\Model\graz.dll
+   Component                        "Grasp" = %apsim%\Model\Grasp.dll
+   Component                      "Tracker" = %apsim%\Model\Tracker.dll
+   Component                         "Graz" = %apsim%\Model\Graz.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -96,7 +96,7 @@ Title                  =
      Sparse data is not allowed
      INPUT File name: capella.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -257,7 +257,7 @@ Title                  =
           ---------------------------------------------------------
            Totals  335481.9 23136.7  1805.1   225.6   400.0    20.0
           ---------------------------------------------------------
-grasp: 
+Grasp: 
      Initialising:
      Parameters:
        Transpiration Efficiency:     13.50 kg/ha/mm at 20.0 hPa
@@ -277,7 +277,7 @@ grasp:
          --------------------------------------------                                                                                                                                                        
 
 
-------- tracker Initialisation ------------------------------------------------
+------- Tracker Initialisation ------------------------------------------------
      Tracker variables:
         sum of met.rain on start_of_day from start_year to now as rainfall
         sum of SoilWat.drain on end_of_day from start_year to now as drainage
@@ -291,7 +291,7 @@ grasp:
         sum of grasp.growth_transp on end_of_day from start_year to now as growth_trans
         sum of grasp.growth_photo on end_of_day from start_year to now as growth_rad
 
-------- graz Initialisation ---------------------------------------------------
+------- Graz Initialisation ---------------------------------------------------
   Initial Stocking rate: 0
   Initial Live Weight: 0
 
@@ -311,7 +311,7 @@ grasp:
        Pan evap from system
      Manager creating a new local real variable : annual_lwg = 0.00000
      Manager creating a new local real variable : grass_sw = 582.25616
-1 September 1900(Day of year=244), manager: 
+1 September 1900(Day of year=244), Manager: 
      Manager creating a new local real variable : avgdailyintake = 4.20815
      Manager creating a new local real variable : targetutil = 0.20000
      Manager creating a new local real variable : annualintake = 1538.07886
@@ -319,5 +319,5 @@ grasp:
      Manager creating a new local real variable : weight_ratio = 2.00000
      Manager creating a new local real variable : factor = 1.68179
      Manager creating a new local real variable : beasts_ha = 0.00590
-31 December 2003(Day of year=365), clock: 
+31 December 2003(Day of year=365), Clock: 
      Simulation is terminating due to end criteria being met.

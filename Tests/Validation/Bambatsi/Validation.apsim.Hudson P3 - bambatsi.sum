@@ -11,21 +11,21 @@
 
 Version                = 7.5
 Title                  = P3 Base Simulation
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
    Component                   "Operations" = %apsim%\Model\Operations.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
-   Component                     "micromet" = %apsim%\Model\micromet.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
+   Component                     "MicroMet" = %apsim%\Model\MicroMet.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                       "solute" = %apsim%\Model\solute.dll
-   Component                     "tracker1" = %apsim%\Model\tracker.dll
-   Component                     "bambatsi" = %apsim%\Model\growth.dll
+   Component                       "Solute" = %apsim%\Model\Solute.dll
+   Component                     "tracker1" = %apsim%\Model\Tracker.dll
+   Component                     "bambatsi" = %apsim%\Model\Growth.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -41,7 +41,7 @@ Title                  = P3 Base Simulation
      Simulation end date   = 23/01/2000
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.dd/mm/yyyy as date
         clock.day
@@ -97,7 +97,7 @@ Title                  = P3 Base Simulation
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: HUDSON.MET
+     INPUT File name: Hudson.met
 
 ------- Operations Initialisation ---------------------------------------------
      Operations Schedule
@@ -124,7 +124,7 @@ Title                  = P3 Base Simulation
       29/9/1999  Prepare      bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
        2/2/2000  Prepare      bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- init
@@ -156,7 +156,7 @@ Title                  = P3 Base Simulation
      Manager creating a new local real variable : cum_production = 0.00000
      Manager creating a new local real variable : cum_runoff = 0.00000
 
-------- micromet Initialisation -----------------------------------------------
+------- MicroMet Initialisation -----------------------------------------------
      Initialising
      
         - Reading Constants
@@ -339,7 +339,7 @@ Title                  = P3 Base Simulation
            Totals  269042.4 18554.6  1157.6   144.7     4.0     0.1
           ---------------------------------------------------------
 
-------- solute Initialisation -------------------------------------------------
+------- Solute Initialisation -------------------------------------------------
      Initialising
      
         - Reading Constants
@@ -433,5 +433,5 @@ Title                  = P3 Base Simulation
    - Reading Fertiliser Type Parameters
         50.00 of N as nitrate (no3_n)
                                          added at depth    5.00 (layer   1)
-23 January 2000(Day of year=23), clock: 
+23 January 2000(Day of year=23), Clock: 
      Simulation is terminating due to end criteria being met.

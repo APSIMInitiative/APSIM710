@@ -109,6 +109,11 @@ string ApsimComponentData::getExecutableFileName(void) const
               executable = execNode->getAttribute("name");
         }
       }
+#ifdef __WIN32__
+   replaceAll(executable, "%dllext%", "dll");
+#else
+   replaceAll(executable, "%dllext%", "so");
+#endif
    return executable;
    }
 // ------------------------------------------------------------------
