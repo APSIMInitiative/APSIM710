@@ -101,7 +101,8 @@ class Program
                 ModifyEntriesFile(FileName);
 
             // Now zip up the whole temporary directory.
-            string outZip = TempDirectory + ".diffs.zip";
+            string outZip = Path.Combine(Directory.GetCurrentDirectory(), 
+                                         Path.GetFileNameWithoutExtension(PatchFileName) + ".diffs.zip");
             string zipExe;
 
             if (Path.DirectorySeparatorChar == '/')
@@ -112,21 +113,11 @@ class Program
             Utility.CheckProcessExitedProperly(P);
 
             if (Environment.MachineName.ToUpper() == "BOB")
+                {
                 File.Copy(outZip, "C:\\inetpub\\wwwroot\\Files\\" + Path.GetFileName(outZip));
-            else
-            {
-                try
-                {
-                    string RemoteName = Path.GetFileNameWithoutExtension(PatchFileName) + "." + Environment.MachineName + ".diffs.zip";
-                    Utility.UploadFtp(outZip, "bob", "seg", "bob.apsim.info", "/Files/" + RemoteName);
+                File.Delete(outZip);
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Upload failed: " + e.Message);
-                }
-            }
             // Now get rid of our temporary directory.
-            File.Delete(outZip);
             Directory.Delete(TempDirectory, true);
         }
 
