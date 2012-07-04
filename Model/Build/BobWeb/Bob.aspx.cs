@@ -32,14 +32,14 @@ namespace BobWeb
                 StringManip.SplitOffBracketedValue(ref PatchFileNameNoBrackets, '(', ')');
                 Row["PatchFileName"] = PatchFileName;
                 Row["PatchFileNameShort"] = PatchFileNameNoBrackets;
-                string Status = "<a href=\"http://bob.apsim.info/files/" + PatchFileName + ".xml\">" + Row["Status"].ToString();
+                string Status = "<a href=\"http://bob.apsim.info/files/" + PatchFileName + ".xml\"> Win32:" + Row["Status"].ToString();
                 if (!Convert.IsDBNull(Row["NumDiffs"]) && Convert.ToInt32(Row["NumDiffs"]) > 0)
                     Status += " (" + Row["NumDiffs"].ToString() + ")";
                 Status += "</a>";
 
                 if (!Convert.IsDBNull(Row["LinuxStatus"]))
                 {
-                    Status += "<p><a href=\"http://bob.apsim.info/files/" + Row["LinuxDetailsFileName"] + "\"> LINUX:" + Row["LinuxStatus"].ToString();
+                    Status += "<p><a href=\"" + Row["LinuxDetailsFileName"] + "\"> x32:" + Row["LinuxStatus"].ToString();
                     if (!Convert.IsDBNull(Row["LinuxNumDiffs"]) && Convert.ToInt32(Row["LinuxNumDiffs"]) > 0)
                         Status += " (" + Row["LinuxNumDiffs"].ToString() + ")";
                     Status += "</a></p>";
@@ -48,10 +48,10 @@ namespace BobWeb
 
                 string Links = "";
                 if (!Convert.IsDBNull(Row["DiffsFileName"]))
-                    Links += " <a href=\"" + Row["DiffsFileName"] + "\">Diffs</a>";
+                    Links += " <a href=\"" + Row["DiffsFileName"] + "\">W32&nbsp;Diffs</a>";
 
                 if (!Convert.IsDBNull(Row["LINUXDiffsFileName"]))
-                    Links += " <a href=\"" + Row["LinuxDiffsFileName"] + "\">Diffs</a>";
+                    Links += " <a href=\"" + Row["LinuxDiffsFileName"] + "\">X32&nbsp;Diffs</a>";
 
                 if (!Convert.IsDBNull(Row["BinariesFileName"]))
                     Links += " <a href=\"" + Row["BinariesFileName"] + "\">Binaries</a>";
@@ -65,8 +65,8 @@ namespace BobWeb
                 if (!Convert.IsDBNull(Row["SetupFileName"]))
                 {
                     Links += " <a href=\"" + Row["SetupFileName"] + "\">WindowsInstallerFull</a>";
-                    Links += " <a href=\"http://bob.apsim.info/files/" + PatchFileName + ".binaries.Win32.exe\">WindowsSelfExtractingBinaries</a>";
-                    Links += " <a href=\"http://bob.apsim.info/files/" + PatchFileName + ".binaries.Linux.x\">LINUXSelfExtractingBinaries</a>";
+                    Links += " <a href=\"http://bob.apsim.info/files/" + PatchFileName + ".binaries.Win32.exe\">Win32SelfExtractingBinaries</a>";
+                    Links += " <a href=\"http://bob.apsim.info/files/" + PatchFileName + ".binaries.Linux.x\">LinuxSelfExtractingBinaries</a>";
                 }
                 Data.Columns["DetailsFileName"].MaxLength = 2000;
                 Row["DetailsFileName"] = Links;
