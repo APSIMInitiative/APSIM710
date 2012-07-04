@@ -11,21 +11,21 @@
 
 Version                = 7.5
 Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; RootDepth=deep; Sowing = AvgWindow
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                     "chickpea" = %apsim%\Model\plant.dll
-   Component                        "wheat" = %apsim%\Model\plant.dll
-   Component                      "sorghum" = %apsim%\Model\sorghum.dll
-   Component                      "tracker" = %apsim%\Model\tracker.dll
-   Component                       "sysbal" = %apsim%\Model\sysbal.dll
+   Component                     "chickpea" = %apsim%\Model\Plant.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                      "Sorghum" = %apsim%\Model\Sorghum.dll
+   Component                      "Tracker" = %apsim%\Model\Tracker.dll
+   Component                       "SysBal" = %apsim%\Model\SysBal.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -41,7 +41,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
      Simulation end date   = 31/12/2000
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.dd/mm/yyyy as date
         clock.year
@@ -69,7 +69,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
      Sparse data is not allowed
      INPUT File name: coonamble.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- init
@@ -433,7 +433,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
            Totals  214376.1 14784.6   951.3   118.9   400.0    10.0
           ---------------------------------------------------------
 
-------- tracker Initialisation ------------------------------------------------
+------- Tracker Initialisation ------------------------------------------------
      Tracker variables:
         maximum of wheat.yield on end_of_day from reported to now as wht_yield
         sum of wheat.ep on end_of_day from reported to now as wht_ep
@@ -482,9 +482,9 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
      Manager creating a new local real variable : fasw150 = 1.00000
      Manager creating a new local real variable : fasw170 = 1.00000
      Manager creating a new local real variable : fasw190 = 1.00000
-8 August 1970(Day of year=220), manager: 
+8 August 1970(Day of year=220), Manager: 
      Manager creating a new local real variable : wht_crop_num = 0.00000
-27 July 1971(Day of year=208), manager: 
+27 July 1971(Day of year=208), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 27 July 1971(Day of year=208), wheat: 
      Crop Sow
@@ -600,7 +600,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =         597.32 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.91 (%)    extractable sw =   32.89 (mm)
-3 December 1971(Day of year=337), manager: 
+3 December 1971(Day of year=337), Manager: 
      Manager creating a new local real variable : w_mat_day = 337.00000
      Manager sending message :- wheat harvest
 3 December 1971(Day of year=337), wheat: 
@@ -649,7 +649,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1178.3
                           N  (kg/ha) =                   0.00                   27.00
      
-28 June 1973(Day of year=179), manager: 
+28 June 1973(Day of year=179), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 28 June 1973(Day of year=179), wheat: 
      Crop Sow
@@ -764,7 +764,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =        1220.92 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.26 (%)    extractable sw =   80.64 (mm)
-13 November 1973(Day of year=317), manager: 
+13 November 1973(Day of year=317), Manager: 
      Manager sending message :- wheat harvest
 13 November 1973(Day of year=317), wheat: 
      
@@ -812,7 +812,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1617.3
                           N  (kg/ha) =                   0.00                   36.66
      
-21 May 1974(Day of year=141), manager: 
+21 May 1974(Day of year=141), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 21 May 1974(Day of year=141), chickpea: 
      Crop Sow
@@ -932,7 +932,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                      stover N conc =     1.85 (%)    extractable sw =   23.00 (mm)
 17 November 1974(Day of year=321), chickpea: 
       stage 11.0 end_crop
-18 November 1974(Day of year=322), manager: 
+18 November 1974(Day of year=322), Manager: 
      Manager creating a new local real variable : c_mat_day = 322.00000
      Manager sending message :- chickpea harvest
 18 November 1974(Day of year=322), chickpea: 
@@ -976,7 +976,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                   864.3
                           N  (kg/ha) =                   0.00                   13.27
      
-24 June 1975(Day of year=175), manager: 
+24 June 1975(Day of year=175), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 24 June 1975(Day of year=175), wheat: 
      Crop Sow
@@ -1091,7 +1091,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =         604.50 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.82 (%)    extractable sw =   10.23 (mm)
-15 November 1975(Day of year=319), manager: 
+15 November 1975(Day of year=319), Manager: 
      Manager sending message :- wheat harvest
 15 November 1975(Day of year=319), wheat: 
      
@@ -1139,7 +1139,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1171.7
                           N  (kg/ha) =                   0.00                   27.09
      
-23 June 1976(Day of year=175), manager: 
+23 June 1976(Day of year=175), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 23 June 1976(Day of year=175), chickpea: 
      Crop Sow
@@ -1259,7 +1259,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                      stover N conc =     1.82 (%)    extractable sw =   15.30 (mm)
 29 November 1976(Day of year=334), chickpea: 
       stage 11.0 end_crop
-30 November 1976(Day of year=335), manager: 
+30 November 1976(Day of year=335), Manager: 
      Manager sending message :- chickpea harvest
 30 November 1976(Day of year=335), chickpea: 
      
@@ -1302,7 +1302,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                   994.6
                           N  (kg/ha) =                   0.00                   15.39
      
-21 May 1977(Day of year=141), manager: 
+21 May 1977(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 21 May 1977(Day of year=141), wheat: 
      Crop Sow
@@ -1417,7 +1417,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =         626.03 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.60 (%)    extractable sw =   10.51 (mm)
-5 November 1977(Day of year=309), manager: 
+5 November 1977(Day of year=309), Manager: 
      Manager sending message :- wheat harvest
 5 November 1977(Day of year=309), wheat: 
      
@@ -1465,7 +1465,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1463.8
                           N  (kg/ha) =                   0.00                   34.20
      
-23 May 1978(Day of year=143), manager: 
+23 May 1978(Day of year=143), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 23 May 1978(Day of year=143), chickpea: 
      Crop Sow
@@ -1585,7 +1585,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                      stover N conc =     1.79 (%)    extractable sw =   22.08 (mm)
 15 November 1978(Day of year=319), chickpea: 
       stage 11.0 end_crop
-16 November 1978(Day of year=320), manager: 
+16 November 1978(Day of year=320), Manager: 
      Manager sending message :- chickpea harvest
 16 November 1978(Day of year=320), chickpea: 
      
@@ -1628,7 +1628,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                   736.2
                           N  (kg/ha) =                   0.00                   11.23
      
-23 June 1979(Day of year=174), manager: 
+23 June 1979(Day of year=174), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 23 June 1979(Day of year=174), wheat: 
      Crop Sow
@@ -1743,7 +1743,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =         603.95 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.65 (%)    extractable sw =   10.53 (mm)
-15 November 1979(Day of year=319), manager: 
+15 November 1979(Day of year=319), Manager: 
      Manager sending message :- wheat harvest
 15 November 1979(Day of year=319), wheat: 
      
@@ -1791,7 +1791,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1232.4
                           N  (kg/ha) =                   0.00                   28.21
      
-20 May 1980(Day of year=141), manager: 
+20 May 1980(Day of year=141), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 20 May 1980(Day of year=141), chickpea: 
      Crop Sow
@@ -1911,7 +1911,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                      stover N conc =     1.74 (%)    extractable sw =   10.57 (mm)
 5 November 1980(Day of year=310), chickpea: 
       stage 11.0 end_crop
-6 November 1980(Day of year=311), manager: 
+6 November 1980(Day of year=311), Manager: 
      Manager sending message :- chickpea harvest
 6 November 1980(Day of year=311), chickpea: 
      
@@ -1954,7 +1954,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                   744.9
                           N  (kg/ha) =                   0.00                   11.77
      
-30 May 1981(Day of year=150), manager: 
+30 May 1981(Day of year=150), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 30 May 1981(Day of year=150), wheat: 
      Crop Sow
@@ -2069,7 +2069,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =         797.62 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     3.61 (%)    extractable sw =   42.40 (mm)
-9 November 1981(Day of year=313), manager: 
+9 November 1981(Day of year=313), Manager: 
      Manager sending message :- wheat harvest
 9 November 1981(Day of year=313), wheat: 
      
@@ -2117,7 +2117,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1707.7
                           N  (kg/ha) =                   0.00                   40.88
      
-21 May 1983(Day of year=141), manager: 
+21 May 1983(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 21 May 1983(Day of year=141), wheat: 
      Crop Sow
@@ -2226,7 +2226,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =        1447.04 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.73 (%)    extractable sw =   43.32 (mm)
-4 November 1983(Day of year=308), manager: 
+4 November 1983(Day of year=308), Manager: 
      Manager sending message :- wheat harvest
 4 November 1983(Day of year=308), wheat: 
      
@@ -2274,7 +2274,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  2385.7
                           N  (kg/ha) =                   0.00                   54.96
      
-27 July 1984(Day of year=209), manager: 
+27 July 1984(Day of year=209), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 27 July 1984(Day of year=209), chickpea: 
      Crop Sow
@@ -2394,7 +2394,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                      stover N conc =     1.77 (%)    extractable sw =   26.75 (mm)
 10 December 1984(Day of year=345), chickpea: 
       stage 11.0 end_crop
-11 December 1984(Day of year=346), manager: 
+11 December 1984(Day of year=346), Manager: 
      Manager sending message :- chickpea harvest
 11 December 1984(Day of year=346), chickpea: 
      
@@ -2437,7 +2437,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                   902.2
                           N  (kg/ha) =                   0.00                   13.78
      
-20 May 1988(Day of year=141), manager: 
+20 May 1988(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1988(Day of year=141), wheat: 
      Crop Sow
@@ -2546,7 +2546,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =         705.83 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     2.38 (%)    extractable sw =    5.70 (mm)
-31 October 1988(Day of year=305), manager: 
+31 October 1988(Day of year=305), Manager: 
      Manager sending message :- wheat harvest
 31 October 1988(Day of year=305), wheat: 
      
@@ -2594,7 +2594,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1489.1
                           N  (kg/ha) =                   0.00                   34.59
      
-20 May 1989(Day of year=140), manager: 
+20 May 1989(Day of year=140), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 20 May 1989(Day of year=140), chickpea: 
      Crop Sow
@@ -2714,7 +2714,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                      stover N conc =     1.79 (%)    extractable sw =   14.18 (mm)
 10 November 1989(Day of year=314), chickpea: 
       stage 11.0 end_crop
-11 November 1989(Day of year=315), manager: 
+11 November 1989(Day of year=315), Manager: 
      Manager sending message :- chickpea harvest
 11 November 1989(Day of year=315), chickpea: 
      
@@ -2757,7 +2757,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                   779.3
                           N  (kg/ha) =                   0.00                   11.93
      
-21 May 1990(Day of year=141), manager: 
+21 May 1990(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 21 May 1990(Day of year=141), wheat: 
      Crop Sow
@@ -2872,7 +2872,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =         894.09 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     2.07 (%)    extractable sw =    9.79 (mm)
-8 November 1990(Day of year=312), manager: 
+8 November 1990(Day of year=312), Manager: 
      Manager sending message :- wheat harvest
 8 November 1990(Day of year=312), wheat: 
      
@@ -2920,7 +2920,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1847.9
                           N  (kg/ha) =                   0.00                   43.40
      
-6 June 1993(Day of year=157), manager: 
+6 June 1993(Day of year=157), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 6 June 1993(Day of year=157), wheat: 
      Crop Sow
@@ -3035,7 +3035,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =        1224.22 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.26 (%)    extractable sw =   25.44 (mm)
-11 November 1993(Day of year=315), manager: 
+11 November 1993(Day of year=315), Manager: 
      Manager sending message :- wheat harvest
 11 November 1993(Day of year=315), wheat: 
      
@@ -3083,7 +3083,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1916.3
                           N  (kg/ha) =                   0.00                   44.52
      
-22 May 1995(Day of year=142), manager: 
+22 May 1995(Day of year=142), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 22 May 1995(Day of year=142), wheat: 
      Crop Sow
@@ -3198,7 +3198,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =         642.83 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.90 (%)    extractable sw =   12.01 (mm)
-28 October 1995(Day of year=301), manager: 
+28 October 1995(Day of year=301), Manager: 
      Manager sending message :- wheat harvest
 28 October 1995(Day of year=301), wheat: 
      
@@ -3246,7 +3246,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1345.1
                           N  (kg/ha) =                   0.00                   31.24
      
-9 July 1996(Day of year=191), manager: 
+9 July 1996(Day of year=191), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 9 July 1996(Day of year=191), chickpea: 
      Crop Sow
@@ -3366,7 +3366,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                      stover N conc =     2.48 (%)    extractable sw =    4.12 (mm)
 3 December 1996(Day of year=338), chickpea: 
       stage 11.0 end_crop
-4 December 1996(Day of year=339), manager: 
+4 December 1996(Day of year=339), Manager: 
      Manager sending message :- chickpea harvest
 4 December 1996(Day of year=339), chickpea: 
      
@@ -3409,7 +3409,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                   523.9
                           N  (kg/ha) =                   0.00                    8.62
      
-21 May 1997(Day of year=141), manager: 
+21 May 1997(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 21 May 1997(Day of year=141), wheat: 
      Crop Sow
@@ -3518,7 +3518,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =         306.64 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     4.07 (%)    extractable sw =   57.99 (mm)
-5 November 1997(Day of year=309), manager: 
+5 November 1997(Day of year=309), Manager: 
      Manager sending message :- wheat harvest
 5 November 1997(Day of year=309), wheat: 
      
@@ -3566,7 +3566,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                   660.4
                           N  (kg/ha) =                   0.00                   15.81
      
-21 May 1998(Day of year=141), manager: 
+21 May 1998(Day of year=141), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 21 May 1998(Day of year=141), chickpea: 
      Crop Sow
@@ -3686,7 +3686,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                      stover N conc =     1.84 (%)    extractable sw =   40.45 (mm)
 8 November 1998(Day of year=312), chickpea: 
       stage 11.0 end_crop
-9 November 1998(Day of year=313), manager: 
+9 November 1998(Day of year=313), Manager: 
      Manager sending message :- chickpea harvest
 9 November 1998(Day of year=313), chickpea: 
      
@@ -3729,7 +3729,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                   767.1
                           N  (kg/ha) =                   0.00                   11.75
      
-12 June 1999(Day of year=163), manager: 
+12 June 1999(Day of year=163), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 12 June 1999(Day of year=163), wheat: 
      Crop Sow
@@ -3844,7 +3844,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =         660.50 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.94 (%)    extractable sw =   35.70 (mm)
-6 November 1999(Day of year=310), manager: 
+6 November 1999(Day of year=310), Manager: 
      Manager sending message :- wheat harvest
 6 November 1999(Day of year=310), wheat: 
      
@@ -3892,7 +3892,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1275.5
                           N  (kg/ha) =                   0.00                   29.30
      
-27 May 2000(Day of year=148), manager: 
+27 May 2000(Day of year=148), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 27 May 2000(Day of year=148), chickpea: 
      Crop Sow
@@ -4012,7 +4012,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                      stover N conc =     1.80 (%)    extractable sw =   40.32 (mm)
 9 November 2000(Day of year=314), chickpea: 
       stage 11.0 end_crop
-10 November 2000(Day of year=315), manager: 
+10 November 2000(Day of year=315), Manager: 
      Manager sending message :- chickpea harvest
 10 November 2000(Day of year=315), chickpea: 
      
@@ -4055,5 +4055,5 @@ Title                  = site=coonamble; soil=cd2; treatment=w3; Nrate=200; Root
                           DM (kg/ha) =                   0.0                   688.5
                           N  (kg/ha) =                   0.00                   10.50
      
-31 December 2000(Day of year=366), clock: 
+31 December 2000(Day of year=366), Clock: 
      Simulation is terminating due to end criteria being met.

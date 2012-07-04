@@ -11,19 +11,19 @@
 
 Version                = 7.5
 Title                  = Continuous winter wheat at Xifeng with low N
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                        "wheat" = %apsim%\Model\plant.dll
-   Component                     "tracker1" = %apsim%\Model\tracker.dll
-   Component                       "sysbal" = %apsim%\Model\sysbal.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                     "tracker1" = %apsim%\Model\Tracker.dll
+   Component                       "SysBal" = %apsim%\Model\SysBal.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -39,7 +39,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Simulation end date   = 30/12/2003
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.day
         clock.year
@@ -78,9 +78,9 @@ Title                  = Continuous winter wheat at Xifeng with low N
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: xifeng.met
+     INPUT File name: Xifeng.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -275,7 +275,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
         sum of SoilWat.eo on end_of_day from report.reported to now as sum@soilwat2_eo
 ------- Start of simulation  --------------------------------------------------
      Manager creating a new local real variable : flag = 1.00000
-21 September 1961(Day of year=264), manager: 
+21 September 1961(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1961(Day of year=264), SurfaceOM: 
      
@@ -351,7 +351,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
                                          added at depth   50.00 (layer   1)
 22 September 1961(Day of year=265), wheat: 
       stage 2.0 germination
-30 September 1961(Day of year=273), manager: 
+30 September 1961(Day of year=273), Manager: 
      Manager creating a new local real variable : event = 0.00000
 1 October 1961(Day of year=274), wheat: 
       stage 3.0 emergence
@@ -361,7 +361,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           2.07 (g/m^2)   lai          =   0.084 (m^2/m^2)
                      stover N conc =     5.84 (%)    extractable sw =   61.53 (mm)
-31 March 1962(Day of year=90), manager: 
+31 March 1962(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 31 March 1962(Day of year=90), wheat: 
       stage 5.0 floral_initiation
@@ -387,7 +387,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         451.94 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.33 (%)    extractable sw =  162.01 (mm)
-30 June 1962(Day of year=181), manager: 
+30 June 1962(Day of year=181), Manager: 
      Manager sending message :- wheat harvest
 30 June 1962(Day of year=181), wheat: 
      
@@ -438,7 +438,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1962(Day of year=264), manager: 
+21 September 1962(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1962(Day of year=264), SurfaceOM: 
      
@@ -522,7 +522,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           2.15 (g/m^2)   lai          =   0.085 (m^2/m^2)
                      stover N conc =     5.84 (%)    extractable sw =   43.93 (mm)
-31 March 1963(Day of year=90), manager: 
+31 March 1963(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 1 April 1963(Day of year=91), wheat: 
       stage 5.0 floral_initiation
@@ -548,7 +548,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         664.86 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =  255.95 (mm)
-6 July 1963(Day of year=187), manager: 
+6 July 1963(Day of year=187), Manager: 
      Manager sending message :- wheat harvest
 6 July 1963(Day of year=187), wheat: 
      
@@ -599,7 +599,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1963(Day of year=264), manager: 
+21 September 1963(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1963(Day of year=264), SurfaceOM: 
      
@@ -683,7 +683,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           2.72 (g/m^2)   lai          =   0.094 (m^2/m^2)
                      stover N conc =     5.83 (%)    extractable sw =   38.89 (mm)
-30 March 1964(Day of year=90), manager: 
+30 March 1964(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 2 April 1964(Day of year=93), wheat: 
       stage 5.0 floral_initiation
@@ -709,7 +709,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         610.19 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =  259.08 (mm)
-7 July 1964(Day of year=189), manager: 
+7 July 1964(Day of year=189), Manager: 
      Manager sending message :- wheat harvest
 7 July 1964(Day of year=189), wheat: 
      
@@ -760,7 +760,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-20 September 1964(Day of year=264), manager: 
+20 September 1964(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 20 September 1964(Day of year=264), SurfaceOM: 
      
@@ -844,7 +844,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           2.65 (g/m^2)   lai          =   0.093 (m^2/m^2)
                      stover N conc =     5.83 (%)    extractable sw =   42.71 (mm)
-31 March 1965(Day of year=90), manager: 
+31 March 1965(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 2 April 1965(Day of year=92), wheat: 
       stage 5.0 floral_initiation
@@ -870,7 +870,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         541.20 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.33 (%)    extractable sw =  220.57 (mm)
-3 July 1965(Day of year=184), manager: 
+3 July 1965(Day of year=184), Manager: 
      Manager sending message :- wheat harvest
 3 July 1965(Day of year=184), wheat: 
      
@@ -921,7 +921,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1965(Day of year=264), manager: 
+21 September 1965(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1965(Day of year=264), SurfaceOM: 
      
@@ -1009,7 +1009,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         252.00 (g/m^2)   lai          =   3.286 (m^2/m^2)
                      stover N conc =     1.76 (%)    extractable sw =   93.15 (mm)
-31 March 1966(Day of year=90), manager: 
+31 March 1966(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 5 May 1966(Day of year=125), wheat: 
       stage 6.0 flowering
@@ -1031,7 +1031,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         823.62 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.29 (%)    extractable sw =  165.59 (mm)
-21 June 1966(Day of year=172), manager: 
+21 June 1966(Day of year=172), Manager: 
      Manager sending message :- wheat harvest
 21 June 1966(Day of year=172), wheat: 
      
@@ -1082,7 +1082,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1966(Day of year=264), manager: 
+21 September 1966(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1966(Day of year=264), SurfaceOM: 
      
@@ -1166,7 +1166,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           2.80 (g/m^2)   lai          =   0.095 (m^2/m^2)
                      stover N conc =     5.82 (%)    extractable sw =   39.16 (mm)
-31 March 1967(Day of year=90), manager: 
+31 March 1967(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 5 April 1967(Day of year=95), wheat: 
       stage 5.0 floral_initiation
@@ -1192,7 +1192,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         556.75 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =  257.47 (mm)
-6 July 1967(Day of year=187), manager: 
+6 July 1967(Day of year=187), Manager: 
      Manager sending message :- wheat harvest
 6 July 1967(Day of year=187), wheat: 
      
@@ -1243,7 +1243,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1967(Day of year=264), manager: 
+21 September 1967(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1967(Day of year=264), SurfaceOM: 
      
@@ -1327,7 +1327,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           2.40 (g/m^2)   lai          =   0.089 (m^2/m^2)
                      stover N conc =     5.83 (%)    extractable sw =   41.07 (mm)
-30 March 1968(Day of year=90), manager: 
+30 March 1968(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 7 April 1968(Day of year=98), wheat: 
       stage 5.0 floral_initiation
@@ -1353,7 +1353,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         717.13 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =  225.42 (mm)
-6 July 1968(Day of year=188), manager: 
+6 July 1968(Day of year=188), Manager: 
      Manager sending message :- wheat harvest
 6 July 1968(Day of year=188), wheat: 
      
@@ -1404,7 +1404,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-20 September 1968(Day of year=264), manager: 
+20 September 1968(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 20 September 1968(Day of year=264), SurfaceOM: 
      
@@ -1492,7 +1492,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         155.78 (g/m^2)   lai          =   2.030 (m^2/m^2)
                      stover N conc =     1.71 (%)    extractable sw =  109.16 (mm)
-31 March 1969(Day of year=90), manager: 
+31 March 1969(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 16 May 1969(Day of year=136), wheat: 
       stage 6.0 flowering
@@ -1514,7 +1514,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         630.60 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.33 (%)    extractable sw =  212.52 (mm)
-28 June 1969(Day of year=179), manager: 
+28 June 1969(Day of year=179), Manager: 
      Manager sending message :- wheat harvest
 28 June 1969(Day of year=179), wheat: 
      
@@ -1565,7 +1565,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1969(Day of year=264), manager: 
+21 September 1969(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1969(Day of year=264), SurfaceOM: 
      
@@ -1649,7 +1649,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           2.14 (g/m^2)   lai          =   0.085 (m^2/m^2)
                      stover N conc =     5.84 (%)    extractable sw =   43.74 (mm)
-31 March 1970(Day of year=90), manager: 
+31 March 1970(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 8 April 1970(Day of year=98), wheat: 
       stage 5.0 floral_initiation
@@ -1675,7 +1675,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         844.81 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =  227.64 (mm)
-6 July 1970(Day of year=187), manager: 
+6 July 1970(Day of year=187), Manager: 
      Manager sending message :- wheat harvest
 6 July 1970(Day of year=187), wheat: 
      
@@ -1726,7 +1726,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1970(Day of year=264), manager: 
+21 September 1970(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1970(Day of year=264), SurfaceOM: 
      
@@ -1810,7 +1810,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           2.77 (g/m^2)   lai          =   0.095 (m^2/m^2)
                      stover N conc =     5.83 (%)    extractable sw =   38.51 (mm)
-31 March 1971(Day of year=90), manager: 
+31 March 1971(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 31 March 1971(Day of year=90), wheat: 
       stage 5.0 floral_initiation
@@ -1836,7 +1836,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         662.93 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =  218.89 (mm)
-3 July 1971(Day of year=184), manager: 
+3 July 1971(Day of year=184), Manager: 
      Manager sending message :- wheat harvest
 3 July 1971(Day of year=184), wheat: 
      
@@ -1887,7 +1887,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1971(Day of year=264), manager: 
+21 September 1971(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1971(Day of year=264), SurfaceOM: 
      
@@ -1971,7 +1971,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           2.26 (g/m^2)   lai          =   0.087 (m^2/m^2)
                      stover N conc =     5.84 (%)    extractable sw =   40.37 (mm)
-30 March 1972(Day of year=90), manager: 
+30 March 1972(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 2 April 1972(Day of year=93), wheat: 
       stage 5.0 floral_initiation
@@ -1997,7 +1997,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         833.84 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =  205.37 (mm)
-29 June 1972(Day of year=181), manager: 
+29 June 1972(Day of year=181), Manager: 
      Manager sending message :- wheat harvest
 29 June 1972(Day of year=181), wheat: 
      
@@ -2048,7 +2048,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-20 September 1972(Day of year=264), manager: 
+20 September 1972(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 20 September 1972(Day of year=264), SurfaceOM: 
      
@@ -2136,7 +2136,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         260.57 (g/m^2)   lai          =   3.184 (m^2/m^2)
                      stover N conc =     1.66 (%)    extractable sw =  110.13 (mm)
-31 March 1973(Day of year=90), manager: 
+31 March 1973(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 7 May 1973(Day of year=127), wheat: 
       stage 6.0 flowering
@@ -2158,7 +2158,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         795.72 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =  202.46 (mm)
-23 June 1973(Day of year=174), manager: 
+23 June 1973(Day of year=174), Manager: 
      Manager sending message :- wheat harvest
 23 June 1973(Day of year=174), wheat: 
      
@@ -2209,7 +2209,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1973(Day of year=264), manager: 
+21 September 1973(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1973(Day of year=264), SurfaceOM: 
      
@@ -2293,7 +2293,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           2.16 (g/m^2)   lai          =   0.085 (m^2/m^2)
                      stover N conc =     5.84 (%)    extractable sw =   46.49 (mm)
-31 March 1974(Day of year=90), manager: 
+31 March 1974(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 4 April 1974(Day of year=94), wheat: 
       stage 5.0 floral_initiation
@@ -2319,7 +2319,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         699.10 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =  204.72 (mm)
-1 July 1974(Day of year=182), manager: 
+1 July 1974(Day of year=182), Manager: 
      Manager sending message :- wheat harvest
 1 July 1974(Day of year=182), wheat: 
      
@@ -2370,7 +2370,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1974(Day of year=264), manager: 
+21 September 1974(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1974(Day of year=264), SurfaceOM: 
      
@@ -2454,7 +2454,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           2.17 (g/m^2)   lai          =   0.085 (m^2/m^2)
                      stover N conc =     5.84 (%)    extractable sw =   56.39 (mm)
-31 March 1975(Day of year=90), manager: 
+31 March 1975(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 5 April 1975(Day of year=95), wheat: 
       stage 5.0 floral_initiation
@@ -2480,7 +2480,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         752.05 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =  224.01 (mm)
-8 July 1975(Day of year=189), manager: 
+8 July 1975(Day of year=189), Manager: 
      Manager sending message :- wheat harvest
 8 July 1975(Day of year=189), wheat: 
      
@@ -2531,7 +2531,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1975(Day of year=264), manager: 
+21 September 1975(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1975(Day of year=264), SurfaceOM: 
      
@@ -2615,7 +2615,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           2.16 (g/m^2)   lai          =   0.085 (m^2/m^2)
                      stover N conc =     5.84 (%)    extractable sw =   51.54 (mm)
-30 March 1976(Day of year=90), manager: 
+30 March 1976(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 14 April 1976(Day of year=105), wheat: 
       stage 5.0 floral_initiation
@@ -2641,7 +2641,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         485.54 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.35 (%)    extractable sw =  224.73 (mm)
-11 July 1976(Day of year=193), manager: 
+11 July 1976(Day of year=193), Manager: 
      Manager sending message :- wheat harvest
 11 July 1976(Day of year=193), wheat: 
      
@@ -2692,7 +2692,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-20 September 1976(Day of year=264), manager: 
+20 September 1976(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 20 September 1976(Day of year=264), SurfaceOM: 
      
@@ -2780,7 +2780,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         204.76 (g/m^2)   lai          =   2.313 (m^2/m^2)
                      stover N conc =     1.61 (%)    extractable sw =   87.52 (mm)
-31 March 1977(Day of year=90), manager: 
+31 March 1977(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 17 May 1977(Day of year=137), wheat: 
       stage 6.0 flowering
@@ -2802,7 +2802,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         700.78 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =  199.37 (mm)
-30 June 1977(Day of year=181), manager: 
+30 June 1977(Day of year=181), Manager: 
      Manager sending message :- wheat harvest
 30 June 1977(Day of year=181), wheat: 
      
@@ -2853,7 +2853,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1977(Day of year=264), manager: 
+21 September 1977(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1977(Day of year=264), SurfaceOM: 
      
@@ -2941,7 +2941,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         266.92 (g/m^2)   lai          =   2.884 (m^2/m^2)
                      stover N conc =     1.53 (%)    extractable sw =  122.17 (mm)
-31 March 1978(Day of year=90), manager: 
+31 March 1978(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 9 May 1978(Day of year=129), wheat: 
       stage 6.0 flowering
@@ -2963,7 +2963,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         764.70 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =  243.63 (mm)
-23 June 1978(Day of year=174), manager: 
+23 June 1978(Day of year=174), Manager: 
      Manager sending message :- wheat harvest
 23 June 1978(Day of year=174), wheat: 
      
@@ -3014,7 +3014,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1978(Day of year=264), manager: 
+21 September 1978(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1978(Day of year=264), SurfaceOM: 
      
@@ -3102,7 +3102,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         195.10 (g/m^2)   lai          =   2.443 (m^2/m^2)
                      stover N conc =     1.71 (%)    extractable sw =   96.84 (mm)
-31 March 1979(Day of year=90), manager: 
+31 March 1979(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 10 May 1979(Day of year=130), wheat: 
       stage 6.0 flowering
@@ -3124,7 +3124,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         693.01 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =  182.76 (mm)
-25 June 1979(Day of year=176), manager: 
+25 June 1979(Day of year=176), Manager: 
      Manager sending message :- wheat harvest
 25 June 1979(Day of year=176), wheat: 
      
@@ -3175,7 +3175,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1979(Day of year=264), manager: 
+21 September 1979(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1979(Day of year=264), SurfaceOM: 
      
@@ -3263,7 +3263,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         234.33 (g/m^2)   lai          =   2.961 (m^2/m^2)
                      stover N conc =     1.75 (%)    extractable sw =   83.95 (mm)
-30 March 1980(Day of year=90), manager: 
+30 March 1980(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 13 May 1980(Day of year=134), wheat: 
       stage 6.0 flowering
@@ -3285,7 +3285,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         779.85 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =  183.52 (mm)
-27 June 1980(Day of year=179), manager: 
+27 June 1980(Day of year=179), Manager: 
      Manager sending message :- wheat harvest
 27 June 1980(Day of year=179), wheat: 
      
@@ -3336,7 +3336,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-20 September 1980(Day of year=264), manager: 
+20 September 1980(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 20 September 1980(Day of year=264), SurfaceOM: 
      
@@ -3424,7 +3424,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         219.36 (g/m^2)   lai          =   2.845 (m^2/m^2)
                      stover N conc =     1.72 (%)    extractable sw =   98.30 (mm)
-31 March 1981(Day of year=90), manager: 
+31 March 1981(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 7 May 1981(Day of year=127), wheat: 
       stage 6.0 flowering
@@ -3446,7 +3446,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         759.47 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.29 (%)    extractable sw =  187.66 (mm)
-22 June 1981(Day of year=173), manager: 
+22 June 1981(Day of year=173), Manager: 
      Manager sending message :- wheat harvest
 22 June 1981(Day of year=173), wheat: 
      
@@ -3497,7 +3497,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1981(Day of year=264), manager: 
+21 September 1981(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1981(Day of year=264), SurfaceOM: 
      
@@ -3581,7 +3581,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           2.40 (g/m^2)   lai          =   0.089 (m^2/m^2)
                      stover N conc =     5.83 (%)    extractable sw =   44.73 (mm)
-31 March 1982(Day of year=90), manager: 
+31 March 1982(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 10 April 1982(Day of year=100), wheat: 
       stage 5.0 floral_initiation
@@ -3607,7 +3607,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         595.46 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =  173.35 (mm)
-4 July 1982(Day of year=185), manager: 
+4 July 1982(Day of year=185), Manager: 
      Manager sending message :- wheat harvest
 4 July 1982(Day of year=185), wheat: 
      
@@ -3658,7 +3658,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1982(Day of year=264), manager: 
+21 September 1982(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1982(Day of year=264), SurfaceOM: 
      
@@ -3742,7 +3742,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           2.63 (g/m^2)   lai          =   0.093 (m^2/m^2)
                      stover N conc =     5.83 (%)    extractable sw =   40.32 (mm)
-31 March 1983(Day of year=90), manager: 
+31 March 1983(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 6 April 1983(Day of year=96), wheat: 
       stage 5.0 floral_initiation
@@ -3768,7 +3768,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         696.00 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =  259.53 (mm)
-9 July 1983(Day of year=190), manager: 
+9 July 1983(Day of year=190), Manager: 
      Manager sending message :- wheat harvest
 9 July 1983(Day of year=190), wheat: 
      
@@ -3819,7 +3819,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1983(Day of year=264), manager: 
+21 September 1983(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1983(Day of year=264), SurfaceOM: 
      
@@ -3907,7 +3907,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         176.09 (g/m^2)   lai          =   2.268 (m^2/m^2)
                      stover N conc =     1.65 (%)    extractable sw =   95.59 (mm)
-30 March 1984(Day of year=90), manager: 
+30 March 1984(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 14 May 1984(Day of year=135), wheat: 
       stage 6.0 flowering
@@ -3929,7 +3929,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         630.39 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =  264.86 (mm)
-1 July 1984(Day of year=183), manager: 
+1 July 1984(Day of year=183), Manager: 
      Manager sending message :- wheat harvest
 1 July 1984(Day of year=183), wheat: 
      
@@ -3980,7 +3980,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-20 September 1984(Day of year=264), manager: 
+20 September 1984(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 20 September 1984(Day of year=264), SurfaceOM: 
      
@@ -4064,7 +4064,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           2.13 (g/m^2)   lai          =   0.085 (m^2/m^2)
                      stover N conc =     5.84 (%)    extractable sw =   41.81 (mm)
-31 March 1985(Day of year=90), manager: 
+31 March 1985(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 5 April 1985(Day of year=95), wheat: 
       stage 5.0 floral_initiation
@@ -4090,7 +4090,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         663.31 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =  273.43 (mm)
-2 July 1985(Day of year=183), manager: 
+2 July 1985(Day of year=183), Manager: 
      Manager sending message :- wheat harvest
 2 July 1985(Day of year=183), wheat: 
      
@@ -4141,7 +4141,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1985(Day of year=264), manager: 
+21 September 1985(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1985(Day of year=264), SurfaceOM: 
      
@@ -4225,7 +4225,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           2.70 (g/m^2)   lai          =   0.094 (m^2/m^2)
                      stover N conc =     5.83 (%)    extractable sw =   38.22 (mm)
-31 March 1986(Day of year=90), manager: 
+31 March 1986(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 3 April 1986(Day of year=93), wheat: 
       stage 5.0 floral_initiation
@@ -4251,7 +4251,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         614.45 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =  221.64 (mm)
-1 July 1986(Day of year=182), manager: 
+1 July 1986(Day of year=182), Manager: 
      Manager sending message :- wheat harvest
 1 July 1986(Day of year=182), wheat: 
      
@@ -4302,7 +4302,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1986(Day of year=264), manager: 
+21 September 1986(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1986(Day of year=264), SurfaceOM: 
      
@@ -4390,7 +4390,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         256.42 (g/m^2)   lai          =   3.106 (m^2/m^2)
                      stover N conc =     1.67 (%)    extractable sw =  105.31 (mm)
-31 March 1987(Day of year=90), manager: 
+31 March 1987(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 13 May 1987(Day of year=133), wheat: 
       stage 6.0 flowering
@@ -4412,7 +4412,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         798.08 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =  225.34 (mm)
-28 June 1987(Day of year=179), manager: 
+28 June 1987(Day of year=179), Manager: 
      Manager sending message :- wheat harvest
 28 June 1987(Day of year=179), wheat: 
      
@@ -4463,7 +4463,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1987(Day of year=264), manager: 
+21 September 1987(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1987(Day of year=264), SurfaceOM: 
      
@@ -4547,7 +4547,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           2.80 (g/m^2)   lai          =   0.096 (m^2/m^2)
                      stover N conc =     5.82 (%)    extractable sw =   37.52 (mm)
-30 March 1988(Day of year=90), manager: 
+30 March 1988(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 4 April 1988(Day of year=95), wheat: 
       stage 5.0 floral_initiation
@@ -4573,7 +4573,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         816.02 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.29 (%)    extractable sw =  264.99 (mm)
-1 July 1988(Day of year=183), manager: 
+1 July 1988(Day of year=183), Manager: 
      Manager sending message :- wheat harvest
 1 July 1988(Day of year=183), wheat: 
      
@@ -4624,7 +4624,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-20 September 1988(Day of year=264), manager: 
+20 September 1988(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 20 September 1988(Day of year=264), SurfaceOM: 
      
@@ -4708,7 +4708,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           2.18 (g/m^2)   lai          =   0.085 (m^2/m^2)
                      stover N conc =     5.84 (%)    extractable sw =   44.31 (mm)
-31 March 1989(Day of year=90), manager: 
+31 March 1989(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 2 April 1989(Day of year=92), wheat: 
       stage 5.0 floral_initiation
@@ -4734,7 +4734,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         621.39 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =  246.18 (mm)
-4 July 1989(Day of year=185), manager: 
+4 July 1989(Day of year=185), Manager: 
      Manager sending message :- wheat harvest
 4 July 1989(Day of year=185), wheat: 
      
@@ -4785,7 +4785,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1989(Day of year=264), manager: 
+21 September 1989(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1989(Day of year=264), SurfaceOM: 
      
@@ -4873,7 +4873,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         220.61 (g/m^2)   lai          =   2.702 (m^2/m^2)
                      stover N conc =     1.69 (%)    extractable sw =  123.11 (mm)
-31 March 1990(Day of year=90), manager: 
+31 March 1990(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 18 May 1990(Day of year=138), wheat: 
       stage 6.0 flowering
@@ -4895,7 +4895,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         745.37 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =  298.55 (mm)
-1 July 1990(Day of year=182), manager: 
+1 July 1990(Day of year=182), Manager: 
      Manager sending message :- wheat harvest
 1 July 1990(Day of year=182), wheat: 
      
@@ -4946,7 +4946,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1990(Day of year=264), manager: 
+21 September 1990(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1990(Day of year=264), SurfaceOM: 
      
@@ -5034,7 +5034,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         175.10 (g/m^2)   lai          =   2.336 (m^2/m^2)
                      stover N conc =     1.76 (%)    extractable sw =  118.32 (mm)
-31 March 1991(Day of year=90), manager: 
+31 March 1991(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 14 May 1991(Day of year=134), wheat: 
       stage 6.0 flowering
@@ -5056,7 +5056,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         691.22 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =  257.62 (mm)
-29 June 1991(Day of year=180), manager: 
+29 June 1991(Day of year=180), Manager: 
      Manager sending message :- wheat harvest
 29 June 1991(Day of year=180), wheat: 
      
@@ -5107,7 +5107,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1991(Day of year=264), manager: 
+21 September 1991(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1991(Day of year=264), SurfaceOM: 
      
@@ -5195,7 +5195,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         253.69 (g/m^2)   lai          =   3.131 (m^2/m^2)
                      stover N conc =     1.70 (%)    extractable sw =  118.17 (mm)
-30 March 1992(Day of year=90), manager: 
+30 March 1992(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 11 May 1992(Day of year=132), wheat: 
       stage 6.0 flowering
@@ -5217,7 +5217,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         786.96 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =  234.77 (mm)
-27 June 1992(Day of year=179), manager: 
+27 June 1992(Day of year=179), Manager: 
      Manager sending message :- wheat harvest
 27 June 1992(Day of year=179), wheat: 
      
@@ -5268,7 +5268,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-20 September 1992(Day of year=264), manager: 
+20 September 1992(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 20 September 1992(Day of year=264), SurfaceOM: 
      
@@ -5356,7 +5356,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         173.38 (g/m^2)   lai          =   1.963 (m^2/m^2)
                      stover N conc =     1.60 (%)    extractable sw =  124.41 (mm)
-31 March 1993(Day of year=90), manager: 
+31 March 1993(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 19 May 1993(Day of year=139), wheat: 
       stage 6.0 flowering
@@ -5378,7 +5378,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         594.74 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =  203.64 (mm)
-2 July 1993(Day of year=183), manager: 
+2 July 1993(Day of year=183), Manager: 
      Manager sending message :- wheat harvest
 2 July 1993(Day of year=183), wheat: 
      
@@ -5429,7 +5429,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1993(Day of year=264), manager: 
+21 September 1993(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1993(Day of year=264), SurfaceOM: 
      
@@ -5513,7 +5513,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           2.61 (g/m^2)   lai          =   0.092 (m^2/m^2)
                      stover N conc =     5.83 (%)    extractable sw =   39.57 (mm)
-31 March 1994(Day of year=90), manager: 
+31 March 1994(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 31 March 1994(Day of year=90), wheat: 
       stage 5.0 floral_initiation
@@ -5539,7 +5539,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         698.73 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =  250.51 (mm)
-27 June 1994(Day of year=178), manager: 
+27 June 1994(Day of year=178), Manager: 
      Manager sending message :- wheat harvest
 27 June 1994(Day of year=178), wheat: 
      
@@ -5590,7 +5590,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1994(Day of year=264), manager: 
+21 September 1994(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1994(Day of year=264), SurfaceOM: 
      
@@ -5678,7 +5678,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         227.48 (g/m^2)   lai          =   2.917 (m^2/m^2)
                      stover N conc =     1.72 (%)    extractable sw =   89.24 (mm)
-31 March 1995(Day of year=90), manager: 
+31 March 1995(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 12 May 1995(Day of year=132), wheat: 
       stage 6.0 flowering
@@ -5700,7 +5700,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         753.95 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.29 (%)    extractable sw =  137.52 (mm)
-22 June 1995(Day of year=173), manager: 
+22 June 1995(Day of year=173), Manager: 
      Manager sending message :- wheat harvest
 22 June 1995(Day of year=173), wheat: 
      
@@ -5751,7 +5751,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1995(Day of year=264), manager: 
+21 September 1995(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1995(Day of year=264), SurfaceOM: 
      
@@ -5839,7 +5839,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         190.66 (g/m^2)   lai          =   2.207 (m^2/m^2)
                      stover N conc =     1.57 (%)    extractable sw =   91.79 (mm)
-30 March 1996(Day of year=90), manager: 
+30 March 1996(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 21 May 1996(Day of year=142), wheat: 
       stage 6.0 flowering
@@ -5861,7 +5861,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         579.58 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =  217.71 (mm)
-3 July 1996(Day of year=185), manager: 
+3 July 1996(Day of year=185), Manager: 
      Manager sending message :- wheat harvest
 3 July 1996(Day of year=185), wheat: 
      
@@ -5912,7 +5912,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-20 September 1996(Day of year=264), manager: 
+20 September 1996(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 20 September 1996(Day of year=264), SurfaceOM: 
      
@@ -6000,7 +6000,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         215.52 (g/m^2)   lai          =   2.817 (m^2/m^2)
                      stover N conc =     1.76 (%)    extractable sw =  120.26 (mm)
-31 March 1997(Day of year=90), manager: 
+31 March 1997(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 6 May 1997(Day of year=126), wheat: 
       stage 6.0 flowering
@@ -6022,7 +6022,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         724.30 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.29 (%)    extractable sw =  174.12 (mm)
-20 June 1997(Day of year=171), manager: 
+20 June 1997(Day of year=171), Manager: 
      Manager sending message :- wheat harvest
 20 June 1997(Day of year=171), wheat: 
      
@@ -6073,7 +6073,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1997(Day of year=264), manager: 
+21 September 1997(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1997(Day of year=264), SurfaceOM: 
      
@@ -6161,7 +6161,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         255.00 (g/m^2)   lai          =   2.990 (m^2/m^2)
                      stover N conc =     1.63 (%)    extractable sw =   99.04 (mm)
-31 March 1998(Day of year=90), manager: 
+31 March 1998(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 6 May 1998(Day of year=126), wheat: 
       stage 6.0 flowering
@@ -6183,7 +6183,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         755.39 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =  246.34 (mm)
-24 June 1998(Day of year=175), manager: 
+24 June 1998(Day of year=175), Manager: 
      Manager sending message :- wheat harvest
 24 June 1998(Day of year=175), wheat: 
      
@@ -6234,7 +6234,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1998(Day of year=264), manager: 
+21 September 1998(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1998(Day of year=264), SurfaceOM: 
      
@@ -6322,7 +6322,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         206.86 (g/m^2)   lai          =   2.897 (m^2/m^2)
                      stover N conc =     1.97 (%)    extractable sw =   83.35 (mm)
-31 March 1999(Day of year=90), manager: 
+31 March 1999(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 22 April 1999(Day of year=112), wheat: 
       stage 6.0 flowering
@@ -6344,7 +6344,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         819.31 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.28 (%)    extractable sw =  225.56 (mm)
-13 June 1999(Day of year=164), manager: 
+13 June 1999(Day of year=164), Manager: 
      Manager sending message :- wheat harvest
 13 June 1999(Day of year=164), wheat: 
      
@@ -6395,7 +6395,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 1999(Day of year=264), manager: 
+21 September 1999(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 1999(Day of year=264), SurfaceOM: 
      
@@ -6483,7 +6483,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         234.27 (g/m^2)   lai          =   3.100 (m^2/m^2)
                      stover N conc =     1.78 (%)    extractable sw =   97.64 (mm)
-30 March 2000(Day of year=90), manager: 
+30 March 2000(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 2 May 2000(Day of year=123), wheat: 
       stage 6.0 flowering
@@ -6505,7 +6505,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         794.46 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.27 (%)    extractable sw =  157.11 (mm)
-13 June 2000(Day of year=165), manager: 
+13 June 2000(Day of year=165), Manager: 
      Manager sending message :- wheat harvest
 13 June 2000(Day of year=165), wheat: 
      
@@ -6556,7 +6556,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-20 September 2000(Day of year=264), manager: 
+20 September 2000(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 20 September 2000(Day of year=264), SurfaceOM: 
      
@@ -6644,7 +6644,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         188.06 (g/m^2)   lai          =   2.725 (m^2/m^2)
                      stover N conc =     1.76 (%)    extractable sw =   96.80 (mm)
-31 March 2001(Day of year=90), manager: 
+31 March 2001(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 10 May 2001(Day of year=130), wheat: 
       stage 6.0 flowering
@@ -6666,7 +6666,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         702.86 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =  179.19 (mm)
-22 June 2001(Day of year=173), manager: 
+22 June 2001(Day of year=173), Manager: 
      Manager sending message :- wheat harvest
 22 June 2001(Day of year=173), wheat: 
      
@@ -6717,7 +6717,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 2001(Day of year=264), manager: 
+21 September 2001(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 2001(Day of year=264), SurfaceOM: 
      
@@ -6805,7 +6805,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         189.33 (g/m^2)   lai          =   2.578 (m^2/m^2)
                      stover N conc =     1.80 (%)    extractable sw =   97.57 (mm)
-31 March 2002(Day of year=90), manager: 
+31 March 2002(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 1 May 2002(Day of year=121), wheat: 
       stage 6.0 flowering
@@ -6827,7 +6827,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         753.89 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =  265.80 (mm)
-18 June 2002(Day of year=169), manager: 
+18 June 2002(Day of year=169), Manager: 
      Manager sending message :- wheat harvest
 18 June 2002(Day of year=169), wheat: 
      
@@ -6878,7 +6878,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 2002(Day of year=264), manager: 
+21 September 2002(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 2002(Day of year=264), SurfaceOM: 
      
@@ -6966,7 +6966,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 5.0 floral_initiation
                      biomass =         236.97 (g/m^2)   lai          =   2.721 (m^2/m^2)
                      stover N conc =     1.68 (%)    extractable sw =  116.79 (mm)
-31 March 2003(Day of year=90), manager: 
+31 March 2003(Day of year=90), Manager: 
      Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n
 10 May 2003(Day of year=130), wheat: 
       stage 6.0 flowering
@@ -6988,7 +6988,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 10.0 harvest_ripe
                      biomass =         706.62 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =  218.82 (mm)
-25 June 2003(Day of year=176), manager: 
+25 June 2003(Day of year=176), Manager: 
      Manager sending message :- wheat harvest
 25 June 2003(Day of year=176), wheat: 
      
@@ -7039,7 +7039,7 @@ Title                  = Continuous winter wheat at Xifeng with low N
      Residue removed using user_defined
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-21 September 2003(Day of year=264), manager: 
+21 September 2003(Day of year=264), Manager: 
      Manager sending message :- surfaceom tillage  type = planter
 21 September 2003(Day of year=264), SurfaceOM: 
      
@@ -7123,5 +7123,5 @@ Title                  = Continuous winter wheat at Xifeng with low N
       stage 4.0 end_of_juvenile
                      biomass =           1.95 (g/m^2)   lai          =   0.082 (m^2/m^2)
                      stover N conc =     5.84 (%)    extractable sw =   63.09 (mm)
-30 December 2003(Day of year=364), clock: 
+30 December 2003(Day of year=364), Clock: 
      Simulation is terminating due to end criteria being met.

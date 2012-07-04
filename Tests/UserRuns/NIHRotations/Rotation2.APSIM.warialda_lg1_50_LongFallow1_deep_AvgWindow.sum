@@ -11,20 +11,20 @@
 
 Version                = 7.5
 Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=50; RootDepth=deep; Sowing = AvgWindow
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                     "chickpea" = %apsim%\Model\plant.dll
-   Component                        "wheat" = %apsim%\Model\plant.dll
-   Component                      "sorghum" = %apsim%\Model\sorghum.dll
-   Component                      "tracker" = %apsim%\Model\tracker.dll
+   Component                     "chickpea" = %apsim%\Model\Plant.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                      "Sorghum" = %apsim%\Model\Sorghum.dll
+   Component                      "Tracker" = %apsim%\Model\Tracker.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -40,7 +40,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
      Simulation end date   = 31/12/2000
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.dd/mm/yyyy as date
         clock.year
@@ -68,7 +68,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
      Sparse data is not allowed
      INPUT File name: warialda.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- init
@@ -432,7 +432,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
            Totals  223106.3 15386.6  1046.1   130.8   400.0    10.0
           ---------------------------------------------------------
 
-------- tracker Initialisation ------------------------------------------------
+------- Tracker Initialisation ------------------------------------------------
      Tracker variables:
         maximum of wheat.yield on end_of_day from reported to now as wht_yield
         sum of wheat.ep on end_of_day from reported to now as wht_ep
@@ -487,11 +487,11 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                       -------------------
      Uninitialised variable "wht_crop_num".
      Variables should have a value before they are used in an expression.
-     Component name: manager
+     Component name: Manager
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-18 July 1971(Day of year=199), manager: 
+18 July 1971(Day of year=199), Manager: 
      Manager creating a new local real variable : wht_crop_num = 0.00000
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 18 July 1971(Day of year=199), wheat: 
@@ -608,7 +608,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
       stage 10.0 harvest_ripe
                      biomass =         777.56 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   66.60 (mm)
-5 December 1971(Day of year=339), manager: 
+5 December 1971(Day of year=339), Manager: 
      Manager creating a new local real variable : w_mat_day = 339.00000
      Manager sending message :- wheat harvest
 5 December 1971(Day of year=339), wheat: 
@@ -657,9 +657,9 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                           DM (kg/ha) =                   0.0                  1255.8
                           N  (kg/ha) =                   0.00                   17.04
      
-30 October 1972(Day of year=304), manager: 
+30 October 1972(Day of year=304), Manager: 
      Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
-30 October 1972(Day of year=304), sorghum: 
+30 October 1972(Day of year=304), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -725,50 +725,50 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
      Residue removed using planter
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    50.00
-31 October 1972(Day of year=305), sorghum: 
+31 October 1972(Day of year=305), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-8 November 1972(Day of year=313), sorghum: 
+8 November 1972(Day of year=313), Sorghum: 
      Stage 3 Emergence  DAS = 9
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  24.14
-19 November 1972(Day of year=324), sorghum: 
+19 November 1972(Day of year=324), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 20
      		Biomass       =   3.65 		 LAI            =   0.05
      		Stover N Conc =   0.09 		 Extractable SW =  71.35
-3 December 1972(Day of year=338), sorghum: 
+3 December 1972(Day of year=338), Sorghum: 
      Stage 5 FloralInitiation  DAS = 34
      		Biomass       =  32.21 		 LAI            =   0.44
      		Stover N Conc =   0.67 		 Extractable SW = 139.61
-26 December 1972(Day of year=361), sorghum: 
+26 December 1972(Day of year=361), Sorghum: 
      Stage 6 FlagLeaf  DAS = 57
      		Biomass       = 298.20 		 LAI            =   2.43
      		Stover N Conc =   4.08 		 Extractable SW =  97.05
-9 January 1973(Day of year=9), sorghum: 
+9 January 1973(Day of year=9), Sorghum: 
      Stage 7 Flowering  DAS = 71
      		Biomass       = 459.07 		 LAI            =   2.44
      		Stover N Conc =   5.23 		 Extractable SW = 104.47
-13 January 1973(Day of year=13), sorghum: 
+13 January 1973(Day of year=13), Sorghum: 
      Stage 8 StartGrainFill  DAS = 75
      		Biomass       = 522.48 		 LAI            =   2.44
      		Stover N Conc =   5.66 		 Extractable SW = 126.83
-19 February 1973(Day of year=50), sorghum: 
+19 February 1973(Day of year=50), Sorghum: 
      Stage 9 EndGrainFill  DAS = 112
      		Biomass       = 834.84 		 LAI            =   1.09
      		Stover N Conc =   2.41 		 Extractable SW = 135.45
-22 February 1973(Day of year=53), sorghum: 
+22 February 1973(Day of year=53), Sorghum: 
      Stage 10 Maturity  DAS = 115
      		Biomass       = 841.52 		 LAI            =   1.02
      		Stover N Conc =   2.34 		 Extractable SW = 129.83
-23 February 1973(Day of year=54), sorghum: 
+23 February 1973(Day of year=54), Sorghum: 
      Stage 11 HarvestRipe  DAS = 116
      		Biomass       = 842.88 		 LAI            =   1.00
      		Stover N Conc =   2.31 		 Extractable SW = 129.18
-24 February 1973(Day of year=55), manager: 
+24 February 1973(Day of year=55), Manager: 
      Manager creating a new local real variable : s_mat_day = 55.00000
      Manager sending message :- sorghum harvest
-24 February 1973(Day of year=55), sorghum: 
+24 February 1973(Day of year=55), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 71 		 Maturity (DAS)          = 115
@@ -806,7 +806,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                          DM (kg/ha) =               4567.37		 1856.92
                          N  (kg/ha) =                 23.12		    3.63
                          P  (kg/ha) =                  0.00		    0.00
-20 May 1974(Day of year=140), manager: 
+20 May 1974(Day of year=140), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1974(Day of year=140), wheat: 
      Crop Sow
@@ -921,7 +921,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
       stage 10.0 harvest_ripe
                      biomass =         862.96 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =  130.07 (mm)
-19 November 1974(Day of year=323), manager: 
+19 November 1974(Day of year=323), Manager: 
      Manager sending message :- wheat harvest
 19 November 1974(Day of year=323), wheat: 
      
@@ -969,9 +969,9 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                           DM (kg/ha) =                   0.0                  1461.2
                           N  (kg/ha) =                   0.00                   13.76
      
-27 October 1975(Day of year=300), manager: 
+27 October 1975(Day of year=300), Manager: 
      Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
-27 October 1975(Day of year=300), sorghum: 
+27 October 1975(Day of year=300), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1037,49 +1037,49 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
      Residue removed using planter
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    50.00
-28 October 1975(Day of year=301), sorghum: 
+28 October 1975(Day of year=301), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW = 116.14
-5 November 1975(Day of year=309), sorghum: 
+5 November 1975(Day of year=309), Sorghum: 
      Stage 3 Emergence  DAS = 9
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW = 100.51
-17 November 1975(Day of year=321), sorghum: 
+17 November 1975(Day of year=321), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 21
      		Biomass       =   3.32 		 LAI            =   0.04
      		Stover N Conc =   0.09 		 Extractable SW =  98.49
-30 November 1975(Day of year=334), sorghum: 
+30 November 1975(Day of year=334), Sorghum: 
      Stage 5 FloralInitiation  DAS = 34
      		Biomass       =  29.35 		 LAI            =   0.42
      		Stover N Conc =   0.63 		 Extractable SW = 138.76
-24 December 1975(Day of year=358), sorghum: 
+24 December 1975(Day of year=358), Sorghum: 
      Stage 6 FlagLeaf  DAS = 58
      		Biomass       = 295.66 		 LAI            =   2.55
      		Stover N Conc =   4.03 		 Extractable SW = 216.47
-7 January 1976(Day of year=7), sorghum: 
+7 January 1976(Day of year=7), Sorghum: 
      Stage 7 Flowering  DAS = 72
      		Biomass       = 525.67 		 LAI            =   2.55
      		Stover N Conc =   6.23 		 Extractable SW = 182.77
-11 January 1976(Day of year=11), sorghum: 
+11 January 1976(Day of year=11), Sorghum: 
      Stage 8 StartGrainFill  DAS = 76
      		Biomass       = 597.27 		 LAI            =   2.55
      		Stover N Conc =   6.64 		 Extractable SW = 165.19
-19 February 1976(Day of year=50), sorghum: 
+19 February 1976(Day of year=50), Sorghum: 
      Stage 9 EndGrainFill  DAS = 115
      		Biomass       = 994.83 		 LAI            =   0.96
      		Stover N Conc =   2.65 		 Extractable SW = 308.11
-21 February 1976(Day of year=52), sorghum: 
+21 February 1976(Day of year=52), Sorghum: 
      Stage 10 Maturity  DAS = 117
      		Biomass       = 998.53 		 LAI            =   0.91
      		Stover N Conc =   2.59 		 Extractable SW = 300.36
-22 February 1976(Day of year=53), sorghum: 
+22 February 1976(Day of year=53), Sorghum: 
      Stage 11 HarvestRipe  DAS = 118
      		Biomass       = 999.95 		 LAI            =   0.89
      		Stover N Conc =   2.57 		 Extractable SW = 297.54
-23 February 1976(Day of year=54), manager: 
+23 February 1976(Day of year=54), Manager: 
      Manager sending message :- sorghum harvest
-23 February 1976(Day of year=54), sorghum: 
+23 February 1976(Day of year=54), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 72 		 Maturity (DAS)          = 117
@@ -1117,7 +1117,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                          DM (kg/ha) =               4948.95		 2068.77
                          N  (kg/ha) =                 25.69		    4.11
                          P  (kg/ha) =                  0.00		    0.00
-20 May 1977(Day of year=140), manager: 
+20 May 1977(Day of year=140), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1977(Day of year=140), wheat: 
      Crop Sow
@@ -1232,7 +1232,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
       stage 10.0 harvest_ripe
                      biomass =         742.39 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   70.82 (mm)
-9 November 1977(Day of year=313), manager: 
+9 November 1977(Day of year=313), Manager: 
      Manager sending message :- wheat harvest
 9 November 1977(Day of year=313), wheat: 
      
@@ -1280,9 +1280,9 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                           DM (kg/ha) =                   0.0                  1406.8
                           N  (kg/ha) =                   0.00                   15.61
      
-27 October 1978(Day of year=300), manager: 
+27 October 1978(Day of year=300), Manager: 
      Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
-27 October 1978(Day of year=300), sorghum: 
+27 October 1978(Day of year=300), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1348,49 +1348,49 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
      Residue removed using planter
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    50.00
-28 October 1978(Day of year=301), sorghum: 
+28 October 1978(Day of year=301), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW = 293.70
-6 November 1978(Day of year=310), sorghum: 
+6 November 1978(Day of year=310), Sorghum: 
      Stage 3 Emergence  DAS = 10
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW = 282.64
-18 November 1978(Day of year=322), sorghum: 
+18 November 1978(Day of year=322), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 22
      		Biomass       =   3.58 		 LAI            =   0.04
      		Stover N Conc =   0.09 		 Extractable SW = 286.96
-1 December 1978(Day of year=335), sorghum: 
+1 December 1978(Day of year=335), Sorghum: 
      Stage 5 FloralInitiation  DAS = 35
      		Biomass       =  29.22 		 LAI            =   0.48
      		Stover N Conc =   0.69 		 Extractable SW = 274.52
-25 December 1978(Day of year=359), sorghum: 
+25 December 1978(Day of year=359), Sorghum: 
      Stage 6 FlagLeaf  DAS = 59
      		Biomass       = 398.85 		 LAI            =   2.88
      		Stover N Conc =   5.03 		 Extractable SW = 222.77
-7 January 1979(Day of year=7), sorghum: 
+7 January 1979(Day of year=7), Sorghum: 
      Stage 7 Flowering  DAS = 72
      		Biomass       = 635.42 		 LAI            =   2.88
      		Stover N Conc =   6.31 		 Extractable SW = 153.79
-12 January 1979(Day of year=12), sorghum: 
+12 January 1979(Day of year=12), Sorghum: 
      Stage 8 StartGrainFill  DAS = 77
      		Biomass       = 701.15 		 LAI            =   2.88
      		Stover N Conc =   6.59 		 Extractable SW = 130.99
-17 February 1979(Day of year=48), sorghum: 
+17 February 1979(Day of year=48), Sorghum: 
      Stage 9 EndGrainFill  DAS = 113
      		Biomass       = 1010.25 		 LAI            =   0.77
      		Stover N Conc =   3.10 		 Extractable SW =  84.39
-19 February 1979(Day of year=50), sorghum: 
+19 February 1979(Day of year=50), Sorghum: 
      Stage 10 Maturity  DAS = 115
      		Biomass       = 1013.32 		 LAI            =   0.73
      		Stover N Conc =   3.07 		 Extractable SW =  83.44
-20 February 1979(Day of year=51), sorghum: 
+20 February 1979(Day of year=51), Sorghum: 
      Stage 11 HarvestRipe  DAS = 116
      		Biomass       = 1014.40 		 LAI            =   0.73
      		Stover N Conc =   3.05 		 Extractable SW =  83.15
-21 February 1979(Day of year=52), manager: 
+21 February 1979(Day of year=52), Manager: 
      Manager sending message :- sorghum harvest
-21 February 1979(Day of year=52), sorghum: 
+21 February 1979(Day of year=52), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 72 		 Maturity (DAS)          = 115
@@ -1428,7 +1428,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                          DM (kg/ha) =               5840.07		 2426.06
                          N  (kg/ha) =                 30.50		    4.33
                          P  (kg/ha) =                  0.00		    0.00
-20 May 1980(Day of year=141), manager: 
+20 May 1980(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1980(Day of year=141), wheat: 
      Crop Sow
@@ -1543,7 +1543,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
       stage 10.0 harvest_ripe
                      biomass =         740.86 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =  124.12 (mm)
-30 October 1980(Day of year=304), manager: 
+30 October 1980(Day of year=304), Manager: 
      Manager sending message :- wheat harvest
 30 October 1980(Day of year=304), wheat: 
      
@@ -1591,9 +1591,9 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                           DM (kg/ha) =                   0.0                  1509.9
                           N  (kg/ha) =                   0.00                   13.96
      
-27 October 1981(Day of year=300), manager: 
+27 October 1981(Day of year=300), Manager: 
      Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
-27 October 1981(Day of year=300), sorghum: 
+27 October 1981(Day of year=300), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1659,49 +1659,49 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
      Residue removed using planter
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    50.00
-28 October 1981(Day of year=301), sorghum: 
+28 October 1981(Day of year=301), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  83.15
-4 November 1981(Day of year=308), sorghum: 
+4 November 1981(Day of year=308), Sorghum: 
      Stage 3 Emergence  DAS = 8
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  81.94
-16 November 1981(Day of year=320), sorghum: 
+16 November 1981(Day of year=320), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 20
      		Biomass       =   3.32 		 LAI            =   0.05
      		Stover N Conc =   0.09 		 Extractable SW = 120.73
-30 November 1981(Day of year=334), sorghum: 
+30 November 1981(Day of year=334), Sorghum: 
      Stage 5 FloralInitiation  DAS = 34
      		Biomass       =  25.33 		 LAI            =   0.42
      		Stover N Conc =   0.61 		 Extractable SW = 159.17
-22 December 1981(Day of year=356), sorghum: 
+22 December 1981(Day of year=356), Sorghum: 
      Stage 6 FlagLeaf  DAS = 56
      		Biomass       = 315.43 		 LAI            =   2.72
      		Stover N Conc =   5.21 		 Extractable SW = 155.79
-5 January 1982(Day of year=5), sorghum: 
+5 January 1982(Day of year=5), Sorghum: 
      Stage 7 Flowering  DAS = 70
      		Biomass       = 566.14 		 LAI            =   2.73
      		Stover N Conc =   7.69 		 Extractable SW = 132.06
-10 January 1982(Day of year=10), sorghum: 
+10 January 1982(Day of year=10), Sorghum: 
      Stage 8 StartGrainFill  DAS = 75
      		Biomass       = 636.56 		 LAI            =   2.73
      		Stover N Conc =   8.06 		 Extractable SW = 119.75
-15 February 1982(Day of year=46), sorghum: 
+15 February 1982(Day of year=46), Sorghum: 
      Stage 9 EndGrainFill  DAS = 111
      		Biomass       = 1045.63 		 LAI            =   1.02
      		Stover N Conc =   2.91 		 Extractable SW =  68.52
-17 February 1982(Day of year=48), sorghum: 
+17 February 1982(Day of year=48), Sorghum: 
      Stage 10 Maturity  DAS = 113
      		Biomass       = 1048.84 		 LAI            =   0.97
      		Stover N Conc =   2.87 		 Extractable SW =  67.59
-18 February 1982(Day of year=49), sorghum: 
+18 February 1982(Day of year=49), Sorghum: 
      Stage 11 HarvestRipe  DAS = 114
      		Biomass       = 1050.38 		 LAI            =   0.95
      		Stover N Conc =   2.85 		 Extractable SW =  66.99
-19 February 1982(Day of year=50), manager: 
+19 February 1982(Day of year=50), Manager: 
      Manager sending message :- sorghum harvest
-19 February 1982(Day of year=50), sorghum: 
+19 February 1982(Day of year=50), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 70 		 Maturity (DAS)          = 113
@@ -1739,7 +1739,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                          DM (kg/ha) =               5230.56		 2160.17
                          N  (kg/ha) =                 28.49		    4.31
                          P  (kg/ha) =                  0.00		    0.00
-20 May 1983(Day of year=140), manager: 
+20 May 1983(Day of year=140), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1983(Day of year=140), wheat: 
      Crop Sow
@@ -1854,7 +1854,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
       stage 10.0 harvest_ripe
                      biomass =        1051.27 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =  268.06 (mm)
-5 November 1983(Day of year=309), manager: 
+5 November 1983(Day of year=309), Manager: 
      Manager sending message :- wheat harvest
 5 November 1983(Day of year=309), wheat: 
      
@@ -1902,9 +1902,9 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                           DM (kg/ha) =                   0.0                  1736.1
                           N  (kg/ha) =                   0.00                   17.55
      
-1 November 1984(Day of year=306), manager: 
+1 November 1984(Day of year=306), Manager: 
      Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
-1 November 1984(Day of year=306), sorghum: 
+1 November 1984(Day of year=306), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1970,49 +1970,49 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
      Residue removed using planter
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    50.00
-2 November 1984(Day of year=307), sorghum: 
+2 November 1984(Day of year=307), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  66.99
-9 November 1984(Day of year=314), sorghum: 
+9 November 1984(Day of year=314), Sorghum: 
      Stage 3 Emergence  DAS = 8
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  74.69
-19 November 1984(Day of year=324), sorghum: 
+19 November 1984(Day of year=324), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 18
      		Biomass       =   3.56 		 LAI            =   0.04
      		Stover N Conc =   0.08 		 Extractable SW = 106.26
-3 December 1984(Day of year=338), sorghum: 
+3 December 1984(Day of year=338), Sorghum: 
      Stage 5 FloralInitiation  DAS = 32
      		Biomass       =  31.33 		 LAI            =   0.48
      		Stover N Conc =   0.71 		 Extractable SW = 151.17
-25 December 1984(Day of year=360), sorghum: 
+25 December 1984(Day of year=360), Sorghum: 
      Stage 6 FlagLeaf  DAS = 54
      		Biomass       = 356.21 		 LAI            =   2.83
      		Stover N Conc =   4.99 		 Extractable SW = 157.75
-9 January 1985(Day of year=9), sorghum: 
+9 January 1985(Day of year=9), Sorghum: 
      Stage 7 Flowering  DAS = 69
      		Biomass       = 597.31 		 LAI            =   2.83
      		Stover N Conc =   6.16 		 Extractable SW = 116.89
-13 January 1985(Day of year=13), sorghum: 
+13 January 1985(Day of year=13), Sorghum: 
      Stage 8 StartGrainFill  DAS = 73
      		Biomass       = 641.18 		 LAI            =   2.83
      		Stover N Conc =   6.35 		 Extractable SW = 106.51
-18 February 1985(Day of year=49), sorghum: 
+18 February 1985(Day of year=49), Sorghum: 
      Stage 9 EndGrainFill  DAS = 109
      		Biomass       = 867.10 		 LAI            =   0.92
      		Stover N Conc =   2.92 		 Extractable SW =  44.37
-21 February 1985(Day of year=52), sorghum: 
+21 February 1985(Day of year=52), Sorghum: 
      Stage 10 Maturity  DAS = 112
      		Biomass       = 869.02 		 LAI            =   0.89
      		Stover N Conc =   2.88 		 Extractable SW =  44.02
-22 February 1985(Day of year=53), sorghum: 
+22 February 1985(Day of year=53), Sorghum: 
      Stage 11 HarvestRipe  DAS = 113
      		Biomass       = 869.56 		 LAI            =   0.89
      		Stover N Conc =   2.87 		 Extractable SW =  43.92
-23 February 1985(Day of year=54), manager: 
+23 February 1985(Day of year=54), Manager: 
      Manager sending message :- sorghum harvest
-23 February 1985(Day of year=54), sorghum: 
+23 February 1985(Day of year=54), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 69 		 Maturity (DAS)          = 112
@@ -2050,7 +2050,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                          DM (kg/ha) =               5450.32		 2276.33
                          N  (kg/ha) =                 28.73		    3.69
                          P  (kg/ha) =                  0.00		    0.00
-19 July 1986(Day of year=200), manager: 
+19 July 1986(Day of year=200), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 19 July 1986(Day of year=200), wheat: 
      Crop Sow
@@ -2165,7 +2165,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
       stage 10.0 harvest_ripe
                      biomass =         773.42 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =  129.84 (mm)
-3 December 1986(Day of year=337), manager: 
+3 December 1986(Day of year=337), Manager: 
      Manager sending message :- wheat harvest
 3 December 1986(Day of year=337), wheat: 
      
@@ -2213,9 +2213,9 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                           DM (kg/ha) =                   0.0                  1417.2
                           N  (kg/ha) =                   0.00                   14.58
      
-27 October 1987(Day of year=300), manager: 
+27 October 1987(Day of year=300), Manager: 
      Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
-27 October 1987(Day of year=300), sorghum: 
+27 October 1987(Day of year=300), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -2281,49 +2281,49 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
      Residue removed using planter
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    50.00
-28 October 1987(Day of year=301), sorghum: 
+28 October 1987(Day of year=301), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  43.92
-4 November 1987(Day of year=308), sorghum: 
+4 November 1987(Day of year=308), Sorghum: 
      Stage 3 Emergence  DAS = 8
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  57.79
-16 November 1987(Day of year=320), sorghum: 
+16 November 1987(Day of year=320), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 20
      		Biomass       =   3.29 		 LAI            =   0.05
      		Stover N Conc =   0.09 		 Extractable SW = 109.69
-29 November 1987(Day of year=333), sorghum: 
+29 November 1987(Day of year=333), Sorghum: 
      Stage 5 FloralInitiation  DAS = 33
      		Biomass       =  29.96 		 LAI            =   0.42
      		Stover N Conc =   0.64 		 Extractable SW = 151.17
-22 December 1987(Day of year=356), sorghum: 
+22 December 1987(Day of year=356), Sorghum: 
      Stage 6 FlagLeaf  DAS = 56
      		Biomass       = 346.37 		 LAI            =   2.80
      		Stover N Conc =   5.56 		 Extractable SW = 148.83
-4 January 1988(Day of year=4), sorghum: 
+4 January 1988(Day of year=4), Sorghum: 
      Stage 7 Flowering  DAS = 69
      		Biomass       = 562.33 		 LAI            =   2.82
      		Stover N Conc =   7.64 		 Extractable SW = 145.84
-8 January 1988(Day of year=8), sorghum: 
+8 January 1988(Day of year=8), Sorghum: 
      Stage 8 StartGrainFill  DAS = 73
      		Biomass       = 640.10 		 LAI            =   2.82
      		Stover N Conc =   8.18 		 Extractable SW = 126.64
-16 February 1988(Day of year=47), sorghum: 
+16 February 1988(Day of year=47), Sorghum: 
      Stage 9 EndGrainFill  DAS = 112
      		Biomass       = 1113.29 		 LAI            =   1.02
      		Stover N Conc =   3.06 		 Extractable SW = 146.67
-18 February 1988(Day of year=49), sorghum: 
+18 February 1988(Day of year=49), Sorghum: 
      Stage 10 Maturity  DAS = 114
      		Biomass       = 1118.35 		 LAI            =   0.98
      		Stover N Conc =   3.01 		 Extractable SW = 142.39
-19 February 1988(Day of year=50), sorghum: 
+19 February 1988(Day of year=50), Sorghum: 
      Stage 11 HarvestRipe  DAS = 115
      		Biomass       = 1120.76 		 LAI            =   0.96
      		Stover N Conc =   2.99 		 Extractable SW = 139.81
-20 February 1988(Day of year=51), manager: 
+20 February 1988(Day of year=51), Manager: 
      Manager sending message :- sorghum harvest
-20 February 1988(Day of year=51), sorghum: 
+20 February 1988(Day of year=51), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 69 		 Maturity (DAS)          = 114
@@ -2361,7 +2361,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                          DM (kg/ha) =               5297.15		 2202.36
                          N  (kg/ha) =                 29.91		    4.40
                          P  (kg/ha) =                  0.00		    0.00
-20 May 1989(Day of year=140), manager: 
+20 May 1989(Day of year=140), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1989(Day of year=140), wheat: 
      Crop Sow
@@ -2476,7 +2476,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
       stage 10.0 harvest_ripe
                      biomass =         954.16 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =  123.17 (mm)
-12 November 1989(Day of year=316), manager: 
+12 November 1989(Day of year=316), Manager: 
      Manager sending message :- wheat harvest
 12 November 1989(Day of year=316), wheat: 
      
@@ -2524,9 +2524,9 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                           DM (kg/ha) =                   0.0                  1692.4
                           N  (kg/ha) =                   0.00                   15.40
      
-27 October 1990(Day of year=300), manager: 
+27 October 1990(Day of year=300), Manager: 
      Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
-27 October 1990(Day of year=300), sorghum: 
+27 October 1990(Day of year=300), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -2592,49 +2592,49 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
      Residue removed using planter
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    50.00
-28 October 1990(Day of year=301), sorghum: 
+28 October 1990(Day of year=301), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW = 129.22
-3 November 1990(Day of year=307), sorghum: 
+3 November 1990(Day of year=307), Sorghum: 
      Stage 3 Emergence  DAS = 7
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW = 129.22
-13 November 1990(Day of year=317), sorghum: 
+13 November 1990(Day of year=317), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 17
      		Biomass       =   2.28 		 LAI            =   0.02
      		Stover N Conc =   0.03 		 Extractable SW = 129.22
-26 November 1990(Day of year=330), sorghum: 
+26 November 1990(Day of year=330), Sorghum: 
      Stage 5 FloralInitiation  DAS = 30
      		Biomass       =  11.89 		 LAI            =   0.15
      		Stover N Conc =   0.20 		 Extractable SW = 129.22
-19 December 1990(Day of year=353), sorghum: 
+19 December 1990(Day of year=353), Sorghum: 
      Stage 6 FlagLeaf  DAS = 53
      		Biomass       = 109.68 		 LAI            =   0.54
      		Stover N Conc =   1.10 		 Extractable SW = 129.22
-12 January 1991(Day of year=12), sorghum: 
+12 January 1991(Day of year=12), Sorghum: 
      Stage 7 Flowering  DAS = 77
      		Biomass       = 156.18 		 LAI            =   0.40
      		Stover N Conc =   1.67 		 Extractable SW = 108.15
-16 January 1991(Day of year=16), sorghum: 
+16 January 1991(Day of year=16), Sorghum: 
      Stage 8 StartGrainFill  DAS = 81
      		Biomass       = 165.71 		 LAI            =   0.40
      		Stover N Conc =   1.72 		 Extractable SW = 120.65
-21 February 1991(Day of year=52), sorghum: 
+21 February 1991(Day of year=52), Sorghum: 
      Stage 9 EndGrainFill  DAS = 117
      		Biomass       = 242.93 		 LAI            =   0.30
      		Stover N Conc =   1.04 		 Extractable SW = 135.49
-24 February 1991(Day of year=55), sorghum: 
+24 February 1991(Day of year=55), Sorghum: 
      Stage 10 Maturity  DAS = 120
      		Biomass       = 244.76 		 LAI            =   0.29
      		Stover N Conc =   1.01 		 Extractable SW = 128.56
-25 February 1991(Day of year=56), sorghum: 
+25 February 1991(Day of year=56), Sorghum: 
      Stage 11 HarvestRipe  DAS = 121
      		Biomass       = 245.28 		 LAI            =   0.29
      		Stover N Conc =   1.00 		 Extractable SW = 126.75
-26 February 1991(Day of year=57), manager: 
+26 February 1991(Day of year=57), Manager: 
      Manager sending message :- sorghum harvest
-26 February 1991(Day of year=57), sorghum: 
+26 February 1991(Day of year=57), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 77 		 Maturity (DAS)          = 120
@@ -2672,7 +2672,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                          DM (kg/ha) =               1471.32		  618.17
                          N  (kg/ha) =                  9.97		    1.19
                          P  (kg/ha) =                  0.00		    0.00
-20 May 1992(Day of year=141), manager: 
+20 May 1992(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1992(Day of year=141), wheat: 
      Crop Sow
@@ -2781,7 +2781,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
       stage 10.0 harvest_ripe
                      biomass =        1210.54 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   98.56 (mm)
-12 November 1992(Day of year=317), manager: 
+12 November 1992(Day of year=317), Manager: 
      Manager sending message :- wheat harvest
 12 November 1992(Day of year=317), wheat: 
      
@@ -2829,9 +2829,9 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                           DM (kg/ha) =                   0.0                  2149.4
                           N  (kg/ha) =                   0.00                   24.88
      
-27 October 1993(Day of year=300), manager: 
+27 October 1993(Day of year=300), Manager: 
      Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
-27 October 1993(Day of year=300), sorghum: 
+27 October 1993(Day of year=300), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -2897,49 +2897,49 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
      Residue removed using planter
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    50.00
-28 October 1993(Day of year=301), sorghum: 
+28 October 1993(Day of year=301), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW = 120.93
-7 November 1993(Day of year=311), sorghum: 
+7 November 1993(Day of year=311), Sorghum: 
      Stage 3 Emergence  DAS = 11
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW = 120.93
-16 November 1993(Day of year=320), sorghum: 
+16 November 1993(Day of year=320), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 20
      		Biomass       =   1.96 		 LAI            =   0.03
      		Stover N Conc =   0.05 		 Extractable SW =  93.98
-28 November 1993(Day of year=332), sorghum: 
+28 November 1993(Day of year=332), Sorghum: 
      Stage 5 FloralInitiation  DAS = 32
      		Biomass       =  25.72 		 LAI            =   0.47
      		Stover N Conc =   0.62 		 Extractable SW = 107.33
-20 December 1993(Day of year=354), sorghum: 
+20 December 1993(Day of year=354), Sorghum: 
      Stage 6 FlagLeaf  DAS = 54
      		Biomass       = 313.47 		 LAI            =   2.63
      		Stover N Conc =   4.14 		 Extractable SW = 158.10
-5 January 1994(Day of year=5), sorghum: 
+5 January 1994(Day of year=5), Sorghum: 
      Stage 7 Flowering  DAS = 70
      		Biomass       = 566.91 		 LAI            =   2.65
      		Stover N Conc =   5.56 		 Extractable SW = 140.10
-9 January 1994(Day of year=9), sorghum: 
+9 January 1994(Day of year=9), Sorghum: 
      Stage 8 StartGrainFill  DAS = 74
      		Biomass       = 612.25 		 LAI            =   2.65
      		Stover N Conc =   5.81 		 Extractable SW = 128.91
-14 February 1994(Day of year=45), sorghum: 
+14 February 1994(Day of year=45), Sorghum: 
      Stage 9 EndGrainFill  DAS = 110
      		Biomass       = 877.82 		 LAI            =   0.93
      		Stover N Conc =   2.70 		 Extractable SW = 136.51
-16 February 1994(Day of year=47), sorghum: 
+16 February 1994(Day of year=47), Sorghum: 
      Stage 10 Maturity  DAS = 112
      		Biomass       = 879.07 		 LAI            =   0.91
      		Stover N Conc =   2.68 		 Extractable SW = 133.21
-17 February 1994(Day of year=48), sorghum: 
+17 February 1994(Day of year=48), Sorghum: 
      Stage 11 HarvestRipe  DAS = 113
      		Biomass       = 879.58 		 LAI            =   0.91
      		Stover N Conc =   2.67 		 Extractable SW = 132.47
-18 February 1994(Day of year=49), manager: 
+18 February 1994(Day of year=49), Manager: 
      Manager sending message :- sorghum harvest
-18 February 1994(Day of year=49), sorghum: 
+18 February 1994(Day of year=49), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 70 		 Maturity (DAS)          = 112
@@ -2977,7 +2977,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                          DM (kg/ha) =               5184.45		 2162.23
                          N  (kg/ha) =                 26.73		    3.70
                          P  (kg/ha) =                  0.00		    0.00
-18 June 1995(Day of year=169), manager: 
+18 June 1995(Day of year=169), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 18 June 1995(Day of year=169), wheat: 
      Crop Sow
@@ -3092,7 +3092,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
       stage 10.0 harvest_ripe
                      biomass =         683.94 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   92.89 (mm)
-14 November 1995(Day of year=318), manager: 
+14 November 1995(Day of year=318), Manager: 
      Manager sending message :- wheat harvest
 14 November 1995(Day of year=318), wheat: 
      
@@ -3140,9 +3140,9 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                           DM (kg/ha) =                   0.0                  1199.1
                           N  (kg/ha) =                   0.00                   13.86
      
-7 November 1996(Day of year=312), manager: 
+7 November 1996(Day of year=312), Manager: 
      Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
-7 November 1996(Day of year=312), sorghum: 
+7 November 1996(Day of year=312), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -3208,49 +3208,49 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
      Residue removed using planter
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    50.00
-8 November 1996(Day of year=313), sorghum: 
+8 November 1996(Day of year=313), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW = 119.70
-16 November 1996(Day of year=321), sorghum: 
+16 November 1996(Day of year=321), Sorghum: 
      Stage 3 Emergence  DAS = 9
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW = 106.54
-28 November 1996(Day of year=333), sorghum: 
+28 November 1996(Day of year=333), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 21
      		Biomass       =   3.88 		 LAI            =   0.04
      		Stover N Conc =   0.09 		 Extractable SW = 123.83
-10 December 1996(Day of year=345), sorghum: 
+10 December 1996(Day of year=345), Sorghum: 
      Stage 5 FloralInitiation  DAS = 33
      		Biomass       =  24.14 		 LAI            =   0.45
      		Stover N Conc =   0.65 		 Extractable SW = 186.03
-1 January 1997(Day of year=1), sorghum: 
+1 January 1997(Day of year=1), Sorghum: 
      Stage 6 FlagLeaf  DAS = 55
      		Biomass       = 367.90 		 LAI            =   2.79
      		Stover N Conc =   4.90 		 Extractable SW = 172.34
-17 January 1997(Day of year=17), sorghum: 
+17 January 1997(Day of year=17), Sorghum: 
      Stage 7 Flowering  DAS = 71
      		Biomass       = 655.94 		 LAI            =   2.82
      		Stover N Conc =   6.32 		 Extractable SW = 120.12
-21 January 1997(Day of year=21), sorghum: 
+21 January 1997(Day of year=21), Sorghum: 
      Stage 8 StartGrainFill  DAS = 75
      		Biomass       = 711.04 		 LAI            =   2.82
      		Stover N Conc =   6.49 		 Extractable SW = 112.74
-27 February 1997(Day of year=58), sorghum: 
+27 February 1997(Day of year=58), Sorghum: 
      Stage 9 EndGrainFill  DAS = 112
      		Biomass       = 1044.85 		 LAI            =   0.71
      		Stover N Conc =   3.21 		 Extractable SW = 101.26
-1 March 1997(Day of year=60), sorghum: 
+1 March 1997(Day of year=60), Sorghum: 
      Stage 10 Maturity  DAS = 114
      		Biomass       = 1047.48 		 LAI            =   0.67
      		Stover N Conc =   3.18 		 Extractable SW =  99.12
-2 March 1997(Day of year=61), sorghum: 
+2 March 1997(Day of year=61), Sorghum: 
      Stage 11 HarvestRipe  DAS = 115
      		Biomass       = 1048.61 		 LAI            =   0.67
      		Stover N Conc =   3.16 		 Extractable SW =  98.74
-3 March 1997(Day of year=62), manager: 
+3 March 1997(Day of year=62), Manager: 
      Manager sending message :- sorghum harvest
-3 March 1997(Day of year=62), sorghum: 
+3 March 1997(Day of year=62), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 71 		 Maturity (DAS)          = 114
@@ -3288,7 +3288,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                          DM (kg/ha) =               6001.47		 2446.95
                          N  (kg/ha) =                 31.64		    4.41
                          P  (kg/ha) =                  0.00		    0.00
-20 May 1998(Day of year=140), manager: 
+20 May 1998(Day of year=140), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1998(Day of year=140), wheat: 
      Crop Sow
@@ -3403,7 +3403,7 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
       stage 10.0 harvest_ripe
                      biomass =         925.93 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =  231.36 (mm)
-4 November 1998(Day of year=308), manager: 
+4 November 1998(Day of year=308), Manager: 
      Manager sending message :- wheat harvest
 4 November 1998(Day of year=308), wheat: 
      
@@ -3451,9 +3451,9 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                           DM (kg/ha) =                   0.0                  1453.5
                           N  (kg/ha) =                   0.00                   14.90
      
-27 October 1999(Day of year=300), manager: 
+27 October 1999(Day of year=300), Manager: 
      Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
-27 October 1999(Day of year=300), sorghum: 
+27 October 1999(Day of year=300), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -3519,49 +3519,49 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
      Residue removed using planter
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    50.00
-28 October 1999(Day of year=301), sorghum: 
+28 October 1999(Day of year=301), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  98.74
-5 November 1999(Day of year=309), sorghum: 
+5 November 1999(Day of year=309), Sorghum: 
      Stage 3 Emergence  DAS = 9
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  95.18
-20 November 1999(Day of year=324), sorghum: 
+20 November 1999(Day of year=324), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 24
      		Biomass       =   3.92 		 LAI            =   0.05
      		Stover N Conc =   0.10 		 Extractable SW = 138.49
-4 December 1999(Day of year=338), sorghum: 
+4 December 1999(Day of year=338), Sorghum: 
      Stage 5 FloralInitiation  DAS = 38
      		Biomass       =  29.45 		 LAI            =   0.43
      		Stover N Conc =   0.64 		 Extractable SW = 176.46
-29 December 1999(Day of year=363), sorghum: 
+29 December 1999(Day of year=363), Sorghum: 
      Stage 6 FlagLeaf  DAS = 63
      		Biomass       = 353.49 		 LAI            =   2.89
      		Stover N Conc =   5.49 		 Extractable SW = 218.61
-14 January 2000(Day of year=14), sorghum: 
+14 January 2000(Day of year=14), Sorghum: 
      Stage 7 Flowering  DAS = 79
      		Biomass       = 702.05 		 LAI            =   2.91
      		Stover N Conc =   7.68 		 Extractable SW = 181.15
-18 January 2000(Day of year=18), sorghum: 
+18 January 2000(Day of year=18), Sorghum: 
      Stage 8 StartGrainFill  DAS = 83
      		Biomass       = 784.58 		 LAI            =   2.91
      		Stover N Conc =   8.04 		 Extractable SW = 169.24
-25 February 2000(Day of year=56), sorghum: 
+25 February 2000(Day of year=56), Sorghum: 
      Stage 9 EndGrainFill  DAS = 121
      		Biomass       = 1163.28 		 LAI            =   0.91
      		Stover N Conc =   3.35 		 Extractable SW =  75.91
-27 February 2000(Day of year=58), sorghum: 
+27 February 2000(Day of year=58), Sorghum: 
      Stage 10 Maturity  DAS = 123
      		Biomass       = 1165.97 		 LAI            =   0.87
      		Stover N Conc =   3.33 		 Extractable SW =  73.19
-28 February 2000(Day of year=59), sorghum: 
+28 February 2000(Day of year=59), Sorghum: 
      Stage 11 HarvestRipe  DAS = 124
      		Biomass       = 1167.11 		 LAI            =   0.87
      		Stover N Conc =   3.31 		 Extractable SW =  72.80
-29 February 2000(Day of year=60), manager: 
+29 February 2000(Day of year=60), Manager: 
      Manager sending message :- sorghum harvest
-29 February 2000(Day of year=60), sorghum: 
+29 February 2000(Day of year=60), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 79 		 Maturity (DAS)          = 123
@@ -3599,5 +3599,5 @@ Title                  = site=warialda; soil=lg1; treatment=LongFallow1; Nrate=5
                          DM (kg/ha) =               6449.84		 2681.75
                          N  (kg/ha) =                 33.06		    4.89
                          P  (kg/ha) =                  0.00		    0.00
-31 December 2000(Day of year=366), clock: 
+31 December 2000(Day of year=366), Clock: 
      Simulation is terminating due to end criteria being met.

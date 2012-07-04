@@ -11,20 +11,20 @@
 
 Version                = 7.5
 Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; RootDepth=deep; Sowing = AvgWindow
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                     "chickpea" = %apsim%\Model\plant.dll
-   Component                        "wheat" = %apsim%\Model\plant.dll
-   Component                      "sorghum" = %apsim%\Model\sorghum.dll
-   Component                      "tracker" = %apsim%\Model\tracker.dll
+   Component                     "chickpea" = %apsim%\Model\Plant.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                      "Sorghum" = %apsim%\Model\Sorghum.dll
+   Component                      "Tracker" = %apsim%\Model\Tracker.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -40,7 +40,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
      Simulation end date   = 31/12/2000
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.dd/mm/yyyy as date
         clock.year
@@ -68,7 +68,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
      Sparse data is not allowed
      INPUT File name: warialda.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- init
@@ -432,7 +432,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
            Totals  223106.3 15386.6  1046.1   130.8   400.0    10.0
           ---------------------------------------------------------
 
-------- tracker Initialisation ------------------------------------------------
+------- Tracker Initialisation ------------------------------------------------
      Tracker variables:
         maximum of wheat.yield on end_of_day from reported to now as wht_yield
         sum of wheat.ep on end_of_day from reported to now as wht_ep
@@ -481,9 +481,9 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
      Manager creating a new local real variable : fasw150 = 1.00000
      Manager creating a new local real variable : fasw170 = 1.00000
      Manager creating a new local real variable : fasw190 = 1.00000
-3 January 1970(Day of year=3), manager: 
+3 January 1970(Day of year=3), Manager: 
      Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
-3 January 1970(Day of year=3), sorghum: 
+3 January 1970(Day of year=3), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -550,50 +550,50 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
      Residue removed using planter
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    50.00
-4 January 1970(Day of year=4), sorghum: 
+4 January 1970(Day of year=4), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-11 January 1970(Day of year=11), sorghum: 
+11 January 1970(Day of year=11), Sorghum: 
      Stage 3 Emergence  DAS = 8
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  22.80
-19 January 1970(Day of year=19), sorghum: 
+19 January 1970(Day of year=19), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   3.03 		 LAI            =   0.04
      		Stover N Conc =   0.10 		 Extractable SW =  52.74
-30 January 1970(Day of year=30), sorghum: 
+30 January 1970(Day of year=30), Sorghum: 
      Stage 5 FloralInitiation  DAS = 27
      		Biomass       =  18.64 		 LAI            =   0.41
      		Stover N Conc =   0.60 		 Extractable SW = 111.34
-20 February 1970(Day of year=51), sorghum: 
+20 February 1970(Day of year=51), Sorghum: 
      Stage 6 FlagLeaf  DAS = 48
      		Biomass       = 266.79 		 LAI            =   2.58
      		Stover N Conc =   5.09 		 Extractable SW = 115.08
-7 March 1970(Day of year=66), sorghum: 
+7 March 1970(Day of year=66), Sorghum: 
      Stage 7 Flowering  DAS = 63
      		Biomass       = 507.10 		 LAI            =   2.58
      		Stover N Conc =   7.39 		 Extractable SW = 118.17
-11 March 1970(Day of year=70), sorghum: 
+11 March 1970(Day of year=70), Sorghum: 
      Stage 8 StartGrainFill  DAS = 67
      		Biomass       = 561.70 		 LAI            =   2.58
      		Stover N Conc =   7.73 		 Extractable SW = 110.88
-24 April 1970(Day of year=114), sorghum: 
+24 April 1970(Day of year=114), Sorghum: 
      Stage 9 EndGrainFill  DAS = 111
      		Biomass       = 1017.76 		 LAI            =   1.53
      		Stover N Conc =   3.20 		 Extractable SW =  78.64
-29 April 1970(Day of year=119), sorghum: 
+29 April 1970(Day of year=119), Sorghum: 
      Stage 10 Maturity  DAS = 116
      		Biomass       = 1040.70 		 LAI            =   1.43
      		Stover N Conc =   3.08 		 Extractable SW =  70.33
-30 April 1970(Day of year=120), sorghum: 
+30 April 1970(Day of year=120), Sorghum: 
      Stage 11 HarvestRipe  DAS = 117
      		Biomass       = 1043.15 		 LAI            =   1.41
      		Stover N Conc =   3.07 		 Extractable SW =  68.91
-1 May 1970(Day of year=121), manager: 
+1 May 1970(Day of year=121), Manager: 
      Manager creating a new local real variable : s_mat_day = 121.00000
      Manager sending message :- sorghum harvest
-1 May 1970(Day of year=121), sorghum: 
+1 May 1970(Day of year=121), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 63 		 Maturity (DAS)          = 116
@@ -631,11 +631,11 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                          DM (kg/ha) =               4767.42		 1905.86
                          N  (kg/ha) =                 30.65		    3.81
                          P  (kg/ha) =                  0.00		    0.00
-8 August 1970(Day of year=220), manager: 
+8 August 1970(Day of year=220), Manager: 
      Manager creating a new local real variable : wht_crop_num = 0.00000
-28 October 1970(Day of year=301), manager: 
+28 October 1970(Day of year=301), Manager: 
      Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
-28 October 1970(Day of year=301), sorghum: 
+28 October 1970(Day of year=301), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -701,49 +701,49 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
      Residue removed using planter
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    50.00
-29 October 1970(Day of year=302), sorghum: 
+29 October 1970(Day of year=302), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  58.12
-7 November 1970(Day of year=311), sorghum: 
+7 November 1970(Day of year=311), Sorghum: 
      Stage 3 Emergence  DAS = 10
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  64.26
-16 November 1970(Day of year=320), sorghum: 
+16 November 1970(Day of year=320), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 19
      		Biomass       =   3.04 		 LAI            =   0.05
      		Stover N Conc =   0.09 		 Extractable SW =  65.59
-1 December 1970(Day of year=335), sorghum: 
+1 December 1970(Day of year=335), Sorghum: 
      Stage 5 FloralInitiation  DAS = 34
      		Biomass       =  32.85 		 LAI            =   0.48
      		Stover N Conc =   0.74 		 Extractable SW = 115.20
-23 December 1970(Day of year=357), sorghum: 
+23 December 1970(Day of year=357), Sorghum: 
      Stage 6 FlagLeaf  DAS = 56
      		Biomass       = 314.70 		 LAI            =   2.83
      		Stover N Conc =   5.62 		 Extractable SW = 196.52
-8 January 1971(Day of year=8), sorghum: 
+8 January 1971(Day of year=8), Sorghum: 
      Stage 7 Flowering  DAS = 72
      		Biomass       = 633.49 		 LAI            =   2.83
      		Stover N Conc =   8.67 		 Extractable SW = 197.86
-12 January 1971(Day of year=12), sorghum: 
+12 January 1971(Day of year=12), Sorghum: 
      Stage 8 StartGrainFill  DAS = 76
      		Biomass       = 713.32 		 LAI            =   2.83
      		Stover N Conc =   9.27 		 Extractable SW = 181.61
-18 February 1971(Day of year=49), sorghum: 
+18 February 1971(Day of year=49), Sorghum: 
      Stage 9 EndGrainFill  DAS = 113
      		Biomass       = 1283.44 		 LAI            =   2.19
      		Stover N Conc =   4.16 		 Extractable SW = 261.70
-20 February 1971(Day of year=51), sorghum: 
+20 February 1971(Day of year=51), Sorghum: 
      Stage 10 Maturity  DAS = 115
      		Biomass       = 1302.32 		 LAI            =   2.04
      		Stover N Conc =   3.89 		 Extractable SW = 252.36
-21 February 1971(Day of year=52), sorghum: 
+21 February 1971(Day of year=52), Sorghum: 
      Stage 11 HarvestRipe  DAS = 116
      		Biomass       = 1315.48 		 LAI            =   1.96
      		Stover N Conc =   3.77 		 Extractable SW = 246.31
-22 February 1971(Day of year=53), manager: 
+22 February 1971(Day of year=53), Manager: 
      Manager sending message :- sorghum harvest
-22 February 1971(Day of year=53), sorghum: 
+22 February 1971(Day of year=53), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 72 		 Maturity (DAS)          = 115
@@ -781,7 +781,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                          DM (kg/ha) =               6206.82		 2482.94
                          N  (kg/ha) =                 37.71		    4.96
                          P  (kg/ha) =                  0.00		    0.00
-20 July 1971(Day of year=201), manager: 
+20 July 1971(Day of year=201), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 20 July 1971(Day of year=201), wheat: 
      Crop Sow
@@ -896,7 +896,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =        1040.20 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   69.69 (mm)
-5 December 1971(Day of year=339), manager: 
+5 December 1971(Day of year=339), Manager: 
      Manager creating a new local real variable : w_mat_day = 339.00000
      Manager sending message :- wheat harvest
 5 December 1971(Day of year=339), wheat: 
@@ -945,7 +945,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1756.7
                           N  (kg/ha) =                   0.00                   40.32
      
-20 May 1972(Day of year=141), manager: 
+20 May 1972(Day of year=141), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 20 May 1972(Day of year=141), chickpea: 
      Crop Sow
@@ -1065,7 +1065,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                      stover N conc =     1.74 (%)    extractable sw =   86.35 (mm)
 13 November 1972(Day of year=318), chickpea: 
       stage 11.0 end_crop
-14 November 1972(Day of year=319), manager: 
+14 November 1972(Day of year=319), Manager: 
      Manager creating a new local real variable : c_mat_day = 319.00000
      Manager sending message :- chickpea harvest
 14 November 1972(Day of year=319), chickpea: 
@@ -1109,7 +1109,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                   603.4
                           N  (kg/ha) =                   0.00                    9.21
      
-9 July 1973(Day of year=190), manager: 
+9 July 1973(Day of year=190), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 9 July 1973(Day of year=190), wheat: 
      Crop Sow
@@ -1224,7 +1224,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =        1102.05 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.32 (%)    extractable sw =   57.04 (mm)
-21 November 1973(Day of year=325), manager: 
+21 November 1973(Day of year=325), Manager: 
      Manager sending message :- wheat harvest
 21 November 1973(Day of year=325), wheat: 
      
@@ -1272,9 +1272,9 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1524.5
                           N  (kg/ha) =                   0.00                   34.58
      
-23 December 1973(Day of year=357), manager: 
+23 December 1973(Day of year=357), Manager: 
      Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
-23 December 1973(Day of year=357), sorghum: 
+23 December 1973(Day of year=357), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1340,49 +1340,49 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
      Residue removed using planter
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    50.00
-24 December 1973(Day of year=358), sorghum: 
+24 December 1973(Day of year=358), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW = 242.91
-30 December 1973(Day of year=364), sorghum: 
+30 December 1973(Day of year=364), Sorghum: 
      Stage 3 Emergence  DAS = 7
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW = 232.37
-6 January 1974(Day of year=6), sorghum: 
+6 January 1974(Day of year=6), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 14
      		Biomass       =   2.89 		 LAI            =   0.04
      		Stover N Conc =   0.08 		 Extractable SW = 233.58
-17 January 1974(Day of year=17), sorghum: 
+17 January 1974(Day of year=17), Sorghum: 
      Stage 5 FloralInitiation  DAS = 25
      		Biomass       =  14.49 		 LAI            =   0.41
      		Stover N Conc =   0.57 		 Extractable SW = 254.01
-8 February 1974(Day of year=39), sorghum: 
+8 February 1974(Day of year=39), Sorghum: 
      Stage 6 FlagLeaf  DAS = 47
      		Biomass       = 284.46 		 LAI            =   2.74
      		Stover N Conc =   5.63 		 Extractable SW = 193.70
-22 February 1974(Day of year=53), sorghum: 
+22 February 1974(Day of year=53), Sorghum: 
      Stage 7 Flowering  DAS = 61
      		Biomass       = 501.16 		 LAI            =   2.76
      		Stover N Conc =   7.69 		 Extractable SW = 166.78
-27 February 1974(Day of year=58), sorghum: 
+27 February 1974(Day of year=58), Sorghum: 
      Stage 8 StartGrainFill  DAS = 66
      		Biomass       = 586.03 		 LAI            =   2.76
      		Stover N Conc =   8.33 		 Extractable SW = 135.71
-8 April 1974(Day of year=98), sorghum: 
+8 April 1974(Day of year=98), Sorghum: 
      Stage 9 EndGrainFill  DAS = 106
      		Biomass       = 909.96 		 LAI            =   1.44
      		Stover N Conc =   3.43 		 Extractable SW =  35.51
-10 April 1974(Day of year=100), sorghum: 
+10 April 1974(Day of year=100), Sorghum: 
      Stage 10 Maturity  DAS = 108
      		Biomass       = 918.78 		 LAI            =   1.33
      		Stover N Conc =   3.30 		 Extractable SW =  33.46
-11 April 1974(Day of year=101), sorghum: 
+11 April 1974(Day of year=101), Sorghum: 
      Stage 11 HarvestRipe  DAS = 109
      		Biomass       = 922.29 		 LAI            =   1.28
      		Stover N Conc =   3.24 		 Extractable SW =  32.46
-12 April 1974(Day of year=102), manager: 
+12 April 1974(Day of year=102), Manager: 
      Manager sending message :- sorghum harvest
-12 April 1974(Day of year=102), sorghum: 
+12 April 1974(Day of year=102), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 61 		 Maturity (DAS)          = 108
@@ -1420,7 +1420,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                          DM (kg/ha) =               4653.21		 1912.27
                          N  (kg/ha) =                 32.43		    3.82
                          P  (kg/ha) =                  0.00		    0.00
-23 June 1975(Day of year=174), manager: 
+23 June 1975(Day of year=174), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 23 June 1975(Day of year=174), wheat: 
      Crop Sow
@@ -1535,7 +1535,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =        1311.62 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.22 (%)    extractable sw =  136.76 (mm)
-20 November 1975(Day of year=324), manager: 
+20 November 1975(Day of year=324), Manager: 
      Manager sending message :- wheat harvest
 20 November 1975(Day of year=324), wheat: 
      
@@ -1583,9 +1583,9 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1733.7
                           N  (kg/ha) =                   0.00                   39.64
      
-26 December 1975(Day of year=360), manager: 
+26 December 1975(Day of year=360), Manager: 
      Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
-26 December 1975(Day of year=360), sorghum: 
+26 December 1975(Day of year=360), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1651,49 +1651,49 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
      Residue removed using planter
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    50.00
-27 December 1975(Day of year=361), sorghum: 
+27 December 1975(Day of year=361), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  32.46
-2 January 1976(Day of year=2), sorghum: 
+2 January 1976(Day of year=2), Sorghum: 
      Stage 3 Emergence  DAS = 7
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  49.21
-10 January 1976(Day of year=10), sorghum: 
+10 January 1976(Day of year=10), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 15
      		Biomass       =   2.68 		 LAI            =   0.04
      		Stover N Conc =   0.08 		 Extractable SW =  71.60
-21 January 1976(Day of year=21), sorghum: 
+21 January 1976(Day of year=21), Sorghum: 
      Stage 5 FloralInitiation  DAS = 26
      		Biomass       =  17.93 		 LAI            =   0.39
      		Stover N Conc =   0.57 		 Extractable SW = 125.43
-13 February 1976(Day of year=44), sorghum: 
+13 February 1976(Day of year=44), Sorghum: 
      Stage 6 FlagLeaf  DAS = 49
      		Biomass       = 260.23 		 LAI            =   2.81
      		Stover N Conc =   5.39 		 Extractable SW = 257.94
-27 February 1976(Day of year=58), sorghum: 
+27 February 1976(Day of year=58), Sorghum: 
      Stage 7 Flowering  DAS = 63
      		Biomass       = 504.72 		 LAI            =   2.82
      		Stover N Conc =   7.73 		 Extractable SW = 237.47
-2 March 1976(Day of year=62), sorghum: 
+2 March 1976(Day of year=62), Sorghum: 
      Stage 8 StartGrainFill  DAS = 67
      		Biomass       = 577.24 		 LAI            =   2.82
      		Stover N Conc =   8.13 		 Extractable SW = 231.37
-13 April 1976(Day of year=104), sorghum: 
+13 April 1976(Day of year=104), Sorghum: 
      Stage 9 EndGrainFill  DAS = 109
      		Biomass       = 1216.76 		 LAI            =   1.97
      		Stover N Conc =   4.16 		 Extractable SW =  92.67
-16 April 1976(Day of year=107), sorghum: 
+16 April 1976(Day of year=107), Sorghum: 
      Stage 10 Maturity  DAS = 112
      		Biomass       = 1242.80 		 LAI            =   1.80
      		Stover N Conc =   3.89 		 Extractable SW =  88.08
-17 April 1976(Day of year=108), sorghum: 
+17 April 1976(Day of year=108), Sorghum: 
      Stage 11 HarvestRipe  DAS = 113
      		Biomass       = 1251.37 		 LAI            =   1.75
      		Stover N Conc =   3.81 		 Extractable SW =  86.53
-18 April 1976(Day of year=109), manager: 
+18 April 1976(Day of year=109), Manager: 
      Manager sending message :- sorghum harvest
-18 April 1976(Day of year=109), sorghum: 
+18 April 1976(Day of year=109), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 63 		 Maturity (DAS)          = 112
@@ -1731,7 +1731,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                          DM (kg/ha) =               5835.65		 1923.97
                          N  (kg/ha) =                 38.11		    3.85
                          P  (kg/ha) =                  0.00		    0.00
-20 May 1977(Day of year=140), manager: 
+20 May 1977(Day of year=140), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1977(Day of year=140), wheat: 
      Crop Sow
@@ -1846,7 +1846,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =        1042.53 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.97 (%)    extractable sw =   28.29 (mm)
-9 November 1977(Day of year=313), manager: 
+9 November 1977(Day of year=313), Manager: 
      Manager sending message :- wheat harvest
 9 November 1977(Day of year=313), wheat: 
      
@@ -1894,7 +1894,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  2072.7
                           N  (kg/ha) =                   0.00                   47.82
      
-21 May 1978(Day of year=141), manager: 
+21 May 1978(Day of year=141), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 21 May 1978(Day of year=141), chickpea: 
      Crop Sow
@@ -2014,7 +2014,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                      stover N conc =     1.83 (%)    extractable sw =  104.83 (mm)
 18 November 1978(Day of year=322), chickpea: 
       stage 11.0 end_crop
-19 November 1978(Day of year=323), manager: 
+19 November 1978(Day of year=323), Manager: 
      Manager sending message :- chickpea harvest
 19 November 1978(Day of year=323), chickpea: 
      
@@ -2057,7 +2057,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                   908.8
                           N  (kg/ha) =                   0.00                   13.86
      
-23 June 1979(Day of year=174), manager: 
+23 June 1979(Day of year=174), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 23 June 1979(Day of year=174), wheat: 
      Crop Sow
@@ -2172,7 +2172,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =        1102.16 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.47 (%)    extractable sw =  117.49 (mm)
-18 November 1979(Day of year=322), manager: 
+18 November 1979(Day of year=322), Manager: 
      Manager sending message :- wheat harvest
 18 November 1979(Day of year=322), wheat: 
      
@@ -2220,7 +2220,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1689.7
                           N  (kg/ha) =                   0.00                   38.38
      
-20 May 1980(Day of year=141), manager: 
+20 May 1980(Day of year=141), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 20 May 1980(Day of year=141), chickpea: 
      Crop Sow
@@ -2340,7 +2340,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                      stover N conc =     1.73 (%)    extractable sw =   73.45 (mm)
 2 November 1980(Day of year=307), chickpea: 
       stage 11.0 end_crop
-3 November 1980(Day of year=308), manager: 
+3 November 1980(Day of year=308), Manager: 
      Manager sending message :- chickpea harvest
 3 November 1980(Day of year=308), chickpea: 
      
@@ -2383,7 +2383,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                   930.8
                           N  (kg/ha) =                   0.00                   14.44
      
-24 May 1981(Day of year=144), manager: 
+24 May 1981(Day of year=144), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 24 May 1981(Day of year=144), wheat: 
      Crop Sow
@@ -2498,7 +2498,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =        1213.49 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.57 (%)    extractable sw =   47.69 (mm)
-11 November 1981(Day of year=315), manager: 
+11 November 1981(Day of year=315), Manager: 
      Manager sending message :- wheat harvest
 11 November 1981(Day of year=315), wheat: 
      
@@ -2546,7 +2546,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  2245.2
                           N  (kg/ha) =                   0.00                   52.37
      
-1 June 1982(Day of year=152), manager: 
+1 June 1982(Day of year=152), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 1 June 1982(Day of year=152), chickpea: 
      Crop Sow
@@ -2635,7 +2635,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
               germination within 40 days of sowing
      
      Plant death. standing above-ground dm = 0.00 (kg/ha)
-11 July 1982(Day of year=192), manager: 
+11 July 1982(Day of year=192), Manager: 
      Manager sending message :- chickpea harvest
 11 July 1982(Day of year=192), chickpea: 
      
@@ -2673,9 +2673,9 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                     0.0
                           N  (kg/ha) =                   0.00                    0.00
      
-28 October 1982(Day of year=301), manager: 
+28 October 1982(Day of year=301), Manager: 
      Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
-28 October 1982(Day of year=301), sorghum: 
+28 October 1982(Day of year=301), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -2741,49 +2741,49 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
      Residue removed using planter
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    50.00
-29 October 1982(Day of year=302), sorghum: 
+29 October 1982(Day of year=302), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  86.53
-5 November 1982(Day of year=309), sorghum: 
+5 November 1982(Day of year=309), Sorghum: 
      Stage 3 Emergence  DAS = 8
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  90.18
-14 November 1982(Day of year=318), sorghum: 
+14 November 1982(Day of year=318), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 17
      		Biomass       =   3.42 		 LAI            =   0.04
      		Stover N Conc =   0.09 		 Extractable SW = 104.43
-25 November 1982(Day of year=329), sorghum: 
+25 November 1982(Day of year=329), Sorghum: 
      Stage 5 FloralInitiation  DAS = 28
      		Biomass       =  25.71 		 LAI            =   0.42
      		Stover N Conc =   0.63 		 Extractable SW = 121.09
-17 December 1982(Day of year=351), sorghum: 
+17 December 1982(Day of year=351), Sorghum: 
      Stage 6 FlagLeaf  DAS = 50
      		Biomass       = 320.39 		 LAI            =   2.66
      		Stover N Conc =   5.65 		 Extractable SW = 109.32
-30 December 1982(Day of year=364), sorghum: 
+30 December 1982(Day of year=364), Sorghum: 
      Stage 7 Flowering  DAS = 63
      		Biomass       = 507.85 		 LAI            =   2.67
      		Stover N Conc =   7.60 		 Extractable SW = 115.10
-3 January 1983(Day of year=3), sorghum: 
+3 January 1983(Day of year=3), Sorghum: 
      Stage 8 StartGrainFill  DAS = 67
      		Biomass       = 566.56 		 LAI            =   2.67
      		Stover N Conc =   8.06 		 Extractable SW = 147.95
-9 February 1983(Day of year=40), sorghum: 
+9 February 1983(Day of year=40), Sorghum: 
      Stage 9 EndGrainFill  DAS = 104
      		Biomass       = 970.06 		 LAI            =   2.64
      		Stover N Conc =   4.82 		 Extractable SW =  38.38
-12 February 1983(Day of year=43), sorghum: 
+12 February 1983(Day of year=43), Sorghum: 
      Stage 10 Maturity  DAS = 107
      		Biomass       = 980.29 		 LAI            =   2.04
      		Stover N Conc =   4.64 		 Extractable SW =  34.67
-13 February 1983(Day of year=44), sorghum: 
+13 February 1983(Day of year=44), Sorghum: 
      Stage 11 HarvestRipe  DAS = 108
      		Biomass       = 987.92 		 LAI            =   1.94
      		Stover N Conc =   4.51 		 Extractable SW =  33.98
-14 February 1983(Day of year=45), manager: 
+14 February 1983(Day of year=45), Manager: 
      Manager sending message :- sorghum harvest
-14 February 1983(Day of year=45), sorghum: 
+14 February 1983(Day of year=45), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 63 		 Maturity (DAS)          = 107
@@ -2821,7 +2821,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                          DM (kg/ha) =               4552.81		 1986.04
                          N  (kg/ha) =                 45.10		    3.97
                          P  (kg/ha) =                  0.00		    0.00
-23 May 1983(Day of year=143), manager: 
+23 May 1983(Day of year=143), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 23 May 1983(Day of year=143), wheat: 
      Crop Sow
@@ -2936,7 +2936,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =        1702.51 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.33 (%)    extractable sw =  120.84 (mm)
-7 November 1983(Day of year=311), manager: 
+7 November 1983(Day of year=311), Manager: 
      Manager sending message :- wheat harvest
 7 November 1983(Day of year=311), wheat: 
      
@@ -2984,9 +2984,9 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  2646.5
                           N  (kg/ha) =                   0.00                   51.79
      
-19 November 1983(Day of year=323), manager: 
+19 November 1983(Day of year=323), Manager: 
      Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
-19 November 1983(Day of year=323), sorghum: 
+19 November 1983(Day of year=323), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -3052,49 +3052,49 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
      Residue removed using planter
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    50.00
-20 November 1983(Day of year=324), sorghum: 
+20 November 1983(Day of year=324), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  33.98
-30 November 1983(Day of year=334), sorghum: 
+30 November 1983(Day of year=334), Sorghum: 
      Stage 3 Emergence  DAS = 11
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  75.16
-10 December 1983(Day of year=344), sorghum: 
+10 December 1983(Day of year=344), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 21
      		Biomass       =   3.30 		 LAI            =   0.04
      		Stover N Conc =   0.09 		 Extractable SW = 109.12
-22 December 1983(Day of year=356), sorghum: 
+22 December 1983(Day of year=356), Sorghum: 
      Stage 5 FloralInitiation  DAS = 33
      		Biomass       =  27.40 		 LAI            =   0.43
      		Stover N Conc =   0.65 		 Extractable SW = 145.45
-13 January 1984(Day of year=13), sorghum: 
+13 January 1984(Day of year=13), Sorghum: 
      Stage 6 FlagLeaf  DAS = 55
      		Biomass       = 319.23 		 LAI            =   2.91
      		Stover N Conc =   5.82 		 Extractable SW = 152.13
-27 January 1984(Day of year=27), sorghum: 
+27 January 1984(Day of year=27), Sorghum: 
      Stage 7 Flowering  DAS = 69
      		Biomass       = 574.25 		 LAI            =   2.91
      		Stover N Conc =   8.27 		 Extractable SW = 120.74
-1 February 1984(Day of year=32), sorghum: 
+1 February 1984(Day of year=32), Sorghum: 
      Stage 8 StartGrainFill  DAS = 74
      		Biomass       = 649.56 		 LAI            =   2.91
      		Stover N Conc =   8.57 		 Extractable SW = 182.46
-10 March 1984(Day of year=70), sorghum: 
+10 March 1984(Day of year=70), Sorghum: 
      Stage 9 EndGrainFill  DAS = 112
      		Biomass       = 1341.53 		 LAI            =   1.98
      		Stover N Conc =   4.12 		 Extractable SW = 107.42
-12 March 1984(Day of year=72), sorghum: 
+12 March 1984(Day of year=72), Sorghum: 
      Stage 10 Maturity  DAS = 114
      		Biomass       = 1360.67 		 LAI            =   1.80
      		Stover N Conc =   3.86 		 Extractable SW = 103.30
-13 March 1984(Day of year=73), sorghum: 
+13 March 1984(Day of year=73), Sorghum: 
      Stage 11 HarvestRipe  DAS = 115
      		Biomass       = 1371.34 		 LAI            =   1.73
      		Stover N Conc =   3.75 		 Extractable SW = 100.53
-14 March 1984(Day of year=74), manager: 
+14 March 1984(Day of year=74), Manager: 
      Manager sending message :- sorghum harvest
-14 March 1984(Day of year=74), sorghum: 
+14 March 1984(Day of year=74), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 69 		 Maturity (DAS)          = 114
@@ -3132,7 +3132,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                          DM (kg/ha) =               6379.77		 2217.78
                          N  (kg/ha) =                 37.55		    4.43
                          P  (kg/ha) =                  0.00		    0.00
-15 July 1984(Day of year=197), manager: 
+15 July 1984(Day of year=197), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 15 July 1984(Day of year=197), chickpea: 
      Crop Sow
@@ -3252,7 +3252,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                      stover N conc =     1.78 (%)    extractable sw =   73.37 (mm)
 9 December 1984(Day of year=344), chickpea: 
       stage 11.0 end_crop
-10 December 1984(Day of year=345), manager: 
+10 December 1984(Day of year=345), Manager: 
      Manager sending message :- chickpea harvest
 10 December 1984(Day of year=345), chickpea: 
      
@@ -3295,7 +3295,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1258.7
                           N  (kg/ha) =                   0.00                   19.20
      
-11 July 1985(Day of year=192), manager: 
+11 July 1985(Day of year=192), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 11 July 1985(Day of year=192), wheat: 
      Crop Sow
@@ -3410,7 +3410,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =         756.98 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     2.01 (%)    extractable sw =   44.69 (mm)
-28 November 1985(Day of year=332), manager: 
+28 November 1985(Day of year=332), Manager: 
      Manager sending message :- wheat harvest
 28 November 1985(Day of year=332), wheat: 
      
@@ -3458,7 +3458,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1371.6
                           N  (kg/ha) =                   0.00                   31.22
      
-27 July 1986(Day of year=208), manager: 
+27 July 1986(Day of year=208), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 27 July 1986(Day of year=208), chickpea: 
      Crop Sow
@@ -3578,7 +3578,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                      stover N conc =     1.84 (%)    extractable sw =   38.59 (mm)
 15 December 1986(Day of year=349), chickpea: 
       stage 11.0 end_crop
-16 December 1986(Day of year=350), manager: 
+16 December 1986(Day of year=350), Manager: 
      Manager sending message :- chickpea harvest
 16 December 1986(Day of year=350), chickpea: 
      
@@ -3621,7 +3621,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1086.4
                           N  (kg/ha) =                   0.00                   16.57
      
-20 May 1988(Day of year=141), manager: 
+20 May 1988(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1988(Day of year=141), wheat: 
      Crop Sow
@@ -3736,7 +3736,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =        1638.47 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.08 (%)    extractable sw =   41.44 (mm)
-2 November 1988(Day of year=307), manager: 
+2 November 1988(Day of year=307), Manager: 
      Manager sending message :- wheat harvest
 2 November 1988(Day of year=307), wheat: 
      
@@ -3784,7 +3784,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  2610.9
                           N  (kg/ha) =                   0.00                   59.67
      
-20 May 1989(Day of year=140), manager: 
+20 May 1989(Day of year=140), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 20 May 1989(Day of year=140), chickpea: 
      Crop Sow
@@ -3904,7 +3904,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                      stover N conc =     1.82 (%)    extractable sw =   97.74 (mm)
 14 November 1989(Day of year=318), chickpea: 
       stage 11.0 end_crop
-15 November 1989(Day of year=319), manager: 
+15 November 1989(Day of year=319), Manager: 
      Manager sending message :- chickpea harvest
 15 November 1989(Day of year=319), chickpea: 
      
@@ -3947,7 +3947,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1036.2
                           N  (kg/ha) =                   0.00                   15.77
      
-24 May 1990(Day of year=144), manager: 
+24 May 1990(Day of year=144), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 24 May 1990(Day of year=144), wheat: 
      Crop Sow
@@ -4062,7 +4062,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =        1309.50 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.04 (%)    extractable sw =   19.22 (mm)
-12 November 1990(Day of year=316), manager: 
+12 November 1990(Day of year=316), Manager: 
      Manager sending message :- wheat harvest
 12 November 1990(Day of year=316), wheat: 
      
@@ -4110,7 +4110,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  2491.9
                           N  (kg/ha) =                   0.00                   57.61
      
-23 May 1991(Day of year=143), manager: 
+23 May 1991(Day of year=143), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 23 May 1991(Day of year=143), chickpea: 
      Crop Sow
@@ -4230,7 +4230,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                      stover N conc =     1.85 (%)    extractable sw =   39.58 (mm)
 7 November 1991(Day of year=311), chickpea: 
       stage 11.0 end_crop
-8 November 1991(Day of year=312), manager: 
+8 November 1991(Day of year=312), Manager: 
      Manager sending message :- chickpea harvest
 8 November 1991(Day of year=312), chickpea: 
      
@@ -4273,7 +4273,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1043.4
                           N  (kg/ha) =                   0.00                   15.91
      
-4 June 1993(Day of year=155), manager: 
+4 June 1993(Day of year=155), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 4 June 1993(Day of year=155), wheat: 
      Crop Sow
@@ -4388,7 +4388,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =        1160.19 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.82 (%)    extractable sw =   20.99 (mm)
-13 November 1993(Day of year=317), manager: 
+13 November 1993(Day of year=317), Manager: 
      Manager sending message :- wheat harvest
 13 November 1993(Day of year=317), wheat: 
      
@@ -4436,7 +4436,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1991.1
                           N  (kg/ha) =                   0.00                   46.31
      
-10 June 1994(Day of year=161), manager: 
+10 June 1994(Day of year=161), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 10 June 1994(Day of year=161), chickpea: 
      Crop Sow
@@ -4556,7 +4556,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                      stover N conc =     1.78 (%)    extractable sw =   19.16 (mm)
 23 November 1994(Day of year=327), chickpea: 
       stage 11.0 end_crop
-24 November 1994(Day of year=328), manager: 
+24 November 1994(Day of year=328), Manager: 
      Manager sending message :- chickpea harvest
 24 November 1994(Day of year=328), chickpea: 
      
@@ -4599,7 +4599,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1106.8
                           N  (kg/ha) =                   0.00                   17.37
      
-18 June 1995(Day of year=169), manager: 
+18 June 1995(Day of year=169), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 18 June 1995(Day of year=169), wheat: 
      Crop Sow
@@ -4714,7 +4714,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =         497.84 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.46 (%)    extractable sw =   10.69 (mm)
-14 November 1995(Day of year=318), manager: 
+14 November 1995(Day of year=318), Manager: 
      Manager sending message :- wheat harvest
 14 November 1995(Day of year=318), wheat: 
      
@@ -4762,9 +4762,9 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                   955.1
                           N  (kg/ha) =                   0.00                   21.10
      
-24 November 1995(Day of year=328), manager: 
+24 November 1995(Day of year=328), Manager: 
      Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
-24 November 1995(Day of year=328), sorghum: 
+24 November 1995(Day of year=328), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -4830,49 +4830,49 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
      Residue removed using planter
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    50.00
-25 November 1995(Day of year=329), sorghum: 
+25 November 1995(Day of year=329), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW = 100.53
-1 December 1995(Day of year=335), sorghum: 
+1 December 1995(Day of year=335), Sorghum: 
      Stage 3 Emergence  DAS = 7
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  97.12
-10 December 1995(Day of year=344), sorghum: 
+10 December 1995(Day of year=344), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   3.47 		 LAI            =   0.05
      		Stover N Conc =   0.09 		 Extractable SW = 114.27
-23 December 1995(Day of year=357), sorghum: 
+23 December 1995(Day of year=357), Sorghum: 
      Stage 5 FloralInitiation  DAS = 29
      		Biomass       =  31.28 		 LAI            =   0.47
      		Stover N Conc =   0.73 		 Extractable SW = 126.52
-14 January 1996(Day of year=14), sorghum: 
+14 January 1996(Day of year=14), Sorghum: 
      Stage 6 FlagLeaf  DAS = 51
      		Biomass       = 299.51 		 LAI            =   2.90
      		Stover N Conc =   5.74 		 Extractable SW = 223.42
-27 January 1996(Day of year=27), sorghum: 
+27 January 1996(Day of year=27), Sorghum: 
      Stage 7 Flowering  DAS = 64
      		Biomass       = 560.14 		 LAI            =   2.91
      		Stover N Conc =   8.26 		 Extractable SW = 257.70
-1 February 1996(Day of year=32), sorghum: 
+1 February 1996(Day of year=32), Sorghum: 
      Stage 8 StartGrainFill  DAS = 69
      		Biomass       = 678.63 		 LAI            =   2.91
      		Stover N Conc =   9.19 		 Extractable SW = 212.39
-12 March 1996(Day of year=72), sorghum: 
+12 March 1996(Day of year=72), Sorghum: 
      Stage 9 EndGrainFill  DAS = 109
      		Biomass       = 1405.22 		 LAI            =   2.06
      		Stover N Conc =   3.99 		 Extractable SW =  88.75
-14 March 1996(Day of year=74), sorghum: 
+14 March 1996(Day of year=74), Sorghum: 
      Stage 10 Maturity  DAS = 111
      		Biomass       = 1428.06 		 LAI            =   1.91
      		Stover N Conc =   3.79 		 Extractable SW =  83.64
-15 March 1996(Day of year=75), sorghum: 
+15 March 1996(Day of year=75), Sorghum: 
      Stage 11 HarvestRipe  DAS = 112
      		Biomass       = 1438.15 		 LAI            =   1.84
      		Stover N Conc =   3.70 		 Extractable SW =  81.01
-16 March 1996(Day of year=76), manager: 
+16 March 1996(Day of year=76), Manager: 
      Manager sending message :- sorghum harvest
-16 March 1996(Day of year=76), sorghum: 
+16 March 1996(Day of year=76), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 64 		 Maturity (DAS)          = 111
@@ -4910,7 +4910,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                          DM (kg/ha) =               6614.69		 2245.03
                          N  (kg/ha) =                 37.03		    4.49
                          P  (kg/ha) =                  0.00		    0.00
-30 July 1996(Day of year=212), manager: 
+30 July 1996(Day of year=212), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 30 July 1996(Day of year=212), chickpea: 
      Crop Sow
@@ -5030,7 +5030,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                      stover N conc =     1.83 (%)    extractable sw =   55.67 (mm)
 14 December 1996(Day of year=349), chickpea: 
       stage 11.0 end_crop
-15 December 1996(Day of year=350), manager: 
+15 December 1996(Day of year=350), Manager: 
      Manager sending message :- chickpea harvest
 15 December 1996(Day of year=350), chickpea: 
      
@@ -5073,7 +5073,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                   867.1
                           N  (kg/ha) =                   0.00                   13.30
      
-20 May 1997(Day of year=140), manager: 
+20 May 1997(Day of year=140), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1997(Day of year=140), wheat: 
      Crop Sow
@@ -5188,7 +5188,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =         631.95 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     2.01 (%)    extractable sw =   29.80 (mm)
-7 November 1997(Day of year=311), manager: 
+7 November 1997(Day of year=311), Manager: 
      Manager sending message :- wheat harvest
 7 November 1997(Day of year=311), wheat: 
      
@@ -5236,7 +5236,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1197.5
                           N  (kg/ha) =                   0.00                   25.98
      
-21 May 1998(Day of year=141), manager: 
+21 May 1998(Day of year=141), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 21 May 1998(Day of year=141), chickpea: 
      Crop Sow
@@ -5356,7 +5356,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                      stover N conc =     1.82 (%)    extractable sw =  124.44 (mm)
 6 November 1998(Day of year=310), chickpea: 
       stage 11.0 end_crop
-7 November 1998(Day of year=311), manager: 
+7 November 1998(Day of year=311), Manager: 
      Manager sending message :- chickpea harvest
 7 November 1998(Day of year=311), chickpea: 
      
@@ -5399,7 +5399,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                   963.8
                           N  (kg/ha) =                   0.00                   14.66
      
-10 June 1999(Day of year=161), manager: 
+10 June 1999(Day of year=161), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 10 June 1999(Day of year=161), wheat: 
      Crop Sow
@@ -5514,7 +5514,7 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
       stage 10.0 harvest_ripe
                      biomass =        1374.93 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.09 (%)    extractable sw =  148.74 (mm)
-8 November 1999(Day of year=312), manager: 
+8 November 1999(Day of year=312), Manager: 
      Manager sending message :- wheat harvest
 8 November 1999(Day of year=312), wheat: 
      
@@ -5562,9 +5562,9 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                           DM (kg/ha) =                   0.0                  1928.0
                           N  (kg/ha) =                   0.00                   44.07
      
-19 November 1999(Day of year=323), manager: 
+19 November 1999(Day of year=323), Manager: 
      Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
-19 November 1999(Day of year=323), sorghum: 
+19 November 1999(Day of year=323), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -5630,49 +5630,49 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
      Residue removed using planter
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    50.00
-20 November 1999(Day of year=324), sorghum: 
+20 November 1999(Day of year=324), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  81.01
-28 November 1999(Day of year=332), sorghum: 
+28 November 1999(Day of year=332), Sorghum: 
      Stage 3 Emergence  DAS = 9
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW = 105.72
-7 December 1999(Day of year=341), sorghum: 
+7 December 1999(Day of year=341), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 18
      		Biomass       =   3.08 		 LAI            =   0.04
      		Stover N Conc =   0.09 		 Extractable SW = 118.42
-20 December 1999(Day of year=354), sorghum: 
+20 December 1999(Day of year=354), Sorghum: 
      Stage 5 FloralInitiation  DAS = 31
      		Biomass       =  25.40 		 LAI            =   0.44
      		Stover N Conc =   0.66 		 Extractable SW = 178.90
-14 January 2000(Day of year=14), sorghum: 
+14 January 2000(Day of year=14), Sorghum: 
      Stage 6 FlagLeaf  DAS = 56
      		Biomass       = 373.38 		 LAI            =   2.88
      		Stover N Conc =   6.24 		 Extractable SW = 144.98
-29 January 2000(Day of year=29), sorghum: 
+29 January 2000(Day of year=29), Sorghum: 
      Stage 7 Flowering  DAS = 71
      		Biomass       = 614.80 		 LAI            =   2.91
      		Stover N Conc =   8.47 		 Extractable SW = 114.44
-2 February 2000(Day of year=33), sorghum: 
+2 February 2000(Day of year=33), Sorghum: 
      Stage 8 StartGrainFill  DAS = 75
      		Biomass       = 679.79 		 LAI            =   2.91
      		Stover N Conc =   8.98 		 Extractable SW = 100.38
-10 March 2000(Day of year=70), sorghum: 
+10 March 2000(Day of year=70), Sorghum: 
      Stage 9 EndGrainFill  DAS = 112
      		Biomass       = 978.46 		 LAI            =   1.55
      		Stover N Conc =   3.62 		 Extractable SW = 110.91
-12 March 2000(Day of year=72), sorghum: 
+12 March 2000(Day of year=72), Sorghum: 
      Stage 10 Maturity  DAS = 114
      		Biomass       = 989.93 		 LAI            =   1.43
      		Stover N Conc =   3.46 		 Extractable SW = 106.44
-13 March 2000(Day of year=73), sorghum: 
+13 March 2000(Day of year=73), Sorghum: 
      Stage 11 HarvestRipe  DAS = 115
      		Biomass       = 997.57 		 LAI            =   1.36
      		Stover N Conc =   3.39 		 Extractable SW = 103.23
-14 March 2000(Day of year=74), manager: 
+14 March 2000(Day of year=74), Manager: 
      Manager sending message :- sorghum harvest
-14 March 2000(Day of year=74), sorghum: 
+14 March 2000(Day of year=74), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 71 		 Maturity (DAS)          = 114
@@ -5710,9 +5710,9 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
                          DM (kg/ha) =               5566.38		 2334.68
                          N  (kg/ha) =                 33.86		    4.67
                          P  (kg/ha) =                  0.00		    0.00
-6 November 2000(Day of year=311), manager: 
+6 November 2000(Day of year=311), Manager: 
      Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
-6 November 2000(Day of year=311), sorghum: 
+6 November 2000(Day of year=311), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -5778,25 +5778,25 @@ Title                  = site=warialda; soil=lg1; treatment=oc2; Nrate=200; Root
      Residue removed using planter
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    50.00
-7 November 2000(Day of year=312), sorghum: 
+7 November 2000(Day of year=312), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  89.60
-16 November 2000(Day of year=321), sorghum: 
+16 November 2000(Day of year=321), Sorghum: 
      Stage 3 Emergence  DAS = 10
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  93.29
-26 November 2000(Day of year=331), sorghum: 
+26 November 2000(Day of year=331), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 20
      		Biomass       =   3.17 		 LAI            =   0.05
      		Stover N Conc =   0.09 		 Extractable SW =  98.70
-7 December 2000(Day of year=342), sorghum: 
+7 December 2000(Day of year=342), Sorghum: 
      Stage 5 FloralInitiation  DAS = 31
      		Biomass       =  26.12 		 LAI            =   0.42
      		Stover N Conc =   0.65 		 Extractable SW = 125.65
-28 December 2000(Day of year=363), sorghum: 
+28 December 2000(Day of year=363), Sorghum: 
      Stage 6 FlagLeaf  DAS = 52
      		Biomass       = 336.38 		 LAI            =   2.87
      		Stover N Conc =   5.93 		 Extractable SW = 172.95
-31 December 2000(Day of year=366), clock: 
+31 December 2000(Day of year=366), Clock: 
      Simulation is terminating due to end criteria being met.

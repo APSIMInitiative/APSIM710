@@ -11,21 +11,21 @@
 
 Version                = 7.5
 Title                  = 
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
    Component                          "met" = %apsim%\Model\Input.dll
-   Component                        "accum" = %apsim%\Model\accum.dll
+   Component                        "Accum" = %apsim%\Model\Accum.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                        "wheat" = %apsim%\Model\plant.dll
-   Component                      "sorghum" = %apsim%\Model\sorghum.dll
-   Component                      "tracker" = %apsim%\Model\tracker.dll
-   Component                       "sysbal" = %apsim%\Model\sysbal.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                      "Sorghum" = %apsim%\Model\Sorghum.dll
+   Component                      "Tracker" = %apsim%\Model\Tracker.dll
+   Component                       "SysBal" = %apsim%\Model\SysBal.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -41,7 +41,7 @@ Title                  =
      Simulation end date   = 30/01/2003
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.dd/mm/yyyy as date
         clock.year
@@ -66,10 +66,10 @@ Title                  =
      Sparse data is not allowed
      INPUT File name: met\salmon_gums.met
 
-------- accum Initialisation --------------------------------------------------
+------- Accum Initialisation --------------------------------------------------
      Initialising
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -299,7 +299,7 @@ Title                  =
            Totals   43812.8  3021.6   587.2    73.4   600.0    20.0
           ---------------------------------------------------------
 
-------- tracker Initialisation ------------------------------------------------
+------- Tracker Initialisation ------------------------------------------------
      Tracker variables:
         maximum of wheat.yield on end_of_day from reported to now as wht_yield
         sum of wheat.ep on end_of_day from reported to now as wht_ep
@@ -324,7 +324,7 @@ Title                  =
      Manager creating a new local real variable : esw_layer4 = 26.00000
      Manager creating a new local real variable : esw_rooting_zone = 82.00000
      Manager creating a new local real variable : rz_no3 = 36.32850
-24 July 1958(Day of year=205), manager: 
+24 July 1958(Day of year=205), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 24 July 1958(Day of year=205), wheat: 
      Crop Sow
@@ -417,7 +417,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         626.60 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   38.02 (mm)
-15 December 1958(Day of year=349), manager: 
+15 December 1958(Day of year=349), Manager: 
      Manager sending message :- wheat harvest
 15 December 1958(Day of year=349), wheat: 
      
@@ -463,7 +463,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                  1209.8
                           N  (kg/ha) =                   0.00                   11.54
      
-15 May 1959(Day of year=135), manager: 
+15 May 1959(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1959(Day of year=135), wheat: 
      Crop Sow
@@ -543,7 +543,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =          96.06 (g/m^2)   lai          =   1.383 (m^2/m^2)
                      stover N conc =     1.89 (%)    extractable sw =   54.08 (mm)
-7 September 1959(Day of year=250), manager: 
+7 September 1959(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1959(Day of year=250), wheat: 
      
@@ -586,7 +586,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                   723.6
                           N  (kg/ha) =                   0.19                    5.85
      
-25 July 1960(Day of year=207), manager: 
+25 July 1960(Day of year=207), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 25 July 1960(Day of year=207), wheat: 
      Crop Sow
@@ -685,7 +685,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         350.94 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   19.20 (mm)
-13 December 1960(Day of year=348), manager: 
+13 December 1960(Day of year=348), Manager: 
      Manager sending message :- wheat harvest
 13 December 1960(Day of year=348), wheat: 
      
@@ -731,7 +731,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   745.8
                           N  (kg/ha) =                   0.00                    7.37
      
-15 May 1961(Day of year=135), manager: 
+15 May 1961(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1961(Day of year=135), wheat: 
      Crop Sow
@@ -810,7 +810,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =         149.83 (g/m^2)   lai          =   2.128 (m^2/m^2)
                      stover N conc =     1.95 (%)    extractable sw =   74.45 (mm)
-7 September 1961(Day of year=250), manager: 
+7 September 1961(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1961(Day of year=250), wheat: 
      
@@ -853,7 +853,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                  1038.0
                           N  (kg/ha) =                   0.19                    8.51
      
-16 May 1962(Day of year=136), manager: 
+16 May 1962(Day of year=136), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 16 May 1962(Day of year=136), wheat: 
      Crop Sow
@@ -946,7 +946,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         493.15 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   33.28 (mm)
-6 November 1962(Day of year=310), manager: 
+6 November 1962(Day of year=310), Manager: 
      Manager sending message :- wheat harvest
 6 November 1962(Day of year=310), wheat: 
      
@@ -992,7 +992,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   743.3
                           N  (kg/ha) =                   0.00                    6.83
      
-15 May 1963(Day of year=135), manager: 
+15 May 1963(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1963(Day of year=135), wheat: 
      Crop Sow
@@ -1071,7 +1071,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =         113.77 (g/m^2)   lai          =   1.544 (m^2/m^2)
                      stover N conc =     1.78 (%)    extractable sw =   77.30 (mm)
-7 September 1963(Day of year=250), manager: 
+7 September 1963(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1963(Day of year=250), wheat: 
      
@@ -1114,7 +1114,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                   740.2
                           N  (kg/ha) =                   0.19                    6.08
      
-12 July 1964(Day of year=194), manager: 
+12 July 1964(Day of year=194), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 12 July 1964(Day of year=194), wheat: 
      Crop Sow
@@ -1207,7 +1207,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         646.90 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   19.19 (mm)
-13 December 1964(Day of year=348), manager: 
+13 December 1964(Day of year=348), Manager: 
      Manager sending message :- wheat harvest
 13 December 1964(Day of year=348), wheat: 
      
@@ -1253,7 +1253,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                  1219.8
                           N  (kg/ha) =                   0.00                   11.92
      
-15 May 1965(Day of year=135), manager: 
+15 May 1965(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1965(Day of year=135), wheat: 
      Crop Sow
@@ -1332,7 +1332,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =          83.28 (g/m^2)   lai          =   1.047 (m^2/m^2)
                      stover N conc =     1.67 (%)    extractable sw =   85.39 (mm)
-7 September 1965(Day of year=250), manager: 
+7 September 1965(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1965(Day of year=250), wheat: 
      
@@ -1375,7 +1375,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                   530.5
                           N  (kg/ha) =                   0.19                    4.23
      
-28 June 1966(Day of year=179), manager: 
+28 June 1966(Day of year=179), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 28 June 1966(Day of year=179), wheat: 
      Crop Sow
@@ -1468,7 +1468,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         509.17 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   18.10 (mm)
-1 December 1966(Day of year=335), manager: 
+1 December 1966(Day of year=335), Manager: 
      Manager sending message :- wheat harvest
 1 December 1966(Day of year=335), wheat: 
      
@@ -1514,7 +1514,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   903.4
                           N  (kg/ha) =                   0.00                    8.09
      
-15 May 1967(Day of year=135), manager: 
+15 May 1967(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1967(Day of year=135), wheat: 
      Crop Sow
@@ -1593,7 +1593,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =          94.70 (g/m^2)   lai          =   1.274 (m^2/m^2)
                      stover N conc =     1.78 (%)    extractable sw =   75.68 (mm)
-7 September 1967(Day of year=250), manager: 
+7 September 1967(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1967(Day of year=250), wheat: 
      
@@ -1636,7 +1636,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                   656.6
                           N  (kg/ha) =                   0.19                    5.08
      
-11 June 1968(Day of year=163), manager: 
+11 June 1968(Day of year=163), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 11 June 1968(Day of year=163), wheat: 
      Crop Sow
@@ -1729,7 +1729,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         476.31 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   19.19 (mm)
-27 November 1968(Day of year=332), manager: 
+27 November 1968(Day of year=332), Manager: 
      Manager sending message :- wheat harvest
 27 November 1968(Day of year=332), wheat: 
      
@@ -1775,7 +1775,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   902.7
                           N  (kg/ha) =                   0.00                    8.59
      
-15 May 1969(Day of year=135), manager: 
+15 May 1969(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1969(Day of year=135), wheat: 
      Crop Sow
@@ -1854,7 +1854,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =         104.48 (g/m^2)   lai          =   1.113 (m^2/m^2)
                      stover N conc =     1.98 (%)    extractable sw =   15.07 (mm)
-7 September 1969(Day of year=250), manager: 
+7 September 1969(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1969(Day of year=250), wheat: 
      
@@ -1897,7 +1897,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                   619.3
                           N  (kg/ha) =                   0.19                    6.74
      
-30 July 1970(Day of year=211), manager: 
+30 July 1970(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 30 July 1970(Day of year=211), wheat: 
      Crop Sow
@@ -1990,7 +1990,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         486.41 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =    7.72 (mm)
-13 December 1970(Day of year=347), manager: 
+13 December 1970(Day of year=347), Manager: 
      Manager sending message :- wheat harvest
 13 December 1970(Day of year=347), wheat: 
      
@@ -2036,7 +2036,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                  1058.9
                           N  (kg/ha) =                   0.00                   17.76
      
-15 May 1971(Day of year=135), manager: 
+15 May 1971(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1971(Day of year=135), wheat: 
      Crop Sow
@@ -2115,7 +2115,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =         103.00 (g/m^2)   lai          =   1.273 (m^2/m^2)
                      stover N conc =     1.70 (%)    extractable sw =   49.47 (mm)
-7 September 1971(Day of year=250), manager: 
+7 September 1971(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1971(Day of year=250), wheat: 
      
@@ -2158,7 +2158,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                   667.4
                           N  (kg/ha) =                   0.19                    5.44
      
-23 June 1972(Day of year=175), manager: 
+23 June 1972(Day of year=175), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 23 June 1972(Day of year=175), wheat: 
      Crop Sow
@@ -2251,7 +2251,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         466.59 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =    5.58 (mm)
-26 November 1972(Day of year=331), manager: 
+26 November 1972(Day of year=331), Manager: 
      Manager sending message :- wheat harvest
 26 November 1972(Day of year=331), wheat: 
      
@@ -2297,7 +2297,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                  1030.5
                           N  (kg/ha) =                   0.00                   18.73
      
-15 May 1973(Day of year=135), manager: 
+15 May 1973(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1973(Day of year=135), wheat: 
      Crop Sow
@@ -2376,7 +2376,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =         135.25 (g/m^2)   lai          =   1.794 (m^2/m^2)
                      stover N conc =     1.78 (%)    extractable sw =   85.16 (mm)
-7 September 1973(Day of year=250), manager: 
+7 September 1973(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1973(Day of year=250), wheat: 
      
@@ -2419,7 +2419,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                   881.6
                           N  (kg/ha) =                   0.19                    7.05
      
-15 May 1974(Day of year=135), manager: 
+15 May 1974(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 15 May 1974(Day of year=135), wheat: 
      Crop Sow
@@ -2512,7 +2512,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         576.20 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   24.35 (mm)
-8 November 1974(Day of year=312), manager: 
+8 November 1974(Day of year=312), Manager: 
      Manager sending message :- wheat harvest
 8 November 1974(Day of year=312), wheat: 
      
@@ -2558,7 +2558,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   843.7
                           N  (kg/ha) =                   0.00                    7.74
      
-15 May 1975(Day of year=135), manager: 
+15 May 1975(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1975(Day of year=135), wheat: 
      Crop Sow
@@ -2637,7 +2637,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =         134.89 (g/m^2)   lai          =   1.763 (m^2/m^2)
                      stover N conc =     1.76 (%)    extractable sw =   70.66 (mm)
-7 September 1975(Day of year=250), manager: 
+7 September 1975(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1975(Day of year=250), wheat: 
      
@@ -2680,7 +2680,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                   884.6
                           N  (kg/ha) =                   0.19                    7.10
      
-29 July 1976(Day of year=211), manager: 
+29 July 1976(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 29 July 1976(Day of year=211), wheat: 
      Crop Sow
@@ -2773,7 +2773,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         507.50 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   20.50 (mm)
-12 December 1976(Day of year=347), manager: 
+12 December 1976(Day of year=347), Manager: 
      Manager sending message :- wheat harvest
 12 December 1976(Day of year=347), wheat: 
      
@@ -2819,7 +2819,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   898.6
                           N  (kg/ha) =                   0.00                    9.01
      
-15 May 1977(Day of year=135), manager: 
+15 May 1977(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1977(Day of year=135), wheat: 
      Crop Sow
@@ -2898,7 +2898,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =          74.16 (g/m^2)   lai          =   0.852 (m^2/m^2)
                      stover N conc =     1.62 (%)    extractable sw =   19.53 (mm)
-7 September 1977(Day of year=250), manager: 
+7 September 1977(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1977(Day of year=250), wheat: 
      
@@ -2941,7 +2941,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                   473.0
                           N  (kg/ha) =                   0.19                    3.83
      
-28 June 1978(Day of year=179), manager: 
+28 June 1978(Day of year=179), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 28 June 1978(Day of year=179), wheat: 
      Crop Sow
@@ -3034,7 +3034,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         520.54 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   10.95 (mm)
-1 December 1978(Day of year=335), manager: 
+1 December 1978(Day of year=335), Manager: 
      Manager sending message :- wheat harvest
 1 December 1978(Day of year=335), wheat: 
      
@@ -3080,7 +3080,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                  1045.1
                           N  (kg/ha) =                   0.00                   13.33
      
-15 May 1979(Day of year=135), manager: 
+15 May 1979(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1979(Day of year=135), wheat: 
      Crop Sow
@@ -3159,7 +3159,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =         105.69 (g/m^2)   lai          =   1.363 (m^2/m^2)
                      stover N conc =     1.77 (%)    extractable sw =   66.39 (mm)
-7 September 1979(Day of year=250), manager: 
+7 September 1979(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1979(Day of year=250), wheat: 
      
@@ -3202,7 +3202,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                   707.4
                           N  (kg/ha) =                   0.19                    5.91
      
-29 July 1980(Day of year=211), manager: 
+29 July 1980(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 29 July 1980(Day of year=211), wheat: 
      Crop Sow
@@ -3295,7 +3295,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         373.28 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.49 (%)    extractable sw =   21.71 (mm)
-7 December 1980(Day of year=342), manager: 
+7 December 1980(Day of year=342), Manager: 
      Manager sending message :- wheat harvest
 7 December 1980(Day of year=342), wheat: 
      
@@ -3341,7 +3341,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   857.0
                           N  (kg/ha) =                   0.00                   19.94
      
-15 May 1981(Day of year=135), manager: 
+15 May 1981(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1981(Day of year=135), wheat: 
      Crop Sow
@@ -3420,7 +3420,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =         109.54 (g/m^2)   lai          =   1.433 (m^2/m^2)
                      stover N conc =     1.77 (%)    extractable sw =   40.23 (mm)
-7 September 1981(Day of year=250), manager: 
+7 September 1981(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1981(Day of year=250), wheat: 
      
@@ -3463,7 +3463,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                   688.6
                           N  (kg/ha) =                   0.19                    6.00
      
-15 June 1982(Day of year=166), manager: 
+15 June 1982(Day of year=166), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 15 June 1982(Day of year=166), wheat: 
      Crop Sow
@@ -3562,7 +3562,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         318.72 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   37.43 (mm)
-15 November 1982(Day of year=319), manager: 
+15 November 1982(Day of year=319), Manager: 
      Manager sending message :- wheat harvest
 15 November 1982(Day of year=319), wheat: 
      
@@ -3608,7 +3608,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   647.7
                           N  (kg/ha) =                   0.00                    7.85
      
-15 May 1983(Day of year=135), manager: 
+15 May 1983(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1983(Day of year=135), wheat: 
      Crop Sow
@@ -3685,7 +3685,7 @@ Title                  =
       stage 6.0 flowering
                      biomass =         532.71 (g/m^2)   lai          =   1.645 (m^2/m^2)
                      stover N conc =     0.94 (%)    extractable sw =   36.61 (mm)
-7 September 1983(Day of year=250), manager: 
+7 September 1983(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1983(Day of year=250), wheat: 
      
@@ -3729,7 +3729,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                  1230.3
                           N  (kg/ha) =                   0.19                   13.41
      
-29 May 1984(Day of year=150), manager: 
+29 May 1984(Day of year=150), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 29 May 1984(Day of year=150), wheat: 
      Crop Sow
@@ -3828,7 +3828,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         528.44 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   49.08 (mm)
-16 November 1984(Day of year=321), manager: 
+16 November 1984(Day of year=321), Manager: 
      Manager sending message :- wheat harvest
 16 November 1984(Day of year=321), wheat: 
      
@@ -3874,7 +3874,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   868.4
                           N  (kg/ha) =                   0.00                    7.57
      
-15 May 1985(Day of year=135), manager: 
+15 May 1985(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1985(Day of year=135), wheat: 
      Crop Sow
@@ -3947,7 +3947,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =         146.67 (g/m^2)   lai          =   2.061 (m^2/m^2)
                      stover N conc =     2.14 (%)    extractable sw =   49.22 (mm)
-7 September 1985(Day of year=250), manager: 
+7 September 1985(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1985(Day of year=250), wheat: 
      
@@ -3990,7 +3990,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                  1134.7
                           N  (kg/ha) =                   0.19                   10.12
      
-16 May 1986(Day of year=136), manager: 
+16 May 1986(Day of year=136), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 16 May 1986(Day of year=136), wheat: 
      Crop Sow
@@ -4083,7 +4083,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         364.02 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.29 (%)    extractable sw =   50.38 (mm)
-13 November 1986(Day of year=317), manager: 
+13 November 1986(Day of year=317), Manager: 
      Manager sending message :- wheat harvest
 13 November 1986(Day of year=317), wheat: 
      
@@ -4129,7 +4129,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   611.4
                           N  (kg/ha) =                   0.00                    5.01
      
-15 May 1987(Day of year=135), manager: 
+15 May 1987(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1987(Day of year=135), wheat: 
      Crop Sow
@@ -4202,7 +4202,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =         126.39 (g/m^2)   lai          =   1.723 (m^2/m^2)
                      stover N conc =     1.84 (%)    extractable sw =   75.38 (mm)
-7 September 1987(Day of year=250), manager: 
+7 September 1987(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1987(Day of year=250), wheat: 
      
@@ -4245,7 +4245,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                   840.7
                           N  (kg/ha) =                   0.19                    7.08
      
-23 May 1988(Day of year=144), manager: 
+23 May 1988(Day of year=144), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 23 May 1988(Day of year=144), wheat: 
      Crop Sow
@@ -4338,7 +4338,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         504.81 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   15.51 (mm)
-2 November 1988(Day of year=307), manager: 
+2 November 1988(Day of year=307), Manager: 
      Manager sending message :- wheat harvest
 2 November 1988(Day of year=307), wheat: 
      
@@ -4384,7 +4384,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   851.8
                           N  (kg/ha) =                   0.00                    8.88
      
-15 May 1989(Day of year=135), manager: 
+15 May 1989(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1989(Day of year=135), wheat: 
      Crop Sow
@@ -4463,7 +4463,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =         102.11 (g/m^2)   lai          =   1.293 (m^2/m^2)
                      stover N conc =     1.69 (%)    extractable sw =   85.42 (mm)
-7 September 1989(Day of year=250), manager: 
+7 September 1989(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1989(Day of year=250), wheat: 
      
@@ -4506,7 +4506,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                   656.3
                           N  (kg/ha) =                   0.19                    5.17
      
-30 July 1990(Day of year=211), manager: 
+30 July 1990(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 30 July 1990(Day of year=211), wheat: 
      Crop Sow
@@ -4599,7 +4599,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         446.89 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   12.54 (mm)
-11 December 1990(Day of year=345), manager: 
+11 December 1990(Day of year=345), Manager: 
      Manager sending message :- wheat harvest
 11 December 1990(Day of year=345), wheat: 
      
@@ -4645,7 +4645,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   978.9
                           N  (kg/ha) =                   0.00                   12.43
      
-15 May 1991(Day of year=135), manager: 
+15 May 1991(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1991(Day of year=135), wheat: 
      Crop Sow
@@ -4724,7 +4724,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =          81.23 (g/m^2)   lai          =   1.151 (m^2/m^2)
                      stover N conc =     1.90 (%)    extractable sw =   60.75 (mm)
-7 September 1991(Day of year=250), manager: 
+7 September 1991(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1991(Day of year=250), wheat: 
      
@@ -4767,7 +4767,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                   661.6
                           N  (kg/ha) =                   0.19                    5.33
      
-29 July 1992(Day of year=211), manager: 
+29 July 1992(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 29 July 1992(Day of year=211), wheat: 
      Crop Sow
@@ -4866,7 +4866,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         402.10 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   28.43 (mm)
-20 December 1992(Day of year=355), manager: 
+20 December 1992(Day of year=355), Manager: 
      Manager sending message :- wheat harvest
 20 December 1992(Day of year=355), wheat: 
      
@@ -4912,7 +4912,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   721.2
                           N  (kg/ha) =                   0.00                    5.93
      
-15 May 1993(Day of year=135), manager: 
+15 May 1993(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1993(Day of year=135), wheat: 
      Crop Sow
@@ -4991,7 +4991,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =         123.56 (g/m^2)   lai          =   1.698 (m^2/m^2)
                      stover N conc =     1.80 (%)    extractable sw =   63.13 (mm)
-7 September 1993(Day of year=250), manager: 
+7 September 1993(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1993(Day of year=250), wheat: 
      
@@ -5034,7 +5034,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                   812.1
                           N  (kg/ha) =                   0.19                    6.64
      
-30 July 1994(Day of year=211), manager: 
+30 July 1994(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 30 July 1994(Day of year=211), wheat: 
      Crop Sow
@@ -5127,7 +5127,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         495.74 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   10.25 (mm)
-8 December 1994(Day of year=342), manager: 
+8 December 1994(Day of year=342), Manager: 
      Manager sending message :- wheat harvest
 8 December 1994(Day of year=342), wheat: 
      
@@ -5173,7 +5173,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                  1066.1
                           N  (kg/ha) =                   0.00                   16.38
      
-15 May 1995(Day of year=135), manager: 
+15 May 1995(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1995(Day of year=135), wheat: 
      Crop Sow
@@ -5252,7 +5252,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =          92.24 (g/m^2)   lai          =   1.270 (m^2/m^2)
                      stover N conc =     1.82 (%)    extractable sw =   62.22 (mm)
-7 September 1995(Day of year=250), manager: 
+7 September 1995(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1995(Day of year=250), wheat: 
      
@@ -5295,7 +5295,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                   671.3
                           N  (kg/ha) =                   0.19                    5.36
      
-29 July 1996(Day of year=211), manager: 
+29 July 1996(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 29 July 1996(Day of year=211), wheat: 
      Crop Sow
@@ -5388,7 +5388,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         527.10 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   16.67 (mm)
-8 December 1996(Day of year=343), manager: 
+8 December 1996(Day of year=343), Manager: 
      Manager sending message :- wheat harvest
 8 December 1996(Day of year=343), wheat: 
      
@@ -5434,7 +5434,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                  1039.1
                           N  (kg/ha) =                   0.00                   12.65
      
-15 May 1997(Day of year=135), manager: 
+15 May 1997(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1997(Day of year=135), wheat: 
      Crop Sow
@@ -5513,7 +5513,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =          98.96 (g/m^2)   lai          =   1.296 (m^2/m^2)
                      stover N conc =     1.74 (%)    extractable sw =   63.15 (mm)
-7 September 1997(Day of year=250), manager: 
+7 September 1997(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1997(Day of year=250), wheat: 
      
@@ -5556,7 +5556,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                   686.2
                           N  (kg/ha) =                   0.19                    5.54
      
-30 July 1998(Day of year=211), manager: 
+30 July 1998(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 30 July 1998(Day of year=211), wheat: 
      Crop Sow
@@ -5649,7 +5649,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         437.25 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   24.97 (mm)
-9 December 1998(Day of year=343), manager: 
+9 December 1998(Day of year=343), Manager: 
      Manager sending message :- wheat harvest
 9 December 1998(Day of year=343), wheat: 
      
@@ -5695,7 +5695,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   919.3
                           N  (kg/ha) =                   0.00                   12.33
      
-15 May 1999(Day of year=135), manager: 
+15 May 1999(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 1999(Day of year=135), wheat: 
      Crop Sow
@@ -5774,7 +5774,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =         145.72 (g/m^2)   lai          =   2.026 (m^2/m^2)
                      stover N conc =     1.85 (%)    extractable sw =   75.94 (mm)
-7 September 1999(Day of year=250), manager: 
+7 September 1999(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 1999(Day of year=250), wheat: 
      
@@ -5817,7 +5817,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                  1015.3
                           N  (kg/ha) =                   0.19                    8.17
      
-29 July 2000(Day of year=211), manager: 
+29 July 2000(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 29 July 2000(Day of year=211), wheat: 
      Crop Sow
@@ -5916,7 +5916,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         321.76 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   11.83 (mm)
-8 December 2000(Day of year=343), manager: 
+8 December 2000(Day of year=343), Manager: 
      Manager sending message :- wheat harvest
 8 December 2000(Day of year=343), wheat: 
      
@@ -5962,7 +5962,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   733.7
                           N  (kg/ha) =                   0.00                    8.72
      
-15 May 2001(Day of year=135), manager: 
+15 May 2001(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = pasture
 15 May 2001(Day of year=135), wheat: 
      Crop Sow
@@ -6041,7 +6041,7 @@ Title                  =
       stage 5.0 floral_initiation
                      biomass =         144.87 (g/m^2)   lai          =   1.964 (m^2/m^2)
                      stover N conc =     1.83 (%)    extractable sw =   49.91 (mm)
-7 September 2001(Day of year=250), manager: 
+7 September 2001(Day of year=250), Manager: 
      Manager sending message :- wheat harvest
 7 September 2001(Day of year=250), wheat: 
      
@@ -6084,7 +6084,7 @@ Title                  =
                           DM (kg/ha) =                   3.0                   997.2
                           N  (kg/ha) =                   0.19                    8.08
      
-30 July 2002(Day of year=211), manager: 
+30 July 2002(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 30 July 2002(Day of year=211), wheat: 
      Crop Sow
@@ -6177,7 +6177,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         329.57 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   10.05 (mm)
-8 December 2002(Day of year=342), manager: 
+8 December 2002(Day of year=342), Manager: 
      Manager sending message :- wheat harvest
 8 December 2002(Day of year=342), wheat: 
      
@@ -6223,5 +6223,5 @@ Title                  =
                           DM (kg/ha) =                   0.0                   766.4
                           N  (kg/ha) =                   0.00                   10.33
      
-30 January 2003(Day of year=30), clock: 
+30 January 2003(Day of year=30), Clock: 
      Simulation is terminating due to end criteria being met.

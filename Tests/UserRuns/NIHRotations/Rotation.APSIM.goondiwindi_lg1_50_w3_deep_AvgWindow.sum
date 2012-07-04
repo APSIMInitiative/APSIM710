@@ -11,21 +11,21 @@
 
 Version                = 7.5
 Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; RootDepth=deep; Sowing = AvgWindow
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                     "chickpea" = %apsim%\Model\plant.dll
-   Component                        "wheat" = %apsim%\Model\plant.dll
-   Component                      "sorghum" = %apsim%\Model\sorghum.dll
-   Component                      "tracker" = %apsim%\Model\tracker.dll
-   Component                       "sysbal" = %apsim%\Model\sysbal.dll
+   Component                     "chickpea" = %apsim%\Model\Plant.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                      "Sorghum" = %apsim%\Model\Sorghum.dll
+   Component                      "Tracker" = %apsim%\Model\Tracker.dll
+   Component                       "SysBal" = %apsim%\Model\SysBal.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -41,7 +41,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
      Simulation end date   = 31/12/2000
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.dd/mm/yyyy as date
         clock.year
@@ -69,7 +69,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
      Sparse data is not allowed
      INPUT File name: goondiwindi.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- init
@@ -433,7 +433,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
            Totals  223106.3 15386.6  1046.1   130.8   400.0    10.0
           ---------------------------------------------------------
 
-------- tracker Initialisation ------------------------------------------------
+------- Tracker Initialisation ------------------------------------------------
      Tracker variables:
         maximum of wheat.yield on end_of_day from reported to now as wht_yield
         sum of wheat.ep on end_of_day from reported to now as wht_ep
@@ -488,11 +488,11 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                       -------------------
      Uninitialised variable "wht_crop_num".
      Variables should have a value before they are used in an expression.
-     Component name: manager
+     Component name: Manager
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-31 May 1970(Day of year=151), manager: 
+31 May 1970(Day of year=151), Manager: 
      Manager creating a new local real variable : wht_crop_num = 0.00000
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 31 May 1970(Day of year=151), wheat: 
@@ -603,7 +603,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         967.23 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =  139.66 (mm)
-3 November 1970(Day of year=307), manager: 
+3 November 1970(Day of year=307), Manager: 
      Manager creating a new local real variable : w_mat_day = 307.00000
      Manager sending message :- wheat harvest
 3 November 1970(Day of year=307), wheat: 
@@ -652,7 +652,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1693.9
                           N  (kg/ha) =                   0.00                   19.99
      
-19 July 1971(Day of year=200), manager: 
+19 July 1971(Day of year=200), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 19 July 1971(Day of year=200), chickpea: 
      Crop Sow
@@ -772,7 +772,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                      stover N conc =     1.78 (%)    extractable sw =   73.10 (mm)
 29 November 1971(Day of year=333), chickpea: 
       stage 11.0 end_crop
-30 November 1971(Day of year=334), manager: 
+30 November 1971(Day of year=334), Manager: 
      Manager creating a new local real variable : c_mat_day = 334.00000
      Manager sending message :- chickpea harvest
 30 November 1971(Day of year=334), chickpea: 
@@ -816,7 +816,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                   982.9
                           N  (kg/ha) =                   0.00                   15.04
      
-8 July 1973(Day of year=189), manager: 
+8 July 1973(Day of year=189), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 8 July 1973(Day of year=189), wheat: 
      Crop Sow
@@ -925,7 +925,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         856.51 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   76.64 (mm)
-6 November 1973(Day of year=310), manager: 
+6 November 1973(Day of year=310), Manager: 
      Manager sending message :- wheat harvest
 6 November 1973(Day of year=310), wheat: 
      
@@ -973,7 +973,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1409.0
                           N  (kg/ha) =                   0.00                   22.16
      
-21 May 1974(Day of year=141), manager: 
+21 May 1974(Day of year=141), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 21 May 1974(Day of year=141), chickpea: 
      Crop Sow
@@ -1093,7 +1093,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                      stover N conc =     1.88 (%)    extractable sw =   29.83 (mm)
 1 November 1974(Day of year=305), chickpea: 
       stage 11.0 end_crop
-2 November 1974(Day of year=306), manager: 
+2 November 1974(Day of year=306), Manager: 
      Manager sending message :- chickpea harvest
 2 November 1974(Day of year=306), chickpea: 
      
@@ -1136,7 +1136,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1062.4
                           N  (kg/ha) =                   0.00                   16.26
      
-24 June 1975(Day of year=175), manager: 
+24 June 1975(Day of year=175), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 24 June 1975(Day of year=175), wheat: 
      Crop Sow
@@ -1251,7 +1251,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         824.79 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.33 (%)    extractable sw =   86.80 (mm)
-5 November 1975(Day of year=309), manager: 
+5 November 1975(Day of year=309), Manager: 
      Manager sending message :- wheat harvest
 5 November 1975(Day of year=309), wheat: 
      
@@ -1299,7 +1299,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1344.7
                           N  (kg/ha) =                   0.00                   13.83
      
-26 May 1976(Day of year=147), manager: 
+26 May 1976(Day of year=147), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 26 May 1976(Day of year=147), chickpea: 
      Crop Sow
@@ -1419,7 +1419,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                      stover N conc =     1.85 (%)    extractable sw =  102.76 (mm)
 3 November 1976(Day of year=308), chickpea: 
       stage 11.0 end_crop
-4 November 1976(Day of year=309), manager: 
+4 November 1976(Day of year=309), Manager: 
      Manager sending message :- chickpea harvest
 4 November 1976(Day of year=309), chickpea: 
      
@@ -1462,7 +1462,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1235.2
                           N  (kg/ha) =                   0.00                   18.83
      
-20 May 1977(Day of year=140), manager: 
+20 May 1977(Day of year=140), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1977(Day of year=140), wheat: 
      Crop Sow
@@ -1571,7 +1571,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         823.62 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   68.96 (mm)
-25 October 1977(Day of year=298), manager: 
+25 October 1977(Day of year=298), Manager: 
      Manager sending message :- wheat harvest
 25 October 1977(Day of year=298), wheat: 
      
@@ -1619,7 +1619,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1564.0
                           N  (kg/ha) =                   0.00                   14.58
      
-21 May 1978(Day of year=141), manager: 
+21 May 1978(Day of year=141), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 21 May 1978(Day of year=141), chickpea: 
      Crop Sow
@@ -1739,7 +1739,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                      stover N conc =     1.79 (%)    extractable sw =  157.75 (mm)
 3 November 1978(Day of year=307), chickpea: 
       stage 11.0 end_crop
-4 November 1978(Day of year=308), manager: 
+4 November 1978(Day of year=308), Manager: 
      Manager sending message :- chickpea harvest
 4 November 1978(Day of year=308), chickpea: 
      
@@ -1782,7 +1782,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1029.3
                           N  (kg/ha) =                   0.00                   15.66
      
-23 June 1979(Day of year=174), manager: 
+23 June 1979(Day of year=174), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 23 June 1979(Day of year=174), wheat: 
      Crop Sow
@@ -1891,7 +1891,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         767.40 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.35 (%)    extractable sw =   89.12 (mm)
-5 November 1979(Day of year=309), manager: 
+5 November 1979(Day of year=309), Manager: 
      Manager sending message :- wheat harvest
 5 November 1979(Day of year=309), wheat: 
      
@@ -1939,7 +1939,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1327.5
                           N  (kg/ha) =                   0.00                   18.59
      
-31 May 1980(Day of year=152), manager: 
+31 May 1980(Day of year=152), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 31 May 1980(Day of year=152), chickpea: 
      Crop Sow
@@ -2059,7 +2059,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                      stover N conc =     1.72 (%)    extractable sw =   47.14 (mm)
 25 October 1980(Day of year=299), chickpea: 
       stage 11.0 end_crop
-26 October 1980(Day of year=300), manager: 
+26 October 1980(Day of year=300), Manager: 
      Manager sending message :- chickpea harvest
 26 October 1980(Day of year=300), chickpea: 
      
@@ -2102,7 +2102,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                   714.3
                           N  (kg/ha) =                   0.00                   11.03
      
-24 May 1981(Day of year=144), manager: 
+24 May 1981(Day of year=144), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 24 May 1981(Day of year=144), wheat: 
      Crop Sow
@@ -2211,7 +2211,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         909.10 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   28.59 (mm)
-27 October 1981(Day of year=300), manager: 
+27 October 1981(Day of year=300), Manager: 
      Manager sending message :- wheat harvest
 27 October 1981(Day of year=300), wheat: 
      
@@ -2259,7 +2259,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1852.3
                           N  (kg/ha) =                   0.00                   21.93
      
-23 May 1983(Day of year=143), manager: 
+23 May 1983(Day of year=143), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 23 May 1983(Day of year=143), wheat: 
      Crop Sow
@@ -2368,7 +2368,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =        1170.49 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =  138.38 (mm)
-24 October 1983(Day of year=297), manager: 
+24 October 1983(Day of year=297), Manager: 
      Manager sending message :- wheat harvest
 24 October 1983(Day of year=297), wheat: 
      
@@ -2416,7 +2416,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1927.3
                           N  (kg/ha) =                   0.00                   21.94
      
-20 June 1984(Day of year=172), manager: 
+20 June 1984(Day of year=172), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 20 June 1984(Day of year=172), chickpea: 
      Crop Sow
@@ -2536,7 +2536,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                      stover N conc =     1.80 (%)    extractable sw =   91.14 (mm)
 17 November 1984(Day of year=322), chickpea: 
       stage 11.0 end_crop
-18 November 1984(Day of year=323), manager: 
+18 November 1984(Day of year=323), Manager: 
      Manager sending message :- chickpea harvest
 18 November 1984(Day of year=323), chickpea: 
      
@@ -2579,7 +2579,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1152.8
                           N  (kg/ha) =                   0.00                   17.58
      
-20 May 1985(Day of year=140), manager: 
+20 May 1985(Day of year=140), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1985(Day of year=140), wheat: 
      Crop Sow
@@ -2694,7 +2694,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         770.85 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   44.16 (mm)
-26 October 1985(Day of year=299), manager: 
+26 October 1985(Day of year=299), Manager: 
      Manager sending message :- wheat harvest
 26 October 1985(Day of year=299), wheat: 
      
@@ -2742,7 +2742,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1384.6
                           N  (kg/ha) =                   0.00                   13.82
      
-30 July 1986(Day of year=211), manager: 
+30 July 1986(Day of year=211), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 30 July 1986(Day of year=211), chickpea: 
      Crop Sow
@@ -2862,7 +2862,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                      stover N conc =     1.80 (%)    extractable sw =   65.20 (mm)
 3 December 1986(Day of year=337), chickpea: 
       stage 11.0 end_crop
-4 December 1986(Day of year=338), manager: 
+4 December 1986(Day of year=338), Manager: 
      Manager sending message :- chickpea harvest
 4 December 1986(Day of year=338), chickpea: 
      
@@ -2905,7 +2905,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                   931.2
                           N  (kg/ha) =                   0.00                   14.25
      
-23 May 1988(Day of year=144), manager: 
+23 May 1988(Day of year=144), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 23 May 1988(Day of year=144), wheat: 
      Crop Sow
@@ -3014,7 +3014,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =        1179.76 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   74.39 (mm)
-27 October 1988(Day of year=301), manager: 
+27 October 1988(Day of year=301), Manager: 
      Manager sending message :- wheat harvest
 27 October 1988(Day of year=301), wheat: 
      
@@ -3062,7 +3062,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  2078.8
                           N  (kg/ha) =                   0.00                   26.47
      
-20 May 1989(Day of year=140), manager: 
+20 May 1989(Day of year=140), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 20 May 1989(Day of year=140), chickpea: 
      Crop Sow
@@ -3182,7 +3182,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                      stover N conc =     1.80 (%)    extractable sw =   62.11 (mm)
 29 October 1989(Day of year=302), chickpea: 
       stage 11.0 end_crop
-30 October 1989(Day of year=303), manager: 
+30 October 1989(Day of year=303), Manager: 
      Manager sending message :- chickpea harvest
 30 October 1989(Day of year=303), chickpea: 
      
@@ -3225,7 +3225,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1053.1
                           N  (kg/ha) =                   0.00                   16.05
      
-21 May 1990(Day of year=141), manager: 
+21 May 1990(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 21 May 1990(Day of year=141), wheat: 
      Crop Sow
@@ -3340,7 +3340,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         875.89 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   96.19 (mm)
-28 October 1990(Day of year=301), manager: 
+28 October 1990(Day of year=301), Manager: 
      Manager sending message :- wheat harvest
 28 October 1990(Day of year=301), wheat: 
      
@@ -3388,7 +3388,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1558.6
                           N  (kg/ha) =                   0.00                   14.24
      
-24 May 1991(Day of year=144), manager: 
+24 May 1991(Day of year=144), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 24 May 1991(Day of year=144), chickpea: 
      Crop Sow
@@ -3508,7 +3508,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                      stover N conc =     1.84 (%)    extractable sw =   38.82 (mm)
 28 October 1991(Day of year=301), chickpea: 
       stage 11.0 end_crop
-29 October 1991(Day of year=302), manager: 
+29 October 1991(Day of year=302), Manager: 
      Manager sending message :- chickpea harvest
 29 October 1991(Day of year=302), chickpea: 
      
@@ -3551,7 +3551,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1025.4
                           N  (kg/ha) =                   0.00                   15.62
      
-24 May 1992(Day of year=145), manager: 
+24 May 1992(Day of year=145), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 24 May 1992(Day of year=145), wheat: 
      Crop Sow
@@ -3660,7 +3660,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         475.10 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   19.29 (mm)
-3 November 1992(Day of year=308), manager: 
+3 November 1992(Day of year=308), Manager: 
      Manager sending message :- wheat harvest
 3 November 1992(Day of year=308), wheat: 
      
@@ -3708,7 +3708,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1031.2
                           N  (kg/ha) =                   0.00                   13.42
      
-18 June 1995(Day of year=169), manager: 
+18 June 1995(Day of year=169), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 18 June 1995(Day of year=169), wheat: 
      Crop Sow
@@ -3817,7 +3817,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         812.54 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   62.20 (mm)
-2 November 1995(Day of year=306), manager: 
+2 November 1995(Day of year=306), Manager: 
      Manager sending message :- wheat harvest
 2 November 1995(Day of year=306), wheat: 
      
@@ -3865,7 +3865,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1407.7
                           N  (kg/ha) =                   0.00                   31.87
      
-20 May 1996(Day of year=141), manager: 
+20 May 1996(Day of year=141), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 20 May 1996(Day of year=141), chickpea: 
      Crop Sow
@@ -3985,7 +3985,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                      stover N conc =     1.82 (%)    extractable sw =   53.58 (mm)
 26 October 1996(Day of year=300), chickpea: 
       stage 11.0 end_crop
-27 October 1996(Day of year=301), manager: 
+27 October 1996(Day of year=301), Manager: 
      Manager sending message :- chickpea harvest
 27 October 1996(Day of year=301), chickpea: 
      
@@ -4028,7 +4028,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                   991.3
                           N  (kg/ha) =                   0.00                   15.17
      
-20 May 1997(Day of year=140), manager: 
+20 May 1997(Day of year=140), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1997(Day of year=140), wheat: 
      Crop Sow
@@ -4143,7 +4143,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         561.63 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.34 (%)    extractable sw =  150.49 (mm)
-23 October 1997(Day of year=296), manager: 
+23 October 1997(Day of year=296), Manager: 
      Manager sending message :- wheat harvest
 23 October 1997(Day of year=296), wheat: 
      
@@ -4191,7 +4191,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1081.5
                           N  (kg/ha) =                   0.00                    9.40
      
-21 May 1998(Day of year=141), manager: 
+21 May 1998(Day of year=141), Manager: 
      Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 21 May 1998(Day of year=141), chickpea: 
      Crop Sow
@@ -4311,7 +4311,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                      stover N conc =     1.77 (%)    extractable sw =  123.54 (mm)
 23 October 1998(Day of year=296), chickpea: 
       stage 11.0 end_crop
-24 October 1998(Day of year=297), manager: 
+24 October 1998(Day of year=297), Manager: 
      Manager sending message :- chickpea harvest
 24 October 1998(Day of year=297), chickpea: 
      
@@ -4354,7 +4354,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                   887.6
                           N  (kg/ha) =                   0.00                   13.56
      
-11 June 1999(Day of year=162), manager: 
+11 June 1999(Day of year=162), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 11 June 1999(Day of year=162), wheat: 
      Crop Sow
@@ -4463,7 +4463,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         795.51 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   80.46 (mm)
-27 October 1999(Day of year=300), manager: 
+27 October 1999(Day of year=300), Manager: 
      Manager sending message :- wheat harvest
 27 October 1999(Day of year=300), wheat: 
      
@@ -4511,5 +4511,5 @@ Title                  = site=goondiwindi; soil=lg1; treatment=w3; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1392.6
                           N  (kg/ha) =                   0.00                   15.43
      
-31 December 2000(Day of year=366), clock: 
+31 December 2000(Day of year=366), Clock: 
      Simulation is terminating due to end criteria being met.

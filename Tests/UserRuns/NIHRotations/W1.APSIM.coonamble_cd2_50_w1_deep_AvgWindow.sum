@@ -11,21 +11,21 @@
 
 Version                = 7.5
 Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootDepth=deep; Sowing = AvgWindow
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                     "chickpea" = %apsim%\Model\plant.dll
-   Component                        "wheat" = %apsim%\Model\plant.dll
-   Component                      "sorghum" = %apsim%\Model\sorghum.dll
-   Component                      "tracker" = %apsim%\Model\tracker.dll
-   Component                       "sysbal" = %apsim%\Model\sysbal.dll
+   Component                     "chickpea" = %apsim%\Model\Plant.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                      "Sorghum" = %apsim%\Model\Sorghum.dll
+   Component                      "Tracker" = %apsim%\Model\Tracker.dll
+   Component                       "SysBal" = %apsim%\Model\SysBal.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -41,7 +41,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
      Simulation end date   = 31/12/2000
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.dd/mm/yyyy as date
         clock.year
@@ -69,7 +69,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
      Sparse data is not allowed
      INPUT File name: coonamble.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- init
@@ -433,7 +433,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
            Totals  214376.1 14784.6   951.3   118.9   400.0    10.0
           ---------------------------------------------------------
 
-------- tracker Initialisation ------------------------------------------------
+------- Tracker Initialisation ------------------------------------------------
      Tracker variables:
         maximum of wheat.yield on end_of_day from reported to now as wht_yield
         sum of wheat.ep on end_of_day from reported to now as wht_ep
@@ -482,9 +482,9 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
      Manager creating a new local real variable : fasw150 = 1.00000
      Manager creating a new local real variable : fasw170 = 1.00000
      Manager creating a new local real variable : fasw190 = 1.00000
-8 August 1970(Day of year=220), manager: 
+8 August 1970(Day of year=220), Manager: 
      Manager creating a new local real variable : wht_crop_num = 0.00000
-27 July 1971(Day of year=208), manager: 
+27 July 1971(Day of year=208), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 27 July 1971(Day of year=208), wheat: 
      Crop Sow
@@ -594,7 +594,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         597.32 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.73 (%)    extractable sw =   32.89 (mm)
-3 December 1971(Day of year=337), manager: 
+3 December 1971(Day of year=337), Manager: 
      Manager creating a new local real variable : w_mat_day = 337.00000
      Manager sending message :- wheat harvest
 3 December 1971(Day of year=337), wheat: 
@@ -643,7 +643,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1178.3
                           N  (kg/ha) =                   0.00                   27.00
      
-27 June 1973(Day of year=178), manager: 
+27 June 1973(Day of year=178), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 27 June 1973(Day of year=178), wheat: 
      Crop Sow
@@ -758,7 +758,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =        1005.40 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =  121.14 (mm)
-13 November 1973(Day of year=317), manager: 
+13 November 1973(Day of year=317), Manager: 
      Manager sending message :- wheat harvest
 13 November 1973(Day of year=317), wheat: 
      
@@ -806,7 +806,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1514.3
                           N  (kg/ha) =                   0.00                   20.30
      
-21 May 1974(Day of year=141), manager: 
+21 May 1974(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 21 May 1974(Day of year=141), wheat: 
      Crop Sow
@@ -921,7 +921,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         695.49 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   57.37 (mm)
-13 November 1974(Day of year=317), manager: 
+13 November 1974(Day of year=317), Manager: 
      Manager sending message :- wheat harvest
 13 November 1974(Day of year=317), wheat: 
      
@@ -969,7 +969,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1265.8
                           N  (kg/ha) =                   0.00                   11.99
      
-23 June 1975(Day of year=174), manager: 
+23 June 1975(Day of year=174), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 23 June 1975(Day of year=174), wheat: 
      Crop Sow
@@ -1084,7 +1084,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         603.97 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   44.57 (mm)
-15 November 1975(Day of year=319), manager: 
+15 November 1975(Day of year=319), Manager: 
      Manager sending message :- wheat harvest
 15 November 1975(Day of year=319), wheat: 
      
@@ -1132,7 +1132,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1045.4
                           N  (kg/ha) =                   0.00                   10.34
      
-21 June 1976(Day of year=173), manager: 
+21 June 1976(Day of year=173), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 21 June 1976(Day of year=173), wheat: 
      Crop Sow
@@ -1247,7 +1247,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         620.97 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   71.01 (mm)
-21 November 1976(Day of year=326), manager: 
+21 November 1976(Day of year=326), Manager: 
      Manager sending message :- wheat harvest
 21 November 1976(Day of year=326), wheat: 
      
@@ -1295,7 +1295,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1139.4
                           N  (kg/ha) =                   0.00                   10.51
      
-23 May 1977(Day of year=143), manager: 
+23 May 1977(Day of year=143), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 23 May 1977(Day of year=143), wheat: 
      Crop Sow
@@ -1410,7 +1410,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         487.19 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   23.31 (mm)
-6 November 1977(Day of year=310), manager: 
+6 November 1977(Day of year=310), Manager: 
      Manager sending message :- wheat harvest
 6 November 1977(Day of year=310), wheat: 
      
@@ -1458,7 +1458,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1075.1
                           N  (kg/ha) =                   0.00                   10.29
      
-24 May 1978(Day of year=144), manager: 
+24 May 1978(Day of year=144), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 24 May 1978(Day of year=144), wheat: 
      Crop Sow
@@ -1573,7 +1573,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         591.97 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =  106.21 (mm)
-15 November 1978(Day of year=319), manager: 
+15 November 1978(Day of year=319), Manager: 
      Manager sending message :- wheat harvest
 15 November 1978(Day of year=319), wheat: 
      
@@ -1621,7 +1621,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1061.0
                           N  (kg/ha) =                   0.00                    9.42
      
-24 June 1979(Day of year=175), manager: 
+24 June 1979(Day of year=175), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 24 June 1979(Day of year=175), wheat: 
      Crop Sow
@@ -1736,7 +1736,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         616.31 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   38.78 (mm)
-15 November 1979(Day of year=319), manager: 
+15 November 1979(Day of year=319), Manager: 
      Manager sending message :- wheat harvest
 15 November 1979(Day of year=319), wheat: 
      
@@ -1784,7 +1784,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1186.9
                           N  (kg/ha) =                   0.00                   11.65
      
-20 May 1980(Day of year=141), manager: 
+20 May 1980(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1980(Day of year=141), wheat: 
      Crop Sow
@@ -1899,7 +1899,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         569.08 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   27.46 (mm)
-30 October 1980(Day of year=304), manager: 
+30 October 1980(Day of year=304), Manager: 
      Manager sending message :- wheat harvest
 30 October 1980(Day of year=304), wheat: 
      
@@ -1947,7 +1947,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1201.5
                           N  (kg/ha) =                   0.00                   11.41
      
-6 June 1981(Day of year=157), manager: 
+6 June 1981(Day of year=157), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 6 June 1981(Day of year=157), wheat: 
      Crop Sow
@@ -2062,7 +2062,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         539.98 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =  116.67 (mm)
-13 November 1981(Day of year=317), manager: 
+13 November 1981(Day of year=317), Manager: 
      Manager sending message :- wheat harvest
 13 November 1981(Day of year=317), wheat: 
      
@@ -2110,7 +2110,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1105.1
                           N  (kg/ha) =                   0.00                   10.34
      
-21 May 1983(Day of year=141), manager: 
+21 May 1983(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 21 May 1983(Day of year=141), wheat: 
      Crop Sow
@@ -2219,7 +2219,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =        1305.57 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   75.24 (mm)
-4 November 1983(Day of year=308), manager: 
+4 November 1983(Day of year=308), Manager: 
      Manager sending message :- wheat harvest
 4 November 1983(Day of year=308), wheat: 
      
@@ -2267,7 +2267,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  2320.9
                           N  (kg/ha) =                   0.00                   29.03
      
-19 July 1984(Day of year=201), manager: 
+19 July 1984(Day of year=201), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 19 July 1984(Day of year=201), wheat: 
      Crop Sow
@@ -2382,7 +2382,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         506.50 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   61.61 (mm)
-30 November 1984(Day of year=335), manager: 
+30 November 1984(Day of year=335), Manager: 
      Manager sending message :- wheat harvest
 30 November 1984(Day of year=335), wheat: 
      
@@ -2430,7 +2430,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                   998.2
                           N  (kg/ha) =                   0.00                   10.44
      
-8 June 1985(Day of year=159), manager: 
+8 June 1985(Day of year=159), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 8 June 1985(Day of year=159), wheat: 
      Crop Sow
@@ -2545,7 +2545,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         603.02 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   48.86 (mm)
-16 November 1985(Day of year=320), manager: 
+16 November 1985(Day of year=320), Manager: 
      Manager sending message :- wheat harvest
 16 November 1985(Day of year=320), wheat: 
      
@@ -2593,7 +2593,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1203.6
                           N  (kg/ha) =                   0.00                   12.34
      
-28 July 1986(Day of year=209), manager: 
+28 July 1986(Day of year=209), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 28 July 1986(Day of year=209), wheat: 
      Crop Sow
@@ -2708,7 +2708,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         308.00 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.57 (%)    extractable sw =    4.74 (mm)
-3 December 1986(Day of year=337), manager: 
+3 December 1986(Day of year=337), Manager: 
      Manager sending message :- wheat harvest
 3 December 1986(Day of year=337), wheat: 
      
@@ -2756,7 +2756,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                   758.7
                           N  (kg/ha) =                   0.00                   13.58
      
-7 June 1988(Day of year=159), manager: 
+7 June 1988(Day of year=159), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 7 June 1988(Day of year=159), wheat: 
      Crop Sow
@@ -2865,7 +2865,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         390.66 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.05 (%)    extractable sw =    0.93 (mm)
-10 November 1988(Day of year=315), manager: 
+10 November 1988(Day of year=315), Manager: 
      Manager sending message :- wheat harvest
 10 November 1988(Day of year=315), wheat: 
      
@@ -2913,7 +2913,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1021.3
                           N  (kg/ha) =                   0.00                   23.91
      
-20 May 1989(Day of year=140), manager: 
+20 May 1989(Day of year=140), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1989(Day of year=140), wheat: 
      Crop Sow
@@ -3022,7 +3022,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         763.47 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   24.75 (mm)
-9 November 1989(Day of year=313), manager: 
+9 November 1989(Day of year=313), Manager: 
      Manager sending message :- wheat harvest
 9 November 1989(Day of year=313), wheat: 
      
@@ -3070,7 +3070,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1549.8
                           N  (kg/ha) =                   0.00                   19.69
      
-22 May 1990(Day of year=142), manager: 
+22 May 1990(Day of year=142), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 22 May 1990(Day of year=142), wheat: 
      Crop Sow
@@ -3185,7 +3185,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         539.18 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   49.51 (mm)
-9 November 1990(Day of year=313), manager: 
+9 November 1990(Day of year=313), Manager: 
      Manager sending message :- wheat harvest
 9 November 1990(Day of year=313), wheat: 
      
@@ -3233,7 +3233,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1005.6
                           N  (kg/ha) =                   0.00                    8.47
      
-27 May 1991(Day of year=147), manager: 
+27 May 1991(Day of year=147), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 27 May 1991(Day of year=147), wheat: 
      Crop Sow
@@ -3348,7 +3348,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         369.13 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   22.23 (mm)
-3 November 1991(Day of year=307), manager: 
+3 November 1991(Day of year=307), Manager: 
      Manager sending message :- wheat harvest
 3 November 1991(Day of year=307), wheat: 
      
@@ -3396,7 +3396,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                   862.6
                           N  (kg/ha) =                   0.00                   11.60
      
-22 July 1992(Day of year=204), manager: 
+22 July 1992(Day of year=204), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 22 July 1992(Day of year=204), wheat: 
      Crop Sow
@@ -3511,7 +3511,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         486.45 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   48.10 (mm)
-28 November 1992(Day of year=333), manager: 
+28 November 1992(Day of year=333), Manager: 
      Manager sending message :- wheat harvest
 28 November 1992(Day of year=333), wheat: 
      
@@ -3559,7 +3559,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1024.2
                           N  (kg/ha) =                   0.00                   12.29
      
-6 June 1993(Day of year=157), manager: 
+6 June 1993(Day of year=157), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 6 June 1993(Day of year=157), wheat: 
      Crop Sow
@@ -3674,7 +3674,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         844.75 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   53.32 (mm)
-11 November 1993(Day of year=315), manager: 
+11 November 1993(Day of year=315), Manager: 
      Manager sending message :- wheat harvest
 11 November 1993(Day of year=315), wheat: 
      
@@ -3722,7 +3722,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1420.2
                           N  (kg/ha) =                   0.00                   15.06
      
-22 May 1995(Day of year=142), manager: 
+22 May 1995(Day of year=142), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 22 May 1995(Day of year=142), wheat: 
      Crop Sow
@@ -3831,7 +3831,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         587.74 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   18.26 (mm)
-28 October 1995(Day of year=301), manager: 
+28 October 1995(Day of year=301), Manager: 
      Manager sending message :- wheat harvest
 28 October 1995(Day of year=301), wheat: 
      
@@ -3879,7 +3879,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1236.5
                           N  (kg/ha) =                   0.00                   18.71
      
-20 May 1996(Day of year=141), manager: 
+20 May 1996(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1996(Day of year=141), wheat: 
      Crop Sow
@@ -3994,7 +3994,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         505.87 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =    9.95 (mm)
-14 November 1996(Day of year=319), manager: 
+14 November 1996(Day of year=319), Manager: 
      Manager sending message :- wheat harvest
 14 November 1996(Day of year=319), wheat: 
      
@@ -4042,7 +4042,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1085.6
                           N  (kg/ha) =                   0.00                   14.46
      
-22 May 1997(Day of year=142), manager: 
+22 May 1997(Day of year=142), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 22 May 1997(Day of year=142), wheat: 
      Crop Sow
@@ -4157,7 +4157,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         424.31 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   50.14 (mm)
-5 November 1997(Day of year=309), manager: 
+5 November 1997(Day of year=309), Manager: 
      Manager sending message :- wheat harvest
 5 November 1997(Day of year=309), wheat: 
      
@@ -4205,7 +4205,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                   763.5
                           N  (kg/ha) =                   0.00                   12.40
      
-21 May 1998(Day of year=141), manager: 
+21 May 1998(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 21 May 1998(Day of year=141), wheat: 
      Crop Sow
@@ -4320,7 +4320,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         946.79 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.33 (%)    extractable sw =   80.67 (mm)
-7 November 1998(Day of year=311), manager: 
+7 November 1998(Day of year=311), Manager: 
      Manager sending message :- wheat harvest
 7 November 1998(Day of year=311), wheat: 
      
@@ -4368,7 +4368,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1434.8
                           N  (kg/ha) =                   0.00                   15.39
      
-11 June 1999(Day of year=162), manager: 
+11 June 1999(Day of year=162), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 11 June 1999(Day of year=162), wheat: 
      Crop Sow
@@ -4483,7 +4483,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         605.88 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   66.76 (mm)
-6 November 1999(Day of year=310), manager: 
+6 November 1999(Day of year=310), Manager: 
      Manager sending message :- wheat harvest
 6 November 1999(Day of year=310), wheat: 
      
@@ -4531,7 +4531,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1152.7
                           N  (kg/ha) =                   0.00                   10.94
      
-27 May 2000(Day of year=148), manager: 
+27 May 2000(Day of year=148), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 27 May 2000(Day of year=148), wheat: 
      Crop Sow
@@ -4646,7 +4646,7 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
       stage 10.0 harvest_ripe
                      biomass =         541.45 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.33 (%)    extractable sw =   84.16 (mm)
-7 November 2000(Day of year=312), manager: 
+7 November 2000(Day of year=312), Manager: 
      Manager sending message :- wheat harvest
 7 November 2000(Day of year=312), wheat: 
      
@@ -4694,5 +4694,5 @@ Title                  = site=coonamble; soil=cd2; treatment=w1; Nrate=50; RootD
                           DM (kg/ha) =                   0.0                  1156.9
                           N  (kg/ha) =                   0.00                   13.97
      
-31 December 2000(Day of year=366), clock: 
+31 December 2000(Day of year=366), Clock: 
      Simulation is terminating due to end criteria being met.

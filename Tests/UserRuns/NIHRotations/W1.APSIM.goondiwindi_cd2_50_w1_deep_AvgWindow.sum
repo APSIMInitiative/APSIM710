@@ -11,21 +11,21 @@
 
 Version                = 7.5
 Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; RootDepth=deep; Sowing = AvgWindow
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                     "chickpea" = %apsim%\Model\plant.dll
-   Component                        "wheat" = %apsim%\Model\plant.dll
-   Component                      "sorghum" = %apsim%\Model\sorghum.dll
-   Component                      "tracker" = %apsim%\Model\tracker.dll
-   Component                       "sysbal" = %apsim%\Model\sysbal.dll
+   Component                     "chickpea" = %apsim%\Model\Plant.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                      "Sorghum" = %apsim%\Model\Sorghum.dll
+   Component                      "Tracker" = %apsim%\Model\Tracker.dll
+   Component                       "SysBal" = %apsim%\Model\SysBal.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -41,7 +41,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
      Simulation end date   = 31/12/2000
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.dd/mm/yyyy as date
         clock.year
@@ -69,7 +69,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
      Sparse data is not allowed
      INPUT File name: goondiwindi.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- init
@@ -433,7 +433,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
            Totals  214376.1 14784.6   951.3   118.9   400.0    10.0
           ---------------------------------------------------------
 
-------- tracker Initialisation ------------------------------------------------
+------- Tracker Initialisation ------------------------------------------------
      Tracker variables:
         maximum of wheat.yield on end_of_day from reported to now as wht_yield
         sum of wheat.ep on end_of_day from reported to now as wht_ep
@@ -488,11 +488,11 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                       -------------------
      Uninitialised variable "wht_crop_num".
      Variables should have a value before they are used in an expression.
-     Component name: manager
+     Component name: Manager
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-31 May 1970(Day of year=151), manager: 
+31 May 1970(Day of year=151), Manager: 
      Manager creating a new local real variable : wht_crop_num = 0.00000
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 31 May 1970(Day of year=151), wheat: 
@@ -603,7 +603,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         740.18 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   81.92 (mm)
-3 November 1970(Day of year=307), manager: 
+3 November 1970(Day of year=307), Manager: 
      Manager creating a new local real variable : w_mat_day = 307.00000
      Manager sending message :- wheat harvest
 3 November 1970(Day of year=307), wheat: 
@@ -652,7 +652,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1310.0
                           N  (kg/ha) =                   0.00                   21.93
      
-28 July 1971(Day of year=209), manager: 
+28 July 1971(Day of year=209), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 28 July 1971(Day of year=209), wheat: 
      Crop Sow
@@ -767,7 +767,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         597.75 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   40.10 (mm)
-23 November 1971(Day of year=327), manager: 
+23 November 1971(Day of year=327), Manager: 
      Manager sending message :- wheat harvest
 23 November 1971(Day of year=327), wheat: 
      
@@ -815,7 +815,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1107.9
                           N  (kg/ha) =                   0.00                   12.30
      
-20 May 1972(Day of year=141), manager: 
+20 May 1972(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1972(Day of year=141), wheat: 
      Crop Sow
@@ -930,7 +930,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         456.62 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   18.98 (mm)
-22 October 1972(Day of year=296), manager: 
+22 October 1972(Day of year=296), Manager: 
      Manager sending message :- wheat harvest
 22 October 1972(Day of year=296), wheat: 
      
@@ -978,7 +978,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1051.1
                           N  (kg/ha) =                   0.00                   11.84
      
-12 July 1973(Day of year=193), manager: 
+12 July 1973(Day of year=193), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 12 July 1973(Day of year=193), wheat: 
      Crop Sow
@@ -1093,7 +1093,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         541.46 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   43.73 (mm)
-8 November 1973(Day of year=312), manager: 
+8 November 1973(Day of year=312), Manager: 
      Manager sending message :- wheat harvest
 8 November 1973(Day of year=312), wheat: 
      
@@ -1141,7 +1141,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                   945.3
                           N  (kg/ha) =                   0.00                   11.22
      
-21 May 1974(Day of year=141), manager: 
+21 May 1974(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 21 May 1974(Day of year=141), wheat: 
      Crop Sow
@@ -1256,7 +1256,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         586.25 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   24.32 (mm)
-30 October 1974(Day of year=303), manager: 
+30 October 1974(Day of year=303), Manager: 
      Manager sending message :- wheat harvest
 30 October 1974(Day of year=303), wheat: 
      
@@ -1304,7 +1304,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1153.6
                           N  (kg/ha) =                   0.00                   11.59
      
-24 June 1975(Day of year=175), manager: 
+24 June 1975(Day of year=175), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 24 June 1975(Day of year=175), wheat: 
      Crop Sow
@@ -1419,7 +1419,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         630.62 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   50.88 (mm)
-5 November 1975(Day of year=309), manager: 
+5 November 1975(Day of year=309), Manager: 
      Manager sending message :- wheat harvest
 5 November 1975(Day of year=309), wheat: 
      
@@ -1467,7 +1467,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1114.5
                           N  (kg/ha) =                   0.00                   12.32
      
-26 May 1976(Day of year=147), manager: 
+26 May 1976(Day of year=147), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 26 May 1976(Day of year=147), wheat: 
      Crop Sow
@@ -1582,7 +1582,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         695.83 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   77.63 (mm)
-2 November 1976(Day of year=307), manager: 
+2 November 1976(Day of year=307), Manager: 
      Manager sending message :- wheat harvest
 2 November 1976(Day of year=307), wheat: 
      
@@ -1630,7 +1630,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1221.6
                           N  (kg/ha) =                   0.00                   13.51
      
-20 May 1977(Day of year=140), manager: 
+20 May 1977(Day of year=140), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1977(Day of year=140), wheat: 
      Crop Sow
@@ -1745,7 +1745,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         529.45 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   32.90 (mm)
-25 October 1977(Day of year=298), manager: 
+25 October 1977(Day of year=298), Manager: 
      Manager sending message :- wheat harvest
 25 October 1977(Day of year=298), wheat: 
      
@@ -1793,7 +1793,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1090.2
                           N  (kg/ha) =                   0.00                   10.84
      
-23 May 1978(Day of year=143), manager: 
+23 May 1978(Day of year=143), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 23 May 1978(Day of year=143), wheat: 
      Crop Sow
@@ -1908,7 +1908,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         938.47 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =  131.30 (mm)
-3 November 1978(Day of year=307), manager: 
+3 November 1978(Day of year=307), Manager: 
      Manager sending message :- wheat harvest
 3 November 1978(Day of year=307), wheat: 
      
@@ -1956,7 +1956,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1525.3
                           N  (kg/ha) =                   0.00                   15.24
      
-21 May 1979(Day of year=141), manager: 
+21 May 1979(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 21 May 1979(Day of year=141), wheat: 
      Crop Sow
@@ -2071,7 +2071,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         554.07 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   75.02 (mm)
-7 November 1979(Day of year=311), manager: 
+7 November 1979(Day of year=311), Manager: 
      Manager sending message :- wheat harvest
 7 November 1979(Day of year=311), wheat: 
      
@@ -2119,7 +2119,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1139.4
                           N  (kg/ha) =                   0.00                   11.61
      
-1 June 1980(Day of year=153), manager: 
+1 June 1980(Day of year=153), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 1 June 1980(Day of year=153), wheat: 
      Crop Sow
@@ -2228,7 +2228,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         415.92 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   49.69 (mm)
-23 October 1980(Day of year=297), manager: 
+23 October 1980(Day of year=297), Manager: 
      Manager sending message :- wheat harvest
 23 October 1980(Day of year=297), wheat: 
      
@@ -2276,7 +2276,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1028.1
                           N  (kg/ha) =                   0.00                   14.89
      
-27 May 1981(Day of year=147), manager: 
+27 May 1981(Day of year=147), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 27 May 1981(Day of year=147), wheat: 
      Crop Sow
@@ -2391,7 +2391,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         698.87 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   37.46 (mm)
-29 October 1981(Day of year=302), manager: 
+29 October 1981(Day of year=302), Manager: 
      Manager sending message :- wheat harvest
 29 October 1981(Day of year=302), wheat: 
      
@@ -2439,7 +2439,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1399.4
                           N  (kg/ha) =                   0.00                   14.17
      
-23 May 1983(Day of year=143), manager: 
+23 May 1983(Day of year=143), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 23 May 1983(Day of year=143), wheat: 
      Crop Sow
@@ -2548,7 +2548,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         987.31 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   75.26 (mm)
-24 October 1983(Day of year=297), manager: 
+24 October 1983(Day of year=297), Manager: 
      Manager sending message :- wheat harvest
 24 October 1983(Day of year=297), wheat: 
      
@@ -2596,7 +2596,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1798.2
                           N  (kg/ha) =                   0.00                   21.89
      
-20 June 1984(Day of year=172), manager: 
+20 June 1984(Day of year=172), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 20 June 1984(Day of year=172), wheat: 
      Crop Sow
@@ -2711,7 +2711,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         648.30 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   56.07 (mm)
-11 November 1984(Day of year=316), manager: 
+11 November 1984(Day of year=316), Manager: 
      Manager sending message :- wheat harvest
 11 November 1984(Day of year=316), wheat: 
      
@@ -2759,7 +2759,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1096.0
                           N  (kg/ha) =                   0.00                   10.15
      
-20 May 1985(Day of year=140), manager: 
+20 May 1985(Day of year=140), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1985(Day of year=140), wheat: 
      Crop Sow
@@ -2874,7 +2874,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         750.70 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   49.59 (mm)
-26 October 1985(Day of year=299), manager: 
+26 October 1985(Day of year=299), Manager: 
      Manager sending message :- wheat harvest
 26 October 1985(Day of year=299), wheat: 
      
@@ -2922,7 +2922,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1351.0
                           N  (kg/ha) =                   0.00                   12.55
      
-5 July 1986(Day of year=186), manager: 
+5 July 1986(Day of year=186), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 5 July 1986(Day of year=186), wheat: 
      Crop Sow
@@ -3037,7 +3037,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         608.10 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   47.35 (mm)
-13 November 1986(Day of year=317), manager: 
+13 November 1986(Day of year=317), Manager: 
      Manager sending message :- wheat harvest
 13 November 1986(Day of year=317), wheat: 
      
@@ -3085,7 +3085,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1173.7
                           N  (kg/ha) =                   0.00                   12.40
      
-21 May 1987(Day of year=141), manager: 
+21 May 1987(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 21 May 1987(Day of year=141), wheat: 
      Crop Sow
@@ -3200,7 +3200,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         705.99 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   54.44 (mm)
-23 October 1987(Day of year=296), manager: 
+23 October 1987(Day of year=296), Manager: 
      Manager sending message :- wheat harvest
 23 October 1987(Day of year=296), wheat: 
      
@@ -3248,7 +3248,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1272.2
                           N  (kg/ha) =                   0.00                   12.95
      
-7 June 1988(Day of year=159), manager: 
+7 June 1988(Day of year=159), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 7 June 1988(Day of year=159), wheat: 
      Crop Sow
@@ -3363,7 +3363,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         667.31 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   33.81 (mm)
-11 November 1988(Day of year=316), manager: 
+11 November 1988(Day of year=316), Manager: 
      Manager sending message :- wheat harvest
 11 November 1988(Day of year=316), wheat: 
      
@@ -3411,7 +3411,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1326.2
                           N  (kg/ha) =                   0.00                   15.65
      
-21 May 1989(Day of year=141), manager: 
+21 May 1989(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 21 May 1989(Day of year=141), wheat: 
      Crop Sow
@@ -3526,7 +3526,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         547.07 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   29.40 (mm)
-28 October 1989(Day of year=301), manager: 
+28 October 1989(Day of year=301), Manager: 
      Manager sending message :- wheat harvest
 28 October 1989(Day of year=301), wheat: 
      
@@ -3574,7 +3574,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1000.1
                           N  (kg/ha) =                   0.00                    8.43
      
-21 May 1990(Day of year=141), manager: 
+21 May 1990(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 21 May 1990(Day of year=141), wheat: 
      Crop Sow
@@ -3689,7 +3689,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         705.79 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.33 (%)    extractable sw =   27.96 (mm)
-28 October 1990(Day of year=301), manager: 
+28 October 1990(Day of year=301), Manager: 
      Manager sending message :- wheat harvest
 28 October 1990(Day of year=301), wheat: 
      
@@ -3737,7 +3737,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1400.0
                           N  (kg/ha) =                   0.00                   14.54
      
-24 May 1991(Day of year=144), manager: 
+24 May 1991(Day of year=144), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 24 May 1991(Day of year=144), wheat: 
      Crop Sow
@@ -3852,7 +3852,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         560.74 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   18.86 (mm)
-26 October 1991(Day of year=299), manager: 
+26 October 1991(Day of year=299), Manager: 
      Manager sending message :- wheat harvest
 26 October 1991(Day of year=299), wheat: 
      
@@ -3900,7 +3900,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1189.6
                           N  (kg/ha) =                   0.00                   13.18
      
-20 May 1992(Day of year=141), manager: 
+20 May 1992(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1992(Day of year=141), wheat: 
      Crop Sow
@@ -4015,7 +4015,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         441.01 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   10.39 (mm)
-1 November 1992(Day of year=306), manager: 
+1 November 1992(Day of year=306), Manager: 
      Manager sending message :- wheat harvest
 1 November 1992(Day of year=306), wheat: 
      
@@ -4063,7 +4063,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                   984.4
                           N  (kg/ha) =                   0.00                   12.20
      
-16 July 1993(Day of year=197), manager: 
+16 July 1993(Day of year=197), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 16 July 1993(Day of year=197), wheat: 
      Crop Sow
@@ -4178,7 +4178,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         292.15 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =    2.94 (mm)
-18 November 1993(Day of year=322), manager: 
+18 November 1993(Day of year=322), Manager: 
      Manager sending message :- wheat harvest
 18 November 1993(Day of year=322), wheat: 
      
@@ -4226,7 +4226,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                   682.9
                           N  (kg/ha) =                   0.00                   11.09
      
-19 June 1995(Day of year=170), manager: 
+19 June 1995(Day of year=170), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 19 June 1995(Day of year=170), wheat: 
      Crop Sow
@@ -4335,7 +4335,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         491.72 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.02 (%)    extractable sw =   25.53 (mm)
-2 November 1995(Day of year=306), manager: 
+2 November 1995(Day of year=306), Manager: 
      Manager sending message :- wheat harvest
 2 November 1995(Day of year=306), wheat: 
      
@@ -4383,7 +4383,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                   959.3
                           N  (kg/ha) =                   0.00                   21.76
      
-20 May 1996(Day of year=141), manager: 
+20 May 1996(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1996(Day of year=141), wheat: 
      Crop Sow
@@ -4498,7 +4498,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         715.90 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   16.76 (mm)
-24 October 1996(Day of year=298), manager: 
+24 October 1996(Day of year=298), Manager: 
      Manager sending message :- wheat harvest
 24 October 1996(Day of year=298), wheat: 
      
@@ -4546,7 +4546,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1313.3
                           N  (kg/ha) =                   0.00                   22.12
      
-21 May 1997(Day of year=141), manager: 
+21 May 1997(Day of year=141), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 21 May 1997(Day of year=141), wheat: 
      Crop Sow
@@ -4661,7 +4661,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         448.76 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.33 (%)    extractable sw =   77.78 (mm)
-24 October 1997(Day of year=297), manager: 
+24 October 1997(Day of year=297), Manager: 
      Manager sending message :- wheat harvest
 24 October 1997(Day of year=297), wheat: 
      
@@ -4709,7 +4709,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                   884.7
                           N  (kg/ha) =                   0.00                    8.12
      
-22 May 1998(Day of year=142), manager: 
+22 May 1998(Day of year=142), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 22 May 1998(Day of year=142), wheat: 
      Crop Sow
@@ -4824,7 +4824,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         802.44 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =  123.37 (mm)
-21 October 1998(Day of year=294), manager: 
+21 October 1998(Day of year=294), Manager: 
      Manager sending message :- wheat harvest
 21 October 1998(Day of year=294), wheat: 
      
@@ -4872,7 +4872,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                  1319.2
                           N  (kg/ha) =                   0.00                   13.60
      
-11 June 1999(Day of year=162), manager: 
+11 June 1999(Day of year=162), Manager: 
      Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 11 June 1999(Day of year=162), wheat: 
      Crop Sow
@@ -4987,7 +4987,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
       stage 10.0 harvest_ripe
                      biomass =         518.26 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   30.09 (mm)
-27 October 1999(Day of year=300), manager: 
+27 October 1999(Day of year=300), Manager: 
      Manager sending message :- wheat harvest
 27 October 1999(Day of year=300), wheat: 
      
@@ -5035,5 +5035,5 @@ Title                  = site=goondiwindi; soil=cd2; treatment=w1; Nrate=50; Roo
                           DM (kg/ha) =                   0.0                   978.5
                           N  (kg/ha) =                   0.00                   13.17
      
-31 December 2000(Day of year=366), clock: 
+31 December 2000(Day of year=366), Clock: 
      Simulation is terminating due to end criteria being met.

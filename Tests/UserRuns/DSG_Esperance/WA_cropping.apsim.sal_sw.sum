@@ -11,21 +11,21 @@
 
 Version                = 7.5
 Title                  = 
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
    Component                          "met" = %apsim%\Model\Input.dll
-   Component                        "accum" = %apsim%\Model\accum.dll
+   Component                        "Accum" = %apsim%\Model\Accum.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                        "wheat" = %apsim%\Model\plant.dll
-   Component                      "sorghum" = %apsim%\Model\sorghum.dll
-   Component                      "tracker" = %apsim%\Model\tracker.dll
-   Component                       "sysbal" = %apsim%\Model\sysbal.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                      "Sorghum" = %apsim%\Model\Sorghum.dll
+   Component                      "Tracker" = %apsim%\Model\Tracker.dll
+   Component                       "SysBal" = %apsim%\Model\SysBal.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -41,7 +41,7 @@ Title                  =
      Simulation end date   = 30/01/2003
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.dd/mm/yyyy as date
         clock.year
@@ -66,10 +66,10 @@ Title                  =
      Sparse data is not allowed
      INPUT File name: met\salmon_gums.met
 
-------- accum Initialisation --------------------------------------------------
+------- Accum Initialisation --------------------------------------------------
      Initialising
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -301,7 +301,7 @@ Title                  =
            Totals   43812.8  3021.6   587.2    73.4   600.0    20.0
           ---------------------------------------------------------
 
-------- tracker Initialisation ------------------------------------------------
+------- Tracker Initialisation ------------------------------------------------
      Tracker variables:
         maximum of wheat.yield on end_of_day from reported to now as wht_yield
         sum of wheat.ep on end_of_day from reported to now as wht_ep
@@ -326,7 +326,7 @@ Title                  =
      Manager creating a new local real variable : esw_layer4 = 26.00000
      Manager creating a new local real variable : esw_rooting_zone = 82.00000
      Manager creating a new local real variable : rz_no3 = 36.32850
-24 July 1958(Day of year=205), manager: 
+24 July 1958(Day of year=205), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 24 July 1958(Day of year=205), wheat: 
      Crop Sow
@@ -419,7 +419,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         626.60 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   38.02 (mm)
-15 December 1958(Day of year=349), manager: 
+15 December 1958(Day of year=349), Manager: 
      Manager sending message :- wheat harvest
 15 December 1958(Day of year=349), wheat: 
      
@@ -465,7 +465,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                  1209.8
                           N  (kg/ha) =                   0.00                   11.54
      
-4 June 1959(Day of year=155), manager: 
+4 June 1959(Day of year=155), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 4 June 1959(Day of year=155), wheat: 
      Crop Sow
@@ -565,7 +565,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         420.83 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   71.85 (mm)
-13 November 1959(Day of year=317), manager: 
+13 November 1959(Day of year=317), Manager: 
      Manager sending message :- wheat harvest
 13 November 1959(Day of year=317), wheat: 
      
@@ -611,9 +611,9 @@ Title                  =
                           DM (kg/ha) =                   0.0                   656.9
                           N  (kg/ha) =                   0.00                    5.51
      
-4 December 1959(Day of year=338), manager: 
+4 December 1959(Day of year=338), Manager: 
      Manager sending message :- sorghum sow  cultivar = early, plants = 5 (/m2), sowing_depth = 30 (mm), tiller_no_fertile = 0
-4 December 1959(Day of year=338), sorghum: 
+4 December 1959(Day of year=338), Sorghum: 
      Sowing initiate
      
                  Crop Sowing Data
@@ -657,89 +657,89 @@ Title                  =
    - Reading Fertiliser Type Parameters
          6.25 of N as nitrate (no3_n)
                                          added at depth    0.00 (layer   1)
-5 December 1959(Day of year=339), sorghum: 
+5 December 1959(Day of year=339), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-12 December 1959(Day of year=346), sorghum: 
+12 December 1959(Day of year=346), Sorghum: 
      Stage 3 Emergence  DAS = 8
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  12.19
-24 December 1959(Day of year=358), sorghum: 
+24 December 1959(Day of year=358), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 20
      		Biomass       =   2.09 		 LAI            =   0.02
      		Stover N Conc =   0.05 		 Extractable SW =  49.77
-10 January 1960(Day of year=10), sorghum: 
+10 January 1960(Day of year=10), Sorghum: 
      Stage 5 FloralInitiation  DAS = 37
      		Biomass       =  15.11 		 LAI            =   0.19
      		Stover N Conc =   0.30 		 Extractable SW =  75.84
-12 January 1960(Day of year=12), sysbal: 
+12 January 1960(Day of year=12), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.033944
-13 January 1960(Day of year=13), sysbal: 
+13 January 1960(Day of year=13), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.039891
-14 January 1960(Day of year=14), sysbal: 
+14 January 1960(Day of year=14), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.057140
-15 January 1960(Day of year=15), sysbal: 
+15 January 1960(Day of year=15), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.034250
-16 January 1960(Day of year=16), sysbal: 
+16 January 1960(Day of year=16), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.041330
-17 January 1960(Day of year=17), sysbal: 
+17 January 1960(Day of year=17), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.064463
-18 January 1960(Day of year=18), sysbal: 
+18 January 1960(Day of year=18), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.098382
-19 January 1960(Day of year=19), sysbal: 
+19 January 1960(Day of year=19), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.140680
-20 January 1960(Day of year=20), sysbal: 
+20 January 1960(Day of year=20), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.163623
-21 January 1960(Day of year=21), sysbal: 
+21 January 1960(Day of year=21), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.154088
-22 January 1960(Day of year=22), sysbal: 
+22 January 1960(Day of year=22), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.057648
-23 January 1960(Day of year=23), sysbal: 
+23 January 1960(Day of year=23), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.148946
-24 January 1960(Day of year=24), sysbal: 
+24 January 1960(Day of year=24), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.134429
-25 January 1960(Day of year=25), sysbal: 
+25 January 1960(Day of year=25), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.154872
-26 January 1960(Day of year=26), sysbal: 
+26 January 1960(Day of year=26), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.132911
-27 January 1960(Day of year=27), sysbal: 
+27 January 1960(Day of year=27), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.113913
-28 January 1960(Day of year=28), sysbal: 
+28 January 1960(Day of year=28), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.125759
-29 January 1960(Day of year=29), sysbal: 
+29 January 1960(Day of year=29), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.035514
-30 January 1960(Day of year=30), sysbal: 
+30 January 1960(Day of year=30), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.059841
-31 January 1960(Day of year=31), sysbal: 
+31 January 1960(Day of year=31), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.023989
-1 February 1960(Day of year=32), sysbal: 
+1 February 1960(Day of year=32), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.024321
-2 February 1960(Day of year=33), sysbal: 
+2 February 1960(Day of year=33), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.041285
-3 February 1960(Day of year=34), sysbal: 
+3 February 1960(Day of year=34), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.041853
-5 February 1960(Day of year=36), sysbal: 
+5 February 1960(Day of year=36), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.020485
-6 February 1960(Day of year=37), sysbal: 
+6 February 1960(Day of year=37), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.074789
-8 February 1960(Day of year=39), sorghum: 
+8 February 1960(Day of year=39), Sorghum: 
      Stage 6 FlagLeaf  DAS = 66
      		Biomass       = 142.93 		 LAI            =   0.70
      		Stover N Conc =   1.20 		 Extractable SW =  59.70
-27 February 1960(Day of year=58), sorghum: 
+27 February 1960(Day of year=58), Sorghum: 
      Stage 7 Flowering  DAS = 85
      		Biomass       = 232.63 		 LAI            =   0.67
      		Stover N Conc =   1.52 		 Extractable SW =  35.25
-4 March 1960(Day of year=64), sorghum: 
+4 March 1960(Day of year=64), Sorghum: 
      Stage 8 StartGrainFill  DAS = 91
      		Biomass       = 255.43 		 LAI            =   0.67
      		Stover N Conc =   1.57 		 Extractable SW =  30.56
-21 April 1960(Day of year=112), sorghum: 
+21 April 1960(Day of year=112), Sorghum: 
       ********** Crop failed due to loss of leaf area ********     Plant Death. Standing above-ground dm = 3325.63 (kg/ha)
-22 April 1960(Day of year=113), manager: 
+22 April 1960(Day of year=113), Manager: 
      Manager sending message :- sorghum harvest
-22 April 1960(Day of year=113), sorghum: 
+22 April 1960(Day of year=113), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 85 		 Maturity (DAS)          = 
@@ -783,7 +783,7 @@ Title                  =
      Residue removed using graze
                                              Fraction Incorporated =     0.75
                                              Incorporated Depth    =     0.00
-25 July 1960(Day of year=207), manager: 
+25 July 1960(Day of year=207), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 25 July 1960(Day of year=207), wheat: 
      Crop Sow
@@ -882,7 +882,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         343.13 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   18.52 (mm)
-13 December 1960(Day of year=348), manager: 
+13 December 1960(Day of year=348), Manager: 
      Manager sending message :- wheat harvest
 13 December 1960(Day of year=348), wheat: 
      
@@ -928,9 +928,9 @@ Title                  =
                           DM (kg/ha) =                   0.0                   773.0
                           N  (kg/ha) =                   0.00                    7.45
      
-28 January 1961(Day of year=28), manager: 
+28 January 1961(Day of year=28), Manager: 
      Manager sending message :- sorghum sow  cultivar = early, plants = 5 (/m2), sowing_depth = 30 (mm), tiller_no_fertile = 0
-28 January 1961(Day of year=28), sorghum: 
+28 January 1961(Day of year=28), Sorghum: 
      Sowing initiate
      
                  Crop Sowing Data
@@ -974,75 +974,75 @@ Title                  =
    - Reading Fertiliser Type Parameters
          4.92 of N as nitrate (no3_n)
                                          added at depth    0.00 (layer   1)
-29 January 1961(Day of year=29), sorghum: 
+29 January 1961(Day of year=29), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  55.33
-1 February 1961(Day of year=32), sorghum: 
+1 February 1961(Day of year=32), Sorghum: 
      Stage 3 Emergence  DAS = 4
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  60.45
-10 February 1961(Day of year=41), sorghum: 
+10 February 1961(Day of year=41), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 13
      		Biomass       =   1.87 		 LAI            =   0.02
      		Stover N Conc =   0.05 		 Extractable SW =  46.76
-23 February 1961(Day of year=54), sorghum: 
+23 February 1961(Day of year=54), Sorghum: 
      Stage 5 FloralInitiation  DAS = 26
      		Biomass       =  12.19 		 LAI            =   0.19
      		Stover N Conc =   0.29 		 Extractable SW =  60.91
-27 February 1961(Day of year=58), sysbal: 
+27 February 1961(Day of year=58), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.024050
-28 February 1961(Day of year=59), sysbal: 
+28 February 1961(Day of year=59), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.043962
-1 March 1961(Day of year=60), sysbal: 
+1 March 1961(Day of year=60), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.065366
-2 March 1961(Day of year=61), sysbal: 
+2 March 1961(Day of year=61), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.073241
-3 March 1961(Day of year=62), sysbal: 
+3 March 1961(Day of year=62), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.049040
-4 March 1961(Day of year=63), sysbal: 
+4 March 1961(Day of year=63), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.025620
-5 March 1961(Day of year=64), sysbal: 
+5 March 1961(Day of year=64), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.114399
-6 March 1961(Day of year=65), sysbal: 
+6 March 1961(Day of year=65), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.081604
-8 March 1961(Day of year=67), sysbal: 
+8 March 1961(Day of year=67), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.076175
-9 March 1961(Day of year=68), sysbal: 
+9 March 1961(Day of year=68), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.044117
-10 March 1961(Day of year=69), sysbal: 
+10 March 1961(Day of year=69), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.057130
-11 March 1961(Day of year=70), sysbal: 
+11 March 1961(Day of year=70), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.068857
-12 March 1961(Day of year=71), sysbal: 
+12 March 1961(Day of year=71), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.040608
-13 March 1961(Day of year=72), sysbal: 
+13 March 1961(Day of year=72), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.043294
-14 March 1961(Day of year=73), sysbal: 
+14 March 1961(Day of year=73), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.013029
-16 March 1961(Day of year=75), sysbal: 
+16 March 1961(Day of year=75), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.019019
-19 March 1961(Day of year=78), sysbal: 
+19 March 1961(Day of year=78), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.069312
-20 March 1961(Day of year=79), sysbal: 
+20 March 1961(Day of year=79), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.016083
-21 March 1961(Day of year=80), sorghum: 
+21 March 1961(Day of year=80), Sorghum: 
      Stage 6 FlagLeaf  DAS = 52
      		Biomass       = 126.76 		 LAI            =   0.87
      		Stover N Conc =   1.26 		 Extractable SW =  31.91
-18 April 1961(Day of year=108), sorghum: 
+18 April 1961(Day of year=108), Sorghum: 
      Stage 7 Flowering  DAS = 80
      		Biomass       = 222.91 		 LAI            =   0.82
      		Stover N Conc =   1.61 		 Extractable SW = 107.45
-26 April 1961(Day of year=116), sorghum: 
+26 April 1961(Day of year=116), Sorghum: 
      Stage 8 StartGrainFill  DAS = 88
      		Biomass       = 245.81 		 LAI            =   0.82
      		Stover N Conc =   1.72 		 Extractable SW =  81.24
-23 June 1961(Day of year=174), sorghum: 
+23 June 1961(Day of year=174), Sorghum: 
       ********** Crop failed due to loss of leaf area ********     Plant Death. Standing above-ground dm = 3305.44 (kg/ha)
-24 June 1961(Day of year=175), manager: 
+24 June 1961(Day of year=175), Manager: 
      Manager sending message :- sorghum harvest
-24 June 1961(Day of year=175), sorghum: 
+24 June 1961(Day of year=175), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 80 		 Maturity (DAS)          = 
@@ -1086,9 +1086,9 @@ Title                  =
      Residue removed using graze
                                              Fraction Incorporated =     0.75
                                              Incorporated Depth    =     0.00
-24 June 1961(Day of year=175), sysbal: 
+24 June 1961(Day of year=175), SysBal: 
      **** N balance - unaccounted loss (kg/ha) =     -0.126808
-30 July 1961(Day of year=211), manager: 
+30 July 1961(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 30 July 1961(Day of year=211), wheat: 
      Crop Sow
@@ -1187,7 +1187,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         267.19 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   11.36 (mm)
-7 December 1961(Day of year=341), manager: 
+7 December 1961(Day of year=341), Manager: 
      Manager sending message :- wheat harvest
 7 December 1961(Day of year=341), wheat: 
      
@@ -1233,9 +1233,9 @@ Title                  =
                           DM (kg/ha) =                   0.0                   654.0
                           N  (kg/ha) =                   0.00                    8.61
      
-17 December 1961(Day of year=351), manager: 
+17 December 1961(Day of year=351), Manager: 
      Manager sending message :- sorghum sow  cultivar = early, plants = 5 (/m2), sowing_depth = 30 (mm), tiller_no_fertile = 0
-17 December 1961(Day of year=351), sorghum: 
+17 December 1961(Day of year=351), Sorghum: 
      Sowing initiate
      
                  Crop Sowing Data
@@ -1273,83 +1273,83 @@ Title                  =
              300.0     0.000          0.170       0.000
          ---------------------------------------------------
      
-18 December 1961(Day of year=352), sorghum: 
+18 December 1961(Day of year=352), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  61.49
-21 December 1961(Day of year=355), sorghum: 
+21 December 1961(Day of year=355), Sorghum: 
      Stage 3 Emergence  DAS = 4
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  66.48
-31 December 1961(Day of year=365), sorghum: 
+31 December 1961(Day of year=365), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 14
      		Biomass       =   1.85 		 LAI            =   0.02
      		Stover N Conc =   0.05 		 Extractable SW =  40.65
-12 January 1962(Day of year=12), sorghum: 
+12 January 1962(Day of year=12), Sorghum: 
      Stage 5 FloralInitiation  DAS = 26
      		Biomass       =  11.75 		 LAI            =   0.17
      		Stover N Conc =   0.26 		 Extractable SW =  30.36
-13 January 1962(Day of year=13), sysbal: 
+13 January 1962(Day of year=13), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.022452
-14 January 1962(Day of year=14), sysbal: 
+14 January 1962(Day of year=14), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.020856
-15 January 1962(Day of year=15), sysbal: 
+15 January 1962(Day of year=15), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.033443
-16 January 1962(Day of year=16), sysbal: 
+16 January 1962(Day of year=16), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.133448
-17 January 1962(Day of year=17), sysbal: 
+17 January 1962(Day of year=17), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.134774
-18 January 1962(Day of year=18), sysbal: 
+18 January 1962(Day of year=18), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.072705
-19 January 1962(Day of year=19), sysbal: 
+19 January 1962(Day of year=19), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.161938
-20 January 1962(Day of year=20), sysbal: 
+20 January 1962(Day of year=20), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.158056
-21 January 1962(Day of year=21), sysbal: 
+21 January 1962(Day of year=21), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.103756
-22 January 1962(Day of year=22), sysbal: 
+22 January 1962(Day of year=22), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.062059
-23 January 1962(Day of year=23), sysbal: 
+23 January 1962(Day of year=23), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.010319
-24 January 1962(Day of year=24), sysbal: 
+24 January 1962(Day of year=24), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.215520
-25 January 1962(Day of year=25), sysbal: 
+25 January 1962(Day of year=25), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.146112
-26 January 1962(Day of year=26), sysbal: 
+26 January 1962(Day of year=26), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.049987
-27 January 1962(Day of year=27), sysbal: 
+27 January 1962(Day of year=27), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.047740
-28 January 1962(Day of year=28), sysbal: 
+28 January 1962(Day of year=28), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.035022
-29 January 1962(Day of year=29), sysbal: 
+29 January 1962(Day of year=29), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.082870
-30 January 1962(Day of year=30), sysbal: 
+30 January 1962(Day of year=30), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.082573
-31 January 1962(Day of year=31), sysbal: 
+31 January 1962(Day of year=31), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.040123
-1 February 1962(Day of year=32), sysbal: 
+1 February 1962(Day of year=32), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.015679
-7 February 1962(Day of year=38), sysbal: 
+7 February 1962(Day of year=38), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.019571
-8 February 1962(Day of year=39), sorghum: 
+8 February 1962(Day of year=39), Sorghum: 
      Stage 6 FlagLeaf  DAS = 53
      		Biomass       =  84.09 		 LAI            =   0.49
      		Stover N Conc =   0.77 		 Extractable SW =  12.76
-8 February 1962(Day of year=39), sysbal: 
+8 February 1962(Day of year=39), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.036072
-10 March 1962(Day of year=69), sorghum: 
+10 March 1962(Day of year=69), Sorghum: 
      Stage 7 Flowering  DAS = 83
      		Biomass       = 138.51 		 LAI            =   0.43
      		Stover N Conc =   0.91 		 Extractable SW =   7.43
-15 March 1962(Day of year=74), sorghum: 
+15 March 1962(Day of year=74), Sorghum: 
      Stage 8 StartGrainFill  DAS = 88
      		Biomass       = 144.73 		 LAI            =   0.43
      		Stover N Conc =   0.92 		 Extractable SW =   6.74
-2 May 1962(Day of year=122), sorghum: 
+2 May 1962(Day of year=122), Sorghum: 
       ********** Crop failed due to loss of leaf area ********     Plant Death. Standing above-ground dm = 1833.79 (kg/ha)
-3 May 1962(Day of year=123), manager: 
+3 May 1962(Day of year=123), Manager: 
      Manager sending message :- sorghum harvest
-3 May 1962(Day of year=123), sorghum: 
+3 May 1962(Day of year=123), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 83 		 Maturity (DAS)          = 
@@ -1393,7 +1393,7 @@ Title                  =
      Residue removed using graze
                                              Fraction Incorporated =     0.75
                                              Incorporated Depth    =     0.00
-16 May 1962(Day of year=136), manager: 
+16 May 1962(Day of year=136), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 16 May 1962(Day of year=136), wheat: 
      Crop Sow
@@ -1492,7 +1492,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         357.41 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   15.99 (mm)
-6 November 1962(Day of year=310), manager: 
+6 November 1962(Day of year=310), Manager: 
      Manager sending message :- wheat harvest
 6 November 1962(Day of year=310), wheat: 
      
@@ -1538,7 +1538,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   596.7
                           N  (kg/ha) =                   0.00                    6.82
      
-6 June 1963(Day of year=157), manager: 
+6 June 1963(Day of year=157), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 6 June 1963(Day of year=157), wheat: 
      Crop Sow
@@ -1637,7 +1637,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         426.29 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   33.85 (mm)
-15 November 1963(Day of year=319), manager: 
+15 November 1963(Day of year=319), Manager: 
      Manager sending message :- wheat harvest
 15 November 1963(Day of year=319), wheat: 
      
@@ -1683,7 +1683,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   751.5
                           N  (kg/ha) =                   0.00                    6.64
      
-12 July 1964(Day of year=194), manager: 
+12 July 1964(Day of year=194), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 12 July 1964(Day of year=194), wheat: 
      Crop Sow
@@ -1782,7 +1782,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         423.91 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   31.78 (mm)
-13 December 1964(Day of year=348), manager: 
+13 December 1964(Day of year=348), Manager: 
      Manager sending message :- wheat harvest
 13 December 1964(Day of year=348), wheat: 
      
@@ -1828,7 +1828,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   749.2
                           N  (kg/ha) =                   0.00                    6.08
      
-26 June 1965(Day of year=177), manager: 
+26 June 1965(Day of year=177), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 26 June 1965(Day of year=177), wheat: 
      Crop Sow
@@ -1927,7 +1927,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         334.24 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   51.13 (mm)
-28 November 1965(Day of year=332), manager: 
+28 November 1965(Day of year=332), Manager: 
      Manager sending message :- wheat harvest
 28 November 1965(Day of year=332), wheat: 
      
@@ -1973,9 +1973,9 @@ Title                  =
                           DM (kg/ha) =                   0.0                   651.1
                           N  (kg/ha) =                   0.00                    5.31
      
-4 January 1966(Day of year=4), manager: 
+4 January 1966(Day of year=4), Manager: 
      Manager sending message :- sorghum sow  cultivar = early, plants = 5 (/m2), sowing_depth = 30 (mm), tiller_no_fertile = 0
-4 January 1966(Day of year=4), sorghum: 
+4 January 1966(Day of year=4), Sorghum: 
      Sowing initiate
      
                  Crop Sowing Data
@@ -2013,47 +2013,47 @@ Title                  =
              300.0     0.000          0.170       0.000
          ---------------------------------------------------
      
-5 January 1966(Day of year=5), sorghum: 
+5 January 1966(Day of year=5), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   9.09
-8 January 1966(Day of year=8), sorghum: 
+8 January 1966(Day of year=8), Sorghum: 
      Stage 3 Emergence  DAS = 4
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  14.10
-20 January 1966(Day of year=20), sorghum: 
+20 January 1966(Day of year=20), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   2.02 		 LAI            =   0.02
      		Stover N Conc =   0.05 		 Extractable SW =  42.47
-1 February 1966(Day of year=32), sorghum: 
+1 February 1966(Day of year=32), Sorghum: 
      Stage 5 FloralInitiation  DAS = 28
      		Biomass       =  13.04 		 LAI            =   0.17
      		Stover N Conc =   0.27 		 Extractable SW =  62.58
-23 February 1966(Day of year=54), sysbal: 
+23 February 1966(Day of year=54), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.010296
-25 February 1966(Day of year=56), sysbal: 
+25 February 1966(Day of year=56), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.030149
-26 February 1966(Day of year=57), sysbal: 
+26 February 1966(Day of year=57), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.054118
-27 February 1966(Day of year=58), sorghum: 
+27 February 1966(Day of year=58), Sorghum: 
      Stage 6 FlagLeaf  DAS = 54
      		Biomass       = 171.11 		 LAI            =   1.18
      		Stover N Conc =   2.28 		 Extractable SW =  47.89
-27 February 1966(Day of year=58), sysbal: 
+27 February 1966(Day of year=58), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.027655
-18 March 1966(Day of year=77), sorghum: 
+18 March 1966(Day of year=77), Sorghum: 
      Stage 7 Flowering  DAS = 73
      		Biomass       = 276.88 		 LAI            =   1.18
      		Stover N Conc =   2.68 		 Extractable SW =  24.95
-25 March 1966(Day of year=84), sorghum: 
+25 March 1966(Day of year=84), Sorghum: 
      Stage 8 StartGrainFill  DAS = 80
      		Biomass       = 305.96 		 LAI            =   1.18
      		Stover N Conc =   2.74 		 Extractable SW =  20.57
-20 May 1966(Day of year=140), sorghum: 
+20 May 1966(Day of year=140), Sorghum: 
       ********** Crop failed due to loss of leaf area ********     Plant Death. Standing above-ground dm = 4183.39 (kg/ha)
-21 May 1966(Day of year=141), manager: 
+21 May 1966(Day of year=141), Manager: 
      Manager sending message :- sorghum harvest
-21 May 1966(Day of year=141), sorghum: 
+21 May 1966(Day of year=141), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 73 		 Maturity (DAS)          = 
@@ -2097,7 +2097,7 @@ Title                  =
      Residue removed using graze
                                              Fraction Incorporated =     0.75
                                              Incorporated Depth    =     0.00
-28 June 1966(Day of year=179), manager: 
+28 June 1966(Day of year=179), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 28 June 1966(Day of year=179), wheat: 
      Crop Sow
@@ -2196,7 +2196,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         341.20 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =    9.90 (mm)
-1 December 1966(Day of year=335), manager: 
+1 December 1966(Day of year=335), Manager: 
      Manager sending message :- wheat harvest
 1 December 1966(Day of year=335), wheat: 
      
@@ -2242,7 +2242,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   643.4
                           N  (kg/ha) =                   0.00                    5.51
      
-25 May 1967(Day of year=145), manager: 
+25 May 1967(Day of year=145), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 25 May 1967(Day of year=145), wheat: 
      Crop Sow
@@ -2341,7 +2341,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         357.09 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   41.81 (mm)
-9 November 1967(Day of year=313), manager: 
+9 November 1967(Day of year=313), Manager: 
      Manager sending message :- wheat harvest
 9 November 1967(Day of year=313), wheat: 
      
@@ -2387,7 +2387,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   625.5
                           N  (kg/ha) =                   0.00                    5.09
      
-11 June 1968(Day of year=163), manager: 
+11 June 1968(Day of year=163), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 11 June 1968(Day of year=163), wheat: 
      Crop Sow
@@ -2480,7 +2480,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         425.73 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   22.25 (mm)
-27 November 1968(Day of year=332), manager: 
+27 November 1968(Day of year=332), Manager: 
      Manager sending message :- wheat harvest
 27 November 1968(Day of year=332), wheat: 
      
@@ -2526,7 +2526,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   793.8
                           N  (kg/ha) =                   0.00                    6.93
      
-30 July 1969(Day of year=211), manager: 
+30 July 1969(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 30 July 1969(Day of year=211), wheat: 
      Crop Sow
@@ -2625,7 +2625,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         315.70 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   17.75 (mm)
-12 December 1969(Day of year=346), manager: 
+12 December 1969(Day of year=346), Manager: 
      Manager sending message :- wheat harvest
 12 December 1969(Day of year=346), wheat: 
      
@@ -2671,7 +2671,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   609.5
                           N  (kg/ha) =                   0.00                    8.40
      
-30 July 1970(Day of year=211), manager: 
+30 July 1970(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 30 July 1970(Day of year=211), wheat: 
      Crop Sow
@@ -2770,7 +2770,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         380.61 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   11.08 (mm)
-13 December 1970(Day of year=347), manager: 
+13 December 1970(Day of year=347), Manager: 
      Manager sending message :- wheat harvest
 13 December 1970(Day of year=347), wheat: 
      
@@ -2816,7 +2816,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   797.8
                           N  (kg/ha) =                   0.00                    8.25
      
-27 May 1971(Day of year=147), manager: 
+27 May 1971(Day of year=147), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 27 May 1971(Day of year=147), wheat: 
      Crop Sow
@@ -2915,7 +2915,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         356.78 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   19.39 (mm)
-19 November 1971(Day of year=323), manager: 
+19 November 1971(Day of year=323), Manager: 
      Manager sending message :- wheat harvest
 19 November 1971(Day of year=323), wheat: 
      
@@ -2961,9 +2961,9 @@ Title                  =
                           DM (kg/ha) =                   0.0                   632.2
                           N  (kg/ha) =                   0.00                    5.25
      
-25 November 1971(Day of year=329), manager: 
+25 November 1971(Day of year=329), Manager: 
      Manager sending message :- sorghum sow  cultivar = early, plants = 5 (/m2), sowing_depth = 30 (mm), tiller_no_fertile = 0
-25 November 1971(Day of year=329), sorghum: 
+25 November 1971(Day of year=329), Sorghum: 
      Sowing initiate
      
                  Crop Sowing Data
@@ -3007,73 +3007,73 @@ Title                  =
    - Reading Fertiliser Type Parameters
          2.07 of N as nitrate (no3_n)
                                          added at depth    0.00 (layer   1)
-26 November 1971(Day of year=330), sorghum: 
+26 November 1971(Day of year=330), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  13.72
-1 December 1971(Day of year=335), sorghum: 
+1 December 1971(Day of year=335), Sorghum: 
      Stage 3 Emergence  DAS = 6
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  19.13
-14 December 1971(Day of year=348), sorghum: 
+14 December 1971(Day of year=348), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 19
      		Biomass       =   2.15 		 LAI            =   0.02
      		Stover N Conc =   0.05 		 Extractable SW =  43.55
-1 January 1972(Day of year=1), sorghum: 
+1 January 1972(Day of year=1), Sorghum: 
      Stage 5 FloralInitiation  DAS = 37
      		Biomass       =  16.67 		 LAI            =   0.20
      		Stover N Conc =   0.32 		 Extractable SW =  37.61
-5 January 1972(Day of year=5), sysbal: 
+5 January 1972(Day of year=5), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.046726
-10 January 1972(Day of year=10), sysbal: 
+10 January 1972(Day of year=10), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.037850
-11 January 1972(Day of year=11), sysbal: 
+11 January 1972(Day of year=11), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.047069
-12 January 1972(Day of year=12), sysbal: 
+12 January 1972(Day of year=12), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.086987
-14 January 1972(Day of year=14), sysbal: 
+14 January 1972(Day of year=14), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.170540
-16 January 1972(Day of year=16), sysbal: 
+16 January 1972(Day of year=16), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.064798
-19 January 1972(Day of year=19), sysbal: 
+19 January 1972(Day of year=19), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.113442
-21 January 1972(Day of year=21), sysbal: 
+21 January 1972(Day of year=21), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.043086
-22 January 1972(Day of year=22), sysbal: 
+22 January 1972(Day of year=22), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.032792
-23 January 1972(Day of year=23), sysbal: 
+23 January 1972(Day of year=23), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.015264
-25 January 1972(Day of year=25), sysbal: 
+25 January 1972(Day of year=25), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.052975
-26 January 1972(Day of year=26), sysbal: 
+26 January 1972(Day of year=26), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.071531
-29 January 1972(Day of year=29), sorghum: 
+29 January 1972(Day of year=29), Sorghum: 
      Stage 6 FlagLeaf  DAS = 65
      		Biomass       = 133.95 		 LAI            =   0.78
      		Stover N Conc =   1.23 		 Extractable SW =  20.01
-16 February 1972(Day of year=47), sorghum: 
+16 February 1972(Day of year=47), Sorghum: 
      Stage 7 Flowering  DAS = 83
      		Biomass       = 173.73 		 LAI            =   0.63
      		Stover N Conc =   1.35 		 Extractable SW =  10.35
-21 February 1972(Day of year=52), sorghum: 
+21 February 1972(Day of year=52), Sorghum: 
      Stage 8 StartGrainFill  DAS = 88
      		Biomass       = 182.91 		 LAI            =   0.63
      		Stover N Conc =   1.36 		 Extractable SW =   8.77
-4 April 1972(Day of year=95), sorghum: 
+4 April 1972(Day of year=95), Sorghum: 
      Stage 9 EndGrainFill  DAS = 131
      		Biomass       = 220.98 		 LAI            =   0.19
      		Stover N Conc =   0.82 		 Extractable SW =   5.64
-8 April 1972(Day of year=99), sorghum: 
+8 April 1972(Day of year=99), Sorghum: 
      Stage 10 Maturity  DAS = 135
      		Biomass       = 221.33 		 LAI            =   0.18
      		Stover N Conc =   0.82 		 Extractable SW =   8.80
-9 April 1972(Day of year=100), sorghum: 
+9 April 1972(Day of year=100), Sorghum: 
      Stage 11 HarvestRipe  DAS = 136
      		Biomass       = 221.40 		 LAI            =   0.18
      		Stover N Conc =   0.81 		 Extractable SW =   7.42
-10 April 1972(Day of year=101), manager: 
+10 April 1972(Day of year=101), Manager: 
      Manager sending message :- sorghum harvest
-10 April 1972(Day of year=101), sorghum: 
+10 April 1972(Day of year=101), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 83 		 Maturity (DAS)          = 135
@@ -3118,7 +3118,7 @@ Title                  =
      Residue removed using graze
                                              Fraction Incorporated =     0.75
                                              Incorporated Depth    =     0.00
-23 June 1972(Day of year=175), manager: 
+23 June 1972(Day of year=175), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 23 June 1972(Day of year=175), wheat: 
      Crop Sow
@@ -3217,7 +3217,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         285.04 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =    4.60 (mm)
-26 November 1972(Day of year=331), manager: 
+26 November 1972(Day of year=331), Manager: 
      Manager sending message :- wheat harvest
 26 November 1972(Day of year=331), wheat: 
      
@@ -3263,9 +3263,9 @@ Title                  =
                           DM (kg/ha) =                   0.0                   648.7
                           N  (kg/ha) =                   0.00                    6.83
      
-24 January 1973(Day of year=24), manager: 
+24 January 1973(Day of year=24), Manager: 
      Manager sending message :- sorghum sow  cultivar = early, plants = 5 (/m2), sowing_depth = 30 (mm), tiller_no_fertile = 0
-24 January 1973(Day of year=24), sorghum: 
+24 January 1973(Day of year=24), Sorghum: 
      Sowing initiate
      
                  Crop Sowing Data
@@ -3309,105 +3309,105 @@ Title                  =
    - Reading Fertiliser Type Parameters
          3.67 of N as nitrate (no3_n)
                                          added at depth    0.00 (layer   1)
-25 January 1973(Day of year=25), sorghum: 
+25 January 1973(Day of year=25), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   5.94
-30 January 1973(Day of year=30), sorghum: 
+30 January 1973(Day of year=30), Sorghum: 
      Stage 3 Emergence  DAS = 6
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  12.87
-10 February 1973(Day of year=41), sorghum: 
+10 February 1973(Day of year=41), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 17
      		Biomass       =   2.02 		 LAI            =   0.02
      		Stover N Conc =   0.05 		 Extractable SW =  21.63
-22 February 1973(Day of year=53), sorghum: 
+22 February 1973(Day of year=53), Sorghum: 
      Stage 5 FloralInitiation  DAS = 29
      		Biomass       =  10.77 		 LAI            =   0.17
      		Stover N Conc =   0.26 		 Extractable SW =  20.39
-24 February 1973(Day of year=55), sysbal: 
+24 February 1973(Day of year=55), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.045402
-25 February 1973(Day of year=56), sysbal: 
+25 February 1973(Day of year=56), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.013283
-26 February 1973(Day of year=57), sysbal: 
+26 February 1973(Day of year=57), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.102219
-27 February 1973(Day of year=58), sysbal: 
+27 February 1973(Day of year=58), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.096956
-28 February 1973(Day of year=59), sysbal: 
+28 February 1973(Day of year=59), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.077309
-1 March 1973(Day of year=60), sysbal: 
+1 March 1973(Day of year=60), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.156905
-2 March 1973(Day of year=61), sysbal: 
+2 March 1973(Day of year=61), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.116375
-3 March 1973(Day of year=62), sysbal: 
+3 March 1973(Day of year=62), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.170631
-4 March 1973(Day of year=63), sysbal: 
+4 March 1973(Day of year=63), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.070094
-5 March 1973(Day of year=64), sysbal: 
+5 March 1973(Day of year=64), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.020684
-6 March 1973(Day of year=65), sysbal: 
+6 March 1973(Day of year=65), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.216404
-7 March 1973(Day of year=66), sysbal: 
+7 March 1973(Day of year=66), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.168725
-8 March 1973(Day of year=67), sysbal: 
+8 March 1973(Day of year=67), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.018441
-9 March 1973(Day of year=68), sysbal: 
+9 March 1973(Day of year=68), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.017086
-11 March 1973(Day of year=70), sysbal: 
+11 March 1973(Day of year=70), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.026910
-12 March 1973(Day of year=71), sysbal: 
+12 March 1973(Day of year=71), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.035137
-13 March 1973(Day of year=72), sysbal: 
+13 March 1973(Day of year=72), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.023202
-14 March 1973(Day of year=73), sysbal: 
+14 March 1973(Day of year=73), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.013181
-15 March 1973(Day of year=74), sysbal: 
+15 March 1973(Day of year=74), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.040217
-16 March 1973(Day of year=75), sysbal: 
+16 March 1973(Day of year=75), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.025438
-17 March 1973(Day of year=76), sysbal: 
+17 March 1973(Day of year=76), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.044503
-18 March 1973(Day of year=77), sysbal: 
+18 March 1973(Day of year=77), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.030284
-19 March 1973(Day of year=78), sysbal: 
+19 March 1973(Day of year=78), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.036309
-20 March 1973(Day of year=79), sysbal: 
+20 March 1973(Day of year=79), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.019525
-21 March 1973(Day of year=80), sysbal: 
+21 March 1973(Day of year=80), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.028270
-22 March 1973(Day of year=81), sysbal: 
+22 March 1973(Day of year=81), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.022557
-26 March 1973(Day of year=85), sysbal: 
+26 March 1973(Day of year=85), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.025378
-27 March 1973(Day of year=86), sysbal: 
+27 March 1973(Day of year=86), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.020900
-28 March 1973(Day of year=87), sysbal: 
+28 March 1973(Day of year=87), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.029702
-29 March 1973(Day of year=88), sysbal: 
+29 March 1973(Day of year=88), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.021099
-30 March 1973(Day of year=89), sysbal: 
+30 March 1973(Day of year=89), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.016990
-31 March 1973(Day of year=90), sysbal: 
+31 March 1973(Day of year=90), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.012578
-1 April 1973(Day of year=91), sysbal: 
+1 April 1973(Day of year=91), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.019002
-4 April 1973(Day of year=94), sysbal: 
+4 April 1973(Day of year=94), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.029127
-6 April 1973(Day of year=96), sysbal: 
+6 April 1973(Day of year=96), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.048110
-7 April 1973(Day of year=97), sysbal: 
+7 April 1973(Day of year=97), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.019827
-10 April 1973(Day of year=100), sysbal: 
+10 April 1973(Day of year=100), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.016193
-11 April 1973(Day of year=101), sysbal: 
+11 April 1973(Day of year=101), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.025126
-16 April 1973(Day of year=106), sorghum: 
+16 April 1973(Day of year=106), Sorghum: 
      Stage 6 FlagLeaf  DAS = 82
      		Biomass       =  92.07 		 LAI            =   0.40
      		Stover N Conc =   0.77 		 Extractable SW =  14.95
-24 June 1973(Day of year=175), manager: 
+24 June 1973(Day of year=175), Manager: 
      Manager sending message :- sorghum harvest
-24 June 1973(Day of year=175), sorghum: 
+24 June 1973(Day of year=175), Sorghum: 
      
      Harvest
      Flowering (DAS)       =  		 Maturity (DAS)          = 
@@ -3452,9 +3452,9 @@ Title                  =
      Residue removed using graze
                                              Fraction Incorporated =     0.75
                                              Incorporated Depth    =     0.00
-24 June 1973(Day of year=175), sysbal: 
+24 June 1973(Day of year=175), SysBal: 
      **** N balance - unaccounted loss (kg/ha) =     -0.013707
-19 July 1973(Day of year=200), manager: 
+19 July 1973(Day of year=200), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 19 July 1973(Day of year=200), wheat: 
      Crop Sow
@@ -3553,7 +3553,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         398.66 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =    7.84 (mm)
-11 December 1973(Day of year=345), manager: 
+11 December 1973(Day of year=345), Manager: 
      Manager sending message :- wheat harvest
 11 December 1973(Day of year=345), wheat: 
      
@@ -3599,7 +3599,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   819.2
                           N  (kg/ha) =                   0.00                    7.89
      
-15 May 1974(Day of year=135), manager: 
+15 May 1974(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 15 May 1974(Day of year=135), wheat: 
      Crop Sow
@@ -3698,7 +3698,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         479.53 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   31.82 (mm)
-8 November 1974(Day of year=312), manager: 
+8 November 1974(Day of year=312), Manager: 
      Manager sending message :- wheat harvest
 8 November 1974(Day of year=312), wheat: 
      
@@ -3744,9 +3744,9 @@ Title                  =
                           DM (kg/ha) =                   0.0                   718.8
                           N  (kg/ha) =                   0.00                    6.43
      
-21 November 1974(Day of year=325), manager: 
+21 November 1974(Day of year=325), Manager: 
      Manager sending message :- sorghum sow  cultivar = early, plants = 5 (/m2), sowing_depth = 30 (mm), tiller_no_fertile = 0
-21 November 1974(Day of year=325), sorghum: 
+21 November 1974(Day of year=325), Sorghum: 
      Sowing initiate
      
                  Crop Sowing Data
@@ -3784,75 +3784,75 @@ Title                  =
              300.0     0.000          0.170       0.000
          ---------------------------------------------------
      
-22 November 1974(Day of year=326), sorghum: 
+22 November 1974(Day of year=326), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  55.24
-27 November 1974(Day of year=331), sorghum: 
+27 November 1974(Day of year=331), Sorghum: 
      Stage 3 Emergence  DAS = 6
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  53.76
-7 December 1974(Day of year=341), sorghum: 
+7 December 1974(Day of year=341), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   2.01 		 LAI            =   0.02
      		Stover N Conc =   0.05 		 Extractable SW =  34.64
-22 December 1974(Day of year=356), sorghum: 
+22 December 1974(Day of year=356), Sorghum: 
      Stage 5 FloralInitiation  DAS = 31
      		Biomass       =  14.71 		 LAI            =   0.18
      		Stover N Conc =   0.30 		 Extractable SW =  44.07
-1 January 1975(Day of year=1), sysbal: 
+1 January 1975(Day of year=1), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.053226
-2 January 1975(Day of year=2), sysbal: 
+2 January 1975(Day of year=2), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.051845
-3 January 1975(Day of year=3), sysbal: 
+3 January 1975(Day of year=3), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.053566
-4 January 1975(Day of year=4), sysbal: 
+4 January 1975(Day of year=4), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.072326
-7 January 1975(Day of year=7), sysbal: 
+7 January 1975(Day of year=7), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.082042
-8 January 1975(Day of year=8), sysbal: 
+8 January 1975(Day of year=8), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.065543
-9 January 1975(Day of year=9), sysbal: 
+9 January 1975(Day of year=9), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.070408
-10 January 1975(Day of year=10), sysbal: 
+10 January 1975(Day of year=10), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.070248
-12 January 1975(Day of year=12), sysbal: 
+12 January 1975(Day of year=12), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.031150
-15 January 1975(Day of year=15), sysbal: 
+15 January 1975(Day of year=15), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.030836
-16 January 1975(Day of year=16), sysbal: 
+16 January 1975(Day of year=16), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.057317
-19 January 1975(Day of year=19), sysbal: 
+19 January 1975(Day of year=19), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.022368
-22 January 1975(Day of year=22), sorghum: 
+22 January 1975(Day of year=22), Sorghum: 
      Stage 6 FlagLeaf  DAS = 62
      		Biomass       = 129.25 		 LAI            =   0.74
      		Stover N Conc =   1.17 		 Extractable SW =  17.54
-22 January 1975(Day of year=22), sysbal: 
+22 January 1975(Day of year=22), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.020959
-12 February 1975(Day of year=43), sorghum: 
+12 February 1975(Day of year=43), Sorghum: 
      Stage 7 Flowering  DAS = 83
      		Biomass       = 171.67 		 LAI            =   0.44
      		Stover N Conc =   1.31 		 Extractable SW =  10.50
-17 February 1975(Day of year=48), sorghum: 
+17 February 1975(Day of year=48), Sorghum: 
      Stage 8 StartGrainFill  DAS = 88
      		Biomass       = 176.83 		 LAI            =   0.44
      		Stover N Conc =   1.33 		 Extractable SW =   9.52
-8 April 1975(Day of year=98), sorghum: 
+8 April 1975(Day of year=98), Sorghum: 
      Stage 9 EndGrainFill  DAS = 138
      		Biomass       = 218.27 		 LAI            =   0.14
      		Stover N Conc =   0.82 		 Extractable SW =  15.18
-11 April 1975(Day of year=101), sorghum: 
+11 April 1975(Day of year=101), Sorghum: 
      Stage 10 Maturity  DAS = 141
      		Biomass       = 218.66 		 LAI            =   0.13
      		Stover N Conc =   0.81 		 Extractable SW =  14.52
-12 April 1975(Day of year=102), sorghum: 
+12 April 1975(Day of year=102), Sorghum: 
      Stage 11 HarvestRipe  DAS = 142
      		Biomass       = 218.75 		 LAI            =   0.13
      		Stover N Conc =   0.81 		 Extractable SW =  14.31
-13 April 1975(Day of year=103), manager: 
+13 April 1975(Day of year=103), Manager: 
      Manager sending message :- sorghum harvest
-13 April 1975(Day of year=103), sorghum: 
+13 April 1975(Day of year=103), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 83 		 Maturity (DAS)          = 141
@@ -3897,7 +3897,7 @@ Title                  =
      Residue removed using graze
                                              Fraction Incorporated =     0.75
                                              Incorporated Depth    =     0.00
-30 July 1975(Day of year=211), manager: 
+30 July 1975(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 30 July 1975(Day of year=211), wheat: 
      Crop Sow
@@ -3996,7 +3996,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         408.86 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   59.69 (mm)
-16 December 1975(Day of year=350), manager: 
+16 December 1975(Day of year=350), Manager: 
      Manager sending message :- wheat harvest
 16 December 1975(Day of year=350), wheat: 
      
@@ -4042,7 +4042,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   798.3
                           N  (kg/ha) =                   0.00                    9.94
      
-29 July 1976(Day of year=211), manager: 
+29 July 1976(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 29 July 1976(Day of year=211), wheat: 
      Crop Sow
@@ -4135,7 +4135,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         532.99 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   10.13 (mm)
-12 December 1976(Day of year=347), manager: 
+12 December 1976(Day of year=347), Manager: 
      Manager sending message :- wheat harvest
 12 December 1976(Day of year=347), wheat: 
      
@@ -4181,7 +4181,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                  1026.5
                           N  (kg/ha) =                   0.00                   14.21
      
-30 July 1977(Day of year=211), manager: 
+30 July 1977(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 30 July 1977(Day of year=211), wheat: 
      Crop Sow
@@ -4280,7 +4280,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         224.23 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   28.93 (mm)
-8 December 1977(Day of year=342), manager: 
+8 December 1977(Day of year=342), Manager: 
      Manager sending message :- wheat harvest
 8 December 1977(Day of year=342), wheat: 
      
@@ -4326,7 +4326,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   442.5
                           N  (kg/ha) =                   0.00                    4.86
      
-28 June 1978(Day of year=179), manager: 
+28 June 1978(Day of year=179), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 28 June 1978(Day of year=179), wheat: 
      Crop Sow
@@ -4419,7 +4419,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         430.09 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =    9.66 (mm)
-1 December 1978(Day of year=335), manager: 
+1 December 1978(Day of year=335), Manager: 
      Manager sending message :- wheat harvest
 1 December 1978(Day of year=335), wheat: 
      
@@ -4465,7 +4465,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   854.7
                           N  (kg/ha) =                   0.00                    9.34
      
-25 July 1979(Day of year=206), manager: 
+25 July 1979(Day of year=206), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 25 July 1979(Day of year=206), wheat: 
      Crop Sow
@@ -4564,7 +4564,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         294.01 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   25.01 (mm)
-8 December 1979(Day of year=342), manager: 
+8 December 1979(Day of year=342), Manager: 
      Manager sending message :- wheat harvest
 8 December 1979(Day of year=342), wheat: 
      
@@ -4610,7 +4610,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   646.6
                           N  (kg/ha) =                   0.00                    7.15
      
-29 July 1980(Day of year=211), manager: 
+29 July 1980(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 29 July 1980(Day of year=211), wheat: 
      Crop Sow
@@ -4703,7 +4703,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         250.49 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.41 (%)    extractable sw =   17.70 (mm)
-7 December 1980(Day of year=342), manager: 
+7 December 1980(Day of year=342), Manager: 
      Manager sending message :- wheat harvest
 7 December 1980(Day of year=342), wheat: 
      
@@ -4749,7 +4749,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   626.9
                           N  (kg/ha) =                   0.00                   11.98
      
-30 July 1981(Day of year=211), manager: 
+30 July 1981(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 30 July 1981(Day of year=211), wheat: 
      Crop Sow
@@ -4848,7 +4848,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         156.98 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =    7.86 (mm)
-9 December 1981(Day of year=343), manager: 
+9 December 1981(Day of year=343), Manager: 
      Manager sending message :- wheat harvest
 9 December 1981(Day of year=343), wheat: 
      
@@ -4894,7 +4894,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   400.5
                           N  (kg/ha) =                   0.00                    6.38
      
-15 June 1982(Day of year=166), manager: 
+15 June 1982(Day of year=166), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 15 June 1982(Day of year=166), wheat: 
      Crop Sow
@@ -4993,7 +4993,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         264.80 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   35.60 (mm)
-15 November 1982(Day of year=319), manager: 
+15 November 1982(Day of year=319), Manager: 
      Manager sending message :- wheat harvest
 15 November 1982(Day of year=319), wheat: 
      
@@ -5039,9 +5039,9 @@ Title                  =
                           DM (kg/ha) =                   0.0                   558.4
                           N  (kg/ha) =                   0.00                    6.74
      
-1 December 1982(Day of year=335), manager: 
+1 December 1982(Day of year=335), Manager: 
      Manager sending message :- sorghum sow  cultivar = early, plants = 5 (/m2), sowing_depth = 30 (mm), tiller_no_fertile = 0
-1 December 1982(Day of year=335), sorghum: 
+1 December 1982(Day of year=335), Sorghum: 
      Sowing initiate
      
                  Crop Sowing Data
@@ -5079,63 +5079,63 @@ Title                  =
              300.0     0.000          0.170       0.000
          ---------------------------------------------------
      
-2 December 1982(Day of year=336), sorghum: 
+2 December 1982(Day of year=336), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  11.79
-5 December 1982(Day of year=339), sorghum: 
+5 December 1982(Day of year=339), Sorghum: 
      Stage 3 Emergence  DAS = 4
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  17.66
-15 December 1982(Day of year=349), sorghum: 
+15 December 1982(Day of year=349), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 14
      		Biomass       =   1.81 		 LAI            =   0.02
      		Stover N Conc =   0.04 		 Extractable SW =  37.61
-26 December 1982(Day of year=360), sorghum: 
+26 December 1982(Day of year=360), Sorghum: 
      Stage 5 FloralInitiation  DAS = 25
      		Biomass       =   8.82 		 LAI            =   0.18
      		Stover N Conc =   0.26 		 Extractable SW =  53.03
-7 January 1983(Day of year=7), sysbal: 
+7 January 1983(Day of year=7), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.028747
-8 January 1983(Day of year=8), sysbal: 
+8 January 1983(Day of year=8), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.062766
-9 January 1983(Day of year=9), sysbal: 
+9 January 1983(Day of year=9), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.085200
-10 January 1983(Day of year=10), sysbal: 
+10 January 1983(Day of year=10), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.041232
-11 January 1983(Day of year=11), sysbal: 
+11 January 1983(Day of year=11), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.047725
-12 January 1983(Day of year=12), sysbal: 
+12 January 1983(Day of year=12), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.012765
-13 January 1983(Day of year=13), sysbal: 
+13 January 1983(Day of year=13), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.065825
-21 January 1983(Day of year=21), sorghum: 
+21 January 1983(Day of year=21), Sorghum: 
      Stage 6 FlagLeaf  DAS = 51
      		Biomass       = 137.12 		 LAI            =   0.95
      		Stover N Conc =   1.59 		 Extractable SW =  23.32
-5 February 1983(Day of year=36), sorghum: 
+5 February 1983(Day of year=36), Sorghum: 
      Stage 7 Flowering  DAS = 66
      		Biomass       = 198.63 		 LAI            =   0.94
      		Stover N Conc =   1.96 		 Extractable SW =  14.82
-10 February 1983(Day of year=41), sorghum: 
+10 February 1983(Day of year=41), Sorghum: 
      Stage 8 StartGrainFill  DAS = 71
      		Biomass       = 210.40 		 LAI            =   0.94
      		Stover N Conc =   2.02 		 Extractable SW =  11.85
-26 March 1983(Day of year=85), sorghum: 
+26 March 1983(Day of year=85), Sorghum: 
      Stage 9 EndGrainFill  DAS = 115
      		Biomass       = 273.55 		 LAI            =   0.26
      		Stover N Conc =   0.99 		 Extractable SW =   5.69
-28 March 1983(Day of year=87), sorghum: 
+28 March 1983(Day of year=87), Sorghum: 
      Stage 10 Maturity  DAS = 117
      		Biomass       = 274.25 		 LAI            =   0.25
      		Stover N Conc =   0.98 		 Extractable SW =   5.50
-29 March 1983(Day of year=88), sorghum: 
+29 March 1983(Day of year=88), Sorghum: 
      Stage 11 HarvestRipe  DAS = 118
      		Biomass       = 274.48 		 LAI            =   0.25
      		Stover N Conc =   0.98 		 Extractable SW =   5.45
-30 March 1983(Day of year=89), manager: 
+30 March 1983(Day of year=89), Manager: 
      Manager sending message :- sorghum harvest
-30 March 1983(Day of year=89), sorghum: 
+30 March 1983(Day of year=89), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 66 		 Maturity (DAS)          = 117
@@ -5180,7 +5180,7 @@ Title                  =
      Residue removed using graze
                                              Fraction Incorporated =     0.75
                                              Incorporated Depth    =     0.00
-24 June 1983(Day of year=175), manager: 
+24 June 1983(Day of year=175), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 24 June 1983(Day of year=175), wheat: 
      Crop Sow
@@ -5279,7 +5279,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         314.86 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   20.31 (mm)
-17 November 1983(Day of year=321), manager: 
+17 November 1983(Day of year=321), Manager: 
      Manager sending message :- wheat harvest
 17 November 1983(Day of year=321), wheat: 
      
@@ -5325,9 +5325,9 @@ Title                  =
                           DM (kg/ha) =                   0.0                   595.0
                           N  (kg/ha) =                   0.00                    6.43
      
-18 November 1983(Day of year=322), manager: 
+18 November 1983(Day of year=322), Manager: 
      Manager sending message :- sorghum sow  cultivar = early, plants = 5 (/m2), sowing_depth = 30 (mm), tiller_no_fertile = 0
-18 November 1983(Day of year=322), sorghum: 
+18 November 1983(Day of year=322), Sorghum: 
      Sowing initiate
      
                  Crop Sowing Data
@@ -5365,95 +5365,95 @@ Title                  =
              300.0     0.000          0.170       0.000
          ---------------------------------------------------
      
-19 November 1983(Day of year=323), sorghum: 
+19 November 1983(Day of year=323), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   5.45
-26 November 1983(Day of year=330), sorghum: 
+26 November 1983(Day of year=330), Sorghum: 
      Stage 3 Emergence  DAS = 8
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  15.08
-11 December 1983(Day of year=345), sorghum: 
+11 December 1983(Day of year=345), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 23
      		Biomass       =   2.00 		 LAI            =   0.02
      		Stover N Conc =   0.05 		 Extractable SW =  54.61
-24 December 1983(Day of year=358), sorghum: 
+24 December 1983(Day of year=358), Sorghum: 
      Stage 5 FloralInitiation  DAS = 36
      		Biomass       =  11.91 		 LAI            =   0.20
      		Stover N Conc =   0.29 		 Extractable SW =  54.90
-26 December 1983(Day of year=360), sysbal: 
+26 December 1983(Day of year=360), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.016240
-27 December 1983(Day of year=361), sysbal: 
+27 December 1983(Day of year=361), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.052346
-28 December 1983(Day of year=362), sysbal: 
+28 December 1983(Day of year=362), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.088309
-29 December 1983(Day of year=363), sysbal: 
+29 December 1983(Day of year=363), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.095062
-30 December 1983(Day of year=364), sysbal: 
+30 December 1983(Day of year=364), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.110098
-31 December 1983(Day of year=365), sysbal: 
+31 December 1983(Day of year=365), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.079142
-1 January 1984(Day of year=1), sysbal: 
+1 January 1984(Day of year=1), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.161851
-2 January 1984(Day of year=2), sysbal: 
+2 January 1984(Day of year=2), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.182881
-3 January 1984(Day of year=3), sysbal: 
+3 January 1984(Day of year=3), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.194233
-4 January 1984(Day of year=4), sysbal: 
+4 January 1984(Day of year=4), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.133705
-5 January 1984(Day of year=5), sysbal: 
+5 January 1984(Day of year=5), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.158412
-6 January 1984(Day of year=6), sysbal: 
+6 January 1984(Day of year=6), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.123441
-7 January 1984(Day of year=7), sysbal: 
+7 January 1984(Day of year=7), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.167484
-8 January 1984(Day of year=8), sysbal: 
+8 January 1984(Day of year=8), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.143088
-9 January 1984(Day of year=9), sysbal: 
+9 January 1984(Day of year=9), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.073192
-10 January 1984(Day of year=10), sysbal: 
+10 January 1984(Day of year=10), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.038497
-12 January 1984(Day of year=12), sysbal: 
+12 January 1984(Day of year=12), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.099690
-13 January 1984(Day of year=13), sysbal: 
+13 January 1984(Day of year=13), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.039558
-14 January 1984(Day of year=14), sysbal: 
+14 January 1984(Day of year=14), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.021946
-15 January 1984(Day of year=15), sysbal: 
+15 January 1984(Day of year=15), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.135459
-16 January 1984(Day of year=16), sysbal: 
+16 January 1984(Day of year=16), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.027471
-17 January 1984(Day of year=17), sysbal: 
+17 January 1984(Day of year=17), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.066261
-18 January 1984(Day of year=18), sysbal: 
+18 January 1984(Day of year=18), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.034471
-19 January 1984(Day of year=19), sorghum: 
+19 January 1984(Day of year=19), Sorghum: 
      Stage 6 FlagLeaf  DAS = 62
      		Biomass       = 127.27 		 LAI            =   0.60
      		Stover N Conc =   1.09 		 Extractable SW =  26.82
-13 February 1984(Day of year=44), sorghum: 
+13 February 1984(Day of year=44), Sorghum: 
      Stage 7 Flowering  DAS = 87
      		Biomass       = 186.63 		 LAI            =   0.48
      		Stover N Conc =   1.19 		 Extractable SW =  10.34
-18 February 1984(Day of year=49), sorghum: 
+18 February 1984(Day of year=49), Sorghum: 
      Stage 8 StartGrainFill  DAS = 92
      		Biomass       = 194.96 		 LAI            =   0.48
      		Stover N Conc =   1.20 		 Extractable SW =   8.53
-7 April 1984(Day of year=98), sorghum: 
+7 April 1984(Day of year=98), Sorghum: 
      Stage 9 EndGrainFill  DAS = 141
      		Biomass       = 217.06 		 LAI            =   0.28
      		Stover N Conc =   0.85 		 Extractable SW =   8.35
-10 April 1984(Day of year=101), sorghum: 
+10 April 1984(Day of year=101), Sorghum: 
      Stage 10 Maturity  DAS = 144
      		Biomass       = 217.15 		 LAI            =   0.28
      		Stover N Conc =   0.85 		 Extractable SW =   7.92
-11 April 1984(Day of year=102), sorghum: 
+11 April 1984(Day of year=102), Sorghum: 
      Stage 11 HarvestRipe  DAS = 145
      		Biomass       = 217.18 		 LAI            =   0.28
      		Stover N Conc =   0.85 		 Extractable SW =   7.87
-12 April 1984(Day of year=103), manager: 
+12 April 1984(Day of year=103), Manager: 
      Manager sending message :- sorghum harvest
-12 April 1984(Day of year=103), sorghum: 
+12 April 1984(Day of year=103), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 87 		 Maturity (DAS)          = 144
@@ -5498,7 +5498,7 @@ Title                  =
      Residue removed using graze
                                              Fraction Incorporated =     0.75
                                              Incorporated Depth    =     0.00
-29 May 1984(Day of year=150), manager: 
+29 May 1984(Day of year=150), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 29 May 1984(Day of year=150), wheat: 
      Crop Sow
@@ -5597,7 +5597,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         519.03 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   31.93 (mm)
-16 November 1984(Day of year=321), manager: 
+16 November 1984(Day of year=321), Manager: 
      Manager sending message :- wheat harvest
 16 November 1984(Day of year=321), wheat: 
      
@@ -5643,7 +5643,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   872.0
                           N  (kg/ha) =                   0.00                    7.45
      
-30 July 1985(Day of year=211), manager: 
+30 July 1985(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 30 July 1985(Day of year=211), wheat: 
      Crop Sow
@@ -5736,7 +5736,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         337.36 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   46.23 (mm)
-11 December 1985(Day of year=345), manager: 
+11 December 1985(Day of year=345), Manager: 
      Manager sending message :- wheat harvest
 11 December 1985(Day of year=345), wheat: 
      
@@ -5782,7 +5782,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   664.4
                           N  (kg/ha) =                   0.00                    6.31
      
-16 May 1986(Day of year=136), manager: 
+16 May 1986(Day of year=136), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 16 May 1986(Day of year=136), wheat: 
      Crop Sow
@@ -5875,7 +5875,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         525.96 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.27 (%)    extractable sw =   39.07 (mm)
-13 November 1986(Day of year=317), manager: 
+13 November 1986(Day of year=317), Manager: 
      Manager sending message :- wheat harvest
 13 November 1986(Day of year=317), wheat: 
      
@@ -5921,7 +5921,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   822.5
                           N  (kg/ha) =                   0.00                    6.71
      
-15 May 1987(Day of year=135), manager: 
+15 May 1987(Day of year=135), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 15 May 1987(Day of year=135), wheat: 
      Crop Sow
@@ -6020,7 +6020,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         362.22 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   33.20 (mm)
-5 November 1987(Day of year=309), manager: 
+5 November 1987(Day of year=309), Manager: 
      Manager sending message :- wheat harvest
 5 November 1987(Day of year=309), wheat: 
      
@@ -6066,7 +6066,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   603.4
                           N  (kg/ha) =                   0.00                    5.24
      
-23 May 1988(Day of year=144), manager: 
+23 May 1988(Day of year=144), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 23 May 1988(Day of year=144), wheat: 
      Crop Sow
@@ -6165,7 +6165,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         410.01 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   21.58 (mm)
-2 November 1988(Day of year=307), manager: 
+2 November 1988(Day of year=307), Manager: 
      Manager sending message :- wheat harvest
 2 November 1988(Day of year=307), wheat: 
      
@@ -6211,7 +6211,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   663.5
                           N  (kg/ha) =                   0.00                    5.71
      
-24 May 1989(Day of year=144), manager: 
+24 May 1989(Day of year=144), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 24 May 1989(Day of year=144), wheat: 
      Crop Sow
@@ -6310,7 +6310,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         319.83 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   43.51 (mm)
-12 November 1989(Day of year=316), manager: 
+12 November 1989(Day of year=316), Manager: 
      Manager sending message :- wheat harvest
 12 November 1989(Day of year=316), wheat: 
      
@@ -6356,7 +6356,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   570.2
                           N  (kg/ha) =                   0.00                    4.60
      
-30 July 1990(Day of year=211), manager: 
+30 July 1990(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 30 July 1990(Day of year=211), wheat: 
      Crop Sow
@@ -6449,7 +6449,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         337.67 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   10.35 (mm)
-11 December 1990(Day of year=345), manager: 
+11 December 1990(Day of year=345), Manager: 
      Manager sending message :- wheat harvest
 11 December 1990(Day of year=345), wheat: 
      
@@ -6495,7 +6495,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   730.1
                           N  (kg/ha) =                   0.00                    8.02
      
-19 June 1991(Day of year=170), manager: 
+19 June 1991(Day of year=170), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 19 June 1991(Day of year=170), wheat: 
      Crop Sow
@@ -6594,7 +6594,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         255.77 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   14.60 (mm)
-18 November 1991(Day of year=322), manager: 
+18 November 1991(Day of year=322), Manager: 
      Manager sending message :- wheat harvest
 18 November 1991(Day of year=322), wheat: 
      
@@ -6640,9 +6640,9 @@ Title                  =
                           DM (kg/ha) =                   0.0                   512.9
                           N  (kg/ha) =                   0.00                    4.35
      
-25 December 1991(Day of year=359), manager: 
+25 December 1991(Day of year=359), Manager: 
      Manager sending message :- sorghum sow  cultivar = early, plants = 5 (/m2), sowing_depth = 30 (mm), tiller_no_fertile = 0
-25 December 1991(Day of year=359), sorghum: 
+25 December 1991(Day of year=359), Sorghum: 
      Sowing initiate
      
                  Crop Sowing Data
@@ -6686,85 +6686,85 @@ Title                  =
    - Reading Fertiliser Type Parameters
          2.61 of N as nitrate (no3_n)
                                          added at depth    0.00 (layer   1)
-26 December 1991(Day of year=360), sorghum: 
+26 December 1991(Day of year=360), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   7.87
-30 December 1991(Day of year=364), sorghum: 
+30 December 1991(Day of year=364), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  10.85
-9 January 1992(Day of year=9), sorghum: 
+9 January 1992(Day of year=9), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 15
      		Biomass       =   1.74 		 LAI            =   0.02
      		Stover N Conc =   0.04 		 Extractable SW =  35.29
-22 January 1992(Day of year=22), sorghum: 
+22 January 1992(Day of year=22), Sorghum: 
      Stage 5 FloralInitiation  DAS = 28
      		Biomass       =  11.28 		 LAI            =   0.19
      		Stover N Conc =   0.27 		 Extractable SW =  54.19
-24 January 1992(Day of year=24), sysbal: 
+24 January 1992(Day of year=24), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.029023
-25 January 1992(Day of year=25), sysbal: 
+25 January 1992(Day of year=25), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.037342
-26 January 1992(Day of year=26), sysbal: 
+26 January 1992(Day of year=26), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.054920
-27 January 1992(Day of year=27), sysbal: 
+27 January 1992(Day of year=27), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.086114
-28 January 1992(Day of year=28), sysbal: 
+28 January 1992(Day of year=28), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.105731
-29 January 1992(Day of year=29), sysbal: 
+29 January 1992(Day of year=29), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.144220
-30 January 1992(Day of year=30), sysbal: 
+30 January 1992(Day of year=30), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.169270
-31 January 1992(Day of year=31), sysbal: 
+31 January 1992(Day of year=31), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.157909
-1 February 1992(Day of year=32), sysbal: 
+1 February 1992(Day of year=32), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.181921
-2 February 1992(Day of year=33), sysbal: 
+2 February 1992(Day of year=33), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.132377
-3 February 1992(Day of year=34), sysbal: 
+3 February 1992(Day of year=34), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.129702
-4 February 1992(Day of year=35), sysbal: 
+4 February 1992(Day of year=35), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.054140
-5 February 1992(Day of year=36), sysbal: 
+5 February 1992(Day of year=36), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.078730
-6 February 1992(Day of year=37), sysbal: 
+6 February 1992(Day of year=37), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.078757
-7 February 1992(Day of year=38), sysbal: 
+7 February 1992(Day of year=38), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.064223
-8 February 1992(Day of year=39), sysbal: 
+8 February 1992(Day of year=39), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.053980
-14 February 1992(Day of year=45), sysbal: 
+14 February 1992(Day of year=45), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.013882
-15 February 1992(Day of year=46), sorghum: 
+15 February 1992(Day of year=46), Sorghum: 
      Stage 6 FlagLeaf  DAS = 52
      		Biomass       = 117.74 		 LAI            =   0.81
      		Stover N Conc =   1.21 		 Extractable SW =  48.39
-15 February 1992(Day of year=46), sysbal: 
+15 February 1992(Day of year=46), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.027681
-3 March 1992(Day of year=63), sorghum: 
+3 March 1992(Day of year=63), Sorghum: 
      Stage 7 Flowering  DAS = 69
      		Biomass       = 219.41 		 LAI            =   0.78
      		Stover N Conc =   1.60 		 Extractable SW =  59.34
-8 March 1992(Day of year=68), sorghum: 
+8 March 1992(Day of year=68), Sorghum: 
      Stage 8 StartGrainFill  DAS = 74
      		Biomass       = 248.02 		 LAI            =   0.78
      		Stover N Conc =   1.69 		 Extractable SW =  51.16
-29 April 1992(Day of year=120), sorghum: 
+29 April 1992(Day of year=120), Sorghum: 
      Stage 9 EndGrainFill  DAS = 126
      		Biomass       = 322.41 		 LAI            =   0.32
      		Stover N Conc =   1.02 		 Extractable SW =  80.40
-3 May 1992(Day of year=124), sorghum: 
+3 May 1992(Day of year=124), Sorghum: 
      Stage 10 Maturity  DAS = 130
      		Biomass       = 323.28 		 LAI            =   0.31
      		Stover N Conc =   1.01 		 Extractable SW =  76.66
-4 May 1992(Day of year=125), sorghum: 
+4 May 1992(Day of year=125), Sorghum: 
      Stage 11 HarvestRipe  DAS = 131
      		Biomass       = 323.44 		 LAI            =   0.31
      		Stover N Conc =   1.01 		 Extractable SW =  76.09
-5 May 1992(Day of year=126), manager: 
+5 May 1992(Day of year=126), Manager: 
      Manager sending message :- sorghum harvest
-5 May 1992(Day of year=126), sorghum: 
+5 May 1992(Day of year=126), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 69 		 Maturity (DAS)          = 130
@@ -6809,7 +6809,7 @@ Title                  =
      Residue removed using graze
                                              Fraction Incorporated =     0.75
                                              Incorporated Depth    =     0.00
-29 July 1992(Day of year=211), manager: 
+29 July 1992(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 29 July 1992(Day of year=211), wheat: 
      Crop Sow
@@ -6908,7 +6908,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         401.54 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   29.44 (mm)
-20 December 1992(Day of year=355), manager: 
+20 December 1992(Day of year=355), Manager: 
      Manager sending message :- wheat harvest
 20 December 1992(Day of year=355), wheat: 
      
@@ -6954,7 +6954,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   747.1
                           N  (kg/ha) =                   0.00                    6.12
      
-12 June 1993(Day of year=163), manager: 
+12 June 1993(Day of year=163), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 12 June 1993(Day of year=163), wheat: 
      Crop Sow
@@ -7053,7 +7053,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         420.72 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   50.30 (mm)
-24 November 1993(Day of year=328), manager: 
+24 November 1993(Day of year=328), Manager: 
      Manager sending message :- wheat harvest
 24 November 1993(Day of year=328), wheat: 
      
@@ -7099,7 +7099,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   739.8
                           N  (kg/ha) =                   0.00                    6.47
      
-30 July 1994(Day of year=211), manager: 
+30 July 1994(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 30 July 1994(Day of year=211), wheat: 
      Crop Sow
@@ -7192,7 +7192,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         420.72 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =    8.50 (mm)
-8 December 1994(Day of year=342), manager: 
+8 December 1994(Day of year=342), Manager: 
      Manager sending message :- wheat harvest
 8 December 1994(Day of year=342), wheat: 
      
@@ -7238,9 +7238,9 @@ Title                  =
                           DM (kg/ha) =                   0.0                   913.3
                           N  (kg/ha) =                   0.00                   10.86
      
-14 January 1995(Day of year=14), manager: 
+14 January 1995(Day of year=14), Manager: 
      Manager sending message :- sorghum sow  cultivar = early, plants = 5 (/m2), sowing_depth = 30 (mm), tiller_no_fertile = 0
-14 January 1995(Day of year=14), sorghum: 
+14 January 1995(Day of year=14), Sorghum: 
      Sowing initiate
      
                  Crop Sowing Data
@@ -7278,111 +7278,111 @@ Title                  =
              300.0     0.000          0.170       0.000
          ---------------------------------------------------
      
-15 January 1995(Day of year=15), sorghum: 
+15 January 1995(Day of year=15), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  71.25
-17 January 1995(Day of year=17), sorghum: 
+17 January 1995(Day of year=17), Sorghum: 
      Stage 3 Emergence  DAS = 3
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  73.16
-18 January 1995(Day of year=18), sysbal: 
+18 January 1995(Day of year=18), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.014657
-27 January 1995(Day of year=27), sorghum: 
+27 January 1995(Day of year=27), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 13
      		Biomass       =   1.50 		 LAI            =   0.02
      		Stover N Conc =   0.04 		 Extractable SW =  36.17
-2 February 1995(Day of year=33), sysbal: 
+2 February 1995(Day of year=33), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.029000
-3 February 1995(Day of year=34), sysbal: 
+3 February 1995(Day of year=34), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.045691
-4 February 1995(Day of year=35), sysbal: 
+4 February 1995(Day of year=35), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.041954
-5 February 1995(Day of year=36), sysbal: 
+5 February 1995(Day of year=36), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.042972
-6 February 1995(Day of year=37), sysbal: 
+6 February 1995(Day of year=37), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.072959
-7 February 1995(Day of year=38), sysbal: 
+7 February 1995(Day of year=38), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.101818
-8 February 1995(Day of year=39), sysbal: 
+8 February 1995(Day of year=39), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.103812
-9 February 1995(Day of year=40), sysbal: 
+9 February 1995(Day of year=40), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.118711
-10 February 1995(Day of year=41), sorghum: 
+10 February 1995(Day of year=41), Sorghum: 
      Stage 5 FloralInitiation  DAS = 27
      		Biomass       =  10.67 		 LAI            =   0.10
      		Stover N Conc =   0.14 		 Extractable SW =  31.79
-10 February 1995(Day of year=41), sysbal: 
+10 February 1995(Day of year=41), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.158878
-11 February 1995(Day of year=42), sysbal: 
+11 February 1995(Day of year=42), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.218410
-12 February 1995(Day of year=43), sysbal: 
+12 February 1995(Day of year=43), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.228388
-13 February 1995(Day of year=44), sysbal: 
+13 February 1995(Day of year=44), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.233317
-14 February 1995(Day of year=45), sysbal: 
+14 February 1995(Day of year=45), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.154397
-15 February 1995(Day of year=46), sysbal: 
+15 February 1995(Day of year=46), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.147623
-16 February 1995(Day of year=47), sysbal: 
+16 February 1995(Day of year=47), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.174830
-17 February 1995(Day of year=48), sysbal: 
+17 February 1995(Day of year=48), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.281531
-18 February 1995(Day of year=49), sysbal: 
+18 February 1995(Day of year=49), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.317912
-19 February 1995(Day of year=50), sysbal: 
+19 February 1995(Day of year=50), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.342035
-20 February 1995(Day of year=51), sysbal: 
+20 February 1995(Day of year=51), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.308149
-21 February 1995(Day of year=52), sysbal: 
+21 February 1995(Day of year=52), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.205022
-22 February 1995(Day of year=53), sysbal: 
+22 February 1995(Day of year=53), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.201628
-23 February 1995(Day of year=54), sysbal: 
+23 February 1995(Day of year=54), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.121305
-24 February 1995(Day of year=55), sysbal: 
+24 February 1995(Day of year=55), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.217032
-25 February 1995(Day of year=56), sysbal: 
+25 February 1995(Day of year=56), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.095916
-26 February 1995(Day of year=57), sysbal: 
+26 February 1995(Day of year=57), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.073656
-27 February 1995(Day of year=58), sysbal: 
+27 February 1995(Day of year=58), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.071509
-28 February 1995(Day of year=59), sysbal: 
+28 February 1995(Day of year=59), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.085814
-1 March 1995(Day of year=60), sysbal: 
+1 March 1995(Day of year=60), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.090244
-2 March 1995(Day of year=61), sysbal: 
+2 March 1995(Day of year=61), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.068499
-3 March 1995(Day of year=62), sysbal: 
+3 March 1995(Day of year=62), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.076098
-4 March 1995(Day of year=63), sysbal: 
+4 March 1995(Day of year=63), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.012976
-5 March 1995(Day of year=64), sysbal: 
+5 March 1995(Day of year=64), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.023193
-6 March 1995(Day of year=65), sysbal: 
+6 March 1995(Day of year=65), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.025220
-8 March 1995(Day of year=67), sysbal: 
+8 March 1995(Day of year=67), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.011605
-9 March 1995(Day of year=68), sysbal: 
+9 March 1995(Day of year=68), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.011826
-10 March 1995(Day of year=69), sysbal: 
+10 March 1995(Day of year=69), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.017323
-12 March 1995(Day of year=71), sorghum: 
+12 March 1995(Day of year=71), Sorghum: 
      Stage 6 FlagLeaf  DAS = 57
      		Biomass       =  67.01 		 LAI            =   0.38
      		Stover N Conc =   0.68 		 Extractable SW =  40.27
-1 April 1995(Day of year=91), sorghum: 
+1 April 1995(Day of year=91), Sorghum: 
      Stage 7 Flowering  DAS = 77
      		Biomass       = 121.49 		 LAI            =   0.38
      		Stover N Conc =   1.00 		 Extractable SW =  32.41
-9 April 1995(Day of year=99), sorghum: 
+9 April 1995(Day of year=99), Sorghum: 
      Stage 8 StartGrainFill  DAS = 85
      		Biomass       = 136.21 		 LAI            =   0.38
      		Stover N Conc =   1.06 		 Extractable SW =  28.31
-14 June 1995(Day of year=165), manager: 
+14 June 1995(Day of year=165), Manager: 
      Manager sending message :- sorghum harvest
-14 June 1995(Day of year=165), sorghum: 
+14 June 1995(Day of year=165), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 77 		 Maturity (DAS)          = 
@@ -7427,7 +7427,7 @@ Title                  =
      Residue removed using graze
                                              Fraction Incorporated =     0.75
                                              Incorporated Depth    =     0.00
-30 July 1995(Day of year=211), manager: 
+30 July 1995(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 30 July 1995(Day of year=211), wheat: 
      Crop Sow
@@ -7526,7 +7526,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         292.89 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =    6.92 (mm)
-8 December 1995(Day of year=342), manager: 
+8 December 1995(Day of year=342), Manager: 
      Manager sending message :- wheat harvest
 8 December 1995(Day of year=342), wheat: 
      
@@ -7572,9 +7572,9 @@ Title                  =
                           DM (kg/ha) =                   0.0                   609.3
                           N  (kg/ha) =                   0.00                    8.22
      
-25 December 1995(Day of year=359), manager: 
+25 December 1995(Day of year=359), Manager: 
      Manager sending message :- sorghum sow  cultivar = early, plants = 5 (/m2), sowing_depth = 30 (mm), tiller_no_fertile = 0
-25 December 1995(Day of year=359), sorghum: 
+25 December 1995(Day of year=359), Sorghum: 
      Sowing initiate
      
                  Crop Sowing Data
@@ -7618,89 +7618,89 @@ Title                  =
    - Reading Fertiliser Type Parameters
          4.58 of N as nitrate (no3_n)
                                          added at depth    0.00 (layer   1)
-26 December 1995(Day of year=360), sorghum: 
+26 December 1995(Day of year=360), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  37.27
-31 December 1995(Day of year=365), sorghum: 
+31 December 1995(Day of year=365), Sorghum: 
      Stage 3 Emergence  DAS = 6
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  36.28
-10 January 1996(Day of year=10), sorghum: 
+10 January 1996(Day of year=10), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   1.89 		 LAI            =   0.02
      		Stover N Conc =   0.04 		 Extractable SW =  43.13
-24 January 1996(Day of year=24), sysbal: 
+24 January 1996(Day of year=24), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.015267
-25 January 1996(Day of year=25), sorghum: 
+25 January 1996(Day of year=25), Sorghum: 
      Stage 5 FloralInitiation  DAS = 31
      		Biomass       =  14.71 		 LAI            =   0.19
      		Stover N Conc =   0.26 		 Extractable SW =  45.35
-25 January 1996(Day of year=25), sysbal: 
+25 January 1996(Day of year=25), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.021775
-26 January 1996(Day of year=26), sysbal: 
+26 January 1996(Day of year=26), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.035437
-27 January 1996(Day of year=27), sysbal: 
+27 January 1996(Day of year=27), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.054830
-28 January 1996(Day of year=28), sysbal: 
+28 January 1996(Day of year=28), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.090611
-29 January 1996(Day of year=29), sysbal: 
+29 January 1996(Day of year=29), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.121240
-30 January 1996(Day of year=30), sysbal: 
+30 January 1996(Day of year=30), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.109315
-31 January 1996(Day of year=31), sysbal: 
+31 January 1996(Day of year=31), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.133273
-1 February 1996(Day of year=32), sysbal: 
+1 February 1996(Day of year=32), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.170315
-2 February 1996(Day of year=33), sysbal: 
+2 February 1996(Day of year=33), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.185597
-3 February 1996(Day of year=34), sysbal: 
+3 February 1996(Day of year=34), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.090871
-4 February 1996(Day of year=35), sysbal: 
+4 February 1996(Day of year=35), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.231479
-5 February 1996(Day of year=36), sysbal: 
+5 February 1996(Day of year=36), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.058585
-6 February 1996(Day of year=37), sysbal: 
+6 February 1996(Day of year=37), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.182780
-7 February 1996(Day of year=38), sysbal: 
+7 February 1996(Day of year=38), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.094196
-8 February 1996(Day of year=39), sysbal: 
+8 February 1996(Day of year=39), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.038232
-9 February 1996(Day of year=40), sysbal: 
+9 February 1996(Day of year=40), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.054477
-14 February 1996(Day of year=45), sysbal: 
+14 February 1996(Day of year=45), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.017601
-15 February 1996(Day of year=46), sysbal: 
+15 February 1996(Day of year=46), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.016171
-18 February 1996(Day of year=49), sorghum: 
+18 February 1996(Day of year=49), Sorghum: 
      Stage 6 FlagLeaf  DAS = 55
      		Biomass       = 107.75 		 LAI            =   0.69
      		Stover N Conc =   1.06 		 Extractable SW =  23.72
-18 February 1996(Day of year=49), sysbal: 
+18 February 1996(Day of year=49), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.030655
-8 March 1996(Day of year=68), sorghum: 
+8 March 1996(Day of year=68), Sorghum: 
      Stage 7 Flowering  DAS = 74
      		Biomass       = 169.12 		 LAI            =   0.65
      		Stover N Conc =   1.21 		 Extractable SW =  10.80
-13 March 1996(Day of year=73), sorghum: 
+13 March 1996(Day of year=73), Sorghum: 
      Stage 8 StartGrainFill  DAS = 79
      		Biomass       = 179.40 		 LAI            =   0.65
      		Stover N Conc =   1.23 		 Extractable SW =   8.98
-6 May 1996(Day of year=127), sorghum: 
+6 May 1996(Day of year=127), Sorghum: 
      Stage 9 EndGrainFill  DAS = 133
      		Biomass       = 241.06 		 LAI            =   0.28
      		Stover N Conc =   0.80 		 Extractable SW =  18.68
-8 May 1996(Day of year=129), sorghum: 
+8 May 1996(Day of year=129), Sorghum: 
      Stage 10 Maturity  DAS = 135
      		Biomass       = 241.31 		 LAI            =   0.27
      		Stover N Conc =   0.80 		 Extractable SW =  17.96
-9 May 1996(Day of year=130), sorghum: 
+9 May 1996(Day of year=130), Sorghum: 
      Stage 11 HarvestRipe  DAS = 136
      		Biomass       = 241.42 		 LAI            =   0.27
      		Stover N Conc =   0.80 		 Extractable SW =  21.57
-10 May 1996(Day of year=131), manager: 
+10 May 1996(Day of year=131), Manager: 
      Manager sending message :- sorghum harvest
-10 May 1996(Day of year=131), sorghum: 
+10 May 1996(Day of year=131), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 74 		 Maturity (DAS)          = 135
@@ -7745,7 +7745,7 @@ Title                  =
      Residue removed using graze
                                              Fraction Incorporated =     0.75
                                              Incorporated Depth    =     0.00
-29 July 1996(Day of year=211), manager: 
+29 July 1996(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 29 July 1996(Day of year=211), wheat: 
      Crop Sow
@@ -7844,7 +7844,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         288.83 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =    5.00 (mm)
-8 December 1996(Day of year=343), manager: 
+8 December 1996(Day of year=343), Manager: 
      Manager sending message :- wheat harvest
 8 December 1996(Day of year=343), wheat: 
      
@@ -7890,7 +7890,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   643.6
                           N  (kg/ha) =                   0.00                    9.18
      
-20 May 1997(Day of year=140), manager: 
+20 May 1997(Day of year=140), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 20 May 1997(Day of year=140), wheat: 
      Crop Sow
@@ -7989,7 +7989,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         463.26 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   39.20 (mm)
-3 November 1997(Day of year=307), manager: 
+3 November 1997(Day of year=307), Manager: 
      Manager sending message :- wheat harvest
 3 November 1997(Day of year=307), wheat: 
      
@@ -8035,9 +8035,9 @@ Title                  =
                           DM (kg/ha) =                   0.0                   745.0
                           N  (kg/ha) =                   0.00                    6.66
      
-14 November 1997(Day of year=318), manager: 
+14 November 1997(Day of year=318), Manager: 
      Manager sending message :- sorghum sow  cultivar = early, plants = 5 (/m2), sowing_depth = 30 (mm), tiller_no_fertile = 0
-14 November 1997(Day of year=318), sorghum: 
+14 November 1997(Day of year=318), Sorghum: 
      Sowing initiate
      
                  Crop Sowing Data
@@ -8075,87 +8075,87 @@ Title                  =
              300.0     0.000          0.170       0.000
          ---------------------------------------------------
      
-15 November 1997(Day of year=319), sorghum: 
+15 November 1997(Day of year=319), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  16.10
-20 November 1997(Day of year=324), sorghum: 
+20 November 1997(Day of year=324), Sorghum: 
      Stage 3 Emergence  DAS = 6
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  16.21
-30 November 1997(Day of year=334), sorghum: 
+30 November 1997(Day of year=334), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   1.95 		 LAI            =   0.02
      		Stover N Conc =   0.05 		 Extractable SW =  35.60
-16 December 1997(Day of year=350), sorghum: 
+16 December 1997(Day of year=350), Sorghum: 
      Stage 5 FloralInitiation  DAS = 32
      		Biomass       =  15.77 		 LAI            =   0.20
      		Stover N Conc =   0.31 		 Extractable SW =  47.73
-17 December 1997(Day of year=351), sysbal: 
+17 December 1997(Day of year=351), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.015149
-18 December 1997(Day of year=352), sysbal: 
+18 December 1997(Day of year=352), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.030700
-19 December 1997(Day of year=353), sysbal: 
+19 December 1997(Day of year=353), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.048919
-20 December 1997(Day of year=354), sysbal: 
+20 December 1997(Day of year=354), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.069674
-21 December 1997(Day of year=355), sysbal: 
+21 December 1997(Day of year=355), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.096534
-22 December 1997(Day of year=356), sysbal: 
+22 December 1997(Day of year=356), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.113944
-24 December 1997(Day of year=358), sysbal: 
+24 December 1997(Day of year=358), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.135126
-25 December 1997(Day of year=359), sysbal: 
+25 December 1997(Day of year=359), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.154668
-26 December 1997(Day of year=360), sysbal: 
+26 December 1997(Day of year=360), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.049610
-27 December 1997(Day of year=361), sysbal: 
+27 December 1997(Day of year=361), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.022554
-28 December 1997(Day of year=362), sysbal: 
+28 December 1997(Day of year=362), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.143521
-29 December 1997(Day of year=363), sysbal: 
+29 December 1997(Day of year=363), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.051905
-31 December 1997(Day of year=365), sysbal: 
+31 December 1997(Day of year=365), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.071232
-1 January 1998(Day of year=1), sysbal: 
+1 January 1998(Day of year=1), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.072264
-2 January 1998(Day of year=2), sysbal: 
+2 January 1998(Day of year=2), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.052630
-3 January 1998(Day of year=3), sysbal: 
+3 January 1998(Day of year=3), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.044277
-4 January 1998(Day of year=4), sysbal: 
+4 January 1998(Day of year=4), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.016955
-5 January 1998(Day of year=5), sysbal: 
+5 January 1998(Day of year=5), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.024024
-9 January 1998(Day of year=9), sorghum: 
+9 January 1998(Day of year=9), Sorghum: 
      Stage 6 FlagLeaf  DAS = 56
      		Biomass       = 120.59 		 LAI            =   0.68
      		Stover N Conc =   1.06 		 Extractable SW =  18.98
-9 January 1998(Day of year=9), sysbal: 
+9 January 1998(Day of year=9), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.012030
-28 January 1998(Day of year=28), sorghum: 
+28 January 1998(Day of year=28), Sorghum: 
      Stage 7 Flowering  DAS = 75
      		Biomass       = 160.27 		 LAI            =   0.68
      		Stover N Conc =   1.17 		 Extractable SW =   9.83
-2 February 1998(Day of year=33), sorghum: 
+2 February 1998(Day of year=33), Sorghum: 
      Stage 8 StartGrainFill  DAS = 80
      		Biomass       = 166.79 		 LAI            =   0.50
      		Stover N Conc =   1.19 		 Extractable SW =   8.42
-15 March 1998(Day of year=74), sorghum: 
+15 March 1998(Day of year=74), Sorghum: 
      Stage 9 EndGrainFill  DAS = 121
      		Biomass       = 193.12 		 LAI            =   0.15
      		Stover N Conc =   0.77 		 Extractable SW =   4.43
-17 March 1998(Day of year=76), sorghum: 
+17 March 1998(Day of year=76), Sorghum: 
      Stage 10 Maturity  DAS = 123
      		Biomass       = 193.31 		 LAI            =   0.15
      		Stover N Conc =   0.76 		 Extractable SW =   4.45
-18 March 1998(Day of year=77), sorghum: 
+18 March 1998(Day of year=77), Sorghum: 
      Stage 11 HarvestRipe  DAS = 124
      		Biomass       = 193.39 		 LAI            =   0.15
      		Stover N Conc =   0.76 		 Extractable SW =   4.46
-19 March 1998(Day of year=78), manager: 
+19 March 1998(Day of year=78), Manager: 
      Manager sending message :- sorghum harvest
-19 March 1998(Day of year=78), sorghum: 
+19 March 1998(Day of year=78), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 75 		 Maturity (DAS)          = 123
@@ -8200,7 +8200,7 @@ Title                  =
      Residue removed using graze
                                              Fraction Incorporated =     0.75
                                              Incorporated Depth    =     0.00
-30 July 1998(Day of year=211), manager: 
+30 July 1998(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 30 July 1998(Day of year=211), wheat: 
      Crop Sow
@@ -8299,7 +8299,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         256.33 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   11.71 (mm)
-9 December 1998(Day of year=343), manager: 
+9 December 1998(Day of year=343), Manager: 
      Manager sending message :- wheat harvest
 9 December 1998(Day of year=343), wheat: 
      
@@ -8345,9 +8345,9 @@ Title                  =
                           DM (kg/ha) =                   0.0                   601.6
                           N  (kg/ha) =                   0.00                    7.63
      
-6 January 1999(Day of year=6), manager: 
+6 January 1999(Day of year=6), Manager: 
      Manager sending message :- sorghum sow  cultivar = early, plants = 5 (/m2), sowing_depth = 30 (mm), tiller_no_fertile = 0
-6 January 1999(Day of year=6), sorghum: 
+6 January 1999(Day of year=6), Sorghum: 
      Sowing initiate
      
                  Crop Sowing Data
@@ -8385,79 +8385,79 @@ Title                  =
              300.0     0.000          0.170       0.000
          ---------------------------------------------------
      
-7 January 1999(Day of year=7), sorghum: 
+7 January 1999(Day of year=7), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   4.46
-12 January 1999(Day of year=12), sorghum: 
+12 January 1999(Day of year=12), Sorghum: 
      Stage 3 Emergence  DAS = 6
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  14.18
-22 January 1999(Day of year=22), sorghum: 
+22 January 1999(Day of year=22), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   1.91 		 LAI            =   0.02
      		Stover N Conc =   0.05 		 Extractable SW =  42.89
-3 February 1999(Day of year=34), sorghum: 
+3 February 1999(Day of year=34), Sorghum: 
      Stage 5 FloralInitiation  DAS = 28
      		Biomass       =  11.74 		 LAI            =   0.20
      		Stover N Conc =   0.30 		 Extractable SW =  91.24
-11 February 1999(Day of year=42), sysbal: 
+11 February 1999(Day of year=42), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.063886
-12 February 1999(Day of year=43), sysbal: 
+12 February 1999(Day of year=43), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.059473
-14 February 1999(Day of year=45), sysbal: 
+14 February 1999(Day of year=45), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.064183
-15 February 1999(Day of year=46), sysbal: 
+15 February 1999(Day of year=46), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.046490
-16 February 1999(Day of year=47), sysbal: 
+16 February 1999(Day of year=47), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.056048
-17 February 1999(Day of year=48), sysbal: 
+17 February 1999(Day of year=48), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.050900
-18 February 1999(Day of year=49), sysbal: 
+18 February 1999(Day of year=49), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.064162
-20 February 1999(Day of year=51), sysbal: 
+20 February 1999(Day of year=51), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.038405
-22 February 1999(Day of year=53), sysbal: 
+22 February 1999(Day of year=53), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.020698
-23 February 1999(Day of year=54), sysbal: 
+23 February 1999(Day of year=54), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.029990
-24 February 1999(Day of year=55), sysbal: 
+24 February 1999(Day of year=55), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.033099
-25 February 1999(Day of year=56), sysbal: 
+25 February 1999(Day of year=56), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.049444
-26 February 1999(Day of year=57), sysbal: 
+26 February 1999(Day of year=57), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.055307
-27 February 1999(Day of year=58), sysbal: 
+27 February 1999(Day of year=58), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.017438
-28 February 1999(Day of year=59), sysbal: 
+28 February 1999(Day of year=59), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.020223
-1 March 1999(Day of year=60), sorghum: 
+1 March 1999(Day of year=60), Sorghum: 
      Stage 6 FlagLeaf  DAS = 54
      		Biomass       = 161.96 		 LAI            =   1.01
      		Stover N Conc =   1.58 		 Extractable SW =  39.47
-18 March 1999(Day of year=77), sorghum: 
+18 March 1999(Day of year=77), Sorghum: 
      Stage 7 Flowering  DAS = 71
      		Biomass       = 250.19 		 LAI            =   0.97
      		Stover N Conc =   1.88 		 Extractable SW =  47.33
-24 March 1999(Day of year=83), sorghum: 
+24 March 1999(Day of year=83), Sorghum: 
      Stage 8 StartGrainFill  DAS = 77
      		Biomass       = 275.20 		 LAI            =   0.97
      		Stover N Conc =   2.04 		 Extractable SW =  66.22
-19 May 1999(Day of year=139), sorghum: 
+19 May 1999(Day of year=139), Sorghum: 
      Stage 9 EndGrainFill  DAS = 133
      		Biomass       = 409.71 		 LAI            =   0.37
      		Stover N Conc =   1.13 		 Extractable SW =  37.28
-24 May 1999(Day of year=144), sorghum: 
+24 May 1999(Day of year=144), Sorghum: 
      Stage 10 Maturity  DAS = 138
      		Biomass       = 411.23 		 LAI            =   0.36
      		Stover N Conc =   1.12 		 Extractable SW =  39.73
-25 May 1999(Day of year=145), sorghum: 
+25 May 1999(Day of year=145), Sorghum: 
      Stage 11 HarvestRipe  DAS = 139
      		Biomass       = 411.56 		 LAI            =   0.36
      		Stover N Conc =   1.11 		 Extractable SW =  39.17
-26 May 1999(Day of year=146), manager: 
+26 May 1999(Day of year=146), Manager: 
      Manager sending message :- sorghum harvest
-26 May 1999(Day of year=146), sorghum: 
+26 May 1999(Day of year=146), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 71 		 Maturity (DAS)          = 138
@@ -8502,7 +8502,7 @@ Title                  =
      Residue removed using graze
                                              Fraction Incorporated =     0.75
                                              Incorporated Depth    =     0.00
-7 July 1999(Day of year=188), manager: 
+7 July 1999(Day of year=188), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 7 July 1999(Day of year=188), wheat: 
      Crop Sow
@@ -8601,7 +8601,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         340.23 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =   10.31 (mm)
-2 December 1999(Day of year=336), manager: 
+2 December 1999(Day of year=336), Manager: 
      Manager sending message :- wheat harvest
 2 December 1999(Day of year=336), wheat: 
      
@@ -8647,9 +8647,9 @@ Title                  =
                           DM (kg/ha) =                   0.0                   697.9
                           N  (kg/ha) =                   0.00                    7.20
      
-16 January 2000(Day of year=16), manager: 
+16 January 2000(Day of year=16), Manager: 
      Manager sending message :- sorghum sow  cultivar = early, plants = 5 (/m2), sowing_depth = 30 (mm), tiller_no_fertile = 0
-16 January 2000(Day of year=16), sorghum: 
+16 January 2000(Day of year=16), Sorghum: 
      Sowing initiate
      
                  Crop Sowing Data
@@ -8693,89 +8693,89 @@ Title                  =
    - Reading Fertiliser Type Parameters
          2.22 of N as nitrate (no3_n)
                                          added at depth    0.00 (layer   1)
-17 January 2000(Day of year=17), sorghum: 
+17 January 2000(Day of year=17), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  33.42
-20 January 2000(Day of year=20), sorghum: 
+20 January 2000(Day of year=20), Sorghum: 
      Stage 3 Emergence  DAS = 4
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  38.27
-1 February 2000(Day of year=32), sorghum: 
+1 February 2000(Day of year=32), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   1.68 		 LAI            =   0.02
      		Stover N Conc =   0.04 		 Extractable SW =  65.70
-15 February 2000(Day of year=46), sorghum: 
+15 February 2000(Day of year=46), Sorghum: 
      Stage 5 FloralInitiation  DAS = 30
      		Biomass       =  13.65 		 LAI            =   0.20
      		Stover N Conc =   0.29 		 Extractable SW =  71.09
-16 February 2000(Day of year=47), sysbal: 
+16 February 2000(Day of year=47), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.030413
-17 February 2000(Day of year=48), sysbal: 
+17 February 2000(Day of year=48), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.035633
-18 February 2000(Day of year=49), sysbal: 
+18 February 2000(Day of year=49), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.056724
-19 February 2000(Day of year=50), sysbal: 
+19 February 2000(Day of year=50), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.046175
-20 February 2000(Day of year=51), sysbal: 
+20 February 2000(Day of year=51), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.077092
-21 February 2000(Day of year=52), sysbal: 
+21 February 2000(Day of year=52), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.118970
-22 February 2000(Day of year=53), sysbal: 
+22 February 2000(Day of year=53), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.128464
-23 February 2000(Day of year=54), sysbal: 
+23 February 2000(Day of year=54), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.115846
-24 February 2000(Day of year=55), sysbal: 
+24 February 2000(Day of year=55), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.157276
-25 February 2000(Day of year=56), sysbal: 
+25 February 2000(Day of year=56), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.143783
-26 February 2000(Day of year=57), sysbal: 
+26 February 2000(Day of year=57), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.142955
-27 February 2000(Day of year=58), sysbal: 
+27 February 2000(Day of year=58), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.033717
-28 February 2000(Day of year=59), sysbal: 
+28 February 2000(Day of year=59), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.043699
-29 February 2000(Day of year=60), sysbal: 
+29 February 2000(Day of year=60), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.068412
-1 March 2000(Day of year=61), sysbal: 
+1 March 2000(Day of year=61), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.039396
-2 March 2000(Day of year=62), sysbal: 
+2 March 2000(Day of year=62), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.030284
-3 March 2000(Day of year=63), sysbal: 
+3 March 2000(Day of year=63), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.064273
-4 March 2000(Day of year=64), sysbal: 
+4 March 2000(Day of year=64), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.049859
-5 March 2000(Day of year=65), sysbal: 
+5 March 2000(Day of year=65), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.039731
-6 March 2000(Day of year=66), sysbal: 
+6 March 2000(Day of year=66), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.049913
-7 March 2000(Day of year=67), sysbal: 
+7 March 2000(Day of year=67), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.052124
-8 March 2000(Day of year=68), sysbal: 
+8 March 2000(Day of year=68), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.059827
-12 March 2000(Day of year=72), sysbal: 
+12 March 2000(Day of year=72), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.044204
-13 March 2000(Day of year=73), sysbal: 
+13 March 2000(Day of year=73), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.045023
-14 March 2000(Day of year=74), sorghum: 
+14 March 2000(Day of year=74), Sorghum: 
      Stage 6 FlagLeaf  DAS = 58
      		Biomass       = 126.30 		 LAI            =   0.80
      		Stover N Conc =   1.22 		 Extractable SW = 102.76
-14 March 2000(Day of year=74), sysbal: 
+14 March 2000(Day of year=74), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.042012
-24 April 2000(Day of year=115), sorghum: 
+24 April 2000(Day of year=115), Sorghum: 
      Stage 7 Flowering  DAS = 99
      		Biomass       = 236.25 		 LAI            =   0.61
      		Stover N Conc =   1.49 		 Extractable SW =  65.10
-2 May 2000(Day of year=123), sorghum: 
+2 May 2000(Day of year=123), Sorghum: 
      Stage 8 StartGrainFill  DAS = 107
      		Biomass       = 250.87 		 LAI            =   0.61
      		Stover N Conc =   1.58 		 Extractable SW =  75.58
-28 May 2000(Day of year=149), sorghum: 
+28 May 2000(Day of year=149), Sorghum: 
       ********** Crop failed due to loss of leaf area ********     Plant Death. Standing above-ground dm = 2856.06 (kg/ha)
-29 May 2000(Day of year=150), manager: 
+29 May 2000(Day of year=150), Manager: 
      Manager sending message :- sorghum harvest
-29 May 2000(Day of year=150), sorghum: 
+29 May 2000(Day of year=150), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 99 		 Maturity (DAS)          = 
@@ -8819,9 +8819,9 @@ Title                  =
      Residue removed using graze
                                              Fraction Incorporated =     0.75
                                              Incorporated Depth    =     0.00
-29 May 2000(Day of year=150), sysbal: 
+29 May 2000(Day of year=150), SysBal: 
      **** N balance - unaccounted loss (kg/ha) =     -0.023626
-29 July 2000(Day of year=211), manager: 
+29 July 2000(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 29 July 2000(Day of year=211), wheat: 
      Crop Sow
@@ -8920,7 +8920,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         289.65 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =    9.98 (mm)
-8 December 2000(Day of year=343), manager: 
+8 December 2000(Day of year=343), Manager: 
      Manager sending message :- wheat harvest
 8 December 2000(Day of year=343), wheat: 
      
@@ -8966,9 +8966,9 @@ Title                  =
                           DM (kg/ha) =                   0.0                   694.4
                           N  (kg/ha) =                   0.00                    8.44
      
-22 January 2001(Day of year=22), manager: 
+22 January 2001(Day of year=22), Manager: 
      Manager sending message :- sorghum sow  cultivar = early, plants = 5 (/m2), sowing_depth = 30 (mm), tiller_no_fertile = 0
-22 January 2001(Day of year=22), sorghum: 
+22 January 2001(Day of year=22), Sorghum: 
      Sowing initiate
      
                  Crop Sowing Data
@@ -9012,105 +9012,105 @@ Title                  =
    - Reading Fertiliser Type Parameters
          2.74 of N as nitrate (no3_n)
                                          added at depth    0.00 (layer   1)
-23 January 2001(Day of year=23), sorghum: 
+23 January 2001(Day of year=23), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  57.75
-27 January 2001(Day of year=27), sorghum: 
+27 January 2001(Day of year=27), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  54.51
-6 February 2001(Day of year=37), sorghum: 
+6 February 2001(Day of year=37), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 15
      		Biomass       =   1.87 		 LAI            =   0.02
      		Stover N Conc =   0.04 		 Extractable SW =  45.16
-21 February 2001(Day of year=52), sysbal: 
+21 February 2001(Day of year=52), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.026337
-22 February 2001(Day of year=53), sorghum: 
+22 February 2001(Day of year=53), Sorghum: 
      Stage 5 FloralInitiation  DAS = 31
      		Biomass       =  11.90 		 LAI            =   0.19
      		Stover N Conc =   0.26 		 Extractable SW =  45.84
-22 February 2001(Day of year=53), sysbal: 
+22 February 2001(Day of year=53), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.056932
-23 February 2001(Day of year=54), sysbal: 
+23 February 2001(Day of year=54), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.047233
-24 February 2001(Day of year=55), sysbal: 
+24 February 2001(Day of year=55), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.030283
-25 February 2001(Day of year=56), sysbal: 
+25 February 2001(Day of year=56), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.050327
-26 February 2001(Day of year=57), sysbal: 
+26 February 2001(Day of year=57), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.076697
-27 February 2001(Day of year=58), sysbal: 
+27 February 2001(Day of year=58), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.093727
-28 February 2001(Day of year=59), sysbal: 
+28 February 2001(Day of year=59), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.132991
-1 March 2001(Day of year=60), sysbal: 
+1 March 2001(Day of year=60), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.173014
-2 March 2001(Day of year=61), sysbal: 
+2 March 2001(Day of year=61), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.178833
-3 March 2001(Day of year=62), sysbal: 
+3 March 2001(Day of year=62), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.183555
-4 March 2001(Day of year=63), sysbal: 
+4 March 2001(Day of year=63), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.184774
-5 March 2001(Day of year=64), sysbal: 
+5 March 2001(Day of year=64), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.182915
-6 March 2001(Day of year=65), sysbal: 
+6 March 2001(Day of year=65), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.157401
-7 March 2001(Day of year=66), sysbal: 
+7 March 2001(Day of year=66), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.139661
-8 March 2001(Day of year=67), sysbal: 
+8 March 2001(Day of year=67), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.076886
-9 March 2001(Day of year=68), sysbal: 
+9 March 2001(Day of year=68), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.075175
-10 March 2001(Day of year=69), sysbal: 
+10 March 2001(Day of year=69), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.051640
-11 March 2001(Day of year=70), sysbal: 
+11 March 2001(Day of year=70), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.036167
-12 March 2001(Day of year=71), sysbal: 
+12 March 2001(Day of year=71), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.036823
-13 March 2001(Day of year=72), sysbal: 
+13 March 2001(Day of year=72), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.038485
-14 March 2001(Day of year=73), sysbal: 
+14 March 2001(Day of year=73), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.062230
-15 March 2001(Day of year=74), sysbal: 
+15 March 2001(Day of year=74), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.029760
-16 March 2001(Day of year=75), sysbal: 
+16 March 2001(Day of year=75), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.014098
-17 March 2001(Day of year=76), sysbal: 
+17 March 2001(Day of year=76), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.039406
-18 March 2001(Day of year=77), sysbal: 
+18 March 2001(Day of year=77), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.022336
-19 March 2001(Day of year=78), sysbal: 
+19 March 2001(Day of year=78), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.031948
-20 March 2001(Day of year=79), sysbal: 
+20 March 2001(Day of year=79), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.057748
-21 March 2001(Day of year=80), sysbal: 
+21 March 2001(Day of year=80), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.013953
-22 March 2001(Day of year=81), sysbal: 
+22 March 2001(Day of year=81), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.045288
-23 March 2001(Day of year=82), sysbal: 
+23 March 2001(Day of year=82), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.024150
-24 March 2001(Day of year=83), sysbal: 
+24 March 2001(Day of year=83), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.015713
-25 March 2001(Day of year=84), sorghum: 
+25 March 2001(Day of year=84), Sorghum: 
      Stage 6 FlagLeaf  DAS = 62
      		Biomass       = 120.45 		 LAI            =   0.62
      		Stover N Conc =   1.10 		 Extractable SW =  46.71
-25 March 2001(Day of year=84), sysbal: 
+25 March 2001(Day of year=84), SysBal: 
      **** N balance - unaccounted gain (kg/ha) =      0.016526
-23 April 2001(Day of year=113), sorghum: 
+23 April 2001(Day of year=113), Sorghum: 
      Stage 7 Flowering  DAS = 91
      		Biomass       = 194.54 		 LAI            =   0.56
      		Stover N Conc =   1.39 		 Extractable SW =  28.12
-2 May 2001(Day of year=122), sorghum: 
+2 May 2001(Day of year=122), Sorghum: 
      Stage 8 StartGrainFill  DAS = 100
      		Biomass       = 212.01 		 LAI            =   0.56
      		Stover N Conc =   1.47 		 Extractable SW =  32.24
-21 June 2001(Day of year=172), sorghum: 
+21 June 2001(Day of year=172), Sorghum: 
       ********** Crop failed due to loss of leaf area ********     Plant Death. Standing above-ground dm = 2588.26 (kg/ha)
-22 June 2001(Day of year=173), manager: 
+22 June 2001(Day of year=173), Manager: 
      Manager sending message :- sorghum harvest
-22 June 2001(Day of year=173), sorghum: 
+22 June 2001(Day of year=173), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 91 		 Maturity (DAS)          = 
@@ -9154,9 +9154,9 @@ Title                  =
      Residue removed using graze
                                              Fraction Incorporated =     0.75
                                              Incorporated Depth    =     0.00
-22 June 2001(Day of year=173), sysbal: 
+22 June 2001(Day of year=173), SysBal: 
      **** N balance - unaccounted loss (kg/ha) =     -0.167105
-30 July 2001(Day of year=211), manager: 
+30 July 2001(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 30 July 2001(Day of year=211), wheat: 
      Crop Sow
@@ -9255,7 +9255,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         293.17 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   13.39 (mm)
-17 December 2001(Day of year=351), manager: 
+17 December 2001(Day of year=351), Manager: 
      Manager sending message :- wheat harvest
 17 December 2001(Day of year=351), wheat: 
      
@@ -9301,7 +9301,7 @@ Title                  =
                           DM (kg/ha) =                   0.0                   670.5
                           N  (kg/ha) =                   0.00                    7.25
      
-30 July 2002(Day of year=211), manager: 
+30 July 2002(Day of year=211), Manager: 
      Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 30 July 2002(Day of year=211), wheat: 
      Crop Sow
@@ -9400,7 +9400,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         213.09 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.30 (%)    extractable sw =    3.97 (mm)
-8 December 2002(Day of year=342), manager: 
+8 December 2002(Day of year=342), Manager: 
      Manager sending message :- wheat harvest
 8 December 2002(Day of year=342), wheat: 
      
@@ -9446,5 +9446,5 @@ Title                  =
                           DM (kg/ha) =                   0.0                   545.7
                           N  (kg/ha) =                   0.00                    7.78
      
-30 January 2003(Day of year=30), clock: 
+30 January 2003(Day of year=30), Clock: 
      Simulation is terminating due to end criteria being met.
