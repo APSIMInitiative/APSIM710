@@ -11,14 +11,14 @@
 
 Version                = 7.5
 Title                  = 2 Years Lucerne Harvested 1996 plots
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                      "report1" = %apsim%\Model\report.dll
-   Component                      "report2" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
-   Component                       "canopy" = %apsim%\Model\canopy.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                      "report1" = %apsim%\Model\Report.dll
+   Component                      "report2" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                       "Canopy" = %apsim%\Model\Canopy.dll
    Component                   "Operations" = %apsim%\Model\Operations.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
@@ -27,10 +27,10 @@ Title                  = 2 Years Lucerne Harvested 1996 plots
    Component                        "lupin" = %apsim%\Model\Plant.dll
    Component                         "weed" = %apsim%\Model\Plant.dll
    Component                        "wheat" = %apsim%\Model\Plant.dll
-   Component                     "tracker1" = %apsim%\Model\tracker.dll
-   Component                     "tracker2" = %apsim%\Model\tracker.dll
+   Component                     "tracker1" = %apsim%\Model\Tracker.dll
+   Component                     "tracker2" = %apsim%\Model\Tracker.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -203,9 +203,9 @@ Title                  = 2 Years Lucerne Harvested 1996 plots
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: 082039new.met
+     INPUT File name: 082039NEW.met
 
-------- canopy Initialisation -------------------------------------------------
+------- Canopy Initialisation -------------------------------------------------
       Initialising
       Module rotation for intercropping :
      wheat                           weed
@@ -253,7 +253,7 @@ Title                  = 2 Years Lucerne Harvested 1996 plots
       7/12/1999  Prepare      canola harvest
       7/12/1999  Prepare      canola end_crop
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -1030,9 +1030,9 @@ Title                  = 2 Years Lucerne Harvested 1996 plots
       stage 7.0 start_grain_fill
                      biomass =         119.67 (g/m^2)   lai          =   0.490 (m^2/m^2)
                      stover N conc =     3.58 (%)    extractable sw =   75.70 (mm)
-31 March 1995(Day of year=90), manager: 
+31 March 1995(Day of year=90), Manager: 
      Manager sending message :- lucerne reduce
-1 August 1995(Day of year=213), manager: 
+1 August 1995(Day of year=213), Manager: 
      Manager sending message :- lucerne spring
 23 August 1995(Day of year=235), Operations: 
       Sending harvest message to lucerne
@@ -1273,7 +1273,7 @@ Title                  = 2 Years Lucerne Harvested 1996 plots
      Residue removed using graze
                                              Fraction Incorporated =     0.75
                                              Incorporated Depth    =     0.00
-30 March 1996(Day of year=90), manager: 
+30 March 1996(Day of year=90), Manager: 
      Manager sending message :- lucerne reduce
 6 April 1996(Day of year=97), Operations: 
       Sending harvest message to lucerne
@@ -1419,7 +1419,7 @@ Title                  = 2 Years Lucerne Harvested 1996 plots
       stage 4.0 end_of_juvenile
                      biomass =           5.19 (g/m^2)   lai          =   0.074 (m^2/m^2)
                      stover N conc =     5.73 (%)    extractable sw =   83.60 (mm)
-31 July 1996(Day of year=213), manager: 
+31 July 1996(Day of year=213), Manager: 
      Manager sending message :- lucerne spring
 25 August 1996(Day of year=238), canola: 
       stage 5.0 floral_initiation
@@ -1500,7 +1500,7 @@ Title                  = 2 Years Lucerne Harvested 1996 plots
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-31 March 1997(Day of year=90), manager: 
+31 March 1997(Day of year=90), Manager: 
      Manager sending message :- lucerne reduce
 30 April 1997(Day of year=120), Operations: 
       Sending tillage message to surfaceom
@@ -1599,7 +1599,7 @@ Title                  = 2 Years Lucerne Harvested 1996 plots
       stage 4.0 end_of_juvenile
                      biomass =           1.09 (g/m^2)   lai          =   0.043 (m^2/m^2)
                      stover N conc =     5.84 (%)    extractable sw =   25.96 (mm)
-1 August 1997(Day of year=213), manager: 
+1 August 1997(Day of year=213), Manager: 
      Manager sending message :- lucerne spring
 30 August 1997(Day of year=242), wheat: 
       stage 5.0 floral_initiation
@@ -1676,7 +1676,7 @@ Title                  = 2 Years Lucerne Harvested 1996 plots
                           DM (kg/ha) =                   0.0                     0.0
                           N  (kg/ha) =                   0.00                    0.00
      
-31 March 1998(Day of year=90), manager: 
+31 March 1998(Day of year=90), Manager: 
      Manager sending message :- lucerne reduce
 20 April 1998(Day of year=110), Operations: 
       Sending tillage message to surfaceom
@@ -1775,7 +1775,7 @@ Title                  = 2 Years Lucerne Harvested 1996 plots
       stage 4.0 end_of_juvenile
                      biomass =           1.34 (g/m^2)   lai          =   0.053 (m^2/m^2)
                      stover N conc =     5.84 (%)    extractable sw =   17.68 (mm)
-1 August 1998(Day of year=213), manager: 
+1 August 1998(Day of year=213), Manager: 
      Manager sending message :- lucerne spring
 22 August 1998(Day of year=234), wheat: 
       stage 5.0 floral_initiation
@@ -1976,7 +1976,7 @@ Title                  = 2 Years Lucerne Harvested 1996 plots
                      stover N conc =     2.39 (%)    extractable sw =   22.04 (mm)
 27 February 1999(Day of year=58), weed: 
       stage 11.0 end_crop
-31 March 1999(Day of year=90), manager: 
+31 March 1999(Day of year=90), Manager: 
      Manager sending message :- lucerne reduce
 29 April 1999(Day of year=119), Operations: 
       Sending harvest message to weed
@@ -2129,7 +2129,7 @@ Title                  = 2 Years Lucerne Harvested 1996 plots
       stage 4.0 end_of_juvenile
                      biomass =           9.71 (g/m^2)   lai          =   0.103 (m^2/m^2)
                      stover N conc =     5.85 (%)    extractable sw =   78.63 (mm)
-1 August 1999(Day of year=213), manager: 
+1 August 1999(Day of year=213), Manager: 
      Manager sending message :- lucerne spring
 28 August 1999(Day of year=240), canola: 
       stage 5.0 floral_initiation
@@ -2197,5 +2197,5 @@ Title                  = 2 Years Lucerne Harvested 1996 plots
                           DM (kg/ha) =                  61.5                  1427.3
                           N  (kg/ha) =                   0.86                    8.21
      
-31 December 1999(Day of year=365), clock: 
+31 December 1999(Day of year=365), Clock: 
      Simulation is terminating due to end criteria being met.

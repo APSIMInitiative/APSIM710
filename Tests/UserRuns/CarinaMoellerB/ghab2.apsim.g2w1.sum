@@ -11,18 +11,18 @@
 
 Version                = 7.5
 Title                  = Ghab2_W1_9900
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
-   Component                   "operations" = %apsim%\Model\operations.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                   "Operations" = %apsim%\Model\Operations.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
    Component                     "chickpea" = %apsim%\Model\Plant.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -38,7 +38,7 @@ Title                  = Ghab2_W1_9900
      Simulation end date   = 29/06/2000
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.year
         clock.day
@@ -68,7 +68,7 @@ Title                  = Ghab2_W1_9900
      Sparse data is not allowed
      INPUT File name: telhadya.met
 
-------- operations Initialisation ---------------------------------------------
+------- Operations Initialisation ---------------------------------------------
      Operations Schedule
      ===================
       29/3/2000  Prepare      irrigation apply amount=41
@@ -91,7 +91,7 @@ Title                  = Ghab2_W1_9900
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -287,13 +287,13 @@ Title                  = Ghab2_W1_9900
      Manager creating a new local real variable : n_from_soil = 0.00000
      Manager creating a new local real variable : green_biom = 0.00000
      Manager creating a new local real variable : wat_mm_1_4 = 71.87227
-21 December 1999(Day of year=355), manager: 
+21 December 1999(Day of year=355), Manager: 
      Manager sending message :- surfaceom tillage  type = planter, f_incorp = 1.0 (0-1), tillage_depth = 150 (mm)
 21 December 1999(Day of year=355), SurfaceOM: 
      Residue removed using planter
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =   150.00
-22 December 1999(Day of year=356), manager: 
+22 December 1999(Day of year=356), Manager: 
      Manager sending message :- chickpea sow  cultivar = amethyst, plants = 50 (/m2), sowing_depth = 65 (mm)
 22 December 1999(Day of year=356), chickpea: 
      Crop Sow
@@ -370,31 +370,31 @@ Title                  = Ghab2_W1_9900
       stage 3.0 emergence
                      biomass =          10.00 (g/m^2)   lai          =   0.005 (m^2/m^2)
                      stover N conc =     6.00 (%)    extractable sw =   20.37 (mm)
-29 March 2000(Day of year=89), operations: 
+29 March 2000(Day of year=89), Operations: 
       Sending apply message to irrigation
 30 March 2000(Day of year=90), chickpea: 
       stage 4.0 end_of_juvenile
                      biomass =          18.71 (g/m^2)   lai          =   0.161 (m^2/m^2)
                      stover N conc =     4.43 (%)    extractable sw =   82.69 (mm)
-2 April 2000(Day of year=93), operations: 
+2 April 2000(Day of year=93), Operations: 
       Sending apply message to irrigation
-5 April 2000(Day of year=96), operations: 
+5 April 2000(Day of year=96), Operations: 
       Sending apply message to irrigation
 12 April 2000(Day of year=103), chickpea: 
       stage 5.0 floral_initiation
                      biomass =          48.51 (g/m^2)   lai          =   0.817 (m^2/m^2)
                      stover N conc =     3.77 (%)    extractable sw =  100.08 (mm)
-13 April 2000(Day of year=104), operations: 
+13 April 2000(Day of year=104), Operations: 
       Sending apply message to irrigation
 14 April 2000(Day of year=105), chickpea: 
       stage 6.0 flowering
                      biomass =          57.42 (g/m^2)   lai          =   0.999 (m^2/m^2)
                      stover N conc =     3.38 (%)    extractable sw =  138.71 (mm)
-18 April 2000(Day of year=109), operations: 
+18 April 2000(Day of year=109), Operations: 
       Sending apply message to irrigation
-26 April 2000(Day of year=117), operations: 
+26 April 2000(Day of year=117), Operations: 
       Sending apply message to irrigation
-2 May 2000(Day of year=123), operations: 
+2 May 2000(Day of year=123), Operations: 
       Sending apply message to irrigation
 9 May 2000(Day of year=130), chickpea: 
       stage 7.0 start_grain_fill
@@ -412,7 +412,7 @@ Title                  = Ghab2_W1_9900
       stage 10.0 harvest_ripe
                      biomass =         433.27 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.77 (%)    extractable sw =    6.51 (mm)
-14 June 2000(Day of year=166), manager: 
+14 June 2000(Day of year=166), Manager: 
      Manager sending message :- chickpea harvest
      
       flowering day          =  105                           stover (kg/ha)         =     2907.7
@@ -455,5 +455,5 @@ Title                  = Ghab2_W1_9900
                           DM (kg/ha) =                   0.0                  1085.6
                           N  (kg/ha) =                   0.00                   16.94
      
-29 June 2000(Day of year=181), clock: 
+29 June 2000(Day of year=181), Clock: 
      Simulation is terminating due to end criteria being met.
