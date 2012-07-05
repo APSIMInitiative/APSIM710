@@ -606,7 +606,13 @@ namespace outputComp
             get { return FIntervalUnit; }
             set { FIntervalUnit = value; }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        public int OutputsCount
+        {
+            get { return FOutputs.Count; }
+        }
         //============================================================================
         /// <summary>
         /// Adds an item to the list of user-specified outputs

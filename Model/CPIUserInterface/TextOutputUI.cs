@@ -19,6 +19,7 @@ namespace CPIUserInterface
 {
     public partial class TextOutputUI : CPIBaseView
     {
+        private const int OUTPUTTAB = 2;
         private StringCollection ComponentNames = new StringCollection();
         private StringCollection ComponentTypes = new StringCollection();
         private List<TTypedValue> typedvals;
@@ -46,6 +47,8 @@ namespace CPIUserInterface
         {
             InitFromComponentDescription(); //fills the propertyList with init properties
             base.HelpText = " TextOutput";
+
+            ReadInitSection();
         }
         //=====================================================================
         /// <summary>
@@ -56,31 +59,6 @@ namespace CPIUserInterface
         //=====================================================================
         private void TextOutUI_Load(object sender, EventArgs e)
         {
-            ReadInitSection();
-            //get the filename from the simulation
-            ApsimFile.Component outputfileComponent = Controller.ApsimData.Find(NodePath).Parent;
-            FileName = ComponentUtility.CalcFileName(outputfileComponent);
-            FileName = FileName.Trim();
-            ApsimFile.Component me = Controller.ApsimData.Find(NodePath);
-            FileName = Path.GetFileNameWithoutExtension(FileName) + "_" + me.Name + ".out";
-            String aVersion = Configuration.Instance.ApsimVersion();
-            String Title = "ApsimVersion = " + aVersion + "\r\nTitle = " + FileName;
-            
-            int i = 0;
-            while (i < propertyList.Count)
-            {
-                if (propertyList[i].InitValue.Name == "title")
-                    propertyList[i].InitValue.setValue(Title);
-                if (propertyList[i].InitValue.Name == "interval")
-                    textBox1.Text = propertyList[i].InitValue.asInt().ToString();
-                if (propertyList[i].InitValue.Name == "intervalunit")
-                {
-                    comboBox1.SelectedIndex = comboBox1.Items.IndexOf( propertyList[i].InitValue.asStr() );
-                    if (comboBox1.SelectedIndex < 0) 
-                        comboBox1.SelectedIndex = comboBox1.Items.IndexOf( "day" );
-                }
-                i++;
-            }
         }
         //=======================================================================
         /// <summary>
@@ -246,6 +224,31 @@ namespace CPIUserInterface
         {
             base.OnRefresh();
 
+            //get the filename from the simulation
+            ApsimFile.Component outputfileComponent = Controller.ApsimData.Find(NodePath).Parent;
+            FileName = ComponentUtility.CalcFileName(outputfileComponent);
+            FileName = FileName.Trim();
+            ApsimFile.Component me = Controller.ApsimData.Find(NodePath);
+            FileName = Path.GetFileNameWithoutExtension(FileName) + "_" + me.Name + ".out";
+            String aVersion = Configuration.Instance.ApsimVersion();
+            String Title = "ApsimVersion = " + aVersion + "\r\nTitle = " + FileName;
+
+            int i = 0;
+            while (i < propertyList.Count)
+            {
+                if (propertyList[i].InitValue.Name == "title")
+                    propertyList[i].InitValue.setValue(Title);
+                if (propertyList[i].InitValue.Name == "interval")
+                    textBox1.Text = propertyList[i].InitValue.asInt().ToString();
+                if (propertyList[i].InitValue.Name == "intervalunit")
+                {
+                    comboBox1.SelectedIndex = comboBox1.Items.IndexOf(propertyList[i].InitValue.asStr());
+                    if (comboBox1.SelectedIndex < 0)
+                        comboBox1.SelectedIndex = comboBox1.Items.IndexOf("day");
+                }
+                i++;
+            }
+
             PopulateEventsGrid();       //Restore the chosen events into the events grid
             PopulateVariablesGrid();    //Restore the chosen variables into the variables grid
 
@@ -265,6 +268,11 @@ namespace CPIUserInterface
 
             VariableListView.Columns[1].Width = 45;
             VariableListView.Columns[2].Width = 45;
+
+            if (tabControl1.SelectedIndex == OUTPUTTAB)
+            {
+                ReloadOutputFile();
+            }
         }
         //=====================================================================
         /// <summary>
@@ -662,25 +670,34 @@ namespace CPIUserInterface
         //=====================================================================
         private void tabControl1_Selected(object sender, TabControlEventArgs e)
         {
-            if (e.TabPageIndex == 2)
+            if (e.TabPageIndex == OUTPUTTAB)
             {
-                Cursor.Current = Cursors.WaitCursor;
-                try
+                ReloadOutputFile();
+            }
+        }
+        //=====================================================================
+        /// <summary>
+        /// Reloads the output file into the richtextbox.
+        /// </summary>
+        //=====================================================================
+        private void ReloadOutputFile()
+        {
+            Cursor.Current = Cursors.WaitCursor;
+            try
+            {
+                label2.Text = Path.GetFullPath(FileName);
+                if (File.Exists(Path.GetFullPath(FileName)))
                 {
-                    label2.Text = Path.GetFullPath(FileName);
-                    if (File.Exists(Path.GetFullPath(FileName)))
-                    {
-                        FileContentsBox.Clear();
-                        StreamReader outfile = new StreamReader(Path.GetFullPath(FileName));
-                        FileContentsBox.AppendText(outfile.ReadToEnd());
-                        outfile.Close();
-                        labelLines.Text = FileContentsBox.Lines.Length.ToString() + " lines";
-                    }
+                    FileContentsBox.Clear();
+                    StreamReader outfile = new StreamReader(Path.GetFullPath(FileName));
+                    FileContentsBox.AppendText(outfile.ReadToEnd());
+                    outfile.Close();
+                    labelLines.Text = FileContentsBox.Lines.Length.ToString() + " lines";
                 }
-                finally
-                {
-                    Cursor.Current = Cursors.Default;
-                }
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
             }
         }
         //=====================================================================
