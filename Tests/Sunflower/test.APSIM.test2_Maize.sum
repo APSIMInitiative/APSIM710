@@ -11,16 +11,16 @@
 
 Version                = 7.5
 Title                  = Test sowing after out on same day
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                        "maize" = %apsim%\Model\maize.dll
+   Component                        "Maize" = %apsim%\Model\Maize.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -36,7 +36,7 @@ Title                  = Test sowing after out on same day
      Simulation end date   = 30/04/1990
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.day
         clock.year
@@ -49,9 +49,9 @@ Title                  = Test sowing after out on same day
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+     INPUT File name: %apsim%\Examples\MetFiles\Dalby.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -215,16 +215,16 @@ Title                  = Test sowing after out on same day
            Totals  149295.9 10296.3   926.1   115.8   400.0    20.0
           ---------------------------------------------------------
 
-------- maize Initialisation --------------------------------------------------
+------- Maize Initialisation --------------------------------------------------
       Initialising, V1.0 2000.01.21
      
          - Reading constants
      
          - Reading constants
 ------- Start of simulation  --------------------------------------------------
-1 November 1989(Day of year=305), manager: 
+1 November 1989(Day of year=305), Manager: 
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
-1 November 1989(Day of year=305), maize: 
+1 November 1989(Day of year=305), Maize: 
      Sowing initiate
      
      
@@ -280,47 +280,47 @@ Title                  = Test sowing after out on same day
      
      
      
-2 November 1989(Day of year=306), maize: 
+2 November 1989(Day of year=306), Maize: 
       stage    2.0 germination
-4 November 1989(Day of year=308), maize: 
+4 November 1989(Day of year=308), Maize: 
       stage    3.0 emergence
                           biomass =          0.2000000       lai =    0.3800000E-02
                           stover N conc =    4.400000       extractable sw =    32.42388
-19 November 1989(Day of year=323), maize: 
+19 November 1989(Day of year=323), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           2.897260       lai =    0.4339030E-01
                           stover N conc =    3.474447       extractable sw =    72.21750
-25 November 1989(Day of year=329), maize: 
+25 November 1989(Day of year=329), Maize: 
       stage    5.0 floral_initiation
                           biomass =           8.121427       lai =    0.9799722E-01
                           stover N conc =    3.177968       extractable sw =    128.5099
-5 January 1990(Day of year=5), maize: 
+5 January 1990(Day of year=5), Maize: 
       stage    6.0 flag_leaf
                           biomass =           658.6564       lai =     4.470813
                           stover N conc =    1.468802       extractable sw =    222.4798
-10 January 1990(Day of year=10), maize: 
+10 January 1990(Day of year=10), Maize: 
       stage    7.0 flowering
                           biomass =           768.4710       lai =     4.349072
                           stover N conc =    1.329700       extractable sw =    194.1977
-20 January 1990(Day of year=20), maize: 
+20 January 1990(Day of year=20), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           950.3929       lai =     4.019034
                           stover N conc =    1.162770       extractable sw =    195.2990
-8 March 1990(Day of year=67), maize: 
+8 March 1990(Day of year=67), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1481.184       lai =     1.371205
                           stover N conc =   0.9280600       extractable sw =    150.6952
-9 March 1990(Day of year=68), maize: 
+9 March 1990(Day of year=68), Maize: 
       stage   10.0 maturity
                           biomass =           1489.383       lai =     1.337408
                           stover N conc =   0.9256768       extractable sw =    148.9908
-10 March 1990(Day of year=69), maize: 
+10 March 1990(Day of year=69), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1489.383       lai =    0.6567955E-02
                           stover N conc =   0.9399812       extractable sw =    146.6039
-11 March 1990(Day of year=70), manager: 
+11 March 1990(Day of year=70), Manager: 
      Manager sending message :- maize harvest
-11 March 1990(Day of year=70), maize: 
+11 March 1990(Day of year=70), Maize: 
      
      
      
@@ -366,9 +366,9 @@ Title                  = Test sowing after out on same day
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM  Fatal  Error
                       -------------------
-     "maize" was taken out today by end_crop action -
+     "Maize" was taken out today by end_crop action -
       Unable to accept sow action  until the next day.
-     Component name: maize
+     Component name: Maize
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      

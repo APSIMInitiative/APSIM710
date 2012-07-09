@@ -25,8 +25,6 @@ namespace APSIMUI
         private StringCollection Args = new StringCollection();
         private string ApplicationName;
 
-        private string SimFileName;
-
         //BaseController for Simulation
         private BaseController SimulationController;
         //BaseController for Toolbox
@@ -34,15 +32,8 @@ namespace APSIMUI
         //ExplorerUI for Toolbox
         private ExplorerUI ToolboxExplorer;
         private int ToolBoxSplitterPoint;
-        private ProcessCaller ApsimProcess;
-        private int CurrentRunningSimulationIndex;
-        private System.DateTime CurrentStartDate;
-        private System.DateTime CurrentEndDate;
-        private StreamWriter CurrentSummaryFile = null;
         private ToolStripButton CurrentToolBoxButton = null;
         #region "Constructor / Destructor / Main"
-
-        Type ToolStripButton;
 
         [System.STAThread()]
         public static void Main(string[] Args)
@@ -125,7 +116,6 @@ namespace APSIMUI
         {
             try
             {
-                Visible = false;
                 SuspendLayout();
                 try
                 {
@@ -143,7 +133,6 @@ namespace APSIMUI
                     // Position window correctly after the scaling has been done.
                     try
                     {
-                        IniFile inifile = new IniFile();
                         int _Height = 0;
                         int _Width = 0;
                         WindowState = (FormWindowState)Convert.ToInt32(Configuration.Instance.Setting("windowstate"));
@@ -282,7 +271,6 @@ namespace APSIMUI
             finally
             {
                 ResumeLayout(true);
-                Visible = true;
             }
 
         }

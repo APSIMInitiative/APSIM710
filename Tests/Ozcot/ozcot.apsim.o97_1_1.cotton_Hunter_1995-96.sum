@@ -11,18 +11,18 @@
 
 Version                = 7.5
 Title                  = Alan Hunter
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                        "ozcot" = %apsim%\Model\ozcot.dll
-   Component                       "sysbal" = %apsim%\Model\sysbal.dll
+   Component                        "Ozcot" = %apsim%\Model\Ozcot.dll
+   Component                       "SysBal" = %apsim%\Model\SysBal.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -38,7 +38,7 @@ Title                  = Alan Hunter
      Simulation end date   = 19/05/1996
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.year
         clock.day
@@ -64,7 +64,7 @@ Title                  = Alan Hunter
      Sparse data is not allowed
      INPUT File name: hunter.aps
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- end_of_day
@@ -232,7 +232,7 @@ Title                  = Alan Hunter
            Totals   85591.6  5902.9   898.4   112.3   400.0     8.0
           ---------------------------------------------------------
 
-------- ozcot Initialisation --------------------------------------------------
+------- Ozcot Initialisation --------------------------------------------------
      Initialising
      
          - Reading constants
@@ -260,9 +260,9 @@ Title                  = Alan Hunter
      
 ------- Start of simulation  --------------------------------------------------
      Manager creating a new local real variable : yield_acre = 0.00000
-7 October 1995(Day of year=280), manager: 
+7 October 1995(Day of year=280), Manager: 
      Manager sending message :- ozcot sow  cultivar = siok, sowing_depth = 50 (mm), row_spacing = 2000 (mm), plants_pm = 12.0, skiprow = 1
-7 October 1995(Day of year=280), ozcot: 
+7 October 1995(Day of year=280), Ozcot: 
      Sow
      
         - Reading Cultivar Parameters
@@ -299,17 +299,17 @@ Title                  = Alan Hunter
          ------------------------------------------------
             280   50.0  12.0   2000.0 siok
          ------------------------------------------------
-18 October 1995(Day of year=291), ozcot: 
+18 October 1995(Day of year=291), Ozcot: 
       *** Crop emerged with  4.0 plants per m sq,100.% of target population of   4.0
-18 October 1995(Day of year=291), sysbal: 
+18 October 1995(Day of year=291), SysBal: 
      **** C balance - unaccounted gain (kg/ha) =     11.998552
      ****        equivalent DM as FOM  (kg/ha) =     29.996380
-23 April 1996(Day of year=114), ozcot: 
+23 April 1996(Day of year=114), Ozcot: 
          Defoliant spray    1
-3 May 1996(Day of year=124), ozcot: 
+3 May 1996(Day of year=124), Ozcot: 
          First Pick  209 days from sowing. There are enough bolls for a 2nd pick.
          Crop terminated: first pick.
-3 May 1996(Day of year=124), manager: 
+3 May 1996(Day of year=124), Manager: 
      Manager sending message :- ozcot harvest
      harvest
      
@@ -322,7 +322,7 @@ Title                  = Alan Hunter
       maximum squares/m2     =  57.84        maximum lai (m2/m2)    =  0.979
       total above ground biomass (kg/ha) =     5697.4
      Manager creating a new local real variable : cotton_status = 0.00000
-4 May 1996(Day of year=125), ozcot: 
+4 May 1996(Day of year=125), Ozcot: 
      Initialising
      
          - Reading constants
@@ -348,5 +348,5 @@ Title                  = Alan Hunter
      
      
      
-19 May 1996(Day of year=140), clock: 
+19 May 1996(Day of year=140), Clock: 
      Simulation is terminating due to end criteria being met.

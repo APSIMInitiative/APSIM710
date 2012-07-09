@@ -11,16 +11,16 @@
 
 Version                = 7.5
 Title                  = Test sowing before out
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
    Component                    "sunflower" = %apsim%\Model\CropMod.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -36,7 +36,7 @@ Title                  = Test sowing before out
      Simulation end date   = 30/06/1989
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.day
         clock.year
@@ -49,9 +49,9 @@ Title                  = Test sowing before out
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+     INPUT File name: %apsim%\Examples\MetFiles\Dalby.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -219,7 +219,7 @@ Title                  = Test sowing before out
      
          - Reading constants
 ------- Start of simulation  --------------------------------------------------
-14 December 1988(Day of year=349), manager: 
+14 December 1988(Day of year=349), Manager: 
      Manager sending message :- sunflower sow  cultivar = sunfola68-2, plants = 5, sowing_depth = 50 (mm)
 14 December 1988(Day of year=349), sunflower: 
      Sowing initiate
@@ -335,7 +335,7 @@ Title                  = Test sowing before out
       stage   11.0 harvest_ripe
                           biomass =           901.2694       lai =     0.000000
                           stover N conc =    1.450505       extractable sw =    34.57553
-17 March 1989(Day of year=76), manager: 
+17 March 1989(Day of year=76), Manager: 
      Manager sending message :- sunflower harvest
 17 March 1989(Day of year=76), sunflower: 
      

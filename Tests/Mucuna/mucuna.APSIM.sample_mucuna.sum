@@ -11,16 +11,16 @@
 
 Version                = 7.5
 Title                  = mucuna Sample Simulation
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
    Component                       "mucuna" = %apsim%\Model\Plant.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -36,7 +36,7 @@ Title                  = mucuna Sample Simulation
      Simulation end date   = 20/05/1989
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.day
         clock.year
@@ -49,9 +49,9 @@ Title                  = mucuna Sample Simulation
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+     INPUT File name: %apsim%\Examples\MetFiles\Dalby.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -207,7 +207,7 @@ Title                  = mucuna Sample Simulation
            Totals  149295.9 10296.3   926.1   115.8   400.0    20.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-25 November 1988(Day of year=330), manager: 
+25 November 1988(Day of year=330), Manager: 
      Manager sending message :- mucuna sow  cultivar = mucuna_gen, plants = 25 (/m2), sowing_depth = 40 (mm)
 25 November 1988(Day of year=330), mucuna: 
      Crop Sow
@@ -297,7 +297,7 @@ Title                  = mucuna Sample Simulation
       stage 7.0 start_grain_fill
                      biomass =         901.24 (g/m^2)   lai          =   5.763 (m^2/m^2)
                      stover N conc =     3.39 (%)    extractable sw =   84.85 (mm)
-30 April 1989(Day of year=120), manager: 
+30 April 1989(Day of year=120), Manager: 
      Manager sending message :- mucuna harvest
 30 April 1989(Day of year=120), mucuna: 
      
@@ -342,5 +342,5 @@ Title                  = mucuna Sample Simulation
                           DM (kg/ha) =                  75.0                  3599.9
                           N  (kg/ha) =                   4.88                   54.00
      
-20 May 1989(Day of year=140), clock: 
+20 May 1989(Day of year=140), Clock: 
      Simulation is terminating due to end criteria being met.

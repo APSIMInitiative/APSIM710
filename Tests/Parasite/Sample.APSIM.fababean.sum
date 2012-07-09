@@ -11,18 +11,18 @@
 
 Version                = 7.5
 Title                  = Sample Simulation
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
-   Component                     "soiltemp" = %apsim%\Model\soiltemp.dll
+   Component                     "SoilTemp" = %apsim%\Model\SoilTemp.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                     "fababean" = %apsim%\Model\plant.dll
-   Component                    "orobanche" = %apsim%\Model\parasite.dll
+   Component                     "fababean" = %apsim%\Model\Plant.dll
+   Component                    "orobanche" = %apsim%\Model\Parasite.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -38,7 +38,7 @@ Title                  = Sample Simulation
      Simulation end date   = 26/12/1988
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.day
         clock.year
@@ -59,9 +59,9 @@ Title                  = Sample Simulation
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+     INPUT File name: %apsim%\Examples\MetFiles\Dalby.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -150,7 +150,7 @@ Title                  = Sample Simulation
             CONA:                     2.50 ()
             Eo from priestly-taylor
 
-------- soiltemp Initialisation -----------------------------------------------
+------- SoilTemp Initialisation -----------------------------------------------
      Initialising :
 
 ------- SurfaceOM Initialisation ----------------------------------------------
@@ -327,7 +327,7 @@ Title                  = Sample Simulation
       stage 10.0 harvest_ripe
                      biomass =        1584.68 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.82 (%)    extractable sw =   33.39 (mm)
-18 November 1988(Day of year=323), manager: 
+18 November 1988(Day of year=323), Manager: 
      Manager sending message :- fababean harvest
 18 November 1988(Day of year=323), fababean: 
      
@@ -371,5 +371,5 @@ Title                  = Sample Simulation
                           DM (kg/ha) =                   0.0                  4489.1
                           N  (kg/ha) =                   0.00                  117.29
      
-26 December 1988(Day of year=361), clock: 
+26 December 1988(Day of year=361), Clock: 
      Simulation is terminating due to end criteria being met.

@@ -2,20 +2,20 @@ version = 7.3
 [Sample PatchInput]
 
 title=PatchInput1 Simulation
-module = clock   PatchInput.par [sample] %apsim%/Model/clock.xml [standard]
-module = report PatchInput.par [sample]
-module = input(met) %apsim%/Examples/MetFiles/dalby.met[weather]
+module = Clock   PatchInput.par [sample] %apsim%/Model/Clock.xml [standard]
+module = Report PatchInput.par [sample]
+module = Input(met) %apsim%/Examples/MetFiles/Dalby.met[weather]
 module = PatchInput(patch) patch.dat [test]
-module = manager PatchInput.par [sample]
+module = Manager PatchInput.par [sample]
 
 [Sample PatchInput2]
 
 title=PatchInput2 Simulation
-module = clock   PatchInput.par [sample] %apsim%/Model/clock.xml [standard]
-module = report PatchInput.par [sample2]
-module = input(met) %apsim%/Examples/MetFiles/dalby.met[weather]
+module = Clock   PatchInput.par [sample] %apsim%/Model/Clock.xml [standard]
+module = Report PatchInput.par [sample2]
+module = Input(met) %apsim%/Examples/MetFiles/Dalby.met[weather]
 module = PatchInput(patch) patch2.dat [test]
-module = manager PatchInput.par [sample]
+module = Manager PatchInput.par [sample]
 
 [Sample PatchInput3]
 ! This sample is what Yield Prophet uses to patch data when the
@@ -23,11 +23,11 @@ module = manager PatchInput.par [sample]
 ! Rather than using growers rainfall, it patches the weather data
 ! for a particular year over all previous years. In this sample
 ! the variables maxt, mint, radn and rain are taken from the
-! dalby.met file for the period: 1990-1-13 to 1990-1-18
+! Dalby.met file for the period: 1990-1-13 to 1990-1-18
 ! and patched over all other years for the same period.
 title=PatchInput3 Simulation
-module = clock   PatchInput.par [sample] %apsim%/Model/clock.xml [standard]
-module = report PatchInput.par [sample3]
-module = input(met) %apsim%/Examples/MetFiles/dalby.met[weather]
+module = Clock   PatchInput.par [sample] %apsim%/Model/Clock.xml [standard]
+module = Report PatchInput.par [sample3]
+module = Input(met) %apsim%/Examples/MetFiles/Dalby.met[weather]
 module = PatchInput(patch) patch3.dat [test]
-module = manager PatchInput.par [sample]
+module = Manager PatchInput.par [sample]
