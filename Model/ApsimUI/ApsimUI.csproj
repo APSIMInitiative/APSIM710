@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -11,7 +11,6 @@
     <RootNamespace>ApsimUI</RootNamespace>
     <AssemblyName>ApsimUI</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
@@ -49,58 +48,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>
-    </ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Actions, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Actions.dll</HintPath>
-    </Reference>
-    <Reference Include="ApsimFile, Version=3.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ApsimFile.dll</HintPath>
-    </Reference>
-    <Reference Include="Controllers, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Controllers.dll</HintPath>
-    </Reference>
-    <Reference Include="CPIUserInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\CPIUserInterface.dll</HintPath>
-    </Reference>
-    <Reference Include="CSGeneral, Version=3.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\CSGeneral.dll</HintPath>
-    </Reference>
-    <Reference Include="CSUserInterface, Version=1.0.4554.22345, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\CSUserInterface.dll</HintPath>
-    </Reference>
-    <Reference Include="Graph, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Graph.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="UIBits, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="ApsimFile, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\UIBits.dll</HintPath>
+      <HintPath>..\ApsimFile.dll</HintPath>
     </Reference>
-    <Reference Include="UIUtility, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="CSGeneral, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\UIUtility.dll</HintPath>
+      <HintPath>..\CSGeneral.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -218,4 +184,46 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <ProjectReference Include="..\Actions\Actions.csproj">
+      <Project>{4CCD530F-ACD7-4027-9AF1-408C318DC575}</Project>
+      <Name>Actions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ApsimFile\ApsimFile.csproj">
+      <Project>{416A3885-FD38-46D0-BE42-54AA33D146B7}</Project>
+      <Name>ApsimFile</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Controllers\Controllers.csproj">
+      <Project>{E8AB262C-A67A-4089-A0BF-DE59B3510A1A}</Project>
+      <Name>Controllers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CPIUserInterface\CPIUserInterface.csproj">
+      <Project>{15A749C8-7D50-4290-A601-E00B3609EB1F}</Project>
+      <Name>CPIUserInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CSGeneral\CSGeneral.csproj">
+      <Project>{D2EDEF3F-995D-4E9D-9E7C-608D46259E9C}</Project>
+      <Name>CSGeneral</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CSUserInterface\CSUserInterface.csproj">
+      <Project>{25C8E90E-D464-4F49-B29E-2811F1B266DE}</Project>
+      <Name>CSUserInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Excel\ExcelUtility.csproj">
+      <Project>{4E5222B2-546F-40D8-A637-A987605BCCCC}</Project>
+      <Name>ExcelUtility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UIBits\UIBits.csproj">
+      <Project>{29210E34-C94B-459F-A926-8203411B93BD}</Project>
+      <Name>UIBits</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Graph\Graph.csproj">
+      <Project>{DB91A541-BEE6-431C-B51F-8FD5220C3D0D}</Project>
+      <Name>Graph</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UIUtility\UIUtility.csproj">
+      <Project>{BD0D614A-2EF9-411B-9884-F1EBD349A0C8}</Project>
+      <Name>UIUtility</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

@@ -38,8 +38,8 @@ namespace CSUserInterface
             this.ToolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.PropertiesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PropertiesTabPage = new System.Windows.Forms.TabPage();
-            this.GenericUI = new CSUserInterface.GenericUI();
             this.ImageList = new System.Windows.Forms.ImageList(this.components);
+            this.GenericUI = new CSUserInterface.GenericUI();
             this.TabControl.SuspendLayout();
             this.PopupMenu.SuspendLayout();
             this.PropertiesTabPage.SuspendLayout();
@@ -69,7 +69,7 @@ namespace CSUserInterface
             this.ToolStripSeparator1,
             this.PropertiesMenuItem});
             this.PopupMenu.Name = "ContextMenuStrip";
-            this.PopupMenu.Size = new System.Drawing.Size(236, 120);
+            this.PopupMenu.Size = new System.Drawing.Size(236, 98);
             this.PopupMenu.Opening += new System.ComponentModel.CancelEventHandler(this.OnPopupOpening);
             // 
             // AddMenuItem
@@ -115,6 +115,12 @@ namespace CSUserInterface
             this.PropertiesTabPage.Text = "Properties";
             this.PropertiesTabPage.UseVisualStyleBackColor = true;
             // 
+            // ImageList
+            // 
+            this.ImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ImageList.ImageStream")));
+            this.ImageList.TransparentColor = System.Drawing.Color.Transparent;
+            this.ImageList.Images.SetKeyName(0, "find.png");
+            // 
             // GenericUI
             // 
             this.GenericUI.AutoScroll = true;
@@ -125,12 +131,6 @@ namespace CSUserInterface
             this.GenericUI.Name = "GenericUI";
             this.GenericUI.Size = new System.Drawing.Size(1014, 774);
             this.GenericUI.TabIndex = 0;
-            // 
-            // ImageList
-            // 
-            this.ImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ImageList.ImageStream")));
-            this.ImageList.TransparentColor = System.Drawing.Color.Transparent;
-            this.ImageList.Images.SetKeyName(0, "find.png");
             // 
             // RuleUI
             // 

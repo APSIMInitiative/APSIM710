@@ -46,7 +46,7 @@ namespace CSUserInterface
 
 			// Fill the property grid.
 			XmlNode UINode = XmlHelper.Find(Data, "ui");
-			if ((UINode != null)) {
+			if ((UINode != null) && UINode.HasChildNodes) {
 				TabControl.TabPages.Add(PropertiesTabPage);
 				GenericUI.OnLoad(Controller, NodePath, UINode.OuterXml);
 				GenericUI.OnRefresh();
@@ -77,21 +77,35 @@ namespace CSUserInterface
 			ToolStrip.Parent = page;
 			ToolStrip.ImageList = ImageList;
 			ToolStrip.Dock = DockStyle.Top;
-			ToolStrip.ItemClicked += OnItemClicked;
-			ToolStripItem FindReplaceButton = ToolStrip.Items.Add("Find/Replace");
-			FindReplaceButton.ImageIndex = 0;
+			
+			ToolStripLabel SearchLabel = new ToolStripLabel("Search:");
 
-			QWhale.Editor.SyntaxEdit ScriptBox = new QWhale.Editor.SyntaxEdit();
-			ScriptBox.Text = Value;
-			ScriptBox.WordWrap = false;
-			ScriptBox.Gutter.Options = (QWhale.Editor.GutterOptions)(((QWhale.Editor.GutterOptions.PaintLineNumbers | QWhale.Editor.GutterOptions.PaintLinesOnGutter) | QWhale.Editor.GutterOptions.PaintBookMarks) | QWhale.Editor.GutterOptions.PaintLineModificators);
-
+			ToolStripTextBox SearchTextBox = new ToolStripTextBox("textbox");
+			SearchTextBox.Width = 120;
+			SearchTextBox.KeyDown += new KeyEventHandler(OnEnterKeyPressed);
+			
+			ToolStripButton SearchButton = new ToolStripButton();
+			SearchButton.ImageIndex = 0;
+			SearchButton.Click += new EventHandler(OnSearchButtonClicked);
+            ToolStrip.Items.Add(SearchLabel);
+            ToolStrip.Items.Add(SearchTextBox);
+            ToolStrip.Items.Add(SearchButton);
+			
+            TextBox ScriptBox = new TextBox();
+            ScriptBox.Font = new Font(FontFamily.GenericMonospace, 9);
+            ScriptBox.WordWrap = false;
+            ScriptBox.AcceptsReturn = true;
+            ScriptBox.AcceptsTab = true;
+            ScriptBox.Multiline = true;
+            ScriptBox.ScrollBars = ScrollBars.Vertical;
+            ScriptBox.Lines = Value.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+            
 			page.Controls.Add(ScriptBox);
 			ScriptBox.Dock = DockStyle.Fill;
 			ScriptBox.BringToFront();
-			int[] TabStops = { 3 };
-			ScriptBox.Lines.TabStops = TabStops;
-			ScriptBox.Lines.UseSpaces = true;
+			//int[] TabStops = { 3 };
+			//ScriptBox.Lines.TabStops = TabStops;
+			//ScriptBox.Lines.UseSpaces = true;
 			TabControl.TabPages.Add(page);
 		}
 
@@ -116,7 +130,7 @@ namespace CSUserInterface
 			foreach (TabPage Page in TabControl.TabPages) {
 				if (Page.Text != "Properties") {
 					XmlNode Script = Data.AppendChild(Data.OwnerDocument.CreateElement("script"));
-					QWhale.Editor.SyntaxEdit ScriptBox = (QWhale.Editor.SyntaxEdit)Page.Controls[0];
+					TextBox ScriptBox = (TextBox)Page.Controls[0];
 					XmlHelper.SetValue(Script, "text", ScriptBox.Text);
 
 					string[] EventNames = Page.Text.Split(",".ToCharArray());
@@ -171,10 +185,42 @@ namespace CSUserInterface
 			PropertiesMenuItem.Enabled = TabControl.TabPages[0].Text != "Properties";
 		}
 
-		private void OnItemClicked(object sender, ToolStripItemClickedEventArgs E)
+		private void OnSearchButtonClicked(object sender, EventArgs e)
 		{
-			QWhale.Editor.SyntaxEdit ScriptBox = (QWhale.Editor.SyntaxEdit)TabControl.SelectedTab.Controls[0];
-			ScriptBox.DisplaySearchDialog();
+			ToolStrip ts = (ToolStrip) TabControl.SelectedTab.Controls[1];
+			ToolStripItem [] tt = ts.Items.Find("textbox",true);
+			if (tt.Length > 0) {
+			string s = tt[0].Text;
+			TextBox ScriptBox = (TextBox)TabControl.SelectedTab.Controls[0];
+			SearchString(ScriptBox, s);
+            ScriptBox.Focus();
+			}
+		}
+		private void OnEnterKeyPressed(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter) 
+			{
+			string s = ((ToolStripTextBox)sender).Text;
+			TextBox ScriptBox = (TextBox)TabControl.SelectedTab.Controls[0];
+			SearchString(ScriptBox, s);
+			}
+		}
+		
+		private void SearchString(TextBox ScriptBox, string text)
+		{
+			if (text.Length > 0) {
+				ScriptBox.SelectionStart = ScriptBox.SelectionStart + 1;
+				
+				int indexToText = ScriptBox.Text.IndexOf( text, ScriptBox.SelectionStart);
+				if (indexToText == -1) {
+					ScriptBox.SelectionStart = 0;
+					ScriptBox.SelectionLength = 0;
+				} else {
+				    ScriptBox.SelectionStart = indexToText;
+					ScriptBox.SelectionLength = text.Length;
+				}
+			    ScriptBox.ScrollToCaret();
+			}
 		}
 	}
 }
