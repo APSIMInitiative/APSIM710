@@ -63,14 +63,12 @@ bool StartR (const char *R_Home, const char *UserLibs, const char *exeName)
     if (!R_StartFn(R_Home, UserLibs )) 
        throw std::runtime_error(string("R_Start failed in ") + exeName);     
 
-    R_SetCallbackFn = (B_VOIDPTR_FN) dllProcAddress(RDLLHandle, "EmbeddedR_SetComponent");
-    if (!R_SetCallbackFn((void *)&componentCallback)) 
-       throw std::runtime_error(string("R_SetComponent failed in ") + exeName);     
-
+    if (NULL == (R_SetCallbackFn = (B_VOIDPTR_FN) dllProcAddress(RDLLHandle, "EmbeddedR_SetComponent"))) goto baddll;
     if (NULL == (R_EvalCharFn = (B_CHAR_FN) dllProcAddress(RDLLHandle, "EmbeddedR_Eval"))) goto baddll; 
     if (NULL == (R_GetVecFn = (B_VEC_FN) dllProcAddress(RDLLHandle, "EmbeddedR_GetVector"))) goto baddll;
     if (NULL == (R_EvalCharSimpleFn = (B_2CHAR_FN) dllProcAddress(RDLLHandle, "EmbeddedR_SimpleCharEval"))) goto baddll;
-    
+
+    R_SetCallbackFn((void *)&componentCallback);
 	return 1; 
 baddll:
     throw std::runtime_error(string("DLL missing symbol in ") + exeName);     
@@ -79,9 +77,12 @@ baddll:
 // Delete an interpreter
 void StopR(void)
    {
-   B_VOID_FN R_StopFn;
-   R_StopFn = (B_VOID_FN) dllProcAddress(RDLLHandle, "EmbeddedR_Stop");
-   if (R_StopFn != NULL) R_StopFn();
+   if (RDLLHandle != NULL) 
+       {
+       B_VOID_FN R_StopFn;
+       R_StopFn = (B_VOID_FN) dllProcAddress(RDLLHandle, "EmbeddedR_Stop");
+       if (R_StopFn != NULL) R_StopFn();
+       }
    }
 
 // Quietly evaluate something   
@@ -150,14 +151,15 @@ RComponent::RComponent(ScienceAPI2 & api) : apsimAPI(api)
    hasFatalError = false;
    apsimAPI.subscribe("error", nullFunction(&RComponent::onError));
    apsimAPI.subscribe("init2", nullFunction(&RComponent::onInit2));
-   currentRComponent = this;
    }
 
 RComponent::~RComponent(void)
    {
-   StopR();
 #ifdef __WIN32__
+   if (RDLLHandle != NULL) StopR();
    RDLLHandle = NULL;
+#else
+   StopR();
 #endif
    }
 
@@ -188,17 +190,10 @@ bool GetStringRegKey(const std::string &strKeyName,const std::string &strValueNa
 }
 #endif
 
-void RComponent::onInit2(void)
+void RComponent::oneTimeInit(void)
    {
    apsimAPI.write("RLink Initialisation\n");
-#ifdef __WIN32__
-   if (RDLLHandle != NULL) throw std::runtime_error("R has already been loaded");
-#endif
-   rules.clear();
-   apsimAPI.readScripts(rules);
- 
-   string apsimDLL = apsimAPI.getExecutableFileName();
-   replaceAll(apsimDLL, "\\", "/"); 
+
 #ifdef __WIN32__
    string installPath, userlibs;
    // Load R.dll first so that the embedder dll resolves to the loaded version and not something unknown
@@ -220,6 +215,8 @@ void RComponent::onInit2(void)
    string Rdll = installPath + "/bin/i386/R.dll";
    if (loadDLL(Rdll) == NULL) throw std::runtime_error("Can't load R DLL " + Rdll);  
 
+   string apsimDLL = apsimAPI.getExecutableFileName();
+   replaceAll(apsimDLL, "\\", "/"); 
    string EXE = fileDirName(apsimDLL) + "/REmbed.dll";
 
    char *p = getenv("USERPROFILE");
@@ -256,7 +253,14 @@ void RComponent::onInit2(void)
    // write copyright notice(s).
    apsimAPI.write(SimpleREval("R.version.string") + "\n");
    apsimAPI.write("Copyright (C) 2011 The R Foundation for Statistical Computing\n");
+   }
 
+void RComponent::onInit2(void)
+   {
+   if (RDLLHandle == NULL) this->oneTimeInit();
+   
+   rules.clear();
+   apsimAPI.readScripts(rules);
    for (map<string,string>::iterator i = rules.begin(); i != rules.end(); i++) 
        {
 	   if  (i->first != "my variables" && i->first != "apsim variables") 
@@ -292,7 +296,7 @@ void RComponent::onInit2(void)
    if (variables.size() > 0) 
       {
 	  apsimAPI.write("--->Exported R Variables:\n");
-      for (int i = 0; i < variables.size(); i++)
+      for (unsigned int i = 0; i < variables.size(); i++)
 	      {
           apsimAPI.write(variables[i]);
           if (units[i] != "") apsimAPI.write(" (" + units[i] + ")");
@@ -330,12 +334,14 @@ void RComponent::onInit2(void)
         }	  
       }
 
-	  // Do the init rule if specified..
+   // Do the init rule if specified..
    string initRule = rules["init"];
    if (initRule != "")
       {
+      RComponent *old = currentRComponent; currentRComponent = this;
       importVariables();	 
       REvalQ(initRule.c_str());
+      currentRComponent = old;
       }
    }
 
@@ -355,6 +361,7 @@ void RComponent::expose(const std::string &variableName, const std::string &unit
 // Deal with an event coming from the system to us
 void RComponent::onRuleCallback(const std::string &s)
    {
+   RComponent *old = currentRComponent; currentRComponent = this;
    if (!hasFatalError) 
      {
      string rule = rules[s];
@@ -364,6 +371,7 @@ void RComponent::onRuleCallback(const std::string &s)
        REvalQ(rule.c_str());
 	   }
      }
+   currentRComponent = old;
    }
 
 // ------------------------------------------------------------------
@@ -371,8 +379,10 @@ void RComponent::onRuleCallback(const std::string &s)
 // ------------------------------------------------------------------
 void RComponent::respondToGet(const std::string &variableName, std::vector<std::string> &result)
    {
+   RComponent *old = currentRComponent; currentRComponent = this;
    result.clear(); 
    RGetVector(variableName.c_str(), result);
+   currentRComponent = old;
    }
 
 // ------------------------------------------------------------------
@@ -380,6 +390,7 @@ void RComponent::respondToGet(const std::string &variableName, std::vector<std::
 // ------------------------------------------------------------------
 void RComponent::respondToSet(const std::string &variableName, std::vector<std::string> &value)
    {
+   RComponent *old = currentRComponent; currentRComponent = this;
    string cmd = variableName;
    cmd += "<-";
    if (value.size() > 1) 
@@ -403,6 +414,7 @@ void RComponent::respondToSet(const std::string &variableName, std::vector<std::
          cmd += "'" + value[0] + "'";
 	  }
    REvalQ(cmd.c_str());
+   currentRComponent = old;
    }
    
 void RComponent::importVariables(void) 
@@ -416,3 +428,10 @@ void RComponent::importVariables(void)
 	 }
 }
  
+void RComponent::query(const std::string &pattern,std::vector<std::string> &matches)
+{
+     std::vector<QueryMatch> queryMatches;
+     apsimAPI.query(pattern, queryMatches);
+     for (unsigned int i = 0; i < queryMatches.size(); i++) 
+        matches.push_back(queryMatches[i].name);
+}

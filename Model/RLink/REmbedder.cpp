@@ -117,7 +117,22 @@ void apsimFatalError( std::string message )
     apsimCallback("fatal", message.c_str(), NULL, NULL);
   }
 
+SEXP apsimQuery( std::string pattern ) 
+  {
+   SEXP result = Rcpp::wrap(R_NilValue);
+   if (apsimCallback == NULL) return result;
 
+   char typeReturned[20];
+   char dataReturned[8192]; 
+   apsimCallback("query", pattern.c_str(), typeReturned, (void *)dataReturned);
+   std::vector<std::string> v;
+   int numReturned = (int) *dataReturned;
+   char *buf = ((char *) dataReturned + sizeof(int));
+   for (int i = 0; i < numReturned; i++) { v.push_back(buf); buf += strlen(buf) + 1; }
+   result = Rcpp::wrap(v);
+   return(result);
+}
+  
 RCPP_MODULE(apsim){
   using namespace Rcpp ;
   function( "publish",  &apsimPublish, List::create( _["eventName"], _["type"], _["value"]),     "Publish an apsim event" ) ;
@@ -125,6 +140,7 @@ RCPP_MODULE(apsim){
   function( "get",      &apsimGet, List::create( _["variableName"]),                       "Get an apsim variable" ) ;
   function( "set",      &apsimSet, List::create( _["variableName"], _["variableValue"] ),  "Set an apsim variable" ) ;
   function( "expose",   &apsimExpose, List::create( _["variableName"] , _["units"] = "" ), "Expose an R variable to apsim" ) ;
+  function( "query",    &apsimQuery, List::create( _["pattern"] ),                         "Query apsim for a module or variable" ) ;
   function( "fatal",    &apsimFatalError, List::create( _["message"] ),                    "Signal a fatal apsim error" ) ;
 }  
 

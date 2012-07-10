@@ -35,6 +35,7 @@ class RComponent
       	
       void respondToGet(const std::string &variableName, std::vector<std::string> &result);
       void respondToSet(const std::string &variableName, std::vector<std::string> &value);
+      void query(const std::string &pattern,std::vector<std::string> &matches);
 
       ScienceAPI2& apsimAPI;
    private:
@@ -42,6 +43,7 @@ class RComponent
       bool hasFatalError;
       Name2RuleMap apsimVariables;
       void importVariables(void);
+      void oneTimeInit(void);
    };
 
 bool isNumeric(const std::string &s); 
