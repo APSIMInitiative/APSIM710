@@ -10,18 +10,18 @@
              Copyright(c) APSRU               
 
 Version                = 7.5
-Title                  = erosion productivity off
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+Title                  = Erosion productivity off
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                        "grasp" = %apsim%\Model\grasp.dll
-   Component                       "sysbal" = %apsim%\Model\sysbal.dll
+   Component                        "Grasp" = %apsim%\Model\Grasp.dll
+   Component                       "SysBal" = %apsim%\Model\SysBal.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -37,7 +37,7 @@ Title                  = erosion productivity off
      Simulation end date   =  1/01/1996
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.dd/mm/yyyy as date
         grasp.max_n_avail()
@@ -49,7 +49,7 @@ Title                  = erosion productivity off
      Sparse data is not allowed
      INPUT File name: Narayen.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- init
@@ -209,7 +209,7 @@ Title                  = erosion productivity off
           ---------------------------------------------------------
            Totals  184996.7 12758.4  1463.3   182.9   400.0    20.0
           ---------------------------------------------------------
-grasp: 
+Grasp: 
      Initialising:
      Parameters:
        Transpiration Efficiency:     10.00 kg/ha/mm at 20.0 hPa
@@ -243,5 +243,5 @@ grasp:
        Root depth :   750.0 mm
        Using vpd from system.
        Pan evap from system
-1 January 1996(Day of year=1), clock: 
+1 January 1996(Day of year=1), Clock: 
      Simulation is terminating due to end criteria being met.

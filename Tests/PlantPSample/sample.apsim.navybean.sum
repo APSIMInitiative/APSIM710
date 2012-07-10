@@ -11,19 +11,19 @@
 
 Version                = 7.5
 Title                  = 
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
    Component                        "SoilP" = %apsim%\Model\SoilP.dll
    Component                     "navybean" = %apsim%\Model\Plant.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -39,7 +39,7 @@ Title                  =
      Simulation end date   = 30/12/1993
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.dd/mm/yyyy as date
         navybean.DaysAfterSowing
@@ -162,7 +162,7 @@ Title                  =
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- init
@@ -414,7 +414,7 @@ Title                  =
         - Module is set phosphorus aware
      
 ------- Start of simulation  --------------------------------------------------
-1 December 1992(Day of year=336), manager: 
+1 December 1992(Day of year=336), Manager: 
      Manager sending message :- navybean sow  crop_class = plant, cultivar = rainbird, plants = 40, sowing_depth = 50
 1 December 1992(Day of year=336), navybean: 
      Crop Sow
@@ -516,7 +516,7 @@ Title                  =
       stage 10.0 harvest_ripe
                      biomass =         374.71 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     2.99 (%)    extractable sw =   23.55 (mm)
-1 March 1993(Day of year=60), manager: 
+1 March 1993(Day of year=60), Manager: 
      Manager sending message :- navybean harvest
 1 March 1993(Day of year=60), navybean: 
      
@@ -568,7 +568,7 @@ Title                  =
                           N  (kg/ha) =                   0.00                   16.62
                           P  (kg/ha) =                  0.00                    1.46
      
-1 May 1993(Day of year=121), manager: 
+1 May 1993(Day of year=121), Manager: 
      Manager sending message :- surfaceom tillage  type = chisel
 1 May 1993(Day of year=121), SurfaceOM: 
      
@@ -576,7 +576,7 @@ Title                  =
      Residue removed using chisel
                                              Fraction Incorporated =     0.50
                                              Incorporated Depth    =   100.00
-31 May 1993(Day of year=151), manager: 
+31 May 1993(Day of year=151), Manager: 
      Manager sending message :- surfaceom tillage  type = burn_95
 31 May 1993(Day of year=151), SurfaceOM: 
      
@@ -584,5 +584,5 @@ Title                  =
      Residue removed using burn_95
                                              Fraction Incorporated =     0.95
                                              Incorporated Depth    =     0.00
-30 December 1993(Day of year=364), clock: 
+30 December 1993(Day of year=364), Clock: 
      Simulation is terminating due to end criteria being met.

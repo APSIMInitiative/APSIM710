@@ -11,16 +11,16 @@
 
 Version                = 7.5
 Title                  = Test report variables 1
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
    Component                        "wheat" = %apsim%\Model\Plant.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -36,7 +36,7 @@ Title                  = Test report variables 1
      Simulation end date   = 26/10/1989
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.year
         clock.day
@@ -61,9 +61,9 @@ Title                  = Test report variables 1
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+     INPUT File name: %apsim%\Examples\MetFiles\Dalby.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -217,7 +217,7 @@ Title                  = Test report variables 1
            Totals  149295.9 10296.3   926.1   115.8   400.0    20.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-26 September 1988(Day of year=270), manager: 
+26 September 1988(Day of year=270), Manager: 
      Manager sending message :- wheat sow  cultivar = hartog, plants = 120, sowing_depth = 30 (mm)
 26 September 1988(Day of year=270), wheat: 
      Crop Sow
@@ -313,7 +313,7 @@ Title                  = Test report variables 1
 29 December 1988(Day of year=364), wheat: 
      Crop failure because of total leaf senescence.
      Plant death. standing above-ground dm = 7494.06 (kg/ha)
-30 December 1988(Day of year=365), manager: 
+30 December 1988(Day of year=365), Manager: 
      Manager sending message :- wheat end_crop
 30 December 1988(Day of year=365), wheat: 
      Crop ended. Yield (dw) =  2672.7  (kg/ha)
@@ -321,5 +321,5 @@ Title                  = Test report variables 1
                           DM (kg/ha) =                7494.1                  1364.1
                           N  (kg/ha) =                  85.49                   21.62
      
-26 October 1989(Day of year=299), clock: 
+26 October 1989(Day of year=299), Clock: 
      Simulation is terminating due to end criteria being met.

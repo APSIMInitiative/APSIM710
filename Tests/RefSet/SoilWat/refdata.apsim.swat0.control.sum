@@ -11,14 +11,14 @@
 
 Version                = 7.5
 Title                  = soilwat2 reference dataset
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "Met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "Met" = %apsim%\Model\Input.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -34,7 +34,7 @@ Title                  = soilwat2 reference dataset
      Simulation end date   = 31/12/1978
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.dd/mm/yyyy as date
         SoilWat.eo
@@ -61,7 +61,7 @@ Title                  = soilwat2 reference dataset
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -145,9 +145,9 @@ Title                  = soilwat2 reference dataset
             CONA:                     4.00 ()
             Eo from priestly-taylor
 ------- Start of simulation  --------------------------------------------------
-10 April 1977(Day of year=100), manager: 
+10 April 1977(Day of year=100), Manager: 
      Manager sending message :- irrigation apply  amount = 30 (mm)
-30 April 1977(Day of year=120), manager: 
+30 April 1977(Day of year=120), Manager: 
      Manager sending message :- soilwat tillage  type = disc, cn_red = 15.0, cn_rain = 30.0
 30 April 1977(Day of year=120), SoilWat: 
      Soil tilled using disc
@@ -155,9 +155,9 @@ Title                  = soilwat2 reference dataset
                                              Acc rain     =    30.00
 10 May 1977(Day of year=130), SoilWat: 
      Tillage CN reduction finished
-10 April 1978(Day of year=100), manager: 
+10 April 1978(Day of year=100), Manager: 
      Manager sending message :- irrigation apply  amount = 30 (mm)
-30 April 1978(Day of year=120), manager: 
+30 April 1978(Day of year=120), Manager: 
      Manager sending message :- soilwat tillage  type = disc, cn_red = 15.0, cn_rain = 30.0
 30 April 1978(Day of year=120), SoilWat: 
      Soil tilled using disc
@@ -165,5 +165,5 @@ Title                  = soilwat2 reference dataset
                                              Acc rain     =    30.00
 31 May 1978(Day of year=151), SoilWat: 
      Tillage CN reduction finished
-31 December 1978(Day of year=365), clock: 
+31 December 1978(Day of year=365), Clock: 
      Simulation is terminating due to end criteria being met.

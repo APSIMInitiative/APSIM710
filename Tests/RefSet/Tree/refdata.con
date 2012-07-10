@@ -6,29 +6,29 @@ version = 7.3
 ! All off.
 [APSIM.step1.control]
 title=Step 1. All off.
-module = clock   refdata.par [all] %apsim%/Model/clock.xml [standard]
-module = report refdata.par[all] refdata.par[step1]
-module = input(met) narayen.met[weather]
-module = manager refdata.par[all]
+module = Clock   refdata.par [all] %apsim%/Model/Clock.xml [standard]
+module = Report refdata.par[all] refdata.par[step1]
+module = Input(met) narayen.met[weather]
+module = Manager refdata.par[all]
 module = SoilWat   refdata.par [all] %apsim%/Model/Soil.xml [SoilWat]
-module = tree   refdata.par [all] refdata.par [step1] refdata.par [soilwat] %apsim%/Model/tree.xml [standard]
+module = Tree   refdata.par [all] refdata.par [step1] refdata.par [soilwat] %apsim%/Model/Tree.xml [standard]
 
 ! Transpiration
 [APSIM.step2.control]
 title=Step 2. Transpiring
-module = clock   refdata.par [all] %apsim%/Model/clock.xml [standard]
-module = report refdata.par[all] refdata.par[step2]
-module = input(met) narayen.met[weather]
-module = manager refdata.par[all]
+module = Clock   refdata.par [all] %apsim%/Model/Clock.xml [standard]
+module = Report refdata.par[all] refdata.par[step2]
+module = Input(met) narayen.met[weather]
+module = Manager refdata.par[all]
 module = SoilWat   refdata.par [all] %apsim%/Model/Soil.xml [SoilWat]
-module = tree   refdata.par [all] refdata.par [step2] refdata.par [soilwat] %apsim%/Model/tree.xml [standard]
+module = Tree   refdata.par [all] refdata.par [step2] refdata.par [soilwat] %apsim%/Model/Tree.xml [standard]
 
 ! SWIM interface.
 [APSIM.step3.control]
 title=Step 3. swim
-module = clock   refdata.par [gmtb0] %apsim%/Model/clock.xml [standard]
-module = report refdata.par[gmtb0]
-module = input(met) gmtapsim.dat[weather]
-module = manager refdata.par[all]
+module = Clock   refdata.par [gmtb0] %apsim%/Model/Clock.xml [standard]
+module = Report refdata.par[gmtb0]
+module = Input(met) gmtapsim.dat[weather]
+module = Manager refdata.par[all]
 module = SWIM2   refdata.par [gmtb0] %apsim%/Model/SWIM2.xml [standard]
-module = tree   refdata.par [all] refdata.par [step3] refdata.par [swim] %apsim%/Model/tree.xml [standard]
+module = Tree   refdata.par [all] refdata.par [step3] refdata.par [swim] %apsim%/Model/Tree.xml [standard]
