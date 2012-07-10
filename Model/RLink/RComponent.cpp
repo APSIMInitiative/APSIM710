@@ -273,24 +273,31 @@ void RComponent::onInit2(void)
    apsimAPI.write("--->End\n");
 
    // Expose variables
-   vector<string> rawVariables; vector<string> variables;
+   vector<string> rawVariables; vector<string> variables; vector<string> units;
    Split_string(rules["my variables"], "\r\n", rawVariables); 
    for (vector<string>::iterator i = rawVariables.begin(); i != rawVariables.end(); i++)
        {
 	   unsigned int p = i->find('#');
 	   if (p != string::npos) 
 	      *i = i->substr(0, p);
-       stripLeadingTrailing(*i, " ");
-	   if (*i != "") 
-	      variables.push_back(*i);
+	   vector<string> words;
+       SplitStringHonouringQuotes(*i, " ", words);
+	   if (words.size() == 1)
+	      {variables.push_back(words[0]); units.push_back("");}
+	   else if (words.size() == 3 && words[1] == "units")
+	      {variables.push_back(words[0]); units.push_back(words[2]);}
+	   else if (words.size() > 0) 
+	   	   throw std::runtime_error("Cant make sense of '" + *i + "'");
        }
    if (variables.size() > 0) 
       {
 	  apsimAPI.write("--->Exported R Variables:\n");
-      for (vector<string>::iterator i = variables.begin(); i != variables.end(); i++)
+      for (int i = 0; i < variables.size(); i++)
 	      {
-          apsimAPI.write(*i + "\n");
-          expose(*i);
+          apsimAPI.write(variables[i]);
+          if (units[i] != "") apsimAPI.write(" (" + units[i] + ")");
+          apsimAPI.write("\n");
+          expose(variables[i], units[i]);
 		  }
       }
    // find the apsim variables we want before every event
@@ -338,9 +345,9 @@ void RComponent::onError(void)
    }
 
 // Allow apsim to read (and/ or write) one of our variables. 
-void RComponent::expose(const std::string &variableName)
+void RComponent::expose(const std::string &variableName, const std::string &units)
    {
-   apsimAPI.exposeFunction2(variableName, "", "", 
+   apsimAPI.exposeFunction2(variableName, units, "", 
                            StringArrayFunction2(variableName, &RComponent::respondToGet),
                            StringArrayFunction2(variableName, &RComponent::respondToSet));
    }

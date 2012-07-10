@@ -31,7 +31,7 @@ class RComponent
       virtual void onInit2(void);
       void subscribe(const std::string &event, const std::string &type, const std::string &handler );
       void onRuleCallback(const std::string &);
-      void expose(const std::string &variableName);
+      void expose(const std::string &variableName,const std::string &units);
       	
       void respondToGet(const std::string &variableName, std::vector<std::string> &result);
       void respondToSet(const std::string &variableName, std::vector<std::string> &value);

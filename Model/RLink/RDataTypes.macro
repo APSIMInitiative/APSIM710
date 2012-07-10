@@ -210,7 +210,7 @@ void componentCallback(const char *what, const char *e, char *t, void *payload)
 	  }
 	else if (Str_i_Eq(what, "expose"))
 	  {
-	  currentRComponent->expose(std::string(e));
+	  currentRComponent->expose(std::string(e), std::string(t));
 	  }
 	else if (Str_i_Eq(what, "get"))
       {
@@ -370,9 +370,11 @@ extern "C" void onApsim[type.name]Event(const char *handler , R[type.name]Type *
 [foreach types.type]
 struct R[type.name]Type *make[type.name]Type(Rcpp::List data) {
     R[type.name]Type *result = new R[type.name]Type;
-    std::vector<std::string> names = data.names();
+    std::vector<std::string> names;
+    if (data.size() > 0)
+       names = data.names();
     [foreach type.field]
-     if (std::find(names.begin(), names.end(), "[field.name]") != names.end()) {
+    if (std::find(names.begin(), names.end(), "[field.name]") != names.end()) {
      [if [field.arrayofstructures] = T]
       Rcpp::List [field.name]List = Rcpp::as<Rcpp::List>(data["[field.name]"]);
  	  result->num[field.name] = [field.name]List.size();
