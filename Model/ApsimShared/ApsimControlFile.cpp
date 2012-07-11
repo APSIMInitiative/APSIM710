@@ -44,26 +44,29 @@ struct ParamFile
       }
 
    void fixUpModuleName(void)
-      {
-      if (moduleName.find('/') != string::npos ||
-          moduleName.find('\\') != string::npos ||
-          moduleName.find('.') != string::npos)
-         {
-         dllFileName = moduleName;
-         moduleName = fileRoot(fileTail(moduleName));
-         }
-      else
-         {
-         dllFileName = "%apsim%/Model/"
-                     + moduleName +
+   {
+	   if (moduleName.find('/') != string::npos ||
+		   moduleName.find('\\') != string::npos ||
+		   moduleName.find('.') != string::npos)
+	   {
+		   dllFileName = moduleName;
+		   moduleName = fileRoot(fileTail(moduleName));
+	   }
+	   else
+	   {
 #ifdef __WIN32__
-                     ".dll";
+		   dllFileName = "%apsim%/Model/" + moduleName + ".dll";
 #else
-                     ".so";
+		   dllFileName = "%apsim%/Model/" + moduleName + ".so";
+		   // For Linux native modules, we use the .so extension, but .NET modules will have
+		   // the .dll extension. 
+		   if (!FileExists(getApsimDirectory() + "/Model/" + moduleName + ".so") &&
+			   FileExists(getApsimDirectory() + "/Model/" + moduleName + ".dll"))
+			   dllFileName = "%apsim%/Model/" + moduleName + ".dll";
 #endif
-         }
-      }
-   };
+	   }
+   }
+};
 
 // ------------------------------------------------------------------
 // Parse the specified 'module=' line to extract the module name,
