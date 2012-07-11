@@ -21,6 +21,7 @@
 using namespace std;
 
 RComponent *currentRComponent = NULL;
+static bool hasStartedR = false;
 
 extern "C" EXPORT RComponent  * STDCALL createComponent(ScienceAPI2& scienceAPI)
    {
@@ -253,11 +254,12 @@ void RComponent::oneTimeInit(void)
    // write copyright notice(s).
    apsimAPI.write(SimpleREval("R.version.string") + "\n");
    apsimAPI.write("Copyright (C) 2011 The R Foundation for Statistical Computing\n");
+   hasStartedR = true;
    }
 
 void RComponent::onInit2(void)
    {
-   if (RDLLHandle == NULL) this->oneTimeInit();
+   if (!hasStartedR) this->oneTimeInit();
    
    rules.clear();
    apsimAPI.readScripts(rules);

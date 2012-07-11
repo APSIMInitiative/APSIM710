@@ -212,6 +212,15 @@ void componentCallback(const char *what, const char *e, char *t, void *payload)
 	  {
 	  currentRComponent->expose(std::string(e), std::string(t));
 	  }
+        else if (Str_i_Eq(what, "query"))
+          {
+          std::vector<std::string> resultArray;
+          currentRComponent->query(std::string(e), resultArray);
+          * ((int *)payload) = resultArray.size();
+          char *buf = ((char *) payload + sizeof(int));
+          for (unsigned int i = 0; i <  resultArray.size(); i++) {strcpy(buf, resultArray[i].c_str()); buf += strlen(buf) + 1;}
+          strcpy(t, "stringvec");
+          }
 	else if (Str_i_Eq(what, "get"))
       {
       std::vector<std::string> resultArray;

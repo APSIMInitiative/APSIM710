@@ -659,7 +659,7 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
                 if ((ownerName.length() > 0) && (ownerName == ".MasterPM"))
                     parentID = 1;
                 else
-                    if (searchName == "*")  //expecting comp.*
+                    if (ownerName.length() > 0 && searchName == "*")  //expecting comp.*
                         componentNameToID(ownerName, parentID);
 				registry.getChildren(parentID, children);
                 
