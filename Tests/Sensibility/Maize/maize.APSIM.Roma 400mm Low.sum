@@ -11,18 +11,18 @@
 
 Version                = 7.5
 Title                  = Roma 400mm wet soil Low Population
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                        "maize" = %apsim%\Model\maize.dll
+   Component                        "Maize" = %apsim%\Model\Maize.dll
    Component                      "Tracker" = %apsim%\Model\Tracker.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -38,7 +38,7 @@ Title                  = Roma 400mm wet soil Low Population
      Simulation end date   = 21/12/2002
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.day
         clock.year
@@ -54,7 +54,7 @@ Title                  = Roma 400mm wet soil Low Population
      Sparse data is not allowed
      INPUT File name: %apsim%\Tests\MetFiles\Roma.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -211,7 +211,7 @@ Title                  = Roma 400mm wet soil Low Population
            Totals  113863.3  9109.1   498.7    62.3    80.0     2.0
           ---------------------------------------------------------
 
-------- maize Initialisation --------------------------------------------------
+------- Maize Initialisation --------------------------------------------------
       Initialising, V1.0 2000.01.21
      
          - Reading constants
@@ -253,7 +253,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1957(Day of year=274), manager: 
+1 October 1957(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1957(Day of year=274), Fertiliser: 
      
@@ -261,7 +261,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1957(Day of year=274), maize: 
+1 October 1957(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -315,45 +315,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1957(Day of year=275), maize: 
+2 October 1957(Day of year=275), Maize: 
       stage    2.0 germination
-5 October 1957(Day of year=278), maize: 
+5 October 1957(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    9.445084
-18 October 1957(Day of year=291), maize: 
+18 October 1957(Day of year=291), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.9424520       lai =    0.1398688E-01
                           stover N conc =    3.912313       extractable sw =    52.41328
-21 October 1957(Day of year=294), maize: 
+21 October 1957(Day of year=294), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.853007       lai =    0.2440963E-01
                           stover N conc =    3.649394       extractable sw =    50.65100
-28 November 1957(Day of year=332), maize: 
+28 November 1957(Day of year=332), Maize: 
       stage    6.0 flag_leaf
                           biomass =           122.6036       lai =    0.3855369
                           stover N conc =    2.822591       extractable sw =    8.883415
-4 December 1957(Day of year=338), maize: 
+4 December 1957(Day of year=338), Maize: 
       stage    7.0 flowering
                           biomass =           129.3723       lai =    0.3006518
                           stover N conc =    2.726441       extractable sw =    6.089798
-13 December 1957(Day of year=347), maize: 
+13 December 1957(Day of year=347), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           135.9440       lai =    0.2124555
                           stover N conc =    2.639287       extractable sw =    3.754381
-26 January 1958(Day of year=26), maize: 
+26 January 1958(Day of year=26), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           166.8199       lai =    0.1417357E-01
                           stover N conc =    2.176491       extractable sw =    36.61604
-27 January 1958(Day of year=27), maize: 
+27 January 1958(Day of year=27), Maize: 
       stage   10.0 maturity
                           biomass =           166.9963       lai =    0.1301652E-01
                           stover N conc =    2.174296       extractable sw =    35.73373
-28 January 1958(Day of year=28), maize: 
+28 January 1958(Day of year=28), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           166.9963       lai =    0.9499788E-03
                           stover N conc =    2.179986       extractable sw =    35.26693
-28 January 1958(Day of year=28), manager: 
+28 January 1958(Day of year=28), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -426,7 +426,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1958(Day of year=274), manager: 
+1 October 1958(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1958(Day of year=274), Fertiliser: 
      
@@ -434,7 +434,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1958(Day of year=274), maize: 
+1 October 1958(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -488,45 +488,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1958(Day of year=275), maize: 
+2 October 1958(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1958(Day of year=277), maize: 
+4 October 1958(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.05351
-19 October 1958(Day of year=292), maize: 
+19 October 1958(Day of year=292), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.247231       lai =    0.1380468E-01
                           stover N conc =    3.744861       extractable sw =    70.48306
-23 October 1958(Day of year=296), maize: 
+23 October 1958(Day of year=296), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.496399       lai =    0.2570687E-01
                           stover N conc =    3.622353       extractable sw =    65.93909
-27 November 1958(Day of year=331), maize: 
+27 November 1958(Day of year=331), Maize: 
       stage    6.0 flag_leaf
                           biomass =           212.3728       lai =     1.245413
                           stover N conc =    2.524971       extractable sw =    20.49378
-3 December 1958(Day of year=337), maize: 
+3 December 1958(Day of year=337), Maize: 
       stage    7.0 flowering
                           biomass =           242.0956       lai =     1.040234
                           stover N conc =    2.409677       extractable sw =    12.69637
-13 December 1958(Day of year=347), maize: 
+13 December 1958(Day of year=347), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           258.1282       lai =    0.6650453
                           stover N conc =    2.424481       extractable sw =    6.235706
-26 January 1959(Day of year=26), maize: 
+26 January 1959(Day of year=26), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           503.2449       lai =    0.5107409
                           stover N conc =    1.290871       extractable sw =    48.56954
-27 January 1959(Day of year=27), maize: 
+27 January 1959(Day of year=27), Maize: 
       stage   10.0 maturity
                           biomass =           506.6079       lai =    0.4908542
                           stover N conc =    1.282950       extractable sw =    57.13335
-28 January 1959(Day of year=28), maize: 
+28 January 1959(Day of year=28), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           506.6079       lai =    0.1207352E-02
                           stover N conc =    1.315671       extractable sw =    88.42986
-28 January 1959(Day of year=28), manager: 
+28 January 1959(Day of year=28), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -599,7 +599,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1959(Day of year=274), manager: 
+1 October 1959(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1959(Day of year=274), Fertiliser: 
      
@@ -607,7 +607,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1959(Day of year=274), maize: 
+1 October 1959(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -661,45 +661,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1959(Day of year=275), maize: 
+2 October 1959(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1959(Day of year=277), maize: 
+4 October 1959(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    21.30271
-22 October 1959(Day of year=295), maize: 
+22 October 1959(Day of year=295), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.511572       lai =    0.1610306E-01
                           stover N conc =    3.628273       extractable sw =    71.26591
-25 October 1959(Day of year=298), maize: 
+25 October 1959(Day of year=298), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.408925       lai =    0.2521089E-01
                           stover N conc =    3.649797       extractable sw =    83.95531
-30 November 1959(Day of year=334), maize: 
+30 November 1959(Day of year=334), Maize: 
       stage    6.0 flag_leaf
                           biomass =           226.4803       lai =     1.098510
                           stover N conc =    2.605761       extractable sw =    23.57707
-5 December 1959(Day of year=339), maize: 
+5 December 1959(Day of year=339), Maize: 
       stage    7.0 flowering
                           biomass =           258.8877       lai =    0.9979694
                           stover N conc =    2.407180       extractable sw =    17.64462
-15 December 1959(Day of year=349), maize: 
+15 December 1959(Day of year=349), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           337.3147       lai =    0.8405337
                           stover N conc =    2.215695       extractable sw =    17.27014
-28 January 1960(Day of year=28), maize: 
+28 January 1960(Day of year=28), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           436.8781       lai =    0.2385899
                           stover N conc =    1.755151       extractable sw =    1.665800
-29 January 1960(Day of year=29), maize: 
+29 January 1960(Day of year=29), Maize: 
       stage   10.0 maturity
                           biomass =           437.0897       lai =    0.2274221
                           stover N conc =    1.755551       extractable sw =    1.573597
-30 January 1960(Day of year=30), maize: 
+30 January 1960(Day of year=30), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           437.0897       lai =    0.1205549E-02
                           stover N conc =    1.783361       extractable sw =    1.486755
-30 January 1960(Day of year=30), manager: 
+30 January 1960(Day of year=30), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -772,7 +772,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1960(Day of year=275), manager: 
+1 October 1960(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1960(Day of year=275), Fertiliser: 
      
@@ -780,7 +780,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1960(Day of year=275), maize: 
+1 October 1960(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -834,45 +834,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1960(Day of year=276), maize: 
+2 October 1960(Day of year=276), Maize: 
       stage    2.0 germination
-4 October 1960(Day of year=278), maize: 
+4 October 1960(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    9.918638
-19 October 1960(Day of year=293), maize: 
+19 October 1960(Day of year=293), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.9291200       lai =    0.1449924E-01
                           stover N conc =    3.864009       extractable sw =    53.82404
-23 October 1960(Day of year=297), maize: 
+23 October 1960(Day of year=297), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.939484       lai =    0.2718624E-01
                           stover N conc =    3.596177       extractable sw =    71.57785
-30 November 1960(Day of year=335), maize: 
+30 November 1960(Day of year=335), Maize: 
       stage    6.0 flag_leaf
                           biomass =           232.1629       lai =     1.219627
                           stover N conc =    2.598961       extractable sw =    26.99895
-5 December 1960(Day of year=340), maize: 
+5 December 1960(Day of year=340), Maize: 
       stage    7.0 flowering
                           biomass =           262.2482       lai =     1.048220
                           stover N conc =    2.459899       extractable sw =    14.08296
-15 December 1960(Day of year=350), maize: 
+15 December 1960(Day of year=350), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           294.9467       lai =    0.7412804
                           stover N conc =    2.312948       extractable sw =    11.23250
-30 January 1961(Day of year=30), maize: 
+30 January 1961(Day of year=30), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           320.5361       lai =    0.9706829E-01
                           stover N conc =    2.262262       extractable sw =   0.4766865
-31 January 1961(Day of year=31), maize: 
+31 January 1961(Day of year=31), Maize: 
       stage   10.0 maturity
                           biomass =           320.6811       lai =    0.9278344E-01
                           stover N conc =    2.262138       extractable sw =   0.4549446
-1 February 1961(Day of year=32), maize: 
+1 February 1961(Day of year=32), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           320.6811       lai =    0.9977743E-03
                           stover N conc =    2.285961       extractable sw =   0.4341106
-1 February 1961(Day of year=32), manager: 
+1 February 1961(Day of year=32), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -945,7 +945,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1961(Day of year=274), manager: 
+1 October 1961(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1961(Day of year=274), Fertiliser: 
      
@@ -953,7 +953,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1961(Day of year=274), maize: 
+1 October 1961(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -1007,45 +1007,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1961(Day of year=275), maize: 
+2 October 1961(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1961(Day of year=277), maize: 
+4 October 1961(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.14950
-18 October 1961(Day of year=291), maize: 
+18 October 1961(Day of year=291), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.9226992       lai =    0.1561061E-01
                           stover N conc =    3.757601       extractable sw =    65.71445
-21 October 1961(Day of year=294), maize: 
+21 October 1961(Day of year=294), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.851845       lai =    0.2627047E-01
                           stover N conc =    3.450546       extractable sw =    63.89071
-26 November 1961(Day of year=330), maize: 
+26 November 1961(Day of year=330), Maize: 
       stage    6.0 flag_leaf
                           biomass =           258.6484       lai =     1.508640
                           stover N conc =    2.368192       extractable sw =    110.5997
-1 December 1961(Day of year=335), maize: 
+1 December 1961(Day of year=335), Maize: 
       stage    7.0 flowering
                           biomass =           337.2830       lai =     1.484519
                           stover N conc =    2.237655       extractable sw =    92.33421
-11 December 1961(Day of year=345), maize: 
+11 December 1961(Day of year=345), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           469.9450       lai =     1.265751
                           stover N conc =    2.092592       extractable sw =    43.52431
-26 January 1962(Day of year=26), maize: 
+26 January 1962(Day of year=26), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           908.9841       lai =    0.7388065
                           stover N conc =    1.259530       extractable sw =    61.11292
-27 January 1962(Day of year=27), maize: 
+27 January 1962(Day of year=27), Maize: 
       stage   10.0 maturity
                           biomass =           914.3060       lai =    0.7185997
                           stover N conc =    1.252576       extractable sw =    58.24481
-28 January 1962(Day of year=28), maize: 
+28 January 1962(Day of year=28), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           914.3060       lai =    0.9504557E-03
                           stover N conc =    1.275640       extractable sw =    80.99442
-28 January 1962(Day of year=28), manager: 
+28 January 1962(Day of year=28), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -1118,7 +1118,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1962(Day of year=274), manager: 
+1 October 1962(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1962(Day of year=274), Fertiliser: 
      
@@ -1126,7 +1126,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1962(Day of year=274), maize: 
+1 October 1962(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -1180,45 +1180,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1962(Day of year=275), maize: 
+2 October 1962(Day of year=275), Maize: 
       stage    2.0 germination
-3 October 1962(Day of year=276), maize: 
+3 October 1962(Day of year=276), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.68134
-17 October 1962(Day of year=290), maize: 
+17 October 1962(Day of year=290), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.9871268       lai =    0.1417190E-01
                           stover N conc =    3.918194       extractable sw =    52.87655
-20 October 1962(Day of year=293), maize: 
+20 October 1962(Day of year=293), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.560748       lai =    0.2366695E-01
                           stover N conc =    3.576536       extractable sw =    87.02321
-26 November 1962(Day of year=330), maize: 
+26 November 1962(Day of year=330), Maize: 
       stage    6.0 flag_leaf
                           biomass =           207.9654       lai =     1.022371
                           stover N conc =    2.607622       extractable sw =    25.45452
-1 December 1962(Day of year=335), maize: 
+1 December 1962(Day of year=335), Maize: 
       stage    7.0 flowering
                           biomass =           234.1459       lai =    0.8772127
                           stover N conc =    2.495080       extractable sw =    17.82728
-11 December 1962(Day of year=345), maize: 
+11 December 1962(Day of year=345), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           263.2761       lai =    0.6115947
                           stover N conc =    2.361651       extractable sw =    9.326441
-28 January 1963(Day of year=28), maize: 
+28 January 1963(Day of year=28), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           426.6591       lai =    0.3982223
                           stover N conc =    1.417462       extractable sw =    119.9703
-29 January 1963(Day of year=29), maize: 
+29 January 1963(Day of year=29), Maize: 
       stage   10.0 maturity
                           biomass =           431.4448       lai =    0.3734775
                           stover N conc =    1.402701       extractable sw =    117.4661
-30 January 1963(Day of year=30), maize: 
+30 January 1963(Day of year=30), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           431.4448       lai =    0.9500682E-03
                           stover N conc =    1.440160       extractable sw =    115.4077
-30 January 1963(Day of year=30), manager: 
+30 January 1963(Day of year=30), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -1291,7 +1291,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1963(Day of year=274), manager: 
+1 October 1963(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1963(Day of year=274), Fertiliser: 
      
@@ -1299,7 +1299,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1963(Day of year=274), maize: 
+1 October 1963(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -1353,45 +1353,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1963(Day of year=275), maize: 
+2 October 1963(Day of year=275), Maize: 
       stage    2.0 germination
-5 October 1963(Day of year=278), maize: 
+5 October 1963(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    12.36203
-21 October 1963(Day of year=294), maize: 
+21 October 1963(Day of year=294), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.345262       lai =    0.1527923E-01
                           stover N conc =    3.879461       extractable sw =    54.81665
-24 October 1963(Day of year=297), maize: 
+24 October 1963(Day of year=297), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.276034       lai =    0.2564609E-01
                           stover N conc =    3.639443       extractable sw =    53.17162
-1 December 1963(Day of year=335), maize: 
+1 December 1963(Day of year=335), Maize: 
       stage    6.0 flag_leaf
                           biomass =           266.8648       lai =     1.458522
                           stover N conc =    2.397811       extractable sw =    94.08897
-7 December 1963(Day of year=341), maize: 
+7 December 1963(Day of year=341), Maize: 
       stage    7.0 flowering
                           biomass =           374.5031       lai =     1.431037
                           stover N conc =    2.256576       extractable sw =    63.79775
-17 December 1963(Day of year=351), maize: 
+17 December 1963(Day of year=351), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           535.4828       lai =     1.364672
                           stover N conc =    2.049154       extractable sw =    51.28556
-30 January 1964(Day of year=30), maize: 
+30 January 1964(Day of year=30), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           686.4243       lai =    0.2724659
                           stover N conc =    1.764973       extractable sw =    1.291992
-31 January 1964(Day of year=31), maize: 
+31 January 1964(Day of year=31), Maize: 
       stage   10.0 maturity
                           biomass =           686.7159       lai =    0.2599385
                           stover N conc =    1.765143       extractable sw =    1.208334
-1 February 1964(Day of year=32), maize: 
+1 February 1964(Day of year=32), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           686.7159       lai =    0.3051877E-02
                           stover N conc =    1.785536       extractable sw =    1.130489
-1 February 1964(Day of year=32), manager: 
+1 February 1964(Day of year=32), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -1464,7 +1464,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1964(Day of year=275), manager: 
+1 October 1964(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1964(Day of year=275), Fertiliser: 
      
@@ -1472,7 +1472,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1964(Day of year=275), maize: 
+1 October 1964(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -1526,45 +1526,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1964(Day of year=276), maize: 
+2 October 1964(Day of year=276), Maize: 
       stage    2.0 germination
-4 October 1964(Day of year=278), maize: 
+4 October 1964(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    14.38540
-22 October 1964(Day of year=296), maize: 
+22 October 1964(Day of year=296), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.537241       lai =    0.1690641E-01
                           stover N conc =    3.858877       extractable sw =    59.72485
-26 October 1964(Day of year=300), maize: 
+26 October 1964(Day of year=300), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.721404       lai =    0.2642245E-01
                           stover N conc =    3.575225       extractable sw =    59.76009
-4 December 1964(Day of year=339), maize: 
+4 December 1964(Day of year=339), Maize: 
       stage    6.0 flag_leaf
                           biomass =           176.9852       lai =    0.8368701
                           stover N conc =    2.727754       extractable sw =    14.69958
-10 December 1964(Day of year=345), maize: 
+10 December 1964(Day of year=345), Maize: 
       stage    7.0 flowering
                           biomass =           209.2284       lai =    0.7384629
                           stover N conc =    2.480237       extractable sw =    13.93705
-21 December 1964(Day of year=356), maize: 
+21 December 1964(Day of year=356), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           226.8482       lai =    0.4585280
                           stover N conc =    2.477494       extractable sw =    4.616352
-3 February 1965(Day of year=34), maize: 
+3 February 1965(Day of year=34), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           267.2223       lai =    0.8247577E-01
                           stover N conc =    2.165981       extractable sw =   0.4646511
-4 February 1965(Day of year=35), maize: 
+4 February 1965(Day of year=35), Maize: 
       stage   10.0 maturity
                           biomass =           267.2730       lai =    0.7852294E-01
                           stover N conc =    2.166648       extractable sw =   0.4432106
-5 February 1965(Day of year=36), maize: 
+5 February 1965(Day of year=36), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           267.2730       lai =    0.3331795E-02
                           stover N conc =    2.188849       extractable sw =   0.4226704
-5 February 1965(Day of year=36), manager: 
+5 February 1965(Day of year=36), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -1637,7 +1637,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1965(Day of year=274), manager: 
+1 October 1965(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1965(Day of year=274), Fertiliser: 
      
@@ -1645,7 +1645,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1965(Day of year=274), maize: 
+1 October 1965(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -1699,45 +1699,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1965(Day of year=275), maize: 
+2 October 1965(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1965(Day of year=277), maize: 
+4 October 1965(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    9.778330
-20 October 1965(Day of year=293), maize: 
+20 October 1965(Day of year=293), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.316547       lai =    0.1597168E-01
                           stover N conc =    3.842320       extractable sw =    61.17525
-23 October 1965(Day of year=296), maize: 
+23 October 1965(Day of year=296), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.201903       lai =    0.2725994E-01
                           stover N conc =    3.624151       extractable sw =    57.90199
-29 November 1965(Day of year=333), maize: 
+29 November 1965(Day of year=333), Maize: 
       stage    6.0 flag_leaf
                           biomass =           165.5881       lai =    0.6170189
                           stover N conc =    2.675359       extractable sw =    9.063162
-5 December 1965(Day of year=339), maize: 
+5 December 1965(Day of year=339), Maize: 
       stage    7.0 flowering
                           biomass =           205.1306       lai =    0.6170189
                           stover N conc =    2.420279       extractable sw =    68.22480
-15 December 1965(Day of year=349), maize: 
+15 December 1965(Day of year=349), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           263.7884       lai =    0.6170189
                           stover N conc =    2.155498       extractable sw =    103.3602
-30 January 1966(Day of year=30), maize: 
+30 January 1966(Day of year=30), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           536.7896       lai =    0.1356449
                           stover N conc =    1.403126       extractable sw =    25.38805
-31 January 1966(Day of year=31), maize: 
+31 January 1966(Day of year=31), Maize: 
       stage   10.0 maturity
                           biomass =           538.5060       lai =    0.1205988
                           stover N conc =    1.399471       extractable sw =    23.73727
-1 February 1966(Day of year=32), maize: 
+1 February 1966(Day of year=32), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           538.5060       lai =    0.9497702E-03
                           stover N conc =    1.408474       extractable sw =    22.60033
-1 February 1966(Day of year=32), manager: 
+1 February 1966(Day of year=32), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -1810,7 +1810,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1966(Day of year=274), manager: 
+1 October 1966(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1966(Day of year=274), Fertiliser: 
      
@@ -1818,7 +1818,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1966(Day of year=274), maize: 
+1 October 1966(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -1872,45 +1872,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1966(Day of year=275), maize: 
+2 October 1966(Day of year=275), Maize: 
       stage    2.0 germination
-5 October 1966(Day of year=278), maize: 
+5 October 1966(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    15.06284
-21 October 1966(Day of year=294), maize: 
+21 October 1966(Day of year=294), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.074402       lai =    0.1496984E-01
                           stover N conc =    3.736828       extractable sw =    72.28421
-26 October 1966(Day of year=299), maize: 
+26 October 1966(Day of year=299), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.729772       lai =    0.2845249E-01
                           stover N conc =    3.499253       extractable sw =    78.20564
-1 December 1966(Day of year=335), maize: 
+1 December 1966(Day of year=335), Maize: 
       stage    6.0 flag_leaf
                           biomass =           238.5860       lai =     1.141156
                           stover N conc =    2.607912       extractable sw =    21.88237
-6 December 1966(Day of year=340), maize: 
+6 December 1966(Day of year=340), Maize: 
       stage    7.0 flowering
                           biomass =           271.9930       lai =     1.025526
                           stover N conc =    2.443467       extractable sw =    18.25233
-16 December 1966(Day of year=350), maize: 
+16 December 1966(Day of year=350), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           303.8888       lai =    0.7138690
                           stover N conc =    2.309254       extractable sw =    7.023907
-28 January 1967(Day of year=28), maize: 
+28 January 1967(Day of year=28), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           369.6159       lai =    0.2002973
                           stover N conc =    1.956131       extractable sw =    41.53429
-29 January 1967(Day of year=29), maize: 
+29 January 1967(Day of year=29), Maize: 
       stage   10.0 maturity
                           biomass =           372.0181       lai =    0.2002973
                           stover N conc =    1.941548       extractable sw =    40.32817
-30 January 1967(Day of year=30), maize: 
+30 January 1967(Day of year=30), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           372.0181       lai =    0.9499490E-03
                           stover N conc =    1.979817       extractable sw =    39.23093
-30 January 1967(Day of year=30), manager: 
+30 January 1967(Day of year=30), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -1983,7 +1983,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1967(Day of year=274), manager: 
+1 October 1967(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1967(Day of year=274), Fertiliser: 
      
@@ -1991,7 +1991,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1967(Day of year=274), maize: 
+1 October 1967(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -2045,45 +2045,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1967(Day of year=275), maize: 
+2 October 1967(Day of year=275), Maize: 
       stage    2.0 germination
-3 October 1967(Day of year=276), maize: 
+3 October 1967(Day of year=276), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.54253
-16 October 1967(Day of year=289), maize: 
+16 October 1967(Day of year=289), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.8821672       lai =    0.1466016E-01
                           stover N conc =    3.654061       extractable sw =    82.07111
-19 October 1967(Day of year=292), maize: 
+19 October 1967(Day of year=292), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.725390       lai =    0.2643688E-01
                           stover N conc =    3.614331       extractable sw =    72.13931
-23 November 1967(Day of year=327), maize: 
+23 November 1967(Day of year=327), Maize: 
       stage    6.0 flag_leaf
                           biomass =           243.0161       lai =     1.170703
                           stover N conc =    2.653447       extractable sw =    35.07484
-29 November 1967(Day of year=333), maize: 
+29 November 1967(Day of year=333), Maize: 
       stage    7.0 flowering
                           biomass =           278.1557       lai =    0.9655809
                           stover N conc =    2.489051       extractable sw =    22.05213
-9 December 1967(Day of year=343), maize: 
+9 December 1967(Day of year=343), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           329.3971       lai =    0.7855164
                           stover N conc =    2.200763       extractable sw =    45.53142
-24 January 1968(Day of year=24), maize: 
+24 January 1968(Day of year=24), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           634.0986       lai =    0.5980790
                           stover N conc =    1.280168       extractable sw =    54.59835
-25 January 1968(Day of year=25), maize: 
+25 January 1968(Day of year=25), Maize: 
       stage   10.0 maturity
                           biomass =           641.8434       lai =    0.5734500
                           stover N conc =    1.265170       extractable sw =    51.56885
-26 January 1968(Day of year=26), maize: 
+26 January 1968(Day of year=26), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           641.8434       lai =    0.9500980E-03
                           stover N conc =    1.296387       extractable sw =    48.89490
-26 January 1968(Day of year=26), manager: 
+26 January 1968(Day of year=26), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -2156,7 +2156,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1968(Day of year=275), manager: 
+1 October 1968(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1968(Day of year=275), Fertiliser: 
      
@@ -2164,7 +2164,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1968(Day of year=275), maize: 
+1 October 1968(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -2218,45 +2218,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1968(Day of year=276), maize: 
+2 October 1968(Day of year=276), Maize: 
       stage    2.0 germination
-5 October 1968(Day of year=279), maize: 
+5 October 1968(Day of year=279), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.60375
-20 October 1968(Day of year=294), maize: 
+20 October 1968(Day of year=294), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.098556       lai =    0.1541752E-01
                           stover N conc =    3.887067       extractable sw =    53.03279
-23 October 1968(Day of year=297), maize: 
+23 October 1968(Day of year=297), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.084841       lai =    0.2691559E-01
                           stover N conc =    3.611885       extractable sw =    51.26752
-30 November 1968(Day of year=335), maize: 
+30 November 1968(Day of year=335), Maize: 
       stage    6.0 flag_leaf
                           biomass =           125.0079       lai =    0.4304187
                           stover N conc =    2.867061       extractable sw =    9.201584
-7 December 1968(Day of year=342), maize: 
+7 December 1968(Day of year=342), Maize: 
       stage    7.0 flowering
                           biomass =           152.6249       lai =    0.4002542
                           stover N conc =    2.509146       extractable sw =    21.88195
-16 December 1968(Day of year=351), maize: 
+16 December 1968(Day of year=351), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           183.9101       lai =    0.3229147
                           stover N conc =    2.339383       extractable sw =    6.333447
-28 January 1969(Day of year=28), maize: 
+28 January 1969(Day of year=28), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           290.3694       lai =    0.2430147E-01
                           stover N conc =    1.468547       extractable sw =    13.49780
-29 January 1969(Day of year=29), maize: 
+29 January 1969(Day of year=29), Maize: 
       stage   10.0 maturity
                           biomass =           290.6839       lai =    0.1183593E-01
                           stover N conc =    1.468741       extractable sw =    13.27555
-30 January 1969(Day of year=30), maize: 
+30 January 1969(Day of year=30), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           290.6838       lai =    0.9500384E-03
                           stover N conc =    1.470470       extractable sw =    13.16332
-30 January 1969(Day of year=30), manager: 
+30 January 1969(Day of year=30), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -2329,7 +2329,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1969(Day of year=274), manager: 
+1 October 1969(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1969(Day of year=274), Fertiliser: 
      
@@ -2337,7 +2337,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1969(Day of year=274), maize: 
+1 October 1969(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -2391,45 +2391,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1969(Day of year=275), maize: 
+2 October 1969(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1969(Day of year=277), maize: 
+4 October 1969(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.42572
-18 October 1969(Day of year=291), maize: 
+18 October 1969(Day of year=291), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.8248363       lai =    0.1476033E-01
                           stover N conc =    3.709231       extractable sw =    84.42128
-22 October 1969(Day of year=295), maize: 
+22 October 1969(Day of year=295), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.779097       lai =    0.2536961E-01
                           stover N conc =    3.425657       extractable sw =    74.19633
-29 November 1969(Day of year=333), maize: 
+29 November 1969(Day of year=333), Maize: 
       stage    6.0 flag_leaf
                           biomass =           335.2423       lai =     1.471059
                           stover N conc =    2.448578       extractable sw =    51.72240
-5 December 1969(Day of year=339), maize: 
+5 December 1969(Day of year=339), Maize: 
       stage    7.0 flowering
                           biomass =           391.1570       lai =     1.250160
                           stover N conc =    2.394881       extractable sw =    31.80601
-14 December 1969(Day of year=348), maize: 
+14 December 1969(Day of year=348), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           440.7685       lai =    0.9622642
                           stover N conc =    2.202072       extractable sw =    17.21011
-27 January 1970(Day of year=27), maize: 
+27 January 1970(Day of year=27), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           518.0682       lai =    0.1750783
                           stover N conc =    1.957824       extractable sw =    2.272661
-28 January 1970(Day of year=28), maize: 
+28 January 1970(Day of year=28), Maize: 
       stage   10.0 maturity
                           biomass =           519.2991       lai =    0.1750783
                           stover N conc =    1.952554       extractable sw =    6.264433
-29 January 1970(Day of year=29), maize: 
+29 January 1970(Day of year=29), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           519.2992       lai =    0.2137020E-02
                           stover N conc =    1.977073       extractable sw =    28.97651
-29 January 1970(Day of year=29), manager: 
+29 January 1970(Day of year=29), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -2502,7 +2502,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1970(Day of year=274), manager: 
+1 October 1970(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1970(Day of year=274), Fertiliser: 
      
@@ -2510,7 +2510,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1970(Day of year=274), maize: 
+1 October 1970(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -2564,45 +2564,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1970(Day of year=275), maize: 
+2 October 1970(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1970(Day of year=277), maize: 
+4 October 1970(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    9.911921
-18 October 1970(Day of year=291), maize: 
+18 October 1970(Day of year=291), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.139017       lai =    0.1400925E-01
                           stover N conc =    3.903659       extractable sw =    58.77686
-22 October 1970(Day of year=295), maize: 
+22 October 1970(Day of year=295), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.248868       lai =    0.2642330E-01
                           stover N conc =    3.598871       extractable sw =    55.48151
-30 November 1970(Day of year=334), maize: 
+30 November 1970(Day of year=334), Maize: 
       stage    6.0 flag_leaf
                           biomass =           258.3936       lai =     1.255147
                           stover N conc =    2.575902       extractable sw =    23.24166
-5 December 1970(Day of year=339), maize: 
+5 December 1970(Day of year=339), Maize: 
       stage    7.0 flowering
                           biomass =           282.3645       lai =     1.047351
                           stover N conc =    2.511299       extractable sw =    14.83085
-16 December 1970(Day of year=350), maize: 
+16 December 1970(Day of year=350), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           406.5139       lai =     1.009290
                           stover N conc =    2.131271       extractable sw =    57.00545
-31 January 1971(Day of year=31), maize: 
+31 January 1971(Day of year=31), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           875.4149       lai =    0.5823806
                           stover N conc =    1.328060       extractable sw =    82.73420
-1 February 1971(Day of year=32), maize: 
+1 February 1971(Day of year=32), Maize: 
       stage   10.0 maturity
                           biomass =           881.8986       lai =    0.5582575
                           stover N conc =    1.318837       extractable sw =    78.44394
-2 February 1971(Day of year=33), maize: 
+2 February 1971(Day of year=33), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           881.8986       lai =    0.9499192E-03
                           stover N conc =    1.341822       extractable sw =    74.35522
-2 February 1971(Day of year=33), manager: 
+2 February 1971(Day of year=33), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -2675,7 +2675,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1971(Day of year=274), manager: 
+1 October 1971(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1971(Day of year=274), Fertiliser: 
      
@@ -2683,7 +2683,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1971(Day of year=274), maize: 
+1 October 1971(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -2737,45 +2737,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1971(Day of year=275), maize: 
+2 October 1971(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1971(Day of year=277), maize: 
+4 October 1971(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    9.415606
-18 October 1971(Day of year=291), maize: 
+18 October 1971(Day of year=291), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.9831502       lai =    0.1603144E-01
                           stover N conc =    3.876050       extractable sw =    70.12476
-22 October 1971(Day of year=295), maize: 
+22 October 1971(Day of year=295), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.087327       lai =    0.2886540E-01
                           stover N conc =    3.623115       extractable sw =    65.47259
-30 November 1971(Day of year=334), maize: 
+30 November 1971(Day of year=334), Maize: 
       stage    6.0 flag_leaf
                           biomass =           176.7652       lai =    0.7060587
                           stover N conc =    2.659642       extractable sw =    13.69998
-6 December 1971(Day of year=340), maize: 
+6 December 1971(Day of year=340), Maize: 
       stage    7.0 flowering
                           biomass =           189.1519       lai =    0.5538987
                           stover N conc =    2.663455       extractable sw =    5.976654
-15 December 1971(Day of year=349), maize: 
+15 December 1971(Day of year=349), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           199.1237       lai =    0.3795375
                           stover N conc =    2.603307       extractable sw =    3.003805
-30 January 1972(Day of year=30), maize: 
+30 January 1972(Day of year=30), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           316.0379       lai =    0.1443980
                           stover N conc =    1.587084       extractable sw =    84.38281
-31 January 1972(Day of year=31), maize: 
+31 January 1972(Day of year=31), Maize: 
       stage   10.0 maturity
                           biomass =           317.7890       lai =    0.1313966
                           stover N conc =    1.579323       extractable sw =    83.32874
-1 February 1972(Day of year=32), maize: 
+1 February 1972(Day of year=32), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           317.7890       lai =    0.9500980E-03
                           stover N conc =    1.601416       extractable sw =    82.44566
-1 February 1972(Day of year=32), manager: 
+1 February 1972(Day of year=32), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -2848,7 +2848,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1972(Day of year=275), manager: 
+1 October 1972(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1972(Day of year=275), Fertiliser: 
      
@@ -2856,7 +2856,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1972(Day of year=275), maize: 
+1 October 1972(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -2910,45 +2910,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1972(Day of year=276), maize: 
+2 October 1972(Day of year=276), Maize: 
       stage    2.0 germination
-4 October 1972(Day of year=278), maize: 
+4 October 1972(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    15.14588
-19 October 1972(Day of year=293), maize: 
+19 October 1972(Day of year=293), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.283119       lai =    0.1409752E-01
                           stover N conc =    3.882885       extractable sw =    58.91175
-22 October 1972(Day of year=296), maize: 
+22 October 1972(Day of year=296), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.055977       lai =    0.2465494E-01
                           stover N conc =    3.669843       extractable sw =    57.16629
-28 November 1972(Day of year=333), maize: 
+28 November 1972(Day of year=333), Maize: 
       stage    6.0 flag_leaf
                           biomass =           282.0233       lai =     1.591305
                           stover N conc =    2.399346       extractable sw =    95.07974
-5 December 1972(Day of year=340), maize: 
+5 December 1972(Day of year=340), Maize: 
       stage    7.0 flowering
                           biomass =           405.4281       lai =     1.561536
                           stover N conc =    2.251869       extractable sw =    59.57271
-14 December 1972(Day of year=349), maize: 
+14 December 1972(Day of year=349), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           516.3589       lai =     1.345412
                           stover N conc =    2.124637       extractable sw =    29.37282
-27 January 1973(Day of year=27), maize: 
+27 January 1973(Day of year=27), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           724.0250       lai =    0.5668567
                           stover N conc =    1.549734       extractable sw =    17.04549
-28 January 1973(Day of year=28), maize: 
+28 January 1973(Day of year=28), Maize: 
       stage   10.0 maturity
                           biomass =           729.5634       lai =    0.5668567
                           stover N conc =    1.537247       extractable sw =    17.22602
-29 January 1973(Day of year=29), maize: 
+29 January 1973(Day of year=29), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           729.5634       lai =    0.4592776E-02
                           stover N conc =    1.571358       extractable sw =    15.19744
-29 January 1973(Day of year=29), manager: 
+29 January 1973(Day of year=29), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -3021,7 +3021,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1973(Day of year=274), manager: 
+1 October 1973(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1973(Day of year=274), Fertiliser: 
      
@@ -3029,7 +3029,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1973(Day of year=274), maize: 
+1 October 1973(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -3083,45 +3083,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1973(Day of year=275), maize: 
+2 October 1973(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1973(Day of year=277), maize: 
+4 October 1973(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    9.858900
-20 October 1973(Day of year=293), maize: 
+20 October 1973(Day of year=293), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.164007       lai =    0.1468115E-01
                           stover N conc =    3.887835       extractable sw =    65.08999
-24 October 1973(Day of year=297), maize: 
+24 October 1973(Day of year=297), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.173443       lai =    0.2652376E-01
                           stover N conc =    3.550791       extractable sw =    67.18871
-1 December 1973(Day of year=335), maize: 
+1 December 1973(Day of year=335), Maize: 
       stage    6.0 flag_leaf
                           biomass =           295.6973       lai =     1.560740
                           stover N conc =    2.435158       extractable sw =    63.02123
-7 December 1973(Day of year=341), maize: 
+7 December 1973(Day of year=341), Maize: 
       stage    7.0 flowering
                           biomass =           371.7420       lai =     1.421571
                           stover N conc =    2.300825       extractable sw =    46.29404
-17 December 1973(Day of year=351), maize: 
+17 December 1973(Day of year=351), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           458.2625       lai =     1.183829
                           stover N conc =    2.150635       extractable sw =    20.92846
-30 January 1974(Day of year=30), maize: 
+30 January 1974(Day of year=30), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           688.5074       lai =    0.6883457
                           stover N conc =    1.439196       extractable sw =    72.31018
-31 January 1974(Day of year=31), maize: 
+31 January 1974(Day of year=31), Maize: 
       stage   10.0 maturity
                           biomass =           696.0168       lai =    0.6883457
                           stover N conc =    1.422770       extractable sw =    68.37886
-1 February 1974(Day of year=32), maize: 
+1 February 1974(Day of year=32), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           696.0167       lai =    0.3090799E-02
                           stover N conc =    1.462525       extractable sw =    63.83250
-1 February 1974(Day of year=32), manager: 
+1 February 1974(Day of year=32), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -3194,7 +3194,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1974(Day of year=274), manager: 
+1 October 1974(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1974(Day of year=274), Fertiliser: 
      
@@ -3202,7 +3202,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1974(Day of year=274), maize: 
+1 October 1974(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -3256,45 +3256,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1974(Day of year=275), maize: 
+2 October 1974(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1974(Day of year=277), maize: 
+4 October 1974(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    9.984476
-22 October 1974(Day of year=295), maize: 
+22 October 1974(Day of year=295), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.497067       lai =    0.1596044E-01
                           stover N conc =    3.869942       extractable sw =    52.03473
-25 October 1974(Day of year=298), maize: 
+25 October 1974(Day of year=298), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.392112       lai =    0.2734880E-01
                           stover N conc =    3.637990       extractable sw =    50.20898
-5 December 1974(Day of year=339), maize: 
+5 December 1974(Day of year=339), Maize: 
       stage    6.0 flag_leaf
                           biomass =           220.5493       lai =    0.9194406
                           stover N conc =    2.712820       extractable sw =    15.18049
-11 December 1974(Day of year=345), maize: 
+11 December 1974(Day of year=345), Maize: 
       stage    7.0 flowering
                           biomass =           238.3106       lai =    0.7401596
                           stover N conc =    2.567202       extractable sw =    9.452667
-20 December 1974(Day of year=354), maize: 
+20 December 1974(Day of year=354), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           251.7380       lai =    0.5023821
                           stover N conc =    2.502632       extractable sw =    4.797497
-2 February 1975(Day of year=33), maize: 
+2 February 1975(Day of year=33), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           316.0239       lai =    0.1375446
                           stover N conc =    2.017458       extractable sw =   0.6980286
-3 February 1975(Day of year=34), maize: 
+3 February 1975(Day of year=34), Maize: 
       stage   10.0 maturity
                           biomass =           316.1495       lai =    0.1311106
                           stover N conc =    2.018010       extractable sw =   0.6287708
-4 February 1975(Day of year=35), maize: 
+4 February 1975(Day of year=35), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           316.1495       lai =    0.9501576E-03
                           stover N conc =    2.048827       extractable sw =   0.5639687
-4 February 1975(Day of year=35), manager: 
+4 February 1975(Day of year=35), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -3367,7 +3367,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1975(Day of year=274), manager: 
+1 October 1975(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1975(Day of year=274), Fertiliser: 
      
@@ -3375,7 +3375,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1975(Day of year=274), maize: 
+1 October 1975(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -3429,45 +3429,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1975(Day of year=275), maize: 
+2 October 1975(Day of year=275), Maize: 
       stage    2.0 germination
-5 October 1975(Day of year=278), maize: 
+5 October 1975(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    14.60710
-20 October 1975(Day of year=293), maize: 
+20 October 1975(Day of year=293), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.9218171       lai =    0.1459906E-01
                           stover N conc =    3.808941       extractable sw =    64.93863
-24 October 1975(Day of year=297), maize: 
+24 October 1975(Day of year=297), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.655340       lai =    0.2746057E-01
                           stover N conc =    3.450500       extractable sw =    71.22885
-1 December 1975(Day of year=335), maize: 
+1 December 1975(Day of year=335), Maize: 
       stage    6.0 flag_leaf
                           biomass =           187.9523       lai =    0.8162002
                           stover N conc =    2.624815       extractable sw =    15.67968
-6 December 1975(Day of year=340), maize: 
+6 December 1975(Day of year=340), Maize: 
       stage    7.0 flowering
                           biomass =           206.5542       lai =    0.6965719
                           stover N conc =    2.515135       extractable sw =    10.33069
-15 December 1975(Day of year=349), maize: 
+15 December 1975(Day of year=349), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           225.9111       lai =    0.5054927
                           stover N conc =    2.390104       extractable sw =    5.077471
-31 January 1976(Day of year=31), maize: 
+31 January 1976(Day of year=31), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           412.5852       lai =    0.2013187
                           stover N conc =    1.356191       extractable sw =    125.2303
-1 February 1976(Day of year=32), maize: 
+1 February 1976(Day of year=32), Maize: 
       stage   10.0 maturity
                           biomass =           414.1945       lai =    0.1790100
                           stover N conc =    1.352534       extractable sw =    123.0843
-2 February 1976(Day of year=33), maize: 
+2 February 1976(Day of year=33), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           414.1945       lai =    0.9501278E-03
                           stover N conc =    1.370033       extractable sw =    121.4156
-2 February 1976(Day of year=33), manager: 
+2 February 1976(Day of year=33), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -3540,7 +3540,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1976(Day of year=275), manager: 
+1 October 1976(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1976(Day of year=275), Fertiliser: 
      
@@ -3548,7 +3548,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1976(Day of year=275), maize: 
+1 October 1976(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -3602,45 +3602,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1976(Day of year=276), maize: 
+2 October 1976(Day of year=276), Maize: 
       stage    2.0 germination
-4 October 1976(Day of year=278), maize: 
+4 October 1976(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.09717
-22 October 1976(Day of year=296), maize: 
+22 October 1976(Day of year=296), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.086756       lai =    0.1397157E-01
                           stover N conc =    3.809710       extractable sw =    50.84489
-26 October 1976(Day of year=300), maize: 
+26 October 1976(Day of year=300), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.098888       lai =    0.2590804E-01
                           stover N conc =    3.647259       extractable sw =    57.23629
-3 December 1976(Day of year=338), maize: 
+3 December 1976(Day of year=338), Maize: 
       stage    6.0 flag_leaf
                           biomass =           216.8097       lai =     1.077486
                           stover N conc =    2.650275       extractable sw =    22.34286
-9 December 1976(Day of year=344), maize: 
+9 December 1976(Day of year=344), Maize: 
       stage    7.0 flowering
                           biomass =           239.4910       lai =    0.8573392
                           stover N conc =    2.528918       extractable sw =    13.28238
-17 December 1976(Day of year=352), maize: 
+17 December 1976(Day of year=352), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           258.9067       lai =    0.6231615
                           stover N conc =    2.397618       extractable sw =    7.014618
-31 January 1977(Day of year=31), maize: 
+31 January 1977(Day of year=31), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           386.8893       lai =    0.3007794
                           stover N conc =    1.580907       extractable sw =    94.36053
-1 February 1977(Day of year=32), maize: 
+1 February 1977(Day of year=32), Maize: 
       stage   10.0 maturity
                           biomass =           389.3944       lai =    0.3007794
                           stover N conc =    1.569547       extractable sw =    92.59448
-2 February 1977(Day of year=33), maize: 
+2 February 1977(Day of year=33), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           389.3945       lai =    0.9500384E-03
                           stover N conc =    1.607204       extractable sw =    91.48584
-2 February 1977(Day of year=33), manager: 
+2 February 1977(Day of year=33), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -3713,7 +3713,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1977(Day of year=274), manager: 
+1 October 1977(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1977(Day of year=274), Fertiliser: 
      
@@ -3721,7 +3721,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1977(Day of year=274), maize: 
+1 October 1977(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -3775,45 +3775,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1977(Day of year=275), maize: 
+2 October 1977(Day of year=275), Maize: 
       stage    2.0 germination
-3 October 1977(Day of year=276), maize: 
+3 October 1977(Day of year=276), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.45243
-18 October 1977(Day of year=291), maize: 
+18 October 1977(Day of year=291), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.269036       lai =    0.1630516E-01
                           stover N conc =    3.853025       extractable sw =    52.22047
-21 October 1977(Day of year=294), maize: 
+21 October 1977(Day of year=294), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.277344       lai =    0.2518692E-01
                           stover N conc =    3.620425       extractable sw =    50.50669
-26 November 1977(Day of year=330), maize: 
+26 November 1977(Day of year=330), Maize: 
       stage    6.0 flag_leaf
                           biomass =           192.2855       lai =     1.024626
                           stover N conc =    2.587397       extractable sw =    17.38726
-2 December 1977(Day of year=336), maize: 
+2 December 1977(Day of year=336), Maize: 
       stage    7.0 flowering
                           biomass =           211.5411       lai =    0.8118508
                           stover N conc =    2.538323       extractable sw =    11.53254
-11 December 1977(Day of year=345), maize: 
+11 December 1977(Day of year=345), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           222.3357       lai =    0.5396904
                           stover N conc =    2.506297       extractable sw =    5.285921
-22 January 1978(Day of year=22), maize: 
+22 January 1978(Day of year=22), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           249.9009       lai =    0.1290670
                           stover N conc =    2.324467       extractable sw =    48.37194
-23 January 1978(Day of year=23), maize: 
+23 January 1978(Day of year=23), Maize: 
       stage   10.0 maturity
                           biomass =           251.4708       lai =    0.1290670
                           stover N conc =    2.306993       extractable sw =    44.48918
-24 January 1978(Day of year=24), maize: 
+24 January 1978(Day of year=24), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           251.4707       lai =    0.1458555E-02
                           stover N conc =    2.350080       extractable sw =    41.82202
-24 January 1978(Day of year=24), manager: 
+24 January 1978(Day of year=24), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -3886,7 +3886,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1978(Day of year=274), manager: 
+1 October 1978(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1978(Day of year=274), Fertiliser: 
      
@@ -3894,7 +3894,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1978(Day of year=274), maize: 
+1 October 1978(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -3948,45 +3948,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1978(Day of year=275), maize: 
+2 October 1978(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1978(Day of year=277), maize: 
+4 October 1978(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.11499
-23 October 1978(Day of year=296), maize: 
+23 October 1978(Day of year=296), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.104708       lai =    0.1441672E-01
                           stover N conc =    3.745688       extractable sw =    79.69038
-27 October 1978(Day of year=300), maize: 
+27 October 1978(Day of year=300), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.187671       lai =    0.2425991E-01
                           stover N conc =    3.492851       extractable sw =    72.43722
-7 December 1978(Day of year=341), maize: 
+7 December 1978(Day of year=341), Maize: 
       stage    6.0 flag_leaf
                           biomass =           244.4424       lai =     1.083218
                           stover N conc =    2.589383       extractable sw =    25.90938
-13 December 1978(Day of year=347), maize: 
+13 December 1978(Day of year=347), Maize: 
       stage    7.0 flowering
                           biomass =           280.5312       lai =    0.9281690
                           stover N conc =    2.452191       extractable sw =    17.43086
-23 December 1978(Day of year=357), maize: 
+23 December 1978(Day of year=357), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           306.4404       lai =    0.6360859
                           stover N conc =    2.353369       extractable sw =    13.42325
-5 February 1979(Day of year=36), maize: 
+5 February 1979(Day of year=36), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           428.5781       lai =    0.2255155
                           stover N conc =    1.758460       extractable sw =    27.49862
-6 February 1979(Day of year=37), maize: 
+6 February 1979(Day of year=37), Maize: 
       stage   10.0 maturity
                           biomass =           429.6994       lai =    0.2255155
                           stover N conc =    1.753297       extractable sw =    27.17388
-7 February 1979(Day of year=38), maize: 
+7 February 1979(Day of year=38), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           429.6994       lai =    0.5138144E-02
                           stover N conc =    1.786041       extractable sw =    30.92033
-7 February 1979(Day of year=38), manager: 
+7 February 1979(Day of year=38), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -4059,7 +4059,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1979(Day of year=274), manager: 
+1 October 1979(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1979(Day of year=274), Fertiliser: 
      
@@ -4067,7 +4067,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1979(Day of year=274), maize: 
+1 October 1979(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -4121,45 +4121,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1979(Day of year=275), maize: 
+2 October 1979(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1979(Day of year=277), maize: 
+4 October 1979(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    14.55941
-19 October 1979(Day of year=292), maize: 
+19 October 1979(Day of year=292), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.290033       lai =    0.1670735E-01
                           stover N conc =    3.871548       extractable sw =    59.52777
-22 October 1979(Day of year=295), maize: 
+22 October 1979(Day of year=295), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.069698       lai =    0.2725383E-01
                           stover N conc =    3.618853       extractable sw =    57.71888
-26 November 1979(Day of year=330), maize: 
+26 November 1979(Day of year=330), Maize: 
       stage    6.0 flag_leaf
                           biomass =           249.4587       lai =     1.502959
                           stover N conc =    2.570612       extractable sw =    45.81203
-2 December 1979(Day of year=336), maize: 
+2 December 1979(Day of year=336), Maize: 
       stage    7.0 flowering
                           biomass =           295.6942       lai =     1.248211
                           stover N conc =    2.440751       extractable sw =    25.49018
-11 December 1979(Day of year=345), maize: 
+11 December 1979(Day of year=345), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           329.6655       lai =    0.8799186
                           stover N conc =    2.308014       extractable sw =    12.48311
-25 January 1980(Day of year=25), maize: 
+25 January 1980(Day of year=25), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           453.9176       lai =    0.2121427
                           stover N conc =    1.767151       extractable sw =   0.8796444
-26 January 1980(Day of year=26), maize: 
+26 January 1980(Day of year=26), Maize: 
       stage   10.0 maturity
                           biomass =           453.9878       lai =    0.2019268
                           stover N conc =    1.767981       extractable sw =   0.8188515
-27 January 1980(Day of year=27), maize: 
+27 January 1980(Day of year=27), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           453.9878       lai =    0.2643213E-02
                           stover N conc =    1.790593       extractable sw =    2.853580
-27 January 1980(Day of year=27), manager: 
+27 January 1980(Day of year=27), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -4232,7 +4232,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1980(Day of year=275), manager: 
+1 October 1980(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1980(Day of year=275), Fertiliser: 
      
@@ -4240,7 +4240,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1980(Day of year=275), maize: 
+1 October 1980(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -4294,45 +4294,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1980(Day of year=276), maize: 
+2 October 1980(Day of year=276), Maize: 
       stage    2.0 germination
-3 October 1980(Day of year=277), maize: 
+3 October 1980(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.44138
-17 October 1980(Day of year=291), maize: 
+17 October 1980(Day of year=291), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.9949033       lai =    0.1556386E-01
                           stover N conc =    3.757588       extractable sw =    76.58418
-20 October 1980(Day of year=294), maize: 
+20 October 1980(Day of year=294), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.889832       lai =    0.2669397E-01
                           stover N conc =    3.622377       extractable sw =    75.76722
-25 November 1980(Day of year=330), maize: 
+25 November 1980(Day of year=330), Maize: 
       stage    6.0 flag_leaf
                           biomass =           222.8926       lai =     1.040351
                           stover N conc =    2.576526       extractable sw =    25.65791
-30 November 1980(Day of year=335), maize: 
+30 November 1980(Day of year=335), Maize: 
       stage    7.0 flowering
                           biomass =           260.7281       lai =    0.9141114
                           stover N conc =    2.469085       extractable sw =    22.44007
-10 December 1980(Day of year=345), maize: 
+10 December 1980(Day of year=345), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           354.7255       lai =    0.8918483
                           stover N conc =    2.131107       extractable sw =    75.10741
-24 January 1981(Day of year=24), maize: 
+24 January 1981(Day of year=24), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           716.3088       lai =    0.4269853
                           stover N conc =    1.341910       extractable sw =    34.02753
-25 January 1981(Day of year=25), maize: 
+25 January 1981(Day of year=25), Maize: 
       stage   10.0 maturity
                           biomass =           721.6155       lai =    0.4021840
                           stover N conc =    1.332818       extractable sw =    31.50324
-26 January 1981(Day of year=26), maize: 
+26 January 1981(Day of year=26), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           721.6156       lai =    0.1846850E-02
                           stover N conc =    1.354214       extractable sw =    29.40760
-26 January 1981(Day of year=26), manager: 
+26 January 1981(Day of year=26), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -4405,7 +4405,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1981(Day of year=274), manager: 
+1 October 1981(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1981(Day of year=274), Fertiliser: 
      
@@ -4413,7 +4413,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1981(Day of year=274), maize: 
+1 October 1981(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -4467,45 +4467,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1981(Day of year=275), maize: 
+2 October 1981(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1981(Day of year=277), maize: 
+4 October 1981(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    21.05988
-20 October 1981(Day of year=293), maize: 
+20 October 1981(Day of year=293), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.255252       lai =    0.1547544E-01
                           stover N conc =    3.744112       extractable sw =    68.32600
-24 October 1981(Day of year=297), maize: 
+24 October 1981(Day of year=297), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.433487       lai =    0.2560129E-01
                           stover N conc =    3.511940       extractable sw =    89.29124
-2 December 1981(Day of year=336), maize: 
+2 December 1981(Day of year=336), Maize: 
       stage    6.0 flag_leaf
                           biomass =           257.1761       lai =     1.438207
                           stover N conc =    2.556792       extractable sw =    45.16787
-8 December 1981(Day of year=342), maize: 
+8 December 1981(Day of year=342), Maize: 
       stage    7.0 flowering
                           biomass =           300.4201       lai =     1.193125
                           stover N conc =    2.440621       extractable sw =    25.36819
-17 December 1981(Day of year=351), maize: 
+17 December 1981(Day of year=351), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           354.7253       lai =    0.9915187
                           stover N conc =    2.175460       extractable sw =    25.05312
-30 January 1982(Day of year=30), maize: 
+30 January 1982(Day of year=30), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           531.6384       lai =    0.4670851
                           stover N conc =    1.482817       extractable sw =    48.89948
-31 January 1982(Day of year=31), maize: 
+31 January 1982(Day of year=31), Maize: 
       stage   10.0 maturity
                           biomass =           537.8417       lai =    0.4670851
                           stover N conc =    1.464227       extractable sw =    46.61075
-1 February 1982(Day of year=32), maize: 
+1 February 1982(Day of year=32), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           537.8417       lai =    0.1302719E-02
                           stover N conc =    1.500398       extractable sw =    44.47863
-1 February 1982(Day of year=32), manager: 
+1 February 1982(Day of year=32), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -4578,7 +4578,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1982(Day of year=274), manager: 
+1 October 1982(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1982(Day of year=274), Fertiliser: 
      
@@ -4586,7 +4586,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1982(Day of year=274), maize: 
+1 October 1982(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -4640,45 +4640,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1982(Day of year=275), maize: 
+2 October 1982(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1982(Day of year=277), maize: 
+4 October 1982(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.08507
-21 October 1982(Day of year=294), maize: 
+21 October 1982(Day of year=294), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.410934       lai =    0.1403556E-01
                           stover N conc =    3.727885       extractable sw =    66.43781
-25 October 1982(Day of year=298), maize: 
+25 October 1982(Day of year=298), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.617660       lai =    0.2424875E-01
                           stover N conc =    3.586884       extractable sw =    95.67250
-29 November 1982(Day of year=333), maize: 
+29 November 1982(Day of year=333), Maize: 
       stage    6.0 flag_leaf
                           biomass =           214.7494       lai =     1.091213
                           stover N conc =    2.636268       extractable sw =    29.00505
-4 December 1982(Day of year=338), maize: 
+4 December 1982(Day of year=338), Maize: 
       stage    7.0 flowering
                           biomass =           263.4821       lai =     1.028548
                           stover N conc =    2.389637       extractable sw =    75.96828
-14 December 1982(Day of year=348), maize: 
+14 December 1982(Day of year=348), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           384.7399       lai =    0.9578728
                           stover N conc =    2.133694       extractable sw =    26.24018
-26 January 1983(Day of year=26), maize: 
+26 January 1983(Day of year=26), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           563.0720       lai =    0.3389956
                           stover N conc =    1.480650       extractable sw =    3.017666
-27 January 1983(Day of year=27), maize: 
+27 January 1983(Day of year=27), Maize: 
       stage   10.0 maturity
                           biomass =           565.1324       lai =    0.3371784
                           stover N conc =    1.474967       extractable sw =    2.745861
-28 January 1983(Day of year=28), maize: 
+28 January 1983(Day of year=28), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           565.1324       lai =    0.9503663E-03
                           stover N conc =    1.499804       extractable sw =    2.497580
-28 January 1983(Day of year=28), manager: 
+28 January 1983(Day of year=28), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -4751,7 +4751,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1983(Day of year=274), manager: 
+1 October 1983(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1983(Day of year=274), Fertiliser: 
      
@@ -4759,7 +4759,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1983(Day of year=274), maize: 
+1 October 1983(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -4813,45 +4813,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1983(Day of year=275), maize: 
+2 October 1983(Day of year=275), Maize: 
       stage    2.0 germination
-3 October 1983(Day of year=276), maize: 
+3 October 1983(Day of year=276), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.67689
-18 October 1983(Day of year=291), maize: 
+18 October 1983(Day of year=291), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.097037       lai =    0.1625351E-01
                           stover N conc =    3.864267       extractable sw =    53.12810
-21 October 1983(Day of year=294), maize: 
+21 October 1983(Day of year=294), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.944912       lai =    0.2485926E-01
                           stover N conc =    3.618562       extractable sw =    51.79620
-30 November 1983(Day of year=334), maize: 
+30 November 1983(Day of year=334), Maize: 
       stage    6.0 flag_leaf
                           biomass =           298.6630       lai =     1.546590
                           stover N conc =    2.388982       extractable sw =    82.58633
-6 December 1983(Day of year=340), maize: 
+6 December 1983(Day of year=340), Maize: 
       stage    7.0 flowering
                           biomass =           395.6158       lai =     1.520809
                           stover N conc =    2.234652       extractable sw =    88.38443
-16 December 1983(Day of year=350), maize: 
+16 December 1983(Day of year=350), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           571.8857       lai =     1.407540
                           stover N conc =    2.071792       extractable sw =    39.46169
-1 February 1984(Day of year=32), maize: 
+1 February 1984(Day of year=32), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           919.8083       lai =    0.7443669
                           stover N conc =    1.314562       extractable sw =    59.45609
-2 February 1984(Day of year=33), maize: 
+2 February 1984(Day of year=33), Maize: 
       stage   10.0 maturity
                           biomass =           928.8470       lai =    0.7244540
                           stover N conc =    1.301990       extractable sw =    55.69091
-3 February 1984(Day of year=34), maize: 
+3 February 1984(Day of year=34), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           928.8470       lai =    0.5007744E-02
                           stover N conc =    1.328304       extractable sw =    52.93887
-3 February 1984(Day of year=34), manager: 
+3 February 1984(Day of year=34), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -4924,7 +4924,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1984(Day of year=275), manager: 
+1 October 1984(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1984(Day of year=275), Fertiliser: 
      
@@ -4932,7 +4932,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1984(Day of year=275), maize: 
+1 October 1984(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -4986,45 +4986,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1984(Day of year=276), maize: 
+2 October 1984(Day of year=276), Maize: 
       stage    2.0 germination
-4 October 1984(Day of year=278), maize: 
+4 October 1984(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    17.36670
-20 October 1984(Day of year=294), maize: 
+20 October 1984(Day of year=294), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.125019       lai =    0.1489567E-01
                           stover N conc =    3.845869       extractable sw =    52.78926
-24 October 1984(Day of year=298), maize: 
+24 October 1984(Day of year=298), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.165233       lai =    0.2504377E-01
                           stover N conc =    3.618902       extractable sw =    67.93771
-2 December 1984(Day of year=337), maize: 
+2 December 1984(Day of year=337), Maize: 
       stage    6.0 flag_leaf
                           biomass =           228.0797       lai =    0.9561464
                           stover N conc =    2.685172       extractable sw =    18.29855
-8 December 1984(Day of year=343), maize: 
+8 December 1984(Day of year=343), Maize: 
       stage    7.0 flowering
                           biomass =           259.1225       lai =    0.8099052
                           stover N conc =    2.489543       extractable sw =    14.20599
-17 December 1984(Day of year=352), maize: 
+17 December 1984(Day of year=352), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           297.7052       lai =    0.6417367
                           stover N conc =    2.231967       extractable sw =    33.00853
-29 January 1985(Day of year=29), maize: 
+29 January 1985(Day of year=29), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           602.8103       lai =    0.3773679
                           stover N conc =    1.349185       extractable sw =    8.599426
-30 January 1985(Day of year=30), maize: 
+30 January 1985(Day of year=30), Maize: 
       stage   10.0 maturity
                           biomass =           605.4347       lai =    0.3518501
                           stover N conc =    1.344624       extractable sw =    7.851994
-31 January 1985(Day of year=31), maize: 
+31 January 1985(Day of year=31), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           605.4346       lai =    0.9499192E-03
                           stover N conc =    1.368555       extractable sw =    7.169958
-31 January 1985(Day of year=31), manager: 
+31 January 1985(Day of year=31), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -5097,7 +5097,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1985(Day of year=274), manager: 
+1 October 1985(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1985(Day of year=274), Fertiliser: 
      
@@ -5105,7 +5105,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1985(Day of year=274), maize: 
+1 October 1985(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -5159,45 +5159,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1985(Day of year=275), maize: 
+2 October 1985(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1985(Day of year=277), maize: 
+4 October 1985(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.06870
-20 October 1985(Day of year=293), maize: 
+20 October 1985(Day of year=293), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.008884       lai =    0.1459702E-01
                           stover N conc =    3.650845       extractable sw =    69.37034
-24 October 1985(Day of year=297), maize: 
+24 October 1985(Day of year=297), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.954293       lai =    0.2449057E-01
                           stover N conc =    3.397168       extractable sw =    80.46092
-3 December 1985(Day of year=337), maize: 
+3 December 1985(Day of year=337), Maize: 
       stage    6.0 flag_leaf
                           biomass =           305.2496       lai =     1.558779
                           stover N conc =    2.395302       extractable sw =    83.83888
-8 December 1985(Day of year=342), maize: 
+8 December 1985(Day of year=342), Maize: 
       stage    7.0 flowering
                           biomass =           380.5408       lai =     1.533409
                           stover N conc =    2.265298       extractable sw =    63.46392
-18 December 1985(Day of year=352), maize: 
+18 December 1985(Day of year=352), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           514.9736       lai =     1.293007
                           stover N conc =    2.106501       extractable sw =    32.65557
-31 January 1986(Day of year=31), maize: 
+31 January 1986(Day of year=31), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           619.1689       lai =    0.2419063
                           stover N conc =    1.837746       extractable sw =    1.963556
-1 February 1986(Day of year=32), maize: 
+1 February 1986(Day of year=32), Maize: 
       stage   10.0 maturity
                           biomass =           619.4517       lai =    0.2309081
                           stover N conc =    1.837874       extractable sw =    1.859827
-2 February 1986(Day of year=33), maize: 
+2 February 1986(Day of year=33), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           619.4517       lai =    0.3001302E-02
                           stover N conc =    1.860005       extractable sw =    1.761707
-2 February 1986(Day of year=33), manager: 
+2 February 1986(Day of year=33), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -5270,7 +5270,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1986(Day of year=274), manager: 
+1 October 1986(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1986(Day of year=274), Fertiliser: 
      
@@ -5278,7 +5278,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1986(Day of year=274), maize: 
+1 October 1986(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -5332,45 +5332,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1986(Day of year=275), maize: 
+2 October 1986(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1986(Day of year=277), maize: 
+4 October 1986(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    11.39800
-19 October 1986(Day of year=292), maize: 
+19 October 1986(Day of year=292), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.010104       lai =    0.1524683E-01
                           stover N conc =    3.820826       extractable sw =    62.29935
-23 October 1986(Day of year=296), maize: 
+23 October 1986(Day of year=296), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.035860       lai =    0.2637397E-01
                           stover N conc =    3.469732       extractable sw =    66.53598
-2 December 1986(Day of year=336), maize: 
+2 December 1986(Day of year=336), Maize: 
       stage    6.0 flag_leaf
                           biomass =           277.4319       lai =     1.315170
                           stover N conc =    2.417726       extractable sw =    54.89061
-9 December 1986(Day of year=343), maize: 
+9 December 1986(Day of year=343), Maize: 
       stage    7.0 flowering
                           biomass =           365.5650       lai =     1.276654
                           stover N conc =    2.324844       extractable sw =    32.48534
-19 December 1986(Day of year=353), maize: 
+19 December 1986(Day of year=353), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           413.8472       lai =    0.8882611
                           stover N conc =    2.224061       extractable sw =    11.91900
-31 January 1987(Day of year=31), maize: 
+31 January 1987(Day of year=31), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           519.2097       lai =    0.2833888
                           stover N conc =    1.824101       extractable sw =    59.27119
-1 February 1987(Day of year=32), maize: 
+1 February 1987(Day of year=32), Maize: 
       stage   10.0 maturity
                           biomass =           522.6926       lai =    0.2833888
                           stover N conc =    1.810558       extractable sw =    56.02599
-2 February 1987(Day of year=33), maize: 
+2 February 1987(Day of year=33), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           522.6926       lai =    0.9502470E-03
                           stover N conc =    1.847989       extractable sw =    53.21011
-2 February 1987(Day of year=33), manager: 
+2 February 1987(Day of year=33), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -5443,7 +5443,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1987(Day of year=274), manager: 
+1 October 1987(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1987(Day of year=274), Fertiliser: 
      
@@ -5451,7 +5451,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1987(Day of year=274), maize: 
+1 October 1987(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -5505,45 +5505,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1987(Day of year=275), maize: 
+2 October 1987(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1987(Day of year=277), maize: 
+4 October 1987(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    21.46976
-19 October 1987(Day of year=292), maize: 
+19 October 1987(Day of year=292), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.134615       lai =    0.1515742E-01
                           stover N conc =    3.728157       extractable sw =    75.66899
-23 October 1987(Day of year=296), maize: 
+23 October 1987(Day of year=296), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.146156       lai =    0.2587450E-01
                           stover N conc =    3.605992       extractable sw =    68.44737
-1 December 1987(Day of year=335), maize: 
+1 December 1987(Day of year=335), Maize: 
       stage    6.0 flag_leaf
                           biomass =           264.3266       lai =     1.314622
                           stover N conc =    2.495534       extractable sw =    30.90835
-7 December 1987(Day of year=341), maize: 
+7 December 1987(Day of year=341), Maize: 
       stage    7.0 flowering
                           biomass =           331.3424       lai =     1.196303
                           stover N conc =    2.410292       extractable sw =    25.38038
-16 December 1987(Day of year=350), maize: 
+16 December 1987(Day of year=350), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           364.5890       lai =    0.8765168
                           stover N conc =    2.271986       extractable sw =    10.72502
-27 January 1988(Day of year=27), maize: 
+27 January 1988(Day of year=27), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           412.2227       lai =    0.1638999
                           stover N conc =    2.111573       extractable sw =    1.585001
-28 January 1988(Day of year=28), maize: 
+28 January 1988(Day of year=28), Maize: 
       stage   10.0 maturity
                           biomass =           412.3579       lai =    0.1561846
                           stover N conc =    2.112167       extractable sw =    1.119268
-29 January 1988(Day of year=29), maize: 
+29 January 1988(Day of year=29), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           412.3579       lai =    0.1075864E-02
                           stover N conc =    2.140593       extractable sw =    1.071911
-29 January 1988(Day of year=29), manager: 
+29 January 1988(Day of year=29), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -5616,7 +5616,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1988(Day of year=275), manager: 
+1 October 1988(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1988(Day of year=275), Fertiliser: 
      
@@ -5624,7 +5624,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1988(Day of year=275), maize: 
+1 October 1988(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -5678,45 +5678,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1988(Day of year=276), maize: 
+2 October 1988(Day of year=276), Maize: 
       stage    2.0 germination
-4 October 1988(Day of year=278), maize: 
+4 October 1988(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    11.38276
-16 October 1988(Day of year=290), maize: 
+16 October 1988(Day of year=290), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.9862991       lai =    0.1387989E-01
                           stover N conc =    3.899766       extractable sw =    55.01330
-19 October 1988(Day of year=293), maize: 
+19 October 1988(Day of year=293), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.863432       lai =    0.2335549E-01
                           stover N conc =    3.640640       extractable sw =    53.13786
-24 November 1988(Day of year=329), maize: 
+24 November 1988(Day of year=329), Maize: 
       stage    6.0 flag_leaf
                           biomass =           214.6759       lai =     1.062189
                           stover N conc =    2.524026       extractable sw =    34.00355
-1 December 1988(Day of year=336), maize: 
+1 December 1988(Day of year=336), Maize: 
       stage    7.0 flowering
                           biomass =           260.0898       lai =    0.8913568
                           stover N conc =    2.412468       extractable sw =    16.50844
-9 December 1988(Day of year=344), maize: 
+9 December 1988(Day of year=344), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           286.8306       lai =    0.6697097
                           stover N conc =    2.290022       extractable sw =    8.909231
-21 January 1989(Day of year=21), maize: 
+21 January 1989(Day of year=21), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           343.5520       lai =    0.1323385
                           stover N conc =    1.994739       extractable sw =    1.428780
-22 January 1989(Day of year=22), maize: 
+22 January 1989(Day of year=22), Maize: 
       stage   10.0 maturity
                           biomass =           343.6336       lai =    0.1260313
                           stover N conc =    1.995588       extractable sw =    1.391541
-23 January 1989(Day of year=23), maize: 
+23 January 1989(Day of year=23), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           343.6336       lai =    0.9502023E-03
                           stover N conc =    2.023828       extractable sw =    1.355608
-23 January 1989(Day of year=23), manager: 
+23 January 1989(Day of year=23), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -5789,7 +5789,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1989(Day of year=274), manager: 
+1 October 1989(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1989(Day of year=274), Fertiliser: 
      
@@ -5797,7 +5797,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1989(Day of year=274), maize: 
+1 October 1989(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -5851,45 +5851,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1989(Day of year=275), maize: 
+2 October 1989(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1989(Day of year=277), maize: 
+4 October 1989(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    9.874687
-18 October 1989(Day of year=291), maize: 
+18 October 1989(Day of year=291), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.127825       lai =    0.1617110E-01
                           stover N conc =    3.871507       extractable sw =    52.96289
-20 October 1989(Day of year=293), maize: 
+20 October 1989(Day of year=293), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.466985       lai =    0.2354599E-01
                           stover N conc =    3.692863       extractable sw =    51.72107
-1 December 1989(Day of year=335), maize: 
+1 December 1989(Day of year=335), Maize: 
       stage    6.0 flag_leaf
                           biomass =           306.7001       lai =     1.528896
                           stover N conc =    2.327929       extractable sw =    80.96951
-6 December 1989(Day of year=340), maize: 
+6 December 1989(Day of year=340), Maize: 
       stage    7.0 flowering
                           biomass =           402.9503       lai =     1.506132
                           stover N conc =    2.216923       extractable sw =    104.7855
-16 December 1989(Day of year=350), maize: 
+16 December 1989(Day of year=350), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           573.0204       lai =     1.445070
                           stover N conc =    2.023906       extractable sw =    50.10865
-28 January 1990(Day of year=28), maize: 
+28 January 1990(Day of year=28), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           745.0875       lai =    0.3678820
                           stover N conc =    1.678915       extractable sw =    4.092907
-29 January 1990(Day of year=29), maize: 
+29 January 1990(Day of year=29), Maize: 
       stage   10.0 maturity
                           biomass =           745.7599       lai =    0.3529643
                           stover N conc =    1.678305       extractable sw =    3.838333
-30 January 1990(Day of year=30), maize: 
+30 January 1990(Day of year=30), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           745.7599       lai =    0.1959234E-02
                           stover N conc =    1.702595       extractable sw =    3.599369
-30 January 1990(Day of year=30), manager: 
+30 January 1990(Day of year=30), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -5962,7 +5962,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1990(Day of year=274), manager: 
+1 October 1990(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1990(Day of year=274), Fertiliser: 
      
@@ -5970,7 +5970,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1990(Day of year=274), maize: 
+1 October 1990(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -6024,45 +6024,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1990(Day of year=275), maize: 
+2 October 1990(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1990(Day of year=277), maize: 
+4 October 1990(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.04919
-18 October 1990(Day of year=291), maize: 
+18 October 1990(Day of year=291), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.157685       lai =    0.1509338E-01
                           stover N conc =    3.892909       extractable sw =    59.59334
-22 October 1990(Day of year=295), maize: 
+22 October 1990(Day of year=295), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.290732       lai =    0.2625432E-01
                           stover N conc =    3.504389       extractable sw =    59.61515
-29 November 1990(Day of year=333), maize: 
+29 November 1990(Day of year=333), Maize: 
       stage    6.0 flag_leaf
                           biomass =           149.2888       lai =    0.5204284
                           stover N conc =    2.823334       extractable sw =    9.950354
-4 December 1990(Day of year=338), maize: 
+4 December 1990(Day of year=338), Maize: 
       stage    7.0 flowering
                           biomass =           158.6245       lai =    0.4328508
                           stover N conc =    2.709597       extractable sw =    10.38000
-13 December 1990(Day of year=347), maize: 
+13 December 1990(Day of year=347), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           171.0898       lai =    0.3155890
                           stover N conc =    2.555907       extractable sw =    4.463589
-25 January 1991(Day of year=25), maize: 
+25 January 1991(Day of year=25), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           250.5784       lai =    0.5934328E-01
                           stover N conc =    1.720054       extractable sw =    25.52838
-26 January 1991(Day of year=26), maize: 
+26 January 1991(Day of year=26), Maize: 
       stage   10.0 maturity
                           biomass =           251.0664       lai =    0.4554439E-01
                           stover N conc =    1.719507       extractable sw =    34.67546
-27 January 1991(Day of year=27), maize: 
+27 January 1991(Day of year=27), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           251.0664       lai =    0.9499788E-03
                           stover N conc =    1.730390       extractable sw =    31.23034
-27 January 1991(Day of year=27), manager: 
+27 January 1991(Day of year=27), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -6135,7 +6135,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1991(Day of year=274), manager: 
+1 October 1991(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1991(Day of year=274), Fertiliser: 
      
@@ -6143,7 +6143,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1991(Day of year=274), maize: 
+1 October 1991(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -6197,45 +6197,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1991(Day of year=275), maize: 
+2 October 1991(Day of year=275), Maize: 
       stage    2.0 germination
-3 October 1991(Day of year=276), maize: 
+3 October 1991(Day of year=276), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.45971
-17 October 1991(Day of year=290), maize: 
+17 October 1991(Day of year=290), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.182520       lai =    0.1601310E-01
                           stover N conc =    3.857718       extractable sw =    53.16705
-20 October 1991(Day of year=293), maize: 
+20 October 1991(Day of year=293), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.102383       lai =    0.2649197E-01
                           stover N conc =    3.622283       extractable sw =    51.41457
-23 November 1991(Day of year=327), maize: 
+23 November 1991(Day of year=327), Maize: 
       stage    6.0 flag_leaf
                           biomass =           145.2218       lai =    0.7508096
                           stover N conc =    2.630406       extractable sw =    15.00403
-28 November 1991(Day of year=332), maize: 
+28 November 1991(Day of year=332), Maize: 
       stage    7.0 flowering
                           biomass =           160.9704       lai =    0.6283226
                           stover N conc =    2.544697       extractable sw =    10.10750
-8 December 1991(Day of year=342), maize: 
+8 December 1991(Day of year=342), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           204.2103       lai =    0.4968599
                           stover N conc =    2.216243       extractable sw =    12.97951
-21 January 1992(Day of year=21), maize: 
+21 January 1992(Day of year=21), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           332.8290       lai =    0.1629263
                           stover N conc =    1.590118       extractable sw =    1.759352
-22 January 1992(Day of year=22), maize: 
+22 January 1992(Day of year=22), Maize: 
       stage   10.0 maturity
                           biomass =           333.0466       lai =    0.1555801
                           stover N conc =    1.589961       extractable sw =    1.670200
-23 January 1992(Day of year=23), maize: 
+23 January 1992(Day of year=23), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           333.0466       lai =    0.2305672E-02
                           stover N conc =    1.610919       extractable sw =    1.586370
-23 January 1992(Day of year=23), manager: 
+23 January 1992(Day of year=23), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -6308,7 +6308,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1992(Day of year=275), manager: 
+1 October 1992(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1992(Day of year=275), Fertiliser: 
      
@@ -6316,7 +6316,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1992(Day of year=275), maize: 
+1 October 1992(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -6370,45 +6370,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1992(Day of year=276), maize: 
+2 October 1992(Day of year=276), Maize: 
       stage    2.0 germination
-4 October 1992(Day of year=278), maize: 
+4 October 1992(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.29566
-20 October 1992(Day of year=294), maize: 
+20 October 1992(Day of year=294), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.324156       lai =    0.1484947E-01
                           stover N conc =    3.858375       extractable sw =    53.09079
-25 October 1992(Day of year=299), maize: 
+25 October 1992(Day of year=299), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.948457       lai =    0.2696435E-01
                           stover N conc =    3.624812       extractable sw =    53.06317
-5 December 1992(Day of year=340), maize: 
+5 December 1992(Day of year=340), Maize: 
       stage    6.0 flag_leaf
                           biomass =           167.2243       lai =    0.6350688
                           stover N conc =    2.788517       extractable sw =    10.64099
-11 December 1992(Day of year=346), maize: 
+11 December 1992(Day of year=346), Maize: 
       stage    7.0 flowering
                           biomass =           175.6237       lai =    0.4896875
                           stover N conc =    2.765278       extractable sw =    5.785973
-21 December 1992(Day of year=356), maize: 
+21 December 1992(Day of year=356), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           193.5743       lai =    0.3855225
                           stover N conc =    2.524833       extractable sw =    3.724066
-31 January 1993(Day of year=31), maize: 
+31 January 1993(Day of year=31), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           212.4958       lai =    0.6339421E-01
                           stover N conc =    2.399676       extractable sw =   0.6136265
-1 February 1993(Day of year=32), maize: 
+1 February 1993(Day of year=32), Maize: 
       stage   10.0 maturity
                           biomass =           212.5632       lai =    0.6048710E-01
                           stover N conc =    2.400018       extractable sw =   0.5914612
-2 February 1993(Day of year=33), maize: 
+2 February 1993(Day of year=33), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           212.5632       lai =    0.9504035E-03
                           stover N conc =    2.426515       extractable sw =   0.5700665
-2 February 1993(Day of year=33), manager: 
+2 February 1993(Day of year=33), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -6481,7 +6481,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1993(Day of year=274), manager: 
+1 October 1993(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1993(Day of year=274), Fertiliser: 
      
@@ -6489,7 +6489,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1993(Day of year=274), maize: 
+1 October 1993(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -6543,45 +6543,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1993(Day of year=275), maize: 
+2 October 1993(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1993(Day of year=277), maize: 
+4 October 1993(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    16.37657
-21 October 1993(Day of year=294), maize: 
+21 October 1993(Day of year=294), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.279248       lai =    0.1627931E-01
                           stover N conc =    3.749138       extractable sw =    58.40013
-24 October 1993(Day of year=297), maize: 
+24 October 1993(Day of year=297), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.144375       lai =    0.2578564E-01
                           stover N conc =    3.662140       extractable sw =    55.90029
-30 November 1993(Day of year=334), maize: 
+30 November 1993(Day of year=334), Maize: 
       stage    6.0 flag_leaf
                           biomass =           176.9165       lai =     1.009961
                           stover N conc =    2.753520       extractable sw =    14.80694
-5 December 1993(Day of year=339), maize: 
+5 December 1993(Day of year=339), Maize: 
       stage    7.0 flowering
                           biomass =           190.6744       lai =    0.8244194
                           stover N conc =    2.641316       extractable sw =    10.04702
-16 December 1993(Day of year=350), maize: 
+16 December 1993(Day of year=350), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           222.7600       lai =    0.6090460
                           stover N conc =    2.413832       extractable sw =    5.110415
-31 January 1994(Day of year=31), maize: 
+31 January 1994(Day of year=31), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           238.3068       lai =    0.7322583E-01
                           stover N conc =    2.400336       extractable sw =   0.5857182
-1 February 1994(Day of year=32), maize: 
+1 February 1994(Day of year=32), Maize: 
       stage   10.0 maturity
                           biomass =           238.5168       lai =    0.7161316E-01
                           stover N conc =    2.398299       extractable sw =   0.5721836
-2 February 1994(Day of year=33), maize: 
+2 February 1994(Day of year=33), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           238.5168       lai =    0.9498298E-03
                           stover N conc =    2.421838       extractable sw =    31.71322
-2 February 1994(Day of year=33), manager: 
+2 February 1994(Day of year=33), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -6654,7 +6654,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1994(Day of year=274), manager: 
+1 October 1994(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1994(Day of year=274), Fertiliser: 
      
@@ -6662,7 +6662,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1994(Day of year=274), maize: 
+1 October 1994(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -6716,45 +6716,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1994(Day of year=275), maize: 
+2 October 1994(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1994(Day of year=277), maize: 
+4 October 1994(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.37243
-20 October 1994(Day of year=293), maize: 
+20 October 1994(Day of year=293), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.252674       lai =    0.1561261E-01
                           stover N conc =    3.882748       extractable sw =    53.61881
-24 October 1994(Day of year=297), maize: 
+24 October 1994(Day of year=297), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.267643       lai =    0.2631498E-01
                           stover N conc =    3.489185       extractable sw =    79.41904
-1 December 1994(Day of year=335), maize: 
+1 December 1994(Day of year=335), Maize: 
       stage    6.0 flag_leaf
                           biomass =           287.8876       lai =     1.571007
                           stover N conc =    2.423095       extractable sw =    40.21593
-9 December 1994(Day of year=343), maize: 
+9 December 1994(Day of year=343), Maize: 
       stage    7.0 flowering
                           biomass =           396.2901       lai =     1.449162
                           stover N conc =    2.325435       extractable sw =    24.16973
-18 December 1994(Day of year=352), maize: 
+18 December 1994(Day of year=352), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           437.5916       lai =     1.028546
                           stover N conc =    2.241645       extractable sw =    9.705172
-31 January 1995(Day of year=31), maize: 
+31 January 1995(Day of year=31), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           503.0146       lai =    0.2361287
                           stover N conc =    2.036028       extractable sw =    18.73290
-1 February 1995(Day of year=32), maize: 
+1 February 1995(Day of year=32), Maize: 
       stage   10.0 maturity
                           biomass =           506.1781       lai =    0.2361287
                           stover N conc =    2.021733       extractable sw =    16.48792
-2 February 1995(Day of year=33), maize: 
+2 February 1995(Day of year=33), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           506.1781       lai =    0.1778290E-02
                           stover N conc =    2.053737       extractable sw =    14.64714
-2 February 1995(Day of year=33), manager: 
+2 February 1995(Day of year=33), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -6827,7 +6827,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1995(Day of year=274), manager: 
+1 October 1995(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1995(Day of year=274), Fertiliser: 
      
@@ -6835,7 +6835,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1995(Day of year=274), maize: 
+1 October 1995(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -6889,45 +6889,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1995(Day of year=275), maize: 
+2 October 1995(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1995(Day of year=277), maize: 
+4 October 1995(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    18.42139
-20 October 1995(Day of year=293), maize: 
+20 October 1995(Day of year=293), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.336397       lai =    0.1604991E-01
                           stover N conc =    3.895748       extractable sw =    60.02907
-23 October 1995(Day of year=296), maize: 
+23 October 1995(Day of year=296), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.210592       lai =    0.2647634E-01
                           stover N conc =    3.642787       extractable sw =    58.05078
-30 November 1995(Day of year=334), maize: 
+30 November 1995(Day of year=334), Maize: 
       stage    6.0 flag_leaf
                           biomass =           292.1647       lai =     1.593767
                           stover N conc =    2.381811       extractable sw =    97.35841
-6 December 1995(Day of year=340), maize: 
+6 December 1995(Day of year=340), Maize: 
       stage    7.0 flowering
                           biomass =           406.2507       lai =     1.566582
                           stover N conc =    2.214382       extractable sw =    156.2834
-17 December 1995(Day of year=351), maize: 
+17 December 1995(Day of year=351), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           618.8693       lai =     1.489801
                           stover N conc =    2.022599       extractable sw =    100.8009
-1 February 1996(Day of year=32), maize: 
+1 February 1996(Day of year=32), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1184.318       lai =    0.7323654
                           stover N conc =    1.293710       extractable sw =    106.3437
-2 February 1996(Day of year=33), maize: 
+2 February 1996(Day of year=33), Maize: 
       stage   10.0 maturity
                           biomass =           1193.562       lai =    0.7090927
                           stover N conc =    1.283995       extractable sw =    103.2792
-3 February 1996(Day of year=34), maize: 
+3 February 1996(Day of year=34), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1193.562       lai =    0.1831532E-02
                           stover N conc =    1.303281       extractable sw =    100.0089
-3 February 1996(Day of year=34), manager: 
+3 February 1996(Day of year=34), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -7000,7 +7000,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1996(Day of year=275), manager: 
+1 October 1996(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1996(Day of year=275), Fertiliser: 
      
@@ -7008,7 +7008,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1996(Day of year=275), maize: 
+1 October 1996(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -7062,45 +7062,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1996(Day of year=276), maize: 
+2 October 1996(Day of year=276), Maize: 
       stage    2.0 germination
-4 October 1996(Day of year=278), maize: 
+4 October 1996(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.08463
-20 October 1996(Day of year=294), maize: 
+20 October 1996(Day of year=294), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.033410       lai =    0.1324270E-01
                           stover N conc =    3.813800       extractable sw =    64.66402
-25 October 1996(Day of year=299), maize: 
+25 October 1996(Day of year=299), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.538711       lai =    0.2514612E-01
                           stover N conc =    3.511331       extractable sw =    68.17815
-7 December 1996(Day of year=342), maize: 
+7 December 1996(Day of year=342), Maize: 
       stage    6.0 flag_leaf
                           biomass =           198.0984       lai =    0.6839505
                           stover N conc =    2.731597       extractable sw =    49.20266
-13 December 1996(Day of year=348), maize: 
+13 December 1996(Day of year=348), Maize: 
       stage    7.0 flowering
                           biomass =           253.5034       lai =    0.6788523
                           stover N conc =    2.460409       extractable sw =    28.09523
-23 December 1996(Day of year=358), maize: 
+23 December 1996(Day of year=358), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           346.4341       lai =    0.6788523
                           stover N conc =    2.161286       extractable sw =    30.53567
-6 February 1997(Day of year=37), maize: 
+6 February 1997(Day of year=37), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           452.4617       lai =    0.2082506
                           stover N conc =    1.759631       extractable sw =    69.45667
-7 February 1997(Day of year=38), maize: 
+7 February 1997(Day of year=38), Maize: 
       stage   10.0 maturity
                           biomass =           454.8514       lai =    0.1865275
                           stover N conc =    1.752450       extractable sw =    67.43071
-8 February 1997(Day of year=39), maize: 
+8 February 1997(Day of year=39), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           454.8514       lai =    0.9496659E-03
                           stover N conc =    1.778391       extractable sw =    65.90816
-8 February 1997(Day of year=39), manager: 
+8 February 1997(Day of year=39), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -7173,7 +7173,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1997(Day of year=274), manager: 
+1 October 1997(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1997(Day of year=274), Fertiliser: 
      
@@ -7181,7 +7181,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1997(Day of year=274), maize: 
+1 October 1997(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -7235,45 +7235,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1997(Day of year=275), maize: 
+2 October 1997(Day of year=275), Maize: 
       stage    2.0 germination
-3 October 1997(Day of year=276), maize: 
+3 October 1997(Day of year=276), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    17.87424
-19 October 1997(Day of year=292), maize: 
+19 October 1997(Day of year=292), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.151255       lai =    0.1436013E-01
                           stover N conc =    3.790764       extractable sw =    64.52547
-24 October 1997(Day of year=297), maize: 
+24 October 1997(Day of year=297), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.715630       lai =    0.2678736E-01
                           stover N conc =    3.425503       extractable sw =    93.12472
-28 November 1997(Day of year=332), maize: 
+28 November 1997(Day of year=332), Maize: 
       stage    6.0 flag_leaf
                           biomass =           228.7347       lai =     1.295046
                           stover N conc =    2.593630       extractable sw =    43.32002
-4 December 1997(Day of year=338), maize: 
+4 December 1997(Day of year=338), Maize: 
       stage    7.0 flowering
                           biomass =           266.6169       lai =     1.085663
                           stover N conc =    2.436418       extractable sw =    25.93440
-14 December 1997(Day of year=348), maize: 
+14 December 1997(Day of year=348), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           352.3373       lai =    0.9971106
                           stover N conc =    2.117283       extractable sw =    55.94723
-25 January 1998(Day of year=25), maize: 
+25 January 1998(Day of year=25), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           608.7134       lai =    0.4371583
                           stover N conc =    1.521882       extractable sw =    3.088566
-26 January 1998(Day of year=26), maize: 
+26 January 1998(Day of year=26), Maize: 
       stage   10.0 maturity
                           biomass =           609.3162       lai =    0.4174059
                           stover N conc =    1.521560       extractable sw =    2.856688
-27 January 1998(Day of year=27), maize: 
+27 January 1998(Day of year=27), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           609.3161       lai =    0.9509623E-03
                           stover N conc =    1.549334       extractable sw =    2.641003
-27 January 1998(Day of year=27), manager: 
+27 January 1998(Day of year=27), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -7346,7 +7346,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1998(Day of year=274), manager: 
+1 October 1998(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1998(Day of year=274), Fertiliser: 
      
@@ -7354,7 +7354,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1998(Day of year=274), maize: 
+1 October 1998(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -7408,45 +7408,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1998(Day of year=275), maize: 
+2 October 1998(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1998(Day of year=277), maize: 
+4 October 1998(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    9.857344
-19 October 1998(Day of year=292), maize: 
+19 October 1998(Day of year=292), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.117257       lai =    0.1444679E-01
                           stover N conc =    3.917205       extractable sw =    52.22884
-24 October 1998(Day of year=297), maize: 
+24 October 1998(Day of year=297), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.449111       lai =    0.2774402E-01
                           stover N conc =    3.601302       extractable sw =    52.30276
-3 December 1998(Day of year=337), maize: 
+3 December 1998(Day of year=337), Maize: 
       stage    6.0 flag_leaf
                           biomass =           306.4144       lai =     1.475727
                           stover N conc =    2.502428       extractable sw =    33.33133
-9 December 1998(Day of year=343), maize: 
+9 December 1998(Day of year=343), Maize: 
       stage    7.0 flowering
                           biomass =           351.7234       lai =     1.255372
                           stover N conc =    2.352641       extractable sw =    22.04278
-18 December 1998(Day of year=352), maize: 
+18 December 1998(Day of year=352), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           401.5500       lai =    0.9486141
                           stover N conc =    2.208610       extractable sw =    19.07000
-31 January 1999(Day of year=31), maize: 
+31 January 1999(Day of year=31), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           706.7042       lai =    0.5873685
                           stover N conc =    1.316564       extractable sw =    13.54677
-1 February 1999(Day of year=32), maize: 
+1 February 1999(Day of year=32), Maize: 
       stage   10.0 maturity
                           biomass =           713.2371       lai =    0.5873685
                           stover N conc =    1.303743       extractable sw =    31.59885
-2 February 1999(Day of year=33), maize: 
+2 February 1999(Day of year=33), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           713.2371       lai =    0.1688659E-02
                           stover N conc =    1.333981       extractable sw =    29.05964
-2 February 1999(Day of year=33), manager: 
+2 February 1999(Day of year=33), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -7519,7 +7519,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1999(Day of year=274), manager: 
+1 October 1999(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1999(Day of year=274), Fertiliser: 
      
@@ -7527,7 +7527,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1999(Day of year=274), maize: 
+1 October 1999(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -7581,45 +7581,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 1999(Day of year=275), maize: 
+2 October 1999(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1999(Day of year=277), maize: 
+4 October 1999(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    18.78281
-17 October 1999(Day of year=290), maize: 
+17 October 1999(Day of year=290), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.9911572       lai =    0.1540053E-01
                           stover N conc =    3.890147       extractable sw =    63.97210
-20 October 1999(Day of year=293), maize: 
+20 October 1999(Day of year=293), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.684203       lai =    0.2484843E-01
                           stover N conc =    3.532617       extractable sw =    62.02057
-1 December 1999(Day of year=335), maize: 
+1 December 1999(Day of year=335), Maize: 
       stage    6.0 flag_leaf
                           biomass =           287.3253       lai =     1.570699
                           stover N conc =    2.394165       extractable sw =    57.75417
-7 December 1999(Day of year=341), maize: 
+7 December 1999(Day of year=341), Maize: 
       stage    7.0 flowering
                           biomass =           376.5048       lai =     1.427687
                           stover N conc =    2.350047       extractable sw =    33.71203
-17 December 1999(Day of year=351), maize: 
+17 December 1999(Day of year=351), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           489.0485       lai =     1.266404
                           stover N conc =    2.103473       extractable sw =    24.46102
-6 February 2000(Day of year=37), maize: 
+6 February 2000(Day of year=37), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1106.146       lai =    0.7442561
                           stover N conc =    1.345241       extractable sw =    23.05556
-7 February 2000(Day of year=38), maize: 
+7 February 2000(Day of year=38), Maize: 
       stage   10.0 maturity
                           biomass =           1113.079       lai =    0.7206262
                           stover N conc =    1.337323       extractable sw =    20.65665
-8 February 2000(Day of year=39), maize: 
+8 February 2000(Day of year=39), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1113.079       lai =    0.9503365E-03
                           stover N conc =    1.360476       extractable sw =    18.50278
-8 February 2000(Day of year=39), manager: 
+8 February 2000(Day of year=39), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -7692,7 +7692,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 2000(Day of year=275), manager: 
+1 October 2000(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 2000(Day of year=275), Fertiliser: 
      
@@ -7700,7 +7700,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 2000(Day of year=275), maize: 
+1 October 2000(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -7754,45 +7754,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 2000(Day of year=276), maize: 
+2 October 2000(Day of year=276), Maize: 
       stage    2.0 germination
-4 October 2000(Day of year=278), maize: 
+4 October 2000(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    9.898079
-19 October 2000(Day of year=293), maize: 
+19 October 2000(Day of year=293), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.084783       lai =    0.1451707E-01
                           stover N conc =    3.801366       extractable sw =    63.85965
-23 October 2000(Day of year=297), maize: 
+23 October 2000(Day of year=297), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.740153       lai =    0.2589701E-01
                           stover N conc =    3.528530       extractable sw =    66.20079
-3 December 2000(Day of year=338), maize: 
+3 December 2000(Day of year=338), Maize: 
       stage    6.0 flag_leaf
                           biomass =           269.8983       lai =     1.444818
                           stover N conc =    2.366690       extractable sw =    90.99495
-9 December 2000(Day of year=344), maize: 
+9 December 2000(Day of year=344), Maize: 
       stage    7.0 flowering
                           biomass =           370.3943       lai =     1.405046
                           stover N conc =    2.278249       extractable sw =    62.90942
-19 December 2000(Day of year=354), maize: 
+19 December 2000(Day of year=354), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           479.5407       lai =     1.267006
                           stover N conc =    2.056129       extractable sw =    38.09026
-31 January 2001(Day of year=31), maize: 
+31 January 2001(Day of year=31), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           617.6928       lai =    0.3075944
                           stover N conc =    1.663812       extractable sw =    20.86873
-1 February 2001(Day of year=32), maize: 
+1 February 2001(Day of year=32), Maize: 
       stage   10.0 maturity
                           biomass =           620.1008       lai =    0.3075944
                           stover N conc =    1.656851       extractable sw =    34.18421
-2 February 2001(Day of year=33), maize: 
+2 February 2001(Day of year=33), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           620.1008       lai =    0.5467087E-02
                           stover N conc =    1.679942       extractable sw =    39.10849
-2 February 2001(Day of year=33), manager: 
+2 February 2001(Day of year=33), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -7865,7 +7865,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 2001(Day of year=274), manager: 
+1 October 2001(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 2001(Day of year=274), Fertiliser: 
      
@@ -7873,7 +7873,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 2001(Day of year=274), maize: 
+1 October 2001(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -7927,45 +7927,45 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 2001(Day of year=275), maize: 
+2 October 2001(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 2001(Day of year=277), maize: 
+4 October 2001(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.55204
-21 October 2001(Day of year=294), maize: 
+21 October 2001(Day of year=294), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.376963       lai =    0.1487805E-01
                           stover N conc =    3.864760       extractable sw =    55.17383
-25 October 2001(Day of year=298), maize: 
+25 October 2001(Day of year=298), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.373092       lai =    0.2812583E-01
                           stover N conc =    3.558542       extractable sw =    55.47078
-3 December 2001(Day of year=337), maize: 
+3 December 2001(Day of year=337), Maize: 
       stage    6.0 flag_leaf
                           biomass =           273.5235       lai =     1.395497
                           stover N conc =    2.462933       extractable sw =    47.37259
-9 December 2001(Day of year=343), maize: 
+9 December 2001(Day of year=343), Maize: 
       stage    7.0 flowering
                           biomass =           330.4702       lai =     1.258556
                           stover N conc =    2.382018       extractable sw =    20.72618
-19 December 2001(Day of year=353), maize: 
+19 December 2001(Day of year=353), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           407.4527       lai =     1.058503
                           stover N conc =    2.124031       extractable sw =    27.62215
-1 February 2002(Day of year=32), maize: 
+1 February 2002(Day of year=32), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           570.7784       lai =    0.3823186
                           stover N conc =    1.549831       extractable sw =    3.727530
-2 February 2002(Day of year=33), maize: 
+2 February 2002(Day of year=33), Maize: 
       stage   10.0 maturity
                           biomass =           574.2811       lai =    0.3823186
                           stover N conc =    1.539525       extractable sw =    28.09222
-3 February 2002(Day of year=34), maize: 
+3 February 2002(Day of year=34), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           574.2811       lai =    0.1823634E-02
                           stover N conc =    1.571785       extractable sw =    24.70540
-3 February 2002(Day of year=34), manager: 
+3 February 2002(Day of year=34), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -8038,7 +8038,7 @@ Title                  = Roma 400mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 2002(Day of year=274), manager: 
+1 October 2002(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 2002(Day of year=274), Fertiliser: 
      
@@ -8046,7 +8046,7 @@ Title                  = Roma 400mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 2002(Day of year=274), maize: 
+1 October 2002(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -8100,31 +8100,31 @@ Title                  = Roma 400mm wet soil Low Population
      
      
      
-2 October 2002(Day of year=275), maize: 
+2 October 2002(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 2002(Day of year=277), maize: 
+4 October 2002(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    10.03705
-18 October 2002(Day of year=291), maize: 
+18 October 2002(Day of year=291), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.231453       lai =    0.1516908E-01
                           stover N conc =    3.869457       extractable sw =    55.51642
-21 October 2002(Day of year=294), maize: 
+21 October 2002(Day of year=294), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.134159       lai =    0.2591846E-01
                           stover N conc =    3.623493       extractable sw =    53.30412
-26 November 2002(Day of year=330), maize: 
+26 November 2002(Day of year=330), Maize: 
       stage    6.0 flag_leaf
                           biomass =           143.3074       lai =    0.6364363
                           stover N conc =    2.791350       extractable sw =    10.39945
-2 December 2002(Day of year=336), maize: 
+2 December 2002(Day of year=336), Maize: 
       stage    7.0 flowering
                           biomass =           152.7068       lai =    0.4989719
                           stover N conc =    2.685487       extractable sw =    7.202391
-11 December 2002(Day of year=345), maize: 
+11 December 2002(Day of year=345), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           160.6209       lai =    0.3344363
                           stover N conc =    2.629338       extractable sw =    4.507561
-21 December 2002(Day of year=355), clock: 
+21 December 2002(Day of year=355), Clock: 
      Simulation is terminating due to end criteria being met.

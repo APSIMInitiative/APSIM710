@@ -11,16 +11,16 @@
 
 Version                = 7.5
 Title                  = 
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
-   Component                      "soilwat" = %apsim%\Model\soilwat.dll
-   Component                        "soiln" = %apsim%\Model\soiln.dll
-   Component                      "sorghum" = %apsim%\Model\sorghum.dll
-   Component                      "tcllink" = %apsim%\Model\tcllink.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
+   Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
+   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                      "Sorghum" = %apsim%\Model\Sorghum.dll
+   Component                      "TclLink" = %apsim%\Model\TclLink.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -36,7 +36,7 @@ Title                  =
      Simulation end date   = 28/02/1990
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.day
         clock.year
@@ -49,9 +49,9 @@ Title                  =
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+     INPUT File name: %apsim%\Examples\MetFiles\Dalby.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -74,7 +74,7 @@ Title                  =
      
      Manager creating a new local real variable : harvest = 0.00000
 
-------- soilwat Initialisation ------------------------------------------------
+------- SoilWat Initialisation ------------------------------------------------
      
          - Reading constants
      
@@ -146,7 +146,7 @@ Title                  =
             CONA:                     2.50 ()
             Eo from priestly-taylor
 
-------- soiln Initialisation --------------------------------------------------
+------- SoilN Initialisation --------------------------------------------------
      
         - Reading Parameters
      
@@ -194,7 +194,7 @@ Title                  =
           ---------------------------------------------------------
            Totals  149295.9 10296.3   926.1   115.8   400.0    20.0
           ---------------------------------------------------------
-tcllink: 
+TclLink: 
      Copyright (C) 1991-1994 The Regents of the University of California.
      Copyright (C) 1996-1997 Sun Microsystems, Inc.
      Copyright (C) 2001      ActiveState.
@@ -213,9 +213,9 @@ tcllink:
             
      --->End
 ------- Start of simulation  --------------------------------------------------
-1 November 1989(Day of year=305), manager: 
+1 November 1989(Day of year=305), Manager: 
      Manager sending message :- sorghum sow  cultivar = early, plants = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0, row_spacing = 1.0 (m)
-1 November 1989(Day of year=305), sorghum: 
+1 November 1989(Day of year=305), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -255,52 +255,52 @@ tcllink:
              300.0     0.040          0.280       1.000
          ---------------------------------------------------
      
-1 November 1989(Day of year=305), tcllink: 
+1 November 1989(Day of year=305), TclLink: 
      got event
      args = sowing
-2 November 1989(Day of year=306), sorghum: 
+2 November 1989(Day of year=306), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-6 November 1989(Day of year=310), sorghum: 
+6 November 1989(Day of year=310), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  25.00
-15 November 1989(Day of year=319), sorghum: 
+15 November 1989(Day of year=319), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 14
      		Biomass       =   3.26 		 LAI            =   0.04
      		Stover N Conc =   0.09 		 Extractable SW =  73.59
-28 November 1989(Day of year=332), sorghum: 
+28 November 1989(Day of year=332), Sorghum: 
      Stage 5 FloralInitiation  DAS = 27
      		Biomass       =  23.40 		 LAI            =   0.40
      		Stover N Conc =   0.60 		 Extractable SW = 143.39
-20 December 1989(Day of year=354), sorghum: 
+20 December 1989(Day of year=354), Sorghum: 
      Stage 6 FlagLeaf  DAS = 49
      		Biomass       = 292.26 		 LAI            =   2.43
      		Stover N Conc =   5.04 		 Extractable SW = 219.93
-3 January 1990(Day of year=3), sorghum: 
+3 January 1990(Day of year=3), Sorghum: 
      Stage 7 Flowering  DAS = 63
      		Biomass       = 572.32 		 LAI            =   2.45
      		Stover N Conc =   7.70 		 Extractable SW = 236.02
-7 January 1990(Day of year=7), sorghum: 
+7 January 1990(Day of year=7), Sorghum: 
      Stage 8 StartGrainFill  DAS = 67
      		Biomass       = 653.93 		 LAI            =   2.45
      		Stover N Conc =   8.16 		 Extractable SW = 224.32
-12 February 1990(Day of year=43), sorghum: 
+12 February 1990(Day of year=43), Sorghum: 
      Stage 9 EndGrainFill  DAS = 103
      		Biomass       = 1152.88 		 LAI            =   0.99
      		Stover N Conc =   2.95 		 Extractable SW = 223.43
-15 February 1990(Day of year=46), sorghum: 
+15 February 1990(Day of year=46), Sorghum: 
      Stage 10 Maturity  DAS = 106
      		Biomass       = 1160.26 		 LAI            =   0.89
      		Stover N Conc =   2.85 		 Extractable SW = 230.48
-16 February 1990(Day of year=47), sorghum: 
+16 February 1990(Day of year=47), Sorghum: 
      Stage 11 HarvestRipe  DAS = 107
      		Biomass       = 1161.86 		 LAI            =   0.88
      		Stover N Conc =   2.82 		 Extractable SW = 231.15
-17 February 1990(Day of year=48), manager: 
+17 February 1990(Day of year=48), Manager: 
      Manager sending message :- sorghum harvest
-17 February 1990(Day of year=48), sorghum: 
+17 February 1990(Day of year=48), Sorghum: 
      
      Harvest
      Flowering (DAS)       = 63 		 Maturity (DAS)          = 106
@@ -329,7 +329,7 @@ tcllink:
         Organic matter removed from system:-      From Tops		From Roots
                          DM (kg/ha) =               6228.24		    0.00
                          N  (kg/ha) =                 87.21		    0.00
-17 February 1990(Day of year=48), tcllink: 
+17 February 1990(Day of year=48), TclLink: 
      got event
      args = harvesting
      Manager sending message :- sorghum sow  cultivar = early, plants = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0, row_spacing = 1.0 (m)
@@ -340,7 +340,7 @@ tcllink:
      Crop is still in the ground -
       unable to sow until it is
       taken out by "end_crop" action.
-     Component name: sorghum
+     Component name: Sorghum
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      

@@ -11,17 +11,17 @@
 
 Version                = 7.5
 Title                  = soilp Sample Simulation
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "Met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "Met" = %apsim%\Model\Input.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
    Component                        "SoilP" = %apsim%\Model\SoilP.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -37,7 +37,7 @@ Title                  = soilp Sample Simulation
      Simulation end date   = 30/01/1988
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.day
         clock.year
@@ -54,9 +54,9 @@ Title                  = soilp Sample Simulation
 
 ------- Met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+     INPUT File name: %apsim%\Examples\MetFiles\Dalby.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -256,28 +256,28 @@ Title                  = soilp Sample Simulation
            Dissolution rate of rock P :    0.00061   (/yr)
            Root C:P :                    200.0
 ------- Start of simulation  --------------------------------------------------
-5 January 1988(Day of year=5), manager: 
+5 January 1988(Day of year=5), Manager: 
      Manager sending message :- fertiliser apply  amount = 30 (kg/ha), depth = 20 (mm), type = rock_p
 5 January 1988(Day of year=5), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         30.00 of Rock Phosphorus (rock_p)
                                          added at depth   20.00 (layer   1)
-10 January 1988(Day of year=10), manager: 
+10 January 1988(Day of year=10), Manager: 
      Manager sending message :- fertiliser apply  amount = 15 (kg/ha), depth = 20 (mm), type = broadcast_p
 10 January 1988(Day of year=10), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         15.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   20.00 (layer   1)
-15 January 1988(Day of year=15), manager: 
+15 January 1988(Day of year=15), Manager: 
      Manager sending message :- fertiliser apply  amount = 20 (kg/ha), depth = 35 (mm), type = banded_p
 15 January 1988(Day of year=15), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         20.00 of Banded Phosphorus (banded_p)
                                          added at depth   35.00 (layer   1)
-20 January 1988(Day of year=20), manager: 
+20 January 1988(Day of year=20), Manager: 
      Manager sending message :- soilwat tillage  type = disc
 20 January 1988(Day of year=20), SoilWat: 
      
@@ -295,5 +295,5 @@ Title                  = soilp Sample Simulation
      Manager sending message :- soilp tillage
 20 January 1988(Day of year=20), SoilP: 
      Banded P destroyed
-30 January 1988(Day of year=30), clock: 
+30 January 1988(Day of year=30), Clock: 
      Simulation is terminating due to end criteria being met.

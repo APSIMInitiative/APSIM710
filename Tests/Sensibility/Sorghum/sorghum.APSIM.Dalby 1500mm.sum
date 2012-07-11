@@ -11,18 +11,18 @@
 
 Version                = 7.5
 Title                  = Dalby 1500mm wet soil
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                      "sorghum" = %apsim%\Model\sorghum.dll
+   Component                      "Sorghum" = %apsim%\Model\Sorghum.dll
    Component                      "Tracker" = %apsim%\Model\Tracker.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -38,7 +38,7 @@ Title                  = Dalby 1500mm wet soil
      Simulation end date   = 21/12/2002
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.day
         clock.year
@@ -54,7 +54,7 @@ Title                  = Dalby 1500mm wet soil
      Sparse data is not allowed
      INPUT File name: %apsim%\Tests\MetFiles\Dalby.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -251,7 +251,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1957(Day of year=288), manager: 
+15 October 1957(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1957(Day of year=288), Fertiliser: 
      
@@ -259,7 +259,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1957(Day of year=288), sorghum: 
+15 October 1957(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -299,47 +299,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1957(Day of year=289), sorghum: 
+16 October 1957(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-19 October 1957(Day of year=292), sorghum: 
+19 October 1957(Day of year=292), Sorghum: 
      Stage 3 Emergence  DAS = 4
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  19.45
-28 October 1957(Day of year=301), sorghum: 
+28 October 1957(Day of year=301), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 13
      		Biomass       =   2.51 		 LAI            =   0.02
      		Stover N Conc =   0.07 		 Extractable SW =  79.37
-14 November 1957(Day of year=318), sorghum: 
+14 November 1957(Day of year=318), Sorghum: 
      Stage 5 FloralInitiation  DAS = 30
      		Biomass       =  35.70 		 LAI            =   0.57
      		Stover N Conc =   0.99 		 Extractable SW = 131.60
-9 December 1957(Day of year=343), sorghum: 
+9 December 1957(Day of year=343), Sorghum: 
      Stage 6 FlagLeaf  DAS = 55
      		Biomass       = 510.19 		 LAI            =   4.29
      		Stover N Conc =   8.15 		 Extractable SW =  43.60
-28 January 1958(Day of year=28), sorghum: 
+28 January 1958(Day of year=28), Sorghum: 
      Stage 7 Flowering  DAS = 105
      		Biomass       = 697.24 		 LAI            =   0.53
      		Stover N Conc =   9.11 		 Extractable SW =  33.11
-1 February 1958(Day of year=32), sorghum: 
+1 February 1958(Day of year=32), Sorghum: 
      Stage 8 StartGrainFill  DAS = 109
      		Biomass       = 713.79 		 LAI            =   0.53
      		Stover N Conc =   9.68 		 Extractable SW =  33.29
-10 March 1958(Day of year=69), sorghum: 
+10 March 1958(Day of year=69), Sorghum: 
      Stage 9 EndGrainFill  DAS = 146
      		Biomass       = 869.56 		 LAI            =   0.30
      		Stover N Conc =   6.55 		 Extractable SW = 109.45
-12 March 1958(Day of year=71), sorghum: 
+12 March 1958(Day of year=71), Sorghum: 
      Stage 10 Maturity  DAS = 148
      		Biomass       = 872.96 		 LAI            =   0.27
      		Stover N Conc =   6.51 		 Extractable SW = 107.99
-13 March 1958(Day of year=72), sorghum: 
+13 March 1958(Day of year=72), Sorghum: 
      Stage 11 HarvestRipe  DAS = 149
      		Biomass       = 874.02 		 LAI            =   0.27
      		Stover N Conc =   6.50 		 Extractable SW = 114.72
-13 March 1958(Day of year=72), manager: 
+13 March 1958(Day of year=72), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -406,7 +406,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1958(Day of year=288), manager: 
+15 October 1958(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1958(Day of year=288), Fertiliser: 
      
@@ -414,7 +414,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1958(Day of year=288), sorghum: 
+15 October 1958(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -454,47 +454,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1958(Day of year=289), sorghum: 
+16 October 1958(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-22 October 1958(Day of year=295), sorghum: 
+22 October 1958(Day of year=295), Sorghum: 
      Stage 3 Emergence  DAS = 7
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  44.10
-1 November 1958(Day of year=305), sorghum: 
+1 November 1958(Day of year=305), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 17
      		Biomass       =   2.90 		 LAI            =   0.03
      		Stover N Conc =   0.10 		 Extractable SW =  95.35
-16 November 1958(Day of year=320), sorghum: 
+16 November 1958(Day of year=320), Sorghum: 
      Stage 5 FloralInitiation  DAS = 32
      		Biomass       =  29.56 		 LAI            =   0.54
      		Stover N Conc =   0.87 		 Extractable SW = 136.28
-13 December 1958(Day of year=347), sorghum: 
+13 December 1958(Day of year=347), Sorghum: 
      Stage 6 FlagLeaf  DAS = 59
      		Biomass       = 505.54 		 LAI            =   4.51
      		Stover N Conc =   9.05 		 Extractable SW = 103.50
-26 December 1958(Day of year=360), sorghum: 
+26 December 1958(Day of year=360), Sorghum: 
      Stage 7 Flowering  DAS = 72
      		Biomass       = 813.74 		 LAI            =   4.51
      		Stover N Conc =  12.80 		 Extractable SW =  64.02
-30 December 1958(Day of year=364), sorghum: 
+30 December 1958(Day of year=364), Sorghum: 
      Stage 8 StartGrainFill  DAS = 76
      		Biomass       = 891.83 		 LAI            =   4.51
      		Stover N Conc =  13.46 		 Extractable SW =  49.79
-5 February 1959(Day of year=36), sorghum: 
+5 February 1959(Day of year=36), Sorghum: 
      Stage 9 EndGrainFill  DAS = 113
      		Biomass       = 1448.37 		 LAI            =   2.01
      		Stover N Conc =   4.85 		 Extractable SW =  19.63
-8 February 1959(Day of year=39), sorghum: 
+8 February 1959(Day of year=39), Sorghum: 
      Stage 10 Maturity  DAS = 116
      		Biomass       = 1462.84 		 LAI            =   1.84
      		Stover N Conc =   4.67 		 Extractable SW =  14.54
-9 February 1959(Day of year=40), sorghum: 
+9 February 1959(Day of year=40), Sorghum: 
      Stage 11 HarvestRipe  DAS = 117
      		Biomass       = 1467.12 		 LAI            =   1.79
      		Stover N Conc =   4.61 		 Extractable SW =  12.88
-9 February 1959(Day of year=40), manager: 
+9 February 1959(Day of year=40), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -561,7 +561,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1959(Day of year=288), manager: 
+15 October 1959(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1959(Day of year=288), Fertiliser: 
      
@@ -569,7 +569,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1959(Day of year=288), sorghum: 
+15 October 1959(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -609,47 +609,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1959(Day of year=289), sorghum: 
+16 October 1959(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-21 October 1959(Day of year=294), sorghum: 
+21 October 1959(Day of year=294), Sorghum: 
      Stage 3 Emergence  DAS = 6
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  38.51
-1 November 1959(Day of year=305), sorghum: 
+1 November 1959(Day of year=305), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 17
      		Biomass       =   2.61 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW = 116.58
-17 November 1959(Day of year=321), sorghum: 
+17 November 1959(Day of year=321), Sorghum: 
      Stage 5 FloralInitiation  DAS = 33
      		Biomass       =  27.96 		 LAI            =   0.53
      		Stover N Conc =   0.79 		 Extractable SW = 163.39
-12 December 1959(Day of year=346), sorghum: 
+12 December 1959(Day of year=346), Sorghum: 
      Stage 6 FlagLeaf  DAS = 58
      		Biomass       = 471.86 		 LAI            =   4.49
      		Stover N Conc =   8.78 		 Extractable SW = 152.38
-26 December 1959(Day of year=360), sorghum: 
+26 December 1959(Day of year=360), Sorghum: 
      Stage 7 Flowering  DAS = 72
      		Biomass       = 807.07 		 LAI            =   4.51
      		Stover N Conc =  12.22 		 Extractable SW = 148.50
-30 December 1959(Day of year=364), sorghum: 
+30 December 1959(Day of year=364), Sorghum: 
      Stage 8 StartGrainFill  DAS = 76
      		Biomass       = 897.65 		 LAI            =   4.51
      		Stover N Conc =  12.70 		 Extractable SW = 121.44
-5 February 1960(Day of year=36), sorghum: 
+5 February 1960(Day of year=36), Sorghum: 
      Stage 9 EndGrainFill  DAS = 113
      		Biomass       = 1444.95 		 LAI            =   1.71
      		Stover N Conc =   4.56 		 Extractable SW =  12.31
-7 February 1960(Day of year=38), sorghum: 
+7 February 1960(Day of year=38), Sorghum: 
      Stage 10 Maturity  DAS = 115
      		Biomass       = 1449.77 		 LAI            =   1.67
      		Stover N Conc =   4.47 		 Extractable SW =  47.20
-8 February 1960(Day of year=39), sorghum: 
+8 February 1960(Day of year=39), Sorghum: 
      Stage 11 HarvestRipe  DAS = 116
      		Biomass       = 1452.41 		 LAI            =   1.63
      		Stover N Conc =   4.43 		 Extractable SW =  44.91
-8 February 1960(Day of year=39), manager: 
+8 February 1960(Day of year=39), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -716,7 +716,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1960(Day of year=289), manager: 
+15 October 1960(Day of year=289), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1960(Day of year=289), Fertiliser: 
      
@@ -724,7 +724,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1960(Day of year=289), sorghum: 
+15 October 1960(Day of year=289), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -764,47 +764,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1960(Day of year=290), sorghum: 
+16 October 1960(Day of year=290), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1960(Day of year=294), sorghum: 
+20 October 1960(Day of year=294), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  25.77
-29 October 1960(Day of year=303), sorghum: 
+29 October 1960(Day of year=303), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 14
      		Biomass       =   2.59 		 LAI            =   0.02
      		Stover N Conc =   0.07 		 Extractable SW =  89.00
-16 November 1960(Day of year=321), sorghum: 
+16 November 1960(Day of year=321), Sorghum: 
      Stage 5 FloralInitiation  DAS = 32
      		Biomass       =  30.88 		 LAI            =   0.55
      		Stover N Conc =   0.86 		 Extractable SW = 142.83
-13 December 1960(Day of year=348), sorghum: 
+13 December 1960(Day of year=348), Sorghum: 
      Stage 6 FlagLeaf  DAS = 59
      		Biomass       = 511.72 		 LAI            =   4.48
      		Stover N Conc =   8.80 		 Extractable SW = 150.26
-27 December 1960(Day of year=362), sorghum: 
+27 December 1960(Day of year=362), Sorghum: 
      Stage 7 Flowering  DAS = 73
      		Biomass       = 860.10 		 LAI            =   4.49
      		Stover N Conc =  12.81 		 Extractable SW =  65.49
-1 January 1961(Day of year=1), sorghum: 
+1 January 1961(Day of year=1), Sorghum: 
      Stage 8 StartGrainFill  DAS = 78
      		Biomass       = 958.76 		 LAI            =   4.49
      		Stover N Conc =  13.63 		 Extractable SW =  43.88
-8 February 1961(Day of year=39), sorghum: 
+8 February 1961(Day of year=39), Sorghum: 
      Stage 9 EndGrainFill  DAS = 116
      		Biomass       = 1220.95 		 LAI            =   0.88
      		Stover N Conc =   5.08 		 Extractable SW =   1.23
-10 February 1961(Day of year=41), sorghum: 
+10 February 1961(Day of year=41), Sorghum: 
      Stage 10 Maturity  DAS = 118
      		Biomass       = 1221.61 		 LAI            =   0.74
      		Stover N Conc =   5.07 		 Extractable SW =   1.06
-11 February 1961(Day of year=42), sorghum: 
+11 February 1961(Day of year=42), Sorghum: 
      Stage 11 HarvestRipe  DAS = 119
      		Biomass       = 1222.28 		 LAI            =   0.68
      		Stover N Conc =   5.06 		 Extractable SW =   6.05
-11 February 1961(Day of year=42), manager: 
+11 February 1961(Day of year=42), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -871,7 +871,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1961(Day of year=288), manager: 
+15 October 1961(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1961(Day of year=288), Fertiliser: 
      
@@ -879,7 +879,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1961(Day of year=288), sorghum: 
+15 October 1961(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -919,47 +919,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1961(Day of year=289), sorghum: 
+16 October 1961(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-19 October 1961(Day of year=292), sorghum: 
+19 October 1961(Day of year=292), Sorghum: 
      Stage 3 Emergence  DAS = 4
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  19.37
-30 October 1961(Day of year=303), sorghum: 
+30 October 1961(Day of year=303), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 15
      		Biomass       =   2.93 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW =  81.14
-15 November 1961(Day of year=319), sorghum: 
+15 November 1961(Day of year=319), Sorghum: 
      Stage 5 FloralInitiation  DAS = 31
      		Biomass       =  27.15 		 LAI            =   0.54
      		Stover N Conc =   0.83 		 Extractable SW = 155.05
-10 December 1961(Day of year=344), sorghum: 
+10 December 1961(Day of year=344), Sorghum: 
      Stage 6 FlagLeaf  DAS = 56
      		Biomass       = 501.30 		 LAI            =   4.45
      		Stover N Conc =   8.79 		 Extractable SW = 146.52
-24 December 1961(Day of year=358), sorghum: 
+24 December 1961(Day of year=358), Sorghum: 
      Stage 7 Flowering  DAS = 70
      		Biomass       = 790.37 		 LAI            =   4.46
      		Stover N Conc =  12.03 		 Extractable SW = 176.19
-29 December 1961(Day of year=363), sorghum: 
+29 December 1961(Day of year=363), Sorghum: 
      Stage 8 StartGrainFill  DAS = 75
      		Biomass       = 911.59 		 LAI            =   4.46
      		Stover N Conc =  12.81 		 Extractable SW = 140.46
-3 February 1962(Day of year=34), sorghum: 
+3 February 1962(Day of year=34), Sorghum: 
      Stage 9 EndGrainFill  DAS = 111
      		Biomass       = 1630.21 		 LAI            =   3.09
      		Stover N Conc =   5.12 		 Extractable SW = 121.13
-5 February 1962(Day of year=36), sorghum: 
+5 February 1962(Day of year=36), Sorghum: 
      Stage 10 Maturity  DAS = 113
      		Biomass       = 1656.39 		 LAI            =   2.82
      		Stover N Conc =   4.83 		 Extractable SW = 112.86
-6 February 1962(Day of year=37), sorghum: 
+6 February 1962(Day of year=37), Sorghum: 
      Stage 11 HarvestRipe  DAS = 114
      		Biomass       = 1665.98 		 LAI            =   2.70
      		Stover N Conc =   4.71 		 Extractable SW = 110.85
-6 February 1962(Day of year=37), manager: 
+6 February 1962(Day of year=37), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -1026,7 +1026,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1962(Day of year=288), manager: 
+15 October 1962(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1962(Day of year=288), Fertiliser: 
      
@@ -1034,7 +1034,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1962(Day of year=288), sorghum: 
+15 October 1962(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -1074,47 +1074,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1962(Day of year=289), sorghum: 
+16 October 1962(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1962(Day of year=293), sorghum: 
+20 October 1962(Day of year=293), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  26.89
-31 October 1962(Day of year=304), sorghum: 
+31 October 1962(Day of year=304), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   2.96 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW =  85.80
-16 November 1962(Day of year=320), sorghum: 
+16 November 1962(Day of year=320), Sorghum: 
      Stage 5 FloralInitiation  DAS = 32
      		Biomass       =  34.19 		 LAI            =   0.57
      		Stover N Conc =   0.98 		 Extractable SW = 124.85
-11 December 1962(Day of year=345), sorghum: 
+11 December 1962(Day of year=345), Sorghum: 
      Stage 6 FlagLeaf  DAS = 57
      		Biomass       = 492.54 		 LAI            =   4.50
      		Stover N Conc =   9.03 		 Extractable SW =  74.77
-24 December 1962(Day of year=358), sorghum: 
+24 December 1962(Day of year=358), Sorghum: 
      Stage 7 Flowering  DAS = 70
      		Biomass       = 775.54 		 LAI            =   4.50
      		Stover N Conc =  12.08 		 Extractable SW =  53.24
-29 December 1962(Day of year=363), sorghum: 
+29 December 1962(Day of year=363), Sorghum: 
      Stage 8 StartGrainFill  DAS = 75
      		Biomass       = 853.54 		 LAI            =   4.50
      		Stover N Conc =  12.71 		 Extractable SW =  41.17
-5 February 1963(Day of year=36), sorghum: 
+5 February 1963(Day of year=36), Sorghum: 
      Stage 9 EndGrainFill  DAS = 113
      		Biomass       = 1193.34 		 LAI            =   1.42
      		Stover N Conc =   5.08 		 Extractable SW =  33.43
-7 February 1963(Day of year=38), sorghum: 
+7 February 1963(Day of year=38), Sorghum: 
      Stage 10 Maturity  DAS = 115
      		Biomass       = 1209.05 		 LAI            =   1.30
      		Stover N Conc =   4.88 		 Extractable SW =  27.99
-8 February 1963(Day of year=39), sorghum: 
+8 February 1963(Day of year=39), Sorghum: 
      Stage 11 HarvestRipe  DAS = 116
      		Biomass       = 1216.81 		 LAI            =   1.25
      		Stover N Conc =   4.80 		 Extractable SW =  23.89
-8 February 1963(Day of year=39), manager: 
+8 February 1963(Day of year=39), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -1181,7 +1181,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1963(Day of year=288), manager: 
+15 October 1963(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1963(Day of year=288), Fertiliser: 
      
@@ -1189,7 +1189,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1963(Day of year=288), sorghum: 
+15 October 1963(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -1229,47 +1229,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1963(Day of year=289), sorghum: 
+16 October 1963(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-21 October 1963(Day of year=294), sorghum: 
+21 October 1963(Day of year=294), Sorghum: 
      Stage 3 Emergence  DAS = 6
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  31.85
-31 October 1963(Day of year=304), sorghum: 
+31 October 1963(Day of year=304), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   2.58 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW =  84.39
-18 November 1963(Day of year=322), sorghum: 
+18 November 1963(Day of year=322), Sorghum: 
      Stage 5 FloralInitiation  DAS = 34
      		Biomass       =  30.92 		 LAI            =   0.61
      		Stover N Conc =   0.94 		 Extractable SW = 185.60
-16 December 1963(Day of year=350), sorghum: 
+16 December 1963(Day of year=350), Sorghum: 
      Stage 6 FlagLeaf  DAS = 62
      		Biomass       = 489.99 		 LAI            =   4.48
      		Stover N Conc =   8.78 		 Extractable SW = 242.02
-30 December 1963(Day of year=364), sorghum: 
+30 December 1963(Day of year=364), Sorghum: 
      Stage 7 Flowering  DAS = 76
      		Biomass       = 893.55 		 LAI            =   4.50
      		Stover N Conc =  13.05 		 Extractable SW = 144.88
-4 January 1964(Day of year=4), sorghum: 
+4 January 1964(Day of year=4), Sorghum: 
      Stage 8 StartGrainFill  DAS = 81
      		Biomass       = 1003.81 		 LAI            =   4.50
      		Stover N Conc =  13.68 		 Extractable SW = 116.78
-9 February 1964(Day of year=40), sorghum: 
+9 February 1964(Day of year=40), Sorghum: 
      Stage 9 EndGrainFill  DAS = 117
      		Biomass       = 1393.83 		 LAI            =   2.28
      		Stover N Conc =   5.18 		 Extractable SW =  43.57
-11 February 1964(Day of year=42), sorghum: 
+11 February 1964(Day of year=42), Sorghum: 
      Stage 10 Maturity  DAS = 119
      		Biomass       = 1409.97 		 LAI            =   2.04
      		Stover N Conc =   4.97 		 Extractable SW =  37.67
-12 February 1964(Day of year=43), sorghum: 
+12 February 1964(Day of year=43), Sorghum: 
      Stage 11 HarvestRipe  DAS = 120
      		Biomass       = 1418.84 		 LAI            =   1.96
      		Stover N Conc =   4.88 		 Extractable SW =  33.96
-12 February 1964(Day of year=43), manager: 
+12 February 1964(Day of year=43), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -1336,7 +1336,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1964(Day of year=289), manager: 
+15 October 1964(Day of year=289), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1964(Day of year=289), Fertiliser: 
      
@@ -1344,7 +1344,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1964(Day of year=289), sorghum: 
+15 October 1964(Day of year=289), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -1384,47 +1384,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1964(Day of year=290), sorghum: 
+16 October 1964(Day of year=290), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-21 October 1964(Day of year=295), sorghum: 
+21 October 1964(Day of year=295), Sorghum: 
      Stage 3 Emergence  DAS = 6
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  36.84
-4 November 1964(Day of year=309), sorghum: 
+4 November 1964(Day of year=309), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 20
      		Biomass       =   3.14 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW = 110.80
-22 November 1964(Day of year=327), sorghum: 
+22 November 1964(Day of year=327), Sorghum: 
      Stage 5 FloralInitiation  DAS = 38
      		Biomass       =  33.24 		 LAI            =   0.53
      		Stover N Conc =   0.87 		 Extractable SW = 151.68
-19 December 1964(Day of year=354), sorghum: 
+19 December 1964(Day of year=354), Sorghum: 
      Stage 6 FlagLeaf  DAS = 65
      		Biomass       = 583.29 		 LAI            =   4.47
      		Stover N Conc =   8.98 		 Extractable SW =  71.63
-1 January 1965(Day of year=1), sorghum: 
+1 January 1965(Day of year=1), Sorghum: 
      Stage 7 Flowering  DAS = 78
      		Biomass       = 856.17 		 LAI            =   4.47
      		Stover N Conc =  11.61 		 Extractable SW =  47.01
-5 January 1965(Day of year=5), sorghum: 
+5 January 1965(Day of year=5), Sorghum: 
      Stage 8 StartGrainFill  DAS = 82
      		Biomass       = 929.05 		 LAI            =   4.47
      		Stover N Conc =  12.08 		 Extractable SW =  37.15
-11 February 1965(Day of year=42), sorghum: 
+11 February 1965(Day of year=42), Sorghum: 
      Stage 9 EndGrainFill  DAS = 119
      		Biomass       = 1070.27 		 LAI            =   0.73
      		Stover N Conc =   4.85 		 Extractable SW =   8.27
-13 February 1965(Day of year=44), sorghum: 
+13 February 1965(Day of year=44), Sorghum: 
      Stage 10 Maturity  DAS = 121
      		Biomass       = 1075.19 		 LAI            =   0.70
      		Stover N Conc =   4.77 		 Extractable SW =   5.84
-14 February 1965(Day of year=45), sorghum: 
+14 February 1965(Day of year=45), Sorghum: 
      Stage 11 HarvestRipe  DAS = 122
      		Biomass       = 1076.18 		 LAI            =   0.70
      		Stover N Conc =   4.76 		 Extractable SW =   4.85
-14 February 1965(Day of year=45), manager: 
+14 February 1965(Day of year=45), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -1491,7 +1491,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1965(Day of year=288), manager: 
+15 October 1965(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1965(Day of year=288), Fertiliser: 
      
@@ -1499,7 +1499,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1965(Day of year=288), sorghum: 
+15 October 1965(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -1539,47 +1539,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1965(Day of year=289), sorghum: 
+16 October 1965(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1965(Day of year=293), sorghum: 
+20 October 1965(Day of year=293), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  27.93
-29 October 1965(Day of year=302), sorghum: 
+29 October 1965(Day of year=302), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 14
      		Biomass       =   2.56 		 LAI            =   0.02
      		Stover N Conc =   0.07 		 Extractable SW =  80.00
-15 November 1965(Day of year=319), sorghum: 
+15 November 1965(Day of year=319), Sorghum: 
      Stage 5 FloralInitiation  DAS = 31
      		Biomass       =  39.13 		 LAI            =   0.58
      		Stover N Conc =   0.99 		 Extractable SW = 121.61
-10 December 1965(Day of year=344), sorghum: 
+10 December 1965(Day of year=344), Sorghum: 
      Stage 6 FlagLeaf  DAS = 56
      		Biomass       = 432.65 		 LAI            =   4.48
      		Stover N Conc =   8.78 		 Extractable SW = 235.15
-25 December 1965(Day of year=359), sorghum: 
+25 December 1965(Day of year=359), Sorghum: 
      Stage 7 Flowering  DAS = 71
      		Biomass       = 749.78 		 LAI            =   4.48
      		Stover N Conc =  11.67 		 Extractable SW = 210.60
-30 December 1965(Day of year=364), sorghum: 
+30 December 1965(Day of year=364), Sorghum: 
      Stage 8 StartGrainFill  DAS = 76
      		Biomass       = 899.42 		 LAI            =   4.48
      		Stover N Conc =  12.70 		 Extractable SW = 163.21
-5 February 1966(Day of year=36), sorghum: 
+5 February 1966(Day of year=36), Sorghum: 
      Stage 9 EndGrainFill  DAS = 113
      		Biomass       = 1595.47 		 LAI            =   2.10
      		Stover N Conc =   4.78 		 Extractable SW =  95.15
-7 February 1966(Day of year=38), sorghum: 
+7 February 1966(Day of year=38), Sorghum: 
      Stage 10 Maturity  DAS = 115
      		Biomass       = 1604.43 		 LAI            =   1.97
      		Stover N Conc =   4.66 		 Extractable SW =  92.27
-8 February 1966(Day of year=39), sorghum: 
+8 February 1966(Day of year=39), Sorghum: 
      Stage 11 HarvestRipe  DAS = 116
      		Biomass       = 1609.28 		 LAI            =   1.92
      		Stover N Conc =   4.60 		 Extractable SW =  90.04
-8 February 1966(Day of year=39), manager: 
+8 February 1966(Day of year=39), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -1646,7 +1646,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1966(Day of year=288), manager: 
+15 October 1966(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1966(Day of year=288), Fertiliser: 
      
@@ -1654,7 +1654,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1966(Day of year=288), sorghum: 
+15 October 1966(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -1694,47 +1694,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1966(Day of year=289), sorghum: 
+16 October 1966(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1966(Day of year=293), sorghum: 
+20 October 1966(Day of year=293), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  29.83
-31 October 1966(Day of year=304), sorghum: 
+31 October 1966(Day of year=304), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   2.74 		 LAI            =   0.02
      		Stover N Conc =   0.08 		 Extractable SW =  94.55
-18 November 1966(Day of year=322), sorghum: 
+18 November 1966(Day of year=322), Sorghum: 
      Stage 5 FloralInitiation  DAS = 34
      		Biomass       =  37.79 		 LAI            =   0.57
      		Stover N Conc =   0.94 		 Extractable SW = 147.53
-14 December 1966(Day of year=348), sorghum: 
+14 December 1966(Day of year=348), Sorghum: 
      Stage 6 FlagLeaf  DAS = 60
      		Biomass       = 515.12 		 LAI            =   4.48
      		Stover N Conc =   8.98 		 Extractable SW =  99.86
-30 December 1966(Day of year=364), sorghum: 
+30 December 1966(Day of year=364), Sorghum: 
      Stage 7 Flowering  DAS = 76
      		Biomass       = 813.30 		 LAI            =   4.50
      		Stover N Conc =  11.69 		 Extractable SW =  35.52
-3 January 1967(Day of year=3), sorghum: 
+3 January 1967(Day of year=3), Sorghum: 
      Stage 8 StartGrainFill  DAS = 80
      		Biomass       = 892.78 		 LAI            =   4.50
      		Stover N Conc =  12.34 		 Extractable SW =  55.89
-10 February 1967(Day of year=41), sorghum: 
+10 February 1967(Day of year=41), Sorghum: 
      Stage 9 EndGrainFill  DAS = 118
      		Biomass       = 1198.89 		 LAI            =   1.50
      		Stover N Conc =   5.05 		 Extractable SW =   1.46
-12 February 1967(Day of year=43), sorghum: 
+12 February 1967(Day of year=43), Sorghum: 
      Stage 10 Maturity  DAS = 120
      		Biomass       = 1199.66 		 LAI            =   1.26
      		Stover N Conc =   5.03 		 Extractable SW =   1.30
-13 February 1967(Day of year=44), sorghum: 
+13 February 1967(Day of year=44), Sorghum: 
      Stage 11 HarvestRipe  DAS = 121
      		Biomass       = 1200.05 		 LAI            =   1.14
      		Stover N Conc =   5.03 		 Extractable SW =   1.24
-13 February 1967(Day of year=44), manager: 
+13 February 1967(Day of year=44), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -1801,7 +1801,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1967(Day of year=288), manager: 
+15 October 1967(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1967(Day of year=288), Fertiliser: 
      
@@ -1809,7 +1809,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1967(Day of year=288), sorghum: 
+15 October 1967(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -1849,47 +1849,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1967(Day of year=289), sorghum: 
+16 October 1967(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-19 October 1967(Day of year=292), sorghum: 
+19 October 1967(Day of year=292), Sorghum: 
      Stage 3 Emergence  DAS = 4
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  21.90
-30 October 1967(Day of year=303), sorghum: 
+30 October 1967(Day of year=303), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 15
      		Biomass       =   2.69 		 LAI            =   0.02
      		Stover N Conc =   0.08 		 Extractable SW =  89.68
-15 November 1967(Day of year=319), sorghum: 
+15 November 1967(Day of year=319), Sorghum: 
      Stage 5 FloralInitiation  DAS = 31
      		Biomass       =  34.42 		 LAI            =   0.53
      		Stover N Conc =   0.90 		 Extractable SW = 144.75
-12 December 1967(Day of year=346), sorghum: 
+12 December 1967(Day of year=346), Sorghum: 
      Stage 6 FlagLeaf  DAS = 58
      		Biomass       = 518.13 		 LAI            =   4.48
      		Stover N Conc =   8.93 		 Extractable SW =  77.77
-5 January 1968(Day of year=5), sorghum: 
+5 January 1968(Day of year=5), Sorghum: 
      Stage 7 Flowering  DAS = 82
      		Biomass       = 803.37 		 LAI            =   3.44
      		Stover N Conc =  10.71 		 Extractable SW =  29.14
-10 January 1968(Day of year=10), sorghum: 
+10 January 1968(Day of year=10), Sorghum: 
      Stage 8 StartGrainFill  DAS = 87
      		Biomass       = 866.06 		 LAI            =   3.18
      		Stover N Conc =  11.52 		 Extractable SW =  64.10
-16 February 1968(Day of year=47), sorghum: 
+16 February 1968(Day of year=47), Sorghum: 
      Stage 9 EndGrainFill  DAS = 124
      		Biomass       = 1149.50 		 LAI            =   0.92
      		Stover N Conc =   5.59 		 Extractable SW =   3.16
-18 February 1968(Day of year=49), sorghum: 
+18 February 1968(Day of year=49), Sorghum: 
      Stage 10 Maturity  DAS = 126
      		Biomass       = 1157.85 		 LAI            =   0.86
      		Stover N Conc =   5.46 		 Extractable SW =   4.76
-19 February 1968(Day of year=50), sorghum: 
+19 February 1968(Day of year=50), Sorghum: 
      Stage 11 HarvestRipe  DAS = 127
      		Biomass       = 1160.49 		 LAI            =   0.85
      		Stover N Conc =   5.41 		 Extractable SW =   3.08
-19 February 1968(Day of year=50), manager: 
+19 February 1968(Day of year=50), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -1956,7 +1956,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1968(Day of year=289), manager: 
+15 October 1968(Day of year=289), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1968(Day of year=289), Fertiliser: 
      
@@ -1964,7 +1964,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1968(Day of year=289), sorghum: 
+15 October 1968(Day of year=289), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -2004,47 +2004,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1968(Day of year=290), sorghum: 
+16 October 1968(Day of year=290), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1968(Day of year=294), sorghum: 
+20 October 1968(Day of year=294), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  25.69
-29 October 1968(Day of year=303), sorghum: 
+29 October 1968(Day of year=303), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 14
      		Biomass       =   2.91 		 LAI            =   0.03
      		Stover N Conc =   0.09 		 Extractable SW =  78.24
-14 November 1968(Day of year=319), sorghum: 
+14 November 1968(Day of year=319), Sorghum: 
      Stage 5 FloralInitiation  DAS = 30
      		Biomass       =  35.70 		 LAI            =   0.59
      		Stover N Conc =   1.00 		 Extractable SW = 141.69
-9 December 1968(Day of year=344), sorghum: 
+9 December 1968(Day of year=344), Sorghum: 
      Stage 6 FlagLeaf  DAS = 55
      		Biomass       = 507.89 		 LAI            =   4.46
      		Stover N Conc =   9.28 		 Extractable SW = 106.19
-23 December 1968(Day of year=358), sorghum: 
+23 December 1968(Day of year=358), Sorghum: 
      Stage 7 Flowering  DAS = 69
      		Biomass       = 839.98 		 LAI            =   4.48
      		Stover N Conc =  12.44 		 Extractable SW =  34.82
-28 December 1968(Day of year=363), sorghum: 
+28 December 1968(Day of year=363), Sorghum: 
      Stage 8 StartGrainFill  DAS = 74
      		Biomass       = 925.27 		 LAI            =   4.48
      		Stover N Conc =  13.06 		 Extractable SW =  24.53
-2 February 1969(Day of year=33), sorghum: 
+2 February 1969(Day of year=33), Sorghum: 
      Stage 9 EndGrainFill  DAS = 110
      		Biomass       = 1122.23 		 LAI            =   0.94
      		Stover N Conc =   5.28 		 Extractable SW =   0.81
-4 February 1969(Day of year=35), sorghum: 
+4 February 1969(Day of year=35), Sorghum: 
      Stage 10 Maturity  DAS = 112
      		Biomass       = 1122.87 		 LAI            =   0.77
      		Stover N Conc =   5.27 		 Extractable SW =   0.70
-5 February 1969(Day of year=36), sorghum: 
+5 February 1969(Day of year=36), Sorghum: 
      Stage 11 HarvestRipe  DAS = 113
      		Biomass       = 1123.15 		 LAI            =   0.69
      		Stover N Conc =   5.27 		 Extractable SW =   0.65
-5 February 1969(Day of year=36), manager: 
+5 February 1969(Day of year=36), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -2111,7 +2111,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1969(Day of year=288), manager: 
+15 October 1969(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1969(Day of year=288), Fertiliser: 
      
@@ -2119,7 +2119,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1969(Day of year=288), sorghum: 
+15 October 1969(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -2159,47 +2159,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1969(Day of year=289), sorghum: 
+16 October 1969(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-21 October 1969(Day of year=294), sorghum: 
+21 October 1969(Day of year=294), Sorghum: 
      Stage 3 Emergence  DAS = 6
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  38.60
-31 October 1969(Day of year=304), sorghum: 
+31 October 1969(Day of year=304), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   2.76 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW =  95.98
-16 November 1969(Day of year=320), sorghum: 
+16 November 1969(Day of year=320), Sorghum: 
      Stage 5 FloralInitiation  DAS = 32
      		Biomass       =  29.98 		 LAI            =   0.57
      		Stover N Conc =   0.87 		 Extractable SW = 151.84
-12 December 1969(Day of year=346), sorghum: 
+12 December 1969(Day of year=346), Sorghum: 
      Stage 6 FlagLeaf  DAS = 58
      		Biomass       = 535.84 		 LAI            =   4.47
      		Stover N Conc =   8.57 		 Extractable SW =  74.24
-26 December 1969(Day of year=360), sorghum: 
+26 December 1969(Day of year=360), Sorghum: 
      Stage 7 Flowering  DAS = 72
      		Biomass       = 822.18 		 LAI            =   4.50
      		Stover N Conc =  11.49 		 Extractable SW = 105.65
-30 December 1969(Day of year=364), sorghum: 
+30 December 1969(Day of year=364), Sorghum: 
      Stage 8 StartGrainFill  DAS = 76
      		Biomass       = 933.37 		 LAI            =   4.50
      		Stover N Conc =  12.57 		 Extractable SW =  86.17
-5 February 1970(Day of year=36), sorghum: 
+5 February 1970(Day of year=36), Sorghum: 
      Stage 9 EndGrainFill  DAS = 113
      		Biomass       = 1526.43 		 LAI            =   2.26
      		Stover N Conc =   4.66 		 Extractable SW =  16.17
-7 February 1970(Day of year=38), sorghum: 
+7 February 1970(Day of year=38), Sorghum: 
      Stage 10 Maturity  DAS = 115
      		Biomass       = 1535.78 		 LAI            =   2.16
      		Stover N Conc =   4.53 		 Extractable SW =  12.43
-8 February 1970(Day of year=39), sorghum: 
+8 February 1970(Day of year=39), Sorghum: 
      Stage 11 HarvestRipe  DAS = 116
      		Biomass       = 1541.16 		 LAI            =   2.09
      		Stover N Conc =   4.47 		 Extractable SW =   9.85
-8 February 1970(Day of year=39), manager: 
+8 February 1970(Day of year=39), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -2266,7 +2266,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1970(Day of year=288), manager: 
+15 October 1970(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1970(Day of year=288), Fertiliser: 
      
@@ -2274,7 +2274,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1970(Day of year=288), sorghum: 
+15 October 1970(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -2314,47 +2314,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1970(Day of year=289), sorghum: 
+16 October 1970(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1970(Day of year=293), sorghum: 
+20 October 1970(Day of year=293), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  33.92
-29 October 1970(Day of year=302), sorghum: 
+29 October 1970(Day of year=302), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 14
      		Biomass       =   2.55 		 LAI            =   0.02
      		Stover N Conc =   0.07 		 Extractable SW =  88.72
-15 November 1970(Day of year=319), sorghum: 
+15 November 1970(Day of year=319), Sorghum: 
      Stage 5 FloralInitiation  DAS = 31
      		Biomass       =  25.67 		 LAI            =   0.53
      		Stover N Conc =   0.82 		 Extractable SW = 167.55
-12 December 1970(Day of year=346), sorghum: 
+12 December 1970(Day of year=346), Sorghum: 
      Stage 6 FlagLeaf  DAS = 58
      		Biomass       = 463.74 		 LAI            =   4.45
      		Stover N Conc =   8.78 		 Extractable SW = 245.09
-25 December 1970(Day of year=359), sorghum: 
+25 December 1970(Day of year=359), Sorghum: 
      Stage 7 Flowering  DAS = 71
      		Biomass       = 783.13 		 LAI            =   4.46
      		Stover N Conc =  11.97 		 Extractable SW = 215.04
-30 December 1970(Day of year=364), sorghum: 
+30 December 1970(Day of year=364), Sorghum: 
      Stage 8 StartGrainFill  DAS = 76
      		Biomass       = 859.04 		 LAI            =   4.46
      		Stover N Conc =  12.20 		 Extractable SW = 273.19
-4 February 1971(Day of year=35), sorghum: 
+4 February 1971(Day of year=35), Sorghum: 
      Stage 9 EndGrainFill  DAS = 112
      		Biomass       = 1653.10 		 LAI            =   4.35
      		Stover N Conc =   6.50 		 Extractable SW = 277.30
-6 February 1971(Day of year=37), sorghum: 
+6 February 1971(Day of year=37), Sorghum: 
      Stage 10 Maturity  DAS = 114
      		Biomass       = 1686.64 		 LAI            =   4.18
      		Stover N Conc =   5.91 		 Extractable SW = 290.72
-7 February 1971(Day of year=38), sorghum: 
+7 February 1971(Day of year=38), Sorghum: 
      Stage 11 HarvestRipe  DAS = 115
      		Biomass       = 1705.58 		 LAI            =   3.96
      		Stover N Conc =   5.58 		 Extractable SW = 283.56
-7 February 1971(Day of year=38), manager: 
+7 February 1971(Day of year=38), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -2421,7 +2421,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1971(Day of year=288), manager: 
+15 October 1971(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1971(Day of year=288), Fertiliser: 
      
@@ -2429,7 +2429,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1971(Day of year=288), sorghum: 
+15 October 1971(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -2469,47 +2469,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1971(Day of year=289), sorghum: 
+16 October 1971(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-21 October 1971(Day of year=294), sorghum: 
+21 October 1971(Day of year=294), Sorghum: 
      Stage 3 Emergence  DAS = 6
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  32.25
-30 October 1971(Day of year=303), sorghum: 
+30 October 1971(Day of year=303), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 15
      		Biomass       =   2.73 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW =  81.74
-18 November 1971(Day of year=322), sorghum: 
+18 November 1971(Day of year=322), Sorghum: 
      Stage 5 FloralInitiation  DAS = 34
      		Biomass       =  37.62 		 LAI            =   0.56
      		Stover N Conc =   0.93 		 Extractable SW = 132.99
-14 December 1971(Day of year=348), sorghum: 
+14 December 1971(Day of year=348), Sorghum: 
      Stage 6 FlagLeaf  DAS = 60
      		Biomass       = 514.11 		 LAI            =   4.47
      		Stover N Conc =   8.87 		 Extractable SW =  82.36
-29 December 1971(Day of year=363), sorghum: 
+29 December 1971(Day of year=363), Sorghum: 
      Stage 7 Flowering  DAS = 75
      		Biomass       = 828.61 		 LAI            =   4.49
      		Stover N Conc =  12.26 		 Extractable SW = 137.61
-2 January 1972(Day of year=2), sorghum: 
+2 January 1972(Day of year=2), Sorghum: 
      Stage 8 StartGrainFill  DAS = 79
      		Biomass       = 943.96 		 LAI            =   4.49
      		Stover N Conc =  13.27 		 Extractable SW = 106.42
-10 February 1972(Day of year=41), sorghum: 
+10 February 1972(Day of year=41), Sorghum: 
      Stage 9 EndGrainFill  DAS = 118
      		Biomass       = 1734.24 		 LAI            =   2.54
      		Stover N Conc =   5.08 		 Extractable SW =  25.42
-12 February 1972(Day of year=43), sorghum: 
+12 February 1972(Day of year=43), Sorghum: 
      Stage 10 Maturity  DAS = 120
      		Biomass       = 1743.83 		 LAI            =   2.38
      		Stover N Conc =   4.92 		 Extractable SW =  27.46
-13 February 1972(Day of year=44), sorghum: 
+13 February 1972(Day of year=44), Sorghum: 
      Stage 11 HarvestRipe  DAS = 121
      		Biomass       = 1747.72 		 LAI            =   2.32
      		Stover N Conc =   4.85 		 Extractable SW =  27.78
-13 February 1972(Day of year=44), manager: 
+13 February 1972(Day of year=44), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -2576,7 +2576,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1972(Day of year=289), manager: 
+15 October 1972(Day of year=289), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1972(Day of year=289), Fertiliser: 
      
@@ -2584,7 +2584,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1972(Day of year=289), sorghum: 
+15 October 1972(Day of year=289), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -2624,47 +2624,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1972(Day of year=290), sorghum: 
+16 October 1972(Day of year=290), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1972(Day of year=294), sorghum: 
+20 October 1972(Day of year=294), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  26.90
-30 October 1972(Day of year=304), sorghum: 
+30 October 1972(Day of year=304), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 15
      		Biomass       =   2.80 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW = 107.77
-13 November 1972(Day of year=318), sorghum: 
+13 November 1972(Day of year=318), Sorghum: 
      Stage 5 FloralInitiation  DAS = 29
      		Biomass       =  22.19 		 LAI            =   0.53
      		Stover N Conc =   0.77 		 Extractable SW = 170.45
-12 December 1972(Day of year=347), sorghum: 
+12 December 1972(Day of year=347), Sorghum: 
      Stage 6 FlagLeaf  DAS = 58
      		Biomass       = 517.81 		 LAI            =   4.47
      		Stover N Conc =   8.74 		 Extractable SW = 131.14
-26 December 1972(Day of year=361), sorghum: 
+26 December 1972(Day of year=361), Sorghum: 
      Stage 7 Flowering  DAS = 72
      		Biomass       = 850.71 		 LAI            =   4.49
      		Stover N Conc =  12.19 		 Extractable SW =  44.49
-31 December 1972(Day of year=366), sorghum: 
+31 December 1972(Day of year=366), Sorghum: 
      Stage 8 StartGrainFill  DAS = 77
      		Biomass       = 929.64 		 LAI            =   4.49
      		Stover N Conc =  12.66 		 Extractable SW =  41.18
-5 February 1973(Day of year=36), sorghum: 
+5 February 1973(Day of year=36), Sorghum: 
      Stage 9 EndGrainFill  DAS = 113
      		Biomass       = 1285.77 		 LAI            =   1.80
      		Stover N Conc =   4.38 		 Extractable SW =   3.76
-7 February 1973(Day of year=38), sorghum: 
+7 February 1973(Day of year=38), Sorghum: 
      Stage 10 Maturity  DAS = 115
      		Biomass       = 1287.33 		 LAI            =   1.77
      		Stover N Conc =   4.35 		 Extractable SW =   3.40
-8 February 1973(Day of year=39), sorghum: 
+8 February 1973(Day of year=39), Sorghum: 
      Stage 11 HarvestRipe  DAS = 116
      		Biomass       = 1288.20 		 LAI            =   1.77
      		Stover N Conc =   4.33 		 Extractable SW =   3.23
-8 February 1973(Day of year=39), manager: 
+8 February 1973(Day of year=39), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -2731,7 +2731,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1973(Day of year=288), manager: 
+15 October 1973(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1973(Day of year=288), Fertiliser: 
      
@@ -2739,7 +2739,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1973(Day of year=288), sorghum: 
+15 October 1973(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -2779,47 +2779,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1973(Day of year=289), sorghum: 
+16 October 1973(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1973(Day of year=293), sorghum: 
+20 October 1973(Day of year=293), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  25.49
-30 October 1973(Day of year=303), sorghum: 
+30 October 1973(Day of year=303), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 15
      		Biomass       =   2.61 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW =  94.24
-15 November 1973(Day of year=319), sorghum: 
+15 November 1973(Day of year=319), Sorghum: 
      Stage 5 FloralInitiation  DAS = 31
      		Biomass       =  34.70 		 LAI            =   0.60
      		Stover N Conc =   0.96 		 Extractable SW = 147.19
-9 December 1973(Day of year=343), sorghum: 
+9 December 1973(Day of year=343), Sorghum: 
      Stage 6 FlagLeaf  DAS = 55
      		Biomass       = 493.19 		 LAI            =   4.48
      		Stover N Conc =   8.91 		 Extractable SW = 142.10
-23 December 1973(Day of year=357), sorghum: 
+23 December 1973(Day of year=357), Sorghum: 
      Stage 7 Flowering  DAS = 69
      		Biomass       = 815.37 		 LAI            =   4.49
      		Stover N Conc =  12.43 		 Extractable SW =  96.21
-28 December 1973(Day of year=362), sorghum: 
+28 December 1973(Day of year=362), Sorghum: 
      Stage 8 StartGrainFill  DAS = 74
      		Biomass       = 949.45 		 LAI            =   4.49
      		Stover N Conc =  13.41 		 Extractable SW =  69.53
-3 February 1974(Day of year=34), sorghum: 
+3 February 1974(Day of year=34), Sorghum: 
      Stage 9 EndGrainFill  DAS = 111
      		Biomass       = 1459.23 		 LAI            =   2.15
      		Stover N Conc =   4.60 		 Extractable SW = 107.06
-5 February 1974(Day of year=36), sorghum: 
+5 February 1974(Day of year=36), Sorghum: 
      Stage 10 Maturity  DAS = 113
      		Biomass       = 1470.38 		 LAI            =   2.01
      		Stover N Conc =   4.48 		 Extractable SW = 102.01
-6 February 1974(Day of year=37), sorghum: 
+6 February 1974(Day of year=37), Sorghum: 
      Stage 11 HarvestRipe  DAS = 114
      		Biomass       = 1475.02 		 LAI            =   1.96
      		Stover N Conc =   4.43 		 Extractable SW =  99.64
-6 February 1974(Day of year=37), manager: 
+6 February 1974(Day of year=37), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -2886,7 +2886,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1974(Day of year=288), manager: 
+15 October 1974(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1974(Day of year=288), Fertiliser: 
      
@@ -2894,7 +2894,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1974(Day of year=288), sorghum: 
+15 October 1974(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -2934,47 +2934,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1974(Day of year=289), sorghum: 
+16 October 1974(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-22 October 1974(Day of year=295), sorghum: 
+22 October 1974(Day of year=295), Sorghum: 
      Stage 3 Emergence  DAS = 7
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  39.31
-2 November 1974(Day of year=306), sorghum: 
+2 November 1974(Day of year=306), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 18
      		Biomass       =   2.74 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW = 119.90
-21 November 1974(Day of year=325), sorghum: 
+21 November 1974(Day of year=325), Sorghum: 
      Stage 5 FloralInitiation  DAS = 37
      		Biomass       =  30.68 		 LAI            =   0.58
      		Stover N Conc =   0.89 		 Extractable SW = 184.42
-18 December 1974(Day of year=352), sorghum: 
+18 December 1974(Day of year=352), Sorghum: 
      Stage 6 FlagLeaf  DAS = 64
      		Biomass       = 557.44 		 LAI            =   4.49
      		Stover N Conc =   8.78 		 Extractable SW = 110.25
-1 January 1975(Day of year=1), sorghum: 
+1 January 1975(Day of year=1), Sorghum: 
      Stage 7 Flowering  DAS = 78
      		Biomass       = 906.60 		 LAI            =   4.52
      		Stover N Conc =  12.41 		 Extractable SW =  79.15
-5 January 1975(Day of year=5), sorghum: 
+5 January 1975(Day of year=5), Sorghum: 
      Stage 8 StartGrainFill  DAS = 82
      		Biomass       = 982.57 		 LAI            =   4.52
      		Stover N Conc =  13.01 		 Extractable SW =  67.53
-11 February 1975(Day of year=42), sorghum: 
+11 February 1975(Day of year=42), Sorghum: 
      Stage 9 EndGrainFill  DAS = 119
      		Biomass       = 1413.80 		 LAI            =   1.21
      		Stover N Conc =   5.24 		 Extractable SW =   3.22
-14 February 1975(Day of year=45), sorghum: 
+14 February 1975(Day of year=45), Sorghum: 
      Stage 10 Maturity  DAS = 122
      		Biomass       = 1416.48 		 LAI            =   0.93
      		Stover N Conc =   5.20 		 Extractable SW =   2.67
-15 February 1975(Day of year=46), sorghum: 
+15 February 1975(Day of year=46), Sorghum: 
      Stage 11 HarvestRipe  DAS = 123
      		Biomass       = 1417.35 		 LAI            =   0.86
      		Stover N Conc =   5.18 		 Extractable SW =   2.52
-15 February 1975(Day of year=46), manager: 
+15 February 1975(Day of year=46), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -3041,7 +3041,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1975(Day of year=288), manager: 
+15 October 1975(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1975(Day of year=288), Fertiliser: 
      
@@ -3049,7 +3049,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1975(Day of year=288), sorghum: 
+15 October 1975(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -3089,47 +3089,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1975(Day of year=289), sorghum: 
+16 October 1975(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1975(Day of year=293), sorghum: 
+20 October 1975(Day of year=293), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  27.77
-1 November 1975(Day of year=305), sorghum: 
+1 November 1975(Day of year=305), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 17
      		Biomass       =   2.96 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW =  96.19
-18 November 1975(Day of year=322), sorghum: 
+18 November 1975(Day of year=322), Sorghum: 
      Stage 5 FloralInitiation  DAS = 34
      		Biomass       =  33.14 		 LAI            =   0.56
      		Stover N Conc =   0.87 		 Extractable SW = 156.71
-13 December 1975(Day of year=347), sorghum: 
+13 December 1975(Day of year=347), Sorghum: 
      Stage 6 FlagLeaf  DAS = 59
      		Biomass       = 497.57 		 LAI            =   4.51
      		Stover N Conc =   9.06 		 Extractable SW =  99.18
-27 December 1975(Day of year=361), sorghum: 
+27 December 1975(Day of year=361), Sorghum: 
      Stage 7 Flowering  DAS = 73
      		Biomass       = 763.96 		 LAI            =   4.51
      		Stover N Conc =  11.66 		 Extractable SW = 179.53
-1 January 1976(Day of year=1), sorghum: 
+1 January 1976(Day of year=1), Sorghum: 
      Stage 8 StartGrainFill  DAS = 78
      		Biomass       = 857.65 		 LAI            =   4.51
      		Stover N Conc =  12.11 		 Extractable SW = 164.56
-7 February 1976(Day of year=38), sorghum: 
+7 February 1976(Day of year=38), Sorghum: 
      Stage 9 EndGrainFill  DAS = 115
      		Biomass       = 1602.92 		 LAI            =   2.55
      		Stover N Conc =   4.75 		 Extractable SW =  19.72
-9 February 1976(Day of year=40), sorghum: 
+9 February 1976(Day of year=40), Sorghum: 
      Stage 10 Maturity  DAS = 117
      		Biomass       = 1616.93 		 LAI            =   2.38
      		Stover N Conc =   4.59 		 Extractable SW =  16.07
-10 February 1976(Day of year=41), sorghum: 
+10 February 1976(Day of year=41), Sorghum: 
      Stage 11 HarvestRipe  DAS = 118
      		Biomass       = 1621.98 		 LAI            =   2.32
      		Stover N Conc =   4.53 		 Extractable SW =  27.44
-10 February 1976(Day of year=41), manager: 
+10 February 1976(Day of year=41), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -3196,7 +3196,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1976(Day of year=289), manager: 
+15 October 1976(Day of year=289), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1976(Day of year=289), Fertiliser: 
      
@@ -3204,7 +3204,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1976(Day of year=289), sorghum: 
+15 October 1976(Day of year=289), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -3244,47 +3244,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1976(Day of year=290), sorghum: 
+16 October 1976(Day of year=290), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-22 October 1976(Day of year=296), sorghum: 
+22 October 1976(Day of year=296), Sorghum: 
      Stage 3 Emergence  DAS = 7
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  38.35
-1 November 1976(Day of year=306), sorghum: 
+1 November 1976(Day of year=306), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 17
      		Biomass       =   2.70 		 LAI            =   0.03
      		Stover N Conc =   0.07 		 Extractable SW = 116.45
-16 November 1976(Day of year=321), sorghum: 
+16 November 1976(Day of year=321), Sorghum: 
      Stage 5 FloralInitiation  DAS = 32
      		Biomass       =  26.43 		 LAI            =   0.56
      		Stover N Conc =   0.82 		 Extractable SW = 153.02
-12 December 1976(Day of year=347), sorghum: 
+12 December 1976(Day of year=347), Sorghum: 
      Stage 6 FlagLeaf  DAS = 58
      		Biomass       = 525.90 		 LAI            =   4.49
      		Stover N Conc =   8.75 		 Extractable SW =  74.79
-26 December 1976(Day of year=361), sorghum: 
+26 December 1976(Day of year=361), Sorghum: 
      Stage 7 Flowering  DAS = 72
      		Biomass       = 785.70 		 LAI            =   4.51
      		Stover N Conc =  10.92 		 Extractable SW =  42.82
-31 December 1976(Day of year=366), sorghum: 
+31 December 1976(Day of year=366), Sorghum: 
      Stage 8 StartGrainFill  DAS = 77
      		Biomass       = 825.67 		 LAI            =   4.51
      		Stover N Conc =  11.24 		 Extractable SW =  23.10
-5 February 1977(Day of year=36), sorghum: 
+5 February 1977(Day of year=36), Sorghum: 
      Stage 9 EndGrainFill  DAS = 113
      		Biomass       = 998.75 		 LAI            =   0.61
      		Stover N Conc =   5.66 		 Extractable SW =   3.51
-7 February 1977(Day of year=38), sorghum: 
+7 February 1977(Day of year=38), Sorghum: 
      Stage 10 Maturity  DAS = 115
      		Biomass       = 1000.35 		 LAI            =   0.60
      		Stover N Conc =   5.63 		 Extractable SW =   3.21
-8 February 1977(Day of year=39), sorghum: 
+8 February 1977(Day of year=39), Sorghum: 
      Stage 11 HarvestRipe  DAS = 116
      		Biomass       = 1001.28 		 LAI            =   0.60
      		Stover N Conc =   5.61 		 Extractable SW =   3.07
-8 February 1977(Day of year=39), manager: 
+8 February 1977(Day of year=39), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -3351,7 +3351,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1977(Day of year=288), manager: 
+15 October 1977(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1977(Day of year=288), Fertiliser: 
      
@@ -3359,7 +3359,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1977(Day of year=288), sorghum: 
+15 October 1977(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -3399,47 +3399,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1977(Day of year=289), sorghum: 
+16 October 1977(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1977(Day of year=293), sorghum: 
+20 October 1977(Day of year=293), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  27.04
-30 October 1977(Day of year=303), sorghum: 
+30 October 1977(Day of year=303), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 15
      		Biomass       =   2.79 		 LAI            =   0.02
      		Stover N Conc =   0.08 		 Extractable SW =  92.87
-14 November 1977(Day of year=318), sorghum: 
+14 November 1977(Day of year=318), Sorghum: 
      Stage 5 FloralInitiation  DAS = 30
      		Biomass       =  34.96 		 LAI            =   0.63
      		Stover N Conc =   1.01 		 Extractable SW = 165.69
-8 December 1977(Day of year=342), sorghum: 
+8 December 1977(Day of year=342), Sorghum: 
      Stage 6 FlagLeaf  DAS = 54
      		Biomass       = 524.53 		 LAI            =   4.48
      		Stover N Conc =   8.79 		 Extractable SW =  96.82
-22 December 1977(Day of year=356), sorghum: 
+22 December 1977(Day of year=356), Sorghum: 
      Stage 7 Flowering  DAS = 68
      		Biomass       = 816.59 		 LAI            =   4.49
      		Stover N Conc =  11.66 		 Extractable SW =  28.85
-26 December 1977(Day of year=360), sorghum: 
+26 December 1977(Day of year=360), Sorghum: 
      Stage 8 StartGrainFill  DAS = 72
      		Biomass       = 856.74 		 LAI            =   4.49
      		Stover N Conc =  11.87 		 Extractable SW =  19.75
-1 February 1978(Day of year=32), sorghum: 
+1 February 1978(Day of year=32), Sorghum: 
      Stage 9 EndGrainFill  DAS = 109
      		Biomass       = 992.03 		 LAI            =   0.62
      		Stover N Conc =   5.50 		 Extractable SW = 107.43
-3 February 1978(Day of year=34), sorghum: 
+3 February 1978(Day of year=34), Sorghum: 
      Stage 10 Maturity  DAS = 111
      		Biomass       = 993.79 		 LAI            =   0.60
      		Stover N Conc =   5.48 		 Extractable SW = 106.64
-4 February 1978(Day of year=35), sorghum: 
+4 February 1978(Day of year=35), Sorghum: 
      Stage 11 HarvestRipe  DAS = 112
      		Biomass       = 995.14 		 LAI            =   0.60
      		Stover N Conc =   5.45 		 Extractable SW = 104.89
-4 February 1978(Day of year=35), manager: 
+4 February 1978(Day of year=35), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -3506,7 +3506,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1978(Day of year=288), manager: 
+15 October 1978(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1978(Day of year=288), Fertiliser: 
      
@@ -3514,7 +3514,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1978(Day of year=288), sorghum: 
+15 October 1978(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -3554,47 +3554,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1978(Day of year=289), sorghum: 
+16 October 1978(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-22 October 1978(Day of year=295), sorghum: 
+22 October 1978(Day of year=295), Sorghum: 
      Stage 3 Emergence  DAS = 7
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  44.47
-3 November 1978(Day of year=307), sorghum: 
+3 November 1978(Day of year=307), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 19
      		Biomass       =   2.65 		 LAI            =   0.02
      		Stover N Conc =   0.07 		 Extractable SW = 125.02
-22 November 1978(Day of year=326), sorghum: 
+22 November 1978(Day of year=326), Sorghum: 
      Stage 5 FloralInitiation  DAS = 38
      		Biomass       =  36.98 		 LAI            =   0.56
      		Stover N Conc =   0.90 		 Extractable SW = 164.93
-17 December 1978(Day of year=351), sorghum: 
+17 December 1978(Day of year=351), Sorghum: 
      Stage 6 FlagLeaf  DAS = 63
      		Biomass       = 505.76 		 LAI            =   4.50
      		Stover N Conc =   8.79 		 Extractable SW = 140.41
-31 December 1978(Day of year=365), sorghum: 
+31 December 1978(Day of year=365), Sorghum: 
      Stage 7 Flowering  DAS = 77
      		Biomass       = 838.95 		 LAI            =   4.52
      		Stover N Conc =  12.30 		 Extractable SW =  90.63
-4 January 1979(Day of year=4), sorghum: 
+4 January 1979(Day of year=4), Sorghum: 
      Stage 8 StartGrainFill  DAS = 81
      		Biomass       = 958.51 		 LAI            =   4.52
      		Stover N Conc =  13.08 		 Extractable SW =  59.62
-10 February 1979(Day of year=41), sorghum: 
+10 February 1979(Day of year=41), Sorghum: 
      Stage 9 EndGrainFill  DAS = 118
      		Biomass       = 1195.27 		 LAI            =   1.99
      		Stover N Conc =   4.74 		 Extractable SW =   4.02
-12 February 1979(Day of year=43), sorghum: 
+12 February 1979(Day of year=43), Sorghum: 
      Stage 10 Maturity  DAS = 120
      		Biomass       = 1197.81 		 LAI            =   1.99
      		Stover N Conc =   4.70 		 Extractable SW =   3.64
-13 February 1979(Day of year=44), sorghum: 
+13 February 1979(Day of year=44), Sorghum: 
      Stage 11 HarvestRipe  DAS = 121
      		Biomass       = 1198.60 		 LAI            =   1.99
      		Stover N Conc =   4.68 		 Extractable SW =   3.47
-13 February 1979(Day of year=44), manager: 
+13 February 1979(Day of year=44), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -3661,7 +3661,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1979(Day of year=288), manager: 
+15 October 1979(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1979(Day of year=288), Fertiliser: 
      
@@ -3669,7 +3669,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1979(Day of year=288), sorghum: 
+15 October 1979(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -3709,47 +3709,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1979(Day of year=289), sorghum: 
+16 October 1979(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1979(Day of year=293), sorghum: 
+20 October 1979(Day of year=293), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  25.64
-31 October 1979(Day of year=304), sorghum: 
+31 October 1979(Day of year=304), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   2.92 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW =  97.01
-16 November 1979(Day of year=320), sorghum: 
+16 November 1979(Day of year=320), Sorghum: 
      Stage 5 FloralInitiation  DAS = 32
      		Biomass       =  27.41 		 LAI            =   0.55
      		Stover N Conc =   0.81 		 Extractable SW = 169.92
-9 December 1979(Day of year=343), sorghum: 
+9 December 1979(Day of year=343), Sorghum: 
      Stage 6 FlagLeaf  DAS = 55
      		Biomass       = 489.60 		 LAI            =   4.50
      		Stover N Conc =   8.87 		 Extractable SW =  95.91
-22 December 1979(Day of year=356), sorghum: 
+22 December 1979(Day of year=356), Sorghum: 
      Stage 7 Flowering  DAS = 68
      		Biomass       = 797.79 		 LAI            =   4.50
      		Stover N Conc =  11.91 		 Extractable SW =  68.46
-26 December 1979(Day of year=360), sorghum: 
+26 December 1979(Day of year=360), Sorghum: 
      Stage 8 StartGrainFill  DAS = 72
      		Biomass       = 895.85 		 LAI            =   4.50
      		Stover N Conc =  12.54 		 Extractable SW =  45.73
-1 February 1980(Day of year=32), sorghum: 
+1 February 1980(Day of year=32), Sorghum: 
      Stage 9 EndGrainFill  DAS = 109
      		Biomass       = 1172.33 		 LAI            =   1.26
      		Stover N Conc =   4.50 		 Extractable SW =  32.06
-3 February 1980(Day of year=34), sorghum: 
+3 February 1980(Day of year=34), Sorghum: 
      Stage 10 Maturity  DAS = 111
      		Biomass       = 1181.91 		 LAI            =   1.17
      		Stover N Conc =   4.37 		 Extractable SW =  28.12
-4 February 1980(Day of year=35), sorghum: 
+4 February 1980(Day of year=35), Sorghum: 
      Stage 11 HarvestRipe  DAS = 112
      		Biomass       = 1184.52 		 LAI            =   1.13
      		Stover N Conc =   4.32 		 Extractable SW =  27.06
-4 February 1980(Day of year=35), manager: 
+4 February 1980(Day of year=35), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -3816,7 +3816,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1980(Day of year=289), manager: 
+15 October 1980(Day of year=289), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1980(Day of year=289), Fertiliser: 
      
@@ -3824,7 +3824,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1980(Day of year=289), sorghum: 
+15 October 1980(Day of year=289), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -3864,47 +3864,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1980(Day of year=290), sorghum: 
+16 October 1980(Day of year=290), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1980(Day of year=294), sorghum: 
+20 October 1980(Day of year=294), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  27.16
-29 October 1980(Day of year=303), sorghum: 
+29 October 1980(Day of year=303), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 14
      		Biomass       =   2.60 		 LAI            =   0.03
      		Stover N Conc =   0.07 		 Extractable SW =  93.69
-15 November 1980(Day of year=320), sorghum: 
+15 November 1980(Day of year=320), Sorghum: 
      Stage 5 FloralInitiation  DAS = 31
      		Biomass       =  34.19 		 LAI            =   0.53
      		Stover N Conc =   0.88 		 Extractable SW = 133.84
-10 December 1980(Day of year=345), sorghum: 
+10 December 1980(Day of year=345), Sorghum: 
      Stage 6 FlagLeaf  DAS = 56
      		Biomass       = 465.41 		 LAI            =   4.49
      		Stover N Conc =   9.04 		 Extractable SW = 146.38
-24 December 1980(Day of year=359), sorghum: 
+24 December 1980(Day of year=359), Sorghum: 
      Stage 7 Flowering  DAS = 70
      		Biomass       = 841.42 		 LAI            =   4.49
      		Stover N Conc =  12.97 		 Extractable SW =  64.46
-28 December 1980(Day of year=363), sorghum: 
+28 December 1980(Day of year=363), Sorghum: 
      Stage 8 StartGrainFill  DAS = 74
      		Biomass       = 932.78 		 LAI            =   4.49
      		Stover N Conc =  13.73 		 Extractable SW =  60.40
-3 February 1981(Day of year=34), sorghum: 
+3 February 1981(Day of year=34), Sorghum: 
      Stage 9 EndGrainFill  DAS = 111
      		Biomass       = 1296.27 		 LAI            =   1.26
      		Stover N Conc =   5.10 		 Extractable SW =   3.49
-5 February 1981(Day of year=36), sorghum: 
+5 February 1981(Day of year=36), Sorghum: 
      Stage 10 Maturity  DAS = 113
      		Biomass       = 1300.10 		 LAI            =   1.07
      		Stover N Conc =   5.03 		 Extractable SW =   8.83
-6 February 1981(Day of year=37), sorghum: 
+6 February 1981(Day of year=37), Sorghum: 
      Stage 11 HarvestRipe  DAS = 114
      		Biomass       = 1304.11 		 LAI            =   1.05
      		Stover N Conc =   4.96 		 Extractable SW = 105.77
-6 February 1981(Day of year=37), manager: 
+6 February 1981(Day of year=37), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -3971,7 +3971,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1981(Day of year=288), manager: 
+15 October 1981(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1981(Day of year=288), Fertiliser: 
      
@@ -3979,7 +3979,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1981(Day of year=288), sorghum: 
+15 October 1981(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -4019,47 +4019,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1981(Day of year=289), sorghum: 
+16 October 1981(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-21 October 1981(Day of year=294), sorghum: 
+21 October 1981(Day of year=294), Sorghum: 
      Stage 3 Emergence  DAS = 6
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  32.32
-31 October 1981(Day of year=304), sorghum: 
+31 October 1981(Day of year=304), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   2.71 		 LAI            =   0.02
      		Stover N Conc =   0.08 		 Extractable SW =  84.75
-19 November 1981(Day of year=323), sorghum: 
+19 November 1981(Day of year=323), Sorghum: 
      Stage 5 FloralInitiation  DAS = 35
      		Biomass       =  32.19 		 LAI            =   0.62
      		Stover N Conc =   0.96 		 Extractable SW = 159.23
-14 December 1981(Day of year=348), sorghum: 
+14 December 1981(Day of year=348), Sorghum: 
      Stage 6 FlagLeaf  DAS = 60
      		Biomass       = 509.17 		 LAI            =   4.50
      		Stover N Conc =   8.93 		 Extractable SW = 147.87
-27 December 1981(Day of year=361), sorghum: 
+27 December 1981(Day of year=361), Sorghum: 
      Stage 7 Flowering  DAS = 73
      		Biomass       = 784.81 		 LAI            =   4.50
      		Stover N Conc =  11.98 		 Extractable SW = 171.10
-31 December 1981(Day of year=365), sorghum: 
+31 December 1981(Day of year=365), Sorghum: 
      Stage 8 StartGrainFill  DAS = 77
      		Biomass       = 895.06 		 LAI            =   4.50
      		Stover N Conc =  12.87 		 Extractable SW = 138.40
-6 February 1982(Day of year=37), sorghum: 
+6 February 1982(Day of year=37), Sorghum: 
      Stage 9 EndGrainFill  DAS = 114
      		Biomass       = 1504.38 		 LAI            =   2.51
      		Stover N Conc =   4.87 		 Extractable SW =   5.31
-8 February 1982(Day of year=39), sorghum: 
+8 February 1982(Day of year=39), Sorghum: 
      Stage 10 Maturity  DAS = 116
      		Biomass       = 1510.52 		 LAI            =   2.44
      		Stover N Conc =   4.77 		 Extractable SW =   4.27
-9 February 1982(Day of year=40), sorghum: 
+9 February 1982(Day of year=40), Sorghum: 
      Stage 11 HarvestRipe  DAS = 117
      		Biomass       = 1512.67 		 LAI            =   2.43
      		Stover N Conc =   4.73 		 Extractable SW =   3.83
-9 February 1982(Day of year=40), manager: 
+9 February 1982(Day of year=40), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -4126,7 +4126,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1982(Day of year=288), manager: 
+15 October 1982(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1982(Day of year=288), Fertiliser: 
      
@@ -4134,7 +4134,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1982(Day of year=288), sorghum: 
+15 October 1982(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -4174,47 +4174,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1982(Day of year=289), sorghum: 
+16 October 1982(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-21 October 1982(Day of year=294), sorghum: 
+21 October 1982(Day of year=294), Sorghum: 
      Stage 3 Emergence  DAS = 6
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  31.75
-31 October 1982(Day of year=304), sorghum: 
+31 October 1982(Day of year=304), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   2.71 		 LAI            =   0.02
      		Stover N Conc =   0.09 		 Extractable SW =  84.18
-18 November 1982(Day of year=322), sorghum: 
+18 November 1982(Day of year=322), Sorghum: 
      Stage 5 FloralInitiation  DAS = 34
      		Biomass       =  38.16 		 LAI            =   0.57
      		Stover N Conc =   0.97 		 Extractable SW = 128.15
-12 December 1982(Day of year=346), sorghum: 
+12 December 1982(Day of year=346), Sorghum: 
      Stage 6 FlagLeaf  DAS = 58
      		Biomass       = 506.16 		 LAI            =   4.49
      		Stover N Conc =   8.96 		 Extractable SW =  99.01
-25 December 1982(Day of year=359), sorghum: 
+25 December 1982(Day of year=359), Sorghum: 
      Stage 7 Flowering  DAS = 71
      		Biomass       = 791.17 		 LAI            =   4.50
      		Stover N Conc =  12.70 		 Extractable SW =  41.58
-30 December 1982(Day of year=364), sorghum: 
+30 December 1982(Day of year=364), Sorghum: 
      Stage 8 StartGrainFill  DAS = 76
      		Biomass       = 861.96 		 LAI            =   4.50
      		Stover N Conc =  13.69 		 Extractable SW =  21.55
-4 February 1983(Day of year=35), sorghum: 
+4 February 1983(Day of year=35), Sorghum: 
      Stage 9 EndGrainFill  DAS = 112
      		Biomass       = 1231.94 		 LAI            =   1.11
      		Stover N Conc =   5.97 		 Extractable SW =   1.43
-6 February 1983(Day of year=37), sorghum: 
+6 February 1983(Day of year=37), Sorghum: 
      Stage 10 Maturity  DAS = 114
      		Biomass       = 1233.22 		 LAI            =   0.92
      		Stover N Conc =   5.95 		 Extractable SW =   1.19
-7 February 1983(Day of year=38), sorghum: 
+7 February 1983(Day of year=38), Sorghum: 
      Stage 11 HarvestRipe  DAS = 115
      		Biomass       = 1233.72 		 LAI            =   0.83
      		Stover N Conc =   5.94 		 Extractable SW =   1.09
-7 February 1983(Day of year=38), manager: 
+7 February 1983(Day of year=38), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -4281,7 +4281,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1983(Day of year=288), manager: 
+15 October 1983(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1983(Day of year=288), Fertiliser: 
      
@@ -4289,7 +4289,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1983(Day of year=288), sorghum: 
+15 October 1983(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -4329,47 +4329,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1983(Day of year=289), sorghum: 
+16 October 1983(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1983(Day of year=293), sorghum: 
+20 October 1983(Day of year=293), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  32.40
-31 October 1983(Day of year=304), sorghum: 
+31 October 1983(Day of year=304), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   2.81 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW =  96.62
-14 November 1983(Day of year=318), sorghum: 
+14 November 1983(Day of year=318), Sorghum: 
      Stage 5 FloralInitiation  DAS = 30
      		Biomass       =  26.60 		 LAI            =   0.53
      		Stover N Conc =   0.82 		 Extractable SW = 133.77
-16 December 1983(Day of year=350), sorghum: 
+16 December 1983(Day of year=350), Sorghum: 
      Stage 6 FlagLeaf  DAS = 62
      		Biomass       = 526.40 		 LAI            =   4.47
      		Stover N Conc =   8.70 		 Extractable SW = 208.07
-31 December 1983(Day of year=365), sorghum: 
+31 December 1983(Day of year=365), Sorghum: 
      Stage 7 Flowering  DAS = 77
      		Biomass       = 917.87 		 LAI            =   4.49
      		Stover N Conc =  13.08 		 Extractable SW = 115.26
-4 January 1984(Day of year=4), sorghum: 
+4 January 1984(Day of year=4), Sorghum: 
      Stage 8 StartGrainFill  DAS = 81
      		Biomass       = 969.80 		 LAI            =   4.49
      		Stover N Conc =  13.30 		 Extractable SW = 106.88
-10 February 1984(Day of year=41), sorghum: 
+10 February 1984(Day of year=41), Sorghum: 
      Stage 9 EndGrainFill  DAS = 118
      		Biomass       = 1599.89 		 LAI            =   2.07
      		Stover N Conc =   4.83 		 Extractable SW =  52.66
-12 February 1984(Day of year=43), sorghum: 
+12 February 1984(Day of year=43), Sorghum: 
      Stage 10 Maturity  DAS = 120
      		Biomass       = 1608.42 		 LAI            =   1.94
      		Stover N Conc =   4.73 		 Extractable SW =  49.65
-13 February 1984(Day of year=44), sorghum: 
+13 February 1984(Day of year=44), Sorghum: 
      Stage 11 HarvestRipe  DAS = 121
      		Biomass       = 1610.89 		 LAI            =   1.91
      		Stover N Conc =   4.69 		 Extractable SW =  49.11
-13 February 1984(Day of year=44), manager: 
+13 February 1984(Day of year=44), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -4436,7 +4436,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1984(Day of year=289), manager: 
+15 October 1984(Day of year=289), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1984(Day of year=289), Fertiliser: 
      
@@ -4444,7 +4444,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1984(Day of year=289), sorghum: 
+15 October 1984(Day of year=289), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -4484,47 +4484,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1984(Day of year=290), sorghum: 
+16 October 1984(Day of year=290), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-22 October 1984(Day of year=296), sorghum: 
+22 October 1984(Day of year=296), Sorghum: 
      Stage 3 Emergence  DAS = 7
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  38.61
-3 November 1984(Day of year=308), sorghum: 
+3 November 1984(Day of year=308), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 19
      		Biomass       =   2.62 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW = 120.01
-18 November 1984(Day of year=323), sorghum: 
+18 November 1984(Day of year=323), Sorghum: 
      Stage 5 FloralInitiation  DAS = 34
      		Biomass       =  31.75 		 LAI            =   0.54
      		Stover N Conc =   0.85 		 Extractable SW = 160.93
-15 December 1984(Day of year=350), sorghum: 
+15 December 1984(Day of year=350), Sorghum: 
      Stage 6 FlagLeaf  DAS = 61
      		Biomass       = 510.77 		 LAI            =   4.51
      		Stover N Conc =   9.00 		 Extractable SW = 113.92
-28 December 1984(Day of year=363), sorghum: 
+28 December 1984(Day of year=363), Sorghum: 
      Stage 7 Flowering  DAS = 74
      		Biomass       = 829.03 		 LAI            =   4.52
      		Stover N Conc =  12.12 		 Extractable SW =  62.37
-2 January 1985(Day of year=2), sorghum: 
+2 January 1985(Day of year=2), Sorghum: 
      Stage 8 StartGrainFill  DAS = 79
      		Biomass       = 939.43 		 LAI            =   4.52
      		Stover N Conc =  12.78 		 Extractable SW =  78.97
-7 February 1985(Day of year=38), sorghum: 
+7 February 1985(Day of year=38), Sorghum: 
      Stage 9 EndGrainFill  DAS = 115
      		Biomass       = 1195.95 		 LAI            =   1.57
      		Stover N Conc =   4.86 		 Extractable SW =   3.81
-9 February 1985(Day of year=40), sorghum: 
+9 February 1985(Day of year=40), Sorghum: 
      Stage 10 Maturity  DAS = 117
      		Biomass       = 1197.80 		 LAI            =   1.33
      		Stover N Conc =   4.83 		 Extractable SW =   3.45
-10 February 1985(Day of year=41), sorghum: 
+10 February 1985(Day of year=41), Sorghum: 
      Stage 11 HarvestRipe  DAS = 118
      		Biomass       = 1198.77 		 LAI            =   1.22
      		Stover N Conc =   4.81 		 Extractable SW =   3.29
-10 February 1985(Day of year=41), manager: 
+10 February 1985(Day of year=41), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -4591,7 +4591,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1985(Day of year=288), manager: 
+15 October 1985(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1985(Day of year=288), Fertiliser: 
      
@@ -4599,7 +4599,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1985(Day of year=288), sorghum: 
+15 October 1985(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -4639,47 +4639,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1985(Day of year=289), sorghum: 
+16 October 1985(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1985(Day of year=293), sorghum: 
+20 October 1985(Day of year=293), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  28.38
-2 November 1985(Day of year=306), sorghum: 
+2 November 1985(Day of year=306), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 18
      		Biomass       =   2.60 		 LAI            =   0.03
      		Stover N Conc =   0.07 		 Extractable SW = 102.96
-18 November 1985(Day of year=322), sorghum: 
+18 November 1985(Day of year=322), Sorghum: 
      Stage 5 FloralInitiation  DAS = 34
      		Biomass       =  26.47 		 LAI            =   0.53
      		Stover N Conc =   0.85 		 Extractable SW = 143.64
-14 December 1985(Day of year=348), sorghum: 
+14 December 1985(Day of year=348), Sorghum: 
      Stage 6 FlagLeaf  DAS = 60
      		Biomass       = 433.55 		 LAI            =   4.49
      		Stover N Conc =   8.81 		 Extractable SW = 140.83
-27 December 1985(Day of year=361), sorghum: 
+27 December 1985(Day of year=361), Sorghum: 
      Stage 7 Flowering  DAS = 73
      		Biomass       = 776.06 		 LAI            =   4.51
      		Stover N Conc =  12.52 		 Extractable SW =  96.15
-1 January 1986(Day of year=1), sorghum: 
+1 January 1986(Day of year=1), Sorghum: 
      Stage 8 StartGrainFill  DAS = 78
      		Biomass       = 908.29 		 LAI            =   4.51
      		Stover N Conc =  13.79 		 Extractable SW =  62.86
-7 February 1986(Day of year=38), sorghum: 
+7 February 1986(Day of year=38), Sorghum: 
      Stage 9 EndGrainFill  DAS = 115
      		Biomass       = 1147.40 		 LAI            =   0.90
      		Stover N Conc =   5.14 		 Extractable SW =   2.94
-9 February 1986(Day of year=40), sorghum: 
+9 February 1986(Day of year=40), Sorghum: 
      Stage 10 Maturity  DAS = 117
      		Biomass       = 1148.91 		 LAI            =   0.76
      		Stover N Conc =   5.11 		 Extractable SW =   2.64
-10 February 1986(Day of year=41), sorghum: 
+10 February 1986(Day of year=41), Sorghum: 
      Stage 11 HarvestRipe  DAS = 118
      		Biomass       = 1149.42 		 LAI            =   0.70
      		Stover N Conc =   5.10 		 Extractable SW =   2.51
-10 February 1986(Day of year=41), manager: 
+10 February 1986(Day of year=41), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -4746,7 +4746,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1986(Day of year=288), manager: 
+15 October 1986(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1986(Day of year=288), Fertiliser: 
      
@@ -4754,7 +4754,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1986(Day of year=288), sorghum: 
+15 October 1986(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -4794,47 +4794,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1986(Day of year=289), sorghum: 
+16 October 1986(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1986(Day of year=293), sorghum: 
+20 October 1986(Day of year=293), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  29.76
-1 November 1986(Day of year=305), sorghum: 
+1 November 1986(Day of year=305), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 17
      		Biomass       =   2.92 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW = 104.06
-18 November 1986(Day of year=322), sorghum: 
+18 November 1986(Day of year=322), Sorghum: 
      Stage 5 FloralInitiation  DAS = 34
      		Biomass       =  35.04 		 LAI            =   0.56
      		Stover N Conc =   0.91 		 Extractable SW = 157.28
-18 December 1986(Day of year=352), sorghum: 
+18 December 1986(Day of year=352), Sorghum: 
      Stage 6 FlagLeaf  DAS = 64
      		Biomass       = 548.52 		 LAI            =   4.49
      		Stover N Conc =   8.85 		 Extractable SW = 107.63
-1 January 1987(Day of year=1), sorghum: 
+1 January 1987(Day of year=1), Sorghum: 
      Stage 7 Flowering  DAS = 78
      		Biomass       = 870.21 		 LAI            =   4.51
      		Stover N Conc =  11.97 		 Extractable SW =  64.25
-5 January 1987(Day of year=5), sorghum: 
+5 January 1987(Day of year=5), Sorghum: 
      Stage 8 StartGrainFill  DAS = 82
      		Biomass       = 951.09 		 LAI            =   4.51
      		Stover N Conc =  12.58 		 Extractable SW =  58.84
-10 February 1987(Day of year=41), sorghum: 
+10 February 1987(Day of year=41), Sorghum: 
      Stage 9 EndGrainFill  DAS = 118
      		Biomass       = 1504.90 		 LAI            =   2.36
      		Stover N Conc =   4.82 		 Extractable SW =   5.73
-12 February 1987(Day of year=43), sorghum: 
+12 February 1987(Day of year=43), Sorghum: 
      Stage 10 Maturity  DAS = 120
      		Biomass       = 1508.13 		 LAI            =   2.16
      		Stover N Conc =   4.76 		 Extractable SW =   3.90
-13 February 1987(Day of year=44), sorghum: 
+13 February 1987(Day of year=44), Sorghum: 
      Stage 11 HarvestRipe  DAS = 121
      		Biomass       = 1509.29 		 LAI            =   1.98
      		Stover N Conc =   4.74 		 Extractable SW =   3.66
-13 February 1987(Day of year=44), manager: 
+13 February 1987(Day of year=44), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -4901,7 +4901,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1987(Day of year=288), manager: 
+15 October 1987(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1987(Day of year=288), Fertiliser: 
      
@@ -4909,7 +4909,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1987(Day of year=288), sorghum: 
+15 October 1987(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -4949,47 +4949,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1987(Day of year=289), sorghum: 
+16 October 1987(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-21 October 1987(Day of year=294), sorghum: 
+21 October 1987(Day of year=294), Sorghum: 
      Stage 3 Emergence  DAS = 6
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  36.93
-31 October 1987(Day of year=304), sorghum: 
+31 October 1987(Day of year=304), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   2.71 		 LAI            =   0.03
      		Stover N Conc =   0.07 		 Extractable SW =  97.53
-19 November 1987(Day of year=323), sorghum: 
+19 November 1987(Day of year=323), Sorghum: 
      Stage 5 FloralInitiation  DAS = 35
      		Biomass       =  32.58 		 LAI            =   0.57
      		Stover N Conc =   0.88 		 Extractable SW = 153.66
-14 December 1987(Day of year=348), sorghum: 
+14 December 1987(Day of year=348), Sorghum: 
      Stage 6 FlagLeaf  DAS = 60
      		Biomass       = 510.49 		 LAI            =   4.47
      		Stover N Conc =   8.70 		 Extractable SW = 156.79
-27 December 1987(Day of year=361), sorghum: 
+27 December 1987(Day of year=361), Sorghum: 
      Stage 7 Flowering  DAS = 73
      		Biomass       = 843.13 		 LAI            =   4.50
      		Stover N Conc =  12.26 		 Extractable SW =  84.36
-1 January 1988(Day of year=1), sorghum: 
+1 January 1988(Day of year=1), Sorghum: 
      Stage 8 StartGrainFill  DAS = 78
      		Biomass       = 946.06 		 LAI            =   4.50
      		Stover N Conc =  12.82 		 Extractable SW =  59.72
-6 February 1988(Day of year=37), sorghum: 
+6 February 1988(Day of year=37), Sorghum: 
      Stage 9 EndGrainFill  DAS = 114
      		Biomass       = 1487.21 		 LAI            =   1.49
      		Stover N Conc =   4.69 		 Extractable SW =  41.70
-8 February 1988(Day of year=39), sorghum: 
+8 February 1988(Day of year=39), Sorghum: 
      Stage 10 Maturity  DAS = 116
      		Biomass       = 1492.48 		 LAI            =   1.40
      		Stover N Conc =   4.64 		 Extractable SW =  91.86
-9 February 1988(Day of year=40), sorghum: 
+9 February 1988(Day of year=40), Sorghum: 
      Stage 11 HarvestRipe  DAS = 117
      		Biomass       = 1495.72 		 LAI            =   1.38
      		Stover N Conc =   4.61 		 Extractable SW =  89.79
-9 February 1988(Day of year=40), manager: 
+9 February 1988(Day of year=40), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -5056,7 +5056,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1988(Day of year=289), manager: 
+15 October 1988(Day of year=289), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1988(Day of year=289), Fertiliser: 
      
@@ -5064,7 +5064,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1988(Day of year=289), sorghum: 
+15 October 1988(Day of year=289), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -5104,47 +5104,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1988(Day of year=290), sorghum: 
+16 October 1988(Day of year=290), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1988(Day of year=294), sorghum: 
+20 October 1988(Day of year=294), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  25.43
-29 October 1988(Day of year=303), sorghum: 
+29 October 1988(Day of year=303), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 14
      		Biomass       =   2.81 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW =  77.91
-14 November 1988(Day of year=319), sorghum: 
+14 November 1988(Day of year=319), Sorghum: 
      Stage 5 FloralInitiation  DAS = 30
      		Biomass       =  35.95 		 LAI            =   0.57
      		Stover N Conc =   0.94 		 Extractable SW = 117.97
-10 December 1988(Day of year=345), sorghum: 
+10 December 1988(Day of year=345), Sorghum: 
      Stage 6 FlagLeaf  DAS = 56
      		Biomass       = 501.28 		 LAI            =   4.46
      		Stover N Conc =   8.79 		 Extractable SW = 118.32
-23 December 1988(Day of year=358), sorghum: 
+23 December 1988(Day of year=358), Sorghum: 
      Stage 7 Flowering  DAS = 69
      		Biomass       = 799.97 		 LAI            =   4.47
      		Stover N Conc =  12.26 		 Extractable SW =  97.98
-28 December 1988(Day of year=363), sorghum: 
+28 December 1988(Day of year=363), Sorghum: 
      Stage 8 StartGrainFill  DAS = 74
      		Biomass       = 918.21 		 LAI            =   4.47
      		Stover N Conc =  13.67 		 Extractable SW =  76.80
-3 February 1989(Day of year=34), sorghum: 
+3 February 1989(Day of year=34), Sorghum: 
      Stage 9 EndGrainFill  DAS = 111
      		Biomass       = 1427.60 		 LAI            =   2.20
      		Stover N Conc =   5.26 		 Extractable SW =   1.60
-5 February 1989(Day of year=36), sorghum: 
+5 February 1989(Day of year=36), Sorghum: 
      Stage 10 Maturity  DAS = 113
      		Biomass       = 1431.97 		 LAI            =   1.87
      		Stover N Conc =   5.18 		 Extractable SW =   1.36
-6 February 1989(Day of year=37), sorghum: 
+6 February 1989(Day of year=37), Sorghum: 
      Stage 11 HarvestRipe  DAS = 114
      		Biomass       = 1435.99 		 LAI            =   1.73
      		Stover N Conc =   5.11 		 Extractable SW =  29.00
-6 February 1989(Day of year=37), manager: 
+6 February 1989(Day of year=37), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -5211,7 +5211,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1989(Day of year=288), manager: 
+15 October 1989(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1989(Day of year=288), Fertiliser: 
      
@@ -5219,7 +5219,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1989(Day of year=288), sorghum: 
+15 October 1989(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -5259,47 +5259,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1989(Day of year=289), sorghum: 
+16 October 1989(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-19 October 1989(Day of year=292), sorghum: 
+19 October 1989(Day of year=292), Sorghum: 
      Stage 3 Emergence  DAS = 4
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  20.21
-30 October 1989(Day of year=303), sorghum: 
+30 October 1989(Day of year=303), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 15
      		Biomass       =   2.63 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW =  94.46
-16 November 1989(Day of year=320), sorghum: 
+16 November 1989(Day of year=320), Sorghum: 
      Stage 5 FloralInitiation  DAS = 32
      		Biomass       =  32.84 		 LAI            =   0.58
      		Stover N Conc =   0.89 		 Extractable SW = 151.49
-12 December 1989(Day of year=346), sorghum: 
+12 December 1989(Day of year=346), Sorghum: 
      Stage 6 FlagLeaf  DAS = 58
      		Biomass       = 520.74 		 LAI            =   4.46
      		Stover N Conc =   8.57 		 Extractable SW = 124.27
-27 December 1989(Day of year=361), sorghum: 
+27 December 1989(Day of year=361), Sorghum: 
      Stage 7 Flowering  DAS = 73
      		Biomass       = 883.14 		 LAI            =   4.49
      		Stover N Conc =  12.62 		 Extractable SW = 113.84
-31 December 1989(Day of year=365), sorghum: 
+31 December 1989(Day of year=365), Sorghum: 
      Stage 8 StartGrainFill  DAS = 77
      		Biomass       = 1002.57 		 LAI            =   4.49
      		Stover N Conc =  13.50 		 Extractable SW =  81.16
-5 February 1990(Day of year=36), sorghum: 
+5 February 1990(Day of year=36), Sorghum: 
      Stage 9 EndGrainFill  DAS = 113
      		Biomass       = 1417.08 		 LAI            =   2.11
      		Stover N Conc =   4.85 		 Extractable SW =  28.46
-8 February 1990(Day of year=39), sorghum: 
+8 February 1990(Day of year=39), Sorghum: 
      Stage 10 Maturity  DAS = 116
      		Biomass       = 1437.29 		 LAI            =   1.90
      		Stover N Conc =   4.64 		 Extractable SW =  83.16
-9 February 1990(Day of year=40), sorghum: 
+9 February 1990(Day of year=40), Sorghum: 
      Stage 11 HarvestRipe  DAS = 117
      		Biomass       = 1440.71 		 LAI            =   1.84
      		Stover N Conc =   4.59 		 Extractable SW =  81.11
-9 February 1990(Day of year=40), manager: 
+9 February 1990(Day of year=40), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -5366,7 +5366,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1990(Day of year=288), manager: 
+15 October 1990(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1990(Day of year=288), Fertiliser: 
      
@@ -5374,7 +5374,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1990(Day of year=288), sorghum: 
+15 October 1990(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -5414,47 +5414,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1990(Day of year=289), sorghum: 
+16 October 1990(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-19 October 1990(Day of year=292), sorghum: 
+19 October 1990(Day of year=292), Sorghum: 
      Stage 3 Emergence  DAS = 4
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  19.36
-31 October 1990(Day of year=304), sorghum: 
+31 October 1990(Day of year=304), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   2.84 		 LAI            =   0.02
      		Stover N Conc =   0.08 		 Extractable SW =  85.19
-16 November 1990(Day of year=320), sorghum: 
+16 November 1990(Day of year=320), Sorghum: 
      Stage 5 FloralInitiation  DAS = 32
      		Biomass       =  35.66 		 LAI            =   0.53
      		Stover N Conc =   0.92 		 Extractable SW = 125.54
-10 December 1990(Day of year=344), sorghum: 
+10 December 1990(Day of year=344), Sorghum: 
      Stage 6 FlagLeaf  DAS = 56
      		Biomass       = 491.87 		 LAI            =   4.46
      		Stover N Conc =   8.66 		 Extractable SW =  58.39
-5 January 1991(Day of year=5), sorghum: 
+5 January 1991(Day of year=5), Sorghum: 
      Stage 7 Flowering  DAS = 82
      		Biomass       = 724.22 		 LAI            =   3.49
      		Stover N Conc =  10.25 		 Extractable SW =   8.82
-9 January 1991(Day of year=9), sorghum: 
+9 January 1991(Day of year=9), Sorghum: 
      Stage 8 StartGrainFill  DAS = 86
      		Biomass       = 758.22 		 LAI            =   3.49
      		Stover N Conc =  10.41 		 Extractable SW =  11.83
-14 February 1991(Day of year=45), sorghum: 
+14 February 1991(Day of year=45), Sorghum: 
      Stage 9 EndGrainFill  DAS = 122
      		Biomass       = 903.80 		 LAI            =   0.46
      		Stover N Conc =   5.81 		 Extractable SW =  91.39
-16 February 1991(Day of year=47), sorghum: 
+16 February 1991(Day of year=47), Sorghum: 
      Stage 10 Maturity  DAS = 124
      		Biomass       = 905.91 		 LAI            =   0.44
      		Stover N Conc =   5.78 		 Extractable SW =  87.48
-17 February 1991(Day of year=48), sorghum: 
+17 February 1991(Day of year=48), Sorghum: 
      Stage 11 HarvestRipe  DAS = 125
      		Biomass       = 906.74 		 LAI            =   0.44
      		Stover N Conc =   5.77 		 Extractable SW =  85.65
-17 February 1991(Day of year=48), manager: 
+17 February 1991(Day of year=48), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -5521,7 +5521,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1991(Day of year=288), manager: 
+15 October 1991(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1991(Day of year=288), Fertiliser: 
      
@@ -5529,7 +5529,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1991(Day of year=288), sorghum: 
+15 October 1991(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -5569,47 +5569,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1991(Day of year=289), sorghum: 
+16 October 1991(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1991(Day of year=293), sorghum: 
+20 October 1991(Day of year=293), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  27.90
-30 October 1991(Day of year=303), sorghum: 
+30 October 1991(Day of year=303), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 15
      		Biomass       =   2.95 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW =  86.25
-13 November 1991(Day of year=317), sorghum: 
+13 November 1991(Day of year=317), Sorghum: 
      Stage 5 FloralInitiation  DAS = 29
      		Biomass       =  25.48 		 LAI            =   0.52
      		Stover N Conc =   0.82 		 Extractable SW = 120.86
-9 December 1991(Day of year=343), sorghum: 
+9 December 1991(Day of year=343), Sorghum: 
      Stage 6 FlagLeaf  DAS = 55
      		Biomass       = 515.48 		 LAI            =   4.45
      		Stover N Conc =   8.92 		 Extractable SW = 115.38
-22 December 1991(Day of year=356), sorghum: 
+22 December 1991(Day of year=356), Sorghum: 
      Stage 7 Flowering  DAS = 68
      		Biomass       = 839.62 		 LAI            =   4.45
      		Stover N Conc =  13.36 		 Extractable SW =  81.32
-27 December 1991(Day of year=361), sorghum: 
+27 December 1991(Day of year=361), Sorghum: 
      Stage 8 StartGrainFill  DAS = 73
      		Biomass       = 968.26 		 LAI            =   4.45
      		Stover N Conc =  15.06 		 Extractable SW =  42.21
-1 February 1992(Day of year=32), sorghum: 
+1 February 1992(Day of year=32), Sorghum: 
      Stage 9 EndGrainFill  DAS = 109
      		Biomass       = 1280.50 		 LAI            =   1.11
      		Stover N Conc =   5.63 		 Extractable SW =  69.43
-3 February 1992(Day of year=34), sorghum: 
+3 February 1992(Day of year=34), Sorghum: 
      Stage 10 Maturity  DAS = 111
      		Biomass       = 1295.56 		 LAI            =   1.03
      		Stover N Conc =   5.41 		 Extractable SW =  73.28
-4 February 1992(Day of year=35), sorghum: 
+4 February 1992(Day of year=35), Sorghum: 
      Stage 11 HarvestRipe  DAS = 112
      		Biomass       = 1304.05 		 LAI            =   0.99
      		Stover N Conc =   5.30 		 Extractable SW =  71.01
-4 February 1992(Day of year=35), manager: 
+4 February 1992(Day of year=35), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -5676,7 +5676,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1992(Day of year=289), manager: 
+15 October 1992(Day of year=289), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1992(Day of year=289), Fertiliser: 
      
@@ -5684,7 +5684,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1992(Day of year=289), sorghum: 
+15 October 1992(Day of year=289), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -5724,47 +5724,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1992(Day of year=290), sorghum: 
+16 October 1992(Day of year=290), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-21 October 1992(Day of year=295), sorghum: 
+21 October 1992(Day of year=295), Sorghum: 
      Stage 3 Emergence  DAS = 6
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  31.87
-1 November 1992(Day of year=306), sorghum: 
+1 November 1992(Day of year=306), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 17
      		Biomass       =   2.72 		 LAI            =   0.02
      		Stover N Conc =   0.08 		 Extractable SW =  98.09
-20 November 1992(Day of year=325), sorghum: 
+20 November 1992(Day of year=325), Sorghum: 
      Stage 5 FloralInitiation  DAS = 36
      		Biomass       =  32.72 		 LAI            =   0.60
      		Stover N Conc =   0.91 		 Extractable SW = 187.51
-15 December 1992(Day of year=350), sorghum: 
+15 December 1992(Day of year=350), Sorghum: 
      Stage 6 FlagLeaf  DAS = 61
      		Biomass       = 525.03 		 LAI            =   4.50
      		Stover N Conc =   8.83 		 Extractable SW = 103.95
-29 December 1992(Day of year=364), sorghum: 
+29 December 1992(Day of year=364), Sorghum: 
      Stage 7 Flowering  DAS = 75
      		Biomass       = 809.81 		 LAI            =   4.52
      		Stover N Conc =  12.06 		 Extractable SW =  39.73
-3 January 1993(Day of year=3), sorghum: 
+3 January 1993(Day of year=3), Sorghum: 
      Stage 8 StartGrainFill  DAS = 80
      		Biomass       = 864.52 		 LAI            =   4.52
      		Stover N Conc =  12.55 		 Extractable SW =  22.73
-8 February 1993(Day of year=39), sorghum: 
+8 February 1993(Day of year=39), Sorghum: 
      Stage 9 EndGrainFill  DAS = 116
      		Biomass       = 1059.93 		 LAI            =   0.63
      		Stover N Conc =   4.76 		 Extractable SW =   2.62
-10 February 1993(Day of year=41), sorghum: 
+10 February 1993(Day of year=41), Sorghum: 
      Stage 10 Maturity  DAS = 118
      		Biomass       = 1061.46 		 LAI            =   0.63
      		Stover N Conc =   4.73 		 Extractable SW =   1.72
-11 February 1993(Day of year=42), sorghum: 
+11 February 1993(Day of year=42), Sorghum: 
      Stage 11 HarvestRipe  DAS = 119
      		Biomass       = 1061.85 		 LAI            =   0.63
      		Stover N Conc =   4.72 		 Extractable SW =   1.64
-11 February 1993(Day of year=42), manager: 
+11 February 1993(Day of year=42), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -5831,7 +5831,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1993(Day of year=288), manager: 
+15 October 1993(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1993(Day of year=288), Fertiliser: 
      
@@ -5839,7 +5839,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1993(Day of year=288), sorghum: 
+15 October 1993(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -5879,47 +5879,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1993(Day of year=289), sorghum: 
+16 October 1993(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-19 October 1993(Day of year=292), sorghum: 
+19 October 1993(Day of year=292), Sorghum: 
      Stage 3 Emergence  DAS = 4
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  21.66
-30 October 1993(Day of year=303), sorghum: 
+30 October 1993(Day of year=303), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 15
      		Biomass       =   2.76 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW =  87.47
-17 November 1993(Day of year=321), sorghum: 
+17 November 1993(Day of year=321), Sorghum: 
      Stage 5 FloralInitiation  DAS = 33
      		Biomass       =  29.08 		 LAI            =   0.60
      		Stover N Conc =   0.90 		 Extractable SW = 144.17
-13 December 1993(Day of year=347), sorghum: 
+13 December 1993(Day of year=347), Sorghum: 
      Stage 6 FlagLeaf  DAS = 59
      		Biomass       = 486.18 		 LAI            =   4.47
      		Stover N Conc =   8.88 		 Extractable SW = 197.91
-26 December 1993(Day of year=360), sorghum: 
+26 December 1993(Day of year=360), Sorghum: 
      Stage 7 Flowering  DAS = 72
      		Biomass       = 832.77 		 LAI            =   4.47
      		Stover N Conc =  12.44 		 Extractable SW = 142.96
-31 December 1993(Day of year=365), sorghum: 
+31 December 1993(Day of year=365), Sorghum: 
      Stage 8 StartGrainFill  DAS = 77
      		Biomass       = 986.98 		 LAI            =   4.47
      		Stover N Conc =  13.63 		 Extractable SW =  95.04
-6 February 1994(Day of year=37), sorghum: 
+6 February 1994(Day of year=37), Sorghum: 
      Stage 9 EndGrainFill  DAS = 114
      		Biomass       = 1350.42 		 LAI            =   1.51
      		Stover N Conc =   4.96 		 Extractable SW =  18.68
-8 February 1994(Day of year=39), sorghum: 
+8 February 1994(Day of year=39), Sorghum: 
      Stage 10 Maturity  DAS = 116
      		Biomass       = 1366.00 		 LAI            =   1.39
      		Stover N Conc =   4.78 		 Extractable SW =  12.16
-9 February 1994(Day of year=40), sorghum: 
+9 February 1994(Day of year=40), Sorghum: 
      Stage 11 HarvestRipe  DAS = 117
      		Biomass       = 1371.88 		 LAI            =   1.33
      		Stover N Conc =   4.69 		 Extractable SW =   9.43
-9 February 1994(Day of year=40), manager: 
+9 February 1994(Day of year=40), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -5986,7 +5986,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1994(Day of year=288), manager: 
+15 October 1994(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1994(Day of year=288), Fertiliser: 
      
@@ -5994,7 +5994,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1994(Day of year=288), sorghum: 
+15 October 1994(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -6034,47 +6034,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1994(Day of year=289), sorghum: 
+16 October 1994(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1994(Day of year=293), sorghum: 
+20 October 1994(Day of year=293), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  25.61
-1 November 1994(Day of year=305), sorghum: 
+1 November 1994(Day of year=305), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 17
      		Biomass       =   2.96 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW = 102.91
-18 November 1994(Day of year=322), sorghum: 
+18 November 1994(Day of year=322), Sorghum: 
      Stage 5 FloralInitiation  DAS = 34
      		Biomass       =  32.59 		 LAI            =   0.61
      		Stover N Conc =   0.94 		 Extractable SW = 151.31
-13 December 1994(Day of year=347), sorghum: 
+13 December 1994(Day of year=347), Sorghum: 
      Stage 6 FlagLeaf  DAS = 59
      		Biomass       = 477.30 		 LAI            =   4.49
      		Stover N Conc =   8.69 		 Extractable SW = 110.42
-29 December 1994(Day of year=363), sorghum: 
+29 December 1994(Day of year=363), Sorghum: 
      Stage 7 Flowering  DAS = 75
      		Biomass       = 784.40 		 LAI            =   4.51
      		Stover N Conc =  11.78 		 Extractable SW =  20.49
-3 January 1995(Day of year=3), sorghum: 
+3 January 1995(Day of year=3), Sorghum: 
      Stage 8 StartGrainFill  DAS = 80
      		Biomass       = 811.98 		 LAI            =   4.17
      		Stover N Conc =  11.99 		 Extractable SW =  11.30
-8 February 1995(Day of year=39), sorghum: 
+8 February 1995(Day of year=39), Sorghum: 
      Stage 9 EndGrainFill  DAS = 116
      		Biomass       = 1334.49 		 LAI            =   1.47
      		Stover N Conc =   5.11 		 Extractable SW =  34.94
-10 February 1995(Day of year=41), sorghum: 
+10 February 1995(Day of year=41), Sorghum: 
      Stage 10 Maturity  DAS = 118
      		Biomass       = 1341.13 		 LAI            =   1.37
      		Stover N Conc =   5.04 		 Extractable SW =  31.99
-11 February 1995(Day of year=42), sorghum: 
+11 February 1995(Day of year=42), Sorghum: 
      Stage 11 HarvestRipe  DAS = 119
      		Biomass       = 1342.51 		 LAI            =   1.37
      		Stover N Conc =   5.02 		 Extractable SW =  31.26
-11 February 1995(Day of year=42), manager: 
+11 February 1995(Day of year=42), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -6141,7 +6141,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1995(Day of year=288), manager: 
+15 October 1995(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1995(Day of year=288), Fertiliser: 
      
@@ -6149,7 +6149,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1995(Day of year=288), sorghum: 
+15 October 1995(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -6189,47 +6189,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1995(Day of year=289), sorghum: 
+16 October 1995(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1995(Day of year=293), sorghum: 
+20 October 1995(Day of year=293), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  25.77
-30 October 1995(Day of year=303), sorghum: 
+30 October 1995(Day of year=303), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 15
      		Biomass       =   2.59 		 LAI            =   0.02
      		Stover N Conc =   0.07 		 Extractable SW =  97.49
-15 November 1995(Day of year=319), sorghum: 
+15 November 1995(Day of year=319), Sorghum: 
      Stage 5 FloralInitiation  DAS = 31
      		Biomass       =  32.58 		 LAI            =   0.59
      		Stover N Conc =   0.93 		 Extractable SW = 143.19
-10 December 1995(Day of year=344), sorghum: 
+10 December 1995(Day of year=344), Sorghum: 
      Stage 6 FlagLeaf  DAS = 56
      		Biomass       = 489.34 		 LAI            =   4.37
      		Stover N Conc =   8.66 		 Extractable SW = 148.17
-24 December 1995(Day of year=358), sorghum: 
+24 December 1995(Day of year=358), Sorghum: 
      Stage 7 Flowering  DAS = 70
      		Biomass       = 851.38 		 LAI            =   4.37
      		Stover N Conc =  12.50 		 Extractable SW = 174.54
-29 December 1995(Day of year=363), sorghum: 
+29 December 1995(Day of year=363), Sorghum: 
      Stage 8 StartGrainFill  DAS = 75
      		Biomass       = 993.38 		 LAI            =   4.37
      		Stover N Conc =  13.27 		 Extractable SW = 144.28
-4 February 1996(Day of year=35), sorghum: 
+4 February 1996(Day of year=35), Sorghum: 
      Stage 9 EndGrainFill  DAS = 112
      		Biomass       = 1779.01 		 LAI            =   2.53
      		Stover N Conc =   4.89 		 Extractable SW = 142.30
-6 February 1996(Day of year=37), sorghum: 
+6 February 1996(Day of year=37), Sorghum: 
      Stage 10 Maturity  DAS = 114
      		Biomass       = 1795.95 		 LAI            =   2.32
      		Stover N Conc =   4.70 		 Extractable SW = 138.74
-7 February 1996(Day of year=38), sorghum: 
+7 February 1996(Day of year=38), Sorghum: 
      Stage 11 HarvestRipe  DAS = 115
      		Biomass       = 1802.80 		 LAI            =   2.24
      		Stover N Conc =   4.62 		 Extractable SW = 135.57
-7 February 1996(Day of year=38), manager: 
+7 February 1996(Day of year=38), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -6296,7 +6296,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1996(Day of year=289), manager: 
+15 October 1996(Day of year=289), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1996(Day of year=289), Fertiliser: 
      
@@ -6304,7 +6304,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1996(Day of year=289), sorghum: 
+15 October 1996(Day of year=289), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -6344,47 +6344,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1996(Day of year=290), sorghum: 
+16 October 1996(Day of year=290), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1996(Day of year=294), sorghum: 
+20 October 1996(Day of year=294), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  28.80
-31 October 1996(Day of year=305), sorghum: 
+31 October 1996(Day of year=305), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   2.86 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW =  90.64
-19 November 1996(Day of year=324), sorghum: 
+19 November 1996(Day of year=324), Sorghum: 
      Stage 5 FloralInitiation  DAS = 35
      		Biomass       =  34.18 		 LAI            =   0.56
      		Stover N Conc =   0.92 		 Extractable SW = 144.80
-16 December 1996(Day of year=351), sorghum: 
+16 December 1996(Day of year=351), Sorghum: 
      Stage 6 FlagLeaf  DAS = 62
      		Biomass       = 493.26 		 LAI            =   4.49
      		Stover N Conc =   8.95 		 Extractable SW = 116.72
-30 December 1996(Day of year=365), sorghum: 
+30 December 1996(Day of year=365), Sorghum: 
      Stage 7 Flowering  DAS = 76
      		Biomass       = 871.89 		 LAI            =   4.51
      		Stover N Conc =  13.67 		 Extractable SW =  45.84
-4 January 1997(Day of year=4), sorghum: 
+4 January 1997(Day of year=4), Sorghum: 
      Stage 8 StartGrainFill  DAS = 81
      		Biomass       = 978.36 		 LAI            =   4.51
      		Stover N Conc =  14.75 		 Extractable SW =  45.47
-10 February 1997(Day of year=41), sorghum: 
+10 February 1997(Day of year=41), Sorghum: 
      Stage 9 EndGrainFill  DAS = 118
      		Biomass       = 1150.13 		 LAI            =   0.57
      		Stover N Conc =   5.62 		 Extractable SW =   0.83
-12 February 1997(Day of year=43), sorghum: 
+12 February 1997(Day of year=43), Sorghum: 
      Stage 10 Maturity  DAS = 120
      		Biomass       = 1150.68 		 LAI            =   0.47
      		Stover N Conc =   5.61 		 Extractable SW =   0.72
-13 February 1997(Day of year=44), sorghum: 
+13 February 1997(Day of year=44), Sorghum: 
      Stage 11 HarvestRipe  DAS = 121
      		Biomass       = 1150.93 		 LAI            =   0.43
      		Stover N Conc =   5.61 		 Extractable SW =   0.67
-13 February 1997(Day of year=44), manager: 
+13 February 1997(Day of year=44), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -6451,7 +6451,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1997(Day of year=288), manager: 
+15 October 1997(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1997(Day of year=288), Fertiliser: 
      
@@ -6459,7 +6459,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1997(Day of year=288), sorghum: 
+15 October 1997(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -6499,47 +6499,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1997(Day of year=289), sorghum: 
+16 October 1997(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 1997(Day of year=293), sorghum: 
+20 October 1997(Day of year=293), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  33.43
-31 October 1997(Day of year=304), sorghum: 
+31 October 1997(Day of year=304), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   2.72 		 LAI            =   0.02
      		Stover N Conc =   0.08 		 Extractable SW = 100.38
-15 November 1997(Day of year=319), sorghum: 
+15 November 1997(Day of year=319), Sorghum: 
      Stage 5 FloralInitiation  DAS = 31
      		Biomass       =  24.43 		 LAI            =   0.50
      		Stover N Conc =   0.75 		 Extractable SW = 147.21
-10 December 1997(Day of year=344), sorghum: 
+10 December 1997(Day of year=344), Sorghum: 
      Stage 6 FlagLeaf  DAS = 56
      		Biomass       = 475.16 		 LAI            =   4.45
      		Stover N Conc =   8.47 		 Extractable SW = 118.00
-23 December 1997(Day of year=357), sorghum: 
+23 December 1997(Day of year=357), Sorghum: 
      Stage 7 Flowering  DAS = 69
      		Biomass       = 787.28 		 LAI            =   4.47
      		Stover N Conc =  11.87 		 Extractable SW =  94.01
-28 December 1997(Day of year=362), sorghum: 
+28 December 1997(Day of year=362), Sorghum: 
      Stage 8 StartGrainFill  DAS = 74
      		Biomass       = 907.57 		 LAI            =   4.47
      		Stover N Conc =  12.70 		 Extractable SW =  83.42
-2 February 1998(Day of year=33), sorghum: 
+2 February 1998(Day of year=33), Sorghum: 
      Stage 9 EndGrainFill  DAS = 110
      		Biomass       = 1269.36 		 LAI            =   1.32
      		Stover N Conc =   4.55 		 Extractable SW =  36.40
-4 February 1998(Day of year=35), sorghum: 
+4 February 1998(Day of year=35), Sorghum: 
      Stage 10 Maturity  DAS = 112
      		Biomass       = 1283.44 		 LAI            =   1.22
      		Stover N Conc =   4.40 		 Extractable SW =  32.87
-5 February 1998(Day of year=36), sorghum: 
+5 February 1998(Day of year=36), Sorghum: 
      Stage 11 HarvestRipe  DAS = 113
      		Biomass       = 1289.39 		 LAI            =   1.17
      		Stover N Conc =   4.34 		 Extractable SW =  29.68
-5 February 1998(Day of year=36), manager: 
+5 February 1998(Day of year=36), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -6606,7 +6606,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1998(Day of year=288), manager: 
+15 October 1998(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1998(Day of year=288), Fertiliser: 
      
@@ -6614,7 +6614,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1998(Day of year=288), sorghum: 
+15 October 1998(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -6654,47 +6654,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1998(Day of year=289), sorghum: 
+16 October 1998(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-19 October 1998(Day of year=292), sorghum: 
+19 October 1998(Day of year=292), Sorghum: 
      Stage 3 Emergence  DAS = 4
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  19.44
-31 October 1998(Day of year=304), sorghum: 
+31 October 1998(Day of year=304), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   2.66 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW =  90.67
-17 November 1998(Day of year=321), sorghum: 
+17 November 1998(Day of year=321), Sorghum: 
      Stage 5 FloralInitiation  DAS = 33
      		Biomass       =  28.03 		 LAI            =   0.56
      		Stover N Conc =   0.90 		 Extractable SW = 135.10
-14 December 1998(Day of year=348), sorghum: 
+14 December 1998(Day of year=348), Sorghum: 
      Stage 6 FlagLeaf  DAS = 60
      		Biomass       = 491.87 		 LAI            =   4.46
      		Stover N Conc =   8.79 		 Extractable SW = 130.21
-27 December 1998(Day of year=361), sorghum: 
+27 December 1998(Day of year=361), Sorghum: 
      Stage 7 Flowering  DAS = 73
      		Biomass       = 828.16 		 LAI            =   4.48
      		Stover N Conc =  12.53 		 Extractable SW =  95.19
-1 January 1999(Day of year=1), sorghum: 
+1 January 1999(Day of year=1), Sorghum: 
      Stage 8 StartGrainFill  DAS = 78
      		Biomass       = 923.66 		 LAI            =   4.48
      		Stover N Conc =  13.62 		 Extractable SW =  76.65
-7 February 1999(Day of year=38), sorghum: 
+7 February 1999(Day of year=38), Sorghum: 
      Stage 9 EndGrainFill  DAS = 115
      		Biomass       = 1418.41 		 LAI            =   1.63
      		Stover N Conc =   4.81 		 Extractable SW =  98.50
-9 February 1999(Day of year=40), sorghum: 
+9 February 1999(Day of year=40), Sorghum: 
      Stage 10 Maturity  DAS = 117
      		Biomass       = 1424.21 		 LAI            =   1.57
      		Stover N Conc =   4.71 		 Extractable SW = 127.97
-10 February 1999(Day of year=41), sorghum: 
+10 February 1999(Day of year=41), Sorghum: 
      Stage 11 HarvestRipe  DAS = 118
      		Biomass       = 1426.52 		 LAI            =   1.53
      		Stover N Conc =   4.67 		 Extractable SW = 130.42
-10 February 1999(Day of year=41), manager: 
+10 February 1999(Day of year=41), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -6761,7 +6761,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 1999(Day of year=288), manager: 
+15 October 1999(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 1999(Day of year=288), Fertiliser: 
      
@@ -6769,7 +6769,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 1999(Day of year=288), sorghum: 
+15 October 1999(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -6809,47 +6809,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 1999(Day of year=289), sorghum: 
+16 October 1999(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-19 October 1999(Day of year=292), sorghum: 
+19 October 1999(Day of year=292), Sorghum: 
      Stage 3 Emergence  DAS = 4
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  20.24
-30 October 1999(Day of year=303), sorghum: 
+30 October 1999(Day of year=303), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 15
      		Biomass       =   2.71 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW =  90.07
-19 November 1999(Day of year=323), sorghum: 
+19 November 1999(Day of year=323), Sorghum: 
      Stage 5 FloralInitiation  DAS = 35
      		Biomass       =  37.14 		 LAI            =   0.60
      		Stover N Conc =   0.96 		 Extractable SW = 155.81
-18 December 1999(Day of year=352), sorghum: 
+18 December 1999(Day of year=352), Sorghum: 
      Stage 6 FlagLeaf  DAS = 64
      		Biomass       = 539.74 		 LAI            =   4.49
      		Stover N Conc =   8.96 		 Extractable SW = 177.79
-4 January 2000(Day of year=4), sorghum: 
+4 January 2000(Day of year=4), Sorghum: 
      Stage 7 Flowering  DAS = 81
      		Biomass       = 911.07 		 LAI            =   4.49
      		Stover N Conc =  12.94 		 Extractable SW = 194.26
-8 January 2000(Day of year=8), sorghum: 
+8 January 2000(Day of year=8), Sorghum: 
      Stage 8 StartGrainFill  DAS = 85
      		Biomass       = 1011.84 		 LAI            =   4.49
      		Stover N Conc =  13.52 		 Extractable SW = 175.73
-15 February 2000(Day of year=46), sorghum: 
+15 February 2000(Day of year=46), Sorghum: 
      Stage 9 EndGrainFill  DAS = 123
      		Biomass       = 1835.93 		 LAI            =   2.71
      		Stover N Conc =   5.36 		 Extractable SW =  86.27
-18 February 2000(Day of year=49), sorghum: 
+18 February 2000(Day of year=49), Sorghum: 
      Stage 10 Maturity  DAS = 126
      		Biomass       = 1861.43 		 LAI            =   2.48
      		Stover N Conc =   5.10 		 Extractable SW =  78.94
-19 February 2000(Day of year=50), sorghum: 
+19 February 2000(Day of year=50), Sorghum: 
      Stage 11 HarvestRipe  DAS = 127
      		Biomass       = 1869.48 		 LAI            =   2.40
      		Stover N Conc =   5.02 		 Extractable SW =  76.41
-19 February 2000(Day of year=50), manager: 
+19 February 2000(Day of year=50), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -6916,7 +6916,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 2000(Day of year=289), manager: 
+15 October 2000(Day of year=289), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 2000(Day of year=289), Fertiliser: 
      
@@ -6924,7 +6924,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 2000(Day of year=289), sorghum: 
+15 October 2000(Day of year=289), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -6964,47 +6964,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 2000(Day of year=290), sorghum: 
+16 October 2000(Day of year=290), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 2000(Day of year=294), sorghum: 
+20 October 2000(Day of year=294), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  25.61
-29 October 2000(Day of year=303), sorghum: 
+29 October 2000(Day of year=303), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 14
      		Biomass       =   2.66 		 LAI            =   0.02
      		Stover N Conc =   0.08 		 Extractable SW =  78.63
-17 November 2000(Day of year=322), sorghum: 
+17 November 2000(Day of year=322), Sorghum: 
      Stage 5 FloralInitiation  DAS = 33
      		Biomass       =  27.43 		 LAI            =   0.57
      		Stover N Conc =   0.86 		 Extractable SW = 140.59
-12 December 2000(Day of year=347), sorghum: 
+12 December 2000(Day of year=347), Sorghum: 
      Stage 6 FlagLeaf  DAS = 58
      		Biomass       = 489.32 		 LAI            =   4.38
      		Stover N Conc =   8.34 		 Extractable SW =  61.07
-30 December 2000(Day of year=365), sorghum: 
+30 December 2000(Day of year=365), Sorghum: 
      Stage 7 Flowering  DAS = 76
      		Biomass       = 752.43 		 LAI            =   4.39
      		Stover N Conc =  10.89 		 Extractable SW =  42.26
-3 January 2001(Day of year=3), sorghum: 
+3 January 2001(Day of year=3), Sorghum: 
      Stage 8 StartGrainFill  DAS = 80
      		Biomass       = 835.08 		 LAI            =   4.39
      		Stover N Conc =  11.32 		 Extractable SW =  23.16
-9 February 2001(Day of year=40), sorghum: 
+9 February 2001(Day of year=40), Sorghum: 
      Stage 9 EndGrainFill  DAS = 117
      		Biomass       = 944.33 		 LAI            =   0.50
      		Stover N Conc =   4.72 		 Extractable SW = 117.57
-11 February 2001(Day of year=42), sorghum: 
+11 February 2001(Day of year=42), Sorghum: 
      Stage 10 Maturity  DAS = 119
      		Biomass       = 948.32 		 LAI            =   0.47
      		Stover N Conc =   4.69 		 Extractable SW = 113.43
-12 February 2001(Day of year=43), sorghum: 
+12 February 2001(Day of year=43), Sorghum: 
      Stage 11 HarvestRipe  DAS = 120
      		Biomass       = 949.91 		 LAI            =   0.46
      		Stover N Conc =   4.66 		 Extractable SW = 111.49
-12 February 2001(Day of year=43), manager: 
+12 February 2001(Day of year=43), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -7071,7 +7071,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 2001(Day of year=288), manager: 
+15 October 2001(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 2001(Day of year=288), Fertiliser: 
      
@@ -7079,7 +7079,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 2001(Day of year=288), sorghum: 
+15 October 2001(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -7119,47 +7119,47 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 2001(Day of year=289), sorghum: 
+16 October 2001(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-21 October 2001(Day of year=294), sorghum: 
+21 October 2001(Day of year=294), Sorghum: 
      Stage 3 Emergence  DAS = 6
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  35.88
-31 October 2001(Day of year=304), sorghum: 
+31 October 2001(Day of year=304), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 16
      		Biomass       =   2.84 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW =  99.16
-17 November 2001(Day of year=321), sorghum: 
+17 November 2001(Day of year=321), Sorghum: 
      Stage 5 FloralInitiation  DAS = 33
      		Biomass       =  30.91 		 LAI            =   0.60
      		Stover N Conc =   0.91 		 Extractable SW = 157.26
-12 December 2001(Day of year=346), sorghum: 
+12 December 2001(Day of year=346), Sorghum: 
      Stage 6 FlagLeaf  DAS = 58
      		Biomass       = 452.31 		 LAI            =   4.37
      		Stover N Conc =   8.81 		 Extractable SW = 214.95
-26 December 2001(Day of year=360), sorghum: 
+26 December 2001(Day of year=360), Sorghum: 
      Stage 7 Flowering  DAS = 72
      		Biomass       = 806.98 		 LAI            =   4.39
      		Stover N Conc =  12.36 		 Extractable SW = 131.03
-31 December 2001(Day of year=365), sorghum: 
+31 December 2001(Day of year=365), Sorghum: 
      Stage 8 StartGrainFill  DAS = 77
      		Biomass       = 946.19 		 LAI            =   4.39
      		Stover N Conc =  13.23 		 Extractable SW =  88.83
-5 February 2002(Day of year=36), sorghum: 
+5 February 2002(Day of year=36), Sorghum: 
      Stage 9 EndGrainFill  DAS = 113
      		Biomass       = 1341.27 		 LAI            =   1.57
      		Stover N Conc =   5.08 		 Extractable SW =   5.73
-7 February 2002(Day of year=38), sorghum: 
+7 February 2002(Day of year=38), Sorghum: 
      Stage 10 Maturity  DAS = 115
      		Biomass       = 1345.38 		 LAI            =   1.32
      		Stover N Conc =   5.01 		 Extractable SW =  11.56
-8 February 2002(Day of year=39), sorghum: 
+8 February 2002(Day of year=39), Sorghum: 
      Stage 11 HarvestRipe  DAS = 116
      		Biomass       = 1349.93 		 LAI            =   1.22
      		Stover N Conc =   4.93 		 Extractable SW =  39.26
-8 February 2002(Day of year=39), manager: 
+8 February 2002(Day of year=39), Manager: 
      Manager sending message :- sorghum harvest
      
      Harvest
@@ -7226,7 +7226,7 @@ Title                  = Dalby 1500mm wet soil
      
                       Effective Cover from Surface Materials =   0.3
      
-15 October 2002(Day of year=288), manager: 
+15 October 2002(Day of year=288), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 15 October 2002(Day of year=288), Fertiliser: 
      
@@ -7234,7 +7234,7 @@ Title                  = Dalby 1500mm wet soil
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- sorghum sow  cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0
-15 October 2002(Day of year=288), sorghum: 
+15 October 2002(Day of year=288), Sorghum: 
      Sowing initiate
      
                  Row spacing converted from m to mm
@@ -7274,25 +7274,25 @@ Title                  = Dalby 1500mm wet soil
              300.0     0.040          0.410       1.000
          ---------------------------------------------------
      
-16 October 2002(Day of year=289), sorghum: 
+16 October 2002(Day of year=289), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-20 October 2002(Day of year=293), sorghum: 
+20 October 2002(Day of year=293), Sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =  25.54
-30 October 2002(Day of year=303), sorghum: 
+30 October 2002(Day of year=303), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 15
      		Biomass       =   2.96 		 LAI            =   0.03
      		Stover N Conc =   0.08 		 Extractable SW =  81.36
-14 November 2002(Day of year=318), sorghum: 
+14 November 2002(Day of year=318), Sorghum: 
      Stage 5 FloralInitiation  DAS = 30
      		Biomass       =  32.67 		 LAI            =   0.59
      		Stover N Conc =   1.01 		 Extractable SW = 134.90
-9 December 2002(Day of year=343), sorghum: 
+9 December 2002(Day of year=343), Sorghum: 
      Stage 6 FlagLeaf  DAS = 55
      		Biomass       = 541.14 		 LAI            =   4.46
      		Stover N Conc =   8.80 		 Extractable SW =  64.80
-21 December 2002(Day of year=355), clock: 
+21 December 2002(Day of year=355), Clock: 
      Simulation is terminating due to end criteria being met.

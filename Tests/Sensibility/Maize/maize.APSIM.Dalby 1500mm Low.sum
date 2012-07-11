@@ -11,18 +11,18 @@
 
 Version                = 7.5
 Title                  = Dalby 1500mm wet soil Low Population
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "met" = %apsim%\Model\input.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                        "maize" = %apsim%\Model\maize.dll
+   Component                        "Maize" = %apsim%\Model\Maize.dll
    Component                      "Tracker" = %apsim%\Model\Tracker.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -38,7 +38,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      Simulation end date   = 21/12/2002
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.day
         clock.year
@@ -54,7 +54,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      Sparse data is not allowed
      INPUT File name: %apsim%\Tests\MetFiles\Dalby.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -219,7 +219,7 @@ Title                  = Dalby 1500mm wet soil Low Population
            Totals  150789.2 12063.1  1377.4   172.2   400.0     8.0
           ---------------------------------------------------------
 
-------- maize Initialisation --------------------------------------------------
+------- Maize Initialisation --------------------------------------------------
       Initialising, V1.0 2000.01.21
      
          - Reading constants
@@ -261,7 +261,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1957(Day of year=274), manager: 
+1 October 1957(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1957(Day of year=274), Fertiliser: 
      
@@ -269,7 +269,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1957(Day of year=274), maize: 
+1 October 1957(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -325,45 +325,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1957(Day of year=275), maize: 
+2 October 1957(Day of year=275), Maize: 
       stage    2.0 germination
-5 October 1957(Day of year=278), maize: 
+5 October 1957(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.30635
-19 October 1957(Day of year=292), maize: 
+19 October 1957(Day of year=292), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.9191474       lai =    0.1306671E-01
                           stover N conc =    3.799521       extractable sw =    72.29713
-23 October 1957(Day of year=296), maize: 
+23 October 1957(Day of year=296), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.079499       lai =    0.2568022E-01
                           stover N conc =    3.610758       extractable sw =    108.1620
-30 November 1957(Day of year=334), maize: 
+30 November 1957(Day of year=334), Maize: 
       stage    6.0 flag_leaf
                           biomass =           329.0888       lai =     1.585818
                           stover N conc =    2.392454       extractable sw =    107.7518
-6 December 1957(Day of year=340), maize: 
+6 December 1957(Day of year=340), Maize: 
       stage    7.0 flowering
                           biomass =           452.5386       lai =     1.560056
                           stover N conc =    2.237671       extractable sw =    69.21793
-16 December 1957(Day of year=350), maize: 
+16 December 1957(Day of year=350), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           580.0831       lai =     1.336939
                           stover N conc =    2.083822       extractable sw =    24.67483
-30 January 1958(Day of year=30), maize: 
+30 January 1958(Day of year=30), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           680.8716       lai =    0.3021655
                           stover N conc =    1.860620       extractable sw =    24.48185
-31 January 1958(Day of year=31), maize: 
+31 January 1958(Day of year=31), Maize: 
       stage   10.0 maturity
                           biomass =           683.2397       lai =    0.3021655
                           stover N conc =    1.853574       extractable sw =    25.68597
-1 February 1958(Day of year=32), maize: 
+1 February 1958(Day of year=32), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           683.2397       lai =    0.5840153E-02
                           stover N conc =    1.881933       extractable sw =    24.04516
-1 February 1958(Day of year=32), manager: 
+1 February 1958(Day of year=32), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -436,7 +436,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1958(Day of year=274), manager: 
+1 October 1958(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1958(Day of year=274), Fertiliser: 
      
@@ -444,7 +444,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1958(Day of year=274), maize: 
+1 October 1958(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -500,45 +500,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1958(Day of year=275), maize: 
+2 October 1958(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1958(Day of year=277), maize: 
+4 October 1958(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.57754
-22 October 1958(Day of year=295), maize: 
+22 October 1958(Day of year=295), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.498862       lai =    0.1372167E-01
                           stover N conc =    3.667020       extractable sw =    124.3915
-26 October 1958(Day of year=299), maize: 
+26 October 1958(Day of year=299), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.757415       lai =    0.2354720E-01
                           stover N conc =    3.408416       extractable sw =    120.5158
-5 December 1958(Day of year=339), maize: 
+5 December 1958(Day of year=339), Maize: 
       stage    6.0 flag_leaf
                           biomass =           301.6327       lai =     1.588774
                           stover N conc =    2.346224       extractable sw =    176.6390
-11 December 1958(Day of year=345), maize: 
+11 December 1958(Day of year=345), Maize: 
       stage    7.0 flowering
                           biomass =           423.6496       lai =     1.559932
                           stover N conc =    2.208070       extractable sw =    136.1210
-21 December 1958(Day of year=355), maize: 
+21 December 1958(Day of year=355), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           580.4017       lai =     1.496314
                           stover N conc =    2.029689       extractable sw =    124.5365
-9 February 1959(Day of year=40), maize: 
+9 February 1959(Day of year=40), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1137.721       lai =    0.7568816
                           stover N conc =    1.275605       extractable sw =    53.28843
-10 February 1959(Day of year=41), maize: 
+10 February 1959(Day of year=41), Maize: 
       stage   10.0 maturity
                           biomass =           1144.173       lai =    0.7356127
                           stover N conc =    1.269473       extractable sw =    62.86047
-11 February 1959(Day of year=42), maize: 
+11 February 1959(Day of year=42), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1144.173       lai =    0.5061507E-02
                           stover N conc =    1.289958       extractable sw =    67.87373
-11 February 1959(Day of year=42), manager: 
+11 February 1959(Day of year=42), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -611,7 +611,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1959(Day of year=274), manager: 
+1 October 1959(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1959(Day of year=274), Fertiliser: 
      
@@ -619,7 +619,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1959(Day of year=274), maize: 
+1 October 1959(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -675,45 +675,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1959(Day of year=275), maize: 
+2 October 1959(Day of year=275), Maize: 
       stage    2.0 germination
-5 October 1959(Day of year=278), maize: 
+5 October 1959(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    41.07006
-25 October 1959(Day of year=298), maize: 
+25 October 1959(Day of year=298), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.488239       lai =    0.1421388E-01
                           stover N conc =    3.614213       extractable sw =    125.1152
-29 October 1959(Day of year=302), maize: 
+29 October 1959(Day of year=302), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.304593       lai =    0.2704871E-01
                           stover N conc =    3.429548       extractable sw =    120.7859
-9 December 1959(Day of year=343), maize: 
+9 December 1959(Day of year=343), Maize: 
       stage    6.0 flag_leaf
                           biomass =           310.1303       lai =     1.574536
                           stover N conc =    2.330003       extractable sw =    205.1041
-15 December 1959(Day of year=349), maize: 
+15 December 1959(Day of year=349), Maize: 
       stage    7.0 flowering
                           biomass =           435.0348       lai =     1.544995
                           stover N conc =    2.199213       extractable sw =    163.4860
-25 December 1959(Day of year=359), maize: 
+25 December 1959(Day of year=359), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           583.3884       lai =     1.479261
                           stover N conc =    2.040042       extractable sw =    181.5613
-10 February 1960(Day of year=41), maize: 
+10 February 1960(Day of year=41), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1174.745       lai =    0.7245597
                           stover N conc =    1.333675       extractable sw =    71.77254
-11 February 1960(Day of year=42), maize: 
+11 February 1960(Day of year=42), Maize: 
       stage   10.0 maturity
                           biomass =           1182.922       lai =    0.7006240
                           stover N conc =    1.324871       extractable sw =    68.38510
-12 February 1960(Day of year=43), maize: 
+12 February 1960(Day of year=43), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1182.922       lai =    0.1363933E-02
                           stover N conc =    1.346625       extractable sw =    65.24159
-12 February 1960(Day of year=43), manager: 
+12 February 1960(Day of year=43), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -786,7 +786,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1960(Day of year=275), manager: 
+1 October 1960(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1960(Day of year=275), Fertiliser: 
      
@@ -794,7 +794,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1960(Day of year=275), maize: 
+1 October 1960(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -850,45 +850,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1960(Day of year=276), maize: 
+2 October 1960(Day of year=276), Maize: 
       stage    2.0 germination
-4 October 1960(Day of year=278), maize: 
+4 October 1960(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.35813
-21 October 1960(Day of year=295), maize: 
+21 October 1960(Day of year=295), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.067447       lai =    0.1383005E-01
                           stover N conc =    3.656899       extractable sw =    78.81059
-25 October 1960(Day of year=299), maize: 
+25 October 1960(Day of year=299), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.088891       lai =    0.2528336E-01
                           stover N conc =    3.482580       extractable sw =    123.9086
-5 December 1960(Day of year=340), maize: 
+5 December 1960(Day of year=340), Maize: 
       stage    6.0 flag_leaf
                           biomass =           317.3565       lai =     1.580355
                           stover N conc =    2.353149       extractable sw =    158.3203
-13 December 1960(Day of year=348), maize: 
+13 December 1960(Day of year=348), Maize: 
       stage    7.0 flowering
                           biomass =           453.1318       lai =     1.550981
                           stover N conc =    2.211561       extractable sw =    152.7809
-24 December 1960(Day of year=359), maize: 
+24 December 1960(Day of year=359), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           651.1252       lai =     1.488767
                           stover N conc =    2.033111       extractable sw =    102.2951
-13 February 1961(Day of year=44), maize: 
+13 February 1961(Day of year=44), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1136.168       lai =    0.6787081
                           stover N conc =    1.400500       extractable sw =    3.592060
-14 February 1961(Day of year=45), maize: 
+14 February 1961(Day of year=45), Maize: 
       stage   10.0 maturity
                           biomass =           1139.259       lai =    0.6787081
                           stover N conc =    1.396562       extractable sw =    2.777851
-15 February 1961(Day of year=46), maize: 
+15 February 1961(Day of year=46), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1139.259       lai =    0.5164325E-02
                           stover N conc =    1.420083       extractable sw =    3.568703
-15 February 1961(Day of year=46), manager: 
+15 February 1961(Day of year=46), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -961,7 +961,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1961(Day of year=274), manager: 
+1 October 1961(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1961(Day of year=274), Fertiliser: 
      
@@ -969,7 +969,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1961(Day of year=274), maize: 
+1 October 1961(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -1025,45 +1025,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1961(Day of year=275), maize: 
+2 October 1961(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1961(Day of year=277), maize: 
+4 October 1961(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.65238
-20 October 1961(Day of year=293), maize: 
+20 October 1961(Day of year=293), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.050302       lai =    0.1467891E-01
                           stover N conc =    3.524072       extractable sw =    79.64808
-24 October 1961(Day of year=297), maize: 
+24 October 1961(Day of year=297), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.022683       lai =    0.2626039E-01
                           stover N conc =    3.389944       extractable sw =    116.6360
-4 December 1961(Day of year=338), maize: 
+4 December 1961(Day of year=338), Maize: 
       stage    6.0 flag_leaf
                           biomass =           294.9134       lai =     1.510331
                           stover N conc =    2.316081       extractable sw =    219.0358
-10 December 1961(Day of year=344), maize: 
+10 December 1961(Day of year=344), Maize: 
       stage    7.0 flowering
                           biomass =           416.9764       lai =     1.483359
                           stover N conc =    2.202976       extractable sw =    181.5340
-21 December 1961(Day of year=355), maize: 
+21 December 1961(Day of year=355), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           558.6651       lai =     1.421390
                           stover N conc =    2.017244       extractable sw =    208.1483
-8 February 1962(Day of year=39), maize: 
+8 February 1962(Day of year=39), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1072.918       lai =    0.7473443
                           stover N conc =    1.277479       extractable sw =    183.9156
-9 February 1962(Day of year=40), maize: 
+9 February 1962(Day of year=40), Maize: 
       stage   10.0 maturity
                           biomass =           1081.315       lai =    0.7259893
                           stover N conc =    1.268100       extractable sw =    180.5139
-10 February 1962(Day of year=41), maize: 
+10 February 1962(Day of year=41), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1081.315       lai =    0.4077971E-02
                           stover N conc =    1.289133       extractable sw =    179.4533
-10 February 1962(Day of year=41), manager: 
+10 February 1962(Day of year=41), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -1136,7 +1136,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1962(Day of year=274), manager: 
+1 October 1962(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1962(Day of year=274), Fertiliser: 
      
@@ -1144,7 +1144,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1962(Day of year=274), maize: 
+1 October 1962(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -1200,45 +1200,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1962(Day of year=275), maize: 
+2 October 1962(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1962(Day of year=277), maize: 
+4 October 1962(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.48101
-19 October 1962(Day of year=292), maize: 
+19 October 1962(Day of year=292), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.9030309       lai =    0.1296431E-01
                           stover N conc =    3.732939       extractable sw =    74.96737
-23 October 1962(Day of year=296), maize: 
+23 October 1962(Day of year=296), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.779991       lai =    0.2412236E-01
                           stover N conc =    3.560689       extractable sw =    107.3066
-1 December 1962(Day of year=335), maize: 
+1 December 1962(Day of year=335), Maize: 
       stage    6.0 flag_leaf
                           biomass =           295.4077       lai =     1.589567
                           stover N conc =    2.384003       extractable sw =    124.9598
-8 December 1962(Day of year=342), maize: 
+8 December 1962(Day of year=342), Maize: 
       stage    7.0 flowering
                           biomass =           412.2504       lai =     1.559513
                           stover N conc =    2.227887       extractable sw =    100.8774
-18 December 1962(Day of year=352), maize: 
+18 December 1962(Day of year=352), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           590.3417       lai =     1.495995
                           stover N conc =    2.040727       extractable sw =    85.75166
-7 February 1963(Day of year=38), maize: 
+7 February 1963(Day of year=38), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1011.934       lai =    0.7582089
                           stover N conc =    1.280045       extractable sw =    26.97036
-8 February 1963(Day of year=39), maize: 
+8 February 1963(Day of year=39), Maize: 
       stage   10.0 maturity
                           biomass =           1020.199       lai =    0.7341685
                           stover N conc =    1.270063       extractable sw =    21.81065
-9 February 1963(Day of year=40), maize: 
+9 February 1963(Day of year=40), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1020.199       lai =    0.2617478E-02
                           stover N conc =    1.294407       extractable sw =    17.87964
-9 February 1963(Day of year=40), manager: 
+9 February 1963(Day of year=40), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -1311,7 +1311,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1963(Day of year=274), manager: 
+1 October 1963(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1963(Day of year=274), Fertiliser: 
      
@@ -1319,7 +1319,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1963(Day of year=274), maize: 
+1 October 1963(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -1375,45 +1375,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1963(Day of year=275), maize: 
+2 October 1963(Day of year=275), Maize: 
       stage    2.0 germination
-5 October 1963(Day of year=278), maize: 
+5 October 1963(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    38.92936
-23 October 1963(Day of year=296), maize: 
+23 October 1963(Day of year=296), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.148392       lai =    0.1305582E-01
                           stover N conc =    3.780710       extractable sw =    110.9711
-28 October 1963(Day of year=301), maize: 
+28 October 1963(Day of year=301), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.291011       lai =    0.2628074E-01
                           stover N conc =    3.490086       extractable sw =    108.9287
-11 December 1963(Day of year=345), maize: 
+11 December 1963(Day of year=345), Maize: 
       stage    6.0 flag_leaf
                           biomass =           307.3807       lai =     1.577375
                           stover N conc =    2.341623       extractable sw =    255.2988
-18 December 1963(Day of year=352), maize: 
+18 December 1963(Day of year=352), Maize: 
       stage    7.0 flowering
                           biomass =           430.2567       lai =     1.548081
                           stover N conc =    2.203632       extractable sw =    239.1758
-29 December 1963(Day of year=363), maize: 
+29 December 1963(Day of year=363), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           656.7567       lai =     1.476755
                           stover N conc =    2.011962       extractable sw =    173.9680
-12 February 1964(Day of year=43), maize: 
+12 February 1964(Day of year=43), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1188.176       lai =    0.7305658
                           stover N conc =    1.307311       extractable sw =    49.88065
-13 February 1964(Day of year=44), maize: 
+13 February 1964(Day of year=44), Maize: 
       stage   10.0 maturity
                           biomass =           1196.741       lai =    0.7070403
                           stover N conc =    1.298327       extractable sw =    46.12651
-14 February 1964(Day of year=45), maize: 
+14 February 1964(Day of year=45), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1196.741       lai =    0.3322363E-02
                           stover N conc =    1.319251       extractable sw =    42.57703
-14 February 1964(Day of year=45), manager: 
+14 February 1964(Day of year=45), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -1486,7 +1486,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1964(Day of year=275), manager: 
+1 October 1964(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1964(Day of year=275), Fertiliser: 
      
@@ -1494,7 +1494,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1964(Day of year=275), maize: 
+1 October 1964(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -1550,45 +1550,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1964(Day of year=276), maize: 
+2 October 1964(Day of year=276), Maize: 
       stage    2.0 germination
-5 October 1964(Day of year=279), maize: 
+5 October 1964(Day of year=279), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    42.04440
-24 October 1964(Day of year=298), maize: 
+24 October 1964(Day of year=298), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.236840       lai =    0.1341117E-01
                           stover N conc =    3.635959       extractable sw =    123.7705
-30 October 1964(Day of year=304), maize: 
+30 October 1964(Day of year=304), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.758923       lai =    0.2622401E-01
                           stover N conc =    3.373415       extractable sw =    118.7684
-13 December 1964(Day of year=348), maize: 
+13 December 1964(Day of year=348), Maize: 
       stage    6.0 flag_leaf
                           biomass =           361.4707       lai =     1.570225
                           stover N conc =    2.330861       extractable sw =    153.7851
-19 December 1964(Day of year=354), maize: 
+19 December 1964(Day of year=354), Maize: 
       stage    7.0 flowering
                           biomass =           492.1032       lai =     1.539798
                           stover N conc =    2.215348       extractable sw =    108.9458
-28 December 1964(Day of year=363), maize: 
+28 December 1964(Day of year=363), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           625.9623       lai =     1.475280
                           stover N conc =    2.036328       extractable sw =    112.2769
-15 February 1965(Day of year=46), maize: 
+15 February 1965(Day of year=46), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1038.429       lai =    0.5410983
                           stover N conc =    1.495855       extractable sw =    3.475281
-16 February 1965(Day of year=47), maize: 
+16 February 1965(Day of year=47), Maize: 
       stage   10.0 maturity
                           biomass =           1039.260       lai =    0.5172199
                           stover N conc =    1.495625       extractable sw =    3.303600
-17 February 1965(Day of year=48), maize: 
+17 February 1965(Day of year=48), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1039.260       lai =    0.1364946E-02
                           stover N conc =    1.518275       extractable sw =    3.141811
-17 February 1965(Day of year=48), manager: 
+17 February 1965(Day of year=48), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -1661,7 +1661,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1965(Day of year=274), manager: 
+1 October 1965(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1965(Day of year=274), Fertiliser: 
      
@@ -1669,7 +1669,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1965(Day of year=274), maize: 
+1 October 1965(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -1725,45 +1725,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1965(Day of year=275), maize: 
+2 October 1965(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1965(Day of year=277), maize: 
+4 October 1965(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.39906
-22 October 1965(Day of year=295), maize: 
+22 October 1965(Day of year=295), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.171398       lai =    0.1362298E-01
                           stover N conc =    3.685759       extractable sw =    112.5780
-26 October 1965(Day of year=299), maize: 
+26 October 1965(Day of year=299), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.194764       lai =    0.2528951E-01
                           stover N conc =    3.501561       extractable sw =    110.1844
-4 December 1965(Day of year=338), maize: 
+4 December 1965(Day of year=338), Maize: 
       stage    6.0 flag_leaf
                           biomass =           310.6077       lai =     1.606913
                           stover N conc =    2.397352       extractable sw =    154.8587
-10 December 1965(Day of year=344), maize: 
+10 December 1965(Day of year=344), Maize: 
       stage    7.0 flowering
                           biomass =           377.1114       lai =     1.580528
                           stover N conc =    2.251687       extractable sw =    217.3667
-22 December 1965(Day of year=356), maize: 
+22 December 1965(Day of year=356), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           555.9911       lai =     1.517098
                           stover N conc =    2.021460       extractable sw =    217.1998
-9 February 1966(Day of year=40), maize: 
+9 February 1966(Day of year=40), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1170.141       lai =    0.7882072
                           stover N conc =    1.323400       extractable sw =    135.8365
-10 February 1966(Day of year=41), maize: 
+10 February 1966(Day of year=41), Maize: 
       stage   10.0 maturity
                           biomass =           1178.929       lai =    0.7666671
                           stover N conc =    1.313877       extractable sw =    132.6115
-11 February 1966(Day of year=42), maize: 
+11 February 1966(Day of year=42), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1178.929       lai =    0.4969895E-02
                           stover N conc =    1.338523       extractable sw =    128.9312
-11 February 1966(Day of year=42), manager: 
+11 February 1966(Day of year=42), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -1836,7 +1836,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1966(Day of year=274), manager: 
+1 October 1966(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1966(Day of year=274), Fertiliser: 
      
@@ -1844,7 +1844,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1966(Day of year=274), maize: 
+1 October 1966(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -1900,45 +1900,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1966(Day of year=275), maize: 
+2 October 1966(Day of year=275), Maize: 
       stage    2.0 germination
-5 October 1966(Day of year=278), maize: 
+5 October 1966(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    41.07971
-25 October 1966(Day of year=298), maize: 
+25 October 1966(Day of year=298), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.425241       lai =    0.1443898E-01
                           stover N conc =    3.580213       extractable sw =    125.1026
-29 October 1966(Day of year=302), maize: 
+29 October 1966(Day of year=302), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.506568       lai =    0.2572095E-01
                           stover N conc =    3.448109       extractable sw =    121.0617
-10 December 1966(Day of year=344), maize: 
+10 December 1966(Day of year=344), Maize: 
       stage    6.0 flag_leaf
                           biomass =           330.0503       lai =     1.607872
                           stover N conc =    2.345439       extractable sw =    145.6445
-17 December 1966(Day of year=351), maize: 
+17 December 1966(Day of year=351), Maize: 
       stage    7.0 flowering
                           biomass =           460.6477       lai =     1.576463
                           stover N conc =    2.222131       extractable sw =    112.7940
-27 December 1966(Day of year=361), maize: 
+27 December 1966(Day of year=361), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           650.9791       lai =     1.508682
                           stover N conc =    2.027235       extractable sw =    58.19075
-13 February 1967(Day of year=44), maize: 
+13 February 1967(Day of year=44), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1070.263       lai =    0.5756231
                           stover N conc =    1.473706       extractable sw =    2.279629
-14 February 1967(Day of year=45), maize: 
+14 February 1967(Day of year=45), Maize: 
       stage   10.0 maturity
                           biomass =           1070.804       lai =    0.5490828
                           stover N conc =    1.473987       extractable sw =    2.122715
-15 February 1967(Day of year=46), maize: 
+15 February 1967(Day of year=46), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1070.804       lai =    0.1458764E-02
                           stover N conc =    1.496365       extractable sw =    1.979424
-15 February 1967(Day of year=46), manager: 
+15 February 1967(Day of year=46), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -2011,7 +2011,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1967(Day of year=274), manager: 
+1 October 1967(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1967(Day of year=274), Fertiliser: 
      
@@ -2019,7 +2019,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1967(Day of year=274), maize: 
+1 October 1967(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -2075,45 +2075,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1967(Day of year=275), maize: 
+2 October 1967(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1967(Day of year=277), maize: 
+4 October 1967(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.31565
-19 October 1967(Day of year=292), maize: 
+19 October 1967(Day of year=292), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.070750       lai =    0.1449411E-01
                           stover N conc =    3.645184       extractable sw =    83.06300
-22 October 1967(Day of year=295), maize: 
+22 October 1967(Day of year=295), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.736351       lai =    0.2216075E-01
                           stover N conc =    3.357594       extractable sw =    123.6840
-1 December 1967(Day of year=335), maize: 
+1 December 1967(Day of year=335), Maize: 
       stage    6.0 flag_leaf
                           biomass =           346.1353       lai =     1.561296
                           stover N conc =    2.386485       extractable sw =    126.4092
-8 December 1967(Day of year=342), maize: 
+8 December 1967(Day of year=342), Maize: 
       stage    7.0 flowering
                           biomass =           435.6117       lai =     1.533888
                           stover N conc =    2.239660       extractable sw =    100.1924
-18 December 1967(Day of year=352), maize: 
+18 December 1967(Day of year=352), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           609.9150       lai =     1.470007
                           stover N conc =    2.056923       extractable sw =    54.97523
-5 February 1968(Day of year=36), maize: 
+5 February 1968(Day of year=36), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1025.869       lai =    0.7420575
                           stover N conc =    1.317454       extractable sw =    5.504234
-6 February 1968(Day of year=37), maize: 
+6 February 1968(Day of year=37), Maize: 
       stage   10.0 maturity
                           biomass =           1027.754       lai =    0.7127154
                           stover N conc =    1.316086       extractable sw =    4.502193
-7 February 1968(Day of year=38), maize: 
+7 February 1968(Day of year=38), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1027.754       lai =    0.2233803E-02
                           stover N conc =    1.344999       extractable sw =    3.967525
-7 February 1968(Day of year=38), manager: 
+7 February 1968(Day of year=38), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -2186,7 +2186,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1968(Day of year=275), manager: 
+1 October 1968(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1968(Day of year=275), Fertiliser: 
      
@@ -2194,7 +2194,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1968(Day of year=275), maize: 
+1 October 1968(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -2250,45 +2250,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1968(Day of year=276), maize: 
+2 October 1968(Day of year=276), Maize: 
       stage    2.0 germination
-5 October 1968(Day of year=279), maize: 
+5 October 1968(Day of year=279), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    38.41956
-21 October 1968(Day of year=295), maize: 
+21 October 1968(Day of year=295), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.036066       lai =    0.1347548E-01
                           stover N conc =    3.889064       extractable sw =    72.99547
-24 October 1968(Day of year=298), maize: 
+24 October 1968(Day of year=298), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.732613       lai =    0.2351925E-01
                           stover N conc =    3.550401       extractable sw =    109.6268
-1 December 1968(Day of year=336), maize: 
+1 December 1968(Day of year=336), Maize: 
       stage    6.0 flag_leaf
                           biomass =           291.0476       lai =     1.607661
                           stover N conc =    2.393551       extractable sw =    128.9041
-8 December 1968(Day of year=343), maize: 
+8 December 1968(Day of year=343), Maize: 
       stage    7.0 flowering
                           biomass =           413.3068       lai =     1.579732
                           stover N conc =    2.221910       extractable sw =    127.9765
-19 December 1968(Day of year=354), maize: 
+19 December 1968(Day of year=354), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           622.8311       lai =     1.508594
                           stover N conc =    2.034198       extractable sw =    69.11362
-2 February 1969(Day of year=33), maize: 
+2 February 1969(Day of year=33), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           987.6501       lai =    0.5513052
                           stover N conc =    1.469392       extractable sw =    1.219997
-3 February 1969(Day of year=34), maize: 
+3 February 1969(Day of year=34), Maize: 
       stage   10.0 maturity
                           biomass =           988.1198       lai =    0.5255370
                           stover N conc =    1.469768       extractable sw =    1.121696
-4 February 1969(Day of year=35), maize: 
+4 February 1969(Day of year=35), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           988.1198       lai =    0.3763795E-02
                           stover N conc =    1.492798       extractable sw =    1.032524
-4 February 1969(Day of year=35), manager: 
+4 February 1969(Day of year=35), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -2361,7 +2361,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1969(Day of year=274), manager: 
+1 October 1969(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1969(Day of year=274), Fertiliser: 
      
@@ -2369,7 +2369,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1969(Day of year=274), maize: 
+1 October 1969(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -2425,45 +2425,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1969(Day of year=275), maize: 
+2 October 1969(Day of year=275), Maize: 
       stage    2.0 germination
-5 October 1969(Day of year=278), maize: 
+5 October 1969(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    41.08221
-22 October 1969(Day of year=295), maize: 
+22 October 1969(Day of year=295), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.9751037       lai =    0.1315195E-01
                           stover N conc =    3.466535       extractable sw =    128.8777
-26 October 1969(Day of year=299), maize: 
+26 October 1969(Day of year=299), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.057032       lai =    0.2281729E-01
                           stover N conc =    3.312462       extractable sw =    122.2556
-7 December 1969(Day of year=341), maize: 
+7 December 1969(Day of year=341), Maize: 
       stage    6.0 flag_leaf
                           biomass =           356.7725       lai =     1.563937
                           stover N conc =    2.360565       extractable sw =    137.1689
-12 December 1969(Day of year=346), maize: 
+12 December 1969(Day of year=346), Maize: 
       stage    7.0 flowering
                           biomass =           449.4367       lai =     1.539887
                           stover N conc =    2.231191       extractable sw =    116.4874
-22 December 1969(Day of year=356), maize: 
+22 December 1969(Day of year=356), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           614.0771       lai =     1.470593
                           stover N conc =    2.030460       extractable sw =    83.40271
-7 February 1970(Day of year=38), maize: 
+7 February 1970(Day of year=38), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1188.218       lai =    0.7586683
                           stover N conc =    1.353809       extractable sw =    48.21070
-8 February 1970(Day of year=39), maize: 
+8 February 1970(Day of year=39), Maize: 
       stage   10.0 maturity
                           biomass =           1197.065       lai =    0.7389875
                           stover N conc =    1.344135       extractable sw =    45.72602
-9 February 1970(Day of year=40), maize: 
+9 February 1970(Day of year=40), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1197.065       lai =    0.4270196E-02
                           stover N conc =    1.370596       extractable sw =    43.34539
-9 February 1970(Day of year=40), manager: 
+9 February 1970(Day of year=40), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -2536,7 +2536,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1970(Day of year=274), manager: 
+1 October 1970(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1970(Day of year=274), Fertiliser: 
      
@@ -2544,7 +2544,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1970(Day of year=274), maize: 
+1 October 1970(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -2600,45 +2600,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1970(Day of year=275), maize: 
+2 October 1970(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1970(Day of year=277), maize: 
+4 October 1970(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.31414
-20 October 1970(Day of year=293), maize: 
+20 October 1970(Day of year=293), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.115303       lai =    0.1412802E-01
                           stover N conc =    3.754085       extractable sw =    87.46738
-24 October 1970(Day of year=297), maize: 
+24 October 1970(Day of year=297), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.061351       lai =    0.2537860E-01
                           stover N conc =    3.473667       extractable sw =    121.5039
-5 December 1970(Day of year=339), maize: 
+5 December 1970(Day of year=339), Maize: 
       stage    6.0 flag_leaf
                           biomass =           303.8504       lai =     1.541099
                           stover N conc =    2.361994       extractable sw =    163.9104
-12 December 1970(Day of year=346), maize: 
+12 December 1970(Day of year=346), Maize: 
       stage    7.0 flowering
                           biomass =           402.6854       lai =     1.513929
                           stover N conc =    2.200910       extractable sw =    237.9034
-22 December 1970(Day of year=356), maize: 
+22 December 1970(Day of year=356), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           579.1863       lai =     1.448583
                           stover N conc =    2.018499       extractable sw =    208.4070
-9 February 1971(Day of year=40), maize: 
+9 February 1971(Day of year=40), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1090.662       lai =    0.7630311
                           stover N conc =    1.328912       extractable sw =    291.3569
-10 February 1971(Day of year=41), maize: 
+10 February 1971(Day of year=41), Maize: 
       stage   10.0 maturity
                           biomass =           1095.107       lai =    0.7429999
                           stover N conc =    1.323996       extractable sw =    293.7379
-11 February 1971(Day of year=42), maize: 
+11 February 1971(Day of year=42), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1095.107       lai =    0.5222499E-02
                           stover N conc =    1.348994       extractable sw =    288.9831
-11 February 1971(Day of year=42), manager: 
+11 February 1971(Day of year=42), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -2711,7 +2711,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1971(Day of year=274), manager: 
+1 October 1971(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1971(Day of year=274), Fertiliser: 
      
@@ -2719,7 +2719,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1971(Day of year=274), maize: 
+1 October 1971(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -2775,45 +2775,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1971(Day of year=275), maize: 
+2 October 1971(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1971(Day of year=277), maize: 
+4 October 1971(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.10052
-20 October 1971(Day of year=293), maize: 
+20 October 1971(Day of year=293), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.157094       lai =    0.1423388E-01
                           stover N conc =    3.456106       extractable sw =    82.22586
-24 October 1971(Day of year=297), maize: 
+24 October 1971(Day of year=297), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.291405       lai =    0.2674179E-01
                           stover N conc =    3.426212       extractable sw =    118.5952
-5 December 1971(Day of year=339), maize: 
+5 December 1971(Day of year=339), Maize: 
       stage    6.0 flag_leaf
                           biomass =           315.3674       lai =     1.571296
                           stover N conc =    2.349972       extractable sw =    153.5517
-12 December 1971(Day of year=346), maize: 
+12 December 1971(Day of year=346), Maize: 
       stage    7.0 flowering
                           biomass =           452.0417       lai =     1.539431
                           stover N conc =    2.225580       extractable sw =    114.7430
-23 December 1971(Day of year=357), maize: 
+23 December 1971(Day of year=357), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           640.4427       lai =     1.470984
                           stover N conc =    2.020420       extractable sw =    80.23536
-14 February 1972(Day of year=45), maize: 
+14 February 1972(Day of year=45), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1206.299       lai =    0.7333036
                           stover N conc =    1.297021       extractable sw =    80.91228
-15 February 1972(Day of year=46), maize: 
+15 February 1972(Day of year=46), Maize: 
       stage   10.0 maturity
                           biomass =           1213.240       lai =    0.7128772
                           stover N conc =    1.289948       extractable sw =    78.24033
-16 February 1972(Day of year=47), maize: 
+16 February 1972(Day of year=47), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1213.240       lai =    0.2344191E-02
                           stover N conc =    1.311093       extractable sw =    76.27806
-16 February 1972(Day of year=47), manager: 
+16 February 1972(Day of year=47), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -2886,7 +2886,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1972(Day of year=275), manager: 
+1 October 1972(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1972(Day of year=275), Fertiliser: 
      
@@ -2894,7 +2894,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1972(Day of year=275), maize: 
+1 October 1972(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -2950,45 +2950,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1972(Day of year=276), maize: 
+2 October 1972(Day of year=276), Maize: 
       stage    2.0 germination
-4 October 1972(Day of year=278), maize: 
+4 October 1972(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    42.06879
-20 October 1972(Day of year=294), maize: 
+20 October 1972(Day of year=294), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.073946       lai =    0.1277027E-01
                           stover N conc =    3.639549       extractable sw =    79.55121
-24 October 1972(Day of year=298), maize: 
+24 October 1972(Day of year=298), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.060537       lai =    0.2452917E-01
                           stover N conc =    3.412967       extractable sw =    116.8970
-6 December 1972(Day of year=341), maize: 
+6 December 1972(Day of year=341), Maize: 
       stage    6.0 flag_leaf
                           biomass =           327.9610       lai =     1.522459
                           stover N conc =    2.330125       extractable sw =    189.8034
-12 December 1972(Day of year=347), maize: 
+12 December 1972(Day of year=347), Maize: 
       stage    7.0 flowering
                           biomass =           436.9324       lai =     1.498551
                           stover N conc =    2.203939       extractable sw =    165.7881
-22 December 1972(Day of year=357), maize: 
+22 December 1972(Day of year=357), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           640.4806       lai =     1.434737
                           stover N conc =    2.015285       extractable sw =    105.0314
-4 February 1973(Day of year=35), maize: 
+4 February 1973(Day of year=35), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1109.158       lai =    0.7086567
                           stover N conc =    1.380896       extractable sw =    6.213112
-5 February 1973(Day of year=36), maize: 
+5 February 1973(Day of year=36), Maize: 
       stage   10.0 maturity
                           biomass =           1110.448       lai =    0.6781375
                           stover N conc =    1.380313       extractable sw =    5.849220
-6 February 1973(Day of year=37), maize: 
+6 February 1973(Day of year=37), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1110.448       lai =    0.5331159E-02
                           stover N conc =    1.404762       extractable sw =    5.511738
-6 February 1973(Day of year=37), manager: 
+6 February 1973(Day of year=37), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -3061,7 +3061,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1973(Day of year=274), manager: 
+1 October 1973(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1973(Day of year=274), Fertiliser: 
      
@@ -3069,7 +3069,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1973(Day of year=274), maize: 
+1 October 1973(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -3125,45 +3125,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1973(Day of year=275), maize: 
+2 October 1973(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1973(Day of year=277), maize: 
+4 October 1973(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.37540
-21 October 1973(Day of year=294), maize: 
+21 October 1973(Day of year=294), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.182089       lai =    0.1448028E-01
                           stover N conc =    3.705837       extractable sw =    70.11878
-25 October 1973(Day of year=298), maize: 
+25 October 1973(Day of year=298), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.103117       lai =    0.2520949E-01
                           stover N conc =    3.467664       extractable sw =    105.7588
-4 December 1973(Day of year=338), maize: 
+4 December 1973(Day of year=338), Maize: 
       stage    6.0 flag_leaf
                           biomass =           324.6443       lai =     1.557069
                           stover N conc =    2.349150       extractable sw =    172.8941
-10 December 1973(Day of year=344), maize: 
+10 December 1973(Day of year=344), Maize: 
       stage    7.0 flowering
                           biomass =           428.6985       lai =     1.531229
                           stover N conc =    2.208508       extractable sw =    161.4369
-21 December 1973(Day of year=355), maize: 
+21 December 1973(Day of year=355), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           597.9766       lai =     1.467364
                           stover N conc =    2.037964       extractable sw =    133.1132
-8 February 1974(Day of year=39), maize: 
+8 February 1974(Day of year=39), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1111.414       lai =    0.7413670
                           stover N conc =    1.285607       extractable sw =    117.3517
-9 February 1974(Day of year=40), maize: 
+9 February 1974(Day of year=40), Maize: 
       stage   10.0 maturity
                           biomass =           1119.087       lai =    0.7212948
                           stover N conc =    1.277099       extractable sw =    115.3332
-10 February 1974(Day of year=41), maize: 
+10 February 1974(Day of year=41), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1119.087       lai =    0.4177690E-02
                           stover N conc =    1.299410       extractable sw =    113.3632
-10 February 1974(Day of year=41), manager: 
+10 February 1974(Day of year=41), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -3236,7 +3236,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1974(Day of year=274), manager: 
+1 October 1974(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1974(Day of year=274), Fertiliser: 
      
@@ -3244,7 +3244,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1974(Day of year=274), maize: 
+1 October 1974(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -3300,45 +3300,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1974(Day of year=275), maize: 
+2 October 1974(Day of year=275), Maize: 
       stage    2.0 germination
-5 October 1974(Day of year=278), maize: 
+5 October 1974(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    42.32430
-24 October 1974(Day of year=297), maize: 
+24 October 1974(Day of year=297), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.249952       lai =    0.1376294E-01
                           stover N conc =    3.830345       extractable sw =    114.8507
-28 October 1974(Day of year=301), maize: 
+28 October 1974(Day of year=301), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.146947       lai =    0.2450542E-01
                           stover N conc =    3.452792       extractable sw =    112.8386
-12 December 1974(Day of year=346), maize: 
+12 December 1974(Day of year=346), Maize: 
       stage    6.0 flag_leaf
                           biomass =           355.3166       lai =     1.584759
                           stover N conc =    2.355830       extractable sw =    162.7599
-18 December 1974(Day of year=352), maize: 
+18 December 1974(Day of year=352), Maize: 
       stage    7.0 flowering
                           biomass =           487.6367       lai =     1.556582
                           stover N conc =    2.224974       extractable sw =    129.6773
-28 December 1974(Day of year=362), maize: 
+28 December 1974(Day of year=362), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           662.7359       lai =     1.489281
                           stover N conc =    2.051964       extractable sw =    91.49225
-14 February 1975(Day of year=45), maize: 
+14 February 1975(Day of year=45), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1223.535       lai =    0.7349908
                           stover N conc =    1.356589       extractable sw =    8.061142
-15 February 1975(Day of year=46), maize: 
+15 February 1975(Day of year=46), Maize: 
       stage   10.0 maturity
                           biomass =           1226.716       lai =    0.7112504
                           stover N conc =    1.353763       extractable sw =    7.306335
-16 February 1975(Day of year=47), maize: 
+16 February 1975(Day of year=47), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1226.716       lai =    0.2268612E-02
                           stover N conc =    1.379116       extractable sw =    6.630890
-16 February 1975(Day of year=47), manager: 
+16 February 1975(Day of year=47), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -3411,7 +3411,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1975(Day of year=274), manager: 
+1 October 1975(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1975(Day of year=274), Fertiliser: 
      
@@ -3419,7 +3419,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1975(Day of year=274), maize: 
+1 October 1975(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -3475,45 +3475,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1975(Day of year=275), maize: 
+2 October 1975(Day of year=275), Maize: 
       stage    2.0 germination
-5 October 1975(Day of year=278), maize: 
+5 October 1975(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.10160
-23 October 1975(Day of year=296), maize: 
+23 October 1975(Day of year=296), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.8597054       lai =    0.1359939E-01
                           stover N conc =    3.671978       extractable sw =    108.3813
-28 October 1975(Day of year=301), maize: 
+28 October 1975(Day of year=301), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.304734       lai =    0.2568720E-01
                           stover N conc =    3.319749       extractable sw =    114.5974
-9 December 1975(Day of year=343), maize: 
+9 December 1975(Day of year=343), Maize: 
       stage    6.0 flag_leaf
                           biomass =           327.3857       lai =     1.586432
                           stover N conc =    2.344085       extractable sw =    150.1413
-14 December 1975(Day of year=348), maize: 
+14 December 1975(Day of year=348), Maize: 
       stage    7.0 flowering
                           biomass =           422.4014       lai =     1.561065
                           stover N conc =    2.222697       extractable sw =    125.9103
-25 December 1975(Day of year=359), maize: 
+25 December 1975(Day of year=359), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           559.5809       lai =     1.495325
                           stover N conc =    2.028412       extractable sw =    199.2109
-14 February 1976(Day of year=45), maize: 
+14 February 1976(Day of year=45), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1121.438       lai =    0.7708836
                           stover N conc =    1.316455       extractable sw =    135.9258
-15 February 1976(Day of year=46), maize: 
+15 February 1976(Day of year=46), Maize: 
       stage   10.0 maturity
                           biomass =           1128.682       lai =    0.7515894
                           stover N conc =    1.308326       extractable sw =    132.9085
-16 February 1976(Day of year=47), maize: 
+16 February 1976(Day of year=47), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1128.682       lai =    0.3973126E-02
                           stover N conc =    1.332663       extractable sw =    129.5006
-16 February 1976(Day of year=47), manager: 
+16 February 1976(Day of year=47), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -3586,7 +3586,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1976(Day of year=275), manager: 
+1 October 1976(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1976(Day of year=275), Fertiliser: 
      
@@ -3594,7 +3594,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1976(Day of year=275), maize: 
+1 October 1976(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -3650,45 +3650,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1976(Day of year=276), maize: 
+2 October 1976(Day of year=276), Maize: 
       stage    2.0 germination
-4 October 1976(Day of year=278), maize: 
+4 October 1976(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.52257
-25 October 1976(Day of year=299), maize: 
+25 October 1976(Day of year=299), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.418004       lai =    0.1480658E-01
                           stover N conc =    3.678201       extractable sw =    113.8937
-29 October 1976(Day of year=303), maize: 
+29 October 1976(Day of year=303), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.513713       lai =    0.2600216E-01
                           stover N conc =    3.386940       extractable sw =    128.9157
-8 December 1976(Day of year=343), maize: 
+8 December 1976(Day of year=343), Maize: 
       stage    6.0 flag_leaf
                           biomass =           335.6757       lai =     1.596391
                           stover N conc =    2.346717       extractable sw =    151.3407
-13 December 1976(Day of year=348), maize: 
+13 December 1976(Day of year=348), Maize: 
       stage    7.0 flowering
                           biomass =           435.6113       lai =     1.568783
                           stover N conc =    2.224894       extractable sw =    127.4820
-23 December 1976(Day of year=358), maize: 
+23 December 1976(Day of year=358), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           596.7340       lai =     1.505159
                           stover N conc =    2.038162       extractable sw =    76.42831
-7 February 1977(Day of year=38), maize: 
+7 February 1977(Day of year=38), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           948.3414       lai =    0.5207394
                           stover N conc =    1.478270       extractable sw =    3.434135
-8 February 1977(Day of year=39), maize: 
+8 February 1977(Day of year=39), Maize: 
       stage   10.0 maturity
                           biomass =           949.2437       lai =    0.4988809
                           stover N conc =    1.477802       extractable sw =    3.263466
-9 February 1977(Day of year=40), maize: 
+9 February 1977(Day of year=40), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           949.2437       lai =    0.9497702E-03
                           stover N conc =    1.501469       extractable sw =    3.103077
-9 February 1977(Day of year=40), manager: 
+9 February 1977(Day of year=40), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -3761,7 +3761,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1977(Day of year=274), manager: 
+1 October 1977(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1977(Day of year=274), Fertiliser: 
      
@@ -3769,7 +3769,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1977(Day of year=274), maize: 
+1 October 1977(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -3825,45 +3825,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1977(Day of year=275), maize: 
+2 October 1977(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1977(Day of year=277), maize: 
+4 October 1977(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.23862
-19 October 1977(Day of year=292), maize: 
+19 October 1977(Day of year=292), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.041584       lai =    0.1268348E-01
                           stover N conc =    3.700374       extractable sw =    70.40557
-23 October 1977(Day of year=296), maize: 
+23 October 1977(Day of year=296), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.069257       lai =    0.2316655E-01
                           stover N conc =    3.548620       extractable sw =    107.5808
-30 November 1977(Day of year=334), maize: 
+30 November 1977(Day of year=334), Maize: 
       stage    6.0 flag_leaf
                           biomass =           312.7874       lai =     1.568338
                           stover N conc =    2.355812       extractable sw =    172.7299
-6 December 1977(Day of year=340), maize: 
+6 December 1977(Day of year=340), Maize: 
       stage    7.0 flowering
                           biomass =           436.6591       lai =     1.538095
                           stover N conc =    2.220828       extractable sw =    134.2259
-15 December 1977(Day of year=349), maize: 
+15 December 1977(Day of year=349), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           600.0721       lai =     1.473493
                           stover N conc =    2.047498       extractable sw =    87.91436
-30 January 1978(Day of year=30), maize: 
+30 January 1978(Day of year=30), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           985.1553       lai =    0.7309897
                           stover N conc =    1.437110       extractable sw =    75.45945
-31 January 1978(Day of year=31), maize: 
+31 January 1978(Day of year=31), Maize: 
       stage   10.0 maturity
                           biomass =           988.4512       lai =    0.7119172
                           stover N conc =    1.432926       extractable sw =    79.57430
-1 February 1978(Day of year=32), maize: 
+1 February 1978(Day of year=32), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           988.4512       lai =    0.1402974E-02
                           stover N conc =    1.463763       extractable sw =    89.65364
-1 February 1978(Day of year=32), manager: 
+1 February 1978(Day of year=32), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -3936,7 +3936,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1978(Day of year=274), manager: 
+1 October 1978(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1978(Day of year=274), Fertiliser: 
      
@@ -3944,7 +3944,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1978(Day of year=274), maize: 
+1 October 1978(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -4000,45 +4000,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1978(Day of year=275), maize: 
+2 October 1978(Day of year=275), Maize: 
       stage    2.0 germination
-5 October 1978(Day of year=278), maize: 
+5 October 1978(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.06105
-25 October 1978(Day of year=298), maize: 
+25 October 1978(Day of year=298), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.229156       lai =    0.1390523E-01
                           stover N conc =    3.581910       extractable sw =    120.4613
-30 October 1978(Day of year=303), maize: 
+30 October 1978(Day of year=303), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.513404       lai =    0.2563841E-01
                           stover N conc =    3.407442       extractable sw =    117.1971
-12 December 1978(Day of year=346), maize: 
+12 December 1978(Day of year=346), Maize: 
       stage    6.0 flag_leaf
                           biomass =           334.5306       lai =     1.585500
                           stover N conc =    2.346053       extractable sw =    182.4809
-18 December 1978(Day of year=352), maize: 
+18 December 1978(Day of year=352), Maize: 
       stage    7.0 flowering
                           biomass =           434.6977       lai =     1.557728
                           stover N conc =    2.231127       extractable sw =    157.7590
-29 December 1978(Day of year=363), maize: 
+29 December 1978(Day of year=363), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           619.3774       lai =     1.486400
                           stover N conc =    2.022034       extractable sw =    128.3386
-15 February 1979(Day of year=46), maize: 
+15 February 1979(Day of year=46), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1100.657       lai =    0.6812969
                           stover N conc =    1.428586       extractable sw =    6.056808
-16 February 1979(Day of year=47), maize: 
+16 February 1979(Day of year=47), Maize: 
       stage   10.0 maturity
                           biomass =           1101.996       lai =    0.6545874
                           stover N conc =    1.427814       extractable sw =    5.706997
-17 February 1979(Day of year=48), maize: 
+17 February 1979(Day of year=48), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1101.996       lai =    0.1412272E-02
                           stover N conc =    1.453824       extractable sw =    5.382568
-17 February 1979(Day of year=48), manager: 
+17 February 1979(Day of year=48), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -4111,7 +4111,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1979(Day of year=274), manager: 
+1 October 1979(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1979(Day of year=274), Fertiliser: 
      
@@ -4119,7 +4119,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1979(Day of year=274), maize: 
+1 October 1979(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -4175,45 +4175,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1979(Day of year=275), maize: 
+2 October 1979(Day of year=275), Maize: 
       stage    2.0 germination
-5 October 1979(Day of year=278), maize: 
+5 October 1979(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    46.45747
-21 October 1979(Day of year=294), maize: 
+21 October 1979(Day of year=294), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.011903       lai =    0.1429791E-01
                           stover N conc =    3.614537       extractable sw =    87.32272
-25 October 1979(Day of year=298), maize: 
+25 October 1979(Day of year=298), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.975736       lai =    0.2469211E-01
                           stover N conc =    3.363434       extractable sw =    124.3648
-3 December 1979(Day of year=337), maize: 
+3 December 1979(Day of year=337), Maize: 
       stage    6.0 flag_leaf
                           biomass =           280.9435       lai =     1.568891
                           stover N conc =    2.353461       extractable sw =    182.6109
-8 December 1979(Day of year=342), maize: 
+8 December 1979(Day of year=342), Maize: 
       stage    7.0 flowering
                           biomass =           390.8536       lai =     1.543588
                           stover N conc =    2.209975       extractable sw =    151.0667
-17 December 1979(Day of year=351), maize: 
+17 December 1979(Day of year=351), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           563.1881       lai =     1.480034
                           stover N conc =    2.032398       extractable sw =    117.9168
-1 February 1980(Day of year=32), maize: 
+1 February 1980(Day of year=32), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1060.002       lai =    0.7579156
                           stover N conc =    1.366814       extractable sw =    33.12974
-2 February 1980(Day of year=33), maize: 
+2 February 1980(Day of year=33), Maize: 
       stage   10.0 maturity
                           biomass =           1068.161       lai =    0.7350116
                           stover N conc =    1.356749       extractable sw =    29.82352
-3 February 1980(Day of year=34), maize: 
+3 February 1980(Day of year=34), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1068.161       lai =    0.4558027E-02
                           stover N conc =    1.379748       extractable sw =    27.22097
-3 February 1980(Day of year=34), manager: 
+3 February 1980(Day of year=34), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -4286,7 +4286,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1980(Day of year=275), manager: 
+1 October 1980(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1980(Day of year=275), Fertiliser: 
      
@@ -4294,7 +4294,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1980(Day of year=275), maize: 
+1 October 1980(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -4350,45 +4350,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1980(Day of year=276), maize: 
+2 October 1980(Day of year=276), Maize: 
       stage    2.0 germination
-4 October 1980(Day of year=278), maize: 
+4 October 1980(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.20838
-19 October 1980(Day of year=293), maize: 
+19 October 1980(Day of year=293), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.9147524       lai =    0.1286825E-01
                           stover N conc =    3.606059       extractable sw =    84.87975
-22 October 1980(Day of year=296), maize: 
+22 October 1980(Day of year=296), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.631506       lai =    0.2232643E-01
                           stover N conc =    3.430363       extractable sw =    122.1972
-1 December 1980(Day of year=336), maize: 
+1 December 1980(Day of year=336), Maize: 
       stage    6.0 flag_leaf
                           biomass =           303.8678       lai =     1.568175
                           stover N conc =    2.358832       extractable sw =    151.8342
-7 December 1980(Day of year=342), maize: 
+7 December 1980(Day of year=342), Maize: 
       stage    7.0 flowering
                           biomass =           372.1108       lai =     1.543977
                           stover N conc =    2.219220       extractable sw =    181.2516
-19 December 1980(Day of year=354), maize: 
+19 December 1980(Day of year=354), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           592.5676       lai =     1.474553
                           stover N conc =    2.015466       extractable sw =    128.7234
-5 February 1981(Day of year=36), maize: 
+5 February 1981(Day of year=36), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1134.616       lai =    0.7365800
                           stover N conc =    1.323444       extractable sw =    20.50834
-6 February 1981(Day of year=37), maize: 
+6 February 1981(Day of year=37), Maize: 
       stage   10.0 maturity
                           biomass =           1138.265       lai =    0.7158537
                           stover N conc =    1.319709       extractable sw =    114.0818
-7 February 1981(Day of year=38), maize: 
+7 February 1981(Day of year=38), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1138.265       lai =    0.3131449E-02
                           stover N conc =    1.342839       extractable sw =    146.6051
-7 February 1981(Day of year=38), manager: 
+7 February 1981(Day of year=38), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -4461,7 +4461,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1981(Day of year=274), manager: 
+1 October 1981(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1981(Day of year=274), Fertiliser: 
      
@@ -4469,7 +4469,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1981(Day of year=274), maize: 
+1 October 1981(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -4525,45 +4525,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1981(Day of year=275), maize: 
+2 October 1981(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1981(Day of year=277), maize: 
+4 October 1981(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.62251
-23 October 1981(Day of year=296), maize: 
+23 October 1981(Day of year=296), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.389119       lai =    0.1508806E-01
                           stover N conc =    3.629750       extractable sw =    106.9112
-27 October 1981(Day of year=300), maize: 
+27 October 1981(Day of year=300), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.519154       lai =    0.2560794E-01
                           stover N conc =    3.501811       extractable sw =    105.2514
-8 December 1981(Day of year=342), maize: 
+8 December 1981(Day of year=342), Maize: 
       stage    6.0 flag_leaf
                           biomass =           302.9397       lai =     1.589162
                           stover N conc =    2.358732       extractable sw =    193.7075
-14 December 1981(Day of year=348), maize: 
+14 December 1981(Day of year=348), Maize: 
       stage    7.0 flowering
                           biomass =           413.8780       lai =     1.562110
                           stover N conc =    2.236004       extractable sw =    162.3155
-25 December 1981(Day of year=359), maize: 
+25 December 1981(Day of year=359), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           576.3894       lai =     1.491168
                           stover N conc =    2.012102       extractable sw =    194.3289
-9 February 1982(Day of year=40), maize: 
+9 February 1982(Day of year=40), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1106.504       lai =    0.7430286
                           stover N conc =    1.313045       extractable sw =    58.98109
-10 February 1982(Day of year=41), maize: 
+10 February 1982(Day of year=41), Maize: 
       stage   10.0 maturity
                           biomass =           1113.857       lai =    0.7213706
                           stover N conc =    1.304727       extractable sw =    55.93024
-11 February 1982(Day of year=42), maize: 
+11 February 1982(Day of year=42), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1113.857       lai =    0.3420293E-02
                           stover N conc =    1.326546       extractable sw =    53.93510
-11 February 1982(Day of year=42), manager: 
+11 February 1982(Day of year=42), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -4636,7 +4636,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1982(Day of year=274), manager: 
+1 October 1982(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1982(Day of year=274), Fertiliser: 
      
@@ -4644,7 +4644,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1982(Day of year=274), maize: 
+1 October 1982(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -4700,45 +4700,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1982(Day of year=275), maize: 
+2 October 1982(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1982(Day of year=277), maize: 
+4 October 1982(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.44163
-23 October 1982(Day of year=296), maize: 
+23 October 1982(Day of year=296), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.498018       lai =    0.1318960E-01
                           stover N conc =    3.668207       extractable sw =    119.0247
-27 October 1982(Day of year=300), maize: 
+27 October 1982(Day of year=300), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.559931       lai =    0.2375298E-01
                           stover N conc =    3.511123       extractable sw =    116.6936
-5 December 1982(Day of year=339), maize: 
+5 December 1982(Day of year=339), Maize: 
       stage    6.0 flag_leaf
                           biomass =           310.2996       lai =     1.609452
                           stover N conc =    2.374274       extractable sw =    164.7782
-11 December 1982(Day of year=345), maize: 
+11 December 1982(Day of year=345), Maize: 
       stage    7.0 flowering
                           biomass =           426.6401       lai =     1.581548
                           stover N conc =    2.224972       extractable sw =    127.3132
-21 December 1982(Day of year=355), maize: 
+21 December 1982(Day of year=355), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           585.5486       lai =     1.515604
                           stover N conc =    2.036910       extractable sw =    87.99976
-6 February 1983(Day of year=37), maize: 
+6 February 1983(Day of year=37), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1097.124       lai =    0.7092981
                           stover N conc =    1.350056       extractable sw =    6.052528
-7 February 1983(Day of year=38), maize: 
+7 February 1983(Day of year=38), Maize: 
       stage   10.0 maturity
                           biomass =           1098.606       lai =    0.6794766
                           stover N conc =    1.349151       extractable sw =    5.634911
-8 February 1983(Day of year=39), maize: 
+8 February 1983(Day of year=39), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1098.606       lai =    0.4536629E-02
                           stover N conc =    1.372043       extractable sw =    5.263340
-8 February 1983(Day of year=39), manager: 
+8 February 1983(Day of year=39), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -4811,7 +4811,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1983(Day of year=274), manager: 
+1 October 1983(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1983(Day of year=274), Fertiliser: 
      
@@ -4819,7 +4819,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1983(Day of year=274), maize: 
+1 October 1983(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -4875,45 +4875,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1983(Day of year=275), maize: 
+2 October 1983(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1983(Day of year=277), maize: 
+4 October 1983(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.44593
-21 October 1983(Day of year=294), maize: 
+21 October 1983(Day of year=294), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.094700       lai =    0.1313521E-01
                           stover N conc =    3.423272       extractable sw =    89.71947
-26 October 1983(Day of year=299), maize: 
+26 October 1983(Day of year=299), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.319308       lai =    0.2459483E-01
                           stover N conc =    3.304648       extractable sw =    131.0583
-9 December 1983(Day of year=343), maize: 
+9 December 1983(Day of year=343), Maize: 
       stage    6.0 flag_leaf
                           biomass =           311.4008       lai =     1.537493
                           stover N conc =    2.311492       extractable sw =    238.8178
-16 December 1983(Day of year=350), maize: 
+16 December 1983(Day of year=350), Maize: 
       stage    7.0 flowering
                           biomass =           445.9723       lai =     1.508704
                           stover N conc =    2.195518       extractable sw =    215.9240
-27 December 1983(Day of year=361), maize: 
+27 December 1983(Day of year=361), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           656.9904       lai =     1.439403
                           stover N conc =    2.008430       extractable sw =    156.9123
-15 February 1984(Day of year=46), maize: 
+15 February 1984(Day of year=46), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1166.674       lai =    0.7200468
                           stover N conc =    1.275200       extractable sw =    98.06372
-16 February 1984(Day of year=47), maize: 
+16 February 1984(Day of year=47), Maize: 
       stage   10.0 maturity
                           biomass =           1173.832       lai =    0.6997744
                           stover N conc =    1.267747       extractable sw =    97.01716
-17 February 1984(Day of year=48), maize: 
+17 February 1984(Day of year=48), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1173.832       lai =    0.3036439E-02
                           stover N conc =    1.288003       extractable sw =    99.03826
-17 February 1984(Day of year=48), manager: 
+17 February 1984(Day of year=48), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -4986,7 +4986,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1984(Day of year=275), manager: 
+1 October 1984(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1984(Day of year=275), Fertiliser: 
      
@@ -4994,7 +4994,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1984(Day of year=275), maize: 
+1 October 1984(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -5050,45 +5050,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1984(Day of year=276), maize: 
+2 October 1984(Day of year=276), Maize: 
       stage    2.0 germination
-5 October 1984(Day of year=279), maize: 
+5 October 1984(Day of year=279), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.07462
-22 October 1984(Day of year=296), maize: 
+22 October 1984(Day of year=296), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.8522795       lai =    0.1285214E-01
                           stover N conc =    3.671133       extractable sw =    107.2510
-27 October 1984(Day of year=301), maize: 
+27 October 1984(Day of year=301), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.138653       lai =    0.2431566E-01
                           stover N conc =    3.439247       extractable sw =    105.5514
-8 December 1984(Day of year=343), maize: 
+8 December 1984(Day of year=343), Maize: 
       stage    6.0 flag_leaf
                           biomass =           329.9197       lai =     1.564943
                           stover N conc =    2.364370       extractable sw =    157.5778
-14 December 1984(Day of year=349), maize: 
+14 December 1984(Day of year=349), Maize: 
       stage    7.0 flowering
                           biomass =           424.7581       lai =     1.536433
                           stover N conc =    2.226446       extractable sw =    132.6844
-24 December 1984(Day of year=359), maize: 
+24 December 1984(Day of year=359), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           594.6299       lai =     1.469150
                           stover N conc =    2.019757       extractable sw =    112.9546
-8 February 1985(Day of year=39), maize: 
+8 February 1985(Day of year=39), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1091.045       lai =    0.7033431
                           stover N conc =    1.419718       extractable sw =    6.430046
-9 February 1985(Day of year=40), maize: 
+9 February 1985(Day of year=40), Maize: 
       stage   10.0 maturity
                           biomass =           1093.020       lai =    0.6796412
                           stover N conc =    1.418016       extractable sw =    6.045773
-10 February 1985(Day of year=41), maize: 
+10 February 1985(Day of year=41), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1093.020       lai =    0.3242970E-02
                           stover N conc =    1.446562       extractable sw =    5.689575
-10 February 1985(Day of year=41), manager: 
+10 February 1985(Day of year=41), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -5161,7 +5161,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1985(Day of year=274), manager: 
+1 October 1985(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1985(Day of year=274), Fertiliser: 
      
@@ -5169,7 +5169,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1985(Day of year=274), maize: 
+1 October 1985(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -5225,45 +5225,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1985(Day of year=275), maize: 
+2 October 1985(Day of year=275), Maize: 
       stage    2.0 germination
-5 October 1985(Day of year=278), maize: 
+5 October 1985(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.02101
-23 October 1985(Day of year=296), maize: 
+23 October 1985(Day of year=296), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.102971       lai =    0.1410386E-01
                           stover N conc =    3.661372       extractable sw =    142.9887
-28 October 1985(Day of year=301), maize: 
+28 October 1985(Day of year=301), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.288054       lai =    0.2394034E-01
                           stover N conc =    3.364208       extractable sw =    130.9584
-8 December 1985(Day of year=342), maize: 
+8 December 1985(Day of year=342), Maize: 
       stage    6.0 flag_leaf
                           biomass =           255.7433       lai =     1.555432
                           stover N conc =    2.395571       extractable sw =    163.9599
-14 December 1985(Day of year=348), maize: 
+14 December 1985(Day of year=348), Maize: 
       stage    7.0 flowering
                           biomass =           361.8445       lai =     1.527083
                           stover N conc =    2.224595       extractable sw =    158.0313
-24 December 1985(Day of year=358), maize: 
+24 December 1985(Day of year=358), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           540.2690       lai =     1.460682
                           stover N conc =    2.029421       extractable sw =    136.7977
-8 February 1986(Day of year=39), maize: 
+8 February 1986(Day of year=39), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1004.392       lai =    0.6699565
                           stover N conc =    1.403701       extractable sw =    5.489433
-9 February 1986(Day of year=40), maize: 
+9 February 1986(Day of year=40), Maize: 
       stage   10.0 maturity
                           biomass =           1005.597       lai =    0.6410126
                           stover N conc =    1.402981       extractable sw =    5.115604
-10 February 1986(Day of year=41), maize: 
+10 February 1986(Day of year=41), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1005.597       lai =    0.3032446E-02
                           stover N conc =    1.426169       extractable sw =    4.775024
-10 February 1986(Day of year=41), manager: 
+10 February 1986(Day of year=41), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -5336,7 +5336,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1986(Day of year=274), manager: 
+1 October 1986(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1986(Day of year=274), Fertiliser: 
      
@@ -5344,7 +5344,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1986(Day of year=274), maize: 
+1 October 1986(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -5400,45 +5400,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1986(Day of year=275), maize: 
+2 October 1986(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1986(Day of year=277), maize: 
+4 October 1986(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    37.36713
-20 October 1986(Day of year=293), maize: 
+20 October 1986(Day of year=293), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.9963346       lai =    0.1373058E-01
                           stover N conc =    3.599375       extractable sw =    80.70400
-24 October 1986(Day of year=297), maize: 
+24 October 1986(Day of year=297), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.992962       lai =    0.2314542E-01
                           stover N conc =    3.384241       extractable sw =    136.7985
-9 December 1986(Day of year=343), maize: 
+9 December 1986(Day of year=343), Maize: 
       stage    6.0 flag_leaf
                           biomass =           325.9847       lai =     1.554814
                           stover N conc =    2.336201       extractable sw =    172.0976
-15 December 1986(Day of year=349), maize: 
+15 December 1986(Day of year=349), Maize: 
       stage    7.0 flowering
                           biomass =           453.6007       lai =     1.527224
                           stover N conc =    2.235440       extractable sw =    129.3975
-25 December 1986(Day of year=359), maize: 
+25 December 1986(Day of year=359), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           637.9752       lai =     1.457247
                           stover N conc =    2.028140       extractable sw =    74.39005
-7 February 1987(Day of year=38), maize: 
+7 February 1987(Day of year=38), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1162.774       lai =    0.7278952
                           stover N conc =    1.333795       extractable sw =    31.22977
-8 February 1987(Day of year=39), maize: 
+8 February 1987(Day of year=39), Maize: 
       stage   10.0 maturity
                           biomass =           1169.670       lai =    0.7075013
                           stover N conc =    1.326320       extractable sw =    28.99255
-9 February 1987(Day of year=40), maize: 
+9 February 1987(Day of year=40), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1169.670       lai =    0.2670228E-02
                           stover N conc =    1.349930       extractable sw =    30.47875
-9 February 1987(Day of year=40), manager: 
+9 February 1987(Day of year=40), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -5511,7 +5511,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1987(Day of year=274), manager: 
+1 October 1987(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1987(Day of year=274), Fertiliser: 
      
@@ -5519,7 +5519,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1987(Day of year=274), maize: 
+1 October 1987(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -5575,45 +5575,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1987(Day of year=275), maize: 
+2 October 1987(Day of year=275), Maize: 
       stage    2.0 germination
-5 October 1987(Day of year=278), maize: 
+5 October 1987(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.46177
-22 October 1987(Day of year=295), maize: 
+22 October 1987(Day of year=295), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.192766       lai =    0.1353070E-01
                           stover N conc =    3.595248       extractable sw =    125.6326
-26 October 1987(Day of year=299), maize: 
+26 October 1987(Day of year=299), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.117761       lai =    0.2413000E-01
                           stover N conc =    3.354504       extractable sw =    134.9744
-8 December 1987(Day of year=342), maize: 
+8 December 1987(Day of year=342), Maize: 
       stage    6.0 flag_leaf
                           biomass =           346.4714       lai =     1.564431
                           stover N conc =    2.337113       extractable sw =    200.0477
-14 December 1987(Day of year=348), maize: 
+14 December 1987(Day of year=348), Maize: 
       stage    7.0 flowering
                           biomass =           451.6277       lai =     1.534863
                           stover N conc =    2.209279       extractable sw =    177.7049
-23 December 1987(Day of year=357), maize: 
+23 December 1987(Day of year=357), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           614.7844       lai =     1.471921
                           stover N conc =    2.046075       extractable sw =    127.4539
-9 February 1988(Day of year=40), maize: 
+9 February 1988(Day of year=40), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1203.300       lai =    0.7310246
                           stover N conc =    1.314983       extractable sw =    117.4823
-10 February 1988(Day of year=41), maize: 
+10 February 1988(Day of year=41), Maize: 
       stage   10.0 maturity
                           biomass =           1212.859       lai =    0.7128236
                           stover N conc =    1.304825       extractable sw =    112.1305
-11 February 1988(Day of year=42), maize: 
+11 February 1988(Day of year=42), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1212.859       lai =    0.3165722E-02
                           stover N conc =    1.327178       extractable sw =    108.4215
-11 February 1988(Day of year=42), manager: 
+11 February 1988(Day of year=42), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -5686,7 +5686,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1988(Day of year=275), manager: 
+1 October 1988(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1988(Day of year=275), Fertiliser: 
      
@@ -5694,7 +5694,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1988(Day of year=275), maize: 
+1 October 1988(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -5750,45 +5750,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1988(Day of year=276), maize: 
+2 October 1988(Day of year=276), Maize: 
       stage    2.0 germination
-4 October 1988(Day of year=278), maize: 
+4 October 1988(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.51661
-17 October 1988(Day of year=291), maize: 
+17 October 1988(Day of year=291), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.9511744       lai =    0.1317186E-01
                           stover N conc =    3.691689       extractable sw =    71.18387
-20 October 1988(Day of year=294), maize: 
+20 October 1988(Day of year=294), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.780339       lai =    0.2153625E-01
                           stover N conc =    3.663236       extractable sw =    107.6216
-29 November 1988(Day of year=334), maize: 
+29 November 1988(Day of year=334), Maize: 
       stage    6.0 flag_leaf
                           biomass =           334.2879       lai =     1.577253
                           stover N conc =    2.365386       extractable sw =    117.6296
-5 December 1988(Day of year=340), maize: 
+5 December 1988(Day of year=340), Maize: 
       stage    7.0 flowering
                           biomass =           453.5387       lai =     1.551103
                           stover N conc =    2.233016       extractable sw =    82.93561
-15 December 1988(Day of year=350), maize: 
+15 December 1988(Day of year=350), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           616.1721       lai =     1.488748
                           stover N conc =    2.034050       extractable sw =    108.5141
-1 February 1989(Day of year=32), maize: 
+1 February 1989(Day of year=32), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1191.089       lai =    0.7482147
                           stover N conc =    1.351412       extractable sw =    7.899879
-2 February 1989(Day of year=33), maize: 
+2 February 1989(Day of year=33), Maize: 
       stage   10.0 maturity
                           biomass =           1195.460       lai =    0.7409375
                           stover N conc =    1.346540       extractable sw =    6.545853
-3 February 1989(Day of year=34), maize: 
+3 February 1989(Day of year=34), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1195.460       lai =    0.3972828E-02
                           stover N conc =    1.371464       extractable sw =    5.495987
-3 February 1989(Day of year=34), manager: 
+3 February 1989(Day of year=34), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -5861,7 +5861,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1989(Day of year=274), manager: 
+1 October 1989(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1989(Day of year=274), Fertiliser: 
      
@@ -5869,7 +5869,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1989(Day of year=274), maize: 
+1 October 1989(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -5925,45 +5925,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1989(Day of year=275), maize: 
+2 October 1989(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1989(Day of year=277), maize: 
+4 October 1989(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.31216
-19 October 1989(Day of year=292), maize: 
+19 October 1989(Day of year=292), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.122703       lai =    0.1581886E-01
                           stover N conc =    3.743150       extractable sw =    71.79434
-22 October 1989(Day of year=295), maize: 
+22 October 1989(Day of year=295), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.904309       lai =    0.2480060E-01
                           stover N conc =    3.474892       extractable sw =    108.3583
-5 December 1989(Day of year=339), maize: 
+5 December 1989(Day of year=339), Maize: 
       stage    6.0 flag_leaf
                           biomass =           333.5225       lai =     1.541609
                           stover N conc =    2.352396       extractable sw =    182.0231
-11 December 1989(Day of year=345), maize: 
+11 December 1989(Day of year=345), Maize: 
       stage    7.0 flowering
                           biomass =           446.4349       lai =     1.517742
                           stover N conc =    2.219784       extractable sw =    162.4060
-22 December 1989(Day of year=356), maize: 
+22 December 1989(Day of year=356), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           630.0427       lai =     1.455526
                           stover N conc =    2.031954       extractable sw =    133.3367
-7 February 1990(Day of year=38), maize: 
+7 February 1990(Day of year=38), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1239.846       lai =    0.7380286
                           stover N conc =    1.339506       extractable sw =    37.15518
-8 February 1990(Day of year=39), maize: 
+8 February 1990(Day of year=39), Maize: 
       stage   10.0 maturity
                           biomass =           1246.160       lai =    0.7176779
                           stover N conc =    1.333141       extractable sw =    94.75656
-9 February 1990(Day of year=40), maize: 
+9 February 1990(Day of year=40), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1246.160       lai =    0.4667461E-02
                           stover N conc =    1.356303       extractable sw =    90.93765
-9 February 1990(Day of year=40), manager: 
+9 February 1990(Day of year=40), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -6036,7 +6036,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1990(Day of year=274), manager: 
+1 October 1990(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1990(Day of year=274), Fertiliser: 
      
@@ -6044,7 +6044,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1990(Day of year=274), maize: 
+1 October 1990(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -6100,45 +6100,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1990(Day of year=275), maize: 
+2 October 1990(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1990(Day of year=277), maize: 
+4 October 1990(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.55037
-20 October 1990(Day of year=293), maize: 
+20 October 1990(Day of year=293), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.096225       lai =    0.1415086E-01
                           stover N conc =    3.555261       extractable sw =    85.57925
-25 October 1990(Day of year=298), maize: 
+25 October 1990(Day of year=298), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.579621       lai =    0.2501038E-01
                           stover N conc =    3.391158       extractable sw =    118.8252
-2 December 1990(Day of year=336), maize: 
+2 December 1990(Day of year=336), Maize: 
       stage    6.0 flag_leaf
                           biomass =           328.2567       lai =     1.580271
                           stover N conc =    2.382661       extractable sw =    128.6300
-8 December 1990(Day of year=342), maize: 
+8 December 1990(Day of year=342), Maize: 
       stage    7.0 flowering
                           biomass =           433.4473       lai =     1.552843
                           stover N conc =    2.230299       extractable sw =    103.2110
-18 December 1990(Day of year=352), maize: 
+18 December 1990(Day of year=352), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           605.7422       lai =     1.476856
                           stover N conc =    2.032627       extractable sw =    59.34332
-31 January 1991(Day of year=31), maize: 
+31 January 1991(Day of year=31), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           901.5532       lai =    0.7319221
                           stover N conc =    1.427788       extractable sw =    16.33573
-1 February 1991(Day of year=32), maize: 
+1 February 1991(Day of year=32), Maize: 
       stage   10.0 maturity
                           biomass =           905.8962       lai =    0.7119365
                           stover N conc =    1.421571       extractable sw =    13.49132
-2 February 1991(Day of year=33), maize: 
+2 February 1991(Day of year=33), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           905.8962       lai =    0.5368233E-02
                           stover N conc =    1.456367       extractable sw =    11.15378
-2 February 1991(Day of year=33), manager: 
+2 February 1991(Day of year=33), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -6211,7 +6211,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1991(Day of year=274), manager: 
+1 October 1991(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1991(Day of year=274), Fertiliser: 
      
@@ -6219,7 +6219,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1991(Day of year=274), maize: 
+1 October 1991(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -6275,45 +6275,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1991(Day of year=275), maize: 
+2 October 1991(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1991(Day of year=277), maize: 
+4 October 1991(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.20792
-19 October 1991(Day of year=292), maize: 
+19 October 1991(Day of year=292), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.133835       lai =    0.1464576E-01
                           stover N conc =    3.555578       extractable sw =    76.95589
-22 October 1991(Day of year=295), maize: 
+22 October 1991(Day of year=295), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.962568       lai =    0.2424801E-01
                           stover N conc =    3.596728       extractable sw =    112.4281
-30 November 1991(Day of year=334), maize: 
+30 November 1991(Day of year=334), Maize: 
       stage    6.0 flag_leaf
                           biomass =           306.8339       lai =     1.557665
                           stover N conc =    2.362144       extractable sw =    142.9739
-6 December 1991(Day of year=340), maize: 
+6 December 1991(Day of year=340), Maize: 
       stage    7.0 flowering
                           biomass =           415.4495       lai =     1.532351
                           stover N conc =    2.246413       extractable sw =    121.5234
-18 December 1991(Day of year=352), maize: 
+18 December 1991(Day of year=352), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           613.1298       lai =     1.459435
                           stover N conc =    2.026967       extractable sw =    116.2604
-31 January 1992(Day of year=31), maize: 
+31 January 1992(Day of year=31), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1098.558       lai =    0.6949984
                           stover N conc =    1.417745       extractable sw =    30.22334
-1 February 1992(Day of year=32), maize: 
+1 February 1992(Day of year=32), Maize: 
       stage   10.0 maturity
                           biomass =           1103.291       lai =    0.6949984
                           stover N conc =    1.411445       extractable sw =    68.52893
-2 February 1992(Day of year=33), maize: 
+2 February 1992(Day of year=33), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1103.291       lai =    0.2489567E-02
                           stover N conc =    1.436739       extractable sw =    74.13309
-2 February 1992(Day of year=33), manager: 
+2 February 1992(Day of year=33), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -6386,7 +6386,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1992(Day of year=275), manager: 
+1 October 1992(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1992(Day of year=275), Fertiliser: 
      
@@ -6394,7 +6394,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1992(Day of year=275), maize: 
+1 October 1992(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -6450,45 +6450,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1992(Day of year=276), maize: 
+2 October 1992(Day of year=276), Maize: 
       stage    2.0 germination
-4 October 1992(Day of year=278), maize: 
+4 October 1992(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.50373
-23 October 1992(Day of year=297), maize: 
+23 October 1992(Day of year=297), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.503758       lai =    0.1396744E-01
                           stover N conc =    3.699349       extractable sw =    106.8643
-27 October 1992(Day of year=301), maize: 
+27 October 1992(Day of year=301), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.620982       lai =    0.2442032E-01
                           stover N conc =    3.607439       extractable sw =    105.1572
-8 December 1992(Day of year=343), maize: 
+8 December 1992(Day of year=343), Maize: 
       stage    6.0 flag_leaf
                           biomass =           334.5866       lai =     1.597613
                           stover N conc =    2.374124       extractable sw =    152.2487
-15 December 1992(Day of year=350), maize: 
+15 December 1992(Day of year=350), Maize: 
       stage    7.0 flowering
                           biomass =           460.1237       lai =     1.566551
                           stover N conc =    2.220795       extractable sw =    121.5595
-25 December 1992(Day of year=360), maize: 
+25 December 1992(Day of year=360), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           612.9613       lai =     1.507292
                           stover N conc =    2.045148       extractable sw =    85.10113
-8 February 1993(Day of year=39), maize: 
+8 February 1993(Day of year=39), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           965.0989       lai =    0.5400968
                           stover N conc =    1.544497       extractable sw =    3.390789
-9 February 1993(Day of year=40), maize: 
+9 February 1993(Day of year=40), Maize: 
       stage   10.0 maturity
                           biomass =           965.7081       lai =    0.5158061
                           stover N conc =    1.544694       extractable sw =    1.374004
-10 February 1993(Day of year=41), maize: 
+10 February 1993(Day of year=41), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           965.7081       lai =    0.3110945E-02
                           stover N conc =    1.571217       extractable sw =    1.273212
-10 February 1993(Day of year=41), manager: 
+10 February 1993(Day of year=41), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -6561,7 +6561,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1993(Day of year=274), manager: 
+1 October 1993(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1993(Day of year=274), Fertiliser: 
      
@@ -6569,7 +6569,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1993(Day of year=274), maize: 
+1 October 1993(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -6625,45 +6625,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1993(Day of year=275), maize: 
+2 October 1993(Day of year=275), Maize: 
       stage    2.0 germination
-5 October 1993(Day of year=278), maize: 
+5 October 1993(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    46.85361
-21 October 1993(Day of year=294), maize: 
+21 October 1993(Day of year=294), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.008825       lai =    0.1325876E-01
                           stover N conc =    3.573875       extractable sw =    83.73717
-25 October 1993(Day of year=298), maize: 
+25 October 1993(Day of year=298), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.958560       lai =    0.2357995E-01
                           stover N conc =    3.481398       extractable sw =    119.2134
-4 December 1993(Day of year=338), maize: 
+4 December 1993(Day of year=338), Maize: 
       stage    6.0 flag_leaf
                           biomass =           297.0931       lai =     1.554346
                           stover N conc =    2.378580       extractable sw =    131.5286
-11 December 1993(Day of year=345), maize: 
+11 December 1993(Day of year=345), Maize: 
       stage    7.0 flowering
                           biomass =           379.6181       lai =     1.527255
                           stover N conc =    2.219195       extractable sw =    201.4950
-22 December 1993(Day of year=356), maize: 
+22 December 1993(Day of year=356), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           577.0265       lai =     1.460193
                           stover N conc =    2.030555       extractable sw =    148.0294
-8 February 1994(Day of year=39), maize: 
+8 February 1994(Day of year=39), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1172.748       lai =    0.7299147
                           stover N conc =    1.366659       extractable sw =    14.86866
-9 February 1994(Day of year=40), maize: 
+9 February 1994(Day of year=40), Maize: 
       stage   10.0 maturity
                           biomass =           1178.025       lai =    0.7090397
                           stover N conc =    1.360975       extractable sw =    12.24264
-10 February 1994(Day of year=41), maize: 
+10 February 1994(Day of year=41), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1178.025       lai =    0.3105164E-02
                           stover N conc =    1.382754       extractable sw =    10.09084
-10 February 1994(Day of year=41), manager: 
+10 February 1994(Day of year=41), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -6736,7 +6736,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1994(Day of year=274), manager: 
+1 October 1994(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1994(Day of year=274), Fertiliser: 
      
@@ -6744,7 +6744,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1994(Day of year=274), maize: 
+1 October 1994(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -6800,45 +6800,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1994(Day of year=275), maize: 
+2 October 1994(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1994(Day of year=277), maize: 
+4 October 1994(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.70780
-21 October 1994(Day of year=294), maize: 
+21 October 1994(Day of year=294), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.170280       lai =    0.1372017E-01
                           stover N conc =    3.772473       extractable sw =    73.30701
-26 October 1994(Day of year=299), maize: 
+26 October 1994(Day of year=299), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.384817       lai =    0.2553675E-01
                           stover N conc =    3.403268       extractable sw =    127.4968
-6 December 1994(Day of year=340), maize: 
+6 December 1994(Day of year=340), Maize: 
       stage    6.0 flag_leaf
                           biomass =           292.8521       lai =     1.583648
                           stover N conc =    2.347990       extractable sw =    149.0356
-13 December 1994(Day of year=347), maize: 
+13 December 1994(Day of year=347), Maize: 
       stage    7.0 flowering
                           biomass =           419.8750       lai =     1.555752
                           stover N conc =    2.216736       extractable sw =    120.3879
-23 December 1994(Day of year=357), maize: 
+23 December 1994(Day of year=357), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           629.0949       lai =     1.486354
                           stover N conc =    2.026534       extractable sw =    59.99348
-8 February 1995(Day of year=39), maize: 
+8 February 1995(Day of year=39), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1147.362       lai =    0.7544338
                           stover N conc =    1.275035       extractable sw =    38.89306
-9 February 1995(Day of year=40), maize: 
+9 February 1995(Day of year=40), Maize: 
       stage   10.0 maturity
                           biomass =           1154.473       lai =    0.7348306
                           stover N conc =    1.267462       extractable sw =    36.95860
-10 February 1995(Day of year=41), maize: 
+10 February 1995(Day of year=41), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1154.473       lai =    0.4612029E-02
                           stover N conc =    1.287627       extractable sw =    34.73737
-10 February 1995(Day of year=41), manager: 
+10 February 1995(Day of year=41), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -6911,7 +6911,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1995(Day of year=274), manager: 
+1 October 1995(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1995(Day of year=274), Fertiliser: 
      
@@ -6919,7 +6919,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1995(Day of year=274), maize: 
+1 October 1995(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -6975,45 +6975,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1995(Day of year=275), maize: 
+2 October 1995(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1995(Day of year=277), maize: 
+4 October 1995(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    43.55515
-21 October 1995(Day of year=294), maize: 
+21 October 1995(Day of year=294), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.232224       lai =    0.1417676E-01
                           stover N conc =    3.746871       extractable sw =    76.90125
-26 October 1995(Day of year=299), maize: 
+26 October 1995(Day of year=299), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.359599       lai =    0.2796909E-01
                           stover N conc =    3.412182       extractable sw =    138.2714
-3 December 1995(Day of year=337), maize: 
+3 December 1995(Day of year=337), Maize: 
       stage    6.0 flag_leaf
                           biomass =           284.3107       lai =     1.484130
                           stover N conc =    2.331905       extractable sw =    208.7206
-10 December 1995(Day of year=344), maize: 
+10 December 1995(Day of year=344), Maize: 
       stage    7.0 flowering
                           biomass =           413.8637       lai =     1.451329
                           stover N conc =    2.188359       extractable sw =    189.2436
-20 December 1995(Day of year=354), maize: 
+20 December 1995(Day of year=354), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           591.2272       lai =     1.389340
                           stover N conc =    2.007573       extractable sw =    175.9643
-6 February 1996(Day of year=37), maize: 
+6 February 1996(Day of year=37), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1147.617       lai =    0.7251098
                           stover N conc =    1.304876       extractable sw =    213.7751
-7 February 1996(Day of year=38), maize: 
+7 February 1996(Day of year=38), Maize: 
       stage   10.0 maturity
                           biomass =           1155.799       lai =    0.7056456
                           stover N conc =    1.295915       extractable sw =    210.8904
-8 February 1996(Day of year=39), maize: 
+8 February 1996(Day of year=39), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1155.799       lai =    0.3589988E-02
                           stover N conc =    1.315942       extractable sw =    208.3978
-8 February 1996(Day of year=39), manager: 
+8 February 1996(Day of year=39), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -7086,7 +7086,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1996(Day of year=275), manager: 
+1 October 1996(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1996(Day of year=275), Fertiliser: 
      
@@ -7094,7 +7094,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1996(Day of year=275), maize: 
+1 October 1996(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -7150,45 +7150,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1996(Day of year=276), maize: 
+2 October 1996(Day of year=276), Maize: 
       stage    2.0 germination
-4 October 1996(Day of year=278), maize: 
+4 October 1996(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    41.38830
-22 October 1996(Day of year=296), maize: 
+22 October 1996(Day of year=296), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.340057       lai =    0.1385225E-01
                           stover N conc =    3.561193       extractable sw =    120.3980
-26 October 1996(Day of year=300), maize: 
+26 October 1996(Day of year=300), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.479395       lai =    0.2282209E-01
                           stover N conc =    3.479645       extractable sw =    117.8525
-8 December 1996(Day of year=343), maize: 
+8 December 1996(Day of year=343), Maize: 
       stage    6.0 flag_leaf
                           biomass =           325.8417       lai =     1.598935
                           stover N conc =    2.377299       extractable sw =    126.0513
-14 December 1996(Day of year=349), maize: 
+14 December 1996(Day of year=349), Maize: 
       stage    7.0 flowering
                           biomass =           431.9493       lai =     1.572680
                           stover N conc =    2.221197       extractable sw =    130.3691
-25 December 1996(Day of year=360), maize: 
+25 December 1996(Day of year=360), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           637.4929       lai =     1.510783
                           stover N conc =    2.034753       extractable sw =    98.31484
-12 February 1997(Day of year=43), maize: 
+12 February 1997(Day of year=43), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1069.689       lai =    0.5404260
                           stover N conc =    1.516110       extractable sw =    1.421272
-13 February 1997(Day of year=44), maize: 
+13 February 1997(Day of year=44), Maize: 
       stage   10.0 maturity
                           biomass =           1070.206       lai =    0.5159183
                           stover N conc =    1.516456       extractable sw =    1.304665
-14 February 1997(Day of year=45), maize: 
+14 February 1997(Day of year=45), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1070.206       lai =    0.4560947E-02
                           stover N conc =    1.540313       extractable sw =    3.643887
-14 February 1997(Day of year=45), manager: 
+14 February 1997(Day of year=45), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -7261,7 +7261,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1997(Day of year=274), manager: 
+1 October 1997(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1997(Day of year=274), Fertiliser: 
      
@@ -7269,7 +7269,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1997(Day of year=274), maize: 
+1 October 1997(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -7325,45 +7325,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1997(Day of year=275), maize: 
+2 October 1997(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1997(Day of year=277), maize: 
+4 October 1997(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.38339
-21 October 1997(Day of year=294), maize: 
+21 October 1997(Day of year=294), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.208929       lai =    0.1398532E-01
                           stover N conc =    3.474596       extractable sw =    91.25201
-25 October 1997(Day of year=298), maize: 
+25 October 1997(Day of year=298), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.243063       lai =    0.2279552E-01
                           stover N conc =    3.393329       extractable sw =    124.3419
-3 December 1997(Day of year=337), maize: 
+3 December 1997(Day of year=337), Maize: 
       stage    6.0 flag_leaf
                           biomass =           296.6404       lai =     1.549573
                           stover N conc =    2.365810       extractable sw =    153.8086
-9 December 1997(Day of year=343), maize: 
+9 December 1997(Day of year=343), Maize: 
       stage    7.0 flowering
                           biomass =           396.6702       lai =     1.517789
                           stover N conc =    2.220433       extractable sw =    119.1873
-19 December 1997(Day of year=353), maize: 
+19 December 1997(Day of year=353), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           557.4890       lai =     1.451197
                           stover N conc =    2.020736       extractable sw =    139.0023
-1 February 1998(Day of year=32), maize: 
+1 February 1998(Day of year=32), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1074.508       lai =    0.7429246
                           stover N conc =    1.325021       extractable sw =    53.81786
-2 February 1998(Day of year=33), maize: 
+2 February 1998(Day of year=33), Maize: 
       stage   10.0 maturity
                           biomass =           1083.197       lai =    0.7194527
                           stover N conc =    1.314763       extractable sw =    48.97771
-3 February 1998(Day of year=34), maize: 
+3 February 1998(Day of year=34), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1083.197       lai =    0.3554225E-02
                           stover N conc =    1.337323       extractable sw =    44.61492
-3 February 1998(Day of year=34), manager: 
+3 February 1998(Day of year=34), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -7436,7 +7436,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1998(Day of year=274), manager: 
+1 October 1998(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1998(Day of year=274), Fertiliser: 
      
@@ -7444,7 +7444,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1998(Day of year=274), maize: 
+1 October 1998(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -7500,45 +7500,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1998(Day of year=275), maize: 
+2 October 1998(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1998(Day of year=277), maize: 
+4 October 1998(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.33897
-21 October 1998(Day of year=294), maize: 
+21 October 1998(Day of year=294), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.163611       lai =    0.1417124E-01
                           stover N conc =    3.637843       extractable sw =    69.87579
-25 October 1998(Day of year=298), maize: 
+25 October 1998(Day of year=298), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.900896       lai =    0.2444063E-01
                           stover N conc =    3.544483       extractable sw =    105.5417
-7 December 1998(Day of year=341), maize: 
+7 December 1998(Day of year=341), Maize: 
       stage    6.0 flag_leaf
                           biomass =           312.5002       lai =     1.556291
                           stover N conc =    2.377597       extractable sw =    156.6139
-14 December 1998(Day of year=348), maize: 
+14 December 1998(Day of year=348), Maize: 
       stage    7.0 flowering
                           biomass =           425.3099       lai =     1.527493
                           stover N conc =    2.221251       extractable sw =    138.2788
-24 December 1998(Day of year=358), maize: 
+24 December 1998(Day of year=358), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           597.1984       lai =     1.461036
                           stover N conc =    2.017799       extractable sw =    129.9062
-10 February 1999(Day of year=41), maize: 
+10 February 1999(Day of year=41), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1161.374       lai =    0.7495543
                           stover N conc =    1.306700       extractable sw =    136.0222
-11 February 1999(Day of year=42), maize: 
+11 February 1999(Day of year=42), Maize: 
       stage   10.0 maturity
                           biomass =           1168.446       lai =    0.7318186
                           stover N conc =    1.299065       extractable sw =    132.7561
-12 February 1999(Day of year=43), maize: 
+12 February 1999(Day of year=43), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1168.446       lai =    0.5048454E-02
                           stover N conc =    1.321343       extractable sw =    130.0554
-12 February 1999(Day of year=43), manager: 
+12 February 1999(Day of year=43), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -7611,7 +7611,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 1999(Day of year=274), manager: 
+1 October 1999(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 1999(Day of year=274), Fertiliser: 
      
@@ -7619,7 +7619,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 1999(Day of year=274), maize: 
+1 October 1999(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -7675,45 +7675,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 1999(Day of year=275), maize: 
+2 October 1999(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 1999(Day of year=277), maize: 
+4 October 1999(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.58869
-19 October 1999(Day of year=292), maize: 
+19 October 1999(Day of year=292), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.9826716       lai =    0.1379647E-01
                           stover N conc =    3.641213       extractable sw =    76.35686
-23 October 1999(Day of year=296), maize: 
+23 October 1999(Day of year=296), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.805987       lai =    0.2388702E-01
                           stover N conc =    3.427240       extractable sw =    111.7860
-8 December 1999(Day of year=342), maize: 
+8 December 1999(Day of year=342), Maize: 
       stage    6.0 flag_leaf
                           biomass =           336.6177       lai =     1.551352
                           stover N conc =    2.350160       extractable sw =    162.0183
-14 December 1999(Day of year=348), maize: 
+14 December 1999(Day of year=348), Maize: 
       stage    7.0 flowering
                           biomass =           439.7270       lai =     1.527474
                           stover N conc =    2.216510       extractable sw =    170.5857
-27 December 1999(Day of year=361), maize: 
+27 December 1999(Day of year=361), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           628.9338       lai =     1.467813
                           stover N conc =    2.032396       extractable sw =    169.1777
-19 February 2000(Day of year=50), maize: 
+19 February 2000(Day of year=50), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1265.508       lai =    0.7554649
                           stover N conc =    1.333255       extractable sw =    138.6272
-20 February 2000(Day of year=51), maize: 
+20 February 2000(Day of year=51), Maize: 
       stage   10.0 maturity
                           biomass =           1272.628       lai =    0.7380400
                           stover N conc =    1.326084       extractable sw =    136.4647
-21 February 2000(Day of year=52), maize: 
+21 February 2000(Day of year=52), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1272.628       lai =    0.4244685E-02
                           stover N conc =    1.348392       extractable sw =    134.1091
-21 February 2000(Day of year=52), manager: 
+21 February 2000(Day of year=52), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -7786,7 +7786,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 2000(Day of year=275), manager: 
+1 October 2000(Day of year=275), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 2000(Day of year=275), Fertiliser: 
      
@@ -7794,7 +7794,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 2000(Day of year=275), maize: 
+1 October 2000(Day of year=275), Maize: 
      Sowing initiate
      
      
@@ -7850,45 +7850,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 2000(Day of year=276), maize: 
+2 October 2000(Day of year=276), Maize: 
       stage    2.0 germination
-4 October 2000(Day of year=278), maize: 
+4 October 2000(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.28091
-20 October 2000(Day of year=294), maize: 
+20 October 2000(Day of year=294), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.033444       lai =    0.1336511E-01
                           stover N conc =    3.657208       extractable sw =    72.66340
-24 October 2000(Day of year=298), maize: 
+24 October 2000(Day of year=298), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.781588       lai =    0.2469709E-01
                           stover N conc =    3.451262       extractable sw =    108.3763
-6 December 2000(Day of year=341), maize: 
+6 December 2000(Day of year=341), Maize: 
       stage    6.0 flag_leaf
                           biomass =           311.5867       lai =     1.533945
                           stover N conc =    2.361555       extractable sw =    121.0124
-11 December 2000(Day of year=346), maize: 
+11 December 2000(Day of year=346), Maize: 
       stage    7.0 flowering
                           biomass =           402.9127       lai =     1.510209
                           stover N conc =    2.261177       extractable sw =    91.24669
-22 December 2000(Day of year=357), maize: 
+22 December 2000(Day of year=357), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           583.0932       lai =     1.440623
                           stover N conc =    2.026198       extractable sw =    56.25788
-6 February 2001(Day of year=37), maize: 
+6 February 2001(Day of year=37), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           885.4628       lai =    0.5309181
                           stover N conc =    1.492513       extractable sw =    104.5781
-7 February 2001(Day of year=38), maize: 
+7 February 2001(Day of year=38), Maize: 
       stage   10.0 maturity
                           biomass =           891.1836       lai =    0.5309181
                           stover N conc =    1.482464       extractable sw =    101.3018
-8 February 2001(Day of year=39), maize: 
+8 February 2001(Day of year=39), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           891.1836       lai =    0.5150497E-02
                           stover N conc =    1.506879       extractable sw =    99.26037
-8 February 2001(Day of year=39), manager: 
+8 February 2001(Day of year=39), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -7961,7 +7961,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 2001(Day of year=274), manager: 
+1 October 2001(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 2001(Day of year=274), Fertiliser: 
      
@@ -7969,7 +7969,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 2001(Day of year=274), maize: 
+1 October 2001(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -8025,45 +8025,45 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 2001(Day of year=275), maize: 
+2 October 2001(Day of year=275), Maize: 
       stage    2.0 germination
-4 October 2001(Day of year=277), maize: 
+4 October 2001(Day of year=277), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    36.56495
-22 October 2001(Day of year=295), maize: 
+22 October 2001(Day of year=295), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.392634       lai =    0.1440456E-01
                           stover N conc =    3.550766       extractable sw =    124.8539
-25 October 2001(Day of year=298), maize: 
+25 October 2001(Day of year=298), Maize: 
       stage    5.0 floral_initiation
                           biomass =           2.133268       lai =    0.2327427E-01
                           stover N conc =    3.489319       extractable sw =    121.4484
-6 December 2001(Day of year=340), maize: 
+6 December 2001(Day of year=340), Maize: 
       stage    6.0 flag_leaf
                           biomass =           296.2767       lai =     1.517043
                           stover N conc =    2.358252       extractable sw =    213.9671
-12 December 2001(Day of year=346), maize: 
+12 December 2001(Day of year=346), Maize: 
       stage    7.0 flowering
                           biomass =           396.8851       lai =     1.490235
                           stover N conc =    2.193828       extractable sw =    228.5069
-23 December 2001(Day of year=357), maize: 
+23 December 2001(Day of year=357), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           579.8832       lai =     1.421786
                           stover N conc =    2.013653       extractable sw =    185.2775
-5 February 2002(Day of year=36), maize: 
+5 February 2002(Day of year=36), Maize: 
       stage    9.0 end_grain_fill
                           biomass =           1129.065       lai =    0.7192027
                           stover N conc =    1.340250       extractable sw =    31.23966
-6 February 2002(Day of year=37), maize: 
+6 February 2002(Day of year=37), Maize: 
       stage   10.0 maturity
                           biomass =           1135.565       lai =    0.6968961
                           stover N conc =    1.333039       extractable sw =    34.06097
-7 February 2002(Day of year=38), maize: 
+7 February 2002(Day of year=38), Maize: 
       stage   11.0 harvest_ripe
                           biomass =           1135.565       lai =    0.4586399E-02
                           stover N conc =    1.355815       extractable sw =    36.50146
-7 February 2002(Day of year=38), manager: 
+7 February 2002(Day of year=38), Manager: 
      Manager sending message :- maize harvest
      
      
@@ -8136,7 +8136,7 @@ Title                  = Dalby 1500mm wet soil Low Population
      
                       Effective Cover from Surface Materials =   0.3
      
-1 October 2002(Day of year=274), manager: 
+1 October 2002(Day of year=274), Manager: 
      Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 200.
 1 October 2002(Day of year=274), Fertiliser: 
      
@@ -8144,7 +8144,7 @@ Title                  = Dalby 1500mm wet soil Low Population
        200.00 of N as nitrate (no3_n)
                                          added at depth  200.00 (layer   2)
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 2.50000 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0
-1 October 2002(Day of year=274), maize: 
+1 October 2002(Day of year=274), Maize: 
      Sowing initiate
      
      
@@ -8200,31 +8200,31 @@ Title                  = Dalby 1500mm wet soil Low Population
      
      
      
-2 October 2002(Day of year=275), maize: 
+2 October 2002(Day of year=275), Maize: 
       stage    2.0 germination
-5 October 2002(Day of year=278), maize: 
+5 October 2002(Day of year=278), Maize: 
       stage    3.0 emergence
                           biomass =          0.5000000E-01   lai =    0.9500000E-03
                           stover N conc =    4.400000       extractable sw =    35.98756
-19 October 2002(Day of year=292), maize: 
+19 October 2002(Day of year=292), Maize: 
       stage    4.0 end_of_juvenile
                           biomass =           1.025605       lai =    0.1301460E-01
                           stover N conc =    3.902356       extractable sw =    74.79027
-22 October 2002(Day of year=295), maize: 
+22 October 2002(Day of year=295), Maize: 
       stage    5.0 floral_initiation
                           biomass =           1.767944       lai =    0.2328358E-01
                           stover N conc =    3.651106       extractable sw =    111.1532
-29 November 2002(Day of year=333), maize: 
+29 November 2002(Day of year=333), Maize: 
       stage    6.0 flag_leaf
                           biomass =           317.3309       lai =     1.584554
                           stover N conc =    2.386300       extractable sw =    143.9530
-5 December 2002(Day of year=339), maize: 
+5 December 2002(Day of year=339), Maize: 
       stage    7.0 flowering
                           biomass =           442.1229       lai =     1.553678
                           stover N conc =    2.240180       extractable sw =    104.2531
-15 December 2002(Day of year=349), maize: 
+15 December 2002(Day of year=349), Maize: 
       stage    8.0 start_grain_fill
                           biomass =           631.6844       lai =     1.491480
                           stover N conc =    2.045538       extractable sw =    107.3927
-21 December 2002(Day of year=355), clock: 
+21 December 2002(Day of year=355), Clock: 
      Simulation is terminating due to end criteria being met.

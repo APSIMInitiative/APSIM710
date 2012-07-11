@@ -11,13 +11,13 @@
 
 Version                = 7.5
 Title                  = Soilwat2 test_seasonal_evap_stuff
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "Met" = %apsim%\Model\input.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "Met" = %apsim%\Model\Input.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -33,7 +33,7 @@ Title                  = Soilwat2 test_seasonal_evap_stuff
      Simulation end date   = 31/12/1988
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.dd/mmm/yyyy as date
         SoilWat.cona
@@ -44,9 +44,9 @@ Title                  = Soilwat2 test_seasonal_evap_stuff
 
 ------- Met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+     INPUT File name: %apsim%\Examples\MetFiles\Dalby.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- end_of_day
@@ -130,5 +130,5 @@ Title                  = Soilwat2 test_seasonal_evap_stuff
                                   Winter        15-apr
             Eo from priestly-taylor
 ------- Start of simulation  --------------------------------------------------
-31 December 1988(Day of year=366), clock: 
+31 December 1988(Day of year=366), Clock: 
      Simulation is terminating due to end criteria being met.

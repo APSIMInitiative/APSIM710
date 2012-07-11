@@ -11,17 +11,17 @@
 
 Version                = 7.5
 Title                  = Surface Organic Matter Module Test 6
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
    Component                          "Met" = %apsim%\Model\Input.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
    Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                        "soilp" = %apsim%\Model\soilp.dll
+   Component                        "SoilP" = %apsim%\Model\SoilP.dll
 
-------- clock Initialisation --------------------------------------------------
+------- Clock Initialisation --------------------------------------------------
      Sequencer phases:
         prepare
         init_step
@@ -37,7 +37,7 @@ Title                  = Surface Organic Matter Module Test 6
      Simulation end date   = 30/01/1988
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
+------- Report Initialisation -------------------------------------------------
      Output variables:
         clock.day
         clock.day
@@ -65,9 +65,9 @@ Title                  = Surface Organic Matter Module Test 6
 
 ------- Met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: optimum.MET
+     INPUT File name: optimum.met
 
-------- manager Initialisation ------------------------------------------------
+------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -206,7 +206,7 @@ Title                  = Surface Organic Matter Module Test 6
            Totals   73935.0  5099.0   489.0    61.1   400.0    20.0
           ---------------------------------------------------------
 
-------- soilp Initialisation --------------------------------------------------
+------- SoilP Initialisation --------------------------------------------------
      Initialising
      
         - Reading Constants
@@ -232,7 +232,7 @@ Title                  = Surface Organic Matter Module Test 6
            Dissolution rate of rock P :    0.00061   (/yr)
            Root C:P :                    200.0
 ------- Start of simulation  --------------------------------------------------
-10 January 1988(Day of year=10), manager: 
+10 January 1988(Day of year=10), Manager: 
      Manager sending message :- fertiliser apply  amount = 100, type = banded_p, depth = 10
 10 January 1988(Day of year=10), Fertiliser: 
      
@@ -249,5 +249,5 @@ Title                  = Surface Organic Matter Module Test 6
    - Reading Fertiliser Type Parameters
        100.00 of Rock Phosphorus (rock_p)
                                          added at depth  600.00 (layer   2)
-30 January 1988(Day of year=30), clock: 
+30 January 1988(Day of year=30), Clock: 
      Simulation is terminating due to end criteria being met.
