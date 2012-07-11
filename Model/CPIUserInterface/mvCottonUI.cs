@@ -52,20 +52,6 @@ namespace CPIUserInterface
         //=====================================================================
         private void mvCottonUI_Load(object sender, EventArgs e)
         {
-            //Fill the property fields
-            XmlNode initSection = XmlHelper.Find(Data, "initsection");
-
-            if (initSection != null)
-            {
-                TInitParser initPsr = new TInitParser(initSection.OuterXml);
-
-                for (int i = 1; i <= initPsr.initCount(); i++)
-                {
-                    String initText = initPsr.initText((uint)i);
-                    TSDMLValue sdmlinit = new TSDMLValue(initText, "");
-                    typedvals.Add(sdmlinit);
-                }
-            }
         }
         //=====================================================================
         /// <summary>
@@ -87,6 +73,21 @@ namespace CPIUserInterface
                 pictureBox1.Image = null;
             }
             label2.Text = Types.Instance.MetaData(Data.Name, "description");
+           
+            //Fill the property fields
+            XmlNode initSection = XmlHelper.Find(Data, "initsection");
+
+            if (initSection != null)
+            {
+                TInitParser initPsr = new TInitParser(initSection.OuterXml);
+
+                for (int i = 1; i <= initPsr.initCount(); i++)
+                {
+                    String initText = initPsr.initText((uint)i);
+                    TSDMLValue sdmlinit = new TSDMLValue(initText, "");
+                    typedvals.Add(sdmlinit);
+                }
+            }
         }
         //=====================================================================
         /// <summary>

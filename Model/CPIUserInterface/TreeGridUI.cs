@@ -255,6 +255,7 @@ namespace CPIUserInterface
         /// </summary>
         private void populateTreeModel()
         {
+            afTreeViewColumns1.SuspendLayout();
             afTreeViewColumns1.TreeView.Nodes.Clear();
 
             foreach (TTypedValue prop in typedvals)
@@ -266,6 +267,7 @@ namespace CPIUserInterface
                     addTreeModelNode(trNode2, prop.Name, prop);
                 }
             }
+            afTreeViewColumns1.ResumeLayout();
         }
         //=======================================================================
         /// <summary>
@@ -274,6 +276,7 @@ namespace CPIUserInterface
         /// </summary>
         private void populateTreeModel(List<TCompProperty> compProperties)
         {
+            afTreeViewColumns1.SuspendLayout();
             afTreeViewColumns1.TreeView.Nodes.Clear();
 
             foreach (TCompProperty prop in compProperties)
@@ -288,6 +291,7 @@ namespace CPIUserInterface
                     }
                 }
             }
+            afTreeViewColumns1.ResumeLayout();
         }
         //=======================================================================
         private void addTreeModelNode(TreeNode parentNode, String name, TTypedValue typedValue)

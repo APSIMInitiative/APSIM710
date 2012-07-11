@@ -76,14 +76,6 @@ namespace CPIUserInterface
             List<String> DllFileNames = Types.Instance.Dlls(ComponentType);
             FDllFileName = DllFileNames[0];
             FDllFileName = Configuration.RemoveMacros(FDllFileName);
-
-            //Fill the property fields
-            XmlNode initSection = XmlHelper.Find(Data, "initsection");
-
-            if (initSection != null)
-            {
-                InitFromInitSection(initSection.OuterXml);
-            }
         }
         //=======================================================================
         /// <summary>
@@ -198,6 +190,14 @@ namespace CPIUserInterface
         public override void OnRefresh()
         {
             base.OnRefresh();
+
+            //Fill the property fields
+            XmlNode initSection = XmlHelper.Find(Data, "initsection");
+
+            if (initSection != null)
+            {
+                InitFromInitSection(initSection.OuterXml);
+            }
         }
         //=======================================================================
         /// <summary>
