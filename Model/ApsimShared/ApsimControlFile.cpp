@@ -84,6 +84,7 @@ void parseModuleLine(const string& controlFileName, const string& moduleLine,
    if (posComment != string::npos)
       line.erase(posComment);
    stripLeadingTrailing(line, "\r");
+   stripLeadingTrailing(line, " ");
 
    // initialise everything to zero.
    string moduleName;
