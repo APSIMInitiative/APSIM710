@@ -97,7 +97,7 @@ class Program
                     XmlHelper.SetName(JobNode, "ApsimX " + FileName);
                     XmlHelper.SetValue(JobNode, "WorkingDirectory", Path.GetDirectoryName(FileName));
                     XmlHelper.SetValue(JobNode, "CommandLine", ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", "ApsimX.exe")) + " " + StringManip.DQuote(FileName) + " > " + StringManip.DQuote(SumFileName)));
-                    XmlHelper.SetValue(JobNode, "CommandLineUnix", ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", "ApsimX.x")) + " " + StringManip.DQuote(FileName) + " > " + StringManip.DQuote(SumFileName)));
+                    XmlHelper.SetValue(JobNode, "CommandLineUnix", ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", "ApsimX.exe")) + " " + StringManip.DQuote(FileName) + " > " + StringManip.DQuote(SumFileName)));
                     XML = "AddXML~" + NodePath + "/RunApsim~" + DocX.OuterXml;
                 }
                 else
