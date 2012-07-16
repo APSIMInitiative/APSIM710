@@ -231,7 +231,7 @@ namespace CPIUserInterface
             ApsimFile.Component me = Controller.ApsimData.Find(NodePath);
             FileName = Path.GetFileNameWithoutExtension(FileName) + "_" + me.Name + ".out";
             String aVersion = Configuration.Instance.ApsimVersion();
-            String Title = "ApsimVersion = " + aVersion + "\r\nTitle = " + FileName;
+            String Title = "ApsimVersion = " + aVersion + Environment.NewLine + "Title = " + FileName;
 
             int i = 0;
             while (i < propertyList.Count)
