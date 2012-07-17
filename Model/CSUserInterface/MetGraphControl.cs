@@ -110,7 +110,13 @@ namespace CSUserInterface
                 float firstDay = 0;
                 if ((YearlyData.Count > 0))
                 {
-                    firstDay = (float)YearlyData[0]["day"];
+                    if (YearlyData.Table.Columns.Contains("day"))
+                        firstDay = (float)YearlyData[0]["day"];
+                    else if (YearlyData.Table.Columns.Contains("date"))
+                    {
+                        DateTime D = (DateTime)YearlyData[0]["date"];
+                        firstDay = D.DayOfYear;
+                    }
                 }
 
                 if (YearlyData.Table.Columns.IndexOf("Rain") != -1)
@@ -125,7 +131,7 @@ namespace CSUserInterface
                         RainfallLabel.Text = MathUtility.Sum(Rainfall).ToString("f1") + " mm for the years " + YearStartBox.Value.ToString() + " to " + (YearStartBox.Value + NumYearsBox.Value - 1).ToString();
                     }
 
-                }
+                }   
                 else
                 {
                     RainfallLabel.Text = "";
