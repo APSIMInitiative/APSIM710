@@ -558,7 +558,7 @@ namespace ApsimFile
 
                     NewThickness.Add(LastThickness);
                     NewThickness.Add(LastThickness);
-                    NewThickness.Add(1000);
+                    NewThickness.Add(3000);
                     NewValues.Add(LastValue * 0.8);
                     NewValues.Add(LastValue * 0.4);
                     NewValues.Add(0);  // This will be constrained below to cropLL.
@@ -584,18 +584,18 @@ namespace ApsimFile
                          VariableName.ToLower() == "dul" || VariableName.ToLower() == "sat")
                 {
                     double LastValue = Values[Values.Length - 1];
-                    NewThickness.Add(1000);
+                    NewThickness.Add(3000);
                     NewValues.Add(LastValue);
                 }
 
                 else if (VariableName.ToLower() == "no3")
                 {
-                    NewThickness.Add(1000);  // go way beyond end of profile.
+                    NewThickness.Add(3000);  // go way beyond end of profile.
                     NewValues.Add(1.0);
                 }
                 else if (VariableName.ToLower() == "nh4")
                 {
-                    NewThickness.Add(1000);  // go way beyond end of profile.
+                    NewThickness.Add(3000);  // go way beyond end of profile.
                     NewValues.Add(0.2);
                 }
                 else if (VariableName.ToLower() == "oc" || VariableName.ToLower() == "ph")
@@ -610,7 +610,7 @@ namespace ApsimFile
                     InFillValues(NewValues, NewThickness, Var.Doubles, Var.ThicknessMM);
 
                     double LastValue = NewValues[NewValues.Count - 1];
-                    NewThickness.Add(1000);  // go way beyond end of profile.
+                    NewThickness.Add(3000);  // go way beyond end of profile.
                     NewValues.Add(LastValue);
                 }
                 else if (VariableName.ToLower() == "ec" || VariableName.ToLower() == "cl")
@@ -625,12 +625,12 @@ namespace ApsimFile
                     double LastValue = 0.0;
                     if (Values.Length > 0)
                         LastValue = NewValues[NewValues.Count - 1];
-                    NewThickness.Add(1000);  // go way beyond end of profile.
+                    NewThickness.Add(3000);  // go way beyond end of profile.
                     NewValues.Add(LastValue);
                 }
                 else
                 {
-                    NewThickness.Add(1000);  // go way beyond end of profile.
+                    NewThickness.Add(3000);  // go way beyond end of profile.
                     NewValues.Add(0.0);
                 }
                 Values = NewValues.ToArray();
@@ -1758,7 +1758,7 @@ namespace ApsimFile
                     (layer > 0 && PAWC[layer - 1] == 0))
                     PAWC[layer] = 0;
                 else
-                    PAWC[layer] = DUL[layer] - LL[layer];
+                    PAWC[layer] = Math.Abs(DUL[layer] - LL[layer]);
             return PAWC;
         }
 
