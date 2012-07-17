@@ -597,7 +597,8 @@
             ! read in rainfall if it is not to be supplied by APSIM
             ! assume that rainfall source is then a file name.
 
-         open (UNIT=LUNrain, IOSTAT=iost, FILE=p%rainfall_file)
+         open (UNIT=LUNrain, IOSTAT=iost, FILE=p%rainfall_file, 
+     :         STATUS='old')
 
          if (iost .ne. 0) then
             call Fatal_Error (err_internal,
@@ -610,7 +611,8 @@
       ! read in evaporation information
       if (p%evap_source .eq. 'file') then
 
-         open (UNIT=LUNevap, IOSTAT=iost, FILE=p%evap_file)
+         open (UNIT=LUNevap, IOSTAT=iost, FILE=p%evap_file,
+     :         STATUS='old')
 
          if (iost .ne. 0) then
               call Fatal_Error (err_internal,
@@ -9034,6 +9036,7 @@ c      pause
        double precision fileamt,filedurn
        integer apsim_time_of_day
        double precision apsim_time
+       character filename*256
 
 *- Implementation Section ----------------------------------
       call push_routine (myname)
@@ -9046,6 +9049,11 @@ c      pause
          If (iost.lt.0) then
             ! We have reached end of file
 
+         elseif (iost.gt.0) then
+            inquire(LUNlog, NAME=filename)
+            call fatal_error(err_user,'Error reading log file: '
+     :      //filename)
+			   
          elseif (line.eq.blank) then
             goto 100 ! try reading next line
 
