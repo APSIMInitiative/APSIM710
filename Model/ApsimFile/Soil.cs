@@ -1753,12 +1753,18 @@ namespace ApsimFile
 
             for (int layer = 0; layer != Thickness.Length; layer++)
                 if (DUL[layer] == MathUtility.MissingValue ||
-                    LL[layer] == MathUtility.MissingValue ||
-                    (XF != null && XF[layer] == 0) ||
-                    (layer > 0 && PAWC[layer - 1] == 0))
+                    LL[layer] == MathUtility.MissingValue)
                     PAWC[layer] = 0;
                 else
                     PAWC[layer] = Math.Max(DUL[layer] - LL[layer], 0.0);
+
+            bool ZeroXFFound = false;
+            for (int layer = 0; layer != Thickness.Length; layer++)
+                if (ZeroXFFound || XF != null && XF[layer] == 0)
+                {
+                    ZeroXFFound = true;
+                    PAWC[layer] = 0;
+                }
             return PAWC;
         }
 
