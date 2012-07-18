@@ -1744,7 +1744,7 @@ namespace ApsimFile
         /// Return the plant available water CAPACITY using the specified lower limits and XF values.
         /// The XF array can equal null.
         /// </summary>
-        private static double[] PAWC(double[] Thickness, double[] LL, double[] DUL, double[] XF)
+        public static double[] PAWC(double[] Thickness, double[] LL, double[] DUL, double[] XF)
         {
             double[] PAWC = new double[Thickness.Length];
 
@@ -1758,7 +1758,7 @@ namespace ApsimFile
                     (layer > 0 && PAWC[layer - 1] == 0))
                     PAWC[layer] = 0;
                 else
-                    PAWC[layer] = Math.Abs(DUL[layer] - LL[layer]);
+                    PAWC[layer] = Math.Max(DUL[layer] - LL[layer], 0.0);
             return PAWC;
         }
 
