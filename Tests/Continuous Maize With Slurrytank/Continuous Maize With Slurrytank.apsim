@@ -4,8 +4,8 @@
       <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
     </metfile>
     <clock>
-      <start_date name="start_date" description="Enter the start date of the simulation" type="date">1/06/1985</start_date>
-      <end_date name="end_date" description="Enter the end date of the simulation" type="date">1/05/1989</end_date>
+      <start_date type="date" description="Enter the start date of the simulation">01/06/1985</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">01/05/1986</end_date>
     </clock>
     <summaryfile />
     <area name="paddock">
@@ -14,6 +14,30 @@
         <SlurryTo type="text" description="where the slurry should go to">SlurryTank</SlurryTo>
       </simpleBuilding>
       <atmosphere />
+      <SlurryTank>
+        <ThetaA type="text" description="ThetaA a constant (unitless)">-3.432</ThetaA>
+        <ThetaB type="text" description="ThetaB a constant (unitless)">0.186</ThetaB>
+        <ThetaC type="text" description="ThetaC a constant (unitless)">36.9</ThetaC>
+        <ThetaAM type="text" description="ThetaAM a constant (unitless)">-3.432</ThetaAM>
+        <ThetaBM type="text" description="ThetaBM a constant (unitless)">0.186</ThetaBM>
+        <ThetaCM type="text" description="ThetaCM constant (unitless)">36.9</ThetaCM>
+        <GInert type="text" description="GInert a constant (unitless)">0.05</GInert>
+        <b type="text" description="b a constant (unitless)">200</b>
+        <CCH4 type="text" description="CCH4 a constant (unitless)">1</CCH4>
+        <dayOfEmpty type="text" description="the day where the tank should be empty(day)">400</dayOfEmpty>
+        <temperatureInKelvin type="text" description="temperature In Kelvin&#xD;&#xA;(unitless)">1</temperatureInKelvin>
+        <k1 type="text" description="k1 (unitless)">0.01</k1>
+        <k2 type="text" description="k2 (unitless)">0.1</k2>
+        <k3 type="text" description="k3 (unitless)">0.1</k3>
+        <k4 type="text" description="k4 (unitless)">0.1</k4>
+        <pHmin type="text" description="pHmin(unitless)">4</pHmin>
+        <pHopt_lo type="text" description="pHopt_lo(unitless)">6</pHopt_lo>
+        <pHmax type="text" description="pHmax  (unitless)">9</pHmax>
+        <pHopt_hi type="text" description="pHopt_hi(unitless)">8</pHopt_hi>
+        <surfaceArea type="text" description="surfaceAreas  (unitless)">300</surfaceArea>
+        <lag_alpha type="text" description="lag_alpha(pr day)">0.09</lag_alpha>
+        <lag_beta type="text" description="lag_beta(unitless)">4</lag_beta>
+      </SlurryTank>
       <soil name="Soil">
         <Langitude description="Longitude (WGS84)" />
         <Comment type="multiedit" description="Comments" />
@@ -1378,40 +1402,168 @@
         <title>Continuous Maize With Slurrytank</title>
         <variables name="My Variables">
           <variable>dd/mm/yyyy as Date</variable>
+          <variable>daysSinceFilled</variable>
           <variable>Water</variable>
           <variable>ENH3</variable>
           <variable>N_Inert</variable>
           <variable>NFast</variable>
           <variable>C_Inert</variable>
-          <variable>TotalCOutput</variable>
           <variable>SlurryTank.CGas</variable>
+          <variable>CSlow</variable>
+          <variable>CFast</variable>
+          <variable>C_Lignin</variable>
+          <variable>CVFA</variable>
+          <variable>CCH4S</variable>
+          <variable>CHCH4M</variable>
+          <variable>CCO2_S</variable>
+          <variable>CO2M</variable>
+          <variable>Tan</variable>
+          <variable>Ash</variable>
+          <variable>S2_S</variable>
+          <variable>S_S04</variable>
+          <variable>SFast</variable>
+          <variable>SlurryOM</variable>
+          <variable>CH4CPerHrPerVS</variable>
+          <variable>cumCH4litresPerkgVS</variable>
+          <variable>TotalCOutput</variable>
+          <variable>Finc</variable>
+          <variable>FTheta</variable>
+          <variable>FpH</variable>
+          <variable>FThetaM</variable>
+          <variable>FS</variable>
         </variables>
-        <events name="My Variables Events" />
+        <events name="My Variables Events">
+          <event>end_day</event>
+        </events>
+        <Graph name="Carbon dynamics">
+          <Legend>
+            <CheckedTitles> C_Inert</CheckedTitles>
+            <CheckedTitles> CSlow</CheckedTitles>
+            <CheckedTitles> CFast</CheckedTitles>
+            <CheckedTitles> CVFA</CheckedTitles>
+            <CheckedTitles> C_Lignin</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>Circle</PointType>
+            <colour>
+            </colour>
+            <X>daysSinceFilled</X>
+            <Y>C_Inert</Y>
+            <Y>CSlow</Y>
+            <Y>CFast</Y>
+            <Y>CVFA</Y>
+            <Y>C_Lignin</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Nitrogen dynamics">
+          <Legend>
+            <CheckedTitles> N_Inert</CheckedTitles>
+            <CheckedTitles> NFast</CheckedTitles>
+            <CheckedTitles> Tan</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>Circle</PointType>
+            <colour>
+            </colour>
+            <X>daysSinceFilled</X>
+            <Y>N_Inert</Y>
+            <Y>NFast</Y>
+            <Y>Tan</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Gas emissions">
+          <Legend>
+            <CheckedTitles> CGas</CheckedTitles>
+            <CheckedTitles> SlurryTank.enh3</CheckedTitles>
+            <CheckedTitles> CHCH4M</CheckedTitles>
+            <CheckedTitles> CO2M</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>Circle</PointType>
+            <colour>
+            </colour>
+            <X>daysSinceFilled</X>
+            <Y>CGas</Y>
+            <Y>SlurryTank.enh3</Y>
+            <Y>CHCH4M</Y>
+            <Y>CO2M</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Gas secondary">
+          <Legend>
+            <CheckedTitles> Continuous Maize With Slurrytank</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>Circle</PointType>
+            <colour>
+            </colour>
+            <X>daysSinceFilled</X>
+            <Y>CH4CPerHrPerVS</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Cumulative methane">
+          <Legend>
+            <CheckedTitles> Continuous Maize With Slurrytank</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>Circle</PointType>
+            <colour>
+            </colour>
+            <X>daysSinceFilled</X>
+            <Y>cumCH4litresPerkgVS</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Sulphur">
+          <Legend>
+            <CheckedTitles> S2_S</CheckedTitles>
+            <CheckedTitles> S_S04</CheckedTitles>
+            <CheckedTitles> SFast</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>Circle</PointType>
+            <colour>
+            </colour>
+            <X>daysSinceFilled</X>
+            <Y>S2_S</Y>
+            <Y>S_S04</Y>
+            <Y>SFast</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Limiting factors">
+          <Legend>
+            <CheckedTitles> Finc</CheckedTitles>
+            <CheckedTitles> FTheta</CheckedTitles>
+            <CheckedTitles> FpH</CheckedTitles>
+            <CheckedTitles> FThetaM</CheckedTitles>
+            <CheckedTitles> FS</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>Circle</PointType>
+            <colour>
+            </colour>
+            <X>daysSinceFilled</X>
+            <Y>Finc</Y>
+            <Y>FTheta</Y>
+            <Y>FpH</Y>
+            <Y>FThetaM</Y>
+            <Y>FS</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
       </outputfile>
-      <SlurryTank>
-        <ThetaA type="text" description="ThetaA a constant (unitless)">-3.432</ThetaA>
-        <ThetaB type="text" description="ThetaB a constant (unitless)">6</ThetaB>
-        <ThetaC type="text" description="ThetaC a constant (unitless)">36.9</ThetaC>
-        <ThetaAM type="text" description="ThetaAM a constant (unitless)">-3.432</ThetaAM>
-        <ThetaBM type="text" description="ThetaBM a constant (unitless)">0.186</ThetaBM>
-        <ThetaCM type="text" description="ThetaCM constant (unitless)">36.9</ThetaCM>
-        <GInert type="text" description="GInert a constant (unitless)">0.05</GInert>
-        <b type="text" description="b a constant (unitless)">200</b>
-        <CCH4 type="text" description="CCH4 a constant (unitless)">1</CCH4>
-        <dayOfEmpty type="text" description="the day where the tank should be empty(day)">-1</dayOfEmpty>
-        <temperatureInKelvin type="text" description="temperature In Kelvin&#xD;&#xA;(unitless)">1</temperatureInKelvin>
-        <k1 type="text" description="k1 (unitless)">0.01</k1>
-        <k2 type="text" description="k2 (unitless)">0.1</k2>
-        <k3 type="text" description="k3 (unitless)">0.1</k3>
-        <k4 type="text" description="k4 (unitless)">0.1</k4>
-        <pHmin type="text" description="pHmin(unitless)">0</pHmin>
-        <pHopt_lo type="text" description="pHopt_lo(unitless)">0</pHopt_lo>
-        <pHmax type="text" description="pHmax  (unitless)">0</pHmax>
-        <pHopt_hi type="text" description="pHopt_hi(unitless)">0</pHopt_hi>
-        <surfaceArea type="text" description="surfaceAreas  (unitless)">300</surfaceArea>
-        <lag_alpha type="text" description="lag_alpha(pr day)">0.06</lag_alpha>
-        <lag_beta type="text" description="lag_beta(unitless)">5</lag_beta>
-      </SlurryTank>
     </area>
   </simulation>
 </folder>

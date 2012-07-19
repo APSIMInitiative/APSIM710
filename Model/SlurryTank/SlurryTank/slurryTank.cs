@@ -38,20 +38,6 @@ public class SlurryTank
     double SFast = 0;
     [Output]
     double S_S04 = 0;
-    [Output]
-    double CGas = 0;
-    /*        double TotalNInput = 0;
-            double TotalNOutput = 0;
-            double TotalCInput = 0;
-            double TotalCOutput = 0;*/
-    [Output]
-    double TotalNInput = 0;
-    [Output]
-    double TotalNOutput = 0;
-    [Output]
-    double TotalCInput = 0;
-    [Output]
-    double TotalCOutput = 0;
 
     //const
     double RA = 0.2;
@@ -90,6 +76,16 @@ public class SlurryTank
     //other
 
     [Output]
+    double CGas = 0;
+    [Output]
+    double TotalNInput = 0;
+    [Output]
+    double TotalNOutput = 0;
+    [Output]
+    double TotalCInput = 0;
+    [Output]
+    double TotalCOutput = 0;
+    [Output]
     double HVFA = 0.0;
     [Output]
     double OVFA = 0.0;
@@ -113,16 +109,32 @@ public class SlurryTank
     double ENH3 = 0;
     [Output]
     int daysSinceFilled = 0;
-    //water
+    [Output]
+    double CO2M = 0;
+    [Output]
+    double CHCH4M = 0;
+    [Output]
+    double SlurryOM = 0;
+    [Output]
+    double CH4CPerHrPerVS = 0;
+    [Output]
+    double cumCH4litresPerkgVS = 0;
+    [Output]
+    double Finc = 0;
+    [Output]
+    double FTheta = 0;
+    [Output]
+    double FpH = 0;
+    [Output]
+    double FThetaM = 0;
+    [Output]
+    double FS = 0;
+
     [Link]
     private Paddock MyPaddock;
 
-    double CO2M = 0;
-    //from File
-
-
-
-
+    
+    //this is not a parameter Jonas!
     [Param]
     double CCH4 = 0;
 
@@ -146,6 +158,8 @@ public class SlurryTank
     [Param]
     double lag_beta = -1;
 
+    double initialOM = 0;
+
     [Event]
     public event DoubleDelegate CCH4SEvent;
     [Event]
@@ -165,34 +179,25 @@ public class SlurryTank
     [EventHandler]
     public void OnInitialised()
     {
-
+        Console.WriteLine("OnInit");
     }
     [EventHandler]
     public void OnPrepare()
     {
+        Console.WriteLine("OnPrep");
 
     }
 
     private double GetOM()
     {
-        double OM = N_Inert + NFast + OInert + OFast + OSlow + HFast + HSlow + HInert;
-        N_Inert = 0;
-        NFast = 0;
-        OInert = 0;
-        OFast = 0;
-        OSlow = 0;
-        HFast = 0;
-        HSlow = 0;
-        HInert = 0;
+        double OM = N_Inert + NFast + OInert + OFast + OSlow + HFast + HSlow + HInert + C_Inert + C_Lignin/0.55 + CSlow + CFast +
+            CVFA + OVFA + HVFA;
         return OM;
     }
 
     private double GetMass()
     {
         double mass = Water + Ash + GetOM() + Tan;
-        Water = 0;
-        Ash = 0;
-        Tan = 0;
         return mass;
     }
 
@@ -254,11 +259,15 @@ public class SlurryTank
         OFast += 0.533 * CIn_RP + 0.14 * CIn_RL + 1.111 * CIn_Starch;//1.17
         OSlow += 1.111 * CSlow;//1.18
         //! Calculate the sulphur in the Fast and Sulphate pools
-        SFast += amount * (input.TotalS - (input.SulphS + input.SulphS));//1.20
-        S_S04 += amount * input.TotalS;//1.21
-        S2_S += amount * input.TotalS; // 1.22
+        //correct form is this!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+       // S_S04 += amount * input.SulphateS;//1.21
+        //S2_S += amount * input.SulphideS; // 1.22
+        //SFast += amount * (input.TotalS - (input.SulphateS + input.SulphideS));//1.20
+        SFast += amount * (input.TotalS - input.SulphS)/1000.0;//1.20
+        S_S04 += amount * input.SulphS / 1000.0;//1.21
+        S2_S += 0; // 1.22
         Water += amount * (1 - input.DM); // 1.1 //kg
-
+        initialOM = GetOM();
     }
 
     [EventHandler]
@@ -272,10 +281,10 @@ public class SlurryTank
             double temperatureInCelsius = temperatureInKelvin - 273.15;
             //Calculate lag effect after cleaning
             //lag_alpha and lag_beta are constants
-            double Finc = 1/(1+Math.Exp(-(lag_alpha*daysSinceFilled-lag_beta)));
+            Finc = 1 / (1 + Math.Exp(-(lag_alpha * daysSinceFilled - lag_beta)));
             //! Calculate the normalised temperature effect
-            double FTheta = Math.Exp(ThetaA + ThetaB * temperatureInCelsius * (1 - 0.5 * (temperatureInCelsius / ThetaC)));  //1.26
-            double FpH = 1.0; //new equations, appear after 1.27
+            FTheta = Math.Exp(ThetaA + ThetaB * temperatureInCelsius * (1 - 0.5 * (temperatureInCelsius / ThetaC)));  //1.26
+            FpH = 1.0; //new equations, appear after 1.27
             if (slurrypH <= pHmin)
                 FpH = 0;
             if ((slurrypH > pHmin) && (slurrypH < pHopt_lo))
@@ -294,9 +303,9 @@ public class SlurryTank
             double hydrolysedHpool = k1act * HSlow + k2act * HFast;
             double hydrolysedOpool = k1act * OSlow + k2act * OFast;
 
-            double FS = Math.Exp(-b * (S_S04 / Water));	//1.31
-            double FThetaM = Math.Exp(ThetaAM + ThetaBM * temperatureInCelsius * (1 - 0.5 * (temperatureInCelsius / ThetaCM)));
-            double k3act = FThetaM * FpH * FS * k3; //1.32
+            FS = Math.Exp(-b * (S_S04 / Water));	//1.31
+            FThetaM = Math.Exp(ThetaAM + ThetaBM * temperatureInCelsius * (1 - 0.5 * (temperatureInCelsius / ThetaCM)));
+            double k3act = Finc * FThetaM * FpH * FS * k3; //1.32
             double k4act = FTheta * FpH * (1 - FS) * k4; //1.33
 
             //calculate C in CH4S. This will be instantaneously lost as CH4-C
@@ -309,7 +318,7 @@ public class SlurryTank
             //TotalCOutput += CGas;
             double Hgas = k3act * HVFA; //1.44
             double Ogas = k3act * OVFA;//1.45
-            double CHCH4M = 12 * (CGas / 24 + Hgas / 8 - Ogas / 64); //1.46
+            CHCH4M = 12 * (CGas / 24 + Hgas / 8 - Ogas / 64); //1.46
 
             CCO2_S = k4act * CVFA; //1.34  //CO2-C from oxidation by SO4
             //calculate the H utilised during oxidation of VFA by SO4. Oxygen is not budgetted here.
@@ -366,6 +375,11 @@ public class SlurryTank
             Tan += k2act * NFast - (NAddInert + ENH3);// 1.52
             NFast *= (1 - k2act); //1.50
 
+            SlurryOM = GetOM();
+            CH4CPerHrPerVS = 1000000.0 * CCH4 / (24 * initialOM);
+            //litres of methane per kg VS; = kg CH4-C * grams per kg * litres per mol/gram mol
+            cumCH4litresPerkgVS += CCH4 * 1000.0 * 22.4 / (16 * initialOM);
+
             if (Tan < 0.0)
             {
 
@@ -386,38 +400,38 @@ public class SlurryTank
             CH4EMEvent.Invoke(value);
             value.Value = NN2O;
             NN2OEvent.Invoke(value);
-            for (int i = 0; i < MyPaddock.Children.Count; i++)
+            if (daysSinceFilled==dayOfEmpty)
             {
-                Component item = MyPaddock.Children[i];
-
-                if (item.Name.CompareTo("SurfaceOrganicMatter") == 0)
+                for (int i = 0; i < MyPaddock.Children.Count; i++)
                 {
+                    Component item = MyPaddock.Children[i];
+
+                    if (item.Name.CompareTo("SurfaceOrganicMatter") == 0)
+                    {
 
 
-                    AddFaecesType faeces = new AddFaecesType();
-                    faeces.VolumePerDefaecation = GetMass();
-                    faeces.AreaPerDefaecation = 0.0;
-                    faeces.NO3N = 0;
-                    faeces.AreaPerDefaecation = 0;
-                    faeces.Defaecations = 0;
-                    faeces.Eccentricity = 0;
-                    faeces.NH4N = Tan;
-                    Tan = 0;
-                    faeces.NO3N = 0;
-                    faeces.OMAshAlk = 0;
-                    faeces.OMN = N_Inert + NFast;
-                    N_Inert = 0;
-                    NFast = 0;
-                    faeces.OMP = 0;
-                    faeces.OMS = SFast;
-                    faeces.OMWeight = GetOM();
-                    faeces.POXP = 0;
-                    faeces.SO4S = S_S04;
-                    item.Publish("add_faeces", faeces);
+                        AddFaecesType faeces = new AddFaecesType();
+                        faeces.VolumePerDefaecation = GetMass();
+                        faeces.AreaPerDefaecation = 0.0;
+                        faeces.NO3N = 0;
+                        faeces.AreaPerDefaecation = 0;
+                        faeces.Defaecations = 0;
+                        faeces.Eccentricity = 0;
+                        faeces.NH4N = Tan;
+                        Tan = 0;
+                        faeces.NO3N = 0;
+                        faeces.OMAshAlk = 0;
+                        faeces.OMN = N_Inert + NFast;
+                        N_Inert = 0;
+                        NFast = 0;
+                        faeces.OMP = 0;
+                        faeces.OMS = SFast;
+                        faeces.OMWeight = GetOM();
+                        faeces.POXP = 0;
+                        faeces.SO4S = S_S04;
+                        item.Publish("add_faeces", faeces);
+                    }
                 }
-            }
-            if (day == dayOfEmpty)
-            {
                 Water = 0;
                 Ash = 0;
                 Tan = 0;
@@ -451,6 +465,9 @@ public class SlurryTank
                 CCO2_S = 0;
                 ENH3 = 0;
                 daysSinceFilled = 0;
+                cumCH4litresPerkgVS = 0;
+                CH4CPerHrPerVS = 0;
+                SlurryOM = GetOM();
             }
             /*
     AddFaecesType faeces1 = new AddFaecesType();
