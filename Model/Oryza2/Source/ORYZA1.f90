@@ -59,29 +59,6 @@
 ! Files included:      -                                               *
 !                                                                      *
 !----------------------------------------------------------------------*
-    module interface_oryza
-     interface
-     SUBROUTINE ORYZA1(ITASK,  IUNITD, IUNITL, FILEI1, FILEI2,FILEIT, &
-                        OUTPUT, TERMNL, IDOY  , DOY, &
-                        TIME,   DELT,   LAT,    RDD,    TMMN,   TMMX, &
-                        NFLV,   NSLLV,  NRT,	RNSTRS,                 &
-                        ESTAB,  TKLT,   ZRTMS,  CROPSTA, &
-                        LRSTRS, LDSTRS, LESTRS, PCEW,  CPEW, TRC, &
-                        DAE,    SLA, LAI,    LAIROL, ZRT,    DVS, &
-                        LLV,    DLDR, WLVG, WST, WSO, GSO, GGR, GST, GLV, &
-                        PLTR, WCL, WL0, WRT, WRR14, NGR, HU)
-      INTEGER       ITASK , IUNITD, IUNITL, CROPSTA, IDOY, I  
-      LOGICAL       OUTPUT, TERMNL
-      CHARACTER (*) FILEI1, FILEIT, FILEI2
-      CHARACTER (*) ESTAB
-      REAL          DOY , TIME, DELT  , LAT  , RDD, TRC, TempR, KDF2, DIF  
-      REAL          TMMN, TMMX, TMAXC, TMINC, TKLT  , ZRTMS, LRSTRS, LDSTRS, LESTRS, NRT
-      REAL          PCEW, CPEW, DAE , LAIROL, ZRT  , DVS, NSLLV, RNSTRS, WCL(10), WL0
-      real          NFLV, SLA, LAI, LLV, DLDR, WLVG, WST, WSO, GSO, GGR, GST, GLV
-      real          PLTR, WRT, Wrr14, NGR, HU
-     end subroutine
-     end interface
-    end module
       SUBROUTINE ORYZA1(ITASK,  IUNITD, IUNITL, FILEI1, FILEI2,FILEIT, &
                         OUTPUT, TERMNL, IDOY  , DOY, &
                         TIME,   DELT,   LAT,    RDD,    TMMN,   TMMX, &
@@ -95,7 +72,6 @@
 !===================================================================*
 !     DECLARATION SECTION                                           *
 !===================================================================*
-      use interface_oryza
  	  USE Public_Module		!VARIABLES
 	  use RootGrowth
       use Module_OutDat

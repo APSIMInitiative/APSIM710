@@ -294,7 +294,6 @@
       USE ModuleDefs
       USE infrastructure2
       Use Oryza2Module
-      use interface_oryza
       USE Public_Module
   	  USE RootGrowth
 

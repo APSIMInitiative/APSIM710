@@ -3,14 +3,12 @@
 ! Some of these are stubs that do nothing, others do proper traslations.
 
       SUBROUTINE FatalERR (MODULE,MESSAG)
-      Use infrastructure2
       IMPLICIT NONE
       CHARACTER(LEN=*) :: MODULE, MESSAG
       call Fatal( 'Oryza2 ' // MODULE // ': ' // MESSAG)
       end subroutine
 
       SUBROUTINE WARNING (numlines, key, msg)
-      Use infrastructure2
       IMPLICIT      NONE
       character(len=*) msg(*)
       CHARACTER(len=*) key
