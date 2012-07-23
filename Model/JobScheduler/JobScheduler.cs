@@ -63,7 +63,6 @@ public class JobScheduler
     {
         try
         {
-
             if (args.Length >= 1)
             {
                 JobScheduler Scheduler = new JobScheduler();
@@ -153,6 +152,33 @@ public class JobScheduler
            NumCPUsToUse = Convert.ToInt32(Utility.CheckProcessExitedProperly(P));
            }
         NumCPUsToUse = Math.Max(NumCPUsToUse, 1);
+
+        #region Core number override for AMD CPUs
+        if (Options.ContainsKey("-n"))
+        {
+            string num;
+            Options.TryGetValue("-n", out num);
+            NumberOfProcesses = num;
+            try
+            {
+                NumCPUsToUse = Convert.ToInt32(num);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Invalid number for -n.");
+                return false;
+            }
+            if (NumCPUsToUse <= 0)
+                NumCPUsToUse = 1;
+        }
+
+        string name = System.Environment.MachineName;
+        if (name.Equals("MUCK"))  //this is so wrong I think my head will explode, but it's the only thing that returns the correct info... JF 23/07/12
+        {
+            Console.WriteLine("Workaround for running on Bob. Doubling core count. Use -n <number of cores> to override.");
+            NumCPUsToUse = 64;
+        }
+        #endregion
 
         Console.WriteLine("Managing " + NumCPUsToUse + " Process" + (NumCPUsToUse > 1 ? "es" : ""));
         Console.WriteLine("Menu: ");
