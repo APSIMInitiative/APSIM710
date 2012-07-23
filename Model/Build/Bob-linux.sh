@@ -7,6 +7,7 @@ while [ : ] ; do
 
   export APSIM=/home/bob/apsim
   export LD_LIBRARY_PATH=$APSIM/Model
+  export LANG=en_AU.UTF-8
   echo ----- SVN revert -----                    >> /tmp/Bootstrap.xml
   svn revert -R $APSIM >> /tmp/Bootstrap.xml
   echo ----- SVN update -----                    >> /tmp/Bootstrap.xml

@@ -236,7 +236,7 @@ namespace ApsimFile
         public string ExeVersion()
         {
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(GetFilePath());
-            return versionInfo.ProductMajorPart + "." + versionInfo.ProductMinorPart;
+            return versionInfo.FileMajorPart + "." + versionInfo.FileMinorPart;
         }
         public string ExeBuildDate()
         {
@@ -245,7 +245,7 @@ namespace ApsimFile
         public string ExeBuildNumber()
         {
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(GetFilePath());
-            return "r" + versionInfo.ProductBuildPart.ToString();
+            return "r" + versionInfo.FileBuildPart.ToString();
         }
         public string ApsimVersion()
         {
