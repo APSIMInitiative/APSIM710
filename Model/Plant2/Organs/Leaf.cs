@@ -1049,7 +1049,7 @@ public class Leaf : BaseOrgan, AboveGround
     {
         DateTime Today = DateUtility.JulianDayNumberToDateTime(Convert.ToInt32(MetData.today));
         string Indent = "     ";
-        string Title = Indent + Today.ToShortDateString() + "  - Killing " + KillLeaf.KillFraction + " of leaves on " + Plant.Name;
+        string Title = Indent + Today.ToString("d MMMM yyyy") + "  - Killing " + KillLeaf.KillFraction + " of leaves on " + Plant.Name;
         Console.WriteLine("");
         Console.WriteLine(Title);
         Console.WriteLine(Indent + new string('-', Title.Length));
@@ -1063,7 +1063,7 @@ public class Leaf : BaseOrgan, AboveGround
     {
         DateTime Today = DateUtility.JulianDayNumberToDateTime(Convert.ToInt32(MetData.today));
         string Indent = "     ";
-        string Title = Indent + Today.ToShortDateString() + "  - Cutting " + Name + " from " + Plant.Name;
+        string Title = Indent + Today.ToString("d MMMM yyyy") + "  - Cutting " + Name + " from " + Plant.Name;
         Console.WriteLine("");
         Console.WriteLine(Title);
         Console.WriteLine(Indent + new string('-', Title.Length));

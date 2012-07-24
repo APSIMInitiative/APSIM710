@@ -21,7 +21,7 @@ class Summary
     [EventHandler]
     public void OnPhaseChanged(PhaseChangedType PhaseChange)
     {
-        Console.WriteLine(Today.ToShortDateString() + " - " + Phenology.CurrentPhase.Start);
+        Console.WriteLine(Today.ToString("d MMMM yyyy") + " - " + Phenology.CurrentPhase.Start);
         if (Leaf != null)
         {
             Console.WriteLine("                            LAI = " + Leaf.LAI.ToString("f2") + " (m^2/m^2)");

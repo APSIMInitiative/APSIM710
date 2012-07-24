@@ -48,7 +48,7 @@ class HIReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
         DateTime Today = new DateTime(Year, 1, 1);
         Today = Today.AddDays(Day - 1);
         string Indent = "     ";
-        string Title = Indent + Today.ToShortDateString() + "  - Harvesting " + Name + " from " + Plant.Name;
+        string Title = Indent + Today.ToString("d MMMM yyyy") + "  - Harvesting " + Name + " from " + Plant.Name;
         double YieldDW = (Live.Wt + Dead.Wt);
 
         Console.WriteLine("");

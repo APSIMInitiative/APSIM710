@@ -123,7 +123,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
             Harvesting.Invoke();
 
         string Indent = "     ";
-        string Title = Indent + Today.ToShortDateString() + "  - Harvesting " + Name + " from " + Plant.Name;
+        string Title = Indent + Today.ToString("d MMMM yyyy") + "  - Harvesting " + Name + " from " + Plant.Name;
         double YieldDW = (Live.Wt + Dead.Wt);
 
         Console.WriteLine("");
@@ -145,7 +145,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     public void OnCut()
     {
         string Indent = "     ";
-        string Title = Indent + Today.ToShortDateString() + "  - Cutting " + Name + " from " + Plant.Name;
+        string Title = Indent + Today.ToString("d MMMM yyyy") + "  - Cutting " + Name + " from " + Plant.Name;
         Console.WriteLine("");
         Console.WriteLine(Title);
         Console.WriteLine(Indent + new string('-', Title.Length));
