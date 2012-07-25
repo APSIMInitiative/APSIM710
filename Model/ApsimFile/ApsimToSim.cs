@@ -355,6 +355,7 @@ public class ApsimToSim
             XmlNode Data2 = (XmlNode)y;
             string ModuleName1 = Path.GetFileNameWithoutExtension(XmlHelper.Attribute(Data1, "executable")).ToLower();
             string ModuleName2 = Path.GetFileNameWithoutExtension(XmlHelper.Attribute(Data2, "executable")).ToLower();
+            bool ambiguous = false;
 
             if (x == y)
                 return 0;
@@ -368,17 +369,22 @@ public class ApsimToSim
                 int ChildIndex2 = Array.IndexOf(XmlHelper.ChildNames(Data2.ParentNode, ""), XmlHelper.Name(Data2));
                 if (ChildIndex1 < ChildIndex2)
                     return -1;
-                else
+                else if (ChildIndex2 > ChildIndex1)
                     return 1;
+                else
+                    ambiguous = true;
             }
             if (XmlHelper.Type(Data1) == "title")
                 return -1;
-            for (int i = 0; i != Components.Count; i++)
+            if (!ambiguous)
             {
-                if (StringManip.StringsAreEqual(Components[i], ModuleName1))
-                    return -1;
-                if (StringManip.StringsAreEqual(Components[i], ModuleName2))
-                    return 1;
+                for (int i = 0; i != Components.Count; i++)
+                {
+                    if (StringManip.StringsAreEqual(Components[i], ModuleName1))
+                        return -1;
+                    if (StringManip.StringsAreEqual(Components[i], ModuleName2))
+                        return 1;
+                }
             }
             // Neither are in list so keep original order intact i.e. Node1 comes before Node2!!
             // Find the relative positions of data1 and data2 in the parent list.
