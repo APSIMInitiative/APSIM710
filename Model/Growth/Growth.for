@@ -549,12 +549,15 @@
       g%Ft = 0.0
       g%Ftcanopy = 0.0
       g%Fwcanopy = 0.0
+      g%Fta = 0.0
       g%Ff = 0.0
       g%Fw = 0.0
       g%Fvpd = 0.0
       g%Fn = 0.0
-      g%Fd = 1.0
       g%Fage = 0.0
+      g%Ffasw = 0.0
+      g%Fdl = 0.0
+      g%Fd = 1.0
       g%Frgr = 0.0
       g%Cum_Stress = 0.0
       g%Flai = 0.0
