@@ -22,11 +22,13 @@ public class MetFile
     [Output]
     public NewMetType MetData = new NewMetType();
     [Output]
-    public double MaxT;
+    public double MaxT { get { return MetData.maxt; } }
     [Output]
-    public double MinT;
+    public double MinT { get { return MetData.mint; } }
     [Output]
-    public double Rain;
+    public double Rain { get { return MetData.rain; } }
+    [Output]
+    public double Radn { get { return MetData.radn; } }
     [Output]
     public int Day
     {
