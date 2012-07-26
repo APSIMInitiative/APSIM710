@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
@@ -210,7 +211,8 @@ public class TypeConverter
     /// </summary>
     internal static object ToDateTime(string Name, object From)
     {
-        return System.Convert.ToDateTime(From);
+        CultureInfo Aus = new CultureInfo("en-AU");
+        return System.Convert.ToDateTime(From, Aus);
     }
 
     /// <summary>
