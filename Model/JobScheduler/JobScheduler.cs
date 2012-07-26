@@ -395,8 +395,9 @@ public class JobScheduler
             FolderNode = ((XmlDocument)FolderNode).DocumentElement;
 
         string Status = "Pass";
-        foreach (XmlNode Child in FolderNode.ChildNodes)
+        for (int i = 0; i < FolderNode.ChildNodes.Count; i++)
         {
+            XmlNode Child = FolderNode.ChildNodes[i];
             if (Child.Name == "Job" || Child.Name == "Folder")
             {
                 string ChildStatus = StatusOfJob(Child);
@@ -775,8 +776,9 @@ public class JobScheduler
                 {
                     XmlDocument Doc = new XmlDocument();
                     Doc.LoadXml(CommandBits[2]);
-                    foreach (XmlNode Child in Doc.DocumentElement)
+                    for (int i = 0; i < Doc.DocumentElement.ChildNodes.Count; i++)
                     {
+                        XmlNode Child = Doc.DocumentElement.ChildNodes[i];
                         JobNode.AppendChild(JobNode.OwnerDocument.ImportNode(Child, true));
                     }
                 }
