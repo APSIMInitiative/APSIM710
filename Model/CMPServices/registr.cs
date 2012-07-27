@@ -935,9 +935,9 @@ namespace CMPServices
             {
                 drvProperty.connects.clear();
                 //now add the connection details
+                drvProperty.autoConn = false;   //this manual connection stops further resolving
                 for (uint i = 1; i <= connects.count(); i++)
                 {
-                    drvProperty.autoConn = false;   //this manual connection stops further resolving
                     if (connects.item(i).asStr().Length > 0)
                     {
                         changed = true;

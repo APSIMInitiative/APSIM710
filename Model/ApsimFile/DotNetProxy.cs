@@ -174,7 +174,10 @@ class DLLProber
                     string SetterCode = "      set {Variable(\"$NAME$\").Set(value);}";
 
                     XmlNode TypeNode = XmlHelper.Find(Node, "type");
-                    if (TypeNode != null && XmlHelper.Attribute(TypeNode, "kind") != "defined" && XmlHelper.ChildNodes(TypeNode, "field").Count == 0)
+                    if (TypeNode != null && 
+                        XmlHelper.Attribute(TypeNode, "kind") != "" &&
+                        XmlHelper.Attribute(TypeNode, "kind") != "defined" &&
+                        XmlHelper.ChildNodes(TypeNode, "field").Count == 0)
                     {
                         string PropertyTypeName = GetDotNetType(TypeNode);
                         string Description = XmlHelper.Attribute(TypeNode, "description");

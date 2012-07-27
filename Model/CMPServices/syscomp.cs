@@ -2415,18 +2415,25 @@ namespace CMPServices
             i = 1;
             pubEvent = registrar.publishedEvent(i);
             if (pubEvent != null)     //if there are queryInfo's to be sent
-            {                                 
+            {
                 processed = true;
                 while (pubEvent != null)
                 {
                     reqCompID = pubEvent.compID;
                     reqRegID = pubEvent.regID;
 
-                    TEntityList connects = pubEvent.connects;
-                    //Some published events will have manual connections at this stage that
-                    //were described in the initdata section.
-                    if (connects.count() > 0)
+                    if (pubEvent.autoConn == true)  // If auto connection
                     {
+                        pubEvent.connects.clear();
+                        //send out queryInfo's for pubEvent->name. The name could be qualified
+                        uint destCompID = 0;   //needs to be set to the optional destination compID
+                        autoConnectPubEvent(reqCompID, reqRegID, destCompID, pubEvent.name, pubEvent.sType);
+                    }
+                    else
+                    {
+                        TEntityList connects = pubEvent.connects;
+                        //Some published events will have manual connections at this stage that
+                        //were described in the initdata section.
                         //If some of the connections are partly described with just the name, then
                         //I need to get the regID and compID of the source of the connection
                         for (y = 1; y <= connects.count(); y++)
@@ -2443,12 +2450,6 @@ namespace CMPServices
                                 sendMessage(msg);                                  //this system will then handle returnInfo's
                             }  //endif
                         }                                                        //next connection
-                    }
-                    else if (pubEvent.autoConn == true)
-                    {   //if continue auto connection
-                        //send out queryInfo's for pubEvent->name. The name could be qualified
-                        uint destCompID = 0;   //needs to be set to the optional destination compID
-                        autoConnectPubEvent(reqCompID, reqRegID, destCompID, pubEvent.name, pubEvent.sType);
                     }
                     i++;
                     pubEvent = registrar.publishedEvent(i);
@@ -2483,11 +2484,21 @@ namespace CMPServices
                     reqCompID = drvProperty.compID;
                     reqRegID = drvProperty.regID;
 
-                    TEntityList connects = drvProperty.connects;
-                    //Some driving properties will have manual connections at this stage that
-                    //were described in the initdata section.
-                    if (connects.count() > 0)
+                    if (drvProperty.autoConn == true) // if auto connection
                     {
+                        drvProperty.connects.clear();
+                        //send out queryInfo's for drvProperty->name. Assumes that name is unqualified
+                        msg = buildQueryInfo(drvProperty.name, TypeSpec.KIND_OWNED_R, FMyID);
+                        //Keep a record of the request so that the system knows what to do
+                        // with the returned values in the handleReturnInfo()
+                        queryInfoTracker.addQueryMsg(msg.msgID, reqCompID, drvProperty.name, reqRegID, TQueryInfoTracker.ANY_DEST_COMP, TQueryInfoTracker.ADD_DRVPROPERTY_CONN);
+                        sendMessage(msg);                //this system will then handle returnInfo's
+                    }
+                    else
+                    {
+                        TEntityList connects = drvProperty.connects;
+                        //Some driving properties will have manual connections at this stage that
+                        //were described in the initdata section.
                         //If some of the connections are partly described with just the name, then
                         //I need to get the regID and compID of the source of the connection
                         for (int c = 1; c <= connects.count(); c++)
@@ -2503,15 +2514,6 @@ namespace CMPServices
                                 sendMessage(msg);                                  //this system will then handle returnInfo's
                             }  //endif
                         }
-                    }
-                    else if (drvProperty.autoConn == true)
-                    {   //if continue auto connection
-                        //send out queryInfo's for drvProperty->name. Assumes that name is unqualified
-                        msg = buildQueryInfo(drvProperty.name, TypeSpec.KIND_OWNED_R, FMyID);
-                        //Keep a record of the request so that the system knows what to do
-                        // with the returned values in the handleReturnInfo()
-                        queryInfoTracker.addQueryMsg(msg.msgID, reqCompID, drvProperty.name, reqRegID, TQueryInfoTracker.ANY_DEST_COMP, TQueryInfoTracker.ADD_DRVPROPERTY_CONN);
-                        sendMessage(msg);                //this system will then handle returnInfo's
                     }
                     i++;
                     drvProperty = registrar.drivingProperty(i);

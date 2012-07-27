@@ -172,8 +172,8 @@ namespace CMPServices
            String sIndent;
 
            if (startIndent > -1) {
-              nextIndent = startIndent + tab;
-              sIndent = new String(' ', startIndent);
+              nextIndent = startIndent;
+              sIndent = new String(' ', nextIndent);
            }
            else {
               nextIndent = -1;
@@ -185,8 +185,11 @@ namespace CMPServices
            sbuf.Append(value.Name);
            sbuf.Append("\" ");
            sbuf.Append(writeFieldInfo(value, nextIndent, tab));
-           sbuf.Append(sIndent);
-           sbuf.Append("</type>");
+           if (!value.isScalar())
+           {
+               sbuf.Append(sIndent);
+               sbuf.Append("</type>");
+           }
 
            return sbuf.ToString();
         }
@@ -204,54 +207,68 @@ namespace CMPServices
         //============================================================================
         protected override String writeFieldInfo(TTypedValue attrInfo, int indent, int tab)
         {
-           String elementType;
-           uint i;
-           int nextIndent;
-           int startIndent;
-           int oneIndent;
-           String CR = "";
+            String elementType;
+            uint i;
+            int nextIndent;
+            int oneIndent;
+            String CR = "";
+            TTypedValue firstElement;
+            String sIndent = "";
 
-           //determine how much to indent this description
-           startIndent = 0;
-           oneIndent = 0;
-           if (indent > -1) {
-              CR = "\r\n";
-              oneIndent = tab;
-              startIndent = indent;
-           }
-           String sIndent = new String(' ', startIndent);   //begin at this level
-           nextIndent = indent + oneIndent;
+            //determine how much to indent this description
+            oneIndent = 0;
+            nextIndent = -1;
+            if (indent > -1)
+            {
+                CR = Environment.NewLine;
+                oneIndent = tab;
+                nextIndent = indent + oneIndent;
+                sIndent = new String(' ', nextIndent);   //begin at this level
+            }
 
-           StringBuilder xml = new StringBuilder("");
-           xml.Append(" kind=\"" + attrInfo.typeName() + "\"");
-           if (attrInfo.isArray())
-              xml.Append(" array=\"T\"");
+            StringBuilder xml = new StringBuilder("");
+            if (attrInfo.baseType() != TBaseType.ITYPE_DEF)
+                xml.Append(" kind=\"" + attrInfo.typeName() + "\"");
+            if (attrInfo.isArray())
+                xml.Append(" array=\"T\"");
 
-           if ( (attrInfo.units().Length > 0) && (attrInfo.units()[0] != '-') ) {
-              xml.Append(" unit=\"" + attrInfo.units() + "\"");
-           }
+            if ((attrInfo.units().Length > 0) && (attrInfo.units()[0] != '-'))
+            {
+                xml.Append(" unit=\"" + attrInfo.units() + "\"");
+            }
 
-           xml.Append(">" + CR);
+            //now nest into the fields/elements for this DDML type
+            if (!attrInfo.isScalar())
+            {
+                xml.Append(">" + CR);
+                if (attrInfo.isArray() && (attrInfo.baseType() == TBaseType.ITYPE_DEF))  //an array will only show the first child for DDML
+                {
+                    if (attrInfo.count() == 0)
+                        firstElement = attrInfo.item(0);
+                    else
+                        firstElement = attrInfo.item(1);
+                    elementType = "element";
+                    xml.Append(sIndent + "<" + elementType);
+                    xml.Append(writeFieldInfo(firstElement, nextIndent, oneIndent));
+                    if (!firstElement.isScalar())
+                        xml.Append(sIndent + "</" + elementType + ">" + CR);
+                }
+                else if (attrInfo.isRecord())
+                {
+                    for (i = 1; i <= attrInfo.count(); i++)         //for each child field
+                    {
+                        elementType = "field";
+                        xml.Append(sIndent + "<" + elementType + " name=\"" + attrInfo.item(i).Name + "\"");
+                        xml.Append(writeFieldInfo(attrInfo.item(i), nextIndent, oneIndent));
+                        if (!attrInfo.item(i).isScalar())
+                            xml.Append(sIndent + "</" + elementType + ">" + CR);
+                    }
+                }
+            }
+            else
+                xml.Append("/>" + CR);
 
-           //now nest into the fields/elements for this DDML type
-           if (!attrInfo.isScalar()) {
-              if ( attrInfo.isArray() && (attrInfo.count() > 0) ) {   //an array will only show the first child for DDML
-                 elementType = "element";
-                 xml.Append(sIndent + "<" + elementType);
-                 xml.Append(writeFieldInfo(attrInfo.item(1), nextIndent, oneIndent));
-                 xml.Append(sIndent + "</" + elementType + ">" + CR);
-              }
-              else if (attrInfo.isRecord()) {
-                 for (i = 1;  i <= attrInfo.count(); i++) {  //for each child field
-                    elementType = "field";
-                    xml.Append(sIndent + "<" + elementType + " name=\"" + attrInfo.item(i).Name + "\"");
-                    xml.Append(writeFieldInfo(attrInfo.item(i), nextIndent, oneIndent));
-                    xml.Append(sIndent + "</" + elementType + ">" + CR);
-                 }
-              }
-           }
-
-           return xml.ToString();
+            return xml.ToString();
         }
 
         //============================================================================

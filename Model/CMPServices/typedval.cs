@@ -1056,7 +1056,7 @@ namespace CMPServices
                 {
                     case TBaseType.ITYPE_BOOL:
                         {
-                            if (Char.ToLower(value[0]) == 't')
+                            if ((value.Length > 0) && (Char.ToLower(value[0]) == 't'))
                                 setValue(true);
                             else setValue(false);
                         } break;
@@ -1067,7 +1067,13 @@ namespace CMPServices
                         if (value.Length > 0)
                             setValue(Convert.ToInt64(value)); break;
                     case TBaseType.ITYPE_SINGLE:
-                    case TBaseType.ITYPE_DOUBLE: setValue(Convert.ToDouble(value)); break;
+                    case TBaseType.ITYPE_DOUBLE:
+                        {
+                            if (value.Length > 0)
+                                setValue(Convert.ToDouble(value));
+                            else
+                                setValue(0);
+                        } break;
                     case TBaseType.ITYPE_CHAR:
                     case TBaseType.ITYPE_WCHAR: setValue(value[0]); break;
                     case TBaseType.ITYPE_STR:
