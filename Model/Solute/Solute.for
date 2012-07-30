@@ -804,8 +804,10 @@
 
       g%dlayer(:) = newProfile%dlayer
       g%bd(:) = newProfile%bd
-      g%sat(:) = newProfile%sat_dep / newProfile%dlayer
-      g%ll15(:) = newProfile%ll15_dep / newProfile%dlayer
+      where (newProfile%dlayer .ne. 0.0)
+         g%sat(:) = newProfile%sat_dep / newProfile%dlayer
+         g%ll15(:) = newProfile%ll15_dep / newProfile%dlayer
+      end where
 
       call pop_routine (myname)
       return

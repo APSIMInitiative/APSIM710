@@ -66,6 +66,12 @@ std::string EXPORT getAusFarmDirectory(void)
    {
       if (AusFarmDir == "")
 	  {
+		const char * AusFarmEnv = getenv("AUSFARM");
+		if (AusFarmEnv != NULL)
+			AusFarmDir = AusFarmEnv;
+	  }
+      if (AusFarmDir == "")
+	  {
 #ifdef __WIN32__
 		HKEY hKey = 0;
 		DWORD dataType;
