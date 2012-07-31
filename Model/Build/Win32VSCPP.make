@@ -44,6 +44,7 @@ ifdef DEBUG
 #	LIBS := cg32.lib import32.lib $(LIBS)
 	LFLAGS := $(LFLAGS) /DEBUG /PDB:"$(APSIM)\Model\$(PROJECT).pdb"
 	LIBPATH := $(LIBPATH) /LIBPATH:$(BOOST)\lib
+   PRECOMPILE:=
 else
 	CFLAGS := $(CFLAGS) /O2 /MD /GL
 #	LFLAGS := $(LFLAGS)

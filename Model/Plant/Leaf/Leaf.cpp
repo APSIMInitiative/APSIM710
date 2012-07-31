@@ -110,6 +110,8 @@ void Leaf::doSWDemand(float SWDemandMaxFactor)         //(OUTPUT) crop water dem
       sw_demand = u_bound(sw_demand_te, SWDemandMax);
       transpEff = transpEff * divide(sw_demand_te, sw_demand, 1.0);
       }
+   Debug("Leaf.sw_demand:%f", sw_demand);
+   Debug("Leaf.transpEff:%f", transpEff);
    }
 
 
@@ -169,7 +171,8 @@ void Leaf::doCover (PlantSpatial &spatial)
                  , spatial.canopyFac()
                  , getSLAI()
                  , &coverLeaf.sen);
-
+    Debug("leaf.cover.green:%f", coverLeaf.green);
+    Debug("leaf.cover.sen:%f", coverLeaf.sen);
 }
 
 void Leaf::doDmPotRUE (void )                    // (OUTPUT) potential dry matter (carbohydrate) production (g/m^2)
@@ -181,6 +184,7 @@ void Leaf::doDmPotRUE (void )                    // (OUTPUT) potential dry matte
    //       taken into account in the radiation use efficiency.
 
    dlt.dm_pot_rue = Photosynthesis->PotentialDM(radiationInterceptedGreen); // this called the original "Potential()" function in previous versions (PFR)
+   Debug("Leaf.dlt.dm_pot_rue:%f", dlt.dm_pot_rue);
    }
 
 

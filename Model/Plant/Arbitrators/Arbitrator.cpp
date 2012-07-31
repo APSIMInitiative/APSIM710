@@ -33,6 +33,8 @@ void Arbitrator::partitionDM()
    float dm_remaining = _DMSupply;
    float dlt_dm_green_tot = 0.0;
 
+
+
    for (unsigned i = 0; i != PartitionParts.size(); i++)
       {
       plantPart& Part = plant.All().find(PartitionParts[i]);
@@ -75,6 +77,8 @@ void Arbitrator::partitionDM()
                     + ftoa(DMSupply(), ".6");
        scienceAPI.warning(msg);
        }
+   Debug("Arbitrator.DMSupply:%f", _DMSupply);
+   Debug("Arbitrator.dlt_dm_green_tot:%f", dlt_dm_green_tot);
    }
 
 float Arbitrator::RelativeGrowthRate(void)
@@ -120,7 +124,9 @@ void Arbitrator::doNPartition(float g_n_fix_pot, float nDemandTotal, float& nFix
 
    // find the proportion of uptake to be distributed to
    // each plant part and distribute it.
-   float nUptakeSum = plant.root().nUptake();     // total plant N uptake (g/m^2)
+   double nUptakeSum = plant.root().nUptake();     // total plant N uptake (g/m^2)
+   if (reals_are_equal(nUptakeSum, 0.0))
+      nUptakeSum = 0.0;
    plant.All().doNPartition(nUptakeSum, nDemandTotal, plant.All().nCapacity());
 
    // Check Mass Balance
@@ -132,12 +138,15 @@ void Arbitrator::doNPartition(float g_n_fix_pot, float nDemandTotal, float& nFix
                     + ftoa(nUptakeSum, ".6");
       scienceAPI.warning(msg);
       }
+   Debug("Arbitrator.nUptakeSum:%f", nUptakeSum);
 
    // Retranslocate N Fixed
    float nFixDemandTotal = l_bound (nDemandTotal - nUptakeSum, 0.0); // total demand for N fixation (g/m^2)
    nFixUptake = bound (g_n_fix_pot, 0.0, nFixDemandTotal);
 
    plant.All().doNFixRetranslocate (nFixUptake, nFixDemandTotal);
+   Debug("Arbitrator.n_demand_differential:%f", nFixDemandTotal);
+   Debug("Arbitrator.NFixUptake:%f", nFixUptake);
    }
 
 void Arbitrator::doDmRetranslocate(plantPart* stemPart, plantPart* leafPart,
@@ -184,6 +193,8 @@ void Arbitrator::doDmRetranslocate(plantPart* stemPart, plantPart* leafPart,
     float dlt_dm_retrans_to_fruit = - dm_retranslocate;
 
     fruitPart->doDmRetranslocate (dlt_dm_retrans_to_fruit, demand_differential_begin);
+
+    Debug("Arbitrator.FinalRetranslocation:%f", dm_retranslocate);
 
    // Finally, a mass balance check
 //   float mbSum = 0.0;                                                    //FIXME - need to reinstate this check

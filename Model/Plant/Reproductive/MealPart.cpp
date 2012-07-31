@@ -23,6 +23,7 @@ void fruitMealPart::doNDemand (float n_demand)                      //remove
 //     ===========================================================  //remove
 {                                                                   //remove
     NDemand = n_demand;                                             //remove
+    Debug("Grain.NDemand:%f", NDemand);
 }                                                                   //remove
 
 void fruitMealPart::doDMDemandGrain (float dm_demand)

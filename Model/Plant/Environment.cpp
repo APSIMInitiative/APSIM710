@@ -37,8 +37,8 @@ void Environment::OnTick(protocol::TimeType &Tick)
 //=======================================================================================
 // Event Handler for the Tick Event
    {
-   double sd = (double)Tick.startday;
-   jday_to_day_of_year(&sd, &day_of_year, &year);
+   jday = (double)Tick.startday;
+   jday_to_day_of_year(&jday, &day_of_year, &year);
    if (latitude == 0.0)
       scienceAPI.get("latitude", "deg", latitude, -90., 90.);
 
@@ -141,4 +141,12 @@ float Environment::Q0(float lat, int day) 						// (PFR)
    float HS = acos(-tan(LATr) * tan(DECr));
 
    return  86400. * 1360. * (HS * sin(LATr) * sin(DECr) + cos(LATr) * cos(DECr) * sin(HS)) / 3.14159265 / 1000000.;
+   }
+
+std::string Environment::TodayString(void)
+   {
+   int day, month, year;
+   jday_to_date (&day, &month, &year, jday);
+   string st = itoa(day) + "/" + itoa(month) + "/" + itoa(year);
+   return st;
    }

@@ -335,6 +335,8 @@ void Plant::onPrepare()
       }
    else
       {
+      Debug("\nPREPARE:%s", _environment->TodayString().c_str());
+      Debug("       :%i", _environment->dayOfYear());
       plant.prepare();
 
       nStress->doPlantNStress (&leaf(), &stem());
@@ -353,7 +355,7 @@ void Plant::onPrepare()
       NewPotentialGrowth.frgr = min(min(getTempStressPhoto(),getNfactPhoto()),min(getOxdefPhoto(),getPfactPhoto()));
       NewPotentialGrowth.sender = Name();
       scienceAPI.publish ("newpotentialgrowth",NewPotentialGrowth);
-
+      Debug("NewPotentialGrowth.frgr:%f", NewPotentialGrowth.frgr);
 
       // Note actually should send total plant
       // potential growth rather than just tops - NIH
@@ -370,9 +372,12 @@ void Plant::onProcess()
       {
       plant_get_other_variables ();   // request and receive variables from owner-modules
 
-      root().plant_root_depth ();
+      //root().plant_root_depth ();
       if (g.plant_status == alive)
          {
+         Debug("\nPROCESS:%s", _environment->TodayString().c_str());
+         Debug("       :%i", _environment->dayOfYear());
+         root().plant_root_depth ();
          environment().process();
          root().doWaterUptake(1, Tops().SWDemand());
          root().doPlantWaterStress (Tops().SWDemand(), swStress);
@@ -741,6 +746,7 @@ void Plant::doNDemandEstimate (int option)
         {
         throw std::invalid_argument ("invalid template option");
         }
+    Debug("Plant.ext_n_demand:%f", g.ext_n_demand);
     }
 
 void Plant::doNSenescence (int   option/*(INPUT) option number*/)
@@ -1408,16 +1414,16 @@ void Plant::plant_update_other_variables (void)
                                        dm_n,
                                        dm_p,
                                        fraction_to_residue);
-
+      
     if (sum(dm_residue) > 0.0)
        plant_send_crop_chopped_event (c.crop_type,
                                       part_name,
-                                      dm_residue,
+                                      dm_residue, 
                                       dm_n,
                                       dm_p,
                                       fraction_to_residue);
 
-    UpdateCanopy();
+     //UpdateCanopy();
 
     }
 
@@ -1439,7 +1445,12 @@ void Plant::UpdateCanopy()
    NewCanopy.cover_tot = cover_tot;
    NewCanopy.sender = Name();
    scienceAPI.publish ("new_canopy",NewCanopy);
-
+   Debug("NewCanopy.height:%f", NewCanopy.height);
+   Debug("NewCanopy.depth:%f", NewCanopy.depth);
+   Debug("NewCanopy.lai:%f", NewCanopy.lai);
+   Debug("NewCanopy.lai_tot:%f", NewCanopy.lai_tot);
+   Debug("NewCanopy.cover:%f", NewCanopy.cover);
+   Debug("NewCanopy.cover_tot:%f", NewCanopy.cover_tot);
    }
 
 //+  Purpose

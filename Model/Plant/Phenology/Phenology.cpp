@@ -541,6 +541,8 @@ void Phenology::process()
       publishStageEvent(existingStage, phases[(int)currentStage]->name(), false);
 
    das++;
+   Debug("Phenology.CurrentPhaseName:%s", phases[(int)currentStage]->FullName().c_str());
+   Debug("Phenology.CurrentStage:%f", currentStage);
    }
 
 void Phenology::onRemoveBiomass(float removeBiomPheno)

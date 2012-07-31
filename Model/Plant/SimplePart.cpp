@@ -351,6 +351,8 @@ void SimplePart::onEmergence()
     EMF.SW = 0.0;
 
     scienceAPI.publish("ExternalMassFlow", EMF);
+   Debug(string(name() + ".InitGreen.StructuralWt:%f").c_str(), Green.DM());
+   Debug(string(name() + ".InitGreen.StructuralN:%f").c_str(), Green.N());
    }
 
 
@@ -374,6 +376,10 @@ void SimplePart::doNConccentrationLimits(float)
    g.n_conc_crit = plant->phenology().doInterpolation(c.n_conc_crit);
    g.n_conc_min  = plant->phenology().doInterpolation(c.n_conc_min);
    g.n_conc_max = plant->phenology().doInterpolation(c.n_conc_max);
+
+   Debug(string(name() + ".n_conc_crit:%f").c_str(), g.n_conc_crit);
+   Debug(string(name() + ".n_conc_min:%f").c_str(), g.n_conc_min);
+   Debug(string(name() + ".n_conc_max:%f").c_str(), g.n_conc_max);
    }
 
 void SimplePart::morphology(void)
@@ -386,6 +392,7 @@ void SimplePart::morphology(void)
       {
       float new_height = c.height.value(dm_plant);       // new plant height (mm)
       dlt.height = l_bound(new_height - Height, 0.0);
+      Debug("Stem.DeltaHeight:%f", dlt.height); 
       }
    else
       {
@@ -442,6 +449,13 @@ void SimplePart::update(void)
 
    Height += dlt.height;
    Width += dlt.width;
+
+   Debug(string(name() + ".Green.Wt:%f").c_str(), Green.DM());
+   Debug(string(name() + ".Green.N:%f").c_str(), Green.N());
+   Debug(string(name() + ".Senesced.Wt:%f").c_str(), Senesced.DM());
+   Debug(string(name() + ".Senesced.N:%f").c_str(), Senesced.N());
+   Debug(string(name() + ".Senescing.Wt:%f").c_str(), Senescing.DM());
+   Debug(string(name() + ".Senescing.N:%f").c_str(), Senescing.N());
    }
 
 void SimplePart::removeBiomass(void)
@@ -592,10 +606,12 @@ void SimplePart::doNDemand1Pot(float dlt_dm             //  Whole plant the dail
    // Estimate of dlt dm green
    Biomass OldGrowth = Growth;
    Growth.SetStructuralDM(dlt_dm_pot_rue * divide (Green.DM(), plant->All().Green.DM(), 0.0));
-
+   Debug(string(name() + ".Growth.StructuralWt:%f").c_str(), Growth.StructuralDM());
    doNDemand1(dlt_dm, dlt_dm_pot_rue);
    Growth.SetStructuralDM(0.0);
    Growth.SetNonStructuralDM(0.0);
+   Debug(string(name() + ".NDemand:%f").c_str(), NDemand);
+   Debug(string(name() + ".NMax:%f").c_str(), NMax);
    }
 
 void SimplePart::doNDemand1(float dlt_dm               //   Whole plant the daily biomass production (g/m^2)
@@ -691,6 +707,8 @@ void SimplePart::doNDemand2(float dlt_dm               // (INPUT)  Whole plant t
       NDemand = 0.0;
       NMax = 0.0;
       }
+   Debug(string(name() + ".NDemand:%f").c_str(), NDemand);
+   Debug(string(name() + ".NMax:%f").c_str(), NMax);
    }
 
 void SimplePart::doPDemand(void)
@@ -741,6 +759,7 @@ void SimplePart::doSoilNDemand(void)
    {
    SoilNDemand = NDemand - dlt.n_senesced_retrans;
    SoilNDemand = l_bound(SoilNDemand,0.0);
+   Debug(string(name() + ".SoilNDemand:%f").c_str(), SoilNDemand);
    }
 
 void SimplePart::doSenescence(float sen_fr)
@@ -752,7 +771,8 @@ void SimplePart::doSenescence(float sen_fr)
    // This is silly
    Senescing.SetStructuralDM((Green.StructuralDM()+Growth.StructuralDM()+Retranslocation.StructuralDM())* fraction_senescing);
    Senescing.SetNonStructuralDM((Green.NonStructuralDM()+Growth.NonStructuralDM()+Retranslocation.NonStructuralDM())* fraction_senescing);
-
+   Debug(string(name() + ".Senescing.StructuralWt:%f").c_str(), Senescing.StructuralDM());
+   Debug(string(name() + ".Senescing.NonStructuralWt:%f").c_str(), Senescing.NonStructuralDM());
    }
 
 void SimplePart::doMaintenanceRespirationPFR(void)
@@ -785,6 +805,7 @@ void SimplePart::doDmRetranslocate(float DMAvail, float DMDemandDifferentialTota
    {
       // All retrans comes out of the nonstructural pool
    Retranslocation.SetNonStructuralDM((float)(DMAvail * divide (dmDemandDifferential(), DMDemandDifferentialTotal, 0.0)));
+   Debug(string(name() + ".Retranslocation:%f").c_str(), Retranslocation.NonStructuralDM());
    }
 
 float SimplePart::dmDemandDifferential(void)
@@ -826,12 +847,15 @@ void SimplePart::doNSenescence(void)
 
    dlt.n_senesced_trans = dlt_n_in_senescing_part - Senescing.N();
    dlt.n_senesced_trans = l_bound(dlt.n_senesced_trans, 0.0);
+   Debug(string(name() + ".SenescingN:%f").c_str(), SenescingN);
+   Debug(string(name() + ".dlt.n_senesced_trans:%f").c_str(), dlt.n_senesced_trans);
    }
 
 void SimplePart::doNSenescedRetrans(float navail, float n_demand_tot)
 //=======================================================================================
    {
    dlt.n_senesced_retrans = navail * divide (NDemand, n_demand_tot, 0.0);
+   Debug(string(name() + ".dlt.n_senesced_retrans:%f").c_str(), dlt.n_senesced_retrans);
    }
 
 void SimplePart::doNFixRetranslocate(float NFix, float NDemandDifferentialTotal)
@@ -843,18 +867,26 @@ void SimplePart::doNFixRetranslocate(float NFix, float NDemandDifferentialTotal)
 void SimplePart::doNRetranslocate( float N_supply, float g_grain_n_demand)
 //=======================================================================================
    {
+   double AmountNToRetranslocate = 0;
    if (g_grain_n_demand >= N_supply)
       {
       // demand greater than or equal to supply
       // retranslocate all available N
-      Retranslocation.SetN(-availableRetranslocateN());
+      AmountNToRetranslocate = availableRetranslocateN();
       }
    else
       {
       // supply greater than demand.
       // Retranslocate what is needed
-      Retranslocation.SetN(-g_grain_n_demand * divide (availableRetranslocateN(), N_supply, 0.0));
+      AmountNToRetranslocate = g_grain_n_demand * divide (availableRetranslocateN(), N_supply, 0.0);
       }
+   if (reals_are_equal(AmountNToRetranslocate, 0.0))
+      Retranslocation.SetN(0);
+   else
+      Retranslocation.SetN(-AmountNToRetranslocate);
+
+
+   Debug(string(name() + ".Retranslocation.N:%f").c_str(), Retranslocation.N());
 // need to do bound check here  FIXME
    }
 
@@ -862,6 +894,8 @@ void SimplePart::Detachment(void)
 //=======================================================================================
    {
    Detaching = Senesced * c.sen_detach_frac;
+   Debug(string(name() + ".Detaching.Wt:%f").c_str(), Detaching.DM());
+   Debug(string(name() + ".Detaching.N:%f").c_str(), Detaching.N());
    }
 
 void SimplePart::doPSenescence(void)
@@ -931,8 +965,8 @@ float SimplePart::availableRetranslocateN(void)
 //    Calculate N available for transfer to grain (g/m^2)
 //    from each plant part.
    {
-   float N_min = g.n_conc_min * Green.DM();
-   float N_avail = l_bound (Green.N() - N_min, 0.0);
+   double N_min = g.n_conc_min * Green.DM();
+   double N_avail = l_bound (Green.N() - N_min, 0.0);
    return (N_avail * c.n_retrans_fraction);
    }
 
@@ -1220,6 +1254,9 @@ float SimplePart::giveDmGreen(float delta)
 
    Growth.AddStructuralDM(delta*SFrac);
    Growth.AddNonStructuralDM(delta*(1.0f-SFrac));
+
+   Debug(string(name() + ".Growth.StructuralWt:%f").c_str(), Growth.StructuralDM());
+   Debug(string(name() + ".Growth.NonStructuralWt:%f").c_str(), Growth.NonStructuralDM());
    return delta;
    }
 

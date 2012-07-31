@@ -29,9 +29,11 @@ class Environment : public plantThing
       float DiffuseLightFactor(void); 						// (PFR)
       void process(void);                                                       // Just to call environment processes(PFR)
       float rootActivityTemperature(void) const;                                // Returns root zone temperature(PFR)
+      std::string TodayString(void);
 
    private:
       protocol::NewMetType NewMet;
+      double jday;
       float latitude;                                   // latitude (degrees, negative for southern hemisphere)
       int day_of_year;                                  // day of year
       int year;                                         // year

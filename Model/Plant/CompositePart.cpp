@@ -943,6 +943,7 @@ void CompositePart::doRadnPartition()
       // to the other parts.
       incomingSolarRadiation -= part.calcInterceptRadiationTotal(incomingSolarRadiation);
       }
+   Debug("RadiationPartitioning.IncomingSolarRadiation:%f", incomingSolarRadiation);
    }
 
 void CompositePart::interceptRadiationGreen (float radiation)

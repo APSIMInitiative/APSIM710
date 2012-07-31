@@ -247,6 +247,7 @@ void RootPart::onEmergence(void)
 
    for (int layer = 0; layer <= deepest_layer; layer++)
       root_length[layer] = rld *(*soil[0]).dlayer[layer] * (*soil[0]).root_proportion (layer, root_depth);
+   Debug("Root.InitRootLength:%f", sum_real_array(root_length, max_layer));
    }
 
 void RootPart::onFlowering(void)
@@ -363,6 +364,10 @@ void RootPart::plant_root_depth (void)
    dltRootDepth = u_bound ( dltRootDepth, root_depth_max - root_depth);
 
    if (dltRootDepth < 0.0) throw std::runtime_error("negative root growth??") ;
+
+   Debug("Root.dltRootDepth:%f", dltRootDepth);
+   Debug("Root.root_layer_max:%i", root_layer_max);
+   Debug("Root.root_depth_max:%f", root_depth_max);
    }
 
 void RootPart::update(void)
@@ -396,6 +401,9 @@ void RootPart::update(void)
    bound_check_real_var(scienceAPI, root_depth, 0.0
                         , sum_real_array ((*soil[0]).dlayer, max_layer)
                         , "root_depth");
+   Debug("root.RootDepth:%f", root_depth);
+   Debug("root.RootLength:%f", sum_real_array(root_length, max_layer));
+   Debug("root.RootLengthSenesced:%f", sum_real_array(root_length_senesced, max_layer));
    }
 
 void RootPart::sen_length(void)
@@ -406,6 +414,7 @@ void RootPart::sen_length(void)
    setTo (dltRootLengthSenesced, (float) 0.0);
    float senesced_length = Senescing.DM() / sm2smm * specificRootLength;
    root_dist(senesced_length, dltRootLengthSenesced);
+   Debug("Root.dltRootLengthSenesced:%f", sum(dltRootLengthSenesced));
    }
 
 void RootPart::root_dist(float root_sum, vector<float> &root_array)           //(INPUT) Material to be distributed
@@ -496,6 +505,7 @@ void RootPart::root_incorp (float  dlt_dm_root,                  // (INPUT) root
 
       protocol::FOMLayerType IncorpFOM;
       IncorpFOM.Type = plant->getCropType();
+      Debug("Root.IncorpFOM.Type:%s", IncorpFOM.Type.c_str());
       for (unsigned i = 0; i != dlt_dm_incorp.size(); i++)
          {
          protocol::FOMLayerLayerType Layer;
@@ -507,6 +517,9 @@ void RootPart::root_incorp (float  dlt_dm_root,                  // (INPUT) root
          Layer.CNR = 0;
          Layer.LabileP = 0;
          IncorpFOM.Layer.push_back(Layer);
+         Debug("Root.IncorpFOM.FOM.amount:%f2", Layer.FOM.amount);
+         Debug("Root.IncorpFOM.FOM.N:%f", Layer.FOM.N);
+
          }
       scienceAPI.publish("IncorpFOM", IncorpFOM);
       }

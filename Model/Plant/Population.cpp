@@ -54,6 +54,7 @@ void Population::ZeroDaily()
 void Population::Update()
    {
    plants = plants + dlt_plants;
+   Debug("Population.Density:%f", plants);
    }
 
 void Population::OnPrepare()
@@ -111,6 +112,7 @@ void Population::PlantDeath()
       dlt_plants_death_drought = 0.0;
 
    DeathActual();
+   Debug("Population.dlt_plants:%f", dlt_plants);
 
    if (reals_are_equal (dlt_plants + plants, 0.0))
       {

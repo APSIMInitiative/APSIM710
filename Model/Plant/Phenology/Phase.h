@@ -54,6 +54,12 @@ class Phase
      virtual float stress() {return 1.0;}  // no stress.
      int getDaysAfter(void) {return (int)days_after;}
      void setDaysTo(int NumDaysTo);
+     std::string FullName()
+        {
+        string st = myName + "to" + EndStageName;
+        replaceAll(st, "_", "");
+        return st;
+        }
    };
 
 bool operator == (const Phase &a, const Phase &b);

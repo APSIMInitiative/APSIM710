@@ -45,15 +45,16 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..;..\..\..\BuildLibraries\boost_1_44;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PLANT_EXPORTS;__WIN32__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..;..\..\..\BuildLibraries\boost_1_44;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PLANT_EXPORTS;__WIN32__;BOOST_REGEX_STATIC_LINK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BasicRuntimeChecks>StackFrameRuntimeCheck</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <PrecompiledHeaderFile>StdPlant.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>StdPlant.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>..\..\..\BuildLibraries\boost_1_44\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -172,9 +173,11 @@
     <ClInclude Include="arbitrators\WholePlantGenericArbitratorXY.h" />
     <ClInclude Include="Arbitrators\WholePlantSeasonalArbitrator.h" />
     <ClInclude Include="Arbitrators\WholePlantSeasonalPpArbitrator.h" />
-    <ClInclude Include="phenology\Zadok.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\ComponentInterface\EntryPoints.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="arbitrators\Arbitrator.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
@@ -191,13 +194,14 @@
     <ClCompile Include="phenology\CWInductivePhase.cpp" />
     <ClCompile Include="phenology\CWSowingPhase.cpp" />
     <ClCompile Include="phenology\CWVernalPhase.cpp" />
+    <ClCompile Include="Phenology\Zadok.cpp" />
+    <ClCompile Include="StdPlant.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="utility\Data.cpp" />
     <ClCompile Include="utility\Date.cpp" />
     <ClCompile Include="Delta.cpp" />
     <ClCompile Include="phenology\EmergentPhase.cpp" />
-    <ClCompile Include="..\ComponentInterface\EntryPoints.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="utility\ExternalFunction.cpp" />
     <ClCompile Include="Fixation.cpp" />
@@ -268,7 +272,6 @@
     <ClCompile Include="arbitrators\WholePlantGenericArbitratorXY.cpp" />
     <ClCompile Include="Arbitrators\WholePlantSeasonalArbitrator.cpp" />
     <ClCompile Include="Arbitrators\WholePlantSeasonalPpArbitrator.cpp" />
-    <ClCompile Include="phenology\Zadok.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Plant.def" />

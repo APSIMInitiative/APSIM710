@@ -343,6 +343,7 @@ void Soil::doSWAvailable(float root_depth)
       }
    // correct bottom layer for actual root penetration
    sw_avail[deepest_layer] = sw_avail[deepest_layer] * root_proportion(deepest_layer, root_depth);
+   Debug("Root.sw_avail[deepest_layer]:%f", sw_avail[deepest_layer]);
    }
 
 void Soil::doSWSupply(float root_depth)
@@ -364,6 +365,7 @@ void Soil::doSWSupply(float root_depth)
       }
    //now adjust bottom layer for depth of root
    sw_supply[deepest_layer] = sw_supply[deepest_layer] * root_proportion(deepest_layer,root_depth);
+   Debug("Root.sw_supply[deepest_layer]:%f", sw_supply[deepest_layer]);
    }
 float Soil::root_proportion (int layer, float root_depth)
 //===========================================================================
@@ -403,6 +405,9 @@ void Soil::doPotentialExtractableSW(float root_depth)
 
    // correct bottom layer for actual root penetration
    sw_avail_pot[deepest_layer] = sw_avail_pot[deepest_layer] * root_proportion(deepest_layer,root_depth);
+
+   Debug("Root.deepest_layer:%i", deepest_layer);
+   Debug("Root.sw_avail_pot[deepest_layer]:%f", sw_avail_pot[deepest_layer]);
    }
 void Soil::doWaterSupply (float root_depth)
 //=======================================================================================
@@ -632,7 +637,7 @@ void Soil::getOtherVariables()
        nh4gsm[i] = values[i] * kg2gm /ha2sm;
 
     if (DynamicCL)
-       scienceAPI.getOptional("cl_ppm", "(mg/kg)", cl, 0.0f, 100000.0f);
+   scienceAPI.getOptional("cl_ppm", "(mg/kg)", cl, 0.0f, 100000.0f);
    if (cl.size() > 0 && cl.size() != num_layers)
       throw std::runtime_error("The number of CL values in root does not equal the number of layers");
    }
@@ -673,6 +678,7 @@ void Soil::doWaterUptakeInternal (float sw_demand, float root_depth)
             }
          }
       }
+   Debug("Root.dlt_sw_dep:%f", sum_real_array(dlt_sw_dep, max_layer));
    }
 
 float Soil::peswTotal(float root_depth)
@@ -721,6 +727,10 @@ void Soil::UpdateOtherVariables(string uptake_source)
       scienceAPI.set("dlt_no3", "kg/ha", dltNO3KgHa);
       scienceAPI.set("dlt_nh4", "kg/ha", dltNH4KgHa);
       scienceAPI.set("dlt_sw_dep", "mm", dltSwDep);
+      Debug("Root.WaterUptake:%f", sum(dltSwDep));
+      Debug("Root.NitrogenUptake.DeltaNO3:%f", sum(dltNO3KgHa));
+      Debug("Root.NitrogenUptake.DeltaNH4:%f", sum(dltNH4KgHa));
+
       }
    else if (Str_i_Eq(uptake_source, "swim3"))
       {
@@ -805,6 +815,8 @@ void Soil::doNUptake(string uptake_source, string crop_type, float root_depth, f
         {
         throw std::invalid_argument ("invalid template option");
         }
+     Debug("Root.dlt_no3gsm:%f", sum_real_array(dlt_no3gsm, max_layer));
+     Debug("Root.dlt_nh4gsm:%f", sum_real_array(dlt_nh4gsm, max_layer));
     }
 
 //+  Purpose
@@ -888,7 +900,8 @@ void Soil::plant_nit_supply(float root_depth, float *root_length)
         {
         throw std::invalid_argument ("invalid template N uptake option");
         }
-
+   Debug("Root.no3gsm_uptake_pot:%f", sum_real_array(no3gsm_uptake_pot, max_layer));
+   Debug("Root.nh4gsm_uptake_pot:%f", sum_real_array(nh4gsm_uptake_pot, max_layer));
    }
 
 //=======================================================================================

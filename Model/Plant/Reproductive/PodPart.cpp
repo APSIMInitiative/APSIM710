@@ -30,6 +30,7 @@ void PlantPartArea::update(void)
 //=======================================================================================
 {
    partAI += dlt_partAI;
+   Debug("pod.partAI:%f", partAI);
 }
 
 void PlantPartArea::onHarvest(float /* cutting_height */, float /*remove_fr*/,
@@ -107,12 +108,14 @@ void PlantPartArea::doCover (PlantSpatial &spatial)
       }
    else
       cover.green = 0.0;
+   Debug("pod.cover.green:%f", cover.green);
 }
 
 void PlantPartArea::calcDlt_area (float dltDm)
    //===========================================================================
 {
    dlt_partAI = dltDm * cSpec_area * smm2sm;
+   Debug("Pod.dlt_partAI:%f", dlt_partAI);
 }
 
 fruitPodPart::fruitPodPart(ScienceAPI& scienceAPI, plantInterface *p, const string &name)
@@ -189,12 +192,14 @@ void fruitPodPart::doDmDemand(float dlt_dm_supply)
       DMGreenDemand = dm_grain_demand * plant->phenology().doInterpolation(*fracPod) - dlt_dm_supply_by_pod;
    else
       DMGreenDemand = dlt_dm_supply * plant->phenology().doInterpolation(*fracPod)  - dlt_dm_supply_by_pod;
+   Debug("Pod.DMGreenDemand:%f", DMGreenDemand);
 }
 
 void fruitPodPart::doDmRetranslocate(float DMAvail, float DMDemandDifferentialTotal)
 //=======================================================================================
    {
    Retranslocation.AddNonStructuralDM(DMAvail * divide (dmDemandDifferential(), DMDemandDifferentialTotal, 0.0));
+   Debug("pod.Retranslocation:%f", Retranslocation.NonStructuralDM());
    }
 
 float fruitPodPart::dltDmRetranslocateSupply(float DemandDifferential)
@@ -339,6 +344,7 @@ void fruitPodPart::doDmPotRUE (void )                    // (OUTPUT) potential d
                                   , plant->getOxdefPhoto()), plant->getPfactPhoto());
 
    dlt.dm_pot_rue = (float)((radiationInterceptedGreen * cRue_pod) * stress_factor * co2Modifier->rue());
+   Debug("Pod.dlt.dm_pot_rue:%f", dlt.dm_pot_rue);
 }
 
 
@@ -367,6 +373,8 @@ void fruitPodPart::doSWDemand(float SWDemandMaxFactor)         //(OUTPUT) crop w
    float SWDemandMax = SWDemandMaxFactor * coverGreen() ;
    sw_demand = u_bound(sw_demand_te, SWDemandMax);
    transpEff = transpEff * divide(sw_demand_te, sw_demand, 1.0);
+   Debug("Pod.sw_demand:%f", sw_demand);
+   Debug("Pod.transpEff:%f", transpEff);
 }
 
 float fruitPodPart::removePodFraction (float DM)

@@ -283,6 +283,10 @@ void GenericLeaf::initialiseAreas(void)
 
    gLAI = cInitialTPLA * smm2sm * plant->population().Density();
    gSLAI = 0.0;
+   Debug("Leaf.InitLeafNo:%f", sum_real_array(gLeafNo, max_node));
+   Debug("Leaf.InitLeafArea:%f", sum_real_array(gLeafArea, max_node));
+   Debug("Leaf.InitLAI:%f", gLAI);
+   Debug("Leaf.InitSLAI:%f", gSLAI);
    }
 
 // Harvest event
@@ -352,6 +356,10 @@ void GenericLeaf::actual(void)
 	else                                               // Unrecognized Flag value in INI file
            throw runtime_error("Unknown LAI model: lai_exp_model_option = " + cLAIExpModelOption + " in " + plant->Name() + "parameterization." );
    this->leaf_no_actual ();
+   Debug("Leaf.dltLAI_carbon:%f", dltLAI_carbon);
+   Debug("Leaf.dltLAI:%f", dltLAI);
+   Debug("Leaf.dltLeafNo:%f", dltLeafNo);
+   Debug("Leaf.dltNodeNo:%f", dltNodeNo);
    }
 
 //Purpose
@@ -447,6 +455,7 @@ void GenericLeaf::leaf_death (float  g_nfact_expansion, float  g_dlt_tt)
        {
        dltLeafNoSen = 0.0;
        }
+   Debug("Leaf.dltLeafNoSen:%f", dltLeafNoSen);
    }
 
 // Public interface to calculate potentials
@@ -463,6 +472,9 @@ void GenericLeaf::CanopyExpansion (int leaf_no_pot_option /* (INPUT) option numb
    else                                               // Unrecognized Flag value in INI file
        throw runtime_error("Unknown LAI model: lai_exp_model_option = " + cLAIExpModelOption + " in " + plant->Name() + "parameterization." );
    this->leaf_area_stressed(AreaStressFactor);
+
+   Debug("Leaf.dltLAI_pot:%f", dltLAI_pot);
+   Debug("Leaf.dltLAI_stressed:%f", dltLAI_stressed);
    }
 
 //+  Purpose
@@ -567,8 +579,12 @@ void GenericLeaf::Detachment (void)
                                , dltSLAI_detached
                                , 1.0  //required because gLeafArea is on an area basis not a plant basis
                                , max_node);
-
-    SimplePart::Detachment();
+         Debug("leaf.dltSLAI_detached:%f", dltSLAI_detached);
+         #ifdef _DEBUG
+         for (int i = 0; i < 10; i++)
+            Debug("leaf.LeafArea:%f0", gLeafArea[i]);
+         #endif
+         SimplePart::Detachment();
    }
 
 //   Calculate todays leaf area senescence
@@ -602,6 +618,12 @@ void GenericLeaf::leaf_area_sen(float swdef_photo)
                               cMinTPLA);
 
     dltSLAI = max(max(max(dltSLAI_age, dltSLAI_light), dltSLAI_water), dltSLAI_frost);
+
+    Debug("Leaf.dltSLAI_age:%f", dltSLAI_age);
+    Debug("Leaf.dltSLAI_light:%f", dltSLAI_light);
+    Debug("Leaf.dltSLAI_water:%f", dltSLAI_water);
+    Debug("Leaf.dltSLAI_frost:%f", dltSLAI_frost);
+    Debug("Leaf.dltSLAI:%f", dltSLAI);
 }
 
 // Update state variables
@@ -653,7 +675,11 @@ void GenericLeaf::update(void)
     float dlt_lai_dead  = gLAI  * dying_fract_plants;
     gLAI -=  dlt_lai_dead;
     gSLAI += dlt_lai_dead;
-
+      Debug("leaf.LeafNo:%f", sum_real_array(gLeafNo, max_node));
+      Debug("leaf.LeafNoSen:%f", sum_real_array(gLeafNoSen, max_node));
+      Debug("leaf.NodeNo:%f", gNodeNo);
+      Debug("leaf.LAI:%f", gLAI);
+      Debug("leaf.SLAI:%f", gSLAI);
 }
 
 // Remove detachment from leaf area record

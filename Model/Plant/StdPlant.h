@@ -11,3 +11,13 @@
 #define isnan _isnan
 #define isinf _isinf
 #endif
+
+
+
+// Debugging trace function
+void XTrace(const char* lpszFormat, ...);
+#ifdef _DEBUG
+#define Debug XTrace
+#else
+#define Debug  
+#endif

@@ -327,7 +327,10 @@ void NStress::doPlantNStress (plantPart* leafPart, plantPart* stemPart)
         {
         throw std::invalid_argument ("invalid template option in doPlantNStress");
         }
-
+    Debug("NStress.Photo:%f", nFact.photo);
+    Debug("NStress.Pheno:%f", nFact.pheno);
+    Debug("NStress.Grain:%f", nFact.grain);
+    Debug("NStress.Expansion:%f", nFact.expansion);
     }
 
 
@@ -563,7 +566,15 @@ void SWStress::doPlantWaterStress (float sw_demand)
    swDef.expansion = SWDefExpansion(sw_demand);
    swDef.fixation = SWDefFixation();
    swDef.oxdef_photo = SWDefOxygen(rootPart->wet_root_fr());
-   }
+
+   Debug("SWStress.Photo:%f", swDef.photo);
+   Debug("SWStress.Pheno:%f", swDef.pheno);
+   Debug("SWStress.PhenoFlower:%f", swDef.pheno_flower);
+   Debug("SWStress.PhenoGrainFilling:%f", swDef.pheno_grainfill);
+   Debug("SWStress.Expansion:%f", swDef.expansion);
+   Debug("SWStress.Fixation:%f", swDef.fixation);
+   Debug("SWStress.OxygenDeficitPhoto:%f", swDef.oxdef_photo);
+}
 
 float SWStress::SWDefExpansion(float sw_demand)
 //==========================================================================
