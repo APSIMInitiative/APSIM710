@@ -173,7 +173,7 @@ public class JobScheduler
         }
 
         string name = System.Environment.MachineName;
-        if (name.Equals("MUCK"))  //this is so wrong I think my head will explode, but it's the only thing that returns the correct info... JF 23/07/12
+        if (name.ToUpper().Equals("BOB"))  //this is so wrong I think my head will explode, but it's the only thing that returns the correct info... JF 23/07/12
         {
             Console.WriteLine("Workaround for running on Bob. Doubling core count. Use -n <number of cores> to override.");
             NumCPUsToUse = 64;
