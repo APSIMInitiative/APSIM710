@@ -27,7 +27,7 @@ SRC = PlantComponent.cpp \
       Biomass.cpp \
       ThingFactory.cpp \
       Parts.cpp \
-	  StdPlant.cpp \
+      StdPlant.cpp \
       Utility/PlantUtility.cpp \
       Utility/Data.cpp \
       Utility/ExternalFunction.cpp \

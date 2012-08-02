@@ -1,7 +1,6 @@
 #include "StdPlant.h"
 
 #include <stdio.h>
-#include <fstream>
 #include <stdarg.h>
 char szBuffer[512]; 
 ofstream dbg;

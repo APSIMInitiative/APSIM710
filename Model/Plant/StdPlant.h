@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdexcept>
 #include <string>
+#include <fstream>
 #include <boost/bind.hpp>
 #include "SimplePart.h"
 
