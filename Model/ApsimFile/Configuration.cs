@@ -175,6 +175,13 @@ namespace ApsimFile
 
         public static string AusFarmDirectory()
         {
+            // On Linux, we will generally expect AUSFARM to be defined. 
+            // On Windows, this provides an easy way to override the default use of registry keys,
+            // which can be handy during development.
+            if (AusFarmDir == "" && Environment.GetEnvironmentVariable("AUSFARM") != null)
+            {
+                AusFarmDir = Environment.GetEnvironmentVariable("AUSFARM");
+            }
             if (AusFarmDir == "" && getArchitecture() == architecture.win32)
             {
                 RegistryKey rk = Registry.LocalMachine.OpenSubKey("SOFTWARE");

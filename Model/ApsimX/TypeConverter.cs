@@ -65,6 +65,8 @@ public class TypeConverter
         return null;
     }
 
+    internal static CultureInfo Aus = new CultureInfo("en-AU");
+
     /// <summary>
     /// Convert the specified From object to the specified ToType. If no conversion is required then
     /// From will be returned.
@@ -203,7 +205,7 @@ public class TypeConverter
     /// </summary>
     internal static object ToString(string Name, object From)
     {
-        return System.Convert.ToString(From);
+        return System.Convert.ToString(From, Aus);
     }
 
     /// <summary>
@@ -211,8 +213,14 @@ public class TypeConverter
     /// </summary>
     internal static object ToDateTime(string Name, object From)
     {
-        CultureInfo Aus = new CultureInfo("en-AU");
-        return System.Convert.ToDateTime(From, Aus);
+        try
+        {
+            return System.Convert.ToDateTime(From, Aus);
+        }
+        catch (Exception)
+        {
+            throw new Exception("Cannot convert " + From.ToString() + " to a DateTime. Variable name is " + Name);
+        }
     }
 
     /// <summary>

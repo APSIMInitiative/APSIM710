@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using CSGeneral;
+using ApsimFile;
 using System.IO;
 
 
@@ -31,7 +32,10 @@ public class RunApsimJob : RunExternalJob
          _SumFileName = Path.Combine(Path.GetDirectoryName(_SimFileName),
                         Path.GetFileNameWithoutExtension(_SimFileName) + ".sum");
          _SumFile = new StreamWriter(_SumFileName);
-         _Executable = Path.Combine("%apsim%", "Model", "Apsim.exe");
+         if (Configuration.getArchitecture() == Configuration.architecture.unix) // ApsimFile.Configuration.amRunningOnUnix()
+             _Executable = Path.Combine("%apsim%", "Model", "Apsim.x");
+         else
+             _Executable = Path.Combine("%apsim%", "Model", "Apsim.exe");
          _Arguments = StringManip.DQuote(_SimFileName);
          }
       }

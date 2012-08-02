@@ -231,15 +231,25 @@ void ApsimSettings::getKeysUnder(const string& key, vector<string>& keys)
 // Add in a %apsim% macro to the specified string if possible
 // ------------------------------------------------------------------
 void ApsimSettings::addMacro(std::string& st)
-   {
-   string StLower = st;
-   To_lower(StLower);
-   string ApsimDir = getApsimDirectory();
-   To_lower(ApsimDir);
-   unsigned Pos = StLower.find(ApsimDir);
-   if (Pos != string::npos)
-      st.replace(Pos, getApsimDirectory().length(), "%apsim%");
-   }
+{
+	string StLower = st;
+	string ApsimDir = getApsimDirectory();
+	string AusFarmDir = getAusFarmDirectory();
+#ifdef __WIN32__
+	To_lower(StLower);
+	To_lower(ApsimDir);
+	To_lower(AusFarmDir);
+#endif
+	unsigned Pos = StLower.find(ApsimDir);
+	if (Pos != string::npos)
+		st.replace(Pos, ApsimDir.length(), "%apsim%");
+	if (AusFarmDir != "")
+	{
+		Pos = StLower.find(AusFarmDir);
+		if (Pos != string::npos)
+			st.replace(Pos, AusFarmDir.length(), "%ausfarm%");
+	}
+}
 
 // ------------------------------------------------------------------
 // Erase the specified key
