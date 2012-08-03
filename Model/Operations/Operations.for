@@ -270,7 +270,7 @@
       call write_string ('===================')
 
       do 100 counter = 1, g%last_record
-         write(Line,'(a10,2x,a,2x,a)')
+         write(Line,'(a11,2x,a,2x,a)')
      :                    trim(g%op_date(counter))
      :                   ,g%phase_name(g%op_phase(counter))
      :                   ,g%op_text(counter)
