@@ -389,7 +389,9 @@ namespace CSUserInterface
                 TotalGrid.Columns[Col].ReadOnly = !Grid.Columns[Col].HeaderText.Contains("NO3") &&
                                                   !Grid.Columns[Col].HeaderText.Contains("NH4");
                 TotalGrid.Columns[Col].DefaultCellStyle.Format = "f1";
-                if (Grid.RowCount > 1 &&
+                string RawVariableName = Grid.Columns[Col].HeaderText;
+                string Units = StringManip.SplitOffBracketedValue(ref RawVariableName, '(', ')');
+                if (Grid.RowCount > 1 && Units != "ppm" &&
                    (Grid.Columns[Col].HeaderText.Contains("NO3") ||
                     Grid.Columns[Col].HeaderText.Contains("NH4") ||
                     Grid.Columns[Col].HeaderText.Contains("PAWC")))
