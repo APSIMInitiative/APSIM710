@@ -332,6 +332,7 @@ public class ApsimRunToolStrip
                 StopButton.Enabled = false;
                 _JobRunner.Stop();
                 String WavFileName = Configuration.Instance.Setting("ApsimFinishedWAVFileName");
+                WavFileName = WavFileName.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
                 if (File.Exists(WavFileName))
                 {
                     System.Media.SoundPlayer Player = new System.Media.SoundPlayer(WavFileName);
