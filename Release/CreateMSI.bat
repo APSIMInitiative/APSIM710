@@ -40,7 +40,7 @@ rem Now use the tool to insert filenames into the .vdproj file
 rem Now combine apsimsetup.msi and setup.exe into a self extracting installation.
 rem This uses IExpress described here:
 rem http://www.itscodingtime.com/post/Combine-Setup-MSI-and-EXE-into-a-single-package-with-IExpress.aspx
-..\..\..\BuildLibraries\IExpress32\iexpress /N /Q %2.sed
+iexpress /N /Q %2.sed
 
 rem Now copy the releases to the right directory - with the revision number.
 copy %2.exe C:\inetpub\wwwroot\Files\%1.exe
