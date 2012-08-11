@@ -6,7 +6,7 @@ using ModelFramework;
 public class animal
 {
     protected double NumberPrDay = 0;
-
+    protected ManureType manurePrDay;
     protected ManureType solidManurePrDay;
     protected ManureType fluidManurePrDay;
     protected feedItemType currentfeed;
