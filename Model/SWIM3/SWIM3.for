@@ -168,6 +168,7 @@
 
          character crop_names (MV)*(strsize)
          character crop_owners (MV)*(strsize)
+         integer crop_owner_id (MV)
          logical   crop_in(MV)
          integer num_crops
          integer          nveg
@@ -433,7 +434,7 @@
      :              parameters_section,
      :              'theta',
      :              M+1,
-     :              '(cc/cc)',
+     :              '(cm^3/cm^3)',
      :              g%th(0),
      :              num_theta,
      :              1.0d-3,
@@ -443,7 +444,7 @@
      :              parameters_section,
      :              'psi',
      :              M+1,
-     :              '(??)',
+     :              '(cm)',
      :              g%psi(0),
      :              num_psi,
      :              -1.0d6,
@@ -562,7 +563,7 @@ c     :              1d0)
      :              parameters_section,
      :              'air_dry',
      :              M+1,
-     :              '(mm/mm)',
+     :              '(cm^3/cm^3)',
      :              p%air_dry(0),
      :              numvals,  ! get number of nodes from here
      :              0.0d0,
@@ -572,7 +573,7 @@ c     :              1d0)
      :              parameters_section,
      :              'll15',
      :              M+1,
-     :              '(mm/mm)',
+     :              '(cm^3/cm^3)',
      :              p%ll15(0),
      :              numvals,  ! get number of nodes from here
      :              0.0d0,
@@ -581,7 +582,7 @@ c     :              1d0)
      :              parameters_section,
      :              'dul',
      :              M+1,
-     :              '(mm/mm)',
+     :              '(cm^3/cm^3)',
      :              p%dul(0),
      :              numvals,  ! get number of nodes from here
      :              0.0d0,
@@ -590,7 +591,7 @@ c     :              1d0)
      :              parameters_section,
      :              'sat',
      :              M+1,
-     :              '(mm/mm)',
+     :              '(cm^3/cm^3)',
      :              p%sat(0),
      :              numvals,  ! get number of nodes from here
      :              0.0d0,
@@ -628,7 +629,7 @@ c     :              1d0)
      :              parameters_section,
      :              'bd',
      :              M+1,
-     :              '(g/cc)',
+     :              '(g/cm^3)',
      :              p%rhob(0),
      :              numvals,  ! get number of nodes from here
      :              0.0d0,
@@ -808,7 +809,7 @@ c     :              1d0)
          call Read_double_var (
      :              top_boundary_section,
      :              'minimum_conductance',
-     :              '(/g%h)',
+     :              '(/h)',
      :              p%g0,
      :              numvals,
      :              1.0d-6,
@@ -817,7 +818,7 @@ c     :              1d0)
          call Read_double_var (
      :              top_boundary_section,
      :              'maximum_conductance',
-     :              '(/g%h)',
+     :              '(/h)',
      :              p%g1,
      :              numvals,
      :              p%g0,
@@ -827,7 +828,7 @@ c     :              1d0)
          call Read_double_var (
      :              top_boundary_section,
      :              'initial_conductance',
-     :              '(/g%h)',
+     :              '(/h)',
      :              g%gsurf,
      :              numvals,
      :              p%g0,
@@ -1073,13 +1074,13 @@ c     :              1d0)
       else if (Variable_name .eq. 'bd') then
          call respond2Get_double_array (
      :            Variable_name,
-     :            '(g/cc)',
+     :            '(g/cm^3)',
      :            p%rhob(0),
      :            p%n+1)
       else if (Variable_name .eq. 'sw') then
          call respond2Get_double_array (
      :            Variable_name,
-     :            '(cc/cc)',
+     :            '(cm^3/cm^3)',
      :            g%th(0),
      :            p%n+1)
       else if (Variable_name .eq. 'swf') then
@@ -1101,7 +1102,7 @@ c     :              1d0)
       else if (Variable_name .eq. 'll15') then
          call respond2Get_double_array (
      :            Variable_name,
-     :            '(cc/cc)',
+     :            '(cm^3/cm^3)',
      :            p%LL15(0),
      :            p%n+1)
       else if (Variable_name .eq. 'll15_dep') then
@@ -1116,7 +1117,7 @@ c     :              1d0)
       else if (Variable_name .eq. 'dul') then
          call respond2Get_double_array (
      :            Variable_name,
-     :            '(cc/cc)',
+     :            '(cm^3/cm^3)',
      :            p%DUL(0),
      :            p%n+1)
       else if (Variable_name .eq. 'dul_dep') then
@@ -1131,7 +1132,7 @@ c     :              1d0)
       else if (Variable_name .eq. 'sat') then
          call respond2Get_double_array (
      :            Variable_name,
-     :            '(cc/cc)',
+     :            '(cm^3/cm^3)',
      :            p%SAT(0),
      :            p%n+1)
       else if (Variable_name .eq. 'sat_dep') then
@@ -1162,14 +1163,14 @@ c     :              1d0)
       else if (Variable_name .eq. 'p') then
          call respond2Get_double_array (
      :            Variable_name,
-     :            '(??)',
+     :            '()',
      :            g%p(0),
      :            p%n+1)
       else if (Variable_name .eq. 'psi') then
 
          call respond2Get_double_array (
      :            Variable_name,
-     :            '(??)',
+     :            '(cm)',
      :            g%psi(0),
      :            p%n+1)
 
@@ -1206,7 +1207,7 @@ c     :              1d0)
       else if (Variable_name .eq. 'cover_surface_runoff') then
          call respond2Get_real_var (
      :            Variable_name,
-     :            '()',
+     :            '(0-1)',
      :            g%cover_surface_runoff)
 
       else if (Variable_name .eq. 'infiltration') then
@@ -1328,7 +1329,7 @@ c     :              1d0)
       else if (Variable_name .eq. 'salb') then
          call respond2Get_real_var (
      :            Variable_name,
-     :            '(??)',
+     :            '(0-1)',
      :            p%salb)
 
       else if (Variable_name .eq. 'hmin') then
@@ -1502,7 +1503,7 @@ cnh added as per request by Dr Val Snow
          call collect_double_array (
      :              'sw',
      :              p%n+1,
-     :              '(cc/cc)',
+     :              '(cm^3/cm^3)',
      :              theta(0),
      :              numvals,
      :              0d0,
@@ -1515,7 +1516,7 @@ cnh added as per request by Dr Val Snow
          call collect_double_array (
      :              'psi',
      :              p%n+1,
-     :              '()',
+     :              '(cm)',
      :              suction(0),
      :              numvals,
      :              -1.d10,
@@ -1544,7 +1545,7 @@ cnh added as per request by Dr Val Snow
       elseif (Variable_name .eq. 'scon') then
          call collect_double_var (
      :              'scon',
-     :              '(/g%h)',
+     :              '(/h)',
      :              g%gsurf,
      :              numvals,
      :              0d0,
@@ -1905,6 +1906,7 @@ c      eqr0 = 0d0
          g%root_conductance(vegnum) = 0d0
          g%crop_names(vegnum) = ''
          g%crop_owners(vegnum) = ''
+         g%crop_owner_id(vegnum) = 0
          g%crop_in(vegnum) = .false.
    50 continue
 
@@ -3434,8 +3436,8 @@ c      eqr0  = 0.d0
       p%hm0 = p%hm0 / 10.d0 ! convert mm to cm
       p%hrc = p%hrc / 10.d0 ! convert mm to cm
       g%hmin=g%hmin / 10.d0 ! convert mm to cm
-      p%roff0 = p%roff0 * (10d0**p%roff1)/10.d0 ! convert (mm/g%h)/mm^P to
-                                          ! (cm/g%h)/(cm^P)
+      p%roff0 = p%roff0 * (10d0**p%roff1)/10.d0 ! convert (mm/h)/mm^P to
+                                          ! (cm/h)/(cm^P)
 
       num_nodes = count_of_double_vals (p%dlayer(0),M+1)
 
@@ -3518,7 +3520,7 @@ c      eqr0  = 0.d0
       call Read_double_var(
      :           solute_section,
      :           'dthc',
-     :           '(mm/mm)',
+     :           '(cm^3/cm^3)',
      :           p%dthc,
      :           numvals,
      :           0d0,
@@ -3672,7 +3674,7 @@ c      eqr0  = 0.d0
 
 
 * ====================================================================
-       subroutine apswim_assign_crop_params ()
+       subroutine apswim_assign_crop_params (vegnum)
 * ====================================================================
 
       implicit none
@@ -3690,14 +3692,14 @@ c      eqr0  = 0.d0
       !                   uptake parameters
       !                   -----------------
 
-      do 50 vegnum = 1,MV
-         g%psimin(vegnum) = 0d0
-         g%root_radius(vegnum) = 0d0
-         g%root_conductance(vegnum) = 0d0
-   50 continue
+!      do 50 vegnum = 1,MV
+!         g%psimin(vegnum) = 0d0
+!         g%root_radius(vegnum) = 0d0
+!         g%root_conductance(vegnum) = 0d0
+!   50 continue
 
-      do 200 vegnum = 1,g%num_crops
-         found = .false.
+!      do 200 vegnum = 1,g%num_crops
+!         found = .false.
          do 150 vegnum2 = 1, MV
             if (c%crop_table_name(vegnum2).eq.g%crop_names(vegnum)) then
                found = .true.
@@ -3740,11 +3742,12 @@ c      eqr0  = 0.d0
       end subroutine
 
 *     ===========================================================
-      subroutine apswim_OnNewCrop (variant)
+      subroutine apswim_OnNewCrop (variant, fromID)
 *     ===========================================================
 
       implicit none
       integer, intent(in) :: variant
+      integer, intent(in) :: fromID
 
 *+  Purpose
 *       Register presence of a new crop
@@ -3763,7 +3766,8 @@ c      eqr0  = 0.d0
       ! See if we know of it
       senderIdx = 0
       do 100 i = 1, g%Num_Crops
-        if (g%crop_owners(i).eq.new_crop%sender)
+        if (g%crop_owners(i).eq.new_crop%sender .and.
+     :      g%crop_names(i).eq.new_crop%crop_type)
      :            senderIdx = i
  100  continue
 
@@ -3778,12 +3782,13 @@ c      eqr0  = 0.d0
          else
             g%crop_owners(g%Num_Crops) = new_crop%sender
             g%crop_names(g%Num_Crops) = new_crop%crop_type
+            g%crop_owner_id(g%Num_Crops) = fromID
             g%crop_in(g%Num_Crops) = .true.
 
           ! Read Component Specific Constants
           ! ---------------------------------
-            call apswim_assign_crop_params ()
-            call apswim_register_crop_outputs()
+            call apswim_assign_crop_params (g%Num_Crops)
+            call apswim_register_crop_outputs(g%Num_Crops)
          
          endif
       else
@@ -3827,7 +3832,7 @@ c      eqr0  = 0.d0
       end subroutine
 
 * ====================================================================
-       subroutine apswim_register_crop_outputs ()
+       subroutine apswim_register_crop_outputs (vegnum)
 * ====================================================================
 
       implicit none
@@ -3843,16 +3848,27 @@ c      eqr0  = 0.d0
 
 *- Implementation Section ----------------------------------
 
-      do vegnum = 1, g%num_crops
+            variable_name = 'uptake_water_'//trim(g%crop_names(vegnum))
+            id = add_reg (respondToGetReg, Variable_name,
+     :                       DoubleArrayTypeDDML, 'mm', '')
+
          do solnum = 1, p%num_solutes
-
-            variable_name = 'uptake_'//trim(p%solute_names(solnum))
-     :                       //'_'//trim(g%crop_names(vegnum))
-            id = Add_Registration (respondToGetSetReg, Variable_name,
-     :                       DoubleArrayTypeDDML, ' ')
-
+            variable_name = 'supply_'//trim(p%solute_names(solnum))
+     :               //'_'//trim(g%crop_names(vegnum))
+            id = add_reg (respondToGetReg, Variable_name,
+     :                       DoubleArrayTypeDDML, 'mm', '')
          end do
-      end do
+
+!      do vegnum = 1, g%num_crops
+!         do solnum = 1, p%num_solutes
+
+!            variable_name = 'uptake_'//trim(p%solute_names(solnum))
+!     :                       //'_'//trim(g%crop_names(vegnum))
+!            id = Add_Registration (respondToGetSetReg, Variable_name,
+!     :                       DoubleArrayTypeDDML, ' ')
+
+!         end do
+!      end do
 
       return
       end subroutine
@@ -3875,44 +3891,38 @@ c      eqr0  = 0.d0
             DDML = '<type name="solute_flow" array="T"'
      :           //' kind="double" unit="kg/ha"/>'
             variable_name = 'flow_'//trim(p%solute_names(solnum))
-            id = Add_Registration (respondToGetSetReg, Variable_name,
+            id = Add_Registration (respondToGetReg, Variable_name,
      :                       DDML, ' ')
 
             DDML = '<type name="solute_leach" array="F"'
      :           //' kind="double" unit="kg/ha"/>'
             variable_name = 'leach_'//trim(p%solute_names(solnum))
-            id = Add_Registration (respondToGetSetReg, Variable_name,
+            id = Add_Registration (respondToGetReg, Variable_name,
      :                       DDML, ' ')
 
             DDML = '<type name="solute_exco" array="T"'
      :           //' kind="double" unit=""/>'
             variable_name = 'exco_'//trim(p%solute_names(solnum))
             id = Add_Registration (respondToGetSetReg, Variable_name,
-     :                       DoubleArrayTypeDDML, ' ')
-
-            DDML = '<type name="solute_dis" array="T"'
-     :           //' kind="double" unit=""/>'
-            variable_name = 'dis_'//trim(p%solute_names(solnum))
-            id = Add_Registration (respondToGetSetReg, Variable_name,
      :                       DDML, ' ')
 
             DDML = '<type name="conc_water_solute" array="T"'
      :           //' kind="double" unit="ppm"/>'
             variable_name = 'conc_water_'//trim(p%solute_names(solnum))
-            id = Add_Registration (respondToGetSetReg, Variable_name,
+            id = Add_Registration (respondToGetReg, Variable_name,
      :                       DDML, ' ')
 
             DDML = '<type name="conc_adsorb_solute" array="T"'
      :           //' kind="double" unit="ppm"/>'
             variable_name = 'conc_adsorb_'//trim(p%solute_names(solnum))
-            id = Add_Registration (respondToGetSetReg, Variable_name,
+            id = Add_Registration (respondToGetReg, Variable_name,
      :                       DDML, ' ')
 
             DDML = '<type name="subsurface_drain_solute" array="F"'
      :           //' kind="double" unit="kg/ha"/>'
             variable_name = 'subsurface_drain_'//
      :                          trim(p%solute_names(solnum))
-            id = Add_Registration (respondToGetSetReg, Variable_name,
+            id = Add_Registration (respondToGetReg, Variable_name,
      :                       DDML, ' ')
 
       end do
@@ -3963,8 +3973,9 @@ c      eqr0  = 0.d0
          do 10 layer = 1,M+1
             rlv_l(layer) = 0d0
    10    continue
-         OK= component_name_to_id(g%crop_owners(vegnum),id)
-
+   
+         id = g%crop_owner_id(vegnum)
+!         OK= component_name_to_id(g%crop_owners(vegnum),id)
                   
          call get_double_array(
      :           id,
@@ -4169,7 +4180,7 @@ c      eqr0  = 0.d0
 cnh NOTE - intensity is not part of the official design !!!!?
       call collect_double_var_optional (
      :                         'intensity'
-     :                        ,'(mm/g%h)'
+     :                        ,'(mm/h)'
      :                        ,intensity
      :                        ,numvals_int
      :                        ,0.d0
@@ -4636,7 +4647,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
       double precision amount          ! amount of rainfall (mm)
       character time*6                 ! time of rainfall (hh:mm)
       double precision duration        ! duration of rainfall (min)
-      double precision intensity       ! intensity of rainfall (mm/g%h)
+      double precision intensity       ! intensity of rainfall (mm/h)
       integer time_of_day              ! time of g%day (min)
       double precision time_mins       ! time of rainfall (min)
       integer owner_module             ! id of module providing info.
@@ -7814,7 +7825,7 @@ c     :                          ,'runoff')
       elseif (eventID .eq. id%new_solute) then
          call apswim_on_new_solute(variant)
       elseif (eventID .eq. id%newcrop) then
-         call apswim_OnNewCrop(variant)
+         call apswim_OnNewCrop(variant, fromID)
       elseif (eventID .eq. id%cropending) then
          call apswim_OnCropEnding(variant)
       elseif (eventID .eq. id%prenewmet) then
