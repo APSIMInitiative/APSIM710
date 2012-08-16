@@ -68,7 +68,7 @@ class Bob
                  
                  // Set some environment variables.
                  System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
-                 System.Environment.SetEnvironmentVariable("PatchFileName", Path.GetFileNameNoExtension(PatchFileName));
+                 System.Environment.SetEnvironmentVariable("PatchFileName", Path.GetFileNameWithoutExtension(PatchFileName));
                  System.Environment.SetEnvironmentVariable("PatchFileNameFull", PatchFileName);
                  
                  // Extract the patch.
