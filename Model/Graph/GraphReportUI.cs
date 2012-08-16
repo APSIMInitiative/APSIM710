@@ -150,12 +150,19 @@ namespace Graph
             if (C is GraphUI)
                {
                GraphUI Graph = (GraphUI)C;
+               // There is a TeeChart bug which causes DrawToBitmap to fail
+               // if double-buffering is in use. For a bit more information, see
+               // http://www.teechart.net/support/viewtopic.php?f=4&t=7008
+               Graph.Chart.Graphics3D.UseBuffer = false;
                Graph.Chart.DrawToBitmap(b, DrawRectangle);
+               Graph.Chart.Graphics3D.UseBuffer = true;
                }
             if (C is GraphUI2)
                {
                GraphUI2 Graph = (GraphUI2)C;
+               Graph.Chart.Graphics3D.UseBuffer = false;
                Graph.Chart.DrawToBitmap(b, DrawRectangle);
+               Graph.Chart.Graphics3D.UseBuffer = true;
                }
 
             Point P = new Point((int)(MarginBounds.Width * XProportion),
