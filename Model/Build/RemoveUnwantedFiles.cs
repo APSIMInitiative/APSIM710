@@ -42,7 +42,7 @@ class Program
                         string path = Path.Combine(directory, relativePath);
                         if (Directory.Exists(path))
                             Directory.Delete(path, true);
-                        else if (File.Exists(path))
+                        else if (File.Exists(path) && Path.GetFileName(path) != "Bootstrap.xml")
                         {
 						    try
 							{
