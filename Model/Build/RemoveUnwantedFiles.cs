@@ -40,9 +40,15 @@ class Program
                         string relativePath = line.Substring(8);
 
                         string path = Path.Combine(directory, relativePath);
+						
+						bool IsJobSchedulerExe = Path.GetExtension(path) == ".exe" && 
+						                         Path.GetFileName(path).Contains("JobScheduler"); 
+						
                         if (Directory.Exists(path))
                             Directory.Delete(path, true);
-                        else if (File.Exists(path) && Path.GetFileName(path) != "Bootstrap.xml")
+                        else if (File.Exists(path) && Path.GetFileName(path) != "Bootstrap.xml" &&
+						         !IsJobSchedulerExe)
+						
                         {
 						    try
 							{
