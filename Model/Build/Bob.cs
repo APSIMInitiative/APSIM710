@@ -20,7 +20,7 @@ class Bob
    ///    directory is the APSIM directory.
    /// This script provides 3 environment variables to the child script.
    ///    JobID - the ID in the builds database of the job being run.
-   ///    PatchFilename - the file name part of the patch .zip file (no path).
+   ///    PatchFilename - the file name part of the patch .zip file (no path or extension).
    ///    PatchFilenameFull - the full name of the patch .zip file.
    /// </summary>
    static int Main(string[] args)
@@ -68,7 +68,7 @@ class Bob
                  
                  // Set some environment variables.
                  System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
-                 System.Environment.SetEnvironmentVariable("PatchFileName", Path.GetFileName(PatchFileName));
+                 System.Environment.SetEnvironmentVariable("PatchFileName", Path.GetFileNameNoExtension(PatchFileName));
                  System.Environment.SetEnvironmentVariable("PatchFileNameFull", PatchFileName);
                  
                  // Extract the patch.
