@@ -15,6 +15,7 @@ call %APSIM%\Model\Build\RunMake.bat %APSIM%\Model\RunTime                      
 if ERRORLEVEL 1 goto CleanUp
 
 echo ----- Compile the JobScheduler -----                                          >> %APSIM%\Model\Build\Bootstrap.xml
+del /Q %APSIM%\Model\*.exe
 call %APSIM%\Model\Build\RunMake.bat %APSIM%\Model\JobScheduler                    >> %APSIM%\Model\Build\Bootstrap.xml
 if ERRORLEVEL 1 goto CleanUp
 
