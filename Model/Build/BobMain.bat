@@ -10,27 +10,6 @@ path > %TEMP%\SavedPath.bat
 rem ----- Setup the Visual Studio 2010 compiler tools
 if "%LIBPATH%" == "" call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat"
 
-rem ----- Setup the bootstrap.xml
-echo ^<StdOut^>^<StdOut^>                                                           > %TEMP%\Bootstrap.xml
-
-echo ----- SVN revert -----                                                        >> %TEMP%\Bootstrap.xml
-svn.exe revert -R %APSIM%                                                          >> %TEMP%\Bootstrap.xml
-
-echo ----- SVN update -----                                                        >> %TEMP%\Bootstrap.xml
-svn.exe update %APSIM%                                                             >> %TEMP%\Bootstrap.xml
-
-echo ----- Remove unwanted files -----                                             >> %TEMP%\Bootstrap.xml
-cd %APSIM%\Model
-RunTime\cscs Build\RemoveUnwantedFiles.cs %APSIM%                                  >> %TEMP%\Bootstrap.xml
-if ERRORLEVEL 1 goto CleanUp 
-
-rem ------------------------------------------------------------------------
-rem At this point the development tree will be clean
-rem ------------------------------------------------------------------------
-
-echo ----- Copy the Bootstrap.xml file to the build directory                      >> %TEMP%\Bootstrap.xml
-copy %TEMP%\Bootstrap.xml %APSIM%\Model\Build
-
 echo ----- Install runtimes         -----                                          >> %APSIM%\Model\Build\Bootstrap.xml
 call %APSIM%\Model\Build\RunMake.bat %APSIM%\Model\RunTime                         >> %APSIM%\Model\Build\Bootstrap.xml
 if ERRORLEVEL 1 goto CleanUp
@@ -47,9 +26,6 @@ rem a parent's environment. Instead, it has writen the values to stdout.
 rem The for loop below reads the values from stdout
 rem and creates environment variables.
 rem ------------------------------------------------------------------------
-echo ----- JobSchedulerWaitForPatch -----                                          >> %APSIM%\Model\Build\Bootstrap.xml
-for /f "tokens=1,2" %%i in ('%APSIM%\Model\JobSchedulerWaitForPatch.exe C:\Upload') do set %%i=%%j
-if ERRORLEVEL 1 goto CleanUp
 echo Patch file: %PatchFileName%
 
 echo ----- JobSchedulerApplyPatch -----                                            >> %APSIM%\Model\Build\Bootstrap.xml
