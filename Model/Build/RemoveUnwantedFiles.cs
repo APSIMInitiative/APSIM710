@@ -44,14 +44,12 @@ class Program
                             Directory.Delete(path, true);
                         else if (File.Exists(path))
                         {
-                            if ((File.GetAttributes(path) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
-                            {
-                                // do nothing
-                            }
-                            else
-                            {
+						    try
+							{
                                 File.Delete(path);
-                            }
+							}
+							catch (Exception)
+							{ }							
                         }
                     }
                 }
