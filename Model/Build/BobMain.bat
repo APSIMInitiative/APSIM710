@@ -10,7 +10,7 @@ path > %TEMP%\SavedPath.bat
 rem ----- Setup the Visual Studio 2010 compiler tools
 if "%LIBPATH%" == "" call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat"
 
-echo ----- Install runtimes         -----                                          >> %APSIM%\Model\Build\Bootstrap.xml
+echo ----- Install runtimes         -----                                          > %APSIM%\Model\Build\Bootstrap.xml
 call %APSIM%\Model\Build\RunMake.bat %APSIM%\Model\RunTime                         >> %APSIM%\Model\Build\Bootstrap.xml
 if ERRORLEVEL 1 goto CleanUp
 
