@@ -18,9 +18,10 @@ class Bob
    /// This is Bob's main program. It takes a single argument being the name of a child script
    ///    to execute once a new patch has been extracted. It assumes that the current working
    ///    directory is the APSIM directory.
-   /// This script provides two environment variables to the child script.
+   /// This script provides 3 environment variables to the child script.
    ///    JobID - the ID in the builds database of the job being run.
-   ///    PatchFilename - the full name of the patch .zip file.
+   ///    PatchFilename - the file name part of the patch .zip file (no path).
+   ///    PatchFilenameFull - the full name of the patch .zip file.
    /// </summary>
    static int Main(string[] args)
    {
@@ -67,7 +68,8 @@ class Bob
                  
                  // Set some environment variables.
                  System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
-                 System.Environment.SetEnvironmentVariable("PatchFileName", PatchFileName);
+                 System.Environment.SetEnvironmentVariable("PatchFileName", Path.GetFileName(PatchFileName));
+                 System.Environment.SetEnvironmentVariable("PatchFileNameFull", PatchFileName);
                  
                  // Extract the patch.
                  Console.WriteLine("Extracting patch: " + PatchFileName);
