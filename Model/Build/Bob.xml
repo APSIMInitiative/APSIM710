@@ -29,15 +29,16 @@
 		Get the APSIM directory up to date and clean.
 		-->
 
-		<Job name="Apply patch">
+		<Job name="Copy RunTime DLL's into model directory">
+			<WorkingDirectory>%Apsim%/Model/RunTime</WorkingDirectory>
+			<CommandLine>..\Build\RunMake.bat %Apsim%/Model/RunTime</CommandLine>
+		</Job>
+		
+		<Job name="Apply patch"  wait="yes">
 			<WorkingDirectory>%apsim%\Model</WorkingDirectory>
 			<CommandLine>JobSchedulerApplyPatch.exe %APSIM% "C:\inetpub\wwwroot\Files\Upload\%PatchFileName%.zip" </CommandLine>
 		</Job>
 	
-		<Job name="Copy RunTime DLL's into model directory" wait="yes">
-			<WorkingDirectory>%Apsim%/Model/RunTime</WorkingDirectory>
-			<CommandLine>..\Build\RunMake.bat %Apsim%/Model/RunTime</CommandLine>
-		</Job>
 		<Job name="Remove all .out and .sum files from Examples folder" wait="yes">
 			<WorkingDirectory>%Apsim%\Examples</WorkingDirectory>
 			<CommandLine>%Apsim%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>
