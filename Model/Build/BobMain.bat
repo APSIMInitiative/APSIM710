@@ -10,6 +10,21 @@ path > %TEMP%\SavedPath.bat
 rem ----- Setup the Visual Studio 2010 compiler tools
 if "%LIBPATH%" == "" call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat"
 
+echo ----- SVN revert -----                                                        
+svn.exe revert -R %APSIM%                                                          
+
+echo ----- SVN update -----                                                        
+svn.exe update %APSIM%                                                             
+
+echo ----- Remove unwanted files -----                                             
+cd %APSIM%\Model
+RunTime\cscs Build\RemoveUnwantedFiles.cs %APSIM%                                  
+if ERRORLEVEL 1 goto CleanUp 
+
+rem ------------------------------------------------------------------------
+rem At this point the development tree will be clean
+rem ------------------------------------------------------------------------
+
 echo ----- Install runtimes         -----                                          > %APSIM%\Model\Build\Bootstrap.xml
 call %APSIM%\Model\Build\RunMake.bat %APSIM%\Model\RunTime                         >> %APSIM%\Model\Build\Bootstrap.xml
 if ERRORLEVEL 1 goto CleanUp
