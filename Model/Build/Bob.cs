@@ -48,6 +48,24 @@ class Bob
                  string PatchFileName = DBGet("PatchFileName", Connection, JobID).ToString();
                  PatchFileName = PatchFileName.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
                   
+				if (System.Environment.MachineName.ToUpper() != "BOB")
+				{
+				   string NowString = DateTime.Now.ToString("yyyy-MM-dd hh:mm tt");
+				   DBUpdate("StartTime", NowString, Connection, JobID);
+				}
+
+				// Update the builds database.
+				DBUpdate("Status", "Running", Connection, JobID);
+				
+				// Check the previous job to see if it has stalled. If so then set its 
+				// status accordingly. Otherwise we get multiple "Running" status'.
+				if (JobID > 0)
+				{
+				   string PreviousStatus = DBGet("Status", Connection, JobID-1).ToString();
+				   if (PreviousStatus == "Running")
+					  DBUpdate("Status", "Aborted", Connection, JobID-1);
+				}				  
+				  
                  if (PatchFileName.Contains("BobDean"))
                  {
                     // Set some environment variables.
@@ -73,24 +91,7 @@ class Bob
                  }
                  else 
                  {
-                    if (System.Environment.MachineName.ToUpper() != "BOB")
-                    {
-                       string NowString = DateTime.Now.ToString("yyyy-MM-dd hh:mm tt");
-                       DBUpdate("StartTime", NowString, Connection, JobID);
-                    }
-
-                    // Update the builds database.
-                    DBUpdate("Status", "Running", Connection, JobID);
-                    
-                    // Check the previous job to see if it has stalled. If so then set its 
-                    // status accordingly. Otherwise we get multiple "Running" status'.
-                    if (JobID > 0)
-                    {
-                       string PreviousStatus = DBGet("Status", Connection, JobID-1).ToString();
-                       if (PreviousStatus == "Running")
-                          DBUpdate("Status", "Aborted", Connection, JobID-1);
-                    }
-                    
+                   
                     // Set some environment variables.
                     System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
                     System.Environment.SetEnvironmentVariable("PatchFileName", Path.GetFileNameWithoutExtension(PatchFileName));
