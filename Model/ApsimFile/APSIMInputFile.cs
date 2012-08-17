@@ -341,8 +341,14 @@ namespace ApsimFile
             StoreRowInData(In, Words, Data, true);
             try
             {
-                In.Seek(-1000, SeekOrigin.End);
-                In.ReadLine(); // throw away partial line.
+                In.Seek(0, SeekOrigin.End);
+                if (In.Position >= 1000)
+                {
+                    In.Seek(-1000, SeekOrigin.End);
+                    In.ReadLine(); // throw away partial line.
+                }
+                else
+                    In.Seek(SavedPosition, SeekOrigin.Begin);
             }
             catch (Exception)
             {

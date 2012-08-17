@@ -134,43 +134,37 @@ namespace Graph
          }
 
       public override void PrintPage(Rectangle MarginBounds, Graphics g)
-         {
-         foreach (Control C in Panel.Controls)
-            {
-            double XProportion = C.Location.X * 1.0 / Panel.Size.Width;
-            double YProportion = C.Location.Y * 1.0 / Panel.Size.Height;
-            double WidthProportion = C.Size.Width * 1.0 / Panel.Size.Width;
-            double HeightProportion = C.Size.Height * 1.0 / Panel.Size.Height;
-            int W = (int)(MarginBounds.Width * WidthProportion);
-            int H = (int)(MarginBounds.Height * HeightProportion);
-            Rectangle DrawRectangle = new Rectangle(0, 0, W, H);
+      {
+          foreach (Control C in Panel.Controls)
+          {
+              double XProportion = C.Location.X * 1.0 / Panel.Size.Width;
+              double YProportion = C.Location.Y * 1.0 / Panel.Size.Height;
+              double WidthProportion = C.Size.Width * 1.0 / Panel.Size.Width;
+              double HeightProportion = C.Size.Height * 1.0 / Panel.Size.Height;
+              int W = (int)(MarginBounds.Width * WidthProportion);
+              int H = (int)(MarginBounds.Height * HeightProportion);
 
-            Bitmap b = new Bitmap(W, H);
+              Steema.TeeChart.TChart chart = null;
 
-            if (C is GraphUI)
-               {
-               GraphUI Graph = (GraphUI)C;
-               // There is a TeeChart bug which causes DrawToBitmap to fail
-               // if double-buffering is in use. For a bit more information, see
-               // http://www.teechart.net/support/viewtopic.php?f=4&t=7008
-               Graph.Chart.Graphics3D.UseBuffer = false;
-               Graph.Chart.DrawToBitmap(b, DrawRectangle);
-               Graph.Chart.Graphics3D.UseBuffer = true;
-               }
-            if (C is GraphUI2)
-               {
-               GraphUI2 Graph = (GraphUI2)C;
-               Graph.Chart.Graphics3D.UseBuffer = false;
-               Graph.Chart.DrawToBitmap(b, DrawRectangle);
-               Graph.Chart.Graphics3D.UseBuffer = true;
-               }
+              if (C is GraphUI)
+                  chart = (C as GraphUI).Chart;
+              else if (C is GraphUI2)
+                  chart = (C as GraphUI2).Chart;
 
-            Point P = new Point((int)(MarginBounds.Width * XProportion),
-                                (int)(MarginBounds.Height * YProportion));
-            g.DrawImage(b, P);
-            }
-         }
-
+              if (chart != null)
+              {
+                  Stream stream = new MemoryStream();
+                  Steema.TeeChart.Export.ImageExportFormat image = chart.Export.Image.PNG;
+                  image.Width = W;
+                  image.Height = H;
+                  image.Save(stream);
+                  Image img = Image.FromStream(stream);
+                  Point P = new Point(MarginBounds.Left + (int)(MarginBounds.Width * XProportion),
+                                      MarginBounds.Top + (int)(MarginBounds.Height * YProportion));
+                  g.DrawImage(img, P);
+              }
+          }
+      }
 
       }
    }

@@ -33,7 +33,7 @@ public class RunExternalJob : Job
       lock (this)
          {
          // Permanently stop the job.
-         if (_P != null && !_P.IsDone)
+         if (_P != null && !_P.IsDone && !_P.process.HasExited)
             {
             try
                {
