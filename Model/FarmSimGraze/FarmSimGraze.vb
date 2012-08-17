@@ -95,7 +95,7 @@ Public Class FarmSimGraze
 
       FSG_Crop2Graze = Crop2Graze
 
-      SUBeefPercentage = (UI_BeefPercentage * 6.0) / (UI_BeefPercentage * 6.0 + (100 - UI_BeefPercentage))
+        SUBeefPercentage = CSng((UI_BeefPercentage * 6.0) / (UI_BeefPercentage * 6.0 + (100 - UI_BeefPercentage)))
       If UI_FarmType.ToLower = "dairy" Then
          AnimalType = "DairyCow"
          For i As Integer = 0 To 13
@@ -334,12 +334,12 @@ Public Class FarmSimGraze
 
       DungData.crop_type = "RuminantDung_PastureFed"
       DungData.dm_type = New String() {"RuminantDung_PastureFed"}
-      DungData.dlt_crop_dm = New Single() {DungN + DungDM}
-      DungData.dlt_dm_n = New Single() {DungN}
-      DungData.dlt_dm_p = New Single() {DungDM * (5.5 / 256.0)} 'Source: McDowell and Stewart (2005) Phosphorus in Fresh and Dry Dung of Grazing Dairy Cattle, Deer, and Sheep, J. Environ. Qual. 34:598-607 (2005). Table 1.
+        DungData.dlt_crop_dm = New Single() {CSng(DungN + DungDM)}
+        DungData.dlt_dm_n = New Single() {CSng(DungN)}
+        DungData.dlt_dm_p = New Single() {CSng(DungDM * (5.5 / 256.0))} 'Source: McDowell and Stewart (2005) Phosphorus in Fresh and Dry Dung of Grazing Dairy Cattle, Deer, and Sheep, J. Environ. Qual. 34:598-607 (2005). Table 1.
       DungData.fraction_to_residue = New Single() {1.0}
 
-        Dim SOM As Component = MyPaddock.LinkByType("surfaceom")
+        Dim SOM As Component = CType(MyPaddock.LinkByType("surfaceom"), Component)
         SOM.Publish("BiomassRemoved", DungData)
 
    End Sub

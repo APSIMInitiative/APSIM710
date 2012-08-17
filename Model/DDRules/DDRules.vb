@@ -804,41 +804,41 @@ Public Class DDRules
     Private Sub PrepareOutputs()
         myFarm.PrepareOutputs()
 
-        DM_Eaten = myFarm.DM_Eaten
-        DM_Eaten_Pasture = myFarm.DM_Eaten_Pasture
-        DM_Eaten_Silage = myFarm.DM_Eaten_Silage
-        DM_Eaten_Supplement = myFarm.DM_Eaten_Supplement
-        ME_Demand = myFarm.ME_Demand
-        ME_Eaten = myFarm.ME_Eaten
-        ME_Eaten_Pasture = myFarm.ME_Eaten_Pasture
-        ME_Eaten_Silage = myFarm.ME_Eaten_Silage
-        ME_Eaten_Supplement = myFarm.ME_Eaten_Supplement
-        N_Eaten = myFarm.N_Eaten
-        N_Eaten_Pasture = myFarm.N_Eaten_Pasture
-        N_Eaten_Silage = myFarm.N_Eaten_Silage
-        N_Eaten_Supplement = myFarm.N_Eaten_Supplement
-        N_to_milk = myFarm.N_to_milk
-        N_to_BC = myFarm.N_to_BC
-        N_to_feaces = myFarm.N_to_feaces
-        DM_to_feaces = myFarm.DM_to_feaces
-        N_to_urine = myFarm.N_to_urine
-        N_Balance = myFarm.N_Balance
-        N_Out = myFarm.N_Out
+        DM_Eaten = CSng(myFarm.DM_Eaten)
+        DM_Eaten_Pasture = CSng(myFarm.DM_Eaten_Pasture)
+        DM_Eaten_Silage = CSng(myFarm.DM_Eaten_Silage)
+        DM_Eaten_Supplement = CSng(myFarm.DM_Eaten_Supplement)
+        ME_Demand = CSng(myFarm.ME_Demand)
+        ME_Eaten = CSng(myFarm.ME_Eaten)
+        ME_Eaten_Pasture = CSng(myFarm.ME_Eaten_Pasture)
+        ME_Eaten_Silage = CSng(myFarm.ME_Eaten_Silage)
+        ME_Eaten_Supplement = CSng(myFarm.ME_Eaten_Supplement)
+        N_Eaten = CSng(myFarm.N_Eaten)
+        N_Eaten_Pasture = CSng(myFarm.N_Eaten_Pasture)
+        N_Eaten_Silage = CSng(myFarm.N_Eaten_Silage)
+        N_Eaten_Supplement = CSng(myFarm.N_Eaten_Supplement)
+        N_to_milk = CSng(myFarm.N_to_milk)
+        N_to_BC = CSng(myFarm.N_to_BC)
+        N_to_feaces = CSng(myFarm.N_to_feaces)
+        DM_to_feaces = CSng(myFarm.DM_to_feaces)
+        N_to_urine = CSng(myFarm.N_to_urine)
+        N_Balance = CSng(myFarm.N_Balance)
+        N_Out = CSng(myFarm.N_Out)
 
-        ME_Demand_Cow = myHerd.ME_Demand_Cow()
-        ME_Eaten_Cow = myHerd.ME_Eaten_Cow()
-        ME_Eaten_Pasture_Cow = myHerd.ME_Eaten_Pasture_Cow()
-        ME_Eaten_Supplement_Cow = myHerd.ME_Eaten_Supplement_Cow()
-        DM_Eaten_Cow = myHerd.DM_Eaten_Cow()
-        DM_Eaten_Pasture_Cow = myHerd.DM_Eaten_Pasture_Cow()
-        DM_Eaten_Supplement_Cow = myHerd.DM_Eaten_Supplement_Cow()
-        N_Eaten_Cow = myHerd.N_Eaten_Cow()
-        N_Eaten_Pasture_Cow = myHerd.N_Eaten_Pasture_Cow()
-        N_Eaten_Supplement_Cow = myHerd.N_Eaten_Supplement_Cow()
-        N_to_milk_Cow = myHerd.N_to_milk_Cow()
-        N_to_BC_Cow = myHerd.N_to_BC_Cow()
-        N_to_feaces_Cow = myHerd.N_to_feaces_Cow()
-        N_to_urine_Cow = myHerd.N_to_urine_Cow()
+        ME_Demand_Cow = CSng(myHerd.ME_Demand_Cow())
+        ME_Eaten_Cow = CSng(myHerd.ME_Eaten_Cow())
+        ME_Eaten_Pasture_Cow = CSng(myHerd.ME_Eaten_Pasture_Cow())
+        ME_Eaten_Supplement_Cow = CSng(myHerd.ME_Eaten_Supplement_Cow())
+        DM_Eaten_Cow = CSng(myHerd.DM_Eaten_Cow())
+        DM_Eaten_Pasture_Cow = CSng(myHerd.DM_Eaten_Pasture_Cow())
+        DM_Eaten_Supplement_Cow = CSng(myHerd.DM_Eaten_Supplement_Cow())
+        N_Eaten_Cow = CSng(myHerd.N_Eaten_Cow())
+        N_Eaten_Pasture_Cow = CSng(myHerd.N_Eaten_Pasture_Cow())
+        N_Eaten_Supplement_Cow = CSng(myHerd.N_Eaten_Supplement_Cow())
+        N_to_milk_Cow = CSng(myHerd.N_to_milk_Cow())
+        N_to_BC_Cow = CSng(myHerd.N_to_BC_Cow())
+        N_to_feaces_Cow = CSng(myHerd.N_to_feaces_Cow())
+        N_to_urine_Cow = CSng(myHerd.N_to_urine_Cow())
     End Sub
 
     '<Output()> <Units("MJME/ha")> Public ME_Demand As Single

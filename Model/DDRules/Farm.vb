@@ -232,7 +232,7 @@ Public Class Farm
         PaddockQueue = New Queue(Of PaddockWrapper)
         For Each Paddock As PaddockWrapper In myPaddocks
             If (Not Paddock.Closed And Paddock.Grazable) Then
-                Paddock.GrazingCounter = Paddock.Area * myDayPerHa
+                Paddock.GrazingCounter = CInt(Paddock.Area * myDayPerHa)
                 PaddockQueue.Enqueue(Paddock) 'add all paddock to the queue (including close ones)
             End If
         Next
@@ -251,7 +251,7 @@ Public Class Farm
         'Need to keep tabs on paddocks currently being grazed i.e not down to residual or for holding long 
         For Each pdk As PaddockWrapper In myPaddocks
             If (pdk.BeingGrazed()) Then
-                pdk.GrazingCounter = Math.Min(pdk.GrazingCounter, pdk.Area * myDayPerHa)
+                pdk.GrazingCounter = CInt(Math.Min(pdk.GrazingCounter, pdk.Area * myDayPerHa))
                 TempList.Add(pdk)
                 'UnallocatedArea -= pdk.Area 'to count or not to count...that is the question
             End If
@@ -288,7 +288,7 @@ Public Class Farm
             'if paddock isn't...closed for silage cutting, is able to be grazed and not already added above then
             If (Not pdk.Closed And pdk.Grazable And Not PaddockQueue.Contains(pdk)) Then
                 UnallocatedArea -= pdk.Area
-                pdk.GrazingCounter = pdk.Area * myDayPerHa
+                pdk.GrazingCounter = CInt(pdk.Area * myDayPerHa)
                 PaddockQueue.Enqueue(pdk)
             End If
         Next
@@ -329,7 +329,7 @@ Public Class Farm
 
     'This function cuts any paddock of the required residual. This can leave the farm in deficit...but under normal circumstances it will be small
     Public Function CutToFeedWedge(ByVal Optimum_residual As Integer, ByVal Rotation As Integer, Optional ByVal Stocking_rate As Double = 3.0, Optional ByVal Intake As Double = 18.0) As BioMass '
-        Dim pre As Integer = CalcPregrazingCoverTarget(Stocking_rate, Intake, Rotation, Optimum_residual)
+        Dim pre As Integer = CInt(CalcPregrazingCoverTarget(Stocking_rate, Intake, Rotation, Optimum_residual))
         Dim interval As Double = (pre - Optimum_residual) / (myPaddocks.Count)
         Dim i As Integer = 0
         Dim result As BioMass = New BioMass()
@@ -341,7 +341,7 @@ Public Class Farm
         myPaddocks.Sort(PaddockWrapper.getSortListByCover(True))
         For Each pdk As PaddockWrapper In myPaddocks
             If Not (myLanewayPaddocks.Contains(pdk)) Then 'don't include laneway paddocks
-                Dim cutResidual As Integer = Optimum_residual + (i * interval)
+                Dim cutResidual As Integer = CInt(Optimum_residual + (i * interval))
                 Dim temp As BioMass = pdk.Harvest(cutResidual, SilageCutWastage)
                 result = result.Add(temp)
                 i += 1
@@ -895,7 +895,7 @@ Public Class Farm
             Dim result(myPaddocks.Count - 1) As Single
             'sort by index here
             For i As Integer = 0 To (myPaddocks.Count - 1)
-                result(i) = myPaddocks(i).ME_Eaten()
+                result(i) = CSng(myPaddocks(i).ME_Eaten())
             Next
             Return result
         End Get
@@ -918,7 +918,7 @@ Public Class Farm
             Dim result(myPaddocks.Count - 1) As Single
             'sort by index
             For i As Integer = 0 To (myPaddocks.Count - 1)
-                result(i) = myPaddocks(i).N_Eaten()
+                result(i) = CSng(myPaddocks(i).N_Eaten())
             Next
             Return result
         End Get
@@ -979,7 +979,7 @@ Public Class Farm
         Dim tmp As PaddockWrapper
 
         While i < list.Length
-            j = Rnd(list.Length)
+            j = CInt(Rnd(list.Length))
             tmp = list(i)
             list(i) = list(j)
             list(j) = tmp
@@ -1260,7 +1260,7 @@ Public Class Farm
                 Next
                 myEffluentIrrigator.Irrigate(myEffluentPond, myEffluentPaddocks)
             Else
-                Dim i As Integer = Math.Round(myEffluentPaddocksPercentage * myPaddocks.Count)
+                Dim i As Integer = CInt(Math.Round(myEffluentPaddocksPercentage * myPaddocks.Count))
                 aList = myPaddocks.GetRange(0, i)
                 Console.Out.WriteLine("Spraying dairy shed effluent to " + i.ToString() + " paddocks")
                 myEffluentIrrigator.Irrigate(myEffluentPond, aList)

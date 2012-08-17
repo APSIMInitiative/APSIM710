@@ -737,12 +737,12 @@ namespace outputComp
         public virtual void writeValues()
         {
         }
-        ////==============================================================================
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <param name="currTime"></param>
-        ////==============================================================================
+        //==============================================================================
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="currTime"></param>
+        //==============================================================================
         public void writeVariables(TTimeValue currTime)
         {
             if (FCurrOutputTime.getDay() == 0)   //First time      
