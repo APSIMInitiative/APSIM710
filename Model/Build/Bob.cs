@@ -244,6 +244,7 @@ class Bob
          else
          {
             Log.WriteLine(Name + " [Pass]");
+            Log.WriteLine(IndentText(StdOut, 4));
          }
          return StdOut;
       }
