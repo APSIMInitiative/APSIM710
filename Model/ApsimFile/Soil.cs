@@ -227,6 +227,22 @@ namespace ApsimFile
                                 NewValues = MathUtility.Multiply(Doubles, BD.Doubles);
                             }
 
+                            else if (Units == "grav. mm/mm" && ToUnits == "mm")
+                            {
+                                Soil.Variable BD = Soil.Get(_SoilNode, "BD");
+                                BD.Units = "g/cc";
+                                BD.ThicknessMM = ThicknessMM;
+                                NewValues = MathUtility.Multiply(MathUtility.Multiply(Doubles, BD.Doubles), BD.ThicknessMM);
+                            }
+
+                            else if (Units == "mm" && ToUnits == "grav. mm/mm")
+                            {
+                                Soil.Variable BD = Soil.Get(_SoilNode, "BD");
+                                BD.Units = "g/cc";
+                                BD.ThicknessMM = ThicknessMM;
+                                NewValues = MathUtility.Divide(MathUtility.Divide(Doubles, BD.Doubles), BD.ThicknessMM);
+                            }
+
                             else if (Units == "Walkley Black %" && ToUnits == "Total %")
                                 NewValues = MathUtility.Multiply_Value(Doubles, 1.3);
 
