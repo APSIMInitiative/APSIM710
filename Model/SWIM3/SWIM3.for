@@ -26,10 +26,10 @@
       character drain_section*(*)
       parameter (drain_section = 'drain')
 
-      integer M
+      integer M                  ! Maximum number of soil layers
       parameter (M=100)
 
-      integer MV
+      integer MV                 ! Maximum number of crops
       parameter (MV=10)
 
       integer SWIMLogSize
@@ -170,10 +170,13 @@
          character crop_owners (MV)*(strsize)
          integer crop_owner_id (MV)
          logical   crop_in(MV)
+         logical demand_received(MV)
          integer num_crops
+         integer supply_event_id(MV)  ! Indicates the event number for sending CohortWaterSupply
+         
          integer          nveg
-         double precision root_radius(MV)
-         double precision root_conductance(MV)
+         double precision root_radius(0:M,MV)
+         double precision root_conductance(0:M,MV)
          double precision pep(MV)
          double precision solute_demand (MV,nsol)
          real             canopy_height(MV),cover_tot(MV)
@@ -1902,12 +1905,13 @@ c      eqr0 = 0d0
 
       do 50 vegnum = 1,MV
          g%psimin(vegnum) = 0d0
-         g%root_radius(vegnum) = 0d0
-         g%root_conductance(vegnum) = 0d0
+         g%root_radius(:,vegnum) = 0d0
+         g%root_conductance(:,vegnum) = 0d0
          g%crop_names(vegnum) = ''
          g%crop_owners(vegnum) = ''
          g%crop_owner_id(vegnum) = 0
          g%crop_in(vegnum) = .false.
+         g%supply_event_id(vegnum) = 0
    50 continue
 
       return
@@ -3442,7 +3446,7 @@ c      eqr0  = 0.d0
       num_nodes = count_of_double_vals (p%dlayer(0),M+1)
 
       do 300 i=1,MV
-         g%root_radius(i) = g%root_radius(i)/10d0
+         g%root_radius(:,i) = g%root_radius(:,i)/10d0
   300 continue
 
       return
@@ -3683,6 +3687,7 @@ c      eqr0  = 0.d0
 *+  Local Variables
        integer vegnum
        integer vegnum2
+
        logical found
 
 *- Implementation Section ----------------------------------
@@ -3701,15 +3706,15 @@ c      eqr0  = 0.d0
 !      do 200 vegnum = 1,g%num_crops
 !         found = .false.
          do 150 vegnum2 = 1, MV
-            if (c%crop_table_name(vegnum2).eq.g%crop_names(vegnum)) then
-               found = .true.
-               g%psimin(vegnum) = c%crop_table_psimin(vegnum2)
-               g%root_radius(vegnum) = c%crop_table_root_radius(vegnum2)
-     :                               /10d0 ! convert mm to cm
-               g%root_conductance(vegnum)
-     :               = c%crop_table_root_con(vegnum2)
-            else
-            endif
+           if (c%crop_table_name(vegnum2).eq.g%crop_names(vegnum)) then
+             found = .true.
+             g%psimin(vegnum) = c%crop_table_psimin(vegnum2)
+             g%root_radius(:,vegnum) = c%crop_table_root_radius(vegnum2)
+     :                             /10d0 ! convert mm to cm
+             g%root_conductance(:,vegnum)
+     :             = c%crop_table_root_con(vegnum2)
+           else
+           endif
   150    continue
 
          if (.not.found) then
@@ -3718,15 +3723,15 @@ c      eqr0  = 0.d0
      :         //g%crop_names(vegnum))
    
          do 160 vegnum2 = 1, MV
-            if (c%crop_table_name(vegnum2).eq.'default') then
-               found = .true.
-               g%psimin(vegnum) = c%crop_table_psimin(vegnum2)
-               g%root_radius(vegnum) = c%crop_table_root_radius(vegnum2)
-     :                               /10d0 ! convert mm to cm
-               g%root_conductance(vegnum)
-     :               = c%crop_table_root_con(vegnum2)
-            else
-            endif
+           if (c%crop_table_name(vegnum2).eq.'default') then
+             found = .true.
+             g%psimin(vegnum) = c%crop_table_psimin(vegnum2)
+             g%root_radius(:,vegnum) = c%crop_table_root_radius(vegnum2)
+     :                             /10d0 ! convert mm to cm
+             g%root_conductance(:,vegnum)
+     :             = c%crop_table_root_con(vegnum2)
+           else
+           endif
   160    continue
 
             if (.not.found) then
@@ -3831,6 +3836,127 @@ c      eqr0  = 0.d0
       return
       end subroutine
 
+*     ===========================================================
+      subroutine apswim_OnCohortWaterDemand (variant, fromID)
+*     ===========================================================
+
+      implicit none
+      integer, intent(in) :: variant
+      integer, intent(in) :: fromID
+
+*+  Purpose
+*       Recieve water demand of a plant cohort within a crop
+
+*+  Local Variables
+      type(CohortWaterDemandType) :: demand
+
+      integer    numvals               ! number of values read
+      integer    i
+      integer    senderIdx
+      integer    cohortIdx
+      integer    cropNo
+      double precision length
+      character  buffer*100
+*- Implementation Section ----------------------------------
+
+      call unpack_cohortwaterdemand(variant, demand)
+      
+! See whether this is the first time we've encountered this crop/cohort combination      
+      senderIdx = 0
+      cropNo = 0
+      ! Find the first entry for this crop/pasture component
+      do i = 1, g%Num_Crops
+        if (g%crop_owner_id(i).eq.fromID .and.
+     :      senderIdx.eq.0)
+     :     senderIdx = i
+        
+      ! Find the crop/cohort combination
+        if (g%crop_owner_id(i).eq.fromID .and.
+     :      g%crop_names(i).eq.demand%cohortID)
+     :         cropNo = i
+      end do
+      
+      if (senderIdx .eq. 0) then
+            call fatal_Error(ERR_Internal
+     :         ,'Unexpected CohortWaterDemand event in SWIM')
+            return
+      endif
+     
+      ! If sender is unknown, add it to the list
+      if (cropNo.eq.0) then
+
+         ! If this is the first entry for the crop, and it hasn't already been converted to
+         ! a cohort, do so now. Otherwise, add a new entry
+         if (g%supply_event_id(senderIdx).eq.0) then
+           cropNo = senderIdx
+         else
+           if (g%num_crops.ge.MV) then
+              call fatal_Error(ERR_Internal
+     :                     ,'Too many crops in the system for swim')
+              return
+           endif
+           g%Num_Crops = g%Num_Crops + 1
+           cropNo = g%Num_Crops
+           g%nveg = g%num_crops
+           g%crop_owners(cropNo) = g%crop_owners(senderIdx)
+           g%crop_owner_id(cropNo) = fromID
+           g%crop_in(cropNo) = .true.
+         endif
+         
+         g%crop_names(cropNo) = demand%cohortID
+
+         g%supply_event_id(cropNo) = add_reg_to_dest(eventReg, 
+     :                 fromID, 
+     :                 'CohortWaterSupply', 
+     :                 CohortWaterSupplyTypeDDML)
+          ! Read Component Specific Constants
+          ! ---------------------------------
+          call apswim_assign_crop_params (g%Num_Crops)
+          call apswim_register_crop_outputs(g%Num_Crops)
+         
+      endif
+
+      g%pep(cropNo) = demand%Demand / 10.0 !! convert kg/m^2 to cm
+      g%psimin(cropNo) = demand%PsiXylemMin * 1.0d4 !! convert MPa to cm (approximately; use 10197 for more precision)
+      g%demand_received(cropNo) = .true.
+
+      if (demand%num_RootSystemLayer .gt. 0) then
+        length = 0d0
+        do i = 1, demand%num_RootSystemLayer
+          !! Should check number of layers
+          !! Could also check to be sure layer depths are as expected
+          !! We also receive ll and kl. Are they of any use?
+        
+          g%rld(i-1, cropNo) = 
+     :      demand%RootSystemLayer(i)%RootLengthDensity * 1.0d-4    !! Convert m/m^3 to cm/cm^3
+          ! If a root radius is provided, use it
+          if (demand%RootSystemLayer(i)%RootRadius .gt. 0.0) then
+            g%root_radius(i-1, cropNo) = 
+     :        demand%RootSystemLayer(i)%RootRadius * 1.0d-1    !! Convert mm to cm
+          endif
+     
+          ! If a root conductance is provided, use it
+          if (demand%RootSystemLayer(i)%RootConductance .gt. 0.0) then
+            g%root_conductance(i-1, cropNo) = 
+     :         demand%RootSystemLayer(i)%RootConductance
+          endif
+          
+          length = length + 
+     :        demand%RootSystemLayer(i)%RootLengthDensity * 1.0d-6 * !! Convert m/m^3 to mm/mm^3
+     :        p%dlayer(i-1)
+        enddo
+        if ((length.gt.0.).and.
+     :      (length.lt.c%min_total_root_length)) then
+          call warning_error(Err_Internal,
+     :        'Possible error with low total RLV for '
+     :         //g%crop_owners(cropNo)//':'//g%crop_names(cropNo))
+        endif
+      endif  
+
+      return
+      end subroutine
+
+
 * ====================================================================
        subroutine apswim_register_crop_outputs (vegnum)
 * ====================================================================
@@ -3845,19 +3971,25 @@ c      eqr0  = 0.d0
       integer vegnum
       integer solnum
       character Variable_name*64
+      character cropname*50
 
 *- Implementation Section ----------------------------------
-
-            variable_name = 'uptake_water_'//trim(g%crop_names(vegnum))
-            id = add_reg (respondToGetReg, Variable_name,
+      if (g%supply_event_id(vegnum) .EQ. 0) then
+        cropname = g%crop_names(vegnum)
+      else
+        cropname = trim(g%crop_owners(vegnum))//
+     :                   '_'//trim(g%crop_names(vegnum))
+      endif
+      variable_name = 'uptake_water_'//trim(cropname)
+      id = add_reg (respondToGetReg, Variable_name,
      :                       DoubleArrayTypeDDML, 'mm', '')
 
-         do solnum = 1, p%num_solutes
-            variable_name = 'supply_'//trim(p%solute_names(solnum))
-     :               //'_'//trim(g%crop_names(vegnum))
-            id = add_reg (respondToGetReg, Variable_name,
-     :                       DoubleArrayTypeDDML, 'mm', '')
-         end do
+      do solnum = 1, p%num_solutes
+         variable_name = 'supply_'//trim(p%solute_names(solnum))
+     :            //'_'//trim(cropname)
+         id = add_reg (respondToGetReg, Variable_name,
+     :                       DoubleArrayTypeDDML, 'kg/ha', '')
+      end do
 
 !      do vegnum = 1, g%num_crops
 !         do solnum = 1, p%num_solutes
@@ -3969,54 +4101,9 @@ c      eqr0  = 0.d0
 
          if (g%crop_in(vegnum)) then
 
-         ! Initialise tempory varaibles to zero
-         do 10 layer = 1,M+1
-            rlv_l(layer) = 0d0
-   10    continue
-   
          id = g%crop_owner_id(vegnum)
-!         OK= component_name_to_id(g%crop_owners(vegnum),id)
                   
-         call get_double_array(
-     :           id,
-     :           'rlv',
-     :           p%n+1,
-     :           '(mm/mm^3)',
-     :           rlv_l,
-     :           numvals,
-     :           0d0,
-     :           1d0)
-         if (numvals.eq.0) then
-         call get_double_array (
-     :           id,
-     :           'rootlengthdensity',
-     :           p%n+1,
-     :           '(mm/mm^3)',
-     :           rlv_l,
-     :           numvals,
-     :           0d0,
-     :           1d0)
-
-
-         endif
-
-         if (numvals.gt.0) then            !  convert mm/mm^3 to cm/cc
-            length = 0d0
-            do 60 layer = 1,p%n+1            !       /
-               g%rld(layer-1,vegnum) = rlv_l(layer)*100d0
-               length = length + rlv_l(layer) * p%dlayer(layer-1)
-   60       continue
-            if ((length.gt.0.).and.
-     :          (length.lt.c%min_total_root_length)) then
-               call warning_error(Err_Internal,
-     :        'Possible error with low total RLV for '
-     :         //g%crop_names(vegnum))
-            endif
-         else
-            call fatal_error (Err_Internal,
-     :        'no rlv returned from '//g%crop_names(vegnum))
-         endif
-
+         g%demand_received(vegnum) = .false.
          call get_double_var_optional (
      :           id,
      :           'sw_demand',
@@ -4037,12 +4124,60 @@ c      eqr0  = 0.d0
 
          endif
 
+
          if (numvals.gt.0) then
             g%pep(vegnum) = g%pep(vegnum)/10d0 ! convert mm to cm
 
          else
             call fatal_error (Err_Internal,
      :        'no sw demand returned from '//g%crop_names(vegnum))
+         endif
+
+         if (.not. g%demand_received(vegnum)) then
+         ! Initialise tempory varaibles to zero
+           do 10 layer = 1,M+1
+              rlv_l(layer) = 0d0
+   10      continue
+   
+           call get_double_array(
+     :             id,
+     :             'rlv',
+     :             p%n+1,
+     :             '(mm/mm^3)',
+     :             rlv_l,
+     :             numvals,
+     :             0d0,
+     :             1d0)
+           if (numvals.eq.0) then
+           call get_double_array (
+     :             id,
+     :             'rootlengthdensity',
+     :             p%n+1,
+     :             '(mm/mm^3)',
+     :             rlv_l,
+     :             numvals,
+     :             0d0,
+     :             1d0)
+
+
+           endif
+
+           if (numvals.gt.0) then            !  convert mm/mm^3 to cm/cc
+              length = 0d0
+              do 60 layer = 1,p%n+1            !       /
+                 g%rld(layer-1,vegnum) = rlv_l(layer)*100d0
+                 length = length + rlv_l(layer) * p%dlayer(layer-1)
+   60         continue
+              if ((length.gt.0.).and.
+     :            (length.lt.c%min_total_root_length)) then
+                 call warning_error(Err_Internal,
+     :          'Possible error with low total RLV for '
+     :           //g%crop_names(vegnum))
+              endif
+           else
+              call fatal_error (Err_Internal,
+     :          'no rlv returned from '//g%crop_names(vegnum))
+           endif
          endif
 
          call get_real_var (
@@ -4399,6 +4534,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
       integer counter
       integer node
       integer vegnum
+      character cropname*50
  
 *- Implementation Section ----------------------------------
 
@@ -4407,10 +4543,13 @@ cnh NOTE - intensity is not part of the official design !!!!?
 
       vegnum = 0
       do 10 counter = 1, g%num_crops
-         if (g%crop_names(counter).eq.ucrop) then
-            vegnum = counter
+         if (g%supply_event_id(counter) .EQ. 0) then
+            cropname = g%crop_names(counter)
          else
+            cropname = trim(g%crop_owners(counter))//
+     :                   '_'//trim(g%crop_names(counter))
          endif
+         if (ucrop .eq. cropname) vegnum = counter
    10 continue
 
       if (vegnum.eq.0) then
@@ -4436,13 +4575,35 @@ cnh NOTE - intensity is not part of the official design !!!!?
       integer counter
       integer node
       type(WaterUptakesCalculatedType) :: Water
+      type(CohortWaterSupplyType) :: Supply
       character CropName*200
+      double precision bottom
 
-      Water%num_Uptakes = g%num_crops
+      Water%num_Uptakes = 0
 
       do counter = 1, g%num_crops
+
+         if (g%supply_event_id(counter) .ne. 0) then
+           Supply%CohortID = g%crop_names(counter)
+           Supply%num_RootSystemLayer = p%n+1
+           bottom = 0.0
+           do node=0, p%n
+              ! This uses "bottom", not "dlayer", so we need to convert
+              bottom = bottom + p%dlayer(node)
+              Supply%RootSystemLayer(node+1)%Bottom = bottom
+              
+              ! uptake may be very small -ve - assume error small
+              Supply%RootSystemLayer(node+1)%Supply =
+     .              max(g%pwuptake(counter,node),0d0)
+           end do
+
+           call publish_CohortWaterSupply
+     .        (g%supply_event_id(counter), Supply);
+         endif
+         
          CropName = g%crop_owners(counter)
 
+         Water%num_Uptakes = Water%num_Uptakes + 1
          Water%Uptakes(counter)%Name = CropName
          Water%Uptakes(counter)%Num_amount = p%n+1
 
@@ -4481,6 +4642,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
       integer node
       integer solnum
       integer vegnum
+      character cropname*50
 
 *+  Initial Data Values
       uflag = .false. ! set to false to start - if match is found it is
@@ -4494,10 +4656,13 @@ cnh NOTE - intensity is not part of the official design !!!!?
 
       vegnum = 0
       do 10 counter = 1, g%num_crops
-         if (g%crop_names(counter).eq.ucrop) then
-            vegnum = counter
+         if (g%supply_event_id(counter) .EQ. 0) then
+            cropname = g%crop_names(counter)
          else
+            cropname = trim(g%crop_owners(counter))//
+     :                   '_'//trim(g%crop_names(counter))
          endif
+         if (ucrop .eq. cropname) vegnum = counter
    10 continue
 
       if (vegnum.eq.0) then
@@ -7828,6 +7993,8 @@ c     :                          ,'runoff')
          call apswim_OnNewCrop(variant, fromID)
       elseif (eventID .eq. id%cropending) then
          call apswim_OnCropEnding(variant)
+      elseif (eventID .eq. id%CohortWaterDemand) then
+         call apswim_OnCohortWaterDemand(variant, fromID)
       elseif (eventID .eq. id%prenewmet) then
 !         call apswim_set_rain_variable ()
 !      elseif (eventID .eq. id%subsurfaceflow) then

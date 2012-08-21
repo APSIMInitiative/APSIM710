@@ -187,6 +187,29 @@
       <field name="solutes" kind="string" array="T"/>
    </type>
    
+   <!-- !!!!! Types for arbitration of soil water !!!!!-->
+   <type name="CohortWaterDemand">
+      <field name="CohortID" kind="string" />
+      <field name="Demand" kind="double" unit="kg/m^2" />
+      <field name="PsiXylemMin" kind="double" unit="MPa" />
+      <field name="RootSystemLayer" array="T">
+         <field name="Bottom" kind="double" unit="m" />
+         <field name="LL" kind="double" unit="m^3/m^3" />
+         <field name="KL" kind="double" unit="/d" />
+         <field name="RootLengthDensity" kind="double" unit="m/m^3" />
+         <field name="RootRadius" kind="double" unit="mm" />
+         <field name="RootConductance" kind="double" unit="" />
+      </field>
+   </type>
+   
+   <type name="CohortWaterSupply">
+      <field name="CohortID" kind="string" />
+      <field name="RootSystemLayer" array="T">
+         <field name="Bottom" kind="double" unit="m" />
+         <field name="Supply" kind="double" unit="kg/m^2" />
+      </field>
+   </type>
+
 <!--      !!!!! Fertiliser types !!!!!-->
    <type name="FertiliserApplication">
       <field name="Amount" kind="single" /> 

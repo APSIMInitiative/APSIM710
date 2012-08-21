@@ -257,7 +257,7 @@ cnh
                if(g%rld(i,iveg).lt.1d-20)g%rld(i,iveg)=1d-20
                rldi=g%rld(i,iveg)
 
-               g%rc(i,iveg)=-log(pi*g%root_radius(iveg)**2*rldi)
+               g%rc(i,iveg)=-log(pi*g%root_radius(i,iveg)**2*rldi)
      :                        /(4.*pi*rldi*p%dx(i))
 
 60        continue
@@ -1444,7 +1444,7 @@ cnh
 cnh root conductance is not an input
 cnh                  g(i)=1./(g%rc(i,iveg)/thk(i)+1./(gr*g%rld(i,iveg)*p%dx(i)))
                   g_(i)=1./(g%rc(i,iveg)/thk(i)+1./
-     :                     (g%root_conductance(iveg)*g%rld(i,iveg)
+     :                     (g%root_conductance(i,iveg)*g%rld(i,iveg)
      :                         *p%dx(i)))
                end if
                a=a+g_(i)*tpsi(i)

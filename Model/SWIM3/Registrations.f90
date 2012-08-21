@@ -24,6 +24,7 @@ module Registrations
       integer :: post
       integer :: WaterUptakesCalculated
       integer :: RunoffEvent
+      integer :: CohortWaterDemand
    end type IDsType
 
    contains
@@ -58,6 +59,7 @@ module Registrations
          id%prepare = add_registration(respondToEventReg, 'prepare', nullTypeDDML, '')
          id%process = add_registration(respondToEventReg, 'process', nullTypeDDML, '')
          id%post = add_registration(respondToEventReg, 'post', nullTypeDDML, '')
+         id%CohortWaterDemand = add_registration(respondToEventReg, 'CohortWaterDemand', CohortWaterDemandTypeDDML, '')
    
     ! variables that are both gettable and settable
          dummy = add_reg(respondToGetSetReg, 'sw', doubleArrayTypeDDML, 'cm^3/cm^3', 'Soil water content')   
