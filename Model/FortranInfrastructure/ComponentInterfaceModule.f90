@@ -49,6 +49,16 @@ module ComponentInterfaceModule
       integer                       :: add_reg
       end function add_reg
 
+      function add_reg_to_dest(kind, destID, regName, typeString)
+      ml_external add_reg_to_dest
+!STDCALL(add_reg_to_dest)
+      integer, intent(in)           :: kind
+      integer, intent(in)           :: destID
+      character (len=*), intent(in) :: regName
+      character (len=*), intent(in) :: typeString
+      integer                       :: add_reg_to_dest
+      end function add_reg_to_dest
+      
       subroutine fortran_error(msg, isFatal)
       ml_external fortran_error
 !STDCALL(fortran_error)
@@ -839,7 +849,6 @@ module ComponentInterfaceModule
 !STDCALL(FCI_getDescriptionInternal)
       integer, intent(in) :: InitScript
       integer, intent(in) :: Description
-      integer                       :: add_registration
       end subroutine FCI_getDescriptionInternal
 	  
       subroutine FCI_getDescriptionLengthInternal(InitScript, Description)
@@ -847,7 +856,6 @@ module ComponentInterfaceModule
 !STDCALL(FCI_getDescriptionLengthInternal)
       integer, intent(in) :: InitScript
       integer, intent(in) :: Description
-      integer                       :: add_registration
       end subroutine FCI_getDescriptionLengthInternal
 
       subroutine FCI2_getDescriptionInternal(InitScript, Description)
@@ -855,7 +863,6 @@ module ComponentInterfaceModule
 !STDCALL(FCI2_getDescriptionInternal)
       integer, intent(in) :: InitScript
       integer, intent(in) :: Description
-      integer                       :: add_registration
       end subroutine FCI2_getDescriptionInternal
 	  
       subroutine FCI2_getDescriptionLengthInternal(InitScript, Description)
@@ -863,7 +870,6 @@ module ComponentInterfaceModule
 !STDCALL(FCI2_getDescriptionLengthInternal)
       integer, intent(in) :: InitScript
       integer, intent(in) :: Description
-      integer                       :: add_registration
       end subroutine FCI2_getDescriptionLengthInternal
    end interface
 

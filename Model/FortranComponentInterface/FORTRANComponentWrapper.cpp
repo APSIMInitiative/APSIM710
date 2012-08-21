@@ -413,6 +413,29 @@ extern "C" unsigned  EXPORT STDCALL add_reg
    return FortranWrapper::currentInstance->addRegistration
       (*kind, destID, regName, ddml);
    }
+
+// ------------------------------------------------------------------
+//  Short description:
+//    add a registration to the system.  Return it's registration ID
+//    to caller.
+
+//  Notes: Allows the caller to target a specific destination by ID
+//       regName must already be unqualified
+
+//  Changes:
+//    EJZ 17/8/2012
+
+// ------------------------------------------------------------------
+extern "C" unsigned  EXPORT STDCALL add_reg_to_dest
+   (EventTypeCode* kind, const int* destID, const char* regName, const char* type,
+    unsigned regNameLength, unsigned typeLength)
+   {
+   return FortranWrapper::currentInstance->addRegistration(*kind,
+                                                           *destID,
+                                                           asString(regName, regNameLength),
+                                                           asString(type, typeLength));
+   }
+   
 // ------------------------------------------------------------------
 //  Short description:
 //     Called from FORTRAN to issue an error
