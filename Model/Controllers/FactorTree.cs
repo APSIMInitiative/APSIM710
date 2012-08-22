@@ -80,7 +80,7 @@ namespace Controllers
 		private void OnRefresh(ApsimFile.Component Comp)
 		{
 			//This should only happen if the user  opens a file /or new file that doesn't have a Factorial Component
-			if ((Controller.ApsimData.FactorComponent == null)) {
+			if ((Controller.ApsimData.FactorComponent == null) && Controller.FactorialMode) {
 				Controller.FactorialMode = false;
 				return;
 			}
