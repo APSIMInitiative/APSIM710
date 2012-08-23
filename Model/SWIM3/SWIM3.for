@@ -4080,6 +4080,7 @@ c      eqr0  = 0.d0
 
 *+  Local Variables
       double precision rlv_l(M+1)
+      double precision pep
       integer vegnum                   ! solute array index counter
       integer layer                    ! layer number specifier
       integer numvals                  ! number of values returned
@@ -4104,11 +4105,12 @@ c      eqr0  = 0.d0
          id = g%crop_owner_id(vegnum)
                   
          g%demand_received(vegnum) = .false.
+         pep = 0.0
          call get_double_var_optional (
      :           id,
      :           'sw_demand',
      :           '(mm)',
-     :           g%pep(vegnum),
+     :           pep,
      :           numvals,
      :           0d0,
      :           20d0)
@@ -4117,66 +4119,68 @@ c      eqr0  = 0.d0
      :              id,
      :              'WaterDemand',
      :              '(mm)',
-     :              g%pep(vegnum),
+     :              pep,
      :              numvals,
      :              0d0,
      :              20d0)
 
          endif
 
-
-         if (numvals.gt.0) then
-            g%pep(vegnum) = g%pep(vegnum)/10d0 ! convert mm to cm
-
-         else
-            call fatal_error (Err_Internal,
-     :        'no sw demand returned from '//g%crop_names(vegnum))
-         endif
-
+         ! Use the returned value only if we didn't also receive a CohortWaterDemand event
          if (.not. g%demand_received(vegnum)) then
-         ! Initialise tempory varaibles to zero
-           do 10 layer = 1,M+1
-              rlv_l(layer) = 0d0
-   10      continue
-   
-           call get_double_array(
-     :             id,
-     :             'rlv',
-     :             p%n+1,
-     :             '(mm/mm^3)',
-     :             rlv_l,
-     :             numvals,
-     :             0d0,
-     :             1d0)
-           if (numvals.eq.0) then
-           call get_double_array (
-     :             id,
-     :             'rootlengthdensity',
-     :             p%n+1,
-     :             '(mm/mm^3)',
-     :             rlv_l,
-     :             numvals,
-     :             0d0,
-     :             1d0)
 
 
-           endif
+           if (numvals.gt.0) then
+              g%pep(vegnum) = pep/10d0 ! convert mm to cm
 
-           if (numvals.gt.0) then            !  convert mm/mm^3 to cm/cc
-              length = 0d0
-              do 60 layer = 1,p%n+1            !       /
-                 g%rld(layer-1,vegnum) = rlv_l(layer)*100d0
-                 length = length + rlv_l(layer) * p%dlayer(layer-1)
-   60         continue
-              if ((length.gt.0.).and.
-     :            (length.lt.c%min_total_root_length)) then
-                 call warning_error(Err_Internal,
-     :          'Possible error with low total RLV for '
-     :           //g%crop_names(vegnum))
-              endif
            else
               call fatal_error (Err_Internal,
-     :          'no rlv returned from '//g%crop_names(vegnum))
+     :          'no sw demand returned from '//g%crop_names(vegnum))
+           endif
+
+           ! Initialise tempory varaibles to zero
+             do 10 layer = 1,M+1
+                rlv_l(layer) = 0d0
+   10        continue
+   
+             call get_double_array(
+     :               id,
+     :               'rlv',
+     :               p%n+1,
+     :               '(mm/mm^3)',
+     :               rlv_l,
+     :               numvals,
+     :               0d0,
+     :               1d0)
+             if (numvals.eq.0) then
+             call get_double_array (
+     :               id,
+     :               'rootlengthdensity',
+     :               p%n+1,
+     :               '(mm/mm^3)',
+     :               rlv_l,
+     :               numvals,
+     :               0d0,
+     :               1d0)
+
+
+             endif
+
+             if (numvals.gt.0) then            !  convert mm/mm^3 to cm/cc
+                length = 0d0
+                do 60 layer = 1,p%n+1            !       /
+                   g%rld(layer-1,vegnum) = rlv_l(layer)*100d0
+                   length = length + rlv_l(layer) * p%dlayer(layer-1)
+   60           continue
+                if ((length.gt.0.).and.
+     :              (length.lt.c%min_total_root_length)) then
+                   call warning_error(Err_Internal,
+     :            'Possible error with low total RLV for '
+     :             //g%crop_names(vegnum))
+                endif
+             else
+                call fatal_error (Err_Internal,
+     :            'no rlv returned from '//g%crop_names(vegnum))
            endif
          endif
 
@@ -4601,7 +4605,12 @@ cnh NOTE - intensity is not part of the official design !!!!?
      .        (g%supply_event_id(counter), Supply);
          endif
          
-         CropName = g%crop_owners(counter)
+         if (g%supply_event_id(counter) .EQ. 0) then
+            cropname = g%crop_owners(counter)
+         else
+            cropname = trim(g%crop_owners(counter))//
+     :                   '_'//trim(g%crop_names(counter))
+         endif
 
          Water%num_Uptakes = Water%num_Uptakes + 1
          Water%Uptakes(counter)%Name = CropName
