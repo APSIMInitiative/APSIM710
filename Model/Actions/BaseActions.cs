@@ -392,6 +392,21 @@ namespace Actions
 			Controller.Explorer.CollapseAll();
 		}
 
+        public static void ExpandSelNode(BaseController Controller)
+        {
+            // --------------------------------------------------------
+            // Expands the currently selected node in tree.
+            // --------------------------------------------------------
+            Controller.Explorer.ExpandSelNode();
+        }
+        public static void CollapseSelNode(BaseController Controller)
+        {
+            // --------------------------------------------------------
+            // Collapse the currently selected node in tree.
+            // --------------------------------------------------------
+            Controller.Explorer.CollapseSelNode();
+        }
+
 
 		public static void Unlink(BaseController Controller)
 		{

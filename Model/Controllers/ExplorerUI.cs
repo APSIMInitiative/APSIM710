@@ -59,6 +59,14 @@ namespace Controllers
 		{
 			DataTree.CollapseAll();
 		}
+		public void ExpandSelNode()
+		{
+			DataTree.SelectedNode.ExpandAll();
+		}
+		public void CollapseSelNode()
+		{
+			DataTree.SelectedNode.Collapse(false);
+		}
 		private void ShowUI(string SelectedPath, ApsimFile.Component SelectedComponent)
 		{
 			// -------------------------------------------------
