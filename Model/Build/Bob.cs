@@ -316,7 +316,7 @@ class Bob
       static string IndentText(string St, int numChars)
       {
          string space = new string(' ', numChars);
-         return space + St.Replace("\r\n", "\r\n" + space);
+         return space + St.Replace("\n", "\n" + space);
       }   
    
    
