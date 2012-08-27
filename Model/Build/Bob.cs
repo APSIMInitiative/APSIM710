@@ -74,7 +74,8 @@ class Bob
                StreamWriter Log = new StreamWriter(LogFileName);               
                
                // Clean the tree.
-               Run("Remove unwanted files", "Model\\cscs.exe", "Model\\Build\\RemoveUnwantedFiles.cs Directory=%APSIM% Recursive=Yes", Log);
+               string CSCS = Assembly.GetCallingAssembly().Location;
+               Run("Remove unwanted files", CSCS, "Model\\Build\\RemoveUnwantedFiles.cs Directory=%APSIM% Recursive=Yes", Log);
                Run("SVN revert", "svn.exe", "revert -R %APSIM%", Log);
                Run("SVN update", "svn.exe", "update %APSIM%", Log);            
                   
@@ -101,7 +102,6 @@ class Bob
                   Log);
 
                // Run the patch.
-               string CSCS = Assembly.GetCallingAssembly().Location;
                Run("Running patch...", CSCS, args[0], Log);
                
                // Close log file.
