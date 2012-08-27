@@ -163,71 +163,86 @@ namespace CMPServices
         /// <seealso cref="TTypedValue">TTypedValue Class</seealso>
         public const int ctBAD = -1;
 
-        //used in unitsMatch()
-		private const int MATCHCOUNT = 5;
+        /// <summary>
+        /// Contains two unit fields. Used in the array of matching units.
+        /// </summary>
+        private struct unit
+        {
+            public String unit1;
+            public String unit2;
+            public unit(String u1, String u2)
+            {
+                unit1 = u1;
+                unit2 = u2;
+            }
+        };
+        //============================================================================
+        /// <summary>
+        /// "cc/cc","mm/mm" are matching units.
+        /// </summary>
+        //============================================================================
+        private static unit match1 = new unit("g/cm^3", "Mg/m^3");
+        //============================================================================
+        /// <summary>
+        /// "m^3/m^3", "mm/mm" are matching units.
+        /// </summary>
+        //============================================================================
+        private static unit match2 = new unit("m^3/m^3", "mm/mm");
+        //============================================================================
+        /// <summary>
+        /// "ppm" and "mg/kg" are allowed to match, although "ppm" is invalid
+        /// This is a concession to APSIM
+        /// </summary>
+        //============================================================================
+        private static unit match3 = new unit("ppm", "mg/kg");
+        //============================================================================
+        /// <summary>
+        /// "g/cc", "Mg/m^3" are matching units, although "cc" is invalid
+        /// This is a concession to APSIM
+        /// </summary>
+        //============================================================================
+        private static unit match4 = new unit("g/cc", "Mg/m^3");
+        //============================================================================
+        /// <summary>
+        /// "0-1" and "-" match,  as both are dimensionless
+        /// </summary>
+        //============================================================================
+        private static unit match5 = new unit("0-1", "-");
+        //============================================================================
+        /// <summary>
+        /// "0-1" and "mm/mm" match, as both are effectively dimensionless
+        /// </summary>
+        //============================================================================
+        private static unit match6 = new unit("0-1", "mm/mm");
+        //============================================================================
+        /// <summary>
+        /// "cm^3/cm^3" and "mm/mm" match, as both are effectively dimensionless
+        /// </summary>
+        //============================================================================
+        private static unit match7 = new unit("cm^3/cm^3", "mm/mm");
+        //============================================================================
+        /// <summary>
+        /// "0-1" and "m^3/m^3" match, as both are effectively dimensionless
+        /// </summary>
+        //============================================================================
+        private static unit match8 = new unit("0-1", "m^3/m^3");
+        //============================================================================
+        /// <summary>
+        /// Array of the matching units- match1, match2,...
+        /// </summary>
+        //============================================================================
+        private static unit[] UNITMATCHES = { match1, match2, match3, match4, match5, match6, match7, match8 };
 
-		/// <summary>
-		/// Contains two unit fields. Used in the array of matching units.
-		/// </summary>
-		private struct unit
-		{
-			public String unit1;
-			public String unit2;
-			public unit(String u1, String u2)
-			{
-				unit1 = u1;
-				unit2 = u2;
-			}
-		};
-		//============================================================================
-		/// <summary>
-		/// "cc/cc","mm/mm" are matching units.
-		/// </summary>
-		//============================================================================
-		private static unit match1 = new unit("g/cm^3", "Mg/m^3");
-		//============================================================================
-		/// <summary>
-		/// "m^3/m^3", "mm/mm" are matching units.
-		/// </summary>
-		//============================================================================
-		private static unit match2 = new unit("m^3/m^3", "mm/mm");
-		//============================================================================
-		/// <summary>
-		/// "ppm" and "mg/kg" are allowed to match, although "ppm" is invalid
-		/// This is a concession to APSIM
-		/// </summary>
-		//============================================================================
-		private static unit match3 = new unit("ppm", "mg/kg");
-		//============================================================================
-		/// <summary>
-		/// "g/cc", "Mg/m^3" are matching units, although "cc" is invalid
-		/// This is a concession to APSIM
-		/// </summary>
-		//============================================================================
-		private static unit match4 = new unit("g/cc", "Mg/m^3");
-		//============================================================================
-		/// <summary>
-		/// "0-1" and "-" match, as both are dimensionless
-		/// </summary>
-		//============================================================================
-		private static unit match5 = new unit("0-1", "-");
-		//============================================================================
-		/// <summary>
-		/// Array of the matching units- match1, match2,...
-		/// </summary>
-		//============================================================================
-		private static unit[] UNITMATCHES = { match1, match2, match3, match4, match5 };
-
-		private TTypedValue childTemplate;      //!<used to keep a pointer to the last element after setElementCount(0)
-		/// <summary>
-		/// Name of the typed value.
-		/// </summary>
-		protected String FName;
-		/// <summary>
-		/// Unit of the typed value.
-		/// </summary>
-		protected String FUnit;
-		/// <summary>
+        private TTypedValue childTemplate;      //!<used to keep a pointer to the last element after setElementCount(0)
+        /// <summary>
+        /// Name of the typed value.
+        /// </summary>
+        protected String FName;
+        /// <summary>
+        /// Unit of the typed value.
+        /// </summary>
+        protected String FUnit;
+        /// <summary>
         /// Store the base type as an integer.
         /// </summary>
         protected TBaseType FBaseType;
@@ -597,7 +612,7 @@ namespace CMPServices
             FIsScalar = true;
             FIsArray = false;
             FIsRecord = false;
-			setUnits("");
+            setUnits("");
 
             createScalar();              //allocates memory and initialises
         }
@@ -2115,7 +2130,7 @@ namespace CMPServices
             else
             {    //Search the lookup table of matching units
                 i = 0;
-                while (!result && (i < MATCHCOUNT))
+                while (!result && (i < UNITMATCHES.Length))
                 {
                     if ((sUnit1 == UNITMATCHES[i].unit1) && (sUnit2 == UNITMATCHES[i].unit2))
                         result = true;

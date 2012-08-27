@@ -777,6 +777,7 @@ public class SoilWater
             {
                 PublishNew_Profile();
                 CalcRunoffDepthFactor(out runoff_wf);
+                CalcDrainageConstants();
             }
         }
     }
@@ -1314,8 +1315,9 @@ public class SoilWater
                 }
             }
 
-            CalcRunoffDepthFactor(out runoff_wf);
             PublishNew_Profile();
+            CalcRunoffDepthFactor(out runoff_wf);
+            CalcDrainageConstants();
         }
     }
 
@@ -1577,6 +1579,8 @@ public class SoilWater
     private double[] cover_green = null;   //! green canopy cover of crops (0-1)
     private double[] canopy_height = null; //! canopy heights of each crop (mm)
     private int num_crops = 0;                //! number of crops ()
+    private double cover_surface_crop = 0.0;  // Total canopy cover, with height weightings
+    private double cover_tot_sum = 0.0;   // Total canopy cover
 
     //TILLAGE EVENT
     private double tillage_cn_red;   //! reduction in CN due to tillage ()   //can either come from the manager module or from the sim file
@@ -2523,6 +2527,55 @@ public class SoilWater
 
     }
 
+    private void CalcCovers()
+    {
+
+        //This does NOT calculate runoff. It calculates an effective cover that is used for runoff.
+        //In the process event this is called before the soilwat2_runoff.
+
+        //*+  Purpose
+        //*       calculate the effective runoff cover
+
+        //*+  Assumptions
+        //*       Assumes that if canopy height is negative it is missing.
+
+        //*+  Mission Statement
+        //*     Calculate the Effective Runoff surface Cover
+
+        int crop;                   //! crop number
+
+        //! cover cn response from perfect   - ML  & dms 7-7-95
+        //! nb. perfect assumed crop canopy was 1/2 effect of mulch
+        //! This allows the taller canopies to have less effect on runoff
+        //! and the cover close to ground to have full effect (jngh)
+
+        //! weight effectiveness of crop canopies
+        //!    0 (no effect) to 1 (full effect)
+
+        cover_surface_crop = 0.0;
+        cover_tot_sum = 0.0;
+        for (crop = 0; crop < num_crops; crop++)
+        {
+            double canopyfact;             //! canopy factor (0-1)
+            if (canopy_height[crop] >= 0.0)
+            {
+                bool bDidInterpolate;
+                canopyfact = MathUtility.LinearInterpReal(canopy_height[crop], canopy_fact_height, canopy_fact, out bDidInterpolate);
+            }
+            else
+            {
+                canopyfact = canopy_fact_default;
+            }
+
+            cover_tot_sum = 1.0 - (1.0 - cover_tot_sum) * (1.0 - cover_tot[crop]);
+            double effective_crop_cover = cover_tot[crop] * canopyfact;
+            cover_surface_crop = 1.0 - (1.0 - cover_surface_crop) * (1.0 - effective_crop_cover);
+        }
+
+        //! add cover known to affect runoff
+        //!    ie residue with canopy shading residue         
+        cover_surface_runoff = 1.0 - (1.0 - cover_surface_crop) * (1.0 - surfaceom_cover);
+    }
 
     private void soilwat2_evap_init()
     {
@@ -2979,9 +3032,6 @@ public class SoilWater
     {
         if (_cona == 0.0 && _u == 0.0) // Temporary hack to turn off evaporation and enable comparisons with earlier models
             return;
-        double cover_tot_sum = 0.0;
-        for (int i = 0; i < num_crops; i++)
-            cover_tot_sum = 1.0 - (1.0 - cover_tot_sum) * (1.0 - cover_tot[i]);
 
         ts_pond_evap = Math.Min(pond, eo * Math.Exp(MathUtility.Divide(-1 * cover_tot_sum, k_standing, 0.0)));
 
@@ -3220,15 +3270,19 @@ public class SoilWater
         double[] sw_fines = sw_fine;
         double[] ll15_fines = ll15_fine;
         double[] dul_fines = dul_fine;
+        double[] air_dry_fines = air_dry_fine;
         for (int layer = num_layers - 1; layer >= 0; layer--) // Work from the bottom up....
         {
             if (sw_fines[layer] == 0.0)  // Avoid problems if sw hasn't been initialised yet
                 diffusivity[layer] = 0.0;
             else
             {
+                // If sw_fines is too small (e.g., from initialisation problem), diffusivity can blow out,
+                // so we'll take air_dry_fines as the smallest allowable value
+                double sw_layer = Math.Max(sw_fines[layer], air_dry_fines[layer]); 
                 diffusivity[layer] = 1e3 * cond[layer] * b[layer] *
-                                 MathUtility.Divide(psi_ll15, sw_fines[layer], 0.0) *
-                                 Math.Pow(MathUtility.Divide(sw_fines[layer], ll15_fines[layer], 0.0), b[layer]);
+                                 MathUtility.Divide(psi_ll15, sw_layer, 0.0) *
+                                 Math.Pow(MathUtility.Divide(sw_layer, ll15_fines[layer], 0.0), b[layer]);
             }
             if (layer == num_layers - 1 || (_sw_dep[layer] >= _dul_dep[layer] && _sw_dep[layer + 1] >= _dul_dep[layer + 1]))
                 ts_flow[layer] = 0.0;
@@ -3762,7 +3816,6 @@ public class SoilWater
 
     }
 
-
     private void SaveState()
     {
         oldSWDep = Total_sw_dep();
@@ -3858,6 +3911,8 @@ public class SoilWater
         // GetOtherVariables();
         // Crop variables (cover) already obtained in OnPrepare
         GetSoluteVariables();
+
+        CalcCovers();
 
         //*     ===========================================================
         //      subroutine soilwat2_process
