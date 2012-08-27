@@ -71,7 +71,7 @@ class Bob
                     // Set some environment variables.
                     System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
                     System.Environment.SetEnvironmentVariable("PatchFileName", PatchFileName);
-                    System.Environment.SetEnvironmentVariable("PatchFileNameShort", Path.GetFileName(PatchFileName));
+                    System.Environment.SetEnvironmentVariable("PatchFileNameShort", Path.GetFileNameWithoutExtension(PatchFileName));
 
                     // Open log file.
                     string LogFileName = Path.ChangeExtension(PatchFileName, ".txt");
