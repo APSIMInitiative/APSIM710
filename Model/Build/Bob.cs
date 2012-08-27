@@ -41,82 +41,76 @@ class Bob
          int JobID;
          do
          {
-             JobID = FindNextJob(Connection);
+            JobID = FindNextJob(Connection);
 
-             if (JobID != -1)
-             {
-                 string PatchFileName = DBGet("PatchFileName", Connection, JobID).ToString();
-                 PatchFileName = PatchFileName.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+            if (JobID != -1)
+            {
+               string PatchFileName = DBGet("PatchFileName", Connection, JobID).ToString();
+               PatchFileName = PatchFileName.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
                   
-				if (System.Environment.MachineName.ToUpper() != "BOB")
-				{
-				   string NowString = DateTime.Now.ToString("yyyy-MM-dd hh:mm tt");
-				   DBUpdate("StartTime", NowString, Connection, JobID);
-				}
+               if (System.Environment.MachineName.ToUpper() != "BOB")
+               {
+                  string NowString = DateTime.Now.ToString("yyyy-MM-dd hh:mm tt");
+                  DBUpdate("StartTime", NowString, Connection, JobID);
+               }
 
-				// Update the builds database.
-				DBUpdate("Status", "Running", Connection, JobID);
-				
-				// Check the previous job to see if it has stalled. If so then set its 
-				// status accordingly. Otherwise we get multiple "Running" status'.
-				if (JobID > 0)
-				{
-				   string PreviousStatus = DBGet("Status", Connection, JobID-1).ToString();
-				   if (PreviousStatus == "Running")
-					  DBUpdate("Status", "Aborted", Connection, JobID-1);
-				}				  
-				  Console.WriteLine("Running patch: " + PatchFileName);
-                 if (PatchFileName.Contains("BobDean"))
-                 {
-                    // Set some environment variables.
-                    System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
-                    System.Environment.SetEnvironmentVariable("PatchFileName", PatchFileName);
-                    System.Environment.SetEnvironmentVariable("PatchFileNameShort", Path.GetFileNameWithoutExtension(PatchFileName));
-
-                    // Open log file.
-                    string LogFileName = Path.ChangeExtension(PatchFileName, ".txt");
-                    StreamWriter Log = new StreamWriter(LogFileName);
-                    
-                    // Extract the patch.
-                    Run("Extracting patch: " + PatchFileName,
-                        "C:\\Program Files\\7-Zip\\7z.exe", 
-                        "x -y " + PatchFileName, 
-                        Log);
-
-                    // Run the patch.
-                    string CSCS = Assembly.GetCallingAssembly().Location;
-                    Run("Running patch...", CSCS, args[0], Log);
-                 
-                    // Write log file.
-                    Log.Close();
-                 }
-                 else 
-                 {
-                   
-                    // Set some environment variables.
-                    System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
-                    System.Environment.SetEnvironmentVariable("PatchFileName", Path.GetFileNameWithoutExtension(PatchFileName));
-                    System.Environment.SetEnvironmentVariable("PatchFileNameFull", PatchFileName);
-                    
-                    // Extract the patch.
-                    Console.WriteLine("Extracting patch: " + PatchFileName);
-                    Process P = Process.Start("C:\\Program Files\\7-Zip\\7z.exe", "x -y " + PatchFileName);
-                    P.WaitForExit();
-                    
-                    // *********************************************
-                    // Now we can run the nested script on the patch
-                    // *********************************************
-                    
-                    string CSCS = Assembly.GetCallingAssembly().Location;
-                    P = Process.Start(CSCS, args[0]);
-                    P.WaitForExit();
-
+               // Update the builds database.
+               DBUpdate("Status", "Running", Connection, JobID);
                
-                 }
-                 Console.WriteLine("Waiting for a patch...");
-             }
-             else
-                 Thread.Sleep(1 * 60 * 1000); // 1 minutes
+               // Check the previous job to see if it has stalled. If so then set its 
+               // status accordingly. Otherwise we get multiple "Running" status'.
+               if (JobID > 0)
+               {
+                  string PreviousStatus = DBGet("Status", Connection, JobID-1).ToString();
+                  if (PreviousStatus == "Running")
+                    DBUpdate("Status", "Aborted", Connection, JobID-1);
+               }
+               
+               // The current working directory will be the APSIM root directory - set the environment variable.
+               System.Environment.SetEnvironmentVariable("APSIM", Directory.GetCurrentDirectory());
+               
+               // Open log file.
+               string LogFileName = Path.ChangeExtension(PatchFileName, ".txt");
+               StreamWriter Log = new StreamWriter(LogFileName);               
+               
+               // Clean the tree.
+               Run("Remove unwanted files", "Model\\cscs.exe", "Model\\Build\\RemoveUnwantedFiles.cs Directory=%APSIM% Recursive=Yes", Log);
+               Run("SVN revert", "svn.exe", "revert -R %APSIM%", Log);
+               Run("SVN update", "svn.exe", "update %APSIM%", Log);            
+                  
+               Console.WriteLine("Running patch: " + PatchFileName);
+               if (PatchFileName.Contains("BobDean"))
+               {
+                  // Set some environment variables.
+                  System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
+                  System.Environment.SetEnvironmentVariable("PatchFileName", PatchFileName);
+                  System.Environment.SetEnvironmentVariable("PatchFileNameShort", Path.GetFileNameWithoutExtension(PatchFileName));
+               }
+               else 
+               {
+                  // Set some environment variables.
+                  System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
+                  System.Environment.SetEnvironmentVariable("PatchFileName", Path.GetFileNameWithoutExtension(PatchFileName));
+                  System.Environment.SetEnvironmentVariable("PatchFileNameFull", PatchFileName);
+               }
+
+               // Extract the patch.
+               Run("Extracting patch: " + PatchFileName,
+                  "C:\\Program Files\\7-Zip\\7z.exe", 
+                  "x -y " + PatchFileName, 
+                  Log);
+
+               // Run the patch.
+               string CSCS = Assembly.GetCallingAssembly().Location;
+               Run("Running patch...", CSCS, args[0], Log);
+               
+               // Close log file.
+               Log.Close();
+
+               Console.WriteLine("Waiting for a patch...");
+            }
+            else
+               Thread.Sleep(1 * 60 * 1000); // 1 minutes
 
          }
          while (true);
