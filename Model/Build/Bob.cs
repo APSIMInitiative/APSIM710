@@ -65,12 +65,13 @@ class Bob
 				   if (PreviousStatus == "Running")
 					  DBUpdate("Status", "Aborted", Connection, JobID-1);
 				}				  
-				  
+				  Console.WriteLine("Running patch: " + PatchFileName);
                  if (PatchFileName.Contains("BobDean"))
                  {
                     // Set some environment variables.
                     System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
                     System.Environment.SetEnvironmentVariable("PatchFileName", PatchFileName);
+                    System.Environment.SetEnvironmentVariable("PatchFileNameShort", Path.GetFileName(PatchFileName));
 
                     // Open log file.
                     string LogFileName = Path.ChangeExtension(PatchFileName, ".txt");
@@ -105,7 +106,7 @@ class Bob
                     // *********************************************
                     // Now we can run the nested script on the patch
                     // *********************************************
-                    Console.WriteLine("Running patch: " + PatchFileName);
+                    
                     string CSCS = Assembly.GetCallingAssembly().Location;
                     P = Process.Start(CSCS, args[0]);
                     P.WaitForExit();
@@ -316,7 +317,7 @@ class Bob
       static string IndentText(string St, int numChars)
       {
          string space = new string(' ', numChars);
-         return space + St.Replace("\n", "\n" + space);
+         return space + St.Replace("\r\n", "\r\n" + space);
       }   
    
    
