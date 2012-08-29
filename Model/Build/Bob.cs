@@ -1,4 +1,7 @@
 ﻿//css_ref System.Data.dll;
+//css_import ..\CSGeneral\Utility.cs
+//css_import ..\CSGeneral\StringManip.cs
+//css_import ..\CSGeneral\MathUtility.cs
 
 using System;
 using System.Text;
@@ -74,8 +77,7 @@ class Bob
                StreamWriter Log = new StreamWriter(LogFileName);               
                
                // Clean the tree.
-               string CSCS = Assembly.GetCallingAssembly().Location;
-               Run("Remove unwanted files", CSCS, "Model\\Build\\RemoveUnwantedFiles.cs Directory=%APSIM% Recursive=Yes", Log);
+               RemoveUnwantedFiles(Directory.GetCurrentDirectory());
                Run("SVN revert", "svn.exe", "revert -R %APSIM%", Log);
                Run("SVN update", "svn.exe", "update %APSIM%", Log);            
                   
@@ -102,6 +104,7 @@ class Bob
                   Log);
 
                // Run the patch.
+               string CSCS = Assembly.GetCallingAssembly().Location;
                Run("Running patch...", CSCS, args[0], Log);
                
                // Close log file.
@@ -131,6 +134,48 @@ class Bob
       return ReturnCode;
    }
 
+    /// <summary>
+    /// This program removes all SVN unversioned files from a specified directory.
+    /// Can optionally do this recursively.
+    /// </summary>
+    static void RemoveUnwantedFiles(string directory)
+    {
+		string StdOut = Run("SVN status", "svn.exe", "status --non-interactive --no-ignore");
+        string[] StdOutLines = StdOut.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+		// Loop through all lines the SVN process produced.
+		foreach (string line in StdOutLines)
+		{
+			if (line.Length > 8)
+			{
+				string relativePath = line.Substring(8);
+				string path = Path.Combine(directory, relativePath);
+
+				bool DoDelete = false;
+				DoDelete = line[0] == '?' || line[0] == 'I';
+				if (DoDelete)
+				{
+					
+					if (Directory.Exists(path))
+						Directory.Delete(path, true);
+					else if (File.Exists(path))
+					{
+						try
+						{
+							File.Delete(path);
+						}
+						catch (Exception)
+						{
+							// Must be a locked or readonly file - ignore.
+						}
+					}
+				}
+			}
+		}
+    }
+   
+   
+   
       /////////////////////////////////////////////////////////////////////////////////////////////
       /////////////////////////////////////////////////////////////////////////////////////////////
       /////////////////////////////////////////////////////////////////////////////////////////////
@@ -219,48 +264,32 @@ class Bob
       }    
    
       // Returns StdOut.
-      static string Run(string Name, string Executable, string Arguments, StreamWriter Log)
+      static string Run(string Name, string Executable, string Arguments, StreamWriter Log = null)
       {
-         Executable = ReplaceEnvironmentVariables(Executable);
+         Executable = CSGeneral.Utility.ReplaceEnvironmentVariables(Executable);
          if (!File.Exists(Executable))
          {
             if (Path.DirectorySeparatorChar == '/') 
                Executable = Path.ChangeExtension(Executable, "");   // linux - remove extension
-            Executable = FindFileOnPath(Executable);
+            Executable = CSGeneral.Utility.FindFileOnPath(Executable);
          }
-         Arguments = ReplaceEnvironmentVariables(Arguments);
-         Process P = RunProcess(Executable, Arguments, Directory.GetCurrentDirectory());
-         string StdOut = CheckProcessExitedProperly(P);      
-         if (P.ExitCode != 0)
-         {
-            Log.WriteLine(Name + " [Fail]");
-            Log.WriteLine(IndentText(StdOut, 4));
-         }
-         else
-         {
-            Log.WriteLine(Name + " [Pass]");
-            Log.WriteLine(IndentText(StdOut, 4));
-         }
+         Arguments = CSGeneral.Utility.ReplaceEnvironmentVariables(Arguments);
+         Process P = CSGeneral.Utility.RunProcess(Executable, Arguments, Directory.GetCurrentDirectory());
+         string StdOut = CheckProcessExitedProperly(P);
+		 if (Log != null)
+		 {
+			 if (P.ExitCode != 0)
+			 {
+				Log.WriteLine(Name + " [Fail]");
+				Log.WriteLine(CSGeneral.StringManip.IndentText(StdOut, 4));
+			 }
+			 else
+			 {
+				Log.WriteLine(Name + " [Pass]");
+				Log.WriteLine(CSGeneral.StringManip.IndentText(StdOut, 4));
+			 }
+		}
          return StdOut;
-      }
-      
-      static Process RunProcess(string Executable, string Arguments, string JobFolder)
-      {
-         if (!File.Exists(Executable))
-             throw new System.Exception("Cannot execute file: " + Executable + ". File not found.");
-         Process PlugInProcess = new Process();
-         PlugInProcess.StartInfo.FileName = Executable;
-         PlugInProcess.StartInfo.Arguments = Arguments;
-         PlugInProcess.StartInfo.UseShellExecute = false;
-         PlugInProcess.StartInfo.CreateNoWindow = true;
-         if (!PlugInProcess.StartInfo.UseShellExecute)
-         {
-             PlugInProcess.StartInfo.RedirectStandardOutput = true;
-             PlugInProcess.StartInfo.RedirectStandardError = true;
-         }
-         PlugInProcess.StartInfo.WorkingDirectory = JobFolder;
-         PlugInProcess.Start();
-         return PlugInProcess;
       }
       
       static string CheckProcessExitedProperly(Process PlugInProcess)
@@ -276,82 +305,8 @@ class Bob
          else
              return "";
       }   
-       
-   
-      /// <summary>
-      /// Find the specified file on the path.
-      /// </summary>
-      static string FindFileOnPath(string FileName)
-      {
-         string PathVariable = Environment.GetEnvironmentVariable("PATH");
-         if (PathVariable == null)
-             throw new Exception("Cannot find PATH environment variable");
-         string[] Paths;
-         string PathSeparator;
-
-         if (Path.VolumeSeparatorChar == '/') 
-            PathSeparator = ":";
-         else
-            PathSeparator = ";";
-
-         Paths = PathVariable.Split(PathSeparator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-
-         foreach (string DirectoryName in Paths)
-         {
-             string FullPath = Path.Combine(DirectoryName, FileName);
-             if (File.Exists(FullPath))
-                 return FullPath;
-         }
-         throw new Exception("Cannot find: " + FileName + " on the system path.");
-      }   
-   
-      // -------------------------------------------------------
-      // Indent the specified string a certain number of spaces.
-      // -------------------------------------------------------
-      static string IndentText(string St, int numChars)
-      {
-         string space = new string(' ', numChars);
-         return space + St.Replace("\r\n", "\r\n" + space);
-      }   
-   
-   
-      /// <summary>
-      /// Look through the specified string for an environment variable name surrounded by
-      /// % characters. Replace them with the environment variable value.
-      /// </summary>
-      static string ReplaceEnvironmentVariables(string CommandLine)
-      {
-         if (CommandLine == null)
-             return CommandLine;
-
-         int PosPercent = CommandLine.IndexOf('%');
-         while (PosPercent != -1)
-         {
-             string Value = null;
-             int EndVariablePercent = CommandLine.IndexOf('%', PosPercent + 1);
-             if (EndVariablePercent != -1)
-             {
-                 string VariableName = CommandLine.Substring(PosPercent + 1, EndVariablePercent - PosPercent - 1);
-                 Value = System.Environment.GetEnvironmentVariable(VariableName);
-                 if (Value == null)
-                     Value = System.Environment.GetEnvironmentVariable(VariableName, EnvironmentVariableTarget.User);
-             }
-
-             if (Value != null)
-             {
-                 CommandLine = CommandLine.Remove(PosPercent, EndVariablePercent - PosPercent + 1);
-                 CommandLine = CommandLine.Insert(PosPercent, Value);
-                 PosPercent = PosPercent + 1;
-             }
-
-             else
-                 PosPercent = PosPercent + 1;
-
-             if (PosPercent >= CommandLine.Length)
-                 PosPercent = -1;
-             else
-                 PosPercent = CommandLine.IndexOf('%', PosPercent);
-         }
-         return CommandLine;
-      }    
+  
    }
+
+   
+   
