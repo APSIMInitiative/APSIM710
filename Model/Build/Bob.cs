@@ -39,13 +39,11 @@ class Bob
             throw new Exception("Usage: cscs Model\\Build\\Bob.cs Model\\Build\\BobMain.cs");
       
          Console.WriteLine("Waiting for a patch...");
-                 
+
+         Connection.Open();
          do
          {
-            Connection.Open();
             int JobID = FindNextJob(Connection);
-            Connection.Close();        
-
             if (JobID != -1)
             {
                string PatchFileName = DBGet("PatchFileName", Connection, JobID).ToString();
@@ -96,6 +94,11 @@ class Bob
          Console.WriteLine(err.Message);
          ReturnCode = 1;
       }
+	  finally
+	  {
+	     if (Connection != null)
+            Connection.Close();        
+	  }
 
       Console.WriteLine("Press return to exit");
       Console.ReadLine();
