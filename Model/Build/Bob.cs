@@ -39,13 +39,18 @@ class Bob
             throw new Exception("Usage: cscs Model\\Build\\Bob.cs Model\\Build\\BobMain.cs");
       
          Console.WriteLine("Waiting for a patch...");
-
-         Connection.Open();
+                 
          do
          {
+            Connection.Open();
             int JobID = FindNextJob(Connection);
+            Connection.Close();        
+
             if (JobID != -1)
             {
+               // Update the builds database.
+               DBUpdate("Status", "Running", Connection, JobID);
+         
                string PatchFileName = DBGet("PatchFileName", Connection, JobID).ToString();
                PatchFileName = PatchFileName.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
                Console.WriteLine("Running patch: " + PatchFileName);
@@ -94,11 +99,6 @@ class Bob
          Console.WriteLine(err.Message);
          ReturnCode = 1;
       }
-	  finally
-	  {
-	     if (Connection != null)
-            Connection.Close();        
-	  }
 
       Console.WriteLine("Press return to exit");
       Console.ReadLine();
@@ -200,7 +200,20 @@ class Bob
          return "";
       }   
 
-   
+      /// <summary>
+      /// Update the status of the specified build job.
+      /// </summary>
+      static void DBUpdate(string FieldName, object Value, SqlConnection Connection, int JobID)
+      {
+         if (FieldName == "Status" && Environment.MachineName.ToUpper() != "BOB")
+            FieldName = Environment.MachineName + "Status";
+            
+         string SQL = "UPDATE BuildJobs SET " + FieldName + " = '" + Value.ToString() + "' WHERE ID = " + JobID.ToString();
+
+         SqlCommand Command = new SqlCommand(SQL, Connection);
+         Command.ExecuteNonQuery();
+      }
+      
       /// <summary>
       /// Execute the specified SqlCommand.
       /// </summary>
