@@ -40,12 +40,10 @@ class Bob
       
          Console.WriteLine("Waiting for a patch...");
                  
+         Connection.Open();
          do
          {
-            Connection.Open();
             int JobID = FindNextJob(Connection);
-            Connection.Close();        
-
             if (JobID != -1)
             {
                // Update the builds database.
@@ -98,6 +96,11 @@ class Bob
       {
          Console.WriteLine(err.Message);
          ReturnCode = 1;
+      }
+      finally
+      {
+         if (Connection != null)
+            Connection.Close();        
       }
 
       Console.WriteLine("Press return to exit");
