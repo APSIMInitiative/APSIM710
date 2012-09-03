@@ -23,8 +23,8 @@ class Bob
    ///    directory is the APSIM directory.
    /// This script provides 3 environment variables to the child script.
    ///    JobID - the ID in the builds database of the job being run.
-   ///    PatchFilename - the file name part of the patch .zip file (no path or extension).
-   ///    PatchFilenameFull - the full name of the patch .zip file.
+   ///    PatchFileName - the file name part of the patch .zip file (no path or extension).
+   ///    PatchFileNameFull - the full name of the patch .zip file.
    /// </summary>
    static int Main(string[] args)
    {
@@ -38,64 +38,37 @@ class Bob
          if (args.Length != 1)
             throw new Exception("Usage: cscs Model\\Build\\Bob.cs Model\\Build\\BobMain.cs");
       
-         Connection.Open();
          Console.WriteLine("Waiting for a patch...");
                  
-         int JobID;
          do
          {
-            JobID = FindNextJob(Connection);
+            Connection.Open();
+            int JobID = FindNextJob(Connection);
+            Connection.Close();        
 
             if (JobID != -1)
             {
                string PatchFileName = DBGet("PatchFileName", Connection, JobID).ToString();
                PatchFileName = PatchFileName.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
-                  
-               if (System.Environment.MachineName.ToUpper() != "BOB")
-               {
-                  string NowString = DateTime.Now.ToString("yyyy-MM-dd hh:mm tt");
-                  DBUpdate("StartTime", NowString, Connection, JobID);
-               }
-
-               // Update the builds database.
-               DBUpdate("Status", "Running", Connection, JobID);
-               
-               // Check the previous job to see if it has stalled. If so then set its 
-               // status accordingly. Otherwise we get multiple "Running" status'.
-               if (JobID > 0)
-               {
-                  string PreviousStatus = DBGet("Status", Connection, JobID-1).ToString();
-                  if (PreviousStatus == "Running")
-                    DBUpdate("Status", "Aborted", Connection, JobID-1);
-               }
+               Console.WriteLine("Running patch: " + PatchFileName);
                
                // The current working directory will be the APSIM root directory - set the environment variable.
                System.Environment.SetEnvironmentVariable("APSIM", Directory.GetCurrentDirectory());
                
                // Open log file.
-               string LogFileName = Path.ChangeExtension(PatchFileName, ".txt");
-               StreamWriter Log = new StreamWriter(LogFileName);               
+               string LogDirectory = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(PatchFileName), ".."));
+               string LogFileName = Path.Combine(LogDirectory, Path.ChangeExtension(Path.GetFileNameWithoutExtension(PatchFileName), ".txt"));
+               StreamWriter Log = new StreamWriter(LogFileName); 
                
                // Clean the tree.
                RemoveUnwantedFiles(Directory.GetCurrentDirectory());
                Run("SVN revert", "svn.exe", "revert -R %APSIM%", Log);
                Run("SVN update", "svn.exe", "update %APSIM%", Log);            
-                  
-               Console.WriteLine("Running patch: " + PatchFileName);
-               if (PatchFileName.Contains("BobDean"))
-               {
-                  // Set some environment variables.
-                  System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
-                  System.Environment.SetEnvironmentVariable("PatchFileName", PatchFileName);
-                  System.Environment.SetEnvironmentVariable("PatchFileNameShort", Path.GetFileNameWithoutExtension(PatchFileName));
-               }
-               else 
-               {
-                  // Set some environment variables.
-                  System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
-                  System.Environment.SetEnvironmentVariable("PatchFileName", Path.GetFileNameWithoutExtension(PatchFileName));
-                  System.Environment.SetEnvironmentVariable("PatchFileNameFull", PatchFileName);
-               }
+
+               // Set some environment variables.
+               System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
+               System.Environment.SetEnvironmentVariable("PatchFileName", PatchFileName);
+               System.Environment.SetEnvironmentVariable("PatchFileNameShort", Path.GetFileNameWithoutExtension(PatchFileName));
 
                // Extract the patch.
                Run("Extracting patch: " + PatchFileName,
@@ -122,11 +95,6 @@ class Bob
       {
          Console.WriteLine(err.Message);
          ReturnCode = 1;
-      }
-      finally
-      {
-        if (Connection != null)
-           Connection.Close();        
       }
 
       Console.WriteLine("Press return to exit");
@@ -229,20 +197,7 @@ class Bob
          return "";
       }   
 
-      /// <summary>
-      /// Update the status of the specified build job.
-      /// </summary>
-      static void DBUpdate(string FieldName, object Value, SqlConnection Connection, int JobID)
-      {
-         if (FieldName == "Status" && Environment.MachineName.ToUpper() != "BOB")
-            FieldName = Environment.MachineName + "Status";
-            
-         string SQL = "UPDATE BuildJobs SET " + FieldName + " = '" + Value.ToString() + "' WHERE ID = " + JobID.ToString();
-
-         SqlCommand Command = new SqlCommand(SQL, Connection);
-         Command.ExecuteNonQuery();
-      }
-    
+   
       /// <summary>
       /// Execute the specified SqlCommand.
       /// </summary>
