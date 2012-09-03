@@ -1,4 +1,7 @@
 ﻿//css_ref System.Data.dll;
+//css_import ..\CSGeneral\ApsimBuildsDB.cs
+//css_import ..\CSGeneral\StringManip.cs
+//css_import ..\CSGeneral\MathUtility.cs
 
 using System;
 using System.Text;
@@ -20,53 +23,85 @@ class BobMain
    /// </summary>
    static int Main(string[] args)
    {
+      // Open the database.
+      CSGeneral.ApsimBuildsDB DB = new CSGeneral.ApsimBuildsDB();
+      DB.Open();
+
+      string APSIMFolder = System.Environment.GetEnvironmentVariable("APSIM");
+      string PatchFileName = System.Environment.GetEnvironmentVariable("PatchFileName");
+      int JobID = Convert.ToInt32(System.Environment.GetEnvironmentVariable("JobID"));
+      
       try
       {
-         string PatchFileName = System.Environment.GetEnvironmentVariable("PatchFileName");
          
+      
+         // Setup the DB fields for current job.
+         if (System.Environment.MachineName.ToUpper() != "BOB")
+            DB.UpdateStartDateToNow(JobID);
+
+         // Check the previous job to see if it has stalled. If so then set its 
+         // status accordingly. Otherwise we get multiple "Running" status'.
+         if (JobID > 0)
+         {
+            string PreviousStatus = DB.Get("Status", JobID-1).ToString();
+            if (PreviousStatus == "Running")
+              DB.UpdateStatus(JobID-1, "Aborted");
+         }            
+            
          // Apply the patch.
-         if (File.Exists("RunTime\\ICSharpCode.SharpZipLib.dll"))
-            File.Copy("RunTime\\ICSharpCode.SharpZipLib.dll", "ICSharpCode.SharpZipLib.dll");
-         bool ok = Run("Apply patch", "%APSIM%\\Model\\cscs.exe", 
-                       "/r:ICSharpCode.SharpZipLib.dll %APSIM%\\Model\\Build\\ApplyPatch.cs %APSIM%",
-                       "%APSIM%\\Model");   
+         Run("Apply patch", "%APSIM%\\Model\\cscs.exe", 
+             "/r:ICSharpCode.SharpZipLib.dll %APSIM%\\Model\\Build\\ApplyPatch.cs %APSIM%",
+             "%APSIM%\\Model");   
          
          // Run the version stamper.
-         if (ok)
-            ok = Run("Run version stamper", "%APSIM%\\Model\\cscs.exe", 
-                "%APSIM%\\Model\\Build\\VersionStamper.cs Directory=%APSIM% [Increment=Yes]", 
-                "%APSIM%\\Model\\Build");
+         Run("Run version stamper", "%APSIM%\\Model\\cscs.exe", 
+             "%APSIM%\\Model\\Build\\VersionStamper.cs Directory=%APSIM% [Increment=Yes]", 
+             "%APSIM%\\Model\\Build");
          
          // Compile the JobScheduler.
-         if (ok)
-            // ok = Run("Compile job scheduler", "make.exe", "--always-make", "%APSIM%\\Model\\JobScheduler");
-            ok = Run("Compile job scheduler", "%VS100COMNTOOLS%\\..\\IDE\\devenv.exe",
-                                              "%APSIM%\\Model\\JobScheduler\\JobScheduler.sln /build debug", 
-                                              "%APSIM%\\Model\\JobScheduler");
+         // Run("Compile job scheduler", "make.exe", "--always-make", "%APSIM%\\Model\\JobScheduler");
+         Run("Compile job scheduler", "%VS100COMNTOOLS%\\..\\IDE\\devenv.exe",
+                                      "%APSIM%\\Model\\JobScheduler\\JobScheduler.sln /build debug", 
+                                      "%APSIM%\\Model\\JobScheduler");
          
          // Run the JobScheduler.
-         if (ok)
-            ok = Run("Run job scheduler", "Model\\JobScheduler.exe", "%APSIM%\\Model\\Build\\BuildAll.xml Target=Bob");
+         Run("Run job scheduler", "Model\\JobScheduler.exe", "%APSIM%\\Model\\Build\\BuildAll.xml Target=Bob");
+         
+         // ******* If we get this far then assume everything ran clean.
          
          // If it ran cleanly then update status and send email.
-         string Status = "Fail";
-         if (ok)
-            Status = "Pass";
-         Run("Set status of job", "UpdateFieldInDB.exe", "Status " + Status, "%APSIM%\\Model");
-         
-         ok = Run("Create summary Html for email", "CreateSummaryHtml.exe", "", "%APSIM%\\Model");
-        
-         if (ok)            
-            Run("Do commit if clean", "IfCleanDoCommit.exe", "%APSIM%", "%APSIM%\\Model");
-
-         //Run("Send email", "SendEmail.exe", "@Build\\MailList.txt", "%APSIM%\\Model");
-         
+         Run("Set status of job", "UpdateFieldInDB.exe", "Status Pass", "%APSIM%\\Model");
+         Run("Do commit if clean", "IfCleanDoCommit.exe", "%APSIM%", "%APSIM%\\Model");
+            
+         // Get revision number and save in DB.
+         string StdOut = Run("Get tip revision number", "svn.exe", "info http://apsrunet.apsim.info/svn/apsim/trunk", "%APSIM");
+         string[] StdOutLines = StdOut.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+         if (StdOutLines.Length < 6)
+            throw new Exception("Invalid output from svn INFO: \n" + StdOut);
+         int TipRevisionNumber = Convert.ToInt32(CSGeneral.StringManip.SplitOffAfterDelimiter(ref StdOutLines[4], " "));
+         DB.UpdateRevisionNumber(JobID, TipRevisionNumber);
       }
       catch (Exception err)
       {
+         Run("Set status of job", "UpdateFieldInDB.exe", "Status Fail", "%APSIM%\\Model");
          Console.WriteLine(err.Message);
          return 1;
       }
+      finally
+      {
+         if (DB != null)
+            DB.Close();
+      }
+
+      // Copy the BuildAllOutput.xml to the web folder.
+      string SourceBuildAllOutputFileName = Path.Combine(APSIMFolder, "Model", "Build", "BuildAllOutput.xml");
+      string DestBuildAllOutputFileName = Path.Combine("C:\\inetpub\\wwwroot\\Files", "BuildAllOutput.xml");
+      File.Copy(SourceBuildAllOutputFileName, DestBuildAllOutputFileName, true);
+
+      // Send email to all.
+      Run("Create summary Html for email", "CreateSummaryHtml.exe", "", "%APSIM%\\Model");
+      Run("Send email", "SendEmail.exe", "@Build\\MailList.txt", "%APSIM%\\Model");         
+
       return 0;
    }
    
@@ -75,7 +110,7 @@ class BobMain
    /////////////////////////////////////////////////////////////////////////////////////////////
   
    // Returns StdOut.
-   static bool Run(string Name, string Executable, string Arguments, string JobFolder = null)
+   static string Run(string Name, string Executable, string Arguments, string JobFolder = null)
    {
       Executable = ReplaceEnvironmentVariables(Executable);
       if (!File.Exists(Executable))
@@ -88,8 +123,7 @@ class BobMain
       if (JobFolder != null)
          JobFolder = ReplaceEnvironmentVariables(JobFolder);
       Process P = RunProcess(Executable, Arguments, JobFolder);
-      CheckProcessExitedProperly(Name, P);
-      return P.ExitCode == 0;
+      return CheckProcessExitedProperly(Name, P);
    }
    
    static Process RunProcess(string Executable, string Arguments, string JobFolder)
@@ -112,7 +146,7 @@ class BobMain
       return PlugInProcess;
    }
    
-   static void CheckProcessExitedProperly(string Name, Process PlugInProcess)
+   static string CheckProcessExitedProperly(string Name, Process PlugInProcess)
    {
       string msg = PlugInProcess.StandardOutput.ReadToEnd();
       PlugInProcess.WaitForExit();
@@ -122,12 +156,13 @@ class BobMain
               IndentText(PlugInProcess.StartInfo.FileName + " " + PlugInProcess.StartInfo.Arguments + "\r\n\r\n" +
                          msg + "\r\n" + 
                          PlugInProcess.StandardError.ReadToEnd(), 4);
-         Console.WriteLine(msg);
+         throw new Exception(msg);
       }
       else
       {
          Console.WriteLine("[Pass] " + Name);
          Console.WriteLine(IndentText(msg, 4));
+         return msg;
       }
    }   
    

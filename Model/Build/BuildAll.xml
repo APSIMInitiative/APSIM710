@@ -722,6 +722,7 @@
    <!-- ############### Release target ############### -->
    <Target name="Release">
       <DependsOn>BobBuildAndRun</DependsOn>
+      <DependsOn>Documentation</DependsOn>
       <Job name="Compile InsertFilesIntoSetup">
          <WorkingDirectory>%APSIM%/Release/InsertFilesIntoSetup</WorkingDirectory>
          <CommandLine>"%VS100COMNTOOLS%\..\IDE\devenv" InsertFilesIntoSetup.sln /build release</CommandLine>

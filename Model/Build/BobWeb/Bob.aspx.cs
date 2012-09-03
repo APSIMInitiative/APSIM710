@@ -32,10 +32,13 @@ namespace BobWeb
                 StringManip.SplitOffBracketedValue(ref PatchFileNameNoBrackets, '(', ')');
                 Row["PatchFileName"] = PatchFileName;
                 Row["PatchFileNameShort"] = PatchFileNameNoBrackets;
-                string Status = "<a href=\"http://bob.apsim.info/files/" + PatchFileName + ".xml\"> Win32:" + Row["Status"].ToString();
+                string Status = "<a href=\"http://bob.apsim.info/files/" + PatchFileName + ".txt\"> Win32:" + Row["Status"].ToString();
+
                 if (!Convert.IsDBNull(Row["NumDiffs"]) && Convert.ToInt32(Row["NumDiffs"]) > 0)
                     Status += " (" + Row["NumDiffs"].ToString() + ")";
                 Status += "</a>";
+
+                Status += " <a href=\"http://bob.apsim.info/files/" + PatchFileName + ".xml\">(xml)</a>";
 
                 if (!Convert.IsDBNull(Row["LinuxStatus"]))
                 {

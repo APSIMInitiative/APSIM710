@@ -35,7 +35,8 @@ public class Apsim
                 if (Macros.ContainsKey("Simulation"))
                     SimulationName = Macros["Simulation"];
 
-                Apsim.Start(FileName, SimulationName);
+                string FullFileName = Path.GetFullPath(FileName.Replace("\"", ""));
+                Apsim.Start(FullFileName, SimulationName);
 
                 Apsim.WaitForAPSIMToFinish();
             }
@@ -97,7 +98,7 @@ public class Apsim
                 NumJobsBeingRun = SimulationPaths.Count;
                 foreach (string SimulationPath in SimulationPaths)
                 {
-                    string Arguments = F.FileName + " " + StringManip.DQuote("Simulation=" + SimulationPath);
+                    string Arguments = StringManip.DQuote(F.FileName) + " " + StringManip.DQuote("Simulation=" + SimulationPath);
                     Job J = new Job(Executable + " " + Arguments, Path.GetDirectoryName(F.FileName));
                     J.Name = SimulationPath;
                     P.Targets[0].Jobs.Add(J);

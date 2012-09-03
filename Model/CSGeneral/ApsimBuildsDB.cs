@@ -201,6 +201,29 @@ namespace CSGeneral
             }
         }
 
+         /// <summary>
+         /// Return the patch file name of the specified job.
+         /// </summary>
+         public object Get(string FieldName, int JobID)
+         {
+            string SQL = "SELECT " + FieldName + " FROM BuildJobs WHERE ID = " + JobID.ToString();
+
+            SqlDataReader Reader = null;
+            try
+            {
+               SqlCommand Command = new SqlCommand(SQL, Connection);
+               Reader = ExecuteReader(Command);
+               if (Reader.Read())
+                   return Reader[0];
+            }
+            finally
+            {
+               if (Reader != null)
+                  Reader.Close();
+            }
+            return "";
+         }        
+        
         /// <summary>
         /// Update the status of the specified build job.
         /// </summary>
