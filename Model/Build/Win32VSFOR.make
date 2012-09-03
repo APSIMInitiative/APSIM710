@@ -6,6 +6,9 @@ LD=ld
 RC=windres
 CC=gcc
 
+include $(APSIM)\Model\Build\VersionInfo.make
+
+
 # add .lib to all user libraries
 LIBS := $(foreach library,$(LIBS),../$(library).lib)
 STATICLIBS := $(foreach library,$(STATICLIBS),../$(library).a)
@@ -46,13 +49,6 @@ all: $(APSIM)/Model/$(PROJECT).dll
 endif
 
 ifeq ($(PROJECTTYPE),dll)
-
-# Normally these are obtained as environment variables, but we want to be sure they are not left undefined
-ifeq ($(MAJOR_VERSION),)
-  MAJOR_VERSION = 1
-  MINOR_VERSION = 0
-  BUILD_NUMBER = 0
-endif
 
 RESOBJ = dllres.obj
 LDFLAGS:= -Xlinker --enable-stdcall-fixup -Xlinker --no-allow-shlib-undefined -Xlinker --disable-auto-import

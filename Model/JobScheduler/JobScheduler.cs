@@ -9,633 +9,282 @@ using System.Collections.Specialized;
 using System.Net.Sockets;
 using System.Net;
 using CSGeneral;
+using System.Xml.Serialization;
+using System.Reflection;
 
+/// <summary>
+/// This job scheduler is capable of running jobs across multiple cores on multiple computers. It uses
+/// a client / server architecture, this class being the server. The JobRunner class represents the client
+/// and does the actual running of the jobs.
+/// 
+/// This job scheduler is given a "Project" to run which contains a list of "Target" instances, which in
+/// turn contains a list of "Job" instances. The Job class represents a job and describes the command line of a job. 
+/// 
+/// The command line entry point to JobScheduler takes an XML file name that is a deserialised "Project". The second 
+/// entry point (Start) takes an instance of a project.
+/// 
+/// A deserialised Project looks like this.
+///   <Project>
+///      <Target name="Compile">
+///         <Job name="Compile General">
+///            <WorkingDirectory>%APSIM%/Model/General</WorkingDirectory>
+///            <CommandLine>make</CommandLine>
+///         </Job>
+///         <Job name="Compile ApsimShared">
+///            <DependsOn>Compile General</DependsOn>
+///            <WorkingDirectory>%APSIM%/Model/ApsimShared</WorkingDirectory>
+///            <CommandLine>make</CommandLine>
+///         </Job>
+///      </Target>
+///   </Project>
+///   
+/// A Target or Job can "DependOn" other jobs and targets. In this case they will only run after the dependency
+/// sucessfully runs (status=Pass).
+/// 
+/// Once the JobScheduler has completed, it will serialise the Project back to an XML file that has "Output" appended
+/// to the file name e.g. BuildAll.xml will become BuildAllOutput.xml. It will also produce a log XML file which 
+/// contains a linear list of jobs, sometimes useful to work out what went wrong.
+/// 
+/// The <WorkingDirectory> and <CommandLine> elements of a job can have references to 
+/// environment variables by surrounding their names with % characters. In addition several additional variable
+/// are available to be used:
+///     %apsim%   - the root APSIM directory: c:\Apsim
+///     %server%  - the machine name of the computer running the JobScheduler: bob.apsim.info
+///     
+/// The JobScheduler listens to a socket port (13000) allowing external programs to talk to the 
+/// scheduler. Commands that can be sent to the port are:
+///    GetJob~NumJobs                                     -> returns job xml or NULL
+///    JobFinished~Job XML                                -> returns "OK" or "ERROR"
+///    AddTarget~TargetXML                                -> returns "OK"
+///    AddVariable~VariableName~VariableValue             -> returns "OK"
+///    GetVariable~VariableName                           -> returns the variable value
+/// </summary>
 
 public class JobScheduler
 {
-    /// <summary>
-    /// Main entry point to scheduler. It takes a single argument - a job XML file formatted like this:
-    ///   <Folder name="..." >
-    ///      <Job name="...">
-    ///         <WorkingDirectory>...</WorkingDirectory>
-    ///         <CommandLine>...</CommandLine>
-    ///      </Job> 
-    ///   </Folder>
-    /// Once the JobScheduler has completed, it will generate an XML output file that will look like this:
-    ///   <Folder name="..." status="Pass">
-    ///      <Job name="..."  status="Pass">
-    ///         <WorkingDirectory>...</WorkingDirectory>
-    ///         <CommandLine>...</CommandLine>
-    ///         <ExitCode>0</ExitCode>
-    ///         <ElapsedTime>10</ElapsedTime>
-    ///         <StdOut>...</StdOut>
-    ///         <StdErr>...</StdErr>
-    ///      </Job> 
-    ///   </Folder>
-    /// Jobs may be nested within folders for convenience. Sibling jobs are run asynchronously. 
-    /// If a job or folder has a wait="yes" attribute, then the scheduler will wait until all
-    /// previous sibling jobs have completed and "passed" before continuing.
-    /// 
-    /// The <WorkingDirectory> and <CommandLine> elements of a job can have references to 
-    /// environment variables by surrounding their names with % characters e.g. %apsim%. In addition
-    /// both elements can reference a special %JobPath% variable that contains the address of
-    /// the job.
-    /// This NodePath can then be passed during a socket connection (described below) when an
-    /// external program wants to add jobs to the scheduler.
-    /// 
-    /// The JobScheduler listens to a socket port (13000) allowing external programs to talk to the 
-    /// scheduler. Commands that can be sent to the port are:
-    ///    AddXML~NodePath~XML to add
-    ///    AddXMLFile~NodePath~File name
-    ///    SaveXMLToFile~File name
-    ///    AddVariable~VariableName~VariableValue
-    ///    GetVariable~VariableName   <- will return the value of the specified variable
-    /// A "wait" atribute (with a value of "yes" or "no") can be added to a Job or a Folder node. 
-    /// This forces the job scheduler to wait until all previous jobs have finished running.
-    /// A "IgnoreErrors" attribute (with a value of "yes" or "no") can be added to a Job or a Folder node.
-    /// It must be added with a "wait" attribute. When it has a value of "yes" then previous errors will 
-    /// be ignored and the Job or Folder will be always executed.
-    /// 
-    /// If the root node of the XML file has LoopForever="yes", then the scheduler will only end when
-    /// the user presses ESC.
-    /// </summary>
     static int Main(string[] args)
     {
         try
         {
-            if (args.Length >= 1)
-            {
-                JobScheduler Scheduler = new JobScheduler();
-                Scheduler.StoreMacros(args);
-                Scheduler.StoreOptions(args);
-
-                // Potentially loop forever if the Go method returns true.
-                while (Scheduler.Go(args[0]))
-                {
-                    Scheduler.Macros.Clear();
-                    Scheduler.StoreMacros(args);
-                }
-                if (Scheduler.StopSignal)
-                    return 2;
-            }
-
+            JobScheduler Scheduler = new JobScheduler();
+            if (Scheduler.RunJob(args))
+                return 1;
             else
-                throw new Exception("Usage: JobScheduler job.xml [MACRONAME=MACROVALUE] [-IgnoreErrors yes]...");
+                return 0;
         }
         catch (Exception err)
         {
             Console.WriteLine(err.Message);
             return 1;
         }
-
-        return 0;
     }
 
     /// Data items
-    private int NumCPUsToUse = 1;
     private bool CancelWorkerThread;
-    private int NumberJobsRunning = 0;
     private Thread SocketListener = null;
-    private XmlDocument Doc = new XmlDocument();
-    private Dictionary<string, string> Macros = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
-    private Dictionary<string, string> Options = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+    private Dictionary<string, string> Macros;
     private bool SomeJobsHaveFailed = false;
-    public bool StopSignal;
-    private int TotalJobs;
-    private int JobsCompleted;
-
-    /// <summary>
-    /// Store all macros found in the command line arguments.
-    /// </summary>
-    private void StoreMacros(string[] args)
-    {
-        for (int i = 1; i < args.Length; i++)
-        {
-            string[] MacroBits = args[i].Split("=".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            if (MacroBits.Length == 2)
-                Macros.Add(MacroBits[0], MacroBits[1]);
-        }
-    }
-
-    private void StoreOptions(string[] args)
-    {
-        Options.Add("-IgnoreErrors", "no");
-
-        for (int i = 1; i < args.Length; i++)
-            if (args[i][0] == '-')
-            {
-                string option = args[i];
-                string arg = "";
-                if (i + 1 < args.Length && args[i + 1][0] != '-')
-                {
-                    arg = args[i + 1];
-                    i++;
-                }
-                if (Options.ContainsKey(option))
-                    Options.Remove(option);
-                Options.Add(option, arg);
-            }
-    }
+    private Project Project;
+    private Project Log = new Project();
+    private int NumJobsRunning = 0;
 
     /// <summary>
     /// Start running jobs.
     /// </summary>
-    private bool Go(string JobFileName)
+    private bool RunJob(string[] args)
     {
-        // Work out how many processes to use.
-        string NumberOfProcesses = Environment.GetEnvironmentVariable("NUMBER_OF_PROCESSORS");
-        if (NumberOfProcesses != null && NumberOfProcesses != "")
-            NumCPUsToUse = Convert.ToInt32(NumberOfProcesses);
-        else 
-           {
-           Process P = Utility.RunProcess("/bin/sh", "-c \"cat /proc/cpuinfo | grep processor | wc -l\"", ".");
-           NumCPUsToUse = Convert.ToInt32(Utility.CheckProcessExitedProperly(P));
-           }
-        NumCPUsToUse = Math.Max(NumCPUsToUse, 1);
+        // Setup the macros dictionary.
+        Macros = Utility.ParseCommandLine(args);
+        if (args.Length < 2 || !Macros.ContainsKey("Target"))
+            throw new Exception("E.g. Usage: JobScheduler job.xml Target=Compile [CreateRunner=No]");
 
-        #region Core number override for AMD CPUs
-        if (Options.ContainsKey("-n"))
-        {
-            string num;
-            Options.TryGetValue("-n", out num);
-            NumberOfProcesses = num;
-            try
-            {
-                NumCPUsToUse = Convert.ToInt32(num);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Invalid number for -n.");
-                return false;
-            }
-            if (NumCPUsToUse <= 0)
-                NumCPUsToUse = 1;
-        }
+        // Deserialise to a proejct.
+        string JobFileName = args[0];
+        XmlSerializer x = new XmlSerializer(typeof(Project));
+        Project = x.Deserialize(new FileStream(JobFileName, FileMode.Open)) as Project;
 
-        string name = System.Environment.MachineName;
-        if (name.ToUpper().Equals("BOB"))  //this is so wrong I think my head will explode, but it's the only thing that returns the correct info... JF 23/07/12
-        {
-            Console.WriteLine("Workaround for running on Bob. Doubling core count. Use -n <number of cores> to override.");
-            NumCPUsToUse = 64;
-        }
-        #endregion
+        DateTime StartTime = DateTime.Now;
 
-        Console.WriteLine("Managing " + NumCPUsToUse + " Process" + (NumCPUsToUse > 1 ? "es" : ""));
-        Console.WriteLine("Menu: ");
-        Console.WriteLine("   ESC - shut down JobScheduler when possible.");
-        Console.WriteLine("     S - signal a shutdown to caller of JobScheduler when all jobs complete.");
+        // Start the socket listener on Project
+        Start(Project, Macros["Target"]);
 
-
-        bool ESCWasPressed = false;
+        // Now wait for socket listener to abort or for the target to finish
         CancelWorkerThread = false;
-        NumberJobsRunning = 0;
         SomeJobsHaveFailed = false;
-        StopSignal = false;
-
-        // Load the job file.
-        Doc.Load(JobFileName);
-        XmlNode CurrentJob = Doc.DocumentElement;
-        TotalJobs = Doc.GetElementsByTagName("Job").Count;
-        JobsCompleted = 0;
-
-        // Create a socket listener.
-        SocketListener = new Thread(ListenForTCPConnection);
-        SocketListener.Start(CurrentJob);
-
-        // Main worker loop to run all jobs.
-        while (!CancelWorkerThread && CurrentJob != null)
+        while (!CancelWorkerThread && !Project.AllTargetsFinished)
         {
-            // Run the job in it's own thread.
-            if (CurrentJob.Name == "Job" && StatusOfJob(CurrentJob) == "")
-            {
-                lock (this)
-                {
-                    SetStatusOfJob(CurrentJob, "Running");
-                    NumberJobsRunning++;
-                }
-                Thread JobThread = new Thread(RunJob);
-                JobThread.Start(CurrentJob);
-            }
             Thread.Sleep(100);
-            CurrentJob = GetNextJobToRun(CurrentJob);
-
-            // Poll for a keypress. If it is the ESC key, then signal a shutdown.
             if (Console.KeyAvailable)
             {
                 ConsoleKeyInfo key = Console.ReadKey();
                 if (key.Key == ConsoleKey.Escape)
-                {
-                    Console.WriteLine("Shutting down scheduler.");
-                    Console.WriteLine("Waiting for currently running jobs to finish...");
                     CancelWorkerThread = true;
-                    ESCWasPressed = true;
-                }
-                else if (key.Key == ConsoleKey.S)
-                {
-                    Console.WriteLine("Will signal to the caller of JobScheduler that a stop has been signalled.");
-                    ESCWasPressed = true;
-                    StopSignal = true;
-                }
             }
-            TotalJobs = Doc.GetElementsByTagName("Job").Count;
+
+            // If we started a JobRunner and it has exited for some reason then terminate us.
+            if (RunnerProcess != null && RunnerProcess.HasExited)
+                CancelWorkerThread = true;
         }
 
         // Wait until all jobs have finished.
         CancelWorkerThread = true;
-        while (NumberJobsRunning > 0 || SocketListener != null)
+        while (SocketListener != null)
             Thread.Sleep(500);
 
-        if (Macros.ContainsKey("OutputFileName"))
-            Doc.Save(Macros["OutputFileName"]);
+        DateTime FinishTime = DateTime.Now;
+        int ElapsedTime = Convert.ToInt32((FinishTime - StartTime).TotalSeconds);
+
+        // Write log message.
+        Console.WriteLine("");
+        if (SomeJobsHaveFailed)
+            Console.Write("[Fail] ");
         else
-            Doc.Save(JobFileName.Replace(".xml", "Output.xml"));
-        return !ESCWasPressed & XmlHelper.Attribute(Doc.DocumentElement, "LoopForever") == "yes";
+            Console.Write("[Pass] ");
+        Console.Write("Project: " + Path.GetFileNameWithoutExtension(JobFileName));
+        
+        Console.WriteLine(" [" + ElapsedTime.ToString() + "sec]");
+        Console.WriteLine("");
+
+
+        x = new XmlSerializer(typeof(Project));
+        StreamWriter s = new StreamWriter(JobFileName.Replace(".xml", "Output.xml"));
+        x.Serialize(s, Project);
+        s.Close();
+        return SomeJobsHaveFailed;
     }
 
     /// <summary>
-    /// Return the next job to run or null if no more to do for now.
+    /// Start running the jobs specified in the project.
     /// </summary>
-    private XmlNode GetNextJobToRun(XmlNode CurrentJob)
+    Process RunnerProcess;
+    public void Start(Project P, string TargetToRun = null)
     {
-        XmlNode JobToRun = CurrentJob;
+        Project = P;
 
-        lock (this)
+        // Give the project to each target.
+        foreach (Target t in Project.Targets)
+            t.Project = Project;
+
+        if (TargetToRun == null)
         {
-            if (NumberJobsRunning < NumCPUsToUse)
-            {
-                if (CurrentJob.Name == "Folder" && StatusOfJob(CurrentJob) == "" && CurrentJob.FirstChild != null)
-                {
-                    XmlHelper.SetValue(CurrentJob, "StartTime", DateTime.Now.ToString());
-                    JobToRun = CurrentJob.FirstChild;
-                }
-
-                else
-                {
-                    if (CurrentJob.NextSibling == null)
-                    {
-                        JobToRun = CurrentJob.ParentNode;
-                        SetStatusOfFolder(JobToRun);
-                    }
-
-                    else
-                        JobToRun = CurrentJob.NextSibling;
-                }
-
-                // All finished i.e. are we at the root node?
-                if (CurrentJob is XmlDocument)
-                {
-                    XmlDocument Doc = (XmlDocument)CurrentJob;
-                    if (StatusOfJob(Doc.DocumentElement) != "Running")
-                        return null;
-                    else
-                    {
-                        SetStatusOfFolder(Doc.DocumentElement);
-                        return CurrentJob;
-                    }
-                }
-
-                // Look for a wait attribute. If found then check that previous siblings
-                // have all passed. If not then goto parent.
-                if (XmlHelper.Attribute(JobToRun, "wait") == "yes")
-                {
-                    if (AllPreviousSiblingsHaveCompleted(JobToRun))
-                    {
-                        bool IgnoreErrors = XmlHelper.Attribute(JobToRun, "IgnoreErrors") == "yes" ||
-                                            Options["-IgnoreErrors"] == "yes";
-
-                        if (!AllPreviousSiblingsPassed(JobToRun) && !IgnoreErrors)
-                        {
-                            // Don't run any more jobs in this folder.
-                            JobToRun = CurrentJob.ParentNode;
-                            SetStatusOfFolder(JobToRun);
-                        }
-                    }
-
-                    else
-                    {
-                        // We have to wait until previous siblings have finished.
-                        JobToRun = CurrentJob;
-                    }
-                }
-
-            }
+            // If there is only 1 target then assume we run that.
+            if (Project.Targets.Count == 1)  
+                Project.Targets[0].NeedToRun = true;
+        }
+        else
+        {
+            Target T = Project.FindTarget(Macros["Target"]);
+            if (T == null)
+                throw new Exception("Cannot find target: " + TargetToRun);
+            T.NeedToRun = true;
         }
 
-        return JobToRun;
-    }
+        if (Macros == null)
+            Macros = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
 
-    /// <summary>
-    /// Return true if all previous siblings have finished running.
-    /// </summary>
-    private bool AllPreviousSiblingsHaveCompleted(XmlNode CurrentJob)
-    {
-        XmlNode Sibling = CurrentJob.PreviousSibling;
-        while (Sibling != null)
+        // Add built-in macros.
+        string APSIMRootDirectory = Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\..");
+        Macros.Add("APSIM", APSIMRootDirectory);
+        Environment.SetEnvironmentVariable("APSIM", APSIMRootDirectory);
+
+        // Create a log project where we'll store all finished jobs - in order.
+        Log.Targets.Add(new Target());
+        Log.Targets[0].StartTime = DateTime.Now;
+
+        // Make sure that there aren't 2 jobs with the same name.
+        Project.CheckForDuplicateJobNames();
+
+        NumJobsRunning = 0;
+        RunnerProcess = null;
+
+
+        // Create a socket listener.
+        SocketListener = new Thread(ListenForTCPConnection);
+        SocketListener.Start();
+
+        bool CreateRunner = true;
+        if (Macros.ContainsKey("CreateRunner") && Macros["CreateRunner"].ToLower() == "no")
+            CreateRunner = false;
+        if (CreateRunner)
         {
-            if (Sibling.Name == "Job" || Sibling.Name == "Folder")
-            {
-                if (StatusOfJob(Sibling) == "Running")
-                    return false;
-            }
-            Sibling = Sibling.PreviousSibling;
+            string BinDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            ProcessStartInfo Info = new ProcessStartInfo();
+            Info.WorkingDirectory = BinDir;
+            Info.FileName = Path.Combine(BinDir, "JobRunner.exe");
+            Info.Arguments = "Server=localhost Port=13000 AutoClose=Yes";
+            Info.CreateNoWindow = true;
+            Info.UseShellExecute = false;
+            if (Environment.MachineName.ToLower() == "bob")
+                Info.Arguments += " NumCPUs=64";
+            RunnerProcess = Process.Start(Info);
         }
-        return true;
-
     }
 
+
     /// <summary>
-    /// Return true if all previous siblings of the specified job have a "pass" status
+    /// Wait for all jobs to complete before returning.
     /// </summary>
-    private bool AllPreviousSiblingsPassed(XmlNode CurrentJob)
+    public void WaitForFinish()
     {
-        XmlNode Sibling = CurrentJob.PreviousSibling;
-        while (Sibling != null)
+        while (SocketListener != null)
         {
-            if (Sibling.Name == "Job" || Sibling.Name == "Folder")
-            {
-                if (StatusOfJob(Sibling) != "Pass")
-                    return false;
-            }
-            Sibling = Sibling.PreviousSibling;
-        }
-        return true;
-    }
-
-    /// <summary>
-    /// Return the status of the specified job node.
-    /// </summary>
-    private string StatusOfJob(XmlNode JobNode)
-    {
-        return XmlHelper.Attribute(JobNode, "status");
-    }
-
-    /// <summary>
-    /// Set the status of the specified job node.
-    /// </summary>
-    private void SetStatusOfJob(XmlNode JobNode, string Status)
-    {
-        if (JobNode is XmlDocument)
-            JobNode = ((XmlDocument)JobNode).DocumentElement;
-        if (JobNode != null)
-            XmlHelper.SetAttribute(JobNode, "status", Status);
-        if (Status == "Fail")
-            SomeJobsHaveFailed = true;
-    }
-
-    /// <summary>
-    /// Set the status of the specified folder node by iterating through all child
-    /// nodes and looking at their status.
-    /// </summary>
-    private void SetStatusOfFolder(XmlNode FolderNode)
-    {
-        if (FolderNode == null)
-            return;
-
-        if (FolderNode is XmlDocument)
-            FolderNode = ((XmlDocument)FolderNode).DocumentElement;
-
-        string Status = "Pass";
-        for (int i = 0; i < FolderNode.ChildNodes.Count; i++)
-        {
-            XmlNode Child = FolderNode.ChildNodes[i];
-            if (Child.Name == "Job" || Child.Name == "Folder")
-            {
-                string ChildStatus = StatusOfJob(Child);
-                if (ChildStatus == "Running")
-                {
-                    Status = "Running";
-                    break;
-                }
-                if (ChildStatus == "")
-                {
-                    Status += " (Incomplete)";
-                    break;
-                }
-                if (ChildStatus == "Fail")
-                    Status = "Fail";
-            }
-        }
-        SetStatusOfJob(FolderNode, Status);
-        if (!Status.Contains("Incomplete") && Status != "Running" && XmlHelper.Value(FolderNode, "StartTime") != "")
-        {
-            DateTime StartTime = DateTime.Parse(XmlHelper.Value(FolderNode, "StartTime"));
-            TimeSpan ElapsedTime = DateTime.Now - StartTime;
-            XmlHelper.SetAttribute(FolderNode, "ElapsedTime", ElapsedTime.TotalSeconds.ToString("f0"));
-            if (FolderNode != FolderNode.OwnerDocument.DocumentElement)
-                SetStatusOfFolder(FolderNode.ParentNode);
+            if (Project.AllTargetsFinished)
+                CancelWorkerThread = true;
+            Thread.Sleep(500);
         }
     }
 
     /// <summary>
-    /// Run the specified job. This method executes in it's own thread.
+    /// Stop all jobs.
     /// </summary>
-    private void RunJob(object xmlNode)
+    public void Stop()
     {
-        XmlNode JobNode = (XmlNode)xmlNode;
-        try
+        // Wait until the socket listener has exited.
+        CancelWorkerThread = true;
+        while (SocketListener != null)
+            Thread.Sleep(100);
+
+        if (RunnerProcess.ExitCode != 0)
         {
-            string NodePath = "/" + XmlHelper.FullPath(JobNode);
-            if (NodePath[NodePath.Length - 1] == '/')
-                NodePath = NodePath.Remove(NodePath.Length - 1);
-
-            // Get and break up the command line. First "word" on command line will be the
-            // executable name, the rest will be the argments.
-            string CommandLine;
-            string WorkingDirectory;
-            lock (this)
-            {
-                if (Path.DirectorySeparatorChar == '/')
-                    CommandLine = XmlHelper.Value(JobNode, "CommandLineUnix");
-                else
-                    CommandLine = XmlHelper.Value(JobNode, "CommandLine");
-                WorkingDirectory = XmlHelper.Value(JobNode, "WorkingDirectory");
-            }
-
-            // Replace any environment variables on commandline and workingdirectory.
-            CommandLine = ReplaceEnvironmentVariables(CommandLine);
-            CommandLine = CommandLine.Replace("%JobPath%", NodePath);
-            WorkingDirectory = ReplaceEnvironmentVariables(WorkingDirectory);
-
-            // Strip of any redirection character.
-            string StdOutFile = "";
-            CommandLine = CommandLine.Replace("&gt;", ">");
-            int PosRedirect = CommandLine.IndexOf('>');
-            if (PosRedirect != -1)
-            {
-                StdOutFile = CommandLine.Substring(PosRedirect + 1).Trim();
-                StdOutFile = StdOutFile.Replace("\"", "");
-                if (!Path.IsPathRooted(StdOutFile) && StdOutFile != "nul")
-                    StdOutFile = Path.Combine(WorkingDirectory, StdOutFile);
-                CommandLine = CommandLine.Remove(PosRedirect);
-            }
-
-
-            StringCollection CommandLineBits = StringManip.SplitStringHonouringQuotes(CommandLine, " ");
-            string Executable = "";
-            if (CommandLineBits.Count >= 1)
-                Executable = CommandLineBits[0].Replace("\"", "");
-
-            // If no path is specified on the Executable - go find the executable on the path if possible.
-            if (!Path.IsPathRooted(Executable))
-            {
-                if (File.Exists(Path.Combine(WorkingDirectory, Executable)))
-                {
-                    Executable = Path.Combine(WorkingDirectory, Executable);
-                }
-                else
-                {
-                    string FullFileName = Utility.FindFileOnPath(Executable);
-                    if (FullFileName != "")
-                        Executable = FullFileName;
-                }
-            }
-            string Arguments = "";
-            for (int i = 1; i < CommandLineBits.Count; i++)
-            {
-                if (i > 1)
-                    Arguments += " ";
-                if (CommandLineBits[i].Contains(" "))
-                    Arguments += StringManip.DQuote(CommandLineBits[i]);
-                else
-                    Arguments += CommandLineBits[i];
-            }
-
-            // Create a process object, configure it and then start it.
-            DateTime StartTime = DateTime.Now;
-
-            OutputReader stdoutReader = null;
-            OutputReader stderrReader = null;
-            try
-            {
-                int ExitCode = 0;
-                if (Executable != "")
-                {
-                    Process process = new Process();
-                    process.StartInfo.UseShellExecute = false;
-                    process.StartInfo.ErrorDialog = false;
-                    process.StartInfo.RedirectStandardOutput = true;
-                    process.StartInfo.RedirectStandardError = true;
-                    process.StartInfo.RedirectStandardInput = true;
-                    process.StartInfo.CreateNoWindow = true;
-                    process.StartInfo.FileName = Executable;
-                    process.StartInfo.Arguments = Arguments;
-                    process.StartInfo.WorkingDirectory = WorkingDirectory;
-
-                    process.Start();
-
-                    ManualResetEvent _setStdOutFinished = new ManualResetEvent(false);
-                    stdoutReader = new OutputReader(process.StandardOutput, _setStdOutFinished);
-
-                    ManualResetEvent _setStdErrFinished = new ManualResetEvent(false);
-                    stderrReader = new OutputReader(process.StandardError, _setStdErrFinished);
-
-                    process.StandardInput.Close();
-                    process.WaitForExit();
-                    _setStdOutFinished.WaitOne();
-                    _setStdErrFinished.WaitOne();
-                    ExitCode = process.ExitCode;
-                }
-                TimeSpan ElapsedTime = DateTime.Now - StartTime;
-                lock (this)
-                {
-                    if (ExitCode == 0)
-                        SetStatusOfJob(JobNode, "Pass");
-                    else
-                        SetStatusOfJob(JobNode, "Fail");
-
-                    XmlHelper.SetValue(JobNode, "ExitCode", ExitCode.ToString());
-                    XmlHelper.SetAttribute(JobNode, "ElapsedTime", ElapsedTime.TotalSeconds.ToString("f0"));
-                    if (stdoutReader != null && stdoutReader.buffer.Length > 0)
-                    {
-                        if (StdOutFile != "")
-                        {
-                            if (StdOutFile.ToLower() != "nul")
-                            {
-                                StreamWriter StdOutStream = new StreamWriter(StdOutFile);
-                                StdOutStream.Write(stdoutReader.buffer);
-                                StdOutStream.Close();
-                            }
-                        }
-
-                        else
-                            XmlHelper.SetValue(JobNode, "StdOut", stdoutReader.buffer.ToString());
-                    }
-                    if (stderrReader != null && stderrReader.buffer.Length > 0)
-                        XmlHelper.SetValue(JobNode, "StdErr", stderrReader.buffer.ToString());
-                }
-            }
-            catch (Exception err)
-            {
-                lock (this)
-                {
-                    SetStatusOfJob(JobNode, "Fail");
-                    XmlHelper.SetValue(JobNode, "ExitCode", "1");
-                    XmlHelper.SetAttribute(JobNode, "ElapsedTime", "0");
-                    if (stdoutReader != null)
-                        XmlHelper.SetValue(JobNode, "StdOut", stdoutReader.buffer.ToString());
-                    if (stderrReader != null)
-                        XmlHelper.SetValue(JobNode, "StdErr", stderrReader.buffer.ToString() + "\n" + err + err.Message);
-                    else
-                        XmlHelper.SetValue(JobNode, "StdErr", err + err.Message);
-                }
-            }
-
-            lock (this)
-            {
-                XmlNode Node = JobNode.ParentNode;
-                while (Node != null)
-                {
-                    SetStatusOfFolder(Node);
-                    Node = Node.ParentNode;
-                }
-                NumberJobsRunning--;
-                JobsCompleted++;
-                string msg = "Jobs Completed = " + JobsCompleted + " of " + TotalJobs +
-                        " [" + JobNode.Attributes.GetNamedItem("name").Value + (StatusOfJob(JobNode) == "Fail" ? "*FAILED*]" : "]");
-                Console.WriteLine(msg);
-            }
+            string StdOut = Utility.CheckProcessExitedProperly(RunnerProcess);
+            if (StdOut != "")
+                throw new Exception("JobRunner error: " + StdOut);
         }
-        catch (Exception err)
-        {
-            lock (this)
-            {
-                SetStatusOfJob(JobNode, "Fail (internal)");
-                XmlHelper.SetValue(JobNode, "ExitCode", "1");
-                XmlHelper.SetAttribute(JobNode, "ElapsedTime", "0");
-                XmlHelper.SetValue(JobNode, "InternalErrorMessage", err.Message + "\n" + err.Source + "\n" + err.StackTrace);
-            }
-        }
-
     }
 
     /// <summary>
-    /// Output handling for the above job runner. 
+    /// Return true if some jobs have errors.
     /// </summary>
+    public bool HasErrors { get { return SomeJobsHaveFailed; } }
 
-    private class OutputReader
-    {
-        private StreamReader _reader;
-        private ManualResetEvent _complete;
-        public StringBuilder buffer = new StringBuilder();
-        public OutputReader(StreamReader reader, ManualResetEvent complete)
+    /// <summary>
+    /// Return the number of jobs completed to caller (GUI)
+    /// </summary>
+    public int NumJobsCompleted 
+    { 
+        get
         {
-            _reader = reader;
-            _complete = complete;
-            Thread t = new Thread(new ThreadStart(ReadAll));
-            t.Start();
-        }
-
-        private void ReadAll()
-        {
-            int ch;
-            while (-1 != (ch = _reader.Read()))
-                buffer.Append((char)ch);
-
-            _complete.Set();
-        }
+            if (Log.Targets != null && Log.Targets.Count > 0 && Log.Targets[0].Jobs != null)
+                return Log.Targets[0].Jobs.Count;
+            else
+                return 0;
+        } 
     }
 
-
+    /// <summary>
+    /// Return the name of the first job with an error.
+    /// </summary>
+    public string FirstJobWithError
+    {
+        get
+        {
+            foreach (Job J in Log.Targets[0].Jobs)
+                if (J.ExitCode != 0)
+                    return J.Name;
+            return "";
+        }
+    }
 
     /// <summary>
     /// Look through the specified string for an environment variable name surrounded by
@@ -643,50 +292,54 @@ public class JobScheduler
     /// </summary>
     private string ReplaceEnvironmentVariables(string CommandLine)
     {
-        int PosPercent = CommandLine.IndexOf('%');
-        while (PosPercent != -1)
+        if (CommandLine != null)
         {
-            string Value = null;
-            int EndVariablePercent = CommandLine.IndexOf('%', PosPercent + 1);
-            if (EndVariablePercent != -1)
+            int PosPercent = CommandLine.IndexOf('%');
+            while (PosPercent != -1)
             {
-                string VariableName = CommandLine.Substring(PosPercent + 1, EndVariablePercent - PosPercent - 1);
-                Value = System.Environment.GetEnvironmentVariable(VariableName);
-                if (Value == null)
-                    Value = System.Environment.GetEnvironmentVariable(VariableName, EnvironmentVariableTarget.User);
-                if (Value == null)
+                string Value = null;
+                int EndVariablePercent = CommandLine.IndexOf('%', PosPercent + 1);
+                if (EndVariablePercent != -1)
                 {
-                    // Look in our macros.
-                    if (Macros.ContainsKey(VariableName))
-                        Value = Macros[VariableName];
+                    string VariableName = CommandLine.Substring(PosPercent + 1, EndVariablePercent - PosPercent - 1);
+                    Value = System.Environment.GetEnvironmentVariable(VariableName);
+                    if (Value == null)
+                        Value = System.Environment.GetEnvironmentVariable(VariableName, EnvironmentVariableTarget.User);
+                    if (Value == null)
+                    {
+                        // Look in our macros.
+                        if (Macros.ContainsKey(VariableName))
+                            Value = Macros[VariableName];
+                    }
                 }
+
+                if (Value != null)
+                {
+                    CommandLine = CommandLine.Remove(PosPercent, EndVariablePercent - PosPercent + 1);
+                    CommandLine = CommandLine.Insert(PosPercent, Value);
+                    PosPercent = PosPercent + 1;
+                }
+
+                else
+                    PosPercent = PosPercent + 1;
+
+                if (PosPercent >= CommandLine.Length)
+                    PosPercent = -1;
+                else
+                    PosPercent = CommandLine.IndexOf('%', PosPercent);
             }
-
-            if (Value != null)
-            {
-                CommandLine = CommandLine.Remove(PosPercent, EndVariablePercent - PosPercent + 1);
-                CommandLine = CommandLine.Insert(PosPercent, Value);
-                PosPercent = PosPercent + 1;
-            }
-
-            else
-                PosPercent = PosPercent + 1;
-
-            if (PosPercent >= CommandLine.Length)
-                PosPercent = -1;
-            else
-                PosPercent = CommandLine.IndexOf('%', PosPercent);
+            return CommandLine;
         }
-        return CommandLine;
+        else
+            return CommandLine;
     }
 
     /// <summary>
     /// Listen for a socket connection. This method executes in it's own thread.
     /// </summary>
-    public void ListenForTCPConnection(object xmlNode)
+    public void ListenForTCPConnection()
     {
         TcpListener server = null;
-        XmlNode RootNode = (XmlNode)xmlNode;
         try
         {
             // Set the TcpListener on port 13000.
@@ -696,7 +349,7 @@ public class JobScheduler
             // TcpListener server = new TcpListener(port);
             server = new TcpListener(localAddr, port);
 
-            // Start listening for client requests.
+            // Start listening for clienzt requests.
             server.Start();
 
             // Buffer for reading data
@@ -728,18 +381,21 @@ public class JobScheduler
                     string Response;
                     try
                     {
-                        Response = InterpretSocketData(data, RootNode);
+                        Response = InterpretSocketData(data);
                     }
                     catch (Exception err)
                     {
-                        Response = err.Message;
+                        Console.WriteLine(err.Message + "\r\n" + err.StackTrace);
+                        Response = "NULL";
+                        CancelWorkerThread = true;
+                        SomeJobsHaveFailed = true;
                     }
 
                     // Shutdown and end connection
                     client.Client.Send(Encoding.UTF8.GetBytes(Response));
                     client.Close();
                 }
-                Thread.Sleep(500);
+                Thread.Sleep(100);
             }
         }
         catch (SocketException e)
@@ -757,107 +413,121 @@ public class JobScheduler
     /// <summary>
     /// A client has sent us some data.
     /// Data should be formated as:
-    ///    AddXML~NodePath~XML to add
-    ///    AddXMLFile~NodePath~File name
-    ///    SaveXMLToFile~File name
-    ///    AddVariable~VariableName~VariableValue
-    ///    GetVariable~VariableName   <- will return the value of the specified variable
+    ///    GetJob~NumJobs                                     -> returns job xml or NULL
+    ///    JobFinished~Job XML                                -> returns "OK" or "ERROR"
+    ///    AddTarget~TargetXML                                -> returns "OK"
+    ///    AddVariable~VariableName~VariableValue             -> returns "OK"
+    ///    GetVariable~VariableName                           -> returns the variable value
     /// </summary>
-    private string InterpretSocketData(string Data, XmlNode RootNode)
+    private string InterpretSocketData(string Data)
     {
+        if (Data == null)
+            return "ERROR";
+
         string[] CommandBits = Data.Split("~".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
-        lock (this)
+        if (CommandBits == null)
+            throw new Exception("Invalid data string from socket: " + Data);
+
+        if (CommandBits.Length == 2 && CommandBits[0] == "GetJob")
         {
-            if (CommandBits.Length == 3 && CommandBits[0] == "AddXML")
+            int NumJobs = Convert.ToInt32(CommandBits[1]);
+            List<Job> NextJobs = Project.FindNextJobToRun(NumJobs);
+            if (NextJobs == null)
             {
-                XmlNode JobNode = XmlHelper.Find(RootNode, CommandBits[1]);
-                if (JobNode != null)
-                {
-                    XmlDocument Doc = new XmlDocument();
-                    Doc.LoadXml(CommandBits[2]);
-                    for (int i = 0; i < Doc.DocumentElement.ChildNodes.Count; i++)
-                    {
-                        XmlNode Child = Doc.DocumentElement.ChildNodes[i];
-                        JobNode.AppendChild(JobNode.OwnerDocument.ImportNode(Child, true));
-                    }
-                }
-
-                else
-                    throw new Exception("Cannot find job node: " + CommandBits[1]);
-            }
-
-            else if (CommandBits.Length == 3 && CommandBits[0] == "AddXMLFile")
-            {
-
-                if (File.Exists(CommandBits[2]))
-                {
-                    StreamReader In = new StreamReader(CommandBits[2]);
-                    InterpretSocketData("AddXML~" + CommandBits[1] + "~" + In.ReadToEnd(), RootNode);
-                }
-
-                else
-                    throw new Exception("Cannot find file: " + CommandBits[2]);
-            }
-            else if (CommandBits.Length == 2 && CommandBits[0] == "SaveXMLToFile")
-            {
-                Doc.Save(CommandBits[1]);
-            }
-            else if (CommandBits.Length == 3 && CommandBits[0] == "AddVariable")
-            {
-                if (Macros.ContainsKey(CommandBits[1]))
-                    Macros[CommandBits[1]] = CommandBits[2];
-                else
-                    Macros.Add(CommandBits[1], CommandBits[2]);
-            }
-            else if (CommandBits.Length == 2 && CommandBits[0] == "GetVariable")
-            {
-                // try and look for an environment variable first.
-                string Value = ReplaceEnvironmentVariables("%" + CommandBits[1] + "%");
-                if (Value != "%" + CommandBits[1] + "%")
-                    return Value;
-                else if (CommandBits[1] == "SomeJobsHaveFailed")
-                {
-                    if (SomeJobsHaveFailed)
-                        return "Yes";
-                    else
-                        return "No";
-                }
-                else
-                    return "Not found";
+                if (NumJobsRunning == 0)
+                    CancelWorkerThread = true;
+                return "NULL";
             }
             else
-                throw new Exception("Dont know about socket command: " + CommandBits[0]);
+            {
+                foreach (Job J in NextJobs)
+                {
+                    J.JobSchedulerProcessID = Process.GetCurrentProcess().Id;
+                    J.CommandLine = ReplaceEnvironmentVariables(J.CommandLine);
+                    J.CommandLineUnix = ReplaceEnvironmentVariables(J.CommandLineUnix);
+                    J.WorkingDirectory = ReplaceEnvironmentVariables(J.WorkingDirectory);
+                }
+                NumJobsRunning += NextJobs.Count;
+                XmlSerializer x = new XmlSerializer(typeof(List<Job>));
+                StringWriter s = new StringWriter();
+                x.Serialize(s, NextJobs);
+                return s.ToString();
+            }
         }
+        else if (CommandBits.Length == 2 && CommandBits[0] == "JobFinished")
+        {
+            XmlSerializer x = new XmlSerializer(typeof(List<Job>));
+            List<Job> Jobs = x.Deserialize(new StringReader(CommandBits[1])) as List<Job>;
+            
+            NumJobsRunning -= Jobs.Count;
+            foreach (Job J in Jobs)
+            {
+                // Check that the job scheduler hasn't restarted since the job went to the client.
+                if (J.JobSchedulerProcessID != Process.GetCurrentProcess().Id)
+                    return "ERROR";
+
+                if (J.Status == "Fail")
+                    SomeJobsHaveFailed = true;
+
+
+                // Write log message.
+                J.WriteLogMessage();
+
+                bool ok = Project.SignalJobHasFinsihed(J);
+
+                // Add the job to our log.
+                Log.Targets[0].Jobs.Add(J);
+
+                if (!ok)
+                    return "ERROR";
+            }
+            return "OK";
+        }
+        else if (CommandBits.Length == 2 && CommandBits[0] == "AddTarget")
+        {
+            XmlSerializer x = new XmlSerializer(typeof(Target));
+            Target T = x.Deserialize(new StringReader(CommandBits[1])) as Target;
+
+            Project.AddTarget(T);
+            return "OK";
+        }
+
+        else if (CommandBits.Length == 3 && CommandBits[0] == "AddVariable")
+        {
+            if (Macros.ContainsKey(CommandBits[1]))
+                Macros[CommandBits[1]] = CommandBits[2];
+            else
+                Macros.Add(CommandBits[1], CommandBits[2]);
+        }
+        else if (CommandBits.Length == 2 && CommandBits[0] == "GetVariable")
+        {
+            // try and look for an environment variable first.
+            string Value = ReplaceEnvironmentVariables("%" + CommandBits[1] + "%");
+            if (Value != "%" + CommandBits[1] + "%")
+                return Value;
+            else if (CommandBits[1] == "SomeJobsHaveFailed")
+            {
+                if (SomeJobsHaveFailed)
+                    return "Yes";
+                else
+                    return "No";
+            }
+            else
+                return "Not found";
+        }
+        else if (CommandBits.Length == 2 && CommandBits[0] == "Error")
+        {
+            Console.WriteLine("Error from JobRunner: " + CommandBits[1]);
+            SomeJobsHaveFailed = true;
+            CancelWorkerThread = true;
+        }
+        else if (Data != "")
+            throw new Exception("Dont know about socket command: " + Data);
+
         return "OK";
     }
 
 
-    /// <summary>
-    /// A static helper method to let other classes talk to this Job Scheduler via a socket connection.
-    /// The response from the JobScheduler is returned.
-    /// </summary>
-    public static string TalkToJobScheduler(string Data)
-    {
-        // Open a socket connection to JobScheduler.
-        int PortNumber = 13000;  // Some arbitary number.
-        IPAddress localAddr = IPAddress.Parse("127.0.0.1");
-        IPEndPoint ipe = new IPEndPoint(localAddr, PortNumber);
-        Socket S = new Socket(ipe.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-        S.Connect(ipe);
-        if (!S.Connected)
-            throw new Exception("Cannot connect to JobScheduler via socket");
 
-        // Send our XML to JobScheduler.
-        Byte[] bytes = Encoding.ASCII.GetBytes(Data);
-        S.Send(bytes);
-
-        // Now wait for a response.
-        bytes = new byte[100];
-        int NumBytes = S.Receive(bytes);
-        S.Close();
-
-        System.Text.Encoding enc = System.Text.Encoding.UTF8;
-        return enc.GetString(bytes, 0, NumBytes);
-    }
 }

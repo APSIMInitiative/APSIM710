@@ -513,11 +513,6 @@ namespace APSIMUI
             ApsimRunToolStrip.Instance.OnStop();
         }
 
-        private void OnCreateSimClick(System.Object sender, System.EventArgs e)
-        {
-            Actions.ApsimUIActions.CreateSIM(SimulationController);
-        }
-
         private void ToolboxClose_Click(System.Object sender, System.EventArgs e)
         {
             OnToolBoxClick(sender, e);

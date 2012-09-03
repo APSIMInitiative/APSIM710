@@ -1,577 +1,845 @@
-<?xml version="1.0"?>
-<?xml-stylesheet type="text/xsl" href="Build.xsl"?>
-<Folder name="Build">
-   <Folder name="Infrastructure">
-	<!-- These two are superfluous if called from buildall.bat/sh
-	 <Job name="Copy RunTime DLL's into model directory" >
-		<WorkingDirectory>%APSIM%/Model/RunTime</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-	 </Job>
-	 <Job name="Version stamp the build" wait="yes">
-		<WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\TclLink\bin\tclsh85.exe VersionStamper.tcl</CommandLine>
-		<CommandLineUnix>tclsh VersionStamper.tcl</CommandLineUnix>
-	 </Job>
-	--> 
-	<Job name="Compile CMPServices" wait="yes">
-		<WorkingDirectory>%APSIM%/Model/CMPServices</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile ApsimFile" wait="yes">
-		<WorkingDirectory>%APSIM%/Model/ApsimFile</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile General">
-		<WorkingDirectory>%APSIM%/Model/General</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile ApsimShared" wait="yes">
-		<WorkingDirectory>%APSIM%/Model/ApsimShared</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile DataTypes">
-		<WorkingDirectory>%APSIM%/Model/DataTypes</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Protocol" wait="yes">
-		<WorkingDirectory>%APSIM%/Model/Protocol</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile ComponentInterface">
-		<WorkingDirectory>%APSIM%/Model/ComponentInterface</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile ComponentInterface2">
-		<WorkingDirectory>%APSIM%/Model/ComponentInterface2</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile CSDotNetComponentInterface">
-		<WorkingDirectory>%APSIM%/Model/CSDotNetComponentInterface</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile FortranInfrastructure">
-		<WorkingDirectory>%APSIM%/Model/FortranInfrastructure</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile FortranComponentInterface" wait="yes">
-		<WorkingDirectory>%APSIM%/Model/FortranComponentInterface</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile FortranComponentInterface2">
-		<WorkingDirectory>%APSIM%/Model/FortranComponentInterface2</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile CropTemplate">
-		<WorkingDirectory>%APSIM%/Model/CropTemplate</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile DotNetProxies">
-		<WorkingDirectory>%APSIM%/Model/DotNetProxies</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>   
-    </Folder>
-    <Folder name="Apsim modules" wait="yes">
-	<Job name="Compile Plant">
-		<WorkingDirectory>%APSIM%/Model/Plant</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Accum">
-		<WorkingDirectory>%APSIM%/Model/Accum</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile AgPasture">
-		<WorkingDirectory>%APSIM%/Model/AgPasture</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Apsim">
-		<WorkingDirectory>%APSIM%/Model/Apsim</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Canopy">
-		<WorkingDirectory>%APSIM%/Model/Canopy</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Clock">
-		<WorkingDirectory>%APSIM%/Model/Clock</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile CropMod">
-		<WorkingDirectory>%APSIM%/Model/CropMod</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Eo">
-		<WorkingDirectory>%APSIM%/Model/Eo</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Erosion">
-		<WorkingDirectory>%APSIM%/Model/Erosion</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Fertiliser">
-		<WorkingDirectory>%APSIM%/Model/Fertiliser</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile FertiliserNET">
-		<WorkingDirectory>%APSIM%/Model/FertiliserNET</WorkingDirectory>
-		<CommandLine>..\Build\RunMake.bat %APSIM%/Model/FertiliserNET</CommandLine>
-		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
-	</Job>
-	<Job name="Compile Grasp">
-		<WorkingDirectory>%APSIM%/Model/Grasp</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Graz">
-		<WorkingDirectory>%APSIM%/Model/Graz</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Growth">
-		<WorkingDirectory>%APSIM%/Model/Growth</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-      <Folder name="Input Modules">
-	<Job name="Compile Input">
-		<WorkingDirectory>%APSIM%/Model/Input</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>  
-	<Job name="Compile PatchInput" wait="yes">
-		<WorkingDirectory>%APSIM%/Model/PatchInput</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile SiloInput">
-		<WorkingDirectory>%APSIM%/Model/SiloInput</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-      </Folder>
-	<Job name="Compile Irrigation">
-		<WorkingDirectory>%APSIM%/Model/Irrigation</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Log">
-		<WorkingDirectory>%APSIM%/Model/Log</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Maize">
-		<WorkingDirectory>%APSIM%/Model/Maize</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile MaizeZ">
-		<WorkingDirectory>%APSIM%/Model/MaizeZ</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Manager">
-		<WorkingDirectory>%APSIM%/Model/Manager</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Manager2">
-		<WorkingDirectory>%APSIM%/Model/Manager2</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Map">
-		<WorkingDirectory>%APSIM%/Model/Map</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile MicroClimate">
-		<WorkingDirectory>%APSIM%\Model\MicroClimate</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile MicroMet">
-		<WorkingDirectory>%APSIM%/Model/MicroMet</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Millet">
-		<WorkingDirectory>%APSIM%/Model/Millet</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Operations">
-		<WorkingDirectory>%APSIM%/Model/Operations</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Oryza">
-		<WorkingDirectory>%APSIM%/Model/Oryza</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Oryza2">
-		<WorkingDirectory>%APSIM%/Model/Oryza2</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Ozcot">
-		<WorkingDirectory>%APSIM%/Model/Ozcot</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile mvOZCOT">
-		<WorkingDirectory>%APSIM%/Model/mvOZCOT</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Parasite">
-		<WorkingDirectory>%APSIM%/Model/Parasite</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Pasture">
-		<WorkingDirectory>%APSIM%/Model/Pasture</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Plant2">
-		<WorkingDirectory>%APSIM%/Model/Plant2</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Pond">
-		<WorkingDirectory>%APSIM%/Model/Pond</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile ProtocolManager">
-		<WorkingDirectory>%APSIM%/Model/ProtocolManager</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Report">
-		<WorkingDirectory>%APSIM%/Model/Report</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile ReportDb">
-		<WorkingDirectory>%APSIM%/Model/ReportDb</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile RLink">
-		<WorkingDirectory>%APSIM%/Model/RLink</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Root">
-		<WorkingDirectory>%APSIM%/Model/Root</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile SOI">
-		<WorkingDirectory>%APSIM%/Model/SOI</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile SoilErosion">
-		<WorkingDirectory>%APSIM%/Model/SoilErosion</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>          
-	<Job name="Compile SoilN">
-		<WorkingDirectory>%APSIM%/Model/SoilN</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile SoilNitrogen">
-		<WorkingDirectory>%APSIM%/Model/SoilNitrogen</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>         
-	<Job name="Compile SoilP">
-		<WorkingDirectory>%APSIM%/Model/SoilP</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile SoilTemp">
-		<WorkingDirectory>%APSIM%/Model/SoilTemp</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile SoilTemp2">
-		<WorkingDirectory>%APSIM%/Model/SoilTemp2</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile SoilWat">
-		<WorkingDirectory>%APSIM%/Model/SoilWat</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile SoilWater">
-		<WorkingDirectory>%APSIM%/Model/SoilWater</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>   
-	<Job name="Compile Solute">
-		<WorkingDirectory>%APSIM%/Model/Solute</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Sorghum">
-		<WorkingDirectory>%APSIM%/Model/Sorghum</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Stock">
-		<WorkingDirectory>%APSIM%/Model/Stock</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Sugar">
-		<WorkingDirectory>%APSIM%/Model/Sugar</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Supplement">
-		<WorkingDirectory>%APSIM%/Model/Supplement</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Surface">
-		<WorkingDirectory>%APSIM%/Model/Surface</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile SurfaceOM">
-		<WorkingDirectory>%APSIM%/Model/SurfaceOM</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile SurfaceOrganicMatter">
-		<WorkingDirectory>%APSIM%/Model/SurfaceOrganicMatter</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile SurfaceTemp">
-		<WorkingDirectory>%APSIM%/Model/SurfaceTemp</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile SWIM2">
-		<WorkingDirectory>%APSIM%/Model/SWIM2</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile SWIM3">
-		<WorkingDirectory>%APSIM%/Model/SWIM3</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile SysBal">
-		<WorkingDirectory>%APSIM%/Model/SysBal</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile SysBal2">
-		<WorkingDirectory>%APSIM%/Model/SysBal2</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile TclLink">
-		<WorkingDirectory>%APSIM%/Model/TclLink</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Textoutput">
-		<WorkingDirectory>%APSIM%/Model/Textoutput</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-    <Job name="Compile Tracker">
-		<WorkingDirectory>%APSIM%/Model/Tracker</WorkingDirectory>
-		<CommandLineUnix>make</CommandLineUnix>
-		<CommandLine>make.exe</CommandLine>
-	</Job>
-	<Job name="Compile Tree">
-		<WorkingDirectory>%APSIM%/Model/Tree</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile UrinePatch">
-		<WorkingDirectory>%APSIM%/Model/UrinePatch</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile VenLink">
-		<WorkingDirectory>%APSIM%/Model/VenLink</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-	</Job>
-	<Job name="Compile WaterSupply">
-		<WorkingDirectory>%APSIM%/Model/WaterSupply</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile YieldProphet">
-		<WorkingDirectory>%APSIM%/Model/YieldProphet</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile DDRules">
-		<WorkingDirectory>%APSIM%/Model/DDRules</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile FarmSimGraze">
-		<WorkingDirectory>%APSIM%/Model/FarmSimGraze</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-   </Folder>
-   <Folder name="ApsimX">
-      <Job name="Compile ApsimX">
-		<WorkingDirectory>%APSIM%/Model/ApsimX</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
+<Project>
+
+   <!-- ############### The BuildAll target is used in BuildAll.bat ############### -->
+   <Target name="BuildAll">
+      <DependsOn>Clean</DependsOn>
+      <DependsOn>Pre-Compile</DependsOn>
+      <DependsOn>Compile</DependsOn>
+      <DependsOn>Post-Compile</DependsOn>
+   </Target>
+   
+   <!-- ############### Cleaning target called by BuildAll ############### -->
+   <Target name="Clean">
+      <Job name="Clean model directory">
+         <WorkingDirectory>%APSIM%\Model</WorkingDirectory>
+         <CommandLine>cscs Build\RemoveUnwantedFiles.cs Directory=%APSIM%\Model</CommandLine>
       </Job>
-   </Folder>   
-   <Folder name="Sundry Executables">
-	<Job name="Compile ApsimToSim">
-		<WorkingDirectory>%APSIM%/Model/ApsimToSim</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile ConToApsim">
-		<WorkingDirectory>%APSIM%/Model/ConToApsim</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile ConToSim">
-		<WorkingDirectory>%APSIM%/Model/ConToSim</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile SetXMLValue">
-		<WorkingDirectory>%APSIM%/Model/SetXMLValue</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile Plant2Documentation">
-		<WorkingDirectory>%APSIM%/Model/Plant2Documentation</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile RunMacro">
-		<WorkingDirectory>%APSIM%/Model/RunMacro</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile UpdateDotNetProxies">
-		<WorkingDirectory>%APSIM%/Model/UpdateDotNetProxies</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-	<Job name="Compile JobSchedulerFindJobs" wait="yes">
-		<WorkingDirectory>%APSIM%/Model/JobScheduler/JobSchedulerFindJobs</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-   <Job name="SlurryTank">
-		<WorkingDirectory>%APSIM%/Model/SlurryTank</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-<Job name="pigs">
-		<WorkingDirectory>%APSIM%/Model/pigs</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-<Job name="PigHousing">
-		<WorkingDirectory>%APSIM%/Model/PigHousing</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-        <Job name="atmosphere">
-		<WorkingDirectory>%APSIM%/Model/atmosphere</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-        <Job name="simpleBuilding">
-		<WorkingDirectory>%APSIM%/Model/simpleBuilding</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-    <!-- The first run of this fails due to missing assemblies, the second run (here) will fail as some
-         programs (JobScheduler) will already be running. Luckily it's ignored -->
-    <Job name="Compile JobScheduler" wait="yes">
-		<WorkingDirectory>%APSIM%/Model/JobScheduler</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-   </Folder>
-   <Folder name="GUI">
-	<Job name="Compile ExcelUtility">
-		<WorkingDirectory>%APSIM%/Model/Excel</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-	</Job>
-	<Job name="Compile ApsimUI">
-		<WorkingDirectory>%APSIM%/Model/ApsimUI</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-	</Job>
-	<Job name="Compile MergeOutputFiles">
-		<WorkingDirectory>%APSIM%/Model/MergeOutputFiles</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-	</Job>
-	<Job name="Compile ShellExtensions">
-		<WorkingDirectory>%APSIM%/Model/ShellExtensions</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-	</Job>
-	<Job name="Compile ApsimRun" wait="yes">
-		<WorkingDirectory>%APSIM%/Model/ApsimRun</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-	</Job>
-	<Job name="Compile BobWeb">
-		<WorkingDirectory>%APSIM%/Model/Build/BobWeb</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-	</Job>
-	<Job name="Compile CreatePatch" wait="yes">
-		<WorkingDirectory>%APSIM%/Model/JobScheduler/CreatePatch</WorkingDirectory>
-		<CommandLine>make.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
-	</Job>
-    </Folder>
-	<Job name="Delete old .NET proxy classes" wait="yes">
-		<WorkingDirectory>%APSIM%/Model/DotNetProxies</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\DeleteFileIfExists.bat DotNetProxies.cs</CommandLine>
-		<CommandLineUnix>rm -f DotNetProxies.cs</CommandLineUnix>
-	</Job>
-	<Job name="Create new .NET proxy classes" wait="yes">
-		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-		<CommandLine>UpdateDotNetProxies.exe</CommandLine>
-		<CommandLineUnix>UpdateDotNetProxies.exe</CommandLineUnix>
-	</Job>
- </Folder>
+      <Job name="Version stamp the build">
+         <DependsOn>Clean model directory</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
+         <CommandLine>cscs Build/VersionStamper.cs Directory=%APSIM% Increment=%INCREMENT%</CommandLine>
+      </Job>
+   </Target>
+   
+   <!-- ############### Compiling targets ############### -->
+   <Target name="Pre-Compile">
+      <DependsOn>Clean</DependsOn>
+      <Job name="Move RunTime files into model directory">
+         <WorkingDirectory>%APSIM%/Model/RunTime</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile JobScheduler Tools">
+         <DependsOn>Move RunTime files into model directory</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/JobScheduler</WorkingDirectory>
+         <CommandLine>make --file=MakefileTools</CommandLine>
+      </Job>      
+   </Target>
+   <Target name="Compile">
+      <DependsOn>Pre-Compile</DependsOn>
+      <Job name="Compile CSGeneral">
+         <WorkingDirectory>%APSIM%/Model/CSGeneral</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile CMPServices">
+         <WorkingDirectory>%APSIM%/Model/CMPServices</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile ApsimFile">
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/ApsimFile</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile General">
+         <WorkingDirectory>%APSIM%/Model/General</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile ApsimShared">
+         <DependsOn>Compile General</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/ApsimShared</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile DataTypes">
+         <DependsOn>Compile General</DependsOn>
+         <DependsOn>Compile ApsimFile</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/DataTypes</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Protocol">
+         <DependsOn>Compile General</DependsOn>
+         <DependsOn>Compile ApsimShared</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Protocol</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile ComponentInterface">
+         <DependsOn>Compile General</DependsOn>
+         <DependsOn>Compile ApsimShared</DependsOn>   
+         <DependsOn>Compile DataTypes</DependsOn>   
+         <WorkingDirectory>%APSIM%/Model/ComponentInterface</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile ComponentInterface2">
+         <DependsOn>Compile General</DependsOn>
+         <DependsOn>Compile ApsimShared</DependsOn>
+         <DependsOn>Compile DataTypes</DependsOn>   
+         <WorkingDirectory>%APSIM%/Model/ComponentInterface2</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile CSDotNetComponentInterface">
+         <DependsOn>Compile ApsimFile</DependsOn>
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <DependsOn>Compile DataTypes</DependsOn>   
+         <WorkingDirectory>%APSIM%/Model/CSDotNetComponentInterface</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile FortranInfrastructure">
+         <DependsOn>Compile DataTypes</DependsOn>   
+         <WorkingDirectory>%APSIM%/Model/FortranInfrastructure</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile FortranComponentInterface">
+         <DependsOn>Compile General</DependsOn>
+         <DependsOn>Compile ApsimShared</DependsOn>
+         <DependsOn>Compile ComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/FortranComponentInterface</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile FortranComponentInterface2">
+         <DependsOn>Compile General</DependsOn>
+         <DependsOn>Compile ApsimShared</DependsOn>
+         <DependsOn>Compile Protocol</DependsOn>
+         <DependsOn>Compile ComponentInterface2</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/FortranComponentInterface2</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile CropTemplate">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/CropTemplate</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile DotNetProxies">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/DotNetProxies</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>		
+      <Job name="Compile Plant">
+         <DependsOn>Compile ComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Plant</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Accum">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Accum</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile AgPasture">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/AgPasture</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Apsim">
+         <DependsOn>Compile ApsimFile</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Apsim</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Canopy">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Canopy</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Clock">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Clock</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile CropMod">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <DependsOn>Compile CropTemplate</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/CropMod</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile Eo">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Eo</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Erosion">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Erosion</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Fertiliser">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface2</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Fertiliser</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile FertiliserNET">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/FertiliserNET</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Grasp">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface2</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Grasp</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Graz">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile ComponentInterface2</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Graz</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Growth">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <DependsOn>Compile CropTemplate</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Growth</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Input">
+         <DependsOn>Compile ComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Input</WorkingDirectory>
+         <CommandLine>make</CommandLine>	
+      </Job>  
+      <Job name="Compile PatchInput">
+         <DependsOn>Compile Input</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/PatchInput</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile SiloInput">
+         <DependsOn>Compile Input</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SiloInput</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Irrigation">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Irrigation</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile Log">
+         <DependsOn>Compile Protocol</DependsOn>
+         <DependsOn>Compile ComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Log</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Maize">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile CropTemplate</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <DependsOn>Compile CropMod</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Maize</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile MaizeZ">
+         <DependsOn>Compile ComponentInterface2</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/MaizeZ</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile Manager">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Manager</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile Manager2">
+         <DependsOn>Compile ApsimFile</DependsOn>
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Manager2</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Map">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Map</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile MicroClimate">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%\Model\MicroClimate</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile MicroMet">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/MicroMet</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile Millet">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile CropTemplate</DependsOn>		
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Millet</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Operations">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Operations</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile Oryza">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Oryza</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile Oryza2">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface2</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Oryza2</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Ozcot">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <DependsOn>Compile CropTemplate</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Ozcot</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile mvOZCOT">
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/mvOZCOT</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Parasite">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <DependsOn>Compile CropTemplate</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Parasite</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile Pasture">
+         <DependsOn>Compile ComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Pasture</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile Plant2">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Plant2</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Pond">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Pond</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile ProtocolManager">
+         <DependsOn>Compile Protocol</DependsOn>
+         <DependsOn>Compile ComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/ProtocolManager</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile Report">
+         <DependsOn>Compile ComponentInterface2</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Report</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile ReportDb">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/ReportDb</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile RLink">
+         <DependsOn>Compile ComponentInterface2</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/RLink</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile Root">
+         <DependsOn>Compile DotNetProxies</DependsOn>
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Root</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile SOI">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SOI</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile SoilErosion">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SoilErosion</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>          
+      <Job name="Compile SoilN">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SoilN</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile SoilNitrogen">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SoilNitrogen</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>         
+      <Job name="Compile SoilP">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SoilP</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile SoilTemp">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SoilTemp</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile SoilTemp2">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SoilTemp2</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile SoilWat">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SoilWat</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile SoilWater">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SoilWater</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>   
+      <Job name="Compile Solute">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Solute</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile Sorghum">
+         <DependsOn>Compile ComponentInterface2</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Sorghum</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile Stock">
+         <DependsOn>Compile ComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Stock</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Sugar">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <DependsOn>Compile CropTemplate</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Sugar</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Supplement">
+         <DependsOn>Compile ComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Supplement</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile Surface">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Surface</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile SurfaceOM">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SurfaceOM</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile SurfaceOrganicMatter">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SurfaceOrganicMatter</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile SurfaceTemp">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SurfaceTemp</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile SWIM2">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SWIM2</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile SWIM3">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SWIM3</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile SysBal">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SysBal</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile SysBal2">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <DependsOn>Compile DotNetProxies</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SysBal2</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile TclLink">
+         <DependsOn>Compile ComponentInterface2</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/TclLink</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile Textoutput">
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Textoutput</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Tracker">
+         <DependsOn>Compile ComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Tracker</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Tree">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Tree</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile UrinePatch">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <DependsOn>Compile DotNetProxies</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/UrinePatch</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile VenLink">
+         <DependsOn>Compile ComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/VenLink</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile WaterSupply">
+         <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile FortranComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/WaterSupply</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile YieldProphet">
+         <DependsOn>Compile ComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/YieldProphet</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile DDRules">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <DependsOn>Compile DotNetProxies</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/DDRules</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile FarmSimGraze">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/FarmSimGraze</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile ApsimX">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile ApsimFile</DependsOn>
+         <DependsOn>Compile DataTypes</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/ApsimX</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile ApsimToSim">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile ApsimFile</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/ApsimToSim</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile ConToApsim">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile ApsimFile</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/ConToApsim</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile ConToSim">
+         <DependsOn>Compile General</DependsOn>
+         <DependsOn>Compile ApsimShared</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/ConToSim</WorkingDirectory>
+         <CommandLine>make</CommandLine>		
+      </Job>
+      <Job name="Compile SetXMLValue">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SetXMLValue</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Plant2Documentation">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile Plant2</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Plant2Documentation</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile RunMacro">
+         <DependsOn>Compile ApsimFile</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/RunMacro</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile UpdateDotNetProxies">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile ApsimFile</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/UpdateDotNetProxies</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile SlurryTank">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SlurryTank</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile pigs">
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/pigs</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile PigHousing">
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/PigHousing</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile atmosphere">
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/atmosphere</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile simpleBuilding">
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/simpleBuilding</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile ExcelUtility">
+         <DependsOn>Compile ApsimFile</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Excel</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile ApsimUI">
+         <DependsOn>Compile CMPServices</DependsOn>
+         <DependsOn>Compile ConToApsim</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/ApsimUI</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile MergeOutputFiles">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile ApsimFile</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/MergeOutputFiles</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile ShellExtensions">
+         <WorkingDirectory>%APSIM%/Model/ShellExtensions</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile ApsimModel">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <DependsOn>Compile ComponentInterface</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/ApsimModel</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile CreatePatch">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/JobScheduler/CreatePatch</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+   </Target>
+   <Target name="Post-Compile">
+      <DependsOn>Compile</DependsOn>
+      <Job name="Delete old .NET proxy classes">
+         <WorkingDirectory>%APSIM%/Model/DotNetProxies</WorkingDirectory>
+         <CommandLine>%APSIM%\Model\Build\DeleteFileIfExists.bat DotNetProxies.cs</CommandLine>
+         <CommandLineUnix>rm -f DotNetProxies.cs</CommandLineUnix>
+      </Job>
+      <Job name="Create new .NET proxy classes">
+         <DependsOn>Delete old .NET proxy classes</DependsOn>
+         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+         <CommandLine>UpdateDotNetProxies.exe</CommandLine>
+         <CommandLineUnix>UpdateDotNetProxies.exe</CommandLineUnix>
+      </Job>
+   </Target>
+
+
+   <!-- ############### Documentation target ############### -->
+   <Target name="Documentation">
+      <DependsOn>BobBuildAndRun</DependsOn>
+      <Job name="Create Broccoli Documentation">
+         <WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+         <CommandLine>Plant2Documentation.exe Broccoli.xml "%Apsim%\Documentation\4 Module Reference\Broccoli.htm"</CommandLine>
+      </Job>
+      <Job name="Create Vine Documentation">
+         <WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+         <CommandLine>Plant2Documentation.exe Vine.xml "%Apsim%\Documentation\4 Module Reference\Vine.htm"</CommandLine>
+      </Job>
+      <Job name="Create documentation">
+         <WorkingDirectory>%Apsim%\Documentation</WorkingDirectory>
+         <CommandLine>%APSIM%\Documentation\CreateIndex.bat</CommandLine>
+      </Job> 	
+   </Target>   
+   
+   <!-- ############### Release target ############### -->
+   <Target name="Release">
+      <DependsOn>BobBuildAndRun</DependsOn>
+      <Job name="Compile InsertFilesIntoSetup">
+         <WorkingDirectory>%APSIM%/Release/InsertFilesIntoSetup</WorkingDirectory>
+         <CommandLine>"%VS100COMNTOOLS%\..\IDE\devenv" InsertFilesIntoSetup.sln /build release</CommandLine>
+      </Job>		
+      <Job name="Create Bootleg MSI">
+         <DependsOn>Compile InsertFilesIntoSetup</DependsOn>
+         <WorkingDirectory>%Apsim%\Release</WorkingDirectory>
+         <CommandLine>%Apsim%\Release\CreateMSI.bat %PatchFileNameShort%.Bootleg Bootleg</CommandLine>
+      </Job>
+      <Job name="Create Release MSI">
+         <DependsOn>Compile InsertFilesIntoSetup</DependsOn>
+         <WorkingDirectory>%Apsim%\Release</WorkingDirectory>
+         <CommandLine>%Apsim%\Release\CreateMSI.bat %PatchFileNameShort%.ApsimSetup ApsimSetup /WithExclusions</CommandLine>
+      </Job>	
+      <Job name="Create MSI Binaries">
+         <DependsOn>Compile InsertFilesIntoSetup</DependsOn>
+         <WorkingDirectory>%Apsim%\Release</WorkingDirectory>
+         <CommandLine>%Apsim%\Release\CreateMSIBinaries.bat %PatchFileNameShort%.binaries.Win32</CommandLine>
+      </Job>	
+      <Job name="Update DB Setup Bootleg">
+         <DependsOn>Create Bootleg MSI</DependsOn>
+         <WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+         <CommandLine>UpdateFieldInDB.exe SetupFileName http://bob.apsim.info/files/%PatchFileNameShort%.bootleg.exe</CommandLine>
+      </Job>
+      <Job name="Update DB Setup">
+         <DependsOn>Create Release MSI</DependsOn>
+         <WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+         <CommandLine>UpdateFieldInDB.exe SetupForReleaseFileName http://bob.apsim.info/files/%PatchFileNameShort%.apsimsetup.exe</CommandLine>
+      </Job>
+   </Target>
+
+   <!-- ############### The Bob target is used by Bob ############### -->
+   <Target name="BobBuildAndRun">
+      <DependsOn>Pre-Compile</DependsOn>
+      <DependsOn>Compile</DependsOn>
+      <DependsOn>Post-Compile</DependsOn>
+      <DependsOn>RunAll</DependsOn>
+      <Job name="Create Diff Zip">
+			<WorkingDirectory>C:\inetpub\wwwroot\Files\Upload</WorkingDirectory>
+			<CommandLine>%Apsim%\Model\CreateDiffZip.exe Directory=%Apsim% PatchFileName=%PatchFileName%</CommandLine>
+		</Job>
+   </Target>
+   
+   <!-- ############### Top level BOB jobs ############### -->
+   <Target name="Bob">
+      <DependsOn IgnoreErrors="true">BobBuildAndRun</DependsOn>
+      <DependsOn IgnoreErrors="true">Documentation</DependsOn>
+      <DependsOn IgnoreErrors="true">Release</DependsOn>
+
+		<Job name="Create Build Tree Zip">
+			<WorkingDirectory>C:\inetpub\wwwroot\Files</WorkingDirectory>
+			<CommandLine>"C:\Program Files\7-Zip\7z.exe" -xr!.svn a -mx=7 -mmt=on %PatchFileNameShort%.buildtree.zip %Apsim%</CommandLine>
+		</Job>	
+		<Job name="Update DB Build tree">
+         <DependsOn>Create Build Tree Zip</DependsOn>
+			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+			<CommandLine>UpdateFieldInDB.exe BuildTreeFileName http://bob.apsim.info/files/%PatchFileNameShort%.buildtree.zip</CommandLine>
+		</Job>				
+		<Job name="CreateBinariesZip">
+			<WorkingDirectory>C:\inetpub\wwwroot\Files</WorkingDirectory>
+			<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on %PatchFileNameShort%.binaries.zip %Apsim%\Model\*.exe %Apsim%\Model\*.dll</CommandLine>
+		</Job>
+		<Job name="Update DB Binaries">
+         <DependsOn>Update DB Binaries</DependsOn>
+			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+			<CommandLine>UpdateFieldInDB.exe BinariesFileName http://bob.apsim.info/files/%PatchFileNameShort%.binaries.zip</CommandLine>
+		</Job>
+      <Job name="Update DB Details">
+         <DependsOn IgnoreErrors="true">Do commit if clean</DependsOn>
+			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+			<CommandLine>UpdateFieldInDB.exe DetailsFileName http://bob.apsim.info/files/%PatchFileNameShort%.txt</CommandLine>
+		</Job>		
+   </Target>
+
+   <!-- ############### Testing targets ############### -->
+   <Target name="FindTests">
+      <DependsOn>Clean</DependsOn>
+      <Job name="Compile FindJobs">
+         <WorkingDirectory>%APSIM%/Model/JobScheduler/FindJobs</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Find Examples">
+         <DependsOn>Compile FindJobs</DependsOn>
+         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+         <CommandLine>%APSIM%\Model\FindJobs.exe Filespec=%APSIM%/Examples/*.apsim? TargetName=Tests Server=%Server% Port=13000</CommandLine>
+      </Job>
+      <Job name="Find .apsim Tests">
+         <DependsOn>Compile FindJobs</DependsOn>
+         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+         <CommandLine>%APSIM%\Model\FindJobs.exe Filespec=%APSIM%/Tests/*.apsim? TargetName=Tests Server=%Server% Port=13000</CommandLine>
+      </Job>
+      <Job name="Find .con Tests">
+         <DependsOn>Compile FindJobs</DependsOn>
+         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+         <CommandLine>%APSIM%\Model\FindJobs.exe Filespec=%APSIM%/Tests/*.con TargetName=Tests Server=%Server% Port=13000</CommandLine>
+      </Job>
+		<Job name="Remove all .out and .sum files from Examples folder">
+			<WorkingDirectory>%Apsim%/Examples</WorkingDirectory>
+			<CommandLine>%Apsim%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>
+		</Job>
+		<Job name="Remove all .out and .sum files from Tests folder">
+			<WorkingDirectory>%Apsim%/Tests</WorkingDirectory>
+			<CommandLine>%Apsim%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>
+		</Job>      
+   </Target>
+   <Target name="RunAll">
+      <DependsOn>FindTests</DependsOn>
+      <DependsOn>Tests</DependsOn>
+      <Job name="Unit tests">
+         <WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
+         <CommandLine>%APSIM%/Model/Build/RunAllUnitTests.bat</CommandLine>
+      </Job>   
+   </Target>
+   
+   <!-- ############### All test simulations will go here ############### -->
+   <Target name="Tests">
+      <DependsOn>Post-Compile</DependsOn>
+   </Target>
+   
+   
+</Project>

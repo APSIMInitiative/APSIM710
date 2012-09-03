@@ -2,18 +2,14 @@ RC=rc
 
 #-----------------------------------------------------------------------
 # The rules
+
+include $(APSIM)\Model\Build\VersionInfo.make
+
+
 ifeq ($(PROJECTTYPE),exe)
-all: $(APSIM)/Model/$(PROJECT).exe
+   all: $(APSIM)/Model/$(PROJECT).exe
 else
-# Normally these are obtained as environment variables, but we want to be sure they are not left undefined
-ifeq ($(MAJOR_VERSION),)
-  MAJOR_VERSION = 1
-  MINOR_VERSION = 0
-  BUILD_NUMBER = 0
-endif
-
-all: $(APSIM)/Model/$(PROJECT).dll
-
+   all: $(APSIM)/Model/$(PROJECT).dll
 endif
 
 

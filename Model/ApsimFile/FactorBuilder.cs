@@ -660,5 +660,26 @@ namespace ApsimFile
             }
         }
 
+        private static ApsimFile CreateCopy(ApsimFile apsimfile)
+        {
+            String txt = apsimfile.RootComponent.FullXML();
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(txt);
+            XmlHelper.SetAttribute(doc.DocumentElement, "version", APSIMChangeTool.CurrentVersion.ToString());
+
+            ApsimFile tmpFile = new ApsimFile();
+            tmpFile.New(doc.OuterXml);
+            return tmpFile;
+        }
+        public static List<SimFactorItem> CreateSimFiles(ApsimFile _F, List<String> SimsToRun)
+        {
+            List<SimFactorItem> SimFiles = new List<SimFactorItem>();
+            //make a copy of the file - should avoid problems with changes being applied during the processing of the factorial nodes
+            ApsimFile tmpFile = CreateCopy(_F);
+            foreach (String SimulationPath in SimsToRun)
+                Factor.ProcessSimulationFactorials(SimFiles, tmpFile, tmpFile.FactorComponent, SimulationPath);
+            return SimFiles;
+        }
+
     }
 }

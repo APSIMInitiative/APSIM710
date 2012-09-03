@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -12,6 +12,7 @@
     <AssemblyName>CreatePatch</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -51,21 +52,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\CSGeneral\MathUtility.cs">
-      <Link>MathUtility.cs</Link>
-    </Compile>
-    <Compile Include="..\..\CSGeneral\StringManip.cs">
-      <Link>StringManip.cs</Link>
-    </Compile>
-    <Compile Include="..\..\CSGeneral\Utility.cs">
-      <Link>Utility.cs</Link>
-    </Compile>
-    <Compile Include="..\..\UIUtility\ListviewAPI.cs">
-      <Link>ListviewAPI.cs</Link>
-    </Compile>
-    <Compile Include="..\..\UIUtility\Zip.cs">
-      <Link>Zip.cs</Link>
-    </Compile>
     <Compile Include="CreatePatch.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -84,7 +70,9 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -97,6 +85,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="bug_yellow.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\CSGeneral\CSGeneral.csproj">
+      <Project>{D2EDEF3F-995D-4E9D-9E7C-608D46259E9C}</Project>
+      <Name>CSGeneral</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -12,7 +12,6 @@ using System.Collections;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using CSGeneral;
-using UIUtility;
 
 public partial class MainForm : Form
 {
@@ -92,7 +91,8 @@ public partial class MainForm : Form
                     if (Status == "")
                         Status = Line[1].ToString();
                     Status = FriendlyStatusName(Status);
-
+                    if (Line[0] != ' ' && Line[3] == '+')
+                        Status = "Added";
 
                     if (Status != "Not-versioned")
                     {
@@ -109,7 +109,7 @@ public partial class MainForm : Form
                             FileName = FileName.Trim();
 
                             if (Status == "Added" || Status == "Deleted" || Status == "Modified" ||
-                                Status == "Conflicted")
+                                Status == "Conflicted" || Status == "Replaced")
                             {
                                 if (Line[8] == '*')
                                     Status = "OutOfDate";
@@ -175,6 +175,7 @@ public partial class MainForm : Form
         if (Status == "A") return "Added";
         if (Status == "D") return "Deleted";
         if (Status == "M") return "Modified";
+        if (Status == "R") return "Replaced";
         if (Status == "C") return "Conflicted";
         if (Status == "X") return "Not-versioned";
         if (Status == "I") return "Ignored";
@@ -254,7 +255,7 @@ public partial class MainForm : Form
                 else
                 {
                     // Zip all files.
-                    UIUtility.Zip.ZipFilesWithDirectories(FileNames, SaveFileDialog.FileName, "");
+                    Zip.ZipFilesWithDirectories(FileNames, SaveFileDialog.FileName, "");
 
                     if (MessageBox.Show("Patch file successfully created. Upload to Bob?", "Success", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                         Process.Start("http://bob.apsim.info/BobWeb/Upload.aspx");

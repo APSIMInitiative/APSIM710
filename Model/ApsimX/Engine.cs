@@ -23,12 +23,16 @@ public class ApsimX
     /// </summary>
     static int Main(string[] args)
     {
+        string SumFileName = Path.ChangeExtension(args[0], ".sum");
+        StreamWriter sw = new StreamWriter(SumFileName);
+        Console.SetOut(sw);
         try
         {
-            if (args.Length != 1)
-                throw new Exception("Usage: FastApsim .ApsimFileName");
+            if (args.Length < 1)
+                throw new Exception("Usage: ApsimX .ApsimFileName");
 
             ModelInstance Simulation = Load(args[0]);
+
             Simulation.Run();
             return 0;
         }
@@ -41,6 +45,10 @@ public class ApsimX
             }
             Console.WriteLine(err.ToString());
             return 1;
+        }
+        finally
+        {
+            sw.Close();
         }
     }
 

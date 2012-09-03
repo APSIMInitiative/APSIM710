@@ -10,7 +10,8 @@ using CSGeneral;
 public class ApsimToSim
 {
     /// <summary>
-    /// Writes a sim file for the specified component. Will throw on error.
+    /// Writes a sim file for the specified component. Returns the name of the 
+    /// .sim file that was written. Will throw on error.
     /// </summary>
     /// 
     public static string WriteSimFile(Component Child)
@@ -25,11 +26,7 @@ public class ApsimToSim
 
     public static string GetSimText(Component Child, Configuration.architecture arch)
     {
-        StringBuilder result = new StringBuilder();
-        StringWriter fp = new StringWriter(result);
-        GetSimDoc(Child, arch).Save(fp);
-        fp.Close();
-        return result.ToString();
+        return GetSimDoc(Child, arch).InnerXml;
     }
 
     /// <summary>
@@ -54,6 +51,7 @@ public class ApsimToSim
         if (PluginsOverride != null)
             PlugIns.LoadAll();
 
+        SimXML.InsertBefore(SimXML.CreateXmlDeclaration("1.0", "UTF-8", null), SimXML.DocumentElement);
         return SimXML;
     }
 

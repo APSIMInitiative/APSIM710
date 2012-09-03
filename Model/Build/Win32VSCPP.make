@@ -6,6 +6,8 @@
 
 ###DEBUG=yes
 
+include $(APSIM)\Model\Build\VersionInfo.make
+
 CC="$(VSINSTALLDIR)\VC\bin\cl.exe"
 LD="$(VSINSTALLDIR)\VC\bin\link.exe"
 MT="$(WindowsSdkDir)\bin\mt.exe"
@@ -64,13 +66,6 @@ endif
 
 SOURCEOBJS:= $(SRC:.cpp=.obj)
 OBJSSRC:=$(OBJS:.obj=.cpp)
-
-# Normally these are obtained as environment variables, but we want to be sure they are not left undefined
-ifeq ($(MAJOR_VERSION),)
-  MAJOR_VERSION = 1
-  MINOR_VERSION = 0
-  BUILD_NUMBER = 0
-endif
 
 ifeq ($(PROJECTTYPE),exe)
 #### EXEs

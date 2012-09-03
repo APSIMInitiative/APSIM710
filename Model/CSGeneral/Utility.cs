@@ -2,15 +2,15 @@ using System;
 using System.IO;
 using System.Net;
 using System.Text;
-//using System.Drawing;
-//using System.Drawing.Imaging;
 using System.Xml;
 using System.Xml.Xsl;
 using System.Xml.XPath;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Reflection;
-
+using System.Net.Sockets;
+using System.Threading;
+using System.Collections.Specialized;
 
 namespace CSGeneral
 {
@@ -141,7 +141,7 @@ namespace CSGeneral
 
             foreach (string ChildDirectoryName in Directory.GetDirectories(DirectoryName))
             {
-                if (SearchHiddenFolders || File.GetAttributes(ChildDirectoryName) != FileAttributes.Hidden)
+                if (SearchHiddenFolders || (File.GetAttributes(ChildDirectoryName) & FileAttributes.Hidden) != FileAttributes.Hidden)
                     FindFiles(ChildDirectoryName, FileSpec, ref FileNames, SearchHiddenFolders);
             }
         }
@@ -373,5 +373,96 @@ namespace CSGeneral
 
             return retVal != "200";
         }
+
+
+        /// <summary>
+        /// Look through the specified string for an environment variable name surrounded by
+        /// % characters. Replace them with the environment variable value.
+        /// </summary>
+        public static string ReplaceEnvironmentVariables(string CommandLine)
+        {
+            if (CommandLine == null)
+                return CommandLine;
+
+            int PosPercent = CommandLine.IndexOf('%');
+            while (PosPercent != -1)
+            {
+                string Value = null;
+                int EndVariablePercent = CommandLine.IndexOf('%', PosPercent + 1);
+                if (EndVariablePercent != -1)
+                {
+                    string VariableName = CommandLine.Substring(PosPercent + 1, EndVariablePercent - PosPercent - 1);
+                    Value = System.Environment.GetEnvironmentVariable(VariableName);
+                    if (Value == null)
+                        Value = System.Environment.GetEnvironmentVariable(VariableName, EnvironmentVariableTarget.User);
+                }
+
+                if (Value != null)
+                {
+                    CommandLine = CommandLine.Remove(PosPercent, EndVariablePercent - PosPercent + 1);
+                    CommandLine = CommandLine.Insert(PosPercent, Value);
+                    PosPercent = PosPercent + 1;
+                }
+
+                else
+                    PosPercent = PosPercent + 1;
+
+                if (PosPercent >= CommandLine.Length)
+                    PosPercent = -1;
+                else
+                    PosPercent = CommandLine.IndexOf('%', PosPercent);
+            }
+            return CommandLine;
+        }
+
+
+        /// <summary>
+        /// Send a string to the specified socket server. Returns the response string. Will throw
+        /// if cannot connect.
+        /// </summary>
+        public static string SocketSend(string ServerName, int Port, string Data)
+        {
+            string Response = null;
+            TcpClient Server = new TcpClient(ServerName, Convert.ToInt32(Port));
+            try
+            {
+                Byte[] data = System.Text.Encoding.ASCII.GetBytes(Data);
+                Server.GetStream().Write(data, 0, data.Length);
+
+                Byte[] bytes = new Byte[8192];
+
+                // Wait for data to become available.
+                while (!Server.GetStream().DataAvailable)
+                    Thread.Sleep(10);
+
+                // Loop to receive all the data sent by the client.
+                while (Server.GetStream().DataAvailable)
+                {
+                    int NumBytesRead = Server.GetStream().Read(bytes, 0, bytes.Length);
+                    Response += System.Text.Encoding.ASCII.GetString(bytes, 0, NumBytesRead);
+                }
+            }
+            finally
+            {
+                Server.Close();
+            }
+            return Response;
+        }
+
+        /// <summary>
+        /// Store all macros found in the command line arguments. Macros are keyword = value
+        /// </summary>
+        public static Dictionary<string, string> ParseCommandLine(string[] args)
+        {
+            Dictionary<string, string> Options = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+            for (int i = 0; i < args.Length; i++)
+            {
+                StringCollection MacroBits = CSGeneral.StringManip.SplitStringHonouringQuotes(args[i], "=");
+                if (MacroBits.Count == 2)
+                    Options.Add(MacroBits[0].Replace("\"", ""), MacroBits[1].Replace("\"", ""));
+            }
+            return Options;
+        }
+
     }
 }

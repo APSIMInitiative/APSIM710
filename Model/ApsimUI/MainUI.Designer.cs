@@ -160,7 +160,6 @@
             this.ToolStripButton1.Size = new System.Drawing.Size(66, 41);
             this.ToolStripButton1.Text = "Create .sim";
             this.ToolStripButton1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.ToolStripButton1.Click += new System.EventHandler(this.OnCreateSimClick);
             // 
             // ErrorsButton
             // 

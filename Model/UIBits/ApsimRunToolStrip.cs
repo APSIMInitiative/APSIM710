@@ -8,14 +8,15 @@ using System.Windows.Forms;
 using System.IO;
 using System.Xml;
 using CSGeneral;
+using System.Threading;
 
 public class ApsimRunToolStrip
 {
     private ApsimFile.ApsimFile _F;
     private StringCollection _SelectedPaths;
-    private Timer Timer;
+    private System.Windows.Forms.Timer Timer;
     private static ApsimRunToolStrip Singleton = null;
-    private JobRunner _JobRunner = null;
+    private Apsim Apsim = null;
     ToolStrip _Strip;
     public Boolean deleteSims = true;
 
@@ -24,7 +25,7 @@ public class ApsimRunToolStrip
         // ----------------------------------------------------------
         // Constructor.
         // ----------------------------------------------------------
-        Timer = new Timer();
+        Timer = new System.Windows.Forms.Timer();
         Timer.Interval = 500;
         Timer.Tick += OnTick;
         Timer.Enabled = false;
@@ -52,7 +53,14 @@ public class ApsimRunToolStrip
             ToolStripButton StopButton = (ToolStripButton)_Strip.Items["StopButton"];
             RunButton.Enabled = true;
             StopButton.Enabled = false;
-            _JobRunner.Stop();
+            try
+            {
+                Apsim.Stop();
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 
@@ -61,15 +69,7 @@ public class ApsimRunToolStrip
         // ----------------------------------------------------------
         // Return the nodepath of the first simulation with an error.
         // ----------------------------------------------------------
-        foreach (Job J in _JobRunner.Jobs)
-        {
-            RunApsimJob ApsimJob = (RunApsimJob)J;
-            if (ApsimJob != null && ApsimJob.HasErrors)
-            {
-                return Path.GetFileNameWithoutExtension(ApsimJob.SimFileName);
-            }
-        }
-        return "";
+        return Apsim.FirstJobWithError;
     }
 
     public void RunApsim(ToolStrip Strip, BaseController Controller)//ApsimFile.ApsimFile F, StringCollection SelectedPaths)
@@ -87,10 +87,10 @@ public class ApsimRunToolStrip
         _SelectedPaths = Controller.SelectedPaths;
         _Strip = Strip;
         _Strip.Visible = true;
-        if (_JobRunner != null)
-            _JobRunner.Stop();
-
-        _JobRunner = new JobRunner();
+        if (Apsim != null)
+            Apsim.Stop();
+        else
+            Apsim = new Apsim();
 
         ToolStripButton RunButton = (ToolStripButton)_Strip.Items["RunButton"];
         ToolStripButton StopButton = (ToolStripButton)_Strip.Items["StopButton"];
@@ -109,7 +109,7 @@ public class ApsimRunToolStrip
         foreach (String SimulationPath in _SelectedPaths)
         {
             ApsimFile.ApsimFile.ExpandSimsToRun(_F.Find(SimulationPath), ref SimsToRun);
-            
+
         }
         // JF 061211 - Added check for duplicate simulation names in different folders.
         //Create a list of sim names
@@ -154,161 +154,11 @@ public class ApsimRunToolStrip
             return;
         }
 
-        try
-        {
-            if (Controller.FactorialMode)
-            {
-                List<SimFactorItem> SimFiles = CreateFactorialSimulations(SimsToRun);
-                RunFactorialSimulations(SimFiles);
-            }
-            else
-            {
-                foreach (String SimulationPath in SimsToRun)
-                {
-                    Component Simulation = _F.Find(SimulationPath);
-
-                    // Check to see if fast APSIM can run the simulation
-                    if (Path.GetExtension(Controller.ApsimData.FileName) == ".apsimx")
-                    {
-                        RunApsimXJob NewJob = new RunApsimXJob(_F.FileName, SimulationPath, _JobRunner);
-                        _JobRunner.Add(NewJob);
-                    }
-                    else
-                    {
-                        String SimFileName;
-                        SimFileName = ApsimToSim.WriteSimFile(Simulation);
-
-                        RunApsimJob NewJob = new RunApsimJob(Simulation.Name, _JobRunner);
-                        NewJob.SimFileName = SimFileName;
-                        NewJob._DeleteSim = deleteSims;
-                        _JobRunner.Add(NewJob);
-                    }
-                }
-            }
-        }
-        catch (Exception err)
-        {
-            //catch any errors thrown when trying to write the sim file.
-            MessageBox.Show(err.Message, "Error");
-            //reset the buttons if there are no other simulations currently running because we will not be doing a run.
-            if (_JobRunner.Jobs.Count == 0)
-            {
-                RunButton.Enabled = true;
-                StopButton.Enabled = false;
-                ErrorsButton.Visible = false;
-                PercentLabel.Text = "";
-            }
-            return;
-        }
+        Apsim.StartMultiple(_F, SimsToRun, Controller.FactorialMode);
         Timer.Enabled = true;
     }
 
-    public ApsimFile.ApsimFile CreateCopy(ApsimFile.ApsimFile apsimfile)
-    {
-        String txt = apsimfile.RootComponent.FullXML();
-        XmlDocument doc = new XmlDocument();
-        doc.LoadXml(txt);
-        XmlHelper.SetAttribute(doc.DocumentElement, "version", APSIMChangeTool.CurrentVersion.ToString());
 
-        ApsimFile.ApsimFile tmpFile = new ApsimFile.ApsimFile();
-        tmpFile.New(doc.OuterXml);
-        return tmpFile;
-    }
-    public List<SimFactorItem> CreateFactorialSimulations(List<String> SimsToRun)
-    {
-        List<SimFactorItem> SimFiles = new List<SimFactorItem>();
-        //make a copy of the file - should avoid problems with changes being applied during the processing of the factorial nodes
-        ApsimFile.ApsimFile tmpFile = CreateCopy(_F);
-        foreach (String SimulationPath in SimsToRun)
-        {
-            Factor.ProcessSimulationFactorials(SimFiles, tmpFile, tmpFile.FactorComponent, SimulationPath);
-        }
-        return SimFiles;
-    }
-    public void RunFactorialSimulations(List<SimFactorItem> SimFiles)
-    {
-        try
-        {
-            foreach (var item in SimFiles)
-            {
-                RunApsimJob NewJob = new RunApsimJob(item.SimName, _JobRunner);
-                NewJob.SimFileName = item.SimFileName; 
-                NewJob._DeleteSim = deleteSims;
-                _JobRunner.Add(NewJob);
-            }
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Error encountered running Factorials\n" + ex.Message);
-        }
-    }
-    public void CreateSIM(ToolStrip Strip, BaseController Controller)//ApsimFile.ApsimFile F, StringCollection SelectedPaths)
-    {
-        // ----------------------------------------------------------
-        // Run APSIM for the specified file and simulation paths.
-        // This method will also locate and look after the various
-        // run button states.
-        // ----------------------------------------------------------
-        _F = Controller.ApsimData;
-        _SelectedPaths = Controller.SelectedPaths;
-
-        // Get a list of simulations to run.
-        List<String> SimsToRun = new List<String>();
-        foreach (String SimulationPath in _SelectedPaths)
-            ApsimFile.ApsimFile.ExpandSimsToRun(_F.Find(SimulationPath), ref SimsToRun);
-        String UserMsg;
-
-        if (SimsToRun.Count <= 0)
-        {
-            UserMsg = "No simulations selected!";
-        }
-        else if (SimsToRun.Count == 1)
-        {
-            UserMsg = "Created simulation file:";
-            deleteSims = false;
-        }
-        else
-        {
-            UserMsg = "Created simulation files:";
-            deleteSims = false;
-        }
-        try
-        {
-            if (Controller.FactorialMode)
-            {
-                List<SimFactorItem> SimFiles = CreateFactorialSimulations(SimsToRun);
-                if (SimFiles.Count > 0)
-                {
-                    UserMsg += "\n" + SimFiles.Count.ToString() + " Sim Files created";
-                }
-                else
-                {
-                    UserMsg += "\n No Sim Files were created";
-                }
-            }
-            else
-            {
-                foreach (String SimulationPath in SimsToRun)
-                {
-                    try
-                    {
-                        Component Simulation = _F.Find(SimulationPath);
-                        String SimFileName = ApsimToSim.WriteSimFile(Simulation);
-                        UserMsg += "\n" + SimFileName;
-                    }
-                    catch (Exception err)
-                    {
-                        MessageBox.Show("Simulation: " + SimulationPath + ". " + err.Message, "Error generating .sim file", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
-        }
-        catch (Exception err)
-        {
-            MessageBox.Show("Unexpected Error while generating .sim files:\n " + err.Message, "Error generating .sim file", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-        MessageBox.Show(UserMsg, "Create .SIM", MessageBoxButtons.OK, MessageBoxIcon.Information);
-    }
     private void OnTick(object sender, EventArgs e)
     {
         // ----------------------------------------------------------
@@ -323,14 +173,15 @@ public class ApsimRunToolStrip
 
         if (ProgressBar != null)
         {
-            ProgressBar.Value = _JobRunner.PercentageComplete;
+            ProgressBar.Value = Apsim.NumJobsCompleted / Apsim.NumJobs * 100;
             PercentLabel.Text = ProgressBar.Value.ToString() + "%";
             if (ProgressBar.Value == 100)
             {
+                OnStop();
+
                 // All finished.
                 RunButton.Enabled = true;
                 StopButton.Enabled = false;
-                _JobRunner.Stop();
                 String WavFileName = Configuration.Instance.Setting("ApsimFinishedWAVFileName");
                 WavFileName = WavFileName.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
                 if (File.Exists(WavFileName))
@@ -341,17 +192,14 @@ public class ApsimRunToolStrip
                 Timer.Enabled = false;
             }
 
-            int NumCompleted;
-            int NumWithErrors;
-            int NumWithWarnings;
-            _JobRunner.CalcStats(out NumCompleted, out NumWithErrors, out NumWithWarnings);
-            ProgressBar.ToolTipText = "Running " + _JobRunner.Jobs.Count.ToString() + " simulations. "
+            ProgressBar.ToolTipText = "Running " + Apsim.NumJobs.ToString() + " simulations. "
                                     + ProgressBar.Value.ToString() + "% completed.";
-            ErrorsButton.Visible = NumWithErrors > 0;
-            if (ErrorsButton.Visible)
-                ErrorsButton.Text = NumWithErrors.ToString() + " sims. have errors";
+            ErrorsButton.Visible = Apsim.HasErrors;
         }
     }
 
+
 }
+
+
    

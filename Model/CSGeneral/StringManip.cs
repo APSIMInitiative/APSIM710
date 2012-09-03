@@ -27,8 +27,7 @@ namespace CSGeneral
             }
             catch (System.Exception)
             {
-                System.Windows.Forms.MessageBox.Show("Error converting string type from CS to VB: " + Cstring);
-                result = "";
+                throw new Exception("Error converting string type from CS to VB: " + Cstring);
             }
 
             return result;
@@ -253,8 +252,10 @@ namespace CSGeneral
         // -------------------------------------------------------
         public static string IndentText(string St, int numChars)
         {
+            if (St == null)
+                return St;
             string space = new string(' ', numChars);
-            return space + St.Replace("\r\n", "\r\n" + space);
+            return space + St.Replace("\n", "\n" + space);
         }
 
         // -------------------------------------------------------

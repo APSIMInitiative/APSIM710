@@ -91,18 +91,6 @@ namespace Actions
 				}
 			}
 		}
-		public static void CreateSIM(BaseController Controller)
-		{
-			// ------------------------------------------------
-			// Create a .sim file.
-			// ------------------------------------------------
-			if ((bool)BaseActions.FileSave(Controller)) {
-				Control[] RunPanels = Controller.MainForm.Controls.Find("RunToolStrip", true);
-				if (RunPanels.Length == 1) {
-					ApsimRunToolStrip.Instance.CreateSIM((ToolStrip)RunPanels[0], Controller);
-				}
-			}
-		}
 
 		public static void Enable(BaseController Controller)
 		{

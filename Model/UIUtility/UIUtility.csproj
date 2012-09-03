@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -64,7 +64,12 @@
     <Compile Include="OutputFileUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\Build\VersionInfo.cs" />
-    <Compile Include="Zip.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Controllers\Controllers.csproj">
+      <Project>{E8AB262C-A67A-4089-A0BF-DE59B3510A1A}</Project>
+      <Name>Controllers</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -74,10 +79,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <ProjectReference Include="..\Controllers\Controllers.csproj">
-      <Project>{E8AB262C-A67A-4089-A0BF-DE59B3510A1A}</Project>
-      <Name>Controllers</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>
