@@ -58,7 +58,7 @@ class Bob
                
                // Open log file.
                string LogDirectory = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(PatchFileName), ".."));
-               string LogFileName = Path.Combine(LogDirectory, Path.ChangeExtension(Path.GetFileNameWithoutExtension(PatchFileName), ".txt"));
+               string LogFileName = Path.Combine(LogDirectory, Path.ChangeExtension(Path.GetFileName(PatchFileName), ".txt"));
                StreamWriter Log = new StreamWriter(LogFileName); 
                
                // Clean the tree.
