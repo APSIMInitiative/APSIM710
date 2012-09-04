@@ -31,12 +31,11 @@ class BobMain
       string PatchFileName = System.Environment.GetEnvironmentVariable("PatchFileName");
       int JobID = Convert.ToInt32(System.Environment.GetEnvironmentVariable("JobID"));
       
+      int ErrorCode = 0;
       try
       {
-         
-      
          // Setup the DB fields for current job.
-         if (System.Environment.MachineName.ToUpper() != "BOB")
+         if (System.Environment.MachineName.ToUpper() == "BOB")
             DB.UpdateStartDateToNow(JobID);
 
          // Check the previous job to see if it has stalled. If so then set its 
@@ -71,10 +70,10 @@ class BobMain
          
          // If it ran cleanly then update status and send email.
          Run("Set status of job", "UpdateFieldInDB.exe", "Status Pass", "%APSIM%\\Model");
-         Run("Do commit if clean", "IfCleanDoCommit.exe", "%APSIM%", "%APSIM%\\Model");
+         Run("Do commit if clean", "IfCleanDoCommit.exe", "%APSIM%", "%APSIM%");
             
          // Get revision number and save in DB.
-         string StdOut = Run("Get tip revision number", "svn.exe", "info http://apsrunet.apsim.info/svn/apsim/trunk", "%APSIM");
+         string StdOut = Run("Get tip revision number", "svn.exe", "info http://apsrunet.apsim.info/svn/apsim/trunk", "%APSIM%");
          string[] StdOutLines = StdOut.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
          if (StdOutLines.Length < 6)
             throw new Exception("Invalid output from svn INFO: \n" + StdOut);
@@ -85,7 +84,7 @@ class BobMain
       {
          Run("Set status of job", "UpdateFieldInDB.exe", "Status Fail", "%APSIM%\\Model");
          Console.WriteLine(err.Message);
-         return 1;
+         ErrorCode = 1;
       }
       finally
       {
@@ -95,14 +94,16 @@ class BobMain
 
       // Copy the BuildAllOutput.xml to the web folder.
       string SourceBuildAllOutputFileName = Path.Combine(APSIMFolder, "Model", "Build", "BuildAllOutput.xml");
-      string DestBuildAllOutputFileName = Path.Combine("C:\\inetpub\\wwwroot\\Files", "BuildAllOutput.xml");
+      string DestBuildAllOutputFileName = Path.Combine("C:\\inetpub\\wwwroot\\Files", Path.GetFileName(PatchFileName));
+      DestBuildAllOutputFileName = Path.ChangeExtension(DestBuildAllOutputFileName, ".xml");
+      Console.WriteLine("Creating " + DestBuildAllOutputFileName);
       File.Copy(SourceBuildAllOutputFileName, DestBuildAllOutputFileName, true);
 
       // Send email to all.
       Run("Create summary Html for email", "CreateSummaryHtml.exe", "", "%APSIM%\\Model");
       Run("Send email", "SendEmail.exe", "@Build\\MailList.txt", "%APSIM%\\Model");         
 
-      return 0;
+      return ErrorCode;
    }
    
    /////////////////////////////////////////////////////////////////////////////////////////////
