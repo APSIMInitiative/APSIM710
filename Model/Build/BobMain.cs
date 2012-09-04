@@ -86,11 +86,6 @@ class BobMain
          Console.WriteLine(err.Message);
          ErrorCode = 1;
       }
-      finally
-      {
-         if (DB != null)
-            DB.Close();
-      }
 
       // Copy the BuildAllOutput.xml to the web folder.
       string SourceBuildAllOutputFileName = Path.Combine(APSIMFolder, "Model", "Build", "BuildAllOutput.xml");
@@ -103,6 +98,14 @@ class BobMain
       Run("Create summary Html for email", "CreateSummaryHtml.exe", "", "%APSIM%\\Model");
       Run("Send email", "SendEmail.exe", "@Build\\MailList.txt", "%APSIM%\\Model");         
 
+      // Set the finish date.
+      if (System.Environment.MachineName.ToUpper() == "BOB")
+         DB.UpdateEndDateToNow(JobID);
+ 
+      // Close the database.
+      if (DB != null)
+         DB.Close();
+         
       return ErrorCode;
    }
    

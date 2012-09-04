@@ -15,7 +15,7 @@ set INCREMENT=
 
 rem ----- Compile the job scheduler.
 echo Compiling the JobScheduler
-call Build\RunMake %APSIM%\Model\JobScheduler
+"%VS100COMNTOOLS%\..\IDE\devenv.exe" "%APSIM%\Model\JobScheduler\JobScheduler.sln" /build debug
 echo.
 
 rem ----- Run the job scheduler.

@@ -119,7 +119,7 @@ class Program
 
             if (Environment.MachineName.ToUpper() == "BOB")
                 {
-                File.Copy(outZip, "C:\\inetpub\\wwwroot\\Files\\" + Path.GetFileName(outZip));
+                File.Copy(outZip, "C:\\inetpub\\wwwroot\\Files\\" + Path.GetFileName(outZip), true);
                 File.Delete(outZip);
                 }
             // Now get rid of our temporary directory.

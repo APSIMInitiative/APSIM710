@@ -786,12 +786,11 @@
 			<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on %PatchFileNameShort%.binaries.zip %Apsim%\Model\*.exe %Apsim%\Model\*.dll</CommandLine>
 		</Job>
 		<Job name="Update DB Binaries">
-         <DependsOn>Update DB Binaries</DependsOn>
+         <DependsOn>CreateBinariesZip</DependsOn>
 			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
 			<CommandLine>UpdateFieldInDB.exe BinariesFileName http://bob.apsim.info/files/%PatchFileNameShort%.binaries.zip</CommandLine>
 		</Job>
       <Job name="Update DB Details">
-         <DependsOn IgnoreErrors="true">Do commit if clean</DependsOn>
 			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
 			<CommandLine>UpdateFieldInDB.exe DetailsFileName http://bob.apsim.info/files/%PatchFileNameShort%.txt</CommandLine>
 		</Job>		
