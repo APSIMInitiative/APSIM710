@@ -82,8 +82,8 @@ class BobMain
       }
       catch (Exception err)
       {
-         Run("Set status of job", "UpdateFieldInDB.exe", "Status Fail", "%APSIM%\\Model");
          Console.WriteLine(err.Message);
+         Run("Set status of job", "%APSIM%\\Model\\UpdateFieldInDB.exe", "Status Fail", "%APSIM%\\Model");
          ErrorCode = 1;
       }
 
@@ -116,6 +116,7 @@ class BobMain
    // Returns StdOut.
    static string Run(string Name, string Executable, string Arguments, string JobFolder = null)
    {
+      string OriginalExe = Executable;
       Executable = ReplaceEnvironmentVariables(Executable);
       if (!File.Exists(Executable))
       {
@@ -126,6 +127,8 @@ class BobMain
       Arguments = ReplaceEnvironmentVariables(Arguments);
       if (JobFolder != null)
          JobFolder = ReplaceEnvironmentVariables(JobFolder);
+      if (!File.Exists(Executable))
+         throw new Exception("Cannot find executable: " + OriginalExe + ". Working directory: " + JobFolder);      
       Process P = RunProcess(Executable, Arguments, JobFolder);
       return CheckProcessExitedProperly(Name, P);
    }
