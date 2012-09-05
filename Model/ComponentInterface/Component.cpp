@@ -830,6 +830,7 @@ void Component::writeStringToStream(const std::string& lines, ostream& out,
       posStart = posCR + 1;
       }
    while (posCR != string::npos);
+   out.flush();
    }
 
 // ------------------------------------------------------------------

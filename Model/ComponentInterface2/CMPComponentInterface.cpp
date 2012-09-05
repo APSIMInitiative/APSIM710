@@ -532,6 +532,7 @@ void CMPComponentInterface::write(const std::string& msg)
       haveWrittenToStdOutToday = true;
       }
    cout <<  "     " << msg;
+   cout.flush();
    }
 
 
