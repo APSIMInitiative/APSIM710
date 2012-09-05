@@ -29,6 +29,14 @@ public class Apsim
                 // Assume first argument is a filename
                 string FileName = args[0];
 
+                // The case of the file is important as the summary file names are based on it. So we
+                // can't rely on the user getting the case of argument right. Check the file system.
+                FileName = Path.GetFullPath(FileName);
+                string[] Files = Directory.GetFiles(Path.GetDirectoryName(FileName), Path.GetFileName(FileName));
+                if (Files.Length != 1)
+                    throw new Exception("Cannot find file: " + FileName);
+                FileName = Files[0];
+
                 Apsim Apsim = new Apsim();
 
                 string SimulationName = null;

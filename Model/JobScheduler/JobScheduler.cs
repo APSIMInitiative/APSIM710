@@ -245,7 +245,10 @@ public class JobScheduler
         while (SocketListener != null)
             Thread.Sleep(100);
 
-        if (RunnerProcess.ExitCode != 0)
+        if (!RunnerProcess.HasExited)
+            RunnerProcess.Kill();
+
+        if (RunnerProcess.HasExited && RunnerProcess.ExitCode != 0)
         {
             string StdOut = Utility.CheckProcessExitedProperly(RunnerProcess);
             if (StdOut != "")

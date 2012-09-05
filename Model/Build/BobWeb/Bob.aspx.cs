@@ -23,6 +23,7 @@ namespace BobWeb
 
             Data.Columns.Add("PatchFileNameShort", typeof(string));
             Data.Columns["Status"].MaxLength = 500;
+            Data.Columns.Add("Duration", typeof(string));
 
             // Loop through all rows in grid and convert some of the columns to <a href>
             foreach (DataRow Row in Data.Rows)
@@ -73,6 +74,14 @@ namespace BobWeb
                 }
                 Data.Columns["DetailsFileName"].MaxLength = 2000;
                 Row["DetailsFileName"] = Links;
+
+                if (!Convert.IsDBNull(Row["StartTime"]) && !Convert.IsDBNull(Row["FinishTime"]))
+                {
+                    DateTime StartTime = Convert.ToDateTime(Row["StartTime"]);
+                    DateTime FinishTime = Convert.ToDateTime(Row["FinishTime"]);
+                    int ElapsedTime = Convert.ToInt32((FinishTime - StartTime).TotalMinutes);
+                    Row["Duration"] = ElapsedTime.ToString() + "min";
+                }
             }
 
 

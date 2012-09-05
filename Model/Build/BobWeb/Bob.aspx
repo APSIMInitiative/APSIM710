@@ -47,6 +47,7 @@
                 Visible="False" />
              <asp:BoundField DataField="StartTime" HeaderText="Start Time" 
                 DataFormatString="{0:dd/MMM/yyyy h:mm tt}" />
+             <asp:BoundField DataField="Duration" HeaderText="Duration" />
              <asp:HyperLinkField DataNavigateUrlFields="RevisionNumber" 
                 DataNavigateUrlFormatString="http://apsrunet.apsim.info/websvn/revision.php?repname=apsim&amp;path=%2Ftrunk%2F&amp;rev={0}" 
                 DataTextField="RevisionNumber" HeaderText="Revision" 
