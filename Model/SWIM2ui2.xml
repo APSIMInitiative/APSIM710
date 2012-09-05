@@ -1,0 +1,256 @@
+<Type version="23" name="SWIM2ui2">
+  <MetaData>
+    <UItype>CSUserInterface.GenericUI</UItype>
+    <ShowInMainTree>Yes</ShowInMainTree>
+    <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+    <Documentation>%apsim%\Documentation\4 Module Reference\SWIM2.htm</Documentation>
+    <Documentation name="Technical specification">%apsim%\Documentation\4 Module Reference\SWIMv21UserManual.pdf</Documentation>
+    <LargeIcon>%apsim%\UserInterface\Images\note_pinned32.png</LargeIcon>
+    <SmallIcon>%apsim%\UserInterface\Images\note_pinned16.png</SmallIcon>
+    <dll>%apsim%/Model/SWIM2.%dllext%</dll>
+    <drops>
+      <drop>toolbox</drop>
+      <drop>area</drop>
+      <drop>simulation</drop>
+      <drop>folder</drop>
+    </drops>
+    <variables name="SWIM variables" link="%apsim%\Documentation\ModelInfo\swim2.xml" />
+    <events name="SWIM events" link="%apsim%\Documentation\ModelInfo\swim2.xml" />
+    <ApsimToSim>
+      <component name="[SWIM2ui2.name]" executable="[dll]" class="SWIM2.SWIM2ui2">
+        <executable name="[dll]" version="1.0"/>
+        <initdata>
+              [Model]
+           </initdata>
+      </component>
+    </ApsimToSim>
+  </MetaData>
+  <Model>
+    <!-- Model  name="SWIM_General" -->
+    <!-- ***  Convergence  ****************                 -->
+    <max_iterations description="number of iterations before timestep is halved">50</max_iterations>
+    <!-- ***  solute balance  ****************
+      Numerical Error can result in negative solute concentration
+      We allert the user according to the level of loss of solute
+      balance due to trucation of negative values.            -->
+    <negative_conc_fatal units="kg/ha">0.1</negative_conc_fatal>
+    <negative_conc_warn units="kg/ha">0.001</negative_conc_warn>
+    <!-- ****  soilwat_eeq_fac  **************** -->
+    <min_crit_temp units="oC" description="temperature below which eeq decreases (oC)">5.0</min_crit_temp>
+    <max_crit_temp units="oC" description="temperature above which eeq increases (oC)">35.0</max_crit_temp>
+    <!-- *** soilwat_pot_evapotranspiration  ************** -->
+    <max_albedo description="albedo at 100% green crop cover (0-1).">0.23</max_albedo>
+    <!-- Bare soil albedo must not exceed this value.       -->
+    <residue_albedo description="albedo at 100% residue cover (0-1).">0.23</residue_albedo>
+    <!-- max_bitesize = .02                                 -->
+    <max_bitesize>0.1</max_bitesize>
+    <extra_supply_fraction>0.5</extra_supply_fraction>
+    <trf_fasw>0 1</trf_fasw>
+    <trf_value>1  1</trf_value>
+    <!-- trf_fasw = 0.0  0.5  1.0 
+           trf_value= 0.0  1.0  1.0                           -->
+    <min_total_root_length>0.01</min_total_root_length>
+    <!-- ***  Residue and Crop Cover Effects    **************
+      The effect of residue and canopy cover is implemented as in the soilwat model.
+      These can be turn off for compatibility with SWIM standalone. -->
+    <cover_effects>on</cover_effects>
+    <A_to_evap_fact description="converts residue specfic area 'A' to">0.44</A_to_evap_fact>
+    <!--    a coef. in exp effect on reducing pot. soil evap for wt. of mixed residues.
+      0.44 = 0.00022/0.0005 DMS 1st approx. 6/95              -->
+    <canopy_eos_coef description="coef. in exp effect of canopy on">1.7</canopy_eos_coef>
+    <!-- reducing pot. soil evap. = 1.7 Adams, Arkin & Ritchie 1976
+      Set the default rainfall and evaporation daily time courses these are used
+      if the user does not specify them in the met file       -->
+    <default_rain_time>0:00</default_rain_time>
+    <default_rain_duration>1440.0</default_rain_duration>
+    <default_evap_time>6:00</default_evap_time>
+    <default_evap_duration>720.</default_evap_duration>
+    <!-- ***  Bounds  ***                                   -->
+    <lb_exco>0</lb_exco>
+    <ub_exco>15000</ub_exco>
+    <lb_fip>0</lb_fip>
+    <ub_fip>100</ub_fip>
+    <lb_dis>0</lb_dis>
+    <ub_dis>20</ub_dis>
+    <lb_slupf>0</lb_slupf>
+    <ub_slupf>1</ub_slupf>
+    <lb_slos>0</lb_slos>
+    <ub_slos>10</ub_slos>
+    <lb_d0>0</lb_d0>
+    <ub_d0>1</ub_d0>
+    <lb_a>0</lb_a>
+    <ub_a>100</ub_a>
+    <lb_dthc>0</lb_dthc>
+    <ub_dthc>1</ub_dthc>
+    <lb_dthp>0</lb_dthp>
+    <ub_dthp>10</ub_dthp>
+    <lb_disp>0</lb_disp>
+    <ub_disp>5</ub_disp>
+    <lb_solute>0</lb_solute>
+    <ub_solute>1000</ub_solute>
+    <!-- Model  name="SWIM_Soil"  -->
+    <init>
+      <slmin>-3.0</slmin>
+      <slmax>7.0</slmax>
+      <bypass_flow>off</bypass_flow>
+      <runoff> [SWIM2ui2.runoff] </runoff>
+      <top_boundary_condition> [SWIM2ui2.top_boundary_condition] </top_boundary_condition>
+      <bottom_boundary_condition> [SWIM2ui.bottom_boundary_condition] </bottom_boundary_condition>
+      <vapour_conductivity>on</vapour_conductivity>
+      <run_solutes> [SWIM2ui2.run_solutes] no3 </run_solutes>
+      <extra_solute_supply>on</extra_solute_supply>
+      <solute_exclusion>on</solute_exclusion>
+      <subsurface_drain> [SWIM2ui2.subsurface_drain] </subsurface_drain>
+      <!--  Soil profile description  -->
+      <x> [SWIM2ui2.x] </x>
+      <soil_type> [SWIM2ui2.soil_type] </soil_type>
+      <psi> [SWIM2ui2.psi] </psi>
+    </init>
+    <solute>
+      <solute_name>      no3      nh4      urea     dcd      br       cl       orgn    </solute_name>
+      <slupf>            1.0      1.0      0.0      0.0      0.0      0.0      0.0     </slupf>
+      <slos>             0.0      0.0      0.0      0.0      0.0      0.0      0.0     </slos>
+      <d0>               0.06840  0.07056  0.0684   0.07700  0.01000  0.01000  0.07200 </d0>
+      <a>                0.0      0.0      0.0      0.0      0.0      0.0      0.0     </a>
+      <dthc>             0.0      0.0      0.0      0.0      0.0      0.0      0.0     </dthc>
+      <dthp>             1.0      1.0      1.0      1.0      1.0      1.0      1.0     </dthp>
+      <disp>             1.0      1.0      1.0      1.0      1.0      1.0      1.0     </disp>
+      <ground_water_conc>0.0      0.0      0.0      0.0      0.0      0.0      0.0     </ground_water_conc>
+    </solute>
+    <calc>
+      <dtmin>0.0</dtmin>
+      <dtmax>30.0</dtmax>
+      <ersoil>0.0001</ersoil>
+      <ernode>0.0001</ernode>
+      <slcerr>0.0001</slcerr>
+      <errex>0.01</errex>
+      <dppl>2</dppl>
+      <dpnl>1</dpnl>
+      <swt>0</swt>
+      <slswt>0.0</slswt>
+      <max_water_increment> [SWIM2ui2.max_water_increment] </max_water_increment>
+    </calc>
+    <climate>
+      <rainfall_source>apsim</rainfall_source>
+      <evap_source>calc</evap_source>
+      <salb>0.23</salb>
+    </climate>
+    <runoff>
+    <!-- will assume no effects of rainfall on decreasing surface storage -->
+      <maximum_surface_storage> [SWIM2ui2.surface_storage] </maximum_surface_storage>
+      <minimum_surface_storage> [SWIM2ui2.surface_storage] </minimum_surface_storage>
+      <initial_surface_storage> [SWIM2ui2.surface_storage] </initial_surface_storage>
+      <precipitation_constant>50</precipitation_constant>
+      <runoff_rate_factor> [SWIM2ui2.runoff_rate_factor] </runoff_rate_factor>
+      <runoff_rate_power>2</runoff_rate_power>
+    </runoff>
+    <bottom_boundary>
+      <constant_gradient> [SWIM2ui2.bottom_constant_gradient] </constant_gradient>
+      <constant_potential> [SWIM2ui2.bottom_constant_potential] </constant_potential>
+    </bottom_boundary>
+    <top_boundary>
+         <!-- will assume no effects of rainfall on decreasing surface conductance -->
+      <maximum_conductance> [SWIM2ui2.surface_conductance] </maximum_conductance>
+      <minimum_conductance> [SWIM2ui2.surface_conductance] </minimum_conductance>
+      <initial_conductance> [SWIM2ui2.surface_conductance] </initial_conductance>
+      <precipitation_constant>25</precipitation_constant>
+    </top_boundary>
+    <bypass_flow>
+      <depth>11</depth>
+      <conductance>0.10</conductance>
+      <storage>0.10</storage>
+    </bypass_flow>
+    <crop>
+         <crop_name>           AgPasture  grass    ryegrass  clover  paspalum  wheat   lucerne    </crop_name>
+         <min_xylem_potential> -15000     -15000   -15000    -15000  -15000    -15000  -15000 (cm)</min_xylem_potential>
+         <root_radius>         0.25       0.25     0.25      0.25    0.25      0.25    0.25   (mm)</root_radius>
+         <root_conductance>    1.4D-7     1.4D-7   1.4D-7    1.4D-7  1.4D-7    1.4D-7  1.4D-7     </root_conductance>
+<!--  This could be used
+      <crop_name>           [SWIM2ui2.new_plant_name]        AgPasture  grass    ryegrass  clover   paspalum   wheat   lucerne      </crop_name>
+      <min_xylem_potential> [SWIM2ui2.new_plant_xylpot]     -15000     -15000   -15000    -15000   -15000     -1500   -15000    (cm)</min_xylem_potential>
+      <root_radius>         [SWIM2ui2.new_plant_rootrad]     0.25       0.25     0.25      0.25     0.25       0.25    0.25     (mm)</root_radius>
+      <root_conductance>    [SWIM2ui2.new_plant_roodcond]    1.4e-7     1.4e-7   1.4e-7    1.4e-7   1.4e-7     1.4e-7  1.4e-7       </root_conductance>
+      -->
+    </crop>
+    <drain>
+      <drain_depth> [SWIM2ui2.drain_depth] (mm)</drain_depth>
+      <drain_spacing> [SWIM2ui2.drain_spacing] (mm)</drain_spacing>
+      <drain_radius> [SWIM2ui2.drain_radius] (mm)</drain_radius>
+      <klat> [SWIM2ui2.drain_klat] (mm/d)</klat>
+      <imperm_depth> [SWIM2ui2.drain_impdepth] </imperm_depth>
+    </drain>
+    <!--  Description for each soil horizon  -->
+    <S01_A1>
+      <sl>-3.000000E+00 -2.300000E+00 -1.600000E+00 -9.000000E-01 -2.000000E-01 +3.500000E-01 +7.142766E-01 +8.326376E-01 +2.129957E+00 +3.775342E+00 +6.023898E+00 +7.000000E+00 </sl>
+      <wc>+6.800000E-01 +6.800000E-01 +6.799988E-01 +6.799694E-01 +6.792305E-01 +6.703131E-01 +6.281510E-01 +5.913289E-01 +2.805678E-01 +1.281068E-01 +6.779279E-02 +5.936176E-02 </wc>
+      <wcd>-8.900874E-09 -2.235798E-07 -5.616072E-06 -1.410693E-04 -3.543502E-03 -4.461004E-02 -2.387733E-01 -3.561303E-01 -1.516863E-01 -5.138499E-02 -1.170555E-02 -6.158931E-03 </wcd>
+      <hkl>+6.989700E-01 +6.989697E-01 +6.989618E-01 +6.987641E-01 +6.937951E-01 +6.333561E-01 +3.353024E-01 +5.664662E-02 -3.557314E+00 -8.140886E+00 -1.440472E+01 -1.712386E+01 </hkl>
+      <hkld>-5.982477E-08 -1.502730E-06 -3.774695E-05 -9.482048E-04 -2.384579E-02 -3.045164E-01 -1.748773E+00 -2.785714E+00 -2.785714E+00 -2.785714E+00 -2.785714E+00 -2.785714E+00 </hkld>
+      <bulk_density>0.75</bulk_density>
+      <solute_name>urea nh4 no3 br cl  orgc orgn sol8</solute_name>
+      <exco>0 25.7 0 0 0 0 0 0</exco>
+      <fip>1 0.55 1 1 1 1 1 1</fip>
+      <dis>1 1 1 1 1 1 1 1</dis>
+    </S01_A1>
+    <S01_A2>
+      <sl>-3.000000E+00 -2.300000E+00 -1.600000E+00 -9.000000E-01 -2.000000E-01 +5.000000E-01 +1.100000E+00 +1.447011E+00 +1.607294E+00 +2.895815E+00 +4.574199E+00 +6.972041E+00 +7.000000E+00 </sl>
+      <wc>+6.400000E-01 +6.400000E-01 +6.400000E-01 +6.399989E-01 +6.399730E-01 +6.393228E-01 +6.292669E-01 +5.869426E-01 +5.395454E-01 +2.913812E-01 +1.756615E-01 +1.342658E-01 +1.340840E-01 </wc>
+      <wcd>-3.118676E-10 -7.833760E-09 -1.967752E-07 -4.942768E-06 -1.241567E-04 -3.118676E-03 -4.942768E-02 -2.443385E-01 -2.937003E-01 -1.178790E-01 -3.589306E-02 -6.564672E-03 -6.435915E-03 </wcd>
+      <hkl>+4.771213E-01 +4.771212E-01 +4.771209E-01 +4.771131E-01 +4.769166E-01 +4.719781E-01 +3.948005E-01 +5.214806E-02 -3.709948E-01 -3.939206E+00 -8.587040E+00 -1.522722E+01 -1.530464E+01 </hkl>
+      <hkld>-2.366954E-09 -5.945520E-08 -1.493447E-06 -3.751377E-05 -9.423508E-04 -2.370071E-02 -3.831216E-01 -2.067430E+00 -2.769231E+00 -2.769231E+00 -2.769231E+00 -2.769231E+00 -2.769231E+00 </hkld>
+      <bulk_density>0.8</bulk_density>
+      <solute_name>urea nh4 no3 br cl  orgc orgn sol8</solute_name>
+      <exco>0 16.8 0 0 0 0 0 0</exco>
+      <fip>1 0.56 1 1 1 1 1 1</fip>
+      <dis>1 1 1 1 1 1 1 1</dis>
+    </S01_A2>
+    <S01_B1>
+      <sl>-3.000000E+00 -2.300000E+00 -1.600000E+00 -9.000000E-01 -2.000000E-01 +2.693848E-01 +5.179593E-01 +2.257106E+00 +4.494876E+00 +7.000000E+00 </sl>
+      <wc>+6.800000E-01 +6.799999E-01 +6.799969E-01 +6.799225E-01 +6.780528E-01 +6.630884E-01 +6.269442E-01 +3.606128E-01 +2.340644E-01 +1.913920E-01 </wc>
+      <wcd>-2.252473E-08 -5.657957E-07 -1.421215E-05 -3.569930E-04 -8.967258E-03 -7.788060E-02 -2.312533E-01 -9.497538E-02 -3.022238E-02 -8.387539E-03 </wcd>
+      <hkl>+9.030899E-01 +9.030888E-01 +9.030597E-01 +9.023299E-01 +8.839628E-01 +7.344515E-01 +3.535357E-01 -4.052302E+00 -9.721321E+00 -1.606763E+01 </hkl>
+      <hkld>-2.208297E-07 -5.546992E-06 -1.393350E-04 -3.500452E-03 -8.825418E-02 -7.899870E-01 -2.533333E+00 -2.533333E+00 -2.533333E+00 -2.533333E+00 </hkld>
+      <bulk_density>0.84</bulk_density>
+      <solute_name>urea nh4 no3 br cl  orgc orgn sol8</solute_name>
+      <exco>0 1.0 0 0 0 0 0 0</exco>
+      <fip>1 0.57 1 1 1 1 1 1</fip>
+      <dis>1 1 1 1 1 1 1 1</dis>
+    </S01_B1>
+    <S01_B2>
+      <sl>-3.000000E+00 -2.300000E+00 -1.600000E+00 -9.000000E-01 -2.000000E-01 +3.500000E-01 +6.695110E-01 +8.770710E-01 +2.667525E+00 +5.042684E+00 +7.000000E+00 </sl>
+      <wc>+6.300000E-01 +6.300000E-01 +6.299988E-01 +6.299705E-01 +6.292583E-01 +6.206626E-01 +5.893323E-01 +5.501247E-01 +3.451396E-01 +2.545568E-01 +2.319671E-01 </wc>
+      <wcd>-8.579731E-09 -2.155131E-07 -5.413444E-06 -1.359796E-04 -3.415652E-03 -4.300051E-02 -1.872818E-01 -1.788565E-01 -6.779872E-02 -1.872236E-02 -6.483591E-03 </wcd>
+      <hkl>+4.771212E-01 +4.771206E-01 +4.771057E-01 +4.767303E-01 +4.672918E-01 +3.520575E-01 -8.996127E-02 -6.992016E-01 -5.965242E+00 -1.295101E+01 -1.870782E+01 </hkl>
+      <hkld>-1.136015E-07 -2.853541E-06 -7.167791E-05 -1.800592E-03 -4.530754E-02 -5.826251E-01 -2.752788E+00 -2.941176E+00 -2.941176E+00 -2.941176E+00 -2.941176E+00 </hkld>
+      <bulk_density>0.85</bulk_density>
+      <solute_name>urea nh4 no3 br cl  orgc orgn sol8</solute_name>
+      <exco>0 0.1 0 0 0 0 0 0</exco>
+      <fip>1 0.61 1 1 1 1 1 1</fip>
+      <dis>1 1 1 1 1 1 1 1</dis>
+    </S01_B2>
+    <S01_C1>
+      <sl>-3.000000E+00 -2.300000E+00 -1.600000E+00 -9.000000E-01 -2.000000E-01 +2.817095E-01 +5.695669E-01 +6.779682E-01 +1.331602E+00 +2.196592E+00 +3.488122E+00 +5.683723E+00 +7.000000E+00 </sl>
+      <wc>+5.600000E-01 +5.599999E-01 +5.599970E-01 +5.599239E-01 +5.580872E-01 +5.424174E-01 +4.938090E-01 +4.512214E-01 +2.604409E-01 +1.792732E-01 +1.540313E-01 +1.501386E-01 +1.500184E-01 </wc>
+      <wcd>-2.212640E-08 -5.557901E-07 -1.396082E-05 -3.506799E-04 -8.808680E-03 -8.097107E-02 -3.048209E-01 -4.623920E-01 -1.695331E-01 -4.493603E-02 -6.188348E-03 -2.127359E-04 -2.820476E-05 </wcd>
+      <hkl>+7.781512E-01 +7.781502E-01 +7.781256E-01 +7.775059E-01 +7.619043E-01 +6.258660E-01 +1.664182E-01 -2.930326E-01 -3.779079E+00 -8.392357E+00 -1.528052E+01 -2.699039E+01 -3.401054E+01 </hkl>
+      <hkld>-1.875000E-07 -4.709788E-06 -1.183054E-04 -2.972227E-03 -7.499497E-02 -7.168957E-01 -3.080362E+00 -5.333333E+00 -5.333333E+00 -5.333333E+00 -5.333333E+00 -5.333333E+00 -5.333333E+00 </hkld>
+      <bulk_density>1</bulk_density>
+      <solute_name>urea nh4 no3 br cl  orgc orgn sol8</solute_name>
+      <exco>0 0 0 0 0 0 0 0</exco>
+      <fip>1 1 1 1 1 1 1 1</fip>
+      <dis>1 1 1 1 1 1 1 1</dis>
+    </S01_C1>
+    <S01_C2>
+      <sl>-3.000000E+00 -2.300000E+00 -1.600000E+00 -9.000000E-01 -5.367227E-01 -3.231053E-01 +5.387051E-01 +1.682741E+00 +3.395700E+00 +6.337521E+00 +7.000000E+00 </sl>
+      <wc>+4.799997E-01 +4.799913E-01 +4.797818E-01 +4.745181E-01 +4.507931E-01 +4.019235E-01 +2.119416E-01 +1.299898E-01 +1.041734E-01 +1.001411E-01 +1.000658E-01 </wc>
+      <wcd>-1.592857E-06 -4.001075E-05 -1.005025E-03 -2.524508E-02 -1.345028E-01 -3.476023E-01 -1.288776E-01 -3.452706E-02 -4.804852E-03 -1.624685E-04 -7.577569E-05 </wcd>
+      <hkl>+1.698966E+00 +1.698861E+00 +1.696226E+00 +1.629551E+00 +1.316912E+00 +6.002163E-01 -4.139741E+00 -1.043194E+01 -1.985321E+01 -3.603323E+01 -3.967686E+01 </hkl>
+      <hkld>-2.002491E-05 -5.030140E-04 -1.264211E-02 -3.220186E-01 -1.831712E+00 -5.500000E+00 -5.500000E+00 -5.500000E+00 -5.500000E+00 -5.500000E+00 -5.500000E+00 </hkld>
+      <bulk_density>1.5</bulk_density>
+      <solute_name>urea nh4 no3 br cl  orgc orgn sol8</solute_name>
+      <exco>0 0 0 0 0 0 0 0</exco>
+      <fip>1 1 1 1 1 1 1 1</fip>
+      <dis>1 1 1 1 1 1 1 1</dis>
+    </S01_C2>
+  </Model>
+</Type>
