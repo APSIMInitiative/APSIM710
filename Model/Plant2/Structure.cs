@@ -53,7 +53,7 @@ public class Structure
     [Description("Number of mainstems per meter")]
     public double MainStemPopn
     {
-        get { return Population.Value * PrimaryBudNo; }
+        get { return Population.Density * PrimaryBudNo; }
     }
     [Output]
     [Units("/m2")]
@@ -87,7 +87,7 @@ public class Structure
             foreach (LeafCohort L in Leaf.Leaves)
                 if (L.IsAppeared)
                     n += L.Population;
-            return n / Population.Value;
+            return n / Population.Density;
         }
     }
     [Output]

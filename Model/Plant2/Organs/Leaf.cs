@@ -224,7 +224,7 @@ public class Leaf : BaseOrgan, AboveGround
             foreach (LeafCohort L in Leaves)
                 if ((L.IsAppeared) && (!L.Finished))
                     n += L.Population;
-            return n / Population.Value;
+            return n / Population.Density;
         }
     } 
     
@@ -573,13 +573,13 @@ public class Leaf : BaseOrgan, AboveGround
                 FinalLeafAppeared = true;
             int AppearingNode = (int)(Structure.MainStemNodeNo + (1 - FinalLeafFraction));
             double CohortAge = (Structure.MainStemNodeNo - AppearingNode) * Structure.MainStemNodeAppearanceRate.Value * FinalLeafFraction;
-            double BranchNumber = Population.Value * Structure.PrimaryBudNo;
+            double BranchNumber = Population.Density * Structure.PrimaryBudNo;
             if (Leaves.Count > 0)
             {
                 int j = (int)AppearedCohortNo - 1;
                 BranchNumber = Leaves[j].Population; //Retrive the branch number of the previous cohort so this can be appended with additional branching
             }
-            BranchNumber += Structure.BranchingRate * Population.Value * Structure.PrimaryBudNo;
+            BranchNumber += Structure.BranchingRate * Population.Density * Structure.PrimaryBudNo;
 
             //Set the properties of the appearing cohort so it begins growing 
             int i = AppearingNode -1;
@@ -620,7 +620,7 @@ public class Leaf : BaseOrgan, AboveGround
             CohortsInitialised = true;
             if (Leaf.Area > 0)//If initial cohorts have an area set the are considered to be appeared on day of emergence so we do appearance and count up the appeared nodes on the first day
             {
-                Leaf._Population = Population.Value * Structure.PrimaryBudNo;
+                Leaf._Population = Population.Density * Structure.PrimaryBudNo;
                 Leaf.DoInitialisation();
                 Structure.MainStemNodeNo += 1.0;
                 Leaf.DoAppearance(1.0);

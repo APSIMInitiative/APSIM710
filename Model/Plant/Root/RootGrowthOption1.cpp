@@ -52,5 +52,5 @@ void rootGrowthOption1::root_length_growth (void)
       dltRootLength[layer] = (float)(dlt_length_tot *
                               divide (rlv_factor[layer], rlv_factor_tot, 0.0));
       }
-   Debug("Root.dltRootLength:%f", sum(dltRootLength, max_layer));
+   Debug("Root.dltRootLength=%f", sum(dltRootLength, max_layer));
 }

@@ -66,7 +66,7 @@ void fruitGrainPartGN::doGrainNumber (void)
 {
       gGrain_no = grainNumber (plant->stem().Green.DM()
                               , pGrains_per_gram_stem);
-      Debug("Grian.GrainNumber:%f", gGrain_no);
+      Debug("Grian.GrainNumber=%f", gGrain_no);
 }
 
 float fruitGrainPartGN::grainNumber (float stem_dm_green
@@ -163,7 +163,7 @@ void fruitGrainPartGN::update(void)
    // transfer plant grain no.
    float dlt_grain_no_lost  = gGrain_no * plant->population().DyingFractionPlants();
    gGrain_no -= dlt_grain_no_lost;
-   Debug("meal.GrainNo:%f", gGrain_no);
+   Debug("meal.GrainNo=%f", gGrain_no);
 }
 
 //void fruitGrainPartGN::display(ostream &os)
@@ -225,7 +225,7 @@ void fruitGrainPartGN::doDMDemandGrain(void)
    else
       gDlt_dm_grain_demand = 0.0;
 
-   Debug("Grain.Dlt_dm_grain_demand:%f", gDlt_dm_grain_demand);
+   Debug("Grain.Dlt_dm_grain_demand=%f", gDlt_dm_grain_demand);
    }
 
 void fruitGrainPartGN::doNDemandGrain (float nfact_grain_conc      //   (INPUT)
@@ -273,7 +273,7 @@ void fruitGrainPartGN::doNDemandGrain (float nfact_grain_conc      //   (INPUT)
       if (dailyNconc > cGrainMaxDailyNConc) gN_grain_demand = (mealPart->Growth.DM() + mealPart->Retranslocation.DM())*cGrainMaxDailyNConc;
       }
 
-    Debug("Grain.N_grain_demand:%f", gN_grain_demand);
+    Debug("Grain.N_grain_demand=%f", gN_grain_demand);
 }
 
 

@@ -412,7 +412,7 @@ public class LeafCohort
         // in as an argument in the constructor below. Confusing isn't it?
         IsAppeared = true;
         if (_Population == 0)
-            _Population = PopulationFunction.Value * Structure.PrimaryBudNo;
+            _Population = PopulationFunction.Density * Structure.PrimaryBudNo;
         MaxArea = MaxAreaFunction.Value * CellDivisionStressFactor * LeafFraction;//Reduce potential leaf area due to the effects of stress prior to appearance on cell number 
         GrowthDuration = GrowthDurationFunction.Value * LeafFraction;
         LagDuration = LagDurationFunction.Value;
@@ -454,7 +454,7 @@ public class LeafCohort
             double FractionStemMortality = 0;
             if (StemMortality > 0)
             {
-            double DeltaPopn = Math.Min(StemMortality * (_Population - Structure.MainStemPopn), _Population - PopulationFunction.Value);
+            double DeltaPopn = Math.Min(StemMortality * (_Population - Structure.MainStemPopn), _Population - PopulationFunction.Density);
             FractionStemMortality = DeltaPopn / _Population;
             _Population -= DeltaPopn;
             }

@@ -8,6 +8,8 @@ abstract public class Function
 {
     abstract public double Value { get; }
     virtual public string ValueString { get { return Value.ToString(); } }
+    virtual public double[] Values { get { return new double[1] { Value }; } }
+
     virtual public void UpdateVariables() { }
     virtual public double AttainableFinalNodeNumber { get { return 0; } }
     virtual public double VernalisationFinalNodeNumber { get { return 0; } }

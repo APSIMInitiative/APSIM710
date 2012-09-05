@@ -77,8 +77,8 @@ void Arbitrator::partitionDM()
                     + ftoa(DMSupply(), ".6");
        scienceAPI.warning(msg);
        }
-   Debug("Arbitrator.DMSupply:%f", _DMSupply);
-   Debug("Arbitrator.dlt_dm_green_tot:%f", dlt_dm_green_tot);
+   Debug("Arbitrator.DMSupply=%f", _DMSupply);
+   Debug("Arbitrator.dlt_dm_green_tot=%f", dlt_dm_green_tot);
    }
 
 float Arbitrator::RelativeGrowthRate(void)
@@ -138,15 +138,15 @@ void Arbitrator::doNPartition(float g_n_fix_pot, float nDemandTotal, float& nFix
                     + ftoa(nUptakeSum, ".6");
       scienceAPI.warning(msg);
       }
-   Debug("Arbitrator.nUptakeSum:%f", nUptakeSum);
+   Debug("Arbitrator.nUptakeSum=%f", nUptakeSum);
 
    // Retranslocate N Fixed
    float nFixDemandTotal = l_bound (nDemandTotal - nUptakeSum, 0.0); // total demand for N fixation (g/m^2)
    nFixUptake = bound (g_n_fix_pot, 0.0, nFixDemandTotal);
 
    plant.All().doNFixRetranslocate (nFixUptake, nFixDemandTotal);
-   Debug("Arbitrator.n_demand_differential:%f", nFixDemandTotal);
-   Debug("Arbitrator.NFixUptake:%f", nFixUptake);
+   Debug("Arbitrator.n_demand_differential=%f", nFixDemandTotal);
+   Debug("Arbitrator.NFixUptake=%f", nFixUptake);
    }
 
 void Arbitrator::doDmRetranslocate(plantPart* stemPart, plantPart* leafPart,
@@ -194,7 +194,7 @@ void Arbitrator::doDmRetranslocate(plantPart* stemPart, plantPart* leafPart,
 
     fruitPart->doDmRetranslocate (dlt_dm_retrans_to_fruit, demand_differential_begin);
 
-    Debug("Arbitrator.FinalRetranslocation:%f", dm_retranslocate);
+    Debug("Arbitrator.FinalRetranslocation=%f", dm_retranslocate);
 
    // Finally, a mass balance check
 //   float mbSum = 0.0;                                                    //FIXME - need to reinstate this check

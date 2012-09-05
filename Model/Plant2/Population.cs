@@ -8,9 +8,9 @@ public class Population
 {
     [Link]
     Plant Plant = null;
-
+    
     [Output("Population")]
-    public double Value
+    public double Density
     {
         get { return Plant.SowingData.Population; }
     }

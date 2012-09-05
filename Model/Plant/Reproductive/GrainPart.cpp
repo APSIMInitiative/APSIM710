@@ -348,7 +348,7 @@ void fruitGrainPart::doDMDemandStress (void)
                                    , plant->getSwdefPhoto()
                                    , plant->getTempStressPhoto()
                                    , &gDlt_dm_stress_max);
-   Debug("Grain.Dlt_dm_stress_max:%f", gDlt_dm_stress_max);
+   Debug("Grain.Dlt_dm_stress_max=%f", gDlt_dm_stress_max);
 }
 
 
@@ -408,7 +408,7 @@ void fruitGrainPart::doNRetranslocate( float N_supply, float grain_n_demand)
       mealPart->doNRetranslocate(grain_n_demand, grain_n_demand);
 
       }
-   Debug("meal.Retranslocation.N:%f", Retranslocation.N());
+   Debug("meal.Retranslocation.N=%f", Retranslocation.N());
 }
 
 void fruitGrainPart::doNDemand1(float /*dlt_dm*/             // (INPUT)  Whole plant the daily biomass production (g/m^2)

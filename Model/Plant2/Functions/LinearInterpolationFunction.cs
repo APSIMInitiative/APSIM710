@@ -59,5 +59,53 @@ public class LinearInterpolationFunction : Function
         }
     }
 
+    public double ValueForX(double XValue)
+    {
+        return XYPairs.ValueIndexed(XValue);
+    }
+
+    public override double[] Values
+    {
+        get
+        {
+            string PropertyName = XProperty;
+
+            // Simple type
+            if (!LookedForInternalVariable)
+            {
+                Plant.GetMemberInfo(XProperty, Plant, out Member, out Target);
+            }
+            object v = null;
+
+            if (Member != null)
+            {
+                if (Member is FieldInfo)
+                    v = (Member as FieldInfo).GetValue(Target);
+                else
+                    v = (Member as PropertyInfo).GetValue(Target, null);
+            }
+            else
+                v = Plant.GetObject(XProperty);
+            if (v == null)
+                throw new Exception("Cannot find value for " + Name + " XProperty: " + XProperty);
+            if (v is Array)
+            {
+                Array A = v as Array;
+                double[] ReturnValues = new double[A.Length];
+                for (int i = 0; i < A.Length; i++)
+                {
+                    double XValue = Convert.ToDouble(A.GetValue(i));
+                    ReturnValues[i] = XYPairs.ValueIndexed(XValue);
+                }
+                return ReturnValues;
+            }
+            else
+            {
+                double XValue = Convert.ToDouble(v);
+                return new double[1] { XYPairs.ValueIndexed(XValue) };
+            }
+        }
+    }
+
 }
 

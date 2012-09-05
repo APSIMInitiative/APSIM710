@@ -175,6 +175,46 @@ public class Biomass
         };
 
     }
+    public static Biomass operator -(Biomass a, Biomass b)
+    {
+        return new Biomass
+        {
+            StructuralWt = a.StructuralWt - b.StructuralWt,
+            NonStructuralWt = a.NonStructuralWt - b.NonStructuralWt,
+            MetabolicWt = a.MetabolicWt - b.MetabolicWt,
+            StructuralN = a.StructuralN - b.StructuralN,
+            NonStructuralN = a.NonStructuralN - b.NonStructuralN,
+            MetabolicN = a.MetabolicN - b.MetabolicN
+        };
 
+    }
+    public static Biomass operator *(Biomass a, double Fraction)
+    {
+        return new Biomass
+        {
+            StructuralWt = a.StructuralWt * Fraction,
+            NonStructuralWt = a.NonStructuralWt * Fraction,
+            MetabolicWt = a.MetabolicWt * Fraction,
+            StructuralN = a.StructuralN * Fraction,
+            NonStructuralN = a.NonStructuralN * Fraction,
+            MetabolicN = a.MetabolicN * Fraction
+        };
+
+    }
+
+    private static Biomass _Empty = new Biomass();
+    public static Biomass None { get { return _Empty; } }
+    public bool IsEmpty
+    {
+        get
+        {
+            return StructuralWt == 0 &&
+                    NonStructuralWt == 0 &&
+                    MetabolicWt == 0 &&
+                    StructuralN == 0 &&
+                    NonStructuralN == 0 &&
+                    MetabolicN == 0;
+        }
+    }
 }
    
