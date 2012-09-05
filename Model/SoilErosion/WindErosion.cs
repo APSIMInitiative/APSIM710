@@ -406,6 +406,20 @@ public partial class SoilErosion
             {
                 MyComponent.Get("sw", out sw);
             }
+            if (sw == null)
+            {
+                double[] sw_dep = null;
+                MyComponent.Get("sw_dep", out sw_dep);
+                if (sw_dep == null)
+                    throw new Exception("Could not obtain a value for soil water");
+                if (dlayer == null)
+                {
+                   MyComponent.Get("dlayer", out dlayer);
+                }
+                if (dlayer == null)
+                    throw new Exception("Could not obtain a value for soil layer depths");
+                soilWater = MathUtility.Divide(sw_dep[0], dlayer[0], 0.0);
+            }
             soilWater = sw[0];
             if (soilWater < minSoilWat)
                 minSoilWat = soilWater;
@@ -455,9 +469,9 @@ public partial class SoilErosion
             // but using an unmodified cover value.
             // double lambda_vegetated = -c_lambda * Math.Log(1.0 - plant_cover * 2.0); 
 
-            double xc = 1.0 / (sigma_bare * m_bare);
-            if (lambda_vegetated >= xc)
-                return 999.0;
+            //double xc = 1.0 / (sigma_bare * m_bare);
+            if (lambda_vegetated >= 1.0 /* xc */)
+                return 0.20; 
             else
                 return (1.0 / Math.Sqrt(1.0 - sigma_bare * m_bare * lambda_vegetated)) * (1.0 / Math.Sqrt(1.0 + m_bare * beta_bare * lambda_vegetated));
 
