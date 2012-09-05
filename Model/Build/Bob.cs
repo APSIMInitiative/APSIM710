@@ -28,6 +28,8 @@ class Bob
    /// </summary>
    static int Main(string[] args)
    {
+      string CWD = Directory.GetCurrentDirectory();
+	  
       int ReturnCode = 0;
 
       string ConnectionString = "Data Source=www.apsim.info\\SQLEXPRESS;Database=\"APSIM Builds\";Trusted_Connection=False;User ID=sv-login-external;password=P@ssword123";
@@ -46,6 +48,8 @@ class Bob
             int JobID = FindNextJob(Connection);
             if (JobID != -1)
             {
+               Directory.SetCurrentDirectory(CWD);
+			
                // Update the builds database.
                DBUpdate("Status", "Running", Connection, JobID);
          
