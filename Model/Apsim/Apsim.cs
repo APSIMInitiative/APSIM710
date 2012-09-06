@@ -168,6 +168,7 @@ public class Apsim
     private string SimulationNameBeingRun;
     private StreamWriter Sum;
     private string SimFileName;
+    private bool HasExited = false;
 
     /// <summary>
     /// Run a single simulation in a .apsim file
@@ -197,6 +198,8 @@ public class Apsim
     /// </summary>
     private void StartSIM(string FileName)
     {
+        HasExited = false;
+
         SimFileName = FileName;
 
         // Create a .sum
@@ -214,6 +217,7 @@ public class Apsim
         _P.StartInfo.RedirectStandardOutput = true;
         _P.OutputDataReceived += OnStdOut;
         _P.StartInfo.WorkingDirectory = Path.GetDirectoryName(SimFileName);
+        _P.EnableRaisingEvents = true;
         _P.Exited += OnExited;
         _P.Start();
         _P.BeginOutputReadLine();
@@ -244,6 +248,7 @@ public class Apsim
     {
         Sum.Close();
         File.Delete(SimFileName);
+        HasExited = true;
     }
 
     /// <summary>
@@ -264,8 +269,10 @@ public class Apsim
         if (JobScheduler != null)
             JobScheduler.WaitForFinish();
         else
-            while (_P != null && !_P.HasExited)
+        {
+            while (_P != null && !HasExited)
                 Thread.Sleep(200);
+        }
     }
 
     #region Methods/Properties called by GUI
