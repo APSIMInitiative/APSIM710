@@ -62,12 +62,12 @@ public class Job
     {
         get
         {
-            StringCollection bits;
-            if (Path.DirectorySeparatorChar == '/' && CommandLine != null)
+            StringCollection bits = null;
+            if (Path.DirectorySeparatorChar == '/' && CommandLineUnix != null)
                 bits = StringManip.SplitStringHonouringQuotes(CommandLineUnix, " ");
-            else
+            else if (CommandLine != null)
                 bits = StringManip.SplitStringHonouringQuotes(CommandLine, " ");
-            if (bits.Count > 0)
+            if (bits != null && bits.Count > 0)
                 return bits[0];
             else
                 return "";
@@ -82,8 +82,12 @@ public class Job
     {
         get
         {
-            StringCollection bits = StringManip.SplitStringHonouringQuotes(CommandLine, " ");
-            if (bits.Count > 1)
+            StringCollection bits = null;
+            if (Path.DirectorySeparatorChar == '/' && CommandLineUnix != null)
+                bits = StringManip.SplitStringHonouringQuotes(CommandLineUnix, " ");
+            else if (CommandLine != null)
+                bits = StringManip.SplitStringHonouringQuotes(CommandLine, " ");
+            if (bits != null && bits.Count > 1)
             {
                 string Argument = "";
                 for (int i = 1; i < bits.Count; i++)

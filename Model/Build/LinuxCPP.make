@@ -1,6 +1,6 @@
 
-CPPDEBUGFLAGS=-g 
-LDDEBUGFLAGS := $(LDDEBUGFLAGS) -lg 
+CPPDEBUGFLAGS=-g
+LDDEBUGFLAGS := $(LDDEBUGFLAGS) -lg
 
 BOOST_INCLUDEDIR=-I/usr/include/boost
 XML2_INCLUDEDIR=-I/usr/include/libxml2
@@ -15,7 +15,7 @@ endif
 
 CC=/usr/bin/g++
 LD=/usr/bin/ld
-# the -fno-omit-frame-pointer is present to disable an option otherwise set by -O3. 
+# the -fno-omit-frame-pointer is present to disable an option otherwise set by -O3.
 # Apparently, for g++ versions before 4.0, using -fomit-frame pointer interferes with use of STDCALL
 CFLAGS= -Wall $(MONO_DEFINE) $(BOOST_INCLUDEDIR) $(XML2_INCLUDEDIR) $(GLIB_INCLUDEDIR) $(MONO_INCLUDEDIR) -I$(APSIM)/Model -I$(APSIM)/Model/$(PROJECT) \
 -DBOOST_FILESYSTEM_VERSION=2 -Wno-write-strings -fpermissive -fPIC -O3 -fno-omit-frame-pointer $(CPPDEBUGFLAGS) $(INCLUDES)
@@ -29,12 +29,12 @@ LIBS:= -L$(APSIM)/Model $(foreach lib,$(LIBS),-l$(lib)) \
         $(XML2_LIBDIR) -lxml2 $(MONO_LIBDIR)
 
 ifeq ($(PROJECTTYPE),dll)
-LDFLAGS:= -Xlinker --warn-common -Xlinker -Bsymbolic -Xlinker -Bsymbolic-functions $(LDFLAGS) 
+LDFLAGS:= -Xlinker --warn-common -Xlinker -Bsymbolic -Xlinker -Bsymbolic-functions $(LDFLAGS)
 LIBS := $(LIBS) -ldl
 endif
 
 ifeq ($(PROJECTTYPE),libdll)
-LDFLAGS:= -Xlinker --warn-common -Xlinker --export-dynamic -Xlinker -Bsymbolic -Xlinker -Bsymbolic-functions $(LDFLAGS) 
+LDFLAGS:= -Xlinker --warn-common -Xlinker --export-dynamic -Xlinker -Bsymbolic -Xlinker -Bsymbolic-functions $(LDFLAGS)
 LIBS := $(LIBS) -ldl
 endif
 
@@ -51,7 +51,7 @@ OBJ:=	$(SRC:.cpp=.o)
 #-----------------------------------------------------------------------
 # The rules
 ifeq ($(PROJECTTYPE),exe)
-all: $(APSIM)/Model/$(PROJECT).x $(POSTBUILD)
+all: $(APSIM)/Model/$(PROJECT).exe $(POSTBUILD)
 else
 all: $(APSIM)/Model/$(PROJECT).so $(POSTBUILD)
 endif
@@ -61,17 +61,17 @@ endif
 
 $(PRECOMPILEDHEADERS) : $(PRECOMPILE)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $<
-	
-$(APSIM)/Model/$(PROJECT).x: $(PREBUILD) $(PRECOMPILEDHEADERS) $(OBJ)
+
+$(APSIM)/Model/$(PROJECT).exe: $(PREBUILD) $(PRECOMPILEDHEADERS) $(OBJ)
 	$(CC) -o $@ $(OBJ) $(OBJS) $(LDFLAGS) $(LIBS) $(LDDEBUGFLAGS)
 
 $(APSIM)/Model/$(PROJECT).so: $(PREBUILD) $(PRECOMPILEDHEADERS) $(OBJ)
 	$(CC) -shared -o $@ $(OBJ) $(OBJS) $(LDFLAGS) $(LIBS) $(LDDEBUGFLAGS) $(DEF)
-	
+
 ifeq ($(PROJECTTYPE),libdll)
 	ln -sf $@ $(APSIM)/Model/lib$(PROJECT).so
 endif
-	
+
 
 clean:
-	rm -f $(OBJ) $(PRECOMPILEDHEADERS) $(APSIM)/Model/$(PROJECT).x $(APSIM)/Model/$(PROJECT).so
+	rm -f $(OBJ) $(PRECOMPILEDHEADERS) $(APSIM)/Model/$(PROJECT).exe $(APSIM)/Model/$(PROJECT).so

@@ -7,14 +7,10 @@ if [ -n "${APSIM:-x}" ] ; then
    export APSIM=`dirname $APSIM`
 fi
 
-if [ -f "$APSIM/Model/Build/VersionInfo.sh" ] ; then 
-  . "$APSIM/Model/Build/VersionInfo.sh"
-fi
-
 # ----- The working directory may be specified by $1 (or blank)
 if [ $# -eq 0 ] ; then
-  make 
+  make
 else
-  make -C "$1" $2 $3 
+  make -C "$1" $2 $3
 fi
 

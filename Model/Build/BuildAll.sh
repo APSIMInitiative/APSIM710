@@ -7,14 +7,13 @@ if [ -n "${APSIM:-x}" ] ; then
    export APSIM=`dirname $APSIM`
 fi
 
-
-$APSIM/Model/Build/CleanAll.sh
-$APSIM/Model/Build/RunMake.sh $APSIM/Model/RunTime
-$APSIM/Model/Build/RunMake.sh $APSIM/Model/JobScheduler
-
-tclsh $APSIM/Model/Build/VersionStamper.tcl
-if [ -f "$APSIM/Model/Build/VersionInfo.sh" ] ; then 
-  . "$APSIM/Model/Build/VersionInfo.sh"
+if [ -f "$MONO_PREFIX/mono/jit.h" ] ; then
+   export MONO_PREFIX=/usr
+fi
+if [ -f "$MONO_PREFIX/mono/jit.h" ] ; then
+   echo Cant find mono/jit.h - expect trouble
 fi
 
-$APSIM/Model/JobScheduler.exe $APSIM/Model/Build/BuildAll.xml
+$APSIM/Model/Build/RunMake.sh $APSIM/Model/JobScheduler
+
+$APSIM/Model/JobScheduler.exe $APSIM/Model/Build/BuildAll.xml  Target=BuildAll

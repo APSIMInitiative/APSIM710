@@ -11,16 +11,16 @@
    <!-- ############### Cleaning target called by BuildAll ############### -->
    <Target name="Clean">
       <Job name="Clean model directory">
-         <WorkingDirectory>%APSIM%\Model</WorkingDirectory>
-         <CommandLine>cscs Build\RemoveUnwantedFiles.cs Directory=%APSIM%\Model</CommandLine>
+         <WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
+         <CommandLine>%APSIM%/Model/cscs.exe RemoveUnwantedFiles.cs Directory=%APSIM%/Model</CommandLine>
       </Job>
       <Job name="Version stamp the build">
          <DependsOn>Clean model directory</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
-         <CommandLine>cscs Build/VersionStamper.cs Directory=%APSIM% Increment=%INCREMENT%</CommandLine>
+         <CommandLine>%APSIM%/Model/cscs.exe VersionStamper.cs Directory=%APSIM% Increment=%INCREMENT%</CommandLine>
       </Job>
    </Target>
-   
+     
    <!-- ############### Compiling targets ############### -->
    <Target name="Pre-Compile">
       <DependsOn>Clean</DependsOn>
@@ -143,6 +143,7 @@
       </Job>
       <Job name="Compile Apsim">
          <DependsOn>Compile ApsimFile</DependsOn>
+         <DependsOn>Compile CSGeneral</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Apsim</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>

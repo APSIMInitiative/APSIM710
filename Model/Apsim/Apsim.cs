@@ -102,7 +102,7 @@ public class Apsim
             else
             {
                 // For each path, create a job in our target.
-                string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "apsim.exe");
+                string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "Apsim.exe");
                 NumJobsBeingRun = SimulationPaths.Count;
                 foreach (string SimulationPath in SimulationPaths)
                 {
@@ -147,7 +147,7 @@ public class Apsim
             else
             {
                 // For each path, create a job in our target.
-                string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "apsim.exe");
+                string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "Apsim.exe");
                 NumJobsBeingRun = SimulationPaths.Count;
                 foreach (string SimulationPath in SimulationPaths)
                 {
@@ -165,7 +165,7 @@ public class Apsim
 
     #region Code to manage a single running APSIM process
     private Process _P = null;
-    private string SimulationNameBeingRun;
+    private string SimulationNameBeingRun = "";
     private StreamWriter Sum;
     private string SimFileName;
     private bool HasExited = false;
@@ -353,7 +353,7 @@ public class Apsim
     {
         List<SimFactorItem> SimFiles = Factor.CreateSimFiles(_F, SimsToRun);
 
-        string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "apsim.exe");
+        string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "Apsim.exe");
         string WorkingDirectory = Path.GetDirectoryName(_F.FileName);
         foreach (SimFactorItem item in SimFiles)
             P.Targets[0].Jobs.Add(new Job(Executable + " " + item.SimName, WorkingDirectory));

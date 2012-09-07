@@ -56,9 +56,12 @@ namespace ApsimDropBox
             {
             // Read in jobs we have submitted before 
             downLoaders = readInDownLoaders();
-
+            int portnum = 4020;
+			if (args.Length == 2 && args[0] == "-p")
+				portnum = Convert.ToInt32(args[1]);
+				
             // Fire up a web listener to report if asked
-            HttpListener listener = HttpListener.Create(IPAddress.Any, 4020);
+            HttpListener listener = HttpListener.Create(IPAddress.Any, portnum);
             listener.RequestReceived += OnHttpRequest;
             listener.Start(5);
 
@@ -86,7 +89,7 @@ namespace ApsimDropBox
         static public void saveDownLoaders()
             {
             XmlSerializer serializer = new XmlSerializer(typeof(List<IDownLoader>));
-            TextWriter textWriter = new StreamWriter("JobMonitor.xml");
+            TextWriter textWriter = new StreamWriter(Path.Combine(Environment.GetEnvironmentVariable("HOME"), "ApsimDropBox.xml"));
             serializer.Serialize(textWriter, downLoaders);
             textWriter.Close();
             }
@@ -94,7 +97,7 @@ namespace ApsimDropBox
         static private List<IDownLoader> readInDownLoaders()
             {
             List<IDownLoader> downLoaders = new List<IDownLoader>();
-            string filename = "JobMonitor.xml";
+            string filename = Path.Combine(Environment.GetEnvironmentVariable("HOME"), "ApsimDropBox.xml");
             if (File.Exists(filename))
                 {
                 XmlSerializer serializer = new XmlSerializer(typeof(List<IDownLoader>));
@@ -104,11 +107,14 @@ namespace ApsimDropBox
                 }
             else
                 {
-                //downLoaders.Add(new FSDownLoader(Directory.GetCurrentDirectory() + "/diskshare"));
-                //downLoaders.Add(new ZipDownLoader("d:/CondorDropBox", "d:/temp/"));
-                downLoaders.Add(new FSDownLoader("d:\\CondorPostbox"));
-                downLoaders.Add(new ZipDownLoader("d:\\ExternalDropBox\\My Dropbox", "d:\\Transfer"));
-                downLoaders.Add(new ZipDownLoader("d:\\CondorDropBox", "d:\\Transfer"));
+                //downLoaders.Add(new FSDownLoader(Environment.GetEnvironmentVariable("HOME") + "/Dropbox/Apsim"));
+				string tmpdir = Environment.GetEnvironmentVariable("TEMP");
+				if (tmpdir == null) tmpdir = "/tmp";
+				downLoaders.Add(new ZipDownLoader(Environment.GetEnvironmentVariable("HOME") + "/Dropbox/Apsim", 
+												  tmpdir));
+                //downLoaders.Add(new FSDownLoader("d:\\CondorPostbox"));
+                //downLoaders.Add(new ZipDownLoader("d:\\ExternalDropBox\\My Dropbox", "d:\\Transfer"));
+                //downLoaders.Add(new ZipDownLoader("d:\\CondorDropBox", "d:\\Transfer"));
                 }
             return downLoaders;
             }
@@ -356,7 +362,7 @@ namespace ApsimDropBox
         {
         // The downloader monitors a disk share for new zipfiles.
         public List<ZipItem> zipJobs = new List<ZipItem>();
-        public string scanDir = "";
+        public string scanDir = ".";
         public string workDir = "";
         public ZipDownLoader() { }
         public ZipDownLoader(string _scanDir, string _workDir)
@@ -398,7 +404,7 @@ namespace ApsimDropBox
 
                     if (!found)
                         {
-                        string destination = Path.Combine(workDir , Path.GetFileNameWithoutExtension(zipfile));
+                        string destination = Path.Combine(workDir , Guid.NewGuid().ToString() + "." + Path.GetFileNameWithoutExtension(zipfile));
                         Console.WriteLine("Found and unpacking new zipfile " + zipfile);
                         // These operations can fail as the zipfile may be locked by another process
                         try
@@ -407,12 +413,8 @@ namespace ApsimDropBox
                             Directory.CreateDirectory(destination);
                             foreach (string file in Directory.GetFiles(destination, "*", SearchOption.AllDirectories).ToList())
                                 File.Delete(file);
-                            string destZipFileName = Path.Combine(destination, Path.GetFileName(zipfile));
 
-                            File.Copy(zipfile, destZipFileName, true);
-
-                            Zip.UnZipFiles(destZipFileName, destination, "");
-                            File.Delete(destZipFileName);
+                            Zip.UnZipFiles(zipfile, destination, "");
 
                             FileInfo fInfo = new FileInfo(Path.Combine(destination , "ApsimCondorJob.xml"));
                             if (fInfo.Exists)
@@ -423,8 +425,8 @@ namespace ApsimDropBox
                             else
                                 {
                                 string[] subFiles = Directory.GetFiles(destination, "*.sub");
-                                if (subFiles.Length> 1)
-                                    Console.WriteLine("More than one submit file found in " + zipfile);
+                                if (subFiles.Length > 1)
+                                    Console.WriteLine("WARNING! More than one submit file found in " + zipfile);
 
                                 // FIXME: One day, we'll have to deal with more than 1 submit file in a zipfile. For now
                                 // ignore it..
@@ -432,8 +434,14 @@ namespace ApsimDropBox
                                     {
                                     Console.WriteLine("Adding old style job from zipfile " + zipfile + " = " + subFiles[0]);
                                     result.Add(new ZipItem(zipfile, new oldStyleCondorApsimJob(subFiles[0])));
-                                    }
-                                }
+                                    } 
+								else 
+									{
+                                    Console.WriteLine("No submit file found in zipfile " + zipfile + "\n");
+										// FIXME - this should be a dummy job
+                                    result.Add(new ZipItem(zipfile, new oldStyleCondorApsimJob("")));
+									}
+								}
                             }
                         catch (Exception e) { Console.WriteLine("Error unpacking and starting jobs in" + zipfile + "\n" + e.ToString()); }
                         }
@@ -541,11 +549,11 @@ namespace ApsimDropBox
             p.StartInfo.RedirectStandardOutput = false;
             p.StartInfo.RedirectStandardError = true;
             p.StartInfo.UseShellExecute = false;
-#if (LINUX)
-            p.StartInfo.FileName = "/opt/condor/bin/condor_submit";
-#else
-            p.StartInfo.FileName = "c:/condor/bin/condor_submit.exe";
-#endif
+            if (Path.DirectorySeparatorChar == '/') 
+              p.StartInfo.FileName = "/usr/bin/condor_submit";
+            else
+              p.StartInfo.FileName = "c:/condor/bin/condor_submit.exe";
+
             p.StartInfo.WorkingDirectory = Path.GetDirectoryName(submitFile);
             p.StartInfo.Arguments = submitFile;
             try

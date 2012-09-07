@@ -76,11 +76,14 @@ class JobRunner
                             catch (Exception err)
                             {
                                 J.ExitCode = 1;
+                                J.StdOut = "";
                                 if (J.WorkingDirectory != null && J.WorkingDirectory != "")
-                                    J.StdOut = J.WorkingDirectory + "> ";
-                                else
-                                    J.StdOut = "";
-                                J.StdOut = J.CommandLine + "\r\n\r\n";
+                                    J.StdOut = "Working Directory = '" + J.WorkingDirectory + "'\n";
+                                if (Path.DirectorySeparatorChar == '/' && J.CommandLineUnix != null)
+                                   J.StdOut += "Command = '" + J.CommandLineUnix + "'";
+                                else if (J.CommandLine != null)
+                                   J.StdOut += "Command = '" + J.CommandLine + "'";
+                                J.StdOut += "\r\n\r\n";
                                 J.StdErr = err.Message;
                                 J.Status = "Fail";
                             }
@@ -105,7 +108,8 @@ class JobRunner
                 }
                 else
                 {
-                    Console.WriteLine("Waiting for server");
+                    Console.WriteLine("Waiting for server:");
+                    Console.WriteLine(err.Message);
                     Thread.Sleep(5000);
                 }
             }
@@ -145,12 +149,22 @@ class JobRunner
 
         if (FinishedJobs != null)
         {
-            XmlSerializer x = new XmlSerializer(typeof(List<Job>));
-            StringWriter s = new StringWriter();
-            x.Serialize(s, FinishedJobs);
-            Utility.SocketSend(Macros["Server"],
+            try
+               {
+               XmlSerializer x = new XmlSerializer(typeof(List<Job>));
+               StringWriter s = new StringWriter();
+               x.Serialize(s, FinishedJobs);
+               Utility.SocketSend(Macros["Server"],
                                Convert.ToInt32(Macros["Port"]),
                                "JobFinished~" + s.ToString());
+               }
+            catch (Exception e)
+               {
+               Console.WriteLine("Error in SendBackFinishedJobs:\n" + e.Message);
+               Utility.SocketSend(Macros["Server"],
+                               Convert.ToInt32(Macros["Port"]),
+                               "JobFinished~");
+               }
         }
     }
 
@@ -170,7 +184,6 @@ class JobRunner
             Process P = Utility.RunProcess("/bin/sh", "-c \"cat /proc/cpuinfo | grep processor | wc -l\"", ".");
             NumCPUsToUse = Convert.ToInt32(Utility.CheckProcessExitedProperly(P));
         }
-        NumCPUsToUse = Math.Max(NumCPUsToUse, 1);
 
         #region Core number override for AMD CPUs
         if (Macros.ContainsKey("NumCPUs"))
@@ -186,10 +199,9 @@ class JobRunner
             {
                 throw new Exception("Invalid number for NumCPUs.");
             }
-            if (NumCPUsToUse <= 0)
-                NumCPUsToUse = 1;
         }
         #endregion
+        NumCPUsToUse = Math.Max(NumCPUsToUse, 1);
         Console.WriteLine("Managing " + NumCPUsToUse + " Process" + (NumCPUsToUse > 1 ? "es" : ""));
         return NumCPUsToUse;
     }
@@ -214,15 +226,16 @@ class JobRunner
                 List<Job> Jobs = x.Deserialize(s) as List<Job>;
                 foreach (Job J in Jobs)
                 {
-                    J.CommandLine = J.CommandLine.Replace("%Server%", Macros["server"]);
+                    if (J.CommandLine != null)
+                        J.CommandLine = J.CommandLine.Replace("%Server%", Macros["server"]);
                     if (J.CommandLineUnix != null)
                         J.CommandLineUnix = J.CommandLineUnix.Replace("%Server%", Macros["server"]);
                 }
                 return Jobs;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new Exception("Response from JobScheduler while asking for new jobs: " + Response);
+                throw new Exception("Response from JobScheduler while asking for new jobs:\n" +  e.Message + "\n" + Response);
             }
         }
     }

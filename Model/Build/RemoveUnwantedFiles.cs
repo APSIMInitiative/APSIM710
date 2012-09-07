@@ -1,7 +1,6 @@
-﻿//css_import ..\CSGeneral\Utility.cs
-//css_import ..\CSGeneral\StringManip.cs
-//css_import ..\CSGeneral\MathUtility.cs
-
+﻿//css_import CSGeneral/Utility.cs
+//css_import CSGeneral/StringManip.cs
+//css_import CSGeneral/MathUtility.cs
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,7 +66,11 @@ class RemoveUnwantedFiles
                         
                         if (Directory.Exists(path))
                             Directory.Delete(path, true);
-                        else if (File.Exists(path) && !path.Contains("VersionStamper.exe"))
+                        else if (File.Exists(path) && 
+                                 !path.Contains("VersionStamper.exe") &&
+                                 !path.Contains("JobScheduler.exe") &&
+                                 !path.Contains("JobRunner.exe") &&
+                                 !path.Contains("CSGeneral.dll"))
                         {
                             try
                             {

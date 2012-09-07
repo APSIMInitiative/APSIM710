@@ -56,7 +56,7 @@ class BobMain
          Run("Run version stamper", "%APSIM%\\Model\\cscs.exe", 
              "%APSIM%\\Model\\Build\\VersionStamper.cs Directory=%APSIM% [Increment=Yes]", 
              "%APSIM%\\Model\\Build");
-         
+
          // Compile the JobScheduler.
          // Run("Compile job scheduler", "make.exe", "--always-make", "%APSIM%\\Model\\JobScheduler");
          Run("Compile job scheduler", "%VS100COMNTOOLS%\\..\\IDE\\devenv.exe",
