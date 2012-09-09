@@ -10,7 +10,7 @@ public class PHmodel
     [Output]
     public double NH3A;
     [Output]
-    public double NH4;
+    public double NH4ph;
     [Output]
     public double H2S;
     [Output]
@@ -260,8 +260,8 @@ public class PHmodel
     {
       
         NH3L=TAN/(1+(Math.Pow(10,-pH)/GetDissociationCoeff(1,TLiq)));
-        NH4 = TAN / (1 + GetDissociationCoeff(1, TLiq) / (Math.Pow(10, -pH)));
-        TAN = NH3L + NH4; //should not be necessary...
+        NH4ph = TAN / (1 + GetDissociationCoeff(1, TLiq) / (Math.Pow(10, -pH)));
+        TAN = NH3L + NH4ph; //should not be necessary...
         H2S=TS/(1+GetDissociationCoeff(0,TLiq)/Math.Pow(10,-pH));
         TS=H2S+HS;
         HS = TS / (Math.Pow(10, -pH) / GetDissociationCoeff(0, TLiq) + 1);
@@ -301,7 +301,7 @@ public class PHmodel
             {
                 case 1:                    //ammonia
                     Gliq = NH3L;
-                    Gion = NH4;
+                    Gion = NH4ph;
                     Wion = OH;
                     GairInf = NH3A;
                     diffusion_coeff_G_liq = GetDiffusionCoeffLiq(2, TLiq, viscosity_liquid);   //NH3
