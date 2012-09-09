@@ -261,8 +261,6 @@ public class ModelInstance
                 ModelInstance Instance = InScope.FindModel(Ref.Name, this);
                 if (Instance == null)
                     Instance = InScope.FindModel(I => I.Type.Name == Ref.Info.FieldType.Name, this);
-                else if (!Utility.IsOfType(Instance.Type, Ref.Info.FieldType.Name))
-                    Instance = null;
                 if (Instance == null)
                 {
                     if (!Ref.Optional)
