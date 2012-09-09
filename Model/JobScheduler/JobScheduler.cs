@@ -123,7 +123,10 @@ public class JobScheduler
 
             // If we started a JobRunner and it has exited for some reason then terminate us.
             if (RunnerProcess != null && RunnerProcess.HasExited)
+            {
                 CancelWorkerThread = true;
+                SomeJobsHaveFailed = true;
+            }
         }
 
         // Wait until all jobs have finished.
