@@ -186,7 +186,7 @@ public class JobScheduler
             Macros = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
 
         // Add built-in macros.
-        string APSIMRootDirectory = Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\..");
+        string APSIMRootDirectory = Path.GetFullPath(Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)));
         Macros.Add("APSIM", APSIMRootDirectory);
         Environment.SetEnvironmentVariable("APSIM", APSIMRootDirectory);
 

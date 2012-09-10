@@ -1373,6 +1373,7 @@ c      not have the same meaning.....
          call get_real_var_optional (unknown_module, 'eo', '(mm)'
      :              , value, numvals, c%pan_lb, c%pan_ub)
          owner_module_id = get_posting_module ()
+         owner_module = ''
          ok = component_id_to_name(owner_module_id, owner_module)
          write (string, '(a,a,a)')
      :        '  Pan evap approximated by ',

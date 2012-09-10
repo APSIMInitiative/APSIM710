@@ -14,6 +14,7 @@ if [ -f "$MONO_PREFIX/mono/jit.h" ] ; then
    echo Cant find mono/jit.h - expect trouble
 fi
 
+$APSIM/Model/Build/RunMake.sh $APSIM/Model/JobScheduler clean
 $APSIM/Model/Build/RunMake.sh $APSIM/Model/JobScheduler
 
 $APSIM/Model/JobScheduler.exe $APSIM/Model/Build/BuildAll.xml  Target=BuildAll
