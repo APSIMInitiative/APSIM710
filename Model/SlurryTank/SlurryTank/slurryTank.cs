@@ -38,6 +38,8 @@ public class SlurryTank
     double SFast = 0;
     [Output]
     double S_S04 = 0;
+    [Output]
+    double DM = 0;
 
     //const
     double RA = 0.2;
@@ -71,6 +73,21 @@ public class SlurryTank
     [Param]
     double pHopt_hi = 0;
 
+    [Param]
+    double pHmin_m = 0;
+    [Param]
+    double pHopt_m_lo = 0;
+    [Param]
+    double pHmax_m = 0;
+    [Param]
+    double pHopt_m_hi = 0;
+
+//    [Param]
+    double[,] measured_pH=new double[4, 9];
+//    [Param]
+    int[] measurement_day=new int[9];
+    [Param]
+    int treatment_no;
     //gas
 
     //other
@@ -126,6 +143,8 @@ public class SlurryTank
     [Output]
     double FpH = 0;
     [Output]
+    double FpH_m = 0;
+    [Output]
     double FThetaM = 0;
     [Output]
     double FS = 0;
@@ -160,6 +179,7 @@ public class SlurryTank
 
     double initialOM = 0;
 
+
     [Event]
     public event DoubleDelegate CCH4SEvent;
     [Event]
@@ -179,13 +199,63 @@ public class SlurryTank
     [EventHandler]
     public void OnInitialised()
     {
-        Console.WriteLine("OnInit");
+        //Console.WriteLine("OnInit");
+        measured_pH[0, 0] = 7.05;
+        measured_pH[0, 1] = 7.11;
+        measured_pH[0, 2] = 7.19;
+        measured_pH[0, 3] = 7.18;
+        measured_pH[0, 4] = 7.05;
+        measured_pH[0, 5] = 7.15;
+        measured_pH[0, 6] = 7.18;
+        measured_pH[0, 7] = 7.24;
+        measured_pH[0, 8] = 7.63;
+
+        measured_pH[1, 0] = 7.02;
+        measured_pH[1, 1] = 7.13;
+        measured_pH[1, 2] = 7.24;
+        measured_pH[1, 3] = 7.17;
+        measured_pH[1, 4] = 7.01;
+        measured_pH[1, 5] = 7.12;
+        measured_pH[1, 6] = 7.15;
+        measured_pH[1, 7] = 7.21;
+        measured_pH[1, 8] = 7.56;
+
+        measured_pH[2, 0] = 4.37;
+        measured_pH[2, 1] = 4.82;
+        measured_pH[2, 2] = 5.08;
+        measured_pH[2, 3] = 5.33;
+        measured_pH[2, 4] = 5.54;
+        measured_pH[2, 5] = 5.61;
+        measured_pH[2, 6] = 5.75;
+        measured_pH[2, 7] = 6.04;
+        measured_pH[2, 8] = 6.38;
+
+        measured_pH[3, 0] = 4.54;
+        measured_pH[3, 1] = 4.88;
+        measured_pH[3, 2] = 5.27;
+        measured_pH[3, 3] = 5.45;
+        measured_pH[3, 4] = 5.66;
+        measured_pH[3, 5] = 5.77;
+        measured_pH[3, 6] = 5.97;
+        measured_pH[3, 7] = 6.09;
+        measured_pH[3, 8] = 6.26;
+
+        measurement_day[0] = 0;
+        measurement_day[1] = 6;
+        measurement_day[2] = 13;
+        measurement_day[3] = 22;
+        measurement_day[4] = 29;
+        measurement_day[5] = 37;
+        measurement_day[6] = 48;
+        measurement_day[7] = 64;
+        measurement_day[8] = 90;
     }
     [EventHandler]
     public void OnPrepare()
     {
-        Console.WriteLine("OnPrep");
-
+        
+       //Console.WriteLine("OnPrep", day);
+        
     }
 
     private double GetOM()
@@ -206,8 +276,9 @@ public class SlurryTank
     {
 
         slurrypH = input.pH;
+        //slurrypH = measurement_no
         double amount = input.amount;
-        double DM = amount * input.DM;
+        DM = amount * input.DM;
         Ash += DM * input.Ash; // formel 1.2 AshContent  //kg
         double TanAdded = amount * input.Tan; //1.3  // kg
         //TotalNInput += TanAdded;
@@ -273,11 +344,31 @@ public class SlurryTank
     [EventHandler]
     public void OnProcess()
     {
-
+        if (daysSinceFilled == 80)
+            Console.WriteLine("at day 82");
         if (Water > 0)
         {
+            double startpH=0.0;
+            double endpH=0.0;
+            int startday=0;
+            int endday=0;
+            for (int k=0; k < 8; k++)
+            {
+                if ((daysSinceFilled >= measurement_day[k]) && (daysSinceFilled < measurement_day[k + 1]))
+                {
+                    startday=measurement_day[k];
+                    endday=measurement_day[k+1];
+                    startpH=measured_pH[treatment_no,k];
+                    endpH=measured_pH[treatment_no,k+1];
+                    slurrypH = startpH + (daysSinceFilled - startday) * (endpH - startpH) / (endday - startday);
+                }
+            }
+            if (daysSinceFilled >= measurement_day[8])
+                    slurrypH=measured_pH[treatment_no,8];
+    
+
             daysSinceFilled++;
-            temperatureInKelvin = 283.0;
+            temperatureInKelvin = 293.0;
             double temperatureInCelsius = temperatureInKelvin - 273.15;
             //Calculate lag effect after cleaning
             //lag_alpha and lag_beta are constants
@@ -285,6 +376,7 @@ public class SlurryTank
             //! Calculate the normalised temperature effect
             FTheta = Math.Exp(ThetaA + ThetaB * temperatureInCelsius * (1 - 0.5 * (temperatureInCelsius / ThetaC)));  //1.26
             FpH = 1.0; //new equations, appear after 1.27
+            //FpH for k1, k2 and k4
             if (slurrypH <= pHmin)
                 FpH = 0;
             if ((slurrypH > pHmin) && (slurrypH < pHopt_lo))
@@ -292,9 +384,21 @@ public class SlurryTank
             if ((slurrypH >= pHopt_lo) && (slurrypH <= pHopt_hi))
                 FpH = 1.0;
             if ((slurrypH > pHopt_hi) && (slurrypH < pHmax))
-                FpH = (slurrypH - pHopt_hi) / (pHmax - pHopt_hi);
+                FpH = 1-(slurrypH - pHopt_hi) / (pHmax - pHopt_hi);
             if (slurrypH >= pHmax)
                 FpH = 0;
+            //FpH_m for methanogenesis
+            if (slurrypH <= pHmin_m)
+                FpH_m = 0;
+            if ((slurrypH > pHmin_m) && (slurrypH < pHopt_m_lo))
+                FpH_m = (pHopt_m_lo - slurrypH) / (pHopt_m_lo - pHmin_m);
+            if ((slurrypH >= pHopt_m_lo) && (slurrypH <= pHopt_m_hi))
+                FpH_m = 1.0;
+            if ((slurrypH > pHopt_m_hi) && (slurrypH < pHmax_m))
+                FpH_m = 1-(slurrypH - pHopt_m_hi) / (pHmax - pHopt_m_hi);
+            if (slurrypH >= pHmax_m)
+                FpH_m = 0;
+
             //! Calculate the degradation rates of the Fast and Slow pools
             double k1act = FpH * FTheta * k1;//1.25 //should be 0 to 1
             double k2act = FpH * FTheta * k2;//1.25
@@ -305,7 +409,7 @@ public class SlurryTank
 
             FS = Math.Exp(-b * (S_S04 / Water));	//1.31
             FThetaM = Math.Exp(ThetaAM + ThetaBM * temperatureInCelsius * (1 - 0.5 * (temperatureInCelsius / ThetaCM)));
-            double k3act = Finc * FThetaM * FpH * FS * k3; //1.32
+            double k3act = Finc * FThetaM * FpH_m * FS * k3; //1.32
             double k4act = FTheta * FpH * (1 - FS) * k4; //1.33
 
             //calculate C in CH4S. This will be instantaneously lost as CH4-C
