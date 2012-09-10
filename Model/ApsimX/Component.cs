@@ -320,7 +320,11 @@ namespace ModelFramework
         {
             Instance.AddModel(ModelDescription, ModelAssembly);
         }
- 
+
+        public void Warning(string msg)
+        {
+            throw new NotImplementedException();
+        }
 
     }
 }

@@ -70,7 +70,7 @@ public class ApsimX
     /// Create instances of all objects specified by the XmlNode. Returns the top 
     /// level instance.
     /// </summary>
-    private static ModelInstance CreateModelInstance(TextReader Reader)
+    public static ModelInstance CreateModelInstance(TextReader Reader)
     {
         ModelInstance RootInstance = XmlSerialiser.Deserialise(Reader);
         RootInstance.Initialise();

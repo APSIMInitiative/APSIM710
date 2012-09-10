@@ -75,6 +75,7 @@ namespace ModelFramework
         //Event id's for events that are handled in this class
         public const int INIT2INDEX = 9999999;
         protected int SOWINDEX = Int32.MaxValue;        //ensure these are unique/unused values
+        protected int PREPAREINDEX = Int32.MaxValue;    //ensure these are unique/unused values
         protected int ENDCROPINDEX = Int32.MaxValue;
         protected int POSTINDEX = Int32.MaxValue;
 
@@ -178,8 +179,11 @@ namespace ModelFramework
                     if (_compClass.Length > 0)
                         CompClass = _compClass;
                     InitData = XmlHelper.Find(Doc.DocumentElement, "initdata");
-                    IsPlant = (XmlHelper.FindByType(InitData, "Plant") != null);
+                    IsPlant = (XmlHelper.FindByType(InitData, "Plant") != null) || (XmlHelper.FindByType(InitData, "Plant1") != null);
                     IsScript = (XmlHelper.FindByType(InitData, "text") != null);
+
+                    PREPAREINDEX = Host.eventCount();
+                    registerEvent(null, "Prepare", "<type/>", PREPAREINDEX, TypeSpec.KIND_SUBSCRIBEDEVENT, 0, 0);
 
                     if (IsScript)
                     {
@@ -321,6 +325,8 @@ namespace ModelFramework
                     OnEndCrop(messageData);
                 else if (RegistrationIndex == POSTINDEX)
                     OnPost(messageData);
+                else if (RegistrationIndex == PREPAREINDEX)
+                    OnPrepare(messageData);
                 else
                 {
                     //execute other event
@@ -419,8 +425,17 @@ namespace ModelFramework
         // ----------------------------------------------
         public void RegisterAllEventHandlers()
         {
+            // Dont allow prepare registrations to go to ProtocolManager because we've already 
+            // registered for this. The ProtocolManager has a problem where: when a plant2 crop 
+            // is sown during prepare of the manager model, it registeres for prepare. The PM 
+            // won't call the crops prepare handler until the day after sowing ie. it doesn't
+            // see new prepare event subscriptions while in the middle of propagating 
+            // the prepare event to all modules. Because of this, the class handles prepare
+            // separately.
+
             for (int i = 0; i != Fact.EventHandlers.Count; i++)
-                if (String.Compare(Fact.EventHandlers[i].EventName, "EndCrop", true) != 0)
+                if (!string.Equals(Fact.EventHandlers[i].EventName, "EndCrop", StringComparison.CurrentCultureIgnoreCase) &&
+                    !string.Equals(Fact.EventHandlers[i].EventName, "Prepare", StringComparison.CurrentCultureIgnoreCase))
                 {
                     ExpandEventName(Fact.EventHandlers[i]);
                     Subscribe(Fact.EventHandlers[i]);
@@ -876,7 +891,7 @@ namespace ModelFramework
                 foreach (KeyValuePair<int, ApsimType> pair in RegistrationsEvent)
                 {
                     //don't unregister the Sow event
-                    if ((pair.Key != SOWINDEX) && (pair.Key != ENDCROPINDEX) && (pair.Key != POSTINDEX))
+                    if ((pair.Key != SOWINDEX) && (pair.Key != ENDCROPINDEX) && (pair.Key != POSTINDEX) && (pair.Key != PREPAREINDEX))
                     {
                         keys.Add(pair.Key);
                     }
@@ -895,6 +910,22 @@ namespace ModelFramework
                 RegistrationsProp.Clear();
                 ModelInstance = null;
             }
+        }
+
+        // ----------------------------------------------
+        /// <summary>
+        /// A Post message has been received. See if we need to do an endcrop.
+        /// </summary>
+        /// <param name="messageData"></param>
+        // ----------------------------------------------
+        public void OnPrepare(byte[] messageData)
+        {
+            if (ModelInstance != null)
+            {
+                GetAllInputs();
+                CallEventHandlers("Prepare", null);
+            }
+
         }
 
         // -----------------------------------------------------------------------
