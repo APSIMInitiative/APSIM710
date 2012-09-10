@@ -182,7 +182,10 @@ namespace CSGeneral
         //-------------------------------------------------------------------------
         public static double Sum(IEnumerable Values)
         {
-            return Sum(Values, 0, 0, 0.0);
+            double result = 0.0;
+            foreach (double Value in Values)
+                result += Value;
+            return result;
         }
 
         //-------------------------------------------------------------------------
@@ -194,14 +197,11 @@ namespace CSGeneral
         {
             double result = dInitialValue;
             if (iStartIndex < 0)
-            {
                 throw new Exception("MathUtility.Sum: End index or start index is out of range");
-            }
             int iIndex = 0;
             foreach (double Value in Values)
             {
-                if ((iStartIndex == 0 && iEndIndex == 0) ||
-                   (iIndex >= iStartIndex && iIndex < iEndIndex) && Value != MissingValue)
+                if (iIndex >= iStartIndex && iIndex < iEndIndex && Value != MissingValue)
                     result += Value;
                 iIndex++;
             }
@@ -266,14 +266,14 @@ namespace CSGeneral
             return 0.0;
         }
 
-        static public double Constrain(double dLowerLimit, double dUpperLimit, double dValue)
+        static public double Constrain(double dValue, double dLowerLimit, double dUpperLimit)
         {
             double dConstrainedValue = 0.0;
             dConstrainedValue = Math.Min(dUpperLimit, Math.Max(dLowerLimit, dValue));
             return dConstrainedValue;
         }
 
-        static public double[] Constrain(double[] dLowerLimits, double[] dUpperLimits, double[] dValues)
+        static public double[] Constrain(double[] dValues, double[] dLowerLimits, double[] dUpperLimits)
         {
             double[] Values = new double[dValues.Length];
             for (int i = 0; i < dValues.Length; i++)
@@ -747,6 +747,7 @@ namespace CSGeneral
 
             return Math.Sqrt(2 * Math.PI) * Math.Pow(t, x + 0.5) * Math.Exp(-t) * a;
         }
+
     }
 
 }

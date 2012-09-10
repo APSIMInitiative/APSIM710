@@ -150,9 +150,13 @@ class LinkField
         // Check our children first.
         foreach (Instance Child in In.Children)
         {
-            if (NameToFind.ToLower() == Child.Name.ToLower() && Utility.IsOfType(Child.Model.GetType(), TypeToFind))
-                return Child;
-        }
+            if (NameToFind.ToLower() == Child.Name.ToLower())
+            {
+                if (string.Equals(TypeToFind, "object", StringComparison.CurrentCultureIgnoreCase) ||
+                    Utility.IsOfType(Child.Model.GetType(), TypeToFind))
+                    return Child;
+            }
+         }
 
         // Check our siblings, our parent's siblings and our parent's, parent's siblings etc.
         Instance Parent = In.Parent;

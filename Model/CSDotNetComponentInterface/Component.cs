@@ -649,8 +649,12 @@ namespace ModelFramework
                 }
                 else
                 {
-                    // not an internal entity so look for an external one.
-                    return HostComponent.Get(NamePrefix + NamePath, Data, true);
+                    // external variable
+                    // try a full address first. If that doesn't work then try relative address.
+                    if (!HostComponent.Get(NamePrefix + NamePath, Data, true))
+                        return HostComponent.Get(NamePath, Data, true);
+                    else
+                        return true;
                 }
             }
         }
