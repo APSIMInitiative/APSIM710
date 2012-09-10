@@ -18,7 +18,8 @@
       implicit none
 *+  Calls
 
-
+      type(NewCropType) :: new_crop
+	  
 *+  Constant Values
       character  my_name*(*)       ! name of procedure
       parameter (my_name  = 'CropMod_Initialisation')
@@ -46,6 +47,10 @@
 
       call PlantP_Create()
       call PlantP_Init(c%crop_type,part_name,max_part)
+
+      call get_name(new_crop%sender)
+      new_crop%crop_type = c%crop_type
+      call publish_NewCrop(id%newcrop, new_crop)	  
 
       call pop_routine (my_name)
       return

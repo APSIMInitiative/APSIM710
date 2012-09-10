@@ -1665,6 +1665,7 @@
           integer :: end_crop
           integer :: prepare
           integer :: process
+		  integer :: newcrop
       end type IDsType
 
 !=================== instance variables ========================================
