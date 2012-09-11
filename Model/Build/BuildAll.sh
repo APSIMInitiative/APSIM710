@@ -14,6 +14,8 @@ if [ -f "$MONO_PREFIX/mono/jit.h" ] ; then
    echo Cant find mono/jit.h - expect trouble
 fi
 
+export MONO_XMLSERIALIZER_THS=no
+
 $APSIM/Model/Build/RunMake.sh $APSIM/Model/JobScheduler clean
 $APSIM/Model/Build/RunMake.sh $APSIM/Model/JobScheduler
 

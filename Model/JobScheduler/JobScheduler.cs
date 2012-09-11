@@ -367,7 +367,7 @@ public class JobScheduler
                 if (server.Pending())
                 {
                     TcpClient client = server.AcceptTcpClient();
-                    string data = "";
+                    StringBuilder data = new StringBuilder("");
 
                     // Get a stream object for reading and writing
                     NetworkStream stream = client.GetStream();
@@ -379,7 +379,7 @@ public class JobScheduler
                     {
                         // Translate data bytes to a ASCII string.
                         NumBytesRead = stream.Read(bytes, 0, bytes.Length);
-                        data += System.Text.Encoding.ASCII.GetString(bytes, 0, NumBytesRead);
+                        data.Append(System.Text.Encoding.ASCII.GetString(bytes, 0, NumBytesRead));
                         Thread.Sleep(10);
                     }
 
@@ -387,7 +387,7 @@ public class JobScheduler
                     string Response;
                     try
                     {
-                        Response = InterpretSocketData(data);
+                        Response = InterpretSocketData(data.ToString());
                     }
                     catch (Exception err)
                     {
