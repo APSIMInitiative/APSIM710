@@ -271,6 +271,39 @@
       <field name="interception" kind = "single"/>
    </type>
 
+   <!-- !!!!! Types for arbitration of canopy energy and water !!!!!-->
+   <type name="CohortCanopy">
+      <field name="CohortID" kind="string"/>
+      <field name="RowAngle" kind="double" unit="radian"/>
+      <field name="RowDistance " kind="double" unit="m"/>
+      <field name="RowOffset " kind="double" unit="m"/>
+      <field name="ColumnDistance " kind="double" unit="m"/>
+      <field name="ColumnOffset " kind="double" unit="m"/>
+      <field name="CanopyLayer" array="T">
+         <field name="Top" kind="double" unit="m"/>
+         <field name="RowExtent" kind="double" unit="m"/>
+         <field name="ColumnExtent" kind="double" unit="m"/>
+         <field name="LiveAI" kind="double" unit="m^2/m^2"/>
+         <field name="DeadAI" kind="double" unit="m^2/m^2"/>
+         <field name="LiveK" kind="double" unit="-"/>
+         <field name="DeadK" kind="double" unit="-"/>
+         <field name="Albedo" kind="double" unit="-"/>
+         <field name="Transmission" kind="double" unit="-"/>
+         <field name="Emissivity" kind="double" unit="-"/>
+         <field name="StomatalGMax" kind="double" unit="m/s"/>
+         <field name="StomatalGHalfSat" kind="double" unit="J/m^2/s"/>
+      </field>
+   </type>
+   
+   <type name="CanopyArbitration">
+      <field name="CohortID" kind="string"/>
+      <field name="CanopyLayer" array="T">
+         <field name="AbsorbedRadiation" kind="double" unit="MJ/m^2"/>
+         <field name="WaterDemand" kind="double" unit="kg/m^2"/>
+         <field name="Interception" kind="double" unit="kg/m^2"/>
+      </field>
+   </type>
+   
    <!--      !!!!! Fertiliser types !!!!!  -->
    <type name="FertiliserApplication">
       <field name="Amount" kind="single" />

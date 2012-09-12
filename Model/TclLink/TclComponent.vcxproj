@@ -38,7 +38,7 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</LinkIncremental>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TclLink</TargetName>
@@ -61,16 +61,18 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>..\..\..\BuildLibraries\boost_1_44\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;TCLCOMPONENT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__WIN32__;WIN32;NDEBUG;_WINDOWS;_USRDLL;TCLCOMPONENT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>..;..\..\..\BuildLibraries\boost_1_44;.\tcl8.4.13\generic;.\tk8.4.13\xlib;.\tk8.4.13\generic;D:\BuildLibraries\netcdf-4.1.1\libsrc4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -78,23 +80,22 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
+      <ModuleDefinitionFile>TclLink.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>..\..\..\BuildLibraries\boost_1_44\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="TclComponent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\ComponentInterface2\CMPComponentEntryPoints.cpp" />
     <ClCompile Include="TclComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\..\BuildLibraries\boost_1_44\lib\libboost_thread-vc100-mt-gd-1_44.lib" />
     <Library Include="..\ApsimShared.lib" />
     <Library Include="..\ComponentInterface2.lib" />
     <Library Include="..\General.lib" />
-    <Library Include="tclstub84.lib" />
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="..\ComponentInterface2\CMPComponentEntryPoints.obj" />
+    <Library Include="lib\tclstub85.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
