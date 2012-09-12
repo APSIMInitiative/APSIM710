@@ -18,7 +18,7 @@ class RemoveUnwantedFiles
     static int Main(string[] args)
     {
         string[] ExtensionToDelete = new string[] {".map", ".obj", ".o", ".lib", ".mod", ".bak",
-                                                   ".dsk", ".res", ".pch", ".dll", ".exe", 
+                                                   ".dsk", ".res", ".pch", ".dll", ".exe", ".so",
                                                    ".tds", ".a", ".pdb", ".imp", ".map"};
 
         Dictionary<string, string> Macros = CSGeneral.Utility.ParseCommandLine(args);

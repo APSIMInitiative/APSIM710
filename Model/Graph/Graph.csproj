@@ -44,10 +44,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\System.Data.SQLite.DLL</HintPath>
-    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -56,6 +52,21 @@
       <HintPath>..\TeeChart.Client.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <Choose>
+      <When Condition="'$(OS)' != 'Windows_NT'">
+      <ItemGroup>
+         <Reference Include="Mono.Data.Sqlite" /> 
+      </ItemGroup>
+      </When>
+      <Otherwise>
+       <ItemGroup>
+         <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139,  processorArchitecture=x86">
+           <SpecificVersion>False</SpecificVersion>
+           <HintPath>..\System.Data.SQLite.DLL</HintPath>
+         </Reference>
+      </ItemGroup>
+      </Otherwise>
+  </Choose>
   <ItemGroup>
     <Compile Include="AddSeriesForm.cs">
       <SubType>Form</SubType>
@@ -254,7 +265,7 @@
       <SubType>Designer</SubType>
       <DependentUpon>PredictedObservedUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\licenses.licx" />
+    <!-- <EmbeddedResource Include="Properties\licenses.licx" /> -->
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>

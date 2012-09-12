@@ -6,7 +6,11 @@ using System.Xml;
 using ApsimFile;
 using CSGeneral;
 using System.IO;
+#if __MonoCS__
+using Mono.Data.Sqlite;
+#else
 using System.Data.SQLite;
+#endif
 using System.Data.OleDb;
 using System.Data.Common;
 
@@ -572,10 +576,18 @@ public class DataProcessor
     {
         if (File.Exists("Output.db"))
         {
+#if __MonoCS__
+            SqliteConnection sql_con = new SqliteConnection("Data Source=Output.db;Version=3;New=False;Compress=True;");
+#else
             SQLiteConnection sql_con = new SQLiteConnection("Data Source=Output.db;Version=3;New=False;Compress=True;");
+#endif
             sql_con.Open();
             string SQL = "SELECT Title, Data.* FROM Simulations, Data WHERE Simulations.ID = Data.SimulationID";
+#if __MonoCS__
+            SqliteDataAdapter DB = new SqliteDataAdapter(SQL, sql_con);
+#else
             SQLiteDataAdapter DB = new SQLiteDataAdapter(SQL, sql_con);
+#endif
             DataSet DS = new DataSet();
             DB.Fill(DS);
             return DS.Tables[0];
