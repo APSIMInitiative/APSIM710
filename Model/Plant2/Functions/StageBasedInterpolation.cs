@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using CSGeneral;
 
 [Description("A value is linearly interpolated between phenological growth stages")]
 public class StageBasedInterpolation : Function
@@ -11,31 +12,53 @@ public class StageBasedInterpolation : Function
     [Param]
     string[] Stages = null;
 
+    int[] StageCodes = null;
+
     [Param]
     double[] Values = null;
+
+    [Param(IsOptional=true)]
+    bool Proportional = true;
 
     [Output]
     public override double Value
     {
         get
         {
-            double Value = Values[0];
-            Phase P = Phenology.CurrentPhase;
-            for (int i = 0; i < Stages.Length; i++)
+            if (StageCodes == null)
             {
-                if (!Phenology.IsValidPhase(Stages[i]))
-                    throw new Exception("Invalid stage name specified in StageLookup. Stage name = " + Stages[i]);
-
-                if (Stages[i] == P.Start)
+                StageCodes = new int[Stages.Length];
+                for (int i = 0; i < Stages.Length; i++)
                 {
-                    Value = Values[i];
-                    if (i < Stages.Length - 1)
-                        Value += P.FractionComplete * (Values[i + 1] - Values[i]);
-
+                    Phase p = Phenology.PhaseStartingWith(Stages[i]);
+                    StageCodes[i] = Phenology.IndexOfPhase(p.Name) + 1;
                 }
             }
 
-            return Value;
+            for (int i = 0; i < StageCodes.Length; i++)
+            {
+                if (Phenology.Stage <= StageCodes[i])
+                {
+                    if (i == 0)
+                        return Values[0];
+                    if (Phenology.Stage == StageCodes[i])
+                        return Values[i];
+
+                    if (Proportional)
+                    {
+                        double slope = MathUtility.Divide(Values[i] - Values[i - 1],
+                                                            StageCodes[i] - StageCodes[i - 1],
+                                                            Values[i]);
+                        return Values[i] + slope * (Phenology.Stage - StageCodes[i]);
+                    }
+                    else
+                    {
+                        // Simple lookup.
+                        return Values[i - 1];
+                    }
+                }
+            }
+            return Values[StageCodes.Length - 1];
         }
     }
 

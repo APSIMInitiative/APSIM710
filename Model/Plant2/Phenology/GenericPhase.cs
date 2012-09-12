@@ -54,10 +54,7 @@ public class GenericPhase : Phase
         _TTinPhase += ThermalTime.Value * PropOfDayToUse;
         double AmountUnusedTT = _TTinPhase - CalcTarget();
         if (AmountUnusedTT > 0)
-        {
-            _TTinPhase = CalcTarget();
             return AmountUnusedTT / ThermalTime.Value;
-        }
         return 0;
     }
     /// <summary>

@@ -163,7 +163,8 @@ public class Phenology
             JustInitialised = false;
         }
         double FractionOfDayLeftOver = CurrentPhase.DoTimeStep(1.0);
-        while (FractionOfDayLeftOver > 0)
+        
+        if (FractionOfDayLeftOver > 0)
         {
             // Transition to the next phase.
             if (CurrentPhaseIndex + 1 >= Phases.Count)
@@ -176,8 +177,11 @@ public class Phenology
 
             // Tell the new phase to use the fraction of day left.
             FractionOfDayLeftOver = CurrentPhase.AddTT(FractionOfDayLeftOver);
+            Stage = CurrentPhaseIndex + 1;
         }
-        Stage = (CurrentPhaseIndex + 1) + CurrentPhase.FractionComplete;
+        else
+            Stage = (CurrentPhaseIndex + 1) + CurrentPhase.FractionComplete;
+
         _AccumulatedTT += CurrentPhase.TTForToday;
         Util.Debug("Phenology.CurrentPhaseName=%s", CurrentPhase.Name.ToLower());
         Util.Debug("Phenology.CurrentStage=%f", Stage);
