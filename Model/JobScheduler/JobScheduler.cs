@@ -148,7 +148,7 @@ public class JobScheduler
         Console.WriteLine(" [" + ElapsedTime.ToString() + "sec]");
         Console.WriteLine("");
 
-
+        Stop();  // Halt the runner process
         x = new XmlSerializer(typeof(Project));
         StreamWriter s = new StreamWriter(JobFileName.Replace(".xml", "Output.xml"));
         x.Serialize(s, Project);
@@ -375,13 +375,14 @@ public class JobScheduler
                     int NumBytesRead;
 
                     // Loop to receive all the data sent by the client.
-                    while (stream.DataAvailable)
+                    do
                     {
                         // Translate data bytes to a ASCII string.
                         NumBytesRead = stream.Read(bytes, 0, bytes.Length);
                         data.Append(System.Text.Encoding.ASCII.GetString(bytes, 0, NumBytesRead));
                         Thread.Sleep(10);
                     }
+                    while (stream.DataAvailable);
 
                     // Interpret the data.
                     string Response;
