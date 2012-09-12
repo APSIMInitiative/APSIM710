@@ -97,12 +97,8 @@ public class CompositeBiomass : Biomass
                             {
                                 if (I.ArraySpecifier == "" || Utility.IsOfType(Obj.GetType(), I.ArraySpecifier))
                                 {
-                                    if (I.ArrayMember == null)
-                                    {
-                                        // first time through here.
-                                        object ReturnTarget;
-                                        Plant.GetMemberInfo(I.ArrayFieldName, Obj, out I.ArrayMember, out ReturnTarget);
-                                    }
+                                    object ReturnTarget;
+                                    Plant.GetMemberInfo(I.ArrayFieldName, Obj, out I.ArrayMember, out ReturnTarget);
                                     object MemberValue = null;
                                     if (I.ArrayMember == null)
                                         MemberValue = Plant.GetValueOfMember(I.ArrayFieldName, Obj);

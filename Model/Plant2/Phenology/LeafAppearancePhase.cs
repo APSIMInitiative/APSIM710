@@ -48,6 +48,24 @@ public class LeafAppearancePhase : Phase
             return 0;
     }
 
+    // Return proportion of TT unused
+    public override double AddTT(double PropOfDayToUse)
+    {
+        base.AddTT(PropOfDayToUse);
+        if (First)
+        {
+            CohortNoAtStart = Leaf.ExpandedCohortNo;
+            First = false;
+        }
+
+        FractionCompleteYesterday = FractionComplete;
+
+        if (Leaf.ExpandedCohortNo >= (int)(Structure.MainStemFinalNodeNo - RemainingLeaves))
+            return 0.00001;
+        else
+            return 0;
+    }
+
     /// <summary>
     /// Return a fraction of phase complete.
     /// </summary>

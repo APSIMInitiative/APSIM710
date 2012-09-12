@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using ModelFramework;
+using CSGeneral;
 
 public class Phenology 
 {
@@ -31,6 +32,12 @@ public class Phenology
     }
     private string CurrentlyOnFirstDayOfPhase = "";
     private bool JustInitialised = true;
+
+    /// <summary>
+    /// A one based stage number.
+    /// </summary>
+    [Output]
+    public double Stage = 1;
 
     [Input]
     public DateTime Today;
@@ -130,7 +137,7 @@ public class Phenology
     /// <summary>
     /// Look for a particular phase and return it's index or -1 if not found.
     /// </summary>
-    private int IndexOfPhase(string Name)
+    public int IndexOfPhase(string Name)
     {
         for (int P = 0; P < Phases.Count; P++)
             if (Phases[P].Name.ToLower() == Name.ToLower())
@@ -168,9 +175,12 @@ public class Phenology
                 GrowthStage.Invoke();
 
             // Tell the new phase to use the fraction of day left.
-            FractionOfDayLeftOver = CurrentPhase.DoTimeStep(FractionOfDayLeftOver);
+            FractionOfDayLeftOver = CurrentPhase.AddTT(FractionOfDayLeftOver);
         }
+        Stage = (CurrentPhaseIndex + 1) + CurrentPhase.FractionComplete;
         _AccumulatedTT += CurrentPhase.TTForToday;
+        Util.Debug("Phenology.CurrentPhaseName=%s", CurrentPhase.Name.ToLower());
+        Util.Debug("Phenology.CurrentStage=%f", Stage);
     }
 
     /// <summary>
@@ -229,7 +239,7 @@ public class Phenology
     /// </summary>
     public bool OnDayOf(String StageName)
     {
-        return (StageName == CurrentlyOnFirstDayOfPhase);
+        return (StageName.Equals(CurrentlyOnFirstDayOfPhase, StringComparison.CurrentCultureIgnoreCase));
     }
 
     /// <summary>
@@ -247,6 +257,16 @@ public class Phenology
     /// </summary>
     public bool Between(String Start, String End)
     {
+        string StartFractionSt = StringManip.SplitOffBracketedValue(ref Start, '(', ')');
+        double StartFraction = 0;
+        if (StartFractionSt != "")
+            StartFraction = Convert.ToDouble(StartFractionSt);
+
+        string EndFractionSt = StringManip.SplitOffBracketedValue(ref Start, '(', ')');
+        double EndFraction = 0;
+        if (EndFractionSt != "")
+            EndFraction = Convert.ToDouble(EndFractionSt);
+
         int StartPhaseIndex = Phases.IndexOf(PhaseStartingWith(Start));
         int EndPhaseIndex = Phases.IndexOf(PhaseEndingWith(End));
         int CurrentPhaseIndex = Phases.IndexOf(CurrentPhase);
@@ -254,7 +274,14 @@ public class Phenology
         if (StartPhaseIndex == -1 || EndPhaseIndex == -1)
             throw new Exception("Cannot test between stages " + Start + " " + End);
 
-        return CurrentPhaseIndex >= StartPhaseIndex && CurrentPhaseIndex <= EndPhaseIndex;
+        if (CurrentPhaseIndex == StartPhaseIndex)
+            return CurrentPhase.FractionComplete >= StartFraction;
+
+        else if (CurrentPhaseIndex == EndPhaseIndex)
+            return CurrentPhase.FractionComplete <= EndPhaseIndex;
+
+        else 
+            return CurrentPhaseIndex >= StartPhaseIndex && CurrentPhaseIndex <= EndPhaseIndex;
     }
 
     /// <summary>

@@ -28,7 +28,7 @@ public class GenericPhase : Phase
             double LeftOverValue = _TTinPhase - Target;
             if (_TTForToday > 0.0)
             {
-                double PropOfValueUnused = LeftOverValue / _TTForToday;
+                double PropOfValueUnused = LeftOverValue / ThermalTime.Value;
                 PropOfDayUnused = PropOfValueUnused * PropOfDayToUse;
             }
             else
@@ -48,7 +48,18 @@ public class GenericPhase : Phase
             throw new Exception("Cannot find target for phase: " + Name);
         return Target.Value;
     }
-
+    // Return proportion of TT unused
+    public override double AddTT(double PropOfDayToUse)
+    {
+        _TTinPhase += ThermalTime.Value * PropOfDayToUse;
+        double AmountUnusedTT = _TTinPhase - CalcTarget();
+        if (AmountUnusedTT > 0)
+        {
+            _TTinPhase = CalcTarget();
+            return AmountUnusedTT / ThermalTime.Value;
+        }
+        return 0;
+    }
     /// <summary>
     /// Return a fraction of phase complete.
     /// </summary>

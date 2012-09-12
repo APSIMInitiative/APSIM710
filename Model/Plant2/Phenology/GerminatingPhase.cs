@@ -18,7 +18,7 @@ class GerminatingPhase : Phase
         bool CanGerminate = !Phenology.OnDayOf("Sowing") && ESW > 0;
 
         if (CanGerminate)
-            return 0.00001;
+            return 0.999;
         else
             return 0;
     }
@@ -30,7 +30,7 @@ class GerminatingPhase : Phase
     {
         get
         {
-            return 1;
+            return 0.999;
         }
     }
 }

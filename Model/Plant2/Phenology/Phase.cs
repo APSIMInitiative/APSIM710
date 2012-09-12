@@ -27,7 +27,15 @@ abstract public class Phase
     protected double PropOfDayUnused = 0;
     protected double _TTForToday = 0;
     [Output]
-    public double TTForToday { get { return _TTForToday; } }
+    public double TTForToday
+    {
+        get
+        {
+            if (ThermalTime == null)
+                return 0;
+            return ThermalTime.Value;
+        }
+    }
     protected double _TTinPhase = 0;
     [Output]
     public double TTinPhase { get { return _TTinPhase; } }
@@ -51,6 +59,13 @@ abstract public class Phase
         _TTinPhase += _TTForToday;
 
         return PropOfDayUnused;
+    }
+
+    // Return proportion of TT unused
+    virtual public double AddTT(double PropOfDayToUse)
+    {
+        _TTinPhase += ThermalTime.Value * PropOfDayToUse;
+        return 0;
     }
     abstract public double FractionComplete { get; }
 
