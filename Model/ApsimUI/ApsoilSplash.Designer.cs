@@ -64,6 +64,8 @@
             this.ClientSize = new System.Drawing.Size(632, 602);
             this.Controls.Add(this.OkButton);
             this.Controls.Add(this.PictureBoxTop);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "ApsoilSplash";
             this.Text = "ApsoilSplash";
             ((System.ComponentModel.ISupportInitialize)(this.PictureBoxTop)).EndInit();

@@ -14,6 +14,7 @@ namespace APSIMUI
         public ApsoilSplash()
         {
             InitializeComponent();
+            this.ClientSize = new System.Drawing.Size(632, 602);
         }
     }
 }
