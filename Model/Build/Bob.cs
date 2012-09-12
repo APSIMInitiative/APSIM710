@@ -16,6 +16,8 @@ using System.Reflection;
 
 class Bob
 {
+   public string svnExe = "svn.exe";
+   public string sevenZipExe = "C:\\Program Files\\7-Zip\\7z.exe";
 
    /// <summary>
    /// This is Bob's main program. It takes a single argument being the name of a child script
@@ -28,9 +30,12 @@ class Bob
    /// </summary>
    static int Main(string[] args)
    {
-      string CWD = Directory.GetCurrentDirectory();
-	  
       int ReturnCode = 0;
+
+      if (Path.DirectorySeparatorChar == '/')
+         {
+       	 svnExe = "svn"; sevenZipExe = "7zr"
+         }
 
       string ConnectionString = "Data Source=www.apsim.info\\SQLEXPRESS;Database=\"APSIM Builds\";Trusted_Connection=False;User ID=sv-login-external;password=P@ssword123";
       SqlConnection Connection = new SqlConnection(ConnectionString);
@@ -39,52 +44,67 @@ class Bob
       {
          if (args.Length != 1)
             throw new Exception("Usage: cscs Model\\Build\\Bob.cs Model\\Build\\BobMain.cs");
-      
+
          Console.WriteLine("Waiting for a patch...");
-                 
+
          Connection.Open();
          do
          {
             int JobID = FindNextJob(Connection);
             if (JobID != -1)
             {
-               Directory.SetCurrentDirectory(CWD);
-			
                // Update the builds database.
                DBUpdate("Status", "Running", Connection, JobID);
-         
+
                string PatchFileName = DBGet("PatchFileName", Connection, JobID).ToString();
                PatchFileName = PatchFileName.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
                Console.WriteLine("Running patch: " + PatchFileName);
-               
+
                // The current working directory will be the APSIM root directory - set the environment variable.
                System.Environment.SetEnvironmentVariable("APSIM", Directory.GetCurrentDirectory());
-               
+
                // Open log file.
                string LogDirectory = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(PatchFileName), ".."));
                string LogFileName = Path.Combine(LogDirectory, Path.ChangeExtension(Path.GetFileName(PatchFileName), ".txt"));
-               StreamWriter Log = new StreamWriter(LogFileName); 
-               
+               StreamWriter Log = new StreamWriter(LogFileName);
+
                // Clean the tree.
                RemoveUnwantedFiles(Directory.GetCurrentDirectory());
-               Run("SVN revert", "svn.exe", "revert -R %APSIM%", Log);
-               Run("SVN update", "svn.exe", "update %APSIM%", Log);            
+               Run("SVN revert", svnExe, "revert -R %APSIM%", Log);
+               Run("SVN update", svnExe, "update %APSIM%", Log);
+
+               if (System.Environment.MachineName.ToUpper() != "BOB")
+                  {
+                  PatchFileName = Path.GetFileName(PatchFileName);
+                  Run("Downloading patch: " + PatchFileName,
+                      "wget", "-nd \"http://bob.apsim.info/Files/Upload/" + PatchFileName + ".zip\"",
+                      Log);
+                  Run("Extracting patch: " + PatchFileName,
+                      sevenZipExe, "x -y " + PatchFileName,
+                      Log);
+                  }
+               else
+                  {
+                  // Extract the patch (already on local filesystem)
+                  Run("Extracting patch: " + PatchFileName,
+                      sevenZipExe,
+                      "x -y " + PatchFileName,
+                      Log);
+                  }
 
                // Set some environment variables.
                System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
                System.Environment.SetEnvironmentVariable("PatchFileName", PatchFileName);
                System.Environment.SetEnvironmentVariable("PatchFileNameShort", Path.GetFileNameWithoutExtension(PatchFileName));
-
-               // Extract the patch.
-               Run("Extracting patch: " + PatchFileName,
-                  "C:\\Program Files\\7-Zip\\7z.exe", 
-                  "x -y " + PatchFileName, 
-                  Log);
+               if (System.Environment.MachineName.ToUpper() == "BOB")
+                 System.Environment.SetEnvironmentVariable("HostSuffix", "");
+               else
+                 System.Environment.SetEnvironmentVariable("HostSuffix", "-" + System.Environment.MachineName);
 
                // Run the patch.
                string CSCS = Assembly.GetCallingAssembly().Location;
                Run("Running patch...", CSCS, args[0], Log);
-               
+
                // Close log file.
                Log.Close();
 
@@ -104,7 +124,7 @@ class Bob
       finally
       {
          if (Connection != null)
-            Connection.Close();        
+            Connection.Close();
       }
 
       Console.WriteLine("Press return to exit");
@@ -118,8 +138,8 @@ class Bob
     /// </summary>
     static void RemoveUnwantedFiles(string directory)
     {
-		string StdOut = Run("SVN status", "svn.exe", "status --non-interactive --no-ignore");
-        string[] StdOutLines = StdOut.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+		string StdOut = Run("SVN status", svnExe, "status --non-interactive --no-ignore");
+    string[] StdOutLines = StdOut.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
 		// Loop through all lines the SVN process produced.
 		foreach (string line in StdOutLines)
@@ -133,7 +153,7 @@ class Bob
 				DoDelete = line[0] == '?' || line[0] == 'I';
 				if (DoDelete)
 				{
-					
+
 					if (Directory.Exists(path))
 						Directory.Delete(path, true);
 					else if (File.Exists(path))
@@ -151,13 +171,13 @@ class Bob
 			}
 		}
     }
-   
-   
-   
+
+
+
       /////////////////////////////////////////////////////////////////////////////////////////////
       /////////////////////////////////////////////////////////////////////////////////////////////
       /////////////////////////////////////////////////////////////////////////////////////////////
-  
+
       /// <summary>
       /// Find the next job to run. Returns the ID.
       /// </summary>
@@ -183,7 +203,7 @@ class Bob
          }
          return -1;
       }
-    
+
       /// <summary>
       /// Return the patch file name of the specified job.
       /// </summary>
@@ -205,7 +225,7 @@ class Bob
                Reader.Close();
          }
          return "";
-      }   
+      }
 
       /// <summary>
       /// Update the status of the specified build job.
@@ -214,13 +234,13 @@ class Bob
       {
          if (FieldName == "Status" && Environment.MachineName.ToUpper() != "BOB")
             FieldName = Environment.MachineName + "Status";
-            
+
          string SQL = "UPDATE BuildJobs SET " + FieldName + " = '" + Value.ToString() + "' WHERE ID = " + JobID.ToString();
 
          SqlCommand Command = new SqlCommand(SQL, Connection);
          Command.ExecuteNonQuery();
       }
-      
+
       /// <summary>
       /// Execute the specified SqlCommand.
       /// </summary>
@@ -239,16 +259,14 @@ class Bob
              }
          }
          throw new Exception("Cannot execute reader query to SQL server: www.apsim.info");
-      }    
-   
+      }
+
       // Returns StdOut.
       static string Run(string Name, string Executable, string Arguments, StreamWriter Log = null)
       {
          Executable = CSGeneral.Utility.ReplaceEnvironmentVariables(Executable);
          if (!File.Exists(Executable))
          {
-            if (Path.DirectorySeparatorChar == '/') 
-               Executable = Path.ChangeExtension(Executable, "");   // linux - remove extension
             Executable = CSGeneral.Utility.FindFileOnPath(Executable);
          }
          Arguments = CSGeneral.Utility.ReplaceEnvironmentVariables(Arguments);
@@ -269,7 +287,7 @@ class Bob
 		}
          return StdOut;
       }
-      
+
       static string CheckProcessExitedProperly(Process PlugInProcess)
       {
          if (!PlugInProcess.StartInfo.UseShellExecute)
@@ -282,9 +300,6 @@ class Bob
          }
          else
              return "";
-      }   
-  
-   }
+      }
 
-   
-   
+   }
