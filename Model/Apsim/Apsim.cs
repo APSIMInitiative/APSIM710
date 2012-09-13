@@ -215,12 +215,15 @@ public class Apsim
         _P.StartInfo.UseShellExecute = false;
         _P.StartInfo.CreateNoWindow = true;
         _P.StartInfo.RedirectStandardOutput = true;
+        _P.StartInfo.RedirectStandardError = true;
         _P.OutputDataReceived += OnStdOut;
+        _P.ErrorDataReceived += OnStdError;
         _P.StartInfo.WorkingDirectory = Path.GetDirectoryName(SimFileName);
         _P.EnableRaisingEvents = true;
         _P.Exited += OnExited;
         _P.Start();
         _P.BeginOutputReadLine();
+        _P.BeginErrorReadLine();
     }
 
     /// <summary>
@@ -259,6 +262,37 @@ public class Apsim
         if (e.Data != null)
             Sum.WriteLine(e.Data);
     }
+
+    int taskProgress = 0;
+    /// <summary>
+    /// Return the number of APSIM simulations being run.
+    /// </summary>
+    public int Progress
+    {
+        get
+        {
+            if (JobScheduler != null)
+                return 100 * NumJobsCompleted / NumJobs;
+            else
+                return taskProgress;
+        }
+    }
+    /// <summary>
+    /// An event handler to collect the standard error.
+    /// </summary>
+    protected virtual void OnStdError(object sender, DataReceivedEventArgs e)
+    {
+        if (e.Data != null && e.Data.Length > 0)
+        {
+            if (e.Data[0] == '%' && e.Data[1] == ' ')
+            {
+                int percent;
+                if (Int32.TryParse(e.Data.Substring(2), out percent))
+                    taskProgress = percent;
+            }
+        }
+    }
+    
     #endregion
 
     /// <summary>

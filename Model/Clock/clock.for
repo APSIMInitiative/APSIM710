@@ -16,15 +16,16 @@ C     Last change:  E     5 Dec 2000    8:52 am
          integer demo_end              ! DEMO end date of simulation
          integer current_date          ! current date of simulation
          double precision current_time ! current time of simulation (mins)
-         logical pause_current_run     ! pause the current run. 
+         logical pause_current_run     ! pause the current run.
          logical end_current_run       ! end the current run.
+         integer PercentDone           ! percentage of simulation completed.
          integer currentTimestepEvent  ! index into event list
          integer, dimension(MAX_NUM_EVENTS) :: timestepEvents
                                        ! list of all events this sequencer is going
                                        ! to publish every timestep.
          integer numTimestepEvents     ! number of timestep events.
 
-      end type ClockData 
+      end type ClockData
 
       ! Constant values
       integer mins_in_day
@@ -75,6 +76,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
 
       g%end_current_run = .false.
       g%pause_current_run = .false.
+      g%PercentDone = 0
       g%start_date = 0
       g%end_date = 0
 
@@ -286,7 +288,13 @@ C     Last change:  E     5 Dec 2000    8:52 am
             ! See if we need to output a % done to standard error stream.
             TodayPercentDone = dble(g%current_date - g%start_date) /
      :                         dble(g%end_date - g%start_date) * 100
-            TodayPercentDone = TodayPercentDone / 10 * 10
+            TodayPercentDone = TodayPercentDone / 5 * 5
+            if (g%PercentDone .ne. TodayPercentDone .and.
+     :          TodayPercentDone .lt. 100 ) then
+               write(str, '(a1, i3)') '%', TodayPercentDone
+               call writeStdErr(str)
+               g%PercentDone = TodayPercentDone
+            endif
 
             ! convert julian day to day and year for speed reasons later.
 

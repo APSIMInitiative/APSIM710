@@ -96,11 +96,13 @@ public class ApsimRunToolStrip
         ToolStripButton StopButton = (ToolStripButton)_Strip.Items["StopButton"];
         ToolStripButton ErrorsButton = (ToolStripButton)_Strip.Items["ErrorsButton"];
         ToolStripLabel PercentLabel = (ToolStripLabel)_Strip.Items["PercentLabel"];
+        ToolStripProgressBar ProgressBar = (ToolStripProgressBar)_Strip.Items["RunProgress"];
 
         RunButton.Enabled = false;
         StopButton.Enabled = true;
         ErrorsButton.Visible = false;
         PercentLabel.Text = "";
+        ProgressBar.Value = 0;
 
         // Get a list of simulations to run.
         List<String> SimsToRun = new List<String>();
@@ -173,10 +175,12 @@ public class ApsimRunToolStrip
 
         if (ProgressBar != null)
         {
-            ProgressBar.Value = Apsim.NumJobsCompleted / Apsim.NumJobs * 100;
+            ProgressBar.Value = Apsim.Progress;
             PercentLabel.Text = ProgressBar.Value.ToString() + "%";
-            if (ProgressBar.Value == 100)
-            {
+            if (Apsim.NumJobsCompleted == Apsim.NumJobs)
+                {
+                ProgressBar.Value = 100;
+                PercentLabel.Text = "100 %";
                 OnStop();
 
                 // All finished.
