@@ -23,14 +23,17 @@ public class ApsimX
     /// </summary>
     static int Main(string[] args)
     {
+        if (args.Length < 1)
+        {
+            Console.WriteLine("Usage: ApsimX .ApsimFileName");
+            return 1;
+        }
+
         string SumFileName = Path.ChangeExtension(args[0], ".sum");
         StreamWriter sw = new StreamWriter(SumFileName);
         Console.SetOut(sw);
         try
         {
-            if (args.Length < 1)
-                throw new Exception("Usage: ApsimX .ApsimFileName");
-
             ModelInstance Simulation = Load(args[0]);
 
             Simulation.Run();
