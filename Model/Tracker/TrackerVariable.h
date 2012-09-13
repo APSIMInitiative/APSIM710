@@ -25,7 +25,7 @@ class TrackerVariable
    private:
       std::string name; 
       protocol::Component* parent;
-      enum Stat {sumStat, averageStat, minimumStat, maximumStat,
+      enum Stat {sumStat, averageStat, stdevStat, minimumStat, maximumStat,
                  countStat, dateStat, valueStat};
       Stat stat;
 

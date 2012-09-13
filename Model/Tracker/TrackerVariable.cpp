@@ -79,6 +79,8 @@ void TrackerVariable::parseStat(StringTokenizer& tokenizer)
       stat = sumStat;
    else if (Str_i_Eq(statName, "average"))
       stat = averageStat;
+   else if (Str_i_Eq(statName, "stdev"))
+      stat = stdevStat;
    else if (Str_i_Eq(statName, "minimum"))
       stat = minimumStat;
    else if (Str_i_Eq(statName, "maximum"))
@@ -371,33 +373,52 @@ void TrackerVariable::onEndPeriod(void)
 // return the current value to caller.
 // ------------------------------------------------------------------
 void TrackerVariable::getCurrentValues(vector<float>& currentValues)
-   {
-   currentValues.erase(currentValues.begin(), currentValues.end());
-   if (stat == countStat)
-      currentValues.push_back(count);
-   else if (values.size() > 0)
-      {
-      for (unsigned i = 0; i != values[0].size(); ++i)
-         {
-         float value = 0.0;
-         if (stat == minimumStat)
-            value = 1000000.0;
-         for (unsigned v = 0; v != values.size(); ++v)
-            {
-            switch (stat)
-               {
-               case sumStat     :
-               case averageStat : value += values[v][i]; break;
-               case minimumStat : value = min(value, values[v][i]); break;
-               case maximumStat : value = max(value, values[v][i]); break;
-               case countStat   : value++; break;
-               case valueStat   : value = values[v][i]; break;
-               }
-            }
-         if (stat == averageStat && values.size() > 0)
-            value /= values.size();
-         currentValues.push_back(value);
-         }
-      }
-   }
+{
+	currentValues.erase(currentValues.begin(), currentValues.end());
+	if (stat == countStat)
+		currentValues.push_back(count);
+	else if (values.size() > 0)
+	{
+		for (unsigned i = 0; i < values[0].size(); ++i)
+		{
+			float value = 0.0;
+			if (stat == minimumStat)
+				value = FLT_MAX;
+			if (stat == maximumStat)
+				value = -FLT_MAX;
+			for (unsigned v = 0; v < values.size(); ++v)
+			{
+				switch (stat)
+				{
+				case sumStat     :
+				case stdevStat   :
+				case averageStat : value += values[v][i]; break;
+				case minimumStat : value = min(value, values[v][i]); break;
+				case maximumStat : value = max(value, values[v][i]); break;
+				case countStat   : value++; break;
+				case valueStat   : value = values[v][i]; break;
+				}
+			}
+			if (stat == averageStat && values.size() > 0)
+				value /= values.size();
+			if (stat == stdevStat)
+			{
+				if (values.size() > 1)
+				{
+					value /= values.size(); // "value" now holds the mean
+					long double sum2 = 0.0;  
+					for (unsigned v = 0; v < values.size(); ++v)
+					{
+						sum2 += (values[v][i] - value) * (values[v][i] - value);
+					}
+					value = float(sqrt(sum2/(values.size() - 1)));
+				}
+				else
+					value = 0.0;
+			}
+		    currentValues.push_back(value);
+		}
+	}
+}
+
 
