@@ -31,7 +31,8 @@ class Bob
    static int Main(string[] args)
    {
       int ReturnCode = 0;
-
+      string CWD = Directory.GetCurrentDirectory();
+	  
       if (Path.DirectorySeparatorChar == '/')
          {
        	 svnExe = "svn"; sevenZipExe = "7zr";
@@ -53,6 +54,8 @@ class Bob
             int JobID = FindNextJob(Connection);
             if (JobID != -1)
             {
+			   Directory.SetCurrentDirectory(CWD);
+			
                // Update the builds database.
                DBUpdate("Status", "Running", Connection, JobID);
 
