@@ -16,8 +16,8 @@ using System.Reflection;
 
 class Bob
 {
-   public string svnExe = "svn.exe";
-   public string sevenZipExe = "C:\\Program Files\\7-Zip\\7z.exe";
+   static public string svnExe = "svn.exe";
+   static public string sevenZipExe = "C:\\Program Files\\7-Zip\\7z.exe";
 
    /// <summary>
    /// This is Bob's main program. It takes a single argument being the name of a child script
@@ -34,7 +34,7 @@ class Bob
 
       if (Path.DirectorySeparatorChar == '/')
          {
-       	 svnExe = "svn"; sevenZipExe = "7zr"
+       	 svnExe = "svn"; sevenZipExe = "7zr";
          }
 
       string ConnectionString = "Data Source=www.apsim.info\\SQLEXPRESS;Database=\"APSIM Builds\";Trusted_Connection=False;User ID=sv-login-external;password=P@ssword123";
@@ -138,7 +138,7 @@ class Bob
     /// </summary>
     static void RemoveUnwantedFiles(string directory)
     {
-		string StdOut = Run("SVN status", svnExe, "status --non-interactive --no-ignore");
+	string StdOut = Run("SVN status", svnExe, "status --non-interactive --no-ignore");
     string[] StdOutLines = StdOut.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
 		// Loop through all lines the SVN process produced.
