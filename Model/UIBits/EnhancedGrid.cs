@@ -170,13 +170,20 @@ namespace UIBits
       /// We need to stop the Tab key. If the user has a combo box dropped down and types a value into
       /// the edit part of the combo box and then presses TAB, a nasty exception occurs. This method
       /// stops that happening.
+      /// 
+      /// UPDATE 14-9-12 JF
+      /// Changed this to a try-catch as the problem occurs with other keys. see task 1586.
       /// </summary>
       protected override bool ProcessDialogKey(Keys keyData)
          {
-         if (keyData == Keys.Tab)
-            return true;
-         else
-            return base.ProcessDialogKey(keyData);
+             try
+             {
+                 return base.ProcessDialogKey(keyData);
+             }
+             catch (Exception e)
+             {
+                 return true;
+             }
          }
 
       /// <summary>

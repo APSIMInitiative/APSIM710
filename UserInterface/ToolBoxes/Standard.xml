@@ -2382,6 +2382,7 @@ public class Script
        </text>
       </manager2>
       <manager2 name="Irrigate at start of week">
+
         <ui>
           <category type="category" description="Irrigation parameters" />
           <amount type="text" description="Amount of irrigation to apply (mm)">50</amount>
@@ -2417,7 +2418,45 @@ public class Script
 }
        </text>
       </manager2>
-    </folder>
+    <manager2 name="Report on specific days">
+	<ui>
+	<title type="category" description="Don't forget to remove any reporting frquency variables from your selected Outputfile." />
+	<reportDays type="text" description="Enter a list of dates to report on, seperated by spaces (e.g. 1-Jan 1-Jul 31-Dec)." />
+	<module type="modulename" description="The output module to report to.">outputfile</module>
+	</ui>
+	<text>
+using System;
+using ModelFramework;
+using CSGeneral;
+
+public class Script 
+{      
+   [Link] Paddock paddock;
+   [Input] DateTime Today; 
+   [Param] string reportDays;
+   [Param] string module;
+   
+   private string[] days;
+   private Outputfile output;
+   
+   [EventHandler] public void OnInitialised()
+   {
+      days = reportDays.Split(' ');
+      output = (Outputfile) paddock.LinkByName(module);
+   }
+        
+   [EventHandler] public void OnPost()
+   {
+      foreach (string s in days)
+      {
+         if (DateUtility.DatesEqual(s, Today))
+            output.DoOutput();
+      }
+   }  
+}
+       </text>
+	   </manager2>
+	</folder>
     <folder name="Weed management">
       <manager name="Weed sowing">
         <ui>
