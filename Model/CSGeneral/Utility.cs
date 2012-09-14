@@ -82,11 +82,14 @@ namespace CSGeneral
         {
             if (!PlugInProcess.StartInfo.UseShellExecute)
             {
-                string msg = PlugInProcess.StandardOutput.ReadToEnd();
+                string msg = "";
+                if (PlugInProcess.StartInfo.RedirectStandardOutput)
+                   msg = PlugInProcess.StandardOutput.ReadToEnd();
                 PlugInProcess.WaitForExit();
                 if (PlugInProcess.ExitCode != 0)
                 {
-                    msg += PlugInProcess.StandardError.ReadToEnd();
+                    if (PlugInProcess.StartInfo.RedirectStandardError)
+                        msg += PlugInProcess.StandardError.ReadToEnd();
                     if (msg != "")
                         throw new System.Exception("Error from " + Path.GetFileName(PlugInProcess.StartInfo.FileName) + ": "
                                                                  + msg);
