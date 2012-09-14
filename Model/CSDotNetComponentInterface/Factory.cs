@@ -371,7 +371,19 @@ class Factory
             t = CallingAssembly.GetType(Parameter.TypeName);
         if ((t == null) && (Parameter != null))
             t = CallingAssembly.GetType(Obj.Name + "+" + Parameter.TypeName);
-        return t;
+        if (t == null && 
+            (Obj.Model.GetType().Name == "Script" || Obj.InstanceName.Contains("Script.")))
+        {
+            // check in the referenced assemblies.
+            foreach (AssemblyName Reference in CallingAssembly.GetReferencedAssemblies())
+            {
+                Assembly A = Assembly.Load(Reference);
+                t = A.GetType(Child.Name);
+                if (t != null)
+                    return t;
+            }
+
+        } return t;
     }
     // --------------------------------------------------------------------
     /// <summary>

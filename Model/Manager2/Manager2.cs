@@ -63,6 +63,12 @@ public class Manager2
             }
         }
 
+        foreach (XmlNode Child in XmlHelper.ChildNodes(Manager2Xml, ""))
+        {
+            if (Child.Name != "ui" && Child.Name != "Reference" && Child.Name != "text")
+                ScriptNode.AppendChild(ScriptNode.OwnerDocument.ImportNode(Child, true));
+        }
+
         try
         {
             My.AddModel(ScriptNode, CompiledAssembly);
@@ -112,13 +118,16 @@ public class Manager2
                 }
                 Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSGeneral.dll"));
 
-                foreach (string val in XmlHelper.ValuesRecursive(Manager2Xml.ParentNode, "reference"))
+                foreach (string v in XmlHelper.ValuesRecursive(Manager2Xml.ParentNode, "Reference"))
+                {
+                    string val = Configuration.RemoveMacros(v);
                     if (File.Exists(val))
                         Params.ReferencedAssemblies.Add(val);
                     else if (File.Exists(RuntimeEnvironment.GetRuntimeDirectory() + val))
                         Params.ReferencedAssemblies.Add(RuntimeEnvironment.GetRuntimeDirectory() + val);
                     else
                         Params.ReferencedAssemblies.Add(Path.Combine(Path.GetDirectoryName(DllFileName), val));
+                }
 
                 string[] source = new string[1];
                 source[0] = Text;

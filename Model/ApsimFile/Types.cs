@@ -427,6 +427,7 @@ public class Types
         {
             foreach (string DLLFileName in Dlls(TypeName))
             {
+                Console.WriteLine("TypeName: " + TypeName);
                 string ClassName = ProxyClassName(TypeName, DLLFileName);
                 string Contents = DLLProber.CreateProxyClassForDLL(TypeName, ClassName, DLLFileName);
                 DLLProber.InsertClassCodeIntoDotNetProxyFile(ClassName, Contents);

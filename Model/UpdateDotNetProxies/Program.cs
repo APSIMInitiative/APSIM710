@@ -42,6 +42,7 @@ class Program
             if (args.Length > 0)
                 msg += "Component name: " + args[0];
             Console.WriteLine(msg);
+            Console.Write(err.StackTrace);
             return 1;
         }
 
@@ -52,6 +53,7 @@ class Program
                 msg += "Component name: " + args[0];
 
             Console.WriteLine(msg);
+            Console.Write(err.StackTrace);
             return 1;
         }
     }
