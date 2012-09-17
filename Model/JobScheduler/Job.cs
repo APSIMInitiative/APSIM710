@@ -43,7 +43,7 @@ public class Job
     /// </summary>
     public Job()
     {
-        
+
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public class Job
     /// <summary>
     /// Return the executable part of the command line.
     /// </summary>
-    public string Executable 
+    public string Executable
     {
         get
         {
@@ -72,7 +72,7 @@ public class Job
             else
                 return "";
         }
-       
+
     }
 
     /// <summary>
@@ -159,21 +159,26 @@ public class Job
         WorkingDirectory = WorkingDirectory.Replace('\\', '/');
 
         StartTime = DateTime.Now;
-        _P = new Process();
-        _P.StartInfo.FileName = Executable;
-        _P.StartInfo.Arguments = Arguments;
-        _P.StartInfo.UseShellExecute = false;
-        _P.StartInfo.CreateNoWindow = true;
-        _P.StartInfo.RedirectStandardOutput = true;
-        _P.StartInfo.RedirectStandardError = true;
-        _P.StartInfo.WorkingDirectory = WorkingDirectory;
-        _P.OutputDataReceived += OnStdOut;
-        _P.ErrorDataReceived += OnStdError;
-        _P.Exited += OnExited;
-        _P.EnableRaisingEvents = true;
-        _P.Start();
-        _P.BeginOutputReadLine();
-        _P.BeginErrorReadLine();
+        if (Executable == "")
+           OnExited(this, null);
+        else
+           {
+           _P = new Process();
+           _P.StartInfo.FileName = Executable;
+           _P.StartInfo.Arguments = Arguments;
+           _P.StartInfo.UseShellExecute = false;
+           _P.StartInfo.CreateNoWindow = true;
+           _P.StartInfo.RedirectStandardOutput = true;
+           _P.StartInfo.RedirectStandardError = true;
+           _P.StartInfo.WorkingDirectory = WorkingDirectory;
+           _P.OutputDataReceived += OnStdOut;
+           _P.ErrorDataReceived += OnStdError;
+           _P.Exited += OnExited;
+           _P.EnableRaisingEvents = true;
+           _P.Start();
+           _P.BeginOutputReadLine();
+           _P.BeginErrorReadLine();
+           }
     }
 
     /// <summary>
@@ -184,7 +189,7 @@ public class Job
         // Job has finished.
         FinishTime = DateTime.Now;
         ElapsedTime = Convert.ToInt32((FinishTime - StartTime).TotalSeconds);
-        ExitCode = _P.ExitCode;
+        ExitCode = (_P == null ? 0 : _P.ExitCode);
         if (ExitCode == 0)
             Status = "Pass";
         else
@@ -215,13 +220,13 @@ public class Job
             }
         }
     }
-    
+
     /// <summary>
     /// Wait until the job has finished.
     /// </summary>
     public void WaitUntilExit()
     {
-        _P.WaitForExit();
+        if (_P != null) _P.WaitForExit();
     }
 
     /// <summary>
@@ -309,7 +314,7 @@ public class Job
 
 
     internal void WriteLogMessage()
-    { 
+    {
         Console.WriteLine("[" + Status + "] " + Name + " [" + ElapsedTime.ToString() + "sec]");
         if (Status == "Fail")
         {
