@@ -344,6 +344,21 @@ namespace CSGeneral
             list.AddRange(type.GetFields(flags | BindingFlags.DeclaredOnly));
             return list;
         }
+
+        public static object GetValueOfFieldOrProperty(string Name, object Obj)
+        {
+            BindingFlags Flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.IgnoreCase;
+            FieldInfo F = Obj.GetType().GetField(Name, Flags);
+            if (F != null)
+                return F.GetValue(Obj);
+
+            PropertyInfo P = Obj.GetType().GetProperty(Name, Flags);
+            if (P != null)
+                return P.GetValue(Obj, null);
+
+            return null;
+        }
+
         /// <summary>
         ///  Upload a file via ftp
         /// </summary>

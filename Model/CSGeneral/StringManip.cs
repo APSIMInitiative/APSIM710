@@ -168,6 +168,50 @@ namespace CSGeneral
             return ReturnStrings;
         }
 
+        /// <summary>
+        /// Split the specified Text into bits. Bits are separated by delimiter characters but
+        /// brackets must be honoured. Example Text given Delimiter='.':
+        ///     Organs[AboveGround].Live.Wt   
+        ///         Bits[0] = Organs[AboveGround]  
+        ///         Bits[1]=Live   
+        ///         Bits[2]=Wt
+        ///     Leaf.Leaves[Leaf.CurrentRank].CoverAbove
+        ///         Bits[0]=Leaf
+        ///         Bits[1]=Leaves[Leaf.CurrentRank]
+        ///         Bits[2]=CoverAbove
+        /// </summary>
+        public static string[] SplitStringHonouringBrackets(string Text, char Delimiter, char OpenBracket, char CloseBracket)
+        {
+            List<string> ReturnStrings = new List<string>();
+            if (Text.Trim() == "")
+                return ReturnStrings.ToArray();
+
+            bool InsideBracket = false;
+            int Start = IndexNotOfAny(Text, Delimiter.ToString().ToCharArray());
+            for (int i = Start; i < Text.Length; i++)
+            {
+                if (Text[i] == OpenBracket)
+                    InsideBracket = true; // toggle
+                else if (Text[i] == CloseBracket)
+                    InsideBracket = false;
+                else if (!InsideBracket)
+                {
+                    if (Text[i] == Delimiter)
+                    {
+                        // Found a word - store it.
+                        if (Start != i)
+                            ReturnStrings.Add(Text.Substring(Start, i - Start).Trim());
+                        Start = i + 1;
+                    }
+                }
+            }
+            if (Start != Text.Length)
+                ReturnStrings.Add(Text.Substring(Start, Text.Length - Start).Trim());
+
+            return ReturnStrings.ToArray();
+        }
+
+
         public static bool StringsAreEqual(string St1, string St2)
         {
             return St1.ToLower() == St2.ToLower();

@@ -7,7 +7,7 @@ using CSGeneral;
 public class Stem1 : Organ1, AboveGround
 {
     [Link]
-    Plant Plant = null;
+    Plant15 Plant = null;
 
     [Link]
     Function HeightFunction = null;

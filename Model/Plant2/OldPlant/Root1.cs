@@ -7,7 +7,7 @@ using CSGeneral;
 public class Root1 : Organ1, BelowGround
 {
     [Link]
-    Plant Plant = null;
+    Plant15 Plant = null;
 
     [Link]
     Function RootAdvanceFactorTemp = null;

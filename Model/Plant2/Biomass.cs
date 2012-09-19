@@ -155,12 +155,21 @@ public class Biomass
     }
     virtual public void Clear()
     {
-        StructuralWt = 0;
-        NonStructuralWt = 0;
-        MetabolicWt = 0;
-        StructuralN = 0;
-        NonStructuralN = 0;
-        MetabolicN = 0;
+        _StructuralWt = 0;
+        _NonStructuralWt = 0;
+        _MetabolicWt = 0;
+        _StructuralN = 0;
+        _NonStructuralN = 0;
+        _MetabolicN = 0;
+    }
+    public void Add(Biomass a)
+    {
+        _StructuralWt += a.StructuralWt;
+        _NonStructuralWt += a.NonStructuralWt;
+        _MetabolicWt += a.MetabolicWt;
+        _StructuralN += a.StructuralN;
+        _NonStructuralN += a.NonStructuralN;
+        _MetabolicN += a.MetabolicN;
     }
     public static Biomass operator +(Biomass a, Biomass b)
     {

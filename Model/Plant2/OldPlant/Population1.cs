@@ -7,7 +7,7 @@ using CSGeneral;
 public class Population1
 {
     [Link]
-    Plant Plant = null;
+    Plant15 Plant = null;
 
     double _Plants;
 

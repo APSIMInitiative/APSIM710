@@ -30,7 +30,7 @@ class GenericArbitratorXY
     Leaf1 Leaf = null;
 
     [Link]
-    Plant Plant = null;   // only needed for debugging.
+    Plant15 Plant = null;   // only needed for debugging.
 
     public virtual double RatioRootPlant { get { return 0.0; } }
 

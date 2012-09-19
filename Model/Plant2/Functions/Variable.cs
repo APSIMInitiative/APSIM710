@@ -7,8 +7,6 @@ using CSGeneral;
 [Description("Returns the value of a nominated internal Plant2 numerical variable")]
 public class Variable : Function
 {
-   [Link] Plant Plant = null;
-
     [Param]
     private string VariableName = "";
 
@@ -17,7 +15,7 @@ public class Variable : Function
     {
         get
         {
-            return Convert.ToDouble(ExpressionFunction.Evaluate(Plant, VariableName.Trim()));
+            return Convert.ToDouble(ExpressionFunction.Evaluate(VariableName.Trim(), My));
         }
     }
 

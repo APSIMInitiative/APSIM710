@@ -92,7 +92,7 @@ public abstract class Organ1
     public Component My;
 
     [Link]
-    public Plant Plant;
+    public Plant15 Plant;
 
 
     public string Name { get { return My.Name; } }

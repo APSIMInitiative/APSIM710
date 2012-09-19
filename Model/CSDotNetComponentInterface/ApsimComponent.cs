@@ -179,7 +179,7 @@ namespace ModelFramework
                     if (_compClass.Length > 0)
                         CompClass = _compClass;
                     InitData = XmlHelper.Find(Doc.DocumentElement, "initdata");
-                    IsPlant = (XmlHelper.FindByType(InitData, "Plant") != null) || (XmlHelper.FindByType(InitData, "Plant1") != null);
+                    IsPlant = CompClass.Contains("Plant2");
                     IsScript = (XmlHelper.FindByType(InitData, "text") != null);
 
                     PREPAREINDEX = Host.eventCount();

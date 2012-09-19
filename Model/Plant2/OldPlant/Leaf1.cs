@@ -7,7 +7,7 @@ using CSGeneral;
 public class Leaf1 : Organ1, AboveGround
 {
     [Link]
-    Plant Plant;
+    Plant15 Plant;
 
     [Link]
     Stem1 Stem;

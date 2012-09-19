@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 using System.Reflection;
+using ModelFramework;
 
 
 public class ArrayBiomass
 {
     [Link]
-    Plant Plant = null;
+    Component My = null;
 
     [Param]
     private string[] Propertys = null;
@@ -126,18 +127,21 @@ public class ArrayBiomass
     private double[] AddValuesToList(string SubPropertyName)
     {
         if (ArraySizeNumber == -1)
-            ArraySizeNumber = Convert.ToInt32(ExpressionFunction.Evaluate(Plant, ArraySize));
+            ArraySizeNumber = Convert.ToInt32(ExpressionFunction.Evaluate( ArraySize, My));
 
         double[] Values = new double[ArraySizeNumber];
         int i = 0;
         foreach (string PropertyName in Propertys)
         {
-            object Obj = ExpressionFunction.Evaluate(Plant, PropertyName + SubPropertyName);
-            if (Obj is double[])
+            object Obj = Util.GetVariable(PropertyName + SubPropertyName, My);
+            if (Obj == null)
+                throw new Exception("Cannot find: " + PropertyName + " in ArrayBiomass: " + My.Name);
+
+            if (Obj is IEnumerable)
             {
-                foreach (double Value in (double[])Obj)
+                foreach (object Value in Obj as IEnumerable)
                 {
-                    Values[i] = Value;
+                    Values[i] = Convert.ToDouble(Value);
                     i++;
                 }
             }

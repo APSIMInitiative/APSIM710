@@ -6,15 +6,13 @@ using System.Text;
 using System.Reflection;
 using CSGeneral;
 using System.Data;
+using ModelFramework;
 using EBMath;
 
 
 //FIXME  This class finds this ambigious.  [Description("Evaluate a mathematical expression using the EvaluateExpression dll. Obs: Expression can contain variable names from Plant2")]
 public class ExpressionFunction : Function
 {
-    [Link]
-    static Plant Plant = null;
-
     [Param]
     private string Expression = "";
 
@@ -31,7 +29,7 @@ public class ExpressionFunction : Function
                 Parse(fn, Expression);
                 parsed = true;
             }
-            FillVariableNames(fn);
+            FillVariableNames(fn, My);
             Evaluate(fn);
             return fn.Result;
         }
@@ -43,7 +41,7 @@ public class ExpressionFunction : Function
         fn.Infix2Postfix();
     }
 
-    private static void FillVariableNames(ExpressionEvaluator fn)
+    private static void FillVariableNames(ExpressionEvaluator fn, ModelFramework.Component RelativeTo)
     {
         ArrayList varUnfilled = fn.Variables;
         ArrayList varFilled = new ArrayList();
@@ -54,7 +52,8 @@ public class ExpressionFunction : Function
             symFilled.m_type = EBMath.Type.Variable;
             symFilled.m_valueString = "";
             symFilled.m_value = 0;
-            symFilled.m_value = Plant.GetObject(sym.m_name.Trim());
+            if (!RelativeTo.Get(sym.m_name.Trim(), out symFilled.m_value))
+                throw new Exception("Cannot find variable: " + sym.m_name + " in function: " + RelativeTo.Name);
             varFilled.Add(symFilled);
         }
         fn.Variables = varFilled;
@@ -85,12 +84,11 @@ public class ExpressionFunction : Function
     ///      Leaf.Leaves[1].Live.Wt                  - returns the live weight of the 2nd element of the leaves array.
     ///      sum(Leaf.Leaves[AboveGround].Live.Wt)   - returns the live weight of the 2nd element of the leaves array.
     /// </summary>
-    public static object Evaluate(Plant P, string Expression)
+    public static object Evaluate(string Expression, ModelFramework.Component RelativeTo)
     {
-        Plant = P;
         ExpressionEvaluator fn = new ExpressionEvaluator();
         Parse(fn, Expression);
-        FillVariableNames(fn);
+        FillVariableNames(fn, RelativeTo);
         Evaluate(fn);
         if (fn.Results != null)
             return fn.Results;

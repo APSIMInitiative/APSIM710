@@ -28,7 +28,7 @@ public class Pod : Organ1, AboveGround
     Function NConcentrationMaximum = null;
 
     [Link]
-    Plant Plant = null;
+    Plant15 Plant = null;
 
     [Input]
     double MaxT;

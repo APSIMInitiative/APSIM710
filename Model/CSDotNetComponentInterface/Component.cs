@@ -344,6 +344,8 @@ namespace ModelFramework
                 Data = (Data as Entity).Get();
                 return true;
             }
+            else if (Data is Instance)
+                Data = (Data as Instance).Model;
             if (Data == null)
             {
                  WrapBuiltInVariable<double> Value = new WrapBuiltInVariable<double>();

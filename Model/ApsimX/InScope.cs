@@ -50,9 +50,13 @@ class InScope
                 }
                 else
                 {
-                    ModelInstance = ModelInstance.Children.Find(x => string.Equals(x.Name, Path, StringComparison.CurrentCultureIgnoreCase));
+                    if (PathIndex == 0)
+                        ModelInstance = FindModel(x => string.Equals(x.Name, Path, StringComparison.CurrentCultureIgnoreCase),
+                                                  ModelInstance);
+                    else
+                        ModelInstance = ModelInstance.Children.Find(x => string.Equals(x.Name, Path, StringComparison.CurrentCultureIgnoreCase));
                     if (ModelInstance == null)
-                        throw new Exception("Cannot find model: " + NamePath);
+                        return null;
                 }
                 PathIndex++;
             }

@@ -129,7 +129,11 @@ namespace ModelFramework
         /// </summary>
         public object LinkByName(string NameToFind)
         {
-            return InScope.FindModel(Inst => string.Equals(Inst.Name, NameToFind, StringComparison.CurrentCultureIgnoreCase), Instance);
+            ModelInstance i = InScope.FindModel(Inst => string.Equals(Inst.Name, NameToFind, StringComparison.CurrentCultureIgnoreCase), Instance);
+            if (i != null)
+                return i.TheModel;
+            else
+                return null;
         }
         // --------------------------------------------------------------------
         /// <summary>

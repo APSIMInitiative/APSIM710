@@ -71,6 +71,7 @@ public class Leaf : BaseOrgan, AboveGround
             return ExpansionStress.Value;
         }
     }
+    [Output]
     public double CurrentRank = 0;
     public double _WaterAllocation;
     public double PEP = 0;

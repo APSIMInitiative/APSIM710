@@ -6,7 +6,7 @@ using System.Text;
 class RUEModel1
 {
     [Link]
-    Plant Plant = null;
+    Plant15 Plant = null;
 
     [Link]
     PStress PStress = null;
