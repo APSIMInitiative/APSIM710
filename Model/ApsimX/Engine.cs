@@ -37,22 +37,21 @@ public class ApsimX
             ModelInstance Simulation = Load(args[0]);
 
             Simulation.Run();
-            return 0;
         }
         catch (Exception err)
         {
             if (err.InnerException is FinishedException)
             {
                 Console.WriteLine(err.InnerException.Message);
-                return 0;
             }
-            Console.WriteLine(err.ToString());
-            return 1;
+            else
+                Console.WriteLine(err.ToString());
         }
         finally
         {
             sw.Close();
         }
+        return 0;
     }
 
     /// <summary>
