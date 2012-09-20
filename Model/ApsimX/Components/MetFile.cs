@@ -59,6 +59,35 @@ public class MetFile
                 return Convert.ToDouble(File.Constant("Latitude").Value);
         }
     }
+    [Output (Immutable = true)]
+    public double tav
+    {
+        get
+        {
+            if (File == null)
+                OnInitialised();
+
+            if (File.Constant("tav") == null)
+                return 0;
+            else
+                return Convert.ToDouble(File.Constant("tav").Value);
+        }
+    }
+    [Output (Immutable = true)]
+    public double amp
+    {
+        get
+        {
+            if (File == null)
+                OnInitialised();
+
+            if (File.Constant("amp") == null)
+                return 0;
+            else
+                return Convert.ToDouble(File.Constant("amp").Value);
+        }
+    }
+
     [EventHandler]
     public void OnInitialised()
     {
