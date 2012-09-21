@@ -41,7 +41,7 @@ public class SlurryTank
     [Output]
     double DM = 0;
 
-    //const
+    [Param]
     double RA = 0.2;
     //from Files
     [Param]
@@ -81,13 +81,11 @@ public class SlurryTank
     double pHmax_m = 0;
     [Param]
     double pHopt_m_hi = 0;
-
-//    [Param]
-    double[,] measured_pH=new double[4, 9];
-//    [Param]
-    int[] measurement_day=new int[9];
+    //070912
     [Param]
-    int treatment_no;
+    double[] measured_pH=new double[9];
+    [Param]
+    double[] measurement_day=new double[9];
     //gas
 
     //other
@@ -102,6 +100,10 @@ public class SlurryTank
     double TotalCInput = 0;
     [Output]
     double TotalCOutput = 0;
+    [Output]
+    double TotalSInput = 0;
+    [Output]
+    double TotalS = 0;
     [Output]
     double HVFA = 0.0;
     [Output]
@@ -124,6 +126,8 @@ public class SlurryTank
     double CCO2_S = 0;
     [Output]
     double ENH3 = 0;
+    [Output]
+    double EH2S = 0;
     [Output]
     int daysSinceFilled = 0;
     [Output]
@@ -178,7 +182,17 @@ public class SlurryTank
     double lag_beta = -1;
 
     double initialOM = 0;
-
+    //parameter for Temp model
+     [Param]
+    double Diameter = 0;
+        [Param]
+    double HeightSoil = 0;
+        [Param]
+    double tempCommon = 0;
+        [Param]
+    double tempAir = 0;
+        [Param]
+    double tempSoil = 0;
 
     [Event]
     public event DoubleDelegate CCH4SEvent;
@@ -199,56 +213,6 @@ public class SlurryTank
     [EventHandler]
     public void OnInitialised()
     {
-        //Console.WriteLine("OnInit");
-        measured_pH[0, 0] = 7.05;
-        measured_pH[0, 1] = 7.11;
-        measured_pH[0, 2] = 7.19;
-        measured_pH[0, 3] = 7.18;
-        measured_pH[0, 4] = 7.05;
-        measured_pH[0, 5] = 7.15;
-        measured_pH[0, 6] = 7.18;
-        measured_pH[0, 7] = 7.24;
-        measured_pH[0, 8] = 7.63;
-
-        measured_pH[1, 0] = 7.02;
-        measured_pH[1, 1] = 7.13;
-        measured_pH[1, 2] = 7.24;
-        measured_pH[1, 3] = 7.17;
-        measured_pH[1, 4] = 7.01;
-        measured_pH[1, 5] = 7.12;
-        measured_pH[1, 6] = 7.15;
-        measured_pH[1, 7] = 7.21;
-        measured_pH[1, 8] = 7.56;
-
-        measured_pH[2, 0] = 4.37;
-        measured_pH[2, 1] = 4.82;
-        measured_pH[2, 2] = 5.08;
-        measured_pH[2, 3] = 5.33;
-        measured_pH[2, 4] = 5.54;
-        measured_pH[2, 5] = 5.61;
-        measured_pH[2, 6] = 5.75;
-        measured_pH[2, 7] = 6.04;
-        measured_pH[2, 8] = 6.38;
-
-        measured_pH[3, 0] = 4.54;
-        measured_pH[3, 1] = 4.88;
-        measured_pH[3, 2] = 5.27;
-        measured_pH[3, 3] = 5.45;
-        measured_pH[3, 4] = 5.66;
-        measured_pH[3, 5] = 5.77;
-        measured_pH[3, 6] = 5.97;
-        measured_pH[3, 7] = 6.09;
-        measured_pH[3, 8] = 6.26;
-
-        measurement_day[0] = 0;
-        measurement_day[1] = 6;
-        measurement_day[2] = 13;
-        measurement_day[3] = 22;
-        measurement_day[4] = 29;
-        measurement_day[5] = 37;
-        measurement_day[6] = 48;
-        measurement_day[7] = 64;
-        measurement_day[8] = 90;
     }
     [EventHandler]
     public void OnPrepare()
@@ -270,6 +234,61 @@ public class SlurryTank
         double mass = Water + Ash + GetOM() + Tan;
         return mass;
     }
+
+    public double GetHenrysCoeff(int compound, double liqTemperatureInKelvin) //Henry's coefficient, KH
+    {
+        double KH = 0.0;
+        switch (compound)
+        {
+            case 0: //H2S
+                KH = Math.Pow(10, (5.703) - 884.94 / liqTemperatureInKelvin);
+                break;
+            case 1: //ammonia NH3
+                KH = Math.Pow(10, (-1.69 * 1477.7 / liqTemperatureInKelvin));
+                break;
+            case 2: //HAc
+                KH = Math.Pow(10, (3.65) - 2596 / liqTemperatureInKelvin);
+                break;
+            case 3: //CO2
+                KH = 358.4357 / ((Math.Exp(2441 * (1 / liqTemperatureInKelvin - 1 / 298.15))) * liqTemperatureInKelvin);
+                break;
+            default: Console.WriteLine("Henry's coefficient not found for this compound");
+                break;
+        }
+        return KH;
+    }
+    public double GetDissociationCoeff(int compound, double liqTemperatureInKelvin) //dissociation coeficient, K
+    {
+        double K = 0.0;
+
+        switch (compound)
+        {
+            case 0: //H2S
+                K = Math.Pow(10,-3448.7 / liqTemperatureInKelvin + 47.479 - 7.5227 * Math.Log(liqTemperatureInKelvin));
+                break;
+            case 1: //ammonia NH3
+                K = Math.Exp((-1843.22 / liqTemperatureInKelvin) - 0.0544943 * liqTemperatureInKelvin + 31.4335 * Math.Log(liqTemperatureInKelvin) - 177.95292);
+                break;
+            case 2: //HAc
+                K = Math.Exp(-406.6 * ((3 + Math.Pow(Math.E, liqTemperatureInKelvin / 1846)) / liqTemperatureInKelvin));
+                break;
+            case 3: //HCO3-  LNKHC3
+                K = Math.Exp(-6286.89 / liqTemperatureInKelvin - 0.050627 * liqTemperatureInKelvin - +12.405);
+                break;
+            case 4: //CO22- LNKCO2
+                K = Math.Exp(-80063.5 / liqTemperatureInKelvin + 0.714984 * liqTemperatureInKelvin - 478.653 * Math.Log(liqTemperatureInKelvin) + 2767.92);
+                break;
+            case 5: //H2O
+                K = Math.Exp(-10294.83 / liqTemperatureInKelvin - 0.039282 * liqTemperatureInKelvin + 14.01708);
+                break;
+
+
+            default: Console.WriteLine("Dissociation coefficient not found for this compound");
+                break;
+        }
+        return K;
+    }
+
 
     [EventHandler]
     public void OnAddSlurry(ManureType input)
@@ -334,6 +353,7 @@ public class SlurryTank
        // S_S04 += amount * input.SulphateS;//1.21
         //S2_S += amount * input.SulphideS; // 1.22
         //SFast += amount * (input.TotalS - (input.SulphateS + input.SulphideS));//1.20
+        TotalSInput+=amount * input.TotalS/1000.0;  //total S in input is in g/kg
         SFast += amount * (input.TotalS - input.SulphS)/1000.0;//1.20
         S_S04 += amount * input.SulphS / 1000.0;//1.21
         S2_S += 0; // 1.22
@@ -352,20 +372,23 @@ public class SlurryTank
             double endpH=0.0;
             int startday=0;
             int endday=0;
-            for (int k=0; k < 8; k++)
+            if (measurement_day.Length != measured_pH.Length)
+                throw new System.InvalidOperationException("List of PH is not the same in slurrytank");
+            for (int k = 0; k < measurement_day.Length-1; k++)
             {
-                if ((daysSinceFilled >= measurement_day[k]) && (daysSinceFilled < measurement_day[k + 1]))
+                if ((daysSinceFilled >= (int) measurement_day[k]) && (daysSinceFilled < (int)measurement_day[k + 1]))
                 {
-                    startday=measurement_day[k];
-                    endday=measurement_day[k+1];
-                    startpH=measured_pH[treatment_no,k];
-                    endpH=measured_pH[treatment_no,k+1];
+                    startday = (int)measurement_day[k];
+                    endday = (int)measurement_day[k + 1];
+                    startpH=measured_pH[k];
+                    endpH=measured_pH[k+1];
                     slurrypH = startpH + (daysSinceFilled - startday) * (endpH - startpH) / (endday - startday);
                 }
             }
-            if (daysSinceFilled >= measurement_day[8])
-                    slurrypH=measured_pH[treatment_no,8];
-    
+          
+                if (daysSinceFilled >= (int)measurement_day[measurement_day.Length-1])
+                    slurrypH = measured_pH[measurement_day.Length - 1];
+         
 
             daysSinceFilled++;
             temperatureInKelvin = 293.0;
@@ -380,7 +403,7 @@ public class SlurryTank
             if (slurrypH <= pHmin)
                 FpH = 0;
             if ((slurrypH > pHmin) && (slurrypH < pHopt_lo))
-                FpH = (pHopt_lo - slurrypH) / (pHopt_lo - pHmin);
+                FpH = (slurrypH - pHmin) / (pHopt_lo - pHmin);
             if ((slurrypH >= pHopt_lo) && (slurrypH <= pHopt_hi))
                 FpH = 1.0;
             if ((slurrypH > pHopt_hi) && (slurrypH < pHmax))
@@ -391,7 +414,7 @@ public class SlurryTank
             if (slurrypH <= pHmin_m)
                 FpH_m = 0;
             if ((slurrypH > pHmin_m) && (slurrypH < pHopt_m_lo))
-                FpH_m = (pHopt_m_lo - slurrypH) / (pHopt_m_lo - pHmin_m);
+                FpH_m = (slurrypH - pHmin_m) / (pHopt_m_lo - pHmin_m);
             if ((slurrypH >= pHopt_m_lo) && (slurrypH <= pHopt_m_hi))
                 FpH_m = 1.0;
             if ((slurrypH > pHopt_m_hi) && (slurrypH < pHmax_m))
@@ -403,9 +426,9 @@ public class SlurryTank
             double k1act = FpH * FTheta * k1;//1.25 //should be 0 to 1
             double k2act = FpH * FTheta * k2;//1.25
 
-            double hydrolysedCpool = k1act * CSlow + k2act * CFast;
-            double hydrolysedHpool = k1act * HSlow + k2act * HFast;
-            double hydrolysedOpool = k1act * OSlow + k2act * OFast;
+            double hydrolysedCpool = k2act * CSlow + k1act * CFast;
+            double hydrolysedHpool = k2act * HSlow + k1act * HFast;
+            double hydrolysedOpool = k2act * OSlow + k1act * OFast;
 
             FS = Math.Exp(-b * (S_S04 / Water));	//1.31
             FThetaM = Math.Exp(ThetaAM + ThetaBM * temperatureInCelsius * (1 - 0.5 * (temperatureInCelsius / ThetaCM)));
@@ -418,7 +441,7 @@ public class SlurryTank
             //calculate the H in CH4S
             double HCH4S = 0.333 * CCH4S;//1.39
 
-            CGas = k3act * CVFA;//1.35	//anaerobic degradation of VFA by methanogens
+            CGas = k3act* CVFA;//1.35	//anaerobic degradation of VFA by methanogens
             //TotalCOutput += CGas;
             double Hgas = k3act * HVFA; //1.44
             double Ogas = k3act * OVFA;//1.45
@@ -433,11 +456,23 @@ public class SlurryTank
 
             double KN = Math.Pow(10, -0.09018 - (2729.92 / temperatureInKelvin)); //1.53
             double KH = Math.Pow(10, -1.69 + 1447.7 / temperatureInKelvin); //1.55
-
             if (Tan > 0.0)
                 ENH3 = 24 * 60 * 60 * surfaceArea * Tan / (Water * KH * (1 + Math.Pow(10, -slurrypH) / KN) * RA); //1.57
             else
                 ENH3 = 0.0;
+
+            double KNH2S = GetDissociationCoeff(0,temperatureInKelvin);
+            double KHH2S = GetHenrysCoeff(0,temperatureInKelvin);
+            if (S2_S > 0.0)
+            {
+                //double H2S = S2_S / (1 + GetDissociationCoeff(0, temperatureInKelvin) / Math.Pow(10, -slurrypH));
+//                S2_S = 0.278;
+  //              double test = S2_S / (Water * KHH2S * (1 + Math.Pow(10, -slurrypH) / KNH2S)); //1.57
+                EH2S = 24 * 60 * 60 * surfaceArea * S2_S / (Water * KHH2S * (1 + KNH2S/Math.Pow(10, -slurrypH)) * RA); //1.57
+            }
+            else
+                EH2S = 0.0;
+                        
             //TotalNOutput += ENH3;
             //update C state variables
             //! Update the carbon in the Inert pool
@@ -445,8 +480,8 @@ public class SlurryTank
             C_Inert += GInert * hydrolysedCpool; //1.27
 
             //! Update the values of the carbon in the Fast and Slow pools is
-            CSlow *= (1 - k1act); //1.24
-            CFast *= (1 - k2act); //1.24 
+            CSlow *= (1 - k2act); //1.24
+            CFast *= (1 - k1act); //1.24 
             double CAddVFA = (1 - GInert) * hydrolysedCpool - CCH4S;//1.29
             if (CAddVFA < 0.0)
             {
@@ -456,10 +491,10 @@ public class SlurryTank
             CVFA = (1 - (k3act + k4act)) * CVFA + CAddVFA; //1.30
 
             //update the H and O
-            HFast *= (1 - k2act);//1.36
-            HSlow *= (1 - k1act);//1.36
-            OFast *= (1 - k2act);//1.36
-            OSlow *= (1 - k1act);//1.36
+            HFast *= (1 - k1act);//1.36
+            HSlow *= (1 - k2act);//1.36
+            OFast *= (1 - k1act);//1.36
+            OSlow *= (1 - k2act);//1.36
             double HAddInert = 0.055 * GInert * hydrolysedHpool;
             HInert += HAddInert; //1.37
             double OAddInert = 0.044 * GInert * hydrolysedOpool;
@@ -468,16 +503,17 @@ public class SlurryTank
             OVFA += hydrolysedOpool - (OAddInert + Ogas);//1.43
 
             //update S in Fast	
-            SFast *= (1 - k2act);//1.59
+            SFast *= (1 - k1act);//1.59
             S_S04 -= 2.667 * CCO2_S; //1.60
             double SAddS2 = 2.667 * (CCO2_S + CCH4S);
-            S2_S += SAddS2; //1.61
+            S2_S += SAddS2 - EH2S; //1.61
 
+            TotalS = SFast + S_S04 + S2_S;
             //update the N
             double NAddInert = 0.1 * GInert * hydrolysedCpool;
             N_Inert += NAddInert;//1.51
-            Tan += k2act * NFast - (NAddInert + ENH3);// 1.52
-            NFast *= (1 - k2act); //1.50
+            Tan += k1act * NFast - (NAddInert + ENH3);// 1.52
+            NFast *= (1 - k1act); //1.50
 
             SlurryOM = GetOM();
             CH4CPerHrPerVS = 1000000.0 * CCH4 / (24 * initialOM);
@@ -486,10 +522,63 @@ public class SlurryTank
 
             if (Tan < 0.0)
             {
-
                 StringType message = new StringType("Not enough TAN to enable the inert to be created or too much volatilisation");
                 panic.Invoke(message);
             }
+
+            EH2S *= 1000.0;  //for plotting
+
+            //temp Model
+            //constants
+            double ashDensity = 0;
+            double manuredensity = 1000;
+            double heatTransferCoefficientForAir = 0;
+            double heatTransferCoefficientForSoil = 0;
+
+
+
+
+
+
+
+
+
+            double highSoilManure = 0;
+            double highAirManure = 0;
+            double tempManureAir = tempCommon;
+            double tempManureSoil = tempCommon;
+
+            tempManureAir = tempAir + (tempManureAir - tempAir) * Math.Pow(Math.E, -heatTransferCoefficientForAir);
+            tempManureSoil = tempSoil + (tempManureSoil - tempSoil) * Math.Pow(Math.E, -heatTransferCoefficientForSoil);
+            double volumeTotal = (DM - Ash) / manuredensity + Ash / ashDensity;
+            double totalHight = volumeTotal / (Math.PI * Math.Pow(Diameter / 2, 2));
+            if (totalHight > HeightSoil)
+            {
+                highSoilManure = HeightSoil;
+                highAirManure = totalHight - HeightSoil;
+            }
+            else
+            {
+                highSoilManure = totalHight;
+                highAirManure = 0;
+            }
+
+            double volumeSoil = highSoilManure * Math.PI * Math.Pow(Diameter / 2, 2); //1.5
+            double volumeAbove = highAirManure * Math.PI * Math.Pow(Diameter / 2, 2); //1.6
+            if ((volumeAbove + volumeSoil) != volumeTotal)
+                throw new System.ArgumentException(" volumen does not match");
+
+            double surfaceSoil = Math.PI * Math.Pow(Diameter / 2, 2) + highSoilManure * Math.PI * Diameter; //1.7
+            double surfaceAir = Math.PI * Math.Pow(Diameter / 2, 2) + highAirManure * Math.PI * Diameter; //1.8
+
+
+            tempCommon = (volumeSoil * tempManureSoil + tempManureAir * volumeAbove) / (volumeSoil * volumeAbove);
+
+            double c=4186;
+
+            heatTransferCoefficientForAir = surfaceAir / (c * volumeAbove * manuredensity);
+            heatTransferCoefficientForSoil = surfaceSoil / (c * volumeSoil * manuredensity);
+
 
             DoubleType value = new DoubleType();
             value.Value = CCH4S;
