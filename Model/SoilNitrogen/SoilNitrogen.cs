@@ -10,6 +10,7 @@ using System.Xml;
 /// A more-or-less direct port of the Fortran SoilN model
 /// Ported by Eric Zurcher Sept/Oct 2010
 /// Changes by RCichota on July/2012: a bit of tidying up - mostly modifying how some variables are handled (substitute get by input, add limits)
+/// Further changes on September/2012, more tidying up, moving pieces of code aroun, updating error messages and finish cleaning the variable imputs
 /// </summary>
 /// 
 public class SoilNitrogen
@@ -22,60 +23,115 @@ public class SoilNitrogen
 
     #region Parameters expected to be provided by the user or by APSIM
 
+    // soil model type, spec used to determine some mineralisation model variations
     [Param(IsOptional = true)]
-    private string soiltype = "standard";   // soil type spec used to determine mineralisation properties
+    private string soiltype = "standard";
 
+    #region values to initialise simpleSoilTemp
+
+    // local latidute
+    [Input(IsOptional = true)]
+    [Units("deg")]
+    private double latitude = -999.0;
+
+    // annual average ambient air temperature (oC)
+    [Param(IsOptional = true, MinVal = 0.0, MaxVal = 55.0)]
+    [Input(IsOptional = true)]
+    [Units("oC")]
+    private double tav = -999.0;
+
+    // annual amplitude of the mean monthly air temperature (oC)
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 50.0)]
     [Input(IsOptional = true)]
     [Units("oC")]
-    private double amp = -999.0;       // annual amplitude in mean monthly temperature (oC) [ave_temp]
+    private double amp = -999.0;
 
-    [Param(IsOptional = true, MinVal = 0.0, MaxVal = 50.0)]
-    [Input(IsOptional = true)]
-    [Units("oC")]
-    private double tav = -999.0;       // annual average ambient temperature (oC)
+    #endregion
 
-    [Param(MinVal = 0.0, MaxVal = 500.0)]
-    private double root_cn = 0.0;   // initial C:N ratio of roots 
+    #region parameters to initialise soilph
 
-    [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1000.0)]
-    private double[] root_cn_pool = null;   // initial C:N ratio of each of the three root composition pools (carbohydrate, cellulose, and lignin)
-
-    [Param]
-    private double root_wt = 0.0;   // initial root weight
-
-    [Param(IsOptional = true)]
-    private double root_depth = 0.0;// initial depth over which roots are distributed (mm)
-
-    [Param]
-    private double soil_cn = 0.0;   // soil C:N ration
-
+    // pH of soil (assumed equivalent to a 1:1 soil-water slurry)
     [Param(IsOptional = true, MinVal = 3.5, MaxVal = 11.0)]
     [Input(IsOptional = true)]
-    private double[] ph = null;     // pH of soil in a 1:1 soil-water slurry
+    private double[] ph = null;
 
-    [Param]
-    private double[] fbiom = null;  // initial ration of biomass-C to mineralizable humic-C (0-1)
+    #endregion
 
-    [Param]
-    private double[] finert = null; // initial proportion of total soil C that is not subject to mineralization (0-1)
+    #region parameters to initialise fresh organic matter (fom)
 
-    private double[] reset_oc;   // Stores initial parameter value so it can be used for a Reset operation
-    private double[] _oc;  // Internal variable for oc. This is set, but doesn't get updated
+    // initial weight of fom in the soil (kgDM/ha)
+    private double fom_ini_wt = 0.0;
+    [Param(MinVal = 0.0, MaxVal = 10000.0)]
+    private double root_wt
+    {
+        get { return fom_ini_wt; }
+        set { fom_ini_wt = value; }
+    }
+
+    // initial depth over which fom is distributed within the soil profile (mm)
+    private double fom_ini_depth = 0.0;
+    [Param(IsOptional = true, MinVal = 0.0, MaxVal = 5000.0)]
+    private double root_depth
+    {
+        get { return fom_ini_depth; }
+        set { fom_ini_depth = value; }
+    }
+
+    // initial C:N ratio of roots (actually FOM)
+    private double fom_ini_cn = 0.0;
+    [Param(MinVal = 0.1, MaxVal = 750.0)]
+    private double root_cn
+    {
+        get { return fom_ini_cn; }
+        set { fom_ini_cn = value; }
+    }
+
+    // initial C:N ratio of each of the three fom composition pools (carbohydrate, cellulose, and lignin) - case not given, fom_cn is used
+    private double[] fomPools_cn = null;
+    [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1000.0)]
+    private double[] root_cn_pool
+    {
+        get { return fomPools_cn; }
+        set { fomPools_cn = value; }
+    }
+
+    #endregion
+
+    #region parameters to initialise soil organic matter (som)
+
+    // initial ratio of biomass-C to mineralizable humic-C (0-1)
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    private double[] fbiom = null;
+
+    // initial proportion of total soil C that is not subject to mineralization (0-1)
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    private double[] finert = null;
+
+    // the soil C:N ratio (actually of humus)
+    private double hum_cn = 0.0;
+    [Param(MinVal = 1.0, MaxVal = 25.0)]
+    private double soil_cn
+    {
+        get { return hum_cn; }
+        set { hum_cn = value; }
+    }
+
+    // total soil organic carbon content (%)
+    private double[] OC_reset;      // stores initial values, can be used for a Reset operation
+    private double[] _oc;           // this can be set, but doesn't get updated internally, the fractions are updated
     [Param]
     [Output]
     [Units("%")]
-    [Description("Organic carbon")]
-    double[] oc             // organic carbon concentration (%)
+    [Description("Soil organic carbon")]
+    double[] oc
     {
         get
         {
             if (dlayer == null || hum_c == null || biom_c == null)
                 return null;
 
-            int nLayers = dlayer.Length;
-            double[] oc_percent = new double[nLayers];
-            for (int i = 0; i < nLayers; i++)
+            double[] oc_percent = new double[dlayer.Length];
+            for (int i = 0; i < dlayer.Length; i++)
             {
                 oc_percent[i] = (hum_c[i] + biom_c[i]) * convFactor_kgha2ppm(i) / 10000;  // (100/1000000) = convert to ppm and then to %
             }
@@ -84,18 +140,23 @@ public class SoilNitrogen
         set
         {
             if (!initDone)
-                reset_oc = value;
+                OC_reset = value;
             _oc = value;
         }
     }
 
-    private double[] reset_ureappm;   // Stores initial parameter value so it can be used for a Reset operation
-    private double[] _ureappm; // local variable to hold parameter value until we can get dlayer!
-    [Param(IsOptional = true)]
+    #endregion
+
+    #region values to initialise soil mineral N
+
+    // soil urea nitrogen content (ppm) 
+    private double[] ureappm_reset;     // stores initial value, can be used for a Reset operation
+    private double[] _ureappm;          // local variable to hold parameter value until we can get dlayer!
+    [Param(IsOptional = true, MinVal = 0.0, MaxVal = 100000.0)]
     [Output]
     [Units("mg/kg")]
     [Description("Soil urea nitrogen content")]
-    private double[] ureappm    // urea nitrogen (ppm)
+    private double[] ureappm
     {
         get
         {
@@ -115,24 +176,30 @@ public class SoilNitrogen
                 Array.Resize(ref _urea, value.Length);
                 for (int layer = 0; layer < value.Length; ++layer)
                 {
+                    if (value[layer] < nh4ppm_min - epsilon)
+                    {
+                        Console.WriteLine(" ureappm(" + layer.ToString() + ") = " + value[layer].ToString() + "ppm is less than lower limit of " + ureappm_min.ToString() + ", value will be adjusted to minimum value.");
+                        value[layer] = ureappm_min;
+                    }
                     _urea[layer] = MathUtility.Divide(value[layer], convFactor_kgha2ppm(layer), 0.0);
                 }
                 if (!inReset)
-                    SendExternalMassFlow(SumDoubleArray(_urea) - sumOld);
+                    SendExternalMassFlowN(SumDoubleArray(_urea) - sumOld);
             }
             else
             {
                 _ureappm = value;
-                reset_ureappm = value;
+                ureappm_reset = value;
             }
         }
     }
 
-    private double[] _urea;  // Internal variable associated with the urea property
+    // soil urea nitrogen amount (kgN/ha)
+    private double[] _urea;     // Internal variable holding the urea amounts
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Soil urea nitrogen amount")]
-    double[] urea            // urea nitrogen
+    double[] urea
     {
         get { return _urea; }
         set
@@ -141,21 +208,30 @@ public class SoilNitrogen
             for (int layer = 0; layer < Math.Min(value.Length, _urea.Length); ++layer)
                 if (layer >= _urea.Length)
                 {
-                    Console.WriteLine("Attempt to assign urea value to non-existent soil layer");
+                    Console.WriteLine(" Attempt to assign urea value to a non-existent soil layer - extra values will be ignored");
+                    break;
                 }
                 else
+                {
+                    if (value[layer] < nh4_min[layer] - epsilon)
+                    {
+                        Console.WriteLine(" urea(" + layer.ToString() + ") = " + value[layer].ToString() + "kg/ha is less than lower limit of " + urea_min[layer].ToString() + ", value will be adjusted to minimum value.");
+                        value[layer] = urea_min[layer];
+                    }
                     _urea[layer] = value[layer];
-            SendExternalMassFlow(SumDoubleArray(_urea) - sumOld);
+                }
+            SendExternalMassFlowN(SumDoubleArray(_urea) - sumOld);
         }
     }
 
-    private double[] reset_nh4ppm;   // Stores initial parameter value so it can be used for a Reset operation
-    private double[] _nh4ppm; // local variable to hold parameter value until we can get dlayer!
+    // soil ammonium nitrogen content (ppm)
+    private double[] nh4ppm_reset;      // stores initial value, can be used for a Reset operation
+    private double[] _nh4ppm;           // local variable to hold parameter value until we can get dlayer!
     [Param]
     [Output]
     [Units("mg/kg")]
     [Description("Soil ammonium nitrogen content")]
-    private double[] nh4ppm    // ammonium nitrogen (ppm) 
+    private double[] nh4ppm
     {
         get
         {
@@ -176,26 +252,28 @@ public class SoilNitrogen
                 for (int layer = 0; layer < value.Length; ++layer)
                 {
                     if (value[layer] < nh4ppm_min - epsilon)
-                        Console.WriteLine("nh4ppm[layer] = " + value[layer].ToString() +
-                                " less than lower limit of " + nh4ppm_min);
+                    {
+                        Console.WriteLine(" nh4ppm(" + layer.ToString() + ") = " + value[layer].ToString() + "ppm is less than lower limit of " + nh4ppm_min.ToString() + ", value will be adjusted to minimum value.");
+                        value[layer] = nh4ppm_min;
+                    }
                     _nh4[layer] = MathUtility.Divide(value[layer], convFactor_kgha2ppm(layer), 0.0);
                 }
                 if (!inReset)
-                    SendExternalMassFlow(SumDoubleArray(_nh4) - sumOld);
+                    SendExternalMassFlowN(SumDoubleArray(_nh4) - sumOld);
             }
             else
             {
                 _nh4ppm = value;
-                reset_nh4ppm = value;
+                nh4ppm_reset = value;
             }
         }
     }
 
-    private double[] _nh4;  // Internal variable associated with the no3 property
+    private double[] _nh4;     // Internal variable holding the nh4 amounts
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Soil ammonium nitrogen amount")]
-    double[] nh4            // ammonium nitrogen
+    double[] nh4
     {
         get { return _nh4; }
         set
@@ -205,28 +283,31 @@ public class SoilNitrogen
             {
                 if (layer >= _nh4.Length)
                 {
-                    Console.WriteLine("Attempt to assign ammonium value to non-existent soil layer");
+                    Console.WriteLine(" Attempt to assign ammonium value to a non-existent soil layer - extra values will be ignored");
                     break;
                 }
                 else
                 {
+                    if (value[layer] < nh4_min[layer] - epsilon)
+                    {
+                        Console.WriteLine(" nh4(" + layer.ToString() + ") = " + value[layer].ToString() + "kg/ha is less than lower limit of " + nh4_min[layer].ToString() + ", value will be adjusted to minimum value.");
+                        value[layer] = nh4_min[layer];
+                    }
                     _nh4[layer] = value[layer];
-                    if (_nh4[layer] < nh4_min[layer] - epsilon)
-                        Console.WriteLine("nh4[layer] = " + _nh4[layer].ToString() +
-                                " less than lower limit of " + nh4_min[layer]);
                 }
             }
-            SendExternalMassFlow(SumDoubleArray(_nh4) - sumOld);
+            SendExternalMassFlowN(SumDoubleArray(_nh4) - sumOld);
         }
     }
 
-    private double[] reset_no3ppm;   // Stores initial parameter value so it can be used for a Reset operation
-    private double[] _no3ppm;   // local variable to hold parameter value until we can get dlayer!
+    // soil nitrate nitrogen content (ppm) - Watch out! no3 and no3ppm aren't quite the same thing... different units
+    private double[] no3ppm_reset;      // stores initial value, can be used for a Reset operation
+    private double[] _no3ppm;           // local variable to hold parameter value until we can get dlayer!
     [Param]
     [Output]
     [Units("mg/kg")]
     [Description("Soil nitrate nitrogen content")]
-    private double[] no3ppm     // nitrate nitrogen (ppm)  Watch out! no3 and no3ppm aren't quite the same thing... different units
+    private double[] no3ppm
     {
         get
         {
@@ -247,27 +328,30 @@ public class SoilNitrogen
                 for (int layer = 0; layer < value.Length; ++layer)
                 {
                     if (value[layer] < no3ppm_min - epsilon)
-                        Console.WriteLine("no3ppm[layer] = " + value[layer].ToString() +
-                                " less than lower limit of " + no3ppm_min);
+                    {
+                        Console.WriteLine(" no3ppm(" + layer.ToString() + ") = " + value[layer].ToString() + "ppm is less than lower limit of " + no3ppm_min.ToString() + ", value will be adjusted to minimum value.");
+                        value[layer] = no3ppm_min;
+                    }
                     _no3[layer] = MathUtility.Divide(value[layer], convFactor_kgha2ppm(layer), 0.0);
                 }
                 if (!inReset)
-                    SendExternalMassFlow(SumDoubleArray(_no3) - sumOld);
+                    SendExternalMassFlowN(SumDoubleArray(_no3) - sumOld);
             }
             else
             {
                 _no3ppm = value;
                 if (!initDone)
-                    reset_no3ppm = value;
+                    no3ppm_reset = value;
             }
         }
     }
 
-    private double[] _no3 = null;  // Internal variable associated with the no3 property
+    // soil nitrate nitrogen amount (kgN/ha)
+    private double[] _no3 = null;
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Soil nitrate nitrogen amount")]
-    double[] no3           // nitrate nitrogen
+    double[] no3
     {
         get { return _no3; }
         set
@@ -277,36 +361,47 @@ public class SoilNitrogen
             {
                 if (layer >= _no3.Length)
                 {
-                    Console.WriteLine("Attempt to assign nitrate value to non-existent soil layer");
+                    Console.WriteLine(" Attempt to assign nitrate value to a non-existent soil layer - extra values will be ignored");
                     break;
                 }
                 else
                 {
+                    if (value[layer] < no3_min[layer] - epsilon)
+                    {
+                        Console.WriteLine(" no3(" + layer.ToString() + ") = " + value[layer].ToString() + "kg/ha is less than lower limit of " + no3_min[layer].ToString() + ", value will be adjusted to minimum value.");
+                        value[layer] = no3_min[layer];
+                    }
                     _no3[layer] = value[layer];
-                    if (_no3[layer] < no3_min[layer] - epsilon)
-                        Console.WriteLine("no3[layer] = " + _no3[layer].ToString() +
-                                " less than lower limit of " + no3_min[layer]);
                 }
             }
-            SendExternalMassFlow(SumDoubleArray(_no3) - sumOld);
+            SendExternalMassFlowN(SumDoubleArray(_no3) - sumOld);
         }
     }
 
     #endregion
 
+    #endregion
+
     #region Parameters not usually provided by the user
 
+    // minimum allowable Urea (ppm)
+    public double ureappm_min = 0.0;
+
+    // minimum allowable NH4 (ppm)
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double nh4ppm_min;           // minimum allowable NH4 (ppm)
+    public double nh4ppm_min = 0.0;
 
+    // minimum allowable NO3 (ppm)
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double no3ppm_min;           // minimum allowable NO3 (ppm)
+    public double no3ppm_min = 0.0;
 
+    // enrichment equation coefficient a
     [Param]
-    private double enr_a_coeff = 0.0;   // enrichment equation coefficient a
+    private double enr_a_coeff = 0.0;
 
+    // enrichment equation coefficient b
     [Param]
-    private double enr_b_coeff = 0.0;   // enrichment equation coefficient b
+    private double enr_b_coeff = 0.0;
 
     [Param]
     private string profile_reduction = "off";
@@ -314,8 +409,14 @@ public class SoilNitrogen
     [Param(IsOptional = true)]
     private string use_organic_solutes = "off";
 
+    // C:N ratio of microbes ()
+    public double biom_cn = 8.0;
     [Param(IsOptional = true, MinVal = 1.0, MaxVal = 50.0)]
-    public double mcn = 8.0;            // C:N ratio of microbes ()
+    private double mcn
+    {
+        get { return biom_cn; }
+        set { biom_cn = value; }
+    }
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     public double ef_fom;               // fraction of FOM C mineralized retained in system (0-1)   
@@ -437,9 +538,7 @@ public class SoilNitrogen
     [Input]
     DateTime today;
 
-    [Input]
-    [Units("deg")]
-    private double latitude;
+    #region Weather data
 
     // today's net solar radiation
     [Input]
@@ -456,9 +555,14 @@ public class SoilNitrogen
     [Units("oC")]
     private double mint = 0.0;
 
+    #endregion
+
+    #region Soil data
+
+    // soil layers' thichness (mm)
     [Input]
     [Units("mm")]
-    private float[] dlayer = null;  // Thickness of soil layer (mm)
+    private float[] dlayer = null;
 
     // soil bulk density for each layer (kg/dm3)
     [Input]
@@ -480,46 +584,79 @@ public class SoilNitrogen
     [Units("mm")]
     private float[] ll15_dep = null;
 
+    // today's soil water content
     [Input]
     [Units("mm")]
     private float[] sw_dep = null;
 
+    // soil albedo (0-1)
     [Input]
     private double salb;
 
+    // soil temperature (as computed by another module - SoilTemp)
     [Input(IsOptional = true)]
     [Units("oC")]
     private double[] ave_soil_temp
     {
         get { return null; }
-        set
-        {
-            st = value;
-        }
+        set { st = value; }
     }
 
+    #endregion
+
+    #region Soil loss data
+
+    // soil loss, due to erosion (?)
     [Input(IsOptional = true)]
     [Units("t/ha")]
     private double soil_loss = 0.0;
 
-    [Input(IsOptional = true)]
-    private string pond_active = "no";
+    #endregion
 
+    #region Pond data
+
+    // switch indicating whether pond is active or not
+    private Boolean is_pond_active = false;
+    [Input(IsOptional = true)]
+    private string pond_active
+    { set { is_pond_active = (value == "yes"); } }
+
+    // C decomposed in pond that is added to soil biomass
     [Input(IsOptional = true)]
     [Units("kg/ha")]
     private double pond_biom_C;
 
+    // C decomposed in pond that is added to soil humus
     [Input(IsOptional = true)]
     [Units("kg/ha")]
     private double pond_hum_C;
 
+    #endregion
+
+    #region Inhibitors data
+
+    // factor reducing nitrification due to the presence of a inhibitor
     double[] _nitrification_inhibition;
-    [Output]
+    //    [Output]
+    [Input(IsOptional = true)]
+    [Units("0-1")]
     double[] nitrification_inhibition
     {
         get { return _nitrification_inhibition; }
         set { _nitrification_inhibition = value; }
     }
+
+    // factor reducing urea hydrolysis due to the presence of an inhibitor - not implemented yet
+    [Input(IsOptional = true)]
+    [Units("0-1")]
+    private double[] hydrolysis_inhibition = null;
+
+    // factor reducing mineralisation processes due to the presence of an inhibitor - not implemented yet
+    [Input(IsOptional = true)]
+    [Units("0-1")]
+    private double[] mineralisation_inhibition = null;
+
+    #endregion
 
     #endregion
 
@@ -584,79 +721,84 @@ public class SoilNitrogen
     #region Values that other components can only get
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Net NO3 change today")]
     double[] dlt_no3_net;   // net no3 change today
 
     [Output]
-    [Units("kg/ha")]
-    [Description("Minimum allowable NO3")]
-    double[] no3_min;       // minimum allowable NO3
-
-    [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Net NH4 change today")]
     double[] dlt_nh4_net;   // net nh4 change today
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
+    [Description("Minimum allowable urea")]
+    double[] urea_min;       // minimum allowable NH4
+
+    [Output]
+    [Units("kgN/ha")]
     [Description("Minimum allowable NH4")]
     double[] nh4_min;       // minimum allowable NH4
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
+    [Description("Minimum allowable NO3")]
+    double[] no3_min;       // minimum allowable NO3
+
+    [Output]
+    [Units("kgN/ha")]
     [Description("Nitrogen moved by nitrification")]
     double[] dlt_rntrf;     // nitrogen moved by nitrification (kg/ha)
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Nitrogen moved by nitrification")]
     double[] nitrification
     { get { return dlt_rntrf; } }
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Effective nitrogen moved by nitrification")]
     double[] effective_nitrification; // effective nitrogen moved by nitrification
     // (Alias dlt_rntrf_eff)
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Nitrogen moved by hydrolysis")]
     double[] dlt_urea_hydrol;   // nitrogen moved by hydrolysis
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Excess N required above NH4 supply")]
     double[] excess_nh4;    // excess N required above NH4 supply
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Nitrogen in FOM")]
     double[] fom_n;         // nitrogen in FOM
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Nitrogen in FOM pool 1")]
     double[] fom_n_pool1;
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Nitrogen in FOM pool 2")]
     double[] fom_n_pool2;
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Nitrogen in FOM pool 3")]
     double[] fom_n_pool3;
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Humic nitrogen")]
     double[] hum_n;         // Humic N
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Biomass nitrogen")]
     double[] biom_n;        // biomass nitrogen
 
@@ -741,57 +883,57 @@ public class SoilNitrogen
     }
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Net NH4 transformation")]
     double[] nh4_transform_net; // net NH4 transformation today
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Net NO3 transformation")]
     double[] no3_transform_net; // net NO3 transformation today
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Net NH4 transformation")]
     double[] dlt_res_nh4_min;   // Net Residue NH4 mineralisation
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Net FOM N mineralized, negative for immobilization")]
     double[] dlt_fom_n_min;     // net fom N mineralized (negative for immobilization) 
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Net biomass N mineralized")]
     double[] dlt_biom_n_min;    // net biomass N mineralized
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Net humic N mineralized")]
     double[] dlt_hum_n_min;     // net humic N mineralized
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Net Residue NO3 mineralisation")]
     double[] dlt_res_no3_min;   // Net Residue NO3 mineralisation
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("NO3 N denitrified")]
     double[] dlt_no3_dnit;      // NO3 N denitrified
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("NH4 N denitrified")]
     double[] dlt_nh4_dnit;      // NH4 N denitrified
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Amount of N2O produced")]
     double[] n2o_atm;           // amount of N2O produced
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Total N in soil")]
     double[] nit_tot           // total N in soil   
     {
@@ -813,7 +955,7 @@ public class SoilNitrogen
     }
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Net N mineralized")]
     double[] dlt_n_min         // net mineralisation
     {
@@ -830,7 +972,7 @@ public class SoilNitrogen
     }
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Net Residue N mineralisation")]
     double[] dlt_n_min_res
     {
@@ -846,7 +988,7 @@ public class SoilNitrogen
     }
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Humic N mineralized")]
     double[] dlt_n_min_tot
     {
@@ -865,7 +1007,7 @@ public class SoilNitrogen
     }
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     [Description("Denitrification")]
     double[] dnit
     {
@@ -1059,7 +1201,7 @@ public class SoilNitrogen
         {
             int nLayers = dlayer.Length;
             double[] result = new double[nLayers];
-            int index = (pond_active == "no") ? 1 : 2;
+            int index = (!is_pond_active) ? 1 : 2;
             for (int layer = 0; layer < nLayers; layer++)
                 result[layer] = (soiltype == "rothc") ? RothcTF(layer, index) : TF(layer, index);
             return result;
@@ -1111,51 +1253,21 @@ public class SoilNitrogen
     // Even though these properties are settable, and not meant to be readable,
     // they still bear the "Output" attribute. 
     // Perhaps that bit of the infrastructure needs a re-think.
-    [Output]
-    [Units("kg/ha")]
-    double[] dlt_no3
-    {
-        set
-        {
-            for (int layer = 0; layer < value.Length; ++layer)
-            {
-                _no3[layer] += value[layer];
-                if (_no3[layer] < no3_min[layer] - epsilon)
-                    Console.WriteLine("no3[layer] = " + _no3[layer].ToString() +
-                            " less than lower limit of " + no3_min[layer]);
-            }
-        }
-    }
 
     [Output]
-    [Units("kg/ha")]
-    double[] dlt_nh4
+    [Units("kgN/ha")]
+    double[] dlt_urea
     {
         set
         {
             for (int layer = 0; layer < value.Length; ++layer)
             {
-                _nh4[layer] += value[layer];
-                if (_nh4[layer] < nh4_min[layer] - epsilon)
-                    Console.WriteLine("nh4[layer] = " + _nh4[layer].ToString() +
-                            " less than lower limit of " + nh4_min[layer]);
-            }
-        }
-    }
-
-    [Output]
-    [Units("kg/ha")]
-    double[] dlt_no3ppm
-    {
-        set
-        {
-            for (int layer = 0; layer < value.Length; ++layer)
-            {
-                double convFact = convFactor_kgha2ppm(layer);
-                _no3[layer] += MathUtility.Divide(value[layer], convFact, 0.0);
-                if (_no3[layer] < no3_min[layer] - epsilon)
-                    Console.WriteLine("no3[layer] = " + _no3[layer].ToString() +
-                            " less than lower limit of " + no3_min[layer]);
+                _urea[layer] += value[layer];
+                if (_urea[layer] < urea_min[layer] - epsilon)
+                {
+                    Console.WriteLine("Attempt to change urea(" + layer.ToString() + ") to a value below lower limit, value will be set to " + urea_min[layer].ToString() + " kgN/ha");
+                    _urea[layer] = urea_min[layer];
+                }
             }
         }
     }
@@ -1168,28 +1280,66 @@ public class SoilNitrogen
         {
             for (int layer = 0; layer < value.Length; ++layer)
             {
-                double convFact = convFactor_kgha2ppm(layer);
-                _nh4[layer] += MathUtility.Divide(value[layer], convFact, 0.0);
+                _nh4[layer] += MathUtility.Divide(value[layer], convFactor_kgha2ppm(layer), 0.0);
                 if (_nh4[layer] < nh4_min[layer] - epsilon)
-                    Console.WriteLine("nh4[layer] = " + _nh4[layer].ToString() +
-                            " less than lower limit of " + nh4_min[layer]);
+                {
+                    Console.WriteLine("Attempt to change nh4(" + layer.ToString() + ") to a value below lower limit, value will be set to " + nh4_min[layer].ToString() + " kgN/ha");
+                    _nh4[layer] = nh4_min[layer];
+                }
+            }
+        }
+    }
+
+    [Output]
+    [Units("kgN/ha")]
+    double[] dlt_nh4
+    {
+        set
+        {
+            for (int layer = 0; layer < value.Length; ++layer)
+            {
+                _nh4[layer] += value[layer];
+                if (_nh4[layer] < nh4_min[layer] - epsilon)
+                {
+                    Console.WriteLine("Attempt to change nh4(" + layer.ToString() + ") to a value below lower limit, value will be set to " + nh4_min[layer].ToString() + " kgN/ha");
+                    _nh4[layer] = nh4_min[layer];
+                }
             }
         }
     }
 
     [Output]
     [Units("kg/ha")]
-    double[] dlt_urea
+    double[] dlt_no3ppm
     {
         set
         {
-            const double urea_min = 0.0;
             for (int layer = 0; layer < value.Length; ++layer)
             {
-                _urea[layer] += value[layer];
-                if (_urea[layer] < urea_min - epsilon)
-                    Console.WriteLine("urea[layer] = " + _urea[layer].ToString() +
-                            " less than lower limit of " + urea_min);
+                _no3[layer] += MathUtility.Divide(value[layer], convFactor_kgha2ppm(layer), 0.0);
+                if (_no3[layer] < no3_min[layer] - epsilon)
+                {
+                    Console.WriteLine("Attempt to change no3(" + layer.ToString() + ") to a value below lower limit, value will be set to " + no3_min[layer].ToString() + " kgN/ha");
+                    _no3[layer] = no3_min[layer];
+                }
+            }
+        }
+    }
+
+    [Output]
+    [Units("kgN/ha")]
+    double[] dlt_no3
+    {
+        set
+        {
+            for (int layer = 0; layer < value.Length; ++layer)
+            {
+                _no3[layer] += value[layer];
+                if (_no3[layer] < no3_min[layer] - epsilon)
+                {
+                    Console.WriteLine("Attempt to change no3(" + layer.ToString() + ") to a value below lower limit, value will be set to " + no3_min[layer].ToString() + " kgN/ha");
+                    _no3[layer] = no3_min[layer];
+                }
             }
         }
     }
@@ -1325,7 +1475,7 @@ public class SoilNitrogen
         Process();
         //        SendNBalanceEvent();  // Not currently used
         //        SendCBalanceEvent();  // Not currently used
-        if (pond_active == "no")
+        if (!is_pond_active)
             SendActualResidueDecompositionCalculated();
     }
 
@@ -1339,10 +1489,10 @@ public class SoilNitrogen
         GetOtherVariables();  // Get information which may vary through time
         // We no longer actually read the parameters from a file.
         // Instead we reset those that the user may have changed, then call "ReadParam" just to do parameter checking
-        oc = reset_oc;
-        no3ppm = reset_no3ppm;
-        nh4ppm = reset_nh4ppm;
-        ureappm = reset_ureappm;
+        oc = OC_reset;
+        no3ppm = no3ppm_reset;
+        nh4ppm = nh4ppm_reset;
+        ureappm = ureappm_reset;
         CheckParams();          // Get all parameters from parameter file
         ReadConstants();      // Get all coefficients from parameter file
         InitCalc();           // Perform initial calculations from inputs
@@ -1512,8 +1662,10 @@ public class SoilNitrogen
             if (Math.Abs(_no3[layer]) < epsilon)
                 _no3[layer] = 0.0;
             if (_no3[layer] < no3_min[layer])
-                Console.WriteLine("no3[layer] = " + _no3[layer].ToString() +
-                        " less than lower limit of " + no3_min[layer]);
+            {
+                Console.WriteLine("Attempt to change no3(" + layer.ToString() + ") to a value below lower limit, value will be set to " + no3_min[layer].ToString() + " kgN/ha");
+                _no3[layer] = no3_min[layer];
+            }
         }
         for (int layer = 0; layer < NitrogenChanged.DeltaNH4.Length; ++layer)
         {
@@ -1521,8 +1673,10 @@ public class SoilNitrogen
             if (Math.Abs(_nh4[layer]) < epsilon)
                 _nh4[layer] = 0.0;
             if (_nh4[layer] < nh4_min[layer])
-                Console.WriteLine("nh4[layer] = " + _nh4[layer].ToString() +
-                        " less than lower limit of " + nh4_min[layer]);
+            {
+                Console.WriteLine("Attempt to change nh4(" + layer.ToString() + ") to a value below lower limit, value will be set to " + nh4_min[layer].ToString() + " kgN/ha");
+                _nh4[layer] = nh4_min[layer];
+            }
         }
     }
 
@@ -1575,18 +1729,18 @@ public class SoilNitrogen
             throw new Exception("Number of \"fract_lign\" different to \"fom_type\"");
 
         // Check if all C:N values are supplied. If not use average C:N ratio in all pools
-        if (root_cn_pool == null || root_cn_pool.Length < 3)
+        if (fomPools_cn == null || fomPools_cn.Length < 3)
         {
-            root_cn_pool = new double[3];
+            fomPools_cn = new double[3];
             for (int i = 0; i < 3; i++)
-                root_cn_pool[i] = root_cn;
+                fomPools_cn[i] = fom_ini_cn;
         }
 
         // if 'root_depth' not provided, assume that 'root_wt' is distributed over whole profile
-        if (root_depth == 0.0)
+        if (fom_ini_depth == 0.0)
         {
             for (int i = 0; i < dlayer.Length; ++i)
-                root_depth += dlayer[i];
+                fom_ini_depth += dlayer[i];
         }
 
         // Do we need these? - are these still being used?
@@ -1618,7 +1772,7 @@ public class SoilNitrogen
         double dltN = TotalN() - oldN;
         double dltC = TotalC() - oldC;
 
-        SendExternalMassFlow(dltN);
+        SendExternalMassFlowN(dltN);
         SendExternalMassFlowC(dltC);
     }
 
@@ -1630,6 +1784,7 @@ public class SoilNitrogen
         Array.Resize(ref _urea, nLayers);
         Array.Resize(ref no3_yesterday, nLayers);
         Array.Resize(ref nh4_yesterday, nLayers);
+        Array.Resize(ref urea_min, nLayers);
         Array.Resize(ref nh4_min, nLayers);
         Array.Resize(ref no3_min, nLayers);
         Array.Resize(ref inert_c, nLayers);
@@ -1695,13 +1850,13 @@ public class SoilNitrogen
         double cum_depth = 0.0;
         double previous_cum_depth = 0.0;
         double factor;
-        int deepest_layer = getCumulativeIndex(root_depth, dlayer);
+        int deepest_layer = getCumulativeIndex(fom_ini_depth, dlayer);
 
         for (int i = 0; i <= deepest_layer; i++)
         {
             cum_depth += dlayer[i];
-            factor = Math.Min(1.0, MathUtility.Divide(root_depth - previous_cum_depth, dlayer[i], 0.0));
-            root_distrib[i] = Math.Exp(-3.0 * Math.Min(1.0, MathUtility.Divide(cum_depth, root_depth, 0.0))) * factor;
+            factor = Math.Min(1.0, MathUtility.Divide(fom_ini_depth - previous_cum_depth, dlayer[i], 0.0));
+            root_distrib[i] = Math.Exp(-3.0 * Math.Min(1.0, MathUtility.Divide(cum_depth, fom_ini_depth, 0.0))) * factor;
             previous_cum_depth = cum_depth;
         }
 
@@ -1710,16 +1865,30 @@ public class SoilNitrogen
         for (int layer = 0; layer < nLayers; layer++)
         {
             double convFact = convFactor_kgha2ppm(layer);
+            urea_min[layer] = MathUtility.Divide(ureappm_min, convFact, 0.0);
             nh4_min[layer] = MathUtility.Divide(nh4ppm_min, convFact, 0.0);
             no3_min[layer] = MathUtility.Divide(no3ppm_min, convFact, 0.0);
-            _no3[layer] = MathUtility.Divide(_no3ppm[layer], convFact, 0.0);
-            if (_no3[layer] < no3_min[layer])
-                Console.WriteLine("Attempt to initialise NO3 below lower limit");
+            if (_ureappm != null)
+            {
+                _urea[layer] = MathUtility.Divide(_ureappm[layer], convFact, 0.0);
+                if (_urea[layer] < urea_min[layer])
+                {
+                    Console.WriteLine("Attempt to change urea(" + layer.ToString() + ") to a value below lower limit, value will be set to " + urea_min[layer].ToString() + " kgN/ha");
+                    _urea[layer] = urea_min[layer];
+                }
+            }
             _nh4[layer] = MathUtility.Divide(_nh4ppm[layer], convFact, 0.0);
             if (_nh4[layer] < nh4_min[layer])
-                Console.WriteLine("Attempt to initialise NH4 below lower limit");
-            if (_ureappm != null)
-                _urea[layer] = MathUtility.Divide(_ureappm[layer], convFact, 0.0);
+            {
+                Console.WriteLine("Attempt to change nh4(" + layer.ToString() + ") to a value below lower limit, value will be set to " + nh4_min[layer].ToString() + " kgN/ha");
+                _nh4[layer] = nh4_min[layer];
+            }
+            _no3[layer] = MathUtility.Divide(_no3ppm[layer], convFact, 0.0);
+            if (_no3[layer] < no3_min[layer])
+            {
+                Console.WriteLine("Attempt to change no3(" + layer.ToString() + ") to a value below lower limit, value will be set to " + no3_min[layer].ToString() + " kgN/ha");
+                _no3[layer] = no3_min[layer];
+            }
 
             // calculate total soil C
             double oc_ppm = _oc[layer] * 10000;     // = (oc/100)*1000000 - convert from % to ppm
@@ -1732,21 +1901,21 @@ public class SoilNitrogen
             // to mineralization
 
             biom_c[layer] = MathUtility.Divide((carbon_tot - inert_c[layer]) * fbiom[layer], 1.0 + fbiom[layer], 0.0);
-            biom_n[layer] = MathUtility.Divide(biom_c[layer], mcn, 0.0);
+            biom_n[layer] = MathUtility.Divide(biom_c[layer], biom_cn, 0.0);
 
             hum_c[layer] = carbon_tot - biom_c[layer];
-            hum_n[layer] = MathUtility.Divide(hum_c[layer], soil_cn, 0.0);
+            hum_n[layer] = MathUtility.Divide(hum_c[layer], hum_cn, 0.0);
 
-            double fom = MathUtility.Divide(root_wt * root_distrib[layer], root_distrib_tot, 0.0);
+            double fom = MathUtility.Divide(fom_ini_wt * root_distrib[layer], root_distrib_tot, 0.0);
 
             fom_c_pool1[layer] = fom * fract_carb[0] * c_in_fom;
             fom_c_pool2[layer] = fom * fract_cell[0] * c_in_fom;
             fom_c_pool3[layer] = fom * fract_lign[0] * c_in_fom;
 
             // Calculate the N in each pool in each layer, fom_n_pool(n)[layer]
-            fom_n_pool1[layer] = MathUtility.Divide(fom_c_pool1[layer], root_cn_pool[0], 0.0);
-            fom_n_pool2[layer] = MathUtility.Divide(fom_c_pool2[layer], root_cn_pool[1], 0.0);
-            fom_n_pool3[layer] = MathUtility.Divide(fom_c_pool3[layer], root_cn_pool[2], 0.0);
+            fom_n_pool1[layer] = MathUtility.Divide(fom_c_pool1[layer], fomPools_cn[0], 0.0);
+            fom_n_pool2[layer] = MathUtility.Divide(fom_c_pool2[layer], fomPools_cn[1], 0.0);
+            fom_n_pool3[layer] = MathUtility.Divide(fom_c_pool3[layer], fomPools_cn[2], 0.0);
 
             fom_n[layer] = fom_n_pool1[layer] + fom_n_pool2[layer] + fom_n_pool3[layer];
 
@@ -1914,7 +2083,7 @@ public class SoilNitrogen
 
         int nLayers = dlayer.Length;
 
-        if (pond_active == "no")
+        if (!is_pond_active)
         {
             // decompose surface residues
 
@@ -1934,8 +2103,8 @@ public class SoilNitrogen
 
             for (int layer = 0; layer < nLayers; layer++)
             {
-                hum_n[layer] = MathUtility.Divide(hum_c[layer], soil_cn, 0.0);
-                biom_n[layer] = MathUtility.Divide(biom_c[layer], mcn, 0.0);
+                hum_n[layer] = MathUtility.Divide(hum_c[layer], hum_cn, 0.0);
+                biom_n[layer] = MathUtility.Divide(biom_c[layer], biom_cn, 0.0);
 
                 // update soil mineral N
 
@@ -1954,8 +2123,8 @@ public class SoilNitrogen
             hum_c[0] += pond_hum_C;
             biom_c[0] += pond_biom_C;
 
-            hum_n[0] = MathUtility.Divide(hum_c[0], soil_cn, 0.0);
-            biom_n[0] = MathUtility.Divide(biom_c[0], mcn, 0.0);
+            hum_n[0] = MathUtility.Divide(hum_c[0], hum_cn, 0.0);
+            biom_n[0] = MathUtility.Divide(biom_c[0], biom_cn, 0.0);
         }
 
         double[,] dlt_fom_n = new double[3, nLayers]; // fom N mineralised in each fraction (kg/ha)
@@ -2006,12 +2175,12 @@ public class SoilNitrogen
             hum_c[layer] += dlt_biom_c_hum[layer] - dlt_hum_c_biom[layer] - dlt_hum_c_atm[layer] +
                            _dlt_fom_c_hum[0][layer] + _dlt_fom_c_hum[1][layer] + _dlt_fom_c_hum[2][layer];
 
-            hum_n[layer] = MathUtility.Divide(hum_c[layer], soil_cn, 0.0);
+            hum_n[layer] = MathUtility.Divide(hum_c[layer], hum_cn, 0.0);
 
             biom_c[layer] += dlt_hum_c_biom[layer] - dlt_biom_c_hum[layer] - dlt_biom_c_atm[layer] +
                            _dlt_fom_c_biom[0][layer] + _dlt_fom_c_biom[1][layer] + _dlt_fom_c_biom[2][layer];
 
-            biom_n[layer] = MathUtility.Divide(biom_c[layer], mcn, 0.0);
+            biom_n[layer] = MathUtility.Divide(biom_c[layer], biom_cn, 0.0);
 
             fom_c_pool1[layer] -= (_dlt_fom_c_hum[0][layer] + _dlt_fom_c_biom[0][layer] + _dlt_fom_c_atm[0][layer]);
             fom_c_pool2[layer] -= (_dlt_fom_c_hum[1][layer] + _dlt_fom_c_biom[1][layer] + _dlt_fom_c_atm[1][layer]);
@@ -2063,18 +2232,18 @@ public class SoilNitrogen
             _no3[layer] += effective_nitrification[layer];
             _nh4[layer] -= dltRntrf;
 
-            if (Math.Abs(_no3[layer]) < epsilon)
-                _no3[layer] = 0.0;
-            if (Math.Abs(_nh4[layer]) < epsilon)
-                _nh4[layer] = 0.0;
             if (Math.Abs(_urea[layer]) < epsilon)
                 _urea[layer] = 0.0;
-            if (_no3[layer] < no3_min[layer] || _no3[layer] > 9000.0)
-                throw new Exception("Value for NO3(layer) is out of range");
+            if (Math.Abs(_nh4[layer]) < epsilon)
+                _nh4[layer] = 0.0;
+            if (Math.Abs(_no3[layer]) < epsilon)
+                _no3[layer] = 0.0;
+            if (_urea[layer] < urea_min[layer] || _urea[layer] > 9000.0)
+                throw new Exception("Value for urea(layer) is out of range");
             if (_nh4[layer] < nh4_min[layer] || _nh4[layer] > 9000.0)
                 throw new Exception("Value for NH4(layer) is out of range");
-            if (_urea[layer] < 0.0 || _urea[layer] > 9000.0)
-                throw new Exception("Value for urea(layer) is out of range");
+            if (_no3[layer] < no3_min[layer] || _no3[layer] > 9000.0)
+                throw new Exception("Value for NO3(layer) is out of range");
 
             nh4_transform_net[layer] = dlt_res_nh4_min[layer] + dlt_fom_n_min[layer] + dlt_biom_n_min[layer] + dlt_hum_n_min[layer] - dltRntrf + dltUreaHydrol + nh4_excess;
 
@@ -2181,8 +2350,8 @@ public class SoilNitrogen
         // test whether adequate N available to meet immobilization demand
 
         // potential N immobilization
-        double n_demand = MathUtility.Divide(SumDoubleArray(dlt_c_biom_tot), mcn, 0.0) +
-                          MathUtility.Divide(SumDoubleArray(dlt_c_hum_tot), soil_cn, 0.0);
+        double n_demand = MathUtility.Divide(SumDoubleArray(dlt_c_biom_tot), biom_cn, 0.0) +
+                          MathUtility.Divide(SumDoubleArray(dlt_c_hum_tot), hum_cn, 0.0);
         double n_avail = nit_tot + SumDoubleArray(pot_n_decomp);
 
         double scale_of = 1.0; // factor to reduce mineralization rates if insufficient N available
@@ -2262,7 +2431,7 @@ public class SoilNitrogen
 
         // dsg 200508  use different values for some constants when anaerobic conditions dominate
         double result;
-        int index = (pond_active == "no") ? 1 : 2;
+        int index = (!is_pond_active) ? 1 : 2;
 
         if (_urea[layer] > 0.0)
         {
@@ -2325,7 +2494,7 @@ public class SoilNitrogen
         //     Calculate the humic rate of decomposition and nitrogen mineralisation
 
         // dsg 200508  use different values for some constants when there's a pond and anaerobic conditions dominate
-        int index = (pond_active == "no") ? 1 : 2;
+        int index = (!is_pond_active) ? 1 : 2;
 
         double tf = (soiltype == "rothc") ? RothcTF(layer, index) : TF(layer, index);
         double mf = WF(layer, index);
@@ -2333,11 +2502,11 @@ public class SoilNitrogen
         // get the rate of mineralization of N from the humic pool
 
         double dlt_c_min_tot = (hum_c[layer] - inert_c[layer]) * rd_hum[index - 1] * tf * mf;
-        double dlt_n_min_tot = MathUtility.Divide(dlt_c_min_tot, soil_cn, 0.0);
+        double dlt_n_min_tot = MathUtility.Divide(dlt_c_min_tot, hum_cn, 0.0);
 
         dlt_c_biom = dlt_c_min_tot * ef_hum;
         dlt_c_atm = dlt_c_min_tot * (1.0 - ef_hum);
-        dlt_n_min = dlt_n_min_tot - MathUtility.Divide(dlt_c_biom, mcn, 0.0);
+        dlt_n_min = dlt_n_min_tot - MathUtility.Divide(dlt_c_biom, biom_cn, 0.0);
     }
 
     private void MinBiomass(int layer, ref double dlt_c_hum, ref double dlt_c_atm, ref double dlt_n_min)
@@ -2357,7 +2526,7 @@ public class SoilNitrogen
         //     Calculate the biomass rate of decomposition and nitrogen mineralisation
 
         // dsg 200508  use different values for some constants when anaerobic conditions dominate
-        int index = (pond_active == "no") ? 1 : 2;
+        int index = (!is_pond_active) ? 1 : 2;
 
         double tf = (soiltype == "rothc") ? RothcTF(layer, index) : TF(layer, index);
         double mf = WF(layer, index);
@@ -2365,15 +2534,15 @@ public class SoilNitrogen
         // get the rate of mineralization of C & N from the biomass pool
 
         double dlt_n_min_tot = biom_n[layer] * rd_biom[index - 1] * tf * mf;
-        double dlt_c_min_tot = dlt_n_min_tot * mcn;
+        double dlt_c_min_tot = dlt_n_min_tot * biom_cn;
 
         dlt_c_hum = dlt_c_min_tot * ef_biom * (1.0 - fr_biom_biom);
         dlt_c_atm = dlt_c_min_tot * (1.0 - ef_biom);
 
         // calculate net mineralization
 
-        dlt_n_min = dlt_n_min_tot - MathUtility.Divide(dlt_c_hum, soil_cn, 0.0) -
-                                    MathUtility.Divide((dlt_c_min_tot - dlt_c_atm - dlt_c_hum), mcn, 0.0);
+        dlt_n_min = dlt_n_min_tot - MathUtility.Divide(dlt_c_hum, hum_cn, 0.0) -
+                                    MathUtility.Divide((dlt_c_min_tot - dlt_c_atm - dlt_c_hum), biom_cn, 0.0);
     }
 
     private void MinFom(int layer, out double[] dlt_c_biom, out double[] dlt_c_hum,
@@ -2406,7 +2575,7 @@ public class SoilNitrogen
 
         // dsg 200508  use different values for some constants when anaerobic conditions dominate
         // index = 1 for aerobic conditions, 2 for anaerobic conditions
-        int index = (pond_active == "no") ? 1 : 2;
+        int index = (!is_pond_active) ? 1 : 2;
 
         // get total available minernal N (kg/ha)
         double nitTot = Math.Max(0.0, (_no3[layer] - no3_min[layer]) + (_nh4[layer] - nh4_min[layer]));
@@ -2467,8 +2636,8 @@ public class SoilNitrogen
             double dlt_c_hum_tot = dlt_fom_c_min_tot * ef_fom * (1.0 - fr_fom_biom); // C mineralized converted to humic
 
             // test whether adequate N available to meet immobilization demand
-            double n_demand = MathUtility.Divide(dlt_c_biom_tot, mcn, 0.0) +
-                              MathUtility.Divide(dlt_c_hum_tot, soil_cn, 0.0);
+            double n_demand = MathUtility.Divide(dlt_c_biom_tot, biom_cn, 0.0) +
+                              MathUtility.Divide(dlt_c_hum_tot, hum_cn, 0.0);
             double n_avail = nitTot + dlt_fom_n_min_tot;
 
             double scale_of; // factor to reduce mineralization rates if insufficient N to meet immobilization demand
@@ -2530,7 +2699,7 @@ public class SoilNitrogen
         double wfd;                   // water factor (0-1)
 
         // dsg 200508  use different values for some constants when anaerobic conditions dominate
-        index = (pond_active == "no") ? 1 : 2;
+        index = (!is_pond_active) ? 1 : 2;
 
         phf = pHFNitrf(layer);
         // get a 0-1 water factor for nitrification
@@ -2701,7 +2870,7 @@ public class SoilNitrogen
         dlayer = newProfile;
     }
 
-    private void SendExternalMassFlow(double dltN)
+    private void SendExternalMassFlowN(double dltN)
     {
         ExternalMassFlowType massBalanceChange = new ExternalMassFlowType();
         if (Math.Abs(dltN) <= epsilon)
@@ -3379,7 +3548,6 @@ public class SoilNitrogen
     }
 
     #endregion
-
 }
 
 
