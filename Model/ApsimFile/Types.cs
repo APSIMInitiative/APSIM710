@@ -140,7 +140,7 @@ public class Types
 
             //attempt to get these details from getDescription() 
             String descr = "";
-            descr = DLLProber.ProbeDLLForDescriptionXML(TypeName, DLLFileName);
+            descr = DLLProber.ProbeDLLForDescriptionXML(ClassName, DLLFileName);
             if (descr.Length > 0)
             {
                 TComponentDescrParser comp = new TComponentDescrParser(descr);
@@ -200,7 +200,7 @@ public class Types
             {
                 //attempt to get these details from getDescription() 
                 String descr = "";
-                descr = DLLProber.ProbeDLLForDescriptionXML(TypeName, DLLFileName);
+                descr = DLLProber.ProbeDLLForDescriptionXML(ClassName, DLLFileName);
                 if (descr.Length > 0)
                 {
                     TComponentDescrParser comp = new TComponentDescrParser(descr);
@@ -261,7 +261,7 @@ public class Types
             {
                 //attempt to get these details from getDescription()
                 String descr = "";
-                descr = DLLProber.ProbeDLLForDescriptionXML(TypeName, DLLFileName);
+                descr = DLLProber.ProbeDLLForDescriptionXML(ClassName, DLLFileName);
                 if (descr.Length > 0)
                 {
                     TComponentDescrParser comp = new TComponentDescrParser(descr);

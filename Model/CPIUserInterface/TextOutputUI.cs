@@ -569,8 +569,7 @@ namespace CPIUserInterface
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        //=====================================================================
-        private void ComponentFilter_TextChanged(object sender, EventArgs e)
+        private void ComponentFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
             PopulateVariableListView();
         }

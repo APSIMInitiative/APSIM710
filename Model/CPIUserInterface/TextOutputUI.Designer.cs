@@ -251,7 +251,7 @@
             this.ComponentFilter.Name = "ComponentFilter";
             this.ComponentFilter.Size = new System.Drawing.Size(155, 21);
             this.ComponentFilter.TabIndex = 23;
-            this.ComponentFilter.TextChanged += new System.EventHandler(this.ComponentFilter_TextChanged);
+            this.ComponentFilter.SelectedIndexChanged += new System.EventHandler(this.ComponentFilter_SelectedIndexChanged);
             // 
             // tabPage3
             // 
