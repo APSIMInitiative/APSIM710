@@ -315,6 +315,8 @@ namespace CPIUserInterface
                         TreeNode trNode2 = new TreeNode();
                         parentNode.Nodes.Add(trNode2);
                         string sVarName = j.ToString();
+                        if (typedValue.isArray())
+                            sVarName = "[" + sVarName + "]";
                         j++;
                         if (typedValueChild.Name.Length > 0)
                         {

@@ -33,10 +33,25 @@ namespace CPIUserInterface
 
         //=====================================================================
         /// <summary>
+        /// Event for retrieving the data for a column. This allows for the 
+        /// flexible definition and use of this treelist control.
+        /// Implement in the host class.
+        /// </summary>
+        /// <param name="item">The tag item for the node</param>
+        /// <param name="col">The column number 0-n</param>
+        /// <returns>The string for the cell</returns>
+        public delegate String onGetColValue(TAFTreeViewColumnTag item, int col);
+        public event onGetColValue getColValueEvent = null;
+
+        public Boolean AllowEdit = true;
+        private Boolean NoRedraw;
+        //=====================================================================
+        /// <summary>
         /// 
         /// </summary>
         public AFTreeViewColumns()
         {
+            NoRedraw = false;
             InitializeComponent();
             _editColumn = "value";
             richTextBox1.Visible = false;
@@ -53,6 +68,13 @@ namespace CPIUserInterface
             get
             {
                 return this.treeView1;
+            }
+        }
+        public ListView ListView
+        {
+            get
+            {
+                return this.listView1;
             }
         }
         //=====================================================================
@@ -112,6 +134,24 @@ namespace CPIUserInterface
             this.treeView1.Focus();
             this.treeView1.Invalidate();
         }
+        /// <summary>
+        /// Stop the redraw for the list and tree
+        /// </summary>
+        public void StopLayout()
+        {
+            this.TreeView.BeginUpdate();
+            this.listView1.SuspendLayout();
+            NoRedraw = true;
+        }
+        /// <summary>
+        /// Enable the redraw for the list and the tree
+        /// </summary>
+        public void RestartLayout()
+        {
+            NoRedraw = false;
+            this.listView1.ResumeLayout();
+            this.TreeView.EndUpdate();
+        }
         //=====================================================================
         /// <summary>
         /// on draw of the tree node - populate the listview columns
@@ -120,61 +160,67 @@ namespace CPIUserInterface
         /// <param name="e"></param>
         private void treeView1_DrawNode(object sender, DrawTreeNodeEventArgs e)
         {
-            e.DrawDefault = true;
-
-            Rectangle rect = e.Bounds;
-
-            if ((e.State & TreeNodeStates.Selected) != 0)
+            if (!NoRedraw)
             {
-                if ((e.State & TreeNodeStates.Focused) != 0)
-                    e.Graphics.FillRectangle(SystemBrushes.Highlight, rect);
+                e.DrawDefault = true;
+
+                Rectangle rect = e.Bounds;
+
+                if ((e.State & TreeNodeStates.Selected) != 0)
+                {
+                    if ((e.State & TreeNodeStates.Focused) != 0)
+                        e.Graphics.FillRectangle(SystemBrushes.Highlight, rect);
+                    else
+                        e.Graphics.FillRectangle(SystemBrushes.Control, rect);
+                }
                 else
-                    e.Graphics.FillRectangle(SystemBrushes.Control, rect);
-            }
-            else
-                e.Graphics.FillRectangle(Brushes.White, rect);
-
-            e.Graphics.DrawRectangle(SystemPens.Control, rect);
-
-            for (int intColumn = 1; intColumn < this.listView1.Columns.Count; intColumn++)
-            {
-                rect.Offset(this.listView1.Columns[intColumn - 1].Width, 0);
-                rect.Width = this.listView1.Columns[intColumn].Width;
+                    e.Graphics.FillRectangle(Brushes.White, rect);
 
                 e.Graphics.DrawRectangle(SystemPens.Control, rect);
 
-                string strColumnText;
-
-                TAFTreeViewColumnTag objTag = e.Node.Tag as TAFTreeViewColumnTag;
-
-                if (objTag != null)
-                    strColumnText = objTag.getValueAtColumn(intColumn);
-                else
-                    strColumnText = intColumn + " " + e.Node.Text; // dummy
-
-                TextFormatFlags flags = TextFormatFlags.EndEllipsis;
-                switch (this.listView1.Columns[intColumn].TextAlign)
+                for (int intColumn = 1; intColumn < this.listView1.Columns.Count; intColumn++)
                 {
-                    case HorizontalAlignment.Center:
-                        flags |= TextFormatFlags.HorizontalCenter;
-                        break;
-                    case HorizontalAlignment.Left:
-                        flags |= TextFormatFlags.Left;
-                        break;
-                    case HorizontalAlignment.Right:
-                        flags |= TextFormatFlags.Right;
-                        break;
-                    default:
-                        break;
-                }
+                    rect.Offset(this.listView1.Columns[intColumn - 1].Width, 0);
+                    rect.Width = this.listView1.Columns[intColumn].Width;
 
-                rect.Y++;
-                if ((e.State & TreeNodeStates.Selected) != 0 &&
-                    (e.State & TreeNodeStates.Focused) != 0)
-                    TextRenderer.DrawText(e.Graphics, strColumnText, e.Node.NodeFont, rect, SystemColors.HighlightText, flags);
-                else
-                    TextRenderer.DrawText(e.Graphics, strColumnText, e.Node.NodeFont, rect, e.Node.ForeColor, e.Node.BackColor, flags);
-                rect.Y--;
+                    e.Graphics.DrawRectangle(SystemPens.Control, rect);
+
+                    string strColumnText;
+
+                    TAFTreeViewColumnTag objTag = e.Node.Tag as TAFTreeViewColumnTag;
+
+                    if (objTag != null)
+                        if (getColValueEvent != null)   //if the host class has implemented a handler
+                            strColumnText = getColValueEvent(objTag, intColumn);
+                        else
+                            strColumnText = objTag.getValueAtColumn(intColumn);
+                    else
+                        strColumnText = intColumn + " " + e.Node.Text; // dummy
+
+                    TextFormatFlags flags = TextFormatFlags.EndEllipsis;
+                    switch (this.listView1.Columns[intColumn].TextAlign)
+                    {
+                        case HorizontalAlignment.Center:
+                            flags |= TextFormatFlags.HorizontalCenter;
+                            break;
+                        case HorizontalAlignment.Left:
+                            flags |= TextFormatFlags.Left;
+                            break;
+                        case HorizontalAlignment.Right:
+                            flags |= TextFormatFlags.Right;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    rect.Y++;
+                    if ((e.State & TreeNodeStates.Selected) != 0 &&
+                        (e.State & TreeNodeStates.Focused) != 0)
+                        TextRenderer.DrawText(e.Graphics, strColumnText, e.Node.NodeFont, rect, SystemColors.HighlightText, flags);
+                    else
+                        TextRenderer.DrawText(e.Graphics, strColumnText, e.Node.NodeFont, rect, e.Node.ForeColor, e.Node.BackColor, flags);
+                    rect.Y--;
+                }
             }
         }
         //=====================================================================
@@ -196,39 +242,42 @@ namespace CPIUserInterface
         /// </summary>
         private void displayEditor()
         {
-            TreeNode treeNode = this.treeView1.SelectedNode;
-            if (treeNode != null)
+            if (AllowEdit)
             {
-                TAFTreeViewColumnTag o = treeNode.Tag as TAFTreeViewColumnTag;
-
-                if ((!o.TypedValue.isArray()) && (!o.TypedValue.isRecord()))
+                TreeNode treeNode = this.treeView1.SelectedNode;
+                if (treeNode != null)
                 {
-                    int iValColumnWidth = 150;
-                    int spos = 0;
-                    int epos = this.listView1.Columns[0].Width;
-                    int i = 0;
-                    bool lFound = false;
-                    while ((i < this.listView1.Columns.Count) && (!lFound))
-                    {
-                        if (this.listView1.Columns[i].Text.ToLower().Equals(_editColumn))
-                        {
-                            lFound = true;
-                            iValColumnWidth = this.listView1.Columns[i].Width;
-                        }
-                        else
-                        {
-                            spos = epos;
-                            epos += this.listView1.Columns[i].Width;
-                        }
-                        i++;
-                    }
+                    TAFTreeViewColumnTag o = treeNode.Tag as TAFTreeViewColumnTag;
 
-                    richTextBox1.Size = new System.Drawing.Size(iValColumnWidth, 20);
-                    richTextBox1.Location = new System.Drawing.Point(spos + 3, treeNode.Bounds.Y + treeNode.Bounds.Height + 3);
-                    richTextBox1.Text = o.Value;
-                    richTextBox1.Show();
-                    richTextBox1.SelectAll();
-                    richTextBox1.Focus();
+                    if ((!o.TypedValue.isArray()) && (!o.TypedValue.isRecord()))
+                    {
+                        int iValColumnWidth = 150;
+                        int spos = 0;
+                        int epos = this.listView1.Columns[0].Width;
+                        int i = 0;
+                        bool lFound = false;
+                        while ((i < this.listView1.Columns.Count) && (!lFound))
+                        {
+                            if (this.listView1.Columns[i].Text.ToLower().Equals(_editColumn))
+                            {
+                                lFound = true;
+                                iValColumnWidth = this.listView1.Columns[i].Width;
+                            }
+                            else
+                            {
+                                spos = epos;
+                                epos += this.listView1.Columns[i].Width;
+                            }
+                            i++;
+                        }
+
+                        richTextBox1.Size = new System.Drawing.Size(iValColumnWidth, 20);
+                        richTextBox1.Location = new System.Drawing.Point(spos + 3, treeNode.Bounds.Y + treeNode.Bounds.Height + 3);
+                        richTextBox1.Text = o.Value;
+                        richTextBox1.Show();
+                        richTextBox1.SelectAll();
+                        richTextBox1.Focus();
+                    }
                 }
             }
         }
@@ -417,6 +466,11 @@ namespace CPIUserInterface
                     selectNode(treeView1.Nodes, parentNode);
                 }
             }
+        }
+
+        private void treeView1_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+                TreeView.DoDragDrop(e.Item, DragDropEffects.All);
         }
     }
 }

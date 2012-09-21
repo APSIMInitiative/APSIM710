@@ -21,6 +21,7 @@ namespace CPIUserInterface
         private string _sDefault;
         private string _sMin;
         private string _sMax;
+        private string _sDescr;
 
         //=====================================================================
         /// <summary>
@@ -32,25 +33,26 @@ namespace CPIUserInterface
             _typedValue = typedValue;
             //_sColumnData = ipsColumnData;
 
-            _sVariable = typedValue.Name;
-            _sValue = typedValue.asString();
-            _sType = typedValue.typeName();
+            _sVariable = _typedValue.Name;
+            _sValue = _typedValue.asString();
+            _sType = _typedValue.typeName();
 
-            if (_sType.ToLower().Equals("defined") || (TypedValue.isRecord() == true))
+            if (_sType.ToLower().Equals("defined") || (_typedValue.isRecord() == true))
             {
                 _sType = "record";
             }
 
-            if (TypedValue.isArray())
+            if (_typedValue.isArray())
             {
                 _sType = "array";
             }
-            _sUnit = typedValue.units();
+            _sUnit = _typedValue.units();
 
             if (typedValue is TInitValue)
             {
-                TInitValue initValue = typedValue as TInitValue;
+                TInitValue initValue = _typedValue as TInitValue;
 
+                _sDescr = initValue.getDescr();
                 if (initValue.getDefault() != null)
                 {
                     _sDefault = initValue.getDefault().asString();
@@ -176,37 +178,23 @@ namespace CPIUserInterface
         /// <returns></returns>
         public string getValueAtColumn(int i)
         {
-            if (i == 0)
+            switch (i)
             {
-                return Variable;
-            }
-            else if (i == 1)
-            {
-                return Value;
-            }
-            else if (i == 2)
-            {
-                return Type;
-            }
-            else if (i == 3)
-            {
-                return Unit;
-            }
-            else if (i == 4)
-            {
-                return DefaultValue;
-            }
-            else if (i == 5)
-            {
-                return Min;
-            }
-            else if (i == 6)
-            {
-                return Max;
-            }
-            else 
-            {
-                return "";
+                case 0: return Variable;
+               
+                case 1: return Value;
+               
+                case 2: return Type;
+                 
+                case 3: return Unit;
+                   
+                case 4: return DefaultValue;
+                  
+                case 5: return Min;
+                  
+                case 6: return Max;
+             
+                default: return "";
             }
         }
         //=====================================================================
@@ -274,6 +262,14 @@ namespace CPIUserInterface
         public string Max
         {
             get { return _sMax; }
+        }
+        //=====================================================================
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Descr
+        {
+            get { return _sDescr; }
         }
     }
 }

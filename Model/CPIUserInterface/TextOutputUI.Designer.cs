@@ -38,14 +38,9 @@
             this.Grid = new System.Windows.Forms.DataGridView();
             this.Variable = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.afTreeViewColumns1 = new CPIUserInterface.AFTreeViewColumns();
             this.DictionaryLabel = new System.Windows.Forms.Label();
             this.Label1 = new System.Windows.Forms.Label();
-            this.VariableListView = new System.Windows.Forms.ListView();
-            this.ColumnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.ColumnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.ColumnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ComponentFilter = new System.Windows.Forms.ComboBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -124,9 +119,9 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.afTreeViewColumns1);
             this.splitContainer1.Panel2.Controls.Add(this.DictionaryLabel);
             this.splitContainer1.Panel2.Controls.Add(this.Label1);
-            this.splitContainer1.Panel2.Controls.Add(this.VariableListView);
             this.splitContainer1.Panel2.Controls.Add(this.ComponentFilter);
             this.splitContainer1.Size = new System.Drawing.Size(766, 326);
             this.splitContainer1.SplitterDistance = 451;
@@ -211,6 +206,21 @@
             this.Column1.Name = "Column1";
             this.Column1.Width = 73;
             // 
+            // afTreeViewColumns1
+            // 
+            this.afTreeViewColumns1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.afTreeViewColumns1.AutoScroll = true;
+            this.afTreeViewColumns1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(171)))), ((int)(((byte)(173)))), ((int)(((byte)(179)))));
+            this.afTreeViewColumns1.Location = new System.Drawing.Point(0, 80);
+            this.afTreeViewColumns1.Name = "afTreeViewColumns1";
+            this.afTreeViewColumns1.Padding = new System.Windows.Forms.Padding(1);
+            this.afTreeViewColumns1.Size = new System.Drawing.Size(308, 246);
+            this.afTreeViewColumns1.TabIndex = 27;
+            this.afTreeViewColumns1.saveChangesEvent += new CPIUserInterface.AFTreeViewColumns.onDataChange(this.afTreeViewColumns1_saveChangesEvent);
+            this.afTreeViewColumns1.reloadTreeEvent += new CPIUserInterface.AFTreeViewColumns.reloadTree(this.afTreeViewColumns1_reloadTreeEvent);
+            // 
             // DictionaryLabel
             // 
             this.DictionaryLabel.BackColor = System.Drawing.SystemColors.ActiveCaption;
@@ -232,52 +242,6 @@
             this.Label1.Size = new System.Drawing.Size(86, 13);
             this.Label1.TabIndex = 26;
             this.Label1.Text = "Component filter:";
-            // 
-            // VariableListView
-            // 
-            this.VariableListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.VariableListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.ColumnHeader1,
-            this.ColumnHeader4,
-            this.columnHeader2,
-            this.columnHeader6,
-            this.ColumnHeader3});
-            this.VariableListView.FullRowSelect = true;
-            this.VariableListView.Location = new System.Drawing.Point(0, 69);
-            this.VariableListView.Name = "VariableListView";
-            this.VariableListView.Size = new System.Drawing.Size(311, 253);
-            this.VariableListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this.VariableListView.TabIndex = 24;
-            this.VariableListView.UseCompatibleStateImageBehavior = false;
-            this.VariableListView.View = System.Windows.Forms.View.Details;
-            this.VariableListView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.VariableListView_ItemDrag);
-            // 
-            // ColumnHeader1
-            // 
-            this.ColumnHeader1.Text = "Variable name";
-            this.ColumnHeader1.Width = 98;
-            // 
-            // ColumnHeader4
-            // 
-            this.ColumnHeader4.Text = "Array";
-            this.ColumnHeader4.Width = 40;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Record";
-            this.columnHeader2.Width = 47;
-            // 
-            // columnHeader6
-            // 
-            this.columnHeader6.Text = "Units";
-            this.columnHeader6.Width = 47;
-            // 
-            // ColumnHeader3
-            // 
-            this.ColumnHeader3.Text = "Description";
-            this.ColumnHeader3.Width = 300;
             // 
             // ComponentFilter
             // 
@@ -507,10 +471,6 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         internal System.Windows.Forms.Label DictionaryLabel;
         internal System.Windows.Forms.Label Label1;
-        internal System.Windows.Forms.ListView VariableListView;
-        internal System.Windows.Forms.ColumnHeader ColumnHeader1;
-        internal System.Windows.Forms.ColumnHeader ColumnHeader4;
-        internal System.Windows.Forms.ColumnHeader ColumnHeader3;
         internal System.Windows.Forms.ComboBox ComponentFilter;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.DataGridView Grid;
@@ -523,7 +483,6 @@
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label3;
-        internal System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.SplitContainer splitContainer2;
         internal System.Windows.Forms.Label label5;
@@ -536,7 +495,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.Label labelLines;
-        private System.Windows.Forms.ColumnHeader columnHeader6;
+        private AFTreeViewColumns afTreeViewColumns1;
 
 
     }

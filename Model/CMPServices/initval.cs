@@ -105,13 +105,13 @@ namespace CMPServices
             //FMax = null;
             //FMin = null;
             FDefault = null;
-            FDescr = "";
 
             //required in this derived class
             buildType(sXML);                   //calls suitable virtual functions
 
             if (isArray())                        // default array length is zero
                 setElementCount(0);
+            FDescr = parser.getAttrValue(parser.rootNode(), "description"); //APSIM descriptions here
         }
 
         //============================================================================
@@ -130,13 +130,13 @@ namespace CMPServices
             //FMax = null;
             //FMin = null;
             FDefault = null;
-            FDescr = "";
 
             //required in this derived class
             buildType(parentParser, baseNode);  //calls suitable virtual functions
 
             if (isArray())                        // default array length is zero
                 setElementCount(0);
+            FDescr = parentParser.getAttrValue(baseNode, "description"); //APSIM descriptions here
         }
 
         //============================================================================
@@ -172,11 +172,11 @@ namespace CMPServices
             //FMax = null;
             //FMin = null;
             FDefault = null;
-            FDescr = "";
             //required in this derived class
             //add array elements which are scalars
             addScalar("", aBaseType);     //calls suitable virtual function
             setElementCount((uint)iNoElements);
+            FDescr = parser.getAttrValue(parser.rootNode(), "description"); //APSIM descriptions here
         }
         //============================================================================
         /// <summary>
@@ -192,9 +192,9 @@ namespace CMPServices
             //FMax = null;
             //FMin = null;
             FDefault = null;
-            FDescr = "";
             newMember(baseValue);
             setElementCount((uint)iNoElements);
+            FDescr = parser.getAttrValue(parser.rootNode(), "description"); //APSIM descriptions here
         }
         //============================================================================
         /// <summary>
@@ -234,6 +234,7 @@ namespace CMPServices
                         FMax = new TDDMLValue("maxval", FBaseType);
                     FMax.copyFrom(other.FMax);
                 }
+                setDescr(other.getDescr(), 255);
             }
         }
 

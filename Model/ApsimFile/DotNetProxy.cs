@@ -19,7 +19,7 @@ class DLLProber
     /// <summary>
     /// Return the XML from a DLL probe
     /// </summary>
-    static private string ProbeDLLForDescriptionXML(string TypeName, string DllFileName)
+    static public string ProbeDLLForDescriptionXML(string TypeName, string DllFileName)
     {
         String descr = "";
 		DllFileName = Configuration.RemoveMacros(DllFileName);

@@ -49,6 +49,41 @@ namespace CPIUserInterface
             base.HelpText = " TextOutput";
 
             ReadInitSection();
+
+            //Configure the treeview that contains the variables for a component
+            this.afTreeViewColumns1.reloadTreeEvent += new AFTreeViewColumns.reloadTree(afTreeViewColumns1_reloadTreeEvent);
+            this.afTreeViewColumns1.saveChangesEvent += new AFTreeViewColumns.onDataChange(afTreeViewColumns1_saveChangesEvent);
+            this.afTreeViewColumns1.getColValueEvent += new AFTreeViewColumns.onGetColValue(afTreeViewColumns1_getColVal);
+
+            ListView.ColumnHeaderCollection lvColumns = afTreeViewColumns1.Columns;
+
+            lvColumns.Clear();
+
+            ColumnHeader ch1 = new ColumnHeader();
+            ch1.Name = "Variable";
+            ch1.Text = "Variable";
+            ch1.Width = 150;
+            lvColumns.Add(ch1);
+
+            ColumnHeader ch2 = new ColumnHeader();
+            ch2.Name = "Type";
+            ch2.Text = "Type";
+            ch2.Width = 50;
+            lvColumns.Add(ch2);
+
+            ColumnHeader ch3 = new ColumnHeader();
+            ch3.Name = "Unit";
+            ch3.Text = "Unit";
+            ch3.Width = 50;
+            lvColumns.Add(ch3);
+
+            ColumnHeader ch4 = new ColumnHeader();
+            ch4.Name = "Description";
+            ch4.Text = "Description";
+            ch4.Width = 300;
+            lvColumns.Add(ch4);
+
+            afTreeViewColumns1.AllowEdit = false;
         }
         //=====================================================================
         /// <summary>
@@ -266,9 +301,6 @@ namespace CPIUserInterface
             PopulateVariableListView();
             //UserChange = true;
 
-            VariableListView.Columns[1].Width = 45;
-            VariableListView.Columns[2].Width = 45;
-
             if (tabControl1.SelectedIndex == OUTPUTTAB)
             {
                 ReloadOutputFile();
@@ -389,9 +421,6 @@ namespace CPIUserInterface
             if (ComponentFilter.SelectedIndex >= 0 & ComponentFilter.SelectedIndex < ComponentNames.Count)
             {
                 Cursor.Current = Cursors.WaitCursor;
-                VariableListView.BeginUpdate();
-                VariableListView.Groups.Clear();
-                VariableListView.Items.Clear();
 
                 string ComponentType = ComponentTypes[ComponentFilter.SelectedIndex];
                 string ComponentName = ComponentNames[ComponentFilter.SelectedIndex];
@@ -399,8 +428,6 @@ namespace CPIUserInterface
                 // e.g. variables or events
                 AddVariablesToListView(ComponentName, ComponentType, PropertyGroup);
 
-                VariableListView.EndUpdate();
-                VariableListView.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
                 Cursor.Current = Cursors.Default;
             }
         }
@@ -457,41 +484,26 @@ namespace CPIUserInterface
         //=====================================================================
         private void AddVariablesToListView(string ComponentName, string ComponentType, string PropertyGroup)
         {
-            List<Types.MetaDataInfo> ModelInfo = null;
-            ModelInfo = Types.Instance.Variables(ComponentType);
-           
-            string GroupName = ComponentName;
-            if (string.IsNullOrEmpty(GroupName))
-            {
-                GroupName = ComponentName + " " + PropertyGroup;
-            }
-            ListViewGroup NewGroup = new ListViewGroup(GroupName);
+            List<TCompProperty> varList = null;
+            varList = Types.Instance.VariableList(ComponentType);
 
-            foreach (Types.MetaDataInfo Variable in ModelInfo)
+            //add to the treeview
+            afTreeViewColumns1.StopLayout();
+            afTreeViewColumns1.TreeView.Nodes.Clear();
+
+            foreach (TCompProperty Variable in varList)
             {
-                VariableListView.Groups.Add(NewGroup);
-                ListViewItem ListItem = new ListViewItem(Variable.Name);
-                ListItem.Group = NewGroup;
-                if (Variable.IsArray)
+                //add the descriptions - CPI and APSIM components store this differently
+                if (Variable.sDescr.Length > 1)
                 {
-                    ListItem.SubItems.Add("Yes");
+                    Variable.InitValue.setDescr(Variable.sDescr, 255);
                 }
-                else
-                {
-                    ListItem.SubItems.Add("No");
-                }
-                if (Variable.IsRecord)
-                {
-                    ListItem.SubItems.Add("Yes");
-                }
-                else
-                {
-                    ListItem.SubItems.Add("No");
-                }
-                ListItem.SubItems.Add(Variable.Units);
-                ListItem.SubItems.Add(Variable.Description);
-                VariableListView.Items.Add(ListItem);
+
+                TreeNode trNode2 = new TreeNode();
+                afTreeViewColumns1.TreeView.Nodes.Add(trNode2);
+                addTreeModelNode(trNode2, Variable.InitValue.Name, Variable.InitValue);
             }
+            afTreeViewColumns1.RestartLayout();
         }
         //=====================================================================
         /// <summary>
@@ -575,17 +587,6 @@ namespace CPIUserInterface
         }
         //=====================================================================
         /// <summary>
-        /// User is trying to initiate a drag - allow drag operation
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        //=====================================================================
-        private void VariableListView_ItemDrag(object sender, ItemDragEventArgs e)
-        {
-            VariableListView.DoDragDrop("xx", DragDropEffects.All);
-        }
-        //=====================================================================
-        /// <summary>
         /// 
         /// </summary>
         /// <param name="sender"></param>
@@ -615,7 +616,85 @@ namespace CPIUserInterface
         //=====================================================================
         private void Grid_DragDrop(object sender, DragEventArgs e)
         {
-            AddVariablesToGrid(VariableListView.SelectedItems);
+            TreeNode srcNode = (TreeNode)e.Data.GetData(typeof(TreeNode));
+            if (srcNode != null)
+            {
+                int decplaces = 0;
+                TTypedValue item = ((TAFTreeViewColumnTag)(srcNode.Tag)).TypedValue;
+                if (item.isScalar() && ((item.baseType() == TTypedValue.TBaseType.ITYPE_DOUBLE) || (item.baseType() == TTypedValue.TBaseType.ITYPE_SINGLE)))
+                    decplaces = 2;
+                String varText = getParentPath(srcNode, srcNode.Text);
+                AddVariableToGrid(varText, srcNode.Text, "", decplaces);
+            }
+        }
+        //=====================================================================
+        /// <summary>
+        /// Builds the path string for a variable in the tree.
+        /// For example: plant2stock:herbage[1]:dm
+        /// </summary>
+        /// <param name="node">The lowest tree node</param>
+        /// <param name="varText">The text for the node</param>
+        /// <returns>The path with the parent text added</returns>
+        //=====================================================================
+        private String getParentPath(TreeNode node, String varText)
+        {
+            String fullPath = varText;
+            if (node.Parent != null)
+            {
+                if (node.Parent.Tag != null)
+                {
+                    TTypedValue parent = ((TAFTreeViewColumnTag)(node.Parent.Tag)).TypedValue;
+                    if (parent.isRecord())
+                        fullPath = node.Parent.Text + ":" + varText;
+                    else
+                        if (node.Text.Contains("["))
+                            fullPath = node.Parent.Text + varText;
+                        else
+                            fullPath = node.Parent.Text + "." + varText;
+                    fullPath = getParentPath(node.Parent, fullPath);
+                }
+            }
+            return fullPath;
+        }
+        //=====================================================================
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="alias"></param>
+        /// <param name="aggreg"></param>
+        /// <param name="decplaces"></param>
+        //=====================================================================
+        private void AddVariableToGrid(String name, String alias, String aggreg, int decplaces)
+        {
+            DataTable Table = (DataTable)Grid.DataSource;
+
+            // Go look for a blank cell.
+            int Row = 0;
+            for (Row = 0; Row <= Table.Rows.Count - 1; Row++)
+            {
+                /*if ( Information.IsDBNull(Table.Rows[Row][0]) || (string.IsNullOrEmpty(Table.Rows[Row][0])) )
+                {
+                    break; // TODO: might not be correct. Was : Exit For
+                }*/
+            }
+            if (Row == Table.Rows.Count)
+            {
+                DataRow NewRow = ((DataTable)Grid.DataSource).NewRow();
+                NewRow[0] = name;
+                NewRow[1] = alias;
+                NewRow[2] = aggreg;
+                NewRow[3] = decplaces.ToString();
+                Table.Rows.Add(NewRow);
+            }
+            else
+            {
+                Table.Rows[Row][0] = name;
+            }
+
+            Grid.Columns[2].Width = 60;
+            Grid.Columns[3].Width = 60;
+            Grid.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
         }
         //=====================================================================
         /// <summary>
@@ -867,7 +946,101 @@ namespace CPIUserInterface
         {
             EventsListView.DoDragDrop("xx", DragDropEffects.All);
         }
+        //=====================================================================
+        /// <summary>
+        /// Called from the tree when arrays are resized.
+        /// Using the selected node, just recreate it's child nodes.
+        /// </summary>
+        //=====================================================================
+        private void afTreeViewColumns1_reloadTreeEvent()
+        {
+            if (afTreeViewColumns1.TreeView.SelectedNode != null)
+            {
+                TAFTreeViewColumnTag changedValue = (TAFTreeViewColumnTag)afTreeViewColumns1.TreeView.SelectedNode.Tag;
+                afTreeViewColumns1.TreeView.BeginUpdate();
+                afTreeViewColumns1.TreeView.SelectedNode.Nodes.Clear();
+                addTreeModelNode(afTreeViewColumns1.TreeView.SelectedNode, changedValue.TypedValue.Name, changedValue.TypedValue);
+                afTreeViewColumns1.TreeView.SelectedNode.Expand();
+                afTreeViewColumns1.TreeView.EndUpdate();
+            }
+        }
+        //=====================================================================
+        /// <summary>
+        /// 
+        /// </summary>
+        //=====================================================================
+        private void afTreeViewColumns1_saveChangesEvent()
+        {
+            this.afTreeViewColumns1.Focus();
+        }
+        //=====================================================================
+        /// <summary>
+        /// Event handler for the control that fills the correct column with 
+        /// the specified data.
+        /// </summary>
+        /// <param name="item">The tree item chosen</param>
+        /// <param name="col">The column in the grid to be filled</param>
+        /// <returns>The string value for the cell in the grid</returns>
+        //=====================================================================
+        private String afTreeViewColumns1_getColVal(TAFTreeViewColumnTag item, int col)
+        {
+            switch (col)
+            {
+                case 0: return item.Variable;
+                case 1: return item.Type;
+                case 2: return item.Unit;
+                case 3: return item.Descr;
+                default: return "";
+            }
+        }
+        //=======================================================================
+        /// <summary>
+        /// Standard function for adding a node to the treelist. Will recurse
+        /// down through the value if it is a record or array.
+        /// </summary>
+        /// <param name="parentNode"></param>
+        /// <param name="name"></param>
+        /// <param name="typedValue"></param>
+        //=====================================================================
+        private void addTreeModelNode(TreeNode parentNode, String name, TTypedValue typedValue)
+        {
+            uint i = 1;
+            uint j = 1;
 
+            parentNode.Name = name;
+            parentNode.Text = name;
+            parentNode.Tag = new TAFTreeViewColumnTag(typedValue);
+
+            if ((typedValue.isArray()) || (typedValue.isRecord()))
+            {
+                uint iCount = typedValue.count();
+                if (typedValue.isArray() && (iCount < 1))
+                {
+                    typedValue.setElementCount(1);
+                    iCount++;
+                }
+                while (i <= iCount)
+                {
+                    TTypedValue typedValueChild = typedValue.item(i);
+
+                    if (typedValueChild != null)
+                    {
+                        TreeNode trNode2 = new TreeNode();
+                        parentNode.Nodes.Add(trNode2);
+                        string sVarName = j.ToString();
+                        if (typedValue.isArray())
+                            sVarName = "[" + sVarName + "]";
+                        j++;
+                        if (typedValueChild.Name.Length > 0)
+                        {
+                            sVarName = typedValueChild.Name;
+                        }
+                        addTreeModelNode(trNode2, sVarName, typedValueChild);
+                    }
+                    i++;
+                }
+            }
+        }
     }
 
 }

@@ -95,6 +95,7 @@
             this.treeView1.Size = new System.Drawing.Size(438, 164);
             this.treeView1.TabIndex = 2;
             this.treeView1.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.treeView1_DrawNode);
+            this.treeView1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeView1_ItemDrag);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             this.treeView1.Click += new System.EventHandler(this.treeView1_Click);
             this.treeView1.DoubleClick += new System.EventHandler(this.treeView1_DoubleClick);
