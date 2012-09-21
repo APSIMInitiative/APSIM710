@@ -720,15 +720,9 @@ public class SoilNitrogen
 
     #region Values that other components can only get
 
-    [Output]
-    [Units("kgN/ha")]
-    [Description("Net NO3 change today")]
-    double[] dlt_no3_net;   // net no3 change today
+    #region Outputs for Nitrogen
 
-    [Output]
-    [Units("kgN/ha")]
-    [Description("Net NH4 change today")]
-    double[] dlt_nh4_net;   // net nh4 change today
+    #region General values
 
     [Output]
     [Units("kgN/ha")]
@@ -747,30 +741,159 @@ public class SoilNitrogen
 
     [Output]
     [Units("kgN/ha")]
-    [Description("Nitrogen moved by nitrification")]
-    double[] dlt_rntrf;     // nitrogen moved by nitrification (kg/ha)
+    [Description("Excess N required above NH4 supply")]
+    double[] excess_nh4;    // excess N required above NH4 supply
+
+    #endregion
+
+    #region Changes for today - deltas
 
     [Output]
     [Units("kgN/ha")]
-    [Description("Nitrogen moved by nitrification")]
+    [Description("Net NH4 change today")]
+    double[] dlt_nh4_net;   // net nh4 change today
+
+    [Output]
+    [Units("kgN/ha")]
+    [Description("Net NH4 transformation")]
+    double[] nh4_transform_net; // net NH4 transformation today
+
+    [Output]
+    [Units("kgN/ha")]
+    [Description("Net NO3 change today")]
+    double[] dlt_no3_net;   // net no3 change today
+
+    [Output]
+    [Units("kgN/ha")]
+    [Description("Net NO3 transformation")]
+    double[] no3_transform_net; // net NO3 transformation today
+
+    [Output]
+    [Units("kgN/ha")]
+    [Description("Net N mineralized")]
+    double[] dlt_n_min         // net mineralisation
+    {
+        get
+        {
+            double[] _dlt_n_min = new double[dlayer.Length];
+            for (int layer = 0; layer < dlayer.Length; layer++)
+                _dlt_n_min[layer] = dlt_hum_n_min[layer] + dlt_biom_n_min[layer] + dlt_fom_n_min[layer];
+            return _dlt_n_min;
+        }
+    }
+
+    [Output]
+    [Units("kgN/ha")]
+    [Description("Net Residue N mineralisation")]
+    double[] dlt_n_min_res
+    {
+        get
+        {
+            double[] _dlt_n_min_res = new double[dlayer.Length];
+            for (int layer = 0; layer < dlayer.Length; layer++)
+                _dlt_n_min_res[layer] = dlt_res_no3_min[layer] + dlt_res_nh4_min[layer];
+            return _dlt_n_min_res;
+        }
+    }
+
+    [Output]
+    [Units("kgN/ha")]
+    [Description("Net use of NH4 for residue mineralization/immobilization")]
+    double[] dlt_res_nh4_min;   // Net Residue NH4 mineralisation
+
+    [Output]
+    [Units("kgN/ha")]
+    [Description("Net use of NO3 for residue mineralization/immobilization")]
+    double[] dlt_res_no3_min;   // Net Residue NO3 mineralisation
+
+    [Output]
+    [Units("kgN/ha")]
+    [Description("Net FOM N mineralized, negative for immobilization")]
+    double[] dlt_fom_n_min;     // net fom N mineralized (negative for immobilization) 
+
+    [Output]
+    [Units("kgN/ha")]
+    [Description("Net humic N mineralized")]
+    double[] dlt_hum_n_min;     // net humic N mineralized
+
+    [Output]
+    [Units("kgN/ha")]
+    [Description("Humic N mineralized")]
+    double[] dlt_n_min_tot
+    {
+        get
+        {
+            double[] _dlt_n_min_tot = new double[dlayer.Length];
+            for (int layer = 0; layer < dlayer.Length; layer++)
+                _dlt_n_min_tot[layer] = dlt_hum_n_min[layer] + dlt_biom_n_min[layer] + dlt_fom_n_min[layer] + dlt_res_no3_min[layer] + dlt_res_nh4_min[layer];
+            return _dlt_n_min_tot;
+        }
+    }
+
+    [Output]
+    [Units("kgN/ha")]
+    [Description("Net biomass N mineralized")]
+    double[] dlt_biom_n_min;    // net biomass N mineralized
+
+    [Output]
+    [Units("kgN/ha")]
+    [Description("Nitrogen coverted by hydrolysis")]
+    double[] dlt_urea_hydrol;   // nitrogen coverted by hydrolysis (from urea to NH4)
+
+    [Output]
+    [Units("kgN/ha")]
+    [Description("Nitrogen coverted by nitrification")]
+    double[] dlt_rntrf;     // nitrogen coverted by nitrification (from NH4 to either NO3 or N2O)
+
+    [Output]
+    [Units("kgN/ha")]
+    [Description("Nitrogen coverted by nitrification")]
     double[] nitrification
     { get { return dlt_rntrf; } }
 
     [Output]
     [Units("kgN/ha")]
-    [Description("Effective nitrogen moved by nitrification")]
-    double[] effective_nitrification; // effective nitrogen moved by nitrification
+    [Description("Effective nitrogen coverted by nitrification")]
+    double[] effective_nitrification; // effective nitrogen coverted by nitrification (from NH4 to NO3)
     // (Alias dlt_rntrf_eff)
 
     [Output]
     [Units("kgN/ha")]
-    [Description("Nitrogen moved by hydrolysis")]
-    double[] dlt_urea_hydrol;   // nitrogen moved by hydrolysis
+    [Description("NH4 N denitrified")]
+    double[] dlt_nh4_dnit;      // NH4 N denitrified
 
     [Output]
     [Units("kgN/ha")]
-    [Description("Excess N required above NH4 supply")]
-    double[] excess_nh4;    // excess N required above NH4 supply
+    [Description("NO3 N denitrified")]
+    double[] dlt_no3_dnit;      // NO3 N denitrified
+
+    [Output]
+    [Units("kgN/ha")]
+    [Description("Amount of N2O produced")]
+    double[] n2o_atm;           // amount of N2O produced
+
+    [Output]
+    [Units("kgN/ha")]
+    [Description("Denitrification")]
+    double[] dnit
+    {
+        get
+        {
+            double[] dnit_tot = new double[dlayer.Length];
+            for (int layer = 0; layer < dlayer.Length; layer++)
+                dnit_tot[layer] = dlt_no3_dnit[layer] + dlt_nh4_dnit[layer];
+            return dnit_tot;
+        }
+    }
+
+    [Output]
+    [Units("kg")]
+    [Description("N loss in sediment")]
+    double dlt_n_loss_in_sed;
+
+    #endregion
+
+    #region Amounts in various pools
 
     [Output]
     [Units("kgN/ha")]
@@ -803,20 +926,44 @@ public class SoilNitrogen
     double[] biom_n;        // biomass nitrogen
 
     [Output]
-    [Units("kg/ha")]
-    [Description("FOM C")]
-    double[] fom_c         // fresh organic C        
+    [Units("kgN/ha")]
+    [Description("Total N in soil")]
+    double[] nit_tot           // total N in soil   
     {
         get
         {
-            double[] _fom_c = new double[fom_c_pool1.Length];
-            for (int i = 0; i < fom_c_pool1.Length; ++i)
-            {
-                _fom_c[i] = LayerFomC(i);
-            }
-            return _fom_c;
+            double[] nitrogen_tot = new double[dlayer.Length];
+            for (int layer = 0; layer < dlayer.Length; layer++)
+                nitrogen_tot[layer] += fom_n[layer] + hum_n[layer] + biom_n[layer] + _no3[layer] + _nh4[layer] + _urea[layer];
+            return nitrogen_tot;
         }
     }
+
+    #endregion
+
+    #region Nitrogen balance
+
+    [Output]
+    [Description("Nitrogen balance")]
+    double nitrogenbalance
+    {
+        get
+        {
+            double deltaN = TotalN() - dailyInitialN; // Delta storage
+            double losses = 0.0;
+            for (int layer = 0; layer < dlayer.Length; layer++)
+                losses += dlt_no3_dnit[layer] + dlt_nh4_dnit[layer];
+            return -(losses + deltaN);
+        }
+    }
+
+    #endregion
+
+    #endregion
+
+    #region Outputs for Carbon
+
+    #region General values
 
     [Output]
     [Description("Number of FOM types")]
@@ -838,198 +985,14 @@ public class SoilNitrogen
     public double fr_lign            // lignin fraction of FOM (0-1)          
     { get { return fract_lign[fom_type]; } }
 
-    [Output]
-    [Units("kg/ha")]
-    [Description("FOM C in pool 1")]
-    double[] fom_c_pool1;
+    #endregion
 
-    [Output]
-    [Units("kg/ha")]
-    [Description("FOM C in pool 2")]
-    double[] fom_c_pool2;
-
-    [Output]
-    [Units("kg/ha")]
-    [Description("FOM C in pool 3")]
-    double[] fom_c_pool3;
-
-    [Output]
-    [Units("kg/ha")]
-    [Description("Humic C")]
-    double[] hum_c;         // Humic C
-
-    [Output]
-    [Units("kg/ha")]
-    [Description("Biomass C")]
-    double[] biom_c;        // biomass carbon 
-
-    [Output]
-    [Units("kg/ha")]
-    [Description("Total carbon")]
-    double[] carbon_tot    // total carbon in soil
-    {
-        get
-        {
-            int numLayers = dlayer.Length;
-            double[] _carbon_tot = new double[numLayers];
-            for (int layer = 0; layer < numLayers; layer++)
-            {
-                _carbon_tot[layer] += LayerFomC(layer) +
-                                  hum_c[layer] +
-                                  biom_c[layer];
-            }
-            return _carbon_tot;
-        }
-    }
-
-    [Output]
-    [Units("kgN/ha")]
-    [Description("Net NH4 transformation")]
-    double[] nh4_transform_net; // net NH4 transformation today
-
-    [Output]
-    [Units("kgN/ha")]
-    [Description("Net NO3 transformation")]
-    double[] no3_transform_net; // net NO3 transformation today
-
-    [Output]
-    [Units("kgN/ha")]
-    [Description("Net NH4 transformation")]
-    double[] dlt_res_nh4_min;   // Net Residue NH4 mineralisation
-
-    [Output]
-    [Units("kgN/ha")]
-    [Description("Net FOM N mineralized, negative for immobilization")]
-    double[] dlt_fom_n_min;     // net fom N mineralized (negative for immobilization) 
-
-    [Output]
-    [Units("kgN/ha")]
-    [Description("Net biomass N mineralized")]
-    double[] dlt_biom_n_min;    // net biomass N mineralized
-
-    [Output]
-    [Units("kgN/ha")]
-    [Description("Net humic N mineralized")]
-    double[] dlt_hum_n_min;     // net humic N mineralized
-
-    [Output]
-    [Units("kgN/ha")]
-    [Description("Net Residue NO3 mineralisation")]
-    double[] dlt_res_no3_min;   // Net Residue NO3 mineralisation
-
-    [Output]
-    [Units("kgN/ha")]
-    [Description("NO3 N denitrified")]
-    double[] dlt_no3_dnit;      // NO3 N denitrified
-
-    [Output]
-    [Units("kgN/ha")]
-    [Description("NH4 N denitrified")]
-    double[] dlt_nh4_dnit;      // NH4 N denitrified
-
-    [Output]
-    [Units("kgN/ha")]
-    [Description("Amount of N2O produced")]
-    double[] n2o_atm;           // amount of N2O produced
-
-    [Output]
-    [Units("kgN/ha")]
-    [Description("Total N in soil")]
-    double[] nit_tot           // total N in soil   
-    {
-        get
-        {
-            int numLayers = dlayer.Length;
-            double[] nitrogen_tot = new double[numLayers];
-            for (int layer = 0; layer < numLayers; layer++)
-            {
-                nitrogen_tot[layer] += fom_n[layer] +
-                                       hum_n[layer] +
-                                       biom_n[layer] +
-                                       _no3[layer] +
-                                       _nh4[layer] +
-                                       _urea[layer];
-            }
-            return nitrogen_tot;
-        }
-    }
-
-    [Output]
-    [Units("kgN/ha")]
-    [Description("Net N mineralized")]
-    double[] dlt_n_min         // net mineralisation
-    {
-        get
-        {
-            int nLayers = dlayer.Length;
-            double[] _dlt_n_min = new double[nLayers];
-            for (int layer = 0; layer < nLayers; layer++)
-                _dlt_n_min[layer] = dlt_hum_n_min[layer] +
-                                    dlt_biom_n_min[layer] +
-                                    dlt_fom_n_min[layer];
-            return _dlt_n_min;
-        }
-    }
-
-    [Output]
-    [Units("kgN/ha")]
-    [Description("Net Residue N mineralisation")]
-    double[] dlt_n_min_res
-    {
-        get
-        {
-            int nLayers = dlayer.Length;
-            double[] _dlt_n_min_res = new double[nLayers];
-            for (int layer = 0; layer < nLayers; layer++)
-                _dlt_n_min_res[layer] = dlt_res_no3_min[layer] +
-                                        dlt_res_nh4_min[layer];
-            return _dlt_n_min_res;
-        }
-    }
-
-    [Output]
-    [Units("kgN/ha")]
-    [Description("Humic N mineralized")]
-    double[] dlt_n_min_tot
-    {
-        get
-        {
-            int nLayers = dlayer.Length;
-            double[] _dlt_n_min_tot = new double[nLayers];
-            for (int layer = 0; layer < nLayers; layer++)
-                _dlt_n_min_tot[layer] = dlt_hum_n_min[layer] +
-                                        dlt_biom_n_min[layer] +
-                                        dlt_fom_n_min[layer] +
-                                        dlt_res_no3_min[layer] +
-                                        dlt_res_nh4_min[layer];
-            return _dlt_n_min_tot;
-        }
-    }
-
-    [Output]
-    [Units("kgN/ha")]
-    [Description("Denitrification")]
-    double[] dnit
-    {
-        get
-        {
-            int nLayers = dlayer.Length;
-            double[] dnit_tot = new double[nLayers];
-            for (int layer = 0; layer < nLayers; layer++)
-                dnit_tot[layer] = dlt_no3_dnit[layer] + dlt_nh4_dnit[layer];
-            return dnit_tot;
-        }
-    }
+    #region Changes for today - deltas
 
     [Output]
     [Units("kg")]
     [Description("Carbon loss in sediment")]
     double dlt_c_loss_in_sed;
-
-    [Output]
-    [Units("kg")]
-    [Description("N loss in sediment")]
-    double dlt_n_loss_in_sed;
 
     [Output]
     [Units("oC")]
@@ -1188,6 +1151,94 @@ public class SoilNitrogen
     [Description("Carbon from all residues to biomass")]
     double[] soilp_dlt_res_c_biom;
 
+    #endregion
+
+    #region Amounts in various pools
+
+    [Output]
+    [Units("kg/ha")]
+    [Description("FOM C")]
+    double[] fom_c         // fresh organic C        
+    {
+        get
+        {
+            double[] _fom_c = new double[fom_c_pool1.Length];
+            for (int i = 0; i < fom_c_pool1.Length; ++i)
+            {
+                _fom_c[i] = LayerFomC(i);
+            }
+            return _fom_c;
+        }
+    }
+
+    [Output]
+    [Units("kg/ha")]
+    [Description("FOM C in pool 1")]
+    double[] fom_c_pool1;
+
+    [Output]
+    [Units("kg/ha")]
+    [Description("FOM C in pool 2")]
+    double[] fom_c_pool2;
+
+    [Output]
+    [Units("kg/ha")]
+    [Description("FOM C in pool 3")]
+    double[] fom_c_pool3;
+
+    [Output]
+    [Units("kg/ha")]
+    [Description("Humic C")]
+    double[] hum_c;         // Humic C
+
+    [Output]
+    [Units("kg/ha")]
+    [Description("Biomass C")]
+    double[] biom_c;        // biomass carbon 
+
+    [Output]
+    [Units("kg/ha")]
+    [Description("Total carbon")]
+    double[] carbon_tot    // total carbon in soil
+    {
+        get
+        {
+            int numLayers = dlayer.Length;
+            double[] _carbon_tot = new double[numLayers];
+            for (int layer = 0; layer < numLayers; layer++)
+            {
+                _carbon_tot[layer] += LayerFomC(layer) +
+                                  hum_c[layer] +
+                                  biom_c[layer];
+            }
+            return _carbon_tot;
+        }
+    }
+
+    #endregion
+
+    #region Carbon Balance
+
+    [Output]
+    [Description("Carbon balance")]
+    double carbonbalance
+    {
+        get
+        {
+            double deltaC = TotalC() - dailyInitialC; // Delta storage
+            double losses = 0.0;
+            for (int layer = 0; layer < dlayer.Length; layer++)
+                losses += _dlt_fom_c_atm[0][layer] + _dlt_fom_c_atm[1][layer] + _dlt_fom_c_atm[2][layer] + dlt_hum_c_atm[layer] + dlt_biom_c_atm[layer] + SumDoubleArray(_dlt_res_c_atm[layer]);
+            return -(losses + deltaC);
+        }
+    }
+
+    #endregion
+
+    #endregion
+
+    #region Factors and other outputs
+
     [Output]
     [Units("kg/ha")]
     [Description("Variable needed by soilp in its calculations")]
@@ -1208,41 +1259,7 @@ public class SoilNitrogen
         }
     }
 
-    [Output]
-    [Description("Carbon balance")]
-    double carbonbalance
-    {
-        get
-        {
-            double deltaC = TotalC() - dailyInitialC; // Delta storage
-            double losses = 0.0;
-            int nLayers = dlayer.Length;
-            for (int layer = 0; layer < nLayers; layer++)
-                losses += _dlt_fom_c_atm[0][layer] +
-                          _dlt_fom_c_atm[1][layer] +
-                          _dlt_fom_c_atm[2][layer] +
-                          dlt_hum_c_atm[layer] +
-                          dlt_biom_c_atm[layer] +
-                          SumDoubleArray(_dlt_res_c_atm[layer]);
-            return -(losses + deltaC);
-        }
-    }
-
-    [Output]
-    [Description("Nitrogen balance")]
-    double nitrogenbalance
-    {
-        get
-        {
-            double deltaN = TotalN() - dailyInitialN; // Delta storage
-            double losses = 0.0;
-            int nLayers = dlayer.Length;
-            for (int layer = 0; layer < nLayers; layer++)
-                losses += dlt_no3_dnit[layer] +
-                          dlt_nh4_dnit[layer];
-            return -(losses + deltaN);
-        }
-    }
+    #endregion
 
     #endregion
 
@@ -1254,6 +1271,30 @@ public class SoilNitrogen
     // they still bear the "Output" attribute. 
     // Perhaps that bit of the infrastructure needs a re-think.
 
+    #region Mineral nitrogen
+
+    // variation in ureappm as given by another component
+    [Output]
+    [Units("mg/kg")]
+    double[] dlt_ureappm
+    {
+        set
+        {
+            for (int layer = 0; layer < value.Length; ++layer)
+            {
+                double oldValue = _urea[layer];
+                _urea[layer] += MathUtility.Divide(value[layer], convFactor_kgha2ppm(layer), 0.0);
+                if (_urea[layer] < urea_min[layer] - epsilon)
+                {
+                    Console.WriteLine(" urea(" + layer.ToString() + ") is being changed from " + oldValue.ToString() + " to " + _urea[layer].ToString() +
+                        " kg/ha. This is less than lower limit of " + urea_min[layer].ToString() + ", value will be adjusted to minimum value.");
+                    _urea[layer] = urea_min[layer];
+                }
+            }
+        }
+    }
+
+    // variation in no3 as given by another component
     [Output]
     [Units("kgN/ha")]
     double[] dlt_urea
@@ -1272,8 +1313,9 @@ public class SoilNitrogen
         }
     }
 
+    // variation in nh4ppm as given by another component
     [Output]
-    [Units("kg/ha")]
+    [Units("mg/kg")]
     double[] dlt_nh4ppm
     {
         set
@@ -1290,6 +1332,7 @@ public class SoilNitrogen
         }
     }
 
+    // variation in nh4 as given by another component
     [Output]
     [Units("kgN/ha")]
     double[] dlt_nh4
@@ -1308,8 +1351,9 @@ public class SoilNitrogen
         }
     }
 
+    // variation in no3ppm as given by another component
     [Output]
-    [Units("kg/ha")]
+    [Units("mg/kg")]
     double[] dlt_no3ppm
     {
         set
@@ -1326,6 +1370,7 @@ public class SoilNitrogen
         }
     }
 
+    // variation in no3 as given by another component
     [Output]
     [Units("kgN/ha")]
     double[] dlt_no3
@@ -1344,17 +1389,12 @@ public class SoilNitrogen
         }
     }
 
-    [Output]
-    string n_reduction
-    {
-        set
-        {
-            p_n_reduction = value.StartsWith("on");
-        }
-    }
+    #endregion
+
+    #region organic N and C
 
     [Output]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     double[] dlt_org_n
     {
         set
@@ -1399,9 +1439,16 @@ public class SoilNitrogen
 
     #endregion
 
+    [Output]
+    string n_reduction
+    { set { p_n_reduction = value.StartsWith("on"); } }
+
+    #endregion
+
     #region Useful constants
 
-    private const float c_in_fom = 0.4F; // fraction weight of C in carbohydrate
+    // weight fraction of C in carbohydrates
+    private const float c_in_fom = 0.4F;
 
     // An "epsilon" value for single-precision floating point
     // We use this since other components are likely to use single-precision math
@@ -1415,27 +1462,27 @@ public class SoilNitrogen
     private double oldC;
     private double dailyInitialC;
     private double dailyInitialN;
-    private bool use_external_st = false;
-    private bool use_external_tav = false;
-    private bool use_external_amp = false;
-    private bool use_external_ph = false;
+    private bool use_external_st = false;           // marker for whether external soil temperature is supplied
+    private bool use_external_tav = false;          //
+    private bool use_external_amp = false;          //
+    private bool use_external_ph = false;           // marker for whether external ph is supplied, otherwise default is used
     private bool p_n_reduction = false;
-    private bool useOrganicSolutes = false;
+    private bool useOrganicSolutes = false;         // marker for whether organic solute are to be simulated (always false as it is not implemented)
     private int fom_type;
-    private double[] surf_temp = new double[366]; // actual soil surface temperatures (oC)
-    private double[] inert_c;   // humic C that is not subject to mineralization (kg/ha)
-    private double[] nh4_yesterday; // yesterday's ammonium nitrogen(kg/ha)
-    private double[] no3_yesterday; // yesterday's nitrate nitrogen (kg/ha)
-    private bool initDone = false;
-    private bool inReset = false;
-    private int num_residues = 0;  // number of residues decomposing
-    private string[] residue_name;
-    private string[] residue_type;
-    private double[] pot_c_decomp; // Potential residue C decomposition (kg/ha)
-    private double[] pot_n_decomp; // Potential residue N decomposition (kg/ha)
-    private double[] pot_p_decomp; // Potential residue P decomposition (kg/ha)
-    private double[][] dlt_res_c_decomp; // residue C decomposition (kg/ha)
-    private double[][] dlt_res_n_decomp; // residue N decomposition (kg/ha)
+    private double[] surf_temp = new double[366];   // actual soil surface temperatures (oC)
+    private double[] inert_c;                       // humic C that is not subject to mineralization (kg/ha)
+    private double[] nh4_yesterday;                 // yesterday's ammonium nitrogen(kg/ha)
+    private double[] no3_yesterday;                 // yesterday's nitrate nitrogen (kg/ha)
+    private bool initDone = false;                  // marker for whether initialisation has been finished
+    private bool inReset = false;                   // marker for whether a reset is going on
+    private int num_residues = 0;                   // number of residues decomposing
+    private string[] residue_name;                  // name of residues decomposing
+    private string[] residue_type;                  // type of decomposing residue
+    private double[] pot_c_decomp;                  // Potential residue C decomposition (kg/ha)
+    private double[] pot_n_decomp;                  // Potential residue N decomposition (kg/ha)
+    private double[] pot_p_decomp;                  // Potential residue P decomposition (kg/ha)
+    private double[][] dlt_res_c_decomp;            // residue C decomposition (kg/ha)
+    private double[][] dlt_res_n_decomp;            // residue N decomposition (kg/ha)
 
     #endregion
 
@@ -1457,53 +1504,87 @@ public class SoilNitrogen
     [EventHandler]
     public void OnInitialised()
     {
-        // performs the initial checks and calculations
+        // +  Purpose:
+        //      Performs the initial checks and setup
 
-        GetSiteVariables();
-        GetOtherVariables();  // Get information which may vary through time
+        // set the size of arrays
+        ResizeLayerArrays(dlayer.Length);
+
+        // check few initialisation parameters
         CheckParams();
-        ReadConstants();
-        InitCalc();
-        Notification();
-        SumReport();
-    }
 
-    [EventHandler(EventName = "process")]
-    public void OnProcess()
-    {
-        //GetOtherVariables(); // Will occur automatically once we're up and running...
-        Process();
-        //        SendNBalanceEvent();  // Not currently used
-        //        SendCBalanceEvent();  // Not currently used
-        if (!is_pond_active)
-            SendActualResidueDecompositionCalculated();
+        // perform initial calculations and setup
+        InitCalc();
+
+        // initialise soil temperature
+        SoilTemp();
+
+        // notifify apsim about solutes
+        AdvertiseMySolutes();
+
+        // print SoilN report
+        WriteSummaryReport();
     }
 
     [EventHandler(EventName = "reset")]
     public void OnReset()
     {
+        // +  Purpose:
+        //      Reset those values that the user may have changed since initialisation
+
         inReset = true;
-        SaveState();          // Save state
-        ZeroVariables();      // Zero internal state variables
-        GetSiteVariables();   // Get information specific to the site
-        GetOtherVariables();  // Get information which may vary through time
-        // We no longer actually read the parameters from a file.
-        // Instead we reset those that the user may have changed, then call "ReadParam" just to do parameter checking
+
+        // Save present state
+        SaveState();
+
+        // Zero internal state variables - not used yet
+        ZeroVariables();
+
+        // reset the size of arrays - so it zeroes them
+        ResizeLayerArrays(dlayer.Length);
+
+        // reset C and N variables to their initial state
         oc = OC_reset;
         no3ppm = no3ppm_reset;
         nh4ppm = nh4ppm_reset;
         ureappm = ureappm_reset;
-        CheckParams();          // Get all parameters from parameter file
-        ReadConstants();      // Get all coefficients from parameter file
-        InitCalc();           // Perform initial calculations from inputs
-        DeltaState();         // Change of state
+
+        // perform initial calculations and setup
+        InitCalc();
+
+        // reset soil temperature
+        SoilTemp();
+
+        // get the changes of state and publish (let other component to know)
+        DeltaState();
+
+        // print SoilN report
+        WriteSummaryReport();
+
         inReset = false;
+    }
+
+    [EventHandler(EventName = "process")]
+    public void OnProcess()
+    {
+        // +  Purpose:
+        //      Performs every-day calcualtions
+
+        // update soil temperature
+        SoilTemp();
+
+        // calculate C and N processes
+        Process();
+
+        // send actual decomposition back to surface OM
+        if (!is_pond_active)
+            SendActualResidueDecompositionCalculated();
     }
 
     [EventHandler(EventName = "sum_report")]
     public void OnSum_report()
     {
-        SumReport();
+        WriteSummaryReport();
     }
 
     [EventHandler(EventName = "IncorpFOM")]
@@ -1692,33 +1773,44 @@ public class SoilNitrogen
 
     #region Setup calculations
 
-    private void CheckParams()  // Could do checking of the parameters here....
+    private void CheckParams()
     {
-        Console.WriteLine();
-        Console.WriteLine("        - Reading Parameters");
+        // +  Purpose:
+        //      Check initialisation parameters and let user know
 
+        Console.WriteLine();
+        Console.WriteLine("        - Reading/checking parameters");
+
+        Console.WriteLine("           - Using " + soiltype + " soil mineralisation specification");
+
+        // check whether soil temperature is present. If not, check whether the basic params for simpleSoilTemp have been supplied
         use_external_st = (ave_soil_temp != null);
         if (!use_external_st)
         {
-            use_external_amp = (amp > -990.0);
-            if (use_external_amp)
-            {
-                if (amp < 0.0 || amp > 50.0)
-                    throw new Exception("External value for amp out of range");
-            }
-            use_external_tav = (tav > -990.0);
-            if (use_external_tav)
-            {
-                if (tav < 0.0 || tav > 50.0)
-                    throw new Exception("External value for tav out of range");
-            }
-            if (use_external_tav && !use_external_amp)
-                throw new Exception("Default AMP with external TAV not permitted");
-            if (!use_external_tav && use_external_amp)
-                throw new Exception("External AMP with default TAV not permitted");
+            if (latitude == -999.0)
+                throw new Exception("Value for latitude was not supplied");
+            if (tav == -999.0)
+                throw new Exception("Value for TAV was not supplied");
+            if (amp == -999.0)
+                throw new Exception("Value for AMP was not supplied");
         }
 
+        // check whether ph is supplied, use a default if not  - might be better to throw an exception?
         use_external_ph = (ph != null);
+        if (!use_external_ph)
+        {
+            for (int layer = 0; layer < dlayer.Length; ++layer)
+                ph[layer] = 6.0; // ph_ini
+        }
+
+        // convert minimum values for nh4 and no3 from ppm to kg/ha
+        for (int layer = 0; layer < dlayer.Length; ++layer)
+        {
+            double convFact = convFactor_kgha2ppm(layer);
+            urea_min[layer] = MathUtility.Divide(ureappm_min, convFact, 0.0);
+            nh4_min[layer] = MathUtility.Divide(nh4ppm_min, convFact, 0.0);
+            no3_min[layer] = MathUtility.Divide(no3ppm_min, convFact, 0.0);
+        }
 
         // Check if all fom values are supplied
         if (num_fom_types != fract_carb.Length)
@@ -1736,7 +1828,7 @@ public class SoilNitrogen
                 fomPools_cn[i] = fom_ini_cn;
         }
 
-        // if 'root_depth' not provided, assume that 'root_wt' is distributed over whole profile
+        // if 'fom_ini_depth' not provided, assume that 'fom_ini_wt' is distributed over whole profile
         if (fom_ini_depth == 0.0)
         {
             for (int i = 0; i < dlayer.Length; ++i)
@@ -1748,36 +1840,102 @@ public class SoilNitrogen
         useOrganicSolutes = use_organic_solutes == "on";
     }
 
-    private void ReadConstants()  // Actually, they've already been read, but we'll do some checking
+    private void InitCalc()
     {
-        Console.WriteLine();
-        Console.WriteLine("        - Reading Constants");
-        Console.WriteLine("     Using " + soiltype + " soil mineralisation specification.");
+        // +  Purpose:
+        //      Do the initial setup and calculations - also used onReset
+
+        double ave_temp = (maxt + mint) * 0.5;
+        for (int i = 0; i < surf_temp.Length; i++)
+            surf_temp[i] = ave_temp;
+
+        int nLayers = dlayer.Length;
+
+        // Factor to distribute fom over the soil profile. Uses a exponential function and goes till the especified depth
+        double[] fom_FracLayer = new double[nLayers];
+        double cum_depth = 0.0;
+        int deepest_layer = getCumulativeIndex(fom_ini_depth, dlayer);
+        for (int layer = 0; layer <= deepest_layer; layer++)
+        {
+            fom_FracLayer[layer] = Math.Exp(-3.0 * Math.Min(1.0, MathUtility.Divide(cum_depth + dlayer[layer], fom_ini_depth, 0.0))) *
+                Math.Min(1.0, MathUtility.Divide(fom_ini_depth - cum_depth, dlayer[layer], 0.0));
+            cum_depth += dlayer[layer];
+        }
+        double fom_FracLayer_tot = SumDoubleArray(fom_FracLayer);
+
+        // Distribute an convert C an N values over the profile
+        for (int layer = 0; layer < nLayers; layer++)
+        {
+            double convFact = convFactor_kgha2ppm(layer);
+            _no3[layer] = MathUtility.Divide(_no3ppm[layer], convFact, 0.0);
+            if (_no3[layer] < no3_min[layer] - epsilon)
+            {
+                Console.WriteLine(" Attempt to initialise NO3 below lower limit, value will be adjusted to minimum");
+                _no3[layer] = no3_min[layer];
+            }
+            _nh4[layer] = MathUtility.Divide(_nh4ppm[layer], convFact, 0.0);
+            if (_nh4[layer] < nh4_min[layer] - epsilon)
+            {
+                Console.WriteLine("Attempt to initialise NH4 below lower limit, value will be adjusted to minimum");
+                _nh4[layer] = nh4_min[layer];
+            }
+            if (_ureappm != null)
+                _urea[layer] = MathUtility.Divide(_ureappm[layer], convFact, 0.0);
+
+            // calculate total soil C
+            double oc_ppm = _oc[layer] * 10000;     // = (oc/100)*1000000 - convert from % to ppm
+            double carbon_tot = MathUtility.Divide(oc_ppm, convFact, 0.0);
+
+            // calculate inert soil C
+            inert_c[layer] = finert[layer] * carbon_tot;
+
+            // calculate microbial biomass C and N
+            biom_c[layer] = MathUtility.Divide((carbon_tot - inert_c[layer]) * fbiom[layer], 1.0 + fbiom[layer], 0.0);
+            biom_n[layer] = MathUtility.Divide(biom_c[layer], biom_cn, 0.0);
+
+            // calculate C and N values for active humus
+            hum_c[layer] = carbon_tot - biom_c[layer];
+            hum_n[layer] = MathUtility.Divide(hum_c[layer], hum_cn, 0.0);
+
+            // distribute and calculate the fom N and C
+            double fom = MathUtility.Divide(fom_ini_wt * fom_FracLayer[layer], fom_FracLayer_tot, 0.0);
+
+            // C amount for each pool
+            fom_c_pool1[layer] = fom * fract_carb[0] * c_in_fom;
+            fom_c_pool2[layer] = fom * fract_cell[0] * c_in_fom;
+            fom_c_pool3[layer] = fom * fract_lign[0] * c_in_fom;
+
+            // N amount for each pool
+            fom_n_pool1[layer] = MathUtility.Divide(fom_c_pool1[layer], root_cn_pool[0], 0.0);
+            fom_n_pool2[layer] = MathUtility.Divide(fom_c_pool2[layer], root_cn_pool[1], 0.0);
+            fom_n_pool3[layer] = MathUtility.Divide(fom_c_pool3[layer], root_cn_pool[2], 0.0);
+
+            // total fom N in each layer
+            fom_n[layer] = fom_n_pool1[layer] + fom_n_pool2[layer] + fom_n_pool3[layer];
+
+            // store today's values
+            no3_yesterday[layer] = _no3[layer];
+            nh4_yesterday[layer] = _nh4[layer];
+        }
+
+        // Calculations for NEW sysbal component
+        dailyInitialC = TotalC();
+        dailyInitialN = TotalN();
+
+        initDone = true;
     }
 
     private void ZeroVariables()
     {
-        // Wait and see whether this is needed
-    }
-
-    private void SaveState()
-    {
-        // Calculations for both NEW and OLD sysbal component
-        dailyInitialN = oldN = TotalN();
-        dailyInitialC = oldC = TotalC();
-    }
-
-    private void DeltaState()
-    {
-        double dltN = TotalN() - oldN;
-        double dltC = TotalC() - oldC;
-
-        SendExternalMassFlowN(dltN);
-        SendExternalMassFlowC(dltC);
+        // +  Purpose:
+        //      Wait and see whether this is needed
     }
 
     private void ResizeLayerArrays(int nLayers)
     {
+        // +  Purpose:
+        //      Initialise all public arrays with nLayers , might include pools in the future
+
         Array.Resize(ref st, nLayers);
         Array.Resize(ref _nh4, nLayers);
         Array.Resize(ref _no3, nLayers);
@@ -1836,181 +1994,71 @@ public class SoilNitrogen
         Array.Resize(ref dlt_biom_c_hum, nLayers);
     }
 
-    private void InitCalc()
+    private void AdvertiseMySolutes()
     {
-        double ave_temp = (maxt + mint) * 0.5;
-        for (int i = 0; i < surf_temp.Length; i++)
-            surf_temp[i] = ave_temp;
+        // + Purpose
+        //    Notify any interested modules about this module's ownership of solute information.
 
-        int nLayers = dlayer.Length;
-        ResizeLayerArrays(nLayers);
-        SoilTemp();
-
-        double[] root_distrib = new double[nLayers];
-        double cum_depth = 0.0;
-        double previous_cum_depth = 0.0;
-        double factor;
-        int deepest_layer = getCumulativeIndex(fom_ini_depth, dlayer);
-
-        for (int i = 0; i <= deepest_layer; i++)
-        {
-            cum_depth += dlayer[i];
-            factor = Math.Min(1.0, MathUtility.Divide(fom_ini_depth - previous_cum_depth, dlayer[i], 0.0));
-            root_distrib[i] = Math.Exp(-3.0 * Math.Min(1.0, MathUtility.Divide(cum_depth, fom_ini_depth, 0.0))) * factor;
-            previous_cum_depth = cum_depth;
-        }
-
-        double root_distrib_tot = SumDoubleArray(root_distrib);
-
-        for (int layer = 0; layer < nLayers; layer++)
-        {
-            double convFact = convFactor_kgha2ppm(layer);
-            urea_min[layer] = MathUtility.Divide(ureappm_min, convFact, 0.0);
-            nh4_min[layer] = MathUtility.Divide(nh4ppm_min, convFact, 0.0);
-            no3_min[layer] = MathUtility.Divide(no3ppm_min, convFact, 0.0);
-            if (_ureappm != null)
-            {
-                _urea[layer] = MathUtility.Divide(_ureappm[layer], convFact, 0.0);
-                if (_urea[layer] < urea_min[layer])
-                {
-                    Console.WriteLine("Attempt to change urea(" + layer.ToString() + ") to a value below lower limit, value will be set to " + urea_min[layer].ToString() + " kgN/ha");
-                    _urea[layer] = urea_min[layer];
-                }
-            }
-            _nh4[layer] = MathUtility.Divide(_nh4ppm[layer], convFact, 0.0);
-            if (_nh4[layer] < nh4_min[layer])
-            {
-                Console.WriteLine("Attempt to change nh4(" + layer.ToString() + ") to a value below lower limit, value will be set to " + nh4_min[layer].ToString() + " kgN/ha");
-                _nh4[layer] = nh4_min[layer];
-            }
-            _no3[layer] = MathUtility.Divide(_no3ppm[layer], convFact, 0.0);
-            if (_no3[layer] < no3_min[layer])
-            {
-                Console.WriteLine("Attempt to change no3(" + layer.ToString() + ") to a value below lower limit, value will be set to " + no3_min[layer].ToString() + " kgN/ha");
-                _no3[layer] = no3_min[layer];
-            }
-
-            // calculate total soil C
-            double oc_ppm = _oc[layer] * 10000;     // = (oc/100)*1000000 - convert from % to ppm
-            double carbon_tot = MathUtility.Divide(oc_ppm, convFact, 0.0);
-
-            // calculate inert soil C
-            inert_c[layer] = finert[layer] * carbon_tot;
-
-            // fbiom is ratio of biomass-c to humic-c that is subject
-            // to mineralization
-
-            biom_c[layer] = MathUtility.Divide((carbon_tot - inert_c[layer]) * fbiom[layer], 1.0 + fbiom[layer], 0.0);
-            biom_n[layer] = MathUtility.Divide(biom_c[layer], biom_cn, 0.0);
-
-            hum_c[layer] = carbon_tot - biom_c[layer];
-            hum_n[layer] = MathUtility.Divide(hum_c[layer], hum_cn, 0.0);
-
-            double fom = MathUtility.Divide(fom_ini_wt * root_distrib[layer], root_distrib_tot, 0.0);
-
-            fom_c_pool1[layer] = fom * fract_carb[0] * c_in_fom;
-            fom_c_pool2[layer] = fom * fract_cell[0] * c_in_fom;
-            fom_c_pool3[layer] = fom * fract_lign[0] * c_in_fom;
-
-            // Calculate the N in each pool in each layer, fom_n_pool(n)[layer]
-            fom_n_pool1[layer] = MathUtility.Divide(fom_c_pool1[layer], fomPools_cn[0], 0.0);
-            fom_n_pool2[layer] = MathUtility.Divide(fom_c_pool2[layer], fomPools_cn[1], 0.0);
-            fom_n_pool3[layer] = MathUtility.Divide(fom_c_pool3[layer], fomPools_cn[2], 0.0);
-
-            fom_n[layer] = fom_n_pool1[layer] + fom_n_pool2[layer] + fom_n_pool3[layer];
-
-            // store today's values
-            no3_yesterday[layer] = _no3[layer];
-            nh4_yesterday[layer] = _nh4[layer];
-        }
-
-        // Calculations for NEW sysbal component
-        dailyInitialC = TotalC();
-        dailyInitialN = TotalN();
-
-        initDone = true;
-    }
-
-    private void Notification()
-    {
-        //+  Purpose
-        //      Notify all interested modules about this module's ownership
-        //      of solute information.
-
-        //+  Mission Statement
-        //     Notify other modules of ownership of solute information
         if (new_solute != null)
         {
             string[] solute_names;
             if (useOrganicSolutes)
             {
-                solute_names = new string[7] {
-                "no3",
-                "nh4",
-                "urea",
-                "org_c_pool1",
-                "org_c_pool2",
-                "org_c_pool3",
-                "org_n"};
+                solute_names = new string[7] { "urea", "nh4", "no3", "org_c_pool1", "org_c_pool2", "org_c_pool3", "org_n" };
             }
             else
             { // don't publish the organic solutes
-                solute_names = new string[3] {
-                "no3",
-                "nh4",
-                "urea"};
+                solute_names = new string[3] { "urea", "nh4", "no3" };
             }
 
             NewSoluteType SoluteData = new NewSoluteType();
-            //data.sender_id = (int)ParentComponent().GetId();
+            //data.sender_id = (int)ParentComponent().GetId();      I think it should have the sender's name as well
             SoluteData.solutes = solute_names;
 
             new_solute.Invoke(SoluteData);
         }
     }
 
-    private void GetSiteVariables()
-    { // Not really needed. This will happen automagically once we're up and running,
-        // but this helps ensure we'll have access to the values during init2
-        //MyPaddock.Get("latitude", out latitude);
-        //MyPaddock.Get("salb", out salb);
-    }
-
-    private void GetOtherVariables()
+    private void SaveState()
     {
-        // MyPaddock.Get("sw_dep", out sw_dep);
-        //MyPaddock.Get("dlayer", out dlayer);
+        // +  Purpose:
+        //      Calculates variations in C an N, needed for both NEW and OLD sysbal component
 
-        //if (p_n_reduction) // ONLY need soil loss if profile reduction is on
-        //{
-        //    MyPaddock.Get("soil_loss", out soil_loss);
-        //}
-
-        //if (use_external_ph)
-        //{
-        //    MyPaddock.Get("ph", out ph);
-        //}
-        //CheckPond();
+        dailyInitialN = oldN = TotalN();
+        dailyInitialC = oldC = TotalC();
     }
 
-    private void CheckPond()
-    { // no need for this, values should be an input
-        //string value;
-        //Boolean found = MyPaddock.Get("pond_active", out value);
-        //if (!found || (value == null))
-        //    pond_active = "no";
-    }
-
-    private void SumReport()
+    private void DeltaState()
     {
+        // +  Purpose:
+        //      Calculates variations in C an N, and publishes Mass flows to apsim
+
+        double dltN = TotalN() - oldN;
+        double dltC = TotalC() - oldC;
+
+        SendExternalMassFlowN(dltN);
+        SendExternalMassFlowC(dltC);
+    }
+
+    private void WriteSummaryReport()
+    {
+        // +  Purpose:
+        //      Write report about setup and status of SoilNitrogen
+
+        string myMessage = "";
         if (use_external_st)
-            Console.WriteLine("           Soil temperature supplied externally");
-        if (use_external_tav && use_external_amp)
-            Console.WriteLine("           TAV and AMP supplied externally");
+            myMessage = "   - Soil temperature supplied by apsim";
+        else
+            myMessage = "   - Soil temperature calculated internally";
+        Console.WriteLine("        " + myMessage);
         if (use_external_ph)
-            Console.WriteLine("           Soil pH supplied externally");
-        Console.Write(@"
+            myMessage = "   - Soil pH supplied by apsim";
+        else
+            myMessage = "   - Soil pH was not supplied, default value will be used";
+        Console.WriteLine("        " + myMessage);
+        Console.WriteLine();
 
+        Console.Write(@"
                       Soil Profile Properties
           ------------------------------------------------
            Layer    pH    OC     NO3     NH4    Urea
@@ -2019,18 +2067,13 @@ public class SoilNitrogen
 ");
         for (int i = 0; i < dlayer.Length; ++i)
         {
-            Console.WriteLine(
-"          {0,4:d1}     {1,4:F2}  {2,4:F2}  {3,6:F2}  {4,6:F2}  {5,6:F2}",
+            Console.WriteLine("          {0,4:d1}     {1,4:F2}  {2,4:F2}  {3,6:F2}  {4,6:F2}  {5,6:F2}",
             i + 1, ph[i], _oc[i], _no3[i], _nh4[i], _urea[i]);
         }
         Console.WriteLine("          ------------------------------------------------");
-        Console.WriteLine(
-"           Totals              {0,6:F2}  {1,6:F2}  {2,6:F2}",
+        Console.WriteLine("           Totals              {0,6:F2}  {1,6:F2}  {2,6:F2}",
                   SumDoubleArray(_no3), SumDoubleArray(_nh4), SumDoubleArray(_urea));
         Console.WriteLine("          ------------------------------------------------");
-        Console.WriteLine();
-        Console.WriteLine();
-        Console.WriteLine();
         Console.WriteLine();
         Console.Write(@"
                   Initial Soil Organic Matter Status
@@ -2045,18 +2088,15 @@ public class SoilNitrogen
         {
             double layerFomC = LayerFomC(i);
             TotalFomC += layerFomC;
-            Console.WriteLine(
-"          {0,4:d1}   {1,10:F1}{2,8:F1}{3,8:F1}{4,8:F1}{5,8:F1}{6,8:F1}",
+            Console.WriteLine("          {0,4:d1}   {1,10:F1}{2,8:F1}{3,8:F1}{4,8:F1}{5,8:F1}{6,8:F1}",
             i + 1, hum_c[i], hum_n[i], biom_c[i], biom_n[i], layerFomC, fom_n[i]);
         }
-        Console.WriteLine(
-"          ---------------------------------------------------------");
-        Console.WriteLine(
-"           Totals{0,10:F1}{1,8:F1}{2,8:F1}{3,8:F1}{4,8:F1}{5,8:F1}",
+        Console.WriteLine("          ---------------------------------------------------------");
+        Console.WriteLine("           Totals{0,10:F1}{1,8:F1}{2,8:F1}{3,8:F1}{4,8:F1}{5,8:F1}",
             SumDoubleArray(hum_c), SumDoubleArray(hum_n), SumDoubleArray(biom_c),
             SumDoubleArray(biom_n), TotalFomC, SumDoubleArray(fom_n));
-        Console.WriteLine(
-"          ---------------------------------------------------------");
+        Console.WriteLine("          ---------------------------------------------------------");
+        Console.WriteLine();
     }
 
     #endregion
@@ -2067,40 +2107,42 @@ public class SoilNitrogen
 
     private void Process()
     {
-        //+  Purpose
-        //        This routine performs the soil N balance.
-        //
-        //        It calculates hydrolysis of g_urea, mineralisation of organic
-        //        matter and immobilization of mineral nitrogen due to crop
-        //        residue and soil organic matter decomposition, denitrification
-        //        and nitrification.
+        // + Purpose
+        //     This routine performs the soil C and N balance, daily.
+        //      - Assesses potential decomposition of surface residues (adjust decompostion if needed, accounts for mineralisation/immobilisation of N)
+        //      - Calculates hydrolysis of urea, denitrification, transformations on soil organic matter (including N mineralisation/immobilition) and nitrification.
 
-        //+  Mission Statement
-        //     Perform all APSIM Timestep calculations
+        int nLayers = dlayer.Length;                    // number of layers in the soil
+        double[,] dlt_fom_n = new double[3, nLayers];   // fom N mineralised in each fraction (kg/ha)
 
-        // update soil temperature
-        SoilTemp();
-
-        int nLayers = dlayer.Length;
-
-        if (!is_pond_active)
+        if (is_pond_active)
         {
-            // decompose surface residues
+            // dsg 190508,  If there is a pond, the POND module will decompose residues - not SoilNitrogen
+            // dsg 110708   Get the biom & hum C decomposed in the pond and add to soil - on advice of MEP
 
-            // dsg 010508 If there is no pond, then mineralise residues into top soil layer
-            //     as done previously.  If there is a pond, then we need to mineralise directly into the pond water, calculating the
-            //     immobilisation demand using mineral N in the pond also.  If 'pond_active' = 'yes' then this will be done in the 'pond' module.
-            //     SoilN2 would get some of the N back from the Pond module via a combination of mass flow and adsorption.
+            // increment the hum and biom C pools in top soil layer
+            hum_c[0] += pond_hum_C;         // humic material from breakdown of residues in pond
+            biom_c[0] += pond_biom_C;       // biom material from breakdown of residues in pond
 
+            // reset the N amounts of N in hum and biom pools
+            hum_n[0] = MathUtility.Divide(hum_c[0], hum_cn, 0.0);
+            biom_n[0] = MathUtility.Divide(biom_c[0], biom_cn, 0.0);
+        }
+        else
+        {   // Decompose residues
+
+            // assess the potential decomposition of surface residues
             MinResidues(dlt_res_c_decomp, dlt_res_n_decomp,
                   ref _dlt_res_c_biom, ref _dlt_res_c_hum, ref _dlt_res_c_atm, ref dlt_res_nh4_min, ref dlt_res_no3_min);
 
+            // update C content in hum and biom pools
             for (int layer = 0; layer < nLayers; layer++)
             {
                 hum_c[layer] += SumDoubleArray(_dlt_res_c_hum[layer]);
                 biom_c[layer] += SumDoubleArray(_dlt_res_c_biom[layer]);
             }
 
+            // update N content in hum and biom pools as well as the mineral N
             for (int layer = 0; layer < nLayers; layer++)
             {
                 hum_n[layer] = MathUtility.Divide(hum_c[layer], hum_cn, 0.0);
@@ -2112,49 +2154,28 @@ public class SoilNitrogen
                 _no3[layer] += dlt_res_no3_min[layer];
             }
         }
-        else
-        {
-            // dsg 190508,  there is a pond, so POND module will decompose residues - not SoilN2
-            // dsg 110708   Get the biom & hum C decomposed in the pond and add to soil - on advice of MEP
-            //MyPaddock.Get("pond_biom_C", out pond_biom_C); // biom material from breakdown of residues in pond (if present)
-            //MyPaddock.Get("pond_hum_C", out pond_hum_C);   // humic material from breakdown of residues in pond (if present)
 
-            // increment the soiln2 hum and biom C pools in top soil layer
-            hum_c[0] += pond_hum_C;
-            biom_c[0] += pond_biom_C;
-
-            hum_n[0] = MathUtility.Divide(hum_c[0], hum_cn, 0.0);
-            biom_n[0] = MathUtility.Divide(biom_c[0], biom_cn, 0.0);
-        }
-
-        double[,] dlt_fom_n = new double[3, nLayers]; // fom N mineralised in each fraction (kg/ha)
-        // now take each layer in turn
+        // now take each layer in turn and compute N processes
         for (int layer = 0; layer < nLayers; layer++)
         {
-            // hydrolyse some urea
+            // urea hydrolysis
+            dlt_urea_hydrol[layer] = UreaHydrolysis(layer);
+            _nh4[layer] += dlt_urea_hydrol[layer];
+            _urea[layer] -= dlt_urea_hydrol[layer];
 
-            double dltUreaHydrol = UreaHydrolysis(layer);
-
-            _nh4[layer] += dltUreaHydrol;
-            _urea[layer] -= dltUreaHydrol;
-
-            // denitrification of nitrate-N
-
+            // nitrate-N denitrification
             dlt_no3_dnit[layer] = Denitrification(layer);
             _no3[layer] -= dlt_no3_dnit[layer];
 
-            // Calculate transformations of soil organic matter and
-            // organic nitrogen.
+            // Calculate transformations of soil organic matter (C and N)
 
-            // get action from humic pool
-
+            // humic pool mineralisation
             MinHumic(layer, ref dlt_hum_c_biom[layer], ref dlt_hum_c_atm[layer], ref dlt_hum_n_min[layer]);
 
-            // get action from biom pool
-
+            // microbial biomass pool mineralisation 
             MinBiomass(layer, ref dlt_biom_c_hum[layer], ref dlt_biom_c_atm[layer], ref dlt_biom_n_min[layer]);
 
-            // get action from fom pool
+            // mineralisation of fresh organic matter pools
             double[] dlt_f_n;
             double[] dlt_fc_biom;
             double[] dlt_fc_hum;
@@ -2166,11 +2187,10 @@ public class SoilNitrogen
                 _dlt_fom_c_biom[fract][layer] = dlt_fc_biom[fract];
                 _dlt_fom_c_hum[fract][layer] = dlt_fc_hum[fract];
                 _dlt_fom_c_atm[fract][layer] = dlt_fc_atm[fract];
-                //              _dlt_fom_c_biom[fract][layer] = dlt_fc_biom[fract];
                 dlt_fom_n[fract, layer] = dlt_f_n[fract];
             }
 
-            // update pools
+            // update pools C an N contents
 
             hum_c[layer] += dlt_biom_c_hum[layer] - dlt_hum_c_biom[layer] - dlt_hum_c_atm[layer] +
                            _dlt_fom_c_hum[0][layer] + _dlt_fom_c_hum[1][layer] + _dlt_fom_c_hum[2][layer];
@@ -2186,52 +2206,48 @@ public class SoilNitrogen
             fom_c_pool2[layer] -= (_dlt_fom_c_hum[1][layer] + _dlt_fom_c_biom[1][layer] + _dlt_fom_c_atm[1][layer]);
             fom_c_pool3[layer] -= (_dlt_fom_c_hum[2][layer] + _dlt_fom_c_biom[2][layer] + _dlt_fom_c_atm[2][layer]);
 
-            // dsg  also perform calculation for n
             fom_n_pool1[layer] -= dlt_fom_n[0, layer];
             fom_n_pool2[layer] -= dlt_fom_n[1, layer];
             fom_n_pool3[layer] -= dlt_fom_n[2, layer];
-            fom_n[layer] = fom_n_pool1[layer] + fom_n_pool2[layer] + fom_n_pool3[layer];
 
             // dsg  these 3 dlts are calculated for the benefit of soilp which needs to 'get' them
             dlt_fom_c_pool1[layer] = _dlt_fom_c_hum[0][layer] + _dlt_fom_c_biom[0][layer] + _dlt_fom_c_atm[0][layer];
             dlt_fom_c_pool2[layer] = _dlt_fom_c_hum[1][layer] + _dlt_fom_c_biom[1][layer] + _dlt_fom_c_atm[1][layer];
             dlt_fom_c_pool3[layer] = _dlt_fom_c_hum[2][layer] + _dlt_fom_c_biom[2][layer] + _dlt_fom_c_atm[2][layer];
 
+            // add up fom in each layer in each of the pools
             double fom_c = fom_c_pool1[layer] + fom_c_pool2[layer] + fom_c_pool3[layer];
-
-            // dsg    add up fom_n in each layer in each of the pools
             fom_n[layer] = fom_n_pool1[layer] + fom_n_pool2[layer] + fom_n_pool3[layer];
 
+            // update soil mineral N after mineralisation/immobilisation
 
-            // update soil mineral N
+            // starts with nh4
             _nh4[layer] += dlt_hum_n_min[layer] + dlt_biom_n_min[layer] + dlt_fom_n_min[layer];
 
-            // now check if too much NH4 immobilized
-            double nh4_excess;
+            // check whether there is enough NH4 to be immobilized
+            double no3_needed4immob = 0.0;
             if (_nh4[layer] < nh4_min[layer])
             {
-                nh4_excess = nh4_min[layer] - _nh4[layer];
+                no3_needed4immob = nh4_min[layer] - _nh4[layer];
                 _nh4[layer] = nh4_min[layer];
             }
-            else
+
+            // now change no3
+            _no3[layer] -= no3_needed4immob;
+            if (_no3[layer] < no3_min[layer] - epsilon)
             {
-                nh4_excess = 0.0;
+                // note: tests for adequate mineral N for immobilization have been made so this no3 should not go below no3_min
+                throw new Exception("N immobilisation resulted in mineral N in layer(" + layer.ToString() + ") to go below minimum");
             }
 
-            _no3[layer] -= nh4_excess;
+            // nitrification of ammonium-N
+            dlt_rntrf[layer] = Nitrification(layer);
 
-            // note soiln2_min_fom tests for adequate mineral N for
-            // immobilization so that g_NO3 should not go below g_NO3_min
-
-            _no3[layer] = Math.Max(_no3[layer], no3_min[layer]);
-
-            // nitrification of some ammonium-N
-
-            double dltRntrf = Nitrification(layer);
-
+            // update soil mineral N
             _no3[layer] += effective_nitrification[layer];
-            _nh4[layer] -= dltRntrf;
+            _nh4[layer] -= dlt_rntrf[layer];
 
+            // check some of the values
             if (Math.Abs(_urea[layer]) < epsilon)
                 _urea[layer] = 0.0;
             if (Math.Abs(_nh4[layer]) < epsilon)
@@ -2245,20 +2261,19 @@ public class SoilNitrogen
             if (_no3[layer] < no3_min[layer] || _no3[layer] > 9000.0)
                 throw new Exception("Value for NO3(layer) is out of range");
 
-            nh4_transform_net[layer] = dlt_res_nh4_min[layer] + dlt_fom_n_min[layer] + dlt_biom_n_min[layer] + dlt_hum_n_min[layer] - dltRntrf + dltUreaHydrol + nh4_excess;
+            // net N tansformations
+            nh4_transform_net[layer] = dlt_res_nh4_min[layer] + dlt_fom_n_min[layer] + dlt_biom_n_min[layer] + dlt_hum_n_min[layer] - dlt_rntrf[layer] + dlt_urea_hydrol[layer] + no3_needed4immob;
+            no3_transform_net[layer] = dlt_res_no3_min[layer] - dlt_no3_dnit[layer] + effective_nitrification[layer] - no3_needed4immob;
 
-            no3_transform_net[layer] = dlt_res_no3_min[layer] - dlt_no3_dnit[layer] + effective_nitrification[layer] - nh4_excess;
-
-            dlt_rntrf[layer] = dltRntrf;
-            dlt_urea_hydrol[layer] = dltUreaHydrol;
-            excess_nh4[layer] = nh4_excess;
-
+            // net deltas
             dlt_nh4_net[layer] = _nh4[layer] - nh4_yesterday[layer];
             dlt_no3_net[layer] = _no3[layer] - no3_yesterday[layer];
 
+            excess_nh4[layer] = no3_needed4immob; // is this used?
+
+            // store these values so they may be used tomorrow
             nh4_yesterday[layer] = _nh4[layer];
             no3_yesterday[layer] = _no3[layer];
-
         }
     }
 
