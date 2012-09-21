@@ -12,7 +12,7 @@ using System.Xml;
 /// Changes by RCichota on July/2012: a bit of tidying up - mostly modifying how some variables are handled (substitute get by input, add limits)
 /// Further changes on September/2012, more tidying up, moving pieces of code aroun, updating error messages and finish cleaning the variable imputs
 /// </summary>
- 
+
 public class SoilNitrogen
 {
 
@@ -385,15 +385,15 @@ public class SoilNitrogen
     #region Parameters not usually provided by the user
 
     // minimum allowable Urea (ppm)
-    public double ureappm_min = 0.0;
+    private double ureappm_min = 0.0;
 
     // minimum allowable NH4 (ppm)
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double nh4ppm_min = 0.0;
+    private double nh4ppm_min = 0.0;
 
     // minimum allowable NO3 (ppm)
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double no3ppm_min = 0.0;
+    private double no3ppm_min = 0.0;
 
     // enrichment equation coefficient a
     [Param]
@@ -410,7 +410,7 @@ public class SoilNitrogen
     private string use_organic_solutes = "off";
 
     // C:N ratio of microbes ()
-    public double biom_cn = 8.0;
+    private double biom_cn = 8.0;
     [Param(IsOptional = true, MinVal = 1.0, MaxVal = 50.0)]
     private double mcn
     {
@@ -419,115 +419,115 @@ public class SoilNitrogen
     }
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double ef_fom;               // fraction of FOM C mineralized retained in system (0-1)   
+    private double ef_fom;               // fraction of FOM C mineralized retained in system (0-1)   
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double fr_fom_biom;          // fraction of retained FOM C transferred to biomass (0-1)
+    private double fr_fom_biom;          // fraction of retained FOM C transferred to biomass (0-1)
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double ef_biom;              // fraction of biomass C mineralized retained in system (0-1)
+    private double ef_biom;              // fraction of biomass C mineralized retained in system (0-1)
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double fr_biom_biom;         // fraction of retained biomass C returned to biomass (0-1)
+    private double fr_biom_biom;         // fraction of retained biomass C returned to biomass (0-1)
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double ef_hum;               // fraction of humic C mineralized retained in system (0-1)
+    private double ef_hum;               // fraction of humic C mineralized retained in system (0-1)
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] rd_biom = null;     // potential rate of soil biomass mineralization (per day)
+    private double[] rd_biom = null;     // potential rate of soil biomass mineralization (per day)
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] rd_hum = null;      // potential rate of humus mineralization (per day)
+    private double[] rd_hum = null;      // potential rate of humus mineralization (per day)
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double ef_res;               // fraction of residue C mineralized retained in system (0-1)
+    private double ef_res;               // fraction of residue C mineralized retained in system (0-1)
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double fr_res_biom;          // fraction of retained residue C transferred to biomass (0-1)
+    private double fr_res_biom;          // fraction of retained residue C transferred to biomass (0-1)
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] rd_carb;            // maximum rate constants for decomposition of FOM pools [carbohydrate component] (0-1)
+    private double[] rd_carb;            // maximum rate constants for decomposition of FOM pools [carbohydrate component] (0-1)
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] rd_cell;            // maximum rate constants for decomposition of FOM pools [cellulose component] (0-1)
+    private double[] rd_cell;            // maximum rate constants for decomposition of FOM pools [cellulose component] (0-1)
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] rd_lign;            // maximum rate constants for decomposition of FOM pools [lignin component] (0-1)
+    private double[] rd_lign;            // maximum rate constants for decomposition of FOM pools [lignin component] (0-1)
 
     [Param(Name = "fom_type")]
-    public String[] fom_types;           // list of fom types
+    private String[] fom_types;           // list of fom types
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Description("Fraction of carbohydrate in FOM, for each FOM type")]
-    public double[] fract_carb;            // carbohydrate fraction of FOM (0-1)          
+    private double[] fract_carb;            // carbohydrate fraction of FOM (0-1)          
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Description("Fraction of cellulose in FOM, for each FOM type")]
-    public double[] fract_cell;            // cellulose fraction of FOM (0-1)          
+    private double[] fract_cell;            // cellulose fraction of FOM (0-1)          
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Description("Fraction of lignin in FOM, for each FOM type")]
-    public double[] fract_lign;            // lignin fraction of FOM (0-1)          
+    private double[] fract_lign;            // lignin fraction of FOM (0-1)          
 
     [Param(MinVal = 0.0, MaxVal = 3.0)]
-    public double oc2om_factor;         // conversion from OC to OM
+    private double oc2om_factor;         // conversion from OC to OM
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double fom_min;              // minimum allowable FOM (kg/ha)
+    private double fom_min;              // minimum allowable FOM (kg/ha)
 
     [Param(MinVal = 0.0, MaxVal = 1000.0)]
-    public double min_depth;            // depth from which mineral N can be immobilized by decomposing residues (mm)
+    private double min_depth;            // depth from which mineral N can be immobilized by decomposing residues (mm)
 
     [Param(MinVal = 0.0, MaxVal = 10.0)]
-    public double cnrf_coeff;           // coeff. to determine the magnitude of C:N effects on decomposition of FOM ()
+    private double cnrf_coeff;           // coeff. to determine the magnitude of C:N effects on decomposition of FOM ()
 
     [Param(MinVal = 5.0, MaxVal = 100.0)]
-    public double cnrf_optcn;           // C:N above which decomposition rate of FOM declines ()
+    private double cnrf_optcn;           // C:N above which decomposition rate of FOM declines ()
 
     [Param(MinVal = 5.0, MaxVal = 100.0)]
-    public double[] opt_temp;           // Soil temperature above which there is no further effect on mineralisation and nitrification (oC)
+    private double[] opt_temp;           // Soil temperature above which there is no further effect on mineralisation and nitrification (oC)
 
     [Param(MinVal = 0.0, MaxVal = 2.0)]
-    public double[] wfmin_index;        // index specifying water content for water factor for mineralization
+    private double[] wfmin_index;        // index specifying water content for water factor for mineralization
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] wfmin_values;       // value of water factor(mineralization) function at given index values
+    private double[] wfmin_values;       // value of water factor(mineralization) function at given index values
 
     [Param(MinVal = 0.0, MaxVal = 2.0)]
-    public double[] wfnit_index;        // index specifying water content for water factor for nitrification
+    private double[] wfnit_index;        // index specifying water content for water factor for nitrification
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] wfnit_values;       // value of water factor(nitrification) function at given index values
+    private double[] wfnit_values;       // value of water factor(nitrification) function at given index values
 
     [Param(MinVal = 0.0, MaxVal = 100.0)]
-    public double nitrification_pot;    // Potential nitrification by soil (ppm)
+    private double nitrification_pot;    // Potential nitrification by soil (ppm)
 
     [Param(MinVal = 0.0, MaxVal = 200.0)]
-    public double nh4_at_half_pot;      // nh4 conc at half potential (ppm)   
+    private double nh4_at_half_pot;      // nh4 conc at half potential (ppm)   
 
     [Param(MinVal = 0.0, MaxVal = 14.0)]
-    public double[] pHf_nit_pH;         // pH values for specifying pH factor for nitrification
+    private double[] pHf_nit_pH;         // pH values for specifying pH factor for nitrification
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] pHf_nit_values;     // value of pH factor(nitrification) function for given pH values
+    private double[] pHf_nit_values;     // value of pH factor(nitrification) function for given pH values
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double dnit_rate_coeff;      // denitrification rate coefficient (kg/mg)
+    private double dnit_rate_coeff;      // denitrification rate coefficient (kg/mg)
 
     [Param(MinVal = 0.0, MaxVal = 5.0)]
-    public double dnit_wf_power;        // denitrification water factor power term
+    private double dnit_wf_power;        // denitrification water factor power term
 
     [Param(MinVal = 0.0, MaxVal = 100.0)]
-    public double dnit_k1;              // K1 parameter from Thorburn et al (2010) for N2O model
+    private double dnit_k1;              // K1 parameter from Thorburn et al (2010) for N2O model
 
     [Param(MinVal = 0.0, MaxVal = 100.0)]
-    public double[] dnit_wfps;            // WFPS for calculating the n2o fraction of denitrification
+    private double[] dnit_wfps;            // WFPS for calculating the n2o fraction of denitrification
 
     [Param(MinVal = 0.0, MaxVal = 100.0)]
-    public double[] dnit_n2o_factor;      // WFPS factor for n2o fraction of denitrification
+    private double[] dnit_n2o_factor;      // WFPS factor for n2o fraction of denitrification
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double dnit_nitrf_loss;      // Fraction of nitrification lost as denitrification
+    private double dnit_nitrf_loss;      // Fraction of nitrification lost as denitrification
 
     #endregion
 
@@ -743,7 +743,7 @@ public class SoilNitrogen
     [Output]
     [Units("kgN/ha")]
     [Description("Minimum allowable urea")]
-    double[] urea_min;       // minimum allowable NH4
+    double[] urea_min;       // minimum allowable Urea
 
     [Output]
     [Units("kgN/ha")]
@@ -985,22 +985,22 @@ public class SoilNitrogen
 
     [Output]
     [Description("Number of FOM types")]
-    int num_fom_types      // number of fom types read
+    private int num_fom_types      // number of fom types read
     { get { return fom_types.Length; } }
 
     [Output]
     [Description("Fraction of carbohydrate in FOM")]
-    public double fr_carb            // carbohydrate fraction of FOM (0-1)          
+    private double fr_carb            // carbohydrate fraction of FOM (0-1)          
     { get { return fract_carb[fom_type]; } }
 
     [Output]
     [Description("Fraction of cellulose in FOM")]
-    public double fr_cell            // cellulose fraction of FOM (0-1)          
+    private double fr_cell            // cellulose fraction of FOM (0-1)          
     { get { return fract_cell[fom_type]; } }
 
     [Output]
     [Description("Fraction of lignin in FOM")]
-    public double fr_lign            // lignin fraction of FOM (0-1)          
+    private double fr_lign            // lignin fraction of FOM (0-1)          
     { get { return fract_lign[fom_type]; } }
 
     #endregion
@@ -1529,8 +1529,13 @@ public class SoilNitrogen
 
         // initialise soil temperature
         //SoilTemp();
-        simpleST = new simpleSoilTemp(latitude, tav, amp, maxt, mint);
-        st = simpleST.SoilTemp(today, maxt, mint, radn, salb, dlayer, bd, ll15_dep, sw_dep);
+        if (use_external_st)
+            st = ave_soil_temp;
+        else
+        {
+            simpleST = new simpleSoilTemp(latitude, tav, amp, maxt, mint);
+            st = simpleST.SoilTemp(today, maxt, mint, radn, salb, dlayer, bd, ll15_dep, sw_dep);
+        }
 
         // notifify apsim about solutes
         AdvertiseMySolutes();
@@ -1567,8 +1572,13 @@ public class SoilNitrogen
 
         // reset soil temperature
         //SoilTemp();
-        simpleST = new simpleSoilTemp(latitude, tav, amp, maxt, mint);
-        st = simpleST.SoilTemp(today, maxt, mint, radn, salb, dlayer, bd, ll15_dep, sw_dep);
+        if (use_external_st)
+            st = ave_soil_temp;
+        else
+        {
+            simpleST = new simpleSoilTemp(latitude, tav, amp, maxt, mint);
+            st = simpleST.SoilTemp(today, maxt, mint, radn, salb, dlayer, bd, ll15_dep, sw_dep);
+        }
 
         // get the changes of state and publish (let other component to know)
         DeltaState();
@@ -1587,7 +1597,10 @@ public class SoilNitrogen
 
         // update soil temperature
         //SoilTemp();
-        st = simpleST.SoilTemp(today, maxt, mint, radn, salb, dlayer, bd, ll15_dep, sw_dep);
+        if (use_external_st)
+            st = ave_soil_temp;
+        else
+            st = simpleST.SoilTemp(today, maxt, mint, radn, salb, dlayer, bd, ll15_dep, sw_dep);
 
         // calculate C and N processes
         Process();
