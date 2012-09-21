@@ -7,6 +7,8 @@
 #include <ComponentInterface/TypeConverter.h>
 #include <ApsimShared/ApsimRegistry.h>
 #include <boost/date_time/gregorian/gregorian.hpp>
+#include <float.h>
+#include <math.h>
 
 #include "TrackerVariable.h"
 
@@ -179,7 +181,6 @@ void TrackerVariable::parseEventName(StringTokenizer& tokenizer)
 void TrackerVariable::doRegistrations(void)
    {
    static const char* nullDDML = "<type/>";
-   static const char* stringDDML = "<type kind=\"string\"/>";
    static const char* doubleDDML = "<type kind=\"double\"/>";
    static const char* singleArrayDDML = "<type kind=\"single\" array=\"T\"/>";
    string typeString = singleArrayDDML;

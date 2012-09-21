@@ -199,7 +199,7 @@ public class Apsim
     private void StartSIM(string FileName)
     {
         HasExited = false;
-
+        taskProgress = 0;
         SimFileName = FileName;
 
         // Create a .sum
