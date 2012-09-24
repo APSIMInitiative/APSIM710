@@ -246,6 +246,32 @@ public class Pod : Organ1, AboveGround
         ZeroDeltas();
     }
 
+    internal override void OnHarvest(HarvestType Harvest, BiomassRemovedType BiomassRemoved)
+    {
+        double dm_init = MathUtility.Constrain(InitialWt * Population.Density, double.MinValue, Green.Wt);
+        double n_init = MathUtility.Constrain(dm_init * InitialNConcentration, double.MinValue, Green.N);
+        //double p_init = MathUtility.Constrain(dm_init * SimplePart::c.p_init_conc, double.MinValue, Green.P);
+
+        double retain_fr_green = MathUtility.Divide(dm_init, Green.Wt, 0.0);
+        double retain_fr_sen = 0.0;
+
+        double dlt_dm_harvest = Green.Wt + Senesced.Wt - dm_init;
+        double dlt_n_harvest = Green.N + Senesced.N - n_init;
+        //double dlt_p_harvest = Green.P + Senesced.P - p_init;
+
+        _Senesced = Senesced * retain_fr_sen;
+        Green.StructuralWt = Green.Wt * retain_fr_green;
+        Green.StructuralN = n_init;
+        //Green.P = p_init;
+
+        int i = IncreaseSizeOfBiomassRemoved(BiomassRemoved);
+        BiomassRemoved.dm_type[i] = Name;
+        BiomassRemoved.fraction_to_residue[i] = (float)(1.0 - Harvest.Remove);
+        BiomassRemoved.dlt_crop_dm[i] = (float)(dlt_dm_harvest * Conversions.gm2kg / Conversions.sm2ha);
+        BiomassRemoved.dlt_dm_n[i] = (float)(dlt_n_harvest * Conversions.gm2kg / Conversions.sm2ha);
+        //BiomassRemoved.dlt_dm_p[i] = (float)(dlt_p_harvest * Conversions.gm2kg / Conversions.sm2ha);
+    }
+
     internal override double interceptRadiation(double incomingSolarRadiation)
     {
         radiationInterceptedGreen = _Cover.Green * incomingSolarRadiation;

@@ -76,8 +76,8 @@ namespace ModelFramework
             In = _In;
 
             //get the name of the owner component of the Instance (e.g. Plant2)
-            NamePrefix = FQN + ".";
             FQN = In.ParentComponent().GetName();
+            NamePrefix = FQN + ".";
             ParentCompName = "";
             if (FQN.LastIndexOf('.') > -1)
                 ParentCompName = FQN.Substring(0, FQN.LastIndexOf('.')); //e.g. Paddock

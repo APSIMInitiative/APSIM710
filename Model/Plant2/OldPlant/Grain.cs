@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using CSGeneral;
 
-public class Grain : Organ1, AboveGround
+public class Grain : Organ1, AboveGround, Reproductive
 {
     [Link]
     SWStress SWStress = null;
@@ -86,6 +86,9 @@ public class Grain : Organ1, AboveGround
 
     [Param]
     double SenescenceDetachmentFraction = 0;
+
+    [Param]
+    public double WaterContentFraction = 0;
 
     // ***********
     [Link]
@@ -230,6 +233,19 @@ public class Grain : Organ1, AboveGround
     {
         ZeroDeltas();
     }
+    internal override void OnHarvest(HarvestType Harvest, BiomassRemovedType BiomassRemoved)
+    {
+        int i = IncreaseSizeOfBiomassRemoved(BiomassRemoved);
+        BiomassRemoved.dm_type[i] = "meal";
+        BiomassRemoved.fraction_to_residue[i] = 0.0F;
+        BiomassRemoved.dlt_crop_dm[i] = (float)((Green.Wt + Senesced.Wt) * Conversions.gm2kg / Conversions.sm2ha);
+        BiomassRemoved.dlt_dm_n[i] = (float)((Green.N + Senesced.N) * Conversions.gm2kg / Conversions.sm2ha);
+        //BiomassRemoved.dlt_dm_p[i] = (float)((Green.P + Senesced.P) * Conversions.gm2kg / Conversions.sm2ha);
+
+        Green.Clear();
+        Senesced.Clear();
+    }
+
     [EventHandler]
     public void OnPhaseChanged(PhaseChangedType PhenologyChange)
     {
@@ -260,7 +276,7 @@ public class Grain : Organ1, AboveGround
 
 
     private double Dlt_dm_stress_max = 0;
-    private double GrainNo = 0;
+    public double GrainNo = 0;
     private double DltDMGrainDemand;
     private static double N_grain_demand;
 
@@ -486,6 +502,14 @@ public class Grain : Organ1, AboveGround
     {
         Retranslocation.NonStructuralWt = DMAvail * MathUtility.Divide(DMDemandDifferential, DMDemandDifferentialTotal, 0.0);
         Util.Debug("meal.Retranslocation=%f", Retranslocation.NonStructuralWt);
+    }
+
+    internal void WriteCultivarInfo()
+    {
+        Console.WriteLine(string.Format("   grains_per_gram_stem           = {0,10:F1} (/g)", GrainsPerGramStem));
+        Console.WriteLine(string.Format("   potential_grain_filling_rate   = {0,10:F4} (g/grain/day)", PotentialGrainFillingRate));
+        Console.WriteLine(string.Format("   potential_grain_growth_rate    = {0,10:F4} (g/grain/day)", PotentialGrainGrowthRate));
+        Console.WriteLine(string.Format("   max_grain_size                 = {0,10:F4} (g)", MaxGrainSize));
     }
 }
 

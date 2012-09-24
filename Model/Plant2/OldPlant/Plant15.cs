@@ -24,169 +24,6 @@ public class Plant15
     public string CropType = "";
  #endregion
 
- #region Low level variable finding routines
-    /// <summary>
-    /// Return an internal plant object. PropertyName can use dot and array notation (square brackets).
-    /// e.g. Leaf.MinT
-    ///      Leaf.Leaves[].Live.Wt              - sums all live weights of all objects in leaves array.
-    ///      Leaf.Leaves[1].Live.               - returns the live weight of the 2nd element of the leaves array.
-    ///      Leaf.Leaves[Leaf.NodeNo].Live.Wt)  - returns the live weight of the leaf as specified by Leaf.NodeNo
-    /// </summary>
-    public double GetObject(string PropertyName)
-    {
-        int PosBracket = PropertyName.IndexOf('[');
-        if (PosBracket == -1)
-            return Convert.ToDouble(GetValueOfVariable(PropertyName));
-        else
-        {
-            object ArrayObject = GetValueOfVariable(PropertyName.Substring(0, PosBracket));
-            if (ArrayObject != null)
-            {
-                string RemainderOfPropertyName = PropertyName;
-                string ArraySpecifier = StringManip.SplitOffBracketedValue(ref RemainderOfPropertyName, '[', ']');
-                int PosRemainder = PropertyName.IndexOf("].");
-                if (PosRemainder == -1)
-                    throw new Exception("Invalid name path found in CompositeBiomass. Path: " + PropertyName);
-                RemainderOfPropertyName = PropertyName.Substring(PosRemainder + 2);
-
-                IList Array = (IList)ArrayObject;
-                int ArrayIndex;
-                if (int.TryParse(ArraySpecifier, out ArrayIndex))
-                    return Convert.ToDouble(GetValueOfMember(RemainderOfPropertyName, Array[ArrayIndex]));
-
-                else if (ArraySpecifier.Contains("."))
-                {
-                    int Index;
-                    if (My.Get(ArraySpecifier, out Index))
-                    {
-                        if (Index < 0 || Index >= Array.Count)
-                            throw new Exception("Invalid index of " + Index.ToString() + " found while indexing into variable: " + PropertyName);
-                        return Convert.ToDouble(GetValueOfMember(RemainderOfPropertyName, Array[Index]));
-                    }
-                }
-                else
-                {
-                    double Sum = 0.0;
-                    for (int i = 0; i < Array.Count; i++)
-                    {
-                        object Obj = GetValueOfMember(RemainderOfPropertyName, Array[i]);
-                        if (Obj == null)
-                            throw new Exception("Cannot evaluate: " + RemainderOfPropertyName);
-
-                        if (ArraySpecifier == "" || Utility.IsOfType(Array[i].GetType(), ArraySpecifier))
-                            Sum += Convert.ToDouble(Obj);
-                    }
-                    return Sum;
-                }
-            }
-            else
-                throw new Exception("Cannot find property: " + PropertyName);
-        return 0;
-        }
-    }
-
-
-    private object GetValueOfVariable(string VariableName)
-    {
-        
-        //// Look internally
-        //Info I = GetMemberInfo(VariableName, this);
-        //if (I != null)
-        //{
-        //    VariableCache.Add(VariableName, I);
-        //    return I.Value;
-        //}
-
-        // Look externally
-        object Data;
-        if (My.Get(VariableName, out Data))
-            return Data;
-        
-        // Still didn't find it
-        throw new Exception("Cannot find variable: " + VariableName);
-    }
-
-
-
-
-    internal static object GetValueOfMember(string PropertyName, object Target)
-    {
-        object ReturnTarget;
-        MemberInfo ReturnMember;
-        GetMemberInfo(PropertyName, Target, out ReturnMember, out ReturnTarget);
-        if (ReturnMember is FieldInfo)
-            return (ReturnMember as FieldInfo).GetValue(ReturnTarget);
-        else
-            return (ReturnMember as PropertyInfo).GetValue(ReturnTarget, null);
-    }
-
-    /// <summary>
-    /// Return the value (using Reflection) of the specified property on the specified object.
-    /// Returns null if not found.
-    /// </summary>
-    internal static void GetMemberInfo(string PropertyName, object Target, out MemberInfo ReturnMember, out object ReturnTarget)
-    {
-        FieldInfo FI;
-        PropertyInfo PI;
-        string[] Bits = PropertyName.Split(".".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-        for (int i = 0; i < Bits.Length - 1; i++)
-        {
-            // First check for organs.
-            bool Found = false;
-            if (Target is Plant)
-            {
-                foreach (Organ O in (Target as Plant).Organs)
-                {
-                    if (O.Name == Bits[i])
-                    {
-                        Found = true;
-                        Target = O;
-                        break;
-                    }
-                }
-            }
-
-            if (!Found)
-            {
-                FI = Target.GetType().GetField(Bits[i], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-                if (FI == null)
-                {
-                    PI = Target.GetType().GetProperty(Bits[i], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-                    if (PI == null)
-                    {
-                        Target = null;
-                        break;
-                    }
-                    else
-                        Target = PI.GetValue(Target, null);
-                }
-                else
-                    Target = FI.GetValue(Target);
-            }
-        }
-
-        if (Target == null)
-            ReturnMember = null;
-        else
-        {
-            // By now we should have a target - go get the field / property.
-            FI = Target.GetType().GetField(Bits[Bits.Length - 1], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-            if (FI == null)
-            {
-                PI = Target.GetType().GetProperty(Bits[Bits.Length - 1], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-                if (PI == null)
-                    ReturnMember = null;
-                else
-                    ReturnMember = PI;
-            }
-            else
-                ReturnMember = FI;
-        }
-        ReturnTarget = Target;
-    }
-
- #endregion
-
  #region Event handlers and publishers
     [Event]
     public event NewCropDelegate NewCrop;
@@ -198,6 +35,9 @@ public class Plant15
     [EventHandler]
     public void OnSow(SowPlant2Type Sow)
     {
+        if (Sow.Cultivar == "")
+            throw new Exception("Cultivar not specified on sow line.");
+
         SowingData = Sow;
 
         // Go through all our children and find all organs.
@@ -224,6 +64,8 @@ public class Plant15
         
         if (Sowing != null)
             Sowing.Invoke();
+
+        WriteSowReport(Sow);
     }
  #endregion
 
@@ -293,10 +135,28 @@ public class Plant15
     [Event]
     public event NewPotentialGrowthDelegate NewPotentialGrowth;
 
+    [Event]
+    public event NullTypeDelegate Harvesting;
+
+    [Output]
+    public string plant_status
+    {
+        get
+        {
+            // What should be returned here?
+            // The old "plant" component returned either "out", "alive"
+            // How to determine "dead"?
+            return "alive";
+        }
+    }
+
     public List<Organ1> Organ1s = new List<Organ1>();
     public List<Organ1> Tops = new List<Organ1>();
     private double ext_n_demand;
     private string AverageStressMessage;
+    private DateTime FloweringDate;
+    private DateTime MaturityDate;
+    private double LAIMax = 0;
 
     public double TopsSWDemand
     {
@@ -442,8 +302,11 @@ public class Plant15
                 biomass += Organ.Green.Wt + Organ.Senesced.Wt;
             Console.WriteLine("                            LAI = " + Leaf.LAI.ToString("f2") + " (m^2/m^2)");
             Console.WriteLine("           Above Ground Biomass = " + biomass.ToString("f2") + " (g/m^2)");
+            AverageStressMessage = null;
         }
         Root.UpdateWaterBalance();
+
+        LAIMax = Math.Max(LAIMax, Leaf.LAI);
     }
 
     [EventHandler]
@@ -458,6 +321,11 @@ public class Plant15
             SWStress.ResetAverage();
             NStress.ResetAverage();
         }
+
+        if (Data.NewPhaseName.Contains("FloweringTo"))
+            FloweringDate = Today;
+        else if (Data.NewPhaseName.Contains("MaturityTo"))
+            MaturityDate = Today;
     }
 
     private void CheckBounds()
@@ -485,6 +353,17 @@ public class Plant15
         NStress.Update();
         Population.Update();
 
+        UpdateCanopy();
+
+        foreach (Organ1 Organ in Organ1s)
+            Organ.DoNConccentrationLimits();
+
+        // PUBLISH BiomassRemoved event
+        DoBiomassRemoved();
+    }
+
+    private void UpdateCanopy()
+    {
         // PUBLISH New_Canopy event
         double cover_green = 0;
         double cover_sen = 0;
@@ -509,12 +388,6 @@ public class Plant15
         Util.Debug("NewCanopy.lai_tot=%f", NewCanopy.lai_tot);
         Util.Debug("NewCanopy.cover=%f", NewCanopy.cover);
         Util.Debug("NewCanopy.cover_tot=%f", NewCanopy.cover_tot);
-
-        foreach (Organ1 Organ in Organ1s)
-            Organ.DoNConccentrationLimits();
-
-        // PUBLISH BiomassRemoved event
-        DoBiomassRemoved();
     }
 
     private void DoBiomassRemoved()
@@ -590,6 +463,301 @@ public class Plant15
         }
         Util.Debug("Plant.ext_n_demand=%f", ext_n_demand);
     }
+
+
+    /// <summary>
+    /// Event handler for the Harvest event - normally comes from Manager.
+    /// </summary>
+    [EventHandler]
+    public void OnHarvest(HarvestType Harvest)
+    {
+        WriteHarvestReport();
+
+        // Tell the rest of the system we are about to harvest
+        if (Harvesting != null)
+            Harvesting.Invoke();
+
+        // Check some bounds
+        if (Harvest.Remove < 0 || Harvest.Remove > 1.0)
+            throw new Exception("Harvest remove fraction needs to be between 0 and 1");
+        if (Harvest.Height < 0 || Harvest.Height > 1000.0)
+            throw new Exception("Harvest height needs to be between 0 and 1000");
+
+        // Set the population denisty if one was provided by user.
+        if (Harvest.Plants != 0)
+            Population.Density = Harvest.Plants;
+        
+        // Call each organ's OnHarvest. They fill a BiomassRemoved structure. We then publish a
+        // BiomassRemoved event.
+        BiomassRemovedType BiomassRemovedData = new BiomassRemovedType();
+        foreach (Organ1 Organ in Organ1s)
+            Organ.OnHarvest(Harvest, BiomassRemovedData);
+        BiomassRemovedData.crop_type = CropType;
+        BiomassRemoved.Invoke(BiomassRemovedData);
+        WriteBiomassRemovedReport(BiomassRemovedData);
+
+        // now update new canopy covers
+        PlantSpatial.Density = Population.Density;
+        PlantSpatial.CanopyWidth = Leaf.width;
+        foreach (Organ1 Organ in Organ1s)
+            Organ.DoCover();
+        UpdateCanopy();
+
+        foreach (Organ1 Organ in Organ1s)
+            Organ.DoNConccentrationLimits();
+    }
+
+    /// <summary>
+    /// Write a sowing report to summary file.
+    /// </summary>
+    void WriteSowReport(SowPlant2Type Sow)
+    {
+        Console.WriteLine("Crop Sow");
+
+        Console.WriteLine("   ------------------------------------------------");
+        Console.WriteLine("   cultivar                   = " + Sow.Cultivar);
+        Phenology.WriteSummary();
+        Grain.WriteCultivarInfo();
+        Console.WriteLine("   ------------------------------------------------\n\n");
+
+        Root.WriteSummary();
+
+        Console.WriteLine(string.Format("    Crop factor for bounding water use is set to {0,5:F1} times eo.", EOCropFactor));
+
+        Console.WriteLine("");
+        Console.WriteLine("                 Crop Sowing Data");
+        Console.WriteLine("    ------------------------------------------------");
+        Console.WriteLine("    Sowing  Depth Plants Spacing Skip  Skip  Cultivar");
+        Console.WriteLine("    Day no   mm     m^2     mm   row   plant name");
+        Console.WriteLine("    ------------------------------------------------");
+
+        Console.WriteLine(string.Format("   {0,7:D}{1,7:F1}{2,7:F1}{3,7:F1}{4,6:F1}{5,6:F1}{6}", new object[] 
+                            {Today.DayOfYear, 
+                             Sow.Depth,
+                             Population.Density, 
+                             Sow.RowSpacing,
+                             Sow.SkipRow,
+                             Sow.SkipPlant,
+                             Sow.Cultivar}));
+        Console.WriteLine("    ------------------------------------------------\n");
+    }
+
+
+    /// <summary>
+    ///  Write a harvest report to summary file.
+    /// </summary>
+    void WriteHarvestReport()
+    {
+        //+  Constant Values
+        const double  plant_c_frac = 0.4;    // fraction of c in resiudes
+
+
+        //+  Local Variables
+        double grain_wt;                     // grain dry weight (g/kernel)
+        double plant_grain_no;               // final grains /head
+        double n_grain;                      // total grain N uptake (kg/ha)
+        double n_green = 0;                  // above ground green plant N (kg/ha)
+        double n_stover = 0;                 // nitrogen content of stover (kg\ha)
+        double n_total;                      // total gross nitrogen content (kg/ha)
+        double n_grain_conc_percent;         // grain nitrogen %
+        double yield;                        // grain yield dry wt (kg/ha)
+        double yield_wet;                    // grain yield including moisture (kg/ha)
+
+        // crop harvested. Report status
+        yield = (Grain.Green.Wt + Grain.Senesced.Wt) * Conversions.gm2kg / Conversions.sm2ha;
+        yield_wet = MathUtility.Divide(yield, Grain.WaterContentFraction, 0) * Conversions.gm2kg / Conversions.sm2ha;
+        grain_wt = MathUtility.Divide(yield, Grain.GrainNo, 0);
+        plant_grain_no = MathUtility.Divide(Grain.GrainNo, Population.Density, 0.0);
+        n_grain = (Grain.Green.N + Grain.Senesced.N) * Conversions.gm2kg/Conversions.sm2ha;
+
+
+        double dmRoot = (Root.Green.Wt + Root.Senesced.Wt) * Conversions.gm2kg / Conversions.sm2ha;
+        double nRoot = (Root.Green.N + Root.Senesced.N) * Conversions.gm2kg / Conversions.sm2ha;
+
+        n_grain_conc_percent = Grain.Green.NConc + Grain.Senesced.NConc;
+
+        double stoverTot = 0;
+        double TopsTotalWt = 0;
+        double TopsGreenWt = 0;
+        double TopsSenescedWt = 0;
+        double TopsSenescedN = 0;
+        foreach (Organ1 Organ in Tops)
+        {
+            TopsTotalWt += Organ.Green.Wt + Organ.Senesced.Wt;
+            TopsGreenWt += Organ.Green.Wt;
+            TopsSenescedWt += Organ.Senesced.Wt;
+            TopsSenescedN += Organ.Senesced.N;
+            if (Organ is Reproductive)
+            { }
+            else
+            {
+                stoverTot += Organ.Green.Wt + Organ.Senesced.Wt;
+                n_stover += (Organ.Green.N + Organ.Senesced.N) * Conversions.gm2kg / Conversions.sm2ha;
+                n_green += Organ.Green.N * Conversions.gm2kg / Conversions.sm2ha;
+            }
+        }
+        n_total = n_grain + n_stover;
+
+        double DMRrootShootRatio = MathUtility.Divide(dmRoot, TopsTotalWt * Conversions.gm2kg / Conversions.sm2ha, 0.0);
+        double HarvestIndex = MathUtility.Divide(yield, TopsTotalWt * Conversions.gm2kg / Conversions.sm2ha, 0.0);
+        double StoverCNRatio = MathUtility.Divide(stoverTot * Conversions.gm2kg / Conversions.sm2ha * plant_c_frac, n_stover, 0.0);
+        double RootCNRatio = MathUtility.Divide(dmRoot * plant_c_frac, nRoot, 0.0);
+
+        Console.WriteLine("");
+
+        Console.WriteLine(string.Format("{0}{1,4:D}{2,26}{3}{4,10:F1}", new object[] {
+                        " flowering day          = ",
+                        FloweringDate.DayOfYear, 
+                        " ", 
+                        " stover (kg/ha)         = ",
+                        stoverTot * Conversions.gm2kg / Conversions.sm2ha}));
+
+        Console.WriteLine(string.Format("{0}{1,4:D}{2,26}{3}{4,10:F1}", new object[] {
+                        " maturity day           = ",
+                        MaturityDate.DayOfYear, 
+                        " ", 
+                        " grain yield (kg/ha)    = ",
+                        yield}));
+
+        Console.WriteLine(string.Format("{0}{1,6:F1}{2,24}{3}{4,10:F1}", new object[] {
+                        " grain % water content  = ",
+                        Grain.WaterContentFraction * Conversions.fract2pcnt, 
+                        " ", 
+                        " grain yield wet (kg/ha)= ",
+                        yield_wet}));
+
+        Console.WriteLine(string.Format("{0}{1,8:F3}{2,22}{3}{4,10:F1}", new object[] {
+                        " grain wt (g)           = ",
+                        grain_wt, 
+                        " ", 
+                        " grains/m^2             = ",
+                        Grain.GrainNo}));
+
+        Console.WriteLine(string.Format("{0}{1,6:F1}{2,24}{3}{4,10:F3}", new object[] {
+                        " grains/plant           = ",
+                        plant_grain_no, 
+                        " ", 
+                        " maximum lai            = ",
+                        LAIMax}));
+
+        Console.WriteLine(string.Format("{0}{1,10:F1}", " total above ground biomass (kg/ha)    = ", TopsTotalWt * Conversions.gm2kg / Conversions.sm2ha));
+        Console.WriteLine(string.Format("{0}{1,10:F1}", " live above ground biomass (kg/ha)     = ", TopsTotalWt * Conversions.gm2kg / Conversions.sm2ha));
+        Console.WriteLine(string.Format("{0}{1,10:F1}", " green above ground biomass (kg/ha)    = ", TopsGreenWt * Conversions.gm2kg / Conversions.sm2ha));
+        Console.WriteLine(string.Format("{0}{1,10:F1}", " senesced above ground biomass (kg/ha) = ", TopsSenescedWt * Conversions.gm2kg / Conversions.sm2ha));
+        Console.WriteLine(string.Format("{0}{1,8:F1}", " number of leaves       = ", Leaf.LeafNumber));
+
+        Console.WriteLine(string.Format("{0}{1,8:F2}{2,22}{3}{4,10:F2}", new object[] {
+                        " DM Root:Shoot ratio    = ",
+                        DMRrootShootRatio, 
+                        " ", 
+                        " Harvest Index          = ",
+                        HarvestIndex}));
+
+        Console.WriteLine(string.Format("{0}{1,8:F2}{2,22}{3}{4,10:F2}", new object[] {
+                        " Stover C:N ratio       = ",
+                        StoverCNRatio, 
+                        " ", 
+                        " Root C:N ratio         = ",
+                        RootCNRatio}));
+
+        Console.WriteLine(string.Format("{0}{1,8:F2}{2,22}{3}{4,10:F2}", new object[] {
+                        " grain N percent        = ",
+                        n_grain_conc_percent, 
+                        " ", 
+                        " total N content (kg/ha)= ",
+                        n_total}));
+
+        Console.WriteLine(string.Format("{0}{1,8:F2}{2,22}{3}{4,8:F2}", new object[] {
+                        " grain N uptake (kg/ha) = ",
+                        n_grain, 
+                        " ", 
+                        " senesced N content (kg/ha)=",
+                        TopsSenescedN * Conversions.gm2kg / Conversions.sm2ha}));
+
+        Console.WriteLine(string.Format("{0}{1,8:F2}", " green N content (kg/ha)= ", n_green));
+
+
+        //summary_p ();
+
+        Console.WriteLine("");
+
+        Console.WriteLine(" Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc");
+
+        Console.WriteLine(AverageStressMessage);
+        AverageStressMessage = "";
+    }
+
+    /// <summary>
+    ///  Write a biomass removed report.
+    /// </summary>
+    void WriteBiomassRemovedReport(BiomassRemovedType Data)
+    {
+        double dm_residue = 0.0;
+        double dm_root_residue = 0.0;
+        double n_residue = 0.0;
+        double n_root_residue = 0.0;
+        double p_residue = 0.0;
+        double p_root_residue = 0.0;
+        double dm_chopped = 0.0;
+        double dm_root_chopped = 0.0;
+        double n_chopped = 0.0;
+        double n_root_chopped = 0.0;
+        double p_chopped = 0.0;
+        double p_root_chopped = 0.0;
+
+        for (int part = 0; part < Data.dm_type.Length; part++)
+        {
+            dm_chopped += Data.dlt_crop_dm[part];
+            n_chopped += Data.dlt_dm_n[part];
+            p_chopped += Data.dlt_dm_p[part];
+            dm_residue += Data.dlt_crop_dm[part] * Data.fraction_to_residue[part];
+            n_residue += Data.dlt_dm_n[part] * Data.fraction_to_residue[part];
+            p_residue += Data.dlt_dm_p[part] * Data.fraction_to_residue[part];
+            if (Data.dm_type[part] == "root")
+            {
+                dm_root_residue += Data.dlt_crop_dm[part] * Data.fraction_to_residue[part];
+                n_root_residue += Data.dlt_dm_n[part] * Data.fraction_to_residue[part];
+                p_root_residue += Data.dlt_dm_p[part] * Data.fraction_to_residue[part];
+                dm_root_chopped += Data.dlt_crop_dm[part];
+                n_root_chopped += Data.dlt_dm_n[part];
+                p_root_chopped += Data.dlt_dm_p[part];
+            }
+        }
+
+        double dm_tops_chopped = dm_chopped - dm_root_chopped;
+        double n_tops_chopped = n_chopped - n_root_chopped;
+        double p_tops_chopped = p_chopped - p_root_chopped;
+
+        double dm_tops_residue = dm_residue - dm_root_residue;
+        double n_tops_residue = n_residue - n_root_residue;
+        double p_tops_residue = p_residue - p_root_residue;
+
+        Console.WriteLine("\r\nCrop harvested.");
+
+        Console.WriteLine("    Organic matter from crop:-      Tops to surface residue      Roots to soil FOM");
+
+        Console.WriteLine(string.Format("{0,48}{1,55:F3}{2,24:F1}", "DM (kg/ha) = ", dm_tops_residue, dm_root_residue));
+        Console.WriteLine(string.Format("{0,48}{1,55:F2}{2,24:F1}", "N (kg/ha) = ", n_tops_residue, n_root_residue));
+        //Console.WriteLine(string.Format("{0,48}{1,55:F1}{2,24:F1}", "P (kg/ha) = ", p_tops_residue, p_root_residue));
+
+        Console.WriteLine("");
+
+        double dm_removed_tops = dm_tops_chopped - dm_tops_residue;
+        double dm_removed_root = dm_root_chopped - dm_root_residue;
+        double n_removed_tops = n_tops_chopped - n_tops_residue;
+        double n_removed_root = n_root_chopped - n_root_residue;
+        double p_removed_tops = p_tops_chopped - p_tops_residue;
+        double p_removed_root = p_root_chopped - p_root_residue;
+
+        Console.WriteLine("    Organic matter removed from system:-      From Tops               From Roots");
+
+        Console.WriteLine(string.Format("{0,48}{1,55:F3}{2,24:F1}", "DM (kg/ha) = ", dm_removed_tops, dm_removed_root));
+        Console.WriteLine(string.Format("{0,48}{1,55:F2}{2,24:F1}", "DM (kg/ha) = ", n_removed_tops, n_removed_root));
+        //Console.WriteLine(string.Format("{0,48}{1,55:F3}{2,24:F1}", "DM (kg/ha) = ", p_removed_tops, p_removed_root));
+
+        Console.WriteLine("");
+    }
+
 
     #endregion
 

@@ -34,16 +34,19 @@ public class Root1 : Organ1, BelowGround
     Function DMSenescenceFraction = null;
 
     [Param]
-    double NConcentrationCritical;
+    double NConcentrationCritical = 0;
 
     [Param]
-    double NConcentrationMinimum;
+    double NConcentrationMinimum = 0;
 
     [Param]
-    double NConcentrationMaximum;
+    double NConcentrationMaximum = 0;
 
     [Param]
-    double InitialRootDepth;
+    double InitialRootDepth = 0;
+
+    [Param]
+    double DieBackFraction = 0;
     
     [Link]
     object NUptakeFunction = null;
@@ -265,9 +268,6 @@ public class Root1 : Organ1, BelowGround
 
     internal override void OnPrepare()
     {
-        if (dlt_sw_dep == null)
-            Initialise();
-
         ZeroDeltas();
         dltRootDepth = 0.0;
         ZeroArray(dltRootLength);
@@ -285,6 +285,27 @@ public class Root1 : Organ1, BelowGround
         ZeroArray(no3gsm_uptake_pot);
         ZeroArray(nh4gsm_uptake_pot);
     }
+    internal override void OnHarvest(HarvestType Harvest, BiomassRemovedType BiomassRemoved)
+    {
+        Biomass Dead;
+        Dead = Green * DieBackFraction;
+
+        // however dead roots have a given N concentration
+        Dead.StructuralN = Dead.Wt * NSenescenceConcentration;
+
+        _Green = Green - Dead;
+        _Senesced = Senesced + Dead;
+
+        int i = IncreaseSizeOfBiomassRemoved(BiomassRemoved);
+
+        // Unlike above ground parts, no roots go to surface residue module.
+        BiomassRemoved.dm_type[i] = Name;
+        BiomassRemoved.fraction_to_residue[i] = 0.0F;
+        BiomassRemoved.dlt_crop_dm[i] = 0.0F;
+        BiomassRemoved.dlt_dm_n[i] = 0.0F;
+        BiomassRemoved.dlt_dm_p[i] = 0.0F;
+    }
+
     internal override void DoPotentialRUE() { }
     internal override void DoSWDemand(double Supply) { }
     internal override double DMSupply { get { return 0.0; } }
@@ -327,6 +348,7 @@ public class Root1 : Organ1, BelowGround
         }
         Util.Debug("Root.Retranslocation.N=%f", Retranslocation.N);
     }
+    [Output]
     internal double NUptake
     {
         get
@@ -1089,5 +1111,41 @@ public class Root1 : Organ1, BelowGround
         Util.Debug("Root.n_conc_min=%f", n_conc_min);
         Util.Debug("Root.n_conc_max=%f", n_conc_max);
     }
+
+    internal void WriteSummary()
+    {
+        if (dlt_sw_dep == null)
+            Initialise();
+
+        Console.WriteLine("                        Root Profile");
+        Console.WriteLine("         -----------------------------------------------");
+        Console.WriteLine("          Layer       Kl           Lower    Exploration");
+        Console.WriteLine("          Depth     Factor         Limit      Factor");
+        Console.WriteLine("          (mm)         ()        (mm/mm)       (0-1)");
+        Console.WriteLine("         -----------------------------------------------");
+
+        double dep_tot, esw_tot;                      // total depth of soil & ll
+
+        dep_tot = esw_tot = 0.0;
+        for (int layer = 0; layer < dlayer.Length; layer++)
+        {
+            Console.WriteLine(string.Format("     {0,9:F1}{1,10:F3}{2,15:F3}{3,12:F3}",
+                              dlayer[layer],
+                              getModifiedKL(layer),
+                              MathUtility.Divide(ll_dep[layer], dlayer[layer], 0.0),
+                              xf[layer]));
+            dep_tot += dlayer[layer];
+            esw_tot += dul_dep[layer] - ll_dep[layer];
+        }
+        Console.WriteLine("         -----------------------------------------------");
+        if (HaveModifiedKLValues)
+            Console.WriteLine("         **** KL's have been modified using either CL, EC or ESP values.");
+
+        Console.WriteLine(string.Format("         Extractable SW: {0,5:F0}mm in {1,5:F0}mm total depth ({2,3:F0}%).",
+                                        esw_tot,
+                                        dep_tot,
+                                        Conversions.fract2pcnt * MathUtility.Divide(esw_tot, dep_tot, 0.0)));
+    }
+
 }
 

@@ -333,5 +333,15 @@ public class Phenology
                 return true;
         return false;
     }
+
+    /// <summary>
+    /// Write phenology info to summary file.
+    /// </summary>
+    internal void WriteSummary()
+    {
+        Console.WriteLine("   Phases:");
+        foreach (Phase P in Phases)
+            P.WriteSummary();
+    }
 }
 

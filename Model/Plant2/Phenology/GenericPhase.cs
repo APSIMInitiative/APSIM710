@@ -68,6 +68,13 @@ public class GenericPhase : Phase
         }
     }
 
+    internal override void WriteSummary()
+    {
+        base.WriteSummary();
+        if (Target != null)
+            Console.WriteLine(string.Format("         Target                    = {0,8:F0}", Target.Value));
+    }
+
 }
 
 

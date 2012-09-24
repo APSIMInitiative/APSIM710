@@ -18,9 +18,9 @@ abstract public class Phase
     [Link]
     public Phenology Phenology = null;
 
-    [Link(IsOptional=true)]
+    [Link(IsOptional = true)]
     public Function ThermalTime = null;
-    
+
     [Link(IsOptional = true)]
     public Function Stress = null;
 
@@ -39,7 +39,7 @@ abstract public class Phase
     protected double _TTinPhase = 0;
     [Output]
     public double TTinPhase { get { return _TTinPhase; } }
-    
+
     public string Name { get { return My.Name; } }
 
     /// <summary>
@@ -71,10 +71,16 @@ abstract public class Phase
 
     [EventHandler]
     public void OnInitialised() { ResetPhase(); }
-    public virtual void ResetPhase() 
-    { _TTinPhase = 0;
-    PropOfDayUnused = 0;
+    public virtual void ResetPhase()
+    {
+        _TTinPhase = 0;
+        PropOfDayUnused = 0;
     }
-        
+
+
+    internal virtual void WriteSummary()
+    {
+        Console.WriteLine("      " + Name);
+    }
 }
    

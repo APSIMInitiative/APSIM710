@@ -36,6 +36,9 @@ public class Stem1 : Organ1, AboveGround
     [Link]
     Function NConcentrationMaximum = null;
 
+    [Link]
+    Function RetainFraction = null;
+
     [Param]
     double NDeficitUptakeFraction = 1.0;
 
@@ -50,6 +53,9 @@ public class Stem1 : Organ1, AboveGround
 
     [Param]
     double InitialNConcentration = 0;
+
+    [Output]
+    double FractionHeightRemoved = 0;
 
     private double[] dlt_sw_dep;
     private double[] sw_avail;
@@ -282,6 +288,36 @@ public class Stem1 : Organ1, AboveGround
     internal override void OnPrepare()
     {
         ZeroDeltas();
+    }
+
+    internal override void OnHarvest(HarvestType Harvest, BiomassRemovedType BiomassRemoved)
+    {
+        // Some biomass is removed according to harvest height
+        FractionHeightRemoved = MathUtility.Divide(Harvest.Height, Height, 0.0);
+
+        double chop_fr_green = (1.0 - RetainFraction.Value);
+        double chop_fr_sen = (1.0 - RetainFraction.Value);
+
+        double dlt_dm_harvest = Green.Wt * chop_fr_green
+                             + Senesced.Wt * chop_fr_sen;
+
+        double dlt_n_harvest = Green.N * chop_fr_green
+                            + Senesced.N * chop_fr_sen;
+
+        //double dlt_p_harvest = Green.P * chop_fr_green
+        //                    + Senesced.P * chop_fr_sen;
+
+        _Senesced = Senesced * RetainFraction.Value;
+        _Green = Green * RetainFraction.Value;
+
+        _Height = MathUtility.Constrain(Harvest.Height, 1.0, double.MaxValue);
+
+        int i = IncreaseSizeOfBiomassRemoved(BiomassRemoved);
+        BiomassRemoved.dm_type[i] = Name;
+        BiomassRemoved.fraction_to_residue[i] = (float)(1.0 - Harvest.Remove);
+        BiomassRemoved.dlt_crop_dm[i] = (float)(dlt_dm_harvest * Conversions.gm2kg / Conversions.sm2ha);
+        BiomassRemoved.dlt_dm_n[i] = (float)(dlt_n_harvest * Conversions.gm2kg / Conversions.sm2ha);
+        //BiomassRemoved.dlt_dm_p[i] = (float)(dlt_p_harvest * Conversions.gm2kg / Conversions.sm2ha);
     }
 
     [EventHandler]

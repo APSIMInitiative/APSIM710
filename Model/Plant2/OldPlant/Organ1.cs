@@ -87,6 +87,28 @@ public abstract class Organ1
             throw new Exception("Accumulate index < 0!!");
     }
 
+    protected static int IncreaseSizeOfBiomassRemoved(BiomassRemovedType BiomassRemoved)
+    {
+        // Make sure the BiomassRemoved structure has enough elements in it.
+        if (BiomassRemoved.dm_type == null)
+        {
+            BiomassRemoved.dm_type = new string[1];
+            BiomassRemoved.fraction_to_residue = new float[1];
+            BiomassRemoved.dlt_crop_dm = new float[1];
+            BiomassRemoved.dlt_dm_n = new float[1];
+            BiomassRemoved.dlt_dm_p = new float[1];
+        }
+        else
+        {
+            int NewSize = BiomassRemoved.dm_type.Length + 1;
+            Array.Resize(ref BiomassRemoved.dm_type, NewSize);
+            Array.Resize(ref BiomassRemoved.fraction_to_residue, NewSize);
+            Array.Resize(ref BiomassRemoved.dlt_crop_dm, NewSize);
+            Array.Resize(ref BiomassRemoved.dlt_dm_n, NewSize);
+            Array.Resize(ref BiomassRemoved.dlt_dm_p, NewSize);
+        }
+        return BiomassRemoved.dm_type.Length - 1;
+    }
 
     [Link]
     public Component My;
@@ -122,6 +144,7 @@ public abstract class Organ1
     internal abstract void DoNSenescedRetranslocation(double navail, double n_demand_tot);
     internal abstract void Update();
     internal virtual void OnPrepare() { }
+    internal virtual void OnHarvest(HarvestType Harvest, BiomassRemovedType BiomassRemoved) { }
 
     internal abstract Biomass Green { get; }
     internal abstract Biomass Senesced { get; }
@@ -133,6 +156,7 @@ public abstract class Organ1
     internal abstract double NMin { get; }
     internal abstract double NDemand { get; }
     internal abstract double SoilNDemand { get; }
+
     internal abstract double SWDemand { get; }
     internal abstract double NCapacity { get; }
     internal abstract double NDemandDifferential { get; }

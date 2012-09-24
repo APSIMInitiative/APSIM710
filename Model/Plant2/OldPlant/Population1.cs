@@ -11,7 +11,17 @@ public class Population1
 
     double _Plants;
 
-    public double Density { get { return _Plants; } }
+    public double Density
+    {
+        get
+        {
+            return _Plants;
+        }
+        set
+        {
+            _Plants = value;
+        }
+    }
 
     [EventHandler]
     public void OnSow(SowPlant2Type Sow)
