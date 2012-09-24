@@ -69,6 +69,7 @@ namespace Actions
             // bOK
             // 
             this.bOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.bOK.Location = new System.Drawing.Point(195, 296);
             this.bOK.Margin = new System.Windows.Forms.Padding(2);
             this.bOK.Name = "bOK";
