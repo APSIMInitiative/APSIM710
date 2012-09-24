@@ -36,7 +36,7 @@ int apsimGetComponentXML(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * 
 int apsimGetChildren(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
 int apsimGetFQName(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
 
-
+// This use of global variables is almost certainly NOT threadsafe...
 static int hasWrittenCopyright = 0;
 static Tcl_Interp *MainInterpreter = NULL;
 
@@ -44,26 +44,26 @@ static Tcl_Interp *MainInterpreter = NULL;
 // Initialise the TCL dll. Call once.
 //   pointers from http://wiki.tcl.tk/2074
 void StartTcl (const std::string &exeName)
-   {
-   void *hTcl = loadDLL(exeName);
-   if (hTcl == NULL) 
-      throw std::runtime_error("Can't load DLL " + exeName);     
+{
+	void *hTcl = loadDLL(exeName);
+	if (hTcl == NULL) 
+		throw std::runtime_error("Can't load DLL " + exeName);     
 
-  CREATEINTERPFN CreateInterpFn;
-  CreateInterpFn = (CREATEINTERPFN) dllProcAddress(hTcl, "Tcl_CreateInterp");
-  if (CreateInterpFn == NULL) 
-     throw std::runtime_error("Can't find Tcl_CreateInterp in " + exeName);     
+	CREATEINTERPFN CreateInterpFn;
+	CreateInterpFn = (CREATEINTERPFN) dllProcAddress(hTcl, "Tcl_CreateInterp");
+	if (CreateInterpFn == NULL) 
+		throw std::runtime_error("Can't find Tcl_CreateInterp in " + exeName);     
 
-  MainInterpreter = CreateInterpFn();
-  if (MainInterpreter == NULL) 
-     throw std::runtime_error("Tcl_CreateInterp failed in " + exeName);     
+	MainInterpreter = CreateInterpFn();
+	if (MainInterpreter == NULL) 
+		throw std::runtime_error("Tcl_CreateInterp failed in " + exeName);     
 
-  Tcl_InitStubs(MainInterpreter, "8.5", 0);
-  Tcl_FindExecutable(exeName.c_str());
-  Tcl_InitMemory(MainInterpreter);
-  Tcl_SetVar(MainInterpreter, "tcl_interactive", "0", TCL_GLOBAL_ONLY);
-  Tcl_Init(MainInterpreter);
-  }
+	Tcl_InitStubs(MainInterpreter, "8.5", 0);
+	Tcl_FindExecutable(exeName.c_str());
+	Tcl_InitMemory(MainInterpreter);
+	Tcl_SetVar(MainInterpreter, "tcl_interactive", "0", TCL_GLOBAL_ONLY);
+	Tcl_Init(MainInterpreter);
+}
 
 // Create a new interpreter
 Tcl_Interp *NewInterp (ClientData cd, const std::string &interpName)
@@ -103,12 +103,10 @@ Tcl_Interp *NewInterp (ClientData cd, const std::string &interpName)
 
 // Delete an interpreter
 void StopTcl(Tcl_Interp *interp)
-   {
-   if (!Tcl_InterpDeleted(interp))
-      Tcl_DeleteInterp(interp);
-   if (interp == MainInterpreter)
-      Tcl_Finalize();
-   }
+{
+	if (!Tcl_InterpDeleted(interp) && interp != MainInterpreter)
+		Tcl_DeleteInterp(interp);
+}
 
 //---------------------------APSIM dll entrypoints
 extern "C" EXPORT TclComponent  * STDCALL createComponent(ScienceAPI2& scienceAPI)
