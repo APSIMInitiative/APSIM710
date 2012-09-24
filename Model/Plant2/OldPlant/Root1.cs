@@ -614,6 +614,21 @@ public class Root1 : Organ1, BelowGround
     }
 
     /// <summary>
+    /// Calculate the extractable soil water in the root zone (mm).
+    /// </summary>
+    internal double ESWInRootZone
+    {
+        get 
+        {
+            double ESW = 0;
+            int deepest_layer = FindLayerNo(RootDepth);
+            for (int layer = 0; layer <= deepest_layer; layer++)
+                ESW += MathUtility.Constrain(sw_dep[layer] - ll_dep[layer], 0.0, double.MaxValue);
+            return ESW;
+        }
+    }
+
+    /// <summary>
     /// Calculate a modified KL value as per:
     ///    Hochman et. al. (2007) Simulating the effects of saline and sodic subsoils on wheat
     ///       crops growing on Vertosols. Australian Journal of Agricultural Research, 58, 802–810

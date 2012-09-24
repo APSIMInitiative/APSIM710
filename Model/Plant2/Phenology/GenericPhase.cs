@@ -72,7 +72,7 @@ public class GenericPhase : Phase
     {
         base.WriteSummary();
         if (Target != null)
-            Console.WriteLine(string.Format("         Target                    = {0,8:F0}", Target.Value));
+            Console.WriteLine(string.Format("         Target                    = {0,8:F0} (dd)", Target.Value));
     }
 
 }

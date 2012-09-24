@@ -157,6 +157,7 @@ public class Plant15
     private DateTime FloweringDate;
     private DateTime MaturityDate;
     private double LAIMax = 0;
+    private bool PhenologyEventToday = false;
 
     public double TopsSWDemand
     {
@@ -294,15 +295,35 @@ public class Plant15
         CheckBounds();
         SWStress.DoPlantWaterStress(TopsSWDemand);
         NStress.DoPlantNStress();
-        if (AverageStressMessage != null)
+        if (PhenologyEventToday)
         {
-            Console.WriteLine(Today.ToShortDateString() + " - " + Phenology.CurrentPhase.Start);
-            double biomass = 0;
-            foreach (Organ1 Organ in Organ1s)
-                biomass += Organ.Green.Wt + Organ.Senesced.Wt;
-            Console.WriteLine("                            LAI = " + Leaf.LAI.ToString("f2") + " (m^2/m^2)");
-            Console.WriteLine("           Above Ground Biomass = " + biomass.ToString("f2") + " (g/m^2)");
-            AverageStressMessage = null;
+            Console.WriteLine(string.Format("{0}(Day of year = {1}), {2}:", 
+                              Today.ToString("d MMMMMM yyyy"),
+                              Today.DayOfYear,
+                              Name));
+            Console.WriteLine("      " + Phenology.CurrentPhase.Start);
+            if (Phenology.CurrentPhase.Start != "Germination")
+            {
+                double biomass = 0;
+                
+                double StoverWt = 0;
+                double StoverN = 0;
+                foreach (Organ1 Organ in Tops)
+                {
+                    biomass += Organ.Green.Wt + Organ.Senesced.Wt;
+                    if (!(Organ is Reproductive))
+                    {
+                        StoverWt += Organ.Green.Wt + Organ.Senesced.Wt;
+                        StoverN += Organ.Green.N + Organ.Senesced.N;
+                    }
+                }
+                double StoverNConc = MathUtility.Divide(StoverN, StoverWt, 0) * Conversions.fract2pcnt;
+                Console.WriteLine(string.Format("           biomass =       {0,8:F2} (g/m^2)   lai          = {1,7:F2} (m^2/m^2)",
+                                                biomass, Leaf.LAI));
+                Console.WriteLine(string.Format("           stover N conc = {0,8:F2} (%)     extractable sw = {1,7:F2} (mm)",
+                                                StoverNConc, Root.ESWInRootZone));
+            }
+            PhenologyEventToday = false;
         }
         Root.UpdateWaterBalance();
 
@@ -314,10 +335,11 @@ public class Plant15
     {
         if (SWStress != null && NStress != null)
         {
-            AverageStressMessage = String.Format("    {0,20} to {1,20}", Data.OldPhaseName, Data.NewPhaseName);
-            AverageStressMessage += String.Format("    {0,13}{1,13}{2,13}{3,13}",
-                                                  SWStress.PhotoAverage, SWStress.ExpansionAverage,
-                                                  NStress.PhotoAverage, NStress.GrainAverage);
+            PhenologyEventToday = true;
+            AverageStressMessage += String.Format("    {0,40}{1,13:F3}{2,13:F3}{3,13:F3}{4,13:F3}\r\n", 
+                                                  Data.OldPhaseName,
+                                                  1-SWStress.PhotoAverage, 1-SWStress.ExpansionAverage,
+                                                  1-NStress.PhotoAverage, 1-NStress.GrainAverage);
             SWStress.ResetAverage();
             NStress.ResetAverage();
         }
@@ -531,10 +553,10 @@ public class Plant15
         Console.WriteLine("    Day no   mm     m^2     mm   row   plant name");
         Console.WriteLine("    ------------------------------------------------");
 
-        Console.WriteLine(string.Format("   {0,7:D}{1,7:F1}{2,7:F1}{3,7:F1}{4,6:F1}{5,6:F1}{6}", new object[] 
+        Console.WriteLine(string.Format("   {0,7:D}{1,7:F1}{2,7:F1}{3,7:F1}{4,6:F1}{5,6:F1} {6}", new object[] 
                             {Today.DayOfYear, 
                              Sow.Depth,
-                             Population.Density, 
+                             Sow.Population, 
                              Sow.RowSpacing,
                              Sow.SkipRow,
                              Sow.SkipPlant,
@@ -565,8 +587,8 @@ public class Plant15
 
         // crop harvested. Report status
         yield = (Grain.Green.Wt + Grain.Senesced.Wt) * Conversions.gm2kg / Conversions.sm2ha;
-        yield_wet = MathUtility.Divide(yield, Grain.WaterContentFraction, 0) * Conversions.gm2kg / Conversions.sm2ha;
-        grain_wt = MathUtility.Divide(yield, Grain.GrainNo, 0);
+        yield_wet = yield * Grain.WaterContentFraction * Conversions.gm2kg / Conversions.sm2ha;
+        grain_wt = MathUtility.Divide(Grain.Green.Wt + Grain.Senesced.Wt, Grain.GrainNo, 0);
         plant_grain_no = MathUtility.Divide(Grain.GrainNo, Population.Density, 0.0);
         n_grain = (Grain.Green.N + Grain.Senesced.N) * Conversions.gm2kg/Conversions.sm2ha;
 
@@ -574,7 +596,7 @@ public class Plant15
         double dmRoot = (Root.Green.Wt + Root.Senesced.Wt) * Conversions.gm2kg / Conversions.sm2ha;
         double nRoot = (Root.Green.N + Root.Senesced.N) * Conversions.gm2kg / Conversions.sm2ha;
 
-        n_grain_conc_percent = Grain.Green.NConc + Grain.Senesced.NConc;
+        n_grain_conc_percent = (Grain.Green.NConc + Grain.Senesced.NConc) * Conversions.fract2pcnt;
 
         double stoverTot = 0;
         double TopsTotalWt = 0;
@@ -736,8 +758,10 @@ public class Plant15
 
         Console.WriteLine("    Organic matter from crop:-      Tops to surface residue      Roots to soil FOM");
 
-        Console.WriteLine(string.Format("{0,48}{1,55:F3}{2,24:F1}", "DM (kg/ha) = ", dm_tops_residue, dm_root_residue));
-        Console.WriteLine(string.Format("{0,48}{1,55:F2}{2,24:F1}", "N (kg/ha) = ", n_tops_residue, n_root_residue));
+        Console.WriteLine(string.Format("                      DM (kg/ha) = {0,21:F1}{1,24:F1}", 
+                                        dm_tops_residue, dm_root_residue));
+        Console.WriteLine(string.Format("                      N  (kg/ha) = {0,22:F2}{1,24:F2}", 
+                                        n_tops_residue, n_root_residue));
         //Console.WriteLine(string.Format("{0,48}{1,55:F1}{2,24:F1}", "P (kg/ha) = ", p_tops_residue, p_root_residue));
 
         Console.WriteLine("");
@@ -751,8 +775,10 @@ public class Plant15
 
         Console.WriteLine("    Organic matter removed from system:-      From Tops               From Roots");
 
-        Console.WriteLine(string.Format("{0,48}{1,55:F3}{2,24:F1}", "DM (kg/ha) = ", dm_removed_tops, dm_removed_root));
-        Console.WriteLine(string.Format("{0,48}{1,55:F2}{2,24:F1}", "DM (kg/ha) = ", n_removed_tops, n_removed_root));
+        Console.WriteLine(string.Format("                      DM (kg/ha) = {0,21:F1}{1,24:F1}", 
+                          dm_removed_tops, dm_removed_root));
+        Console.WriteLine(string.Format("                      N  (kg/ha) = {0,22:F2}{1,24:F2}", 
+                          n_removed_tops, n_removed_root));
         //Console.WriteLine(string.Format("{0,48}{1,55:F3}{2,24:F1}", "DM (kg/ha) = ", p_removed_tops, p_removed_root));
 
         Console.WriteLine("");

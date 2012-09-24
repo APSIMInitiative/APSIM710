@@ -23,6 +23,9 @@ class RUEModel1
     [Link]
     Function RUE = null;
 
+    [Link]
+    Function RUEModifier = null;   // used for CO2
+
     [Event]
     public event NewPotentialGrowthDelegate NewPotentialGrowth;
 
@@ -34,8 +37,7 @@ class RUEModel1
                                                  PStress.Photo),
                                         RUEFactor);
 
-        return radiationInterceptedGreen * RUE.Value * stress_factor;
-
+        return radiationInterceptedGreen * RUE.Value * stress_factor * RUEModifier.Value;
     }
 
     private void PublishNewPotentialGrowth()

@@ -5,8 +5,8 @@
     <ShowInMainTree>Yes</ShowInMainTree>
     <Image>%apsim%\UserInterface\Images\Wheat.jpg</Image>
     <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
-    <LargeIcon>%apsim%\UserInterface\Images\Wheat32.jpg</LargeIcon>
-    <SmallIcon>%apsim%\UserInterface\Images\Wheat16.jpg</SmallIcon>
+    <LargeIcon>%apsim%\UserInterface\Images\Wheat32.png</LargeIcon>
+    <SmallIcon>%apsim%\UserInterface\Images\Wheat16.png</SmallIcon>
     <dll>%apsim%\Model\Plant2.dll</dll>
     <drops>
       <drop>toolbox</drop>
@@ -24,12 +24,6 @@
     </ApsimToSim>
   </MetaData>
   <Model>
-    <Cultivar name="default">
-      <Construct>Plant15</Construct>
-    </Cultivar>
-    <Cultivar name="avalon">
-      <Construct>Plant15</Construct>
-    </Cultivar>
     <Plant15>
       <CropType>Wheat</CropType>
       <DoRetranslocationBeforeNDemand>false</DoRetranslocationBeforeNDemand>
@@ -392,6 +386,9 @@
             <Stages>Sowing Germination Emergence EndOfJuvenile FloralInitiation Flowering StartGrainFill EndGrainFill Maturity HarvestRipe EndCrop </Stages>
             <Values>0 0 1.24 1.24 1.24 1.24 1.24 1.24 0.00 0.00 0 </Values>
           </StageBasedInterpolation>
+          <RUECO2Function name="RUEModifier">
+            <PhotosyntheticPathway>C3</PhotosyntheticPathway>
+          </RUECO2Function>
         </RUEModel1>
         <StageBasedInterpolation name="TE">
           <Proportional>false</Proportional>
@@ -404,6 +401,14 @@
             <XY>350 1.0</XY>
             <XY>700 1.37</XY>
             <XY>1000 1.69</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="NConcCriticalModifier">
+          <XProperty>CO2</XProperty>
+          <XYPairs>
+            <XY>350 1.0</XY>
+            <XY>700 0.93</XY>
+            <XY>1000 0.9</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <PhaseBasedSwitch name="NodeFormationPeriod">
@@ -765,5 +770,1088 @@
         <Values>1 2 3 4 5 6 7 8 9 10 11 </Values>
       </StageBasedInterpolation>
     </Plant15>
+    <Cultivar name="hartog">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="janz">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="cunningham">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="hybrid_meteor">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="buckly">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="anlace">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="bowie">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="sunco">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.0</VernSens>
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="batavia">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="suneca">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.8</VernSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="sunbri">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.5</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="sunbrook">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="ellison">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.0</VernSens>
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="espada">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="pasture">
+      <Construct>Plant15</Construct>
+      <Override name="Grain">
+        <GrainsPerGramStem>0.0</GrainsPerGramStem>
+      </Override>
+    </Cultivar>
+    <Cultivar name="kulin">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.FloralInitiationToFlowering.Target">
+        <Value>580.0</Value>
+      </Override>
+      <Override name="Phenology.StartGrainFillToEndGrainFill.Target">
+        <Value>646</Value>
+      </Override>
+      <Override name="Phenology.EndGrainFillToMaturity.Target">
+        <Value>34</Value>
+      </Override>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="gamenya">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.FloralInitiationToFlowering.Target">
+        <Value>630.0</Value>
+      </Override>
+      <Override name="Phenology.StartGrainFillToEndGrainFill.Target">
+        <Value>665</Value>
+      </Override>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>2.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="gutha">
+      <Construct>Plant15</Construct>
+      <Override name="Grain">
+        <GrainsPerGramStem>20.0</GrainsPerGramStem>
+      </Override>
+    </Cultivar>
+    <Cultivar name="spear">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+      <Override name="Grain">
+        <GrainsPerGramStem>20</GrainsPerGramStem>
+        <MaxGrainSize>0.045</MaxGrainSize>
+      </Override>
+    </Cultivar>
+    <Cultivar name="dagger">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+      <Override name="Grain">
+        <GrainsPerGramStem>20</GrainsPerGramStem>
+        <MaxGrainSize>0.045</MaxGrainSize>
+      </Override>
+    </Cultivar>
+    <Cultivar name="wilgoyne">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.4</VernSens>
+        <PhotopSens>1.6</PhotopSens>
+      </Override>
+      <Override name="Grain">
+        <GrainsPerGramStem>20.0</GrainsPerGramStem>
+        <MaxGrainSize>0.045</MaxGrainSize>
+      </Override>
+    </Cultivar>
+    <Cultivar name="yecora">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.5</VernSens>
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+      <Override name="Grain">
+        <GrainsPerGramStem>20.0</GrainsPerGramStem>
+      </Override>
+    </Cultivar>
+    <Cultivar name="NewZealand_base_cultivar">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.0</VernSens>
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+      <Override name="Root.RootDepthRate">
+        <Values>0 5.0 20 20 20 20 0 0.0 0.0 0.0 0 </Values>
+      </Override>
+      <Override name="Arbitrator1.FracDMRemainingInleaf.XYPairs">
+        <XY>5 0.3</XY>
+      </Override>
+      <Override name="Leaf.LeavesPerNode.XYPairs">
+        <XY>6 1</XY>
+      </Override>
+      <Override name="Leaf">
+        <NodeSenescenceRate>120.0</NodeSenescenceRate>
+        <SenRateWater>0.05</SenRateWater>
+      </Override>
+      <Override name="Stem.HeightFunction.XYPairs">
+        <XY>0 50</XY>
+      </Override>
+      <Override name="Grain">
+        <GrainsPerGramStem>35.0</GrainsPerGramStem>
+        <MaxGrainSize>0.047</MaxGrainSize>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Albric">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.0</VernSens>
+        <PhotopSens>4.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Amarok">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Aspiring">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="BAKKER_GOLD">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Buster">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Cassius">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>5.0</PhotopSens>
+      </Override>
+      <Override name="Grain">
+        <GrainsPerGramStem>50.0</GrainsPerGramStem>
+        <MaxGrainSize>0.06</MaxGrainSize>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Cellar">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>4.0</VernSens>
+        <PhotopSens>2.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="CENTAUR">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Claire">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.0</VernSens>
+        <PhotopSens>5.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Conquest">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>0.0</VernSens>
+        <PhotopSens>5.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Commando">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Consort">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>4.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Dominio">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Einstein">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Exceed">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Hilton">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Kohika">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Kotuku">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Macro">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Marshall">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Monad">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Morph">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.0</VernSens>
+        <PhotopSens>4.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Option">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>4.0</VernSens>
+        <PhotopSens>4.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Otane">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.0</VernSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Pennant">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Phonix">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Raffels">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Regency">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Richmond">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>4.0</VernSens>
+        <PhotopSens>5.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="rongotea">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+      <Override name="Grain">
+        <GrainsPerGramStem>22.0</GrainsPerGramStem>
+        <MaxGrainSize>0.047</MaxGrainSize>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Sapphire">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Saracen">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>0.0</VernSens>
+        <PhotopSens>5.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Savannah">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Solstice">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Tanker">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Torlesse">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Wakaniu">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Weston">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="xifeng24">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.StartGrainFillToEndGrainFill.Target">
+        <Value>617.5</Value>
+      </Override>
+      <Override name="Phenology.EndGrainFillToMaturity.Target">
+        <Value>32.5</Value>
+      </Override>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.0</VernSens>
+        <PhotopSens>2.0</PhotopSens>
+      </Override>
+      <Override name="Grain">
+        <PotentialGrainFillingRate>0.0025</PotentialGrainFillingRate>
+      </Override>
+    </Cultivar>
+    <Cultivar name="dingxi24">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>0.5</VernSens>
+        <PhotopSens>1.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="hartog_wet">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="hartog_dry">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="gatton_hartog">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.5</VernSens>
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="h45">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>1.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="h46">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>1.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="silverstar">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>1.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="westonia">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>1.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="zippy">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>1.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="tamarinrock">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>1.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="wollaroi">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>1.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="waagan">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>1.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="saintly">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>1.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="arrino">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="ruby">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="kirchauff">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="kalka">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="kukri">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="hybrid_mercury">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="ouyen">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="tamaroi">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="wyalkatchem">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="mace">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="young">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="bowerbird">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="drysdale">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="bonnie_rock">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="perengori">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="agtscythe">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="livingston">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="crusader">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="hyperno">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="annuello">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="diamondbird">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="frame">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="goroke">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="ventura">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="mitre">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="yallaroi">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="yitpi">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="carnamah">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="estoc">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="scout">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="sunstate">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="guardian">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="barunga">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="catalina">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="gladius">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="halbred">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="stiletto">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="clf_stiletto">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="pugsley">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="lincoln">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="correll">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="peake">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="spitfire">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="justica">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="kord">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="baxter">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="babbler">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="camm">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="clf-jnz">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="dollarbird">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="saphire">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="arrivato">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="derrimut">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="barham">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="buckley">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="carinya">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="bellaroi">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.0</VernSens>
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="lang">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.0</VernSens>
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="braewood">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.8</VernSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="calingiri">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.8</VernSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="chara">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.8</VernSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="giles">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.8</VernSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="wylie">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.8</VernSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="endure">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.8</VernSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="sunlin">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.8</VernSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="sunvale">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.8</VernSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="gregory">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.8</VernSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="magenta">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.8</VernSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="kelallac">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.5</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="strzelecki">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.5</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="bolac">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="beaufort">
+      <Construct>Plant15</Construct>
+    </Cultivar>
+    <Cultivar name="lorikeet">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.FloralInitiationToFlowering.Target">
+        <Value>380.0</Value>
+      </Override>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.9</VernSens>
+        <PhotopSens>3.9</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="wylah">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.FloralInitiationToFlowering.Target">
+        <Value>380.0</Value>
+      </Override>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.9</VernSens>
+        <PhotopSens>3.9</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="rosella">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.FloralInitiationToFlowering.Target">
+        <Value>380.0</Value>
+      </Override>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.9</VernSens>
+        <PhotopSens>3.9</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="whistler">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.FloralInitiationToFlowering.Target">
+        <Value>380.0</Value>
+      </Override>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.9</VernSens>
+        <PhotopSens>3.9</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="wedgetail">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.FloralInitiationToFlowering.Target">
+        <Value>380.0</Value>
+      </Override>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.9</VernSens>
+        <PhotopSens>3.9</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="marombi">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.FloralInitiationToFlowering.Target">
+        <Value>455.0</Value>
+      </Override>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.9</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="declic">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.FloralInitiationToFlowering.Target">
+        <Value>530.0</Value>
+      </Override>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.9</VernSens>
+        <PhotopSens>4.3</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="mackellar">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.FloralInitiationToFlowering.Target">
+        <Value>530.0</Value>
+      </Override>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.9</VernSens>
+        <PhotopSens>4.3</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="mackellar_TAS">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.FloralInitiationToFlowering.Target">
+        <Value>530.0</Value>
+      </Override>
+      <Override name="Phenology.StartGrainFillToEndGrainFill.Target">
+        <Value>706.5</Value>
+      </Override>
+      <Override name="Phenology.EndGrainFillToMaturity.Target">
+        <Value>43.5</Value>
+      </Override>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.2</VernSens>
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="revenue">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.FloralInitiationToFlowering.Target">
+        <Value>530.0</Value>
+      </Override>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.9</VernSens>
+        <PhotopSens>4.3</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="brennan">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.FloralInitiationToFlowering.Target">
+        <Value>530.0</Value>
+      </Override>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.9</VernSens>
+        <PhotopSens>4.3</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="dennis">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.FloralInitiationToFlowering.Target">
+        <Value>580.0</Value>
+      </Override>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.9</VernSens>
+        <PhotopSens>4.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="tennant">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.FloralInitiationToFlowering.Target">
+        <Value>580.0</Value>
+      </Override>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.9</VernSens>
+        <PhotopSens>4.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="teesdale">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.FloralInitiationToFlowering.Target">
+        <Value>580.0</Value>
+      </Override>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.9</VernSens>
+        <PhotopSens>4.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="wills">
+      <Construct>Plant15</Construct>
+      <Override name="Phenology.FloralInitiationToFlowering.Target">
+        <Value>580.0</Value>
+      </Override>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.9</VernSens>
+        <PhotopSens>4.5</PhotopSens>
+      </Override>
+    </Cultivar>
   </Model>
 </Type>

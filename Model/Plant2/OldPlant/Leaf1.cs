@@ -28,6 +28,9 @@ public class Leaf1 : Organ1, AboveGround
     Function TEModifier = null;
 
     [Link]
+    Function NConcCriticalModifier = null;
+
+    [Link]
     Function TE = null;
 
     [Link]
@@ -134,7 +137,7 @@ public class Leaf1 : Organ1, AboveGround
     double SenescenceDetachmentFraction = 0;
 
     [Input(IsOptional=true)]
-    double CO2 = 0;
+    double CO2 = 350;             // The TEModifier and NConcCriticalModifier function's use this.
 
     // ***********
     [Link]
@@ -401,6 +404,8 @@ public class Leaf1 : Organ1, AboveGround
         LeafNo = new double[max_node];
         LeafNoSen = new double[max_node];
         LeafArea = new double[max_node];
+        if (CO2 != 350 && (TEModifier == null || NConcCriticalModifier == null))
+            throw new Exception("CO2 isn't at the default level, and model: " + Plant.Name + " has no CO2 parameterisations.");
     }
 
     internal override void OnPrepare()
@@ -865,16 +870,13 @@ public class Leaf1 : Organ1, AboveGround
         n_conc_min = NConcentrationMinimum.Value;
         n_conc_max = NConcentrationMaximum.Value;
 
-        double modifier = 1.0; // FIXME co2 goes here.   co2Modifier->n_conc()
-
-        n_conc_crit *= modifier;
-        if (n_conc_crit <= n_conc_min)
-            throw new Exception("nconc_crit < nconc_min!. What's happened to CO2??");
-
         Util.Debug("Leaf.n_conc_crit=%f", n_conc_crit);
         Util.Debug("Leaf.n_conc_min=%f", n_conc_min);
         Util.Debug("Leaf.n_conc_max=%f", n_conc_max);
 
+        n_conc_crit *= NConcCriticalModifier.Value;
+        if (n_conc_crit <= n_conc_min)
+            throw new Exception("nconc_crit < nconc_min!. What's happened to CO2??");
     }
 
     private static double CalculateCover(double LAI, double ExtinctionCoefficient, double CanopyFactor)
