@@ -148,9 +148,9 @@ namespace CPIUserInterface
         /// </summary>
         public void RestartLayout()
         {
-            NoRedraw = false;
             this.listView1.ResumeLayout();
             this.TreeView.EndUpdate();
+            NoRedraw = false;
         }
         //=====================================================================
         /// <summary>
@@ -216,9 +216,9 @@ namespace CPIUserInterface
                     rect.Y++;
                     if ((e.State & TreeNodeStates.Selected) != 0 &&
                         (e.State & TreeNodeStates.Focused) != 0)
-                        TextRenderer.DrawText(e.Graphics, strColumnText, e.Node.NodeFont, rect, SystemColors.HighlightText, flags);
+                        TextRenderer.DrawText(e.Graphics, strColumnText, treeView1.Font, rect, SystemColors.HighlightText, flags);
                     else
-                        TextRenderer.DrawText(e.Graphics, strColumnText, e.Node.NodeFont, rect, e.Node.ForeColor, e.Node.BackColor, flags);
+                        TextRenderer.DrawText(e.Graphics, strColumnText, treeView1.Font, rect, treeView1.ForeColor, treeView1.BackColor, flags);
                     rect.Y--;
                 }
             }

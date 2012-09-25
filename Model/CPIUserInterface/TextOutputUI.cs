@@ -283,7 +283,7 @@ namespace CPIUserInterface
                 }
                 i++;
             }
-
+           
             PopulateEventsGrid();       //Restore the chosen events into the events grid
             PopulateVariablesGrid();    //Restore the chosen variables into the variables grid
 
@@ -292,14 +292,10 @@ namespace CPIUserInterface
             GetSiblingComponents(Paddock, ref ComponentNames, ref ComponentTypes);
 
             //populate the events tab
-            PopulateEventComponentFilter();
-            PopulateEventsListView();
+            PopulateEventComponentFilter(); //also triggers PopulateEventsListView() 
 
             //populate the variable tab
-            //UserChange = false;
-            PopulateComponentFilter();
-            PopulateVariableListView();
-            //UserChange = true;
+            PopulateComponentFilter();      //also triggers PopulateVariableListView()
 
             if (tabControl1.SelectedIndex == OUTPUTTAB)
             {
@@ -400,7 +396,7 @@ namespace CPIUserInterface
         //=====================================================================
         private void PopulateComponentFilter()
         {
-            ComponentFilter.Items.Clear();
+			ComponentFilter.Items.Clear(); 
             foreach (string ComponentName in ComponentNames)
             {
                 ComponentFilter.Items.Add(ComponentName);
@@ -409,7 +405,7 @@ namespace CPIUserInterface
             if (ComponentFilter.Items.Count > 0)
             {
                 ComponentFilter.SelectedIndex = 0;
-            }
+			} 
         }
         //=====================================================================
         /// <summary>

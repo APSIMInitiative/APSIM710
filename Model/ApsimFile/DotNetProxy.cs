@@ -10,12 +10,19 @@ using System.Runtime.InteropServices;
 using System.Xml.XPath;
 using CSGeneral;
 using System.Diagnostics;
+using CMPServices;
 
 using System.CodeDom;
 using System.CodeDom.Compiler;
 
 class DLLProber
 {
+	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
+	internal delegate void PGetDescriptionLength([MarshalAs(UnmanagedType.LPStr)]String szContext, ref Int32 lLength);
+	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
+	internal delegate void PGetDescription([MarshalAs(UnmanagedType.LPStr)]String szContext, StringBuilder szDescription);
+
+    //=========================================================================
     /// <summary>
     /// Return the XML from a DLL probe
     /// </summary>
@@ -92,37 +99,35 @@ class DLLProber
 
             if (typeOfAssembly == Utility.CompilationMode.Native || typeOfAssembly == Utility.CompilationMode.Mixed)
             {
-                StringBuilder Description = new StringBuilder(500000);
+				//access the native component 
+				PGetDescriptionLength fpGetDescrLength;
+				PGetDescription fpGetDescr;
 
-                // Dynamically create a method for the entry point we're going to call.
-                AppDomain currentDomain = AppDomain.CurrentDomain;
-                AssemblyName myAssemblyName = new AssemblyName();
-                myAssemblyName.Name = ModuleName + "Assembly";
-                AssemblyBuilder myAssemblyBuilder = currentDomain.DefineDynamicAssembly(myAssemblyName, AssemblyBuilderAccess.Run);
-                ModuleBuilder moduleBuilder = myAssemblyBuilder.DefineDynamicModule(ModuleName + "Module");
-                MethodBuilder method;
-                method = moduleBuilder.DefinePInvokeMethod("getDescription", DllFileName,
-                                                   MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.PinvokeImpl,
-                                                 CallingConventions.Standard,
-                                                 typeof(void),
-                                                 new Type[] { typeof(string), typeof(StringBuilder) },
-                                                 CallingConvention.StdCall,
-                                                 CharSet.Ansi);
-                method.SetImplementationFlags(MethodImplAttributes.PreserveSig |
-                method.GetMethodImplementationFlags());
-                moduleBuilder.CreateGlobalFunctions();
-                MethodInfo mi = moduleBuilder.GetMethod("getDescription");
-
-                // Call the DLL
-                object[] Parameters = new object[] { initScript, Description };
-                mi.Invoke(null, Parameters);
-
-                descr = Description.ToString();
+				IntPtr dllHandle = TOSInterface.loadDll(DllFileName);
+				if (!dllHandle.Equals(IntPtr.Zero))
+				{
+					IntPtr procAddr = TOSInterface.LibGetAddr(dllHandle, "getDescriptionLength");
+					if (!procAddr.Equals(IntPtr.Zero))
+					{
+						Int32 lLength = 0;
+						fpGetDescrLength = (PGetDescriptionLength)Marshal.GetDelegateForFunctionPointer(procAddr, typeof(PGetDescriptionLength));
+						fpGetDescrLength(initScript, ref lLength);
+						//now get the description. Native components construct an instance during getDescription()
+						procAddr = TOSInterface.LibGetAddr(dllHandle, "getDescription");
+						if (!procAddr.Equals(IntPtr.Zero))
+						{
+							StringBuilder sb = new StringBuilder(lLength);
+							fpGetDescr = (PGetDescription)Marshal.GetDelegateForFunctionPointer(procAddr, typeof(PGetDescription));
+							fpGetDescr(initScript, sb);
+							descr = sb.ToString();
+						}
+					}
+				}
             }
         }
         return descr;
     }
-
+    //=========================================================================
     /// <summary>
     /// Create and return a C# proxy class based on the specified DescriptionXML.
     /// </summary>
