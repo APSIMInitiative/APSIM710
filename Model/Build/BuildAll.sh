@@ -7,14 +7,16 @@ if [ -n "${APSIM:-x}" ] ; then
    export APSIM=`dirname $APSIM`
 fi
 
-if [ -f "$MONO_PREFIX/mono/jit.h" ] ; then
+if [ ! -f "$MONO_PREFIX/include/mono-2.0/mono/jit/jit.h" ] ; then
    export MONO_PREFIX=/usr
 fi
-if [ -f "$MONO_PREFIX/mono/jit.h" ] ; then
+if [ ! -f "$MONO_PREFIX/include/mono-2.0/mono/jit/jit.h" ] ; then
    echo Cant find mono/jit.h - expect trouble
 fi
 
 export MONO_XMLSERIALIZER_THS=no
+
+$APSIM/Model/cscs.exe $APSIM/Model/Build/VersionStamper.cs Directory=$APSIM 
 
 $APSIM/Model/Build/RunMake.sh $APSIM/Model/JobScheduler clean
 $APSIM/Model/Build/RunMake.sh $APSIM/Model/JobScheduler
