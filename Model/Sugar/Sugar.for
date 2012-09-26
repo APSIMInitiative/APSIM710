@@ -5883,11 +5883,12 @@ c         call sugar_kill_crop ()
 
       call push_routine (my_name)
 
-      if (reals_are_equal (g_lai, 0.0)
+      if (g_lai .le. 0.0
      :       .and. stage_is_between (emerg, crop_end
      :                             , g_current_stage)) then
 
          dlt_plants = - g_plants
+         g_lai = 0.0
 
          write (string, '(3a)')
      :                ' crop failure because of total leaf senescence.'
