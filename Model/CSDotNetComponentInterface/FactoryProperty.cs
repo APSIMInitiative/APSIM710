@@ -36,7 +36,14 @@ public abstract class ReflectedType : NamedItem
             else if (Typ.Name == "Single")
                 SetObject(Convert.ToSingle(Value));
             else if (Typ.Name == "Boolean")
-                SetObject(Convert.ToBoolean(Value));
+            {
+                if (string.Equals(Value, "yes", StringComparison.CurrentCultureIgnoreCase))
+                    SetObject(true);
+                else if (string.Equals(Value, "no", StringComparison.CurrentCultureIgnoreCase))
+                    SetObject(false);
+                else
+                    SetObject(Convert.ToBoolean(Value));
+            }
             else if (Typ.Name == "String")
                 SetObject(Value);
             else if (Typ.Name == "Double[]")

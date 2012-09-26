@@ -1,6 +1,6 @@
 <Type name="Wheat2" version="31">
   <MetaData>
-    <UItype>CSuserInterface.EmptyUI</UItype>
+    <UItype>CSuserInterface.GenericUI</UItype>
     <IsCrop>Yes</IsCrop>
     <ShowInMainTree>Yes</ShowInMainTree>
     <Image>%apsim%\UserInterface\Images\Wheat.jpg</Image>
@@ -18,8 +18,13 @@
       <component name="[InstanceName]" executable="[dll]" class="Plant2.Wheat2">
         <executable name="[dll]" version="1.0" />
         <initdata>
-[Model]
-<ll>[soil.[InstanceName] ll(mm/mm)]</ll><kl>[soil.[InstanceName] kl(/day)]</kl><xf>[soil.[InstanceName] xf(0-1)]</xf></initdata>
+         [Model]
+         [innerxml]
+         <ll>[soil.[InstanceName] ll(mm/mm)]</ll>
+         <kl>[soil.[InstanceName] kl(/day)]</kl>
+         <xf>[soil.[InstanceName] xf(0-1)]</xf>
+         [if [soil.Cl (mg/kg)]]<cl>[soil.Cl (mg/kg)]</cl>[endif]
+</initdata>
       </component>
     </ApsimToSim>
   </MetaData>
@@ -83,8 +88,25 @@
             </XYPairs>
           </LinearInterpolationFunction>
           <MultiplyFunction name="Stress">
-            <MinimumFunction>  <Variable>    <VariableName>Phenology.Vernalisation.VernEff</VariableName>  </Variable>  <Variable name="Variable1">    <VariableName>Phenology.Vernalisation.PhotopEff</VariableName>  </Variable></MinimumFunction>
-            <MinimumFunction name="Stresses">  <Variable name="Variable2">    <VariableName>SWStress.Pheno</VariableName>  </Variable>  <Variable name="Variable3">    <VariableName>NStress.Pheno</VariableName>  </Variable>  <Variable name="Variable4">    <VariableName>PStress.Pheno</VariableName>  </Variable></MinimumFunction>
+            <MinimumFunction>
+              <Variable>
+                <VariableName>Phenology.Vernalisation.VernEff</VariableName>
+              </Variable>
+              <Variable name="Variable1">
+                <VariableName>Phenology.Vernalisation.PhotopEff</VariableName>
+              </Variable>
+            </MinimumFunction>
+            <MinimumFunction name="Stresses">
+              <Variable name="Variable2">
+                <VariableName>SWStress.Pheno</VariableName>
+              </Variable>
+              <Variable name="Variable3">
+                <VariableName>NStress.Pheno</VariableName>
+              </Variable>
+              <Variable name="Variable4">
+                <VariableName>PStress.Pheno</VariableName>
+              </Variable>
+            </MinimumFunction>
           </MultiplyFunction>
         </GenericPhase>
         <GenericPhase name="EndOfJuvenileToFloralInitiation">
@@ -102,8 +124,25 @@
             </XYPairs>
           </LinearInterpolationFunction>
           <MultiplyFunction name="Stress">
-            <MinimumFunction>  <Variable>    <VariableName>Phenology.Vernalisation.VernEff</VariableName>  </Variable>  <Variable name="Variable1">    <VariableName>Phenology.Vernalisation.PhotopEff</VariableName>  </Variable></MinimumFunction>
-            <MinimumFunction name="Stresses">  <Variable name="Variable2">    <VariableName>SWStress.Pheno</VariableName>  </Variable>  <Variable name="Variable3">    <VariableName>NStress.Pheno</VariableName>  </Variable>  <Variable name="Variable4">    <VariableName>PStress.Pheno</VariableName>  </Variable></MinimumFunction>
+            <MinimumFunction>
+              <Variable>
+                <VariableName>Phenology.Vernalisation.VernEff</VariableName>
+              </Variable>
+              <Variable name="Variable1">
+                <VariableName>Phenology.Vernalisation.PhotopEff</VariableName>
+              </Variable>
+            </MinimumFunction>
+            <MinimumFunction name="Stresses">
+              <Variable name="Variable2">
+                <VariableName>SWStress.Pheno</VariableName>
+              </Variable>
+              <Variable name="Variable3">
+                <VariableName>NStress.Pheno</VariableName>
+              </Variable>
+              <Variable name="Variable4">
+                <VariableName>PStress.Pheno</VariableName>
+              </Variable>
+            </MinimumFunction>
           </MultiplyFunction>
         </GenericPhase>
         <GenericPhase name="FloralInitiationToFlowering">
@@ -121,8 +160,25 @@
             </XYPairs>
           </LinearInterpolationFunction>
           <MultiplyFunction name="Stress">
-            <MinimumFunction>  <Variable>    <VariableName>Phenology.Vernalisation.VernEff</VariableName>  </Variable>  <Variable name="Variable1">    <VariableName>Phenology.Vernalisation.PhotopEff</VariableName>  </Variable></MinimumFunction>
-            <MinimumFunction name="Stresses">  <Variable name="Variable2">    <VariableName>SWStress.Pheno</VariableName>  </Variable>  <Variable name="Variable3">    <VariableName>NStress.Pheno</VariableName>  </Variable>  <Variable name="Variable4">    <VariableName>PStress.Pheno</VariableName>  </Variable></MinimumFunction>
+            <MinimumFunction>
+              <Variable>
+                <VariableName>Phenology.Vernalisation.VernEff</VariableName>
+              </Variable>
+              <Variable name="Variable1">
+                <VariableName>Phenology.Vernalisation.PhotopEff</VariableName>
+              </Variable>
+            </MinimumFunction>
+            <MinimumFunction name="Stresses">
+              <Variable name="Variable2">
+                <VariableName>SWStress.Pheno</VariableName>
+              </Variable>
+              <Variable name="Variable3">
+                <VariableName>NStress.Pheno</VariableName>
+              </Variable>
+              <Variable name="Variable4">
+                <VariableName>PStress.Pheno</VariableName>
+              </Variable>
+            </MinimumFunction>
           </MultiplyFunction>
         </GenericPhase>
         <GenericPhase name="FloweringToStartGrainFill">
@@ -240,7 +296,6 @@
       <Root1 name="Root">
         <InitialWt>0.010</InitialWt>
         <InitialNConcentration>0.020</InitialNConcentration>
-        <ModifyKl>false</ModifyKl>
         <ll>0</ll>
         <kl>0</kl>
         <xf>0</xf>
@@ -257,6 +312,13 @@
         <NConcentrationMaximum>0.020</NConcentrationMaximum>
         <NConcentrationCritical>0.020</NConcentrationCritical>
         <DieBackFraction>0.0</DieBackFraction>
+        <ModifyKL>no</ModifyKL>
+        <ClA>4.0</ClA>
+        <ClB>-0.005</ClB>
+        <ESPA>10.0</ESPA>
+        <ESPB>-0.15</ESPB>
+        <ECA>3.0</ECA>
+        <ECB>-1.3</ECB>
         <LinearInterpolationFunction name="RootAdvanceFactorTemp">
           <XProperty>Environment.MeanT</XProperty>
           <XYPairs>

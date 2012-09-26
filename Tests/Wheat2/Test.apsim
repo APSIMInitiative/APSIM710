@@ -1148,7 +1148,9 @@
           <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
         </surfaceom>
         <fertiliser />
-        <wheat />
+        <wheat>
+          <ModifyKL type="yesno" description="Modify KL using CL, EC or ESP if found?">no</ModifyKL>
+        </wheat>
         <folder name="Manager folder">
           <manager name="Sow on a fixed date">
             <ui>
@@ -1217,7 +1219,9 @@
       <clock shortcut="/simulations/Base/Wheat/clock" />
       <summaryfile shortcut="/simulations/Base/Wheat/summaryfile" />
       <area name="paddock" shortcut="/simulations/Base/Wheat/paddock">
-        <wheat2 />
+        <wheat2>
+          <ModifyKL type="yesno" description="Modify KL using CL, EC or ESP if found?">no</ModifyKL>
+        </wheat2>
         <soil name="Soil" shortcut="/simulations/Base/Wheat/paddock/Soil">
           <ASC_Order description="Australian Soil Classification Order" />
           <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
@@ -1805,6 +1809,630 @@ if (date_within('[date1], [date2]') = 1) then
       <Legend>
         <CheckedTitles> Wheat With SWIM3</CheckedTitles>
         <CheckedTitles> Wheat2 With SWIM3</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>Circle</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>no3()</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+  </folder>
+  <folder name="With Cl">
+    <simulation name="Wheat With Cl" shortcut="/simulations/Base/Wheat">
+      <metfile name="met" shortcut="/simulations/Base/Wheat/met" />
+      <clock shortcut="/simulations/Base/Wheat/clock" />
+      <summaryfile shortcut="/simulations/Base/Wheat/summaryfile" />
+      <area name="paddock" shortcut="/simulations/Base/Wheat/paddock">
+        <soil name="Soil" shortcut="/simulations/Base/Wheat/paddock/Soil">
+          <InitWater name="Initial water" shortcut="/simulations/Base/Wheat/paddock/Soil/Initial water" />
+          <Water shortcut="/simulations/Base/Wheat/paddock/Soil/Water">
+            <SoilCrop name="Barley" shortcut="/simulations/Base/Wheat/paddock/Soil/Water/Barley" />
+            <SoilCrop name="Chickpea" shortcut="/simulations/Base/Wheat/paddock/Soil/Water/Chickpea" />
+            <SoilCrop name="Lucerne" shortcut="/simulations/Base/Wheat/paddock/Soil/Water/Lucerne" />
+            <SoilCrop name="Maize" shortcut="/simulations/Base/Wheat/paddock/Soil/Water/Maize" />
+            <SoilCrop name="Perennial Grass" shortcut="/simulations/Base/Wheat/paddock/Soil/Water/Perennial Grass" />
+            <SoilCrop name="Sorghum" shortcut="/simulations/Base/Wheat/paddock/Soil/Water/Sorghum" />
+            <SoilCrop name="Wheat" shortcut="/simulations/Base/Wheat/paddock/Soil/Water/Wheat" />
+            <SoilCrop name="wheat2" shortcut="/simulations/Base/Wheat/paddock/Soil/Water/wheat2" />
+          </Water>
+          <SoilWat shortcut="/simulations/Base/Wheat/paddock/Soil/SoilWat" />
+          <SoilOrganicMatter shortcut="/simulations/Base/Wheat/paddock/Soil/SoilOrganicMatter" />
+          <Analysis>
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC units="1:5 dS/m">0.2</EC>
+              <PH units="1:5 water">8.4</PH>
+              <CL units="mg/kg">10</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>0.25</EC>
+              <PH>8.8</PH>
+              <CL units="mg/kg">500</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>0.31</EC>
+              <PH>9</PH>
+              <CL units="mg/kg">1000</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>0.4</EC>
+              <PH>9.2</PH>
+              <CL units="mg/kg">1000</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>0.59</EC>
+              <PH>9.2</PH>
+              <CL units="mg/kg">1000</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>0.84</EC>
+              <PH>9.1</PH>
+              <CL units="mg/kg">1000</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>0.93</EC>
+              <PH>9</PH>
+              <CL units="mg/kg">1000</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>1.01</EC>
+              <PH>9</PH>
+              <CL units="mg/kg">1000</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>1.06</EC>
+              <PH>8.9</PH>
+              <CL units="mg/kg">1000</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>1.05</EC>
+              <PH>8.9</PH>
+              <CL units="mg/kg">1000</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>1.01</EC>
+              <PH>8.9</PH>
+              <CL units="mg/kg">1000</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+          </Analysis>
+          <Sample name="Initial nitrogen" shortcut="/simulations/Base/Wheat/paddock/Soil/Initial nitrogen" />
+        </soil>
+        <surfaceom name="surface organic matter" shortcut="/simulations/Base/Wheat/paddock/surface organic matter" />
+        <fertiliser shortcut="/simulations/Base/Wheat/paddock/fertiliser" />
+        <wheat>
+          <ModifyKL type="yesno" description="Modify KL using CL, EC or ESP if found?">yes</ModifyKL>
+        </wheat>
+        <folder name="Manager folder" shortcut="/simulations/Base/Wheat/paddock/Manager folder">
+          <manager name="Sow on a fixed date" shortcut="/simulations/Base/Wheat/paddock/Manager folder/Sow on a fixed date" />
+          <manager name="Harvesting rule" shortcut="/simulations/Base/Wheat/paddock/Manager folder/Harvesting rule" />
+        </folder>
+        <outputfile shortcut="/simulations/Base/Wheat/paddock/outputfile">
+          <filename output="yes">Wheat With Cl.out</filename>
+          <title>Wheat With Cl</title>
+          <variables name="Variables" shortcut="/simulations/Base/Wheat/paddock/outputfile/Variables" />
+          <events name="Reporting Frequency" shortcut="/simulations/Base/Wheat/paddock/outputfile/Reporting Frequency" />
+        </outputfile>
+      </area>
+    </simulation>
+    <simulation name="Wheat2 With Cl" shortcut="/simulations/Base/Wheat2">
+      <metfile name="met" shortcut="/simulations/Base/Wheat2/met">
+        <filename shortcut="/simulations/Base/Wheat2/met/filename" input="yes" />
+      </metfile>
+      <clock shortcut="/simulations/Base/Wheat2/clock" />
+      <summaryfile shortcut="/simulations/Base/Wheat2/summaryfile" />
+      <area name="paddock" shortcut="/simulations/Base/Wheat2/paddock">
+        <wheat2>
+          <ModifyKL type="yesno" description="Modify KL using CL, EC or ESP if found?">yes</ModifyKL>
+        </wheat2>
+        <soil name="Soil" shortcut="/simulations/Base/Wheat2/paddock/Soil">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
+          <Water shortcut="/simulations/Base/Wheat2/paddock/Soil/Water">
+            <SoilCrop name="Barley" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Barley" />
+            <SoilCrop name="Chickpea" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Chickpea" />
+            <SoilCrop name="Lucerne" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Lucerne" />
+            <SoilCrop name="Maize" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Maize" />
+            <SoilCrop name="Perennial Grass" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Perennial Grass" />
+            <SoilCrop name="Sorghum" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Sorghum" />
+            <SoilCrop name="Wheat" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Wheat" />
+            <SoilCrop name="wheat2" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/wheat2" />
+          </Water>
+          <SoilWat shortcut="/simulations/Base/Wheat2/paddock/Soil/SoilWat" />
+          <SoilOrganicMatter shortcut="/simulations/Base/Wheat2/paddock/Soil/SoilOrganicMatter" />
+          <Analysis>
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC units="1:5 dS/m">0.2</EC>
+              <PH units="1:5 water">8.4</PH>
+              <CL units="mg/kg">10</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>0.25</EC>
+              <PH>8.8</PH>
+              <CL units="mg/kg">500</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>0.31</EC>
+              <PH>9</PH>
+              <CL units="mg/kg">1000</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>0.4</EC>
+              <PH>9.2</PH>
+              <CL units="mg/kg">1000</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>0.59</EC>
+              <PH>9.2</PH>
+              <CL units="mg/kg">1000</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>0.84</EC>
+              <PH>9.1</PH>
+              <CL units="mg/kg">1000</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>0.93</EC>
+              <PH>9</PH>
+              <CL units="mg/kg">1000</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>1.01</EC>
+              <PH>9</PH>
+              <CL units="mg/kg">1000</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>1.06</EC>
+              <PH>8.9</PH>
+              <CL units="mg/kg">1000</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>1.05</EC>
+              <PH>8.9</PH>
+              <CL units="mg/kg">1000</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC>1.01</EC>
+              <PH>8.9</PH>
+              <CL units="mg/kg">1000</CL>
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+          </Analysis>
+          <InitWater name="Initial Water" shortcut="/simulations/Base/Wheat2/paddock/Soil/Initial Water" />
+          <Sample name="Initial Nitrogen" shortcut="/simulations/Base/Wheat2/paddock/Soil/Initial Nitrogen" />
+        </soil>
+        <surfaceom name="surface organic matter" shortcut="/simulations/Base/Wheat2/paddock/surface organic matter" />
+        <fertiliser shortcut="/simulations/Base/Wheat2/paddock/fertiliser" />
+        <folder name="Manager folder" shortcut="/simulations/Base/Wheat2/paddock/Manager folder">
+          <manager name="Sow on a fixed date" shortcut="/simulations/Base/Wheat2/paddock/Manager folder/Sow on a fixed date" />
+          <manager name="Harvesting rule" shortcut="/simulations/Base/Wheat2/paddock/Manager folder/Harvesting rule" />
+        </folder>
+        <outputfile>
+          <filename output="yes">Wheat2 With Cl.out</filename>
+          <title>Wheat2 With Cl</title>
+          <variables name="Variables" shortcut="/simulations/Base/Wheat2/paddock/outputfile/Variables" />
+          <events name="Reporting Frequency" shortcut="/simulations/Base/Wheat2/paddock/outputfile/Reporting Frequency" />
+        </outputfile>
+        <micromet name="Micromet" shortcut="/simulations/Base/Wheat2/paddock/Micromet" />
+      </area>
+    </simulation>
+    <Graph name="LAI">
+      <Legend>
+        <CheckedTitles> Wheat With Cl</CheckedTitles>
+        <CheckedTitles> Wheat2 With Cl</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>Circle</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>LeafLAI</Y>
+        <Y>LAI</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="SWdep">
+      <Legend>
+        <CheckedTitles> Wheat With Cl</CheckedTitles>
+        <CheckedTitles> Wheat2 With Cl</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>Circle</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>sw_dep()</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="Stubble">
+      <Legend>
+        <CheckedTitles> Wheat With Cl</CheckedTitles>
+        <CheckedTitles> Wheat2 With Cl</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>Circle</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>surfaceom_wt</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="NO3">
+      <Legend>
+        <CheckedTitles> Wheat With Cl</CheckedTitles>
+        <CheckedTitles> Wheat2 With Cl</CheckedTitles>
       </Legend>
       <Plot>
         <SeriesType>Solid line</SeriesType>

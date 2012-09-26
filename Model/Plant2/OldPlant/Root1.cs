@@ -68,9 +68,9 @@ public class Root1 : Organ1, BelowGround
 
     [Input]
     public double[] sat_dep = null;
-
-    [Input(IsOptional = true)]
-    public double[] cl = null;
+    
+    [Param]
+    private double[] cl = null;
 
     [Input(IsOptional = true)]
     public double[] esp = null;
@@ -651,7 +651,7 @@ public class Root1 : Organ1, BelowGround
         if (ModifyKL)
         {
             double KLFactor = 1.0;
-            if (cl.Length > 1)
+            if (cl != null && cl.Length > 1)
                 KLFactor = Math.Min(1.0, ClA * Math.Exp(ClB * cl[i]));
 
             else if (esp.Length > 1)
