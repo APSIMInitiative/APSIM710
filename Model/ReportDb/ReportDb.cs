@@ -304,9 +304,11 @@ public class ReportDb
         Values.Add(new KeyValuePair<string, object>("Date", Today));
         for (int i = 0; i < Variables.Variable.Length; i++)
         {
-            string Value;
+            object Value;
             Paddock.Get(Variables.Variable[i], out Value);
-            ConvertVariableToValues(Variables.Variable[i], Value, Values);
+            if (Value == null)
+                Value = "";
+            ConvertVariableToValues(Variables.Variable[i], Value.ToString(), Values);
         }
         return Values;
     }

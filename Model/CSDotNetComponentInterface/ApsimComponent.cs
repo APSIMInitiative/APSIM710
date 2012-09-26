@@ -531,7 +531,7 @@ namespace ModelFramework
             DriverFound = false;
             Host.sendDriverRequest(RegistrationIndex, 0);
             //no need to deregister now 
-            return DriverFound;  //true if no errors
+            return DriverFound && Data != null;  //true if no errors
         }
         // ----------------------------------------------
         /// <summary>
