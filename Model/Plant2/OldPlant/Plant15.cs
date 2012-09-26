@@ -82,7 +82,13 @@ public class Plant15
     Function NFixRate = null;
 
     [Link]
-    CompositeBiomass TopsGreen = null;
+    CompositeBiomass AboveGroundGreen = null;
+
+    [Link]
+    CompositeBiomass AboveGround = null;
+
+    [Link]
+    CompositeBiomass BelowGround = null;
 
     [Link]
     SWStress SWStress = null;
@@ -133,6 +139,9 @@ public class Plant15
     public event NewCanopyDelegate New_Canopy;
 
     [Event]
+    public event NewCropDelegate CropEnding;
+
+    [Event]
     public event NewPotentialGrowthDelegate NewPotentialGrowth;
 
     [Event]
@@ -149,6 +158,21 @@ public class Plant15
             return "alive";
         }
     }
+
+    // Used by SWIM
+    [Output]
+    [Units("mm")]
+    public double WaterDemand
+    {
+        get
+        {
+            double Demand = 0;
+            foreach (Organ1 Organ in Organ1s)
+                Demand += Organ.SWDemand;
+            return Demand;
+        }
+    }
+
 
     public List<Organ1> Organ1s = new List<Organ1>();
     public List<Organ1> Tops = new List<Organ1>();
@@ -357,9 +381,6 @@ public class Plant15
 
     private void Update()
     {
-        // send off detached roots before root structure is updated by plant death
-        Root.DisposeDetachedMaterial();
-
         foreach (Organ1 Organ in Organ1s)
             Organ.Update();
 
@@ -467,7 +488,7 @@ public class Plant15
             ext_n_demand += Organ.NDemand;
 
         //nh  use zero growth value here so that estimated n fix is always <= actual;
-        double n_fix_pot = NFixRate.Value * TopsGreen.Wt * SWStress.Fixation;
+        double n_fix_pot = NFixRate.Value * AboveGroundGreen.Wt * SWStress.Fixation;
 
         if (NSupplyPreference == "active")
         {
@@ -528,6 +549,38 @@ public class Plant15
         foreach (Organ1 Organ in Organ1s)
             Organ.DoNConccentrationLimits();
     }
+
+    [EventHandler]
+    public void OnEndCrop()
+    {
+        NewCropType Crop = new NewCropType();
+        Crop.crop_type = CropType;
+        Crop.sender = Name;
+        if (CropEnding != null)
+            CropEnding.Invoke(Crop);
+
+        // Keep track of some variables for reporting.
+        Biomass AboveGroundBiomass = new Biomass(AboveGround);
+        Biomass BelowGroundBiomass = new Biomass(BelowGround);
+
+        // Call each organ's OnHarvest. They fill a BiomassRemoved structure. We then publish a
+        // BiomassRemoved event.
+        BiomassRemovedType BiomassRemovedData = new BiomassRemovedType();
+        foreach (Organ1 Organ in Organ1s)
+            Organ.OnEndCrop(BiomassRemovedData);
+        BiomassRemovedData.crop_type = CropType;
+        BiomassRemoved.Invoke(BiomassRemovedData);
+
+        Console.WriteLine("    Organic matter from crop:-      Tops to surface residue      Roots to soil FOM");
+        Console.WriteLine(string.Format("                      DM (kg/ha) = {0,21:F1}{1,24:F1}",
+                                        AboveGroundBiomass.Wt, BelowGroundBiomass.Wt));
+        Console.WriteLine(string.Format("                      N  (kg/ha) = {0,22:F2}{1,24:F2}",
+                                        AboveGroundBiomass.N, BelowGroundBiomass.N));
+        //Console.WriteLine(string.Format("                      P  (kg/ha) = {0,22:F2}{1,24:F2}",
+        //                                AboveGroundBiomass.P, BelowGroundBiomass.P));
+
+    }
+
 
     /// <summary>
     /// Write a sowing report to summary file.

@@ -1049,6 +1049,28 @@ extern "C" void EXPORT STDCALL get_double_array
 // ------------------------------------------------------------------
 // Module is requesting the value of a variable from another module.
 // ------------------------------------------------------------------
+extern "C" void EXPORT STDCALL get_double_array_optional
+   (int* componentID, const char* variableName, unsigned* arraySize, const char* units,
+    double* value, unsigned* numvals, double* lower, double* upper,
+    unsigned variableNameLength, unsigned unitsLength)
+   {
+   protocol::vector<double> values(value, 0, *arraySize);
+   FortranWrapper::currentInstance->get_var
+      (*componentID, FString(variableName, variableNameLength, FORString), doubleArrayType, values, *numvals, true);
+   if (*numvals == 0)
+      {
+      for (unsigned i = 0; i != *arraySize; i++)
+         value[i] = 0.0;
+      }
+   else
+      {
+      *numvals = values.size();
+      boundCheckDoubleArray(value, *numvals, *lower, *upper, FString(variableName, variableNameLength, FORString));
+      }
+   }   
+// ------------------------------------------------------------------
+// Module is requesting the value of a variable from another module.
+// ------------------------------------------------------------------
 extern "C" void EXPORT STDCALL get_char_var
    (int* componentID, const char* variableName, const char* units,
     char* value, unsigned* numvals,

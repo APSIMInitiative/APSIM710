@@ -114,8 +114,8 @@ public class Root1 : Organ1, BelowGround
     [Param(IsOptional = true)]
     double ECB = 0;
 
-    [Param(IsOptional = true)]
-    string UptakeSource = "calc";
+    [Input(IsOptional = true)]
+    double swim3 = double.MinValue;
 
     [Param]
     double NDeficitUptakeFraction = 1.0;
@@ -143,7 +143,7 @@ public class Root1 : Organ1, BelowGround
 
     // ***********
     [Link]
-    CompositeBiomass WholePlantGreen = null;
+    CompositeBiomass TotalGreen = null;
 
     [Link]
     Function GrowthStructuralFractionStage = null;
@@ -154,6 +154,7 @@ public class Root1 : Organ1, BelowGround
     [Event]
     public event NitrogenChangedDelegate NitrogenChanged;
 
+    private bool SwimIsPresent = false;
     private double[] dlt_sw_dep;
     private double[] sw_avail;
     private double[] sw_avail_pot;
@@ -237,9 +238,11 @@ public class Root1 : Organ1, BelowGround
                    MathUtility.Sum(nh4gsm_uptake_pot, 0, deepest_layer+1, 0);
         }
     }
-    internal override double SWDemand { get { return sw_demand; } }
+
+    public override double SWDemand { get { return sw_demand; } }
     internal override double DMGreenDemand { get { return _DMGreenDemand; } }
     internal override double DltNSenescedRetrans { get { return dlt.n_senesced_retrans; } }
+
 
     protected void ZeroDeltas()
     {
@@ -306,6 +309,14 @@ public class Root1 : Organ1, BelowGround
         BiomassRemoved.dlt_dm_p[i] = 0.0F;
     }
 
+    internal override void OnEndCrop(BiomassRemovedType BiomassRemoved)
+    {
+        DisposeDetachedMaterial(Green, RootLength);
+        DisposeDetachedMaterial(Senesced, RootLengthSenesced);
+        Senesced.Clear();
+        Green.Clear();
+    }
+
     internal override void DoPotentialRUE() { }
     internal override void DoSWDemand(double Supply) { }
     internal override double DMSupply { get { return 0.0; } }
@@ -361,7 +372,7 @@ public class Root1 : Organ1, BelowGround
     internal override void DoNDemand1Pot(double dltDmPotRue)
     {
         Biomass OldGrowth = _Growth;
-        _Growth.StructuralWt = dltDmPotRue * MathUtility.Divide(Green.Wt, WholePlantGreen.Wt, 0.0);
+        _Growth.StructuralWt = dltDmPotRue * MathUtility.Divide(Green.Wt, TotalGreen.Wt, 0.0);
         Util.Debug("Root.Growth.StructuralWt=%f", _Growth.StructuralWt);
         CalcNDemand(dltDmPotRue, dltDmPotRue, n_conc_crit, n_conc_max, _Growth, Green, Retranslocation.N, 1.0,
                    ref _NDemand, ref NMax);
@@ -446,7 +457,7 @@ public class Root1 : Organ1, BelowGround
         {
             if (RootDepth > 0.0)
             {
-                double[] RootFr = RootDist(1.0);
+                double[] RootFr = RootDist(1.0, RootLength);
 
                 double wet_root_fr = 0.0;
                 for (int layer = 0; layer != RootFr.Length; layer++)
@@ -458,20 +469,21 @@ public class Root1 : Organ1, BelowGround
         }
     }
 
-    public double[] RootLengthDensity
-    {
-        get
-        {
-            double[] rld = MathUtility.Divide(RootLength, dlayer);
-            return MathUtility.Divide_Value(rld, Population.Density);
-        }
-    }
+    /// <summary>
+    /// Root length density - needed by SWIM
+    /// </summary>
+    [Output("RootLengthDensity")]
+    [Units("mm/mm^3")]
+    double[] RootLengthDensity { get { return MathUtility.Divide(RootLength, dlayer); } }
 
-    
 
 
     void Initialise()
     {
+        SwimIsPresent = swim3 > 0;
+        if (SwimIsPresent)
+            Console.WriteLine("Using SWIM3 for Soil Water Uptake.");
+
         dlt_sw_dep = new double[dlayer.Length];
         sw_avail = new double[dlayer.Length];
         sw_avail_pot = new double[dlayer.Length];
@@ -660,18 +672,14 @@ public class Root1 : Organ1, BelowGround
     internal void DoWaterUptake(double TopsSWDemand)
     {
         DoWaterSupply();
-        if (UptakeSource == "apsim")
+        if (SwimIsPresent)
         {
-            throw new NotImplementedException();
-            //doWaterUptakeExternal(uptake_source, crop_type);
-        }
-        else if (UptakeSource == "swim3")
-        {
-            throw new NotImplementedException();
-            //doWaterUptakeExternal(uptake_source, crop_type);
+            My.Get("uptake_water_" + Plant.CropType, out dlt_sw_dep);
+            dlt_sw_dep = MathUtility.Multiply_Value(dlt_sw_dep, -1);   // make them negative numbers.
         }
         else
             DoWaterUptakeInternal(TopsSWDemand);
+        Util.Debug("Root.dlt_sw_dep=%f", MathUtility.Sum(dlt_sw_dep));
     }
 
     /// <summary>
@@ -786,7 +794,6 @@ public class Root1 : Organ1, BelowGround
                 }
             }
         }
-        Util.Debug("Root.dlt_sw_dep=%f", MathUtility.Sum(dlt_sw_dep));
     }
 
     /// <summary>
@@ -860,7 +867,7 @@ public class Root1 : Organ1, BelowGround
     /// Distribute root material over profile based upon root
     /// length distribution.
     /// </summary>
-    double[] RootDist(double root_sum)
+    double[] RootDist(double root_sum, double[] RootLength)
     {
         int deepest_layer = FindLayerNo(RootDepth);
 
@@ -920,6 +927,9 @@ public class Root1 : Organ1, BelowGround
         Util.Debug("Root.dltRootLength=%f", MathUtility.Sum(dltRootLength));
     }
 
+
+
+
     /// <summary>
     /// Calculate root length senescence based upon changes in senesced root
     /// biomass and the specific root length.
@@ -928,24 +938,22 @@ public class Root1 : Organ1, BelowGround
     {
         ZeroArray(dltRootLengthSenesced);
         double senesced_length = _Senescing.Wt / Conversions.sm2smm * SpecificRootLength;
-        dltRootLengthSenesced = RootDist(senesced_length);
+        dltRootLengthSenesced = RootDist(senesced_length, RootLength);
         Util.Debug("Root.dltRootLengthSenesced=%f", MathUtility.Sum(dltRootLengthSenesced));
     }
 
     internal void DoNUptake(double PotNFix)
     {
-        if (UptakeSource == "apsim")
-        {
-            throw new NotImplementedException();
-            //doWaterUptakeExternal(uptake_source, crop_type);
-        }
-        else if (UptakeSource == "swim3")
-        {
-            throw new NotImplementedException();
-            //doWaterUptakeExternal(uptake_source, crop_type);
-        }
-        else
+        //if (SwimIsPresent)
+        //{
+        //    My.Get("uptake_no3_" + Plant.CropType, out dlt_no3gsm);
+        //    MathUtility.Multiply_Value(dlt_no3gsm, -Conversions.kg2gm/Conversions.ha2sm);   // convert units and make them negative.
+        //}
+        //else
             DoNUptakeInternal(PotNFix);
+    
+        Util.Debug("Root.dlt_no3gsm=%f", MathUtility.Sum(dlt_no3gsm));
+        Util.Debug("Root.dlt_nh4gsm=%f", MathUtility.Sum(dlt_nh4gsm));
     }
 
 
@@ -988,8 +996,6 @@ public class Root1 : Organ1, BelowGround
             double nh4gsm_uptake = nh4gsm_uptake_pot[layer] * scalef;
             dlt_nh4gsm[layer] = -nh4gsm_uptake;
         }
-        Util.Debug("Root.dlt_no3gsm=%f", MathUtility.Sum(dlt_no3gsm));
-        Util.Debug("Root.dlt_nh4gsm=%f", MathUtility.Sum(dlt_nh4gsm));
     }
 
     internal override void DoDetachment()
@@ -1002,18 +1008,18 @@ public class Root1 : Organ1, BelowGround
     /// <summary>
     /// Dispose of detached material from dead & senesced roots into FOM pool
     /// </summary>
-    internal void DisposeDetachedMaterial()
+    internal void DisposeDetachedMaterial(Biomass BiomassToDisposeOf, double[] RootLength)
     {
-        if (_Detaching.Wt > 0.0)
+        if (BiomassToDisposeOf.Wt > 0.0)
         {
             // DM
-            double[] dlt_dm_incorp = RootDist(_Detaching.Wt * Conversions.gm2kg / Conversions.sm2ha);
+            double[] dlt_dm_incorp = RootDist(BiomassToDisposeOf.Wt * Conversions.gm2kg / Conversions.sm2ha, RootLength);
 
             // Nitrogen
-            double[] dlt_N_incorp = RootDist(_Detaching.N * Conversions.gm2kg / Conversions.sm2ha);
+            double[] dlt_N_incorp = RootDist(BiomassToDisposeOf.N * Conversions.gm2kg / Conversions.sm2ha, RootLength);
 
             // Phosporous
-            //double[] dlt_P_incorp = RootDist(_Detaching.P * Conversions.gm2kg / Conversions.sm2ha);
+            //double[] dlt_P_incorp = RootDist(BiomassToDisposeOf.P * Conversions.gm2kg / Conversions.sm2ha);
 
             FOMLayerType IncorpFOMData = new FOMLayerType();
             IncorpFOMData.Type = Plant.CropType;
@@ -1047,6 +1053,9 @@ public class Root1 : Organ1, BelowGround
     /// </summary>
     internal override void Update()
     {
+        // send off detached roots before root structure is updated by plant death
+        DisposeDetachedMaterial(_Detaching, RootLength);
+
         _Green = Green + Growth - _Senescing;
 
         _Senesced = Senesced - _Detaching + _Senescing;
@@ -1098,23 +1107,22 @@ public class Root1 : Organ1, BelowGround
 
     public void UpdateWaterBalance()
     {
+        NitrogenChangedType NitrogenUptake = new NitrogenChangedType();
+        NitrogenUptake.DeltaNO3 = MathUtility.Multiply_Value(dlt_no3gsm, Conversions.gm2kg / Conversions.sm2ha);
+        NitrogenUptake.DeltaNH4 = MathUtility.Multiply_Value(dlt_nh4gsm, Conversions.gm2kg / Conversions.sm2ha);
+        Util.Debug("Root.NitrogenUptake.DeltaNO3=%f", MathUtility.Sum(NitrogenUptake.DeltaNO3));
+        Util.Debug("Root.NitrogenUptake.DeltaNH4=%f", MathUtility.Sum(NitrogenUptake.DeltaNH4));
+        NitrogenChanged.Invoke(NitrogenUptake);
+
         // Send back delta water and nitrogen back to APSIM.
-        if (UptakeSource == "calc")
+        if (!SwimIsPresent)
         {
             WaterChangedType WaterUptake = new WaterChangedType();
             WaterUptake.DeltaWater = dlt_sw_dep;
             Util.Debug("Root.WaterUptake=%f", MathUtility.Sum(WaterUptake.DeltaWater));
             WaterChanged.Invoke(WaterUptake);
 
-            NitrogenChangedType NitrogenUptake = new NitrogenChangedType();
-            NitrogenUptake.DeltaNO3 = MathUtility.Multiply_Value(dlt_no3gsm, Conversions.gm2kg / Conversions.sm2ha);
-            NitrogenUptake.DeltaNH4 = MathUtility.Multiply_Value(dlt_nh4gsm, Conversions.gm2kg / Conversions.sm2ha);
-            Util.Debug("Root.NitrogenUptake.DeltaNO3=%f", MathUtility.Sum(NitrogenUptake.DeltaNO3));
-            Util.Debug("Root.NitrogenUptake.DeltaNH4=%f", MathUtility.Sum(NitrogenUptake.DeltaNH4));
-            NitrogenChanged.Invoke(NitrogenUptake);
         }
-        else
-            throw new NotImplementedException();
     }
 
     internal override void DoNConccentrationLimits()

@@ -111,7 +111,7 @@ public class Fertiliser
 
                         // This variable is being tracked - send the delta to it
                         double[] V;
-                        if (MyPaddock.Get(dlt_name, out V))
+                        if (MyPaddock.Get(comp.components[i], out V))
                         {
                             deltaArray[layer] = amount * comp.fraction[i]; // This is where the fertiliser
                             MyPaddock.Set(dlt_name, deltaArray);    // is actually added.

@@ -145,6 +145,7 @@ public abstract class Organ1
     internal abstract void Update();
     internal virtual void OnPrepare() { }
     internal virtual void OnHarvest(HarvestType Harvest, BiomassRemovedType BiomassRemoved) { }
+    internal virtual void OnEndCrop(BiomassRemovedType BiomassRemoved) { }
 
     internal abstract Biomass Green { get; }
     internal abstract Biomass Senesced { get; }
@@ -157,7 +158,7 @@ public abstract class Organ1
     internal abstract double NDemand { get; }
     internal abstract double SoilNDemand { get; }
 
-    internal abstract double SWDemand { get; }
+    public abstract double SWDemand { get; }
     internal abstract double NCapacity { get; }
     internal abstract double NDemandDifferential { get; }
     internal abstract double AvailableRetranslocateN { get ; }

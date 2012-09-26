@@ -92,7 +92,7 @@ public class Grain : Organ1, AboveGround, Reproductive
 
     // ***********
     [Link]
-    CompositeBiomass WholePlantGreen = null;
+    CompositeBiomass TotalGreen = null;
 
     [Link]
     Function GrowthStructuralFractionStage = null;
@@ -170,7 +170,7 @@ public class Grain : Organ1, AboveGround, Reproductive
     internal override double NDemand { get { return _NDemand; } }
     internal double NDemand2 { get { return MathUtility.Constrain(NDemand - dlt.n_senesced_retrans - Growth.N, 0.0, double.MaxValue); } }
     internal override double SoilNDemand { get { return _SoilNDemand; } }
-    internal override double SWDemand { get { return sw_demand; } }
+    public override double SWDemand { get { return sw_demand; } }
     internal override double DMGreenDemand { get { return _DMGreenDemand; } }
     internal override double DMDemandDifferential
     {
@@ -245,6 +245,22 @@ public class Grain : Organ1, AboveGround, Reproductive
         Green.Clear();
         Senesced.Clear();
     }
+
+    internal override void OnEndCrop(BiomassRemovedType BiomassRemoved)
+    {
+        base.OnEndCrop(BiomassRemoved);
+
+        int i = IncreaseSizeOfBiomassRemoved(BiomassRemoved);
+        BiomassRemoved.dm_type[i] = Name;
+        BiomassRemoved.fraction_to_residue[i] = 1.0F;
+        BiomassRemoved.dlt_crop_dm[i] = (float)((Green.Wt + Senesced.Wt) * Conversions.gm2kg / Conversions.sm2ha);
+        BiomassRemoved.dlt_dm_n[i] = (float)((Green.N + Senesced.N) * Conversions.gm2kg / Conversions.sm2ha);
+        //BiomassRemoved.dlt_dm_p[i] = (float)((Green.P + Senesced.P) * Conversions.gm2kg / Conversions.sm2ha);
+
+        Senesced.Clear();
+        Green.Clear();
+    }
+
 
     [EventHandler]
     public void OnPhaseChanged(PhaseChangedType PhenologyChange)

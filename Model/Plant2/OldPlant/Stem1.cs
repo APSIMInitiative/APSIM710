@@ -16,7 +16,7 @@ public class Stem1 : Organ1, AboveGround
     Population1 Population = null;
 
     [Link]
-    CompositeBiomass WholePlantGreen = null;
+    CompositeBiomass TotalGreen = null;
 
     [Link]
     Function GrowthStructuralFractionStage = null;
@@ -128,7 +128,7 @@ public class Stem1 : Organ1, AboveGround
     internal override double NMin { get { return n_conc_min * Green.Wt; } }
     internal override double NDemand { get { return _NDemand; } }
     internal override double SoilNDemand { get { return _SoilNDemand; } }
-    internal override double SWDemand { get { return sw_demand; } }
+    public override double SWDemand { get { return sw_demand; } }
     internal override double DMGreenDemand { get { return _DMGreenDemand; } }
     internal override double DMRetransSupply
     {
@@ -215,7 +215,7 @@ public class Stem1 : Organ1, AboveGround
     internal override void DoNDemand1Pot(double dltDmPotRue)
     {
         Biomass OldGrowth = Growth;
-        Growth.StructuralWt = dltDmPotRue * MathUtility.Divide(Green.Wt, WholePlantGreen.Wt, 0.0);
+        Growth.StructuralWt = dltDmPotRue * MathUtility.Divide(Green.Wt, TotalGreen.Wt, 0.0);
         Util.Debug("Stem.Growth.StructuralWt=%f", _Growth.StructuralWt);
 
         CalcNDemand(dltDmPotRue, dltDmPotRue, n_conc_crit, n_conc_max, Growth, Green, Retranslocation.N, 1.0,
@@ -279,7 +279,7 @@ public class Stem1 : Organ1, AboveGround
     private double _Width = 0;
 
     // soilwat needs height for its E0 calculation.
-    [Output("Height")]
+    [Output("Height")][Units("mm")]
     public double Height { get { return _Height; } }
     public double Width { get { return _Width; } }
 
@@ -319,6 +319,22 @@ public class Stem1 : Organ1, AboveGround
         BiomassRemoved.dlt_dm_n[i] = (float)(dlt_n_harvest * Conversions.gm2kg / Conversions.sm2ha);
         //BiomassRemoved.dlt_dm_p[i] = (float)(dlt_p_harvest * Conversions.gm2kg / Conversions.sm2ha);
     }
+
+    internal override void OnEndCrop(BiomassRemovedType BiomassRemoved)
+    {
+        base.OnEndCrop(BiomassRemoved);
+
+        int i = IncreaseSizeOfBiomassRemoved(BiomassRemoved);
+        BiomassRemoved.dm_type[i] = Name;
+        BiomassRemoved.fraction_to_residue[i] = 1.0F;
+        BiomassRemoved.dlt_crop_dm[i] = (float)((Green.Wt + Senesced.Wt) * Conversions.gm2kg / Conversions.sm2ha);
+        BiomassRemoved.dlt_dm_n[i] = (float)((Green.N + Senesced.N) * Conversions.gm2kg / Conversions.sm2ha);
+        //BiomassRemoved.dlt_dm_p[i] = (float)((Green.P + Senesced.P) * Conversions.gm2kg / Conversions.sm2ha);
+
+        Senesced.Clear();
+        Green.Clear();
+    }
+
 
     [EventHandler]
     public void OnPhaseChanged(PhaseChangedType PhenologyChange)

@@ -1275,23 +1275,35 @@
               <event>start_of_day</event>
             </script>
           </manager>
-          <manager name="Harvesting rule" />
+          <manager name="Harvesting rule">
+            <ui>
+              <category type="category" description="Harvesting criteria" />
+              <crop type="crop" description="Enter name of crop to harvest when ripe : ">wheat2</crop>
+            </ui>
+            <script>
+              <text>
+        if [crop].plant_status &lt;&gt; 'out' then
+           if [crop].PhenologyCurrentPhaseName = 'ReadyForHarvesting' or  [crop].plant_status = 'dead' then
+              [crop]  harvest
+              [crop]  endcrop
+           endif
+        endif
+
+            </text>
+              <event>end_of_day</event>
+            </script>
+          </manager>
         </folder>
         <outputfile>
           <filename output="yes">Wheat2.out</filename>
           <title>Wheat2</title>
           <variables name="Variables">
             <variable>dd/mm/yyyy as Date</variable>
-            <variable>StageCodeValue</variable>
+            <variable>PhenologyStage</variable>
             <variable>PhenologyCurrentPhaseName</variable>
-            <variable>LeafLAI</variable>
-            <variable>AboveGroundWt</variable>
+            <variable>LAI</variable>
+            <variable>AboveGroundWt format 2</variable>
             <variable>sw_dep()</variable>
-            <variable>WaterDemand</variable>
-            <variable>LeafFw</variable>
-            <variable>LeafTranspiration</variable>
-            <variable>LeafWaterDemand</variable>
-            <variable>RootWaterUptake</variable>
             <variable>surfaceom_wt</variable>
             <variable>no3()</variable>
           </variables>
@@ -1454,24 +1466,7 @@ if (date_within('[date1], [date2]') = 1) then
         <fertiliser shortcut="/simulations/Base/Wheat2/paddock/fertiliser" />
         <folder name="Manager folder" shortcut="/simulations/Base/Wheat2/paddock/Manager folder">
           <manager name="Sow on a fixed date" shortcut="/simulations/Base/Wheat2/paddock/Manager folder/Sow on a fixed date" />
-          <manager name="Harvesting rule">
-            <ui>
-              <category type="category" description="Harvesting criteria" />
-              <crop type="crop" description="Enter name of crop to harvest when ripe : ">wheat2</crop>
-            </ui>
-            <script>
-              <text>
-        if [crop].plant_status &lt;&gt; 'out' then
-           if [crop].PhenologyCurrentPhaseName = 'ReadyForHarvesting' then
-              [crop]  harvest
-              [crop]  endcrop
-           endif
-        endif
-
-            </text>
-              <event>end_of_day</event>
-            </script>
-          </manager>
+          <manager name="Harvesting rule" shortcut="/simulations/Base/Wheat2/paddock/Manager folder/Harvesting rule" />
         </folder>
         <outputfile>
           <filename output="yes">Wheat2 With CO2.out</filename>
@@ -1484,9 +1479,8 @@ if (date_within('[date1], [date2]') = 1) then
     </simulation>
     <Graph name="LAI">
       <Legend>
-        <CheckedTitles> LeafLAI, Wheat2 With CO2</CheckedTitles>
-        <CheckedTitles> LAI, Wheat With CO2</CheckedTitles>
-        <CheckedTitles> LAI, Wheat2 With CO2</CheckedTitles>
+        <CheckedTitles> Wheat With CO2</CheckedTitles>
+        <CheckedTitles> Wheat2 With CO2</CheckedTitles>
       </Legend>
       <Plot>
         <SeriesType>Solid line</SeriesType>
@@ -1545,121 +1539,282 @@ if (date_within('[date1], [date2]') = 1) then
       </Plot>
     </Graph>
   </folder>
-  <simulation name="Wheat2WithSWIM3" shortcut="/simulations/Base/Wheat2">
-    <metfile name="met" shortcut="/simulations/Base/Wheat2/met">
-      <filename shortcut="/simulations/Base/Wheat2/met/filename" input="yes" />
-    </metfile>
-    <clock shortcut="/simulations/Base/Wheat2/clock" />
-    <summaryfile shortcut="/simulations/Base/Wheat2/summaryfile" />
-    <area name="paddock" shortcut="/simulations/Base/Wheat2/paddock">
-      <wheat2 shortcut="/simulations/Base/Wheat2/paddock/wheat2" />
-      <soil name="Soil" shortcut="/simulations/Base/Wheat2/paddock/Soil">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
-        <Water shortcut="/simulations/Base/Wheat2/paddock/Soil/Water">
-          <SoilCrop name="Barley" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Barley" />
-          <SoilCrop name="Chickpea" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Chickpea" />
-          <SoilCrop name="Lucerne" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Lucerne" />
-          <SoilCrop name="Maize" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Maize" />
-          <SoilCrop name="Perennial Grass" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Perennial Grass" />
-          <SoilCrop name="Sorghum" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Sorghum" />
-          <SoilCrop name="Wheat" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Wheat" />
-          <SoilCrop name="wheat2" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/wheat2" />
-        </Water>
-        <SoilOrganicMatter shortcut="/simulations/Base/Wheat2/paddock/Soil/SoilOrganicMatter" />
-        <Analysis shortcut="/simulations/Base/Wheat2/paddock/Soil/Analysis" />
-        <InitWater name="Initial Water" shortcut="/simulations/Base/Wheat2/paddock/Soil/Initial Water" />
-        <Sample name="Initial Nitrogen" shortcut="/simulations/Base/Wheat2/paddock/Soil/Initial Nitrogen" />
-        <Swim>
-          <Salb type="text" description="Bare Soil Albedo">0.13</Salb>
-          <Cn2Bare type="text" description="Bare Soil Runoff Curve Number">73</Cn2Bare>
-          <CnRed type="text" description="Max. Reduction in Curve Number due to cover">20</CnRed>
-          <CnCov type="text" description="Cover for max Curve Number reduction">0.8</CnCov>
-          <Kdul type="text" description="Hydraulic Conductivity at DUL (mm/d)">.1</Kdul>
-          <psidul type="text" description="Matric Potential at DUL (cm)">-100</psidul>
-          <VC type="list" listvalues="on,off" description="Vapour Conductivity Calculations (on/off)">on</VC>
-          <dtmin type="text" description="Minimum Timestep (min)">0.0</dtmin>
-          <dtmax type="text" description="Maximum Timestep (min)">1440.</dtmax>
-          <MaxWaterIncrement type="text" description="Maximum Water Increment (mm)">10</MaxWaterIncrement>
-          <SpaceWeightingFactor type="text" description="Space Weighting Factor">0</SpaceWeightingFactor>
-          <SoluteSpaceWeightingFactor type="text" description="Solute Space Weighting Factor">0.0</SoluteSpaceWeightingFactor>
-          <diagnostics type="yesno" description="Diagnostic Information?">no</diagnostics>
-          <SwimSoluteParameters>
-            <dis type="text" description="Dispersivity - dis ((cm^2/h)/(cm/h)^p) ">15</dis>
-            <disp type="text" description="Dispersivity Power - disp">1</disp>
-            <a type="text" description="Tortuosity Constant - a">1.0</a>
-            <dthc type="text" description="Tortuoisty Offset - dthc">0.0</dthc>
-            <dthp type="text" description="Tortuoisty Power - dthp">1.0</dthp>
-            <WaterTableCl type="text" description="Water Table Cl Concentration (ppm)">0.0</WaterTableCl>
-            <WaterTableNO3 type="text" description="Water Table NO3 Concentration (ppm)">0.0</WaterTableNO3>
-            <WaterTableNH4 type="text" description="Water Table NH4 Concentration (ppm)">0.0</WaterTableNH4>
-            <WaterTableUrea type="text" description="Water Table Urea Concentration (ppm)">0.0</WaterTableUrea>
-            <Layer>
-              <Thickness units="mm">1000</Thickness>
-              <NO3Exco units="">0</NO3Exco>
-              <NO3FIP units="">1.0</NO3FIP>
-              <NH4Exco units="">100.0</NH4Exco>
-              <NH4FIP units="">1.0</NH4FIP>
-              <UreaExco units="">0.0</UreaExco>
-              <UreaFIP units="">1.0</UreaFIP>
-              <ClExco units="">0.0</ClExco>
-              <ClFIP units="">1.0</ClFIP>
-            </Layer>
-            <Layer>
-              <Thickness units="mm">1000</Thickness>
-              <NO3Exco units="">0</NO3Exco>
-              <NO3FIP units="">1.0</NO3FIP>
-              <NH4Exco units="">100.0</NH4Exco>
-              <NH4FIP units="">1.0</NH4FIP>
-              <UreaExco units="">0.0</UreaExco>
-              <UreaFIP units="">1.0</UreaFIP>
-              <ClExco units="">0.0</ClExco>
-              <ClFIP units="">1.0</ClFIP>
-            </Layer>
-            <Layer>
-              <Thickness units="mm">1000</Thickness>
-              <NO3Exco units="">0.0</NO3Exco>
-              <NO3FIP units="">1.0</NO3FIP>
-              <NH4Exco units="">100.0</NH4Exco>
-              <NH4FIP units="">1.0</NH4FIP>
-              <UreaExco units="">0.0</UreaExco>
-              <UreaFIP units="">1.0</UreaFIP>
-              <ClExco units="">0.0</ClExco>
-              <ClFIP units="">1.0</ClFIP>
-            </Layer>
-          </SwimSoluteParameters>
-        </Swim>
-        <Thickness>
-          <Values type="text" description="Enter soil profile thickness values for APSIM (mm)">10 20 30 40 100 200 300 300 300 300 300 500 500 100 </Values>
-        </Thickness>
-      </soil>
-      <surfaceom name="surface organic matter" shortcut="/simulations/Base/Wheat2/paddock/surface organic matter" />
-      <fertiliser shortcut="/simulations/Base/Wheat2/paddock/fertiliser" />
-      <folder name="Manager folder" shortcut="/simulations/Base/Wheat2/paddock/Manager folder">
-        <manager name="Sow on a fixed date" shortcut="/simulations/Base/Wheat2/paddock/Manager folder/Sow on a fixed date" />
-        <manager name="Harvesting rule" />
-      </folder>
-      <outputfile>
-        <filename output="yes">Wheat2WithSWIM3.out</filename>
-        <title>Wheat2WithSWIM3</title>
-        <variables name="Variables" shortcut="/simulations/Base/Wheat2/paddock/outputfile/Variables" />
-        <events name="Reporting Frequency" shortcut="/simulations/Base/Wheat2/paddock/outputfile/Reporting Frequency" />
-      </outputfile>
-      <micromet name="Micromet" shortcut="/simulations/Base/Wheat2/paddock/Micromet" />
-    </area>
-  </simulation>
+  <folder name="With SWIM">
+    <simulation name="Wheat With SWIM3" shortcut="/simulations/Base/Wheat">
+      <metfile name="met" shortcut="/simulations/Base/Wheat/met" />
+      <clock shortcut="/simulations/Base/Wheat/clock" />
+      <summaryfile shortcut="/simulations/Base/Wheat/summaryfile" />
+      <area name="paddock" shortcut="/simulations/Base/Wheat/paddock">
+        <soil name="Soil" shortcut="/simulations/Base/Wheat/paddock/Soil">
+          <InitWater name="Initial water" shortcut="/simulations/Base/Wheat/paddock/Soil/Initial water" />
+          <Water shortcut="/simulations/Base/Wheat/paddock/Soil/Water">
+            <SoilCrop name="Barley" shortcut="/simulations/Base/Wheat/paddock/Soil/Water/Barley" />
+            <SoilCrop name="Chickpea" shortcut="/simulations/Base/Wheat/paddock/Soil/Water/Chickpea" />
+            <SoilCrop name="Lucerne" shortcut="/simulations/Base/Wheat/paddock/Soil/Water/Lucerne" />
+            <SoilCrop name="Maize" shortcut="/simulations/Base/Wheat/paddock/Soil/Water/Maize" />
+            <SoilCrop name="Perennial Grass" shortcut="/simulations/Base/Wheat/paddock/Soil/Water/Perennial Grass" />
+            <SoilCrop name="Sorghum" shortcut="/simulations/Base/Wheat/paddock/Soil/Water/Sorghum" />
+            <SoilCrop name="Wheat" shortcut="/simulations/Base/Wheat/paddock/Soil/Water/Wheat" />
+            <SoilCrop name="wheat2" shortcut="/simulations/Base/Wheat/paddock/Soil/Water/wheat2" />
+          </Water>
+          <SoilOrganicMatter shortcut="/simulations/Base/Wheat/paddock/Soil/SoilOrganicMatter" />
+          <Analysis shortcut="/simulations/Base/Wheat/paddock/Soil/Analysis" />
+          <Sample name="Initial nitrogen" shortcut="/simulations/Base/Wheat/paddock/Soil/Initial nitrogen" />
+          <Swim>
+            <Salb type="text" description="Bare Soil Albedo">0.13</Salb>
+            <Cn2Bare type="text" description="Bare Soil Runoff Curve Number">73</Cn2Bare>
+            <CnRed type="text" description="Max. Reduction in Curve Number due to cover">20</CnRed>
+            <CnCov type="text" description="Cover for max Curve Number reduction">0.8</CnCov>
+            <Kdul type="text" description="Hydraulic Conductivity at DUL (mm/d)">.1</Kdul>
+            <psidul type="text" description="Matric Potential at DUL (cm)">-100</psidul>
+            <VC type="list" listvalues="on,off" description="Vapour Conductivity Calculations (on/off)">on</VC>
+            <dtmin type="text" description="Minimum Timestep (min)">0.0</dtmin>
+            <dtmax type="text" description="Maximum Timestep (min)">1440.</dtmax>
+            <MaxWaterIncrement type="text" description="Maximum Water Increment (mm)">10</MaxWaterIncrement>
+            <SpaceWeightingFactor type="text" description="Space Weighting Factor">0</SpaceWeightingFactor>
+            <SoluteSpaceWeightingFactor type="text" description="Solute Space Weighting Factor">0.0</SoluteSpaceWeightingFactor>
+            <diagnostics type="yesno" description="Diagnostic Information?">no</diagnostics>
+            <SwimSoluteParameters>
+              <dis type="text" description="Dispersivity - dis ((cm^2/h)/(cm/h)^p) ">15</dis>
+              <disp type="text" description="Dispersivity Power - disp">1</disp>
+              <a type="text" description="Tortuosity Constant - a">1.0</a>
+              <dthc type="text" description="Tortuoisty Offset - dthc">0.0</dthc>
+              <dthp type="text" description="Tortuoisty Power - dthp">1.0</dthp>
+              <WaterTableCl type="text" description="Water Table Cl Concentration (ppm)">0.0</WaterTableCl>
+              <WaterTableNO3 type="text" description="Water Table NO3 Concentration (ppm)">0.0</WaterTableNO3>
+              <WaterTableNH4 type="text" description="Water Table NH4 Concentration (ppm)">0.0</WaterTableNH4>
+              <WaterTableUrea type="text" description="Water Table Urea Concentration (ppm)">0.0</WaterTableUrea>
+              <Layer>
+                <Thickness units="mm">1000</Thickness>
+                <NO3Exco units="">0</NO3Exco>
+                <NO3FIP units="">1.0</NO3FIP>
+                <NH4Exco units="">100.0</NH4Exco>
+                <NH4FIP units="">1.0</NH4FIP>
+                <UreaExco units="">0.0</UreaExco>
+                <UreaFIP units="">1.0</UreaFIP>
+                <ClExco units="">0.0</ClExco>
+                <ClFIP units="">1.0</ClFIP>
+              </Layer>
+              <Layer>
+                <Thickness units="mm">1000</Thickness>
+                <NO3Exco units="">0</NO3Exco>
+                <NO3FIP units="">1.0</NO3FIP>
+                <NH4Exco units="">100.0</NH4Exco>
+                <NH4FIP units="">1.0</NH4FIP>
+                <UreaExco units="">0.0</UreaExco>
+                <UreaFIP units="">1.0</UreaFIP>
+                <ClExco units="">0.0</ClExco>
+                <ClFIP units="">1.0</ClFIP>
+              </Layer>
+              <Layer>
+                <Thickness units="mm">1000</Thickness>
+                <NO3Exco units="">0.0</NO3Exco>
+                <NO3FIP units="">1.0</NO3FIP>
+                <NH4Exco units="">100.0</NH4Exco>
+                <NH4FIP units="">1.0</NH4FIP>
+                <UreaExco units="">0.0</UreaExco>
+                <UreaFIP units="">1.0</UreaFIP>
+                <ClExco units="">0.0</ClExco>
+                <ClFIP units="">1.0</ClFIP>
+              </Layer>
+            </SwimSoluteParameters>
+          </Swim>
+          <Thickness>
+            <Values type="text" description="Enter soil profile thickness values for APSIM (mm)">10 20 30 40 100 200 300 300 300 300 300 500 500 100 </Values>
+          </Thickness>
+        </soil>
+        <surfaceom name="surface organic matter" shortcut="/simulations/Base/Wheat/paddock/surface organic matter" />
+        <fertiliser shortcut="/simulations/Base/Wheat/paddock/fertiliser" />
+        <wheat shortcut="/simulations/Base/Wheat/paddock/wheat" />
+        <folder name="Manager folder" shortcut="/simulations/Base/Wheat/paddock/Manager folder">
+          <manager name="Sow on a fixed date" shortcut="/simulations/Base/Wheat/paddock/Manager folder/Sow on a fixed date" />
+          <manager name="Harvesting rule" shortcut="/simulations/Base/Wheat/paddock/Manager folder/Harvesting rule" />
+        </folder>
+        <outputfile shortcut="/simulations/Base/Wheat/paddock/outputfile">
+          <filename output="yes">Wheat With SWIM3.out</filename>
+          <title>Wheat With SWIM3</title>
+          <variables name="Variables" shortcut="/simulations/Base/Wheat/paddock/outputfile/Variables" />
+          <events name="Reporting Frequency" shortcut="/simulations/Base/Wheat/paddock/outputfile/Reporting Frequency" />
+        </outputfile>
+      </area>
+    </simulation>
+    <simulation name="Wheat2 With SWIM3" shortcut="/simulations/Base/Wheat2">
+      <metfile name="met" shortcut="/simulations/Base/Wheat2/met">
+        <filename shortcut="/simulations/Base/Wheat2/met/filename" input="yes" />
+      </metfile>
+      <clock shortcut="/simulations/Base/Wheat2/clock" />
+      <summaryfile shortcut="/simulations/Base/Wheat2/summaryfile" />
+      <area name="paddock" shortcut="/simulations/Base/Wheat2/paddock">
+        <wheat2 shortcut="/simulations/Base/Wheat2/paddock/wheat2" />
+        <soil name="Soil" shortcut="/simulations/Base/Wheat2/paddock/Soil">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
+          <Water shortcut="/simulations/Base/Wheat2/paddock/Soil/Water">
+            <SoilCrop name="Barley" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Barley" />
+            <SoilCrop name="Chickpea" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Chickpea" />
+            <SoilCrop name="Lucerne" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Lucerne" />
+            <SoilCrop name="Maize" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Maize" />
+            <SoilCrop name="Perennial Grass" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Perennial Grass" />
+            <SoilCrop name="Sorghum" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Sorghum" />
+            <SoilCrop name="Wheat" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/Wheat" />
+            <SoilCrop name="wheat2" shortcut="/simulations/Base/Wheat2/paddock/Soil/Water/wheat2" />
+          </Water>
+          <SoilOrganicMatter shortcut="/simulations/Base/Wheat2/paddock/Soil/SoilOrganicMatter" />
+          <Analysis shortcut="/simulations/Base/Wheat2/paddock/Soil/Analysis" />
+          <InitWater name="Initial Water" shortcut="/simulations/Base/Wheat2/paddock/Soil/Initial Water" />
+          <Sample name="Initial Nitrogen" shortcut="/simulations/Base/Wheat2/paddock/Soil/Initial Nitrogen" />
+          <Swim>
+            <Salb type="text" description="Bare Soil Albedo">0.13</Salb>
+            <Cn2Bare type="text" description="Bare Soil Runoff Curve Number">73</Cn2Bare>
+            <CnRed type="text" description="Max. Reduction in Curve Number due to cover">20</CnRed>
+            <CnCov type="text" description="Cover for max Curve Number reduction">0.8</CnCov>
+            <Kdul type="text" description="Hydraulic Conductivity at DUL (mm/d)">.1</Kdul>
+            <psidul type="text" description="Matric Potential at DUL (cm)">-100</psidul>
+            <VC type="list" listvalues="on,off" description="Vapour Conductivity Calculations (on/off)">on</VC>
+            <dtmin type="text" description="Minimum Timestep (min)">0.0</dtmin>
+            <dtmax type="text" description="Maximum Timestep (min)">1440.</dtmax>
+            <MaxWaterIncrement type="text" description="Maximum Water Increment (mm)">10</MaxWaterIncrement>
+            <SpaceWeightingFactor type="text" description="Space Weighting Factor">0</SpaceWeightingFactor>
+            <SoluteSpaceWeightingFactor type="text" description="Solute Space Weighting Factor">0.0</SoluteSpaceWeightingFactor>
+            <diagnostics type="yesno" description="Diagnostic Information?">no</diagnostics>
+            <SwimSoluteParameters>
+              <dis type="text" description="Dispersivity - dis ((cm^2/h)/(cm/h)^p) ">15</dis>
+              <disp type="text" description="Dispersivity Power - disp">1</disp>
+              <a type="text" description="Tortuosity Constant - a">1.0</a>
+              <dthc type="text" description="Tortuoisty Offset - dthc">0.0</dthc>
+              <dthp type="text" description="Tortuoisty Power - dthp">1.0</dthp>
+              <WaterTableCl type="text" description="Water Table Cl Concentration (ppm)">0.0</WaterTableCl>
+              <WaterTableNO3 type="text" description="Water Table NO3 Concentration (ppm)">0.0</WaterTableNO3>
+              <WaterTableNH4 type="text" description="Water Table NH4 Concentration (ppm)">0.0</WaterTableNH4>
+              <WaterTableUrea type="text" description="Water Table Urea Concentration (ppm)">0.0</WaterTableUrea>
+              <Layer>
+                <Thickness units="mm">1000</Thickness>
+                <NO3Exco units="">0</NO3Exco>
+                <NO3FIP units="">1.0</NO3FIP>
+                <NH4Exco units="">100.0</NH4Exco>
+                <NH4FIP units="">1.0</NH4FIP>
+                <UreaExco units="">0.0</UreaExco>
+                <UreaFIP units="">1.0</UreaFIP>
+                <ClExco units="">0.0</ClExco>
+                <ClFIP units="">1.0</ClFIP>
+              </Layer>
+              <Layer>
+                <Thickness units="mm">1000</Thickness>
+                <NO3Exco units="">0</NO3Exco>
+                <NO3FIP units="">1.0</NO3FIP>
+                <NH4Exco units="">100.0</NH4Exco>
+                <NH4FIP units="">1.0</NH4FIP>
+                <UreaExco units="">0.0</UreaExco>
+                <UreaFIP units="">1.0</UreaFIP>
+                <ClExco units="">0.0</ClExco>
+                <ClFIP units="">1.0</ClFIP>
+              </Layer>
+              <Layer>
+                <Thickness units="mm">1000</Thickness>
+                <NO3Exco units="">0.0</NO3Exco>
+                <NO3FIP units="">1.0</NO3FIP>
+                <NH4Exco units="">100.0</NH4Exco>
+                <NH4FIP units="">1.0</NH4FIP>
+                <UreaExco units="">0.0</UreaExco>
+                <UreaFIP units="">1.0</UreaFIP>
+                <ClExco units="">0.0</ClExco>
+                <ClFIP units="">1.0</ClFIP>
+              </Layer>
+            </SwimSoluteParameters>
+          </Swim>
+          <Thickness>
+            <Values type="text" description="Enter soil profile thickness values for APSIM (mm)">10 20 30 40 100 200 300 300 300 300 300 500 500 100 </Values>
+          </Thickness>
+        </soil>
+        <surfaceom name="surface organic matter" shortcut="/simulations/Base/Wheat2/paddock/surface organic matter" />
+        <fertiliser shortcut="/simulations/Base/Wheat2/paddock/fertiliser" />
+        <folder name="Manager folder" shortcut="/simulations/Base/Wheat2/paddock/Manager folder">
+          <manager name="Sow on a fixed date" shortcut="/simulations/Base/Wheat2/paddock/Manager folder/Sow on a fixed date" />
+          <manager name="Harvesting rule" shortcut="/simulations/Base/Wheat2/paddock/Manager folder/Harvesting rule" />
+        </folder>
+        <outputfile>
+          <filename output="yes">Wheat2 With SWIM3.out</filename>
+          <title>Wheat2 With SWIM3</title>
+          <variables name="Variables" shortcut="/simulations/Base/Wheat2/paddock/outputfile/Variables" />
+          <events name="Reporting Frequency" shortcut="/simulations/Base/Wheat2/paddock/outputfile/Reporting Frequency" />
+        </outputfile>
+        <micromet name="Micromet" shortcut="/simulations/Base/Wheat2/paddock/Micromet" />
+      </area>
+    </simulation>
+    <Graph name="LAI">
+      <Legend>
+        <CheckedTitles> Wheat With SWIM3</CheckedTitles>
+        <CheckedTitles> Wheat2 With SWIM3</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>Circle</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>LeafLAI</Y>
+        <Y>LAI</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="SWdep">
+      <Legend>
+        <CheckedTitles> Wheat With SWIM3</CheckedTitles>
+        <CheckedTitles> Wheat2 With SWIM3</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>Circle</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>sw_dep()</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="Stubble">
+      <Legend>
+        <CheckedTitles> Wheat With SWIM3</CheckedTitles>
+        <CheckedTitles> Wheat2 With SWIM3</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>Circle</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>surfaceom_wt</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="NO3">
+      <Legend>
+        <CheckedTitles> Wheat With SWIM3</CheckedTitles>
+        <CheckedTitles> Wheat2 With SWIM3</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>Circle</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>no3()</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+  </folder>
 </folder>

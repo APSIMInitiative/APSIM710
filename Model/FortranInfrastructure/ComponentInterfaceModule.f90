@@ -426,6 +426,19 @@ module ComponentInterfaceModule
        double precision, intent(in)     :: upper
        end subroutine get_double_array
 
+       subroutine get_double_array_optional(componentID, variableName, arraySize, units, value, numvals, lower, upper)
+       ml_external get_double_array_optional
+!STDCALL(get_double_array_optional) 
+       integer, intent(in)          :: componentID
+       character(len=*), intent(in) :: variableName
+       integer, intent(in)          :: arraySize
+       character(len=*), intent(in) :: units
+       double precision, intent(in out) :: value(*)
+       integer, intent(in out)          :: numvals
+       double precision, intent(in)     :: lower
+       double precision, intent(in)     :: upper
+       end subroutine get_double_array_optional
+       
        subroutine get_char_var(componentID, variableName, units, value, numvals)
        ml_external get_char_var
 !STDCALL(get_char_var)

@@ -1,0 +1,609 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.5
+Title                  = Wheat2 With SWIM3
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component                         "SWIM" = %apsim%\Model\SWIM3.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                       "wheat2" = %apsim%\Model\Plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/04/1940
+     Simulation end date   = 31/12/1941
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\Goond.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        PhenologyStage
+        PhenologyCurrentPhaseName
+        LAI
+        AboveGroundWt format 2
+        sw_dep()
+        surfaceom_wt
+        no3()
+
+     Output file = Wheat2 With SWIM3.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+             if (today = date('1-jun') then
+       wheat2 sow population =150, depth = 50, cultivar = hartog, maxcover = 1.0, budnumber = 1, rowspacing = 500, crop_class =
+              endif
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+             if wheat2.plant_status <> 'out' then
+                if wheat2.phenologycurrentphasename = 'readyforharvesting' or  wheat2.plant_status = 'dead' then
+       wheat2  harvest
+       wheat2  endcrop
+                endif
+             endif
+     END of rules
+     
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- SWIM Initialisation ---------------------------------------------------
+     
+     
+                           APSIM Soil Profile
+                           ------------------
+     
+     ---------------------------------------------------------------
+      x    dlayer   BD   SW     LL15   DUL   SAT      Ks      Psi
+     ---------------------------------------------------------------
+        0.0   10.0  1.02  0.540  0.290  0.540  0.590 100.00   -100.0
+       20.0   20.0  1.02  0.540  0.290  0.540  0.590 100.00   -100.0
+       40.0   30.0  1.02  0.540  0.290  0.540  0.590 100.00   -100.0
+       80.0   40.0  1.02  0.540  0.290  0.540  0.590 100.00   -100.0
+      120.0  100.0  1.02  0.535  0.290  0.535  0.585 100.00   -100.0
+      280.0  200.0  1.02  0.535  0.290  0.535  0.585 100.00   -100.0
+      520.0  300.0  1.02  0.540  0.290  0.540  0.587 100.00   -100.0
+      880.0  300.0  1.03  0.533  0.293  0.533  0.577 100.00   -100.0
+     1120.0  300.0  1.08  0.513  0.303  0.513  0.563 100.00   -100.0
+     1480.0  300.0  1.11  0.500  0.313  0.500  0.550 100.00   -100.0
+     1720.0  300.0  1.13  0.493  0.323  0.493  0.543 100.00   -100.0
+     2080.0  500.0  1.17  0.474  0.336  0.474  0.524 100.00   -100.0
+     2720.0  500.0  1.22  0.452  0.354  0.452  0.502 100.00   -100.0
+     3000.0  100.0  1.25  0.440  0.360  0.440  0.490 100.00   -100.0
+     ---------------------------------------------------------------
+     
+     
+                       Soil Moisture Characteristics
+                       -----------------------------
+     
+     --------------------------------------------------------------------
+                              Soil Water Potential (cm)
+         x       0      10      25    100   1000  15000   10^6   10^7
+     --------------------------------------------------------------------
+        0.0 | 0.5900 0.5837 0.5729 0.5400 0.4363 0.2900 0.0864 0.0000
+       20.0 | 0.5900 0.5837 0.5729 0.5400 0.4363 0.2900 0.0864 0.0000
+       40.0 | 0.5900 0.5837 0.5729 0.5400 0.4363 0.2900 0.0864 0.0000
+       80.0 | 0.5900 0.5837 0.5729 0.5400 0.4363 0.2900 0.0864 0.0000
+      120.0 | 0.5850 0.5787 0.5679 0.5350 0.4333 0.2900 0.0866 0.0000
+      280.0 | 0.5850 0.5787 0.5679 0.5350 0.4333 0.2900 0.0866 0.0000
+      520.0 | 0.5870 0.5811 0.5710 0.5400 0.4377 0.2900 0.0864 0.0000
+      880.0 | 0.5770 0.5715 0.5620 0.5330 0.4359 0.2930 0.0878 0.0000
+     1120.0 | 0.5630 0.5567 0.5459 0.5130 0.4253 0.3030 0.0922 0.0000
+     1480.0 | 0.5500 0.5438 0.5329 0.5000 0.4215 0.3130 0.0964 0.0000
+     1720.0 | 0.5430 0.5368 0.5259 0.4930 0.4215 0.3230 0.1003 0.0000
+     2080.0 | 0.5240 0.5101 0.4979 0.4740 0.4244 0.3360 0.1058 0.0000
+     2720.0 | 0.5020 0.4858 0.4732 0.4520 0.4212 0.3540 0.1133 0.0000
+     3000.0 | 0.4900 0.4727 0.4599 0.4400 0.4176 0.3600 0.1159 0.0000
+     --------------------------------------------------------------------
+     
+     
+                        Soil Hydraulic Conductivity
+                        ---------------------------
+     
+     -----------------------------------------------------------------------
+                              Soil Water Potential (cm)
+         x       0        10       25       100     1000    15000     10^6
+     -----------------------------------------------------------------------
+        0.0 | 100.     25.4     2.50     .100     .168E-02 .681E-06 .607E-16
+       20.0 | 100.     25.4     2.50     .100     .168E-02 .681E-06 .607E-16
+       40.0 | 100.     25.4     2.50     .100     .168E-02 .681E-06 .607E-16
+       80.0 | 100.     25.4     2.50     .100     .168E-02 .681E-06 .607E-16
+      120.0 | 100.     25.4     2.51     .100     .167E-02 .701E-06 .484E-16
+      280.0 | 100.     25.4     2.51     .100     .167E-02 .701E-06 .484E-16
+      520.0 | 100.     25.3     2.46     .100     .178E-02 .681E-06 .607E-16
+      880.0 | 100.     25.2     2.45     .100     .187E-02 .731E-06 .338E-16
+     1120.0 | 100.     25.5     2.59     .100     .159E-02 .907E-06 .378E-17
+     1480.0 | 100.     25.7     2.67     .100     .154E-02 .108E-05 .360E-18
+     1720.0 | 100.     25.8     2.76     .100     .151E-02 .124E-05 .345E-19
+     2080.0 | 100.     5.48     .758     .100     .283E-02 .157E-05 .120E-21
+     2720.0 | 100.     4.87     .887     .100     .443E-02 .211E-05 .355E-27
+     3000.0 | 100.     6.12     1.13     .100     .621E-02 .241E-05 .215E-31
+     -----------------------------------------------------------------------
+     
+     
+          bottom boundary condition = specified gradient (     0.000)
+          vapour conductivity       = on
+          Evaporation Source        = calc
+     
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.40  1.04    0.66    0.06    0.00
+             2     8.40  1.04    1.33    0.12    0.00
+             3     8.40  1.04    1.99    0.18    0.00
+             4     8.40  1.04    2.65    0.24    0.00
+             5     8.60  0.96    4.41    0.36    0.00
+             6     8.90  0.89    4.31    0.20    0.00
+             7     9.07  0.89    6.02    0.31    0.00
+             8     9.20  0.85    5.27    0.31    0.00
+             9     9.17  0.66    5.50    0.32    0.00
+            10     9.07  0.39    5.68    0.33    0.00
+            11     9.00  0.25    5.77    0.34    0.00
+            12     8.94  0.18    9.93    0.58    0.00
+            13     8.90  0.13   10.38    0.61    0.00
+            14     8.90  0.12    2.13    0.13    0.00
+          ------------------------------------------------
+           Totals               66.02    4.11    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1       1045.3    83.6    15.5     1.9    11.3     0.3
+             2       2090.6   167.2    31.0     3.9    11.1     0.3
+             3       3135.8   250.9    46.6     5.8    10.8     0.3
+             4       4181.1   334.5    62.1     7.8    10.4     0.3
+             5       9780.1   782.4   111.2    13.9     9.4     0.2
+             6      18148.2  1451.9    96.8    12.1     7.7     0.2
+             7      27175.6  2174.1    58.4     7.3     5.7     0.1
+             8      26319.9  2105.6    21.6     2.7     4.2     0.1
+             9      21410.9  1712.9    10.6     1.3     3.1     0.1
+            10      13015.7  1041.3     6.4     0.8     2.3     0.1
+            11       8572.5   685.8     4.2     0.5     1.7     0.0
+            12      10740.3   859.2     5.3     0.7     1.0     0.0
+            13       7682.2   614.6     3.8     0.5     0.6     0.0
+            14       1499.3   119.9     0.7     0.1     0.6     0.0
+          ---------------------------------------------------------
+           Totals  154797.3 12383.8   474.4    59.3    80.0     2.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+1 June 1940(Day of year=153), Sow on a fixed date: 
+     Manager sending message :- wheat2 sow  population = 150, depth = 50, cultivar = hartog, maxcover = 1.0, budnumber = 1, rowspacing = 500, crop_class =
+Crop Sow
+   ------------------------------------------------
+   cultivar                   = hartog
+   Phases:
+      SowingToGermination
+      GerminationToEmergence
+      EmergenceToEndOfJuvenile
+         Target                    =        1 (dd)
+      EndOfJuvenileToFloralInitiation
+         Target                    =      400 (dd)
+      FloralInitiationToFlowering
+         Target                    =      555 (dd)
+      FloweringToStartGrainFill
+         Target                    =      120 (dd)
+      StartGrainFillToEndGrainFill
+         Target                    =      545 (dd)
+      EndGrainFillToMaturity
+         Target                    =       35 (dd)
+      MaturityToHarvestRipe
+         Target                    =        1 (dd)
+      ReadyForHarvesting
+         Target                    =     1000 (dd)
+      EndCrop
+         Target                    =     1000 (dd)
+   grains_per_gram_stem           =       25.0 (/g)
+   potential_grain_filling_rate   =     0.0020 (g/grain/day)
+   potential_grain_growth_rate    =     0.0010 (g/grain/day)
+   max_grain_size                 =     0.0410 (g)
+   ------------------------------------------------
+
+
+Using SWIM3 for Soil Water Uptake.
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+          10.0     0.100          0.290       1.000
+          20.0     0.100          0.290       1.000
+          30.0     0.100          0.290       1.000
+          40.0     0.100          0.290       1.000
+         100.0     0.100          0.290       1.000
+         200.0     0.090          0.305       1.000
+         300.0     0.073          0.320       1.000
+         300.0     0.053          0.330       1.000
+         300.0     0.033          0.360       1.000
+         300.0     0.017          0.390       1.000
+         300.0     0.007          0.433       0.667
+         500.0     0.000          0.474       0.000
+         500.0     0.000          0.452       0.000
+         100.0     0.000          0.440       0.000
+         -----------------------------------------------
+         Extractable SW:   319mm in  3000mm total depth ( 11%).
+    Crop factor for bounding water use is set to   1.5 times eo.
+
+                 Crop Sowing Data
+    ------------------------------------------------
+    Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+    Day no   mm     m^2     mm   row   plant name
+    ------------------------------------------------
+       153   50.0  150.0  500.0   0.0   0.0 hartog
+    ------------------------------------------------
+
+2 June 1940(Day of year = 154), wheat2:
+      Germination
+11 June 1940(Day of year = 163), wheat2:
+      Emergence
+           biomass =           0.69 (g/m^2)   lai          =    0.03 (m^2/m^2)
+           stover N conc =     5.85 (%)     extractable sw =   25.87 (mm)
+12 June 1940(Day of year = 164), wheat2:
+      EndOfJuvenile
+           biomass =           0.95 (g/m^2)   lai          =    0.03 (m^2/m^2)
+           stover N conc =     5.83 (%)     extractable sw =   25.68 (mm)
+6 August 1940(Day of year = 219), wheat2:
+      FloralInitiation
+           biomass =         110.30 (g/m^2)   lai          =    1.40 (m^2/m^2)
+           stover N conc =     1.69 (%)     extractable sw =  146.41 (mm)
+11 September 1940(Day of year = 255), wheat2:
+      Flowering
+           biomass =         337.06 (g/m^2)   lai          =    0.83 (m^2/m^2)
+           stover N conc =     0.72 (%)     extractable sw =  175.67 (mm)
+17 September 1940(Day of year = 261), wheat2:
+      StartGrainFill
+           biomass =         381.35 (g/m^2)   lai          =    0.65 (m^2/m^2)
+           stover N conc =     0.53 (%)     extractable sw =  163.39 (mm)
+22 September 1940(Day of year=266), SWIM: 
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    8.0000000000000000      to:    4.0000000000000000
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    8.0000000000000142      to:    4.0000000000000071
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    7.2499999999999964      to:    3.6249999999999982
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    1.8124999999999991      to:   0.90624999999999956
+23 September 1940(Day of year=267), SWIM: 
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    8.5928987429889592      to:    4.2964493714944796
+15 October 1940(Day of year = 289), wheat2:
+      EndGrainFill
+           biomass =         422.08 (g/m^2)   lai          =    0.18 (m^2/m^2)
+           stover N conc =     0.37 (%)     extractable sw =  151.42 (mm)
+16 October 1940(Day of year = 290), wheat2:
+      Maturity
+           biomass =         422.08 (g/m^2)   lai          =    0.16 (m^2/m^2)
+           stover N conc =     0.37 (%)     extractable sw =  151.02 (mm)
+17 October 1940(Day of year = 291), wheat2:
+      HarvestRipe
+           biomass =         422.08 (g/m^2)   lai          =    0.00 (m^2/m^2)
+           stover N conc =     0.37 (%)     extractable sw =  150.86 (mm)
+17 October 1940(Day of year=291), Harvesting rule: 
+     Manager sending message :- wheat2 harvest
+
+ flowering day          =  255                           stover (kg/ha)         =     2795.8
+ maturity day           =  290                           grain yield (kg/ha)    =     1425.0
+ grain % water content  =   12.5                         grain yield wet (kg/ha)=     1781.2
+ grain wt (g)           =    0.029                       grains/m^2             =     4884.1
+ grains/plant           =   32.6                         maximum lai            =      1.458
+ total above ground biomass (kg/ha)    =     4220.8
+ live above ground biomass (kg/ha)     =     4220.8
+ green above ground biomass (kg/ha)    =     3493.0
+ senesced above ground biomass (kg/ha) =      727.8
+ number of leaves       =     35.9
+ DM Root:Shoot ratio    =     0.18                       Harvest Index          =       0.34
+ Stover C:N ratio       =   109.56                       Root C:N ratio         =      42.96
+ grain N percent        =     1.53                       total N content (kg/ha)=      31.99
+ grain N uptake (kg/ha) =    21.78                       senesced N content (kg/ha)=    3.64
+ green N content (kg/ha)=     6.57
+
+ Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+                         SowingToGermination        0.000        0.000        0.000        0.000
+                      GerminationToEmergence        0.000        0.000        0.000        0.000
+                    EmergenceToEndOfJuvenile        0.000        0.000        0.000        0.000
+             EndOfJuvenileToFloralInitiation        0.000        0.000        0.350        0.350
+                 FloralInitiationToFlowering        0.000        0.000        0.404        0.404
+                   FloweringToStartGrainFill        0.000        0.000        0.039        0.039
+                StartGrainFillToEndGrainFill        0.000        0.000        0.704        0.704
+                      EndGrainFillToMaturity        0.000        0.000        0.826        0.826
+                       MaturityToHarvestRipe        0.000        0.000        0.818        0.818
+
+
+Crop harvested.
+    Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                      DM (kg/ha) =                2795.8                     0.0
+                      N  (kg/ha) =                  10.21                    0.00
+
+    Organic matter removed from system:-      From Tops               From Roots
+                      DM (kg/ha) =                1425.0                     0.0
+                      N  (kg/ha) =                  21.78                    0.00
+
+     Manager sending message :- wheat2 endcrop
+    Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                      DM (kg/ha) =                   0.0                    74.6
+                      N  (kg/ha) =                   0.00                    0.69
+30 November 1940(Day of year=335), SWIM: 
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    3.7500000000000000      to:    1.8750000000000000
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    4.0404039366133473      to:    2.0202019683066736
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    4.0404039366136058      to:    2.0202019683068029
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    1.0101009841534014      to:   0.50505049207670072
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    4.0404039366157880      to:    2.0202019683078940
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    1.0101009841539470      to:   0.50505049207697350
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:   0.25252524603848675      to:   0.12626262301924338
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    4.1754939312249917      to:    2.0877469656124958
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    1.0438734828062479      to:   0.52193674140312396
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    3.7281567319400892      to:    1.8640783659700446
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:   0.93203918298502231      to:   0.46601959149251115
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    3.7295963081933223      to:    1.8647981540966612
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:   0.93239907704833058      to:   0.46619953852416529
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    3.7269454394781860      to:    1.8634727197390930
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    4.0375242261016187      to:    2.0187621130508093
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    3.0281431695762140      to:    1.5140715847881070
+1 June 1941(Day of year=152), Sow on a fixed date: 
+     Manager sending message :- wheat2 sow  population = 150, depth = 50, cultivar = hartog, maxcover = 1.0, budnumber = 1, rowspacing = 500, crop_class =
+Crop Sow
+   ------------------------------------------------
+   cultivar                   = hartog
+   Phases:
+      SowingToGermination
+      GerminationToEmergence
+      EmergenceToEndOfJuvenile
+         Target                    =        1 (dd)
+      EndOfJuvenileToFloralInitiation
+         Target                    =      400 (dd)
+      FloralInitiationToFlowering
+         Target                    =      555 (dd)
+      FloweringToStartGrainFill
+         Target                    =      120 (dd)
+      StartGrainFillToEndGrainFill
+         Target                    =      545 (dd)
+      EndGrainFillToMaturity
+         Target                    =       35 (dd)
+      MaturityToHarvestRipe
+         Target                    =        1 (dd)
+      ReadyForHarvesting
+         Target                    =     1000 (dd)
+      EndCrop
+         Target                    =     1000 (dd)
+   grains_per_gram_stem           =       25.0 (/g)
+   potential_grain_filling_rate   =     0.0020 (g/grain/day)
+   potential_grain_growth_rate    =     0.0010 (g/grain/day)
+   max_grain_size                 =     0.0410 (g)
+   ------------------------------------------------
+
+
+Using SWIM3 for Soil Water Uptake.
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+          10.0     0.100          0.290       1.000
+          20.0     0.100          0.290       1.000
+          30.0     0.100          0.290       1.000
+          40.0     0.100          0.290       1.000
+         100.0     0.100          0.290       1.000
+         200.0     0.090          0.305       1.000
+         300.0     0.073          0.320       1.000
+         300.0     0.053          0.330       1.000
+         300.0     0.033          0.360       1.000
+         300.0     0.017          0.390       1.000
+         300.0     0.007          0.433       0.667
+         500.0     0.000          0.474       0.000
+         500.0     0.000          0.452       0.000
+         100.0     0.000          0.440       0.000
+         -----------------------------------------------
+         Extractable SW:   319mm in  3000mm total depth ( 11%).
+    Crop factor for bounding water use is set to   1.5 times eo.
+
+                 Crop Sowing Data
+    ------------------------------------------------
+    Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+    Day no   mm     m^2     mm   row   plant name
+    ------------------------------------------------
+       152   50.0  150.0  500.0   0.0   0.0 hartog
+    ------------------------------------------------
+
+2 June 1941(Day of year = 153), wheat2:
+      Germination
+10 June 1941(Day of year = 161), wheat2:
+      Emergence
+           biomass =           0.69 (g/m^2)   lai          =    0.03 (m^2/m^2)
+           stover N conc =     5.85 (%)     extractable sw =   44.33 (mm)
+11 June 1941(Day of year = 162), wheat2:
+      EndOfJuvenile
+           biomass =           0.86 (g/m^2)   lai          =    0.03 (m^2/m^2)
+           stover N conc =     5.83 (%)     extractable sw =   42.68 (mm)
+11 August 1941(Day of year = 223), wheat2:
+      FloralInitiation
+           biomass =          75.29 (g/m^2)   lai          =    0.72 (m^2/m^2)
+           stover N conc =     1.44 (%)     extractable sw =  151.63 (mm)
+16 September 1941(Day of year = 259), wheat2:
+      Flowering
+           biomass =         187.21 (g/m^2)   lai          =    0.36 (m^2/m^2)
+           stover N conc =     0.70 (%)     extractable sw =  189.53 (mm)
+23 September 1941(Day of year = 266), wheat2:
+      StartGrainFill
+           biomass =         211.40 (g/m^2)   lai          =    0.26 (m^2/m^2)
+           stover N conc =     0.47 (%)     extractable sw =  181.19 (mm)
+20 October 1941(Day of year = 293), wheat2:
+      EndGrainFill
+           biomass =         228.13 (g/m^2)   lai          =    0.08 (m^2/m^2)
+           stover N conc =     0.37 (%)     extractable sw =  173.56 (mm)
+21 October 1941(Day of year = 294), wheat2:
+      Maturity
+           biomass =         228.13 (g/m^2)   lai          =    0.07 (m^2/m^2)
+           stover N conc =     0.37 (%)     extractable sw =  173.31 (mm)
+22 October 1941(Day of year = 295), wheat2:
+      HarvestRipe
+           biomass =         228.13 (g/m^2)   lai          =    0.00 (m^2/m^2)
+           stover N conc =     0.37 (%)     extractable sw =  173.24 (mm)
+22 October 1941(Day of year=295), Harvesting rule: 
+     Manager sending message :- wheat2 harvest
+
+ flowering day          =  259                           stover (kg/ha)         =     1531.6
+ maturity day           =  294                           grain yield (kg/ha)    =      749.7
+ grain % water content  =   12.5                         grain yield wet (kg/ha)=      937.2
+ grain wt (g)           =    0.026                       grains/m^2             =     2856.7
+ grains/plant           =   19.0                         maximum lai            =      0.757
+ total above ground biomass (kg/ha)    =     2281.3
+ live above ground biomass (kg/ha)     =     2281.3
+ green above ground biomass (kg/ha)    =     1888.3
+ senesced above ground biomass (kg/ha) =      393.0
+ number of leaves       =     32.0
+ DM Root:Shoot ratio    =     0.19                       Harvest Index          =       0.33
+ Stover C:N ratio       =   107.44                       Root C:N ratio         =      44.32
+ grain N percent        =     1.55                       total N content (kg/ha)=      17.30
+ grain N uptake (kg/ha) =    11.60                       senesced N content (kg/ha)=    1.97
+ green N content (kg/ha)=     3.74
+
+ Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+                         SowingToGermination        0.000        0.000        0.000        0.000
+                      GerminationToEmergence        0.000        0.000        0.000        0.000
+                    EmergenceToEndOfJuvenile        0.000        0.000        0.000        0.000
+             EndOfJuvenileToFloralInitiation        0.000        0.000        0.416        0.416
+                 FloralInitiationToFlowering        0.000        0.000        0.440        0.440
+                   FloweringToStartGrainFill        0.000        0.000        0.131        0.131
+                StartGrainFillToEndGrainFill        0.000        0.000        0.721        0.721
+                      EndGrainFillToMaturity        0.000        0.000        0.730        0.730
+                       MaturityToHarvestRipe        0.000        0.000        0.718        0.718
+
+
+Crop harvested.
+    Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                      DM (kg/ha) =                1531.6                     0.0
+                      N  (kg/ha) =                   5.70                    0.00
+
+    Organic matter removed from system:-      From Tops               From Roots
+                      DM (kg/ha) =                 749.7                     0.0
+                      N  (kg/ha) =                  11.60                    0.00
+
+     Manager sending message :- wheat2 endcrop
+    Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                      DM (kg/ha) =                   0.0                    44.0
+                      N  (kg/ha) =                   0.00                    0.40
+26 October 1941(Day of year=299), SWIM: 
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    7.3619635347685533      to:    3.6809817673842766
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    7.3619635347695986      to:    3.6809817673847993
+28 October 1941(Day of year=301), SWIM: 
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    9.3909193715628856      to:    4.6954596857814428
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    9.6522701571092782      to:    4.8261350785546391
+16 November 1941(Day of year=320), SWIM: 
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    7.5000000000000000      to:    3.7500000000000000
+17 November 1941(Day of year=321), SWIM: 
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim -  Changing dt value from:    7.2727272727266410      to:    3.6363636363633205
+31 December 1941(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.

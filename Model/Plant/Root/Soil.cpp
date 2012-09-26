@@ -678,7 +678,6 @@ void Soil::doWaterUptakeInternal (float sw_demand, float root_depth)
             }
          }
       }
-   Debug("Root.dlt_sw_dep=%f", sum_real_array(dlt_sw_dep, max_layer));
    }
 
 float Soil::peswTotal(float root_depth)
@@ -727,10 +726,9 @@ void Soil::UpdateOtherVariables(string uptake_source)
       scienceAPI.set("dlt_no3", "kg/ha", dltNO3KgHa);
       scienceAPI.set("dlt_nh4", "kg/ha", dltNH4KgHa);
       scienceAPI.set("dlt_sw_dep", "mm", dltSwDep);
-      Debug("Root.WaterUptake=%f", sum(dltSwDep));
       Debug("Root.NitrogenUptake.DeltaNO3=%f", sum(dltNO3KgHa));
       Debug("Root.NitrogenUptake.DeltaNH4=%f", sum(dltNH4KgHa));
-
+      Debug("Root.WaterUptake=%f", sum(dltSwDep));
       }
    else if (Str_i_Eq(uptake_source, "swim3"))
       {
@@ -742,6 +740,8 @@ void Soil::UpdateOtherVariables(string uptake_source)
          }
       scienceAPI.set("dlt_no3", "kg/ha", dltNO3KgHa);
       scienceAPI.set("dlt_nh4", "kg/ha", dltNH4KgHa);
+      Debug("Root.NitrogenUptake.DeltaNO3=%f", sum(dltNO3KgHa));
+      Debug("Root.NitrogenUptake.DeltaNH4=%f", sum(dltNH4KgHa));
       }
    else
       {
@@ -837,6 +837,7 @@ void Soil::doWaterUptake (string uptake_source, string crop_type, float SWDemand
         {
         doWaterUptakeInternal(SWDemand, root_depth);
         }
+    Debug("Root.dlt_sw_dep=%f", sum_real_array(dlt_sw_dep, max_layer));
     }
 
 void Soil::plant_nit_supply(float root_depth, float *root_length)

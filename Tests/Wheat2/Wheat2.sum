@@ -50,16 +50,11 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        StageCodeValue
+        PhenologyStage
         PhenologyCurrentPhaseName
-        LeafLAI
-        AboveGroundWt
+        LAI
+        AboveGroundWt format 2
         sw_dep()
-        WaterDemand
-        LeafFw
-        LeafTranspiration
-        LeafWaterDemand
-        RootWaterUptake
         surfaceom_wt
         no3()
 
@@ -81,13 +76,15 @@ Paddock:
 
 ------- Harvesting rule Initialisation ----------------------------------------
      Manager rules:
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     No manager lines were found in any parameter file.
-     Component name: Harvesting rule
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
+     SECTION:- end_of_day
+             if wheat2.plant_status <> 'out' then
+                if wheat2.phenologycurrentphasename = 'readyforharvesting' or  wheat2.plant_status = 'dead' then
+       wheat2  harvest
+       wheat2  endcrop
+                endif
+             endif
+     END of rules
      
 
 ------- Micromet Initialisation -----------------------------------------------
@@ -329,121 +326,71 @@ Crop Sow
 6 August 1940(Day of year = 219), wheat2:
       FloralInitiation
            biomass =         106.17 (g/m^2)   lai          =    1.30 (m^2/m^2)
-           stover N conc =     1.69 (%)     extractable sw =  178.95 (mm)
+           stover N conc =     1.69 (%)     extractable sw =  179.04 (mm)
 11 September 1940(Day of year = 255), wheat2:
       Flowering
-           biomass =         317.55 (g/m^2)   lai          =    0.74 (m^2/m^2)
-           stover N conc =     0.72 (%)     extractable sw =  183.57 (mm)
+           biomass =         317.52 (g/m^2)   lai          =    0.74 (m^2/m^2)
+           stover N conc =     0.72 (%)     extractable sw =  183.58 (mm)
 17 September 1940(Day of year = 261), wheat2:
       StartGrainFill
-           biomass =         357.44 (g/m^2)   lai          =    0.57 (m^2/m^2)
-           stover N conc =     0.52 (%)     extractable sw =  172.95 (mm)
+           biomass =         357.40 (g/m^2)   lai          =    0.57 (m^2/m^2)
+           stover N conc =     0.52 (%)     extractable sw =  172.96 (mm)
 15 October 1940(Day of year = 289), wheat2:
       EndGrainFill
-           biomass =         391.35 (g/m^2)   lai          =    0.17 (m^2/m^2)
-           stover N conc =     0.36 (%)     extractable sw =  161.82 (mm)
+           biomass =         391.36 (g/m^2)   lai          =    0.17 (m^2/m^2)
+           stover N conc =     0.36 (%)     extractable sw =  161.91 (mm)
 16 October 1940(Day of year = 290), wheat2:
       Maturity
-           biomass =         391.35 (g/m^2)   lai          =    0.15 (m^2/m^2)
-           stover N conc =     0.36 (%)     extractable sw =  161.63 (mm)
+           biomass =         391.36 (g/m^2)   lai          =    0.15 (m^2/m^2)
+           stover N conc =     0.36 (%)     extractable sw =  161.71 (mm)
 17 October 1940(Day of year = 291), wheat2:
       HarvestRipe
-           biomass =         391.35 (g/m^2)   lai          =    0.00 (m^2/m^2)
-           stover N conc =     0.36 (%)     extractable sw =  161.42 (mm)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 3913.53 (kg/ha)
-1 December 1940(Day of year = 336), wheat2:
-      EndCrop
-           biomass =         391.35 (g/m^2)   lai          =    0.00 (m^2/m^2)
-           stover N conc =     0.36 (%)     extractable sw =  198.31 (mm)
+           biomass =         391.36 (g/m^2)   lai          =    0.00 (m^2/m^2)
+           stover N conc =     0.36 (%)     extractable sw =  161.51 (mm)
+17 October 1940(Day of year=291), Harvesting rule: 
+     Manager sending message :- wheat2 harvest
+
+ flowering day          =  255                           stover (kg/ha)         =     2622.2
+ maturity day           =  290                           grain yield (kg/ha)    =     1291.5
+ grain % water content  =   12.5                         grain yield wet (kg/ha)=     1614.3
+ grain wt (g)           =    0.028                       grains/m^2             =     4613.5
+ grains/plant           =   30.8                         maximum lai            =      1.358
+ total above ground biomass (kg/ha)    =     3913.6
+ live above ground biomass (kg/ha)     =     3913.6
+ green above ground biomass (kg/ha)    =     3222.7
+ senesced above ground biomass (kg/ha) =      690.9
+ number of leaves       =     35.8
+ DM Root:Shoot ratio    =     0.18                       Harvest Index          =       0.33
+ Stover C:N ratio       =   110.23                       Root C:N ratio         =      42.91
+ grain N percent        =     1.52                       total N content (kg/ha)=      29.10
+ grain N uptake (kg/ha) =    19.59                       senesced N content (kg/ha)=    3.45
+ green N content (kg/ha)=     6.06
+
+ Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+                         SowingToGermination        0.000        0.000        0.000        0.000
+                      GerminationToEmergence        0.000        0.000        0.000        0.000
+                    EmergenceToEndOfJuvenile        0.000        0.000        0.000        0.000
+             EndOfJuvenileToFloralInitiation        0.000        0.000        0.357        0.357
+                 FloralInitiationToFlowering        0.000        0.000        0.410        0.410
+                   FloweringToStartGrainFill        0.000        0.000        0.043        0.043
+                StartGrainFillToEndGrainFill        0.000        0.000        0.728        0.728
+                      EndGrainFillToMaturity        0.000        0.000        0.864        0.864
+                       MaturityToHarvestRipe        0.000        0.000        0.858        0.858
+
+
+Crop harvested.
+    Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                      DM (kg/ha) =                2622.2                     0.0
+                      N  (kg/ha) =                   9.51                    0.00
+
+    Organic matter removed from system:-      From Tops               From Roots
+                      DM (kg/ha) =                1291.5                     0.0
+                      N  (kg/ha) =                  19.59                    0.00
+
+     Manager sending message :- wheat2 endcrop
+    Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                      DM (kg/ha) =                   0.0                    70.9
+                      N  (kg/ha) =                   0.00                    0.66
 1 June 1941(Day of year=152), Sow on a fixed date: 
      Manager sending message :- wheat2 sow  population = 150, depth = 50, cultivar = hartog, maxcover = 1.0, budnumber = 1, rowspacing = 500, crop_class =
 Crop Sow
@@ -511,132 +458,78 @@ Crop Sow
 10 June 1941(Day of year = 161), wheat2:
       Emergence
            biomass =           0.69 (g/m^2)   lai          =    0.03 (m^2/m^2)
-           stover N conc =     5.85 (%)     extractable sw =   30.35 (mm)
+           stover N conc =     5.85 (%)     extractable sw =   34.48 (mm)
 11 June 1941(Day of year = 162), wheat2:
       EndOfJuvenile
            biomass =           0.86 (g/m^2)   lai          =    0.03 (m^2/m^2)
-           stover N conc =     5.83 (%)     extractable sw =   28.18 (mm)
+           stover N conc =     5.83 (%)     extractable sw =   32.62 (mm)
 11 August 1941(Day of year = 223), wheat2:
       FloralInitiation
-           biomass =         154.38 (g/m^2)   lai          =    1.76 (m^2/m^2)
-           stover N conc =     1.55 (%)     extractable sw =  144.17 (mm)
+           biomass =          76.77 (g/m^2)   lai          =    0.74 (m^2/m^2)
+           stover N conc =     1.44 (%)     extractable sw =  197.76 (mm)
 16 September 1941(Day of year = 259), wheat2:
       Flowering
-           biomass =         368.94 (g/m^2)   lai          =    0.88 (m^2/m^2)
-           stover N conc =     0.67 (%)     extractable sw =  139.39 (mm)
+           biomass =         191.41 (g/m^2)   lai          =    0.36 (m^2/m^2)
+           stover N conc =     0.71 (%)     extractable sw =  224.50 (mm)
 23 September 1941(Day of year = 266), wheat2:
       StartGrainFill
-           biomass =         411.61 (g/m^2)   lai          =    0.61 (m^2/m^2)
-           stover N conc =     0.44 (%)     extractable sw =  125.32 (mm)
+           biomass =         215.92 (g/m^2)   lai          =    0.26 (m^2/m^2)
+           stover N conc =     0.47 (%)     extractable sw =  215.58 (mm)
 20 October 1941(Day of year = 293), wheat2:
       EndGrainFill
-           biomass =         426.48 (g/m^2)   lai          =    0.13 (m^2/m^2)
-           stover N conc =     0.36 (%)     extractable sw =  119.29 (mm)
+           biomass =         230.36 (g/m^2)   lai          =    0.08 (m^2/m^2)
+           stover N conc =     0.37 (%)     extractable sw =  208.04 (mm)
 21 October 1941(Day of year = 294), wheat2:
       Maturity
-           biomass =         426.48 (g/m^2)   lai          =    0.12 (m^2/m^2)
-           stover N conc =     0.36 (%)     extractable sw =  119.24 (mm)
+           biomass =         230.36 (g/m^2)   lai          =    0.07 (m^2/m^2)
+           stover N conc =     0.37 (%)     extractable sw =  207.70 (mm)
 22 October 1941(Day of year = 295), wheat2:
       HarvestRipe
-           biomass =         426.48 (g/m^2)   lai          =    0.00 (m^2/m^2)
-           stover N conc =     0.36 (%)     extractable sw =  119.17 (mm)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-Crop failure because of total leaf senescence.
-Plant death. standing above-ground dm = 4264.83 (kg/ha)
-8 December 1941(Day of year = 342), wheat2:
-      EndCrop
-           biomass =         426.48 (g/m^2)   lai          =    0.00 (m^2/m^2)
-           stover N conc =     0.36 (%)     extractable sw =  126.06 (mm)
+           biomass =         230.36 (g/m^2)   lai          =    0.00 (m^2/m^2)
+           stover N conc =     0.37 (%)     extractable sw =  207.34 (mm)
+22 October 1941(Day of year=295), Harvesting rule: 
+     Manager sending message :- wheat2 harvest
+
+ flowering day          =  259                           stover (kg/ha)         =     1563.2
+ maturity day           =  294                           grain yield (kg/ha)    =      740.5
+ grain % water content  =   12.5                         grain yield wet (kg/ha)=      925.6
+ grain wt (g)           =    0.025                       grains/m^2             =     2925.9
+ grains/plant           =   19.5                         maximum lai            =      0.773
+ total above ground biomass (kg/ha)    =     2303.6
+ live above ground biomass (kg/ha)     =     2303.6
+ green above ground biomass (kg/ha)    =     1904.4
+ senesced above ground biomass (kg/ha) =      399.2
+ number of leaves       =     32.2
+ DM Root:Shoot ratio    =     0.20                       Harvest Index          =       0.32
+ Stover C:N ratio       =   109.33                       Root C:N ratio         =      43.88
+ grain N percent        =     1.51                       total N content (kg/ha)=      16.92
+ grain N uptake (kg/ha) =    11.20                       senesced N content (kg/ha)=    2.00
+ green N content (kg/ha)=     3.72
+
+ Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+                         SowingToGermination        0.000        0.000        0.000        0.000
+                      GerminationToEmergence        0.000        0.000        0.000        0.000
+                    EmergenceToEndOfJuvenile        0.000        0.000        0.000        0.000
+             EndOfJuvenileToFloralInitiation        0.000        0.000        0.412        0.412
+                 FloralInitiationToFlowering        0.000        0.000        0.435        0.435
+                   FloweringToStartGrainFill        0.000        0.000        0.118        0.118
+                StartGrainFillToEndGrainFill        0.000        0.000        0.764        0.764
+                      EndGrainFillToMaturity        0.000        0.000        0.809        0.809
+                       MaturityToHarvestRipe        0.000        0.000        0.801        0.801
+
+
+Crop harvested.
+    Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                      DM (kg/ha) =                1563.2                     0.0
+                      N  (kg/ha) =                   5.72                    0.00
+
+    Organic matter removed from system:-      From Tops               From Roots
+                      DM (kg/ha) =                 740.5                     0.0
+                      N  (kg/ha) =                  11.20                    0.00
+
+     Manager sending message :- wheat2 endcrop
+    Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                      DM (kg/ha) =                   0.0                    45.0
+                      N  (kg/ha) =                   0.00                    0.41
 31 December 1941(Day of year=365), clock: 
      Simulation is terminating due to end criteria being met.

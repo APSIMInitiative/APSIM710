@@ -3706,7 +3706,8 @@ c      eqr0  = 0.d0
 !      do 200 vegnum = 1,g%num_crops
 !         found = .false.
          do 150 vegnum2 = 1, MV
-           if (c%crop_table_name(vegnum2).eq.g%crop_names(vegnum)) then
+           if (strings_equal(c%crop_table_name(vegnum2), 
+     :                       g%crop_names(vegnum))) then
              found = .true.
              g%psimin(vegnum) = c%crop_table_psimin(vegnum2)
              g%root_radius(:,vegnum) = c%crop_table_root_radius(vegnum2)
@@ -4142,8 +4143,8 @@ c      eqr0  = 0.d0
              do 10 layer = 1,M+1
                 rlv_l(layer) = 0d0
    10        continue
-   
-             call get_double_array(
+     
+             call get_double_array_optional(
      :               id,
      :               'rlv',
      :               p%n+1,
@@ -4165,7 +4166,6 @@ c      eqr0  = 0.d0
 
 
              endif
-
              if (numvals.gt.0) then            !  convert mm/mm^3 to cm/cc
                 length = 0d0
                 do 60 layer = 1,p%n+1            !       /
@@ -4553,7 +4553,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
             cropname = trim(g%crop_owners(counter))//
      :                   '_'//trim(g%crop_names(counter))
          endif
-         if (ucrop .eq. cropname) vegnum = counter
+         if (strings_equal(ucrop, cropname)) vegnum = counter
    10 continue
 
       if (vegnum.eq.0) then

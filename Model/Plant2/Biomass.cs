@@ -153,6 +153,18 @@ public class Biomass
                 return 0.0;
         }
     }
+    public Biomass() { }
+
+    public Biomass(Biomass from)
+    {
+        _StructuralWt = from.StructuralWt;
+        _NonStructuralWt = from.NonStructuralWt;
+        _MetabolicWt = from.MetabolicWt;
+        _StructuralN = from.StructuralN;
+        _NonStructuralN = from.NonStructuralN;
+        _MetabolicN = from.MetabolicN;
+    }
+
     virtual public void Clear()
     {
         _StructuralWt = 0;

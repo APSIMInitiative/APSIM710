@@ -53,6 +53,7 @@ namespace ModelFramework
         private Factory Fact;
         private int instanceNumber;
         public uint ComponentID;
+        private bool DriverFound = false;
         //private String Name;
         private String DllFileName;
         private Dictionary<int, TExtendedPropertyInfo> RegistrationsPropStatic;     //component properties (for plant2 they are 'static' properties and will not be deregistered)
@@ -503,6 +504,7 @@ namespace ModelFramework
                 ((TypeInterpreter)Data).setValue(aValue);
                 result = true;
             }
+            DriverFound = true;
             return result;
         }
         // ----------------------------------------------
@@ -526,9 +528,10 @@ namespace ModelFramework
             }
             // Set the data destination so AssignDriver will know where to put it
             RegistrationsDriverExtra[RegistrationIndex] = Data;
+            DriverFound = false;
             Host.sendDriverRequest(RegistrationIndex, 0);
             //no need to deregister now 
-            return (Data != null);  //true if no errors
+            return DriverFound;  //true if no errors
         }
         // ----------------------------------------------
         /// <summary>

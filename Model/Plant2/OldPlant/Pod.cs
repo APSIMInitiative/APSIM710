@@ -37,7 +37,7 @@ public class Pod : Organ1, AboveGround
     double MinT;
 
     [Link]
-    CompositeBiomass WholePlantGreen = null;
+    CompositeBiomass TotalGreen = null;
 
     [Link]
     Function GrowthStructuralFractionStage = null;
@@ -156,7 +156,7 @@ public class Pod : Organ1, AboveGround
     internal override double NMin { get { return n_conc_min * Green.Wt; } }
     internal override double NDemand { get { return _NDemand; } }
     internal override double SoilNDemand { get { return _SoilNDemand; } }
-    internal override double SWDemand { get { return sw_demand; } }
+    public override double SWDemand { get { return sw_demand; } }
     internal override double DMGreenDemand { get { return _DMGreenDemand; } }
     internal override double DMDemandDifferential 
         {
@@ -272,6 +272,21 @@ public class Pod : Organ1, AboveGround
         //BiomassRemoved.dlt_dm_p[i] = (float)(dlt_p_harvest * Conversions.gm2kg / Conversions.sm2ha);
     }
 
+    internal override void OnEndCrop(BiomassRemovedType BiomassRemoved)
+    {
+        base.OnEndCrop(BiomassRemoved);
+
+        int i = IncreaseSizeOfBiomassRemoved(BiomassRemoved);
+        BiomassRemoved.dm_type[i] = Name;
+        BiomassRemoved.fraction_to_residue[i] = 1.0F;
+        BiomassRemoved.dlt_crop_dm[i] = (float)((Green.Wt + Senesced.Wt) * Conversions.gm2kg / Conversions.sm2ha);
+        BiomassRemoved.dlt_dm_n[i] = (float)((Green.N + Senesced.N) * Conversions.gm2kg / Conversions.sm2ha);
+        //BiomassRemoved.dlt_dm_p[i] = (float)((Green.P + Senesced.P) * Conversions.gm2kg / Conversions.sm2ha);
+
+        Senesced.Clear();
+        Green.Clear();
+    }
+
     internal override double interceptRadiation(double incomingSolarRadiation)
     {
         radiationInterceptedGreen = _Cover.Green * incomingSolarRadiation;
@@ -307,7 +322,7 @@ public class Pod : Organ1, AboveGround
     internal override void DoNDemand1Pot(double dltDmPotRue)
     {
         Biomass OldGrowth = _Growth;
-        _Growth.StructuralWt = dltDmPotRue * MathUtility.Divide(Green.Wt, WholePlantGreen.Wt, 0.0);
+        _Growth.StructuralWt = dltDmPotRue * MathUtility.Divide(Green.Wt, TotalGreen.Wt, 0.0);
         Util.Debug("Pod.Growth.StructuralWt=%f", _Growth.StructuralWt);
 
         CalcNDemand(dltDmPotRue, dltDmPotRue, n_conc_crit, n_conc_max, _Growth, Green, Retranslocation.N, 1.0,
