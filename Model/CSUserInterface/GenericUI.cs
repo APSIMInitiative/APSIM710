@@ -56,7 +56,7 @@ namespace CSUserInterface
 			Grid.PopupMenu.Items.Insert(1, new ToolStripSeparator());
 			EditModeItem.Click += OnEditModeClick;
 			Grid.AddingNewRowEvent += OnAddingNewRow;
-
+            Grid.AllowUserToResizeRows = true;
 		}
 
 		/// <summary>
@@ -111,6 +111,7 @@ namespace CSUserInterface
 				Grid.Columns[Col].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 			}
 			Grid.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Grid.AutoResizeRows(DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders);
 
 			IsDirty = false;
 			GotoEditMode(false);
