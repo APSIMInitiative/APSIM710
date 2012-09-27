@@ -1,0 +1,1800 @@
+<folder version="32" name="simulations">
+  <simulation name="Test">
+    <metfile name="met">
+      <FileName input="yes">%apsim%\Tests\ApsimX\Goondiwindi.met</FileName>
+    </metfile>
+    <clock>
+      <start_date type="date" description="Enter the start date of the simulation">01/01/1900</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">31/12/2000</end_date>
+    </clock>
+    <summaryfile />
+    <area name="paddock">
+      <Plant name="Wheat2">
+        <CropType>wheat</CropType>
+        <Population />
+        <Phenology>
+          <VernalisationCW name="Vernalisation">
+            <StartStageForEffects>Emergence</StartStageForEffects>
+            <EndStageForEffects>FloralInitiation</EndStageForEffects>
+            <StartStageForCumulativeVD>Germination</StartStageForCumulativeVD>
+            <EndStageForCumulativeVD>FloralInitiation</EndStageForCumulativeVD>
+            <VernSens>1.5</VernSens>
+            <PhotopSens>3.0</PhotopSens>
+            <AirTemperatureFunction name="VDModel">
+              <XYPairs>
+                <XY>0 0</XY>
+                <XY>2 1</XY>
+                <XY>15 0</XY>
+              </XYPairs>
+            </AirTemperatureFunction>
+            <PhotoperiodFunction name="Photoperiod">
+              <Twilight type="text" description="Twilight">-6</Twilight>
+            </PhotoperiodFunction>
+          </VernalisationCW>
+          <AirTemperatureFunction name="ThermalTime">
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>26 26</XY>
+              <XY>34 0</XY>
+            </XYPairs>
+          </AirTemperatureFunction>
+          <GerminatingPhase name="Germinating">
+            <Start>Sowing</Start>
+            <End>Germination</End>
+          </GerminatingPhase>
+          <EmergingPhase name="Emerging">
+            <Start>Germination</Start>
+            <End>Emergence</End>
+            <ShootLag units="oCd" description="Time lag before linear coleoptile growth starts">40.0</ShootLag>
+            <ShootRate units="oCd/mm" description="Growing deg day increase with depth for coleoptile">1.50</ShootRate>
+            <LinearInterpolationFunction name="ThermalTime">
+              <XProperty>Phenology.Vernalisation.CrownTemperature</XProperty>
+              <XYPairs>
+                <XY>0 0</XY>
+                <XY>26 26</XY>
+                <XY>34 0</XY>
+              </XYPairs>
+            </LinearInterpolationFunction>
+          </EmergingPhase>
+          <GenericPhase name="Inductive">
+            <Start>Emergence</Start>
+            <End>FloralInitiation</End>
+            <Constant name="Target">
+              <Value>401</Value>
+            </Constant>
+            <LinearInterpolationFunction name="ThermalTime">
+              <XProperty>Phenology.Vernalisation.CrownTemperature</XProperty>
+              <XYPairs>
+                <XY> 0 0</XY>
+                <XY> 26  26</XY>
+                <XY> 34  0</XY>
+              </XYPairs>
+            </LinearInterpolationFunction>
+            <MinimumFunction name="Stress">
+              <Variable>
+                <VariableName type="text" description="Variable Name">Phenology.Vernalisation.VernEff</VariableName>
+                <Memo>Returns the value of a nominated internal Plant2 numerical variable
+                        </Memo>
+              </Variable>
+              <Variable name="Variable1">
+                <VariableName type="text" description="Variable Name"> Phenology.Vernalisation.PhotopEff</VariableName>
+                <Memo>Returns the value of a nominated internal Plant2 numerical variable
+                        </Memo>
+              </Variable>
+            </MinimumFunction>
+          </GenericPhase>
+          <GenericPhase name="FloralInitiationToFlagLeaf">
+            <Start>FloralInitiation</Start>
+            <End>FlagLeaf</End>
+            <Constant name="Target">
+              <Value>222</Value>
+            </Constant>
+            <LinearInterpolationFunction name="ThermalTime">
+              <XProperty>Phenology.Vernalisation.CrownTemperature</XProperty>
+              <XYPairs>
+                <XY> 0 0</XY>
+                <XY> 26  26</XY>
+                <XY> 34  0</XY>
+              </XYPairs>
+            </LinearInterpolationFunction>
+            <MinimumFunction name="Stress">
+              <Variable>
+                <VariableName type="text" description="Variable Name">Phenology.Vernalisation.VernEff</VariableName>
+                <Memo>Returns the value of a nominated internal Plant2 numerical variable
+                        </Memo>
+              </Variable>
+              <Variable name="Variable1">
+                <VariableName type="text" description="Variable Name"> Phenology.Vernalisation.PhotopEff</VariableName>
+                <Memo>Returns the value of a nominated internal Plant2 numerical variable
+                        </Memo>
+              </Variable>
+            </MinimumFunction>
+          </GenericPhase>
+          <GenericPhase name="FlagLeafToFlowering">
+            <Start>FlagLeaf</Start>
+            <End>Flowering</End>
+            <Constant name="Target">
+              <Value>333</Value>
+            </Constant>
+            <LinearInterpolationFunction name="ThermalTime">
+              <XProperty>Phenology.Vernalisation.CrownTemperature</XProperty>
+              <XYPairs>
+                <XY> 0 0</XY>
+                <XY> 26  26</XY>
+                <XY> 34  0</XY>
+              </XYPairs>
+            </LinearInterpolationFunction>
+            <MinimumFunction name="Stress">
+              <Variable>
+                <VariableName type="text" description="Variable Name">Phenology.Vernalisation.VernEff</VariableName>
+                <Memo>Returns the value of a nominated internal Plant2 numerical variable
+                        </Memo>
+              </Variable>
+              <Variable name="Variable1">
+                <VariableName type="text" description="Variable Name"> Phenology.Vernalisation.PhotopEff</VariableName>
+                <Memo>Returns the value of a nominated internal Plant2 numerical variable
+                        </Memo>
+              </Variable>
+            </MinimumFunction>
+          </GenericPhase>
+          <GenericPhase name="FloweringToGrainFilling">
+            <Start>Flowering</Start>
+            <End>StartGrainFill</End>
+            <Constant name="Target">
+              <Value>120</Value>
+            </Constant>
+            <LinearInterpolationFunction name="ThermalTime">
+              <XProperty>Phenology.Vernalisation.CrownTemperature</XProperty>
+              <XYPairs>
+                <XY> 0 0</XY>
+                <XY> 26  26</XY>
+                <XY> 34  0</XY>
+              </XYPairs>
+            </LinearInterpolationFunction>
+          </GenericPhase>
+          <GenericPhase name="GrainFilling">
+            <Start>StartGrainFill</Start>
+            <End>EndGrainFill</End>
+            <Constant name="Target">
+              <Value>545</Value>
+            </Constant>
+            <LinearInterpolationFunction name="ThermalTime">
+              <XProperty>Phenology.Vernalisation.CrownTemperature</XProperty>
+              <XYPairs>
+                <XY> 0 0</XY>
+                <XY> 26  26</XY>
+                <XY> 34  0</XY>
+              </XYPairs>
+            </LinearInterpolationFunction>
+          </GenericPhase>
+          <GenericPhase name="Maturing">
+            <Start>EndGrainFill</Start>
+            <End>Maturity</End>
+            <Constant name="Target">
+              <Value>36</Value>
+            </Constant>
+            <LinearInterpolationFunction name="ThermalTime">
+              <XProperty>Phenology.Vernalisation.CrownTemperature</XProperty>
+              <XYPairs>
+                <XY> 0 0</XY>
+                <XY> 26  26</XY>
+                <XY> 34  0</XY>
+              </XYPairs>
+            </LinearInterpolationFunction>
+          </GenericPhase>
+          <GenericPhase name="MaturityToHarvestRipe">
+            <Start>Maturity</Start>
+            <End>HarvestRipe</End>
+            <Constant name="Target">
+              <Value>1</Value>
+            </Constant>
+            <LinearInterpolationFunction name="ThermalTime">
+              <XProperty>Phenology.Vernalisation.CrownTemperature</XProperty>
+              <XYPairs>
+                <XY> 0 0</XY>
+                <XY> 26  26</XY>
+                <XY> 34  0</XY>
+              </XYPairs>
+            </LinearInterpolationFunction>
+          </GenericPhase>
+          <EndPhase name="ReadyForHarvesting">
+            <Start>HarvestRipe</Start>
+            <End>Unused</End>
+            <LinearInterpolationFunction name="ThermalTime">
+              <XProperty>Phenology.Vernalisation.CrownTemperature</XProperty>
+              <XYPairs>
+                <XY> 0 0</XY>
+                <XY> 26  26</XY>
+                <XY> 34  0</XY>
+              </XYPairs>
+            </LinearInterpolationFunction>
+          </EndPhase>
+        </Phenology>
+        <Arbitrator>
+          <ArbitrationOption>RelativeAllocation</ArbitrationOption>
+          <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
+        Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
+        Wt_Step 2. In this step freshly fixed Wt is partitioned to organs based on their relative Structural and Metabolic demands such that if there is not enough freshly fixed Wt to meet these demands the organs with the highest demands get the greatest share of the photosynthesis.
+        Wt_Step 3. In the second step any freshly fixed DM that was surplus to Structural and Metabolic demands is partitioned to sink organs.  An organ will be a sink if it is parameterised to have a Non-structural (mobile) component and the capacity of each organ to receive excess DM depends on its structural fraction (which determines the Non-structural Fraction and subsequent sink capacity).  If there is still fresh DM unallocated after the second pass this remains unallocated with the assumption that in this case the plant would down regulate photosynthesis due to lack of sink capacity.
+        Wt_Step 4. In this step, Non-structural DM is reallocated from Non-Structural pools if there was insufficient DM to meet the structural and metabolic DM demands of organs.
+        The arbitrator then sends a potential DM allocation to each organ that they use to calculate their N demands and then steps through N partitioning routines.  The final pass in biomass partitioning comes after N partitioning
+
+        N_Step 1. Set up N supplies and demands.  Each organ may (or may not) supply N in a number of ways.  Each organ has (potentially) a structural, metabolic and Non-structural N Demand.  The structural N demand is that required to grow immobile biomass components, Metabolic N is that required to produce working biomass such as the photosynthetic mechanism in the leaves.  The Non-structural N demand is considered to be the luxury uptake and storage of highly mobile N compounds such as nitrate.
+         Each of the following 4 steps have a number of processes in common; Firstly the arbitrator determines each organs current N demand (that outstanding after previous N partitioning steps), then it allocates N to each demanding organ (There are three ways that N can be allocated, see below), then it sets for each supplying organ the amount of N that was taken up.
+        N_Step 2. NReallocation.  This is the supply of N within the plant by the reallocation of sensing and/or Non-structural N which is the lowest energy form of N available to the plant so is partitioned first.
+        N_Step 3. NUptake.  This is the supply of mineral N from the environment (typically by roots from the soil). In this step the arbitrator partitions the potential N uptake supply to satisfy all organs N demands (Structural, Metabolic and Non-structural).  If supply is sufficient this will replenish all Non-structural N that was reallocated in the previous step.  If not the N conc of organs with a Non-structural N component will begin to fall.  If total N demand is less than the uptake supply the crop will leave the surplus mineral N in the soil.
+        N_Step 4. NFixation.  This is the supply of symbiotically fixed N and is redundant for Non-fixers!  The arbitrator will asks all N fixing organs (typically nodules) for their potential N fixation supply and then partition this to meet the Structural and Metabolic N demands of organs.  The arbitrator will not fix N to meet Non-structural N demands to minimise the biomass cost of fixation which is metabolically expensive.  Fixation follows uptake to enable the arbitrator to capture the "Lazy" N fixing behaviour of some legumes.  Once fixation is calculated the arbitrator determines the DM cost of this fixation.
+        N_Step 5. NRetranslocation.  This is only invoked under sever N shortage when NReallocation and Uptake (and fixation if appropriate) cannot meet structural and metabolic N demands.  It this step the arbitrator will remove Metabolic N from older leaf cohorts to meet the N demand of new leaves and reproductive organs.
+
+
+         In all of these N partitioning steps there are three options the developer may chose for determining the allocation of N between demanding organs.
+        1. RelativeAllocation.  If this option is used all N is partitioned to organs relative to their demand so that the organs with the larger N demand get a larger share of a limited N supply.
+        2. PriorityAllocation.  If this option is used the arbitrator steps through all organs in order of priority (set by the order they appear in the IDE) allocating N to meet all of the first organs structural and metabolic N demands before partitioning any to the next organ in the hierarchy.  Once it has stepped through all organs and allocated their minimum (structural and metabolic) N demands it will then step through them again and allocate their luxury (Non-structural) N demands in the same way.
+        3. PrioritythenRelativeAllocation.  If this option is used the arbitrator steps through all organs in order of priority allocating N to meet minimum N demands.  However on the second pass it allocated N relative to the organs outstanding demands such that the organ with the greatest luxury N demand will get the greatest share of the N allocation.
+
+        Wt_Step 5. Once N is allocated the arbitrator then reduces the Wt allocation of each organ to account for the metabolic cost of N fixation.  The Wt reduction is spread around all organs and an organ will only have its Wt allocation limited until it reaches maximum N conc.
+        Wt_Step 6. Then the arbitrator determines if the N allocated to each organ is sufficient for that organ to reach its minimum N concentration.  If not the arbitrator will constrain the biomass growth of that organ and discards the surplus biomass.  This assume that under sever N stress photosynthesis would be down regulated due to N inadequacy limiting sink strength.  
+
+        Once these steps are complete the Arbitrator finally communicates to each organ its state changes as a result of arbitration.
+
+               </Memo>
+        </Arbitrator>
+        <Structure>
+          <PrimaryBudNo>1</PrimaryBudNo>
+          <InitialiseStage>Emergence</InitialiseStage>
+          <Constant name="MainStemInitialPrimordiaNumber">
+            <Value type="text" description="Value">4</Value>
+          </Constant>
+          <PhaseLookupValue name="MainStemPrimordiaInitiationRate">
+            <Start>Emergence</Start>
+            <End>FloralInitiation</End>
+            <Constant name="Function">
+              <Value>95.0</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="MainStemNodeAppearanceRate">
+            <Start>Emergence</Start>
+            <End>Maturity</End>
+            <LinearInterpolationFunction name="Function">
+              <XProperty>Structure.MainStemNodeNo</XProperty>
+              <XYPairs>
+                <XY>1 95</XY>
+                <XY>30 95</XY>
+              </XYPairs>
+            </LinearInterpolationFunction>
+          </PhaseLookupValue>
+          <PhaseLengthFinalNodeNumber name="MainStemFinalNodeNumber">
+            <MaximumMainStemNodeNumber type="text" description="Maximum number of mainstem leaves that the plant can produce">40</MaximumMainStemNodeNumber>
+            <Memo> 
+            This Function allows final node number to increase as primordia are initiated and it is fixed at the value or primordia that are initiated when initiation finishes.  
+                  </Memo>
+          </PhaseLengthFinalNodeNumber>
+          <LinearInterpolationFunction name="Height">
+            <XProperty>StageCode.Value</XProperty>
+            <XYPairs>
+              <XY>3 100</XY>
+              <XY>6 1200</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="BranchingRate">
+            <XProperty>Structure.MainStemNodeNo</XProperty>
+            <XYPairs>
+              <XY> 4 0.0</XY>
+              <XY> 5 0.7</XY>
+              <XY> 8 0.0</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <Constant name="ShadeInducedBranchMortality">
+            <Value type="text" description="Value">0</Value>
+          </Constant>
+          <Constant name="DroughtInducedBranchMortality">
+            <Value type="text" description="Value">0</Value>
+          </Constant>
+          <AirTemperatureFunction name="ThermalTime" shortcut="../../Phenology/ThermalTime">
+            <XYPairs shortcut="../../../Phenology/ThermalTime/XYPairs" />
+          </AirTemperatureFunction>
+        </Structure>
+        <ReproductiveOrgan name="Grain">
+          <MaximumSize>0.042</MaximumSize>
+          <RipeStage>Ripe</RipeStage>
+          <Biomass name="Live" />
+          <Biomass name="Dead" />
+          <OnEventFunction name="NumberFunction">
+            <SetEvent type="text" description="SetEvent">Flowering</SetEvent>
+            <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
+            <Constant name="PreEventValue">
+              <Value type="text" description="Value">0</Value>
+            </Constant>
+            <LinearInterpolationFunction name="PostEventValue">
+              <XProperty>Stem.Live.Wt</XProperty>
+              <XYPairs>
+                <XY>0 0</XY>
+                <XY>1000 25000</XY>
+              </XYPairs>
+            </LinearInterpolationFunction>
+          </OnEventFunction>
+          <PhaseLookup name="FillingRate">
+            <PhaseLookupValue name="EarlyGrainGrowth">
+              <Start>Flowering</Start>
+              <End>StartGrainFill</End>
+              <AirTemperatureFunction name="Function">
+                <XYPairs>
+                  <XY>0 0</XY>
+                  <XY>26 0.001</XY>
+                  <XY>30 0.001</XY>
+                  <XY>35 0.001</XY>
+                </XYPairs>
+              </AirTemperatureFunction>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="LateGrainGrowth">
+              <Start>StartGrainFill</Start>
+              <End>Maturity</End>
+              <AirTemperatureFunction name="Function">
+                <XYPairs>
+                  <XY>0 0</XY>
+                  <XY>26 0.002</XY>
+                  <XY>30 0.002</XY>
+                  <XY>35 0.002</XY>
+                </XYPairs>
+              </AirTemperatureFunction>
+            </PhaseLookupValue>
+          </PhaseLookup>
+          <PhaseLookup name="NFillingRate">
+            <PhaseLookupValue name="EarlyGrainGrowth">
+              <Start>Flowering</Start>
+              <End>Maturity</End>
+              <AirTemperatureFunction name="Function">
+                <XYPairs>
+                  <XY>0 0</XY>
+                  <XY>25 5.5E-05</XY>
+                  <XY>30 5.5E-05</XY>
+                  <XY>35 5.5E-05</XY>
+                </XYPairs>
+              </AirTemperatureFunction>
+            </PhaseLookupValue>
+          </PhaseLookup>
+          <Constant name="MaxNConcDailyGrowth">
+            <Value>0.03</Value>
+          </Constant>
+          <Constant name="WaterContent">
+            <Value>0.12</Value>
+          </Constant>
+          <StageBasedInterpolation name="MaximumNConc">
+            <Stages>Germination</Stages>
+            <Stages>Emergence</Stages>
+            <Stages>FloralInitiation</Stages>
+            <Stages>FlagLeaf</Stages>
+            <Stages>Flowering</Stages>
+            <Stages>StartGrainFill</Stages>
+            <Stages>EndGrainFill</Stages>
+            <Stages>Maturity</Stages>
+            <Stages>HarvestRipe</Stages>
+            <Values>0.022</Values>
+            <Values>0.022</Values>
+            <Values>0.022</Values>
+            <Values>0.022</Values>
+            <Values>0.022</Values>
+            <Values>0.022</Values>
+            <Values>0.022</Values>
+            <Values>0.022</Values>
+            <Values>0.022</Values>
+          </StageBasedInterpolation>
+          <StageBasedInterpolation name="MinimumNConc">
+            <Stages>Germination</Stages>
+            <Stages>Emergence</Stages>
+            <Stages>FloralInitiation</Stages>
+            <Stages>FlagLeaf</Stages>
+            <Stages>Flowering</Stages>
+            <Stages>StartGrainFill</Stages>
+            <Stages>EndGrainFill</Stages>
+            <Stages>Maturity</Stages>
+            <Stages>HarvestRipe</Stages>
+            <Values>0.006</Values>
+            <Values>0.006</Values>
+            <Values>0.006</Values>
+            <Values>0.006</Values>
+            <Values>0.006</Values>
+            <Values>0.006</Values>
+            <Values>0.006</Values>
+            <Values>0.006</Values>
+            <Values>0.006</Values>
+          </StageBasedInterpolation>
+        </ReproductiveOrgan>
+        <Root>
+          <ll>0.240</ll>
+          <ll>0.290</ll>
+          <ll>0.310</ll>
+          <ll>0.310</ll>
+          <ll>0.310</ll>
+          <ll>0.310</ll>
+          <ll>0.310</ll>
+          <kl>0.07</kl>
+          <kl>0.07</kl>
+          <kl>0.07</kl>
+          <kl>0.07</kl>
+          <kl>0.05</kl>
+          <kl>0.05</kl>
+          <kl>0.04</kl>
+          <xf>1.00</xf>
+          <xf>1.00</xf>
+          <xf>1.00</xf>
+          <xf>1.00</xf>
+          <xf>1.00</xf>
+          <xf>1.00</xf>
+          <xf>1.00</xf>
+          <InitialDM type="text" description="InitialWt">0.01</InitialDM>
+          <SpecificRootLength type="text" description="SpecificRootLength">40000</SpecificRootLength>
+          <KNO3 type="text" description="KNO3">0.02</KNO3>
+          <KNH4 type="text" description="KNH4">0.0</KNH4>
+          <CompositeBiomass name="Live">
+            <Propertys>Root.LayerLive[]</Propertys>
+          </CompositeBiomass>
+          <CompositeBiomass name="Dead">
+            <Propertys>Root.LayerDead[]</Propertys>
+          </CompositeBiomass>
+          <Memo>Optional paramaters
+
+   1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
+   2.  NitrogenDemandSwitch.  Default value is 1 which means the organ always has a N demand if its N content is below maximum N conc.  If N demand needs to be switched off place a function on the organ named NitrogenDemandSwitch which returns a value of 1 when no demand is expressed.
+               </Memo>
+          <LinearInterpolationFunction name="KLModifier">
+            <XProperty>Leaf.LAI</XProperty>
+            <XYPairs>
+              <XY>0 1</XY>
+              <XY>3 1</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <PhaseLookup name="RootFrontVelocity">
+            <PhaseLookupValue name="PreEmergence">
+              <Start>Germination</Start>
+              <End>Emergence</End>
+              <Constant name="Function">
+                <Value>5</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="PostEmergence">
+              <Start>Emergence</Start>
+              <End>Flowering</End>
+              <Constant name="Function">
+                <Value>30</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="PostFlowering">
+              <Start>Flowering</Start>
+              <End>Maturity</End>
+              <Constant name="Function">
+                <Value>0</Value>
+              </Constant>
+            </PhaseLookupValue>
+          </PhaseLookup>
+          <Constant name="PartitionFraction">
+            <Value>0.25</Value>
+          </Constant>
+          <Constant name="SoilWaterEffect">
+            <Value>1.0</Value>
+          </Constant>
+          <AirTemperatureFunction name="TemperatureEffect">
+            <XYPairs>
+              <XY> 0 0.0</XY>
+              <XY>25 1.0</XY>
+              <XY>35 0.0</XY>
+            </XYPairs>
+          </AirTemperatureFunction>
+          <Constant name="MaximumNConc">
+            <Value>0.01</Value>
+          </Constant>
+          <Constant name="MaxDailyNUptake">
+            <Value>6.0</Value>
+          </Constant>
+          <PhaseLookup name="SenescenceRate">
+            <PhaseLookupValue name="PreEmergence">
+              <Start>Germination</Start>
+              <End>Emergence</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">0</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="PostEmergence">
+              <Start>Emergence</Start>
+              <End>Flowering</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">0.005</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="PostFlowering">
+              <Start>Flowering</Start>
+              <End>Maturity</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">0.005</Value>
+              </Constant>
+            </PhaseLookupValue>
+          </PhaseLookup>
+          <Constant name="MinimumNConc">
+            <Value>0.01</Value>
+          </Constant>
+          <Constant name="StructuralFraction">
+            <Value type="text" description="Value">1</Value>
+          </Constant>
+        </Root>
+        <GenericAboveGroundOrgan name="Ear">
+          <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
+   1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
+   2. NReallocationFactor.  Default value is 0 which means the organ will not allow any of its N to be reallocated as it senesses.  If reallocation of senessing N is required place a function on the organ named NReallocationFactor.  It needs to be a number from 0 - 1 that represents the proportion of senessing N that is available for reallocation
+   3. NRetranslocationFactor.  Default value is 0 which means none of the nonstructuralN in this organ is available for retranslocation.  If retranslocation is required place a function on the organ named NRetranslocationFactor. It needs to be a number from 0 -1 that represents the proportion of non-structural N that can be removed from an organ on any day.
+   4. NitrogenDemandSwitch.  Default value is 1 which means the organ always has a N demand if its N content is below maximum N conc.  If N demand needs to be switched off place a function on the organ named NitrogenDemandSwitch which returns a value of 1 when no demand is expressed.
+   5. DMRetranslocationFactor.  Default value is 0 which means the organ will not retranslocate NonStructural biomass.  If retranslocation is desired turn change this to a value between 0 - 1.  This represents the proportion of NonStructural biomass in the organ that can be retranslocated each day.
+   6. StructuralFraction.  Derault value is 1 which means all biomass partitioned to this organ is put into the structrual pool.  If you wish this organ to have NonStructural DM that can be retranslocated set this to a value lower than 1 (between 0 - 1). Also note that making structural fraction less then 1 may influence the biomass partitioning to this organ because biomass is only partitioned to NonStructural Pools after the DM demand from other pools has been met.
+               </Memo>
+          <Biomass name="Live" />
+          <Biomass name="Dead" />
+          <PartitionFractionDemandFunction name="DMDemandFunction">
+            <StageBasedInterpolation name="PartitionFraction">
+              <Stages>Germination</Stages>
+              <Stages>Emergence</Stages>
+              <Stages>FloralInitiation</Stages>
+              <Stages>FlagLeaf</Stages>
+              <Stages>Flowering</Stages>
+              <Stages>StartGrainFill</Stages>
+              <Stages>EndGrainFill</Stages>
+              <Stages>Maturity</Stages>
+              <Stages>HarvestRipe</Stages>
+              <Values>0.0</Values>
+              <Values>0.00</Values>
+              <Values>0.00</Values>
+              <Values>0.0</Values>
+              <Values>0.4</Values>
+              <Values>0.0</Values>
+              <Values>0.0</Values>
+              <Values>0.0</Values>
+              <Values>0.0</Values>
+            </StageBasedInterpolation>
+          </PartitionFractionDemandFunction>
+          <Constant name="StructuralFraction">
+            <Value>1.0</Value>
+          </Constant>
+          <Constant name="MinimumNConc">
+            <Value>0.01</Value>
+          </Constant>
+          <Constant name="MaximumNConc">
+            <Value>0.01</Value>
+          </Constant>
+        </GenericAboveGroundOrgan>
+        <Leaf>
+          <MaxCover>1.0</MaxCover>
+          <KDead>0.5</KDead>
+          <LeafCohort name="InitialLeaves[1]">
+            <Rank>1</Rank>
+            <Area>200</Area>
+          </LeafCohort>
+          <LeafCohort name="InitialLeaves[2]">
+            <Rank type="text" description="Rank">2</Rank>
+            <Area type="text" description="Area">0</Area>
+          </LeafCohort>
+          <LeafCohort name="InitialLeaves[3]">
+            <Rank type="text" description="Rank">3</Rank>
+            <Area type="text" description="Area">0</Area>
+          </LeafCohort>
+          <LeafCohort name="InitialLeaves[4]">
+            <Rank type="text" description="Rank">4</Rank>
+            <Area type="text" description="Area">0</Area>
+          </LeafCohort>
+          <CompositeBiomass name="Live">
+            <Propertys>Leaf.Leaves[].Live</Propertys>
+          </CompositeBiomass>
+          <CompositeBiomass name="Dead">
+            <Propertys>Leaf.Leaves[].Dead</Propertys>
+          </CompositeBiomass>
+          <LinearInterpolationFunction name="FrostFraction">
+            <XProperty>MinT</XProperty>
+            <XYPairs>
+              <XY>-1 0</XY>
+              <XY>0 0</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="ExtinctionCoeff">
+            <XProperty>Leaf.LAI</XProperty>
+            <XYPairs>
+              <XY> 0 0.5</XY>
+              <XY> 0.45 0.45</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="yHeight">
+            <XProperty>StageCode.Value</XProperty>
+            <XYPairs>
+              <XY>3 100</XY>
+              <XY>6 1200</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <RUEModel name="Photosynthesis">
+            <Constant name="RUE">
+              <Value type="text" description="Value">1.65</Value>
+            </Constant>
+            <WeightedTemperatureFunction name="FT">
+              <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
+              <XYPairs>
+                <XY>0 0.0</XY>
+                <XY>10 1.0</XY>
+                <XY>25 1.0</XY>
+                <XY>35 0.0</XY>
+              </XYPairs>
+            </WeightedTemperatureFunction>
+            <LinearInterpolationFunction name="FVPD">
+              <XProperty type="text" description="XProperty">Leaf.Photosynthesis.VPD</XProperty>
+              <XYPairs>
+                <XY> 0 1.0</XY>
+                <XY>10 1.0</XY>
+                <XY>50 1.0</XY>
+              </XYPairs>
+            </LinearInterpolationFunction>
+            <LinearInterpolationFunction name="FN">
+              <XProperty type="text" description="XProperty">Leaf.Fn</XProperty>
+              <XYPairs>
+                <XY>0 0</XY>
+                <XY>1 1</XY>
+                <XY>1.5 1</XY>
+              </XYPairs>
+            </LinearInterpolationFunction>
+            <LinearInterpolationFunction name="FW">
+              <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
+              <XYPairs>
+                <XY>0 0</XY>
+                <XY>1 1</XY>
+                <XY>1.5 1</XY>
+              </XYPairs>
+            </LinearInterpolationFunction>
+            <RUECO2Function name="Fco2">
+              <PhotosyntheticPathway>C3</PhotosyntheticPathway>
+            </RUECO2Function>
+          </RUEModel>
+          <AirTemperatureFunction name="ThermalTime">
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>26 26</XY>
+              <XY>34 0</XY>
+            </XYPairs>
+          </AirTemperatureFunction>
+          <LinearInterpolationFunction name="ExpansionStress">
+            <XProperty>WaterSupplyDemandRatio</XProperty>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>1 1</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="MaxArea">
+            <XProperty>Structure.MainStemNodeNo</XProperty>
+            <XYPairs>
+              <XY> 1  1400.0</XY>
+              <XY> 5  3700.0</XY>
+              <XY> 8  4800.0</XY>
+              <XY>10  5600.0</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="SpecificLeafArea">
+            <XProperty>Structure.MainStemNodeNo</XProperty>
+            <XYPairs>
+              <XY> 1 27000.0</XY>
+              <XY> 10 22000.0</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="GrowthDuration">
+            <XProperty>Structure.MainStemNodeNo</XProperty>
+            <XYPairs>
+              <XY> 1   95.0</XY>
+              <XY> 10 190.0</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="LagDuration">
+            <XProperty>Structure.MainStemNodeNo</XProperty>
+            <XYPairs>
+              <XY> 1  400.0</XY>
+              <XY> 10 900.0</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="SenescenceDuration">
+            <XProperty>Structure.MainStemNodeNo</XProperty>
+            <XYPairs>
+              <XY> 5 150.0</XY>
+              <XY>30 150.0</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <Constant name="DetachmentLagDuration">
+            <Value type="text" description="Value">1e6</Value>
+          </Constant>
+          <Constant name="DetachmentDuration">
+            <Value type="text" description="Value">1e6</Value>
+          </Constant>
+          <StageBasedInterpolation name="MaximumNConc">
+            <Stages>Germination</Stages>
+            <Stages>Emergence</Stages>
+            <Stages>FloralInitiation</Stages>
+            <Stages>FlagLeaf</Stages>
+            <Stages>Flowering</Stages>
+            <Stages>StartGrainFill</Stages>
+            <Stages>EndGrainFill</Stages>
+            <Stages>Maturity</Stages>
+            <Stages>HarvestRipe</Stages>
+            <Values>0.063</Values>
+            <Values>0.063</Values>
+            <Values>0.032</Values>
+            <Values>0.020</Values>
+            <Values>0.015</Values>
+            <Values>0.012</Values>
+            <Values>0.008</Values>
+            <Values>0.008</Values>
+            <Values>0.008</Values>
+          </StageBasedInterpolation>
+          <StageBasedInterpolation name="MinimumNConc">
+            <Stages>Germination</Stages>
+            <Stages>Emergence</Stages>
+            <Stages>FloralInitiation</Stages>
+            <Stages>FlagLeaf</Stages>
+            <Stages>Flowering</Stages>
+            <Stages>StartGrainFill</Stages>
+            <Stages>EndGrainFill</Stages>
+            <Stages>Maturity</Stages>
+            <Stages>HarvestRipe</Stages>
+            <Values>0.025</Values>
+            <Values>0.025</Values>
+            <Values>0.021</Values>
+            <Values>0.016</Values>
+            <Values>0.010</Values>
+            <Values>0.0075</Values>
+            <Values>0.005</Values>
+            <Values>0.005</Values>
+            <Values>0.005</Values>
+          </StageBasedInterpolation>
+          <Constant name="StructuralFraction">
+            <Value type="text" description="Value">.5</Value>
+          </Constant>
+          <Constant name="NReallocationFactor">
+            <Value type="text" description="Value">1</Value>
+          </Constant>
+          <Constant name="SpecificLeafAreaMax">
+            <Value type="text" description="Value">54000</Value>
+          </Constant>
+          <Constant name="SpecificLeafAreaMin">
+            <Value type="text" description="Value">20000</Value>
+          </Constant>
+          <Constant name="NRetranslocationFactor">
+            <Value type="text" description="Value">0</Value>
+          </Constant>
+          <Constant name="DMRetranslocationFactor">
+            <Value type="text" description="Value">.5</Value>
+          </Constant>
+          <StageBasedInterpolation name="CriticalNConc">
+            <Stages>Germination</Stages>
+            <Stages>Emergence</Stages>
+            <Stages>FloralInitiation</Stages>
+            <Stages>FlagLeaf</Stages>
+            <Stages>Flowering</Stages>
+            <Stages>StartGrainFill</Stages>
+            <Stages>EndGrainFill</Stages>
+            <Stages>Maturity</Stages>
+            <Stages>HarvestRipe</Stages>
+            <Values>0.063</Values>
+            <Values>0.063</Values>
+            <Values>0.032</Values>
+            <Values>0.020</Values>
+            <Values>0.015</Values>
+            <Values>0.012</Values>
+            <Values>0.008</Values>
+            <Values>0.008</Values>
+            <Values>0.008</Values>
+          </StageBasedInterpolation>
+          <LinearInterpolationFunction name="ShadeInducedSenescenceRate">
+            <XProperty type="text" description="XProperty">Leaf.Leaves[Leaf.CurrentRank].CoverAbove</XProperty>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>0.9 0</XY>
+              <XY>0.900001 0.2</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <Constant name="InitialNConc">
+            <Value type="text" description="Value">0</Value>
+          </Constant>
+        </Leaf>
+        <GenericAboveGroundOrgan name="Stem">
+          <Biomass name="Live" />
+          <Biomass name="Dead" />
+          <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
+   1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
+   2. NReallocationFactor.  Default value is 0 which means the organ will not allow any of its N to be reallocated as it senesses.  If reallocation of senessing N is required place a function on the organ named NReallocationFactor.  It needs to be a number from 0 - 1 that represents the proportion of senessing N that is available for reallocation
+   3. NRetranslocationFactor.  Default value is 0 which means none of the nonstructuralN in this organ is available for retranslocation.  If retranslocation is required place a function on the organ named NRetranslocationFactor. It needs to be a number from 0 -1 that represents the proportion of non-structural N that can be removed from an organ on any day.
+   4. NitrogenDemandSwitch.  Default value is 1 which means the organ always has a N demand if its N content is below maximum N conc.  If N demand needs to be switched off place a function on the organ named NitrogenDemandSwitch which returns a value of 1 when no demand is expressed.
+   5. DMRetranslocationFactor.  Default value is 0 which means the organ will not retranslocate NonStructural biomass.  If retranslocation is desired turn change this to a value between 0 - 1.  This represents the proportion of NonStructural biomass in the organ that can be retranslocated each day.
+   6. StructuralFraction.  Derault value is 1 which means all biomass partitioned to this organ is put into the structrual pool.  If you wish this organ to have NonStructural DM that can be retranslocated set this to a value lower than 1 (between 0 - 1). Also note that making structural fraction less then 1 may influence the biomass partitioning to this organ because biomass is only partitioned to NonStructural Pools after the DM demand from other pools has been met.
+               </Memo>
+          <PartitionFractionDemandFunction name="DMDemandFunction">
+            <StageBasedInterpolation name="PartitionFraction">
+              <Stages>Germination</Stages>
+              <Stages>Emergence</Stages>
+              <Stages>FloralInitiation</Stages>
+              <Stages>FlagLeaf</Stages>
+              <Stages>Flowering</Stages>
+              <Stages>StartGrainFill</Stages>
+              <Stages>EndGrainFill</Stages>
+              <Stages>Maturity</Stages>
+              <Stages>HarvestRipe</Stages>
+              <Values>0.0</Values>
+              <Values>0.4</Values>
+              <Values>0.4</Values>
+              <Values>0.6</Values>
+              <Values>0.6</Values>
+              <Values>0.0</Values>
+              <Values>0.0</Values>
+              <Values>0.0</Values>
+              <Values>0.0</Values>
+            </StageBasedInterpolation>
+          </PartitionFractionDemandFunction>
+          <PhaseLookup name="StructuralFraction">
+            <PhaseLookupValue name="Early">
+              <Start>Emergence</Start>
+              <End>FlagLeaf</End>
+              <Constant name="Function">
+                <Value>1.0</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="Middle">
+              <Start>FlagLeaf</Start>
+              <End>Flowering</End>
+              <Constant name="Function">
+                <Value>0.50</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="Late">
+              <Start>Flowering</Start>
+              <End>Maturity</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">0.5</Value>
+              </Constant>
+            </PhaseLookupValue>
+          </PhaseLookup>
+          <StageBasedInterpolation name="MinimumNConc">
+            <Stages>Germination</Stages>
+            <Stages>Emergence</Stages>
+            <Stages>FloralInitiation</Stages>
+            <Stages>FlagLeaf</Stages>
+            <Stages>Flowering</Stages>
+            <Stages>StartGrainFill</Stages>
+            <Stages>EndGrainFill</Stages>
+            <Stages>Maturity</Stages>
+            <Stages>HarvestRipe</Stages>
+            <Values>0.003</Values>
+            <Values>0.003</Values>
+            <Values>0.003</Values>
+            <Values>0.003</Values>
+            <Values>0.003</Values>
+            <Values>0.003</Values>
+            <Values>0.003</Values>
+            <Values>0.003</Values>
+            <Values>0.003</Values>
+          </StageBasedInterpolation>
+          <StageBasedInterpolation name="MaximumNConc">
+            <Stages>Germination</Stages>
+            <Stages>Emergence</Stages>
+            <Stages>FloralInitiation</Stages>
+            <Stages>FlagLeaf</Stages>
+            <Stages>Flowering</Stages>
+            <Stages>StartGrainFill</Stages>
+            <Stages>EndGrainFill</Stages>
+            <Stages>Maturity</Stages>
+            <Stages>HarvestRipe</Stages>
+            <Values>0.050</Values>
+            <Values>0.050</Values>
+            <Values>0.020</Values>
+            <Values>0.015</Values>
+            <Values>0.010</Values>
+            <Values>0.0075</Values>
+            <Values>0.005</Values>
+            <Values>0.005</Values>
+            <Values>0.005</Values>
+          </StageBasedInterpolation>
+        </GenericAboveGroundOrgan>
+        <StageBasedInterpolation name="StageCode">
+          <Stages>Sowing</Stages>
+          <Stages>Germination</Stages>
+          <Stages>Emergence</Stages>
+          <Stages>FloralInitiation</Stages>
+          <Stages>FlagLeaf</Stages>
+          <Stages>Flowering</Stages>
+          <Stages>StartGrainFill</Stages>
+          <Stages>EndGrainFill</Stages>
+          <Stages>Maturity</Stages>
+          <Stages>HarvestRipe</Stages>
+          <Values>1</Values>
+          <Values>2</Values>
+          <Values>3</Values>
+          <Values>4</Values>
+          <Values>5</Values>
+          <Values>6</Values>
+          <Values>7</Values>
+          <Values>8</Values>
+          <Values>9</Values>
+          <Values>10</Values>
+        </StageBasedInterpolation>
+        <StageBasedInterpolation name="ZadokStage">
+          <Stages>Sowing</Stages>
+          <Stages>Germination</Stages>
+          <Stages>Emergence</Stages>
+          <Stages>FloralInitiation</Stages>
+          <Stages>FlagLeaf</Stages>
+          <Stages>Flowering</Stages>
+          <Stages>StartGrainFill</Stages>
+          <Stages>EndGrainFill</Stages>
+          <Stages>Maturity</Stages>
+          <Stages>HarvestRipe</Stages>
+          <Values>0</Values>
+          <Values>5</Values>
+          <Values>10</Values>
+          <Values>30</Values>
+          <Values>37</Values>
+          <Values>65</Values>
+          <Values>70</Values>
+          <Values>85</Values>
+          <Values>90</Values>
+          <Values>90</Values>
+        </StageBasedInterpolation>
+        <CompositeBiomass name="AboveGround">
+          <Propertys>Organs[AboveGround].Live</Propertys>
+          <Propertys>Organs[AboveGround].Dead</Propertys>
+        </CompositeBiomass>
+        <CompositeBiomass name="BelowGround">
+          <Propertys>Organs[BelowGround]. Live</Propertys>
+          <Propertys>Organs[BelowGround].Dead</Propertys>
+        </CompositeBiomass>
+        <CompositeBiomass name="Total">
+          <Propertys>Organs[].Live</Propertys>
+          <Propertys>Organs[].Dead</Propertys>
+        </CompositeBiomass>
+        <CompositeBiomass name="TotalLive">
+          <Propertys>Organs[].Live</Propertys>
+        </CompositeBiomass>
+        <CompositeBiomass name="TotalDead">
+          <Propertys>Organs[].Dead</Propertys>
+        </CompositeBiomass>
+        <Summary />
+      </Plant>
+      <SoilWater>
+        <!--    ****************
+              soilwat2_eeq_fac
+              ****************
+              -->
+        <min_crit_temp units="oC" description="temperature below which eeq decreases (oC)">5.0</min_crit_temp>
+        <max_crit_temp units="oC" description="temperature above which eeq increases (oC)">35.0</max_crit_temp>
+        <!--    ******************************
+              soilwat2_pot_evapotranspiration
+              ******************************
+              -->
+        <max_albedo description="albedo at 100% green crop cover (0-1).">0.23</max_albedo>
+        <!--  Bare soil albedo must not exceed this value.
+              ***********************
+              soilwat_evaporation
+              *********************** <dms 7-95>
+              -->
+        <A_to_evap_fact description="converts residue specfic area 'A' to">0.44      </A_to_evap_fact>
+        <!--    a coef. in exp effect on reducing
+              pot. soil evap for wt. of mixed residues.
+              0.44 = 0.00022/0.0005 DMS 1st approx. 6/95
+              -->
+        <canopy_eos_coef description="coef. in exp effect of canopy on">1.7       </canopy_eos_coef>
+        <!--    reducing pot. soil evap.
+              = 1.7 Adams, Arkin & Ritchie 1976
+              ******************
+              soilwat2_evap_init
+              ******************
+              -->
+        <sw_top_crit description="critical sw ratio in top layer">0.9</sw_top_crit>
+        <!--  below which stage 2 evaporation occurs
+              -->
+        <sumes1_max units="mm" description="upper limit of sumes1">100.0</sumes1_max>
+        <sumes2_max units="mm" description="upper limit of sumes2">25.0</sumes2_max>
+        <!--    ******************
+              soilwat2_nflow
+              ******************
+              -->
+        <solute_flow_eff description="efficiency of moving solute with flow (0-1)">1.0</solute_flow_eff>
+        <!--    ******************
+              soilwat2_nflux
+              ******************
+              -->
+        <solute_flux_eff description="efficiency of moving solute with flux (0-1)">1.0</solute_flux_eff>
+        <!--    ******************
+              soilwat2_unsaturated_flow
+              ******************
+              -->
+        <gravity_gradient description="soil water gradient due to gravitational">0.00002</gravity_gradient>
+        <!--  pressure head
+              ****************
+              soilwat2_check_profile
+              ****************
+              -->
+        <specific_bd units="g/cc" description="specific bulk density">2.65</specific_bd>
+        <hydrol_effective_depth units="mm">450</hydrol_effective_depth>
+        <mobile_solutes>no3</mobile_solutes>
+        <mobile_solutes>urea</mobile_solutes>
+        <mobile_solutes>cl</mobile_solutes>
+        <mobile_solutes>br</mobile_solutes>
+        <mobile_solutes>org_n</mobile_solutes>
+        <mobile_solutes>org_c_pool1</mobile_solutes>
+        <mobile_solutes>org_c_pool2</mobile_solutes>
+        <mobile_solutes>org_c_pool3</mobile_solutes>
+        <immobile_solutes>nh4</immobile_solutes>
+        <!--    ****************
+              soilwat2_runoff_cover
+              ****************
+              -->
+        <canopy_fact>1.0</canopy_fact>
+        <canopy_fact>1.0</canopy_fact>
+        <canopy_fact>0.0</canopy_fact>
+        <canopy_fact>0.0</canopy_fact>
+        <canopy_fact_height>0</canopy_fact_height>
+        <canopy_fact_height>600</canopy_fact_height>
+        <canopy_fact_height>1800</canopy_fact_height>
+        <canopy_fact_height>30000</canopy_fact_height>
+        <canopy_fact_default description="canopy factor to use if height is missing">0.5</canopy_fact_default>
+        <!--  added for SOILWAT2 ver 1.4 Aug-97 DMS & PdV
+              ****************
+              soilwat2_evaporation
+              ****************
+              <8-97 dms&pdv>
+              Ritchie (use with crops),
+              Ken Rickert (use with GRASP),
+              B&S
+              actual soil evaporation methods
+              -->
+        <act_evap_method>ritchie</act_evap_method>
+        <!-- act_evap_method = rickert
+              act_evap_method = bs_a
+              act_evap_method = bs_b
+              ****************
+              soilwat2_tillage
+              **************** <8-97 dms&pdv>
+              Mark Littleboy's tillage effect on runoff (used in PERFECT v2.0)
+              Littleboy, Cogle, Smith, Yule & Rao (1996)  Soil management and production
+              of alfisols in the SAT's I. Modelling the effects of soil management on runoff
+              and erosion.  Aust. J. Soil Res. 34: 91-102.
+
+              Tillage reduces runoff potential (CN2) by g_tillage_cn_red (1st column below).
+              After tillage, CN2 increases linearly with cumulative rain since tillage until
+              g_tillage_cn_rain (column 2 below) has occured, ie roughness is smoothed out by rain.
+              Example parameter values (Littleboy et al) are given below for shallow & deep tillage.
+              Also, Nelsen et al (in press) had to reduce CN2 by 30 for ~ 30 days after tillage
+              during the wet season in wet tropical Philipines to mimic measured runoff.
+              -->
+        <!--
+            <tillage>
+            -->
+        <!--  ________________________________________
+                tillage         CN2        Cumulative
+                type        reduction        rain to
+                                          cease reduction
+                (0-100)        (mm)
+                ________________________________________
+                -->
+        <!--					 
+            <chisel description="will have no effect - SOILWAT the same as old ver.">0.0           0.   </chisel>
+            <disc>0.0           0.</disc>
+            <planter>0.0           0.</planter>
+            <burn>0.0           0.</burn>
+            </tillage>
+            -->
+        <SummerCona>3.5</SummerCona>
+        <SummerU>6</SummerU>
+        <SummerDate>1-Nov</SummerDate>
+        <WinterCona>2.5</WinterCona>
+        <WinterU>4</WinterU>
+        <WinterDate>1-Apr</WinterDate>
+        <Diffus_Const>40</Diffus_Const>
+        <Diffus_Slope>16</Diffus_Slope>
+        <Salb>0.12</Salb>
+        <Cn2_Bare>73</Cn2_Bare>
+        <Cn_Red>20</Cn_Red>
+        <Cn_Cov>0.8</Cn_Cov>
+        <dlayer>150.000</dlayer>
+        <dlayer>150.000</dlayer>
+        <dlayer>300.000</dlayer>
+        <dlayer>300.000</dlayer>
+        <dlayer>300.000</dlayer>
+        <dlayer>300.000</dlayer>
+        <dlayer>300.000</dlayer>
+        <sat>0.570</sat>
+        <sat>0.570</sat>
+        <sat>0.550</sat>
+        <sat>0.550</sat>
+        <sat>0.540</sat>
+        <sat>0.530</sat>
+        <sat>0.520</sat>
+        <dul>0.520</dul>
+        <dul>0.520</dul>
+        <dul>0.500</dul>
+        <dul>0.500</dul>
+        <dul>0.490</dul>
+        <dul>0.480</dul>
+        <dul>0.470</dul>
+        <ll15>0.240</ll15>
+        <ll15>0.290</ll15>
+        <ll15>0.310</ll15>
+        <ll15>0.310</ll15>
+        <ll15>0.310</ll15>
+        <ll15>0.310</ll15>
+        <ll15>0.310</ll15>
+        <air_dry>0.120</air_dry>
+        <air_dry>0.232</air_dry>
+        <air_dry>0.310</air_dry>
+        <air_dry>0.310</air_dry>
+        <air_dry>0.310</air_dry>
+        <air_dry>0.310</air_dry>
+        <air_dry>0.310</air_dry>
+        <swcon>0.300</swcon>
+        <swcon>0.300</swcon>
+        <swcon>0.300</swcon>
+        <swcon>0.300</swcon>
+        <swcon>0.300</swcon>
+        <swcon>0.300</swcon>
+        <swcon>0.300</swcon>
+        <bd>1.050</bd>
+        <bd>1.060</bd>
+        <bd>1.110</bd>
+        <bd>1.120</bd>
+        <bd>1.130</bd>
+        <bd>1.170</bd>
+        <bd>1.200</bd>
+        <sw>0.520</sw>
+        <sw>0.520</sw>
+        <sw>0.500</sw>
+        <sw>0.500</sw>
+        <sw>0.490</sw>
+        <sw>0.480</sw>
+        <sw>0.470</sw>
+      </SoilWater>
+      <SoilNitrogen>
+        <cnrf_coeff description="coeff. to determine the magnitude of C:N effects on decomposition of FOM">0.693  </cnrf_coeff>
+        <cnrf_optcn description="C:N above which decomposition rate of FOM declines">25.0   </cnrf_optcn>
+        <ef_biom description="fraction of biomass C mineralized retained in system (0-1)">0.4       </ef_biom>
+        <ef_fom description="fraction of FOM C mineralized retained in system (0-1)">0.4        </ef_fom>
+        <ef_hum description="fraction of humic C mineralized retained in system (0-1)">0.4        </ef_hum>
+        <ef_res description="fraction of residue C mineralized retained in system (0-1)">0.4        </ef_res>
+        <fom_min description="minimum allowable FOM (kg/ha)">0.5       </fom_min>
+        <fr_biom_biom description="fraction of retained biomass C returned to biomass (0-1)">0.6  </fr_biom_biom>
+        <fr_fom_biom description="fraction of retained FOM C transferred to biomass (0-1)">0.9   </fr_fom_biom>
+        <fr_res_biom description="fraction of retained residue C transferred to biomass (0-1)">0.9   </fr_res_biom>
+        <fom_type>default</fom_type>
+        <fom_type>manure</fom_type>
+        <fom_type>mucuna</fom_type>
+        <fom_type>lablab</fom_type>
+        <fom_type>shemp</fom_type>
+        <fom_type>stable</fom_type>
+        <fract_carb>0.2</fract_carb>
+        <fract_carb>0.3</fract_carb>
+        <fract_carb>0.54</fract_carb>
+        <fract_carb>0.57</fract_carb>
+        <fract_carb>0.45</fract_carb>
+        <fract_carb>0.0</fract_carb>
+        <fract_cell>0.7</fract_cell>
+        <fract_cell>0.3</fract_cell>
+        <fract_cell>0.37</fract_cell>
+        <fract_cell>0.37</fract_cell>
+        <fract_cell>0.47</fract_cell>
+        <fract_cell>0.1</fract_cell>
+        <fract_lign>0.1</fract_lign>
+        <fract_lign>0.4</fract_lign>
+        <fract_lign>0.09</fract_lign>
+        <fract_lign>0.06</fract_lign>
+        <fract_lign>0.08</fract_lign>
+        <fract_lign>0.9 </fract_lign>
+        <oc2om_factor>1.7</oc2om_factor>
+        <mcn description="C:N ratio of microbes ()">8.0           </mcn>
+        <!-- dsg 200509 ****** the following constants are for (a) aerobic AND (b)anaerobic conditions ***** -->
+        <opt_temp>32.0</opt_temp>
+        <opt_temp>32.0</opt_temp>
+        <rd_biom>0.0081</rd_biom>
+        <rd_biom>0.004</rd_biom>
+        <rd_carb>0.2</rd_carb>
+        <rd_carb>0.1</rd_carb>
+        <rd_cell>0.05</rd_cell>
+        <rd_cell>0.25</rd_cell>
+        <rd_lign>0.0095</rd_lign>
+        <rd_lign>0.003</rd_lign>
+        <rd_hum>0.00015</rd_hum>
+        <rd_hum>0.00007</rd_hum>
+        <nh4ppm_min>0.0</nh4ppm_min>
+        <no3ppm_min description="minimum allowable NO3 (ppm)">0.0    </no3ppm_min>
+        <min_depth description="depth of soil from which N can be immobilised by decomposing surface residues (mm)">100.    </min_depth>
+        <!--
+            ______________________________________________________________________-
+            Specifying the water factor for Nitrogen Transformations is
+            by referring to water content via an indexing system and linear interpolation
+            between specified coordinates.
+            (see example)
+
+            1 |    ______
+            |   /.     \                In this example
+            .5 |  / .      -               wf_index = 0.0 0.5 1.0 2.0
+            | /  .        \             wf_values= 0.0 1.0 1.0 0.25
+            |/   .
+            0 ______________________-
+            LL       DUL   SAT
+            =0       =1    =2
+            -->
+        <wfmin_index>0.0</wfmin_index>
+        <wfmin_index>0.5</wfmin_index>
+        <wfmin_index>1.0</wfmin_index>
+        <wfmin_index>2.0</wfmin_index>
+        <wfmin_values>0.0</wfmin_values>
+        <wfmin_values>1.0</wfmin_values>
+        <wfmin_values>1.0</wfmin_values>
+        <wfmin_values>0.5</wfmin_values>
+        <wfnit_index>0.0</wfnit_index>
+        <wfnit_index>0.25</wfnit_index>
+        <wfnit_index>1.0</wfnit_index>
+        <wfnit_index>2.0</wfnit_index>
+        <wfnit_values>0.0</wfnit_values>
+        <wfnit_values>1.0</wfnit_values>
+        <wfnit_values>1.0</wfnit_values>
+        <wfnit_values>0.0</wfnit_values>
+        <nitrification_pot units="ppm" description="Soil Nitrification potential (ug NH4/g soil)">40.0</nitrification_pot>
+        <nh4_at_half_pot units="ppm" description="NH4 concentration at half potential nitrification (Michaelis-Menton kinetics)">90</nh4_at_half_pot>
+        <pHf_nit_pH>4.5</pHf_nit_pH>
+        <pHf_nit_pH>6.0</pHf_nit_pH>
+        <pHf_nit_pH>8.0</pHf_nit_pH>
+        <pHf_nit_pH>9.0</pHf_nit_pH>
+        <pHf_nit_values>0.0</pHf_nit_values>
+        <pHf_nit_values>1.0</pHf_nit_values>
+        <pHf_nit_values>1.0</pHf_nit_values>
+        <pHf_nit_values>0.0</pHf_nit_values>
+        <dnit_rate_coeff description="denitrification rate coefficient (kg soil/mg C per day)">0.0006 </dnit_rate_coeff>
+        <dnit_wf_power description="power term for calculation of water factor for denitrification where wf = ((SW-DUL)/(SAT-DUL))^P">1        </dnit_wf_power>
+        <dnit_k1 description="K1 parameter from Thorburn et al(2010) for N2O model">25.1        </dnit_k1>
+        <dnit_wfps>21.33333</dnit_wfps>
+        <dnit_wfps>100.0</dnit_wfps>
+        <dnit_n2o_factor>0.0</dnit_n2o_factor>
+        <dnit_n2o_factor>1.18</dnit_n2o_factor>
+        <dnit_nitrf_loss>0.0 </dnit_nitrf_loss>
+        <soiltype>Black Vertosol</soiltype>
+        <root_cn>40</root_cn>
+        <root_wt>1000</root_wt>
+        <soil_cn>12</soil_cn>
+        <enr_a_coeff>7.4</enr_a_coeff>
+        <enr_b_coeff>0.2</enr_b_coeff>
+        <profile_reduction>off</profile_reduction>
+        <oc>1.560</oc>
+        <oc>1.220</oc>
+        <oc>1.120</oc>
+        <oc>0.930</oc>
+        <oc>0.520</oc>
+        <oc>0.330</oc>
+        <oc>0.290</oc>
+        <ph>8.200</ph>
+        <ph>8.700</ph>
+        <ph>8.900</ph>
+        <ph>8.100</ph>
+        <ph>8.000</ph>
+        <ph>8.000</ph>
+        <ph>8.000</ph>
+        <fbiom>0.040</fbiom>
+        <fbiom>0.020</fbiom>
+        <fbiom>0.020</fbiom>
+        <fbiom>0.020</fbiom>
+        <fbiom>0.010</fbiom>
+        <fbiom>0.010</fbiom>
+        <fbiom>0.010</fbiom>
+        <finert>0.400</finert>
+        <finert>0.600</finert>
+        <finert>0.800</finert>
+        <finert>1.000</finert>
+        <finert>1.000</finert>
+        <finert>1.000</finert>
+        <finert>1.000</finert>
+        <no3ppm>0.333</no3ppm>
+        <no3ppm>1.000</no3ppm>
+        <no3ppm>1.000</no3ppm>
+        <no3ppm>1.000</no3ppm>
+        <no3ppm>0.667</no3ppm>
+        <no3ppm>0.000</no3ppm>
+        <no3ppm>0.000</no3ppm>
+        <nh4ppm>0.067</nh4ppm>
+        <nh4ppm>0.200</nh4ppm>
+        <nh4ppm>0.200</nh4ppm>
+        <nh4ppm>0.200</nh4ppm>
+        <nh4ppm>0.133</nh4ppm>
+        <nh4ppm>0.000</nh4ppm>
+        <nh4ppm>0.000</nh4ppm>
+      </SoilNitrogen>
+      <ReportDb>
+        <variables>
+          <variable>LAI</variable>
+          <variable>sw</variable>
+          <variable>maxt</variable>
+          <variable>surfaceom_wt</variable>
+          <variable>interception</variable>
+          <variable>no3</variable>
+          <variable>CurrentPhaseName</variable>
+        </variables>
+      </ReportDb>
+      <surfaceom name="SurfaceOrganicMatter">
+        <PoolName>wheat_stubble</PoolName>
+        <type>wheat</type>
+        <mass>1000.</mass>
+        <cnr>80.0</cnr>
+        <standing_fraction>0.0</standing_fraction>
+        <crit_residue_wt>2000.0</crit_residue_wt>
+        <opt_temp description="temperature at which decomp reaches optimum rate (oC)">20       </opt_temp>
+        <cum_eos_max description="cumeos at which decomp rate becomes zero. (mm H2O)">20    </cum_eos_max>
+        <cnrf_coeff description="coeff. to determine the magnitude">0.277  </cnrf_coeff>
+        <!--  of C:N effects on decomposition of residue ()
+           -->
+        <cnrf_optcn description="C:N above which decomposition rate">25.0   </cnrf_optcn>
+        <!--  of residue declines ()
+           -->
+        <c_fract description="Fraction of Carbon in plant material (0-1)">0.4</c_fract>
+        <leach_rain_tot description="total amount of 'leaching' rain to remove">25.0 </leach_rain_tot>
+        <!--  all soluble N from Manure
+           -->
+        <min_rain_to_leach description="threshold rainfall amount for leaching to occur">10.0 </min_rain_to_leach>
+        <crit_min_surfom_orgC units="kg/ha" description="critical minimum org C below">0.004</crit_min_surfom_orgC>
+        <!--  which potential decomposition rate
+           is 100% (to avoid numerical imprecision)
+           -->
+        <default_cpr description="default C:P ratio to use when insufficient information">0.0</default_cpr>
+        <!--  is supplied to residue2
+           -->
+        <default_standing_fraction description="fraction of the residues 'standing' ie isolated from the soil">0.0              </default_standing_fraction>
+        <standing_extinct_coeff description="assume all standing stuff is flat (!!??)">1.0                 </standing_extinct_coeff>
+        <!--  ______________________________________________________________-
+           Residue type information
+           ______________________________________________________________-
+           -->
+        <ResiduesType>
+          <base_type>
+            <fom_type>inert</fom_type>
+            <fraction_C description="fraction of Carbon in FOM (0-1)">0.4     </fraction_C>
+            <po4ppm description="labile P concentration(ppm)">0.0     </po4ppm>
+            <nh4ppm description="ammonium N concentration (ppm)">0.0     </nh4ppm>
+            <no3ppm description="nitrate N concentration (ppm)">0.0     </no3ppm>
+            <specific_area description="specific area of residue (ha/kg">0.0005  </specific_area>
+            <cf_contrib>1</cf_contrib>
+            <pot_decomp_rate>0.1</pot_decomp_rate>
+            <fr_c>0.2 0.7 0.1</fr_c>
+            <fr_n>0.2 0.7 0.1</fr_n>
+            <fr_p>0.2 0.7 0.1</fr_p>
+          </base_type>
+          <inert>
+            <derived_from>base_type</derived_from>
+            <fom_type>inert</fom_type>
+            <pot_decomp_rate>0.0</pot_decomp_rate>
+          </inert>
+          <manure>
+            <fom_type>manure</fom_type>
+            <fraction_C description="fraction of Carbon in FOM (0-1)">0.08    </fraction_C>
+            <pot_decomp_rate>0.1</pot_decomp_rate>
+            <fr_c>0.3 0.3 0.4</fr_c>
+            <fr_n>0.3 0.3 0.4</fr_n>
+            <fr_p>0.3 0.3 0.4</fr_p>
+            <po4ppm description="labile P concentration(ppm)">10.0     </po4ppm>
+            <nh4ppm description="ammonium N concentration (ppm)">10.0     </nh4ppm>
+            <no3ppm description="nitrate N concentration (ppm)">10.0     </no3ppm>
+            <specific_area description="specific area of residue (ha/kg)">0.0001  </specific_area>
+            <cf_contrib>1</cf_contrib>
+          </manure>
+          <RuminantDung_PastureFed>
+            <fom_type>RuminantDung_PastureFed</fom_type>
+            <fraction_C description="fraction of Carbon in FOM (0-1)">0.4     </fraction_C>
+            <po4ppm description="labile P concentration(ppm)">5.0     </po4ppm>
+            <nh4ppm description="ammonium N concentration (ppm)">1250.0     </nh4ppm>
+            <no3ppm description="nitrate N concentration (ppm)">0.0     </no3ppm>
+            <specific_area description="specific area of residue (ha/kg">0.0001  </specific_area>
+            <cf_contrib>1</cf_contrib>
+            <pot_decomp_rate>0.1</pot_decomp_rate>
+            <fr_c>0.3 0.5 0.2</fr_c>
+            <fr_n>0.3 0.5 0.2</fr_n>
+            <fr_p>0.3 0.5 0.2</fr_p>
+          </RuminantDung_PastureFed>
+          <algae>
+            <derived_from>base_type</derived_from>
+            <fom_type>algae</fom_type>
+            <fraction_C description="fraction of Carbon in FOM (0-1)">0.4    </fraction_C>
+            <pot_decomp_rate>0.1</pot_decomp_rate>
+            <specific_area description="specific area of residue (ha/kg)">0.0005  </specific_area>
+            <cf_contrib>1</cf_contrib>
+          </algae>
+          <fym>
+            <fom_type>fym</fom_type>
+            <fraction_C description="fraction of Carbon in FOM (0-1)">0.08    </fraction_C>
+            <pot_decomp_rate>0.1</pot_decomp_rate>
+            <fr_c>0.3 0.3 0.4</fr_c>
+            <fr_n>0.3 0.3 0.4</fr_n>
+            <fr_p>0.3 0.3 0.4</fr_p>
+            <po4ppm description="labile P concentration(ppm)">40.0     </po4ppm>
+            <nh4ppm description="ammonium N concentration (ppm)">10.0     </nh4ppm>
+            <no3ppm description="nitrate N concentration (ppm)">10.0     </no3ppm>
+            <specific_area description="specific area of residue (ha/kg)">0.0001  </specific_area>
+            <cf_contrib>1</cf_contrib>
+          </fym>
+          <goatmanure>
+            <fom_type>goatmanure</fom_type>
+            <fraction_C description="fraction of Carbon in FOM (0-1)">0.08    </fraction_C>
+            <pot_decomp_rate>0.1</pot_decomp_rate>
+            <fr_c>0.3 0.6 0.3</fr_c>
+            <fr_n>0.3 0.6 0.3</fr_n>
+            <fr_p>0.3 0.6 0.34</fr_p>
+            <po4ppm description="labile P concentration(ppm)">5.0     </po4ppm>
+            <nh4ppm description="ammonium N concentration (ppm)">1307.0     </nh4ppm>
+            <no3ppm description="nitrate N concentration (ppm)">481.0     </no3ppm>
+            <specific_area description="specific area of residue (ha/kg)">0.0001  </specific_area>
+            <cf_contrib>1</cf_contrib>
+          </goatmanure>
+          <chikenmanure_base>
+            <fom_type>cm</fom_type>
+            <fraction_C description="fraction of Carbon in FOM (0-1)">0.374    </fraction_C>
+            <pot_decomp_rate>0.1</pot_decomp_rate>
+            <fr_c>0.0 0.50 0.50</fr_c>
+            <fr_n>0.0 0.50 0.50</fr_n>
+            <fr_p>0.0 0.50 0.50</fr_p>
+            <po4ppm description="labile P concentration(ppm)">5.0     </po4ppm>
+            <nh4ppm description="ammonium N concentration (ppm)">1307.0     </nh4ppm>
+            <no3ppm description="nitrate N concentration (ppm)">481.0     </no3ppm>
+            <specific_area description="specific area of residue (ha/kg)">0.0001  </specific_area>
+            <cf_contrib>1</cf_contrib>
+          </chikenmanure_base>
+          <cm>
+            <derived_from>chikenmanure_base</derived_from>
+            <fraction_C description="fraction of Carbon in FOM (0-1)">0.277    </fraction_C>
+            <nh4ppm description="ammonium N concentration (ppm)">2558.0     </nh4ppm>
+            <no3ppm description="nitrate N concentration (ppm)">873.0     </no3ppm>
+          </cm>
+          <cmA>
+            <derived_from>chikenmanure_base</derived_from>
+            <fraction_C description="fraction of Carbon in FOM (0-1)">0.374    </fraction_C>
+            <nh4ppm description="ammonium N concentration (ppm)">1307.0     </nh4ppm>
+            <no3ppm description="nitrate N concentration (ppm)">481.0     </no3ppm>
+          </cmA>
+          <cmB>
+            <derived_from>chikenmanure_base</derived_from>
+            <fraction_C description="fraction of Carbon in FOM (0-1)">0.240    </fraction_C>
+            <nh4ppm description="ammonium N concentration (ppm)">3009.0     </nh4ppm>
+            <no3ppm description="nitrate N concentration (ppm)">36.0     </no3ppm>
+          </cmB>
+          <manB>
+            <fom_type>manB</fom_type>
+            <fraction_C description="fraction of Carbon in FOM (0-1)">0.08    </fraction_C>
+            <pot_decomp_rate>0.1</pot_decomp_rate>
+            <fr_c>0.1 0.01 0.89</fr_c>
+            <fr_n>0.1 0.01 0.89</fr_n>
+            <fr_p>0.1 0.01 0.89</fr_p>
+            <po4ppm description="labile P concentration(ppm)">5.0     </po4ppm>
+            <nh4ppm description="ammonium N concentration (ppm)">1307.0     </nh4ppm>
+            <no3ppm description="nitrate N concentration (ppm)">481.0     </no3ppm>
+            <specific_area description="specific area of residue (ha/kg)">0.0001  </specific_area>
+            <cf_contrib>1</cf_contrib>
+          </manB>
+          <tithonia>
+            <derived_from>base_type</derived_from>
+            <fom_type>tithonia</fom_type>
+            <specific_area description="specific area of residue (ha/kg)">0.0005  </specific_area>
+          </tithonia>
+          <bambatsi>
+            <derived_from>base_type</derived_from>
+            <fom_type>bambatsi</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0005  </specific_area>
+          </bambatsi>
+          <barley>
+            <derived_from>base_type</derived_from>
+            <fom_type>barley</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0005  </specific_area>
+          </barley>
+          <broccoli>
+            <derived_from>base_type</derived_from>
+            <fom_type>broccoli</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0004  </specific_area>
+          </broccoli>
+          <butterflypea>
+            <derived_from>base_type</derived_from>
+            <fom_type>butterflypea</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0004  </specific_area>
+          </butterflypea>
+          <camaldulensis>
+            <derived_from>base_type</derived_from>
+            <fom_type>camaldulensis</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </camaldulensis>
+          <canola>
+            <derived_from>base_type</derived_from>
+            <fom_type>canola</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </canola>
+          <centro>
+            <derived_from>base_type</derived_from>
+            <fom_type>centro</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0004  </specific_area>
+          </centro>
+          <chickpea>
+            <derived_from>base_type</derived_from>
+            <fom_type>chickpea</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </chickpea>
+          <cowpea>
+            <derived_from>base_type</derived_from>
+            <fom_type>cowpea</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </cowpea>
+          <danthonia>
+            <derived_from>base_type</derived_from>
+            <fom_type>danthonia</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0005  </specific_area>
+          </danthonia>
+          <nativepasture>
+            <derived_from>base_type</derived_from>
+            <fom_type>nativepasture</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0005  </specific_area>
+          </nativepasture>
+          <globulus>
+            <derived_from>base_type</derived_from>
+            <fom_type>globulus</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </globulus>
+          <grandis>
+            <derived_from>base_type</derived_from>
+            <fom_type>grandis</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </grandis>
+          <fababean>
+            <derived_from>base_type</derived_from>
+            <fom_type>fababean</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </fababean>
+          <fieldpea>
+            <derived_from>base_type</derived_from>
+            <fom_type>fieldpea</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </fieldpea>
+          <grass>
+            <derived_from>base_type</derived_from>
+            <fom_type>grass</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0004  </specific_area>
+          </grass>
+          <lablab>
+            <derived_from>base_type</derived_from>
+            <fom_type>lablab</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </lablab>
+          <lentil>
+            <derived_from>chickpea</derived_from>
+          </lentil>
+          <lucerne>
+            <derived_from>base_type</derived_from>
+            <fom_type>lucerne</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </lucerne>
+          <lucerne2>
+            <derived_from>lucerne</derived_from>
+          </lucerne2>
+          <lupin>
+            <derived_from>base_type</derived_from>
+            <fom_type>lupin</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </lupin>
+          <maize>
+            <derived_from>base_type</derived_from>
+            <fom_type>maize</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0004  </specific_area>
+          </maize>
+          <medic>
+            <derived_from>lucerne</derived_from>
+          </medic>
+          <millet>
+            <derived_from>base_type</derived_from>
+            <fom_type>millet</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0004  </specific_area>
+          </millet>
+          <mucuna>
+            <derived_from>base_type</derived_from>
+            <fom_type>mucuna</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </mucuna>
+          <mungbean>
+            <derived_from>base_type</derived_from>
+            <fom_type>mungbean</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </mungbean>
+          <horsegram>
+            <derived_from>base_type</derived_from>
+            <fom_type>horsegram</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </horsegram>
+          <navybean>
+            <derived_from>base_type</derived_from>
+            <fom_type>navybean</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </navybean>
+          <cotton>
+            <derived_from>base_type</derived_from>
+            <fom_type>cotton</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </cotton>
+          <oats>
+            <derived_from>base_type</derived_from>
+            <fom_type>oats</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0005  </specific_area>
+          </oats>
+          <orobanche>
+            <derived_from>base_type</derived_from>
+            <fom_type>orobanche</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </orobanche>
+          <peanut>
+            <derived_from>base_type</derived_from>
+            <fom_type>peanut</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </peanut>
+          <pigeonpea>
+            <derived_from>base_type</derived_from>
+            <fom_type>pigeonpea</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </pigeonpea>
+          <poppies>
+            <derived_from>base_type</derived_from>
+            <fom_type>poppies</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0005  </specific_area>
+          </poppies>
+          <potato>
+            <derived_from>base_type</derived_from>
+            <fom_type>potato</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0005  </specific_area>
+          </potato>
+          <rice>
+            <derived_from>base_type</derived_from>
+            <fom_type>rice</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0005  </specific_area>
+          </rice>
+          <soybean>
+            <derived_from>base_type</derived_from>
+            <fom_type>soybean</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </soybean>
+          <sorghum>
+            <derived_from>base_type</derived_from>
+            <fom_type>sorghum</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0004  </specific_area>
+          </sorghum>
+          <stylo>
+            <derived_from>base_type</derived_from>
+            <fom_type>stylo</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </stylo>
+          <sugar>
+            <derived_from>base_type</derived_from>
+            <fom_type>sugar</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0007  </specific_area>
+          </sugar>
+          <sunflower>
+            <derived_from>base_type</derived_from>
+            <fom_type>sunflower</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0002  </specific_area>
+          </sunflower>
+          <sweetcorn>
+            <derived_from>base_type</derived_from>
+            <fom_type>sweetcorn</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0004  </specific_area>
+          </sweetcorn>
+          <sweetsorghum>
+            <derived_from>base_type</derived_from>
+            <fom_type>sweetsorghum</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0004  </specific_area>
+          </sweetsorghum>
+          <vetch>
+            <derived_from>fieldpea</derived_from>
+          </vetch>
+          <weed>
+            <derived_from>base_type</derived_from>
+            <fom_type>weed</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0004  </specific_area>
+          </weed>
+          <WF_Millet>
+            <derived_from>base_type</derived_from>
+            <fom_type>WF_Millet</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0004  </specific_area>
+          </WF_Millet>
+          <wheat>
+            <derived_from>base_type</derived_from>
+            <fom_type>wheat</fom_type>
+            <specific_area description="specific area of residue (ha/kg">0.0005  </specific_area>
+          </wheat>
+        </ResiduesType>
+        <SOMTillageType>
+          <chisel>0.5           100.</chisel>
+          <disc>0.5           200.</disc>
+          <planter>0.1            50.</planter>
+          <burn>1.0             0.</burn>
+          <bw_chisel>1.0           100.</bw_chisel>
+          <herbinc>0.1            50.</herbinc>
+          <burn_95>.95            0.</burn_95>
+          <graze>0.75            0.</graze>
+          <scarifier>0.30          100.</scarifier>
+          <pits>0.5           100.</pits>
+          <rip>0.3           300.</rip>
+          <blade>0.30          100.</blade>
+          <sweep description="Pdev">0.30          100.   </sweep>
+          <Cool_burn>0.7             0.</Cool_burn>
+          <burn_90>  0.9             0.</burn_90>
+          <tine>     1.0           100.</tine>
+          <default_tillage>  1.0             1.</default_tillage>
+          <decomp>  0.75           100.</decomp>
+          <mix>      1.0           100.</mix>
+          <hoe>      1.0           100.</hoe>
+          <MTT_Plough>1.0          200.</MTT_Plough>
+          <MTT_Disc>  0.8          100.</MTT_Disc>
+          <MTT_Drill> 0.05          50. </MTT_Drill>
+          <MTT_Bale>  0.8           0. </MTT_Bale>
+          <Tread>     0.5          100  </Tread>
+          <bale_cereal_straw>     0.5          0  </bale_cereal_straw>
+          <bale_grass_straw>      0.7          0  </bale_grass_straw>
+          <bale_legume_straw>     0.9          0  </bale_legume_straw>
+          <graze_cereal_forage>   0.9         0  </graze_cereal_forage>
+          <graze_kale_forage>     0.85         0  </graze_kale_forage>
+          <carry_cereal_forage>   0.95          0  </carry_cereal_forage>
+        </SOMTillageType>
+      </surfaceom>
+      <micromet name="Micromet">
+        <soil_albedo name="soil_albedo">0.23</soil_albedo>
+        <a_interception name="a_interception">0.0</a_interception>
+        <b_interception name="b_interception">0.0</b_interception>
+        <c_interception name="c_interception">0.0</c_interception>
+        <d_interception name="d_interception">0.0</d_interception>
+      </micromet>
+      <Manager2 name="Script(C#)">
+        <text>
+using System;
+using ModelFramework;
+using System.Xml;
+
+public class Script 
+{      
+   [Link] Paddock MyPaddock;
+   [Link] Plant Wheat2; 
+   [Input] DateTime Today;   
+   [Input] string CurrentPhaseName; 
+
+   string Checkpoint;
+
+   // The following event handler will be called once at the beginning of the simulation
+   [EventHandler] public void OnInitialised()
+   {
+      MyPaddock.Deactivate("wheat2");
+      Checkpoint = MyPaddock.Checkpoint("wheat2");
+      Console.Write(Checkpoint);
+      MyPaddock.OutputDiagnostics();
+   }
+
+   // The following event handler will be called each day at the beginning of the day
+   [EventHandler] public void OnPrepare()
+   {
+      if (Today.Day == 1 &amp;&amp; Today.Month == 6) 
+      {
+         Console.WriteLine("Sowing");
+         MyPaddock.Activate("wheat2");
+         SowPlant2Type Sow = new SowPlant2Type {Cultivar = "Hartog", Population = 150, Depth = 50, RowSpacing = 500, MaxCover = 1, BudNumber = 1};
+         Wheat2.OnSow(Sow);
+      }
+
+   }
+
+   // The following event handler will be called each day at the beginning of the day
+   [EventHandler] public void OnPost()
+   {
+      if (CurrentPhaseName == "ReadyForHarvesting")
+      {
+         Console.WriteLine("Harvesting");
+         Wheat2.OnHarvest();
+         Wheat2.OnEndCrop();
+         MyPaddock.InitialiseFromCheckpoint("wheat2", Checkpoint);
+         MyPaddock.Deactivate("wheat2");
+      }
+
+   }
+
+}
+            </text>
+      </Manager2>
+    </area>
+  </simulation>
+</folder>
