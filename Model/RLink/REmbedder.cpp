@@ -177,6 +177,7 @@ extern "C" bool EmbeddedR_Start(const char *R_Home, const char *UserLibs)
    } 	 
 
    try {
+     R->parseEval("library(\"methods\")");
      (*R)["apsim"] = LOAD_RCPP_MODULE(apsim) ;
    } catch (std::exception& ex) {
         std::cerr << "R Exception: " << ex.what() << std::endl; std::cerr.flush();
