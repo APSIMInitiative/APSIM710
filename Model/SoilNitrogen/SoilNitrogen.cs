@@ -418,15 +418,36 @@ public class SoilNitrogen
 
     #region Parameters not usually provided by the user
 
+    // parameter for TermA in N2N2O function
+    [Param]
+    private double dnit_A;
+
+    // parameter for TermB in N2N2O function
+    [Param]
+    private double dnit_B;
+
+    // parameter for TermC in N2N2O function
+    [Param]
+    private double dnit_C;
+
+    // parameter 1 to compute active carbon (for denitrification)
+    [Param]
+    private double actC_p1;
+
+    // parameter 2 to compute active carbon (for denitrification)
+    [Param]
+    private double actC_p2;
+
     // minimum allowable Urea (ppm)
+    [Param(MinVal = 0.0, MaxVal = 1000.0)]
     private double ureappm_min = 0.0;
 
     // minimum allowable NH4 (ppm)
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    [Param(MinVal = 0.0, MaxVal = 1000.0)]
     private double nh4ppm_min = 0.0;
 
     // minimum allowable NO3 (ppm)
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    [Param(MinVal = 0.0, MaxVal = 1000.0)]
     private double no3ppm_min = 0.0;
 
     // enrichment equation coefficient a
@@ -2807,26 +2828,13 @@ public class SoilNitrogen
         //       Reference for Carbon availability factor: Reddy KR, Khaleel R, Overcash MR (). "Carbon transformations in land areas receiving 
         //        organic wastes in relation to nonpoint source pollution: A conceptual model".  J.Environ. Qual. 9:434-442.
 
-
-        //double active_c;              // water extractable organic carbon as
-        //// "available" C conc. (mg C/kg soil)
-        //double tf;                    // temperature factor affecting
-        ////    denitrification rate (0-1)
-        //double wf;                    // soil moisture factor affecting
-        ////    denitrification rate (0-1)
-        //double no3_avail;             // soil nitrate available (kg/ha)
-        //double hum_c_conc;            // carbon conc. of humic pool
-        ////    (mg C/kg soil)
-        //double fom_c_conc;            // carbon conc. of fresh organic pool
-        //    (mg C/kg soil)
-
         // make sure no3 will not go below minimum
         if (_no3[layer] < no3_min[layer])
             return 0.0;
 
 
         // get available carbon from soil organic pools
-        double active_c = 0.0031 * (hum_c[layer] + fom_c_pool1[layer] + fom_c_pool2[layer] + fom_c_pool3[layer]) * convFactor_kgha2ppm(layer) + 24.5;
+        double active_c = actC_p1 * (hum_c[layer] + fom_c_pool1[layer] + fom_c_pool2[layer] + fom_c_pool3[layer]) * convFactor_kgha2ppm(layer) + actC_p2;
         // Note CM V2 had active_c = fom_C_conc + 0.0031*hum_C_conc + 24.5
 
         // get the soil water factor
@@ -2855,16 +2863,14 @@ public class SoilNitrogen
         double WFPS = sw_dep[layer] / sat_dep[layer] * 100.0;
 
         // CO2 production today (kgC/ha)
-        double CO2 = (dlt_c_fom_2_atm[0][layer] + dlt_c_fom_2_atm[1][layer] + dlt_c_fom_2_atm[2][layer] + dlt_c_biom_2_atm[layer] + dlt_c_hum_2_atm[layer]);
-        //                      /(bd[layer] * dlayer[layer]) * 100.0;
+        double CO2_prod = (dlt_c_fom_2_atm[0][layer] + dlt_c_fom_2_atm[1][layer] + dlt_c_fom_2_atm[2][layer] + dlt_c_biom_2_atm[layer] + dlt_c_hum_2_atm[layer]);
 
         // calculate the terms for the formula from Thornburn et al (2010)
-        double RtermA = 0.16 * dnit_k1;
-        //double RtermB = (CO2 > 0.0) ?
-        //     dnit_k1 * (Math.Exp(-0.8 * (_no3[layer] * convFactor_kgha2ppm(layer) / CO2)))
-        //     : 0.0;
-        double RtermB = (CO2 > 0.0) ? dnit_k1 * (Math.Exp(-0.8 * (_no3[layer] / CO2))) : 0.0;
-        double RtermC = 0.1;
+        double RtermA = dnit_A * dnit_k1;
+        double RtermB = 0.0;
+        if (CO2_prod > 0.0)
+            RtermB = dnit_k1 * Math.Exp(-dnit_B * (_no3[layer] / CO2_prod));
+        double RtermC = dnit_C;
         bool didInterpolate;
         double RtermD = MathUtility.LinearInterpReal(WFPS, dnit_wfps, dnit_n2o_factor, out didInterpolate);
         // RTermD = (0.015 * WFPS) - 0.32;
