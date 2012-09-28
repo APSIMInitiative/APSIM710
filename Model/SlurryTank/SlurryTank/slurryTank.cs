@@ -58,7 +58,8 @@ public class SlurryTank
     [Param]
     double ThetaCM = 0;
 
-
+    [Param]
+    double HeatTransferCoefficient = 0;
     [Param]
     double GInert = 0;
     [Param]
@@ -576,8 +577,8 @@ public class SlurryTank
 
             double c=4186;
 
-            heatTransferCoefficientForAir = surfaceAir / (c * volumeAbove * manuredensity);
-            heatTransferCoefficientForSoil = surfaceSoil / (c * volumeSoil * manuredensity);
+            heatTransferCoefficientForAir = (HeatTransferCoefficient*surfaceAir) / (c * volumeAbove * manuredensity);
+            heatTransferCoefficientForSoil =(HeatTransferCoefficient*surfaceSoil) / (c * volumeSoil * manuredensity);
 
 
             DoubleType value = new DoubleType();
