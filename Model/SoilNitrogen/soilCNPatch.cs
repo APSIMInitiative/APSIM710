@@ -237,8 +237,8 @@ class soilCNPatch
                         Console.WriteLine(" Attempt to set urea(" + (layer + 1).ToString() + ") to a value below the lower limit, value will be set to minimum (" + urea_min[layer].ToString() + ")");
                         value[layer] = urea_min[layer];
                     }
-                    _urea[layer] = value[layer];
                 }
+                _urea[layer] = value[layer];
             }
         }
     }
@@ -302,8 +302,8 @@ class soilCNPatch
                         Console.WriteLine(" Attempt to set no3(" + (layer + 1).ToString() + ") to a value below the lower limit, value will be set to minimum (" + no3_min[layer].ToString() + ")");
                         value[layer] = no3_min[layer];
                     }
-                    _no3[layer] = value[layer];
                 }
+                _no3[layer] = value[layer];
             }
         }
     }
@@ -488,7 +488,7 @@ class soilCNPatch
     #endregion
 
     #endregion
- 
+
     #region Values that other components can get or set
 
     // these are declared below
@@ -771,13 +771,12 @@ class soilCNPatch
     {
         get
         {
-            int numLayers = dlayer.Length;
-            double[] _carbon_tot = new double[numLayers];
-            for (int layer = 0; layer < numLayers; layer++)
+            double[] result = new double[dlayer.Length];
+            for (int layer = 0; layer < dlayer.Length; layer++)
             {
-                _carbon_tot[layer] += fom_c_pool1[layer] + fom_c_pool2[layer] + fom_c_pool3[layer] + hum_c[layer] + biom_c[layer];
+                result[layer] += fom_c_pool1[layer] + fom_c_pool2[layer] + fom_c_pool3[layer] + hum_c[layer] + biom_c[layer];
             }
-            return _carbon_tot;
+            return result;
         }
     }
 
@@ -807,6 +806,8 @@ class soilCNPatch
     private double[][] dlt_c_decomp;            // residue C decomposition (kg/ha)
     private double[][] dlt_n_decomp;            // residue N decomposition (kg/ha)
 
+    public SurfaceOrganicMatterDecompType SOMDecomp;
+
     #endregion
 
     #region Initial setup calculations
@@ -816,8 +817,8 @@ class soilCNPatch
         for (int layer = 0; layer < dlayer.Length; layer++)
         {
             // store these values so they may be used tomorrow
-            nh4_yesterday[layer] = nh4[layer];
-            no3_yesterday[layer] = no3[layer];
+            nh4_yesterday[layer] = _nh4[layer];
+            no3_yesterday[layer] = _no3[layer];
         }
     }
 
@@ -957,10 +958,6 @@ class soilCNPatch
             // starts with nh4
             _nh4[layer] += dlt_n_hum_2_min[layer] + dlt_n_biom_2_min[layer] + dlt_n_fom_2_min[layer];
 
-            int teste = 0;
-            if (dlt_n_fom_2_min[layer] < 0)
-                teste = 0;
-
             // check whether there is enough NH4 to be immobilised
             nh4_deficit_immob = new double[dlayer.Length];
             if (_nh4[layer] < nh4_min[layer])
@@ -1012,20 +1009,19 @@ class soilCNPatch
             no3_transform_net[layer] = dlt_no3_decomp[layer] - dlt_no3_dnit[layer] + effective_nitrification[layer] - nh4_deficit_immob[layer];
 
             // net deltas
-            dlt_nh4_net[layer] = nh4[layer] - nh4_yesterday[layer];
-            dlt_no3_net[layer] = no3[layer] - no3_yesterday[layer];
+            dlt_nh4_net[layer] = _nh4[layer] - nh4_yesterday[layer];
+            dlt_no3_net[layer] = _no3[layer] - no3_yesterday[layer];
 
             // store these values so they may be used tomorrow
-            nh4_yesterday[layer] = nh4[layer];
-            no3_yesterday[layer] = no3[layer];
+            nh4_yesterday[layer] = _nh4[layer];
+            no3_yesterday[layer] = _no3[layer];
         }
-        //if (!is_pond_active)
-        //    PackActualResidueDecomposition();
     }
 
     public void OnTick()
     {
-        // Reset Potential Decomposition Register
+        // +  Purpose:
+        //      Reset potential decomposition variables
 
         num_residues = 0;
         Array.Resize(ref pot_c_decomp, 0);
@@ -1035,19 +1031,18 @@ class soilCNPatch
 
     public void OnIncorpFOM(FOMLayerType FOMdata)
     {
-        //    We partition the C and N into fractions in each layer.
-        //    We will do this by assuming that the CN ratios
-        //    of all fractions are equal
+        // +  Purpose:
+        //      Partition the given FOM C and N into fractions in each layer.
+        //      It will be assumed that the CN ratios of all fractions are equal
 
         bool nSpecified = false;
-        for (int i = 0; i < FOMdata.Layer.Length; i++)
+        for (int layer = 0; layer < FOMdata.Layer.Length; layer++)
         {
             // If the caller specified CNR values then use them to calculate N from Amount.
-            if (FOMdata.Layer[i].CNR > 0.0)
-                FOMdata.Layer[i].FOM.N = (FOMdata.Layer[i].FOM.amount * c_in_fom) /
-                                           FOMdata.Layer[i].CNR;
+            if (FOMdata.Layer[layer].CNR > 0.0)
+                FOMdata.Layer[layer].FOM.N = (FOMdata.Layer[layer].FOM.amount * c_in_fom) / FOMdata.Layer[layer].CNR;
             // Was any N specified?
-            nSpecified |= FOMdata.Layer[i].FOM.N != 0.0;
+            nSpecified |= FOMdata.Layer[layer].FOM.N != 0.0;
         }
 
         if (nSpecified)
@@ -1061,48 +1056,55 @@ class soilCNPatch
                     break;
                 }
             }
-            // Now convert the IncorpFOM.DeltaWt and IncorpFOM.DeltaN arrays to
-            // include fraction information and add to pools.
-            int nLayers = FOMdata.Layer.Length;
-            if (nLayers > dlayer.Length)
-            {
-                Array.Resize(ref dlayer, nLayers);
-                ResizeLayerArrays(nLayers);
-            }
-            for (int i = 0; i < nLayers; i++)
-            {
-                fom_c_pool1[i] += FOMdata.Layer[i].FOM.amount * fract_carb[fom_type] * c_in_fom;
-                fom_c_pool2[i] += FOMdata.Layer[i].FOM.amount * fract_cell[fom_type] * c_in_fom;
-                fom_c_pool3[i] += FOMdata.Layer[i].FOM.amount * fract_lign[fom_type] * c_in_fom;
+            // Now convert the IncorpFOM.DeltaWt and IncorpFOM.DeltaN arrays to include fraction information and add to pools.
+            // int nLayers = FOMdata.Layer.Length;
+            //if (nLayers > dlayer.Length)
+            //{
+            //    Array.Resize(ref dlayer, nLayers);        -  this is wrong, dlayer should not be reset by this module
+            //    ResizeLayerArrays(nLayers);
+            //}
+            //for (int layer = 0; layer < nLayers; layer++)
 
-                fom_n_pool1[i] += FOMdata.Layer[i].FOM.N * fract_carb[fom_type];
-                fom_n_pool2[i] += FOMdata.Layer[i].FOM.N * fract_cell[fom_type];
-                fom_n_pool3[i] += FOMdata.Layer[i].FOM.N * fract_lign[fom_type];
+            for (int layer = 0; layer < FOMdata.Layer.Length; layer++)
+            {
+                if (layer < dlayer.Length)
+                {
+                    fom_c_pool1[layer] += FOMdata.Layer[layer].FOM.amount * fract_carb[fom_type] * c_in_fom;
+                    fom_c_pool2[layer] += FOMdata.Layer[layer].FOM.amount * fract_cell[fom_type] * c_in_fom;
+                    fom_c_pool3[layer] += FOMdata.Layer[layer].FOM.amount * fract_lign[fom_type] * c_in_fom;
 
-                // add up fom_n in each layer by adding up each of the pools
-                //fom_n[i] = fom_n_pool1[i] + fom_n_pool2[i] + fom_n_pool3[i];
+                    fom_n_pool1[layer] += FOMdata.Layer[layer].FOM.N * fract_carb[fom_type];
+                    fom_n_pool2[layer] += FOMdata.Layer[layer].FOM.N * fract_cell[fom_type];
+                    fom_n_pool3[layer] += FOMdata.Layer[layer].FOM.N * fract_lign[fom_type];
+                }
+                else
+                    Console.WriteLine(" Number of FOM values given is larger than the number of layers, estra values will be ignored");
             }
         }
     }
 
     public void OnIncorpFOMPool(FOMPoolType FOMPoolData)
     {
-        // INCREMENT THE POOLS wtih the unpacked deltas
-        for (int i = 0; i < FOMPoolData.Layer.Length; i++)
+        // +  Purpose:
+        //      Partition the given FOM C and N into fractions in each layer.
+
+        for (int layer = 0; layer < FOMPoolData.Layer.Length; layer++)
         {
-            fom_c_pool1[i] += FOMPoolData.Layer[i].Pool[0].C;
-            fom_c_pool2[i] += FOMPoolData.Layer[i].Pool[1].C;
-            fom_c_pool3[i] += FOMPoolData.Layer[i].Pool[2].C;
+            if (layer < dlayer.Length)
+            {
+                fom_c_pool1[layer] += FOMPoolData.Layer[layer].Pool[0].C;
+                fom_c_pool2[layer] += FOMPoolData.Layer[layer].Pool[1].C;
+                fom_c_pool3[layer] += FOMPoolData.Layer[layer].Pool[2].C;
 
-            fom_n_pool1[i] += FOMPoolData.Layer[i].Pool[0].N;
-            fom_n_pool2[i] += FOMPoolData.Layer[i].Pool[1].N;
-            fom_n_pool3[i] += FOMPoolData.Layer[i].Pool[2].N;
+                fom_n_pool1[layer] += FOMPoolData.Layer[layer].Pool[0].N;
+                fom_n_pool2[layer] += FOMPoolData.Layer[layer].Pool[1].N;
+                fom_n_pool3[layer] += FOMPoolData.Layer[layer].Pool[2].N;
 
-            //// add up fom_n in each layer by adding up each of the pools
-            fom_n[i] = fom_n_pool1[i] + fom_n_pool2[i] + fom_n_pool3[i];
-
-            _no3[i] += FOMPoolData.Layer[i].no3;
-            _nh4[i] += FOMPoolData.Layer[i].nh4;
+                _no3[layer] += FOMPoolData.Layer[layer].no3;
+                _nh4[layer] += FOMPoolData.Layer[layer].nh4;
+            }
+            else
+                Console.WriteLine(" Number of FOM values given is larger than the number of layers, estra values will be ignored");
         }
     }
 
@@ -1118,7 +1120,6 @@ class soilCNPatch
         Array.Resize(ref pot_c_decomp, num_residues);
         Array.Resize(ref pot_n_decomp, num_residues);
         Array.Resize(ref pot_p_decomp, num_residues);
-
         for (int layer = 0; layer < dlt_c_res_2_biom.Length; layer++)
         {
             Array.Resize(ref dlt_c_res_2_biom[layer], num_residues);
@@ -1134,14 +1135,14 @@ class soilCNPatch
             residue_type[residue] = SurfaceOrganicMatterDecomp.Pool[residue].OrganicMatterType;
             pot_c_decomp[residue] = SurfaceOrganicMatterDecomp.Pool[residue].FOM.C;
             pot_n_decomp[residue] = SurfaceOrganicMatterDecomp.Pool[residue].FOM.N;
-            // this P decomposition is needed to formulate data required by SOILP - struth, this is very ugly
             pot_p_decomp[residue] = SurfaceOrganicMatterDecomp.Pool[residue].FOM.P;
         }
     }
 
     public void OnNew_profile(NewProfileType NewProfile)
     {
-        // Soil profile is changed - primarily by erosion (??)
+        //+  Purpose
+        //     Consider soil profile changes - primarily due to by erosion (??)
 
         bd = NewProfile.bd;
         sat_dep = NewProfile.dul_dep;
@@ -1152,7 +1153,7 @@ class soilCNPatch
         CheckProfile(NewProfile.dlayer);
     }
 
-    private void ResizeLayerArrays(int nLayers)
+    public void ResizeLayerArrays(int nLayers)
     {
         // +  Purpose:
         //      Set the size of all public arrays (with nLayers), this doesn't clear the existing values
@@ -1166,6 +1167,8 @@ class soilCNPatch
         Array.Resize(ref no3_min, nLayers);
         Array.Resize(ref no3_yesterday, nLayers);
         Array.Resize(ref nh4_yesterday, nLayers);
+        Array.Resize(ref fbiom, nLayers);
+        Array.Resize(ref finert, nLayers);
         Array.Resize(ref inert_c, nLayers);
         Array.Resize(ref biom_c, nLayers);
         Array.Resize(ref biom_n, nLayers);
@@ -1342,13 +1345,13 @@ class soilCNPatch
         double wf = WF(layer, index);
 
         // get the rate of mineralisation of N from the humic pool
-        double dlt_c_min_tot = (hum_c[layer] - inert_c[layer]) * rd_hum[index - 1] * tf * wf;
-        double dlt_n_min_tot = MathUtility.Divide(dlt_c_min_tot, hum_cn, 0.0);
+        double dlt_c_min_hum = (hum_c[layer] - inert_c[layer]) * rd_hum[index - 1] * tf * wf;
+        double dlt_n_min_hum = MathUtility.Divide(dlt_c_min_hum, hum_cn, 0.0);
 
         // distribute the mineralised N and C
-        dlt_c_hum_2_biom[layer] = dlt_c_min_tot * ef_hum;
-        dlt_c_hum_2_atm[layer] = dlt_c_min_tot * (1.0 - ef_hum);
-        dlt_n_hum_2_min[layer] = dlt_n_min_tot - MathUtility.Divide(dlt_c_hum_2_biom[layer], biom_cn, 0.0);
+        dlt_c_hum_2_biom[layer] = dlt_c_min_hum * ef_hum;
+        dlt_c_hum_2_atm[layer] = dlt_c_min_hum * (1.0 - ef_hum);
+        dlt_n_hum_2_min[layer] = dlt_n_min_hum - MathUtility.Divide(dlt_c_hum_2_biom[layer], biom_cn, 0.0);
     }
 
     private void MineraliseBiomass(int layer)
@@ -1366,15 +1369,15 @@ class soilCNPatch
         double wf = WF(layer, index);
 
         // get the rate of mineralisation of C & N from the biomass pool
-        double dlt_n_min_tot = biom_n[layer] * rd_biom[index - 1] * tf * wf;
-        double dlt_c_min_tot = dlt_n_min_tot * biom_cn;
+        double dlt_n_min_biom = biom_n[layer] * rd_biom[index - 1] * tf * wf;       // why the calculation is on n while for hum is on C?
+        double dlt_c_min_biom = dlt_n_min_biom * biom_cn;
 
         // distribute the carbon
-        dlt_c_biom_2_hum[layer] = dlt_c_min_tot * ef_biom * (1.0 - fr_biom_biom);
-        dlt_c_biom_2_atm[layer] = dlt_c_min_tot * (1.0 - ef_biom);
+        dlt_c_biom_2_hum[layer] = dlt_c_min_biom * ef_biom * (1.0 - fr_biom_biom);
+        dlt_c_biom_2_atm[layer] = dlt_c_min_biom * (1.0 - ef_biom);
 
         // calculate net N mineralisation
-        dlt_n_biom_2_min[layer] = dlt_n_min_tot - MathUtility.Divide(dlt_c_biom_2_hum[layer], hum_cn, 0.0) - MathUtility.Divide((dlt_c_min_tot - dlt_c_biom_2_atm[layer] - dlt_c_biom_2_hum[layer]), biom_cn, 0.0);
+        dlt_n_biom_2_min[layer] = dlt_n_min_biom - MathUtility.Divide(dlt_c_biom_2_hum[layer], hum_cn, 0.0) - MathUtility.Divide((dlt_c_min_biom - dlt_c_biom_2_atm[layer] - dlt_c_biom_2_hum[layer]), biom_cn, 0.0);
     }
 
     private void MineraliseFOM(int layer, out double[] dlt_c_biom, out double[] dlt_c_hum, out double[] dlt_c_atm, out double[] dlt_fom_n, out double dlt_n_min)
@@ -1416,8 +1419,8 @@ class soilCNPatch
         // calculate gross amount of C & N released due to mineralisation of the fresh organic matter.
         if (fomC >= fom_min)
         {
-            double dlt_fom_n_min_tot = 0.0; // amount of fresh organic N mineralised across fpools (kg/ha)
-            double dlt_fom_c_min_tot = 0.0; // total C mineralised (kg/ha) summed across fpools
+            double dlt_n_min_fom = 0.0; // amount of fresh organic N mineralised across fpools (kg/ha)
+            double dlt_c_min_fom = 0.0; // total C mineralised (kg/ha) summed across fpools
             double[] dlt_n_min_tot = new double[3]; // amount of fresh organic N mineralised in each pool (kg/ha)
             double[] dlt_c_min_tot = new double[3]; // amount of C mineralised (kg/ha) from each pool
 
@@ -1436,26 +1439,26 @@ class soilCNPatch
                 // calculate the gross amount of N released from fresh organic matter (kg/ha)
                 double gross_n_decomp = decomp_rate * FractFomN(fractn)[layer];
 
-                dlt_fom_n_min_tot += gross_n_decomp;
+                dlt_n_min_fom += gross_n_decomp;
                 dlt_c_min_tot[fractn] = gross_c_decomp;
                 dlt_n_min_tot[fractn] = gross_n_decomp;
-                dlt_fom_c_min_tot += gross_c_decomp;
+                dlt_c_min_fom += gross_c_decomp;
             }
 
             // calculate potential transfers of C mineralised to biomass
-            double dlt_c_biom_tot = dlt_fom_c_min_tot * ef_fom * fr_fom_biom;
+            double dlt_c_biom_tot = dlt_c_min_fom * ef_fom * fr_fom_biom;
 
             // calculate potential transfers of C mineralised to humus
-            double dlt_c_hum_tot = dlt_fom_c_min_tot * ef_fom * (1.0 - fr_fom_biom);
+            double dlt_c_hum_tot = dlt_c_min_fom * ef_fom * (1.0 - fr_fom_biom);
 
             // test whether there is adequate N available to meet immobilisation demand
             double n_demand = MathUtility.Divide(dlt_c_biom_tot, biom_cn, 0.0) + MathUtility.Divide(dlt_c_hum_tot, hum_cn, 0.0);
-            double n_avail = nitTot + dlt_fom_n_min_tot;
+            double n_avail = nitTot + dlt_n_min_fom;
 
             // factor to reduce mineralisation rates if insufficient N to meet immobilisation demand
             double Navail_factor = 1.0;
             if (n_demand > n_avail)
-                Navail_factor = Math.Max(0.0, Math.Min(1.0, MathUtility.Divide(nitTot, n_demand - dlt_fom_n_min_tot, 0.0)));
+                Navail_factor = Math.Max(0.0, Math.Min(1.0, MathUtility.Divide(nitTot, n_demand - dlt_n_min_fom, 0.0)));
 
             // now adjust carbon transformations etc. and similarly for npools
             for (int fractn = 0; fractn < 3; fractn++)
@@ -1471,7 +1474,7 @@ class soilCNPatch
                 dlt_fom_n[fractn] = MathUtility.RoundToZero(dlt_fom_n[fractn]);
             }
 
-            dlt_n_min = (dlt_fom_n_min_tot - n_demand) * Navail_factor;
+            dlt_n_min = (dlt_n_min_fom - n_demand) * Navail_factor;
         }
     }
 
@@ -1644,8 +1647,6 @@ class soilCNPatch
         return result;
     }
 
-    public SurfaceOrganicMatterDecompType SOMDecomp;
-
     private void PackActualResidueDecomposition()
     {
         // + Purpose
@@ -1704,7 +1705,7 @@ class soilCNPatch
             SOMDecomp.Pool[residue].FOM.AshAlk = 0.0F;
 
             // dsg 131004 soilp needs some stuff - very ugly process - needs to be streamlined
-            //  create some variables which soilp can "get" - layer based arrays independant of residues
+            //  create some variables which soilp can "get" - layer based arrays independent of residues
             for (int layer = 0; layer < nLayers; layer++)
             {
                 soilp_dlt_res_c_atm[layer] += dlt_c_res_2_atm[layer][residue];
@@ -1714,9 +1715,6 @@ class soilCNPatch
             }
         }
     }
- 
-
-
 
     private void CheckProfile(float[] newProfile)
     {
@@ -1776,8 +1774,7 @@ class soilCNPatch
 
         if (MathUtility.FloatsAreEqual(profile_depth, new_profile_depth))
         {
-            // move from below bottom layer - assume it has same properties
-            // as bottom layer
+            // move from below bottom layer - assume it has same properties as bottom layer
             layer_loss = variable[lowest_layer - 1] * LayerFract(lowest_layer - 1);
         }
         else
@@ -1874,7 +1871,7 @@ class soilCNPatch
             return MathUtility.LinearInterpReal(wfd, wfnit_index, wfnit_values, out didInterpolate);
         else
             // if pond is active, and aerobic conditions dominate, assume wf_nitrf = 0
-            return 0;
+            return 0.0;
     }
 
     private double WFDenit(int layer)
@@ -1959,7 +1956,6 @@ class soilCNPatch
         double t = Math.Min(st[layer], opt_temp[layer]);
         return 47.9 / (1.0 + Math.Exp(106.0 / (t + 18.3)));
     }
-
 
     private double[] FractFomC(int fract)
     {

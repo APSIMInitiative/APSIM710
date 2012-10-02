@@ -633,7 +633,7 @@
             <variable>dlt_n_min_tot() as NetMineralisedHumus  format 3</variable>
             <variable>n2o_atm() as N2Oemissions format 3</variable>
             <variable>es as Evaporation format 2</variable>
-            <variable>WaterUptake as Transpiration format 2</variable>
+            <variable>ep as Transpiration format 2</variable>
             <variable>drain as Drain  format 2</variable>
             <variable>dlayer format 1</variable>
             <variable>no3 format 2</variable>
@@ -22436,9 +22436,9 @@
       - two soils, a free draining and a clayey;
       - Wheat planted;
       - Initial mineral N = 30kg as NO3 + 30kg as NH4;
-      - Initial organic matter = about 125 tonnes hum, 10ton N + 1000kg fom, 13kg N;
-      - Initial surface residues = 1000kg, 27kg N;
-      - No additions of residues;
+      - Initial organic matter = about 125 tonnes hum, 10ton N;
+      - No initial surface residues;
+      - No additions of residues (besides crop senescence);
       - Apply 50kg urea_N;
 
 +++++++++++++++++++++++++++++++++++++++++++++</memo>
@@ -22458,7 +22458,7 @@
         <surfaceom name="Surface Organic Matter">
           <PoolName type="text" description="Organic Matter pool name">Residue1</PoolName>
           <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">grass</type>
-          <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
+          <mass type="text" description="Initial surface residue (kg/ha)">0</mass>
           <cnr type="text" description="C:N ratio of initial residue">15</cnr>
           <cpr type="text" description="C:P ratio of initial residue (optional)" />
           <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
@@ -22642,7 +22642,7 @@
           </SoilWat>
           <SoilOrganicMatter>
             <RootCn type="text" description="RootCn">30</RootCn>
-            <RootWt type="text" description="RootWt">1000</RootWt>
+            <RootWt type="text" description="RootWt">0</RootWt>
             <SoilCn type="text" description="SoilCn">12.5</SoilCn>
             <EnrACoeff type="text" description="EnrACoeff">7.4</EnrACoeff>
             <EnrBCoeff type="text" description="EnrBCoeff">0.2</EnrBCoeff>
@@ -23129,7 +23129,7 @@
           </SoilWat>
           <SoilOrganicMatter>
             <RootCn type="text" description="RootCn">30</RootCn>
-            <RootWt type="text" description="RootWt">1000</RootWt>
+            <RootWt type="text" description="RootWt">0</RootWt>
             <SoilCn type="text" description="SoilCn">12.5</SoilCn>
             <EnrACoeff type="text" description="EnrACoeff">7.4</EnrACoeff>
             <EnrBCoeff type="text" description="EnrBCoeff">0.2</EnrBCoeff>
@@ -23449,9 +23449,9 @@
       - two soils, a free draining and a clayey;
       - Wheat planted;
       - Initial mineral N = 30kg as NO3 + 30kg as NH4;
-      - Initial organic matter = about 125 tonnes hum, 10ton N;
-      - No initial surface residues;
-      - No additions of residues;
+      - Initial organic matter = about 125 tonnes hum, 10ton N + 1000kg fom, 13kg N;
+      - Initial surface residues = 1000kg, 27kg N;
+      - No additions of residues (besides crop senescence);
       - Apply 50kg urea_N;
 
 +++++++++++++++++++++++++++++++++++++++++++++</memo>
@@ -23468,7 +23468,14 @@
           </operation>
         </operations>
         <fertiliser name="Fertiliser" shortcut="/SoilNitrogen_BasicTests/WithSoilN/Sim01-SoilN - BareBare/Paddock1-LD/Fertiliser" />
-        <surfaceom name="Surface Organic Matter" shortcut="/SoilNitrogen_BasicTests/WithSoilN/Sim01-SoilN - BareBare/Paddock1-LD/Surface Organic Matter" />
+        <surfaceom name="Surface Organic Matter">
+          <PoolName type="text" description="Organic Matter pool name">Residue1</PoolName>
+          <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">grass</type>
+          <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
+          <cnr type="text" description="C:N ratio of initial residue">15</cnr>
+          <cpr type="text" description="C:P ratio of initial residue (optional)" />
+          <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+        </surfaceom>
         <soil name="LowDrainageSoil">
           <Langitude description="Longitude (WGS84)" />
           <Comment type="multiedit" description="Comments" />
@@ -23648,7 +23655,7 @@
           </SoilWat>
           <SoilOrganicMatter>
             <RootCn type="text" description="RootCn">30</RootCn>
-            <RootWt type="text" description="RootWt">0</RootWt>
+            <RootWt type="text" description="RootWt">1000</RootWt>
             <SoilCn type="text" description="SoilCn">12.5</SoilCn>
             <EnrACoeff type="text" description="EnrACoeff">7.4</EnrACoeff>
             <EnrBCoeff type="text" description="EnrBCoeff">0.2</EnrBCoeff>
@@ -23959,7 +23966,7 @@
       <area name="Paddock2-HD" shortcut="/SoilNitrogen_BasicTests/WithSoilN/Sim01-SoilN - BareBare/Paddock2-HD">
         <operations name="Operations Schedule" shortcut="/SoilNitrogen_BasicTests/WithSoilN/Sim23-SoilN - Wheat+N+urea/Paddock1-LD/Operations Schedule" />
         <fertiliser name="Fertiliser" shortcut="/SoilNitrogen_BasicTests/WithSoilN/Sim01-SoilN - BareBare/Paddock2-HD/Fertiliser" />
-        <surfaceom name="Surface Organic Matter" shortcut="/SoilNitrogen_BasicTests/WithSoilN/Sim01-SoilN - BareBare/Paddock2-HD/Surface Organic Matter" />
+        <surfaceom name="Surface Organic Matter" shortcut="/SoilNitrogen_BasicTests/WithSoilN/Sim25-SoilN - Wheat+Hum+FOM+SurfOM+N+urea/Paddock1-LD/Surface Organic Matter" />
         <soil name="HighDrainageSoil">
           <Langitude description="Longitude (WGS84)" />
           <Comment type="multiedit" description="Comments" />
@@ -24135,7 +24142,7 @@
           </SoilWat>
           <SoilOrganicMatter>
             <RootCn type="text" description="RootCn">30</RootCn>
-            <RootWt type="text" description="RootWt">0</RootWt>
+            <RootWt type="text" description="RootWt">1000</RootWt>
             <SoilCn type="text" description="SoilCn">12.5</SoilCn>
             <EnrACoeff type="text" description="EnrACoeff">7.4</EnrACoeff>
             <EnrBCoeff type="text" description="EnrBCoeff">0.2</EnrBCoeff>
@@ -27400,7 +27407,14 @@
       <area name="Paddock2-HD" shortcut="/SoilNitrogen_BasicTests/WithSoilN/Sim25-SoilN - Wheat+Hum+FOM+SurfOM+N+urea/Paddock2-HD">
         <operations name="Operations Schedule" shortcut="/SoilNitrogen_BasicTests/WithSoilN/Sim25-SoilN - Wheat+Hum+FOM+SurfOM+N+urea/Paddock2-HD/Operations Schedule" />
         <fertiliser name="Fertiliser" shortcut="/SoilNitrogen_BasicTests/WithSoilN/Sim25-SoilN - Wheat+Hum+FOM+SurfOM+N+urea/Paddock2-HD/Fertiliser" />
-        <surfaceom name="Surface Organic Matter" shortcut="/SoilNitrogen_BasicTests/WithSoilN/Sim25-SoilN - Wheat+Hum+FOM+SurfOM+N+urea/Paddock2-HD/Surface Organic Matter" />
+        <surfaceom name="Surface Organic Matter">
+          <PoolName type="text" description="Organic Matter pool name">Residue1</PoolName>
+          <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">grass</type>
+          <mass type="text" description="Initial surface residue (kg/ha)">0</mass>
+          <cnr type="text" description="C:N ratio of initial residue">15</cnr>
+          <cpr type="text" description="C:P ratio of initial residue (optional)" />
+          <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+        </surfaceom>
         <soil name="HighDrainageSoil" shortcut="/SoilNitrogen_BasicTests/WithSoilN/Sim25-SoilN - Wheat+Hum+FOM+SurfOM+N+urea/Paddock2-HD/HighDrainageSoil">
           <Water shortcut="/SoilNitrogen_BasicTests/WithSoilN/Sim25-SoilN - Wheat+Hum+FOM+SurfOM+N+urea/Paddock2-HD/HighDrainageSoil/Water">
             <SoilCrop name="wheat" shortcut="/SoilNitrogen_BasicTests/WithSoilN/Sim25-SoilN - Wheat+Hum+FOM+SurfOM+N+urea/Paddock2-HD/HighDrainageSoil/Water/wheat" />
