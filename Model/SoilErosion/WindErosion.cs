@@ -108,14 +108,62 @@ public partial class SoilErosion
 
     /// <summary>
     /// Amount of clay in the soil surface layer, expressed as a percentage
-    /// This is used in the MB95 moisture correction algorithm
+    /// This is used to generate the particle size distribution
+    /// This is also used in the MB95 moisture correction algorithm
     /// It would be better if APSIM could reliably provide us with soil texture information!
     /// </summary>
-    [Param(IsOptional = true, MinVal = 0.0, MaxVal = 100.0)]
-    [Description("Percent clay in the surface layers")]
-    [Units("%")]
-    public double percent_clay = 10.0;
-    
+    [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0)]
+    [Description("Fraction clay in the surface layers")]
+    [Units("0-1")]
+    public double fraction_clay = 0.30;
+
+    /// <summary>
+    /// Amount of clay in the soil surface layer, expressed as a percentage
+    /// This is used to generate the particle size distribution
+    /// It would be better if APSIM could reliably provide us with soil texture information!
+    /// </summary>
+    [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0)]
+    [Description("Fraction silt in the surface layers")]
+    [Units("0-1")]
+    public double fraction_silt = 0.30;
+
+    /// <summary>
+    /// Amount of clay in the soil surface layer, expressed as a percentage
+    /// This is used to generate the particle size distribution
+    /// It would be better if APSIM could reliably provide us with soil texture information!
+    /// </summary>
+    [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0)]
+    [Description("Fraction fine sand in the surface layers")]
+    [Units("0-1")]
+    public double fraction_fine_sand = 0.3;
+
+    /// <summary>
+    /// Maximum radius of particles considered to be clay sized
+    /// Note that this is radius, not diameter
+    /// </summary>
+    [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10.0)]
+    [Description("Maximum radius of clay particles")]
+    [Units("um")]
+    public double max_clay_radius = 1.0;
+
+    /// <summary>
+    /// Maximum radius of particles considered to be silt sized
+    /// Note that this is radius, not diameter
+    /// </summary>
+    [Param(IsOptional = true, MinVal = 1.0, MaxVal = 100.0)]
+    [Description("Maximum radius of silt particles")]
+    [Units("um")]
+    public double max_silt_radius = 10.0;
+
+    /// <summary>
+    /// Maximum radius of particles considered to be fine-sand sized
+    /// Note that this is radius, not diameter
+    /// </summary>
+    [Param(IsOptional = true, MinVal = 10.0, MaxVal = 1000.0)]
+    [Description("Maximum radius of fine sand particles")]
+    [Units("um")]
+    public double max_fine_sand_radius = 100.0;
+
     /// <summary>
     /// Smooth roughness length; used in calculating the MB95 drag partition correction
     /// Darmenova et al. suggest a range from 1e-4 to 3e-3
@@ -335,7 +383,7 @@ public partial class SoilErosion
     /// </summary>
     protected void GetCover()
     {
-        // The default APSIM connection logic does not suffice here, as if we live in a mixed paddock,
+        // The default APSIM connection logic does not suffice here, since if we live in a mixed paddock, it
         // would provide us with cover values from only the first "crop" component.
         // We need to combine cover values from the various sources.
         // The AusFarm pasture component also provides "cover_green" and "cover_tot"
@@ -433,6 +481,7 @@ public partial class SoilErosion
             }
 
             double swGrav = 100.0 * soilWater * rho_water / bd[0]; //Gravimetric soil water, as a % - YUCK. Why did M&B use percentages for this stuff?
+            double percent_clay = fraction_clay * 100.0;
             double wPrime = 0.0014 * MathUtility.Sqr(percent_clay) + 0.17 * percent_clay;
             if (swGrav < wPrime)
                 return 1.0;
@@ -458,8 +507,6 @@ public partial class SoilErosion
     {
         if (wind_model.ToLower() == "shao")
         {
-
-            GetCover();
 
             double lambda_vegetated = -c_lambda * Math.Log(1.0 - plant_cover);
 
@@ -595,18 +642,20 @@ public partial class SoilErosion
         // and the maximum index for "dust"
         if (dd == null)
         {
-            logNormalDist[] dist = null;
-            PSD.GetDist(soil_type, true, ref dist);
-            CreateSizeDist(dist, out dd, out psd_disp, out dpsd_disp, out ppsd_disp, n_classes);
-            PSD.GetDist(soil_type, false, ref dist);
-            CreateSizeDist(dist, out dd, out psd, out dpsd, out ppsd, n_classes);
+            CreateSkaggsSizeDist(out dd, out psd, out dpsd, out ppsd, n_classes);
+            CreateSkaggsSizeDist(out dd, out psd_disp, out dpsd_disp, out ppsd_disp, n_classes);
+            //logNormalDist[] dist = null;
+            //PSD.GetDist(soil_type, true, ref dist);
+            //CreateSizeDist(dist, out dd, out psd_disp, out dpsd_disp, out ppsd_disp, n_classes);
+            //PSD.GetDist(soil_type, false, ref dist);
+            //CreateSizeDist(dist, out dd, out psd, out dpsd, out ppsd, n_classes);
             smoothThreshold = new double[dd.Length];
             for (int i = 0; i < dd.Length; i++)
             {
                 smoothThreshold[i] = ThresholdFrictionVelocitySmooth(dd[i] / 1000.0);
                 if (dd[i] <= dust_cutoff)
                     iDust = i;
-                if (dd[i] <= 2.0) // Defined as clay if < 2 microns
+                if (dd[i] <= max_clay_radius * 2.0) // Compare with maximum clay diameters
                     iClay = i;
             }
 
@@ -623,8 +672,8 @@ public partial class SoilErosion
                  
         }
 
-        if (percent_clay < 0.0)
-            percent_clay = ppsd_disp[iClay] * 100.0;
+        if (fraction_clay < 0.0)
+            fraction_clay = ppsd_disp[iClay];
 
         // Initialise those values that don't change with particle size, but do change with time
         moistureCorrection = CalcMoistureCorrection(0.0);
@@ -699,23 +748,22 @@ public partial class SoilErosion
         {
             // The units of alpha are cm^-1
             // Shao's source multiplies this result by 100, since he's using m, not cm
-            double alpha = Math.Pow(10, 0.134 * Math.Min(percent_clay, 20.0) - 6.0); 
+            double alpha = Math.Pow(10, 0.134 * Math.Min(100.0 * fraction_clay, 20.0) - 6.0); 
             return totHorizFlux * alpha;
         }
-        else if (wind_model.ToLower() == "shao")
+        else if (wind_model.ToLower() == "shao") // See code for imod .eq. 5 in Shao's source
         {
-            double bulkDensity;
             if (bd == null)
             {
                 MyComponent.Get("bd", out bd);            
             }
+            double bulkDensity = bd[0] * 1000.0;  // Shao uses units of kg/m^3 for density
             double frictionVelocity = WindFrictionVelocity(windSpeed, wind_height) / 100.0; // NOTE: It this context, we want friction velocity in m/sec, not cm/sec
             if (frictionVelocity < ustar_t_min)
                 return 0.0;
-            bulkDensity = bd[0] * 1000.0;  // Shao uses units of kg/m^3 for density
             double zeta = frictionVelocity * Math.Sqrt(bulkDensity / plastic_pressure);  // zeta is dimensionless
             double sigma_m = 12.0 * MathUtility.Sqr(zeta) * (1.0 + 14.0 * zeta);       // sigma_m is dimenionless
-            double gamma = Math.Exp(-shao_k_gamma * Math.Pow((frictionVelocity - ustar_t_min), 3.0)); // ghl of Shao's code. I think the result is meant to be dimensionless, although the velocities start with units
+            double gamma = Math.Exp(-shao_k_gamma * Math.Pow(frictionVelocity - ustar_t_min, 3.0)); // ghl of Shao's code. I think the result is meant to be dimensionless, although the velocities start with units
 
             double[,] flux = new double[dd.Length, iDust + 1];
             for (int i = iDust + 1; i < dd.Length; i++)
@@ -1000,6 +1048,68 @@ public partial class SoilErosion
         }
 
         // double sumPSD = 0.0;
+        // Renormalisation
+        for (int i = 0; i < nSizes; i++)
+        {
+            deltaPSD[i] /= cumProb[nSizes - 1];
+            PSD[i] /= cumProb[nSizes - 1]; // Is this the right normalization to use here? Since we don't use this, it doesn't really matter...
+            cumProb[i] /= cumProb[nSizes - 1];
+        }
+    }
+
+    /// <summary>
+    /// Generate a particle size distribution based on the algorithm of Skaggs et al. 2001.
+    /// </summary>
+    /// <param name="diamMid"></param>
+    /// <param name="PSD"></param>
+    /// <param name="deltaPSD"></param>
+    /// <param name="cumProb"></param>
+    /// <param name="nSizes"></param>
+    protected void CreateSkaggsSizeDist(out double[] diamMid, out double[] PSD, out double[] deltaPSD, out double[] cumProb,
+                   int nSizes)
+    {
+        diamMid = new double[nSizes];
+        PSD = new double[nSizes];
+        deltaPSD = new double[nSizes];
+        cumProb = new double[nSizes];
+        horizFlux = new double[nSizes];
+        //        psds = new double[nSizes];
+        //        dpsds = new double[nSizes];
+        //        ppsds = new double[nSizes];
+
+        // See Skaggs et al., page 1039
+        double alpha = 1.0 / Math.Log((max_silt_radius - max_clay_radius) / (max_fine_sand_radius - max_clay_radius));
+        double beta = alpha * Math.Log((max_silt_radius - max_clay_radius) / max_clay_radius);
+        double v = Math.Log((1.0 / (fraction_clay + fraction_silt) - 1.0) / (1.0 / fraction_clay - 1.0));
+        double w = Math.Log((1.0 / (fraction_clay + fraction_silt + fraction_fine_sand) - 1.0) / (1.0 / fraction_clay - 1.0));
+
+        double c = alpha * Math.Log(v / w);
+        double u = Math.Pow(-v, 1.0 - beta) * Math.Pow(-w, beta);
+
+        // Estimate diameters using log10 scale
+        // const double minSize = 0.1;     // Smallest particle size class starts at 0.1 microns
+        double minSize = max_clay_radius * 2.0;     // Smallest particle size class starts at 0.1 microns
+        const double maxSize = 1000.0;  // Largest particle size class ends at 1000 microns
+
+        double logMinSize = Math.Log10(minSize);    // Log (base 10) of the diameter of the smallest size class
+        double logMaxSize = Math.Log10(maxSize);    // Log (base 10) of the diamater of the largest size class 
+        double deltaLog = (logMaxSize - logMinSize) / nSizes;  // Change in log (base 10) as we go from one class to the next
+        double deltaLn = deltaLog * Math.Log(10.0);  // Change in log (base e) as we go from one class to the next
+
+        for (int i = 0; i < nSizes; i++)  // Now calculate the values for each size class
+        {
+            diamMid[i] = Math.Pow(10.0, logMinSize + (i + 0.5) * deltaLog);   // Get the diameter of the mid-point of the class
+            double R = (diamMid[i] / 2.0 - max_clay_radius) / max_clay_radius;
+            cumProb[i] = 1.0 / (1.0 + (1.0 / fraction_clay - 1.0) * Math.Exp(-u * Math.Pow(R, c)));
+
+            if (i > 0)
+                deltaPSD[i] = cumProb[i] - cumProb[i - 1];
+            else
+                deltaPSD[i] = cumProb[i];
+
+            PSD[i] = deltaPSD[i] / deltaLn / diamMid[i];
+        }
+
         // Renormalisation
         for (int i = 0; i < nSizes; i++)
         {

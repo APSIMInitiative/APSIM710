@@ -412,6 +412,7 @@ public partial class SoilErosion
     {
         ZeroDailyVariables();
         // GetOtherVariables();
+        GetCover(); 
         Process();
         SetOtherVariables();
     }
