@@ -19,7 +19,7 @@ public class SWStress
     private int _ExpansionCount = 0;
 
     [Link]
-    Root1 Root = null;
+    Plant15 Plant = null;
 
     [Link]
     Function ExpansionFactor = null;
@@ -86,7 +86,10 @@ public class SWStress
        if (sw_demand > 0.0)
           {
           //get potential water that can be taken up when profile is full
-          double sw_demand_ratio = MathUtility.Divide(Root.WaterUptake, sw_demand, 1.0);
+              double SWUptake = 0;
+              foreach (Organ1 Organ in Plant.Organ1s)
+                  SWUptake += Organ.SWUptake;
+          double sw_demand_ratio = MathUtility.Divide(SWUptake, sw_demand, 1.0);
           return MathUtility.Constrain(sw_demand_ratio , 0.0, 1.0);
           }
        else

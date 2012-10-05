@@ -3,9 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CSGeneral;
+using ModelFramework;
 
 public class Grain : Organ1, AboveGround, Reproductive
 {
+    [Link]
+    public Component My;
+
+    [Link]
+    Plant15 Plant;
+
+    public string Name { get { return My.Name; } }
+
     [Link]
     SWStress SWStress = null;
 
@@ -17,9 +26,6 @@ public class Grain : Organ1, AboveGround, Reproductive
 
     [Link]
     Stem1 Stem = null;
-
-    [Link]
-    Root1 Root = null;
 
     [Link]
     Phenology Phenology = null;
@@ -159,32 +165,57 @@ public class Grain : Organ1, AboveGround, Reproductive
     private double n_conc_min = 0;
     private double radiationInterceptedGreen;
 
-    internal override Biomass Green { get { return _Green; } }
-    internal override Biomass Senesced { get { return _Senesced; } }
-    internal override Biomass Senescing { get { return _Senescing; } }
-    internal override Biomass Retranslocation { get { return _Retranslocation; } }
-    internal override Biomass Growth { get { return _Growth; } }
-    internal override Biomass Detaching { get { return _Detaching; } }
-    internal override double NCrit { get { return n_conc_crit * Green.Wt; } }
-    internal override double NMin { get { return n_conc_min * Green.Wt; } }
-    internal override double NDemand { get { return _NDemand; } }
+    public Biomass Green { get { return _Green; } set { } }
+    public  Biomass Senesced { get { return _Senesced; } }
+    public  Biomass Senescing { get { return _Senescing; } }
+    public  Biomass Retranslocation { get { return _Retranslocation; } }
+    public  Biomass Growth { get { return _Growth; } }
+    public  Biomass Detaching { get { return _Detaching; } }
+
+    public  double NDemand { get { return _NDemand; } }
     internal double NDemand2 { get { return MathUtility.Constrain(NDemand - dlt.n_senesced_retrans - Growth.N, 0.0, double.MaxValue); } }
-    internal override double SoilNDemand { get { return _SoilNDemand; } }
-    public override double SWDemand { get { return sw_demand; } }
-    internal override double DMGreenDemand { get { return _DMGreenDemand; } }
-    internal override double DMDemandDifferential
+    public  double SoilNDemand { get { return _SoilNDemand; } }
+    public  double SWDemand { get { return sw_demand; } }
+    public  double DMGreenDemand { get { return _DMGreenDemand; } }
+    public  double DMDemandDifferential
     {
         get
         {
             return MathUtility.Constrain(DMGreenDemand - _Growth.Wt, 0.0, Double.MaxValue);
         }
     }
-    internal override double NCapacity { get  { return 0.0; } }
-    internal override double NDemandDifferential { get { return MathUtility.Constrain(NDemand - Growth.N, 0.0, double.MaxValue); } }
-    internal override double AvailableRetranslocateN { get { return 0.0; } }
-    internal override double DltNSenescedRetrans { get { return dlt.n_senesced_retrans; } }
+    public  double NCapacity { get  { return 0.0; } }
+    public  double NDemandDifferential { get { return MathUtility.Constrain(NDemand - Growth.N, 0.0, double.MaxValue); } }
+    public  double AvailableRetranslocateN { get { return 0.0; } }
+    public  double DltNSenescedRetrans { get { return dlt.n_senesced_retrans; } }
+    public  double CoverGreen { get { return 0; } }
+    public  double CoverSen { get { return 0; } }
 
-    internal override void DoNRetranslocate(double NSupply, double GrainNDemand)
+    public  void DoSWDemand(double Supply) { }
+    public  void DoPotentialRUE() { }
+    public  void DoDMDemand(double DMSupply) { }
+    public  double DMSupply { get { return 0; } }
+    public double SWSupply { get { return 0; } }
+    public double SWUptake { get { return 0; } }
+    public void DoSWUptake(double SWDemand) { }
+
+    public  double dltDmPotRue { get { return 0; } }
+    public  double interceptRadiation(double incomingSolarRadiation) { return 0; }
+    public  double DMRetransSupply { get { return 0; } }
+    public  void DoCover() { }
+    public void DoNSupply() { }
+    public void DoNPartition(double GrowthN)
+    {
+        Growth.StructuralN = GrowthN;
+    }
+    public  void DoNFixRetranslocate(double NFixUptake, double nFixDemandTotal)
+    {
+        Growth.StructuralN += NFixUptake * MathUtility.Divide(NDemandDifferential, nFixDemandTotal, 0.0);
+    }
+    public double NSupply { get { return 0; } }
+    public double NUptake { get { return 0; } }
+
+    public  void DoNRetranslocate(double NSupply, double GrainNDemand)
     {
         if (GrainNDemand >= NSupply)
         {
@@ -199,6 +230,9 @@ public class Grain : Organ1, AboveGround, Reproductive
         }
         Util.Debug("meal.Retranslocation.N=%f", Retranslocation.N);
     }
+
+    public void DoNUptake(double PotNFix) { }
+
 
     [Output("Yield")]
     [Units("kg/ha")]
@@ -229,13 +263,13 @@ public class Grain : Organ1, AboveGround, Reproductive
         sw_demand = 0.0;
     }
 
-    internal override void OnPrepare()
+    public  void OnPrepare()
     {
         ZeroDeltas();
     }
-    internal override void OnHarvest(HarvestType Harvest, BiomassRemovedType BiomassRemoved)
+    public  void OnHarvest(HarvestType Harvest, BiomassRemovedType BiomassRemoved)
     {
-        int i = IncreaseSizeOfBiomassRemoved(BiomassRemoved);
+        int i = Util.IncreaseSizeOfBiomassRemoved(BiomassRemoved);
         BiomassRemoved.dm_type[i] = "meal";
         BiomassRemoved.fraction_to_residue[i] = 0.0F;
         BiomassRemoved.dlt_crop_dm[i] = (float)((Green.Wt + Senesced.Wt) * Conversions.gm2kg / Conversions.sm2ha);
@@ -246,11 +280,9 @@ public class Grain : Organ1, AboveGround, Reproductive
         Senesced.Clear();
     }
 
-    internal override void OnEndCrop(BiomassRemovedType BiomassRemoved)
+    public  void OnEndCrop(BiomassRemovedType BiomassRemoved)
     {
-        base.OnEndCrop(BiomassRemoved);
-
-        int i = IncreaseSizeOfBiomassRemoved(BiomassRemoved);
+        int i = Util.IncreaseSizeOfBiomassRemoved(BiomassRemoved);
         BiomassRemoved.dm_type[i] = Name;
         BiomassRemoved.fraction_to_residue[i] = 1.0F;
         BiomassRemoved.dlt_crop_dm[i] = (float)((Green.Wt + Senesced.Wt) * Conversions.gm2kg / Conversions.sm2ha);
@@ -273,16 +305,11 @@ public class Grain : Organ1, AboveGround, Reproductive
             Util.Debug("meal.InitGreen.StructuralN=%f", Green.StructuralN);
         }
     }
-    internal override void ZeroDltDmGreen()
-    {
-        _Growth.StructuralWt = 0;
-        _Growth.NonStructuralWt = 0;
-    }
-    internal override void ZeroDltNSenescedTrans()
+    public  void ZeroDltNSenescedTrans()
     {
         dlt.n_senesced_trans = 0;
     }
-    internal override void GiveDmGreen(double Delta)
+    public  void GiveDmGreen(double Delta)
     {
         _Growth.StructuralWt += Delta * GrowthStructuralFractionStage.Value;
         _Growth.NonStructuralWt += Delta * (1.0 - GrowthStructuralFractionStage.Value);
@@ -296,7 +323,7 @@ public class Grain : Organ1, AboveGround, Reproductive
     private double DltDMGrainDemand;
     private static double N_grain_demand;
 
-    internal override void DoNDemand1Pot(double dltDmPotRue)
+    public  void DoNDemand1Pot(double dltDmPotRue)
     {
         // no n demand for grain
     }
@@ -373,7 +400,7 @@ public class Grain : Organ1, AboveGround, Reproductive
        Util.Debug("Grain.Dlt_dm_grain_demand=%f", DltDMGrainDemand);
        }
 
-    internal override void DoSenescence()
+    public  void DoSenescence()
     {
         double fraction_senescing = MathUtility.Constrain(DMSenescenceFraction.Value, 0.0, 1.0);
 
@@ -384,7 +411,7 @@ public class Grain : Organ1, AboveGround, Reproductive
 
     }
 
-    internal override void DoNSenescence()
+    public  void DoNSenescence()
     {
         double green_n_conc = MathUtility.Divide(Green.N, Green.Wt, 0.0);
         double dlt_n_in_senescing_part = _Senescing.Wt * green_n_conc;
@@ -399,7 +426,7 @@ public class Grain : Organ1, AboveGround, Reproductive
         Util.Debug("meal.SenescingN=%f", SenescingN);
         Util.Debug("meal.dlt.n_senesced_trans=%f", dlt.n_senesced_trans);
     }
-    internal override void DoNSenescedRetranslocation(double navail, double n_demand_tot)
+    public  void DoNSenescedRetranslocation(double navail, double n_demand_tot)
     {
         dlt.n_senesced_retrans = navail * MathUtility.Divide(NDemand, n_demand_tot, 0.0);
         Util.Debug("meal.dlt.n_senesced_retrans=%f", dlt.n_senesced_retrans);
@@ -430,7 +457,12 @@ public class Grain : Organ1, AboveGround, Reproductive
                            * PotentialGrainNFillingRate * NStress.Grain
                            * RelativeGrainNFill.Value;
 
-            gN_grain_demand2 = Math.Min(GrainNo * PotentialGrainNFillingRate * RelativeGrainNFill.Value, Root.NSupply);
+            // calculate total N supply
+            double NSupply = 0;
+            foreach (Organ1 Organ in Plant.Organ1s)
+                NSupply += Organ.NSupply;
+
+            gN_grain_demand2 = Math.Min(GrainNo * PotentialGrainNFillingRate * RelativeGrainNFill.Value, NSupply);
             N_grain_demand = Math.Max(gN_grain_demand1, gN_grain_demand2);
             N_grain_demand = gN_grain_demand1;
 
@@ -454,26 +486,26 @@ public class Grain : Organ1, AboveGround, Reproductive
         Util.Debug("Grain.N_grain_demand=%f", N_grain_demand);
     }
 
-    internal override void DoNDemand(bool IncludeRetranslocation)
+    public  void DoNDemand(bool IncludeRetranslocation)
     {
         _NDemand = N_grain_demand;
         Util.Debug("Grain.NDemand=%f", _NDemand);
     }
 
-    internal override void DoSoilNDemand()
+    public  void DoSoilNDemand()
     {
         _SoilNDemand = NDemand - dlt.n_senesced_retrans;
         _SoilNDemand = MathUtility.Constrain(_SoilNDemand, 0.0, double.MaxValue);
         Util.Debug("meal.SoilNDemand=%f", _SoilNDemand);
     }
-    internal override void DoDetachment()
+    public  void DoDetachment()
     {
         _Detaching = Senesced * SenescenceDetachmentFraction;
         Util.Debug("meal.Detaching.Wt=%f", _Detaching.Wt);
         Util.Debug("meal.Detaching.N=%f", _Detaching.N);
     }
 
-    internal override void Update()
+    public  void Update()
     {
         _Green = Green + Growth - _Senescing;
 
@@ -503,7 +535,7 @@ public class Grain : Organ1, AboveGround, Reproductive
         Util.Debug("meal.GrainNo=%f", GrainNo);
     }
 
-    internal override void DoNConccentrationLimits()
+    public  void DoNConccentrationLimits()
     {
         n_conc_crit = NConcentrationCritical.Value;
         n_conc_min = NConcentrationMinimum.Value;
@@ -514,7 +546,7 @@ public class Grain : Organ1, AboveGround, Reproductive
     }
 
 
-    internal override void DoDmRetranslocate(double DMAvail, double DMDemandDifferentialTotal)
+    public  void DoDmRetranslocate(double DMAvail, double DMDemandDifferentialTotal)
     {
         Retranslocation.NonStructuralWt = DMAvail * MathUtility.Divide(DMDemandDifferential, DMDemandDifferentialTotal, 0.0);
         Util.Debug("meal.Retranslocation=%f", Retranslocation.NonStructuralWt);

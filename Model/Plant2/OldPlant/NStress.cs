@@ -66,7 +66,7 @@ public class NStress
         _GrainCount = 0;
     }
 
-    private static double critNFactor(Organ1 Leaf, Organ1 Stem, double multiplier)
+    private static double critNFactor(Leaf1 Leaf, Stem1 Stem, double multiplier)
     //=======================================================================================
     //   Calculate Nitrogen stress factor from a bunch of parts
     /*  Purpose

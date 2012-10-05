@@ -2641,9 +2641,9 @@ cRC   lines for g%th and g%csl added by RCichota, 09/02/2010
                g%dt=0.5*g%dt
 
 !              Tell user that SWIM is changing dt
-               write(string,*)
+               write(string,'(a,f15.3,a,f15.3)')
      :               'Changing dt value from: ', g%dt*2
-     :               ,'to: ', g%dt
+     :               ,' to: ', g%dt
                call write_string('ApsimSwim|apswim_swim - '//string)
                if(g%dt.ge.dtiny)go to 40
             else

@@ -174,8 +174,8 @@ public class Plant15
     }
 
 
-    public List<Organ1> Organ1s = new List<Organ1>();
-    public List<Organ1> Tops = new List<Organ1>();
+    internal List<Organ1> Organ1s = new List<Organ1>();
+    internal List<Organ1> Tops = new List<Organ1>();
     private double ext_n_demand;
     private string AverageStressMessage;
     private DateTime FloweringDate;
@@ -207,9 +207,13 @@ public class Plant15
     {
         get
         {
+            double Supply = 0;
+            foreach (Organ1 Organ in Organ1s)
+                Supply += Organ.SWSupply;
+
             double Demand = TopsSWDemand;
             if (Demand > 0)
-                return Root.SWSupply / Demand;
+                return Supply / Demand;
             else
                 return 1.0;
         }
@@ -257,10 +261,12 @@ public class Plant15
     {
         Util.Debug("\r\nPROCESS=%s", Today.ToString("d/M/yyyy"));
         Util.Debug("       =%i", Today.DayOfYear);
-        Root.DoPlantRootDepth();
-        Root.DoWaterUptake(TopsSWDemand);
+        foreach (Organ1 Organ in Organ1s)
+            Organ.DoSWUptake(TopsSWDemand);
+
         SWStress.DoPlantWaterStress(TopsSWDemand);
-        Root.DoNitrogenSupply();
+        foreach (Organ1 Organ in Organ1s) 
+            Organ.DoNSupply();
         Phenology.DoTimeStep();
         Stem.Morphology();
         Leaf.DoCanopyExpansion();
@@ -349,7 +355,7 @@ public class Plant15
             }
             PhenologyEventToday = false;
         }
-        Root.UpdateWaterBalance();
+        //Root.UpdateWaterBalance();
 
         LAIMax = Math.Max(LAIMax, Leaf.LAI);
     }
@@ -439,7 +445,7 @@ public class Plant15
         List<string> OrganNames = new List<string>();
         foreach (Organ1 Organ in Organ1s)
         {
-            if (!Organ.Detaching.IsEmpty)
+            if (Organ is AboveGround && !Organ.Detaching.IsEmpty)
             {
                 Detaching.Add(Organ.Detaching);
                 OrganNames.Add(Organ.Name);

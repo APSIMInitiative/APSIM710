@@ -675,9 +675,12 @@ namespace ModelFramework
         {
             Fact.Clear();   //clear this so it can be reinitialised
             Fact.Create(XML.OuterXml, modelAssembly, this);
-            if (Init2Received)
-                Fact.Initialise();  //resolve links can only happen after init2 
             ModelInstance = (Instance)(Fact.Root);
+            if (Init2Received)
+            {
+                GetAllInputs();
+                Fact.Initialise();  //resolve links can only happen after init2 
+            } 
             String InstanceName = Name;
             if (InstanceName.Contains("."))
             {

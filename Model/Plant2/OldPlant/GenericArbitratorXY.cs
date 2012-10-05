@@ -46,7 +46,7 @@ class GenericArbitratorXY
             Organ.DoDMDemand(DMSupply);
 
         foreach (Organ1 Organ in Organs)
-            Organ.ZeroDltDmGreen();
+            Organ.Growth.Clear();
 
         double dm_remaining = DMSupply;
         double dlt_dm_green_tot = 0.0;
@@ -55,7 +55,6 @@ class GenericArbitratorXY
         {
             Organ1 Organ = FindOrgan(PartitionOrgans[i], Organs);
 
-            Organ.ZeroDltDmGreen();
             if (PartitionRules[i] == "magic")
                 Organ.GiveDmGreen(RatioRootShoot.Value * DMSupply);
             else if (PartitionRules[i] == "seasonal")                  // (PFR)
@@ -201,12 +200,13 @@ class GenericArbitratorXY
     {
         double NDemandTotal = 0;
         double NCapacityTotal = 0;
+        double nUptakeSum = 0;
         foreach (Organ1 Organ in Organs)
         {
             NDemandTotal += Organ.NDemand;
             NCapacityTotal += Organ.NCapacity;
+            nUptakeSum += Organ.NUptake;
         }
-        double nUptakeSum = Root.NUptake;        // total plant N uptake (g/m^2)
         double n_excess = nUptakeSum - NDemandTotal;
         n_excess = MathUtility.Constrain(n_excess, 0.0, double.MaxValue);
 
