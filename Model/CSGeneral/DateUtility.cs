@@ -93,7 +93,7 @@ namespace CSGeneral
                     year,
                     LowerCaseMonths.IndexOf(rxMMM.Match(ddMMM).Value.ToLower()),
                     int.Parse(rxDD.Match(ddMMM).Value),
-                    12,
+                    0,
                     0,
                     0
                     );
@@ -180,8 +180,7 @@ namespace CSGeneral
             if (start.CompareTo(end) > 0)
                 end = end.AddYears(1);
 
-            // "GetDate" returns dates with a time of noon. Convert "today" to also be at noon
-            return WithinDates(start, new DateTime(today.Year, today.Month, today.Day, 12, 0, 0), end);
+            return WithinDates(start, today, end);
         }
 
         /// <summary>
