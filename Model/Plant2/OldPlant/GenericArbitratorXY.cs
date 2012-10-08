@@ -21,16 +21,7 @@ class GenericArbitratorXY
     Component My = null;
 
     [Link]
-    Root1 Root = null;
-
-    [Link]
-    Grain Grain = null;
-
-    [Link]
     Leaf1 Leaf = null;
-
-    [Link]
-    Plant15 Plant = null;   // only needed for debugging.
 
     public virtual double RatioRootPlant { get { return 0.0; } }
 

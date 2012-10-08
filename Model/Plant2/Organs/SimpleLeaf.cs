@@ -18,7 +18,7 @@ class SimpleLeaf : BaseOrgan
     public event NewCanopyDelegate New_Canopy;
 
     [Input]
-    public NewMetType MetData;
+    public NewMetType MetData = null;
 
     [Param(Name = "Height")]
     private double _Height;         // Height of the canopy (mm) 

@@ -10,16 +10,13 @@ class RadiationPartitioning
     double FractIncidentRadn = 0.0;
 
     [Param]
-    string[] RadiationPartitioningOrder;
+    string[] RadiationPartitioningOrder = null;
 
     [Link]
-    Leaf1 Leaf;
-
-    [Link]
-    Component My;
+    Component My = null;
 
     [Input]
-    double Radn;
+    double Radn = 0;
 
     public void DoRadiationPartition()
     {

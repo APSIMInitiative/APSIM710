@@ -15,48 +15,36 @@ public class CompositeBiomass : Biomass
     [Param]
     private string[] Propertys = null;
 
-    bool DoUpdate = true;
-
     /// <summary>
     ///  Update this biomass object.
     /// </summary>
     public void Update()
     {
-       // if (DoUpdate)
+        base.Clear();
+
+        foreach (string PropertyName in Propertys)
         {
-            base.Clear();
+            object v = Util.GetVariable(PropertyName, My);
+            if (v == null)
+                throw new Exception("Cannot find: " + PropertyName + " in composite biomass: " + My.Name);
 
-            foreach (string PropertyName in Propertys)
+            if (v is IEnumerable)
             {
-                object v = Util.GetVariable(PropertyName, My);
-                if (v == null)
-                    throw new Exception("Cannot find: " + PropertyName + " in composite biomass: " + My.Name);
-
-                if (v is IEnumerable)
+                foreach (object i in v as IEnumerable)
                 {
-                    foreach (object i in v as IEnumerable)
-                    {
-                        if (!(i is Biomass))
-                            throw new Exception("Elements in the array: " + PropertyName + " are not Biomass objects in composition biomass: " + My.Name);
-                        Add(i as Biomass);
-                    }
-                }
-                else
-                {
-                   
-                    if (!(v is Biomass))
-                        throw new Exception("Property: " + PropertyName + " is not a Biomass object in composition biomass: " + My.Name);
-                    Add(v as Biomass);
+                    if (!(i is Biomass))
+                        throw new Exception("Elements in the array: " + PropertyName + " are not Biomass objects in composition biomass: " + My.Name);
+                    Add(i as Biomass);
                 }
             }
-            DoUpdate = false;
-        }
-    }
+            else
+            {
 
-    [EventHandler]
-    void OnTick(TimeType t)
-    {
-        DoUpdate = true;
+                if (!(v is Biomass))
+                    throw new Exception("Property: " + PropertyName + " is not a Biomass object in composition biomass: " + My.Name);
+                Add(v as Biomass);
+            }
+        }
     }
 
     [Output]

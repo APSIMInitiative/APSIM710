@@ -16,7 +16,7 @@ class Summary
 
 
     [Input]
-    private DateTime Today;
+    private DateTime Today = DateTime.Now;  // assigned a value to stop warning msg.
 
     [EventHandler]
     public void OnPhaseChanged(PhaseChangedType PhaseChange)

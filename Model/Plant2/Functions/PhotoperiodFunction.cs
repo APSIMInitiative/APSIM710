@@ -12,7 +12,7 @@ class PhotoperiodFunction : Function
     [Input]
     private double Latitude = 0;
     [Input]
-    public DateTime Today;
+    public DateTime Today = DateTime.Now;  // assigned a value to stop warning msg.
 
     [Link]
     private Paddock MyPaddock = null;

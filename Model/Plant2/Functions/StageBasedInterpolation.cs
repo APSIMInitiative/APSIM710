@@ -15,7 +15,7 @@ public class StageBasedInterpolation : Function
     int[] StageCodes = null;
 
     [Param]
-    double[] Values = null;
+    new double[] Values = null;
 
     [Param(IsOptional=true)]
     bool Proportional = true;

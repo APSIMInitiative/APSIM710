@@ -15,11 +15,6 @@ public class LinearInterpolationFunction : Function
     [Param]
     private string XProperty = "";
 
-    private bool LookedForInternalVariable = false;
-    private MemberInfo Member = null;
-    private object Target = null;
-
-
     [Output]
     public override double Value
     {

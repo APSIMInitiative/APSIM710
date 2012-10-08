@@ -9,15 +9,15 @@ public class NStress
     [Link]
     Leaf1 Leaf = null;
     [Link]
-    Stem1 Stem;
+    Stem1 Stem = null;
     [Param]
-    double N_fact_photo;
+    double N_fact_photo = 0;
     [Param]
-    double N_fact_pheno;
+    double N_fact_pheno = 0;
     [Param]
-    double N_fact_expansion;
+    double N_fact_expansion = 0;
     [Param]
-    double N_fact_grain;
+    double N_fact_grain = 0;
 
     private double expansion;
     private double pheno;

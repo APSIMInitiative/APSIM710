@@ -27,7 +27,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     protected Function MaxNConcDailyGrowth = null;
 
     [Input]
-    public DateTime Today;
+    public DateTime Today = DateTime.Now;  // assigned a value to stop warning msg.
 
     [Param]
     protected double MaximumSize = 0;
