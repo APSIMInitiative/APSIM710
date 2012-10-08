@@ -14,6 +14,7 @@ namespace UIBits
    using System.Collections.Generic;
    using System.Data;
    using System.Diagnostics;
+       using CSGeneral;
    public class MyDataGridViewComboBoxCell : DataGridViewComboBoxCell
       {
       public bool ValueInserted;
@@ -180,7 +181,7 @@ namespace UIBits
              {
                  return base.ProcessDialogKey(keyData);
              }
-             catch (Exception e)
+             catch (Exception )
              {
                  return true;
              }
@@ -328,14 +329,14 @@ namespace UIBits
       /// </summary>
       void OnCellValidating(object sender, DataGridViewCellValidatingEventArgs e)
          {
-         if (!InRefresh && e.FormattedValue.ToString() != "" && 
-             DataSourceTable != null && DataSourceTable.Columns[e.ColumnIndex].DataType == typeof(double))
-            {
-            double Value;
-            e.Cancel = !double.TryParse(e.FormattedValue.ToString(), out Value);
-            if (e.Cancel)
-               MessageBox.Show("Cannot convert " + e.FormattedValue + " to a real number.");
-            }
+         //if (!InRefresh && e.FormattedValue.ToString() != "" && 
+         //    DataSourceTable != null && DataSourceTable.Columns[e.ColumnIndex].DataType == typeof(double))
+         //   {
+         //   double Value;
+         //   e.Cancel = !double.TryParse(e.FormattedValue.ToString(), out Value);
+         //   if (e.Cancel)
+         //      MessageBox.Show("Cannot convert " + e.FormattedValue + " to a real number.");
+         //   }
          }
 
       /// <summary>
@@ -360,6 +361,22 @@ namespace UIBits
                   Rows[e.RowIndex].ContextMenuStrip = PopupMenu;
                ContextMenuStrip = PopupMenu;
 
+               if (DataSourceTable.Columns[Col].DataType == typeof(double) &&
+                   !MathUtility.IsNumerical(Rows[Row].Cells[Col].Value.ToString()))
+               {
+                   // Turn the column into a string column.
+
+                   // Capture state of existing column and remove it from DataTable.
+                   string ColumnName = DataSourceTable.Columns[Col].ColumnName;
+                   string[] Values = GridUtility.GetColumnAsStringsUsingCellFormat(this, Col);
+                   int Ordinal = DataSourceTable.Columns[Col].Ordinal;
+                   DataSourceTable.Columns.RemoveAt(Col);
+
+                   // Create a new column of string type.
+                   DataColumn NewColumn = DataSourceTable.Columns.Add(ColumnName, typeof(string));
+                   NewColumn.SetOrdinal(Ordinal);
+                   DataTableUtility.AddColumn(DataSourceTable, ColumnName, Values);
+               }
                DataSourceTable.Rows[Row][Col] = Rows[Row].Cells[Col].Value;
                ChangedColumnNames.Add(DataSourceTable.Columns[Col].ColumnName);
 

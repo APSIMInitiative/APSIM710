@@ -58,6 +58,28 @@ namespace CSGeneral
         }
 
         /// <summary>
+        /// Get a column of string values from the specified grid column
+        /// </summary>
+        public static string[] GetColumnAsStringsUsingCellFormat(DataGridView Grid, int ColumnIndex)
+        {
+            int NumValues = Grid.RowCount;
+            if (!Grid.ReadOnly)
+                NumValues--;
+            string[] Values = new string[NumValues];
+
+            int Index = 0;
+            for (int RowIndex = 0; RowIndex < NumValues; RowIndex++)
+            {
+                if (Grid.Rows[RowIndex].Cells[ColumnIndex].Value == null)
+                    Values[Index] = "";
+                else
+                    Values[Index] = Grid.Rows[RowIndex].Cells[ColumnIndex].FormattedValue.ToString();
+                Index = Index + 1;
+            }
+            return Values;
+        }
+
+        /// <summary>
         /// Convert a grid to a DataTable.
         /// </summary>
         public static DataTable GridToDataTable(DataGridView Grid)
