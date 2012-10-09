@@ -88,7 +88,10 @@ namespace CSUserInterface
                 Soil.WriteToTableFromProfileNode(ProfileNode, Table, GetVariableNames());
             }
             else
+            {
+                HelpText = "";
                 Soil.WriteToTable(_SoilNode, Table, GetVariableNames());
+            }
 
             Grid.DataSourceTable = Table;
             Grid.AllowUserToAddRows = true;
@@ -205,7 +208,10 @@ namespace CSUserInterface
                                     }
                                     Grid.Columns[Col].ToolTipText = CodeText;
                                     Grid.Rows[Row].Cells[Col].ToolTipText = CodeText;
-                                    Grid.Rows[Row].Cells[Col].Style.ForeColor = Color.Blue;
+                                    if (CodeText == "Calculated")
+                                        Grid.Rows[Row].Cells[Col].Style.ForeColor = Color.Gray;
+                                    else
+                                        Grid.Rows[Row].Cells[Col].Style.ForeColor = Color.Blue;
                                 }
                             }
                         }
