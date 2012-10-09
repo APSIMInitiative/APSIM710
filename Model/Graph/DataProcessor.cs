@@ -400,8 +400,11 @@ public class DataProcessor
                     NewRow["Depth"] = (DepthSoFar + PreviousDepth) / 2;
 
                     for (int Col = 0; Col < ProfileColumns.Count; Col++)
-                        NewRow[ProfileColumns[Col]] = Data.Rows[Row][ProfileColumns[Col] + "(" + Layer.ToString() + ")"];
-
+                    {
+                        string ProfileColumnName = ProfileColumns[Col] + "(" + Layer.ToString() + ")";
+                        if (Data.Columns.Contains(ProfileColumnName))
+                            NewRow[ProfileColumns[Col]] = Data.Rows[Row][ProfileColumnName];
+                    }
                     NewRow["Date"] = RowDate;
                     NewRow["Title"] = Data.Rows[Row]["Title"] + ", " + RowDate.ToShortDateString();
                     NewData.Rows.Add(NewRow);
