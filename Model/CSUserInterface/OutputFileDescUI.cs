@@ -371,7 +371,13 @@ namespace CSUserInterface
 			} else if (XmlHelper.Type(Data).ToLower() == "tracker") {
 				HelpText = "Syntax of tracker variables:" + Environment.NewLine + "  [stat] of [VariableName] on [EventName] [from [From] to [To]] as [Alias]" + Environment.NewLine + "Where:" + Environment.NewLine + "  [stat] can be sum, value, count, average, stdev, maximum, minimum, or date" + Environment.NewLine + "  [VariableName] can be any APSIM variable name" + Environment.NewLine + "  [EventName] is the APSIM event name to collect the value" + Environment.NewLine + "  [From] is the APSIM event name to start collecting the values" + Environment.NewLine + "  [To] is the APSIM event name to stop collecting the values" + Environment.NewLine + "  [Alias] is the name the variable will be known as within APSIM";
 			} else {
-				HelpText = "Example output frequencies:" + Environment.NewLine + "  Daily       - reporting will be done daily" + Environment.NewLine + "  end_week    - reporting will be done at the end of each week" + Environment.NewLine + "  end_month   - reporting will be done at the end of each month" + Environment.NewLine + "  end_year    - reporting will be done at the end of each year" + Environment.NewLine + "  harvesting  - reporting will be done at harvest of a crop";
+				HelpText = "Example output frequencies:" + Environment.NewLine + 
+                           "  Daily: BEFORE modules have completed their daily calculations (eg. crop harvest)" + Environment.NewLine + 
+                           "  end_day: AFTER all modules have completed their daily calculations" + Environment.NewLine + 
+                           "  end_week: at the end of each week" + Environment.NewLine + 
+                           "  end_month: at the end of each month" + Environment.NewLine + 
+                           "  end_year: at the end of each year" + Environment.NewLine + 
+                           "  harvesting: at harvest of a crop";
 			}
 			MessageBox.Show(HelpText, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
