@@ -1,0 +1,47 @@
+<folder version="32" name="simulations">
+  <simulation name="PreNewMet">
+    <clock>
+      <start_date type="date" description="Enter the start date of the simulation">01/01/1940</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">03/01/1940</end_date>
+    </clock>
+    <metfile name="met">
+      <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
+    </metfile>
+    <summaryfile />
+    <manager2 name="ClimateCont">
+      <text>
+Imports System
+Imports ModelFramework
+
+Public Class Script 
+      
+   &lt;Link&gt; Dim MyPaddock As Paddock ' Can be used to dynamically get access to simulation structure and variables
+   &lt;Link&gt; Dim Met As Metfile   ' Equates to the value of the current simulation date - value comes from CLOCK
+   
+   ' The following event handler will be called when the prenewmet event is sent by Input
+   &lt;EventHandler()&gt; Public Sub OnPrenewmet(ByVal MetData As NewMetType)
+      Met.maxt = 5
+      Met.mint = 1
+      Met.rain = 99
+      Met.radn = 2
+   End Sub
+   
+End Class
+   </text>
+    </manager2>
+    <outputfile>
+      <filename output="yes">PreNewMet.out</filename>
+      <title>PreNewMet</title>
+      <variables name="Variables">
+        <variable>Today format dd/mm/yyyy as Date</variable>
+        <variable>MaxT</variable>
+        <variable>MinT</variable>
+        <variable>Radn</variable>
+        <variable>Rain</variable>
+      </variables>
+      <events name="Reporting Frequency">
+        <event>daily</event>
+      </events>
+    </outputfile>
+  </simulation>
+</folder>

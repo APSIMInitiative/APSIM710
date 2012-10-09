@@ -155,10 +155,10 @@ void InputComponent::doInit1(const protocol::Init1Data& init1Data)
      // and other tools can see the met variables.
      if (ToLower(getName()) == "input" && getVariableValue("maxt") == 0.0)
         {
-          addRegistration(::respondToGet, 0, "maxt", singleType);       
-          addRegistration(::respondToGet, 0, "mint", singleType);       
-          addRegistration(::respondToGet, 0, "radn", singleType);       
-          addRegistration(::respondToGet, 0, "rain", singleType);       
+          addRegistration(::respondToGetSet, 0, "maxt", singleType);       
+          addRegistration(::respondToGetSet, 0, "mint", singleType);       
+          addRegistration(::respondToGetSet, 0, "radn", singleType);       
+          addRegistration(::respondToGetSet, 0, "rain", singleType);       
         } 
 	  }
    catch (const runtime_error& err)

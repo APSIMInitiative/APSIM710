@@ -1,0 +1,55 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.5
+Title                  = PreNewMet
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                  "ClimateCont" = %apsim%\Model\Manager2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1940
+     Simulation end date   =  3/01/1940
+     Time step =           = 1440 (mins)
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        Today format dd/mm/yyyy as Date
+        MaxT
+        MinT
+        Radn
+        Rain
+
+     Output file = PreNewMet.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\Goond.met
+
+------- ClimateCont Initialisation --------------------------------------------
+------- Start of simulation  --------------------------------------------------
+3 January 1940(Day of year=3), clock: 
+     Simulation is terminating due to end criteria being met.
