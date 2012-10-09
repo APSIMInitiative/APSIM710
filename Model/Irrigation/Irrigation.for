@@ -1403,7 +1403,7 @@
 
 *+  Local Variables
       real       profile_depth           ! total soil profile depth
-      character  msg*100
+      character  msg*200
 
 *- Implementation Section ----------------------------------
       call push_routine (myname)
@@ -1411,7 +1411,6 @@
       if (p%automatic_irrigation .eq. 'on') then
 
          profile_depth = sum_real_array (g%dlayer, max_layer)
-
          if (p%asw_depth .gt. profile_depth) then
             write (msg, '(3a,f8.1,2a,f8.1)' )
      :      'ASW_depth for automatic irrigation must not ' //
