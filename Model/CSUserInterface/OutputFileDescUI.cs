@@ -149,9 +149,10 @@ namespace CSUserInterface
 				if (PropertyGroup.ToLower() == "tracker") {
 					PropertyGroup = "variables";
 				}
-				if ((ComponentType != "tracker") || (Data.Name == "tracker")) {
-					AddVariablesToListView(ComponentName, ComponentType, PropertyGroup);
-				}
+				if (ComponentType == "tracker")
+                    AddTrackerExamples();
+                else
+                    AddVariablesToListView(ComponentName, ComponentType, PropertyGroup);
 
 				VariableListView.EndUpdate();
 				VariableListView.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
@@ -159,6 +160,36 @@ namespace CSUserInterface
 			}
 		}
 
+        private void AddTrackerExamples()
+        {
+            ListViewGroup NewGroup = new ListViewGroup("Tracker");
+            VariableListView.Groups.Add(NewGroup);
+
+			ListViewItem ListItem = new ListViewItem("sum of rain on start_of_day from sowing to now as RainSinceSowing");
+            ListItem.Group = NewGroup;
+            VariableListView.Items.Add(ListItem);
+			ListItem = new ListViewItem("sum of rainfall from sowing to now");
+            ListItem.Group = NewGroup;
+            VariableListView.Items.Add(ListItem);
+            ListItem = new ListViewItem("sum of rain on last 3 start_of_day as RainLast3Days");
+            ListItem.Group = NewGroup;
+            VariableListView.Items.Add(ListItem);
+            ListItem = new ListViewItem("sum of rainfall over the last 3 days");
+            ListItem.Group = NewGroup;
+            VariableListView.Items.Add(ListItem);
+            ListItem = new ListViewItem("value of yield on harvesting as HarvestedYield");
+            ListItem.Group = NewGroup;
+            VariableListView.Items.Add(ListItem);
+            ListItem = new ListViewItem("sum of ep on end_of_day from sowing to harvesting as InCropPlantWaterUptake");
+            ListItem.Group = NewGroup;
+            VariableListView.Items.Add(ListItem);
+            ListItem = new ListViewItem("maximum of lai on end_of_day from sowing to harvesting as MaxLai");
+            ListItem.Group = NewGroup;
+            VariableListView.Items.Add(ListItem);
+            ListItem = new ListViewItem("sum of rain on start_of_day from reported to now as rainfall");
+            ListItem.Group = NewGroup;
+            VariableListView.Items.Add(ListItem);
+        }
 		private void AddVariablesToListView(string ComponentName, string ComponentType, string PropertyGroup)
 		{
 			List<Types.MetaDataInfo> ModelInfo = null;
