@@ -8,12 +8,13 @@
 #include <General/stl_functions.h>
 #include <General/TreeNodeIterator.h>
 #include <General/xml.h>
+#include <General/exec.h>
 
 #include <ApsimShared/ApsimComponentData.h>
 #include <ApsimShared/ApsimSystemData.h>
 #include <ApsimShared/ApsimServiceData.h>
 #include <ApsimShared/ApsimSimulationFile.h>
-
+#include <ApsimShared/ApsimDirectories.h>
 #include <ComponentInterface/Interfaces.h>
  
 #include "Simulation.h"
@@ -23,6 +24,39 @@
 
 using namespace std;
 using namespace protocol;
+
+//---------------------------------------------------------------------------
+// Convert the specified .apsim to a .sim and return the filename of the .sim
+//---------------------------------------------------------------------------
+string ConvertToSim(const string& apsimPath, string& simulationName)
+   {
+   // Create a command line to ApsimToSim
+   string CommandLine = "%apsim%\\Model\\ApsimToSim.exe \"" + apsimPath + "\"";
+   if (simulationName != "")
+      {
+      replaceAll(simulationName, "Simulation=", "");
+      replaceAll(simulationName, "simulation=", "");
+      CommandLine += " \"" + simulationName + "\"";
+      }
+   CommandLine += " 2> apsim.tmp";
+   replaceAll(CommandLine, "%apsim%", getApsimDirectory());
+   
+   // exec ApsimToSim and read its stdout as the .sim file name.
+   system(CommandLine.c_str());
+   ifstream in("apsim.tmp");
+   string simPath;
+   getline(in, simPath);
+   in.close();
+   
+   if (simPath.find("Written ") == string::npos)
+      return "";
+   else
+      {
+      unlink("apsim.tmp");
+      replaceAll(simPath, "Written ", "");
+      return simPath;
+      }
+   }
 
 //---------------------------------------------------------------------------
 // Main routine for running APSIM from .sim script.
@@ -97,17 +131,31 @@ int main(int argc, char **argv)
       cout << "Cannot find simulation file: " << simPath.c_str() << endl;
       return 1;
       }
-   
-   // Change the working directory to where the .sim file is.
-   Path simFile(simPath);
-   simFile.Change_directory();
-         
-   // get sdml contents.
-   ifstream in(simPath.c_str());
-   ostringstream sdml;
-   sdml << in.rdbuf();   
-   
-   RunAPSIM(sdml.str().c_str());
+   // If simPath is actually a .apsim file then convert to sim.
+   bool DeleteSim = false;
+   if (fileExtension(simPath) == "apsim")
+      {
+      string simulationName = "";
+      if (argc == 3)
+         simulationName = argv[2];
+      simPath = ConvertToSim(simPath, simulationName);
+      DeleteSim = true;
+      }
+   if (simPath != "")
+      {
+      // Change the working directory to where the .sim file is.
+      Path simFile(simPath);
+      simFile.Change_directory();
+            
+      // get sdml contents.
+      ifstream in(simPath.c_str());
+      ostringstream sdml;
+      sdml << in.rdbuf();   
+      in.close();
+      if (DeleteSim)
+         unlink(simPath.c_str());
+      RunAPSIM(sdml.str().c_str());
+      }
 }
 
 //---------------------------------------------------------------------------
@@ -117,3 +165,4 @@ extern "C" unsigned get_componentID(void)
    {
    return 0;
    }
+
