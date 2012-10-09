@@ -66,7 +66,56 @@ namespace Actions
 			string url = Configuration.Instance.Setting("ApsimInternetGroup");
 			Process.Start(url);
 		}
+        public static void CombineMultiple(BaseController Controller)
+        {
+            string LastDir = null;
+            if (Controller.FileSaveAfterPrompt())
+            {
+                if ((Configuration.Instance.GetFrequentList().Count > 0))
+                    LastDir = Configuration.Instance.GetFrequentList()[0];
+                else
+                    LastDir = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 
+                OpenFileDialog dialog = new OpenFileDialog();
+                if (!string.IsNullOrEmpty(LastDir))
+                {
+                    LastDir = LastDir.Substring(0, LastDir.LastIndexOf(Path.DirectorySeparatorChar));
+                    dialog.InitialDirectory = LastDir;
+                }
+
+                dialog.Filter = Configuration.Instance.Setting("DialogFilter");
+                dialog.DefaultExt = Configuration.Instance.Setting("DefaultExtension");
+                dialog.RestoreDirectory = true;
+                dialog.Multiselect = true;
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    Controller.Explorer.CloseUI();
+
+                    string Xml = CombineApsimFiles(dialog.FileNames);
+                    Controller.ApsimData.New(Xml);
+                    Controller.RefreshToolStrips();
+                }
+            }
+
+
+        }
+
+        private static string CombineApsimFiles(string[] FileNames)
+        {
+            string Xml = "<folder version=\"" + ApsimFile.APSIMChangeTool.CurrentVersion.ToString() + "\" name=\"simulations\">\r\n";
+            foreach (string FileName in FileNames)
+            {
+                if (File.Exists(FileName))
+                {
+                    XmlDocument Doc = new XmlDocument();
+                    Doc.Load(FileName);
+                    if (Doc.DocumentElement != null)
+                        Xml += Doc.DocumentElement.InnerXml;
+                }
+            }
+            Xml += "\r\n</folder>";
+            return Xml;
+        }
 
 
 		#region "Simulation methods"
