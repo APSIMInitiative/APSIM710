@@ -4994,6 +4994,12 @@ subroutine OnNitrogenChanged (variant)
       g%nh4(layer) = g%nh4(layer) + NitrogenChanged%DeltaNH4(layer)
       call bound_check_real_var (g%nh4(layer), g%nh4_min(layer), g%nh4(layer), 'g%NH4(layer)')
    enddo
+   
+   ! Added by RCichota - using NitrogenChanged to change urea
+   do layer = 1,NitrogenChanged%num_DeltaUrea
+      g%urea(layer) = g%urea(layer) + NitrogenChanged%DeltaUrea(layer)
+      call bound_check_real_var (g%urea(layer), 0.0, g%urea(layer), 'g%Urea(layer)')
+   enddo
    return
 end subroutine
 
