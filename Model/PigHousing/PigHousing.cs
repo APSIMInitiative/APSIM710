@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using ModelFramework;
 public class PigHousing
-{    [Link]
-    private Paddock MyPaddock;
-[Link]
-Component My;
+{
+    [Link]
+    private Component MyPaddock;
     [EventHandler]
     public void OnInitialised()
     {
@@ -22,16 +21,16 @@ Component My;
     [EventHandler]
     public void OnProcess()
     {
-       // MyPaddock.LinkByName("animalSection");
-        My.LinkByName("animalSection");
-  //      Component section =(Component) 
-     //   Component sections = (Component)MyPaddock.LinkByName("animalSection");
-        Console.WriteLine(My.Name);
-        Console.WriteLine(My.Children.Count);
-        for (int i = 0; i < My.Children.Count; i++)
+        Console.WriteLine(MyPaddock.Name);
+        Console.WriteLine(MyPaddock.Children.Count);
+        for (int i = 0; i < MyPaddock.Children.Count(); i++)
         {
-            ;
-            Console.WriteLine(My.Children[i].Name);
+            Console.WriteLine(MyPaddock.Children[i].Name);
+
+            for (int j = 0; j < MyPaddock.Children[i].Children.Count(); j++)
+            {
+                Console.WriteLine(MyPaddock.Children[i].Children[j].Name);
+            }
         }
 
     }

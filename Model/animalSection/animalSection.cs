@@ -6,10 +6,7 @@ using ModelFramework;
 public class animalSection
 {
     [Link]
-    Component My;
-
-    [Link]
-    private Paddock MyPaddock;
+    private Component MyPaddock;
     [Param]
     double NrOfAnimals = 1;
     [Param]
@@ -27,7 +24,13 @@ public class animalSection
     [EventHandler]
     public void OnProcess()
     {
-        Console.WriteLine(My.Name);
+        Console.WriteLine(MyPaddock.Name);
+        Console.WriteLine(MyPaddock.Children.Count);
+        for (int i = 0; i < MyPaddock.Children.Count(); i++)
+        {
+            Console.WriteLine(MyPaddock.Children[i].Name);
+        }
+        /*Console.WriteLine(My.Name);
         Console.WriteLine(My.Children.Count);
         My.LinkByName("floor1");
         Component Floor1 = (Component)MyPaddock.LinkByName("floor1");
@@ -66,17 +69,17 @@ public class animalSection
                 AnimalSection.Publish("RcvBedding", someStraw);
             }
 
-        }
+        }*/
 
-   
 
-     
+
+
     }
 
     void RcvManure(ManureType aUrine, ManureType aFaeces)
     {
 
-        foreach (Component AnimalSection in My.Children)
+        /*foreach (Component AnimalSection in My.Children)
         {
             Console.WriteLine(AnimalSection.Children.Count);
             Console.WriteLine(AnimalSection.Name);
@@ -90,7 +93,7 @@ public class animalSection
                 aFaeces.amount *= ExcretaPartition;
                 AnimalSection.Publish("RcvSolidManure", aFaeces);
             }
-        }
+        }*/
     }
 
      
