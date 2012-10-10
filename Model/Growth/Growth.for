@@ -1154,7 +1154,7 @@ cnh         cover = 1.0 - exp (-g%extinction_coef*g%lai)
 
          call respond2get_real_var (
      :               variable_name       ! variable name
-     :              ,'(g/m2)'              ! variable units
+     :              ,'(kg/ha)'              ! variable units
      :              ,g%dlt_dm) ! variable
 
       elseif (variable_name .eq. 'ft') then
