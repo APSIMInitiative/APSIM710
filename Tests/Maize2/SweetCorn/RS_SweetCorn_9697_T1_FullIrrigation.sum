@@ -1,0 +1,623 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.5
+Title                  = RS_SweetCorn_9697_T1_FullIrrigation
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                      "Outputs" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component               "ClimateControl" = %apsim%\Model\Manager.dll
+   Component         "Diagnostic variables" = %apsim%\Model\Manager.dll
+   Component "Fertilise incrop on critical NO3 level- top up" = %apsim%\Model\Manager.dll
+   Component      "Templeton deep 1  Water" = %apsim%\Model\SoilWat.dll
+   Component    "Soil Temperature (dotNET)" = %apsim%\Model\SoilTemp2.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component   "Templeton deep 1  Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                       "Maize2" = %apsim%\Model\Plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 30/10/1996
+     Simulation end date   =  1/04/1997
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
+
+------- Outputs Initialisation ------------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mmm/yyyy as Date
+        AccumTtemerg
+        StageCodeValue
+        no3()
+        nh4()
+        urea()
+        surfaceom_n
+        biom_n()
+        fom_n()
+        hum_n()
+        dnit()
+        leach_no3
+        AccumPlantN
+        AccumMineralisation
+        AccumDenit
+        AccumFert
+        AccumLeach
+        AccumDetach
+        DeltaSoilOMN
+        DeltaSurfaceOMN
+        DeltaSoilMineralN
+        RootNSupplyUptake
+        eo
+        es
+        sw_dep()
+        dul_dep()
+        drain
+        runoff
+        outflow_lat()
+        pond
+        AccumEO
+        AccumEP
+        AccumES
+        AccumDrainage
+        AccumRunoff
+        AccumRainfall
+        AccumIrrigation
+        AccumOutflowLat
+        SoilWaterDeficit
+        AboveGroundLiveWt
+        BelowGroundWt
+        TotalWt
+        LeafDeadWt
+        LeafLiveWt
+        StemLiveWt
+        RootDeadWt
+        RootLiveWt
+        GrainLiveWt
+        GrainDeadWt
+        AboveGroundN
+        BelowGroundN
+        TotalN
+        TotalLiveN
+        TotalDeadN
+        LeafDeadN
+        LeafLiveN
+        StemLiveN
+        RootLiveN
+        RootDeadN
+        GrainLiveN
+        GrainDeadN
+        LeafLiveNConc
+        LeafDeadNConc
+        StemLiveNConc
+        TuberLiveNConc
+        RootLiveNConc
+        GrainLiveNConc
+        FloretLiveNConc
+        RootWaterSupply
+        RootWaterUptake
+        LeafTranspiration
+        LeafWaterDemand
+        RootDepth
+        Cover_green
+        Cover_tot
+        Cover_dead
+        LeafLAI
+        LeafLAIDead
+        Height
+        LeafFn
+        LeafFw
+        LeafPhotosynthesisFtValue
+        LeafPhotosynthesisFvpdValue
+        sw
+        no3
+        LeafPartitionFractionValue
+        GrainPartitionFractionValue
+        RootPartitionFractionValue
+        GrainMinimumNConcValue
+        LeafMinimumNConcValue
+        RootMinimumNConcValue
+        GrainMaximumNConcValue
+        LeafMaximumNConcValue
+        RootMaximumNConcValue
+        leavesPerStem
+        PhenologyEarlyTuberTargetValue
+        StemLiveNonStructuralN
+        StemLiveStructuralN
+        StemLiveStructuralWt
+        StemLiveNonStructuralWt
+        LeafLiveNonStructuralN
+        LeafLiveNonStructuralWt
+        LeafLiveStructuralN
+        LeafLiveStructuralWt
+        LeafTotalStructuralN
+        LeafTotalNonStructuralN
+        LeafTotalStructuralWt
+        LeafTotalNonStructuralWt
+        LeafLiveMetabolicWt
+        RootNSupplyUptake
+        ArbitratorNDemand
+        LeafExpandedCohortNo
+        StructurePlantMainStemNodeNo
+        LeafPlantAppearedGreenLeafNo
+        LeafExpandingCohortNo
+        LeafAppearedCohortNo
+        StructureTotalStemPopn
+        LeafDeadCohortNo
+        StructureMainStemNodeNo
+        LeafSenescingCohortNo
+        StructurePrimaryBudMainStemNodeNo
+        StructureMainStemPrimordiaNo
+        LeafFinalNodeNo
+        LeafPhotoPeriodValue
+        PhenologyVernalisationIndexValue
+        PhenologyVernalisationSIRIUSAccumulatedVernalisation as VernalisationIndex
+        StructureMainStemFinalNodeNumberVernalisationFinalNodeNumber as VFNN
+        StructureMainStemFinalNodeNumberPhotoperiodFinalNodeNumber as PPFNN
+        StructureMainStemFinalNodeNumberTerminatedFinalNodeNumber as TFNN
+        StructureMainStemFinalNodeNumberTargetFinalNodeNumber as FLN
+        MaxT
+        MinT
+        maxt_soil_surface
+        mint_soil_surface
+        LeafThermalTimeValue
+        StructureMainStemFinalNodeNo
+        sw
+        LeafSpecificArea
+        HuskLiveWt
+        RachisLiveWt
+        StructureTotalStemPopn
+        GrainNumber
+        WaterSupplyDemandRatio
+        AboveGroundLiveWt
+        GrainAccumThermalTimeValue
+        GrainSize
+        EarLiveWt
+        AboveGroundDeadWt
+        LeafCohortSize
+        LeafCohortMaxSize
+
+     Output file = RS_SweetCorn_9697_T1_FullIrrigation Outputs.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+      17/12/1996  Prepare      irrigation apply amount= 20.5 (mm)
+      23/12/1996  Prepare      irrigation apply amount= 19.8 (mm)
+      30/12/1996  Prepare      irrigation apply amount= 20 (mm)
+       7/01/1997  Prepare      irrigation apply amount= 20 (mm)
+      14/01/1997  Prepare      irrigation apply amount= 24 (mm)
+      21/01/1997  Prepare      irrigation apply amount= 23.5 (mm)
+      28/01/1997  Prepare      irrigation apply amount= 28.1 (mm)
+      04/02/1997  Prepare      irrigation apply amount= 34 (mm)
+      11/02/1997  Prepare      irrigation apply amount= 27.2 (mm)
+      18/02/1997  Prepare      irrigation apply amount= 27.5 (mm)
+      24/02/1997  Prepare      irrigation apply amount= 24.4 (mm)
+      04/03/1997  Prepare      irrigation apply amount= 21.4 (mm)
+      11/03/1997  Prepare      irrigation apply amount= 22 (mm)
+      18/03/1997  Prepare      irrigation apply amount= 21.7 (mm)
+      27/03/1997  Prepare      irrigation apply amount= 36.4 (mm)
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if today = date('30/10/1996') then
+        maize2 sow population =5.7, depth = 20, cultivar = pionere1234, maxcover = 1.0, budnumber = 1, row_spacing = 700, crop_class = plant
+       endif
+     END of rules
+     
+
+------- ClimateControl Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- prenewmet
+     if (date_within('1/10/1996, 25/03/1997') = 1) then
+        maxt = maxt + 0
+        mint = mint + 0
+        rain = rain + rain * -100 / 100
+        radn = radn + radn * 0 / 100
+        co2 = 350
+      endif
+     
+     SECTION:- init
+     co2 = 350
+     END of rules
+     
+     Manager creating a new local real variable : co2 = 350.00000
+
+------- Diagnostic variables Initialisation -----------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     simday = 1
+     accumplantn = 0
+     accummineralisation = 0
+     accumdenit = 0
+     accumfert = 0
+     accumleach = 0
+     accumdetach = 0
+     deltasoilomn = 0
+     deltasurfaceomn = 0
+     deltasoilmineraln = 0
+     accumeo = 0
+     accumep = 0
+     accumes = 0
+     accumdrainage = 0
+     accumrunoff = 0
+     accumoutflowlat = 0
+     accumirrigation = 0
+     accumrainfall = 0
+     soilwaterdeficit = 0
+     accumttemerg = 0
+     
+     SECTION:- start_of_day
+     if simday = 1 then
+     initialsoilomn = biom_n() + fom_n() + hum_n()
+     initialsurfaceomn = surfaceom_n
+     initialmineraln = no3() + nh4() + urea()
+     endif
+     accumplantn =  accumplantn - maize2.rootnuptake
+     accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
+     accumdenit = accumdenit - dnit()
+     accumfert = accumfert + fertiliser
+     accumleach = accumleach - leach_urea - leach_no3 - leach_nh4
+     accumdetach = 0
+     deltasoilomn = (biom_n() + fom_n() + hum_n()) - initialsoilomn
+     deltasurfaceomn = surfaceom_n - initialsurfaceomn
+     deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
+     accumeo = accumeo - eo
+     accumep = accumep - maize2.leaftranspiration
+     accumes = accumes - es
+     accumdrainage = accumdrainage - drain
+     accumrunoff = accumrunoff - runoff
+     accumoutflowlat = accumoutflowlat - outflow_lat()
+     accumirrigation = accumirrigation + irrigation
+     accumrainfall = accumrainfall + rain
+     soilwaterdeficit =  sw_dep() - dul_dep()
+     if maize2.stagecodevalue >= 3 then
+     accumttemerg = accumttemerg + maize2.phenologythermaltimevalue
+     endif
+     
+     SECTION:- end_of_day
+     if simday = 1 then
+     simday = 2
+     else simday = 2
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : simday = 1.00000
+     Manager creating a new local real variable : accumplantn = 0.00000
+     Manager creating a new local real variable : accummineralisation = 0.00000
+     Manager creating a new local real variable : accumdenit = 0.00000
+     Manager creating a new local real variable : accumfert = 0.00000
+     Manager creating a new local real variable : accumleach = 0.00000
+     Manager creating a new local real variable : accumdetach = 0.00000
+     Manager creating a new local real variable : deltasoilomn = 0.00000
+     Manager creating a new local real variable : deltasurfaceomn = 0.00000
+     Manager creating a new local real variable : deltasoilmineraln = 0.00000
+     Manager creating a new local real variable : accumeo = 0.00000
+     Manager creating a new local real variable : accumep = 0.00000
+     Manager creating a new local real variable : accumes = 0.00000
+     Manager creating a new local real variable : accumdrainage = 0.00000
+     Manager creating a new local real variable : accumrunoff = 0.00000
+     Manager creating a new local real variable : accumoutflowlat = 0.00000
+     Manager creating a new local real variable : accumirrigation = 0.00000
+     Manager creating a new local real variable : accumrainfall = 0.00000
+     Manager creating a new local real variable : soilwaterdeficit = 0.00000
+     Manager creating a new local real variable : accumttemerg = 0.00000
+
+------- Fertilise incrop on critical NO3 level- top up Initialisation ---------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (maize2.plant_status = 'alive') then
+     no3_available = no3(1) + no3(2) + no3(3)
+     if (no3_available <= 100) then
+        n_deficit = 200 - no3_available
+        'fertiliser' apply amount = n_deficit (kg/ha), depth = 50 (mm), type = no3_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- Templeton deep 1  Water Initialisation --------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     4832.039
+             exceeds upper limit of    1000.000
+     Component name: Templeton deep 1  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  200.  0.053  0.053  0.330  0.426  0.330  1.311  0.856  0.483*******
+          200.-  400.  0.038  0.038  0.300  0.405  0.300  1.524  0.135  0.272389.229
+          400.-  600.  0.125  0.125  0.250  0.318  0.250  1.650  0.009  0.097 16.362
+          600.-  800.  0.100  0.100  0.200  0.314  0.200  1.601  0.000  0.170 97.995
+          800.- 1000.  0.085  0.085  0.170  0.312  0.170  1.601  0.000  0.306 97.995
+         1000.- 1200.  0.070  0.070  0.140  0.310  0.140  1.601  0.000  0.306 97.995
+         1200.- 1400.  0.115  0.115  0.230  0.316  0.230  1.601  0.000  0.306 97.995
+         1400.- 1600.  0.149  0.149  0.280  0.342  0.280  1.601  0.000  0.153 97.995
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  200.      10.60      55.40      55.40      19.20
+          200.-  400.       7.60      52.40      52.40      21.00
+          400.-  600.      25.00      25.00      25.00      13.60
+          600.-  800.      20.00      20.00      20.00      22.80
+          800.- 1000.      17.00      17.00      17.00      28.40
+         1000.- 1200.      14.00      14.00      14.00      34.00
+         1200.- 1400.      23.00      23.00      23.00      17.20
+         1400.- 1600.      29.80      26.20      26.20      12.40
+          ---------------------------------------------------------
+               Totals     147.00     233.00     233.00     168.60
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        9.00 (mm)
+                                  Winter        6.00 (mm)
+            Stage 2       (CONA): Summer        4.40 (mm^0.5)
+                                  Winter        3.00 (mm^0.5)
+            Critical Dates:       Summer        1-Oct
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- Soil Temperature (dotNET) Initialisation ------------------------------
+
+------- soiltemp Initialisation -----------------------------------------------
+     Initialising :
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat            0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- Templeton deep 1  Nitrogen Initialisation -----------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type NZ_sedementary
+     
+     
+     
+           Soil temperature supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  2.49   50.02    5.00    0.00
+             2     6.00  0.92   13.63    0.14    0.00
+             3     6.00  0.32   14.76    0.15    0.00
+             4     6.00  0.28   14.32    0.14    0.00
+             5     6.00  0.21   14.32    0.14    0.00
+             6     6.00  0.20   14.32    0.14    0.00
+             7     6.00  0.20   14.32    0.14    0.00
+             8     6.00  0.20   14.32    0.14    0.00
+          ------------------------------------------------
+           Totals              150.03    6.01    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      64115.2  5828.7  1093.9   136.7   131.6     3.3
+             2      27950.1  2540.9   122.0    15.3    90.5     2.3
+             3      10409.5   946.3    18.5     2.3    62.2     1.6
+             4       8890.2   808.2    11.3     1.4    42.7     1.1
+             5       6656.5   605.1     3.6     0.5    29.4     0.7
+             6       6402.9   582.1     1.1     0.1    20.2     0.5
+             7       6402.9   582.1     1.1     0.1    13.9     0.3
+             8       6387.8   580.7    16.2     2.0     9.5     0.2
+          ---------------------------------------------------------
+           Totals  137215.2 12474.1  1267.8   158.5   400.0    10.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager sending message :- maize2 sow  population = 5.7, depth = 20, cultivar = pionere1234, maxcover = 1.0, budnumber = 1, row_spacing = 700, crop_class = plant
+     Manager creating a new local real variable : initialsoilomn = 12642.57813
+     Manager creating a new local real variable : initialsurfaceomn = 0.00000
+     Manager creating a new local real variable : initialmineraln = 156.03610
+     Manager creating a new local real variable : no3_available = 78.41450
+     Manager creating a new local real variable : n_deficit = 121.58550
+     Manager sending message :- fertiliser apply  amount = 121.58550 (kg/ha), depth = 50 (mm), type = no3_n
+fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       121.59 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+31 October 1996 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+12 November 1996 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+17 December 1996(Day of year=352), operations: 
+      Sending apply message to irrigation
+23 December 1996(Day of year=358), operations: 
+      Sending apply message to irrigation
+30 December 1996(Day of year=365), operations: 
+      Sending apply message to irrigation
+7 January 1997(Day of year=7), operations: 
+      Sending apply message to irrigation
+7 January 1997(Day of year=7), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 110.38609 (kg/ha), depth = 50 (mm), type = no3_n
+7 January 1997(Day of year=7), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       110.39 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+14 January 1997(Day of year=14), operations: 
+      Sending apply message to irrigation
+16 January 1997(Day of year=16), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 108.84314 (kg/ha), depth = 50 (mm), type = no3_n
+16 January 1997(Day of year=16), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       108.84 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+21 January 1997(Day of year=21), operations: 
+      Sending apply message to irrigation
+23 January 1997(Day of year=23), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 116.02932 (kg/ha), depth = 50 (mm), type = no3_n
+23 January 1997(Day of year=23), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       116.03 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+28 January 1997(Day of year=28), operations: 
+      Sending apply message to irrigation
+30 January 1997(Day of year=30), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 102.25578 (kg/ha), depth = 50 (mm), type = no3_n
+30 January 1997(Day of year=30), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       102.26 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+30 January 1997 - FlagLeaf
+                            LAI = 2.46 (m^2/m^2)
+           Above Ground Biomass = 804.19 (g/m^2)
+4 February 1997(Day of year=35), operations: 
+      Sending apply message to irrigation
+4 February 1997 - Flowering
+                            LAI = 2.44 (m^2/m^2)
+           Above Ground Biomass = 908.61 (g/m^2)
+11 February 1997(Day of year=42), operations: 
+      Sending apply message to irrigation
+14 February 1997 - StartGrainFill
+                            LAI = 2.42 (m^2/m^2)
+           Above Ground Biomass = 1188.03 (g/m^2)
+18 February 1997(Day of year=49), operations: 
+      Sending apply message to irrigation
+24 February 1997(Day of year=55), operations: 
+      Sending apply message to irrigation
+2 March 1997(Day of year=61), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 100.76775 (kg/ha), depth = 50 (mm), type = no3_n
+2 March 1997(Day of year=61), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.77 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+4 March 1997(Day of year=63), operations: 
+      Sending apply message to irrigation
+11 March 1997(Day of year=70), operations: 
+      Sending apply message to irrigation
+18 March 1997(Day of year=77), operations: 
+      Sending apply message to irrigation
+27 March 1997(Day of year=86), operations: 
+      Sending apply message to irrigation
+1 April 1997(Day of year=91), clock: 
+     Simulation is terminating due to end criteria being met.
