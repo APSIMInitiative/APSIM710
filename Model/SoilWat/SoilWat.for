@@ -283,6 +283,7 @@
           integer :: process
           integer :: post
           integer :: WaterChanged
+          integer :: NitrogenChanged
           integer :: RunoffEvent
       end type IDsType
 
@@ -7574,6 +7575,9 @@ c
       id%WaterChanged = add_registration(respondToEventReg,
      .                                   'WaterChanged',
      .                                   WaterChangedTypeDDML, '')
+      id%NitrogenChanged = add_registration(respondToEventReg,
+     .                                   'NitrogenChanged',
+     .                                   NitrogenChangedTypeDDML, '')
 
       ! variables we own and make gettable
       dummy = add_reg(respondToGetReg, 'es',
