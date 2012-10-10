@@ -117,6 +117,38 @@ namespace Actions
             return Xml;
         }
 
+        public static void Find(BaseController Controller)
+        {
+            Component StartNode = Controller.Selection;
+            if (StartNode != null)
+            {
+                string FindWhat = UIBits.InputDialog.InputBox("Find what:", "Find", "", false);
+                if (FindWhat != "")
+                {
+                    Component FoundNode = Find(StartNode, FindWhat, Controller);
+                    if (FoundNode == null)
+                        MessageBox.Show("Cannot find: " + FindWhat, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    else
+                        Controller.SelectedPath = FoundNode.FullPath;
+                }
+            }
+        }
+
+        private static Component Find(Component StartNode, string FindWhat, BaseController Controller)
+        {
+            List<Component> AllNodes = new List<Component>();
+            Controller.ApsimData.RootComponent.ChildNodesRecursively(AllNodes);
+
+            int StartPos = AllNodes.IndexOf(StartNode);
+            StartPos++;
+
+            for (int i = StartPos; i < AllNodes.Count; i++)
+            {
+                if (AllNodes[i].Name.ToLower().Contains(FindWhat.ToLower()))
+                    return AllNodes[i];
+            }
+            return null;
+        }
 
 		#region "Simulation methods"
 		public static void Run(BaseController Controller)
