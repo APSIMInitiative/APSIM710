@@ -34,6 +34,12 @@ namespace ApsimFile
             string BaseName = Name;
             string UniqueChildName = BaseName;
 
+            // Fix for bug: http://www.apsim.info/BugTracker/edit_bug.aspx?id=1599:
+            //     Currently when you use the duplicate paddock function from the GUI it isn't very smart 
+            //     with the way it numbers the resulting paddocks.
+            if (UniqueChildName.Length > 0 && UniqueChildName[UniqueChildName.Length - 1] == '1')
+                BaseName = BaseName.Remove(UniqueChildName.Length - 1);
+
             if (Parent != null)
             {
                 for (int i = 1; i != 10000; i++)
