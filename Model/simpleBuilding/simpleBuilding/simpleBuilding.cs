@@ -59,6 +59,7 @@ public class simpleBuilding
         // ting.SulphideS = 0.24; //g per kg fresh weight
         // ting.SulphateS = 0.24; //g per kg fresh weight
         ting.ADL = slurry_ADL;// 0.115;
+        ting.Rem = 1 - (ting.RL + ting.RP + ting.NDF + ting.VFA + ting.Ash);
         ting.DM = slurry_DM;// 0.1;
         ting.pH = slurry_pH;
         for (int i = 0; i < MyPaddock.Children.Count; i++)
