@@ -48,8 +48,8 @@
 class EXPORT StringTokenizer
    {
    private:
-      unsigned int currentPosition;
-      unsigned int maxPosition;
+      size_t currentPosition;
+      size_t maxPosition;
       std::string str;
       std::string delimiters;
       bool retTokens;
@@ -65,7 +65,7 @@ class EXPORT StringTokenizer
      * Will return a start position of string::npos when
      * no more tokens can be read
      */
-      void calcPosNextToken(unsigned& start, unsigned& end);
+      void calcPosNextToken(size_t& start, size_t& end);
 
    public:
     /*
@@ -106,7 +106,7 @@ class EXPORT StringTokenizer
      *                as tokens.
      */
      StringTokenizer(const std::string& str,
-                     unsigned pos,
+                     size_t pos,
                      const std::string& delim,
                      bool returnTokens = false);
 
@@ -164,7 +164,7 @@ class EXPORT StringTokenizer
     /*
      * Return the current position in string.
     */
-     unsigned currentPos(void) const {return currentPosition;}
+     size_t currentPos(void) const {return currentPosition;}
 
 
    };

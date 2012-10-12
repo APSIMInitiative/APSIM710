@@ -616,7 +616,7 @@ class EXPORT Component
        std::string valueString = componentData->getProperty(sectionName, variableName);
 
        // remove any Units specifier "(..)":
-       unsigned int posBracket = (unsigned)valueString.find('(');
+       size_t posBracket = valueString.find('(');
        if (posBracket != std::string::npos)
          valueString = valueString.substr(0,posBracket);
 

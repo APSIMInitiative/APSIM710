@@ -58,7 +58,7 @@ StringTokenizer::StringTokenizer(const string& st,
      */
 // ------------------------------------------------------------------
 StringTokenizer::StringTokenizer(const string& st,
-                                 unsigned pos,
+                                 size_t pos,
                                  const string& delim,
                                  bool returnTokens)
    {
@@ -108,7 +108,7 @@ bool StringTokenizer::hasMoreTokens()
 // ------------------------------------------------------------------
 string StringTokenizer::nextToken()
    {
-   unsigned int start = currentPosition;
+   size_t start = currentPosition;
    calcPosNextToken(start, currentPosition);
    if (start != string::npos)
       return str.substr(start, currentPosition-start);
@@ -185,8 +185,8 @@ bool StringTokenizer::hasMoreElements()
 int StringTokenizer::countTokens()
    {
    int count = 0;
-   unsigned start = currentPosition;
-   unsigned end = 0;
+   size_t start = currentPosition;
+   size_t end = 0;
    while (start != string::npos)
       {
       calcPosNextToken(start, end);
@@ -214,8 +214,8 @@ int StringTokenizer::countTokens()
 //    DPH 25/8/2000
 
 // ------------------------------------------------------------------
-void StringTokenizer::calcPosNextToken(unsigned& start,
-                                       unsigned& end)
+void StringTokenizer::calcPosNextToken(size_t& start,
+                                       size_t& end)
    {
    // check for past end of string
    if (start == str.length())

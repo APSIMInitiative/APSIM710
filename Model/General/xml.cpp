@@ -368,7 +368,7 @@ XMLNode findNode(XMLNode node, const std::string& fqn)
    }
 XMLNode findNode(XMLNode node, const std::string& fqn, char delimiter)
    {
-   unsigned posDelimiter = fqn.find(delimiter);
+   size_t posDelimiter = fqn.find(delimiter);
    XMLNode::iterator i = find_if(node.begin(),
                                  node.end(),
                                  EqualToName<XMLNode>(fqn.substr(0, posDelimiter)));
@@ -394,7 +394,7 @@ XMLNode findNodeWithName(XMLNode node, const std::string& fqn)
    }
 XMLNode findNodeWithName(XMLNode node, const std::string& fqn, char delimiter)
    {
-   unsigned posDelimiter = fqn.find(delimiter);
+   size_t posDelimiter = fqn.find(delimiter);
    XMLNode::iterator i = find_if(node.begin(),
                                  node.end(),
                                  AttributeEquals<XMLNode>("name", fqn.substr(0, posDelimiter)));

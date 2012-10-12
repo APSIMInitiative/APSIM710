@@ -10,14 +10,14 @@ FString Type::getAttribute(const char* attributeName) const
    char stringToLocate[100];
    strcpy(stringToLocate, attributeName);
    strcat(stringToLocate, "=\"");
-   unsigned posAttr = type.find(stringToLocate);
+   size_t posAttr = type.find(stringToLocate);
    if (posAttr == FString::npos)
       return "";
    else
       {
       posAttr += strlen(stringToLocate);
       FString attrPlusRemainder = type.substr(posAttr);
-      unsigned posEndQuote = attrPlusRemainder.find("\"");
+      size_t posEndQuote = attrPlusRemainder.find("\"");
       return attrPlusRemainder.substr(0, posEndQuote);
       }
    }
@@ -29,7 +29,7 @@ void Type::setAttribute(const char* attributeName, const char* value)
    char stringToLocate[100];
    strcpy(stringToLocate, attributeName);
    strcat(stringToLocate, "=\"");
-   unsigned posInsertion = type.find(stringToLocate);
+   size_t posInsertion = type.find(stringToLocate);
    if (posInsertion == FString::npos)
       {
       posInsertion = type.find("/>");
@@ -54,7 +54,7 @@ void Type::setAttribute(const char* attributeName, const char* value)
    else
       {
       posInsertion += strlen(stringToLocate);
-      unsigned posEndQuote = type.find("\"", posInsertion);
+      size_t posEndQuote = type.find("\"", posInsertion);
       if (posEndQuote != FString::npos)
          {
          type.erase(posInsertion, posEndQuote-posInsertion);

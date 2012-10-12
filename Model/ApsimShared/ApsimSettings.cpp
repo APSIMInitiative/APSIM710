@@ -78,7 +78,7 @@ void ApsimSettings::refresh(void)
 // ------------------------------------------------------------------
 string ApsimSettings::getSection(const std::string& key) const
    {
-   int posBar = key.find('|');
+   size_t posBar = key.find('|');
    if (posBar != string::npos)
       return key.substr(0, posBar);
    else
@@ -89,7 +89,7 @@ string ApsimSettings::getSection(const std::string& key) const
 // ------------------------------------------------------------------
 string ApsimSettings::getKey(const std::string& key) const
    {
-   int posBar = key.find('|');
+   size_t posBar = key.find('|');
    if (posBar != string::npos)
       return key.substr(posBar+1);
    else
@@ -240,7 +240,7 @@ void ApsimSettings::addMacro(std::string& st)
 	To_lower(ApsimDir);
 	To_lower(AusFarmDir);
 #endif
-	unsigned Pos = StLower.find(ApsimDir);
+	size_t Pos = StLower.find(ApsimDir);
 	if (Pos != string::npos)
 		st.replace(Pos, ApsimDir.length(), "%apsim%");
 	if (AusFarmDir != "")

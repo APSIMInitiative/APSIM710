@@ -58,8 +58,8 @@ class EXPORT IniFile
                             std::vector<std::string>& values,
                             bool allowMultiple) const;
       bool getSectionPosition(const std::string& section,
-                              unsigned& posStartSection,
-                              unsigned& posEndSection) const;
+                              size_t& posStartSection,
+                              size_t& posEndSection) const;
       void updateIndexesAfter(const std::string& section, unsigned numChars);
 
       void doBackup();

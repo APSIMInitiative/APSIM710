@@ -68,14 +68,14 @@ void IniFile::parse(void)
    s << in.rdbuf();
    contents = s.str();
 
-   unsigned posStartLine = 0;
-   unsigned posEol = contents.find('\n');
+   size_t posStartLine = 0;
+   size_t posEol = contents.find('\n');
    while (posEol != string::npos)
       {
-      unsigned int posOpen = contents.find_first_not_of (" \t", posStartLine);
+      size_t posOpen = contents.find_first_not_of (" \t", posStartLine);
       if (posOpen != string::npos && contents[posOpen] == '[')
          {
-         unsigned int posClose = contents.find(']', posOpen);
+         size_t posClose = contents.find(']', posOpen);
          if (posClose != string::npos)
             {
             string sectionName = contents.substr(posOpen+1, posClose-posOpen-1);
@@ -94,12 +94,12 @@ void IniFile::parse(void)
 // Return true on success and updates pos to reflect the start of
 // next line.
 // ------------------------------------------------------------------
-bool getIniLine(const string& contents, unsigned& pos, string& line)
+bool getIniLine(const string& contents, size_t& pos, string& line)
    {
    if (pos == string::npos || pos == contents.length())
       return false;
 
-   unsigned posEol = contents.find('\n', pos);
+   size_t posEol = contents.find('\n', pos);
    if (posEol == string::npos)
       {
       line = contents.substr(pos);
@@ -121,7 +121,7 @@ void stripComments(std::string& line)
    // remove tabs.
    replaceAll(line, "\t", "   ");
 
-   unsigned posComment = line.find_first_of("!");
+   size_t posComment = line.find_first_of("!");
    if (posComment != string::npos)
       line.erase(posComment);
    }
@@ -235,15 +235,15 @@ void IniFile::readSection(const string& section, string& contentsString) const
 // Return the start and end positions of a section.
 // ------------------------------------------------------------------
 bool IniFile::getSectionPosition(const string& section,
-                                 unsigned& posStartSection,
-                                 unsigned& posEndSection) const
+                                 size_t& posStartSection,
+                                 size_t& posEndSection) const
         {
    vector<string>::const_iterator i = find_if(sectionNames.begin(),
                                               sectionNames.end(),
                                               CaseInsensitiveStringComparison(section));
    if (i != sectionNames.end())
       {
-      unsigned posSectionName = sectionIndexes[i-sectionNames.begin()];
+      size_t posSectionName = sectionIndexes[i-sectionNames.begin()];
       posStartSection = contents.find('\n', posSectionName);
       if (posStartSection != string::npos)
          {
@@ -390,7 +390,7 @@ void IniFile::deleteSection(const string& section)
       {
       vector<string>::iterator nextI = i + 1;
       unsigned posStart = sectionIndexes[i - sectionNames.begin()];
-      unsigned numCharsToDelete;
+      size_t numCharsToDelete;
       if (nextI == sectionNames.end())
          numCharsToDelete = string::npos;
 

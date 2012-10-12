@@ -320,7 +320,7 @@ bool ScienceAPI::readOptional(const std::string& name, std::vector<std::string>&
 std::string EXPORT addUnitsToDDML(const string& ddml, const string& units)
    {
    string returnString = ddml;
-   unsigned pos = returnString.find("/>");
+   size_t pos = returnString.find("/>");
    if (units != "" && pos != string::npos)
       returnString = returnString.substr(0, pos) + " unit=\"" + units + "\"/>";
    return returnString;
@@ -328,7 +328,7 @@ std::string EXPORT addUnitsToDDML(const string& ddml, const string& units)
 std::string EXPORT addDescToDDML(const string& ddml, const string& desc)
    {
    string returnString = ddml;
-   unsigned pos = returnString.find("/>");
+   size_t pos = returnString.find("/>");
    if (desc != "" && pos != string::npos)
       returnString = returnString.substr(0, pos) + " description=\"" + desc + "\"/>";
    return returnString;

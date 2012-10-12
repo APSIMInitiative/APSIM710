@@ -18,11 +18,11 @@ ArraySpecifier* ArraySpecifier::create(const std::string& arraySpec)
    if (arraySpec == "")
       return NULL;                                    // Nothing there
 
-   unsigned posOpenBracket = arraySpec.rfind('(');
+   size_t posOpenBracket = arraySpec.rfind('(');
    if (posOpenBracket == string::npos)
       return NULL;                                    // No brackets
 
-   unsigned posCloseBracket = arraySpec.rfind(')');
+   size_t posCloseBracket = arraySpec.rfind(')');
    if (posCloseBracket == string::npos ||
        posOpenBracket > posCloseBracket)
       throw runtime_error("Badly formed array specifier: \"" + arraySpec + "\"");
@@ -55,7 +55,7 @@ ArraySpecifier* ArraySpecifier::create(const std::string& arraySpec)
       // 5. var name(number:number)  e.g. varname(2:5)
 
       posOpenBracket = bracketedValue.find('(');
-      posCloseBracket = (unsigned)bracketedValue.rfind(')');
+      posCloseBracket = bracketedValue.rfind(')');
 
       // strip variable name from case 5.
       if (posOpenBracket != string::npos && posCloseBracket != string::npos)

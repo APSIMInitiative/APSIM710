@@ -47,7 +47,7 @@ void RemovePathAndExtension(std::string& fileName)
    {
    boost::filesystem::path p(fileName, boost::filesystem::native);
    std::string name = p.leaf();
-   unsigned posExtension = name.find('.');
+   size_t posExtension = name.find('.');
    if (posExtension != std::string::npos)
       name.erase(posExtension);
    fileName = name;

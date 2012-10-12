@@ -220,12 +220,12 @@ void TrackerVariable::doRegistrations(void)
          {
          string ddml = subscriptions[0]->getDDML();
          string unitsEq = "unit=";
-         unsigned posAttr = ddml.find(unitsEq);
+         size_t posAttr = ddml.find(unitsEq);
          if (posAttr != string::npos)
             {
             posAttr += unitsEq.size();
             string attrPlusRemainder = ddml.substr(1+posAttr);
-            unsigned posEndQuote = attrPlusRemainder.find("\"");
+            size_t posEndQuote = attrPlusRemainder.find("\"");
             string units = attrPlusRemainder.substr(0, posEndQuote);
             typeString = "<type kind=\"single\" unit=\"" + units + "\" array=\"T\"/>";
             }

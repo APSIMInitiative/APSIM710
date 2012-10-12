@@ -58,7 +58,7 @@ std::string splitOffAfterDelimiter(std::string& value, const std::string& delimi
    {
    string returnString;
 
-   unsigned pos = value.find(delimiter);
+   size_t pos = value.find(delimiter);
    if (pos != string::npos)
       {
       returnString = value.substr(pos + delimiter.length());
@@ -76,10 +76,10 @@ string splitOffBracketedValue(string& value,
    {
    string returnString;
 
-   unsigned posCloseBracket = value.find_last_not_of(" ");
+   size_t posCloseBracket = value.find_last_not_of(" ");
    if (posCloseBracket != string::npos && value[posCloseBracket] == closeBracket)
       {
-      unsigned posOpenBracket = value.find_last_of(openBracket, posCloseBracket-1);
+      size_t posOpenBracket = value.find_last_of(openBracket, posCloseBracket-1);
       if (posOpenBracket != string::npos)
          {
          returnString = value.substr(posOpenBracket+1, posCloseBracket-posOpenBracket-1);
@@ -178,7 +178,7 @@ bool Replace_all (string& St, const char* Sub_string, const char* Replacement_st
 // the substring with the replacement string after the given position.
 // Return true if a replacement was made.
 // ------------------------------------------------------------------
-bool replaceAll(string& St, unsigned position, const string& subString, const string& replacementString)
+bool replaceAll(string& St, size_t position, const string& subString, const string& replacementString)
    {
    if (subString=="")
 	   throw std::runtime_error("Empty search string.");
@@ -188,7 +188,7 @@ bool replaceAll(string& St, unsigned position, const string& subString, const st
    pos = stristr(pos, subString.c_str());
    while (pos != NULL)
 	  {
-	  unsigned charPos = pos - St.c_str();
+	  size_t charPos = pos - St.c_str();
 	  St.replace(charPos, subString.length(), replacementString);
 	  replacementMade = true;
 	  pos = stristr(pos + replacementString.length(), subString.c_str());
@@ -209,7 +209,7 @@ bool replaceAll(string& St, const string& subString, const string& replacementSt
    char* pos = stristr(St.c_str(), subString.c_str());
    while (pos != NULL)
 	  {
-	  unsigned Pos = pos - St.c_str();
+	  size_t Pos = pos - St.c_str();
 	  St.replace(Pos, subString.length(), replacementString);
 	  replacementMade = true;
 	  pos = stristr(St.c_str() + Pos + replacementString.length(), subString.c_str());
@@ -297,10 +297,10 @@ void Replace_all_chars (char* St, char Char_to_replace, char Replacement_char)
    string getSectionName(const std::string& line)
       {
       string section;
-      unsigned int posOpen = line.find_first_not_of (" \t");
+      size_t posOpen = line.find_first_not_of (" \t");
       if (posOpen != string::npos && line[posOpen] == '[')
          {
-         int posClose = line.find(']');
+         size_t posClose = line.find(']');
          if (posClose != string::npos)
             section = line.substr(posOpen+1, posClose-posOpen-1);
          }
@@ -326,7 +326,7 @@ void Replace_all_chars (char* St, char Char_to_replace, char Replacement_char)
 // ------------------------------------------------------------------
    void getKeyNameAndValue(const string& line, string& key, string& value)
       {
-      int posEquals = line.find('=');
+      size_t posEquals = line.find('=');
       if (posEquals != string::npos)
          {
          key = line.substr(0, posEquals);
@@ -344,14 +344,14 @@ void Replace_all_chars (char* St, char Char_to_replace, char Replacement_char)
 
    void getKeyNameValueUnits(const string& line, string& key, string& value, string& units)
       {
-      int posEquals = line.find('=');
+      size_t posEquals = line.find('=');
       if (posEquals != string::npos)
          {
          key = line.substr(0, posEquals);
          To_lower(key);
          stripLeadingTrailing(key, " ");
          value = line.substr(posEquals+1);
-         int posBracket = value.find('(');
+         size_t posBracket = value.find('(');
          if (posBracket != string::npos)
             {
             units = value.substr(posBracket+1);
@@ -374,7 +374,7 @@ void Replace_all_chars (char* St, char Char_to_replace, char Replacement_char)
 // ------------------------------------------------------------------
 // Locate a substring within a string - case insensitive.
 // ------------------------------------------------------------------
-unsigned findSubString(const std::string& st, const std::string& subString)
+size_t findSubString(const std::string& st, const std::string& subString)
    {
    if (subString=="")
        return string::npos;
@@ -388,10 +388,10 @@ unsigned findSubString(const std::string& st, const std::string& subString)
 // -----------------------------------------------------------
 // Find a matching bracket, allowing for nested brackets.
 // -----------------------------------------------------------
-unsigned matchBracket(const std::string& st, char openBracket, char closeBracket,
-                      unsigned startPos)
+size_t matchBracket(const std::string& st, char openBracket, char closeBracket,
+                      size_t startPos)
    {
-   unsigned pos = startPos + 1;
+   size_t pos = startPos + 1;
    int matchCount = 1;
    while (pos < st.length())
       {
@@ -420,7 +420,7 @@ void addAttributeToXML(std::string& XML, const std::string& Attribute)
    // xml string (e.g. "<type name="biomass"/>)
    // -----------------------------------------------------------------------
    {
-   unsigned PosEnd = XML.rfind("/>");
+   size_t PosEnd = XML.rfind("/>");
    if (PosEnd == string::npos)
       throw runtime_error("Invalid XML string: " + XML);
 
@@ -432,14 +432,14 @@ void addAttributeToXML(std::string& XML, const std::string& Attribute)
 // -----------------------------------------------------------------------
 std::string getAttributeFromXML(const std::string& XML, const std::string& attributeName)
    {
-   unsigned posEnd = XML.find(">");
-   unsigned posAttribute = XML.find(attributeName);
+   size_t posEnd = XML.find(">");
+   size_t posAttribute = XML.find(attributeName);
    if (posAttribute != string::npos && posAttribute < posEnd)
       {
-      unsigned posOpenQuote = XML.find('\"', posAttribute);
+      size_t posOpenQuote = XML.find('\"', posAttribute);
       if (posOpenQuote != string::npos )
          {
-         unsigned posCloseQuote = XML.find('\"', posOpenQuote+1);
+         size_t posCloseQuote = XML.find('\"', posOpenQuote+1);
          if (posCloseQuote != string::npos)
             {
             return XML.substr(posOpenQuote+1, posCloseQuote-posOpenQuote-1);

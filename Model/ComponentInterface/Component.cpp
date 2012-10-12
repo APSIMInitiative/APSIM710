@@ -353,7 +353,7 @@ void Component::doInit1(const Init1Data& init1Data)
 
    // get instance name from fqn.
    string fqn =  asString(init1Data.fqn);
-   unsigned posPeriod = (unsigned)fqn.rfind('.');
+   size_t posPeriod = fqn.rfind('.');
    if (posPeriod == string::npos)
 	  {
 	  name = fqn;
@@ -809,18 +809,18 @@ void Component::writeStringToStream(const std::string& lines, ostream& out,
       }
 
    // write out the lines.
-   unsigned posStart = 0;
-   unsigned posEndText;
-   unsigned posCR;
+   size_t posStart = 0;
+   size_t posEndText;
+   size_t posCR;
    do
 	  {
-      posCR = (unsigned)lines.find("\n", posStart);
+      posCR = lines.find("\n", posStart);
       posEndText = posCR;
       if (posEndText == string::npos)
-         posEndText = (unsigned)lines.length();
+         posEndText = lines.length();
       if (posEndText > 0)
          {
-         posEndText = (unsigned)lines.find_last_not_of(" ", posEndText-1);
+         posEndText = lines.find_last_not_of(" ", posEndText-1);
          if (posEndText == string::npos)
             posEndText = posStart;  // must be all spaces.
          else

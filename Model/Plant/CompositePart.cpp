@@ -890,7 +890,7 @@ plantThing& CompositePart::findThing(const std::string& name)
    //===========================================================================
    string nameToFind = name;
    string remainder = "";
-   unsigned PosDelimiter = name.find('.');
+   size_t PosDelimiter = name.find('.');
    if (PosDelimiter != string::npos)
       {
       nameToFind = name.substr(0, PosDelimiter);

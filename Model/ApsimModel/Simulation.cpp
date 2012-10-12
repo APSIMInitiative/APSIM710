@@ -175,11 +175,11 @@ void Simulation::resolveIncludes(string& sdml)
    replaceAll(sdml, "%apsim%", getApsimDirectory());
    replaceAll(sdml, "%ausfarm%", getAusFarmDirectory());
 
-   unsigned posInclude = sdml.find("<include>");
+   size_t posInclude = sdml.find("<include>");
    while (posInclude != string::npos)
       {
-      unsigned posFileName = posInclude + strlen("<include>");
-      unsigned posEndFileName = sdml.find("</include>", posFileName);
+      size_t posFileName = posInclude + strlen("<include>");
+      size_t posEndFileName = sdml.find("</include>", posFileName);
       if (posEndFileName == string::npos)
          throw runtime_error("Cannot find </include> tag");
       string includeFileName = sdml.substr(posFileName, posEndFileName-posFileName);
@@ -199,7 +199,7 @@ void Simulation::resolveIncludes(string& sdml)
          contents = findModelNode(doc.documentElement(), modelType);
          }
 
-      unsigned posEndInclude = posEndFileName + strlen("</include>");
+      size_t posEndInclude = posEndFileName + strlen("</include>");
       sdml.replace(posInclude, posEndInclude - posInclude, contents);
 
       posInclude = sdml.find("<include>");

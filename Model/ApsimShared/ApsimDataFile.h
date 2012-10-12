@@ -116,7 +116,7 @@ class EXPORT ApsimDataFile
       std::vector<unsigned> columnIndexes;
 
       std::ifstream in;
-      unsigned firstRecordPos;
+      std::ifstream::pos_type firstRecordPos;
       iterator yearI;
       iterator monthI;
       iterator dayI;

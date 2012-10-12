@@ -360,7 +360,7 @@ bool CMPComponentInterface::readFromSection(XMLNode::iterator initData,
          {
          string value = match->getValue();
          // Remove any units specifier "(..)":
-         unsigned int posBracket = (unsigned)value.find('(');
+         size_t posBracket = value.find('(');
          if (posBracket != std::string::npos)
             value = value.substr(0,posBracket);
 
@@ -484,7 +484,7 @@ void CMPComponentInterface::query(const std::string& pattern, std::vector<QueryM
    queryInfo.name = nameWithoutArraySpec;
 
    // work out if we dealing with a list of components or a list of variables.
-   unsigned posPeriod = (unsigned)pattern.find('.');
+   size_t posPeriod = pattern.find('.');
    if (posPeriod != string::npos)
       queryInfo.kind = 2;
    else
@@ -674,7 +674,7 @@ void CMPComponentInterface::onInit1(const Message& message)
    Init1Type init1;
    unpack(messageData, init1);
    // get instance name from fqn.
-   unsigned posPeriod = init1.fqn.rfind('.');
+   size_t posPeriod = init1.fqn.rfind('.');
    if (posPeriod == string::npos)
       {
       name = init1.fqn;

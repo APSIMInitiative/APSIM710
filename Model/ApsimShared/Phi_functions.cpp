@@ -13,7 +13,7 @@ std::string ExtractFileExt(const char* a) {
 
   string file = a;
 
-  unsigned pos = file.find(".");
+  size_t pos = file.find(".");
   if (pos != string::npos) {
     returnString = file.substr(pos); // includes the dot in the extension
   }

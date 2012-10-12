@@ -134,7 +134,7 @@ void ApsimDataFile::readApsimHeader() throw(runtime_error)
          // If the first non-blank character on the line is a open bracket '('
          // then we have found the units line.  The previous line is then
          // assumed to be the headings line.
-         unsigned int posFirstNonBlankChar = line.find_first_not_of (" ");
+         size_t posFirstNonBlankChar = line.find_first_not_of (" ");
          if (posFirstNonBlankChar != string::npos &&
              line[posFirstNonBlankChar] == '(')
             {
@@ -249,7 +249,7 @@ bool ApsimDataFile::readNextRecord() throw(runtime_error)
       vector<string> fieldValues;
 
       // remove any comment characters.
-      unsigned posComment = line.find('!');
+      size_t posComment = line.find('!');
       if (posComment != string::npos)
          line.erase(posComment);
       if (line.length() == 0)

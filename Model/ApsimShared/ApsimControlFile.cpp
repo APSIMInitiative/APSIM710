@@ -80,7 +80,7 @@ void parseModuleLine(const string& controlFileName, const string& moduleLine,
    string line = moduleLine;
 
    // remove any comments
-   unsigned posComment = line.find('!');
+   size_t posComment = line.find('!');
    if (posComment != string::npos)
       line.erase(posComment);
    stripLeadingTrailing(line, "\r");
@@ -100,7 +100,7 @@ void parseModuleLine(const string& controlFileName, const string& moduleLine,
    static const int READ_SECTION = 3;
 
    int state = READ_MODULE_NAME;
-   int currentPos = 0;
+   size_t currentPos = 0;
    bool inQuotes = false;
    while (currentPos < line.size())
       {
@@ -626,11 +626,11 @@ bool ApsimControlFile::changeModuleName(const std::string& section,
                                 line != lines.end();
                                 line++)
       {
-      unsigned posStartModuleName =line->find_first_not_of(' ');
+      size_t posStartModuleName =line->find_first_not_of(' ');
       if (posStartModuleName != string::npos)
          {
          string moduleName = *line;
-         unsigned posEndModuleName = line->find_first_of(" \n", posStartModuleName);
+         size_t posEndModuleName = line->find_first_of(" \n", posStartModuleName);
          if (posEndModuleName != string::npos)
             moduleName = line->substr(posStartModuleName, posEndModuleName - posStartModuleName);
 
@@ -813,7 +813,7 @@ bool ApsimControlFile::addModuleLine(const string& section,
    newParamFile.instanceName = instanceName;
    newParamFile.fileName = parFileName;
    newParamFile.sectionName = parSectionName;
-   unsigned posPeriod = parSectionName.find('.');
+   size_t posPeriod = parSectionName.find('.');
    if (posPeriod != string::npos)
      newParamFile.sectionName.erase(posPeriod);
 
@@ -1249,7 +1249,7 @@ bool ApsimControlFile::renameModule(const std::string& section,
    string newIniFileName = newModuleName + ".xml";
    for (unsigned p = 0; p != paramFiles.size(); p++)
       {
-      unsigned posIni = findSubString(paramFiles[p].fileName, oldIniFileName);
+      size_t posIni = findSubString(paramFiles[p].fileName, oldIniFileName);
       if (posIni != string::npos)
          {
          paramFiles[p].fileName = "%apsim%/Model/" + newIniFileName;
@@ -1320,10 +1320,10 @@ bool ApsimControlFile::deleteModule(const std::string& section,
                                 line++)
       {
       bool keepModuleLine = true;
-      unsigned posStartModuleName =line->find_first_not_of(' ');
+      size_t posStartModuleName =line->find_first_not_of(' ');
       if (posStartModuleName != string::npos)
          {
-         unsigned posEndModuleName = line->find(' ', posStartModuleName);
+         size_t posEndModuleName = line->find(' ', posStartModuleName);
          if (posEndModuleName == string::npos)
             posEndModuleName = line->length();
          if (posEndModuleName != string::npos)

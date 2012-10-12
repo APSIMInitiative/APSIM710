@@ -300,7 +300,7 @@ SimCreator::ParFile* SimCreator::ConvertParFile(const std::string& fileName)
          // Don't scrub comments from manager sections.
          if (currentSection != NULL && ! currentSection->isManagerSection)
            {
-           unsigned posComment = line.find('!');
+           size_t posComment = line.find('!');
            if (posComment != string::npos)
               line.erase(posComment);
            }

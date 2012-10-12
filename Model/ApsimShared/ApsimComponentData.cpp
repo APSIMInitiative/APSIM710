@@ -273,7 +273,7 @@ std::string ApsimComponentData::findProperty(const std::string& name)
    // Return it's value.
    // ------------------------------------------------------------------
    XMLNode foundNode;
-   unsigned posLastDelimiter = name.rfind('/');
+   size_t posLastDelimiter = name.rfind('/');
    if (posLastDelimiter != string::npos
        && Str_i_Eq(name.substr(posLastDelimiter+1), "name"))
       {

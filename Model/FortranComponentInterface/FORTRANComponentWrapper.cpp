@@ -248,7 +248,7 @@ void FortranWrapper::onApsimGetQuery(unsigned int fromID, protocol::ApsimGetQuer
    inApsimGetQuery = true;
 
    string qualifiedName = asString(apsimGetQueryData.name);
-   unsigned pos = qualifiedName.find("(");
+   size_t pos = qualifiedName.find("(");
    if (pos != string::npos)
       qualifiedName = qualifiedName.substr(0,pos);
 
@@ -349,7 +349,7 @@ extern "C" unsigned  EXPORT STDCALL add_registration
 /*string addUnitsToDDML(const string& ddml, const string& units)
    {
    string returnString = ddml;
-   unsigned pos = returnString.find("/>");
+   size_t pos = returnString.find("/>");
    if (pos != string::npos)
       returnString.insert(pos, " unit=\"" + units + "\"/>");
    return returnString;
@@ -1529,21 +1529,21 @@ extern "C" bool EXPORT STDCALL store_in_postbox(const char* str, unsigned strLen
 
    while (posStart < line.length())
       {
-      unsigned posComma = line.find(",", posStart);
+      size_t posComma = line.find(",", posStart);
       if (posComma == FString::npos)
          posComma = line.length();
 
-      unsigned posEquals = line.find("=", posStart);
+      size_t posEquals = line.find("=", posStart);
       if (posEquals != FString::npos)
          {
          FString name = line.substr(posStart, posEquals-posStart);
          stripBlanks(name);
 
          FString value = line.substr(posEquals+1, posComma-posEquals-1);
-         unsigned posOpenBracket = value.find("(");
+         size_t posOpenBracket = value.find("(");
          if (posOpenBracket != FString::npos)
             {
-            unsigned posCloseBracket = value.find(")", posOpenBracket);
+            size_t posCloseBracket = value.find(")", posOpenBracket);
             if (posCloseBracket != FString::npos)
                value.erase(posOpenBracket, posCloseBracket-posOpenBracket+1);
             }

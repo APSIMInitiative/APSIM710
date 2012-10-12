@@ -91,7 +91,7 @@ void Macro::go(const XMLNode& values,
 // Adjust the start of the specified tag. This routine will remove
 // unwanted spaces on the front of the tag.
 // ------------------------------------------------------------------
-unsigned getStartOfTag(const string& st, unsigned posTag)
+size_t getStartOfTag(const string& st, size_t posTag)
    {
    if (posTag > 0)
       {
@@ -110,9 +110,9 @@ unsigned getStartOfTag(const string& st, unsigned posTag)
 // Adjust the end of the specified tag. This routine will remove
 // unwanted spaces and a single CR on the end of the tag.
 // ------------------------------------------------------------------
-unsigned getEndOfTag(const string& st, unsigned posTag, const string& tagName)
+size_t getEndOfTag(const string& st, size_t posTag, const string& tagName)
    {
-   unsigned posEndTag = posTag + tagName.length();
+   size_t posEndTag = posTag + tagName.length();
    posEndTag = st.find_first_not_of(' ', posEndTag);
    if (posEndTag == string::npos)
       return st.length()-1;
@@ -129,7 +129,7 @@ string Macro::parseForEach(const string& originalContents,
                            const XMLNode& valuesNode) const
    {
    string contents = originalContents;
-   unsigned posForEach = contents.find("#for_each");
+   size_t posForEach = contents.find("#for_each");
    while (posForEach != string::npos)
       {
       StringTokenizer tokenizer(contents, posForEach, " \n");
@@ -137,19 +137,19 @@ string Macro::parseForEach(const string& originalContents,
       string macroName = tokenizer.nextToken();
       if (macroName == "")
          throw runtime_error("Can't find macro name after #for_each");
-      unsigned posStartForEachBody = tokenizer.currentPos();
+      size_t posStartForEachBody = tokenizer.currentPos();
       if (contents[posStartForEachBody] == '\n')
          posStartForEachBody++;
 
       // Now search through to find the end of the for loop
       // This current loop may contain nested loops - therefore
       // need to count #for_each and #endfor statements.
-      unsigned posEndFor;
-      unsigned currentPos = posStartForEachBody;
+      size_t posEndFor;
+      size_t currentPos = posStartForEachBody;
       unsigned count = 1;
       do
          {
-         unsigned posForEach = contents.find("#for_each", currentPos);
+         size_t posForEach = contents.find("#for_each", currentPos);
          posEndFor = contents.find("#endfor", currentPos);
          if (posForEach != string::npos && posForEach < posEndFor)
             {
@@ -178,7 +178,7 @@ string Macro::parseForEach(const string& originalContents,
       // recurse back and parse the forEachBody for other for_each macros.
       string body;
 
-      unsigned posChild = macroName.rfind(".");
+      size_t posChild = macroName.rfind(".");
       if (posChild != string::npos)
          {
          string childToMatch = macroName.substr(posChild+1);
@@ -216,19 +216,19 @@ void Macro::writeStringToFiles(string contents,
                                std::vector<std::string>& fileNamesCreated,
                                const string& outputDirectory) const
    {
-   unsigned posFile = contents.find("#file");
+   size_t posFile = contents.find("#file");
    while (posFile != string::npos)
       {
       posFile += strlen("#file");
-      unsigned posEol = contents.find("\n", posFile);
+      size_t posEol = contents.find("\n", posFile);
       string filename=contents.substr(posFile, posEol-posFile);
       stripLeadingTrailing(filename, " ");
       if (outputDirectory != "")
          filename = outputDirectory + "\\" + filename;
       //replaceAll(filename, "%apsuite", getApsimDirectory());
 
-      unsigned posStartFileBody = posEol + 1;
-      unsigned posEndFileBody = contents.find("#endfile", posStartFileBody);
+      size_t posStartFileBody = posEol + 1;
+      size_t posEndFileBody = contents.find("#endfile", posStartFileBody);
       if (posEndFileBody == string::npos)
          throw runtime_error("Cannot find a matching #endfile tag");
 
@@ -257,19 +257,19 @@ void Macro::replaceGlobalCounter(string& contents) const
    char* posGlobalCounter = stristr(contents.c_str(), "global.counter");
    while (posGlobalCounter != NULL)
       {
-      unsigned posCounter = posGlobalCounter - contents.c_str();
+      ptrdiff_t posCounter = posGlobalCounter - contents.c_str();
       if (contents[posCounter-1] == '#'
           && Str_i_Eq(contents.substr(posCounter-1, strlen(GLOBAL_COUNTER_INC)),
                       GLOBAL_COUNTER_INC))
          {
-         unsigned posStartLine = posCounter;
+         size_t posStartLine = posCounter;
          posStartLine = contents.rfind('\n', posStartLine);
          if (posStartLine == string::npos)
             posStartLine = 0;
          else
             posStartLine++;
 
-         unsigned posEndLine = contents.find('\n', posStartLine);
+         size_t posEndLine = contents.find('\n', posStartLine);
          if (posEndLine == string::npos)
             posEndLine = contents.length();
 
@@ -290,15 +290,15 @@ void Macro::replaceGlobalCounter(string& contents) const
 // ------------------------------------------------------------------
 void Macro::parseIf(string& st) const
    {
-   unsigned posElseIf = 0;
-   unsigned posElse = 0;
-   unsigned posOpenBracket;
-   unsigned posCloseBracket;
-   unsigned posCondition = st.find("#if");
+   size_t posElseIf = 0;
+   size_t posElse = 0;
+   size_t posOpenBracket;
+   size_t posCloseBracket;
+   size_t posCondition = st.find("#if");
    while (posCondition != string::npos)
       {
-      unsigned posEndIf = st.find("#endif", posCondition+1);
-      unsigned posEndBlock = min(min(st.find("#elseif", posCondition+1),
+      size_t posEndIf = st.find("#endif", posCondition+1);
+      size_t posEndBlock = min(min(st.find("#elseif", posCondition+1),
                                      st.find("#else", posCondition+1)), posEndIf);
       if (posEndBlock == string::npos)
          throw runtime_error("Missing endif for if: " + st.substr(posCondition));
@@ -324,7 +324,7 @@ void Macro::parseIf(string& st) const
          st.erase(posEndBlock, posEndIf-posEndBlock+1);
 
          // remove the condition line.
-         unsigned posEndCondition;
+         size_t posEndCondition;
          if (posCloseBracket != string::npos)
             posEndCondition = getEndOfTag(st, posCloseBracket, ")");
          else
@@ -343,7 +343,7 @@ void Macro::parseIf(string& st) const
          st.erase(posCondition, posEndBlock-posCondition);
          }
 
-      unsigned posIf = st.find("#if");
+      size_t posIf = st.find("#if");
       posElse = st.find("#else");
       posElseIf = st.find("#elseif");
       posCondition = min(min(posIf, posElse), posElseIf);

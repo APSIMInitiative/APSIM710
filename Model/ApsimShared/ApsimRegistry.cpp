@@ -308,7 +308,7 @@ ApsimRegistration *ApsimRegistry::find(EventTypeCode type,
 
    // Sometimes registrations are
    string regName;
-   unsigned int pos = name.rfind('(');
+   size_t pos = name.rfind('(');
    if (pos != std::string::npos)
 	  regName = ToLower(name.substr(0, pos));
    else
