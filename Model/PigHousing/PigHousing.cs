@@ -6,7 +6,7 @@ using ModelFramework;
 public class PigHousing
 {
     [Link]
-    private Component MyPaddock;
+    private Component My;
     [EventHandler]
     public void OnInitialised()
     {
@@ -21,15 +21,15 @@ public class PigHousing
     [EventHandler]
     public void OnProcess()
     {
-        Console.WriteLine(MyPaddock.Name);
-        Console.WriteLine(MyPaddock.Children.Count);
-        for (int i = 0; i < MyPaddock.Children.Count(); i++)
+        Console.WriteLine(My.Name);
+        Console.WriteLine(My.Children.Count);
+        for (int i = 0; i < My.Children.Count(); i++)
         {
-            Console.WriteLine(MyPaddock.Children[i].Name);
+            Console.WriteLine(My.Children[i].Name);
 
-            for (int j = 0; j < MyPaddock.Children[i].Children.Count(); j++)
+            for (int j = 0; j < My.Children[i].Children.Count(); j++)
             {
-                Console.WriteLine(MyPaddock.Children[i].Children[j].Name);
+                Console.WriteLine(My.Children[i].Children[j].Name);
             }
         }
 

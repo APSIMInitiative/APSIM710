@@ -9,7 +9,7 @@ public class floor
     [Link]
     Component Me;
     [Link]
-    private Paddock MyPaddock;
+    private Component My;
     store Solid=new store();
     store liquid=new store();
     [Param]
@@ -67,11 +67,11 @@ public class floor
         water.amount += liquid.CleanStore().amount;
         bool found = false;
 
-        for (int i = 0; i < MyPaddock.Children.Count(); i++)
+        for (int i = 0; i < My.Children.Count(); i++)
         {
-            if (MyPaddock.Children[i].Name.CompareTo(WhereTo) == 0)
+            if (My.Children[i].Name.CompareTo(WhereTo) == 0)
             {
-                MyPaddock.Children[i].Publish("RcvManure", water);
+                My.Children[i].Publish("RcvManure", water);
             }
         }
         if (found == false)

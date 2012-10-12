@@ -6,7 +6,7 @@ using ModelFramework;
 public class animalSection
 {
     [Link]
-    private Component MyPaddock;
+    private Component My;
     [Param]
     double NrOfAnimals = 1;
     [Param]
@@ -24,11 +24,11 @@ public class animalSection
     [EventHandler]
     public void OnProcess()
     {
-        Console.WriteLine(MyPaddock.Name);
-        Console.WriteLine(MyPaddock.Children.Count);
-        for (int i = 0; i < MyPaddock.Children.Count(); i++)
+        Console.WriteLine(My.Name);
+        Console.WriteLine(My.Children.Count);
+        for (int i = 0; i < My.Children.Count(); i++)
         {
-            Console.WriteLine(MyPaddock.Children[i].Name);
+            Console.WriteLine(My.Children[i].Name);
         }
         /*Console.WriteLine(My.Name);
         Console.WriteLine(My.Children.Count);
