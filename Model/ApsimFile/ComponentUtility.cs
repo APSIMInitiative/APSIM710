@@ -106,6 +106,12 @@ namespace ApsimFile
             case "graph2":
                DoesAllow = true;
                break;
+            case "xypairs":
+               DoesAllow = true;
+               break;
+            case "memo":
+               DoesAllow = true;
+               break;
             }
 
          //Based on the Parent the children are allowed to have the same name;
