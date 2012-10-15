@@ -28,10 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.DataGrid = new System.Windows.Forms.DataGridView();
+            this.FileContentsBox = new System.Windows.Forms.RichTextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.chkTextView = new System.Windows.Forms.CheckBox();
+            this.labelLines = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -53,27 +63,24 @@
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ComponentEventsFilter = new System.Windows.Forms.ComboBox();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.FileContentsBox = new System.Windows.Forms.RichTextBox();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.labelLines = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tabControl1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.DataGrid)).BeginInit();
+            this.panel1.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            //(this.splitContainer1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Grid)).BeginInit();
             this.tabPage3.SuspendLayout();
-            //((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.EventGrid)).BeginInit();
-            this.tabPage2.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // MyHelpLabel
@@ -85,15 +92,102 @@
             this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Location = new System.Drawing.Point(0, 19);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(780, 358);
             this.tabControl1.TabIndex = 21;
             this.tabControl1.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabControl1_Selected);
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.DataGrid);
+            this.tabPage2.Controls.Add(this.FileContentsBox);
+            this.tabPage2.Controls.Add(this.panel1);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(772, 332);
+            this.tabPage2.TabIndex = 0;
+            this.tabPage2.Text = "Output";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // DataGrid
+            // 
+            this.DataGrid.AllowUserToAddRows = false;
+            this.DataGrid.AllowUserToDeleteRows = false;
+            this.DataGrid.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
+            this.DataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.DataGrid.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.DataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DataGrid.Location = new System.Drawing.Point(3, 26);
+            this.DataGrid.Name = "DataGrid";
+            this.DataGrid.ReadOnly = true;
+            this.DataGrid.RowHeadersVisible = false;
+            this.DataGrid.RowHeadersWidth = 16;
+            this.DataGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.DataGrid.ShowEditingIcon = false;
+            this.DataGrid.ShowRowErrors = false;
+            this.DataGrid.Size = new System.Drawing.Size(766, 303);
+            this.DataGrid.TabIndex = 5;
+            this.DataGrid.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DataGrid_CellMouseClick);
+            // 
+            // FileContentsBox
+            // 
+            this.FileContentsBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FileContentsBox.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FileContentsBox.Location = new System.Drawing.Point(3, 26);
+            this.FileContentsBox.Name = "FileContentsBox";
+            this.FileContentsBox.Size = new System.Drawing.Size(766, 303);
+            this.FileContentsBox.TabIndex = 6;
+            this.FileContentsBox.Text = "";
+            this.FileContentsBox.WordWrap = false;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.chkTextView);
+            this.panel1.Controls.Add(this.labelLines);
+            this.panel1.Controls.Add(this.label2);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(3, 3);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(766, 23);
+            this.panel1.TabIndex = 0;
+            // 
+            // chkTextView
+            // 
+            this.chkTextView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkTextView.AutoSize = true;
+            this.chkTextView.Location = new System.Drawing.Point(616, 4);
+            this.chkTextView.Name = "chkTextView";
+            this.chkTextView.Size = new System.Drawing.Size(72, 17);
+            this.chkTextView.TabIndex = 2;
+            this.chkTextView.Text = "Text view";
+            this.chkTextView.UseVisualStyleBackColor = true;
+            this.chkTextView.CheckStateChanged += new System.EventHandler(this.chkTextView_CheckStateChanged);
+            // 
+            // labelLines
+            // 
+            this.labelLines.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelLines.AutoSize = true;
+            this.labelLines.Location = new System.Drawing.Point(700, 5);
+            this.labelLines.Name = "labelLines";
+            this.labelLines.Size = new System.Drawing.Size(55, 13);
+            this.labelLines.TabIndex = 1;
+            this.labelLines.Text = "1234 lines";
+            this.labelLines.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 5);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(35, 13);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "label2";
             // 
             // tabPage1
             // 
@@ -102,7 +196,7 @@
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(772, 332);
-            this.tabPage1.TabIndex = 0;
+            this.tabPage1.TabIndex = 1;
             this.tabPage1.Text = "Variables";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
@@ -129,6 +223,8 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.comboBox2);
+            this.panel2.Controls.Add(this.label4);
             this.panel2.Controls.Add(this.comboBox1);
             this.panel2.Controls.Add(this.textBox1);
             this.panel2.Controls.Add(this.label3);
@@ -137,6 +233,27 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(451, 33);
             this.panel2.TabIndex = 1;
+            // 
+            // comboBox2
+            // 
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Items.AddRange(new object[] {
+            "dd/MM/yyyy",
+            "yyyy-MM-dd"});
+            this.comboBox2.Location = new System.Drawing.Point(315, 8);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(121, 21);
+            this.comboBox2.TabIndex = 5;
+            this.toolTip1.SetToolTip(this.comboBox2, "d, dd = day; ddd, dddd = day of week; M = month; y = year");
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(235, 12);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(62, 13);
+            this.label4.TabIndex = 4;
+            this.label4.Text = "Date format";
             // 
             // comboBox1
             // 
@@ -187,7 +304,7 @@
             this.Grid.Name = "Grid";
             this.Grid.RowHeadersVisible = false;
             this.Grid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.Grid.Size = new System.Drawing.Size(449, 292);
+            this.Grid.Size = new System.Drawing.Size(850, 518);
             this.Grid.TabIndex = 0;
             this.Grid.DragDrop += new System.Windows.Forms.DragEventHandler(this.Grid_DragDrop);
             this.Grid.DragEnter += new System.Windows.Forms.DragEventHandler(this.Grid_DragEnter);
@@ -216,7 +333,7 @@
             this.afTreeViewColumns1.Location = new System.Drawing.Point(0, 80);
             this.afTreeViewColumns1.Name = "afTreeViewColumns1";
             this.afTreeViewColumns1.Padding = new System.Windows.Forms.Padding(1);
-            this.afTreeViewColumns1.Size = new System.Drawing.Size(308, 246);
+            this.afTreeViewColumns1.Size = new System.Drawing.Size(523, 472);
             this.afTreeViewColumns1.TabIndex = 27;
             this.afTreeViewColumns1.saveChangesEvent += new CPIUserInterface.AFTreeViewColumns.onDataChange(this.afTreeViewColumns1_saveChangesEvent);
             this.afTreeViewColumns1.reloadTreeEvent += new CPIUserInterface.AFTreeViewColumns.reloadTree(this.afTreeViewColumns1_reloadTreeEvent);
@@ -261,7 +378,7 @@
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage3.Size = new System.Drawing.Size(772, 332);
             this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Reporting";
+            this.tabPage3.Text = "Frequency";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // splitContainer2
@@ -349,7 +466,7 @@
             this.EventsListView.FullRowSelect = true;
             this.EventsListView.Location = new System.Drawing.Point(0, 71);
             this.EventsListView.Name = "EventsListView";
-            this.EventsListView.Size = new System.Drawing.Size(311, 253);
+            this.EventsListView.Size = new System.Drawing.Size(526, 479);
             this.EventsListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.EventsListView.TabIndex = 24;
             this.EventsListView.UseCompatibleStateImageBehavior = false;
@@ -376,59 +493,9 @@
             this.ComponentEventsFilter.TabIndex = 23;
             this.ComponentEventsFilter.SelectedIndexChanged += new System.EventHandler(this.ComponentEventsFilter_SelectedIndexChanged);
             // 
-            // tabPage2
+            // toolTip1
             // 
-            this.tabPage2.Controls.Add(this.FileContentsBox);
-            this.tabPage2.Controls.Add(this.panel1);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(772, 332);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Output";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // FileContentsBox
-            // 
-            this.FileContentsBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.FileContentsBox.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.FileContentsBox.Location = new System.Drawing.Point(3, 26);
-            this.FileContentsBox.Name = "FileContentsBox";
-            this.FileContentsBox.ReadOnly = true;
-            this.FileContentsBox.Size = new System.Drawing.Size(766, 303);
-            this.FileContentsBox.TabIndex = 4;
-            this.FileContentsBox.Text = "";
-            this.FileContentsBox.WordWrap = false;
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.labelLines);
-            this.panel1.Controls.Add(this.label2);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(3, 3);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(766, 23);
-            this.panel1.TabIndex = 0;
-            // 
-            // labelLines
-            // 
-            this.labelLines.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelLines.AutoSize = true;
-            this.labelLines.Location = new System.Drawing.Point(705, 5);
-            this.labelLines.Name = "labelLines";
-            this.labelLines.Size = new System.Drawing.Size(55, 13);
-            this.labelLines.TabIndex = 1;
-            this.labelLines.Text = "1234 lines";
-            this.labelLines.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 5);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(35, 13);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "label2";
+            this.toolTip1.ToolTipTitle = "Date format";
             // 
             // TextOutputUI
             // 
@@ -441,11 +508,15 @@
             this.Controls.SetChildIndex(this.tabControl1, 0);
             this.Controls.SetChildIndex(this.MyHelpLabel, 0);
             this.tabControl1.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.DataGrid)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.tabPage1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
-            //(this.splitContainer1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
@@ -454,12 +525,9 @@
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
             this.splitContainer2.Panel2.PerformLayout();
-            //((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.EventGrid)).EndInit();
-            this.tabPage2.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -476,7 +544,6 @@
         private System.Windows.Forms.DataGridView Grid;
         private System.Windows.Forms.DataGridViewTextBoxColumn Variable;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
-        internal System.Windows.Forms.RichTextBox FileContentsBox;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel panel2;
@@ -496,7 +563,11 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.Label labelLines;
         private AFTreeViewColumns afTreeViewColumns1;
-
-
+        public System.Windows.Forms.DataGridView DataGrid;
+        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.RichTextBox FileContentsBox;
+        private System.Windows.Forms.CheckBox chkTextView;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

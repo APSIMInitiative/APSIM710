@@ -28,6 +28,19 @@ namespace outputComp
         }
         //============================================================================
         /// <summary>
+        /// Write an 'empty' line to any existing file.
+        /// </summary>
+        public void ClearOutFile()
+        {
+            if ((FileName.Length > 0) && File.Exists(FileName))
+            {
+                FOutFile = new StreamWriter(FileName, false);
+                FOutFile.WriteLine("- no data -");
+                FOutFile.Close();
+            }
+        }
+        //============================================================================
+        /// <summary>
         /// Writes the header rows to the output file. Must be done after the            
         /// FColumns structure is populated, which can only happen once variable values  
         /// are returned.
@@ -46,7 +59,10 @@ namespace outputComp
                 FWidths.Add(maxwidth);
                 FHeaderfmt.Append("{0,15}");
                 colArray[0] = "Date";
-                unitsArray[0] = "(dd/mm/yyyy)";
+                if (DateFMT.Length > 0)
+                    unitsArray[0] = "(" + DateFMT + ")";
+                else
+                    unitsArray[0] = "(dd/mm/yyyy)";
                 for (Idx = 0; Idx <= FColumns.Count - 1; Idx++)
                 {
                     maxwidth = Math.Max(FColumns[Idx].Name.Length + 1, FColumns[Idx].Units.Length + 1);
@@ -84,7 +100,8 @@ namespace outputComp
         {
             if (!FWriting)
             {
-                FOutFile = new StreamWriter(FileName);
+                FileStream stream = new FileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.Read);
+                FOutFile = new StreamWriter(stream);
                 try
                 {
                     if (Title.Length > 0)
@@ -150,9 +167,19 @@ namespace outputComp
                 else
                 {
                     if (ApsimFMT)
-                        sDateStr = FCurrOutputTime.asDateStr();
+                    {
+                        if (DateFMT.Length > 0)
+                            sDateStr = FCurrOutputTime.asDateStrFMT(DateFMT);
+                        else
+                            sDateStr = FCurrOutputTime.asDateStr();
+                    }
                     else
-                        sDateStr = FCurrOutputTime.asISODateStr();
+                    {
+                        if (DateFMT.Length > 0)
+                            sDateStr = FCurrOutputTime.asDateStrFMT(DateFMT);
+                        else
+                            sDateStr = FCurrOutputTime.asISODateStr();
+                    }
                 }
             }
 

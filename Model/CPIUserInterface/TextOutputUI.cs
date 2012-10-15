@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
@@ -9,24 +8,29 @@ using System.Xml;
 using System.Collections;
 using System.IO;
 using System.Collections.Specialized;
+using System.Globalization;
 
 using ApsimFile;
 using Controllers;
 using CSGeneral;
 using CMPServices;
+using Graph;
 
 namespace CPIUserInterface
 {
     public partial class TextOutputUI : CPIBaseView
     {
-        private const int OUTPUTTAB = 2;
+        private const int OUTPUTTAB = 0;
         private StringCollection ComponentNames = new StringCollection();
         private StringCollection ComponentTypes = new StringCollection();
         private List<TTypedValue> typedvals;
         private string FileName;
+
+        public delegate void ColumnClickEvent(string ColumnName);
+        public event ColumnClickEvent OnColumnClickEvent;
         //=====================================================================
         /// <summary>
-        /// This UI is designed for the CPI TextOut component. Specifically the
+        /// This UI is designed for the CPI TextOutput component. Specifically the
         /// .net version. It creates files in apsim format so the charting
         /// system can use them.
         /// N.Herrmann May 2012
@@ -35,20 +39,26 @@ namespace CPIUserInterface
         public TextOutputUI()
         {
             InitializeComponent();
+
+            //some standard date formats
+            String[] formats = new String[5]{ "dd/MM/yyyy",
+                                        "dd/MMM/yyyy",
+                                        "dd/MM/yyyy",
+                                        "d/M/yy",
+                                        "yyyy/MM/dd"};
             typedvals = new List<TTypedValue>();
             comboBox1.SelectedIndex = 3;
-        }
-        //=====================================================================
-        /// <summary>
-        /// 
-        /// </summary>
-        //=====================================================================
-        protected override void OnLoad()
-        {
-            InitFromComponentDescription(); //fills the propertyList with init properties
-            base.HelpText = " TextOutput";
 
-            ReadInitSection();
+            //ensure that the current sep is used so APSIMInputFile copes nicely with reading
+            CultureInfo ci = CultureInfo.CurrentCulture;
+            String delim = ci.DateTimeFormat.DateSeparator;
+            comboBox2.Items.Clear();
+            for (int i = 0; i < formats.Length; i++)
+            {
+                formats[i] = formats[i].Replace("-", delim);
+                formats[i] = formats[i].Replace("/", delim);
+                comboBox2.Items.Add(formats[i]);
+            }
 
             //Configure the treeview that contains the variables for a component
             this.afTreeViewColumns1.reloadTreeEvent += new AFTreeViewColumns.reloadTree(afTreeViewColumns1_reloadTreeEvent);
@@ -84,6 +94,19 @@ namespace CPIUserInterface
             lvColumns.Add(ch4);
 
             afTreeViewColumns1.AllowEdit = false;
+        }
+        //=====================================================================
+        /// <summary>
+        /// Load the component details each time it is selected.
+        /// </summary>
+        //=====================================================================
+        protected override void OnLoad()
+        {
+            InitFromComponentDescription(); //fills the propertyList with init properties
+            base.HelpText = " TextOutput";
+
+            ReadInitSection();
+
         }
         //=====================================================================
         /// <summary>
@@ -203,6 +226,11 @@ namespace CPIUserInterface
                 if (propertyList[i].InitValue.Name == "intervalunit")
                     propertyList[i].InitValue.setValue(comboBox1.Text);
 
+                if (propertyList[i].InitValue.Name == "dateformat")
+                {
+                    propertyList[i].InitValue.setValue(comboBox2.Text);
+                }
+
                 if (propertyList[i].InitValue.Name == "outputs")
                 {
                     TTypedValue sdmlinit = propertyList[i].InitValue;
@@ -281,6 +309,18 @@ namespace CPIUserInterface
                     if (comboBox1.SelectedIndex < 0)
                         comboBox1.SelectedIndex = comboBox1.Items.IndexOf("day");
                 }
+                if (propertyList[i].InitValue.Name == "dateformat")
+                {
+                    //ensure that the current sep is used so APSIMInputFile copes nicely with reading
+                    CultureInfo ci = CultureInfo.CurrentCulture;
+                    String delim = ci.DateTimeFormat.DateSeparator;
+                    String format = propertyList[i].InitValue.asStr();
+                    format = format.Replace("-", delim);
+                    format = format.Replace("/", delim);
+                    comboBox2.Text = format;
+                }
+                if (comboBox2.Text.Length < 1)
+                    comboBox2.SelectedIndex = 0;
                 i++;
             }
            
@@ -308,7 +348,7 @@ namespace CPIUserInterface
         /// </summary>
         //=====================================================================
         private void PopulateVariablesGrid()
-        {
+        {  
             DataTable Table = new DataTable();
             //if (XmlHelper.Type(Data).ToLower() == "variables")
             {
@@ -341,10 +381,10 @@ namespace CPIUserInterface
                 }
                 i++;
             }
-
+            //set the autosizemode back to none before I set the column widths (avoids failure)
+            Grid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.None;
             Grid.Columns.Clear();
             Grid.DataSource = Table;     // Give data table to grid.
-
             Grid.Columns[2].Width = 60;
             Grid.Columns[3].Width = 75;
             Grid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -354,6 +394,7 @@ namespace CPIUserInterface
             thirdColumn.ToolTipText = "max, min, average, total";
             DataGridViewColumn firstColumn = Grid.Columns[0];
             firstColumn.ToolTipText = "Ctrl+Up, Ctrl+Down to reorder";
+            Grid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
         }
         //=====================================================================
         /// <summary>
@@ -383,6 +424,8 @@ namespace CPIUserInterface
                 }
                 i++;
             }
+            //set the autosizemode back to none before I set the column widths (avoids failure)
+            Grid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             EventGrid.Columns.Clear();
             EventGrid.DataSource = Table;     // Give data table to grid.
 
@@ -751,7 +794,7 @@ namespace CPIUserInterface
         }
         //=====================================================================
         /// <summary>
-        /// Reloads the output file into the richtextbox.
+        /// Reloads the output file into the datagrid
         /// </summary>
         //=====================================================================
         private void ReloadOutputFile()
@@ -762,11 +805,44 @@ namespace CPIUserInterface
                 label2.Text = Path.GetFullPath(FileName);
                 if (File.Exists(Path.GetFullPath(FileName)))
                 {
-                    FileContentsBox.Clear();
-                    StreamReader outfile = new StreamReader(Path.GetFullPath(FileName));
-                    FileContentsBox.AppendText(outfile.ReadToEnd());
-                    outfile.Close();
-                    labelLines.Text = FileContentsBox.Lines.Length.ToString() + " lines";
+                    try
+                    {
+                        if (chkTextView.Checked)    //if view the text file in the richedit
+                        {
+                            FileContentsBox.Clear();
+                            DataGrid.Visible = false;
+                            FileContentsBox.Visible = true;
+                            FileStream stream = new FileStream(Path.GetFullPath(FileName), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                            StreamReader outfile = new StreamReader(stream);
+                            FileContentsBox.AppendText(outfile.ReadToEnd());
+                            outfile.Close();
+                            labelLines.Text = FileContentsBox.Lines.Length.ToString() + " lines";
+                        }
+                        else
+                        {
+                            DataGrid.Visible = true;
+                            FileContentsBox.Visible = false;
+                            DataGrid.DataSource = null;
+
+                            DataProcessor Processor = new DataProcessor();
+                            //List<string> DefaultFileNames = new List<string>();
+                            //UIUtility.OutputFileUtility.GetOutputFiles(Controller, Controller.Selection, DefaultFileNames);
+                            //Processor.DefaultOutputFileNames = DefaultFileNames;
+
+                            XmlDocument Doc = new XmlDocument();
+                            Doc.LoadXml("<GDApsimFileReader name=\"ApsimFileReader\">" +
+                                          "<FileName>" + Path.GetFullPath(FileName) + "</FileName>" +
+                                        "</GDApsimFileReader>");
+                            //Doc.LoadXml(Controller.ApsimData.Find(NodePath).FullXML());
+                            DataGrid.DataSource = Processor.Go(Doc.DocumentElement, NodePath);
+                            foreach (DataGridViewColumn Col in DataGrid.Columns)
+                                Col.SortMode = DataGridViewColumnSortMode.NotSortable;
+                            labelLines.Text = DataGrid.RowCount.ToString() + " lines";
+                        }
+                    }
+                    catch (Exception)
+                    {
+                    }
                 }
             }
             finally
@@ -1035,6 +1111,23 @@ namespace CPIUserInterface
                     i++;
                 }
             }
+        }
+
+        private void DataGrid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.ColumnIndex >= 0 && e.RowIndex == -1 && OnColumnClickEvent != null && e.Button == MouseButtons.Left && DataGrid.Columns.Count > 0)
+                OnColumnClickEvent.Invoke(DataGrid.Columns[e.ColumnIndex].HeaderText);
+        }
+        //=====================================================================
+        /// <summary>
+        /// User chooses text view or table view of the file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        //=====================================================================
+        private void chkTextView_CheckStateChanged(object sender, EventArgs e)
+        {
+            ReloadOutputFile();
         }
     }
 

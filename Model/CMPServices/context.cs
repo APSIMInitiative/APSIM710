@@ -116,6 +116,7 @@ namespace CMPServices
             XmlNode metaDataNode;
             XmlNode modelNode;
             XmlNode compNode;
+            XmlNode childNode;
             String compName;
             String compDll = "";
             string compClass = "";
@@ -124,6 +125,8 @@ namespace CMPServices
             String xml;
             int i;
             List<String> dllList;
+            String nodeName;
+
 
             strContext = "";
 
@@ -177,6 +180,16 @@ namespace CMPServices
                                 anode = xmlParse.firstChild(anode);
                                 while (anode != null)                              //while more children under <initdata>
                                 {
+                                    nodeName = anode.Name;
+                                    if (nodeName == "PerformInstructions")
+                                    {
+                                        childNode = xmlParse.firstElementChild(anode, "ConstructModel");
+                                        if (childNode != null)
+                                        {
+                                            model = StripMacros(xmlParse.InnerXml(childNode));
+                                            break;
+                                        }
+                                    }
                                     xml = anode.OuterXml;
                                     if (xml.Length > 0)
                                     {
@@ -186,7 +199,7 @@ namespace CMPServices
                                             model = xmlParse.InnerXml(modelNode);
                                         }
                                         if (xmlParse.getNodeType(anode) == XmlNodeType.Element)     //get all the init names
-                                            FInitList.Add(anode.Name);
+                                            FInitList.Add(nodeName);
                                     }
                                     anode = xmlParse.nextSibling(anode);
                                 }
@@ -195,6 +208,10 @@ namespace CMPServices
                     }
 
                     compName = findCompClassName(xmlParse, modelNode, compDll);
+                    if (compName == "")
+                        compName = Path.GetFileNameWithoutExtension(compDll);
+                    if (compClass == "")
+                        compClass = Path.GetFileNameWithoutExtension(compDll);
 
                     buf = new StringBuilder();
                     //now build the correct xml for the context file
@@ -209,6 +226,39 @@ namespace CMPServices
                 }
             }
         }
+
+        //==============================================================================
+        /// <summary>
+        /// Strip macros from a block of initdata xml
+        /// </summary>
+        /// <param name="text">Input block of text</param>
+        /// <returns>Text with macros deleted</returns>
+        //==============================================================================
+        protected String StripMacros(String text)
+        {
+            String result = text;
+            int iStart = result.IndexOf('[');
+            while (iStart >= 0) 
+            {
+                int iLevel = 1;
+                int nChars = 1;
+                while (iLevel > 0) 
+                {
+                    if ((iStart + nChars) > result.Length)
+                        throw new Exception("Unable to find closing macro bracket");
+                    char ch = result[iStart + nChars];
+                    if (ch == '[')
+                        iLevel++;
+                    else if (ch == ']')
+                        iLevel--;
+                    nChars++;
+                }
+                result.Remove(iStart, nChars);
+                iStart = result.IndexOf('[');
+            }
+            return result;
+        }
+
         //==============================================================================
         /// <summary>
         /// Searching for a suitable model class name.
@@ -355,6 +405,8 @@ namespace CMPServices
 
             return compDll;
         }
+
+
     }
 }
 

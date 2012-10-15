@@ -548,9 +548,13 @@ namespace outputComp
         /// </summary>
         protected TTimeValue FNextOutputTime;                                   //Start of next reporting interval      
         /// <summary>
-        /// 
+        /// Produce a file in the Normal APSIM format
         /// </summary>
         public Boolean ApsimFMT;
+        /// <summary>
+        /// The date format string. Ignored if empty.
+        /// </summary>
+        public String DateFMT;
         //============================================================================
         /// <summary>
         /// 

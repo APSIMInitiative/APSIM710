@@ -31,7 +31,8 @@ namespace outputComp
         public const int drvOUT_OFS     =  PROP_START_INDEX + 5;
         public const int prpAPSIMFMT    =  PROP_START_INDEX + 6;
         public const int prpTITLE       =  PROP_START_INDEX + 7;
-        public const int prpOUTFREQ     =  PROP_START_INDEX + 8; 
+        public const int prpOUTFREQ     =  PROP_START_INDEX + 8;
+        public const int prpDATEFMT      = PROP_START_INDEX + 9; 
         
         //event ID's
         public const int evtEXEC    = 1;
@@ -105,6 +106,7 @@ namespace outputComp
             addProperty("summary_file", prpSUMMARYFILE, true, true, true, "-", false, TTypedValue.STYPE_STR, "Summary file name", "");
             addProperty("apsim_format", prpAPSIMFMT, true, true, true, "-", false, TTypedValue.STYPE_BOOL, "Use an APSIM output format", "");
             addProperty("outputfrequency", prpOUTFREQ, true, true, true, "-", true, TTypedValue.STYPE_STR, "Report when these events are received", "");
+            addProperty("dateformat", prpDATEFMT, true, true, true, "-", false, TTypedValue.STYPE_STR, "Date format string", "Use: dd/mm/yyyy etc. Ignored if empty string."); 
 
             addWritingEvent(evtEXEC, "update_outputs");
         }
@@ -152,7 +154,11 @@ namespace outputComp
             if (iStage == 1)
             { }
             if (iStage == 2)
-            { }
+            {
+                //ensure that the file has no data carried over from last run
+                if (FReporter.GetType() == typeof(TTextReporter))
+                    ((TTextReporter)FReporter).ClearOutFile();
+            }
         }
         //==========================================================================
         /// <summary>
@@ -251,6 +257,11 @@ namespace outputComp
                             }
                         }
                     } break;
+                case prpDATEFMT:
+                    {
+                        FReporter.DateFMT = aValue.asStr();
+                    }
+                    break;
                 default: throw (new ApplicationException("Invalid ID code in initProperty()"));
             }
 
@@ -329,6 +340,11 @@ namespace outputComp
                             idx++;
                         }
                     } break;
+                case prpDATEFMT:
+                    {
+                        aValue.setValue(FReporter.DateFMT);
+                    }
+                    break;
             }
         }
         //==========================================================================

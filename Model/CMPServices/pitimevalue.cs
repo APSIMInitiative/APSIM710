@@ -1,5 +1,6 @@
 using System;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace CMPServices
 {
@@ -607,9 +608,22 @@ namespace CMPServices
         }
         //============================================================================
         /// <summary>
+        /// Format the returned date as specified.
+        /// </summary>
+        /// <param name="dateFMT">The date format string. See MSDN help for DateTime.ToString()</param>
+        /// <returns>Formated date string.</returns>
+        //============================================================================
+        public string asDateStrFMT(string dateFMT)
+        {
+            CultureInfo provider = CultureInfo.InvariantCulture;
+            string buf = asDateTime().ToString(dateFMT, provider);
+            return buf;
+        }
+        //============================================================================
+        /// <summary>
         /// Constructs a formatted date string.
         /// </summary>
-        /// <returns>Formatted date string e.g. dd/mm/yyyy</returns>
+        /// <returns>Formatted date string e.g. yyyy/mm/dd</returns>
         //============================================================================
         public string asISODateStr()
         {
