@@ -4800,9 +4800,21 @@ c  dsg   070302  added runon
                                        ! changes in solute (kg/ha)
       type(RunoffEventType) :: r       ! structure holding runoff event
 
+      type(NitrogenChangedType) :: NchgData  ! structure holding 
+                                             ! NitrogenChanged data
+
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
+
+      ! initialise the NitrogenChanged data to zero
+      call fill_real_array (temp_dlt_solute ,0.0, max_layer)
+      NchgData%num_DeltaUrea = 0
+      NchgData%DeltaUrea = temp_dlt_solute
+      NchgData%num_DeltaNH4 = 0
+      NchgData%DeltaNH4 = temp_dlt_solute
+      NchgData%num_DeltaNO3 = 0
+      NchgData%DeltaNO3 = temp_dlt_solute
 
       num_layers = count_of_real_vals (p%dlayer, max_layer)
       do 100 solnum = 1, g%num_solutes
@@ -4813,14 +4825,30 @@ c  dsg   070302  added runon
             temp_dlt_solute(layer) = g%dlt_solute (solnum, layer)
    50    continue
 
-         dlt_name = string_concat ('dlt_',g%solute_names(solnum))
+         ! Added by RCichota - using NitrogenChanged event to modify dlt_N's
+         if (g%solute_names(solnum) .eq. 'urea') then
+            NchgData%num_DeltaUrea = num_layers
+            NchgData%DeltaUrea = temp_dlt_solute
+         elseif (g%solute_names(solnum) .eq. 'nh4') then
+            NchgData%num_DeltaNH4 = num_layers
+            NchgData%DeltaNH4 = temp_dlt_solute
+         elseif (g%solute_names(solnum) .eq. 'no3') then
+            NchgData%num_DeltaNO3 = num_layers
+            NchgData%DeltaNO3 = temp_dlt_solute
+         else
+            dlt_name = string_concat ('dlt_', g%solute_names(solnum))
+            call set_real_array(g%solute_owners(solnum)
+     :                          , dlt_name
+     :                          , '(kg/ha)'
+     :                          , temp_dlt_solute
+     :                          , num_layers)
+        endif
 
-         call set_real_array(g%solute_owners(solnum)
-     :                       , dlt_name
-     :                       , '(kg/ha)'
-     :                       , temp_dlt_solute
-     :                       , num_layers)
   100 continue
+
+      ! Send a NitrogenChanged event to the system
+      NchgData%Sender = 'SoilWat'
+      call publish_NitrogenChanged(ID%NitrogenChanged, NchgData)
 
       ! Send a runoff event to the system
       if (g%runoff .gt. 0.0) then
@@ -7540,14 +7568,14 @@ c
       ! events published
       id%new_profile = add_registration(eventReg, 'new_profile',
      .                                  newprofileTypeDDML, '')
-
       id%ExternalMassFlow = add_registration(eventReg
      .                    , 'ExternalMassFlow', ExternalMassFlowTypeDDML
      :                    , '')
-
       id%RunoffEvent = add_registration(eventReg
-     :                    , 'RunoffEvent', RunoffEventTypeDDML
-     :                    , '')
+     :                    , 'RunoffEvent', RunoffEventTypeDDML, '')
+      id%NitrogenChanged = add_registration(eventReg,
+     .                                   'NitrogenChanged',
+     .                                   NitrogenChangedTypeDDML, '')
 
       ! events subscribed to
       id%tillage = add_registration(respondToEventReg, 'tillage',
@@ -7575,9 +7603,6 @@ c
       id%WaterChanged = add_registration(respondToEventReg,
      .                                   'WaterChanged',
      .                                   WaterChangedTypeDDML, '')
-      id%NitrogenChanged = add_registration(respondToEventReg,
-     .                                   'NitrogenChanged',
-     .                                   NitrogenChangedTypeDDML, '')
 
       ! variables we own and make gettable
       dummy = add_reg(respondToGetReg, 'es',
