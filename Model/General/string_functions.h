@@ -64,8 +64,8 @@ void SplitStringHonouringQuotes(const std::string& text,
 
    std::string separatorsAndQuote = separators + std::string("\"");
    std::string separatorsAndSpace = separators + std::string(" ");
-        unsigned int n = text.length();
-   unsigned int start, stop;
+        size_t n = text.length();
+   size_t start, stop;
 
    start = text.find_first_not_of(separatorsAndSpace);
 
@@ -128,8 +128,8 @@ std::string buildString(const std::vector<T>& values, const char* separators)
 template <class container>
 void split(const std::string& text, const std::string& separators, container& words)
    {
-   unsigned n = text.length();
-   unsigned start, stop;
+   size_t n = text.length();
+   size_t start, stop;
 
    start = text.find_first_not_of(separators);
 
@@ -366,7 +366,7 @@ void String_2_integer_container(const std::string& St, container_type& values)
    values.erase (values.begin(), values.end());
    std::vector<std::string> string_container;
    splitIntoValues(St, " ", string_container);
-   for (unsigned i = 0; i != string_container.size(); i++)
+   for (size_t i = 0; i != string_container.size(); i++)
      values.push_back (atoi(string_container[i].c_str()));
    }
 // ------------------------------------------------------------------
@@ -387,7 +387,7 @@ bool EXPORT Replace_all (std::string& St, const char* Sub_string, const char* Re
 // the substring with the replacement string after the given position.
 // Return true if a replacement was made.
 // ------------------------------------------------------------------
-bool EXPORT replaceAll(std::string& St, unsigned pos, const std::string& subString, const std::string& replacementString);
+bool EXPORT replaceAll(std::string& St, size_t pos, const std::string& subString, const std::string& replacementString);
 
 // ------------------------------------------------------------------
 // function that takes a string and replaces all occurrances of
@@ -474,13 +474,13 @@ std::string EXPORT doubleQuoted(const std::string& st);
 // ------------------------------------------------------------------
 // Locate a substring within a string - case insensitive.
 // ------------------------------------------------------------------
-unsigned EXPORT findSubString(const std::string& st, const std::string& substring);
+size_t EXPORT findSubString(const std::string& st, const std::string& substring);
 
 // -----------------------------------------------------------
 // Find a matching bracket, allowing for nested brackets.
 // -----------------------------------------------------------
-unsigned EXPORT matchBracket(const std::string& st, char openBracket, char closeBracket,
-                             unsigned startPos);
+size_t EXPORT matchBracket(const std::string& st, char openBracket, char closeBracket,
+                             size_t startPos);
 
 // ------------------------------------------------------------
 // return a string of spaces for the specified level of indent.

@@ -41,11 +41,11 @@ class Field
       bool csv;
       std::string unitsToOutput;
 
-      std::vector<unsigned> widths;
+      std::vector<size_t> widths;
       std::vector<string> values;
 
       void getValues();
-      void writeValueTo(std::ostream& out, const std::string& value, unsigned fieldWidth);
+      void writeValueTo(std::ostream& out, const std::string& value, size_t fieldWidth);
       void formatValues(void);
       void applyUnitConversion(void);
    };

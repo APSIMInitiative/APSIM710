@@ -407,10 +407,10 @@ unsigned Component::addRegistration(EventTypeCode kind,
                                     const std::string& alias)
    {
    ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
-   unsigned int regID;
+   size_t regID;
    ApsimRegistration *reg = registry.find(kind, componentID, destinationComponentID, regName);
    if (reg != NULL)
-       regID = (unsigned int) reg;
+       regID = (size_t) reg;
    else
       {
       reg = registry.createNativeRegistration(kind,

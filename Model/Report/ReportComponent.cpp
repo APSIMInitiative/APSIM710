@@ -95,9 +95,9 @@ void Field::writeHeadings(ostream& out)
          heading += "(" + itoa(i+1) + ")";
 
       // Now calculate a field width.
-      int fieldWidth = max((unsigned)15, heading.length() + 1);
-      fieldWidth = max((unsigned)fieldWidth, values[i].length() + 1);
-      fieldWidth = max((unsigned)fieldWidth, units.length() + 1);
+      size_t fieldWidth = max((size_t)15, heading.length() + 1);
+      fieldWidth = max(fieldWidth, values[i].length() + 1);
+      fieldWidth = max(fieldWidth, units.length() + 1);
       widths.push_back(fieldWidth);
 
       writeValueTo(out, heading, fieldWidth);
@@ -236,7 +236,7 @@ void Field::applyUnitConversion(void)
 // ------------------------------------------------------------------
 // write this field to summary file
 // ------------------------------------------------------------------
-void Field::writeValueTo(ostream& out, const std::string& value, unsigned fieldWidth)
+void Field::writeValueTo(ostream& out, const std::string& value, size_t fieldWidth)
    {
    if (csv)
       out << value;
@@ -260,7 +260,7 @@ void Field::writeValue(ostream& out)
       {
       if (csv && i > 0)
          out << ',';
-      unsigned width;
+      size_t width;
       if (i >= widths.size())
          width = widths[0];
       else

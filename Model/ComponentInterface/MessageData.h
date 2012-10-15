@@ -88,16 +88,16 @@ class EXPORT MessageData
       char* ptr(void) const {return currentPtr;}
       const char* start(void) const {return startBuffer;}
       void seek(char* ptr) {currentPtr = ptr;}
-      unsigned totalBytes(void)  const {return bufferSize;}
-      unsigned bytesRead(void)   const {return currentPtr-startBuffer;}
-      unsigned bytesUnRead(void) const
+      size_t totalBytes(void)  const {return bufferSize;}
+      size_t bytesRead(void)   const {return currentPtr-startBuffer;}
+      size_t bytesUnRead(void) const
          {return totalBytes()-bytesRead();}
 
-      void movePtrBy(unsigned int numBytes)
+      void movePtrBy(size_t numBytes)
          {
          currentPtr += numBytes;
          }
-      void copyFrom(const char* from, unsigned int numBytes)
+      void copyFrom(const char* from, size_t numBytes)
          {
          memcpy(currentPtr, from, numBytes);
          currentPtr += numBytes;

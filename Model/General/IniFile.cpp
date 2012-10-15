@@ -136,8 +136,8 @@ bool findLinePosForKeys(const string& contents,
                         bool allowMultiple)
    {
    string line;
-   unsigned startPos = 0;
-   unsigned endPos = 0;
+   size_t startPos = 0;
+   size_t endPos = 0;
    while(getIniLine(contents, endPos, line))
       {
       stripComments(line);
@@ -226,8 +226,8 @@ void IniFile::readSectionNames(vector<string>& sections) const
 // ------------------------------------------------------------------
 void IniFile::readSection(const string& section, string& contentsString) const
         {
-   unsigned posStartSection;
-   unsigned posEndSection;
+   size_t posStartSection;
+   size_t posEndSection;
    if (getSectionPosition(section, posStartSection, posEndSection))
       contentsString = contents.substr(posStartSection, posEndSection - posStartSection + 1);
    }
@@ -282,15 +282,15 @@ void IniFile::updateIndexesAfter(const string& section, unsigned numChars)
 void IniFile::writeSection(const string& section, const string& newContents)
         {
    doBackup();
-   unsigned posStartSection;
-   unsigned posEndSection;
+   size_t posStartSection;
+   size_t posEndSection;
    if (getSectionPosition(section, posStartSection, posEndSection))
       {
       // make sure we have a carriage return before the start of the next
       // section.
       if (newContents.length() > 0 && newContents[newContents.length()-1] != '\n')
          posEndSection--;
-      unsigned numCharsReplaced = posEndSection-posStartSection+1;
+      size_t numCharsReplaced = posEndSection-posStartSection+1;
       contents.replace(posStartSection, numCharsReplaced, newContents);
       updateIndexesAfter(section, newContents.length() - numCharsReplaced);
       }
@@ -340,7 +340,7 @@ void IniFile::write(const string& section, const string& key,
                     const vector<string>& values)
         {
    doBackup();
-   unsigned insertPos;
+   size_t insertPos;
    string contents;
    readSection(section, contents);
    Indexes indexes;
@@ -389,7 +389,7 @@ void IniFile::deleteSection(const string& section)
    if (i != sectionNames.end())
       {
       vector<string>::iterator nextI = i + 1;
-      unsigned posStart = sectionIndexes[i - sectionNames.begin()];
+      size_t posStart = sectionIndexes[i - sectionNames.begin()];
       size_t numCharsToDelete;
       if (nextI == sectionNames.end())
          numCharsToDelete = string::npos;
@@ -451,7 +451,7 @@ void IniFile::renameSection(const string& oldSection,
       *i = newSection;
 
       //unsigned z = i-sectionNames.begin();
-      unsigned posSectionName = contents.find(oldSection,
+      size_t posSectionName = contents.find(oldSection,
                                               sectionIndexes[i-sectionNames.begin()]);
       contents.replace(posSectionName, oldSection.length(), newSection);
       ofstream out(fileName.c_str());

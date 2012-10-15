@@ -116,7 +116,7 @@ string Path::Get_extension(void)
    if(lastDot==NULL)
       return("");
 
-   char *lastDirDelim=strrchr(Name.c_str(), (int)dirDelim);
+   char *lastDirDelim=strrchr(Name.c_str(), (int)dirDelim());
 
    if(lastDot>lastDirDelim)
       return(lastDot+1);
