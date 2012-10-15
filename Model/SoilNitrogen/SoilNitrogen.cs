@@ -1873,6 +1873,25 @@ public class SoilNitrogen
         }
     }
 
+    [Output]
+    [Description("Number of internal patches")]
+    int numPatches
+    { get { return Patch.Count; } }
+
+    [Output]
+    [Description("Relative area of each internal patch")]
+    double[] PatchArea
+    { 
+        get 
+        {
+            double[] result = new double[Patch.Count];
+            for (int k = 0; k < Patch.Count; k++)
+                result[k] = Patch[k].PatchArea;
+            return result;
+        } 
+    }
+
+    
     #endregion
 
     #endregion
@@ -1974,6 +1993,35 @@ public class SoilNitrogen
             for (int k = 0; k < Patch.Count; k++)
                 Patch[k].dlt_no3 = value;
         }
+    }
+
+    private double[][] calcDLT(double[] incoming, double[][] alreadyThere, string name)
+    {
+        // + Purpose
+        //     calculate how the dlt's are partitioned amongst patches
+
+        double[][] result = new double[Patch.Count][];
+        for (int k = 0; k < Patch.Count; k++)
+            result[k]=new double[dlayer.Length];
+
+        // calculations are done for each layer 
+        for (int layer = 0; layer < (dlayer.Length - 1); layer++)
+        {
+            // compute the total solute amount, over all patches
+            double totalSol = 0.0;
+            for (int k = 0; k < Patch.Count; k++)
+                totalSol += alreadyThere[k][layer] * Patch[k].PatchArea;
+
+            // now compute the weights (based on exisiting amounts) and partioned the dlt's
+            for (int k = 0; k < Patch.Count; k++)
+            {
+                double weight = 0.0;
+                if (totalSol != 0)
+                    weight = alreadyThere[k][layer] / totalSol;
+                result[k][layer] = incoming[layer] * weight;
+            }
+        }
+        return result;
     }
 
     #endregion
@@ -2276,8 +2324,9 @@ public class SoilNitrogen
 
         for (int k = 0; k < Patch.Count; k++)
         {
-            Patch[k].dlt_no3 = NitrogenChanged.DeltaNO3;
+            Patch[k].dlt_urea = NitrogenChanged.DeltaUrea;
             Patch[k].dlt_nh4 = NitrogenChanged.DeltaNH4;
+            Patch[k].dlt_no3 = NitrogenChanged.DeltaNO3;
         }
     }
 
@@ -2820,6 +2869,8 @@ public class SoilNitrogen
         // Values that are the same for all patches
         for (int k =0; k <Patch.Count; k++)
         {
+            // today's date
+            Patch[k].Today = today;
             for (int layer = 0; layer < dlayer.Length; layer++)
             {
                 // soil layers' thichness (mm)

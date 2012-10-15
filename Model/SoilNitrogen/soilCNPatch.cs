@@ -18,6 +18,9 @@ class soilCNPatch
 
     #region Parameters provided by the user or by APSIM
 
+    // today's date
+    public DateTime Today;
+
     #region Values used on initialisation only
 
     // soil model type, spec used to determine some mineralisation model variations
@@ -354,7 +357,9 @@ class soilCNPatch
                     _urea[layer] += value[layer];
                     if (_urea[layer] < urea_min[layer] - epsilon)
                     {
-                        Console.WriteLine("Attempt to change urea(" + (layer + 1).ToString() + ") to a value below the lower limit, value will be set to " + urea_min[layer].ToString() + " kgN/ha");
+                        //Console.WriteLine("Attempt to change urea(" + (layer + 1).ToString() + ") to a value below the lower limit, value will be set to " + urea_min[layer].ToString() + " kgN/ha");
+                        Console.WriteLine(Today.ToShortDateString() + " - Attempt to change urea(" + (layer + 1).ToString() + " in Patch(" + PatchName + ") to a value below the lower limit");
+                        Console.WriteLine("  The value [" + _urea[layer].ToString("#0.0###") + "] will be reset to " + urea_min[layer].ToString("#0.000#") + " kgN/ha");
                         _urea[layer] = urea_min[layer];
                     }
                 }
@@ -379,7 +384,9 @@ class soilCNPatch
                     _nh4[layer] += value[layer];
                     if (_nh4[layer] < nh4_min[layer] - epsilon)
                     {
-                        Console.WriteLine("Attempt to change nh4(" + (layer + 1).ToString() + ") to a value below the lower limit, value will be set to " + nh4_min[layer].ToString() + " kgN/ha");
+                        //Console.WriteLine("Attempt to change nh4(" + (layer + 1).ToString() + ") to a value below the lower limit, value will be set to " + nh4_min[layer].ToString() + " kgN/ha");
+                        Console.WriteLine(Today.ToShortDateString() + " - Attempt to change nh4(" + (layer + 1).ToString() + " in Patch(" + PatchName + ") to a value below the lower limit");
+                        Console.WriteLine("  The value [" + _nh4[layer].ToString("#0.0###") + "] will be reset to " + nh4_min[layer].ToString("#0.000#") + " kgN/ha");
                         _nh4[layer] = nh4_min[layer];
                     }
                 }
@@ -404,7 +411,9 @@ class soilCNPatch
                     _no3[layer] += value[layer];
                     if (_no3[layer] < no3_min[layer] - epsilon)
                     {
-                        Console.WriteLine("Attempt to change no3(" + (layer + 1).ToString() + ") to a value below the lower limit, value will be set to " + no3_min[layer].ToString() + " kgN/ha");
+                        //Console.WriteLine("Attempt to change no3(" + (layer + 1).ToString() + ") to a value below the lower limit, value will be set to " + no3_min[layer].ToString() + " kgN/ha");
+                        Console.WriteLine(Today.ToShortDateString() + " - Attempt to change no3(" + (layer + 1).ToString() + " in Patch(" + PatchName + ") to a value below the lower limit");
+                        Console.WriteLine("  The value [" + _no3[layer].ToString("#0.0###") + "] will be reset to " + no3_min[layer].ToString("#0.000#") + " kgN/ha");
                         _no3[layer] = no3_min[layer];
                     }
                 }
@@ -430,7 +439,9 @@ class soilCNPatch
                 fom_n[layer] += value[layer];
                 if (fom_n[layer] < 0.0)
                 {
-                    Console.WriteLine("Attempt to change org_n(" + (layer + 1).ToString() + ") to a negative value, value will be set to 0.0 kg/ha");
+                    //Console.WriteLine("Attempt to change org_n(" + (layer + 1).ToString() + ") to a negative value, value will be set to 0.0 kg/ha");
+                    Console.WriteLine(Today.ToShortDateString() + " - Attempt to change fom_n(" + (layer + 1).ToString() + " in Patch(" + PatchName + ") to a negative value");
+                    Console.WriteLine("  The value [" + fom_n[layer].ToString("#0.0###") + "] will be reset to 0.000 kgN/ha");
                     fom_n[layer] = 0.0;
                 }
             }
@@ -446,7 +457,9 @@ class soilCNPatch
                 fom_c_pool1[layer] += value[layer];
                 if (fom_c_pool1[layer] < 0.0)
                 {
-                    Console.WriteLine("Attempt to change fom_c_pool1(" + (layer + 1).ToString() + ") to a negative value, value will be set to 0.0 kg/ha");
+                    //Console.WriteLine("Attempt to change fom_c_pool1(" + (layer + 1).ToString() + ") to a negative value, value will be set to 0.0 kg/ha");
+                    Console.WriteLine(Today.ToShortDateString() + " - Attempt to change fom_c_pool1(" + (layer + 1).ToString() + " in Patch(" + PatchName + ") to a negative value");
+                    Console.WriteLine("  The value [" + fom_c_pool1[layer].ToString("#0.0###") + "] will be reset to 0.000 kg/ha");
                     fom_c_pool1[layer] = 0.0;
                 }
             }
@@ -462,7 +475,9 @@ class soilCNPatch
                 fom_c_pool2[layer] += value[layer];
                 if (fom_c_pool2[layer] < 0.0)
                 {
-                    Console.WriteLine("Attempt to change fom_c_pool2(" + (layer + 1).ToString() + ") to a negative value, value will be set to 0.0 kg/ha");
+                    //Console.WriteLine("Attempt to change fom_c_pool2(" + (layer + 1).ToString() + ") to a negative value, value will be set to 0.0 kg/ha");
+                    Console.WriteLine(Today.ToShortDateString() + " - Attempt to change fom_c_pool2(" + (layer + 1).ToString() + " in Patch(" + PatchName + ") to a negative value");
+                    Console.WriteLine("  The value [" + fom_c_pool2[layer].ToString("#0.0###") + "] will be reset to 0.000 kg/ha");
                     fom_c_pool2[layer] = 0.0;
                 }
             }
@@ -478,7 +493,9 @@ class soilCNPatch
                 fom_c_pool3[layer] += value[layer];
                 if (fom_c_pool3[layer] < 0.0)
                 {
-                    Console.WriteLine("Attempt to change fom_c_pool3(" + (layer + 1).ToString() + ") to a negative value, value will be set to 0.0 kg/ha");
+                    //Console.WriteLine("Attempt to change fom_c_pool3(" + (layer + 1).ToString() + ") to a negative value, value will be set to 0.0 kg/ha");
+                    Console.WriteLine(Today.ToShortDateString() + " - Attempt to change fom_c_pool3(" + (layer + 1).ToString() + " in Patch(" + PatchName + ") to a negative value");
+                    Console.WriteLine("  The value [" + fom_c_pool3[layer].ToString("#0.0###") + "] will be reset to 0.000 kg/ha");
                     fom_c_pool3[layer] = 0.0;
                 }
             }
