@@ -12,7 +12,7 @@ V_CHAR4_FN apsimCallback = NULL;
 
 SEXP apsimGet( std::string variableName )
 {
-   SEXP result = Rcpp::wrap(R_NilValue);
+   SEXP result = Rcpp::wrap(NA_STRING);
    if (apsimCallback == NULL) return result;
 
    char typeReturned[20];
