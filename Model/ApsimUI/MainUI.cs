@@ -38,7 +38,7 @@ namespace APSIMUI
         [System.STAThread()]
         public static void Main(string[] Args)
         {
-            Application.EnableVisualStyles();
+			try { Application.EnableVisualStyles(); } catch (Exception) {} 
             Application.DoEvents();
             Application.DoEvents();
             Application.Run(new MainUI(Args));
@@ -374,19 +374,22 @@ namespace APSIMUI
                     string ImageFileName = XmlHelper.Attribute(Doc.DocumentElement, "image");
                     if (string.IsNullOrEmpty(ImageFileName))
                     {
-                        ImageFileName = Path.Combine("%apsim%", "UserInterface", "Images", "Toolbox24.png");
+                        ImageFileName = Path.Combine("%apsim%", "UserInterface", "Images", "toolbox24.png");
                     }
                     ImageFileName = Configuration.RemoveMacros(ImageFileName);
 
                     string ToolBoxName = Path.GetFileNameWithoutExtension(FileName);
-                    ToolStripButton NewItem = new ToolStripButton(ToolBoxName, new System.Drawing.Bitmap(ImageFileName));
-                    NewItem.TextImageRelation = TextImageRelation.ImageBeforeText;
-                    NewItem.ImageScaling = ToolStripItemImageScaling.None;
-                    NewItem.CheckOnClick = true;
-                    NewItem.ToolTipText = "";
-                    NewItem.Tag = FileName;
-                    NewItem.Click += OnToolBoxClick;
-                    ToolBoxesToolStrip.Items.Add(NewItem);
+					try 
+					{
+						ToolStripButton NewItem = new ToolStripButton(ToolBoxName, new System.Drawing.Bitmap(ImageFileName));
+                        NewItem.TextImageRelation = TextImageRelation.ImageBeforeText;
+                        NewItem.ImageScaling = ToolStripItemImageScaling.None;
+                        NewItem.CheckOnClick = true;
+                        NewItem.ToolTipText = "";
+                        NewItem.Tag = FileName;
+                        NewItem.Click += OnToolBoxClick;
+                        ToolBoxesToolStrip.Items.Add(NewItem);
+					} catch (Exception) {}
                 }
                 else
                 {
