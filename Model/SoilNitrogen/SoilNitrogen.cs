@@ -1995,35 +1995,6 @@ public class SoilNitrogen
         }
     }
 
-    private double[][] calcDLT(double[] incoming, double[][] alreadyThere, string name)
-    {
-        // + Purpose
-        //     calculate how the dlt's are partitioned amongst patches
-
-        double[][] result = new double[Patch.Count][];
-        for (int k = 0; k < Patch.Count; k++)
-            result[k]=new double[dlayer.Length];
-
-        // calculations are done for each layer 
-        for (int layer = 0; layer < (dlayer.Length - 1); layer++)
-        {
-            // compute the total solute amount, over all patches
-            double totalSol = 0.0;
-            for (int k = 0; k < Patch.Count; k++)
-                totalSol += alreadyThere[k][layer] * Patch[k].PatchArea;
-
-            // now compute the weights (based on exisiting amounts) and partioned the dlt's
-            for (int k = 0; k < Patch.Count; k++)
-            {
-                double weight = 0.0;
-                if (totalSol != 0)
-                    weight = alreadyThere[k][layer] / totalSol;
-                result[k][layer] = incoming[layer] * weight;
-            }
-        }
-        return result;
-    }
-
     #endregion
 
     #region organic N and C
@@ -2316,17 +2287,57 @@ public class SoilNitrogen
     }
 
     [EventHandler(EventName = "NitrogenChanged")]
-    public void OnNitrogenChanged(NitrogenChangedType NitrogenChanged)
+    public void OnNitrogenChanged(NitrogenChangedType NitrogenChanges)
     {
         //+  Purpose
         //     Get the delta mineral N from other module
-        //     Send deltas to each patch, will need to handle this differently in the future
+        //     Send deltas to each patch, if delta comes from soil or plant then the partition is made based on N content
+        //      if sender is any other module then values are passed to patches as they come
 
-        for (int k = 0; k < Patch.Count; k++)
+        if (NitrogenChanges.Sender.ToLower() == "soilwat")
         {
-            Patch[k].dlt_urea = NitrogenChanged.DeltaUrea;
-            Patch[k].dlt_nh4 = NitrogenChanged.DeltaNH4;
-            Patch[k].dlt_no3 = NitrogenChanged.DeltaNO3;
+            // values supplied by SoilWat will be passed to the patches according to their N content
+
+            // 1- consider urea:
+            if (hasValues(NitrogenChanges.DeltaUrea, epsilon))
+            {
+                // send incoming dlt to be partitioned amongst patches
+                double[][] newDelta = calcDelta(NitrogenChanges.DeltaUrea, "urea");
+                // 4- send dlt's to each patch
+                for (int k = 0; k < Patch.Count; k++)
+                    Patch[k].dlt_urea = newDelta[k];
+            }
+
+            // 2- consider nh4:
+            if (hasValues(NitrogenChanges.DeltaNH4, epsilon))
+            {
+                // send incoming dlt to be partitioned amongst patches
+                double[][] newDelta = calcDelta(NitrogenChanges.DeltaNH4, "nh4");
+                // 4- send dlt's to each patch
+                for (int k = 0; k < Patch.Count; k++)
+                    Patch[k].dlt_nh4 = newDelta[k];
+            }
+
+            int ddd = today.Day;
+            // 1- consider no3:
+            if (hasValues(NitrogenChanges.DeltaNO3, epsilon))
+            {
+                // send incoming dlt to be partitioned amongst patches
+                double[][] newDelta = calcDelta(NitrogenChanges.DeltaNO3, "no3");
+                // 4- send dlt's to each patch
+                for (int k = 0; k < Patch.Count; k++)
+                    Patch[k].dlt_no3 = newDelta[k];
+            }
+        }
+        else
+        {
+            // values will passed to patches as they come
+            for (int k = 0; k < Patch.Count; k++)
+            {
+                Patch[k].dlt_urea = NitrogenChanges.DeltaUrea;
+                Patch[k].dlt_nh4 = NitrogenChanges.DeltaNH4;
+                Patch[k].dlt_no3 = NitrogenChanges.DeltaNO3;
+            }
         }
     }
 
@@ -3061,9 +3072,69 @@ public class SoilNitrogen
 
     #region Auxiliar functions
 
+       private double[][] calcDelta(double[] incoming, string SoluteName)
+    {
+        // + Purpose
+        //     calculate how the dlt's are partitioned amongst patches
+        //      return a dlt value for each patch and each layer to which an incoming dlt was provided
+
+        // 1- initialise the result to zero
+        double[][] result = new double[Patch.Count][];
+        for (int k = 0; k < Patch.Count; k++)
+            result[k] = new double[dlayer.Length];
+
+        try
+        {
+            // 2- gather how much solute is already in the soil
+            double[][] alreadyThere = new double[Patch.Count][];
+            for (int k = 0; k < Patch.Count; k++)
+            {
+                alreadyThere[k] = new double[dlayer.Length];
+                if (SoluteName == "urea")
+                    for (int layer = 0; layer < dlayer.Length; layer++)
+                        alreadyThere[k][layer] = Patch[k].urea[layer];
+                else if (SoluteName == "nh4")
+                    for (int layer = 0; layer < dlayer.Length; layer++)
+                        alreadyThere[k][layer] = Patch[k].nh4[layer];
+                else if (SoluteName == "no3")
+                    for (int layer = 0; layer < dlayer.Length; layer++)
+                        alreadyThere[k][layer] = Patch[k].no3[layer];
+            }
+
+
+            // 3- calculations are done for each layer 
+            for (int layer = 0; layer < (dlayer.Length); layer++)
+            {
+                // 3.1- compute the total solute amount, over all patches
+                double totalSol = 0.0;
+                for (int k = 0; k < Patch.Count; k++)
+                    totalSol += alreadyThere[k][layer] * Patch[k].PatchArea;
+
+                // 3.2- calculations for each patch
+                for (int k = 0; k < Patch.Count; k++)
+                {
+                    // 3.2.1- compute the weights (based on existing solute amount)
+                    double weight = 1.0;
+                    if (totalSol > 0)
+                        weight = alreadyThere[k][layer] / totalSol;
+
+                    // 3.2.2- partition the dlt's for each patch
+                    result[k][layer] = incoming[layer] * weight;
+
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            throw new System.InvalidOperationException(" problem with " + SoluteName + "- " + e.ToString());
+        }
+        return result;
+    }
+
     private double convFactor_kgha2ppm(int layer)
     {
-        // Calculate conversion factor from kg/ha to ppm (mg/kg)
+        // + Purpose
+        //     Calculate conversion factor from kg/ha to ppm (mg/kg)
 
         if (bd == null || dlayer == null || bd.Length == 0 || dlayer.Length == 0)
         {
@@ -3073,8 +3144,31 @@ public class SoilNitrogen
         return MathUtility.Divide(100.0, bd[layer] * dlayer[layer], 0.0);
     }
 
+    private bool hasValues(double[] anArray, double MinValue)
+    {
+        // + Purpose
+        //     check whether there is any considerable values in the array
+
+        bool result = false;
+        if (anArray != null)
+        {
+            foreach (double Value in anArray)
+            {
+                if (Math.Abs(Value) > MinValue)
+                {
+                    result = true;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
     private double SumDoubleArray(double[] anArray)
     {
+        // + Purpose
+        //     calculate the sum of all values of an array of doubles
+
         double result = 0.0;
         if (anArray != null)
         {
@@ -3086,6 +3180,9 @@ public class SoilNitrogen
 
     private int getCumulativeIndex(double sum, float[] realArray)
     {
+        // + Purpose
+        //     get the index at which the cumulative amount is equal or greater than 'sum'
+
         float cum = 0.0f;
         for (int i = 0; i < realArray.Length; i++)
         {
