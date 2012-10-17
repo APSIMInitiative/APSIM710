@@ -557,7 +557,7 @@ void CMPComponentInterface::sendMessage(Message& message)
    }
 
 
-uintptr_t CMPComponentInterface::nameToRegistrationID(const std::string& name,
+int CMPComponentInterface::nameToRegistrationID(const std::string& name,
                                                 RegistrationKind regKind)
    // -----------------------------------------------------------------------
    // Return a registration id for the specified
@@ -571,9 +571,9 @@ uintptr_t CMPComponentInterface::nameToRegistrationID(const std::string& name,
    if (reg == regNames.end())
       return 0;
    else
-      return (uintptr_t) reg->second;
+      return reg->second->regId;
    }
-uintptr_t CMPComponentInterface::RegisterWithPM(const string& name, const string& units,
+int CMPComponentInterface::RegisterWithPM(const string& name, const string& units,
                                           const string& description,
                                           RegistrationKind regKind,
                                           Packable* data)
@@ -604,14 +604,16 @@ uintptr_t CMPComponentInterface::RegisterWithPM(const string& name, const string
        delete reg->data;
      reg->data = data;
      reg->ddml = ddml;
-     return (uintptr_t) reg;
+     return reg->regId;
      }
    reg = new Reg;
    reg->data = data;
    reg->kind = regKind;
    reg->ddml = ddml;
    regNames.insert(make_pair(fullRegName, reg));
-   uintptr_t ID = (uintptr_t) reg;
+   Registrations.push_back(reg);
+   size_t ID = Registrations.size();
+   reg->regId = ID;
 
    // send register message to PM.
    RegisterType registerData;
@@ -731,8 +733,10 @@ void CMPComponentInterface::onQueryValue(const Message& message)
    MessageData messageData(message);
    QueryValueType queryValue;
    unpack(messageData, queryValue);
-   Reg* reg = (Reg*) queryValue.ID;
-   if (reg->data != NULL) 
+   Reg* reg = NULL;
+   if (queryValue.ID <= Registrations.size())
+     reg = Registrations[queryValue.ID - 1];
+   if (reg != NULL && reg->data != NULL) 
       {
       Packable& data = *(reg->data);
       ReplyValueType replyValue;
@@ -761,20 +765,25 @@ void CMPComponentInterface::onQuerySetValue(const Message& message)
    MessageData messageData(message);
 	QuerySetValueType querySetValue;
    unpack(messageData, querySetValue);
-   Reg* reg = (Reg*) querySetValue.ID;
-   Packable& data = *(reg->data);
+   Reg* reg = NULL;
+   if (querySetValue.ID <= Registrations.size())
+     reg = Registrations[querySetValue.ID - 1];
+   if (reg != NULL && reg->data != NULL)
+    {
+     Packable& data = *(reg->data);
 
-   // change the value of the variable.
-   data.unpack(messageData, querySetValue.ddml);
+     // change the value of the variable.
+     data.unpack(messageData, querySetValue.ddml);
 
-   // now send back a replySetValueSuccess message.
-   //NBNBNB can't seem to build a ReplySetValueSuccessType structure, so use a similar one YUCK!!
-   NotifySetValueSuccessType replySetValueSuccess;
-   replySetValueSuccess.ID = message.messageID;
-   replySetValueSuccess.success = true;
-   sendMessage(newMessage(Message::ReplySetValueSuccess,
+     // now send back a replySetValueSuccess message.
+     //NBNBNB can't seem to build a ReplySetValueSuccessType structure, so use a similar one YUCK!!
+     NotifySetValueSuccessType replySetValueSuccess;
+     replySetValueSuccess.ID = message.messageID;
+     replySetValueSuccess.success = true;
+     sendMessage(newMessage(Message::ReplySetValueSuccess,
                           componentID, fromID, false,
                           replySetValueSuccess));
+    }
    }
 void CMPComponentInterface::onEvent(const Message& message)
    // -----------------------------------------------------------------------
@@ -784,18 +793,23 @@ void CMPComponentInterface::onEvent(const Message& message)
    MessageData messageData(message);
    EventType cmpevent;
    unpack(messageData, cmpevent);
-   Reg* reg = (Reg*) cmpevent.ID;
-   Packable& data = *(reg->data);
+   Reg* reg = NULL;
+   if (cmpevent.ID <= Registrations.size())
+     reg = Registrations[cmpevent.ID - 1];
+   if (reg != NULL && reg->data != NULL)
+   {
+     Packable& data = *(reg->data);
 
-   if (cmpevent.ID == tickID)
-      {
-      unpack(messageData, tick);
-      messageData.reset();
-      unpack(messageData, cmpevent);
-      haveWrittenToStdOutToday = false;
-      }
-   // unpack the data - this will unpack and then call the function.
-   data.unpack(messageData, cmpevent.ddml);
+     if (cmpevent.ID == tickID)
+        {
+        unpack(messageData, tick);
+        messageData.reset();
+        unpack(messageData, cmpevent);
+        haveWrittenToStdOutToday = false;
+        }
+     // unpack the data - this will unpack and then call the function.
+     data.unpack(messageData, cmpevent.ddml);
+    }
    }
 
 void CMPComponentInterface::terminate(void)

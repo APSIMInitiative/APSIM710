@@ -57,7 +57,7 @@ std::string EXPORT DDML(const ErrorType& data);
 //------ Event ------
 struct EventType
    {
-   uintptr_t ID;
+   unsigned ID;
    int publishedBy;
    std::string ddml;
    };
@@ -106,7 +106,7 @@ std::string EXPORT DDML(const NotifySetValueSuccessType& data);
 //------ PublishEvent ------
 struct PublishEventType
    {
-   int ID;
+   unsigned ID;
    std::string ddml;
    };
 
@@ -131,7 +131,7 @@ std::string EXPORT DDML(const QueryInfoType& data);
 struct RegisterType
    {
    int kind;
-   uintptr_t ID;
+   unsigned ID;
    int destID;
    std::string name;
    std::string ddml;
@@ -146,7 +146,7 @@ std::string EXPORT DDML(const RegisterType& data);
 struct DeRegisterType
    {
    int kind;
-   uintptr_t ID;
+   unsigned ID;
    };
 
 void EXPORT pack(MessageData& messageData, const DeRegisterType& data);
@@ -157,7 +157,7 @@ std::string EXPORT DDML(const DeRegisterType& data);
 //------ ReplyValue ------
 struct ReplyValueType
    {
-   int queryID;
+   unsigned queryID;
    std::string ddml;
    };
 
@@ -234,7 +234,7 @@ std::string EXPORT DDML(const ReturnValueType& data);
 //------ QueryValue ------
 struct QueryValueType
    {
-   uintptr_t ID;
+   unsigned ID;
    int requestedByID;
    };
 
@@ -246,7 +246,7 @@ std::string EXPORT DDML(const QueryValueType& data);
 //------ QuerySetValue ------
 struct QuerySetValueType
    {
-   uintptr_t ID;
+   unsigned ID;
    std::string ddml;
    };
 

@@ -4,6 +4,7 @@
 
 #include <string.h>
 #include <stdint.h>
+#include <stddef.h>
 #include <vector>
 #include <stdexcept>
 #include <General/string_functions.h>

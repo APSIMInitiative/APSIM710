@@ -86,10 +86,12 @@ class EXPORT CMPComponentInterface
          Packable* data;
          RegistrationKind kind;
          std::string ddml;
+         int regId;
          };
 
       typedef std::multimap<std::string, Reg*> NameToRegMap;
-		typedef std::vector<Message*> Messages;
+      typedef std::vector<Message*> Messages;
+      typedef std::vector<Reg*> Regs;
       //typedef std::multimap<std::string, RegistrationKind> NameToRegKindMap;
       //typedef std::multimap<std::string, std::string> NameToDDMLMap;
 
@@ -97,18 +99,19 @@ class EXPORT CMPComponentInterface
       //NameToRegKindMap regKinds;
       //NameToDDMLMap regDDMLs;
       Messages messages;
+      Regs Registrations;
 
       uintptr_t tickID;
       TimeType tick;
       bool haveWrittenToStdOutToday;
 
       void clearMessages();
-      uintptr_t RegisterWithPM(const std::string& Name, const std::string& Units,
+      int RegisterWithPM(const std::string& Name, const std::string& Units,
                          const std::string& Description,
                          RegistrationKind regKind,
                          Packable* Data);
 
-      uintptr_t nameToRegistrationID(const std::string& name,
+      int nameToRegistrationID(const std::string& name,
                                RegistrationKind regKind);
 
       void sendMessage(Message& message);

@@ -83,7 +83,7 @@ Message EXPORT &constructMessage(Message::Type messageType,
    message->toAcknowledge = acknowledgementRequired;
    message->nDataBytes    = numDataBytes;
    if (numDataBytes > 0)
-      message->dataPtr = ((char*)&message->dataPtr) + 4;
+      message->dataPtr = ((char*)&message->dataPtr) + sizeof(char*);
 
    else
       message->dataPtr = NULL;
@@ -111,7 +111,7 @@ Message EXPORT * cloneMessage(const Message& from)
    {
    Message* message = (Message*) new char[sizeof(Message) + from.nDataBytes];
    memcpy(message, &from, sizeof(Message));
-   message->dataPtr = ((char*)&message->dataPtr) + 4;
+   message->dataPtr = ((char*)&message->dataPtr) + sizeof(char*);
    memcpy(message->dataPtr, from.dataPtr, from.nDataBytes);
    return message;
    }

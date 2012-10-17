@@ -63,21 +63,21 @@ inline void Convert(const std::string& source, int& dest)
    if (chk == source.c_str()) {throw std::runtime_error("Cannot parse int from string \"" + source + "\"");}
    }
 
-// ------ long long ------
-inline unsigned int memorySize(const uintptr_t& value)
-   {return sizeof(uintptr_t);}
-inline void unpack(MessageData& messageData, uintptr_t& value)
+// ------ unsigned ------
+inline unsigned int memorySize(const unsigned& value)
+   {return sizeof(unsigned);}
+inline void unpack(MessageData& messageData, unsigned& value)
    {
-   value = *((uintptr_t*)messageData.ptr());
+   value = *((unsigned*)messageData.ptr());
    messageData.movePtrBy(memorySize(value));
    }
-inline void pack(MessageData& messageData, const uintptr_t value)
+inline void pack(MessageData& messageData, const unsigned value)
    {
-   *((uintptr_t*)messageData.ptr()) = value;
+   *((unsigned*)messageData.ptr()) = value;
    messageData.movePtrBy(memorySize(value));
    }
-inline std::string DDML(const uintptr_t value)  // For now, we assume either 32-bit or 64-bit 
-   {return (sizeof(uintptr_t) == 4) ? "<type kind=\"integer4\"/>": "<type kind=\"integer8\"/>";}
+inline std::string DDML(const unsigned value)
+   {return (sizeof(unsigned) == 4) ? "<type kind=\"integer4\"/>" : "<type kind=\"integer8\"/>";}
 
 inline void Convert(bool source, uintptr_t& dest)   {dest = source;}
 inline void Convert(int source, uintptr_t& dest)    {dest = source;}
