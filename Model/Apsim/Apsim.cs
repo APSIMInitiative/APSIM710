@@ -207,10 +207,17 @@ public class Apsim
         Sum = new StreamWriter(SumFileName);
 
         // Run the apsim process.
-        string ApsimModelExe = Path.Combine(Configuration.ApsimBinDirectory(), "ApsimModel.exe");
         _P = new Process();
-
-        _P.StartInfo.FileName = ApsimModelExe;
+		if (Configuration.getArchitecture() == Configuration.architecture.unix) 
+		{
+	        string ldPath = Environment.GetEnvironmentVariable("LD_LIBRARY_PATH");
+			if (ldPath != null && ldPath.Length > 0)
+				ldPath += ":" + Configuration.ApsimBinDirectory();
+			else
+				ldPath = Configuration.ApsimBinDirectory();
+            _P.StartInfo.EnvironmentVariables.Add("LD_LIBRARY_PATH", ldPath);
+		}
+        _P.StartInfo.FileName = Path.Combine(Configuration.ApsimBinDirectory(), "ApsimModel.exe");
         _P.StartInfo.Arguments = StringManip.DQuote(SimFileName);
         _P.StartInfo.UseShellExecute = false;
         _P.StartInfo.CreateNoWindow = true;
@@ -290,6 +297,10 @@ public class Apsim
                 if (Int32.TryParse(e.Data.Substring(2), out percent))
                     taskProgress = percent;
             }
+			else 
+			{
+                Sum.WriteLine(e.Data);
+			}
         }
     }
     
