@@ -49,7 +49,8 @@ public partial class SurfaceOM
     [Event]
     public event SurfaceOM_removedDelegate SurfaceOM_removed;
 
-
+    [Event]
+    public event NitrogenChangedDelegate NitrogenChanged;
    
 
 }

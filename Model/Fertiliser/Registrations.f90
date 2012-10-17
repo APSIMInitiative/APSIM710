@@ -3,6 +3,7 @@ module Registrations
    type IDsType
       sequence
       integer :: externalmassflow
+      integer :: NitrogenChanged
       integer :: create
       integer :: sysinit
       integer :: apply
@@ -20,6 +21,7 @@ module Registrations
          type(IDsType) :: id
 
 !         id%externalmassflow = add_registration(eventReg, 'externalmassflow', ExternalMassFlowTypeDDML, '')
+!         id%nitrogenchanged = add_registration(eventReg, 'NitrogenChanged', NitrogenChangedTypeDDML, '')
 !         id%create = add_registration(respondToEventReg, 'create', nullTypeDDML, '')
 !         id%sysinit = add_registration(respondToEventReg, 'sysinit', nullTypeDDML, '')
 !         id%apply = add_registration(respondToEventReg, 'apply', nullTypeDDML, '')

@@ -162,6 +162,7 @@ c     include   'fertiliz.inc'
 !      character  Err_string*400      ! Event message string
 
       type (ExternalMassFlowType) :: massBalanceChange
+      type(NitrogenChangedType) :: NchgData  ! structure holding NitrogenChanged data
 
 *- Implementation Section ----------------------------------
 
@@ -286,16 +287,42 @@ c     include   'fertiliz.inc'
      :       , 1.0e30)              ! Upper Limit for bound checking
 
             if (found) then
-                  ! this variable is being tracked - send the delta to it
+               ! this variable is being tracked - send the delta to it
 
                call fill_real_array (delta_array, 0.0, max_layer)
+
+               ! initialise the NitrogenChanged data to zero
+               NchgData%num_DeltaUrea = 0
+               NchgData%DeltaUrea = delta_array
+               NchgData%num_DeltaNH4 = 0
+               NchgData%DeltaNH4 = delta_array
+               NchgData%num_DeltaNO3 = 0
+               NchgData%DeltaNO3 = delta_array
+
                delta_array(layer) = amount * fraction(counter)
 
-               dlt_name = 'dlt_'//components(counter)
-               call Set(   dlt_name
-     :                    , '(kg/ha)'
-     :                    , delta_array
-     :                    , array_size)
+               ! Added by RCichota - using NitrogenChanged event to modify dlt_N's
+               if (components(counter) .eq. 'urea') then
+                  NchgData%num_DeltaUrea = array_size
+                  NchgData%DeltaUrea = delta_array
+               elseif (components(counter) .eq. 'nh4') then
+                  NchgData%num_DeltaNH4 = array_size
+                  NchgData%DeltaNH4 = delta_array
+               elseif (components(counter) .eq. 'no3') then
+                  NchgData%num_DeltaNO3 = array_size
+                  NchgData%DeltaNO3 = delta_array
+               else
+
+                  dlt_name = 'dlt_'//components(counter)
+                  call Set(   dlt_name
+     :                       , '(kg/ha)'
+     :                       , delta_array
+     :                       , array_size)
+               endif
+
+               ! Send a NitrogenChanged event to the system
+               NchgData%Sender = 'Fertiliser'
+               call publish('NitrogenChanged', NchgData)
 
                massBalanceChange%PoolClass = "soil"
                massBalanceChange%FlowType = "gain"

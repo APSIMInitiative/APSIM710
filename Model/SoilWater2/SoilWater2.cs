@@ -1504,6 +1504,12 @@ public class SoilWater
     {
         //taken from soilwat2_set_other_variables()
 
+        NitrogenChangedType NitrogenChanges = new NitrogenChangedType();
+        NitrogenChanges.Sender = "SoilWater2";
+        NitrogenChanges.DeltaUrea = new double[dlayer.Length];
+        NitrogenChanges.DeltaNH4 = new double[dlayer.Length];
+        NitrogenChanges.DeltaNO3 = new double[dlayer.Length];
+
         //for all solutes in this simulation.
         for (int solnum = 0; solnum < num_solutes; solnum++)
         {
@@ -1519,12 +1525,22 @@ public class SoilWater
 
             //set the change in solutes for the modules
             string propName;
-            if (solutes[solnum].ownerName != "")
-                propName = solutes[solnum].ownerName + ".dlt_" + solutes[solnum].name;
+            if (solutes[solnum].name == "urea")
+                NitrogenChanges.DeltaUrea = solutes[solnum].delta;
+            else if (solutes[solnum].name == "nh4")
+                NitrogenChanges.DeltaNH4 = solutes[solnum].delta;
+            else if (solutes[solnum].name == "no3")
+                NitrogenChanges.DeltaNO3 = solutes[solnum].delta;
             else
-                propName = "dlt_" + solutes[solnum].name;
-            MyPaddock.Set(propName, temp_dlt_solute);
+            {
+                if (solutes[solnum].ownerName != "")
+                    propName = solutes[solnum].ownerName + ".dlt_" + solutes[solnum].name;
+                else
+                    propName = "dlt_" + solutes[solnum].name;
+                MyPaddock.Set(propName, temp_dlt_solute);
+            }
         }
+        NitrogenChanged.Invoke(NitrogenChanges);
     }
 
     //this is called in the On Process event handler
@@ -4451,6 +4467,9 @@ public class SoilWater
 
     [Event]
     public event RunoffEventDelegate Runoff;
+
+    [Event]
+    public event NitrogenChangedDelegate NitrogenChanged;
 
     #endregion
 

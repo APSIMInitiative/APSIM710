@@ -2682,8 +2682,9 @@ public class AgPasture
     {
         //Uptake from the root_zone
         NitrogenChangedType NUptake = new NitrogenChangedType();
-        NUptake.DeltaNO3 = new double[dlayer.Length];
+        NUptake.DeltaUrea = new double[dlayer.Length];
         NUptake.DeltaNH4 = new double[dlayer.Length];
+        NUptake.DeltaNO3 = new double[dlayer.Length];
 
         float Fraction = 0;
         if (p_soilNavailable > 0)
@@ -2785,6 +2786,7 @@ public class AgPasture
                 n_uptake += (no3[layer] + nh4[layer]) * Fraction;
                 SNUptake[layer] = (no3[layer] + nh4[layer]) * Fraction;
 
+                NUptake.Sender = "AgPasture";
                 NUptake.DeltaNO3[layer] = -no3[layer] * Fraction;
                 NUptake.DeltaNH4[layer] = -nh4[layer] * Fraction;
             }

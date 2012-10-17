@@ -37,6 +37,9 @@ public class Fertiliser
     [Output]
     ExternalMassFlowType externalMassFlow = new ExternalMassFlowType();
 
+    [Event]
+    public event NitrogenChangedDelegate NitrogenChanged;
+
     int maxLayer = 100;
     string pondActive = "no";
     int year;
@@ -109,12 +112,35 @@ public class Fertiliser
                     {
                         string dlt_name = "dlt_" + comp.components[i];
 
+                        NitrogenChangedType NitrogenChanges = new NitrogenChangedType();
+                        NitrogenChanges.Sender = "Fertiliser";
+                        NitrogenChanges.DeltaUrea = new double[dlayer.Length];
+                        NitrogenChanges.DeltaNH4 = new double[dlayer.Length];
+                        NitrogenChanges.DeltaNO3 = new double[dlayer.Length];
+
                         // This variable is being tracked - send the delta to it
                         double[] V;
                         if (MyPaddock.Get(comp.components[i], out V))
                         {
-                            deltaArray[layer] = amount * comp.fraction[i]; // This is where the fertiliser
-                            MyPaddock.Set(dlt_name, deltaArray);    // is actually added.
+                            deltaArray[layer] = amount * comp.fraction[i];
+                            // This is where the fertiliser is actually added.
+                            if (comp.components[i] == "urea")
+                            {
+                                NitrogenChanges.DeltaUrea[layer] = amount * comp.fraction[i];
+                                NitrogenChanged.Invoke(NitrogenChanges);
+                            }
+                            else if (comp.components[i] == "nh4")
+                            {
+                                NitrogenChanges.DeltaNH4[layer] = amount * comp.fraction[i];
+                                NitrogenChanged.Invoke(NitrogenChanges);
+                            }
+                            else if (comp.components[i] == "no3")
+                            {
+                                NitrogenChanges.DeltaNO3[layer] = amount * comp.fraction[i];
+                                NitrogenChanged.Invoke(NitrogenChanges);
+                            }
+                            else
+                                MyPaddock.Set(dlt_name, deltaArray);
 
                             massBalanceChange.PoolClass = "soil";
                             massBalanceChange.FlowType = "gain";
