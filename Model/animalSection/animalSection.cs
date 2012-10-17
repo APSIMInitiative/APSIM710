@@ -5,6 +5,8 @@ using System.Text;
 using ModelFramework;
 public class animalSection
 {
+    [Input]
+    ManureType WASHWATER;
     [Link]
     private Component My;
     [Param]
@@ -24,52 +26,31 @@ public class animalSection
     [EventHandler]
     public void OnProcess()
     {
-        Console.WriteLine(My.Name);
-        Console.WriteLine(My.Children.Count);
-        for (int i = 0; i < My.Children.Count(); i++)
-        {
-            Console.WriteLine(My.Children[i].Name);
-        }
-        /*Console.WriteLine(My.Name);
-        Console.WriteLine(My.Children.Count);
-        My.LinkByName("floor1");
-        Component Floor1 = (Component)MyPaddock.LinkByName("floor1");
-        double ExcretaPartition;
-        Floor1.Get("ExcretaPartition", out ExcretaPartition);
-        for (int i = 0; i < My.Children.Count; i++)
-        {
-           ;
-           Console.WriteLine(My.Children[i].Name);
-        }
-
-        foreach (Component AnimalSection in My.Children)
-        {
-            Console.WriteLine(AnimalSection.Children.Count);
-            Console.WriteLine(AnimalSection.Name);
-
-             
-                AnimalSection.Get("ExcretaPartition", out ExcretaPartition);
-            
-        }
+        Console.WriteLine(My.Name+" animal section name in animal sec");
+      
+   
+  
+  
+   
 
         if (NrOfAnimals > 0)
         {
-            ManureType WASHWATER=new ManureType();
-            WASHWATER.amount=NrOfAnimals * SpiltDrinkingWater/1000.0;
-            RcvManure(WASHWATER,null);
+            ManureType WASHWATERInput = WASHWATER;
+            WASHWATERInput.amount = NrOfAnimals * SpiltDrinkingWater / 1000.0;
+            RcvManure(WASHWATERInput, null);
 
             ManureType someStraw = new ManureType();
-            foreach (Component AnimalSection in My.Children)
+            for(int i=0; i<My.Children.Count;i++)
             {
-               
-                AnimalSection.Get("ExcretaPartition", out ExcretaPartition);
-                double StrawAdded;
-                AnimalSection.Get("StrawAdded", out StrawAdded);
+                double ExcretaPartition = 0;
+                My.Children[i].Get("ExcretaPartition", out ExcretaPartition);
+                double StrawAdded=0;
+                My.Children[i].Get("StrawAdded", out StrawAdded);
                 someStraw.amount = NrOfAnimals * StrawAdded*ExcretaPartition / 1000;
-                AnimalSection.Publish("RcvBedding", someStraw);
+                My.Children[i].Publish("RcvBedding", someStraw);
             }
 
-        }*/
+        }
 
 
 
