@@ -3,6 +3,7 @@
 #define MessageDataH
 
 #include <string.h>
+#include <stdint.h>
 #include <vector>
 #include <stdexcept>
 #include <General/string_functions.h>
@@ -18,10 +19,10 @@ class MessageData
    private:
       const char* startBuffer;
       char* currentPtr;
-      unsigned int bufferSize;
+      ptrdiff_t bufferSize;
    public:
       MessageData(void) : startBuffer(NULL), currentPtr(NULL), bufferSize(0) { }
-      MessageData(char* dataPtr, unsigned int numBytes)
+      MessageData(char* dataPtr, ptrdiff_t numBytes)
          : startBuffer((char*)dataPtr),
            currentPtr(dataPtr),
            bufferSize(numBytes)
@@ -48,13 +49,13 @@ class MessageData
       unsigned bytesUnRead(void) const
          {return totalBytes()-bytesRead();}
 
-      void movePtrBy(unsigned int numBytes)
+      void movePtrBy(ptrdiff_t numBytes)
          {
          if (currentPtr + numBytes > startBuffer + bufferSize) 
             throw std::runtime_error("MessageData buffer has overflowed"); 
          currentPtr += numBytes;
          }
-      void copyFrom(const char* from, unsigned int numBytes)
+      void copyFrom(const char* from, ptrdiff_t numBytes)
          {
          if (currentPtr + numBytes > startBuffer + bufferSize) 
             throw std::runtime_error("MessageData buffer has overflowed"); 

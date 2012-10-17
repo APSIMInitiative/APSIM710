@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <stdexcept>
 
 #include <ComponentInterface2/MessageData.h>
@@ -62,6 +63,32 @@ inline void Convert(const std::string& source, int& dest)
    if (chk == source.c_str()) {throw std::runtime_error("Cannot parse int from string \"" + source + "\"");}
    }
 
+// ------ long long ------
+inline unsigned int memorySize(const uintptr_t& value)
+   {return sizeof(uintptr_t);}
+inline void unpack(MessageData& messageData, uintptr_t& value)
+   {
+   value = *((uintptr_t*)messageData.ptr());
+   messageData.movePtrBy(memorySize(value));
+   }
+inline void pack(MessageData& messageData, const uintptr_t value)
+   {
+   *((uintptr_t*)messageData.ptr()) = value;
+   messageData.movePtrBy(memorySize(value));
+   }
+inline std::string DDML(const uintptr_t value)  // For now, we assume either 32-bit or 64-bit 
+   {return (sizeof(uintptr_t) == 4) ? "<type kind=\"integer4\"/>": "<type kind=\"integer8\"/>";}
+
+inline void Convert(bool source, uintptr_t& dest)   {dest = source;}
+inline void Convert(int source, uintptr_t& dest)    {dest = source;}
+inline void Convert(float source, uintptr_t& dest)  {dest = (uintptr_t)source;}
+inline void Convert(double source, uintptr_t& dest) {dest = (uintptr_t)source;}
+inline void Convert(const std::string& source, uintptr_t& dest)
+   {
+   char *chk;
+   dest = (uintptr_t) strtoul(source.c_str(), &chk, 10);
+   if (chk == source.c_str()) {throw std::runtime_error("Cannot parse long int from string \"" + source + "\"");}
+   }
 // ------ float ------
 inline unsigned int memorySize(const float& value)
    {return 4;}

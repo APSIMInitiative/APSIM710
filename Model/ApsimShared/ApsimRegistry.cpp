@@ -85,7 +85,7 @@ ApsimRegistration* ApsimRegistry::createForeignRegistration
 
 // Add a registration if not already present
 // fixme - we really need to rethink this!!
-unsigned int ApsimRegistry::add(ApsimRegistration *reg)
+uintptr_t ApsimRegistry::add(ApsimRegistration *reg)
    {
    if ( reg->getName().rfind(".") != string::npos)
 	 throw std::runtime_error("trying to add a qualified registration " + reg->getName());
@@ -125,7 +125,7 @@ unsigned int ApsimRegistry::add(ApsimRegistration *reg)
 //        reg->getName();
 //   if (reg->getDestinationID()>0) cout<< "->" << componentByID(reg->getDestinationID());
 //   cout << ")= " << ((unsigned int)reg) << " called\n";
-   return ((unsigned int)reg);
+   return ((uintptr_t)reg);
    }
 
 
@@ -278,7 +278,7 @@ void ApsimRegistry::erase(EventTypeCode type, int owner, unsigned int regID)
 // are easy, foreigns need special care.
 ApsimRegistration *ApsimRegistry::find(EventTypeCode type,
 									   int ownerID,
-									   unsigned int regnID)
+									   uintptr_t regnID)
    {
    if (isForeign(ownerID))
 	  {

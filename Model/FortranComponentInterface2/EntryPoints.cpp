@@ -11,12 +11,12 @@
 
 using namespace std;
 
-unsigned CreateFortranComponent(ScienceAPI2* scienceAPI, CMPComponentInterface* componentInterface,
+uintptr_t CreateFortranComponent(ScienceAPI2* scienceAPI, CMPComponentInterface* componentInterface,
                          const char* dllFileName, void* dllHandle)
    {
-   return (unsigned) new FortranComponentWrapper(scienceAPI, componentInterface, dllHandle);
+   return (uintptr_t) new FortranComponentWrapper(scienceAPI, componentInterface, dllHandle);
    }
-void DeleteFortranComponent(unsigned component, void* dllHandle)
+void DeleteFortranComponent(uintptr_t component, void* dllHandle)
    {
    delete (FortranComponentWrapper*) component;
    }
@@ -25,7 +25,7 @@ struct Bit
    CMPComponentInterface* componentInterface;
    ScienceAPI2Impl* scienceAPI;
    void* dllHandle;
-   unsigned component;
+   uintptr_t component;
 
    ~Bit()
       {
@@ -46,8 +46,8 @@ extern "C" void EXPORT STDCALL createInstance
    (const char* dllFileName,
     unsigned int* componentID,
     unsigned int* parentID,
-    unsigned int* instanceNumber,
-    unsigned int* callbackArg,
+    uintptr_t* instanceNumber,
+    uintptr_t* callbackArg,
     CallbackType* callback)
    {
    Bit* bit = new Bit;
@@ -65,12 +65,12 @@ extern "C" void EXPORT STDCALL createInstance
 
    // The instance number we return to the PM is a pointer to the component
    // object we just created.
-   *instanceNumber = (unsigned) bit;
+   *instanceNumber = (uintptr_t) bit;
    }
 // ------------------------------------------------------------------
 // The PM is instructing us to delete an instance of our data.
 // ------------------------------------------------------------------
-extern "C" void EXPORT STDCALL deleteInstance (unsigned* instanceNumber)
+extern "C" void EXPORT STDCALL deleteInstance (uintptr_t* instanceNumber)
    {
    Bit* bit = (Bit*) *instanceNumber;
    delete bit;
@@ -78,7 +78,7 @@ extern "C" void EXPORT STDCALL deleteInstance (unsigned* instanceNumber)
 // ------------------------------------------------------------------
 // All messages to component go through here.
 // ------------------------------------------------------------------
-extern "C" void EXPORT STDCALL messageToLogic (unsigned* instanceNumber,
+extern "C" void EXPORT STDCALL messageToLogic (uintptr_t* instanceNumber,
                                                   Message* message,
                                                   bool* processed)
    {
@@ -99,8 +99,9 @@ extern "C" void EXPORT STDCALL FCI2_getDescriptionInternal(char* initScript,
 
    // create an instance of the module.
    unsigned dummy = 0;
-   unsigned instanceNumber = 0;
-   createInstance(dllFileName.c_str(), &dummy, &dummy, &instanceNumber, &dummy, NULL);
+   uintptr_t instanceNumber = 0;
+   uintptr_t dummy2 = 0;
+   createInstance(dllFileName.c_str(), &dummy, &dummy, &instanceNumber, &dummy2, NULL);
 
    Init1Type init1;
    init1.sdml = initScript;

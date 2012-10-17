@@ -209,7 +209,7 @@ void TrackerVariable::doRegistrations(void)
       // Do a "get" to tickle the system into probing for the variable. Discard results.
       protocol::Variant *variant = NULL;
 	  reg->setName(ownerModuleName);
-      parent->getVariable((unsigned int)reg, &variant, true);
+      parent->getVariable((uintptr_t)reg, &variant, true);
       
       // Now find the sending modules registration for that variable, and 
       //  extract units
@@ -321,7 +321,7 @@ void TrackerVariable::doSample(void)
    else if (inWindow)
       {
       vector<float> theseValues;
-      unsigned int valueID = parent->addRegistration(::get,
+      uintptr_t valueID = parent->addRegistration(::get,
                                                      ownerModuleID,
                                                      ownerModuleName,
                                                      protocol::DDML(theseValues).c_str());

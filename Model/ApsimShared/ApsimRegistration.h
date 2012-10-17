@@ -3,6 +3,7 @@
 #define ApsimRegistrationH
 
 #include <string.h>
+#include <stdint.h>
 #include <General/platform.h>
 #include <General/string_functions.h>
 #include <ApsimShared/ApsimRegistrationType.h>
@@ -63,14 +64,14 @@ class EXPORT  ApsimRegistration
       int getDestinationID(void) const {return destinationID;};
 	  void setName(const std::string& name) { 
 		registrationName = ToLower(name);
-        unsigned int pos = registrationName.find('(');
+        size_t pos = registrationName.find('(');
         if (pos != std::string::npos)
            {
            arraySpecifier = registrationName.substr(pos);
 //           registrationName = registrationName.substr(0, pos);
            }
 
-        pos = (unsigned)registrationName.rfind('(');
+        pos = registrationName.rfind('(');
         if (pos != std::string::npos)
            {
            registrationNameWithoutBrackets = registrationName.substr(0, pos);
@@ -79,7 +80,7 @@ class EXPORT  ApsimRegistration
            registrationNameWithoutBrackets = registrationName;
 	  };
 
-      virtual unsigned int getRegID(void) const = 0;
+      virtual uintptr_t getRegID(void) const = 0;
 
       EventTypeCode opposite();
 
@@ -110,7 +111,7 @@ class EXPORT  NativeRegistration : public ApsimRegistration
         ApsimRegistration(_type, _registrationName,_ddml, _destinationID, _componentID)
         {
         };
-     unsigned int getRegID(void) const  {return (unsigned int) this;};
+     uintptr_t getRegID(void) const  {return (uintptr_t) this;};
    };
 
 class EXPORT  ForeignRegistration : public ApsimRegistration
@@ -128,7 +129,7 @@ class EXPORT  ForeignRegistration : public ApsimRegistration
         foreignID(_foreignID)
         {
         };
-     unsigned int getRegID(void) const {return foreignID;}
+     uintptr_t getRegID(void) const {return foreignID;}
 
    };
 

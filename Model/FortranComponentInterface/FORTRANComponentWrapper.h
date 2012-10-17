@@ -64,7 +64,7 @@ class FortranWrapper : public protocol::Component
          {FString(n, nLength, EmptyString) = getFQName().c_str();}
       unsigned get_componentID(void) {return componentID;}
       unsigned get_parentID(void)    {return parentID;}
-      unsigned get_componentData(void) {return (unsigned)componentData;}
+      uintptr_t get_componentData(void) {return (uintptr_t)componentData;}
 
       bool get_set_variable_success(void)
          {
@@ -94,7 +94,7 @@ class FortranWrapper : public protocol::Component
 		 regItem->setName(asString(variableName));
          numvals = 0;
          protocol::Variant *variant = NULL;
-         if (getVariable((unsigned int)regItem, &variant, isOptional))
+         if (getVariable((uintptr_t)regItem, &variant, isOptional))
             {
             protocol::TypeConverter* typeConverter = NULL;
 			getTypeConverter(regItem->getName().c_str(),
@@ -131,7 +131,7 @@ class FortranWrapper : public protocol::Component
             regItem = (ApsimRegistration *)
                     FortranWrapper::currentInstance->addRegistration
                              (::get, 0, variableName, dataTypeString);
-            FortranWrapper::currentInstance->getVariables((unsigned int)regItem, &vars);
+            FortranWrapper::currentInstance->getVariables((uintptr_t)regItem, &vars);
             }
          if (vars != NULL && vars->size() > 0)
             {
@@ -173,7 +173,7 @@ class FortranWrapper : public protocol::Component
             static char buffer[1000];
             strcpy(buffer, "");
             strncat(buffer, dataTypeString.f_str(), dataTypeString.length());
-            unsigned insertPos = dataTypeString.find(">");
+            size_t insertPos = dataTypeString.find(">");
             if (insertPos != FString::npos && units.length() > 0)
                {
                insertPos--;

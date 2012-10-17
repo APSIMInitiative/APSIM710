@@ -10,12 +10,12 @@
 
 struct Message;
 
-typedef EXPORT void (STDCALL CallbackType)(const unsigned int *compInst, Message& message);
+typedef EXPORT void (STDCALL CallbackType)(const uintptr_t *compInst, Message& message);
 
 class EXPORT CMPComponentInterface
    {
    public:
-      CMPComponentInterface(unsigned* callbackarg, CallbackType* callback, unsigned componentID, unsigned parentID, const std::string &dllName);
+      CMPComponentInterface(uintptr_t* callbackarg, CallbackType* callback, unsigned componentID, unsigned parentID, const std::string &dllName);
       ~CMPComponentInterface();
 
       bool get(const std::string& name, const std::string& units, bool optional, Packable* data);
@@ -61,7 +61,7 @@ class EXPORT CMPComponentInterface
       void deRegisterAll();
    private:
       ScienceAPI2* scienceAPI;
-      unsigned* callbackArg;
+      uintptr_t* callbackArg;
       unsigned componentID;
       unsigned parentID;
       std::string name;
@@ -98,17 +98,17 @@ class EXPORT CMPComponentInterface
       //NameToDDMLMap regDDMLs;
       Messages messages;
 
-      int tickID;
+      uintptr_t tickID;
       TimeType tick;
       bool haveWrittenToStdOutToday;
 
       void clearMessages();
-      int RegisterWithPM(const std::string& Name, const std::string& Units,
+      uintptr_t RegisterWithPM(const std::string& Name, const std::string& Units,
                          const std::string& Description,
                          RegistrationKind regKind,
                          Packable* Data);
 
-      int nameToRegistrationID(const std::string& name,
+      uintptr_t nameToRegistrationID(const std::string& name,
                                RegistrationKind regKind);
 
       void sendMessage(Message& message);

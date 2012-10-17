@@ -22,15 +22,15 @@ CompilationMode IsManaged(const char * filename);
 
 namespace protocol {
 
-typedef EXPORT void (STDCALL CallbackType)(const unsigned int *compInst, Message *message);
+typedef EXPORT void (STDCALL CallbackType)(const uintptr_t *compInst, Message *message);
 typedef void (STDCALL createInstanceProcType)(const char* ,
                                           const unsigned int* ,
                                           const unsigned int* ,
-                                          const int* ,
-                                          const int* ,
+                                          const uintptr_t* ,
+                                          const uintptr_t* ,
                                           CallbackType* );
-typedef void (STDCALL deleteInstanceProcType)(const int*);
-typedef void (STDCALL messageToLogicProcType)(const int* ,
+typedef void (STDCALL deleteInstanceProcType)(const uintptr_t*);
+typedef void (STDCALL messageToLogicProcType)(const uintptr_t* ,
                                           const Message* ,
                                           bool* );
 
@@ -72,11 +72,11 @@ class EXPORT Computation : public IComputation
                (*messageToLogicProc) (&instanceNo, message, &messageProcessed);
 			 }
          }
-      unsigned getInstanceNo(void) const {return instanceNo;}
+      uintptr_t getInstanceNo(void) const {return instanceNo;}
       std::string getExecutable(void) {return executableFileName;}
 
    private:
-      int instanceNo;
+      uintptr_t instanceNo;
       void* handle;
 	  std::string executableFileName;
 

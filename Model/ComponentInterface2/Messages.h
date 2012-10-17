@@ -2,6 +2,7 @@
 #define MessagesH
 #include <General/platform.h>
 #include <string>
+#include <stdint.h>
 
 class MessageData;
 
@@ -56,7 +57,7 @@ std::string EXPORT DDML(const ErrorType& data);
 //------ Event ------
 struct EventType
    {
-   int ID;
+   uintptr_t ID;
    int publishedBy;
    std::string ddml;
    };
@@ -130,7 +131,7 @@ std::string EXPORT DDML(const QueryInfoType& data);
 struct RegisterType
    {
    int kind;
-   int ID;
+   uintptr_t ID;
    int destID;
    std::string name;
    std::string ddml;
@@ -145,7 +146,7 @@ std::string EXPORT DDML(const RegisterType& data);
 struct DeRegisterType
    {
    int kind;
-   int ID;
+   uintptr_t ID;
    };
 
 void EXPORT pack(MessageData& messageData, const DeRegisterType& data);
@@ -233,7 +234,7 @@ std::string EXPORT DDML(const ReturnValueType& data);
 //------ QueryValue ------
 struct QueryValueType
    {
-   int ID;
+   uintptr_t ID;
    int requestedByID;
    };
 
@@ -245,7 +246,7 @@ std::string EXPORT DDML(const QueryValueType& data);
 //------ QuerySetValue ------
 struct QuerySetValueType
    {
-   int ID;
+   uintptr_t ID;
    std::string ddml;
    };
 

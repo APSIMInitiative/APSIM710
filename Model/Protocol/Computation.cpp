@@ -45,7 +45,7 @@ typedef EXPORT void ( STDCALL wrapperDll_t) (char* dllFileName);
 //    dph 10/5/2001
 
 // ------------------------------------------------------------------
-void EXPORT STDCALL messageCallback(const unsigned int* dummy, Message* message)
+void EXPORT STDCALL messageCallback(const uintptr_t* dummy, Message* message)
    {
    Transport::getTransport().deliverMessage(message);
    }
@@ -130,7 +130,7 @@ void Computation::createInstance(const std::string& filename,
 	}
 	else
 	{
-   static int dummy = 0;
+   static uintptr_t dummy = 0;
    (*createInstanceProc) (filename.c_str(),
                           &componentId,
                           &parentId,

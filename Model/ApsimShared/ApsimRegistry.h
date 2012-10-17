@@ -38,7 +38,7 @@ class EXPORT ApsimRegistry
             (EventTypeCode kind, const std::string& regName, const std::string& ddml,
              int destinationComponentID, int componentID, unsigned foreignID);
 
-      unsigned int add(ApsimRegistration *);
+      uintptr_t add(ApsimRegistration *);
 
       void erase(EventTypeCode type, int owner, unsigned int regID);
       void erase(EventTypeCode type, const std::string& owner, unsigned int regID)
@@ -53,7 +53,7 @@ class EXPORT ApsimRegistry
 
       // Find a single registration for a component,
       //  returns NULL if not found.
-      ApsimRegistration *find(EventTypeCode type, int ownerID, unsigned int regnID);
+      ApsimRegistration *find(EventTypeCode type, int ownerID, uintptr_t regnID);
       ApsimRegistration *find(EventTypeCode type, int ownerID, int destID, const std::string &name);
 
       // Component routines

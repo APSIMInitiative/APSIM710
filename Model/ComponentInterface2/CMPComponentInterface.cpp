@@ -19,7 +19,7 @@ string state = "";
 // =============================================================================
 // =============================================================================
 // =============================================================================
-CMPComponentInterface::CMPComponentInterface(unsigned* callbackarg, CallbackType* callback,
+CMPComponentInterface::CMPComponentInterface(uintptr_t* callbackarg, CallbackType* callback,
                                              unsigned componentid, unsigned parentid, 
                                              const std::string &_dllName)
    // -----------------------------------------------------------------------
@@ -557,7 +557,7 @@ void CMPComponentInterface::sendMessage(Message& message)
    }
 
 
-int CMPComponentInterface::nameToRegistrationID(const std::string& name,
+uintptr_t CMPComponentInterface::nameToRegistrationID(const std::string& name,
                                                 RegistrationKind regKind)
    // -----------------------------------------------------------------------
    // Return a registration id for the specified
@@ -571,9 +571,9 @@ int CMPComponentInterface::nameToRegistrationID(const std::string& name,
    if (reg == regNames.end())
       return 0;
    else
-      return (int) reg->second;
+      return (uintptr_t) reg->second;
    }
-int CMPComponentInterface::RegisterWithPM(const string& name, const string& units,
+uintptr_t CMPComponentInterface::RegisterWithPM(const string& name, const string& units,
                                           const string& description,
                                           RegistrationKind regKind,
                                           Packable* data)
@@ -604,14 +604,14 @@ int CMPComponentInterface::RegisterWithPM(const string& name, const string& unit
        delete reg->data;
      reg->data = data;
      reg->ddml = ddml;
-     return (int) reg;
+     return (uintptr_t) reg;
      }
    reg = new Reg;
    reg->data = data;
    reg->kind = regKind;
    reg->ddml = ddml;
    regNames.insert(make_pair(fullRegName, reg));
-   int ID = (int) reg;
+   uintptr_t ID = (uintptr_t) reg;
 
    // send register message to PM.
    RegisterType registerData;
@@ -634,7 +634,7 @@ void CMPComponentInterface::deRegisterAll()
                                reg++)
       {
       DeRegisterType deregistration;
-      deregistration.ID = (int) reg->second;
+      deregistration.ID = (uintptr_t) reg->second;
       deregistration.kind = reg->second->kind;
       sendMessage(newMessage(Message::Deregister, componentID, parentID, false,
                              deregistration));
