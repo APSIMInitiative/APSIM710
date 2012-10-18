@@ -14,14 +14,15 @@ Public Class Farm
     Private GrazedList As List(Of PaddockWrapper)         ' List of grazed paddocks
     Private myGrazingResidual As Integer = 1600
     Private myGrazingInterval As Integer = 30
+    Private RotationInterval As Integer = 21
     Private myDayPerHa As Double 'this value is used to control rotation speed
-    Public WinterOffDryStock As Boolean = True
+    Public boolWinterOffDryStock As Boolean = True
 
     Private myDate As Date
     Private Day As Integer
     Private Month As Integer
     Private end_week As Boolean
-    Private myPorportionOfFarmInLaneWays As Double = 0
+    Private myProportionOfFarmInLaneWays As Double = 0
     Private myTimeOnLaneWays As Double = 0
     Private myTimeInDairyShed As Double = 0
     Public myEffluentPaddocksPercentage As Double = 1.0 '[default = 1.0 = spread to all paddocks]
@@ -29,11 +30,16 @@ Public Class Farm
     Public AllocationType As Integer = 0
     'LUDF Process
     Private EnableCutting As Boolean = True
-    Private DefaultPastureME As Double = 11.5 '12.3 average me/kgDM from 2006-2010
+    Public DefaultPastureME As Double = 11.5 '12.3 average me/kgDM from 2006-2010
+    'Public Default_N_Conc As Double = 0.035
     Public Shared MovingAverageSeriesLength As Integer = 7
     Public myAverageCover As MovingAverage = New MovingAverage(MovingAverageSeriesLength)
     Public preGrazeCovers() As Double
     Public postGrazeCovers() As Double
+    Public Surplus As Double
+    Public Stocking_Rate_Threshold_ As Double = 0.1
+    Public PreGrazingCoverTarget As Double
+    Public MaxPreGrazingCoverTarget As Double = 10000
 
     Public Sub New()
         myMilkingHerd = New SimpleHerd()
@@ -74,7 +80,7 @@ Public Class Farm
         '                        Console.WriteLine(pdk.Name + "")
         '                        Console.WriteLine(pdk.TypeName)
         '                End If
-        '                Dim tempArea As Double = FarmArea * myPorportionOfFarmInLaneWays
+        '                Dim tempArea As Double = FarmArea * myProportionOfFarmInLaneWays
         '                SpecifiedArea += tempArea
         '                MyFarmArea += tempArea 'add lane area into total area i.e. not included in effective area allocation
         '                TempList.Add(pdk.Name, tempArea)
@@ -154,6 +160,7 @@ Public Class Farm
         End If
 
         myMilkingHerd.setValues(7, Year, Month)
+
     End Sub
 
     Public Sub Prepare(ByVal Year As Integer, ByVal Month As Integer, ByVal Day As Integer, ByVal end_week As Boolean)
@@ -376,28 +383,46 @@ Public Class Farm
     'Supplementary feeding
     '<Units("kgDM")> Public SilageFed As Double 'kgDM @ 10.5me fed to meet animal requirements
     '<Units("kgDM")> Public SupplementFedout As Double 'kg of grain fed this period (to fill unsatisifed feed demand)
-    Public SupplementWastage As Double = 0.0 'percentage of feed wasted as part of feeding out [Dawns' default = 10%]
     Public SilageCutWastage As Double = 0.05 'percentage of silage lost as part of cutting 5% @ 30%DM : farmFact 1-44 Losses when making pasture silage
     Public SilageWastage As Double = 0.15 'percentage of feed wasted as part of feeding out [Dawns' default = 15%]
 
     Private SupplementStore As New FeedStore 'this is used to track the supplements that have been fed to the herd (oppsite of SilageHeap)
 
     'Todo: Set supplemnt parameter in "Supplement heap" - this assumes same feed throughout simulation
-    Public SupplementDigestability As Double = 0.8
-    Public SilageDigestability As Double = 0.68 'need to check this value
+    Public SilageDigestibility As Double = 0.68 'need to check this value
     Public SilageQualityModifier As Double = 0.9 'need to check this value
 
     Public SilageN As Double = 0.035 'N content of silage (need to check this value - add to the user interface
-    Public SupplementN As Double = 0.018 'N content of supplement (grain?) - add to the user interface
-    Public SupplementME As Double = 12
-    Public DefualtSilageME As Double = 10.5
+    Public DefaultSilageME As Double = 10.5
 
+    Private SupplementME_ As Double = 12
+    Public SupplementN As Double = 0.018 'N content of supplement (grain?) - add to the user interface
+    Public SupplementDigestibility As Double = 0.8
+    Public SupplementWastage As Double = 0.0 'percentage of feed wasted as part of feeding out [Dawns' default = 10%]
+
+    Public GrassSilageSupplementME As Double = 10
+    Public GrassSilageSupplementN As Double = 0.035
+    Public GrassSilageSupplementDigestibility As Double = 0.7
+    Public GrassSilageSupplementWastage As Double = 0.0
+
+    Public GrainOrConcentrateSupplementME As Double = 12
+    Public GrainOrConcentrateSupplementN As Double = 0.018 'N content of supplement (grain?) - add to the user interface
+    Public GrainOrConcentrateSupplementDigestibility As Double = 0.8
+    Public GrainOrConcentrateSupplementWastage As Double = 0.0 'percentage of feed wasted as part of feeding out [Dawns' default = 10%]
+    Property SupplementME() As Double
+        Get
+            Return SupplementME_
+        End Get
+        Set(ByVal value As Double)
+            SupplementME_ = value
+        End Set
+    End Property
     Public Property SilageME() As Double
         Get
             Return SilageHeap.MEContent
         End Get
         Set(ByVal value As Double)
-            DefualtSilageME = value
+            DefaultSilageME = value
             If (SilageHeap.DM > 0) Then
                 SilageHeap.MEContent = value
             End If
@@ -416,11 +441,11 @@ Public Class Farm
         End If
 
         If (myMilkingHerd.RemainingFeedDemand > 0) Then ' Meet any remaining demand with bought in feed (i.e. grain)
-            'Dim temp As Single = FeedSupplement(myHerd.RemainingFeedDemand) '20010523 removed, SupplementME) , SupplementN, SupplementWastage, SupplementDigestability)
+            'Dim temp As Single = FeedSupplement(myHerd.RemainingFeedDemand) '20010523 removed, SupplementME_) , SupplementN, SupplementWastage, SupplementDigestibility)
             If (DebugLevel > 0) Then
                 Console.WriteLine("*** DDRules - Supplements Fed demend *** = " + myMilkingHerd.RemainingFeedDemand.ToString())
             End If
-            Dim temp As Double = FeedSupplement(myMilkingHerd.RemainingFeedDemand, SupplementME, SupplementN, SupplementWastage, SupplementDigestability)
+            Dim temp As Double = FeedSupplement(myMilkingHerd.RemainingFeedDemand, SupplementME_, SupplementN, SupplementWastage, SupplementDigestibility)
             If (DebugLevel > 0) Then
                 Console.WriteLine("*** DDRules - Supplements Fed *** = " + temp.ToString())
                 Console.WriteLine("Supplment Fed Today = " + SupplementStore.ToString())
@@ -435,10 +460,10 @@ Public Class Farm
         Set(ByVal value As Double)
             SilageHeap = New FeedStore
             Dim temp As BioMass = New BioMass()
-            temp.set(value, SilageDigestability, SilageN, DefualtSilageME)
-            'temp.digestibility = SilageDigestability
+            temp.set(value, SilageDigestibility, SilageN, DefaultSilageME)
+            'temp.digestibility = SilageDigestibility
             'temp.N_Conc = SilageN
-            'temp.setME(DefualtSilageME)
+            'temp.setME(DefaultSilageME)
             SilageHeap.Add(temp)
         End Set
     End Property
@@ -449,7 +474,7 @@ Public Class Farm
             Return 0
         End If
         tempDM = tempDM.Multiply(1 - WastageFactor)
-        tempDM.digestibility = SilageDigestability
+        tempDM.digestibility = SilageDigestibility
         tempDM.N_Conc = SilageN
         Dim tempEnergyDiff As Double = (tempDM.getME_Total - MEDemand) / MEDemand
         myMilkingHerd.Feed(tempDM, SimpleHerd.FeedType.Silage)
@@ -458,22 +483,22 @@ Public Class Farm
 
     Function FeedSupplement(ByVal MEDemand As Double, ByVal WastageFactor As Double) As Double
         Dim dm As BioMass = New BioMass()
-        Dim SupplementFedout As Double = (MEDemand / SupplementME) * (1 + SupplementWastage)
+        Dim SupplementFedout As Double = (MEDemand / SupplementME_) * (1 + SupplementWastage)
         dm.gLeaf = SupplementFedout * (1 - SupplementWastage)
-        dm.setME(SupplementME)
-        dm.digestibility = SupplementDigestability
+        dm.setME(SupplementME_)
+        dm.digestibility = SupplementDigestibility
         dm.N_Conc = SupplementN
         myMilkingHerd.Feed(dm, SimpleHerd.FeedType.Supplement)
         SupplementStore.Remove(dm)
         Return dm.DM_Total
     End Function
 
-    Function FeedSupplement(ByVal MEDemand As Double, ByVal MEperKg As Double, ByVal NperKg As Double, ByVal WastageFactor As Double, ByVal Digestability As Double) As Double
+    Function FeedSupplement(ByVal MEDemand As Double, ByVal MEperKg As Double, ByVal NperKg As Double, ByVal WastageFactor As Double, ByVal Digestibility As Double) As Double
         Dim dm As BioMass = New BioMass()
         Dim SupplementFedout As Double = (MEDemand / MEperKg) * (1 + WastageFactor)
         dm.gLeaf = SupplementFedout * (1 - WastageFactor)
-        dm.setME(SupplementME)
-        dm.digestibility = Digestability
+        dm.setME(SupplementME_)
+        dm.digestibility = Digestibility
         dm.N_Conc = NperKg
         myMilkingHerd.Feed(dm, SimpleHerd.FeedType.Supplement)
         SupplementStore.Remove(dm)
@@ -482,7 +507,7 @@ Public Class Farm
 #End Region
 
     Private Function IsWinteringOff() As Boolean
-        Return WinterOffDryStock And myMilkingHerd.isDry
+        Return boolWinterOffDryStock And myMilkingHerd.isDry
     End Function
 
     Public DCWO As Date 'Commence Wintering Off
@@ -684,7 +709,8 @@ Public Class Farm
             Dim HarvestedDM As BioMass = New BioMass()
             Select Case (AllocationType)
                 Case 1
-                    If (FeedSituation() / IdealGrazingCover() > 0.2) Then 'Cut when 20% in surplus?
+                    'If (FeedSituation() / IdealGrazingCover() > 0.2) Then 'Cut when 20% in surplus?
+                    If (FeedSituation() / IdealGrazingCover() > Surplus) Then 'Cut when 20% in surplus?
                         HarvestedDM = CutToFeedWedge(myGrazingResidual, myGrazingInterval, MilkingCows() / FarmArea, myMilkingHerd.ME_Demand_Cow / DefaultPastureME)
                     End If
                 Case Else
@@ -694,7 +720,7 @@ Public Class Farm
             If (DebugLevel > 0) Then
                 Console.WriteLine("DDRules Harvested " & HarvestedDM.ToString())
             End If
-            'HarvestedDM.setME(DefualtSilageME)
+            'HarvestedDM.setME(DefaultSilageME)
             HarvestedDM.setME(HarvestedDM.getME() * SilageQualityModifier)
             SilageHeap.Add(HarvestedDM)
         End If
@@ -721,7 +747,7 @@ Public Class Farm
         For Each Paddock As PaddockWrapper In myPaddocks
             If (Paddock.Closed) Then                        'Harvest all closed paddocks
                 Dim CutDM As BioMass = Paddock.Harvest(CR, loss)
-                CutDM.digestibility = SilageDigestability
+                CutDM.digestibility = SilageDigestibility
                 result = result.Add(CutDM)
                 If (CutDM.DM_Total > 0) Then
                     'fire event
@@ -990,12 +1016,12 @@ Public Class Farm
         myPaddocks.AddRange(list)
     End Sub
 
-    Public Property PorportionOfFarmInLaneWays() As Double
+    Public Property ProportionOfFarmInLaneWays() As Double
         Get
-            Return myPorportionOfFarmInLaneWays
+            Return myProportionOfFarmInLaneWays
         End Get
         Set(ByVal value As Double)
-            myPorportionOfFarmInLaneWays = value
+            myProportionOfFarmInLaneWays = value
         End Set
     End Property
 
@@ -1078,10 +1104,13 @@ Public Class Farm
     'Result [kgDM/ha]
     Private Function CalcPregrazingCoverTarget(ByVal Stocking_Rate As Double, ByVal Intake As Double, ByVal Rotation As Double, ByVal Residual As Double) As Double
         Dim calcPre As Double = (Stocking_Rate * Intake * Rotation) + Residual
-        If (Stocking_Rate <= 0.1) Then
-            calcPre = 4000
+        'If (Stocking_Rate <= 0.1) Then
+        If (Stocking_Rate <= Stocking_Rate_Threshold_) Then
+            'calcPre = 4000
+            calcPre = PreGrazingCoverTarget
         End If
-        Dim maxPre As Double = 10000 '3860
+        'Dim maxPre As Double = 10000 '3860
+        Dim maxPre As Double = MaxPreGrazingCoverTarget
         Return Math.Min(calcPre, maxPre)
     End Function
 
@@ -1199,8 +1228,11 @@ Public Class Farm
         'Todo 20110524 - add checking here
         myMilkingHerd.setMilkSolids(values)
     End Sub
+    Public Sub setCow_BC(ByVal values As Double())
+        myMilkingHerd.setCow_BC(values)
+    End Sub
 
-    Public Function getMilkSolids() As Double()
+    Public Function getMilkSolids() As String
         Return myMilkingHerd.getMilkSolids()
     End Function
 
@@ -1209,7 +1241,7 @@ Public Class Farm
         myMilkingHerd.setLiveWeight(values)
     End Sub
 
-    Public Function getLiveWeight() As Double()
+    Public Function getLiveWeight() As String
         Return myMilkingHerd.getLiveWeight()
     End Function
 
@@ -1289,7 +1321,7 @@ Public Class Farm
             For Each pdk As PaddockWrapper In myPaddocks
                 pdk.Area = newArea
             Next
-            Dim lArea As Double = FarmArea * myPorportionOfFarmInLaneWays / myLanewayPaddocks.Count
+            Dim lArea As Double = FarmArea * myProportionOfFarmInLaneWays / myLanewayPaddocks.Count
             For Each pdk As PaddockWrapper In myLanewayPaddocks
                 pdk.Area = lArea
             Next
@@ -1305,7 +1337,7 @@ Public Class Farm
         Console.WriteLine("             Stocking Rate           " & StockingRate & " cows/ha")
         Console.WriteLine("             Calving Date            ")
         Console.WriteLine("             Paddock Count           " & PaddockCount())
-        Console.WriteLine("             Winter Off Dry Stock    " & WinterOffDryStock.ToString)
+        Console.WriteLine("             Winter Off Dry Stock    " & boolWinterOffDryStock.ToString)
         Console.WriteLine("     Grazing Management")
         Console.WriteLine("             Residules               " & GrazingResidual & " kgDM/ha")
         Console.WriteLine("             Interval                " & GrazingInterval & " days")
@@ -1374,10 +1406,18 @@ Public Class Farm
         End Set
     End Property
 
+    Property DefaultPastureMetEnergy As String
+        Get
+            Return DefaultPastureME.ToString
+        End Get
+        Set(ByVal value As String)
+            DefaultPastureME = Double.Parse(value)
+        End Set
+    End Property
+
     Public Sub setEffluent(ByVal effPond As EffluentPond, ByVal effIrrigator As EffluentIrrigator)
         myEffluentPond = effPond
         myEffluentIrrigator = effIrrigator
     End Sub
-
 
 End Class

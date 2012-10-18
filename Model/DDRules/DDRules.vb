@@ -55,13 +55,17 @@ Public Class DDRules
     Private myFarm As Farm
     Private myHerd As SimpleHerd 'local handle to the herd contained in Farm. Is this only a short term fix?
 
-    Public dairyNZ_mg As Integer() = {20, 25, 30, 40, 50, 100, 100, 80, 50, 25, 20, 20}  'jan to dec
+    'Grazing residual
     Public dairyNZ_gr As Integer() = {1600, 1600, 1600, 1500, 1400, 1200, 1200, 1400, 1500, 1500, 1500, 1500}  'june to may
     Public Val_gr As Integer() = {1600, 1600, 1600, 1600, 1600, 1200, 1200, 1600, 1600, 1600, 1600, 1600}  'june to may - altered by Val for FarmSim
+
+    'Grazing interval
+    Private dairyNZ_mg As Integer() = {20, 25, 30, 40, 50, 100, 100, 80, 50, 25, 20, 20}  'jan to dec
+
     Public default_mg As Integer() = dairyNZ_mg
     Public default_gr As Integer() = dairyNZ_gr
 
-    Dim strEffluentPaddocks() As String
+    Dim strEffluentPaddocks() As String = {"10T", "11P", "12P"}
     Dim strLanewayPaddocks() As String
     'Dim myIrrigationAmount As Double = 0
     Dim myFertiliserAmount As Double = 0
@@ -70,9 +74,40 @@ Public Class DDRules
     Private GrazingResidualIsSet As Boolean = False
     'Dim myIrrigation_efficiency As Double = 1.0
 
+    Private a As Double = 500
+    Private b As Double = 140
+
+    Private Rotation As Integer = 21
+
+    Private Live_Weight As Double = 480
+    Private ConditionScore As Double = 3
+    'Private BC As Double()
+
+
+
+    Public Function StringtoIntegerArray(ByVal strArray As String) As Integer()
+        Dim strvalues As String() = strArray.Split(",")
+        Dim dblvalues(strvalues.Length - 1) As Integer
+        For i As Integer = 0 To strvalues.Length - 1
+            dblvalues(i) = CInt(strvalues(i))
+        Next
+        Return dblvalues
+    End Function
+
+    Public Function StringtoDoubleArray(ByVal text As String) As Double()
+        Dim stringdoubles() As String = text.Split(",")
+        Dim doubleArray(stringdoubles.Length - 1) As Double
+        For i As Integer = 0 To stringdoubles.Length - 1
+            doubleArray(i) = Convert.ToDouble(stringdoubles(i))
+        Next
+        Return doubleArray
+    End Function
+
+
     Public Sub New()
         myFarm = New Farm()
         DebugLevel = myDebugLevel
+
     End Sub
 
 #Region "EventHandlers"
@@ -115,6 +150,8 @@ Public Class DDRules
             Console.WriteLine("*** DDRules OnInit2() - Get herd reference")
         End If
         myHerd = myFarm.getHerd()
+        myHerd.ReferenceCow.Live_Weight = Live_Weight
+        myHerd.ReferenceCow.ConditionScore = ConditionScore
 
         If (DebugLevel > 2) Then
             Console.WriteLine("*** DDRules OnInit2() - Test for FarmSim Components")
@@ -131,10 +168,10 @@ Public Class DDRules
         'PaddockGrazable(0) = 0 'testing removal of a paddock from the rotation i.e. for forage crops etc.
         'PaddockGrazable(2) = 0 'testing removal of a paddock from the rotation i.e. for forage crops etc.
         'myIrrigation_efficiency = 1.0
+
         If (DebugLevel > 2) Then
             Console.WriteLine("DDRules OnInit2() Complete!")
         End If
-
     End Sub
 
     <Description("Reset tracked output variables")> _
@@ -157,7 +194,7 @@ Public Class DDRules
             Console.WriteLine("   Rotation Length " & GrazingInterval.ToString)
             Console.WriteLine("   Residual " & GrazingResidual.ToString)
             Console.WriteLine("   Stocking Rate " & StockingRate.ToString)
-        End If        
+        End If
     End Sub
 
     <Description("Pasture covers pre-grazing")> _
@@ -192,7 +229,8 @@ Public Class DDRules
 
         If (MyClock.simulation_days = 0) And AllocationType = 1 Then
             'myFarm.CutToFeedWedge(GrazingResidual, GrazingInterval, MilkingCows() / FarmArea, ME_Demand_Cow / 11.5)
-            myFarm.CutToFeedWedge(GrazingResidual, 21)
+            'myFarm.CutToFeedWedge(GrazingResidual, 21)
+            myFarm.CutToFeedWedge(GrazingResidual, Rotation)
         End If
 
         myFarm.Process(is_start_week)
@@ -212,6 +250,34 @@ Public Class DDRules
     <EventHandler()> Public Sub OnApplyFertiliser(ByVal amount As FertiliserApplicationType)
         myFertiliserAmount += myFarm.Fertilise(amount, ApplyFertToEffluentPdks)
     End Sub
+
+    <Description("Default [N])")> _
+ <Output()> Public Property Default_N_Conc__() As Double
+        Get
+            Return PaddockWrapper.Default_N_Conc
+        End Get
+        Set(ByVal value As Double)
+            PaddockWrapper.Default_N_Conc = value
+        End Set
+    End Property
+    <Description("Default Digestibility)")> _
+ <Output()> Public Property Default_Digestibility__() As Double
+        Get
+            Return PaddockWrapper.Default_Digestibility
+        End Get
+        Set(ByVal value As Double)
+            PaddockWrapper.Default_Digestibility = value
+        End Set
+    End Property
+    <Description("Default Fert Application Depth")> _
+ <Output()> Public Property DefaultApplicationDepth__() As Double
+        Get
+            Return PaddockWrapper.Default_Application_Depth
+        End Get
+        Set(ByVal value As Double)
+            PaddockWrapper.Default_Application_Depth = value
+        End Set
+    End Property
 
     '<Description("Whole farm irrigation application - this will become a manager script")> _
     '<EventHandler()> Public Sub OnApplyIrrigation(ByVal amount As IrrigationApplicationType)
@@ -273,16 +339,18 @@ Public Class DDRules
     End Property
 
     <Description("Take dry stock off farm")> _
-    <Output()> <Units("")> Public Property WinterOffDryStock() As Integer
+    <Param()> <Output()> <Units("")> Public Property WinterOffDryStock__() As Integer
+    '<Description("Take dry stock off farm")> _
+        '<Output()> <Units("")> Public Property WinterOffDryStock__() As Integer
         Get
-            If (myFarm.WinterOffDryStock) Then
+            If (myFarm.boolWinterOffDryStock) Then
                 Return 1
             Else
                 Return 0
             End If
         End Get
         Set(ByVal value As Integer)
-            myFarm.WinterOffDryStock = value > 0
+            myFarm.boolWinterOffDryStock = value > 0
         End Set
     End Property
 
@@ -322,16 +390,16 @@ Public Class DDRules
             myFarm.SupplementME = 10
             myFarm.SupplementN = 0.035
             myFarm.SupplementWastage = 0.0
-            myFarm.SupplementDigestability = 0.7 ' minimum for high quality silage. Source: DairyNZ FarmFact 1-46
+            myFarm.SupplementDigestibility = 0.7 ' minimum for high quality silage. Source: DairyNZ FarmFact 1-46
         Else 'GrainOrConcentrate
             myFarm.SupplementME = 12
             myFarm.SupplementN = 0.018
             myFarm.SupplementWastage = 0.0
-            myFarm.SupplementDigestability = 0.8
+            myFarm.SupplementDigestibility = 0.8
         End If
 
         SilageStoreEnable = 0 'False 'all supplement purchase / no silage kept
-        WinterOffDryStock = 1 'all stock wintered off farm
+        WinterOffDryStock__ = 1 'all stock wintered off farm
         default_gr = Val_gr
     End Sub
 
@@ -526,12 +594,22 @@ Public Class DDRules
             Return myHerd.LWt_Change
         End Get
     End Property
-
     <Description("Averge body condition score")> _
-    <Output()> <Units("")> Public ReadOnly Property Cow_BC() As Double
+     <Output()> <Units("")> Public ReadOnly Property Cow_BC() As Double
         Get
-            Return myHerd.BC
+            Return myHerd.BC  'Reference cow ConditionScore
         End Get
+    End Property
+    <Description("Averge body condition score")> _
+    <Param()> <Output()> <Units("")> Public Property Cow_BC_ByMonth() As String
+        '<Description("Averge body condition score")> _
+        '<Output()> <Units("")> Public Property Cow_BC_ByMonth() As String
+        Get
+            Return myHerd.Cow_BC_ByMonth_
+        End Get
+        Set(ByVal value As String)
+            myFarm.setCow_BC(StringtoDoubleArray(value))
+        End Set
     End Property
 
     <Description("Is herd currently dried off")> _
@@ -613,7 +691,9 @@ Public Class DDRules
     End Property
 
     <Description("Energy content of purchased supplement")> _
-    <Output()> <Units("MJME/kgDM")> Public Property SupplementME() As Double
+    <Param()> <Output()> <Units("MJME/kgDM")> Public Property SupplementME__() As Double
+    '<Description("Energy content of purchased supplement")> _
+        '<Output()> <Units("MJME/kgDM")> Public Property SupplementME__() As Double
         Get
             Return myFarm.SupplementME
         End Get
@@ -623,7 +703,9 @@ Public Class DDRules
     End Property
 
     <Description("Nitrogen content of purchased supplement")> _
-    <Output()> <Units("kgN/kgDM")> Public Property SupplementN() As Double
+    <Param()> <Output()> <Units("kgN/kgDM")> Public Property SupplementN__() As Double
+    '<Description("Nitrogen content of purchased supplement")> _
+        '<Output()> <Units("kgN/kgDM")> Public Property SupplementN__() As Double
         Get
             Return myFarm.SupplementN
         End Get
@@ -632,18 +714,22 @@ Public Class DDRules
         End Set
     End Property
 
-    <Description("Supplment digestability")> _
-    <Output()> <Units("0-1")> Public Property SupplementDigestability() As Double
+    <Description("Supplement Digestibility")> _
+    <Param()> <Output()> <Units("0-1")> Public Property SupplementDigestibility__() As Double
+        '<Description("Supplement Digestibility")> _
+        '<Output()> <Units("0-1")> Public Property SupplementDigestibility__() As Double
         Get
-            Return myFarm.SupplementDigestability
+            Return myFarm.SupplementDigestibility
         End Get
         Set(ByVal value As Double)
-            myFarm.SupplementDigestability = value
+            myFarm.SupplementDigestibility = value
         End Set
     End Property
 
     <Description("Supplment loss at feeding out")> _
-    <Output()> <Units("%")> Public Property SupplementWastage() As Double
+    <Param()> <Output()> <Units("%")> Public Property SupplementWastage__() As Double
+    '<Description("Supplment loss at feeding out")> _
+        '<Output()> <Units("%")> Public Property SupplementWastage__() As Double
         Get
             Return myFarm.SupplementWastage * 100
         End Get
@@ -652,8 +738,108 @@ Public Class DDRules
         End Set
     End Property
 
+    <Description("Energy content of purchased supplement")> _
+    <Param()> <Output()> <Units("MJME/kgDM")> Public Property GrassSilageSupplementME__() As Double
+    '<Description("Energy content of purchased supplement")> _
+        '<Output()> <Units("MJME/kgDM")> Public Property GrassSilageSupplementME__() As Double
+        Get
+            Return myFarm.GrassSilageSupplementME
+        End Get
+        Set(ByVal value As Double)
+            myFarm.GrassSilageSupplementME = value
+        End Set
+    End Property
+
+    <Description("Nitrogen content of purchased supplement")> _
+    <Param()> <Output()> <Units("kgN/kgDM")> Public Property GrassSilageSupplementN__() As Double
+    '<Description("Nitrogen content of purchased supplement")> _
+        '<Output()> <Units("kgN/kgDM")> Public Property GrassSilageSupplementN__() As Double
+
+        Get
+            Return myFarm.GrassSilageSupplementN
+        End Get
+        Set(ByVal value As Double)
+            myFarm.GrassSilageSupplementN = value
+        End Set
+    End Property
+
+    <Description("Supplement Digestibility")> _
+    <Param()> <Output()> <Units("0-1")> Public Property GrassSilageSupplementDigestibility__() As Double
+        '<Description("Supplement Digestibility")> _
+        '<Output()> <Units("0-1")> Public Property GrassSilageSupplementDigestibility__() As Double
+        Get
+            Return myFarm.GrassSilageSupplementDigestibility
+        End Get
+        Set(ByVal value As Double)
+            myFarm.GrassSilageSupplementDigestibility = value
+        End Set
+    End Property
+
+    <Description("Supplement loss at feeding out")> _
+    <Param()> <Output()> <Units("%")> Public Property GrassSilageSupplementWastage__() As Double
+    '<Description("Supplement loss at feeding out")> _
+        '<Output()> <Units("%")> Public Property GrassSilageSupplementWastage__() As Double
+        Get
+            Return myFarm.GrassSilageSupplementWastage * 100
+        End Get
+        Set(ByVal value As Double)
+            myFarm.GrassSilageSupplementWastage = value / 100
+        End Set
+    End Property
+
+    <Description("Energy content of purchased supplement")> _
+    <Param()> <Output()> <Units("MJME/kgDM")> Public Property GrainOrConcentrateSupplementME__() As Double
+    '<Description("Energy content of purchased supplement")> _
+        '<Output()> <Units("MJME/kgDM")> Public Property GrainOrConcentrateSupplementME__() As Double
+        Get
+            Return myFarm.GrainOrConcentrateSupplementME
+        End Get
+        Set(ByVal value As Double)
+            myFarm.GrainOrConcentrateSupplementME = value
+        End Set
+    End Property
+
+    <Description("Nitrogen content of purchased supplement")> _
+    <Param()> <Output()> <Units("kgN/kgDM")> Public Property GrainOrConcentrateSupplementN__() As Double
+    '<Description("Nitrogen content of purchased supplement")> _
+        '<Output()> <Units("kgN/kgDM")> Public Property GrainOrConcentrateSupplementN__() As Double
+        Get
+            Return myFarm.GrainOrConcentrateSupplementN
+        End Get
+        Set(ByVal value As Double)
+            myFarm.GrainOrConcentrateSupplementN = value
+        End Set
+    End Property
+
+    <Description("Supplement Digestibility")> _
+    <Param()> <Output()> <Units("0-1")> Public Property GrainOrConcentrateSupplementDigestibility__() As Double
+    '<Description("Supplement Digestibility")> _
+        '<Output()> <Units("0-1")> Public Property GrainOrConcentrateSupplementDigestibility__() As Double
+        Get
+            Return myFarm.GrainOrConcentrateSupplementDigestibility
+        End Get
+        Set(ByVal value As Double)
+            myFarm.GrainOrConcentrateSupplementDigestibility = value
+        End Set
+    End Property
+
+    <Description("Supplement loss at feeding out")> _
+    <Param()> <Output()> <Units("%")> Public Property GrainOrConcentrateSupplementWastage__() As Double
+    '<Description("Supplement loss at feeding out")> _
+        '<Output()> <Units("%")> Public Property GrainOrConcentrateSupplementWastage__() As Double
+
+        Get
+            Return myFarm.GrainOrConcentrateSupplementWastage * 100
+        End Get
+        Set(ByVal value As Double)
+            myFarm.GrainOrConcentrateSupplementWastage = value / 100
+        End Set
+    End Property
+
     <Description("Proportion of silage lost during feeding out (Default = 15%, source DairyNZ)")> _
-    <Output()> <Units("0-1")> Public Property SilageWastage() As Double
+    <Param()> <Output()> <Units("0-1")> Public Property SilageWastage__() As Double
+    '<Description("Proportion of silage lost during feeding out (Default = 15%, source DairyNZ)")> _
+        '<Output()> <Units("0-1")> Public Property SilageWastage__() As Double
         Get
             Return myFarm.SilageWastage * 100
         End Get
@@ -662,18 +848,22 @@ Public Class DDRules
         End Set
     End Property
 
-    <Description("Silage digestability (could this be made read only once the store has been refactored)")> _
-    <Output()> <Units("0-1")> Public Property SilageDigestability() As Double
+    <Description("Silage Digestibility (could this be made read only once the store has been refactored)")> _
+    <Param()> <Output()> <Units("0-1")> Public Property SilageDigestibility__() As Double
+    '<Description("Silage Digestibility (could this be made read only once the store has been refactored)")> _
+        '<Output()> <Units("0-1")> Public Property SilageDigestibility__() As Double
         Get
-            Return myFarm.SilageDigestability
+            Return myFarm.SilageDigestibility
         End Get
         Set(ByVal value As Double)
-            myFarm.SilageDigestability = value
+            myFarm.SilageDigestibility = value
         End Set
     End Property
 
     <Description("proportion of pasture ME captured during silage making [default = 0.9, e.g. 12 ME pasture produces 10.8 ME silage")> _
-    <Output()> <Units("0-1")> Public Property SilageQualityModifier() As Double
+    <Param()> <Output()> <Units("0-1")> Public Property SilageQualityModifier__() As Double
+    '<Description("proportion of pasture ME captured during silage making [default = 0.9, e.g. 12 ME pasture produces 10.8 ME silage")> _
+        '<Output()> <Units("0-1")> Public Property SilageQualityModifier__() As Double
         Get
             Return myFarm.SilageQualityModifier
         End Get
@@ -681,6 +871,43 @@ Public Class DDRules
             myFarm.SilageQualityModifier = Math.Max(0, Math.Min(1, value))
         End Set
     End Property
+
+    <Description("Energy content of silage produced on farm")> _
+    <Param()> <Output()> <Units("MJME/kgDM")> Public Property SilageME__() As Double
+    '<Description("Energy content of silage produced on farm")> _
+        '<Output()> <Units("MJME/kgDM")> Public Property SilageME__() As Double
+        Get
+            Return myFarm.SilageME
+        End Get
+        Set(ByVal value As Double)
+            myFarm.SilageME = value
+        End Set
+    End Property
+
+    <Description("Nitrogen content of silage produced on farm")> _
+    <Param()> <Output()> <Units("kgN/kgDM")> Public Property SilageN__() As Double
+    '<Description("Nitrogen content of silage produced on farm")> _
+        '<Output()> <Units("kgN/kgDM")> Public Property SilageN__() As Double
+        Get
+            Return myFarm.SilageN
+        End Get
+        Set(ByVal value As Double)
+            myFarm.SilageN = value
+        End Set
+    End Property
+
+    <Description("Supplment/silage loss during cutting")> _
+    <Param()> <Output()> <Units("%")> Public Property SilageCutWastage__() As Double
+    '<Description("Supplment/silage loss during cutting")> _
+        '<Output()> <Units("%")> Public Property SilageCutWastage__() As Double
+        Get
+            Return myFarm.SilageCutWastage * 100
+        End Get
+        Set(ByVal value As Double)
+            myFarm.SilageCutWastage = value / 100
+        End Set
+    End Property
+
 #End Region
 
 #Region "3: Conservation"
@@ -695,35 +922,7 @@ Public Class DDRules
     'Last Conservation Date - uing a month for the time being
     '<Output()> <Units("")> Public LCD As Integer = 3
 
-    <Description("Energy content of silage produced on farm")> _
-    <Output()> <Units("MJME/kgDM")> Public Property SilageME() As Double
-        Get
-            Return myFarm.SilageME
-        End Get
-        Set(ByVal value As Double)
-            myFarm.SilageME = value
-        End Set
-    End Property
 
-    <Description("Nitrogen content of silage produced on farm")> _
-    <Output()> <Units("kgN/kgDM")> Public Property SilageN() As Double
-        Get
-            Return myFarm.SilageN
-        End Get
-        Set(ByVal value As Double)
-            myFarm.SilageN = value
-        End Set
-    End Property
-
-    <Description("Supplment/silage loss during cutting")> _
-    <Output()> <Units("%")> Public Property SilageCutWastage() As Double
-        Get
-            Return myFarm.SilageCutWastage * 100
-        End Get
-        Set(ByVal value As Double)
-            myFarm.SilageCutWastage = value / 100
-        End Set
-    End Property
     <Description("First Conservation Date")> _
     <Output()> <Units("")> Public Property ConservationStart() As String
         Get
@@ -1007,7 +1206,9 @@ Public Class DDRules
     ' 1) winter off dry stock
     ' 2) winter off between specific dates
     <Description("Proportion (PWO) of herd wintered off-farm (range 0-1.0)")> _
-    <Output()> <Units("0-1")> Public Property PWO() As Single
+    <Param()> <Output()> <Units("0-1")> Public Property PWO__() As Single
+    '<Description("Proportion (PWO) of herd wintered off-farm (range 0-1.0)")> _
+        '<Output()> <Units("0-1")> Public Property PWO__() As Single
         Get
             Return myFarm.PWO
         End Get
@@ -1016,7 +1217,9 @@ Public Class DDRules
         End Set
     End Property
     <Description("Date commence winter off")> _
-    <Output()> <Units("")> Public Property DCWO() As String
+    <Param()> <Output()> <Units("")> Public Property DCWO__() As String
+    '<Description("Date commence winter off")> _
+        '<Output()> <Units("")> Public Property DCWO__() As String
         Get
             Return myFarm.DCWO.ToString()
         End Get
@@ -1025,7 +1228,9 @@ Public Class DDRules
         End Set
     End Property
     <Description("Date to stop winter off")> _
-    <Output()> <Units("")> Public Property DSWO() As String
+    <Param()> <Output()> <Units("")> Public Property DSWO__() As String
+    '<Description("Date to stop winter off")> _
+        '<Output()> <Units("")> Public Property DSWO__() As String
         Get
             Return myFarm.DSWO.ToString()
         End Get
@@ -1042,12 +1247,12 @@ Public Class DDRules
     End Property
 
     <Description("Proportion of farm allocated to laneways (not grazed)")> _
-    <Output()> <Units("0-1")> Public Property PorportionOfFarmInLaneWays() As Double
+    <Output()> <Units("0-1")> Public Property ProportionOfFarmInLaneWays() As Double
         Get
-            Return myFarm.PorportionOfFarmInLaneWays()
+            Return myFarm.ProportionOfFarmInLaneWays()
         End Get
         Set(ByVal value As Double)
-            myFarm.PorportionOfFarmInLaneWays = value
+            myFarm.ProportionOfFarmInLaneWays = value
         End Set
     End Property
 
@@ -1113,6 +1318,48 @@ Public Class DDRules
             SimpleCow.DoInterpolate = (value = 1)
         End Set
     End Property
+    Private Function MyCStr(ByVal d As Integer) As String
+        Return CStr(d)
+    End Function
+    <Description("Monthly grazing intervals")> _
+    <Param()> <Output()> Public Property GrazingIntervalByMonth() As String
+    '<Description("Monthly grazing intervals")> _
+        '<Output()> Public Property GrazingIntervalByMonth() As String
+        Get
+            Dim b() As String = Array.ConvertAll(dairyNZ_mg, New Converter(Of Integer, String)(AddressOf MyCStr))
+            Dim c As String = String.Join(",", b)
+            Return c
+        End Get
+        Set(ByVal value As String)
+            dairyNZ_mg = StringtoIntegerArray(value)
+        End Set
+    End Property
+    <Description("Monthly grazing residuals")> _
+    <Param()> <Output()> Public Property GrazingResidualByMonth() As String
+    '<Description("Monthly grazing residuals")> _
+        '<Output()> Public Property GrazingResidualByMonth() As String
+        Get
+            Dim b() As String = Array.ConvertAll(dairyNZ_gr, New Converter(Of Integer, String)(AddressOf MyCStr))
+            Dim c As String = String.Join(",", b)
+            Return c
+        End Get
+        Set(ByVal value As String)
+            dairyNZ_gr = StringtoIntegerArray(value)
+        End Set
+    End Property
+    <Description("Monthly grazing residuals (Val)")> _
+        <Param()> <Output()> Public Property GrazingResidualValByMonth() As String
+    '<Description("Monthly grazing residuals (Val)")> _
+        '<Output()> Public Property GrazingResidualValByMonth() As String
+        Get
+            Dim b() As String = Array.ConvertAll(Val_gr, New Converter(Of Integer, String)(AddressOf MyCStr))
+            Dim c As String = String.Join(",", b)
+            Return c
+        End Get
+        Set(ByVal value As String)
+            Val_gr = StringtoIntegerArray(value)
+        End Set
+    End Property
 
     <Description("Control animal grazing to simulate break feeding of individual paddocks [0=No, 1=Yes]")> _
     <Param()> Property BreakFeeding() As Integer
@@ -1143,7 +1390,7 @@ Public Class DDRules
     End Property
 
     <Description("Testing: Use a moving average of daily growth to predict future growth based in past growth")> _
-    <Param()> Property GrowthRateWindowSize() As Integer
+    <Param()> <Output()> Property GrowthRateWindowSize() As Integer
         Get
             Return PaddockWrapper.MovingAverageSeriesLength
         End Get
@@ -1153,9 +1400,80 @@ Public Class DDRules
         End Set
 
     End Property
+    <Description("Surplus cover")> _
+     <Param()> <Output()> <Units("0-1")> Public Property SurplusCover() As Double
+    '<Description("Surplus cover")> _
+        '<Output()> <Units("0-1")> Public Property SurplusCover() As Double
+        Get
+            Return myFarm.Surplus
+        End Get
+        Set(ByVal value As Double)
+            myFarm.Surplus = value
+        End Set
 
-    <Description("Porportion of farm to return effluient to")> _
-    <Output()> <Units("0-1")> Public Property EffluentPaddocksPercentage() As Double
+    End Property
+    <Description("Stocking rate threshold")> _
+    <Param()> <Output()> <Units("0-1")> Public Property Stocking_Rate_Threshold__() As Double
+    '<Description("Stocking rate threshold")> _
+        '<Output()> <Units("0-1")> Public Property Stocking_Rate_Threshold__() As Double
+        Get
+            Return myFarm.Stocking_Rate_Threshold_
+        End Get
+        Set(ByVal value As Double)
+            myFarm.Stocking_Rate_Threshold_ = value
+        End Set
+    End Property
+    <Description("Pre-grazing cover target")> _
+        <Param()> <Output()> Public Property PreGrazingCoverTarget__() As Double
+    '<Description("Pre-grazing cover target")> _
+        '<Output()> Public Property PreGrazingCoverTarget__() As Double
+        Get
+            Return myFarm.PreGrazingCoverTarget
+        End Get
+        Set(ByVal value As Double)
+            myFarm.PreGrazingCoverTarget = value
+        End Set
+    End Property
+    <Description("Max pre-grazing cover target")> _
+       <Param()> <Output()> Public Property MaxPreGrazingCoverTarget__() As Double
+    '<Description("Max pre-grazing cover target")> _
+        '<Output()> Public Property MaxPreGrazingCoverTarget__() As Double
+        Get
+            Return myFarm.MaxPreGrazingCoverTarget
+        End Get
+        Set(ByVal value As Double)
+            myFarm.MaxPreGrazingCoverTarget = value
+        End Set
+    End Property
+    <Description("Simple cow live weight")> _
+       <Param()> <Output()> Public Property Live_Weight__() As Double
+    '<Description("Simple cow live weight")> _
+        '<Output()> Public Property Live_Weight__() As Double
+        Get
+            Return Live_Weight
+        End Get
+        Set(ByVal value As Double)
+            Live_Weight = value
+        End Set
+    End Property
+    <Description("Simple cow condition score")> _
+        <Param()> <Output()> Public Property ConditionScore__() As Double
+    '<Description("Simple cow condition score")> _
+        '<Output()> Public Property ConditionScore__() As Double
+        Get
+            Return ConditionScore
+        End Get
+        Set(ByVal value As Double)
+            ConditionScore = value
+        End Set
+    End Property
+
+
+
+    <Description("Proportion of farm to return effluent to")> _
+    <Param()> <Output()> <Units("0-1")> Public Property EffluentPaddocksPercentage() As Double
+    '<Description("Proportion of farm to return effluent to")> _
+        '<Output()> <Units("0-1")> Public Property EffluentPaddocksPercentage() As Double
         Get
             Return myFarm.EffluentPaddocksPercentage
         End Get
@@ -1164,6 +1482,7 @@ Public Class DDRules
         End Set
 
     End Property
+
 
     'WIP: Fire an "Graze" event when pasture is removed by DDRules
     '<[Event]()> Public Event Grazing1 As GrazeDelegate
@@ -1228,10 +1547,39 @@ Public Class DDRules
         End Get
     End Property
 
+    <Param()> <Output()> Public Property a_RPM__() As Double
+        '<Output()> Public Property a_RPM__() As Double
+        Get
+            Return a
+        End Get
+        Set(ByVal value As Double)
+            a = a_RPM__
+        End Set
+    End Property
+    <Param()> <Output()> Public Property b_RPM__() As Double
+        '<Output()> Public Property b_RPM__() As Double
+        Get
+            Return b
+        End Get
+        Set(ByVal value As Double)
+            b = b_RPM__
+        End Set
+    End Property
+    <Param()> <Output()> Public Property RotationInterval__() As Integer
+        '<Output()> Public Property RotationInterval__() As Integer
+        Get
+            Return Rotation            '
+        End Get
+        Set(ByVal value As Integer)
+            Rotation = RotationInterval__
+        End Set
+    End Property
+
     <Description("Average pasture mass across the milking platform in 'clicks'. Source 1-15 Using the Rising Plate Meter (RPM)")> _
     <Output()> <Units("kg/ha")> Public ReadOnly Property AverageCoverClicks() As Double
         Get
-            Return (myFarm.AverageCover() - 500) / 140.0
+            'Return (myFarm.AverageCover() - 500) / 140.0
+            Return (myFarm.AverageCover() - a_RPM__) / b_RPM__
         End Get
     End Property
 
@@ -1277,22 +1625,35 @@ Public Class DDRules
     'End Property
 
     <Description("Set milk production data")> _
-    <Output()> <Units("kgMS/cow/day")> Public Property MilkCurve As Double()
+    <Output()> <Units("kgMS/cow/day")> Public Property MilkCurve As String
         Get
             Return myFarm.getMilkSolids()
         End Get
-        Set(ByVal value As Double())
-            'Dim strValues As String() = value 'value.Split(New [Char]() {","c})
-            Dim values(11) As Double
-            For i As Integer = 0 To 11 'strValues.Length - 1
+        Set(ByVal value As String)
+            Dim v As Double() = strToDoubleArray(value, 12)
+            Dim values(v.Length - 1) As Double
+            For i As Integer = 0 To v.Length - 1
                 If (DebugLevel > 0) Then
-                    Console.Write("Milk Curve = " + value(i).ToString())
+                    Console.Write("Milk Curve = " + v(i).ToString())
                 End If
-                values(i) = value((i + 6) Mod 12)
+
+                values(i) = v((i + 6) Mod 12)
+
                 If (DebugLevel > 0) Then
-                    Console.WriteLine(" [ha] = " + (values(i) * StockingRate).ToString("0.00"))
+                    Console.WriteLine(" [ha] = " + (v(i) * StockingRate).ToString("0.00"))
                 End If
             Next
+            'Dim strValues As String() = value 'value.Split(New [Char]() {","c})
+            ''    Dim values(11) As Double
+            ''    For i As Integer = 0 To 11 'strValues.Length - 1
+            ''        If (DebugLevel > 0) Then
+            ''            Console.Write("Milk Curve = " + value(i).ToString())
+            ''        End If
+            ''        values(i) = value((i + 6) Mod 12)
+            ''        If (DebugLevel > 0) Then
+            ''            Console.WriteLine(" [ha] = " + (values(i) * StockingRate).ToString("0.00"))
+            ''        End If
+            ''    Next
             myFarm.setMilkSolids(values)
         End Set
     End Property
@@ -1350,16 +1711,24 @@ Public Class DDRules
             Next
         End Set
     End Property
-
+    Private Function strToDoubleArray(ByVal s As String, ByVal l As Integer) As Double()
+        Dim values(l - 1) As Double
+        Dim strValues() As String = s.Split(",")
+        For i As Integer = 0 To l - 1
+            values(i) = CDbl(strValues(i))
+        Next
+        Return values
+    End Function
     <Description("Set Live Weight Profile")> _
-    <Output()> <Units("kgMS/cow/day")> Public Property LWtCurve As Double()
+    <Output()> <Units("kg")> Public Property LWtCurve As String
         Get
             Return myFarm.getLiveWeight()
         End Get
-        Set(ByVal value As Double())
+        Set(ByVal value As String)
+            Dim v As Double() = strToDoubleArray(value, 12)
             Dim values(11) As Double
             For i As Integer = 0 To 11 'strValues.Length - 1
-                values(i) = LWtCurve((i + 6) Mod 12)
+                values(i) = v((i + 6) Mod 12)
             Next
             myFarm.setLiveWeight(values)
         End Set
@@ -1382,6 +1751,18 @@ Public Class DDRules
         End Get
         Set(ByVal value As Double)
             myFarm.DryOffProportion = value
+        End Set
+    End Property
+
+    <Description("Default pasture ME")> _
+    <Param()> <Output()> Public Property DefaultPastureMetEnergy() As String
+    '<Description("Default pasture ME")> _
+        '<Output()> Public Property DefaultPastureMetEnergy() As String
+        Get
+            Return myFarm.DefaultPastureMetEnergy
+        End Get
+        Set(ByVal value As String)
+            myFarm.DefaultPastureMetEnergy = value
         End Set
     End Property
 

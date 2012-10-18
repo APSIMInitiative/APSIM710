@@ -4,10 +4,10 @@
     '    DairyNZ farmfact 1-7 Feed requirements of dry cows (2006)
 
     Public Live_Weight As Double = 480
-    Public CondistionScore As Double = 3
+    Public ConditionScore As Double = 3
     Public MS_per_Day As Double = 0
     Public Change_in_KgLWt_per_Day As Double = 0
-    Private Change_in_CondistionScore_per_Day As Double = 0
+    Private Change_in_ConditionScore_per_Day As Double = 0
     Public Change_in_MS_per_Day As Double = 0
     'Claving Date & spread;
     'Drying off
@@ -25,6 +25,7 @@
 
     Public myExcreta As New Excreta()
     Public myTempExcreta As New Excreta()
+
 
 #Region "Output Variables - Intake"
 #Region "Output Variables - Intake - Dry Matter"
@@ -100,14 +101,15 @@
     End Property
 
     Private Month As Integer
-    'Private MilkCurve As Double() = {1.6, 1.49, 1.45, 1.3, 1.21, 0, 0.22, 1.56, 1.86, 1.95, 1.91, 1.67} 'kgMS/Day
-    'Private LWtChange As Double() = {0, 0, 0, 0, -35.0, 0, 35.0, 0, 0, 0, 0, 0} 'kg LWt/Month
     'Month	1	2	3	4	5	6	7	8	9	10	11	12
-    Private BC As Double() = {3.8, 3.9, 4.2, 4.4, 4.5, 5.1, 5, 5.1, 4, 3.8, 3.9, 3.9} 'dawn
-    'Private BC As Double() = {3.8, 3.9, 4.2, 4.4, 4.5, 5.1, 5, 5.1, 4, 3.8, 3.9, 3.9} 'dawn
+    Public BC_ByMonth As Double() = {3.8, 3.9, 4.2, 4.4, 4.5, 5.1, 5, 5.1, 4, 3.8, 3.9, 3.9} 'dawn
+
+    'Private LWtChange As Double() = {0, 0, 0, 0, -35.0, 0, 35.0, 0, 0, 0, 0, 0} 'kg LWt/Month
     Private LWt As Double() = {437, 443, 450, 458, 466, 478, 486, 463, 430, 430, 438, 442} 'dawn
-    'Private LWt As Double() = {475, 475, 476, 484, 500, 515, 531, 430, 437, 444, 451, 465} 'LUDF
+    'Private LWt As Double() = {475, 475, 476, 484, 500, 515, 531, 430, 437, 444, 451, 465} 'LUDF, Jan - Dec
+
     Private MS As Double() = {1.5, 1.33, 1.23, 1.13, 1.12, 0, 0, 0.78, 1.69, 1.94, 1.86, 1.68} 'dawn
+    'Private MilkCurve As Double() = {1.6, 1.49, 1.45, 1.3, 1.21, 0, 0.22, 1.56, 1.86, 1.95, 1.91, 1.67} 'kgMS/Day
     'Private MS(11) As Double ' = {1.6, 1.47, 1.35, 1.14, 0.73, 0, 0.01, 0.59, 1.38, 1.83, 1.87, 1.67} 'LUDF
 
     Public Sub New()
@@ -132,7 +134,7 @@
     End Sub
 
     Public Function ME_WeightChange() As Double
-        Return ME_Change_In_Liveweight(Change_in_CondistionScore_per_Day * 35)
+        Return ME_Change_In_Liveweight(Change_in_ConditionScore_per_Day * 35)
     End Function
 
     Public Function ME_Walking() As Double
@@ -240,7 +242,7 @@
             Console.WriteLine("DDRules (debug) - " & "Urine: N not a number")
         End If
 
-        Dim DM_out As Double = Total_DM_Eaten.DM_Total * (1 - Total_DM_Eaten.digestibility) 'digestability = 70% grass, 55% hay, 80% grain, time = 18-24, 30-40 & 12-14 Farm Tech manual A-154
+        Dim DM_out As Double = Total_DM_Eaten.DM_Total * (1 - Total_DM_Eaten.digestibility) 'Digestibility = 70% grass, 55% hay, 80% grain, time = 18-24, 30-40 & 12-14 Farm Tech manual A-154
         DM_to_feaces = DM_out
 
         myExcreta = New Excreta(N_to_urine, N_to_feaces, DM_to_feaces) ' this is used from reporting
@@ -284,7 +286,7 @@
         Else
             If (DoInterpolate) Then 'don't interpolate as it requires a Bézier curve or similar with modification to get the monthly averages correct
                 Live_Weight += Change_in_KgLWt_per_Day
-                CondistionScore += Change_in_CondistionScore_per_Day
+                ConditionScore += Change_in_ConditionScore_per_Day
                 MS_per_Day += Change_in_MS_per_Day
             End If
         End If
@@ -294,16 +296,17 @@
         Dim days As Integer = Date.DaysInMonth(year, mth)
         Dim indexMth As Integer = (mth + 12 - 1) Mod 12
         Live_Weight = LWt(indexMth)
-        CondistionScore = BC(indexMth)
+        ConditionScore = BC_ByMonth(indexMth)
         Dim indexMth2 As Integer = (mth + 12) Mod 12
         Dim deltaLWt As Double = LWt(indexMth2) - LWt(indexMth)
         Change_in_KgLWt_per_Day = deltaLWt / days
-        Dim deltaBC As Double = BC(indexMth2) - BC(indexMth)
-        Change_in_CondistionScore_per_Day = deltaBC / days
+        Dim deltaBC As Double = BC_ByMonth(indexMth2) - BC_ByMonth(indexMth)
+        Change_in_ConditionScore_per_Day = deltaBC / days
     End Sub
-
-    Public Function getMilkSolids() As Double()
-        Return MS
+    Public Function getMilkSolids() As String
+        Dim b() As String = Array.ConvertAll(MS, New Converter(Of Double, String)(AddressOf MyCStr))
+        Dim c As String = String.Join(",", b)
+        Return c
     End Function
 
     Public Sub setMilkSolids(ByVal values As Double())
@@ -318,12 +321,22 @@
             Console.WriteLine("    = " + MS(x).ToString("0.00"))
         Next
     End Sub
+    Public Sub setCow_BC(ByVal values As Double())
+        For i As Integer = 0 To values.Length - 1
+            BC_ByMonth(i) = values(i)
+        Next
+    End Sub
 
     Public Sub setLiveWeight(ByVal values As Double())
         LWt = values
     End Sub
-    Public Function getLiveWeight() As Double()
-        Return LWt
+    Private Function MyCStr(ByVal d As Double) As String
+        Return CStr(d)
+    End Function
+    Public Function getLiveWeight() As String
+        Dim b() As String = Array.ConvertAll(LWt, New Converter(Of Double, String)(AddressOf MyCStr))
+        Dim c As String = String.Join(",", b)
+        Return c
     End Function
 
     Private Sub setMilkProduction(ByVal year As Integer, ByVal mth As Integer)

@@ -5,7 +5,7 @@
         Supplement
     End Enum
 
-    Private ReferenceCow As SimpleCow
+    Public ReferenceCow As SimpleCow
     Private TotalCows As Double = 0
 
     Dim Total_DM_Eaten As BioMass = New BioMass()
@@ -279,7 +279,15 @@
     End Function
 
     Public Function BC() As Double
-        Return ReferenceCow.CondistionScore
+        Return ReferenceCow.ConditionScore
+    End Function
+    Private Function MyCStr(ByVal d As Double) As String
+        Return CStr(d)
+    End Function
+    Public Function Cow_BC_ByMonth_() As String
+        Dim b() As String = Array.ConvertAll(ReferenceCow.BC_ByMonth, New Converter(Of Double, String)(AddressOf MyCStr))
+        Dim c As String = String.Join(",", b)
+        Return c
     End Function
 
     Public Function Month_Of_Pregnancy() As Integer
@@ -405,19 +413,21 @@
     Public Function N_to_urine_Cow() As Double
         Return ReferenceCow.N_to_urine
     End Function
-
+    Public Sub setCow_BC(ByVal values As Double())
+        ReferenceCow.setCow_BC(values)
+    End Sub
     Public Sub setMilkSolids(ByVal values As Double())
         'Todo 20110524 - add checking here
         ReferenceCow.setMilkSolids(values)
     End Sub
-    Public Function getMilkSolids() As Double()
+    Public Function getMilkSolids() As String
         Return ReferenceCow.getMilkSolids()
     End Function
     Public Sub setLiveWeight(ByVal values As Double())
         'Todo 20110524 - add checking here
         ReferenceCow.setLiveWeight(values)
     End Sub
-    Public Function getLiveWeight() As Double()
+    Public Function getLiveWeight() As String
         Return ReferenceCow.getLiveWeight()
     End Function
 

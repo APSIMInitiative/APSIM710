@@ -29,14 +29,14 @@ Public Class PaddockWrapper
     'Lookup for indervidual pasture species
     Public PastureMasses As Dictionary(Of String, BioMass) = New Dictionary(Of String, BioMass)
 
-    Private Default_N_Conc As Double = 0.035
-    Private Default_Digestability As Double = 0.68
+    Public Shared Default_N_Conc As Double = 0.035
+    Public Shared Default_Digestibility As Double = 0.68
     Public index As Integer
     Public GrazingResidual As Double = 0
     Dim DM_Grazed As BioMass = New BioMass()
     Dim N_Feaces, C_Feaces, N_Urine As Double
     Public GrazingCounter As Integer = 0 'number of days this paddocked will be grazed for given the current rotation length
-    Dim Default_Application_Depth As Double = 300 'mm
+    Public Shared Default_Application_Depth As Double = 300 'mm
 
     Private UrinePatchComponent As Component
     Private AgPastureInstance As AgPasture '<Link()> 
@@ -306,7 +306,7 @@ Public Class PaddockWrapper
             Crop.Get("DefoliatedDigestibility", result.digestibility)
         Else
             result.N_Conc = Default_N_Conc
-            result.digestibility = Default_Digestability
+            result.digestibility = Default_Digestibility
         End If
         Return result
     End Function
