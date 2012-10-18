@@ -7,6 +7,8 @@ public class animalSection
 {
     [Input]
     ManureType WASHWATER;
+    [Input]
+    ManureType WHEATSTRAW;
     [Link]
     private Component My;
     [Param]
