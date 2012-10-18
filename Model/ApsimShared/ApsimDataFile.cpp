@@ -380,13 +380,13 @@ bool ApsimDataFile::eof(void)
 
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
-extern "C" unsigned EXPORT STDCALL newApsimDataFile
+extern "C" uintptr_t EXPORT STDCALL newApsimDataFile
    (const char* filename, unsigned filenameLength)
    {
    string fileName(filename, filenameLength);
    ApsimDataFile* dataFile = new ApsimDataFile;
    dataFile->open(fileName);
-   return (unsigned) dataFile;
+   return (uintptr_t) dataFile;
    }
 extern "C" void EXPORT STDCALL deleteApsimDataFile
    (ApsimDataFile** dataFile)

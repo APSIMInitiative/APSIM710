@@ -476,11 +476,11 @@ std::string ApsimComponentData::getInterfaceFileName(void) const
 // ------------------------------------------------------------------
 // constructor
 // ------------------------------------------------------------------
-extern "C" unsigned EXPORT STDCALL newApsimComponentData
+extern "C" uintptr_t EXPORT STDCALL newApsimComponentData
    (const char* xml, unsigned xmlLength)
    {
    string xmlString(xml, xmlLength);
-   return (unsigned) new ApsimComponentData(xmlString);
+   return (uintptr_t) new ApsimComponentData(xmlString);
    }
 extern "C" void EXPORT STDCALL deleteApsimComponentData
    (ApsimComponentData* componentData)
@@ -513,20 +513,21 @@ extern "C" void EXPORT STDCALL ApsimComponentData_getRuleNames
 
 typedef vector<string> *stringVector;
 
-// DANGER - assumes 32-bit pointers (more precisely, that a pointer
-// can be safely stored as 4-byte Fortran integer)
-extern "C" void EXPORT STDCALL ApsimComponentData_allocateRules(unsigned* handle)
+// DANGER - to allow for 64-bit pointers, we use a 64-bit "handle".
+// The calling program needs to be careful to call this with a
+// corresponding 64 bit argument
+extern "C" void EXPORT STDCALL ApsimComponentData_allocateRules(uint64_t* handle)
 {
-	*handle = unsigned(new vector<string>);
+	*handle = uint64_t(new vector<string>);
 }
 
-extern "C" void EXPORT STDCALL ApsimComponentData_deallocateRules(unsigned* handle)
+extern "C" void EXPORT STDCALL ApsimComponentData_deallocateRules(uint64_t* handle)
 {
 	delete (stringVector)*handle;
 }
 
 extern "C" void EXPORT STDCALL ApsimComponentData_loadRule
-   (unsigned* handle,
+   (uint64_t* handle,
     ApsimComponentData** componentData,
     const char* name,
 	char* condition,
@@ -542,12 +543,12 @@ extern "C" void EXPORT STDCALL ApsimComponentData_loadRule
    Split_string(contents, "\n", *(stringVector(*handle)));
    }
 extern "C" unsigned EXPORT STDCALL ApsimComponentData_getNumRuleLines
-   (unsigned* handle)
+   (uint64_t* handle)
    {
    return stringVector(*handle)->size();
    }
 extern "C" void EXPORT STDCALL ApsimComponentData_getRuleLine
-   (unsigned* handle,
+   (uint64_t* handle,
     unsigned* lineNumber,
     char* line,
     unsigned lineLength)
