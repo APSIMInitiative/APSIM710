@@ -61,12 +61,11 @@ Namespace CMPComp
         ''' <param name="messageCallback"></param>
         ''' <remarks>
         ''' ============================================================================
-        ''' Note that we are assuming that an "IntPtr" can be stored within a uint
-        ''' value. That is, we're assuming the native caller is 32-bit.
+        ''' Note that we are assuming that an "IntPtr" can be stored within a ULong value. 
         ''' This value is cast to an IntPtr, then mashalled to a delegate
         ''' ============================================================================
         ''' </remarks>
-        Public Sub New(compID As UInteger, parentCompID As UInteger, messageCallback As UInteger)
+        Public Sub New(compID As UInteger, parentCompID As UInteger, messageCallback As ULong)
             MyBase.New(compID, parentCompID, If(messageCallback = 0, Nothing, DirectCast(Marshal.GetDelegateForFunctionPointer(TMessageInterpreter.PtrCast(messageCallback), GetType(MessageFromLogic)), MessageFromLogic)))
             If messageCallback <> 0 Then
                 msgNativeDestFunction = DirectCast(Marshal.GetDelegateForFunctionPointer(TMessageInterpreter.PtrCast(messageCallback), GetType(NativeMessageFromLogic)), NativeMessageFromLogic)
@@ -142,11 +141,11 @@ Namespace CMPComp
         ''' <param name="inVal">Pointer to message that will be sent to the engine.
         ''' </param>
         ''' <remark>
-        ''' The value passed in, although described as a "uint", is actually
+        ''' The value passed in, although described as a "ULong", is actually
         ''' a pointer to a native TMsgHeader
         ''' </remark>
         ''' ==============================================================================
-        Public Overloads Sub handleMessage(inVal As UInteger)
+        Public Overloads Sub handleMessage(inVal As ULong)
             ' We need to copy the "native" message point into a managed object.
             Dim src As TNativeMsgHeader = DirectCast(Marshal.PtrToStructure(TMessageInterpreter.PtrCast(inVal), GetType(TNativeMsgHeader)), TNativeMsgHeader)
 
