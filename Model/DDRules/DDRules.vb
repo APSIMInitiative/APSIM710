@@ -86,7 +86,7 @@ Public Class DDRules
 
 
     Public Function StringtoIntegerArray(ByVal strArray As String) As Integer()
-        Dim strvalues As String() = strArray.Split(",")
+        Dim strvalues As String() = strArray.Split(New [Char]() {","c})
         Dim dblvalues(strvalues.Length - 1) As Integer
         For i As Integer = 0 To strvalues.Length - 1
             dblvalues(i) = CInt(strvalues(i))
@@ -95,7 +95,7 @@ Public Class DDRules
     End Function
 
     Public Function StringtoDoubleArray(ByVal text As String) As Double()
-        Dim stringdoubles() As String = text.Split(",")
+        Dim stringdoubles() As String = text.Split(New [Char]() {","c})
         Dim doubleArray(stringdoubles.Length - 1) As Double
         For i As Integer = 0 To stringdoubles.Length - 1
             doubleArray(i) = Convert.ToDouble(stringdoubles(i))
@@ -1326,7 +1326,7 @@ Public Class DDRules
     '<Description("Monthly grazing intervals")> _
         '<Output()> Public Property GrazingIntervalByMonth() As String
         Get
-            Dim b() As String = Array.ConvertAll(dairyNZ_mg, New Converter(Of Integer, String)(AddressOf MyCStr))
+            Dim b() As String = Array.ConvertAll(Of Integer, String)(dairyNZ_mg, New Converter(Of Integer, String)(AddressOf MyCStr))
             Dim c As String = String.Join(",", b)
             Return c
         End Get
@@ -1339,7 +1339,7 @@ Public Class DDRules
     '<Description("Monthly grazing residuals")> _
         '<Output()> Public Property GrazingResidualByMonth() As String
         Get
-            Dim b() As String = Array.ConvertAll(dairyNZ_gr, New Converter(Of Integer, String)(AddressOf MyCStr))
+            Dim b() As String = Array.ConvertAll(Of Integer, String)(dairyNZ_gr, New Converter(Of Integer, String)(AddressOf MyCStr))
             Dim c As String = String.Join(",", b)
             Return c
         End Get
@@ -1352,7 +1352,7 @@ Public Class DDRules
     '<Description("Monthly grazing residuals (Val)")> _
         '<Output()> Public Property GrazingResidualValByMonth() As String
         Get
-            Dim b() As String = Array.ConvertAll(Val_gr, New Converter(Of Integer, String)(AddressOf MyCStr))
+            Dim b() As String = Array.ConvertAll(Of Integer, String)(Val_gr, New Converter(Of Integer, String)(AddressOf MyCStr))
             Dim c As String = String.Join(",", b)
             Return c
         End Get
@@ -1713,7 +1713,7 @@ Public Class DDRules
     End Property
     Private Function strToDoubleArray(ByVal s As String, ByVal l As Integer) As Double()
         Dim values(l - 1) As Double
-        Dim strValues() As String = s.Split(",")
+        Dim strValues() As String = s.Split(New [Char]() {","c})
         For i As Integer = 0 To l - 1
             values(i) = CDbl(strValues(i))
         Next

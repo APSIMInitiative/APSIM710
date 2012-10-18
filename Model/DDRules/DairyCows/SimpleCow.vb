@@ -304,7 +304,7 @@
         Change_in_ConditionScore_per_Day = deltaBC / days
     End Sub
     Public Function getMilkSolids() As String
-        Dim b() As String = Array.ConvertAll(MS, New Converter(Of Double, String)(AddressOf MyCStr))
+        Dim b() As String = Array.ConvertAll(Of Double, String)(MS, New Converter(Of Double, String)(AddressOf MyCStr))
         Dim c As String = String.Join(",", b)
         Return c
     End Function
@@ -334,7 +334,7 @@
         Return CStr(d)
     End Function
     Public Function getLiveWeight() As String
-        Dim b() As String = Array.ConvertAll(LWt, New Converter(Of Double, String)(AddressOf MyCStr))
+        Dim b() As String = Array.ConvertAll(Of Double, String)(LWt, New Converter(Of Double, String)(AddressOf MyCStr))
         Dim c As String = String.Join(",", b)
         Return c
     End Function

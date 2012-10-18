@@ -285,7 +285,7 @@
         Return CStr(d)
     End Function
     Public Function Cow_BC_ByMonth_() As String
-        Dim b() As String = Array.ConvertAll(ReferenceCow.BC_ByMonth, New Converter(Of Double, String)(AddressOf MyCStr))
+        Dim b() As String = Array.ConvertAll(Of Double, String)(ReferenceCow.BC_ByMonth, New Converter(Of Double, String)(AddressOf MyCStr))
         Dim c As String = String.Join(",", b)
         Return c
     End Function
