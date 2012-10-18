@@ -3,6 +3,7 @@
 #define MessageH
 
 #include <General/platform.h>
+#include <stdint.h>
 
 namespace protocol
    {

@@ -11,7 +11,7 @@ static const unsigned MAX_MESSAGE_SIZE = 15000;
 
 void freeMsgPtr(Message** aMsgPtr) {delete [] aMsgPtr;} // Requires use of array delete
 boost::thread_specific_ptr<int> runningMessageIDPtr;
-boost::thread_specific_ptr<unsigned> nextFreeMessagePtr;
+boost::thread_specific_ptr<uintptr_t> nextFreeMessagePtr;
 boost::thread_specific_ptr<Message*> msgPtr(freeMsgPtr);
 // ------------------------------------------------------------------
 //  Short description:
@@ -31,7 +31,7 @@ void initMessages(void)
            for (unsigned messageI = 0; messageI < MAX_NUM_MESSAGES; messageI++)
              messages[messageI] = (Message*) new char[MAX_MESSAGE_SIZE];
 		   runningMessageIDPtr.reset(new int(0));
-		   nextFreeMessagePtr.reset(new unsigned(0));
+		   nextFreeMessagePtr.reset(new uintptr_t(0));
 	   }
 }
 
@@ -81,7 +81,7 @@ Message EXPORT * constructMessage(MessageType messageType,
    {
    Message* message;
    Message** messages = msgPtr.get();
-   unsigned & nextFreeMessage = *nextFreeMessagePtr;
+   uintptr_t & nextFreeMessage = *nextFreeMessagePtr;
    int & runningMessageID = *runningMessageIDPtr;
    if (nextFreeMessage > MAX_NUM_MESSAGES)
       {
@@ -104,7 +104,7 @@ Message EXPORT * constructMessage(MessageType messageType,
    message->toAcknowledge = acknowledgementRequired;
    message->nDataBytes    = numDataBytes;
    if (numDataBytes > 0)
-      message->dataPtr = ((char*)&message->dataPtr) + 4;
+      message->dataPtr = ((char*)&(message->dataPtr)) + sizeof(void*);
 
    else
       message->dataPtr = NULL;
@@ -113,7 +113,7 @@ Message EXPORT * constructMessage(MessageType messageType,
 
 void EXPORT deleteMessage(Message* message)
    {
-   unsigned & nextFreeMessage = *nextFreeMessagePtr;
+   uintptr_t & nextFreeMessage = *nextFreeMessagePtr;
    if (message->nDataBytes > MAX_MESSAGE_SIZE - sizeof(Message))
       delete [] message;
    else
