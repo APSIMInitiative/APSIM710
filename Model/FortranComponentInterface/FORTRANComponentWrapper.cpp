@@ -1632,10 +1632,11 @@ extern "C" void EXPORT STDCALL change_component_order
 // ------------------------------------------------------------------
 extern "C" double EXPORT STDCALL string_to_float(const char* str, bool* ok, unsigned strLength)
 {
-	const unsigned MAX_CHARS=30;
+	const size_t MAX_CHARS=30;
 	char buf[MAX_CHARS + 1];
+        memset(buf, 0, MAX_CHARS + 1);
 	char* endPtr;
-	int nChars = min(MAX_CHARS, strLength);
+	size_t nChars = min(MAX_CHARS, (size_t)strLength);
 	memcpy(buf, str, nChars);
 	buf[nChars] = '\0';
 	double result = strtod(buf, &endPtr);

@@ -128,7 +128,7 @@ module ComponentInterfaceModule
       function get_componentData( )
       ml_external get_componentData
 !STDCALL(get_componentData)
-      integer :: get_componentData
+      integer*8 :: get_componentData
       end function
 
       function get_componentID( )
@@ -140,13 +140,13 @@ module ComponentInterfaceModule
       subroutine apsimcomponentdata_allocaterules(handle)
       ml_external ApsimComponentData_allocateRules
 !STDCALL(apsimcomponentdata_allocaterules)
-      integer, intent(out) :: handle
+      integer*8, intent(out) :: handle
       end subroutine
 
       subroutine apsimcomponentdata_deallocaterules(handle)
       ml_external ApsimComponentData_deallocateRules
 !STDCALL(apsimcomponentdata_deallocaterules)
-      integer, intent(in) :: handle
+      integer*8, intent(in) :: handle
       end subroutine
 	  
       subroutine apsimcomponentdata_getrulenames(componentData,      &
@@ -155,7 +155,7 @@ module ComponentInterfaceModule
                                                  numRules)
       ml_external ApsimComponentData_getRuleNames
 !STDCALL(ApsimComponentData_getRuleNames)
-      integer, intent(in)          :: componentData
+      integer*8, intent(in)          :: componentData
       character(len=*), intent(in) :: ruleNames(*)
       integer, intent(in)          :: maxNumRules
       integer, intent(in)          :: numRules
@@ -167,8 +167,8 @@ module ComponentInterfaceModule
                                              condition)
       ml_external ApsimComponentData_loadRule
 !STDCALL(ApsimComponentData_loadRule)
-      integer, intent(in)          :: ruleHandle
-      integer, intent(in)          :: componentData
+      integer*8, intent(in)          :: ruleHandle
+      integer*8, intent(in)          :: componentData
       character(len=*), intent(in) :: ruleNames(*)
       character(len=*), intent(in out) :: condition
       end subroutine
@@ -177,13 +177,13 @@ module ComponentInterfaceModule
       ml_external ApsimComponentData_getNumRuleLines
 !STDCALL(ApsimComponentData_getNumRuleLines)
       integer :: apsimcomponentdata_getnumrulelines
-      integer, intent(in)          :: ruleHandle
+      integer*8, intent(in)          :: ruleHandle
       end function
 
       subroutine ApsimComponentData_getRuleLine(ruleHandle, lineNumber, Line)
       ml_external ApsimComponentData_getRuleLine
 !STDCALL(ApsimComponentData_getRuleLine)
-      integer, intent(in)          :: ruleHandle
+      integer*8, intent(in)          :: ruleHandle
       integer, intent(in) :: lineNumber
       character(len=*), intent(in out) :: line
       end subroutine

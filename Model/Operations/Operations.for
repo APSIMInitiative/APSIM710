@@ -41,7 +41,7 @@
          character  op_text(max_ops)*(record_length)
          character phase_name(3)*10
          integer last_record
-         integer rule
+         integer*8 rule
 
       end type OperatnsGlobals
 
@@ -319,7 +319,6 @@
       character  Line*(record_length) ! line from an operations file
 *      integer    recno                ! record number for direct
                                       ! access file
-      integer rule_object             ! C++ rule object
       logical ok                      ! created object ok?
       integer Line_number             ! line number
       integer num_lines               ! number of lines in memo

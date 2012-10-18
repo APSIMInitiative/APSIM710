@@ -187,7 +187,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
          integer line_number            ! line number in section to read from.
          integer num_lines              ! number of lines in section
-         integer rule                   ! C++ RULE object containing all lines in section
+         integer*8 rule                   ! C++ RULE object containing all lines in section
 
          logical lines_been_read        ! have any lines been read so far?
 

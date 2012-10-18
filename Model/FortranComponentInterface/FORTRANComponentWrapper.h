@@ -64,7 +64,7 @@ class FortranWrapper : public protocol::Component
          {FString(n, nLength, EmptyString) = getFQName().c_str();}
       unsigned get_componentID(void) {return componentID;}
       unsigned get_parentID(void)    {return parentID;}
-      uintptr_t get_componentData(void) {return (uintptr_t)componentData;}
+      uint64_t get_componentData(void) {return (uint64_t)componentData;}
 
       bool get_set_variable_success(void)
          {
