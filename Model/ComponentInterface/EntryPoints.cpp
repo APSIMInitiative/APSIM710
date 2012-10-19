@@ -16,26 +16,26 @@ extern "C" void EXPORT STDCALL createInstance
    (const char* dllFileName,
     const unsigned int* compID,
     const unsigned int* parentID,
-    unsigned int* instanceNumber,
-    const unsigned int* callbackArg,
+    uintptr_t * instanceNumber,
+    const uintptr_t* callbackArg,
     protocol::CallbackType* callback)
    {
    protocol::Component* component;
    component = ::createComponent();
    component->setup(dllFileName, *compID, *parentID, callbackArg, callback);
-   *instanceNumber = (unsigned) component;
+   *instanceNumber = (uintptr_t) component;
    }
 // ------------------------------------------------------------------
 // The PM is instructing us to delete an instance of our data.
 // ------------------------------------------------------------------
-extern "C" void EXPORT STDCALL deleteInstance (unsigned* instanceNumber)
+extern "C" void EXPORT STDCALL deleteInstance (uintptr_t* instanceNumber)
    {
    delete (protocol::Component*) *instanceNumber;
    }
 // ------------------------------------------------------------------
 // All messages to component go through here.
 // ------------------------------------------------------------------
-extern "C" void EXPORT STDCALL messageToLogic (unsigned* instanceNumber,
+extern "C" void EXPORT STDCALL messageToLogic (uintptr_t* instanceNumber,
                                                   Message* message,
                                                   bool* processed)
    {
@@ -55,8 +55,9 @@ extern "C" void EXPORT STDCALL getDescriptionInternal(char* initScript,
 
    // create an instance of the module.
    unsigned dummy = 0;
-   unsigned instanceNumber = 0;
-   createInstance(dllFileName.c_str(), &dummy, &dummy, &instanceNumber, &dummy, NULL);
+   uintptr_t instanceNumber = 0;
+   uintptr_t dummy2 = 0;
+   createInstance(dllFileName.c_str(), &dummy, &dummy, &instanceNumber, &dummy2, NULL);
 
    // call init1.
    Message* init1Message = newInit1Message(0, 0, initScript, instanceName.c_str(), true);
