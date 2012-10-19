@@ -38,17 +38,17 @@ class Component;
 class Variants;
 struct QueryValueData;
 
-extern "C" void EXPORT STDCALL messageToLogic (unsigned* instanceNumber,
+extern "C" void EXPORT STDCALL messageToLogic (uintptr_t* instanceNumber,
                                                   Message* message,
                                                   bool* processed);
-typedef EXPORT void (STDCALL CallbackType)(const unsigned int *compInst, Message *message);
+typedef EXPORT void (STDCALL CallbackType)(const uintptr_t *compInst, Message *message);
 extern "C" void EXPORT STDCALL createInstance(const char* dllFileName,
                                          const unsigned int* compID,
                                          const unsigned int* parentID,
-                                         unsigned int* instanceNumber,
-                                         const unsigned int* callbackArg,
+                                         uintptr_t* instanceNumber,
+                                         const uintptr_t* callbackArg,
                                          CallbackType* callback);
-void callCallback(const unsigned int* callbackArg,
+void callCallback(const uintptr_t* callbackArg,
                    CallbackType* messageCallback,
                    Message* message);
 
@@ -196,7 +196,7 @@ class EXPORT Component
       ScienceAPI& scienceAPI() {return *api;}
 
       // Add a registration.
-      unsigned addRegistration(EventTypeCode kind,
+      uintptr_t addRegistration(EventTypeCode kind,
                                int destID,
                                const char *name,
                                const char *ddml)
@@ -204,7 +204,7 @@ class EXPORT Component
          return (addRegistration(kind, destID, name, ddml, string("")));
          };
 
-      unsigned addRegistration(EventTypeCode kind,
+      uintptr_t addRegistration(EventTypeCode kind,
                                int destID,
                                const std::string& name,
                                const std::string& ddml)
@@ -212,7 +212,7 @@ class EXPORT Component
          return (addRegistration(kind, destID, name, ddml, string("")));
          };
 
-      unsigned addRegistration(EventTypeCode kind,
+      uintptr_t addRegistration(EventTypeCode kind,
                                int destID,
                                const FString& name,
                                const FString& ddml)
@@ -224,7 +224,7 @@ class EXPORT Component
                                  string("")));
          };
 
-      unsigned addRegistration(EventTypeCode kind,
+      uintptr_t addRegistration(EventTypeCode kind,
                                int destID,
                                const FString& name,
                                const Type& type,
@@ -237,14 +237,14 @@ class EXPORT Component
                                  asString(alias)));
          };
 
-      unsigned addRegistration(EventTypeCode kind,
+      uintptr_t addRegistration(EventTypeCode kind,
                                int destID,
                                const std::string& name,
                                const std::string& ddml,
                                const std::string& alias);
 
       void deleteRegistration(EventTypeCode kind,
-                              unsigned int regID);
+                              uintptr_t regID);
 
       std::string getProperty(const std::string &a, const std::string &b) const
          {
@@ -388,11 +388,17 @@ class EXPORT Component
       virtual void messageToLogic(/*const*/ Message* message);
 
       // Put here so that unit tests can call it.
+      //void setup(const char *dllname,
+      //           const unsigned int componentid,
+      //           const unsigned int parentid,
+      //           const uintptr_t* callbackarg,
+      //           void* messagecallback);
       void setup(const char *dllname,
                  const unsigned int componentid,
                  const unsigned int parentid,
-                 const unsigned int* callbackarg,
-                 void* messagecallback);
+                 const uintptr_t* callbackarg,
+                 CallbackType messagecallback);
+
    protected:
       int componentID;
       int parentID;
@@ -436,11 +442,11 @@ class EXPORT Component
             waitForComplete();
          deleteMessage(message);
          }
-      ApsimRegistration *getRegistration(int fromID, unsigned int regID);
-      EventTypeCode getRegistrationType(unsigned int regID);
-      void getRegistrationName(int fromID, unsigned int regID, std::string &);
+      ApsimRegistration *getRegistration(int fromID, uintptr_t regID);
+      EventTypeCode getRegistrationType(uintptr_t regID);
+      void getRegistrationName(int fromID, uintptr_t regID, std::string &);
       bool getSetVariableSuccess(void) {return setVariableSuccess;}
-      void setVariableError(unsigned int regID);
+      void setVariableError(uintptr_t regID);
       void writeStringToStream(const std::string& lines, std::ostream& out,
                                const std::string& componentName);
 
@@ -469,14 +475,8 @@ class EXPORT Component
       UInt2SetInfoMap setVarMap;                  // List of variables we can send to system
       UInt2EventMap eventMap;                  // List of events we handle
 
-      const unsigned int* callbackArg;
+      const uintptr_t* callbackArg;
       CallbackType* messageCallback;
-
-      void setup(const char *dllname,
-                 const unsigned int componentid,
-                 const unsigned int parentid,
-                 const unsigned int* callbackarg,
-                 CallbackType messagecallback);
 
       void addReturnValueMessage(ReturnValueData &returnData);
       void clearReturnInfos(void);
@@ -508,7 +508,7 @@ class EXPORT Component
  public:
       // Get a variable from the system (into basic C datatypes)
       template <class T>
-      bool getVariable(unsigned int regId,
+      bool getVariable(uintptr_t regId,
                        T& value,
                        double lower,
                        double upper,
@@ -554,7 +554,7 @@ class EXPORT Component
          }
 
       template <class T>
-      bool getVariable(unsigned int regId,
+      bool getVariable(uintptr_t regId,
                        std::vector<T>& values,
                        double lower,
                        double upper,

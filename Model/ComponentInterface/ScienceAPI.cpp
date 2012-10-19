@@ -12,7 +12,7 @@ bool StringConverter(protocol::Component* component, const string& name,
    {
    // 1. Convert it
    try {to = boost::lexical_cast<T> (from); }
-   catch(boost::bad_lexical_cast &e)
+   catch(boost::bad_lexical_cast & /* e */)
       {
       string msg = string("Problem converting variable to ") +
                    typeid(T).name() + " type.\n"
@@ -47,7 +47,7 @@ bool StringConverter(protocol::Component* component, const string& name,
      {
      T value;
      try {value = boost::lexical_cast<T> (strings[i]); }
-     catch(boost::bad_lexical_cast &e)
+     catch(boost::bad_lexical_cast & /* e */)
         {
         string msg = string("Problem converting variable to vector<") +
                      typeid(T).name() + "> type.\n"

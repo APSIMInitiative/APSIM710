@@ -129,7 +129,7 @@ void Component::clearReturnInfos(void)
 void Component::setup(const char *dllname,
 					  const unsigned int componentid,
 					  const unsigned int parentid,
-					  const unsigned int* callbackarg,
+					  const uintptr_t* callbackarg,
 					  CallbackType messagecallback)
    {
    dllName = dllname;
@@ -322,7 +322,7 @@ char* GetVerInfoString(const char * filename, const char* field)
     if (VerQueryValue(VersionInfoBuf, "\\VarFileInfo\\Translation", &ptr, (PUINT)&retLen) && retLen >= 4)
     {
       char temp[33];
-      unsigned Info = *(unsigned *)ptr;
+      uintptr_t Info = *(uintptr_t *)ptr;
       Info = (Info >> 16) | ((Info & 0xffff) << 16);
       sprintf(temp, "%8.8X", Info);
       buffer += temp;
@@ -400,17 +400,17 @@ void Component::doInit1(const Init1Data& init1Data)
 // add a registration
 // ------------------------------------------------------------------
 // new name: RegisterWithPM
-unsigned Component::addRegistration(EventTypeCode kind,
+uintptr_t Component::addRegistration(EventTypeCode kind,
                                     int destinationComponentID,
                                     const std::string& regName,
                                     const std::string& ddml,
                                     const std::string& alias)
    {
    ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
-   size_t regID;
+   uintptr_t regID;
    ApsimRegistration *reg = registry.find(kind, componentID, destinationComponentID, regName);
    if (reg != NULL)
-       regID = (size_t) reg;
+       regID = (uintptr_t) reg;
    else
       {
       reg = registry.createNativeRegistration(kind,
@@ -439,7 +439,7 @@ unsigned Component::addRegistration(EventTypeCode kind,
 // delete the specified registration.
 // ------------------------------------------------------------------
 void Component::deleteRegistration(EventTypeCode kind,
-								   unsigned int regID)
+								   uintptr_t regID)
    {
    sendMessage(newDeregisterMessage(componentID,
 									parentID,
@@ -717,7 +717,7 @@ bool Component::componentIDToName(int compID, std::string& name)
 void Component::onQuerySetValueMessage(unsigned fromID, QuerySetValueData& querySetData, unsigned msgID)
    {
    bool ok = respondToSet(fromID, querySetData);
-   unsigned int regID = querySetData.ID;
+   uintptr_t regID = querySetData.ID;
 //cout << "Component::onQuerySetValueMessage id="<<regID<<endl;
    sendMessage(newReplySetValueSuccessMessage
 				  (componentID,
@@ -843,7 +843,7 @@ void Component::writeStringToStream(const std::string& lines, ostream& out,
 //    DPH 7/6/2001
 
 // ------------------------------------------------------------------
-EventTypeCode Component::getRegistrationType(unsigned int regID)
+EventTypeCode Component::getRegistrationType(uintptr_t regID)
    {
    return (getRegistration(componentID, regID)->getTypeCode());
    }
@@ -857,7 +857,7 @@ EventTypeCode Component::getRegistrationType(unsigned int regID)
 //    DPH 7/6/2001
 
 // ------------------------------------------------------------------
-ApsimRegistration* Component::getRegistration(int fromID, unsigned int regID)
+ApsimRegistration* Component::getRegistration(int fromID, uintptr_t regID)
    {
    ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
    EventTypeCode types[] = {::get, ::set, ::respondToGet, ::respondToSet,
@@ -874,7 +874,7 @@ ApsimRegistration* Component::getRegistration(int fromID, unsigned int regID)
    throw std::runtime_error(msg);
    }
 
-void Component::getRegistrationName(int fromID, unsigned int regID, std::string &name)
+void Component::getRegistrationName(int fromID, uintptr_t regID, std::string &name)
    {
    name = getRegistration(fromID, regID)->getName();
    }
@@ -886,7 +886,7 @@ void Component::getRegistrationName(int fromID, unsigned int regID, std::string 
 //  Changes:
 //    dph 6/3/2001
 // ------------------------------------------------------------------
-void Component::setVariableError(unsigned int regID)
+void Component::setVariableError(uintptr_t regID)
    {
    ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
    ApsimRegistration* regItem = registry.find(::set, componentID, regID);

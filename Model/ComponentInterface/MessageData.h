@@ -64,10 +64,10 @@ class EXPORT MessageData
    private:
       const char* startBuffer;
       char* currentPtr;
-      unsigned int bufferSize;
+      size_t bufferSize;
    public:
       MessageData(void) : startBuffer(NULL), currentPtr(NULL), bufferSize(0) { }
-      MessageData(char* dataPtr, unsigned int numBytes)
+      MessageData(char* dataPtr, size_t numBytes)
          : startBuffer((char*)dataPtr),
            currentPtr(dataPtr),
            bufferSize(numBytes)
@@ -93,11 +93,11 @@ class EXPORT MessageData
       size_t bytesUnRead(void) const
          {return totalBytes()-bytesRead();}
 
-      void movePtrBy(size_t numBytes)
+      void movePtrBy(ptrdiff_t numBytes)
          {
          currentPtr += numBytes;
          }
-      void copyFrom(const char* from, size_t numBytes)
+      void copyFrom(const char* from, ptrdiff_t numBytes)
          {
          memcpy(currentPtr, from, numBytes);
          currentPtr += numBytes;
