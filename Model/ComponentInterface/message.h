@@ -4,6 +4,7 @@
 
 #include <General/platform.h>
 #include <stdint.h>
+#include <stddef.h>
 
 namespace protocol
    {

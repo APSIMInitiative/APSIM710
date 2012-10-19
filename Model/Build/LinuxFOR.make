@@ -12,7 +12,7 @@ FC =  /usr/bin/gfortran
 LIBS := -L$(APSIM)/Model $(foreach lib,$(LIBS),-l$(lib)) -ldl $(LDDEBUGFLAGS)
 STATICLIBS := $(foreach library,$(STATICLIBS),$(APSIM)/Model/$(library).a)
 
-F90FLAGS= -D"ml_external=!external" -D"STDCALL(x)=GCC$$ ATTRIBUTES STDCALL :: x" -static \
+F90FLAGS= -D"ml_external=!external" -D"STDCALL(x)=GCC$$ ATTRIBUTES STDCALL :: x" -fPIC\
           -fno-underscoring -ffree-line-length-none -finit-integer=0 -finit-real=zero -finit-logical=false \
           $(F95DEBUGFLAGS) -frounding-math $(EXTRACOMPILEFLAGS)
 F90INCLUDES = 
@@ -33,7 +33,7 @@ all: $(APSIM)/Model/$(PROJECT).so
 endif
 
 ifeq ($(PROJECTTYPE),dll)
- LDFLAGS:= -static -Xlinker -Bsymbolic -Xlinker -Bsymbolic-functions -Xlinker 
+ LDFLAGS:= -Xlinker -Bsymbolic -Xlinker -Bsymbolic-functions
 all: $(APSIM)/Model/$(PROJECT).so
 endif
 
