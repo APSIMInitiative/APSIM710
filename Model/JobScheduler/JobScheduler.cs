@@ -82,7 +82,7 @@ public class JobScheduler
     /// Data items
     private bool CancelWorkerThread;
     private Thread SocketListener = null;
-    private Dictionary<string, string> Macros;
+    private Dictionary<string, string> Macros = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
     private bool SomeJobsHaveFailed = false;
     private Project Project;
     private Project Log = new Project();
@@ -182,13 +182,12 @@ public class JobScheduler
             T.NeedToRun = true;
         }
 
-        if (Macros == null)
-            Macros = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
-
         // Add built-in macros.
         string APSIMRootDirectory = Path.GetFullPath(Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)));
-        Macros.Add("APSIM", APSIMRootDirectory);
-        Environment.SetEnvironmentVariable("APSIM", APSIMRootDirectory);
+		if (!Macros.ContainsKey("APSIM")) 
+		   Macros.Add("APSIM", APSIMRootDirectory);
+		if (Environment.GetEnvironmentVariable("APSIM") == null)
+           Environment.SetEnvironmentVariable("APSIM", APSIMRootDirectory);
 
         // Create a log project where we'll store all finished jobs - in order.
         Log.Targets.Add(new Target());
@@ -502,10 +501,7 @@ public class JobScheduler
 
         else if (CommandBits.Length == 3 && CommandBits[0] == "AddVariable")
         {
-            if (Macros.ContainsKey(CommandBits[1]))
-                Macros[CommandBits[1]] = CommandBits[2];
-            else
-                Macros.Add(CommandBits[1], CommandBits[2]);
+			AddVariable(CommandBits[1], CommandBits[2]);
         }
         else if (CommandBits.Length == 2 && CommandBits[0] == "GetVariable")
         {
@@ -535,6 +531,12 @@ public class JobScheduler
         return "OK";
     }
 
-
+	public void AddVariable (string key, string value) 
+	{
+	   if (Macros.ContainsKey(key))
+           Macros[key] = value;
+       else
+           Macros.Add(key, value);
+	}
 
 }

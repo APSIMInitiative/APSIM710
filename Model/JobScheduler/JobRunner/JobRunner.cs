@@ -92,33 +92,24 @@ class JobRunner
                     Thread.Sleep(500);  // wait a half second.
                 NumServerConnectErrors = 0;
             }
+            catch (SocketException e)
+            {
+                NumServerConnectErrors++;
+                if (e.ErrorCode == 10061 /* WSAECONNREFUSED */)
+                   ESCWasPressed = true; // Get out of here - the other end has disappeared
+                else
+                   Console.WriteLine("Socket error: " + e.Message);
+            }
             catch (Exception err)
             {
-                if (err.Message.Contains("Unable to read data from the transport connection:") ||
-                    err.Message.Contains("No connection could be made"))
-                    NumServerConnectErrors++;
-
-                if (AutoClose && NumServerConnectErrors > 2)
-                {
-                    ESCWasPressed = true;
-                    Utility.SocketSend(Macros["Server"], Convert.ToInt32(Macros["Port"]), "Error~" + err.Message);
-                }
-                else
-                {
+                    Console.WriteLine(Macros["server"] + ":" + Macros["Port"] + " - " + err.Message);
                     Console.WriteLine("Waiting for server");
                     Thread.Sleep(5000);
-                }
             }
-
-            Thread.Sleep(500);
-
-            // Poll for a keypress. If it is the ESC key, then signal a shutdown.
-            //if (Console.KeyAvailable)
-            //{
-            //    ConsoleKeyInfo key = Console.ReadKey();
-            //    if (key.Key == ConsoleKey.Escape)
-            //        ESCWasPressed = true;
-            //}
+            if (AutoClose && NumServerConnectErrors > 2)
+            {
+                ESCWasPressed = true;
+            }
         }
         // Kill all jobs.
         foreach (Job J in Jobs)
@@ -140,7 +131,6 @@ class JobRunner
                 FinishedJobs.Add(Jobs[i]);
             }
         }
-
         if (FinishedJobs != null)
         {
             XmlSerializer x = new XmlSerializer(typeof(List<Job>));
@@ -203,34 +193,21 @@ class JobRunner
     private static List<Job> GetNextJobToRun(Dictionary<string, string> Macros, int NumJobs)
     {
         string Response = Utility.SocketSend(Macros["Server"],
-                                                Convert.ToInt32(Macros["Port"]),
-                                                "GetJob~" + NumJobs.ToString());
+                                      Convert.ToInt32(Macros["Port"]),
+                                      "GetJob~" + NumJobs.ToString());
         if (Response == null || Response == "NULL")
             return null;
-        else
-        {
-            try
+
+        XmlSerializer x = new XmlSerializer(typeof(List<Job>));
+        StringReader s = new StringReader(Response);
+        List<Job> Jobs = x.Deserialize(s) as List<Job>;
+        foreach (Job J in Jobs)
             {
-                XmlSerializer x = new XmlSerializer(typeof(List<Job>));
-                StringReader s = new StringReader(Response);
-                List<Job> Jobs = x.Deserialize(s) as List<Job>;
-                foreach (Job J in Jobs)
-                {
-                    J.CommandLine = J.CommandLine.Replace("%Server%", Macros["server"]);
-                    if (J.CommandLineUnix != null)
-                        J.CommandLineUnix = J.CommandLineUnix.Replace("%Server%", Macros["server"]);
-                }
-                return Jobs;
+            J.CommandLine = J.CommandLine.Replace("%Server%", Macros["server"]);
+            if (J.CommandLineUnix != null)
+                J.CommandLineUnix = J.CommandLineUnix.Replace("%Server%", Macros["server"]);
             }
-            catch (Exception)
-            {
-                throw new Exception("Response from JobScheduler while asking for new jobs: " + Response);
-            }
-        }
+        return Jobs;
     }
-
-
-
-
 }
 

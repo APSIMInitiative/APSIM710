@@ -441,9 +441,10 @@ namespace CSGeneral
         public static string SocketSend(string ServerName, int Port, string Data)
         {
             string Response = null;
-            TcpClient Server = new TcpClient(ServerName, Convert.ToInt32(Port));
+            TcpClient Server = null;
             try
             {
+                Server = new TcpClient(ServerName, Convert.ToInt32(Port));
                 Byte[] data = System.Text.Encoding.ASCII.GetBytes(Data);
                 Server.GetStream().Write(data, 0, data.Length);
 
@@ -462,7 +463,7 @@ namespace CSGeneral
             }
             finally
             {
-                Server.Close();
+                if (Server != null) Server.Close();
             }
             return Response;
         }

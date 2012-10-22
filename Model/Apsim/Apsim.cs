@@ -13,41 +13,99 @@ using System.Threading;
 
 public class Apsim
 {
-    private JobScheduler JobScheduler = null;
+    private static JobScheduler JobScheduler = null;
     private int NumJobsBeingRun = 0;
 
     /// <summary>
     /// Command line entry point.
+    /// Usage:
+    /// Run a single simulation xyz in a single file:
+    ///   Apsim.exe  <filename.[apsim,con]> Simulation=<xyz>
+	///
+	/// Run a single .sim file:
+    ///   Apsim.exe  <filename.sim>
+    /// 
+	/// Run any number of simulations in any combination of .apsim|.con|.sim files
+    ///   Apsim.exe  <file1> <file2> <file3> ....
+	/// 
+	/// The last starts a job scheduler that runs the jobs in parallel.
+	/// 
+	/// Arguments that are not files or "key=value" pairs are silently ignored
     /// </summary>
     static int Main(string[] args)
     {
         try
         {
+            Apsim Apsim = new Apsim();
             Dictionary<string, string> Macros = Utility.ParseCommandLine(args);
-            if (args.Length >= 1)
-            {
-                // Assume first argument is a filename
-                string FileName = args[0];
 
-                // The case of the file is important as the summary file names are based on it. So we
-                // can't rely on the user getting the case of argument right. Check the file system.
-                FileName = Path.GetFullPath(FileName);
-                string[] Files = Directory.GetFiles(Path.GetDirectoryName(FileName), Path.GetFileName(FileName));
-                if (Files.Length != 1)
-                    throw new Exception("Cannot find file: " + FileName);
-                FileName = Files[0];
+			// Count the number of files in the argument list
+			string FileName = "";
+			int numFiles = 0;
+			for (int i = 0; i < args.Length; i++)
+			{
+				string x = realNameOfFile(args[i]);
+				if (File.Exists(x))
+			    {
+				   FileName = x;
+				   numFiles++; 
+			    }
+			}
 
-                Apsim Apsim = new Apsim();
-
-                string SimulationName = null;
-                if (Macros.ContainsKey("Simulation"))
-                    SimulationName = Macros["Simulation"];
-
-                string FullFileName = Path.GetFullPath(FileName.Replace("\"", ""));
-                Apsim.Start(FullFileName, SimulationName);
-
+			// If they've specified a simulation name on the command line, then run just
+			// that simulation.
+            PlugIns.LoadAll();
+            if (numFiles == 1 && Macros.ContainsKey("Simulation"))
+			{
+                Apsim.NumJobsBeingRun = 1;
+				if (Path.GetExtension(FileName).ToLower() == ".apsim") 
+                    Apsim.StartAPSIM(new ApsimFile.ApsimFile(FileName), 
+				                     Macros["Simulation"]);
+				else if (Path.GetExtension(FileName).ToLower() == ".con") 
+				    Apsim.StartCON(FileName, Macros["Simulation"]);
+				
+				Apsim.WaitForAPSIMToFinish();
+			}
+			else if (numFiles == 1 && Path.GetExtension(FileName) == ".sim")
+			{
+                Apsim.NumJobsBeingRun = 1;
+				Apsim.StartSIM(FileName);
                 Apsim.WaitForAPSIMToFinish();
-            }
+			}
+            else 
+			{
+                // Crack open whatever files are there and start a job for
+			    // each simulation in each file
+                JobScheduler = new JobScheduler();
+                Project P = new Project();
+				Target T = new Target();
+  		        T.Name = "Apsim.exe";
+                Apsim.NumJobsBeingRun = 0;
+
+				for (int iarg = 0; iarg < args.Length; iarg++)
+	            {
+    	            // Assume each argument is a filename
+        	        string thisFileName = realNameOfFile(args[iarg]);
+					if (File.Exists(thisFileName)) 
+					{
+                    	if (Path.GetExtension(thisFileName).ToLower() == ".con")
+                        	Apsim.StartMultipleFromCON(T, thisFileName);
+                    	else if (Path.GetExtension(thisFileName).ToLower() == ".sim")
+                        	Apsim.StartMultipleSIM(T, thisFileName);
+                    	else if (Path.GetExtension(thisFileName).ToLower() == ".apsim")
+                        	Apsim.StartMultiple(T, new ApsimFile.ApsimFile(thisFileName));
+					}
+					else 
+						throw new Exception("Cant open file " + thisFileName);
+        	    }
+				P.Targets.Add(T);
+
+				// NB. The key/value macro in the jobscheduler is private - and has no direct relationship
+				// with ours. Be careful!!
+	            //JobScheduler.AddVariable("key", "value");
+                JobScheduler.Start(P);
+                JobScheduler.WaitForFinish();
+			}
         }
         catch (Exception err)
         {
@@ -57,110 +115,106 @@ public class Apsim
         return 0;
     }
 
-    /// <summary>
-    /// Code to start APSIM running all simulations in the specified file.
+	/// <summary>
+    /// Helper to return the real name of the file on disk (readlink() equivalent) - preserves
+    /// upper/lower case
     /// </summary>
-    public void Start(string FileName, string SimulationName)
-    {
-        if (Path.GetExtension(FileName).ToLower() == ".con")
-            StartMultipleFromCON(FileName, SimulationName);
-        else if (Path.GetExtension(FileName) == ".sim")
-            StartSIM(FileName);
-        else
-        {
-            PlugIns.LoadAll();
-            StartMultiple(new ApsimFile.ApsimFile(FileName),
-                          new List<string>() { SimulationName }, false);
-        }
-    }
+    public static string realNameOfFile (string filename) 
+	{
+	    string fullname = Path.GetFullPath(filename);
+		string dirName = Path.GetDirectoryName(fullname);
+		if (Directory.Exists(dirName))
+		{
+        	string[] Files = Directory.GetFiles(dirName, Path.GetFileName(fullname));
+        	if (Files.Length == 1)
+		  		return (Path.GetFullPath(Files[0].Replace("\"", "")));
+		}
+		return filename ; // probably undefined 
+	}
 
-    /// <summary>
+    public void StartMultipleFromPaths(ApsimFile.ApsimFile F, List<String> SimulationPaths)
+    {
+        JobScheduler = new JobScheduler();
+        Project P = new Project();
+        Target T = new Target();
+  		T.Name = "Apsim.exe";
+        NumJobsBeingRun = 0;
+
+        // For each path, create a job in our target.
+        string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "Apsim.exe");
+        foreach (string SimulationPath in SimulationPaths)
+        {
+            string Arguments = StringManip.DQuote(F.FileName) + " " + StringManip.DQuote("Simulation=" + SimulationPath);
+            Job J = new Job(Executable + " " + Arguments, Path.GetDirectoryName(F.FileName));
+            J.Name = SimulationPath;
+            T.Jobs.Add(J);
+            NumJobsBeingRun++;
+        }
+        P.Targets.Add(T);
+
+        JobScheduler.Start(P);
+	}
+
+	/// <summary>
     /// Code to start APSIM running multiple simulations from the specified .apsim file.
     /// </summary>
-    public void StartMultiple(ApsimFile.ApsimFile F, List<string> SimulationPaths, bool FactorialMode = false)
+    public void StartMultiple(Target T, ApsimFile.ApsimFile F)
     {
-        Project P = new Project();
-        P.Targets.Add(new Target());
-        if (FactorialMode)
-            FillProjectWithFactorialJobs(P, F, SimulationPaths);
+        if (F.FactorComponent != null)
+            FillProjectWithFactorialJobs(T, F);
         else
         {
-            // If caller hasn't specified any paths then go get all paths.
-            if (SimulationPaths[0] == null)
-            {
-                SimulationPaths = new List<String>();
-                ApsimFile.ApsimFile.ExpandSimsToRun(F.RootComponent, ref SimulationPaths);
-            }
+            // Go get all paths in the simulation.
+            List<String> SimulationPaths = new List<String>();
+            ApsimFile.ApsimFile.ExpandSimsToRun(F.RootComponent, ref SimulationPaths);
 
-            // If this is a single run of APSIM then just go run it.
-            if (SimulationPaths.Count == 1)
+            // For each path, create a job in our target.
+            string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "Apsim.exe");
+            NumJobsBeingRun = SimulationPaths.Count;
+            foreach (string SimulationPath in SimulationPaths)
             {
-                NumJobsBeingRun = 1;
-                StartAPSIM(F, SimulationPaths[0]);
-                return;
-            }
-            else
-            {
-                // For each path, create a job in our target.
-                string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "Apsim.exe");
-                NumJobsBeingRun = SimulationPaths.Count;
-                foreach (string SimulationPath in SimulationPaths)
-                {
-                    string Arguments = StringManip.DQuote(F.FileName) + " " + StringManip.DQuote("Simulation=" + SimulationPath);
-                    Job J = new Job(Executable + " " + Arguments, Path.GetDirectoryName(F.FileName));
-                    J.Name = SimulationPath;
-                    P.Targets[0].Jobs.Add(J);
-                }
+                string Arguments = StringManip.DQuote(F.FileName) + " " + StringManip.DQuote("Simulation=" + SimulationPath);
+                Job J = new Job(Executable + " " + Arguments, Path.GetDirectoryName(F.FileName));
+                J.Name = SimulationPath;
+                T.Jobs.Add(J);
+                NumJobsBeingRun++;
             }
         }
-        // Run project
-        JobScheduler = new JobScheduler();
-        JobScheduler.Start(P);
     }
 
     /// <summary>
     /// Code to start APSIM running multiple simulations from the specified .con file.
     /// </summary>
-    public void StartMultipleFromCON(string FileName, string SimulationName)
+    public void StartMultipleFromCON(Target T, string FileName)
     {
-        FileName = Path.GetFullPath(FileName); // just in case it doesn't have a directory.
-
-        if (SimulationName != null)
-            StartCON(FileName, SimulationName);
-        else
-        {
             List<string> SimulationPaths = new List<string>();
 
-            Project P = new Project();
-            P.Targets.Add(new Target());
-            // If caller hasn't specified any paths then go get all paths.
-            if (SimulationName == null)
-                SimulationPaths = ConFile.GetSimsInConFile(FileName);
+            // Go get all paths.
+             SimulationPaths = ConFile.GetSimsInConFile(FileName);
 
-            // If this is a single run of APSIM then just go run it.
-            if (SimulationPaths.Count == 1)
+            // For each path, create a job in our target.
+            string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "Apsim.exe");
+            NumJobsBeingRun = SimulationPaths.Count;
+            foreach (string SimulationPath in SimulationPaths)
             {
-                NumJobsBeingRun = 1;
-                StartCON(FileName, SimulationPaths[0]);
-                return;
+                string Arguments =  StringManip.DQuote(FileName) + " " + StringManip.DQuote("Simulation=" + SimulationPath);
+                Job J = new Job(Executable + " " + Arguments, Path.GetDirectoryName(FileName));
+                J.Name = SimulationPath;
+                T.Jobs.Add(J);
+                NumJobsBeingRun++;
             }
-            else
-            {
-                // For each path, create a job in our target.
-                string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "Apsim.exe");
-                NumJobsBeingRun = SimulationPaths.Count;
-                foreach (string SimulationPath in SimulationPaths)
-                {
-                    string Arguments =  StringManip.DQuote(FileName) + " " + StringManip.DQuote("Simulation=" + SimulationPath);
-                    Job J = new Job(Executable + " " + Arguments, Path.GetDirectoryName(FileName));
-                    J.Name = SimulationPath;
-                    P.Targets[0].Jobs.Add(J);
-                }
-            }
-            // Run project
-            JobScheduler = new JobScheduler();
-            JobScheduler.Start(P);
-        }
+    }
+    /// <summary>
+    /// Code to start APSIM running multiple simulations from the specified .sim file.
+    /// </summary>
+    public void StartMultipleSIM(Target T, string FileName)
+    {
+        string Arguments =  StringManip.DQuote(FileName);
+        string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "Apsim.exe");
+        Job J = new Job(Executable + " " + Arguments, Path.GetDirectoryName(FileName));
+        J.Name = Path.GetFileNameWithoutExtension(FileName);
+        T.Jobs.Add(J);
+        NumJobsBeingRun++;
     }
 
     #region Code to manage a single running APSIM process
@@ -173,7 +227,7 @@ public class Apsim
     /// <summary>
     /// Run a single simulation in a .apsim file
     /// </summary>
-    private void StartAPSIM(ApsimFile.ApsimFile F, string SimulationName)
+    public void StartAPSIM(ApsimFile.ApsimFile F, string SimulationName)
     {
         // store the simulation name for later.
         Component C;
@@ -196,7 +250,7 @@ public class Apsim
     /// <summary>
     /// Run a .sim file
     /// </summary>
-    private void StartSIM(string FileName)
+    public void StartSIM(string FileName)
     {
         HasExited = false;
         taskProgress = 0;
@@ -205,16 +259,19 @@ public class Apsim
         // Create a .sum
         string SumFileName = Path.ChangeExtension(FileName, ".sum");
         Sum = new StreamWriter(SumFileName);
+		
+		if (_P != null) throw new Exception("Already running a process in Apsim::StartSIM() !");
 
-        // Run the apsim process.
+		// Run the apsim process.
         _P = new Process();
-		if (Configuration.getArchitecture() == Configuration.architecture.unix) 
+		if (Configuration.getArchitecture() == Configuration.architecture.unix)
 		{
 	        string ldPath = Environment.GetEnvironmentVariable("LD_LIBRARY_PATH");
 			if (ldPath != null && ldPath.Length > 0)
 				ldPath += ":" + Configuration.ApsimBinDirectory();
 			else
 				ldPath = Configuration.ApsimBinDirectory();
+            _P.StartInfo.EnvironmentVariables.Remove("LD_LIBRARY_PATH");
             _P.StartInfo.EnvironmentVariables.Add("LD_LIBRARY_PATH", ldPath);
 		}
         _P.StartInfo.FileName = Path.Combine(Configuration.ApsimBinDirectory(), "ApsimModel.exe");
@@ -236,19 +293,35 @@ public class Apsim
     /// <summary>
     /// Run a single simulation in a .con file
     /// </summary>
-    private void StartCON(string FileName, string SimulationName)
+    public void StartCON(string FileName, string SimulationName)
     {
         // Run ConToSim first.
         string ConToSimExe = Path.Combine(Configuration.ApsimBinDirectory(), "ConToSim.exe");
-        Process ConToSim = Utility.RunProcess(ConToSimExe, 
+        Process ConToSim = Utility.RunProcess(ConToSimExe,
                                               StringManip.DQuote(FileName) + " " + StringManip.DQuote(SimulationName),
                                               Path.GetDirectoryName(FileName));
         Utility.CheckProcessExitedProperly(ConToSim);
 
         // Now run APSIM.
-        string SimFileName = Path.Combine(Path.GetDirectoryName(FileName), 
+        string SimFileName = Path.Combine(Path.GetDirectoryName(FileName),
                                           Path.GetFileNameWithoutExtension(FileName) + "." + SimulationName + ".sim");
         StartSIM(SimFileName);
+    }
+
+    /// <summary>
+    /// Find the simulations in a file with a factorial
+    /// </summary>
+    private void FillProjectWithFactorialJobs(Target T, ApsimFile.ApsimFile _F)
+    {
+        List<SimFactorItem> SimFiles = Factor.CreateSimFiles(_F, null);
+
+        string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "Apsim.exe");
+        string WorkingDirectory = Path.GetDirectoryName(_F.FileName);
+        foreach (SimFactorItem item in SimFiles)
+		{
+           T.Jobs.Add(new Job(Executable + " " + item.SimName, WorkingDirectory));
+           NumJobsBeingRun++;
+		}
     }
 
     /// <summary>
@@ -297,13 +370,13 @@ public class Apsim
                 if (Int32.TryParse(e.Data.Substring(2), out percent))
                     taskProgress = percent;
             }
-			else 
+			else
 			{
-                Sum.WriteLine(e.Data);
+                Sum.Write(e.Data);
 			}
         }
     }
-    
+
     #endregion
 
     /// <summary>
@@ -311,14 +384,12 @@ public class Apsim
     /// </summary>
     public void WaitForAPSIMToFinish()
     {
-        if (JobScheduler != null)
-            JobScheduler.WaitForFinish();
-        else
-        {
-            while (_P != null && !HasExited)
-                Thread.Sleep(200);
-        }
-    }
+        while (_P != null && !HasExited)
+		   Thread.Sleep(500);
+
+		if (JobScheduler != null)
+		   JobScheduler.WaitForFinish();
+	}
 
     #region Methods/Properties called by GUI
     /// <summary>
@@ -393,17 +464,5 @@ public class Apsim
         }
     }
     #endregion
-
-    private void FillProjectWithFactorialJobs(Project P, ApsimFile.ApsimFile _F, List<String> SimsToRun)
-    {
-        List<SimFactorItem> SimFiles = Factor.CreateSimFiles(_F, SimsToRun);
-
-        string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "Apsim.exe");
-        string WorkingDirectory = Path.GetDirectoryName(_F.FileName);
-        foreach (SimFactorItem item in SimFiles)
-            P.Targets[0].Jobs.Add(new Job(Executable + " " + item.SimName, WorkingDirectory));
-    }
-
-
 }
 
