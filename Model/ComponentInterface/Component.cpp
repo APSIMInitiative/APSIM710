@@ -47,7 +47,6 @@ Component::Component(void)
    : completeIDs(MAX_NESTED_COMPLETES)
    {
    componentData = NULL;
-   currentRegID = 0;
    beforeInit2 = true;
    beforeCommence = true;
    tick.startday = 0;
@@ -414,14 +413,16 @@ unsigned int Component::addRegistration(EventTypeCode kind,
        regID = reg->getRegID();
    else
       {
+      regID = (unsigned)Registrations.size() + 1;
       reg = registry.createNativeRegistration(kind,
                                              regName,
                                              ddml,
                                              destinationComponentID,
                                              componentID,
-											 ++currentRegID);
+											 regID);
 
-      regID = registry.add(reg);
+      registry.add(reg);
+	  Registrations.push_back(reg);
 
       sendMessage(newRegisterMessage(componentID,    // from
 									 parentID,       // to
@@ -860,21 +861,26 @@ EventTypeCode Component::getRegistrationType(unsigned int regID)
 
 // ------------------------------------------------------------------
 ApsimRegistration* Component::getRegistration(int fromID, unsigned int regID)
-   {
-   ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
-   EventTypeCode types[] = {::get, ::set, ::respondToGet, ::respondToSet,
-                            ::event, ::respondToEvent, ::respondToGetSet};
-   ApsimRegistration* reg;
-   for (int i = 0; i < 7; i++)
-     if ((reg = registry.find(types[i], fromID, regID)) != NULL)
-       return reg;
+{
+	if (fromID == componentID)
+		return getReg(regID);
+	else
+	{
+		ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
+		EventTypeCode types[] = {::get, ::set, ::respondToGet, ::respondToSet,
+			::event, ::respondToEvent, ::respondToGetSet};
+		ApsimRegistration* reg;
+		for (int i = 0; i < 7; i++)
+			if ((reg = registry.find(types[i], fromID, regID)) != NULL)
+				return reg;
 
-   string msg = "Invalid registration ID in Component::getRegistration ";
-   msg += itoa(fromID);
-   msg += ".";
-   msg += itoa(regID);
-   throw std::runtime_error(msg);
-   }
+		string msg = "Invalid registration ID in Component::getRegistration ";
+		msg += itoa(fromID);
+		msg += ".";
+		msg += itoa(regID);
+		throw std::runtime_error(msg);
+	}
+}
 
 void Component::getRegistrationName(int fromID, unsigned int regID, std::string &name)
    {

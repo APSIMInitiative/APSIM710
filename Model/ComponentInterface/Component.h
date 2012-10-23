@@ -246,8 +246,15 @@ class EXPORT Component
       void deleteRegistration(EventTypeCode kind,
                               unsigned int regID);
 
-	  ApsimRegistration *getReg(unsigned int regID) { return getRegistration(componentID, regID); }
-      std::string getProperty(const std::string &a, const std::string &b) const
+	  ApsimRegistration *getReg(unsigned int regID) 
+ 	    { 
+          if (regID <= Registrations.size())
+            return Registrations[regID - 1];
+		  else
+ 	        return NULL;
+ 	    }
+	   
+	  std::string getProperty(const std::string &a, const std::string &b) const
          {
          return componentData->getProperty(a,b);
          }
@@ -443,6 +450,10 @@ class EXPORT Component
             waitForComplete();
          deleteMessage(message);
          }
+
+	  typedef std::vector<ApsimRegistration*> Regs;
+      Regs Registrations;
+
       ApsimRegistration *getRegistration(int fromID, unsigned int regID);
       EventTypeCode getRegistrationType(unsigned int regID);
       void getRegistrationName(int fromID, unsigned int regID, std::string &);
@@ -471,7 +482,6 @@ class EXPORT Component
       bool sendTickToComponent;
       protocol::TimeType tick;
       unsigned currentMsgID;
-	  unsigned currentRegID;
 
       UInt2InfoMap getVarMap;                  // List of variables we can send to system
       UInt2SetInfoMap setVarMap;                  // List of variables we can send to system
