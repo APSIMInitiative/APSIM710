@@ -196,7 +196,7 @@ class EXPORT Component
       ScienceAPI& scienceAPI() {return *api;}
 
       // Add a registration.
-      uintptr_t addRegistration(EventTypeCode kind,
+      unsigned int addRegistration(EventTypeCode kind,
                                int destID,
                                const char *name,
                                const char *ddml)
@@ -204,7 +204,7 @@ class EXPORT Component
          return (addRegistration(kind, destID, name, ddml, string("")));
          };
 
-      uintptr_t addRegistration(EventTypeCode kind,
+      unsigned int addRegistration(EventTypeCode kind,
                                int destID,
                                const std::string& name,
                                const std::string& ddml)
@@ -212,7 +212,7 @@ class EXPORT Component
          return (addRegistration(kind, destID, name, ddml, string("")));
          };
 
-      uintptr_t addRegistration(EventTypeCode kind,
+      unsigned int addRegistration(EventTypeCode kind,
                                int destID,
                                const FString& name,
                                const FString& ddml)
@@ -224,7 +224,7 @@ class EXPORT Component
                                  string("")));
          };
 
-      uintptr_t addRegistration(EventTypeCode kind,
+      unsigned int addRegistration(EventTypeCode kind,
                                int destID,
                                const FString& name,
                                const Type& type,
@@ -237,15 +237,16 @@ class EXPORT Component
                                  asString(alias)));
          };
 
-      uintptr_t addRegistration(EventTypeCode kind,
+      unsigned int addRegistration(EventTypeCode kind,
                                int destID,
                                const std::string& name,
                                const std::string& ddml,
                                const std::string& alias);
 
       void deleteRegistration(EventTypeCode kind,
-                              uintptr_t regID);
+                              unsigned int regID);
 
+	  ApsimRegistration *getReg(unsigned int regID) { return getRegistration(componentID, regID); }
       std::string getProperty(const std::string &a, const std::string &b) const
          {
          return componentData->getProperty(a,b);
@@ -442,11 +443,11 @@ class EXPORT Component
             waitForComplete();
          deleteMessage(message);
          }
-      ApsimRegistration *getRegistration(int fromID, uintptr_t regID);
-      EventTypeCode getRegistrationType(uintptr_t regID);
-      void getRegistrationName(int fromID, uintptr_t regID, std::string &);
+      ApsimRegistration *getRegistration(int fromID, unsigned int regID);
+      EventTypeCode getRegistrationType(unsigned int regID);
+      void getRegistrationName(int fromID, unsigned int regID, std::string &);
       bool getSetVariableSuccess(void) {return setVariableSuccess;}
-      void setVariableError(uintptr_t regID);
+      void setVariableError(unsigned int regID);
       void writeStringToStream(const std::string& lines, std::ostream& out,
                                const std::string& componentName);
 
@@ -470,6 +471,7 @@ class EXPORT Component
       bool sendTickToComponent;
       protocol::TimeType tick;
       unsigned currentMsgID;
+	  unsigned currentRegID;
 
       UInt2InfoMap getVarMap;                  // List of variables we can send to system
       UInt2SetInfoMap setVarMap;                  // List of variables we can send to system
@@ -508,7 +510,7 @@ class EXPORT Component
  public:
       // Get a variable from the system (into basic C datatypes)
       template <class T>
-      bool getVariable(uintptr_t regId,
+      bool getVariable(unsigned int regId,
                        T& value,
                        double lower,
                        double upper,
@@ -521,7 +523,7 @@ class EXPORT Component
             }
          else
             {
-            ApsimRegistration *regItem = (ApsimRegistration *)regId /*getRegistration(componentID, regId)*/;
+            ApsimRegistration *regItem = getRegistration(componentID, regId);
             TypeConverter* typeConverter;
             getTypeConverter(regItem->getName().c_str(),
                              variant->getType(),
@@ -554,7 +556,7 @@ class EXPORT Component
          }
 
       template <class T>
-      bool getVariable(uintptr_t regId,
+      bool getVariable(unsigned int regId,
                        std::vector<T>& values,
                        double lower,
                        double upper,
@@ -568,7 +570,7 @@ class EXPORT Component
             }
          else
             {
-            ApsimRegistration *regItem = (ApsimRegistration *)regId /*getRegistration(componentID, regId)*/;
+            ApsimRegistration *regItem = getRegistration(componentID, regId);
 			TypeConverter* typeConverter;
             getTypeConverter(regItem->getName().c_str(),
                              variant->getType(),

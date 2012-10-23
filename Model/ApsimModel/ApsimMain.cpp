@@ -120,7 +120,9 @@ int main(int argc, char **argv)
       GetFullPathName(argv[1], sizeof Full_path, Full_path, &Ptr_to_name);
       std::string simPath = Full_path;
    #else
-		std::string simPath = argv[1];
+      char Full_path[PATH_MAX];
+      std::string simPath = realpath(argv[1], Full_path);
+      //std::string simPath = argv[1];
    #endif
 
    // Make sure the .sim file exists.

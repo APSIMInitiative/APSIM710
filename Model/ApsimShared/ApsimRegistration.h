@@ -80,7 +80,7 @@ class EXPORT  ApsimRegistration
            registrationNameWithoutBrackets = registrationName;
 	  };
 
-      virtual uintptr_t getRegID(void) const = 0;
+      virtual unsigned int getRegID(void) const = 0;
 
       EventTypeCode opposite();
 
@@ -102,16 +102,19 @@ class EXPORT  ApsimRegistration
 
 class EXPORT  NativeRegistration : public ApsimRegistration
    {
+   private:
+     unsigned int regID;
    public:
       NativeRegistration(EventTypeCode _type,
                               const std::string& _registrationName,
                               const std::string& _ddml,
                               int  _destinationID,
-                              int _componentID) :
-        ApsimRegistration(_type, _registrationName,_ddml, _destinationID, _componentID)
+                              int _componentID,
+							  unsigned int newRegId) :
+        ApsimRegistration(_type, _registrationName,_ddml, _destinationID, _componentID), regID(newRegId)
         {
         };
-     uintptr_t getRegID(void) const  {return (uintptr_t) this;};
+     unsigned int getRegID(void) const  {return regID;};
    };
 
 class EXPORT  ForeignRegistration : public ApsimRegistration
@@ -129,7 +132,7 @@ class EXPORT  ForeignRegistration : public ApsimRegistration
         foreignID(_foreignID)
         {
         };
-     uintptr_t getRegID(void) const {return foreignID;}
+     unsigned int getRegID(void) const {return foreignID;}
 
    };
 

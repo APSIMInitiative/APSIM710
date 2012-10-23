@@ -85,16 +85,16 @@ class FortranWrapper : public protocol::Component
                    const FString& variableName, const FString& dataTypeString,
                    T& value, unsigned& numvals, bool isOptional = false)
          {
-         ApsimRegistration *regItem = (ApsimRegistration *)
-                  FortranWrapper::currentInstance->
+         unsigned int regId = FortranWrapper::currentInstance->
                              addRegistration(::get,
                                              destID,
                                              asString(variableName),
                                              asString(dataTypeString));
+         ApsimRegistration *regItem = currentInstance->getRegistration(componentID, regId);
 		 regItem->setName(asString(variableName));
          numvals = 0;
          protocol::Variant *variant = NULL;
-         if (getVariable((uintptr_t)regItem, &variant, isOptional))
+         if (getVariable(regId, &variant, isOptional))
             {
             protocol::TypeConverter* typeConverter = NULL;
 			getTypeConverter(regItem->getName().c_str(),
@@ -128,10 +128,10 @@ class FortranWrapper : public protocol::Component
          static ApsimRegistration * regItem;
          if (requestNo == 1)
             {
-            regItem = (ApsimRegistration *)
-                    FortranWrapper::currentInstance->addRegistration
+            unsigned int regId = FortranWrapper::currentInstance->addRegistration
                              (::get, 0, variableName, dataTypeString);
-            FortranWrapper::currentInstance->getVariables((uintptr_t)regItem, &vars);
+            regItem = currentInstance->getRegistration(componentID, regId);
+            FortranWrapper::currentInstance->getVariables(regId, &vars);
             }
          if (vars != NULL && vars->size() > 0)
             {

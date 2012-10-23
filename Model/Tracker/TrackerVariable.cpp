@@ -200,16 +200,16 @@ void TrackerVariable::doRegistrations(void)
                                                     ownerModuleID, 
                                                     ownerModuleName);
 
-      ApsimRegistration* reg = (ApsimRegistration*)
-                                  parent->addRegistration(::get,
-                                                          ownerModuleID,
-                                                          ownerModuleName,
-                                                          singleArrayDDML);
+      unsigned int regId = parent->addRegistration(::get,
+                                                   ownerModuleID,
+                                                   ownerModuleName,
+                                                   singleArrayDDML);
       
+      ApsimRegistration* reg = parent->getReg(regId);
       // Do a "get" to tickle the system into probing for the variable. Discard results.
       protocol::Variant *variant = NULL;
 	  reg->setName(ownerModuleName);
-      parent->getVariable((uintptr_t)reg, &variant, true);
+      parent->getVariable(regId, &variant, true);
       
       // Now find the sending modules registration for that variable, and 
       //  extract units
@@ -321,7 +321,7 @@ void TrackerVariable::doSample(void)
    else if (inWindow)
       {
       vector<float> theseValues;
-      uintptr_t valueID = parent->addRegistration(::get,
+      unsigned int valueID = parent->addRegistration(::get,
                                                      ownerModuleID,
                                                      ownerModuleName,
                                                      protocol::DDML(theseValues).c_str());
@@ -331,7 +331,7 @@ void TrackerVariable::doSample(void)
 	  // The registration is actually for the entire array (no3),
 	  // so we need to tinker with regItem to make sure it knows
 	  // which element we want.
-	  ApsimRegistration *regItem = (ApsimRegistration *)valueID;
+	  ApsimRegistration *regItem = parent->getReg(valueID);
 	  regItem->setName(ownerModuleName);
 
       bool ok = parent->getVariable(valueID,

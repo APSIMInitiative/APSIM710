@@ -78,7 +78,7 @@ Namespace CMPComp
         ''' Define type for the native MessageFromLogic function
         ''' </summary>
         ''' =========================================================================
-        Public Delegate Sub NativeMessageFromLogic(ByRef dummy As UInteger, ByRef inMsg As TNativeMsgHeader)
+        Public Delegate Sub NativeMessageFromLogic(ByRef dummy As IntPtr, ByRef inMsg As TNativeMsgHeader)
         ''' =========================================================================
         ''' <summary>
         ''' Define a delegate (function pointer) for MessageFromLogic
@@ -115,7 +115,7 @@ Namespace CMPComp
                         msgPtr.dataPtr = Marshal.AllocHGlobal(CInt(nBytes))
                         Marshal.Copy(msg.dataPtr, 0, msgPtr.dataPtr, CInt(nBytes))
                     End If
-                    Dim dummy As UInteger = 0
+                    Dim dummy As IntPtr = CType(0, IntPtr)
                     'will take a copy
                     msgNativeDestFunction(dummy, msgPtr)
                 Finally

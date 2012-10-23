@@ -47,6 +47,7 @@ Component::Component(void)
    : completeIDs(MAX_NESTED_COMPLETES)
    {
    componentData = NULL;
+   currentRegID = 0;
    beforeInit2 = true;
    beforeCommence = true;
    tick.startday = 0;
@@ -400,24 +401,25 @@ void Component::doInit1(const Init1Data& init1Data)
 // add a registration
 // ------------------------------------------------------------------
 // new name: RegisterWithPM
-uintptr_t Component::addRegistration(EventTypeCode kind,
+unsigned int Component::addRegistration(EventTypeCode kind,
                                     int destinationComponentID,
                                     const std::string& regName,
                                     const std::string& ddml,
                                     const std::string& alias)
    {
    ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
-   uintptr_t regID;
+   unsigned int regID;
    ApsimRegistration *reg = registry.find(kind, componentID, destinationComponentID, regName);
    if (reg != NULL)
-       regID = (uintptr_t) reg;
+       regID = reg->getRegID();
    else
       {
       reg = registry.createNativeRegistration(kind,
                                              regName,
                                              ddml,
                                              destinationComponentID,
-                                             componentID);
+                                             componentID,
+											 ++currentRegID);
 
       regID = registry.add(reg);
 
@@ -439,7 +441,7 @@ uintptr_t Component::addRegistration(EventTypeCode kind,
 // delete the specified registration.
 // ------------------------------------------------------------------
 void Component::deleteRegistration(EventTypeCode kind,
-								   uintptr_t regID)
+								   unsigned int regID)
    {
    sendMessage(newDeregisterMessage(componentID,
 									parentID,
@@ -717,7 +719,7 @@ bool Component::componentIDToName(int compID, std::string& name)
 void Component::onQuerySetValueMessage(unsigned fromID, QuerySetValueData& querySetData, unsigned msgID)
    {
    bool ok = respondToSet(fromID, querySetData);
-   uintptr_t regID = querySetData.ID;
+   unsigned int regID = querySetData.ID;
 //cout << "Component::onQuerySetValueMessage id="<<regID<<endl;
    sendMessage(newReplySetValueSuccessMessage
 				  (componentID,
@@ -843,7 +845,7 @@ void Component::writeStringToStream(const std::string& lines, ostream& out,
 //    DPH 7/6/2001
 
 // ------------------------------------------------------------------
-EventTypeCode Component::getRegistrationType(uintptr_t regID)
+EventTypeCode Component::getRegistrationType(unsigned int regID)
    {
    return (getRegistration(componentID, regID)->getTypeCode());
    }
@@ -857,7 +859,7 @@ EventTypeCode Component::getRegistrationType(uintptr_t regID)
 //    DPH 7/6/2001
 
 // ------------------------------------------------------------------
-ApsimRegistration* Component::getRegistration(int fromID, uintptr_t regID)
+ApsimRegistration* Component::getRegistration(int fromID, unsigned int regID)
    {
    ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
    EventTypeCode types[] = {::get, ::set, ::respondToGet, ::respondToSet,
@@ -874,7 +876,7 @@ ApsimRegistration* Component::getRegistration(int fromID, uintptr_t regID)
    throw std::runtime_error(msg);
    }
 
-void Component::getRegistrationName(int fromID, uintptr_t regID, std::string &name)
+void Component::getRegistrationName(int fromID, unsigned int regID, std::string &name)
    {
    name = getRegistration(fromID, regID)->getName();
    }
@@ -886,7 +888,7 @@ void Component::getRegistrationName(int fromID, uintptr_t regID, std::string &na
 //  Changes:
 //    dph 6/3/2001
 // ------------------------------------------------------------------
-void Component::setVariableError(uintptr_t regID)
+void Component::setVariableError(unsigned int regID)
    {
    ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
    ApsimRegistration* regItem = registry.find(::set, componentID, regID);

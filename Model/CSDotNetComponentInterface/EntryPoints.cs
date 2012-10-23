@@ -85,7 +85,7 @@ namespace CMPComp
         /// Define type for the native MessageFromLogic function
         /// </summary>
         //=========================================================================
-        public delegate void NativeMessageFromLogic(ref uint dummy, ref TNativeMsgHeader inMsg);
+        public delegate void NativeMessageFromLogic(ref IntPtr dummy, ref TNativeMsgHeader inMsg);
         //=========================================================================
         /// <summary>
         /// Define a delegate (function pointer) for MessageFromLogic
@@ -138,7 +138,7 @@ namespace CMPComp
                         msgPtr.dataPtr = Marshal.AllocHGlobal((int)nBytes);
                         Marshal.Copy(msg.dataPtr, 0, msgPtr.dataPtr, (int)nBytes);
                     }
-                    uint dummy = 0;
+                    IntPtr dummy = (IntPtr)0;
                     msgNativeDestFunction(ref dummy, ref msgPtr);	//will take a copy
                 }
                 finally

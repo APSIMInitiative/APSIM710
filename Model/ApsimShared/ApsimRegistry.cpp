@@ -70,9 +70,9 @@ void ApsimRegistry::freeIdReg(ApsimRegistration* reg)
 // Create a native registration.
 ApsimRegistration* ApsimRegistry::createNativeRegistration
 	  (EventTypeCode kind, const std::string& regName, const std::string& ddml,
-	   int destinationComponentID, int componentID)
+	   int destinationComponentID, int componentID, unsigned int regId)
    {
-   return new NativeRegistration(kind, regName, ddml, destinationComponentID, componentID);
+   return new NativeRegistration(kind, regName, ddml, destinationComponentID, componentID, regId);
    }
 
 // Create a foreign registration.
@@ -85,7 +85,7 @@ ApsimRegistration* ApsimRegistry::createForeignRegistration
 
 // Add a registration if not already present
 // fixme - we really need to rethink this!!
-uintptr_t ApsimRegistry::add(ApsimRegistration *reg)
+unsigned int ApsimRegistry::add(ApsimRegistration *reg)
    {
    if ( reg->getName().rfind(".") != string::npos)
 	 throw std::runtime_error("trying to add a qualified registration " + reg->getName());
@@ -125,7 +125,7 @@ uintptr_t ApsimRegistry::add(ApsimRegistration *reg)
 //        reg->getName();
 //   if (reg->getDestinationID()>0) cout<< "->" << componentByID(reg->getDestinationID());
 //   cout << ")= " << ((unsigned int)reg) << " called\n";
-   return ((uintptr_t)reg);
+   return (reg->getRegID());
    }
 
 
@@ -278,10 +278,10 @@ void ApsimRegistry::erase(EventTypeCode type, int owner, unsigned int regID)
 // are easy, foreigns need special care.
 ApsimRegistration *ApsimRegistry::find(EventTypeCode type,
 									   int ownerID,
-									   uintptr_t regnID)
+									   unsigned int regnID)
    {
-   if (isForeign(ownerID))
-	  {
+   //if (isForeign(ownerID))
+	//  {
       reg_id_map_type::iterator i, a, b;
       a = reg_id_map.lower_bound(regnID);
       b = reg_id_map.upper_bound(regnID);
@@ -295,8 +295,8 @@ ApsimRegistration *ApsimRegistry::find(EventTypeCode type,
 	  } 
       return NULL;
 
-	  }
-   return ((ApsimRegistration *) regnID);
+	//  }
+   //return ((ApsimRegistration *) regnID);
    }
 
 ApsimRegistration *ApsimRegistry::find(EventTypeCode type,

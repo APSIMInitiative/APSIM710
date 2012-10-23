@@ -555,7 +555,7 @@ extern "C" unsigned  EXPORT STDCALL get_parentID(void)
 //    DPH 7/6/2001
 
 // ------------------------------------------------------------------
-extern "C" unsigned  EXPORT STDCALL get_componentData(void)
+extern "C" uint64_t  EXPORT STDCALL get_componentData(void)
    {
    return FortranWrapper::currentInstance->get_componentData();
    }

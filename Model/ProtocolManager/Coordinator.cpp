@@ -296,7 +296,7 @@ void Coordinator::addComponent(const string& compName,
                                             true));
 
       }
-   catch (const runtime_error& error)
+   catch (const runtime_error& /* error */)
       {
       if (componentAlias) delete componentAlias;
       components.erase(childComponentID);
@@ -599,7 +599,8 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
                              queryName,
                              "<undefined/>",
                              queryComponentID,
-                             fromID);
+                             fromID,
+							 0);
 
       pollComponentsForGetVariable(fromID, queryComponentID, queryName);
       registry.lookup(&reg, matches);
@@ -610,7 +611,8 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
                              queryName,
                              "<undefined/>",
                              queryComponentID,
-                             fromID);
+                             fromID,
+							 0);
       registry.lookup(&reg, matches);
       }
    else if (queryInfo.kind == protocol::respondToEventInfo)
@@ -619,7 +621,8 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
                              queryName,
                              "<undefined/>",
                              queryComponentID,
-                             fromID);
+                             fromID,
+							 0);
       registry.lookup(&reg, matches);
       }
    else if ( (queryInfo.kind == protocol::componentInfo) || (queryInfo.kind == protocol::systemInfo) )
