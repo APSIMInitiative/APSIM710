@@ -16,7 +16,7 @@
 #include <ApsimShared/ApsimSimulationFile.h>
 #include <ApsimShared/ApsimDirectories.h>
 #include <ComponentInterface/Interfaces.h>
- 
+
 #include "Simulation.h"
 #ifdef __WIN32__
 #include <windows.h>
@@ -40,14 +40,14 @@ string ConvertToSim(const string& apsimPath, string& simulationName)
       }
    CommandLine += " 2> apsim.tmp";
    replaceAll(CommandLine, "%apsim%", getApsimDirectory());
-   
+
    // exec ApsimToSim and read its stdout as the .sim file name.
    system(CommandLine.c_str());
    ifstream in("apsim.tmp");
    string simPath;
    getline(in, simPath);
    in.close();
-   
+
    if (simPath.find("Written ") == string::npos)
       return "";
    else
@@ -105,7 +105,7 @@ extern "C" int EXPORT STDCALL RunAPSIM(const char* sdml)
 //---------------------------------------------------------------------------
 // main entrypoint when running from command line.
 //---------------------------------------------------------------------------
-int main(int argc, char **argv) 
+int main(int argc, char **argv)
 {
    if (argc == 1)
       {
@@ -114,15 +114,17 @@ int main(int argc, char **argv)
       }
 
    // Get the full path name to the sim file.
+   std::string simPath = argv[1];
    #ifdef __WIN32__
       char Full_path[MAX_PATH];
       char *Ptr_to_name;
-      GetFullPathName(argv[1], sizeof Full_path, Full_path, &Ptr_to_name);
-      std::string simPath = Full_path;
+      if (GetFullPathName(argv[1], sizeof Full_path, Full_path, &Ptr_to_name) > 0)
+         simPath = Full_path;
    #else
       char Full_path[PATH_MAX];
-      std::string simPath = realpath(argv[1], Full_path);
-      //std::string simPath = argv[1];
+      char *rp;
+      if ((rp = realpath(argv[1], Full_path) != NULL)
+          simPath = rp;
    #endif
 
    // Make sure the .sim file exists.
@@ -148,11 +150,11 @@ int main(int argc, char **argv)
       // Change the working directory to where the .sim file is.
       Path simFile(simPath);
       simFile.Change_directory();
-            
+
       // get sdml contents.
       ifstream in(simPath.c_str());
       ostringstream sdml;
-      sdml << in.rdbuf();   
+      sdml << in.rdbuf();
       in.close();
       if (DeleteSim)
          unlink(simPath.c_str());
