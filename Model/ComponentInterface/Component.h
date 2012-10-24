@@ -246,7 +246,7 @@ class EXPORT Component
       void deleteRegistration(EventTypeCode kind,
                               unsigned int regID);
 
-	  ApsimRegistration *getReg(unsigned int regID) 
+	  ApsimRegistration *getRego(unsigned int regID) 
  	    { 
           if (regID <= Registrations.size())
             return Registrations[regID - 1];
@@ -477,7 +477,7 @@ class EXPORT Component
 
       unsigned int tickID;
       bool setVariableSuccess;
-      vector<unsigned> completeIDs;
+      std::vector<unsigned> completeIDs;
       bool completeFound;
       bool sendTickToComponent;
       protocol::TimeType tick;
@@ -515,7 +515,7 @@ class EXPORT Component
                           std::string &DDML);
 
  protected:
-      vector<ReturnInfoData*> returnInfos;
+      std::vector<ReturnInfoData*> returnInfos;
 
  public:
       // Get a variable from the system (into basic C datatypes)

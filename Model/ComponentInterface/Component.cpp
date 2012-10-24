@@ -863,7 +863,7 @@ EventTypeCode Component::getRegistrationType(unsigned int regID)
 ApsimRegistration* Component::getRegistration(int fromID, unsigned int regID)
 {
 	if (fromID == componentID)
-		return getReg(regID);
+		return getRego(regID);
 	else
 	{
 		ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
@@ -917,7 +917,7 @@ void Component::onCompleteMessage(CompleteData& completeData)
        && completeIDs[completeIDs.size()-1] == completeData.ack_ID)
       {
       completeFound = true;
-      completeIDs.erase(completeIDs.size()-1);
+      completeIDs.pop_back();
       }
    else
       {

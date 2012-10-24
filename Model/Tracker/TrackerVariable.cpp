@@ -205,7 +205,7 @@ void TrackerVariable::doRegistrations(void)
                                                    ownerModuleName,
                                                    singleArrayDDML);
       
-      ApsimRegistration* reg = parent->getReg(regId);
+      ApsimRegistration* reg = parent->getRego(regId);
       // Do a "get" to tickle the system into probing for the variable. Discard results.
       protocol::Variant *variant = NULL;
 	  reg->setName(ownerModuleName);
@@ -331,7 +331,7 @@ void TrackerVariable::doSample(void)
 	  // The registration is actually for the entire array (no3),
 	  // so we need to tinker with regItem to make sure it knows
 	  // which element we want.
-	  ApsimRegistration *regItem = parent->getReg(valueID);
+	  ApsimRegistration *regItem = parent->getRego(valueID);
 	  regItem->setName(ownerModuleName);
 
       bool ok = parent->getVariable(valueID,
