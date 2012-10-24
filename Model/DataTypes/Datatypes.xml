@@ -546,19 +546,6 @@
       </type>
 
 
-   <!--!!!!! Urine patch types  !!!!!!!!!!!!!!!!!!!!!!-->
-      
-   <type name="ApplyUrine">
-      <field name="Sender" kind="string" array="F"/>
-      <field name="UrineNLoad" kind="double" unit="kg/ha" />
-      <field name="UrineWater" kind="double" unit="mm" />
-      <field name="StockType" kind="string" unit="-" />
-      <field name="StockDensity" kind="double" unit="-" />
-      <field name="InfiltrationShapeType" kind="string" unit="-" />
-      <field name="MaxInfiltrationDepth" kind="double" unit="mm" />
-   </type>
-
-
    <!--!!!!! AgPasture types  !!!!!!!!!!!!!!!!!!!!!!-->
 
    <type name="Graze">
@@ -857,31 +844,63 @@
    <!--!!!!! STOCK  types  - 2011 revisions for excreta !!!!!!!!!!!!!!!!!!!!!!-->
    
    <type name="AddUrine">
-      <field name="Urinations"         unit="-"      kind="double"/>
-      <field name="VolumePerUrination" unit="m^3"    kind="double"/>
-      <field name="AreaPerUrination"   unit="m^2"    kind="double"/>
-      <field name="Eccentricity"       unit="-"      kind="double"/>
-      <field name="Urea"               unit="kg/ha"  kind="double"/>
-      <field name="POX"                unit="kg/ha"  kind="double"/>
-      <field name="SO4"                unit="kg/ha"  kind="double"/>
-      <field name="AshAlk"             unit="mol/ha" kind="double"/>
+      <field name="Sender"             unit="-"      kind="string"  array="F"  descr=""/>
+      <field name="Urinations"         unit="-"      kind="double"  array="F"  descr=""/>
+      <field name="VolumePerUrination" unit="m^3"    kind="double"  array="F"  descr=""/>
+      <field name="AreaPerUrination"   unit="m^2"    kind="double"  array="F"  descr=""/>
+      <field name="Eccentricity"       unit="-"      kind="double"  array="F"  descr=""/>
+      <field name="Urea"               unit="kg/ha"  kind="double"  array="F"  descr=""/>
+      <field name="POX"                unit="kg/ha"  kind="double"  array="F"  descr=""/>
+      <field name="SO4"                unit="kg/ha"  kind="double"  array="F"  descr=""/>
+      <field name="AshAlk"             unit="mol/ha" kind="double"  array="F"  descr=""/>
    </type>
-   
+
    <type name="AddFaeces">
-      <field name="Defaecations"         unit="-"      kind="double"/>
-      <field name="VolumePerDefaecation" unit="m^3"    kind="double"/>
-      <field name="AreaPerDefaecation"   unit="m^2"    kind="double"/>
-      <field name="Eccentricity"         unit="-"      kind="double"/>
-	  <field name="OMWeight"             unit="kg/ha"  kind="double"/>
-	  <field name="OMN"                  unit="kg/ha"  kind="double"/>
-	  <field name="OMP"                  unit="kg/ha"  kind="double"/>
-	  <field name="OMS"                  unit="kg/ha"  kind="double"/>
-      <field name="OMAshAlk"             unit="mol/ha" kind="double"/>
-      <field name="NO3N"                 unit="kg/ha"  kind="double"/>
-      <field name="NH4N"                 unit="kg/ha"  kind="double"/>
-      <field name="POXP"                 unit="kg/ha"  kind="double"/>
-      <field name="SO4S"                 unit="kg/ha"  kind="double"/>
+      <field name="Sender"               unit="-"      kind="string"  array="F"  descr=""/>
+      <field name="Defaecations"         unit="-"      kind="double"  array="F"  descr=""/>
+      <field name="VolumePerDefaecation" unit="m^3"    kind="double"  array="F"  descr=""/>
+      <field name="AreaPerDefaecation"   unit="m^2"    kind="double"  array="F"  descr=""/>
+      <field name="Eccentricity"         unit="-"      kind="double"  array="F"  descr=""/>
+      <field name="OMWeight"             unit="kg/ha"  kind="double"  array="F"  descr=""/>
+      <field name="OMN"                  unit="kg/ha"  kind="double"  array="F"  descr=""/>
+      <field name="OMP"                  unit="kg/ha"  kind="double"  array="F"  descr=""/>
+      <field name="OMS"                  unit="kg/ha"  kind="double"  array="F"  descr=""/>
+      <field name="OMAshAlk"             unit="mol/ha" kind="double"  array="F"  descr=""/>
+      <field name="NO3N"                 unit="kg/ha"  kind="double"  array="F"  descr=""/>
+      <field name="NH4N"                 unit="kg/ha"  kind="double"  array="F"  descr=""/>
+      <field name="POXP"                 unit="kg/ha"  kind="double"  array="F"  descr=""/>
+      <field name="SO4S"                 unit="kg/ha"  kind="double"  array="F"  descr=""/>
    </type>
+
+
+   <!--!!!!! Urine patch types  !!!!!!!!!!!!!!!!!!!!!!-->
+
+   <!-- used to send data to UrinePatch, which will process these and then emulate patch effects or apply patches to soil -->
+   <type name="ApplyUrine">
+      <field name="Sender"                unit="-"     kind="string"  array="F"  descr=""/>
+      <field name="StockType"             unit="-"     kind="string"  array="F"  descr=""/>
+      <field name="StockDensity"          unit="-"     kind="double"  array="F"  descr=""/>
+      <field name="UrineNLoad"            unit="kg/ha" kind="double"  array="F"  descr=""/>
+      <field name="UrineWater"            unit="mm"    kind="double"  array="F"  descr=""/>
+      <field name="InfiltrationShapeType" unit="-"     kind="string"  array="F"  descr=""/>
+      <field name="MaxInfiltrationDepth"  unit="mm"    kind="double"  array="F"  descr=""/>
+   </type>
+
+   <!-- used to send data to soil. SoilNitrogen will deal with N (adding patches if appropriate), water will be handled by a water module -->
+   <type name="AddUrinePatch">
+      <field name="Sender"           unit="-"      kind="string"  array="F"  descr=""/>
+      <field name="DepositionType"   unit="-"      kind="string"  array="F"  descr=""/>
+      <field name="AddToPatches_nm"  unit="-"      kind="string"  array="T"  descr=""/>
+      <field name="AddToPatches_id"  unit="-"      kind="double"  array="T"  descr=""/>
+      <field name="PatchArea"        unit="m^2"    kind="double"  array="F"  descr=""/>
+      <field name="UrineWater"       unit="mm"     kind="double"  array="T"  descr=""/>
+      <field name="Urea"             unit="kgN/ha" kind="double"  array="T"  descr=""/>
+      <field name="POX"              unit="kgP/ha" kind="double"  array="T"  descr=""/>
+      <field name="SO4"              unit="kgS/ha" kind="double"  array="T"  descr=""/>
+      <field name="AshAlk"           unit="mol/ha" kind="double"  array="T"  descr=""/>
+   </type>
+
+
    <!--!   !!!!! SUPPLEMENT  types  !!!!!!!!!!!!!!!!!!!!!!-->
 
    <type name="SupplementBuy">

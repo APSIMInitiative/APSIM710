@@ -7,11 +7,13 @@ using CSGeneral;
 using System.Xml;
 
 /// <summary>
-/// A more-or-less direct port of the Fortran SoilN model
-/// Ported by Eric Zurcher Sept/Oct 2010
-/// Changes by RCichota on July/2012: a bit of tidying up - mostly modifying how some variables are handled (substitute get by input, add limits)
-/// Further changes on September/2012, more tidying up, moving pieces of code around, updating error messages and finish cleaning the variable inputs
-/// Changes to add patch capability (September/2012)
+/// Initially ported from Fortran SoilN model by Eric Zurcher Sept/Oct-2010.
+/// Code tidied up by RCichota on Aug/Sep-2012: mostly modifying how some variables are handled (substitute 'get's by [input]), added regions to ease access,
+///   updated error messages, moved all soilTemp code to a separate class (the idea is to eliminate it in the future), also added some of the constants to xml.
+/// Changes on Sep/Oct-2012 by RCichota, add patch capability: move all code for soil C and N to a separate class (SoilCNPatch), allow several instances to be
+///   initialised, modified inputs to handle the partitioning of incoming N, also modified outputs to summ up the pools from the several instances (patches)
+///   
+/// 
 /// </summary>
 
 public class SoilNitrogen
@@ -398,17 +400,23 @@ public class SoilNitrogen
     [Param]
     private double enr_b_coeff = 0.0;
 
+    // whether simpleSoilTemp is allowed, if 'no' SoiTemp must be present, if 'yes' SoilTemp will be used if present
+    private bool AllowsimpleSoilTemp = false;
+    [Param]
+    private string allow_simpleSoilTemp
+    { set { AllowsimpleSoilTemp = value.ToLower().Contains("yes"); } }
+
     // switch indicating whether soil profile reduction is allowed (from erosion)
     private bool AllowProfileReduction = false;
     [Param]
     private string profile_reduction
-    { set { AllowProfileReduction = value.StartsWith("on"); } }
+    { set { AllowProfileReduction = value.ToLower().StartsWith("on"); } }
 
     // marker for whether organic solute are to be simulated (always false as it is not implemented)
     private bool useOrganicSolutes = false;
     [Param(IsOptional = true)]
     private string use_organic_solutes
-    { set { useOrganicSolutes = value.StartsWith("on"); } }
+    { set { useOrganicSolutes = value.ToLower().StartsWith("on"); } }
 
     // C:N ratio of microbes ()
     private double biom_cn = 8.0;
@@ -2291,19 +2299,21 @@ public class SoilNitrogen
     {
         //+  Purpose
         //     Get the delta mineral N from other module
-        //     Send deltas to each patch, if delta comes from soil or plant then the partition is made based on N content
-        //      if sender is any other module then values are passed to patches as they come
+        //     Send deltas to each patch, if delta comes from soil or plant then the values are modified (partioned)
+        //      based on N content. If sender is any other module then values are passed to patches as they come
 
-        if (NitrogenChanges.Sender.ToLower() == "soilwat")
+        string module = NitrogenChanges.Sender.ToLower();
+        if (module == "soilwat" || module == "agpasture" || module == "plant")
         {
-            // values supplied by SoilWat will be passed to the patches according to their N content
+            // values supplied by a module from which a different treatment for each patch is required,
+            //  they will be partitioned according to the N content in each patch
 
             // 1- consider urea:
             if (hasValues(NitrogenChanges.DeltaUrea, epsilon))
             {
                 // send incoming dlt to be partitioned amongst patches
-                double[][] newDelta = calcDelta(NitrogenChanges.DeltaUrea, "urea");
-                // 4- send dlt's to each patch
+                double[][] newDelta = partitionDelta(NitrogenChanges.DeltaUrea, "urea");
+                // 1.1- send dlt's to each patch
                 for (int k = 0; k < Patch.Count; k++)
                     Patch[k].dlt_urea = newDelta[k];
             }
@@ -2312,19 +2322,18 @@ public class SoilNitrogen
             if (hasValues(NitrogenChanges.DeltaNH4, epsilon))
             {
                 // send incoming dlt to be partitioned amongst patches
-                double[][] newDelta = calcDelta(NitrogenChanges.DeltaNH4, "nh4");
-                // 4- send dlt's to each patch
+                double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNH4, "nh4");
+                // 2.1- send dlt's to each patch
                 for (int k = 0; k < Patch.Count; k++)
                     Patch[k].dlt_nh4 = newDelta[k];
             }
 
-            int ddd = today.Day;
-            // 1- consider no3:
+             // 3- consider no3:
             if (hasValues(NitrogenChanges.DeltaNO3, epsilon))
             {
                 // send incoming dlt to be partitioned amongst patches
-                double[][] newDelta = calcDelta(NitrogenChanges.DeltaNO3, "no3");
-                // 4- send dlt's to each patch
+                double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNO3, "no3");
+                // 3.1- send dlt's to each patch
                 for (int k = 0; k < Patch.Count; k++)
                     Patch[k].dlt_no3 = newDelta[k];
             }
@@ -2357,7 +2366,7 @@ public class SoilNitrogen
 
         double[] newUrea = new double[dlayer.Length];
         newUrea[0] = UrineAdded.Urea;
-
+        
         if (UrineAdded.VolumePerUrination > 0.0)
         {
             SplitPatch(0);
@@ -2376,6 +2385,38 @@ public class SoilNitrogen
 
     }
 
+    //[EventHandler(EventName = "AddUrinePatch")]
+    //public void OnAddUrinePatch(AddUrinePatchType PatchtoAdd)
+    //{
+    //    //+  Purpose
+    //    //     Adding a urine patch
+
+    //    // test for adding urine patches
+    //    // if VolumePerUrination = 0.0 then no patch will be added, otherwise a patch will be added (based on 'base' patch)
+    //    // assuming new PatchArea is passed as a fraction and this will be subtracted from original
+    //    // urea will be added to the top layer for now
+
+    //    double[] newUrea = new double[dlayer.Length];
+    //    newUrea[0] = PatchtoAdd.Urea;
+
+    //    if (UrineAdded.VolumePerUrination > 0.0)
+    //    {
+    //        SplitPatch(0);
+    //        double oldArea = Patch[0].PatchArea;
+    //        double newArea = oldArea - UrineAdded.AreaPerUrination;
+    //        Patch[0].PatchArea = newArea;
+    //        int k = Patch.Count - 1;  // make it explicit for now to ease reading
+    //        Patch[k].PatchArea = UrineAdded.AreaPerUrination;
+    //        Patch[k].PatchName = "Patch" + k.ToString();
+    //        if (UrineAdded.Urea > epsilon)
+    //            Patch[k].dlt_urea = newUrea;
+    //    }
+    //    else
+    //        for (int k = 0; k < Patch.Count; k++)
+    //            Patch[k].dlt_urea = newUrea;
+
+    //}
+
     #endregion
 
     #region Setup calculations
@@ -2391,7 +2432,8 @@ public class SoilNitrogen
         Console.WriteLine("           - Using " + SoilN_MinerModel + " soil mineralisation specification");
 
         // check whether soil temperature is present. If not, check whether the basic params for simpleSoilTemp have been supplied
-        use_external_st = (ave_soil_temp != null);
+        if (AllowsimpleSoilTemp)
+            use_external_st = (ave_soil_temp != null);
         if (!use_external_st)
         {
             if (latitude == -999.0)
@@ -3072,7 +3114,7 @@ public class SoilNitrogen
 
     #region Auxiliar functions
 
-       private double[][] calcDelta(double[] incoming, string SoluteName)
+       private double[][] partitionDelta(double[] incoming, string SoluteName)
     {
         // + Purpose
         //     calculate how the dlt's are partitioned amongst patches
