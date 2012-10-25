@@ -123,7 +123,7 @@ int main(int argc, char **argv)
    #else
       char Full_path[PATH_MAX];
       char *rp;
-      if ((rp = realpath(argv[1], Full_path) != NULL)
+      if ((rp = realpath(argv[1], Full_path)) != NULL)
           simPath = rp;
    #endif
 
