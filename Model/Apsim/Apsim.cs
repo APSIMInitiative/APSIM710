@@ -243,6 +243,7 @@ public class Apsim
         if (C.Enabled)
         {
             SimFileName = ApsimToSim.WriteSimFile(C);
+            NumJobsBeingRun = 1;
             StartSIM(SimFileName);
         }
     }
@@ -305,6 +306,7 @@ public class Apsim
         // Now run APSIM.
         string SimFileName = Path.Combine(Path.GetDirectoryName(FileName),
                                           Path.GetFileNameWithoutExtension(FileName) + "." + SimulationName + ".sim");
+        NumJobsBeingRun = 1;
         StartSIM(SimFileName);
     }
 
