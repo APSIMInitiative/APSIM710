@@ -876,28 +876,29 @@
    <!--!!!!! Urine patch types  !!!!!!!!!!!!!!!!!!!!!!-->
 
    <!-- used to send data to UrinePatch, which will process these and then emulate patch effects or apply patches to soil -->
+      <!-- used to send data to UrinePatch, which will process these and then emulate patch effects or apply patches to soil -->
    <type name="ApplyUrine">
-      <field name="Sender"                unit="-"     kind="string"  array="F"  descr=""/>
-      <field name="StockType"             unit="-"     kind="string"  array="F"  descr=""/>
-      <field name="StockDensity"          unit="-"     kind="double"  array="F"  descr=""/>
-      <field name="UrineNLoad"            unit="kg/ha" kind="double"  array="F"  descr=""/>
-      <field name="UrineWater"            unit="mm"    kind="double"  array="F"  descr=""/>
-      <field name="InfiltrationShapeType" unit="-"     kind="string"  array="F"  descr=""/>
-      <field name="MaxInfiltrationDepth"  unit="mm"    kind="double"  array="F"  descr=""/>
+      <field name="Sender"                unit="-"     kind="string"  array="F"  descr="name of module raising the event"/>
+      <field name="StockType"             unit="-"     kind="string"  array="F"  descr="animal type"/>
+      <field name="StockDensity"          unit="-"     kind="double"  array="F"  descr="stocking density"/>
+      <field name="UrineNLoad"            unit="kg/ha" kind="double"  array="F"  descr="amount of N being applied"/>
+      <field name="UrineWater"            unit="mm"    kind="double"  array="F"  descr="amount of water being applied"/>
+      <field name="InfiltrationShapeType" unit="-"     kind="string"  array="F"  descr="shape for urine infiltration"/>
+      <field name="MaxInfiltrationDepth"  unit="mm"    kind="double"  array="F"  descr="max urine infiltration in the soil"/>
    </type>
 
-   <!-- used to send data to soil. SoilNitrogen will deal with N (adding patches if appropriate), water will be handled by a water module -->
+      <!-- used to send data to soil. SoilNitrogen will deal with N (adding patches if appropriate), water will be handled by a water module -->
    <type name="AddUrinePatch">
-      <field name="Sender"           unit="-"      kind="string"  array="F"  descr=""/>
-      <field name="DepositionType"   unit="-"      kind="string"  array="F"  descr=""/>
-      <field name="AddToPatches_nm"  unit="-"      kind="string"  array="T"  descr=""/>
-      <field name="AddToPatches_id"  unit="-"      kind="double"  array="T"  descr=""/>
-      <field name="PatchArea"        unit="m^2"    kind="double"  array="F"  descr=""/>
-      <field name="UrineWater"       unit="mm"     kind="double"  array="T"  descr=""/>
-      <field name="Urea"             unit="kgN/ha" kind="double"  array="T"  descr=""/>
-      <field name="POX"              unit="kgP/ha" kind="double"  array="T"  descr=""/>
-      <field name="SO4"              unit="kgS/ha" kind="double"  array="T"  descr=""/>
-      <field name="AshAlk"           unit="mol/ha" kind="double"  array="T"  descr=""/>
+      <field name="Sender"           unit="-"      kind="string"   array="F"  descr="name of module raising the event"/>
+      <field name="DepositionType"   unit="-"      kind="string"   array="F"  descr="type (homogeneous, SinplePatchy)"/>
+      <field name="AddToPatches_nm"  unit="-"      kind="string"   array="T"  descr="the name of patches to add urine"/>
+      <field name="AddToPatches_id"  unit="-"      kind="integer4" array="T"  descr="the id of patches to add urine"/>
+      <field name="PatchArea"        unit="m^2"    kind="double"   array="F"  descr="area of the urine patch"/>
+      <field name="UrineWater"       unit="mm"     kind="double"   array="T"  descr="amount of water to add per layer"/>
+      <field name="Urea"             unit="kgN/ha" kind="double"   array="T"  descr="amount of urea to add per layer"/>
+      <field name="POX"              unit="kgP/ha" kind="double"   array="T"  descr="amount of POx to add per layer"/>
+      <field name="SO4"              unit="kgS/ha" kind="double"   array="T"  descr="amount of SO4 to add per layer"/>
+      <field name="AshAlk"           unit="mol/ha" kind="double"   array="T"  descr="ash amount to add per layer"/>
    </type>
 
 
