@@ -11,7 +11,7 @@ using System.Xml;
 /// Code tidied up by RCichota on Aug/Sep-2012: mostly modifying how some variables are handled (substitute 'get's by [input]), added regions to ease access,
 ///   updated error messages, moved all soilTemp code to a separate class (the idea is to eliminate it in the future), also added some of the constants to xml.
 /// Changes on Sep/Oct-2012 by RCichota, add patch capability: move all code for soil C and N to a separate class (SoilCNPatch), allow several instances to be
-///   initialised, modified inputs to handle the partitioning of incoming N, also modified outputs to summ up the pools from the several instances (patches)
+///   initialised, modified inputs to handle the partitioning of incoming N, also modified outputs to sum up the pools from the several instances (patches)
 ///   
 /// 
 /// </summary>
@@ -379,6 +379,10 @@ public class SoilNitrogen
     // parameter 2 to compute active carbon (for denitrification)
     [Param]
     private double actC_p2;
+
+    // minimum relative area (fraction of paddock) for any patch
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    private double minPatchArea = 0.001;
 
     // minimum allowable Urea (ppm)
     [Param(MinVal = 0.0, MaxVal = 1000.0)]
@@ -2077,26 +2081,19 @@ public class SoilNitrogen
     private bool use_external_st = false;           // marker for whether external soil temperature is supplied
     private bool use_external_ph = false;           // marker for whether external ph is supplied, otherwise default is used
     private bool is_pond_active = false;            // marker for whether there is a pond, decomposition od surface OM will be done by that model
-    //private double oldN;
-    //private double oldC;
-    private double dailyInitialC;               // Total C content at the beginning of the day
-    private double dailyInitialN;               // Total N content at the beginning of the day
-    private int fom_type;
-    //private double[] inert_c;                       // humic C that is not subject to mineralisation (kg/ha)
-    //private double[] nh4_yesterday;                 // yesterday's ammonium nitrogen(kg/ha)
-    //private double[] no3_yesterday;                 // yesterday's nitrate nitrogen (kg/ha)
+    private double dailyInitialC;                   // Total C content at the beginning of the day
+    private double dailyInitialN;                   // Total N content at the beginning of the day
+    private int fom_type;                           // Type of fom
     private int num_residues = 0;                   // number of residues decomposing
-    //private string[] residue_name;                  // name of residues decomposing
-    //private string[] residue_type;                  // type of decomposing residue
-    //private double[] pot_c_decomp;                  // Potential residue C decomposition (kg/ha)
-    //private double[] pot_n_decomp;                  // Potential residue N decomposition (kg/ha)
-    //private double[] pot_p_decomp;                  // Potential residue P decomposition (kg/ha)
-    //private double[][] dlt_c_decomp;            // residue C decomposition (kg/ha)
-    //private double[][] dlt_n_decomp;            // residue N decomposition (kg/ha)
 
-    //ref double[][] _dlt_res_c_biom, ref double[][] _dlt_res_c_hum, ref double[][] _dlt_res_c_atm, ref double[] dlt_res_nh4_min, ref double[] dlt_res_no3_min
+    private simpleSoilTemp simpleST;                // the internal soil temp module - to be avoided
 
-    private simpleSoilTemp simpleST;     // the internal soil temp module - to be avoided
+    private struct PatchIDs
+    {
+        // list with patch ids to merge
+        public List<int> disappearing;
+        public List<int> recipient;
+    }
 
     #endregion
 
@@ -2209,7 +2206,7 @@ public class SoilNitrogen
     public void OnProcess()
     {
         // +  Purpose:
-        //      Performs every-day calcualtions
+        //      Performs every-day calculations - main process phase
 
         // update soil temperature
         if (use_external_st)
@@ -2226,6 +2223,31 @@ public class SoilNitrogen
         // send actual decomposition back to surface OM
         if (!is_pond_active)
             SendActualResidueDecompositionCalculated();
+    }
+
+    [EventHandler(EventName = "post")]
+    public void OnPost()
+    {
+        // +  Purpose:
+        //      Performs every-day calculations - end of day processes
+
+        if (Patch.Count > 10) // must set this to zero later
+        {
+            // we have more than one patch, check whether they are similar enough to be merged
+            PatchIDs Patches = new PatchIDs();
+            Patches = comparePatches();
+
+            if (Patches.disappearing.Count > 0)
+            {  // there are patches that will be merged
+                for (int k = 0; k < Patches.disappearing.Count; k++)
+                {
+                    MergePatches(Patches.recipient[k], Patches.disappearing[k]);
+                    Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.MergePatch:");
+                    Console.WriteLine("   merging Patch(" + Patches.disappearing[k].ToString() + ") into Patch(" + Patches.recipient[k].ToString() +
+                        "). New patch area = " + Patch[Patches.recipient[k]].PatchArea.ToString("#0.00#"));
+                }
+            }
+        }
     }
 
     [EventHandler(EventName = "sum_report")]
@@ -2390,11 +2412,6 @@ public class SoilNitrogen
         //+  Purpose
         //     Handling the addition of urine patches
 
-        // test for adding urine patches
-        // if VolumePerUrination = 0.0 then no patch will be added, otherwise a patch will be added (based on 'base' patch)
-        // assuming new PatchArea is passed as a fraction and this will be subtracted from original
-        // urea will be added to the top layer for now
-
         // data passed with this event:
         //.Sender: the name of the module that raised this event
         //.DepositionType: the type of deposition:
@@ -2408,12 +2425,10 @@ public class SoilNitrogen
         //.UrineWater: amount of water to add, not handled here
         //.Urea: amount of urea to add, per layer
 
-        double minPatchArea = 0.001;
-
         double[] deltaUrea = new double[PatchtoAdd.Urea.Length];
         double totalUrea = SumDoubleArray(deltaUrea);
 
-        int[] fakeIDs = new int[PatchtoAdd.AddToPatches_id.Length];
+        //int[] fakeIDs = new int[PatchtoAdd.AddToPatches_id.Length];
         List<int> PatchesToDelete = new List<int>();
 
         if ((PatchtoAdd.DepositionType.ToLower() == "NewSimplePatch".ToLower()) || (PatchtoAdd.DepositionType.ToLower() == "NewOverlappingPatch".ToLower()))
@@ -2430,7 +2445,7 @@ public class SoilNitrogen
             }
             else
             {
-                PatchIDs = CheckPatchIDs(fakeIDs, PatchtoAdd.AddToPatches_nm);
+                PatchIDs = CheckPatchIDs(PatchtoAdd.AddToPatches_id, PatchtoAdd.AddToPatches_nm);
                 for (int i = 0; i < PatchIDs.Length; i++)
                     AreaAffected += Patch[PatchIDs[i]].PatchArea;
             }
@@ -2443,12 +2458,12 @@ public class SoilNitrogen
                 double OldPatch_newArea = NewPatch_area - NewPatch_area;
                 if (NewPatch_area < minPatchArea)
                 {  // area to create is too small, patch will not be created
-                    Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen:");
+                    Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
                     Console.WriteLine("   attempt to create a new patch with area too small or negative (" + NewPatch_area.ToString("#0.00#") + "). The patch will not be created");
                 }
                 else if (OldPatch_newArea < minPatchArea)
                 {  // negative or too small area, patch will be created but old one will be deleted
-                    Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen:");
+                    Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
                     Console.WriteLine(" attempt to set the area of existing patch(" + PatchIDs[i].ToString() + ") to a value too small or negative (" + OldPatch_newArea.ToString("#0.00#") + "). The patch will be eliminated");
                     
                     // mark old patch for deletion
@@ -2471,7 +2486,7 @@ public class SoilNitrogen
                     Patch[k].PatchArea = NewPatch_area;
                     Patch[k].PatchName = "Patch" + k.ToString();
                     Patch[k].dlt_urea = deltaUrea;
-                    Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen:");
+                    Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
                     Console.WriteLine(" create new patch, with area = " + NewPatch_area.ToString("#0.00#") + ", based on existing patch(" + PatchIDs[i].ToString() + 
                         ") - Old area = " + NewPatch_area.ToString("#0.00#") + ", new area = "+ NewPatch_area.ToString("#0.00#"));
                 }
@@ -2484,7 +2499,7 @@ public class SoilNitrogen
             if (totalUrea > epsilon)
             {
                 // 2. get the list of patch id's to which urine will be added
-                int[] PatchIDs = CheckPatchIDs(fakeIDs, PatchtoAdd.AddToPatches_nm);
+                int[] PatchIDs = CheckPatchIDs(PatchtoAdd.AddToPatches_id, PatchtoAdd.AddToPatches_nm);
                 // 3. Add deltaUrea to each patch
                 for (int i = 0; i < PatchIDs.Length; i++)
                     Patch[i].dlt_urea = deltaUrea;
@@ -2500,85 +2515,6 @@ public class SoilNitrogen
                     Patch[k].dlt_urea = deltaUrea;
             }
     }
-
-    private int[] CheckPatchIDs(int[] IDs, string[] Names)
-    {
-
-        List<int> SelectedIDs = new List<int>();
-        if (Math.Max(IDs.Length, Names.Length) > 0)
-        {  // at least one patch has been selected
-            if (Names.Length > 0)
-            {  // at least one name was selected, check value and get id
-                for (int pName = 0; pName < Names.Length; pName++)
-                {
-                    for (int k = 0; k < Patch.Count; k++)
-                    {
-                        if (Names[pName] == Patch[k].PatchName)
-                        {  // found the patch, check for replicates
-                            for (int i = 0; i < SelectedIDs.Count; i++)
-                            {
-                                if (SelectedIDs[i] == k)
-                                {  // id already selected
-                                    i = SelectedIDs.Count;
-                                    k = Patch.Count;
-                                }
-                                else
-                                {  // store the id
-                                    SelectedIDs.Add(k);
-                                    i = SelectedIDs.Count;
-                                    k = Patch.Count;
-                                }
-                            }
-                        }
-                        else
-                        {  // name passed did not correspond to any patch
-                            Console.WriteLine(" SoilNitrogen, the patch name '" + Names[pName] + "' did not correspond to any existing patch. Value will be ignored.");
-                        }
-                    }
-                }
-                // check the ids
-            }
-            if (IDs.Length > 0)
-            {  // at least one ID was selected, check value
-                for (int pId = 0; pId < IDs.Length; pId++)
-                {
-                    for (int k = 0; k < Patch.Count; k++)
-                    {
-                        if (IDs[pId] == k)
-                        {  // found the patch, check for replicates
-                            for (int i = 0; i < SelectedIDs.Count; i++)
-                            {
-                                if (SelectedIDs[i] == k)
-                                {  // id already selected
-                                    i = SelectedIDs.Count;
-                                    k = Patch.Count;
-                                }
-                                else
-                                {  // store the id
-                                    SelectedIDs.Add(k);
-                                    i = SelectedIDs.Count;
-                                    k = Patch.Count;
-                                }
-                            }
-                        }
-                        else
-                        {  // id passed did not correspond to any patch
-                            Console.WriteLine(" SoilNitrogen, the patch id '" + IDs[pId] + "' did not correspond to any existing patch. Value will be ignored.");
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {  // no patch was indicated, use 'base'
-            SelectedIDs.Add(0);
-        } 
-        int[] result = new int[SelectedIDs.Count];
-        for (int i = 0; i < SelectedIDs.Count; i++)
-            result[i] = SelectedIDs[i];
-        return result;
-    }
-
 
     #endregion
 
@@ -3185,6 +3121,121 @@ public class SoilNitrogen
 
         // delete disappearing patch
         Patch.RemoveAt(disappearing);
+    }
+
+    private int[] CheckPatchIDs(int[] IDs, string[] Names)
+    {
+        // +  Purpose:
+        //      Check the list of patch names and ids passed by 'AddUrinePatch', output only ids
+        //        verify whether the names correspond to existing patches, verify whether there are replicates
+
+        // List of patch ids for output
+        List<int> SelectedIDs = new List<int>();
+
+        if (Math.Max(IDs.Length, Names.Length) > 0)
+        {  // at least one patch has been selected
+            if (Names.Length > 0)
+            {  // at least one name was selected, check value and get id
+                for (int pName = 0; pName < Names.Length; pName++)
+                {
+                    for (int k = 0; k < Patch.Count; k++)
+                    {
+                        if (Names[pName] == Patch[k].PatchName)
+                        {  // found the patch, check for replicates
+                            for (int i = 0; i < SelectedIDs.Count; i++)
+                            {
+                                if (SelectedIDs[i] == k)
+                                {  // id already selected
+                                    i = SelectedIDs.Count;
+                                    k = Patch.Count;
+                                }
+                                else
+                                {  // store the id
+                                    SelectedIDs.Add(k);
+                                    i = SelectedIDs.Count;
+                                    k = Patch.Count;
+                                }
+                            }
+                        }
+                        else
+                        {  // name passed did not correspond to any patch
+                            Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
+                            Console.WriteLine("  the patch name '" + Names[pName] + "' did not correspond to any existing patch. Patch will be ignored.");
+                        }
+                    }
+                }
+                // check the ids
+            }
+            if (IDs.Length > 0)
+            {  // at least one ID was selected, check value
+                for (int pId = 0; pId < IDs.Length; pId++)
+                {
+                    for (int k = 0; k < Patch.Count; k++)
+                    {
+                        if (IDs[pId] == k)
+                        {  // found the patch, check for replicates
+                            for (int i = 0; i < SelectedIDs.Count; i++)
+                            {
+                                if (SelectedIDs[i] == k)
+                                {  // id already selected
+                                    i = SelectedIDs.Count;
+                                    k = Patch.Count;
+                                }
+                                else
+                                {  // store the id
+                                    SelectedIDs.Add(k);
+                                    i = SelectedIDs.Count;
+                                    k = Patch.Count;
+                                }
+                            }
+                        }
+                        else
+                        {  // id passed did not correspond to any patch
+                            Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
+                            Console.WriteLine("  the patch id '" + IDs[pId] + "' did not correspond to any existing patch. Patch will be ignored.");
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {  // no patch was indicated, use 'base'
+            SelectedIDs.Add(0);
+        }
+        // pass data into an array to return as result
+        int[] result = new int[SelectedIDs.Count];
+        for (int i = 0; i < SelectedIDs.Count; i++)
+            result[i] = SelectedIDs[i];
+        return result;
+    }
+
+    private PatchIDs comparePatches()
+    {
+        // +  Purpose:
+        //      Compare all existing patches, return the pairs that can be merged
+
+        PatchIDs Patches = new PatchIDs();
+        List<int> recipient = new List<int>();
+        List<int> disappearing = new List<int>();
+
+        for (int k1 = 0; k1 < Patch.Count; k1++)
+        {
+            for (int k2 = k1 + 1; k2 < Patch.Count; k2++)
+            {
+                // go through a series of criteria t evaluate whether the two patches can be merged
+                if (Math.Abs(Patch[k1].carbon_tot[0] - Patch[k2].carbon_tot[0]) < epsilon)
+                {
+                    if (Math.Abs(Patch[k1].no3[0] - Patch[k2].no3[0]) < epsilon)
+                    {
+                        recipient.Add(k1);
+                        disappearing.Add(k2);
+                    }
+                }
+            }
+        }
+        Patches.recipient = recipient;
+        Patches.disappearing = disappearing;
+        return Patches;
     }
 
     #endregion

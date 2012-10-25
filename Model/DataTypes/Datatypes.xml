@@ -872,11 +872,38 @@
       <field name="SO4S"                 unit="kg/ha"  kind="double"  array="F"  descr=""/>
    </type>
 
+   <type name="UrineDeposition">
+      <field name="Sender"             unit="-"    kind="string"  array="F"  descr="name of module raising the event"/>
+      <field name="AnimalType"         unit="-"    kind="string"  array="F"  descr="animal type"/>
+      <field name="Urinations"         unit="-"    kind="double"  array="F"  descr="number of urine depositions"/>
+      <field name="VolumePerUrination" unit="L"    kind="double"  array="T"  descr="volume of each urine deposition"/>
+      <field name="UreaNPerUrination"  unit="ppm"  kind="double"  array="T"  descr="amount of urea in each urine deposition"/>
+      <field name="POXPerUrination"    unit="ppm"  kind="double"  array="T"  descr="amount of POx in each urine deposition"/>
+      <field name="SO4PerUrination"    unit="ppm"  kind="double"  array="T"  descr="amount of SO4 in each urine deposition"/>
+      <field name="AshAlkPerUrination" unit="ppm"  kind="double"  array="T"  descr="ash amount in each urine deposition"/>
+   </type>
+
+   <type name="FaecesDeposition">
+      <field name="Sender"               unit="-"    kind="string"  array="F"  descr="name of module raising the event"/>
+      <field name="AnimalType"           unit="-"    kind="string"  array="F"  descr="animal type"/>
+      <field name="Defaecations"         unit="-"    kind="double"  array="F"  descr="number of faeces depositions"/>
+      <field name="VolumePerDefaecation" unit="L"    kind="double"  array="T"  descr="volume of each faeces deposition"/>
+      <field name="OMWeight"             unit="kg"   kind="double"  array="T"  descr="dry weight of each faeces deposition"/>
+      <field name="OMMoist"              unit="%"    kind="double"  array="T"  descr="moisture of each faeces deposition"/>
+      <field name="OMN"                  unit="ppm"  kind="double"  array="T"  descr="org N content of each faeces deposition"/>
+      <field name="OMP"                  unit="ppm"  kind="double"  array="T"  descr="org P content of each faeces deposition"/>
+      <field name="OMS"                  unit="ppm"  kind="double"  array="T"  descr="org S content of each faeces deposition"/>
+      <field name="OMAshAlk"             unit="ppm"  kind="double"  array="T"  descr="org ash content of each faeces deposition"/>
+      <field name="NO3N"                 unit="ppm"  kind="double"  array="T"  descr="NO3 content of each faeces deposition"/>
+      <field name="NH4N"                 unit="ppm"  kind="double"  array="T"  descr="NH4 content of each faeces deposition"/>
+      <field name="POXP"                 unit="ppm"  kind="double"  array="T"  descr="POx content of each faeces deposition"/>
+      <field name="SO4S"                 unit="ppm"  kind="double"  array="T"  descr="SO4 content of each faeces deposition"/>
+   </type>
+
 
    <!--!!!!! Urine patch types  !!!!!!!!!!!!!!!!!!!!!!-->
 
    <!-- used to send data to UrinePatch, which will process these and then emulate patch effects or apply patches to soil -->
-      <!-- used to send data to UrinePatch, which will process these and then emulate patch effects or apply patches to soil -->
    <type name="ApplyUrine">
       <field name="Sender"                unit="-"     kind="string"  array="F"  descr="name of module raising the event"/>
       <field name="StockType"             unit="-"     kind="string"  array="F"  descr="animal type"/>
@@ -887,10 +914,10 @@
       <field name="MaxInfiltrationDepth"  unit="mm"    kind="double"  array="F"  descr="max urine infiltration in the soil"/>
    </type>
 
-      <!-- used to send data to soil. SoilNitrogen will deal with N (adding patches if appropriate), water will be handled by a water module -->
+   <!-- used to send data to soil. SoilNitrogen will deal with N (adding patches if appropriate), water will be handled by a water module -->
    <type name="AddUrinePatch">
       <field name="Sender"           unit="-"      kind="string"   array="F"  descr="name of module raising the event"/>
-      <field name="DepositionType"   unit="-"      kind="string"   array="F"  descr="type (homogeneous, SinplePatchy)"/>
+      <field name="DepositionType"   unit="-"      kind="string"   array="F"  descr="Homogeneous, ToSpecificPatch, NewSimplePatch, NewOverlappingPatch"/>
       <field name="AddToPatches_nm"  unit="-"      kind="string"   array="T"  descr="the name of patches to add urine"/>
       <field name="AddToPatches_id"  unit="-"      kind="integer4" array="T"  descr="the id of patches to add urine"/>
       <field name="PatchArea"        unit="m^2"    kind="double"   array="F"  descr="area of the urine patch"/>
