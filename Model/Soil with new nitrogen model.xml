@@ -108,32 +108,56 @@
                 <nh4ppm>[soil.NH4(ppm)]</nh4ppm>
 
                 <!-- additions by RCichota -->
+                <functions2use description="the set of function to use (original or new) - for develop/debugging"> original </functions2use>
+
                 <allow_simpleSoilTemp description="whether internal soilTemp can be used, otherwise the SoilTemp has to be present"> yes </allow_simpleSoilTemp>
                 <use_organic_solutes description="whether organic solute are on or off"> off </use_organic_solutes>
                 <ureappm_min description="minimum allowable urea content (ppm)"> 0.0 </ureappm_min>
                 <minPatchArea description="minimum allowable relative area for a patch(0-1)"> 0.001 </minPatchArea>
 
+                <!-- Parameters for urea hydrolisys -->
+                <stf_hydrol_p1 description="parameter for temp factor, optimum temperature"> 32.0  32.0 </stf_hydrol_p1>
+                <stf_hydrol_p2 description="parameter for temp factor, value of factor at zero degrees"> 0.20  0.20 </stf_hydrol_p2>
+                <stf_hydrol_p3 description="parameter for temp factor, curve exponent"> 1.0  1.0 </stf_hydrol_p3>
+                <swf_hydrol_x description="parameter for moist factor, values of modified swc (0-3)"> 0.0 1.0 1.5 2.0 3.0 </swf_hydrol_x>
+                <swf_hydrol_y description="parameter for moist factor, swf values corresponding to x"> 0.0 0.0 1.0 1.0 0.5 </swf_hydrol_y>
+
+                <pot_hydrol_min description="parameter for potential hydrol function - minimum potential"> 0.25 </pot_hydrol_min>
+                <pot_hydrol_termA description="parameter A for potential hydrol function"> -1.12 </pot_hydrol_termA>
+                <pot_hydrol_termB description="parameter A for potential hydrol function"> 1.31 </pot_hydrol_termB>
+                <pot_hydrol_termC description="parameter A for potential hydrol function"> 0.203 </pot_hydrol_termC>
+                <pot_hydrol_termD description="parameter A for potential hydrol function"> -0.155 </pot_hydrol_termD>
+
+                <!-- Parameters for nitrification -->
+                <stf_nitrif_p1 description="parameter for temp factor, optimum temperature"> 32.0  32.0 </stf_nitrif_p1>
+                <stf_nitrif_p2 description="parameter for temp factor, value of factor at zero degrees"> 0.00  0.00 </stf_nitrif_p2>
+                <stf_nitrif_p3 description="parameter for temp factor, curve exponent"> 2.0  2.0 </stf_nitrif_p3>
+                <swf_nitrif_x description="parameter for moist factor, values of modified swc (0-3)"> 0.0 1.0 1.25 2.0 3.0 </swf_nitrif_x>
+                <swf_nitrif_y description="parameter for moist factor, swf values corresponding to x"> 0.0 0.0 1.0 1.0 0.0 </swf_nitrif_y>
+                <sphf_nitrif_x description="parameter for pH factor, values of soil ph (0-14)"> 0.0 4.5 6.0 8.0 9.0 14.0 </sphf_nitrif_x>
+                <sphf_nitrif_y description="parameter for pH factor, sphf values corresponding to x"> 0.0 0.0 1.0 1.0 0.0 0.0 </sphf_nitrif_y>
+
+                <!-- Parameters for denitrification -->
+                <stf_denit_p1 description="parameter for temp factor, optimum temperature"> 50.0  50.0 </stf_denit_p1>
+                <stf_denit_p2 description="parameter for temp factor, value of factor at zero degrees"> 0.10  0.10 </stf_denit_p2>
+                <stf_denit_p3 description="parameter for temp factor, curve exponent"> 1000.0  1000.0 </stf_denit_p3>
+                <swf_denit_x description="parameter for moist factor, values of modified swc (0-3)"> 0.0 2.0 3.0 </swf_denit_x>
+                <swf_denit_y description="parameter for moist factor, swf values corresponding to x"> 0.0 0.0 1.0 </swf_denit_y>
                 <dnit_A description="parameter for TermA in N2N2O function"> 0.16 </dnit_A>
                 <dnit_B description="parameter for TermB in N2N2O function"> 0.80 </dnit_B>
                 <dnit_C description="parameter for TermC in N2N2O function"> 1.0 </dnit_C>
                 <actC_p1 description="parameter 1 to compute active carbon"> 0.0031 </actC_p1>
                 <actC_p2 description="parameter 2 to compute active carbon"> 24.5 </actC_p2>
 
-                <rc_stf_hydrol_p1 description="parameter for hydrolisys temp factor, stf at zero"> 0.2 </rc_stf_hydrol_p1>
-                <rc_stf_hydrol_p2 description="parameter for hydrolisys temp factor, optimum temp"> 32 </rc_stf_hydrol_p2>
-                <rc_stf_hydrol_p3 description="parameter for hydrolisys temp factor, exponent"> 1.0 </rc_stf_hydrol_p3>
+                <!-- Parameters for soil OM mineralisation -->
+                <stf_miner_p1 description="parameter for temp factor, optimum temperature"> 32.0  32.0 </stf_miner_p1>
+                <stf_miner_p2 description="parameter for temp factor, value of factor at zero degrees"> 0.20  0.20 </stf_miner_p2>
+                <stf_miner_p3 description="parameter for temp factor, curve exponent"> 2.0  2.0 </stf_miner_p3>
+                <swf_miner_x description="parameter for moist factor, values of modified swc (0-3)"> 0.0 1.0 1.5 2.0 3.0 </swf_miner_x>
+                <swf_miner_y description="parameter for moist factor, swf values corresponding to x"> 0.0 0.0 1.0 1.0 0.5 </swf_miner_y>
+                <cnf_miner_p1 description="parameter for C:N ratio factor, variation rate"> 0.693 </cnf_miner_p1>
+                <cnf_miner_p2 description="parameter for C:N ratio factor, optimum CN value"> 25.0 </cnf_miner_p2>
 
-                <rc_stf_nitrif_p1 description="parameter for nitrification temp factor, stf at zero"> 0.0 </rc_stf_nitrif_p1>
-                <rc_stf_nitrif_p2 description="parameter for nitrification temp factor, optimum temp"> 32 </rc_stf_nitrif_p2>
-                <rc_stf_nitrif_p3 description="parameter for nitrification temp factor, exponent"> 2.0 </rc_stf_nitrif_p3>
-
-                <rc_stf_denit_p1 description="parameter for denitrification temp factor, stf at zero"> 0.1 </rc_stf_denit_p1>
-                <rc_stf_denit_p2 description="parameter for denitrification temp factor, optimum temp"> 50 </rc_stf_denit_p2>
-                <rc_stf_denit_p3 description="parameter for denitrification temp factor, exponent"> 1000.0 </rc_stf_denit_p3>
-
-                <rc_stf_miner_p1 description="parameter for mineralisation temp factor, stf at zero"> 0.0 </rc_stf_miner_p1>
-                <rc_stf_miner_p2 description="parameter for mineralisation temp factor, optimum temp"> 32 </rc_stf_miner_p2>
-                <rc_stf_miner_p3 description="parameter for mineralisation temp factor, exponent"> 2.0 </rc_stf_miner_p3>
 
                 <rc_stf_minerHum_p1 description="parameter for humus mineralisation temp factor, stf at zero"> 0.0 </rc_stf_minerHum_p1>
                 <rc_stf_minerHum_p2 description="parameter for humus mineralisation temp factor, optimum temp"> 32 </rc_stf_minerHum_p2>

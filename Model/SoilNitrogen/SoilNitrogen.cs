@@ -360,30 +360,6 @@ public class SoilNitrogen
 
     #region Parameters not usually provided by the user
 
-    // parameter for TermA in N2N2O function
-    [Param]
-    private double dnit_A;
-
-    // parameter for TermB in N2N2O function
-    [Param]
-    private double dnit_B;
-
-    // parameter for TermC in N2N2O function
-    [Param]
-    private double dnit_C;
-
-    // parameter 1 to compute active carbon (for denitrification)
-    [Param]
-    private double actC_p1;
-
-    // parameter 2 to compute active carbon (for denitrification)
-    [Param]
-    private double actC_p2;
-
-    // minimum relative area (fraction of paddock) for any patch
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    private double minPatchArea = 0.001;
-
     // minimum allowable Urea (ppm)
     [Param(MinVal = 0.0, MaxVal = 1000.0)]
     private double ureappm_min = 0.0;
@@ -541,6 +517,191 @@ public class SoilNitrogen
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     private double dnit_nitrf_loss;      // Fraction of nitrification lost as denitrification
+
+    #endregion
+
+    #region Parameters added by RCichota
+
+    // marker for what set of functions will be used (original or new)
+    private bool useNewFunctions = false;
+    [Param]
+    private string functions2use
+    { set { useNewFunctions = value.ToLower().Contains("new"); } }
+
+    // minimum relative area (fraction of paddock) for any patch
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    private double minPatchArea = 0.001;
+
+    #region Parameters for hydrolisys process
+
+    // optimum temperature for urea hydrolisys
+    private TempFactorData TempFactor_Hydrol = new TempFactorData();
+    [Param]
+    private double[] stf_hydrol_p1
+    { set { TempFactor_Hydrol.TempOptimum = value; } }
+
+    // temperature factor for urea hydrolisys at zero degrees
+    [Param]
+    private double[] stf_hydrol_p2
+    { set { TempFactor_Hydrol.FactorAtZero = value; } }
+
+    // curve exponent for temperature factor for urea hydrolisys
+    [Param]
+    private double[] stf_hydrol_p3
+    { set { TempFactor_Hydrol.CurveExponent = value; } }
+
+    // parameters for soil moisture factor for hydrolisys
+    private XYData MoistFactor_Hydrol = new XYData();
+    [Param]
+    private double[] swf_hydrol_x
+    { set { MoistFactor_Hydrol.xVals = value; } }
+    [Param]
+    private double[] swf_hydrol_y
+    { set { MoistFactor_Hydrol.yVals = value; } }
+
+    // parameters for potential urea hydrolisys
+    [Param]
+    private double pot_hydrol_min;  // minimum value
+
+    [Param]
+    private double pot_hydrol_termA;
+
+    [Param]
+    private double pot_hydrol_termB;
+
+    [Param]
+    private double pot_hydrol_termC;
+
+    [Param]
+    private double pot_hydrol_termD;
+
+    #endregion
+
+    #region Parameters for nitrification process
+
+    // optimum temperature for nitrification
+    private TempFactorData TempFactor_Nitrif = new TempFactorData();
+    [Param]
+    private double[] stf_nitrif_p1
+    { set { TempFactor_Nitrif.TempOptimum = value; } }
+
+    // temperature factor for nitrification at zero degrees
+    [Param]
+    private double[] stf_nitrif_p2
+    { set { TempFactor_Nitrif.FactorAtZero = value; } }
+
+    // curve exponent for temperature factor for nitrification
+    [Param]
+    private double[] stf_nitrif_p3
+    { set { TempFactor_Nitrif.CurveExponent = value; } }
+
+    // parameters for soil moisture factor for nitrification
+    private XYData MoistFactor_Nitrif = new XYData();
+    [Param]
+    private double[] swf_nitrif_x
+    { set { MoistFactor_Nitrif.xVals = value; } }
+    [Param]
+    private double[] swf_nitrif_y
+    { set { MoistFactor_Nitrif.yVals = value; } }
+
+    // parameters for soil pH factor for nitrification
+    private XYData pHFactor_Nitrif = new XYData();
+    [Param]
+    private double[] sphf_nitrif_x
+    { set { pHFactor_Nitrif.xVals = value; } }
+    [Param]
+    private double[] sphf_nitrif_y
+    { set { pHFactor_Nitrif.yVals = value; } }
+
+    #endregion
+
+    #region Parameters for denitrification and N2O emission processes
+
+    // optimum temperature for denitrification
+    private TempFactorData TempFactor_Denit = new TempFactorData();
+    [Param]
+    private double[] stf_denit_p1
+    { set { TempFactor_Denit.TempOptimum = value; } }
+
+    // temperature factor for denitrification at zero degrees
+    [Param]
+    private double[] stf_denit_p2
+    { set { TempFactor_Denit.FactorAtZero = value; } }
+
+    // curve exponent for temperature factor for denitrification
+    [Param]
+    private double[] stf_denit_p3
+    { set { TempFactor_Denit.CurveExponent = value; } }
+
+    // parameters for soil moisture factor for denitrification
+    private XYData MoistFactor_Denit = new XYData();
+    [Param]
+    private double[] swf_denit_x
+    { set { MoistFactor_Denit.xVals = value; } }
+    [Param]
+    private double[] swf_denit_y
+    { set { MoistFactor_Denit.yVals = value; } }
+
+    // parameter for TermA in N2N2O function
+    [Param]
+    private double dnit_A;
+
+    // parameter for TermB in N2N2O function
+    [Param]
+    private double dnit_B;
+
+    // parameter for TermC in N2N2O function
+    [Param]
+    private double dnit_C;
+
+    // parameter 1 to compute active carbon (for denitrification)
+    [Param]
+    private double actC_p1;
+
+    // parameter 2 to compute active carbon (for denitrification)
+    [Param]
+    private double actC_p2;
+
+    #endregion
+
+    #region Parameters for mineralisation/immobilisation process
+
+    // optimum temperature for OM mineralisation
+    private TempFactorData TempFactor_Miner = new TempFactorData();
+    [Param]
+    private double[] stf_miner_p1
+    { set { TempFactor_Miner.TempOptimum = value; } }
+
+    // temperature factor for OM mineralisation at zero degrees
+    [Param]
+    private double[] stf_miner_p2
+    { set { TempFactor_Miner.FactorAtZero = value; } }
+
+    // curve exponent for temperature factor for OM mineralisation
+    [Param]
+    private double[] stf_miner_p3
+    { set { TempFactor_Miner.CurveExponent = value; } }
+
+    // parameters for soil moisture factor for OM mineralisation
+    private XYData MoistFactor_Miner = new XYData();
+    [Param]
+    private double[] swf_miner_x
+    { set { MoistFactor_Miner.xVals = value; } }
+    [Param]
+    private double[] swf_miner_y
+    { set { MoistFactor_Miner.yVals = value; } }
+
+    // parameters for C:N factor for OM mineralisation
+    double CNFactorMiner_Opt;
+    [Param]
+    private double cnf_miner_p1
+    { set { CNFactorMiner_Opt = value; } }
+    double CNFactorMiner_rate;
+    [Param]
+    private double cnf_miner_p2
+    { set { CNFactorMiner_rate = value; } }
+
+    #endregion
 
     #endregion
 
@@ -2095,6 +2256,21 @@ public class SoilNitrogen
         public List<int> recipient;
     }
 
+    public struct TempFactorData
+    {
+        // the parameters to compute the temperature factor
+        public double[] TempOptimum;
+        public double[] FactorAtZero;
+        public double[] CurveExponent;
+    }
+
+    private struct XYData
+    {
+        // lists with value of x and y used to describe certain functions (water factor, for ex.)
+        public double[] xVals;
+        public double[] yVals;
+    }
+
     #endregion
 
     #region Events which we publish
@@ -2799,7 +2975,7 @@ public class SoilNitrogen
     private void InitialisePatch(int k)
     {
         // + Purpose
-        //    set all variables within a single patch to defaul/initial values (there must be only one patch)
+        //    set all variables within a single patch to defaul/initial values
 
         #region Values needed for initalisation only
 
@@ -2808,21 +2984,6 @@ public class SoilNitrogen
         Patch[k].epsilon = epsilon;
 
         Patch[k].c_in_fom = c_in_fom;
-
-        // parameter for TermA in N2N2O function ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        Patch[k].dnit_A = dnit_A;
-
-        // parameter for TermB in N2N2O function
-        Patch[k].dnit_B = dnit_B;
-
-        // parameter for TermC in N2N2O function
-        Patch[k].dnit_C = dnit_C;
-
-        // parameter 1 to compute active carbon (for denitrification)
-        Patch[k].actC_p1 = actC_p1;
-
-        // parameter 2 to compute active carbon (for denitrification) ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        Patch[k].actC_p2 = actC_p2;
 
         for (int layer = 0; layer < dlayer.Length; layer++)
         {
@@ -2968,6 +3129,78 @@ public class SoilNitrogen
 
         #endregion
 
+        #region Parameters added by RCichota
+
+        Patch[k].useNewFunctions = useNewFunctions;
+        Patch[k].minPatchArea = minPatchArea;
+
+        // parameters for temperature factor for urea hydrolisys
+        Patch[k].TempFactor_Hydrol.TempOptimum = TempFactor_Hydrol.TempOptimum;
+        Patch[k].TempFactor_Hydrol.FactorAtZero = TempFactor_Hydrol.FactorAtZero;
+        Patch[k].TempFactor_Hydrol.CurveExponent = TempFactor_Hydrol.CurveExponent;
+
+        Patch[k].pot_hydrol_min = pot_hydrol_min;
+        Patch[k].pot_hydrol_termA = pot_hydrol_termA;
+        Patch[k].pot_hydrol_termB = pot_hydrol_termB;
+        Patch[k].pot_hydrol_termC = pot_hydrol_termC;
+        Patch[k].pot_hydrol_termD = pot_hydrol_termD;
+
+        // parameters for soil moisture factor for hydrolisys
+        Patch[k].MoistFactor_Hydrol.xVals = MoistFactor_Hydrol.xVals;
+        Patch[k].MoistFactor_Hydrol.yVals = MoistFactor_Hydrol.yVals;
+
+        // parameters for temperature factor for nitrification
+        Patch[k].TempFactor_Nitrif.TempOptimum = TempFactor_Nitrif.TempOptimum;
+        Patch[k].TempFactor_Nitrif.FactorAtZero = TempFactor_Nitrif.FactorAtZero;
+        Patch[k].TempFactor_Nitrif.CurveExponent = TempFactor_Nitrif.CurveExponent;
+
+        // parameters for soil moisture factor for nitrification
+        Patch[k].MoistFactor_Nitrif.xVals = MoistFactor_Nitrif.xVals;
+        Patch[k].MoistFactor_Nitrif.yVals = MoistFactor_Nitrif.yVals;
+
+        // parameters for pH factor for nitrification
+        Patch[k].pHFactor_Nitrif.xVals = pHFactor_Nitrif.xVals;
+        Patch[k].pHFactor_Nitrif.yVals = pHFactor_Nitrif.yVals;
+
+        // parameters for temperature factor for denitrification
+        Patch[k].TempFactor_Denit.TempOptimum = TempFactor_Denit.TempOptimum;
+        Patch[k].TempFactor_Denit.FactorAtZero = TempFactor_Denit.FactorAtZero;
+        Patch[k].TempFactor_Denit.CurveExponent = TempFactor_Denit.CurveExponent;
+
+        // parameters for soil moisture factor for denitrification
+        Patch[k].MoistFactor_Denit.xVals = MoistFactor_Denit.xVals;
+        Patch[k].MoistFactor_Denit.yVals = MoistFactor_Denit.yVals;
+
+        // parameter for TermA in N2N2O function
+        Patch[k].dnit_A = dnit_A;
+
+        // parameter for TermB in N2N2O function
+        Patch[k].dnit_B = dnit_B;
+
+        // parameter for TermC in N2N2O function
+        Patch[k].dnit_C = dnit_C;
+
+        // parameter 1 to compute active carbon (for denitrification)
+        Patch[k].actC_p1 = actC_p1;
+
+        // parameter 2 to compute active carbon (for denitrification)
+        Patch[k].actC_p2 = actC_p2;
+
+        // parameters for temperature factor for mineralisation
+        Patch[k].TempFactor_Miner.TempOptimum = TempFactor_Miner.TempOptimum;
+        Patch[k].TempFactor_Miner.FactorAtZero = TempFactor_Miner.FactorAtZero;
+        Patch[k].TempFactor_Miner.CurveExponent = TempFactor_Miner.CurveExponent;
+
+        // parameters for soil moisture factor for OM mineralisation
+        Patch[k].MoistFactor_Miner.xVals = MoistFactor_Miner.xVals;
+        Patch[k].MoistFactor_Miner.yVals = MoistFactor_Miner.yVals;
+
+        // parameters for C:N factor for OM mineralisation
+        Patch[k].CNFactorMiner_Opt = CNFactorMiner_Opt;
+        Patch[k].CNFactorMiner_rate = CNFactorMiner_rate;
+
+        #endregion
+
         #region Values needed for initalisation an during the simulation
 
         Patch[k].dlayer = new float[dlayer.Length];
@@ -2998,7 +3231,8 @@ public class SoilNitrogen
             // today's soil water content
             Patch[k].sw_dep[layer] = sw_dep[layer];
 
-            Patch[k].ph[layer] = ph[layer];       // soil pH
+            // soil pH
+            Patch[k].ph[layer] = ph[layer];
 
             // soil temperature (as computed by another module - SoilTemp)
             Patch[k].st[layer] = st[layer];
@@ -3240,7 +3474,7 @@ public class SoilNitrogen
 
     #endregion
 
-    #region process calculations
+    #region Process calculations
 
     private void Process()
     {
