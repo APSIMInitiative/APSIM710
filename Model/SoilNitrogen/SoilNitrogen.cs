@@ -666,6 +666,12 @@ public class SoilNitrogen
 
     #region Parameters for mineralisation/immobilisation process
 
+    // whether mineralisation factors use single calculation of for each type
+    private bool useSingleMinerFactors = false;
+    [Param]
+    private string useSingleFactors
+    { set { useSingleMinerFactors = value.ToLower().Contains("yes"); } }
+
     // optimum temperature for OM mineralisation
     private TempFactorData TempFactor_Miner = new TempFactorData();
     [Param]
@@ -700,6 +706,95 @@ public class SoilNitrogen
     [Param]
     private double cnf_miner_p2
     { set { CNFactorMiner_rate = value; } }
+
+    #region Parameters for especifity OM types
+
+    // optimum temperature for mineralisation of humus
+    private TempFactorData TempFactor_minerHum = new TempFactorData();
+    [Param]
+    private double[] stf_minerHum_p1
+    { set { TempFactor_minerHum.TempOptimum = value; } }
+
+    // temperature factor for mineralisation of humus at zero degrees
+    [Param]
+    private double[] stf_minerHum_p2
+    { set { TempFactor_minerHum.FactorAtZero = value; } }
+
+    // curve exponent for temperature factor for mineralisation of humus
+    [Param]
+    private double[] stf_minerHum_p3
+    { set { TempFactor_minerHum.CurveExponent = value; } }
+
+    // parameters for soil moisture factor for mineralisation of humus
+    private XYData MoistFactor_minerHum = new XYData();
+    [Param]
+    private double[] swf_minerHum_x
+    { set { MoistFactor_minerHum.xVals = value; } }
+    [Param]
+    private double[] swf_minerHum_y
+    { set { MoistFactor_minerHum.yVals = value; } }
+
+    // optimum temperature for mineralisation of OM biomass
+    private TempFactorData TempFactor_minerBiom = new TempFactorData();
+    [Param]
+    private double[] stf_minerBiom_p1
+    { set { TempFactor_minerBiom.TempOptimum = value; } }
+
+    // temperature factor for mineralisation of OM biomass at zero degrees
+    [Param]
+    private double[] stf_minerBiom_p2
+    { set { TempFactor_minerBiom.FactorAtZero = value; } }
+
+    // curve exponent for temperature factor for mineralisation of OM biomass
+    [Param]
+    private double[] stf_minerBiom_p3
+    { set { TempFactor_minerBiom.CurveExponent = value; } }
+
+    // parameters for soil moisture factor for mineralisation of OM biomass
+    private XYData MoistFactor_minerBiom = new XYData();
+    [Param]
+    private double[] swf_minerBiom_x
+    { set { MoistFactor_minerBiom.xVals = value; } }
+    [Param]
+    private double[] swf_minerBiom_y
+    { set { MoistFactor_minerBiom.yVals = value; } }
+
+    // optimum temperature for mineralisation of FOM
+    private TempFactorData TempFactor_minerFOM = new TempFactorData();
+    [Param]
+    private double[] stf_minerFOM_p1
+    { set { TempFactor_minerFOM.TempOptimum = value; } }
+
+    // temperature factor for mineralisation of FOM at zero degrees
+    [Param]
+    private double[] stf_minerFOM_p2
+    { set { TempFactor_minerFOM.FactorAtZero = value; } }
+
+    // curve exponent for temperature factor for mineralisation of FOM
+    [Param]
+    private double[] stf_minerFOM_p3
+    { set { TempFactor_minerFOM.CurveExponent = value; } }
+
+    // parameters for soil moisture factor for mineralisation of FOM
+    private XYData MoistFactor_minerFOM = new XYData();
+    [Param]
+    private double[] swf_minerFOM_x
+    { set { MoistFactor_minerFOM.xVals = value; } }
+    [Param]
+    private double[] swf_minerFOM_y
+    { set { MoistFactor_minerFOM.yVals = value; } }
+
+    // parameters for C:N factor mineralisation of FOM
+    double CNFactorMinerFOM_Opt;
+    [Param]
+    private double cnf_minerFOM_p1
+    { set { CNFactorMinerFOM_Opt = value; } }
+    double CNFactorMinerFOM_rate;
+    [Param]
+    private double cnf_minerFOM_p2
+    { set { CNFactorMinerFOM_rate = value; } }
+
+    #endregion
 
     #endregion
 
@@ -3186,6 +3281,9 @@ public class SoilNitrogen
         // parameter 2 to compute active carbon (for denitrification)
         Patch[k].actC_p2 = actC_p2;
 
+        // whether mineralisation factors are computed single or for each type
+        Patch[k].useSingleMinerFactors = useSingleMinerFactors;
+
         // parameters for temperature factor for mineralisation
         Patch[k].TempFactor_Miner.TempOptimum = TempFactor_Miner.TempOptimum;
         Patch[k].TempFactor_Miner.FactorAtZero = TempFactor_Miner.FactorAtZero;
@@ -3198,6 +3296,41 @@ public class SoilNitrogen
         // parameters for C:N factor for OM mineralisation
         Patch[k].CNFactorMiner_Opt = CNFactorMiner_Opt;
         Patch[k].CNFactorMiner_rate = CNFactorMiner_rate;
+
+        #region parameter for each OM type
+
+        // parameters for temperature factor for humus mineralisation
+        Patch[k].TempFactor_minerHum.TempOptimum = TempFactor_minerHum.TempOptimum;
+        Patch[k].TempFactor_minerHum.FactorAtZero = TempFactor_minerHum.FactorAtZero;
+        Patch[k].TempFactor_minerHum.CurveExponent = TempFactor_minerHum.CurveExponent;
+
+        // parameters for soil moisture factor for humus mineralisation
+        Patch[k].MoistFactor_minerHum.xVals = MoistFactor_minerHum.xVals;
+        Patch[k].MoistFactor_minerHum.yVals = MoistFactor_minerHum.yVals;
+
+        // parameters for temperature factor for OM biomass mineralisation
+        Patch[k].TempFactor_minerBiom.TempOptimum = TempFactor_minerBiom.TempOptimum;
+        Patch[k].TempFactor_minerBiom.FactorAtZero = TempFactor_minerBiom.FactorAtZero;
+        Patch[k].TempFactor_minerBiom.CurveExponent = TempFactor_minerBiom.CurveExponent;
+
+        // parameters for soil moisture factor for OM biomass mineralisation
+        Patch[k].MoistFactor_minerBiom.xVals = MoistFactor_minerBiom.xVals;
+        Patch[k].MoistFactor_minerBiom.yVals = MoistFactor_minerBiom.yVals;
+
+        // parameters for temperature factor for FOM mineralisation
+        Patch[k].TempFactor_minerFOM.TempOptimum = TempFactor_minerFOM.TempOptimum;
+        Patch[k].TempFactor_minerFOM.FactorAtZero = TempFactor_minerFOM.FactorAtZero;
+        Patch[k].TempFactor_minerFOM.CurveExponent = TempFactor_minerFOM.CurveExponent;
+
+        // parameters for soil moisture factor for FOM mineralisation
+        Patch[k].MoistFactor_minerFOM.xVals = MoistFactor_minerFOM.xVals;
+        Patch[k].MoistFactor_minerFOM.yVals = MoistFactor_minerFOM.yVals;
+
+        // parameters for C:N factor for FOM mineralisation
+        Patch[k].CNFactorMinerFOM_Opt = CNFactorMinerFOM_Opt;
+        Patch[k].CNFactorMinerFOM_rate = CNFactorMinerFOM_rate;
+
+        #endregion
 
         #endregion
 

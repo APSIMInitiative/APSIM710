@@ -210,6 +210,9 @@ class soilCNPatch
 
     #region Parameters for mineralisation/immobilisation process
 
+    // whether mineralisation factors are computed single or for each type
+    public bool useSingleMinerFactors = true;
+
     // parameters for temperature factor for OM mineralisation
     public TempFactorData TempFactor_Miner = new TempFactorData();
 
@@ -219,6 +222,33 @@ class soilCNPatch
     // parameters for C:N factor for OM mineralisation
     public double CNFactorMiner_Opt;
     public double CNFactorMiner_rate;
+
+    #region parameters for each OM type
+
+    // parameters for temperature factor for humus mineralisation
+    public TempFactorData TempFactor_minerHum = new TempFactorData();
+
+    // parameters for soil moisture factor for humus mineralisation
+    public XYData MoistFactor_minerHum = new XYData();
+
+    // parameters for temperature factor for OM biomass mineralisation
+    public TempFactorData TempFactor_minerBiom = new TempFactorData();
+
+    // parameters for soil moisture factor for OM biomass mineralisation
+    public XYData MoistFactor_minerBiom = new XYData();
+
+
+    // parameters for temperature factor for FOM mineralisation
+    public TempFactorData TempFactor_minerFOM = new TempFactorData();
+
+    // parameters for soil moisture factor for FOM mineralisation
+    public XYData MoistFactor_minerFOM = new XYData();
+
+    // parameters for C:N factor for FOM mineralisation
+    public double CNFactorMinerFOM_Opt;
+    public double CNFactorMinerFOM_rate;
+
+    #endregion
 
     #endregion
 
@@ -1464,12 +1494,26 @@ class soilCNPatch
         // get the soil temperature factor
         double tf = (SoilN_MinerModel == "rothc") ? RothcTF(layer, index) : TF(layer, index);
         if (useNewFunctions)
-            tf = SoilTempFactor(layer, index, TempFactor_Miner);
+            if (useSingleMinerFactors)
+            {
+                tf = SoilTempFactor(layer, index, TempFactor_Miner);
+            }
+            else
+            {
+                tf = SoilTempFactor(layer, index, TempFactor_minerHum);
+            }
 
         // get the soil water factor
         double wf = WF(layer, index);
         if (useNewFunctions)
-            wf = SoilMoistFactor(layer, index, MoistFactor_Miner);
+            if (useSingleMinerFactors)
+            {
+                wf = SoilMoistFactor(layer, index, MoistFactor_Miner);
+            }
+            else
+            {
+                wf = SoilMoistFactor(layer, index, MoistFactor_minerHum);
+            }
 
         // get the rate of mineralisation of N from the humic pool
         double dlt_c_min_hum = (hum_c[layer] - inert_c[layer]) * rd_hum[index - 1] * tf * wf;
@@ -1492,12 +1536,26 @@ class soilCNPatch
         // get the soil temperature factor
         double tf = (SoilN_MinerModel == "rothc") ? RothcTF(layer, index) : TF(layer, index);
         if (useNewFunctions)
-            tf = SoilTempFactor(layer, index, TempFactor_Miner);
+            if (useSingleMinerFactors)
+            {
+                tf = SoilTempFactor(layer, index, TempFactor_Miner);
+            }
+            else
+            {
+                tf = SoilTempFactor(layer, index, TempFactor_minerBiom);
+            }
 
         // get the soil water factor
         double wf = WF(layer, index);
-        if (useNewFunctions)
-            wf = SoilMoistFactor(layer, index, MoistFactor_Miner);
+        if (useSingleMinerFactors)
+            if (useNewFunctions)
+            {
+                wf = SoilMoistFactor(layer, index, MoistFactor_Miner);
+            }
+            else
+            {
+                wf = SoilMoistFactor(layer, index, MoistFactor_minerBiom);
+            }
 
         // get the rate of mineralisation of C & N from the biomass pool
         double dlt_n_min_biom = biom_n[layer] * rd_biom[index - 1] * tf * wf;       // why the calculation is on n while for hum is on C?
@@ -1645,17 +1703,38 @@ class soilCNPatch
         // calculate the C:N ratio factor - Bound to [0, 1]
         double cnrf = Math.Max(0.0, Math.Min(1.0, Math.Exp(-cnrf_coeff * (cnr - cnrf_optcn) / cnrf_optcn)));
         if (useNewFunctions)
-            cnrf = CNorgFactor(layer, index, CNFactorMiner_Opt, CNFactorMiner_rate);
+            if (useNewFunctions)
+            {
+                cnrf = CNorgFactor(layer, index, CNFactorMiner_Opt, CNFactorMiner_rate);
+            }
+            else
+            {
+                cnrf = CNorgFactor(layer, index, CNFactorMinerFOM_Opt, CNFactorMinerFOM_rate);
+            }
 
         // get the soil temperature factor
         double tf = (SoilN_MinerModel == "rothc") ? RothcTF(layer, index) : TF(layer, index);
         if (useNewFunctions)
-            tf = SoilTempFactor(layer, index, TempFactor_Miner);
+            if (useNewFunctions)
+            {
+                tf = SoilTempFactor(layer, index, TempFactor_Miner);
+            }
+            else
+            {
+                tf = SoilTempFactor(layer, index, TempFactor_minerFOM);
+            }
 
         // get the soil water factor
         double wf = WF(layer, index);
         if (useNewFunctions)
-            wf = SoilMoistFactor(layer, index, MoistFactor_Miner);
+            if (useNewFunctions)
+            {
+                wf = SoilMoistFactor(layer, index, MoistFactor_Miner);
+            }
+            else
+            {
+                wf = SoilMoistFactor(layer, index, MoistFactor_minerFOM);
+            }
 
         // calculate gross amount of C & N released due to mineralisation of the fresh organic matter.
         if (fomC >= fom_min)
