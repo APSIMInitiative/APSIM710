@@ -461,9 +461,14 @@ public class JobScheduler
                 return s.ToString();
             }
         }
-        else if (CommandBits.Length == 2 && CommandBits[0] == "JobFinished")
+        else if (CommandBits.Length > 1 && CommandBits[0] == "JobFinished")
         {
             XmlSerializer x = new XmlSerializer(typeof(List<Job>));
+            if (CommandBits.Length > 2) // If there were tilde characters in the job XML, reassemble it into a single string
+            {
+                for (int i = 2; i < CommandBits.Length; i++)
+                    CommandBits[1] += "~" + CommandBits[i];
+            }
             List<Job> Jobs = x.Deserialize(new StringReader(CommandBits[1])) as List<Job>;
             
             NumJobsRunning -= Jobs.Count;
