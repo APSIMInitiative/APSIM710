@@ -16,13 +16,13 @@ using System.Reflection;
 /// This job scheduler is capable of running jobs across multiple cores on multiple computers. It uses
 /// a client / server architecture, this class being the server. The JobRunner class represents the client
 /// and does the actual running of the jobs.
-/// 
+///
 /// This job scheduler is given a "Project" to run which contains a list of "Target" instances, which in
-/// turn contains a list of "Job" instances. The Job class represents a job and describes the command line of a job. 
-/// 
-/// The command line entry point to JobScheduler takes an XML file name that is a deserialised "Project". The second 
+/// turn contains a list of "Job" instances. The Job class represents a job and describes the command line of a job.
+///
+/// The command line entry point to JobScheduler takes an XML file name that is a deserialised "Project". The second
 /// entry point (Start) takes an instance of a project.
-/// 
+///
 /// A deserialised Project looks like this.
 ///   <Project>
 ///      <Target name="Compile">
@@ -37,21 +37,21 @@ using System.Reflection;
 ///         </Job>
 ///      </Target>
 ///   </Project>
-///   
+///
 /// A Target or Job can "DependOn" other jobs and targets. In this case they will only run after the dependency
 /// sucessfully runs (status=Pass).
-/// 
+///
 /// Once the JobScheduler has completed, it will serialise the Project back to an XML file that has "Output" appended
-/// to the file name e.g. BuildAll.xml will become BuildAllOutput.xml. It will also produce a log XML file which 
+/// to the file name e.g. BuildAll.xml will become BuildAllOutput.xml. It will also produce a log XML file which
 /// contains a linear list of jobs, sometimes useful to work out what went wrong.
-/// 
-/// The <WorkingDirectory> and <CommandLine> elements of a job can have references to 
+///
+/// The <WorkingDirectory> and <CommandLine> elements of a job can have references to
 /// environment variables by surrounding their names with % characters. In addition several additional variable
 /// are available to be used:
 ///     %apsim%   - the root APSIM directory: c:\Apsim
 ///     %server%  - the machine name of the computer running the JobScheduler: bob.apsim.info
-///     
-/// The JobScheduler listens to a socket port (13000) allowing external programs to talk to the 
+///
+/// The JobScheduler listens to a socket port (13000) allowing external programs to talk to the
 /// scheduler. Commands that can be sent to the port are:
 ///    GetJob~NumJobs                                     -> returns job xml or NULL
 ///    JobFinished~Job XML                                -> returns "OK" or "ERROR"
@@ -87,6 +87,9 @@ public class JobScheduler
     private Project Project;
     private Project Log = new Project();
     private int NumJobsRunning = 0;
+
+    private Int32 listenPort = 0;
+    private IPAddress listenIP = IPAddress.Parse("127.0.0.1");
 
     /// <summary>
     /// Start running jobs.
@@ -144,7 +147,7 @@ public class JobScheduler
         else
             Console.Write("[Pass] ");
         Console.Write("Project: " + Path.GetFileNameWithoutExtension(JobFileName));
-        
+
         Console.WriteLine(" [" + ElapsedTime.ToString() + "sec]");
         Console.WriteLine("");
 
@@ -171,7 +174,7 @@ public class JobScheduler
         if (TargetToRun == null)
         {
             // If there is only 1 target then assume we run that.
-            if (Project.Targets.Count == 1)  
+            if (Project.Targets.Count == 1)
                 Project.Targets[0].NeedToRun = true;
         }
         else
@@ -184,7 +187,7 @@ public class JobScheduler
 
         // Add built-in macros.
         string APSIMRootDirectory = Path.GetFullPath(Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)));
-		if (!Macros.ContainsKey("APSIM")) 
+		if (!Macros.ContainsKey("APSIM"))
 		   Macros.Add("APSIM", APSIMRootDirectory);
 		if (Environment.GetEnvironmentVariable("APSIM") == null)
            Environment.SetEnvironmentVariable("APSIM", APSIMRootDirectory);
@@ -204,6 +207,13 @@ public class JobScheduler
         SocketListener = new Thread(ListenForTCPConnection);
         SocketListener.Start();
 
+        // Wait for server process to start
+        while (listenPort == 0)
+           Thread.Sleep(250);
+
+        Macros["Port"] = listenPort.ToString();
+        Macros["Server"] = listenIP.ToString();
+
         bool CreateRunner = true;
         if (Macros.ContainsKey("CreateRunner") && Macros["CreateRunner"].ToLower() == "no")
             CreateRunner = false;
@@ -214,7 +224,7 @@ public class JobScheduler
             ProcessStartInfo Info = new ProcessStartInfo();
             Info.WorkingDirectory = BinDir;
             Info.FileName = Path.Combine(BinDir, "JobRunner.exe");
-            Info.Arguments = "Server=localhost Port=13000 AutoClose=Yes";
+            Info.Arguments = "Server=" + listenIP.ToString() +  " Port=" + listenPort + " AutoClose=Yes";
             Info.CreateNoWindow = true;
             Info.UseShellExecute = false;
             if (Environment.MachineName.ToLower() == "bob")
@@ -266,15 +276,15 @@ public class JobScheduler
     /// <summary>
     /// Return the number of jobs completed to caller (GUI)
     /// </summary>
-    public int NumJobsCompleted 
-    { 
+    public int NumJobsCompleted
+    {
         get
         {
             if (Log.Targets != null && Log.Targets.Count > 0 && Log.Targets[0].Jobs != null)
                 return Log.Targets[0].Jobs.Count;
             else
                 return 0;
-        } 
+        }
     }
 
     /// <summary>
@@ -347,15 +357,17 @@ public class JobScheduler
         TcpListener server = null;
         try
         {
-            // Set the TcpListener on port 13000.
-            Int32 port = 13000;
-            IPAddress localAddr = IPAddress.Parse("127.0.0.1");
+            server = new TcpListener(listenIP, listenPort);
 
-            // TcpListener server = new TcpListener(port);
-            server = new TcpListener(localAddr, port);
-
-            // Start listening for clienzt requests.
+            // Start listening for client requests.
             server.Start();
+
+            // Allow the main thread to find our address:port
+            lock (this)
+            {
+               listenIP = ((IPEndPoint) server.LocalEndpoint).Address;
+               listenPort = ((IPEndPoint) server.LocalEndpoint).Port;
+            }
 
             // Buffer for reading data
             Byte[] bytes = new Byte[2048];
@@ -470,7 +482,7 @@ public class JobScheduler
                     CommandBits[1] += "~" + CommandBits[i];
             }
             List<Job> Jobs = x.Deserialize(new StringReader(CommandBits[1])) as List<Job>;
-            
+
             NumJobsRunning -= Jobs.Count;
             foreach (Job J in Jobs)
             {
@@ -536,7 +548,7 @@ public class JobScheduler
         return "OK";
     }
 
-	public void AddVariable (string key, string value) 
+	public void AddVariable (string key, string value)
 	{
 	   if (Macros.ContainsKey(key))
            Macros[key] = value;

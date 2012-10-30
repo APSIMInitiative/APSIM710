@@ -47,6 +47,7 @@ class JobRunner
         if (!Macros.ContainsKey("Server") || !Macros.ContainsKey("Port"))
             throw new Exception("Usage: JobRunner Server=bob.apsim.info  Port=13000");
 
+        Console.WriteLine("JobRunner listening to " + Macros["Server"] + ":" + Macros["Port"] + " - managing " + NumCPUsToUse + " Process" + (NumCPUsToUse > 1 ? "es" : ""));
         List<Job> Jobs = new List<Job>();
         bool ESCWasPressed = false;
         bool AutoClose = Macros.ContainsKey("AutoClose") && Macros["AutoClose"].ToLower() == "yes";
@@ -76,12 +77,14 @@ class JobRunner
                             catch (Exception err)
                             {
                                 J.ExitCode = 1;
+                                J.StdOut = "";
+                                string msg = "Internal Error\n";
                                 if (J.WorkingDirectory != null && J.WorkingDirectory != "")
-                                    J.StdOut = J.WorkingDirectory + "> ";
-                                else
-                                    J.StdOut = "";
-                                J.StdOut = J.CommandLine + "\r\n\r\n";
-                                J.StdErr = err.Message;
+                                    msg += "Working Directory = \"" + J.WorkingDirectory+"\"";
+                                msg += "Command Line = \"" + J.CommandLine + "\"";
+                                msg += "Error = " + err.Message;
+                                msg += "Stack Trace = " + err.StackTrace;
+                                J.StdErr = msg;
                                 J.Status = "Fail";
                             }
                             Jobs.Add(J);
@@ -97,14 +100,12 @@ class JobRunner
                 NumServerConnectErrors++;
                 if (e.ErrorCode == 10061 /* WSAECONNREFUSED */)
                    ESCWasPressed = true; // Get out of here - the other end has disappeared
-                else
-                   Console.WriteLine("Socket error: " + e.Message);
+                Console.WriteLine("Socket error: " + e.Message);
             }
             catch (Exception err)
             {
-                    Console.WriteLine(Macros["server"] + ":" + Macros["Port"] + " - " + err.Message);
-                    Console.WriteLine("Waiting for server");
-                    Thread.Sleep(5000);
+                Console.WriteLine("JobRunner exception when talking to " + Macros["Server"] + ":" + Macros["Port"] + " - " + err.Message + err.StackTrace);
+                Thread.Sleep(5000);
             }
             if (AutoClose && NumServerConnectErrors > 2)
             {
@@ -182,7 +183,6 @@ class JobRunner
                 NumCPUsToUse = 1;
         }
         #endregion
-        Console.WriteLine("Managing " + NumCPUsToUse + " Process" + (NumCPUsToUse > 1 ? "es" : ""));
         return NumCPUsToUse;
     }
 

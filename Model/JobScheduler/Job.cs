@@ -19,8 +19,8 @@ public class Job
     public string CommandLine { get; set; }
     public string CommandLineUnix { get; set; }
     public string WorkingDirectory { get; set; }
-    public string StdOut { get; set; }
-    public string StdErr { get; set; }
+    private StringBuilder StdOutBuf = new StringBuilder();
+    private StringBuilder StdErrBuf = new StringBuilder();
     public int ExitCode { get; set; }
     public int JobSchedulerProcessID { get; set; }
     public DateTime StartTime { get; set; }
@@ -35,15 +35,30 @@ public class Job
     [XmlAttribute("ElapsedTime")]
     public int ElapsedTime { get; set; }
 
+    [XmlElement("StdOut")]
+    public string StdOut {
+        get {return(StdOutBuf.ToString());}
+        set {StdOutBuf.Clear(); StdOutBuf.Append(value);}
+    }
+
+    [XmlElement("StdErr")]
+    public string StdErr {
+        get {return(StdErrBuf.ToString());}
+        set {StdErrBuf.Clear(); StdErrBuf.Append(value);}
+    }
+
     [XmlElement("DependsOn")]
     public List<DependsOn> DependsOn { get ; set; }
+
+    [XmlAttribute("IgnoreErrors")]
+    public bool IgnoreErrors { get; set; }
 
     /// <summary>
     /// Default constructor.
     /// </summary>
     public Job()
     {
-
+        IgnoreErrors = false;
     }
 
     /// <summary>
@@ -53,6 +68,7 @@ public class Job
     {
         CommandLine = _CommandLine;
         WorkingDirectory = dir;
+        IgnoreErrors = false;
     }
 
     /// <summary>
@@ -72,7 +88,6 @@ public class Job
             else
                 return "";
         }
-
     }
 
     /// <summary>
@@ -190,7 +205,7 @@ public class Job
         FinishTime = DateTime.Now;
         ElapsedTime = Convert.ToInt32((FinishTime - StartTime).TotalSeconds);
         ExitCode = (_P == null ? 0 : _P.ExitCode);
-        if (ExitCode == 0)
+        if (ExitCode == 0 || IgnoreErrors)
             Status = "Pass";
         else
             Status = "Fail";
@@ -234,7 +249,7 @@ public class Job
     /// </summary>
     protected virtual void OnStdOut(object sender, DataReceivedEventArgs e)
     {
-        StdOut += e.Data + "\r\n";
+        StdOutBuf.AppendLine( e.Data );
     }
 
     /// <summary>
@@ -242,7 +257,7 @@ public class Job
     /// </summary>
     protected virtual void OnStdError(object sender, DataReceivedEventArgs e)
     {
-        StdErr += e.Data + "\r\n";
+        StdErrBuf.AppendLine(e.Data);
     }
 
     /// <summary>
@@ -272,7 +287,7 @@ public class Job
                 if (T.Status == "Fail")
                 {
                     Status = "Fail";
-                    StdOut = "Failed due to dependency failure";
+                    StdOutBuf.AppendLine("Failed due to dependency failure");
                     Project.SignalJobHasFinsihed(this);
                 }
                 if (T.Status == "Running")
@@ -290,7 +305,7 @@ public class Job
                     if (J.Status == "Fail")
                     {
                         Status = "Fail";
-                        StdOut = "Failed due to dependency failure";
+                        StdOutBuf.AppendLine("Failed due to dependency failure");
                         Project.SignalJobHasFinsihed(this);
                     }
 
@@ -303,7 +318,7 @@ public class Job
                 {
                     Status = "Fail";
                     ExitCode = 1;
-                    StdErr = "Cannot find dependency: " + Dependency;
+                    StdErrBuf.AppendLine("Cannot find dependency: " + Dependency);
                     return false;
                 }
             }
@@ -311,15 +326,15 @@ public class Job
         return true;
     }
 
-
-
     internal void WriteLogMessage()
     {
         Console.WriteLine("[" + Status + "] " + Name + " [" + ElapsedTime.ToString() + "sec]");
         if (Status == "Fail")
         {
-            Console.WriteLine(StringManip.IndentText(StdOut, 4));
-            Console.WriteLine(StringManip.IndentText(StdErr, 4));
+            if (StdOut.Length > 0)
+                Console.WriteLine(StringManip.IndentText(StdOut.ToString(), 4));
+            if (StdErr.Length > 0)
+                Console.WriteLine(StringManip.IndentText(StdErr.ToString(), 4));
         }
     }
 }

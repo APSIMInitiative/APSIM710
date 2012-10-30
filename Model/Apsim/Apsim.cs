@@ -13,7 +13,7 @@ using System.Threading;
 
 public class Apsim
 {
-    private static JobScheduler JobScheduler = null;
+    private JobScheduler JobScheduler = null;
     private int NumJobsBeingRun = 0;
 
     /// <summary>
@@ -74,9 +74,14 @@ public class Apsim
 			}
             else 
 			{
-                // Crack open whatever files are there and start a job for
+  				Apsim.JobScheduler = new JobScheduler();
+				// NB. The key/value macro in the jobscheduler is private - send over any keys we dont know about
+				foreach (string key in Macros.Keys) 
+					if (Macros[key] != "Simulation")
+						Apsim.JobScheduler.AddVariable(key, Macros[key]);
+
+				// Crack open whatever files are there and start a job for
 			    // each simulation in each file
-                JobScheduler = new JobScheduler();
                 Project P = new Project();
 				Target T = new Target();
   		        T.Name = "Apsim.exe";
@@ -100,11 +105,8 @@ public class Apsim
         	    }
 				P.Targets.Add(T);
 
-				// NB. The key/value macro in the jobscheduler is private - and has no direct relationship
-				// with ours. Be careful!!
-	            //JobScheduler.AddVariable("key", "value");
-                JobScheduler.Start(P);
-                JobScheduler.WaitForFinish();
+                Apsim.JobScheduler.Start(P);
+                Apsim.JobScheduler.WaitForFinish();
 			}
         }
         catch (Exception err)
@@ -134,25 +136,33 @@ public class Apsim
 
     public void StartMultipleFromPaths(ApsimFile.ApsimFile F, List<String> SimulationPaths)
     {
-        JobScheduler = new JobScheduler();
-        Project P = new Project();
-        Target T = new Target();
-  		T.Name = "Apsim.exe";
-        NumJobsBeingRun = 0;
+		if (SimulationPaths.Count == 1) 
+		{
+            NumJobsBeingRun = 1;
+            StartAPSIM(F,SimulationPaths[0]); 
+		}
+		else
+		{
+	        Project P = new Project();
+    	    Target T = new Target();
+  			T.Name = "Apsim.exe";
+	        NumJobsBeingRun = 0;
 
-        // For each path, create a job in our target.
-        string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "Apsim.exe");
-        foreach (string SimulationPath in SimulationPaths)
-        {
-            string Arguments = StringManip.DQuote(F.FileName) + " " + StringManip.DQuote("Simulation=" + SimulationPath);
-            Job J = new Job(Executable + " " + Arguments, Path.GetDirectoryName(F.FileName));
-            J.Name = SimulationPath;
-            T.Jobs.Add(J);
-            NumJobsBeingRun++;
-        }
-        P.Targets.Add(T);
-
-        JobScheduler.Start(P);
+	        // For each path, create a job in our target.
+    	    string Apsim = Path.Combine(Configuration.ApsimBinDirectory(), "Apsim.exe");
+        	foreach (string SimulationPath in SimulationPaths)
+	        {
+        	    string Arguments = StringManip.DQuote(F.FileName) + " " + StringManip.DQuote("Simulation=" + SimulationPath);
+    	        Job J = new Job(Apsim + " " + Arguments, Path.GetDirectoryName(F.FileName));
+            	J.Name = SimulationPath;
+				J.IgnoreErrors = true;
+    	        T.Jobs.Add(J);
+        	    NumJobsBeingRun++;
+	        }
+    	    P.Targets.Add(T);
+			JobScheduler = new JobScheduler();
+	        JobScheduler.Start(P);
+		}
 	}
 
 	/// <summary>
@@ -176,6 +186,7 @@ public class Apsim
                 string Arguments = StringManip.DQuote(F.FileName) + " " + StringManip.DQuote("Simulation=" + SimulationPath);
                 Job J = new Job(Executable + " " + Arguments, Path.GetDirectoryName(F.FileName));
                 J.Name = SimulationPath;
+  				J.IgnoreErrors = true;
                 T.Jobs.Add(J);
                 NumJobsBeingRun++;
             }
@@ -187,22 +198,22 @@ public class Apsim
     /// </summary>
     public void StartMultipleFromCON(Target T, string FileName)
     {
-            List<string> SimulationPaths = new List<string>();
+        List<string> SimulationPaths = new List<string>();
+        // Go get all paths.
+        SimulationPaths = ConFile.GetSimsInConFile(FileName);
 
-            // Go get all paths.
-             SimulationPaths = ConFile.GetSimsInConFile(FileName);
-
-            // For each path, create a job in our target.
-            string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "Apsim.exe");
-            NumJobsBeingRun = SimulationPaths.Count;
-            foreach (string SimulationPath in SimulationPaths)
-            {
-                string Arguments =  StringManip.DQuote(FileName) + " " + StringManip.DQuote("Simulation=" + SimulationPath);
-                Job J = new Job(Executable + " " + Arguments, Path.GetDirectoryName(FileName));
-                J.Name = SimulationPath;
-                T.Jobs.Add(J);
-                NumJobsBeingRun++;
-            }
+        // For each path, create a job in our target.
+        string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "Apsim.exe");
+        NumJobsBeingRun = SimulationPaths.Count;
+        foreach (string SimulationPath in SimulationPaths)
+        {
+            string Arguments =  StringManip.DQuote(FileName) + " " + StringManip.DQuote("Simulation=" + SimulationPath);
+            Job J = new Job(Executable + " " + Arguments, Path.GetDirectoryName(FileName));
+            J.Name = SimulationPath;
+			J.IgnoreErrors = true;
+            T.Jobs.Add(J);
+            NumJobsBeingRun++;
+        }
     }
     /// <summary>
     /// Code to start APSIM running multiple simulations from the specified .sim file.
@@ -213,6 +224,7 @@ public class Apsim
         string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "Apsim.exe");
         Job J = new Job(Executable + " " + Arguments, Path.GetDirectoryName(FileName));
         J.Name = Path.GetFileNameWithoutExtension(FileName);
+		J.IgnoreErrors = true;
         T.Jobs.Add(J);
         NumJobsBeingRun++;
     }
@@ -243,7 +255,6 @@ public class Apsim
         if (C.Enabled)
         {
             SimFileName = ApsimToSim.WriteSimFile(C);
-            NumJobsBeingRun = 1;
             StartSIM(SimFileName);
         }
     }
@@ -331,6 +342,7 @@ public class Apsim
     /// </summary>
     void OnExited(object sender, EventArgs e)
     {
+		_P.WaitForExit(-1);
         Sum.Close();
         File.Delete(SimFileName);
         HasExited = true;

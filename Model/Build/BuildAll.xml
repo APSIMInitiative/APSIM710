@@ -7,7 +7,7 @@
       <DependsOn>Compile</DependsOn>
       <DependsOn>Post-Compile</DependsOn>
    </Target>
-   
+
    <!-- ############### Cleaning target called by BuildAll ############### -->
    <Target name="Clean">
       <Job name="Clean model directory">
@@ -20,7 +20,7 @@
          <CommandLine>%APSIM%/Model/cscs.exe VersionStamper.cs Directory=%APSIM% Increment=%INCREMENT%</CommandLine>
       </Job>
    </Target>
-     
+
    <!-- ############### Compiling targets ############### -->
    <Target name="Pre-Compile">
       <DependsOn>Clean</DependsOn>
@@ -32,7 +32,7 @@
          <DependsOn>Move RunTime files into model directory</DependsOn>
          <WorkingDirectory>%APSIM%/Model/JobScheduler</WorkingDirectory>
          <CommandLine>make --file=MakefileTools</CommandLine>
-      </Job>      
+      </Job>
    </Target>
    <Target name="Compile">
       <DependsOn>Pre-Compile</DependsOn>
@@ -72,15 +72,15 @@
       </Job>
       <Job name="Compile ComponentInterface">
          <DependsOn>Compile General</DependsOn>
-         <DependsOn>Compile ApsimShared</DependsOn>   
-         <DependsOn>Compile DataTypes</DependsOn>   
+         <DependsOn>Compile ApsimShared</DependsOn>
+         <DependsOn>Compile DataTypes</DependsOn>
          <WorkingDirectory>%APSIM%/Model/ComponentInterface</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile ComponentInterface2">
          <DependsOn>Compile General</DependsOn>
          <DependsOn>Compile ApsimShared</DependsOn>
-         <DependsOn>Compile DataTypes</DependsOn>   
+         <DependsOn>Compile DataTypes</DependsOn>
          <WorkingDirectory>%APSIM%/Model/ComponentInterface2</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
@@ -88,12 +88,12 @@
          <DependsOn>Compile ApsimFile</DependsOn>
          <DependsOn>Compile CSGeneral</DependsOn>
          <DependsOn>Compile CMPServices</DependsOn>
-         <DependsOn>Compile DataTypes</DependsOn>   
+         <DependsOn>Compile DataTypes</DependsOn>
          <WorkingDirectory>%APSIM%/Model/CSDotNetComponentInterface</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile FortranInfrastructure">
-         <DependsOn>Compile DataTypes</DependsOn>   
+         <DependsOn>Compile DataTypes</DependsOn>
          <WorkingDirectory>%APSIM%/Model/FortranInfrastructure</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
@@ -122,7 +122,7 @@
          <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/DotNetProxies</WorkingDirectory>
          <CommandLine>make</CommandLine>
-      </Job>		
+      </Job>
       <Job name="Compile Plant">
          <DependsOn>Compile ComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Plant</WorkingDirectory>
@@ -164,7 +164,7 @@
          <DependsOn>Compile FortranComponentInterface</DependsOn>
          <DependsOn>Compile CropTemplate</DependsOn>
          <WorkingDirectory>%APSIM%/Model/CropMod</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile Eo">
          <DependsOn>Compile FortranInfrastructure</DependsOn>
@@ -213,8 +213,8 @@
       <Job name="Compile Input">
          <DependsOn>Compile ComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Input</WorkingDirectory>
-         <CommandLine>make</CommandLine>	
-      </Job>  
+         <CommandLine>make</CommandLine>
+      </Job>
       <Job name="Compile PatchInput">
          <DependsOn>Compile Input</DependsOn>
          <WorkingDirectory>%APSIM%/Model/PatchInput</WorkingDirectory>
@@ -229,7 +229,7 @@
          <DependsOn>Compile FortranInfrastructure</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Irrigation</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile Log">
          <DependsOn>Compile Protocol</DependsOn>
@@ -243,18 +243,18 @@
          <DependsOn>Compile FortranComponentInterface</DependsOn>
          <DependsOn>Compile CropMod</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Maize</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile MaizeZ">
          <DependsOn>Compile ComponentInterface2</DependsOn>
          <WorkingDirectory>%APSIM%/Model/MaizeZ</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile Manager">
          <DependsOn>Compile FortranInfrastructure</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Manager</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile Manager2">
          <DependsOn>Compile ApsimFile</DependsOn>
@@ -268,7 +268,7 @@
          <DependsOn>Compile FortranInfrastructure</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Map</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile MicroClimate">
          <DependsOn>Compile CSGeneral</DependsOn>
@@ -281,11 +281,11 @@
          <DependsOn>Compile FortranInfrastructure</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/MicroMet</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile Millet">
          <DependsOn>Compile FortranInfrastructure</DependsOn>
-         <DependsOn>Compile CropTemplate</DependsOn>		
+         <DependsOn>Compile CropTemplate</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Millet</WorkingDirectory>
          <CommandLine>make</CommandLine>
@@ -294,13 +294,13 @@
          <DependsOn>Compile FortranInfrastructure</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Operations</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile Oryza">
          <DependsOn>Compile FortranInfrastructure</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Oryza</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile Oryza2">
          <DependsOn>Compile FortranInfrastructure</DependsOn>
@@ -325,12 +325,12 @@
          <DependsOn>Compile FortranComponentInterface</DependsOn>
          <DependsOn>Compile CropTemplate</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Parasite</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile Pasture">
          <DependsOn>Compile ComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Pasture</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile Plant2">
          <DependsOn>Compile CSGeneral</DependsOn>
@@ -343,18 +343,18 @@
          <DependsOn>Compile FortranInfrastructure</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Pond</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile ProtocolManager">
          <DependsOn>Compile Protocol</DependsOn>
          <DependsOn>Compile ComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/ProtocolManager</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile Report">
          <DependsOn>Compile ComponentInterface2</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Report</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile ReportDb">
          <DependsOn>Compile CSGeneral</DependsOn>
@@ -366,7 +366,7 @@
       <Job name="Compile RLink">
          <DependsOn>Compile ComponentInterface2</DependsOn>
          <WorkingDirectory>%APSIM%/Model/RLink</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile Root">
          <DependsOn>Compile DotNetProxies</DependsOn>
@@ -380,7 +380,7 @@
          <DependsOn>Compile FortranInfrastructure</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/SOI</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile SoilErosion">
          <DependsOn>Compile CSGeneral</DependsOn>
@@ -388,7 +388,7 @@
          <DependsOn>Compile CMPServices</DependsOn>
          <WorkingDirectory>%APSIM%/Model/SoilErosion</WorkingDirectory>
          <CommandLine>make</CommandLine>
-      </Job>          
+      </Job>
       <Job name="Compile SoilN">
          <DependsOn>Compile FortranInfrastructure</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
@@ -401,7 +401,7 @@
          <DependsOn>Compile CMPServices</DependsOn>
          <WorkingDirectory>%APSIM%/Model/SoilNitrogen</WorkingDirectory>
          <CommandLine>make</CommandLine>
-      </Job>         
+      </Job>
       <Job name="Compile SoilP">
          <DependsOn>Compile FortranInfrastructure</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
@@ -432,18 +432,18 @@
          <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
          <DependsOn>Compile CMPServices</DependsOn>
          <WorkingDirectory>%APSIM%/Model/SoilWater</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
-      </Job>   
+         <CommandLine>make</CommandLine>
+      </Job>
       <Job name="Compile Solute">
          <DependsOn>Compile FortranInfrastructure</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Solute</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile Sorghum">
          <DependsOn>Compile ComponentInterface2</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Sorghum</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile Stock">
          <DependsOn>Compile ComponentInterface</DependsOn>
@@ -460,19 +460,19 @@
       <Job name="Compile Supplement">
          <DependsOn>Compile ComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Supplement</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile Surface">
          <DependsOn>Compile FortranInfrastructure</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Surface</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile SurfaceOM">
          <DependsOn>Compile FortranInfrastructure</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/SurfaceOM</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile SurfaceOrganicMatter">
          <DependsOn>Compile CSGeneral</DependsOn>
@@ -485,7 +485,7 @@
          <DependsOn>Compile FortranInfrastructure</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/SurfaceTemp</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile SWIM2">
          <DependsOn>Compile FortranInfrastructure</DependsOn>
@@ -497,13 +497,13 @@
          <DependsOn>Compile FortranInfrastructure</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/SWIM3</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile SysBal">
          <DependsOn>Compile FortranInfrastructure</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/SysBal</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile SysBal2">
          <DependsOn>Compile CSGeneral</DependsOn>
@@ -516,7 +516,7 @@
       <Job name="Compile TclLink">
          <DependsOn>Compile ComponentInterface2</DependsOn>
          <WorkingDirectory>%APSIM%/Model/TclLink</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile Textoutput">
          <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
@@ -558,7 +558,7 @@
       <Job name="Compile YieldProphet">
          <DependsOn>Compile ComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/YieldProphet</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile DDRules">
          <DependsOn>Compile CSGeneral</DependsOn>
@@ -598,7 +598,7 @@
          <DependsOn>Compile General</DependsOn>
          <DependsOn>Compile ApsimShared</DependsOn>
          <WorkingDirectory>%APSIM%/Model/ConToSim</WorkingDirectory>
-         <CommandLine>make</CommandLine>		
+         <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile SetXMLValue">
          <DependsOn>Compile CSGeneral</DependsOn>
@@ -724,19 +724,22 @@
    <Target name="Documentation">
       <DependsOn>BobBuildAndRun</DependsOn>
       <Job name="Create Broccoli Documentation">
-         <WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
          <CommandLine>Plant2Documentation.exe Broccoli.xml "%Apsim%\Documentation\4 Module Reference\Broccoli.htm"</CommandLine>
+         <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
       <Job name="Create Vine Documentation">
-         <WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
          <CommandLine>Plant2Documentation.exe Vine.xml "%Apsim%\Documentation\4 Module Reference\Vine.htm"</CommandLine>
+         <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
       <Job name="Create documentation">
-         <WorkingDirectory>%Apsim%\Documentation</WorkingDirectory>
+         <WorkingDirectory>%APSIM%/Documentation</WorkingDirectory>
          <CommandLine>%APSIM%\Documentation\CreateIndex.bat</CommandLine>
-      </Job> 	
-   </Target>   
-   
+         <CommandLineUnix>/bin/true</CommandLineUnix>
+      </Job>
+   </Target>
+
    <!-- ############### Release target ############### -->
    <Target name="Release">
       <DependsOn>BobBuildAndRun</DependsOn>
@@ -744,31 +747,41 @@
       <Job name="Compile InsertFilesIntoSetup">
          <WorkingDirectory>%APSIM%/Release/InsertFilesIntoSetup</WorkingDirectory>
          <CommandLine>"%VS100COMNTOOLS%\..\IDE\devenv" InsertFilesIntoSetup.sln /build release</CommandLine>
-      </Job>		
+         <CommandLineUnix>/bin/true</CommandLineUnix>
+      </Job>
       <Job name="Create Bootleg MSI">
          <DependsOn>Compile InsertFilesIntoSetup</DependsOn>
-         <WorkingDirectory>%Apsim%\Release</WorkingDirectory>
+         <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
          <CommandLine>%Apsim%\Release\CreateMSI.bat %PatchFileNameShort%.Bootleg Bootleg</CommandLine>
+         <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
       <Job name="Create Release MSI">
          <DependsOn>Compile InsertFilesIntoSetup</DependsOn>
-         <WorkingDirectory>%Apsim%\Release</WorkingDirectory>
+         <WorkingDirectory>%APSIM%\Release</WorkingDirectory>
          <CommandLine>%Apsim%\Release\CreateMSI.bat %PatchFileNameShort%.ApsimSetup ApsimSetup /WithExclusions</CommandLine>
-      </Job>	
+         <CommandLineUnix>/bin/true</CommandLineUnix>
+      </Job>
       <Job name="Create MSI Binaries">
          <DependsOn>Compile InsertFilesIntoSetup</DependsOn>
-         <WorkingDirectory>%Apsim%\Release</WorkingDirectory>
+         <WorkingDirectory>%APSIM%\Release</WorkingDirectory>
          <CommandLine>%Apsim%\Release\CreateMSIBinaries.bat %PatchFileNameShort%.binaries.Win32</CommandLine>
-      </Job>	
+         <CommandLineUnix>/bin/true</CommandLineUnix>
+      </Job>
       <Job name="Update DB Setup Bootleg">
          <DependsOn>Create Bootleg MSI</DependsOn>
-         <WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
          <CommandLine>UpdateFieldInDB.exe SetupFileName http://bob.apsim.info/files/%PatchFileNameShort%.bootleg.exe</CommandLine>
+         <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
       <Job name="Update DB Setup">
          <DependsOn>Create Release MSI</DependsOn>
-         <WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
          <CommandLine>UpdateFieldInDB.exe SetupForReleaseFileName http://bob.apsim.info/files/%PatchFileNameShort%.apsimsetup.exe</CommandLine>
+         <CommandLineUnix>/bin/true</CommandLineUnix>
+      </Job>
+      <Job name="Create SFX Binaries">
+    		<WorkingDirectory>%APSIM%/Release</WorkingDirectory>
+		    <CommandLineUnix>%APSIM%/Release/Release.sh %PatchFileName%</CommandLineUnix>
       </Job>
    </Target>
 
@@ -778,12 +791,18 @@
       <DependsOn>Compile</DependsOn>
       <DependsOn>Post-Compile</DependsOn>
       <DependsOn>RunAll</DependsOn>
-      <Job name="Create Diff Zip">
-			<WorkingDirectory>C:\inetpub\wwwroot\Files\Upload</WorkingDirectory>
-			<CommandLine>%Apsim%\Model\CreateDiffZip.exe Directory=%Apsim% PatchFileName=%PatchFileName%</CommandLine>
-		</Job>
+     <Job name="Create Diff Zip">
+  		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+		<CommandLine>%APSIM%/Model/CreateDiffZip.exe Directory=%Apsim% PatchFileName=%PatchFileName%</CommandLine>
+     </Job>
+     <Job name="Upload Diff Zip">
+      <!-- The windows build will copy it to the local filesystem. -->
+      <DependsOn>Create Diff Zip</DependsOn>
+	  <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+	  <CommandLineUnix>curl -T %PatchFileNameShort%.diffs.zip -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.Linux.diffs.zip</CommandLineUnix>
+     </Job>
    </Target>
-   
+
    <!-- ############### Top level BOB jobs ############### -->
    <Target name="Bob">
       <DependsOn IgnoreErrors="true">BobBuildAndRun</DependsOn>
@@ -791,27 +810,31 @@
       <DependsOn IgnoreErrors="true">Release</DependsOn>
 
 		<Job name="Create Build Tree Zip">
-			<WorkingDirectory>C:\inetpub\wwwroot\Files</WorkingDirectory>
-			<CommandLine>"C:\Program Files\7-Zip\7z.exe" -xr!.svn a -mx=7 -mmt=on %PatchFileNameShort%.buildtree.zip %Apsim%</CommandLine>
-		</Job>	
+			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+			<CommandLine>"C:\Program Files\7-Zip\7z.exe" -xr!.svn a -mx=7 -mmt=on C:\inetpub\wwwroot\Files\%PatchFileNameShort%.buildtree.zip %Apsim%</CommandLine>
+			<CommandLineUnix>/bin/true</CommandLineUnix>
+		</Job>
 		<Job name="Update DB Build tree">
          <DependsOn>Create Build Tree Zip</DependsOn>
-			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
 			<CommandLine>UpdateFieldInDB.exe BuildTreeFileName http://bob.apsim.info/files/%PatchFileNameShort%.buildtree.zip</CommandLine>
-		</Job>				
+			<CommandLineUnix>/bin/true</CommandLineUnix>
+		</Job>
 		<Job name="CreateBinariesZip">
-			<WorkingDirectory>C:\inetpub\wwwroot\Files</WorkingDirectory>
-			<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on %PatchFileNameShort%.binaries.zip %Apsim%\Model\*.exe %Apsim%\Model\*.dll</CommandLine>
+			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+			<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on C:\inetpub\wwwroot\Files\%PatchFileNameShort%.binaries.zip %Apsim%\Model\*.exe %Apsim%\Model\*.dll</CommandLine>
+			<CommandLineUnix>/bin/true</CommandLineUnix>
 		</Job>
 		<Job name="Update DB Binaries">
          <DependsOn>CreateBinariesZip</DependsOn>
-			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
 			<CommandLine>UpdateFieldInDB.exe BinariesFileName http://bob.apsim.info/files/%PatchFileNameShort%.binaries.zip</CommandLine>
+			<CommandLineUnix>/bin/true</CommandLineUnix>
 		</Job>
       <Job name="Update DB Details">
-			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>UpdateFieldInDB.exe DetailsFileName http://bob.apsim.info/files/%PatchFileNameShort%.txt</CommandLine>
-		</Job>		
+			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+			<CommandLine>UpdateFieldInDB.exe DetailsFileName http://bob.apsim.info/files/%PatchFileNameShort%%HostSuffix%.txt</CommandLine>
+		</Job>
    </Target>
 
    <!-- ############### Testing targets ############### -->
@@ -824,26 +847,26 @@
       <Job name="Find Examples">
          <DependsOn>Compile FindJobs</DependsOn>
          <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-         <CommandLine>%APSIM%\Model\FindJobs.exe Filespec=%APSIM%/Examples/*.apsim? TargetName=Tests Server=%Server% Port=13000</CommandLine>
+         <CommandLine>%APSIM%\Model\FindJobs.exe Filespec=%APSIM%/Examples/*.apsim? TargetName=Tests Server=%Server% Port=%Port%</CommandLine>
       </Job>
       <Job name="Find .apsim Tests">
          <DependsOn>Compile FindJobs</DependsOn>
          <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-         <CommandLine>%APSIM%\Model\FindJobs.exe Filespec=%APSIM%/Tests/*.apsim? TargetName=Tests Server=%Server% Port=13000</CommandLine>
+         <CommandLine>%APSIM%\Model\FindJobs.exe Filespec=%APSIM%/Tests/*.apsim? TargetName=Tests Server=%Server% Port=%Port%</CommandLine>
       </Job>
       <Job name="Find .con Tests">
          <DependsOn>Compile FindJobs</DependsOn>
          <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-         <CommandLine>%APSIM%\Model\FindJobs.exe Filespec=%APSIM%/Tests/*.con TargetName=Tests Server=%Server% Port=13000</CommandLine>
+         <CommandLine>%APSIM%\Model\FindJobs.exe Filespec=%APSIM%/Tests/*.con TargetName=Tests Server=%Server% Port=%Port%</CommandLine>
       </Job>
 		<Job name="Remove all .out and .sum files from Examples folder">
-			<WorkingDirectory>%Apsim%/Examples</WorkingDirectory>
+			<WorkingDirectory>%APSIM%/Examples</WorkingDirectory>
 			<CommandLine>%Apsim%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>
 		</Job>
 		<Job name="Remove all .out and .sum files from Tests folder">
-			<WorkingDirectory>%Apsim%/Tests</WorkingDirectory>
+			<WorkingDirectory>%APSIM%/Tests</WorkingDirectory>
 			<CommandLine>%Apsim%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>
-		</Job>      
+		</Job>
    </Target>
    <Target name="RunAll">
       <DependsOn>FindTests</DependsOn>
@@ -851,13 +874,13 @@
       <Job name="Unit tests">
          <WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
          <CommandLine>%APSIM%/Model/Build/RunAllUnitTests.bat</CommandLine>
-      </Job>   
+      </Job>
    </Target>
-   
+
    <!-- ############### All test simulations will go here ############### -->
    <Target name="Tests">
       <DependsOn>Post-Compile</DependsOn>
    </Target>
-   
-   
+
+
 </Project>
