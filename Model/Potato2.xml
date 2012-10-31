@@ -154,11 +154,11 @@
           <End type="text" description="End">FinalLeaf</End>
           <DivideFunction name="NodeInitiationRateFunction">
             <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values </Memo>
-            <Variable name="Phyllochron">
+            <VariableReference name="Phyllochron">
               <VariableName type="text" description="Variable Name">Structure.MainStemNodeAppearanceRate.Phyllochron.Value</VariableName>
               <Memo>Returns the value of a nominated internal Plant2 numerical variable
                  </Memo>
-            </Variable>
+            </VariableReference>
             <Constant name="PrimordiaPerMainstemNode">
               <Value type="text" description="Value">2</Value>
             </Constant>
@@ -239,20 +239,20 @@ In addition this organ has a relative growth rate variable and a tubers per stem
             <Constant name="OrganNumberPerStem">
               <Value type="text" description="Value">5</Value>
             </Constant>
-            <Variable name="StemNumber">
+            <VariableReference name="StemNumber">
               <VariableName type="text" description="Variable Name">Structure.MainStemPopn</VariableName>
-            </Variable>
+            </VariableReference>
           </MultiplyFunction>
           <TemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime" />
           <AccumulateFunction name="AccumThermalTime">
             <StartStageName type="text" description="StartStageName">TuberInitiation</StartStageName>
             <EndStageName type="text" description="StartStageName">Maturity</EndStageName>
             <Memo>Sum the values of the children of this node and accumulate daily between the start and end stages</Memo>
-            <Variable name="DailyThermalTimeValue">
+            <VariableReference name="DailyThermalTimeValue">
               <VariableName type="text" description="Variable Name">Phenology.ThermalTime.Value</VariableName>
               <Memo>Returns the value of a nominated internal Plant2 numerical variable
 </Memo>
-            </Variable>
+            </VariableReference>
           </AccumulateFunction>
         </PotentialSizeDemandFunction>
         <LinearInterpolationFunction name="WaterContent">

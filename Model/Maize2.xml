@@ -295,11 +295,11 @@
             <End type="text" description="End">FlagLeaf</End>
             <DivideFunction name="NodeInitiationRateFunction">
               <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values </Memo>
-              <Variable name="Phyllochron">
+              <VariableReference name="Phyllochron">
                 <VariableName type="text" description="Variable Name">Structure.MainStemNodeAppearanceRate.Value</VariableName>
                 <Memo>Returns the value of a nominated internal Plant2 numerical variable
                  </Memo>
-              </Variable>
+              </VariableReference>
               <Constant name="PrimordiaPerMainstemNode">
                 <Value type="text" description="Value">2</Value>
               </Constant>
@@ -455,11 +455,11 @@
         </PhaseBasedSwitch>
         <MultiplyFunction name="NumberFunction">
           <Memo>Multiplies the values of the children of this node</Memo>
-          <Variable name="StemNumber">
+          <VariableReference name="StemNumber">
             <VariableName type="text" description="Variable Name">Structure.TotalStemPopn</VariableName>
             <Memo>Returns the value of a nominated internal Plant2 numerical variable
 </Memo>
-          </Variable>
+          </VariableReference>
           <Constant name="KernalsPerCob">
             <Value type="text" description="Value">800</Value>
           </Constant>
@@ -674,11 +674,11 @@
         <BellCurveFunction name="MaxArea">
           <MultiplyFunction name="LargestLeafPosition">
             <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
-            <Variable name="FinalLeafNumber">
+            <VariableReference name="FinalLeafNumber">
               <VariableName type="text" description="Variable Name">Structure.MainStemFinalNodeNumber.Value</VariableName>
               <Memo>Returns the value of a nominated internal Plant.NET numerical variable
 </Memo>
-            </Variable>
+            </VariableReference>
             <Constant name="RelativePositionOfLargestLeaf">
               <Value type="text" description="Value">.67</Value>
             </Constant>
@@ -1106,16 +1106,16 @@
         <MinimumFunction name="DMDemandFunction">
           <MultiplyFunction name="PotentialDMAccumulation">
             <Memo>Multiplies the values of the children of this node</Memo>
-            <Variable name="NodesAppearing">
+            <VariableReference name="NodesAppearing">
               <VariableName type="text" description="Variable Name">Structure.DeltaNodeNumber</VariableName>
               <Memo>Returns the value of a nominated internal Plant2 numerical variable
 </Memo>
-            </Variable>
-            <Variable name="Branches">
+            </VariableReference>
+            <VariableReference name="Branches">
               <VariableName type="text" description="Variable Name">Structure.TotalStemPopn</VariableName>
               <Memo>Returns the value of a nominated internal Plant2 numerical variable
 </Memo>
-            </Variable>
+            </VariableReference>
             <LinearInterpolationFunction name="PotentialInternodeWt">
               <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
               <XYPairs>
@@ -1130,16 +1130,16 @@
             <Constant name="SpecificStemLengthMax">
               <Value type="text" description="Value">1</Value>
             </Constant>
-            <Variable name="Branches">
+            <VariableReference name="Branches">
               <VariableName type="text" description="Variable Name">Structure.TotalStemPopn</VariableName>
               <Memo>Returns the value of a nominated internal Plant2 numerical variable
 </Memo>
-            </Variable>
-            <Variable name="DeltaHeight">
+            </VariableReference>
+            <VariableReference name="DeltaHeight">
               <VariableName type="text" description="Variable Name">Structure.Height.DeltaHeight</VariableName>
               <Memo>Returns the value of a nominated internal Plant2 numerical variable
 </Memo>
-            </Variable>
+            </VariableReference>
           </MultiplyFunction>
         </MinimumFunction>
       </GenericAboveGroundOrgan>

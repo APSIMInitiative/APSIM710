@@ -5,7 +5,7 @@ using System.Reflection;
 using CSGeneral;
 
 [Description("Returns the value of a nominated internal Plant2 numerical variable")]
-public class Variable : Function
+public class VariableReference : Function
 {
     [Param]
     private string VariableName = "";

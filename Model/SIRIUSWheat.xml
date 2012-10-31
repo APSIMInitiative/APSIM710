@@ -240,11 +240,11 @@
           <End type="text" description="End">FlagLeaf</End>
           <DivideFunction name="NodeInitiationRateFunction">
             <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values </Memo>
-            <Variable name="Phyllochron">
+            <VariableReference name="Phyllochron">
               <VariableName type="text" description="Variable Name">Structure.MainStemNodeAppearanceRate.BasePhyllochron.Value</VariableName>
               <Memo>Returns the value of a nominated internal Plant2 numerical variable
                  </Memo>
-            </Variable>
+            </VariableReference>
             <Constant name="PrimordiaPerMainstemNode">
               <Value type="text" description="Value">2</Value>
             </Constant>
@@ -671,11 +671,11 @@
         </LinearInterpolationFunction>
         <MultiplyFunction name="GrowthDuration">
           <Memo>Multiplies the values of the children of this node</Memo>
-          <Variable name="Phyllochron">
+          <VariableReference name="Phyllochron">
             <VariableName type="text" description="Variable Name">Structure.MainStemNodeAppearanceRate.BasePhyllochron.Value</VariableName>
             <Memo>Returns the value of a nominated internal Plant2 numerical variable
                  </Memo>
-          </Variable>
+          </VariableReference>
           <LinearInterpolationFunction name="NumberOfExpandingLeaves">
             <XProperty type="text" description="XProperty">Structure.RelativeNodeApperance</XProperty>
             <XYPairs>
@@ -1063,16 +1063,16 @@
         <MinimumFunction name="DMDemandFunction">
           <MultiplyFunction name="PotentialDMAccumulation">
             <Memo>Multiplies the values of the children of this node</Memo>
-            <Variable name="NodesAppearing">
+            <VariableReference name="NodesAppearing">
               <VariableName type="text" description="Variable Name">Structure.DeltaNodeNumber</VariableName>
               <Memo>Returns the value of a nominated internal Plant2 numerical variable
 </Memo>
-            </Variable>
-            <Variable name="Branches">
+            </VariableReference>
+            <VariableReference name="Branches">
               <VariableName type="text" description="Variable Name">Structure.TotalStemPopn</VariableName>
               <Memo>Returns the value of a nominated internal Plant2 numerical variable
 </Memo>
-            </Variable>
+            </VariableReference>
             <LinearInterpolationFunction name="PotentialInternodeWt">
               <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
               <XYPairs>
@@ -1087,30 +1087,30 @@
             <Constant name="SpecificStemLengthMax">
               <Value type="text" description="Value">.0022</Value>
             </Constant>
-            <Variable name="Branches">
+            <VariableReference name="Branches">
               <VariableName type="text" description="Variable Name">Structure.TotalStemPopn</VariableName>
               <Memo>Returns the value of a nominated internal Plant2 numerical variable
 </Memo>
-            </Variable>
-            <Variable name="DeltaHeight">
+            </VariableReference>
+            <VariableReference name="DeltaHeight">
               <VariableName type="text" description="Variable Name">Structure.Height.DeltaHeight</VariableName>
               <Memo>Returns the value of a nominated internal Plant2 numerical variable
 </Memo>
-            </Variable>
+            </VariableReference>
           </MultiplyFunction>
         </MinimumFunction>
         <MultiplyFunction name="yDMDemandFunction">
           <Memo>Multiplies the values of the children of this node</Memo>
-          <Variable name="NodesAppearing">
+          <VariableReference name="NodesAppearing">
             <VariableName type="text" description="Variable Name">Structure.DeltaNodeNumber</VariableName>
             <Memo>Returns the value of a nominated internal Plant2 numerical variable
 </Memo>
-          </Variable>
-          <Variable name="Branches">
+          </VariableReference>
+          <VariableReference name="Branches">
             <VariableName type="text" description="Variable Name">Structure.TotalStemPopn</VariableName>
             <Memo>Returns the value of a nominated internal Plant2 numerical variable
 </Memo>
-          </Variable>
+          </VariableReference>
           <LinearInterpolationFunction name="PotentialInternodeWt">
             <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
             <XYPairs>
