@@ -55,6 +55,7 @@ class JobRunner
         // Main worker loop to continually run jobs.
         while (!ESCWasPressed)
         {
+            bool idle = true;
             try
             {
                 // See if any jobs have finished.
@@ -64,6 +65,10 @@ class JobRunner
                 if (Jobs.Count < NumCPUsToUse)
                 {
                     List<Job> NewJobs = GetNextJobToRun(Macros, NumCPUsToUse-Jobs.Count);
+
+					if (NewJobs == null && Jobs.Count == 0) 
+						ESCWasPressed = true; // All done. 
+					
                     if (NewJobs != null)
                     {
                         foreach (Job J in NewJobs)
@@ -88,11 +93,14 @@ class JobRunner
                                 J.Status = "Fail";
                             }
                             Jobs.Add(J);
+							idle = false;
                         }
                     }
                 }
-                else
-                    Thread.Sleep(500);  // wait a half second.
+                
+				if (idle)
+                   Thread.Sleep(500);  // wait a half second.
+			
                 NumServerConnectErrors = 0;
             }
             catch (SocketException e)
@@ -188,7 +196,7 @@ class JobRunner
 
     /// <summary>
     /// Return the next job that this runner should execute. Will return null if there
-    /// are no more jobs to run.
+    /// are no more jobs to run. Returns an empty list if the queue is stalled.
     /// </summary>
     private static List<Job> GetNextJobToRun(Dictionary<string, string> Macros, int NumJobs)
     {

@@ -128,7 +128,6 @@ public class JobScheduler
             if (RunnerProcess != null && RunnerProcess.HasExited)
             {
                 CancelWorkerThread = true;
-                SomeJobsHaveFailed = true;
             }
         }
 
