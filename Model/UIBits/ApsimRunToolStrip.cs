@@ -155,10 +155,10 @@ public class ApsimRunToolStrip
             PercentLabel.Text = "";
             return;
         }
-		if (simNames.Count == 1) 
-			Apsim.StartAPSIM(_F, simNames[0]);
-		else if (simNames.Count > 1) 
-            Apsim.StartMultipleFromPaths(_F, simNames);
+        if (SimsToRun.Count == 1)
+            Apsim.StartAPSIM(_F, SimsToRun[0]);
+        else if (SimsToRun.Count > 1)
+            Apsim.StartMultipleFromPaths(_F, SimsToRun);
         Timer.Enabled = true;
     }
 
