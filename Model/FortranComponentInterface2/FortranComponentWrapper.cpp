@@ -210,7 +210,7 @@ extern "C" int EXPORT STDCALL ReadIntegerArray
 
    if ((int)valueVec.size() > *maxValues) currentWrapper->componentInterface().error("Too many elements for array " + variableName, true);
 
-   for (unsigned int i = 0; i < valueVec.size() && i < (unsigned)*maxValues; i++) 
+   for (unsigned int i = 0; i < valueVec.size() && i < (unsigned)*maxValues; i++)
       value[i] = valueVec[i];
    *numValues = min((int)valueVec.size(), *maxValues);
    return result;
@@ -227,7 +227,7 @@ extern "C" int EXPORT STDCALL ReadRealArray
 
    if ((int)valueVec.size() > *maxValues) currentWrapper->componentInterface().error("Too many elements for array " + variableName, true);
 
-   for (unsigned int i = 0; i < valueVec.size() && i < (unsigned)*maxValues; i++) 
+   for (unsigned int i = 0; i < valueVec.size() && i < (unsigned)*maxValues; i++)
       value[i] = valueVec[i];
    *numValues = min((int)valueVec.size(), *maxValues);
    return result;
@@ -244,7 +244,7 @@ extern "C" int EXPORT STDCALL ReadDoubleArray
 
    if ((int)valueVec.size() > *maxValues) currentWrapper->componentInterface().error("Too many elements for array " + variableName, true);
 
-   for (unsigned int i = 0; i < valueVec.size() && i < (unsigned)*maxValues; i++) 
+   for (unsigned int i = 0; i < valueVec.size() && i < (unsigned)*maxValues; i++)
       value[i] = valueVec[i];
    *numValues = min((int)valueVec.size(), *maxValues);
    return result;
@@ -518,7 +518,7 @@ extern "C" void EXPORT STDCALL SetStringArray
    }
 
 // ------------------------------------------------------------------
-// Provide access to a method for converting a string to a floating point numeric 
+// Provide access to a method for converting a string to a floating point numeric
 // which should be noticeably faster than a Fortran internal read (especially with gfortran)
 // ------------------------------------------------------------------
 extern "C" double EXPORT STDCALL string_to_float(const char* str, bool* ok, unsigned strLength)
@@ -543,10 +543,10 @@ extern "C" void EXPORT STDCALL GetComponentName
    }
 
 typedef void (STDCALL FFloatFunction2)(const char *, float *, unsigned);
-extern "C" void EXPORT STDCALL ExposeRealFunction(const char *name, 
-                                                   const char *units, 
+extern "C" void EXPORT STDCALL ExposeRealFunction(const char *name,
+                                                   const char *units,
                                                    const char *description,
-                                                   FFloatFunction2 *getter, 
+                                                   FFloatFunction2 *getter,
                                                    FFloatFunction2 *setter,
                                                    int nameLength, int unitsLength, int descriptionLength)
    {
@@ -554,12 +554,12 @@ extern "C" void EXPORT STDCALL ExposeRealFunction(const char *name,
    string myName = FortranString(name, nameLength).toString();
    string myUnits = FortranString(units, unitsLength).toString();
    string myDesc = FortranString(description, descriptionLength).toString();
-   FortranNamedDualMethod<boost::function3<void, const char *, float *, unsigned>, float > *m = 
-      new FortranNamedDualMethod<boost::function3<void, const char *, float *, unsigned>, float >  
+   FortranNamedDualMethod<boost::function3<void, const char *, float *, unsigned>, float > *m =
+      new FortranNamedDualMethod<boost::function3<void, const char *, float *, unsigned>, float >
           (currentWrapper, myName, initialValue, getter, setter);
    currentWrapper->componentInterface().expose(myName,
                                                myUnits,
-                                               myDesc, 
-                                               true, 
+                                               myDesc,
+                                               true,
                                                m);
    }

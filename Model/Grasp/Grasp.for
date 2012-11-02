@@ -183,7 +183,7 @@
          real out_rfact          ! radiation index
          real out_tfact          ! temperature index
          real out_nfact          ! nitrogen index
-         real out_tsdm 
+         real out_tsdm
          real out_n_green(max_part)
          real out_n_dead(max_part)
          real out_dm_green(max_part)
@@ -455,7 +455,7 @@ c        do N at start of day to calculate N indexes for growth.
       endif
 
       call grasp_set_other_variables ()
-      
+
       return
       end subroutine
 
@@ -680,7 +680,7 @@ c        do N at start of day to calculate N indexes for growth.
                                 ! actual uptake is calculated by grasp
          call grasp_sw_uptake (g%dlt_sw_dep)
 
-      else 
+      else
                                 ! actual uptake is done by swim
          dlt_name = string_concat('uptake_water_',p%crop_type)
          found = Get(dlt_name  ! Variable Name
@@ -1683,7 +1683,7 @@ C     Limit cover to potential maximum
                                 ! By us
          transpiration = g%swi_total * grasp_sw_pot ()
 
-      else 
+      else
                                 ! By swim
          transpiration = -1.0 *
      :       sum_real_array(g%dlt_sw_dep, max_layer)
@@ -1828,7 +1828,7 @@ C     Limit cover to potential maximum
 
 *- Implementation Section ----------------------------------
 
-     
+
 c     NB. straight from grasp - may be another method:
       grasp_rfact = 1.0 - exp(- divide
      :     (g%radn, p%rad_factor, 0.0) )
@@ -1948,12 +1948,12 @@ c     PdeV 7/96.
       do 2000 layer = 1, deepest_layer
          dlt_No3(layer) = dlt_N_uptake
      :                  * divide (N_avail(layer), N_avail_sum, 0.0)
-         
+
          ! limit to available
          if (dlt_No3(layer) .gt. g%No3(layer)) then
             dlt_No3(layer) = g%No3(layer)
          endif
-         
+
          ! change to a delta
          dlt_No3(layer) = -1.0 * dlt_No3(layer)
  2000 continue
@@ -2044,7 +2044,7 @@ c      need to be changed. FIXME!
 *     ===========================================================
       use dataTypes
       implicit none
- 
+
 *+  Purpose
 *       Update states
 
@@ -2114,9 +2114,9 @@ c      need to be changed. FIXME!
       if (sum(g%detach(:)) .gt. 0.0) then
          call Grasp_Send_Crop_Chopped_Event (g%detach(:), N_detach(:))
       endif
-      
+
       g%dmAvailable%num_cohorts = 4
-      g%dmAvailable%cohorts(1)%CohortID = p%crop_type 
+      g%dmAvailable%cohorts(1)%CohortID = p%crop_type
       g%dmAvailable%cohorts(1)%organ = 'leaf'
       g%dmAvailable%cohorts(1)%AgeID = 'live'
       g%dmAvailable%cohorts(1)%Bottom = 0.0
@@ -2128,7 +2128,7 @@ c      need to be changed. FIXME!
       g%dmAvailable%cohorts(1)%S =      0.0
       g%dmAvailable%cohorts(1)%AshAlk = 0.0
 
-      g%dmAvailable%cohorts(2)%CohortID = p%crop_type 
+      g%dmAvailable%cohorts(2)%CohortID = p%crop_type
       g%dmAvailable%cohorts(2)%organ = 'leaf'
       g%dmAvailable%cohorts(2)%AgeID = 'dead'
       g%dmAvailable%cohorts(2)%Bottom = 0.0
@@ -2139,8 +2139,8 @@ c      need to be changed. FIXME!
       g%dmAvailable%cohorts(2)%P =      0.0
       g%dmAvailable%cohorts(2)%S =      0.0
       g%dmAvailable%cohorts(2)%AshAlk = 0.0
-  
-      g%dmAvailable%cohorts(3)%CohortID = p%crop_type 
+
+      g%dmAvailable%cohorts(3)%CohortID = p%crop_type
       g%dmAvailable%cohorts(3)%organ = 'stem'
       g%dmAvailable%cohorts(3)%AgeID = 'live'
       g%dmAvailable%cohorts(3)%Bottom = 0.0
@@ -2152,7 +2152,7 @@ c      need to be changed. FIXME!
       g%dmAvailable%cohorts(3)%S =      0.0
       g%dmAvailable%cohorts(3)%AshAlk = 0.0
 
-      g%dmAvailable%cohorts(4)%CohortID = p%crop_type 
+      g%dmAvailable%cohorts(4)%CohortID = p%crop_type
       g%dmAvailable%cohorts(4)%organ = 'stem'
       g%dmAvailable%cohorts(4)%AgeID = 'dead'
       g%dmAvailable%cohorts(4)%Bottom = 0.0
@@ -2183,7 +2183,7 @@ C     condition. This is because of the wrap-around between years.
       g%acc_growth_for_N = g%acc_growth_for_N
      :                   + sum_real_array(g%dlt_dm_plant, max_part)
 
-     
+
       if (g%crop_status .eq. crop_out) then
          g%out_plant_status = 'out'
       elseif (g%crop_status .eq. crop_alive) then
@@ -2191,7 +2191,7 @@ C     condition. This is because of the wrap-around between years.
       elseif (g%crop_status .eq. crop_dead) then
          g%out_plant_status = 'dead'
       endif
-      
+
       stage_no = int (g%current_stage)
       g%out_stage_code = p%stage_code_list(stage_no)
       stage_no = int (g%current_stage)
@@ -2220,12 +2220,12 @@ C     condition. This is because of the wrap-around between years.
       g%out_growth_index = g%out_tfact * g%out_rfact *
      :      g%swi_total
       g%out_transp_eff = grasp_transp_eff()
-      g%out_vpd_hgt_ndx = grasp_vpd_hgt_ndx(g%canopy_height) 
+      g%out_vpd_hgt_ndx = grasp_vpd_hgt_ndx(g%canopy_height)
       g%out_numlayers =  find_layer_no (g%root_depth, g%dlayer,
      :     max_layer)
       do 500 layer = 1, g%out_numlayers
          g%out_sw_uptake(layer) = - g%dlt_sw_dep(layer)
-         g%out_max_n_avail(layer) =  
+         g%out_max_n_avail(layer) =
      :        p%max_n_avail(layer) *
      :        root_proportion (layer, g%dlayer,
      :        g%root_depth)
@@ -3066,6 +3066,11 @@ C     Check that none of the pools is negative
          call WriteLine(string)
 
 cplp         call fatal_error(err_internal, 'Negative Pool Error')
+         g%dm_green(leaf) = max(0.0, g%dm_green(leaf))
+         g%dm_dead(leaf) = max(0.0, g%dm_dead(leaf))
+         g%dm_green(stem) = max(0.0, g%dm_green(stem))
+         g%dm_dead(stem) = max(0.0, g%dm_dead(stem))
+         g%litter = max(0.0, g%litter)
       endif
 
       return
@@ -3229,7 +3234,7 @@ cpdev  bound required?..
      :     , g%es, c%es_lb, c%es_ub)
 
                                 ! soil profile and soil water
-      found = get ( 'dlayer', '(mm)', 0, temp, 
+      found = get ( 'dlayer', '(mm)', 0, temp,
      :              numvals, max_layer, c%dlayer_lb, c%dlayer_ub)
 
       if (.not. found) then
@@ -3273,13 +3278,13 @@ cpdev  bound required?..
       found = get ('bd'
      :     , '(mm)', 0, g%bd, numvals, max_layer, 0.0, 10.0)
 
-      found = get ('dul_dep', '(mm)', 0, g%dul_dep, 
+      found = get ('dul_dep', '(mm)', 0, g%dul_dep,
      :             numvals, max_layer, c%dul_dep_lb, c%dul_dep_ub)
 
-      found = get ('sw_dep', '(mm)', 0, g%sw_dep, 
+      found = get ('sw_dep', '(mm)', 0, g%sw_dep,
      :             numvals, max_layer, c%sw_dep_lb, c%sw_dep_ub)
 
-      found = get ('no3', '(kg/ha)', 1, 
+      found = get ('no3', '(kg/ha)', 1,
      :             g%No3, numvals,max_layer, c%NO3_lb, c%NO3_ub)
       if (.not. found) then
             ! we have no N supply - make non-limiting.
@@ -3324,7 +3329,7 @@ cpdev  bound required?..
 
 *+  Local Variables
       integer    num_layers            ! number of layers
-      
+
 *- Implementation Section ----------------------------------
 
 
@@ -3360,8 +3365,8 @@ cpdev  bound required?..
 !STDCALL(grasp_get_real_variable)
 
 *+  Sub-Program Arguments
-      character  Variable_name*(*)     ! (INPUT) Variable name 
-      real       Variable_value        ! (INPUT) value of Variable 
+      character  Variable_name*(*)     ! (INPUT) Variable name
+      real       Variable_value        ! (INPUT) value of Variable
       if (variable_name .eq. 'green_leaf') then
          variable_value = g%dm_green(leaf)
       else if (variable_name .eq. 'green_stem') then
@@ -3409,8 +3414,8 @@ cpdev  bound required?..
 !STDCALL(grasp_set_real_variable )
 
 *+  Sub-Program Arguments
-      character  Variable_name*(*)     ! (INPUT) Variable name 
-      real       Variable_value        ! (INPUT) value of Variable 
+      character  Variable_name*(*)     ! (INPUT) Variable name
+      real       Variable_value        ! (INPUT) value of Variable
 
 *+  Purpose
 *      set a variable in this module as requested by another.
@@ -3563,9 +3568,9 @@ cpdev  bound required?..
          else
             n_conc = c%litter_n / 100.0
          endif
-         g%dm_green(leaf) = g%dm_green(leaf) + 
+         g%dm_green(leaf) = g%dm_green(leaf) +
      :                          variable_value * frac_leaf
-         g%n_green(leaf) = g%n_green(leaf) + 
+         g%n_green(leaf) = g%n_green(leaf) +
      :                          variable_value * frac_leaf * n_conc
 
          if (g%dm_green(stem) .gt. 0.0) then
@@ -3609,9 +3614,9 @@ cpdev  bound required?..
          else
             n_conc = c%litter_n / 100.0
          endif
-         g%dm_dead(leaf) = g%dm_dead(leaf) + 
+         g%dm_dead(leaf) = g%dm_dead(leaf) +
      :                        variable_value * frac_leaf
-         g%n_dead(leaf) = g%n_dead(leaf) + 
+         g%n_dead(leaf) = g%n_dead(leaf) +
      :                        variable_value * frac_leaf * n_conc
 
          if (g%dm_dead(leaf) .gt. 0.0) then
@@ -3645,6 +3650,9 @@ cpdev  bound required?..
 
       endif
 
+      g%out_tsdm = sum_real_array(g%dm_green, max_part) +
+     :     sum_real_array(g%dm_dead, max_part) -
+     :     g%dm_green(root) - g%dm_dead(root)
 
       return
       end subroutine
@@ -3693,220 +3701,220 @@ c     real       N_demand              ! sum N demand for plant parts (g/plant)
 *- Implementation Section ----------------------------------
 
       call Expose('crop_type', ' ', 'Crop Type', .false., p%crop_type)
-      call Expose('crop_status', ' ', 'Status of crop', .false., 
+      call Expose('crop_status', ' ', 'Status of crop', .false.,
      :            g%crop_status)
-      call Expose('stage', ' ', 'Stage of development', .false.,  
+      call Expose('stage', ' ', 'Stage of development', .false.,
      :            g%current_stage)
-      call Expose('height', 'mm', 'Height of canopy', .false.,  
+      call Expose('height', 'mm', 'Height of canopy', .false.,
      :            g%canopy_height)
-      call Expose('green_cover', '0-1', 'Green cover', .false.,  
+      call Expose('green_cover', '0-1', 'Green cover', .false.,
      :            g%out_radn_cover)
-      call Expose('cover_green', '0-1', 'Green cover', .false., 
+      call Expose('cover_green', '0-1', 'Green cover', .false.,
      :             g%out_radn_cover)
-      call Expose('radn_cover', '0-1', 'Green cover', .false.,  
+      call Expose('radn_cover', '0-1', 'Green cover', .false.,
      :            g%out_radn_cover)
-      call Expose('transp_cover', '0-1',  
-     :            'Cover used in transpiration calc', .false.,  
+      call Expose('transp_cover', '0-1',
+     :            'Cover used in transpiration calc', .false.,
      :            g%out_transp_cover)
-      call Expose('clothesline', ' ', 'Clothesline effect', .false.,  
+      call Expose('clothesline', ' ', 'Clothesline effect', .false.,
      :            g%out_clothesline)
-      call Expose('tfact', '0-1', 'Temperature factor', .false.,  
+      call Expose('tfact', '0-1', 'Temperature factor', .false.,
      :            g%out_tfact)
       call Expose('nfact', '0-1', 'N factor', .false., g%out_nfact)
-      call Expose('vpd_estimation', '', 'Estimation of VPD', .false., 
+      call Expose('vpd_estimation', '', 'Estimation of VPD', .false.,
      :             g%vpd)
-      call Expose('detachment', 'kg/ha', 
-     :             'Weight of material detached today', 
+      call Expose('detachment', 'kg/ha',
+     :             'Weight of material detached today',
      :             .false.,g%litter )
-      call Expose('acc_growth_for_n', 'kg/ha', 
-     :             'Cumulative growth in N uptake calcs', .false., 
+      call Expose('acc_growth_for_n', 'kg/ha',
+     :             'Cumulative growth in N uptake calcs', .false.,
      :             g%acc_growth_for_n)
-      call Expose('acc_trans_for_n', 'mm',  
-     :            'Cumulative transpiration in N uptake calc',  
+      call Expose('acc_trans_for_n', 'mm',
+     :            'Cumulative transpiration in N uptake calc',
      :            .false., g%acc_trans_for_n )
-      call Expose('sw_pot', 'mm', 'Potential soil water', 
+      call Expose('sw_pot', 'mm', 'Potential soil water',
      :             .false., g%out_sw_pot)
-      call Expose('growth', 'kg/ha', 'Daily growth', .false., 
+      call Expose('growth', 'kg/ha', 'Daily growth', .false.,
      :             g%dlt_dm)
-      call Expose('growth_transp', 'kg/ha', 
-     :             'Potential growth via transpiration', .false., 
+      call Expose('growth_transp', 'kg/ha',
+     :             'Potential growth via transpiration', .false.,
      :             g%out_growth_transp)
-      call Expose('growth_photo', 'kg/ha', 
-     :             'Potential growth via photosynthesis', .false., 
+      call Expose('growth_photo', 'kg/ha',
+     :             'Potential growth via photosynthesis', .false.,
      :             g%out_growth_photo)
-      call Expose('growth_regrowth', 'kg/ha', 
-     :             'Potential rgowth via tussock regrowth', .false., 
+      call Expose('growth_regrowth', 'kg/ha',
+     :             'Potential rgowth via tussock regrowth', .false.,
      :             g%out_growth_regrow)
-      call Expose('death_frost_leaf', 'kg/ha', 
-     :             'Death of leaves by frost', .false.,  
+      call Expose('death_frost_leaf', 'kg/ha',
+     :             'Death of leaves by frost', .false.,
      :             g%out_death_frost(leaf))
-      call Expose('death_frost_stem', 'kg/ha', 
-     :             'Death of stem by frost', .false.,  
+      call Expose('death_frost_stem', 'kg/ha',
+     :             'Death of stem by frost', .false.,
      :            g%out_death_frost(stem))
-      call Expose('death_water_leaf', 'kg/ha', 
-     :             'Death of leaves by drought', 
+      call Expose('death_water_leaf', 'kg/ha',
+     :             'Death of leaves by drought',
      :             .false., g%out_death_water(leaf))
-      call Expose('death_water_stem', 'kg/ha', 
-     :             'Death of stem by drought', 
+      call Expose('death_water_stem', 'kg/ha',
+     :             'Death of stem by drought',
      :             .false., g%out_death_water(stem))
-      call Expose('death_pheno_leaf', 'kg/ha', 
-     :             'Death of leaves by age', .false., 
+      call Expose('death_pheno_leaf', 'kg/ha',
+     :             'Death of leaves by age', .false.,
      :             g%out_death_pheno(leaf))
-      call Expose('death_pheno_stem', 'kg/ha', 
-     :             'Death of stem via age', .false., 
+      call Expose('death_pheno_stem', 'kg/ha',
+     :             'Death of stem via age', .false.,
      :             g%out_death_pheno(stem))
-      call Expose('sw_demand', 'mm', 'Soil water demand', 
+      call Expose('sw_demand', 'mm', 'Soil water demand',
      :             .false., g%out_sw_demand)
-      call Expose('n_uptake', 'kg/ha', 'Cumulative N uptake', 
+      call Expose('n_uptake', 'kg/ha', 'Cumulative N uptake',
      :             .false., g%N_uptake)
-      call Expose('dlt_n_uptake', 'kg/ha', 'Daily N uptake', 
+      call Expose('dlt_n_uptake', 'kg/ha', 'Daily N uptake',
      :             .false., g%dlt_N_uptake)
-      call Expose('n_index', '0-1', 'N index in growth', 
+      call Expose('n_index', '0-1', 'N index in growth',
      :             .false., g%out_nfact)
-      call Expose('rad_index', '0-1', 'Radiation index in growth', 
+      call Expose('rad_index', '0-1', 'Radiation index in growth',
      :             .false., g%out_rfact)
-      call Expose('sw_index', '', 'Soil Water index in growth', 
+      call Expose('sw_index', '', 'Soil Water index in growth',
      :             .false., g%swi_total)
-      call Expose('temp_index', '', 'Temperature index in growth', 
+      call Expose('temp_index', '', 'Temperature index in growth',
      :             .false.,g%out_tfact )
-      call Expose('plant_status', ' ', 'Status of crop', 
+      call Expose('plant_status', ' ', 'Status of crop',
      :            .false., g%out_plant_status)
-      call Expose('stage_code', ' ', 'Stage code of development', 
+      call Expose('stage_code', ' ', 'Stage code of development',
      :            .false., g%out_stage_code)
-      call Expose('stage_name', ' ', 'Stage name of development', 
+      call Expose('stage_name', ' ', 'Stage name of development',
      :            .false., g%out_stage_name)
-      call Expose('cover_tot', '0-1', 'Total green and dead cover', 
+      call Expose('cover_tot', '0-1', 'Total green and dead cover',
      :            .false., g%out_total_cover)
-    
-      call Expose('swi', '0-1', 'Soil water index', .false., 
+
+      call Expose('swi', '0-1', 'Soil water index', .false.,
      :            g%swi, g%out_numlayers, max_layer)
-      call Expose('max_n_avail', 'kg/ha', 'N available to plant', 
+      call Expose('max_n_avail', 'kg/ha', 'N available to plant',
      :            .false.,g%out_max_n_avail,g%out_numlayers,max_layer)
-      call Expose('rlv', 'mm/mm^3', 'Root length volume', .false., 
+      call Expose('rlv', 'mm/mm^3', 'Root length volume', .false.,
      :            g%rlv,g%out_numlayers,max_layer)
-      call Expose('vpd_hgt_ndx', '', 'Height adjusted VPD', 
+      call Expose('vpd_hgt_ndx', '', 'Height adjusted VPD',
      :            .false., g%out_vpd_hgt_ndx)
-      call Expose('transp_eff_adj', ' ', 'Adjusted TE', 
+      call Expose('transp_eff_adj', ' ', 'Adjusted TE',
      :            .false.,g%out_transp_eff )
-      call Expose('growth_index', '0-1', 'Growth index', 
+      call Expose('growth_index', '0-1', 'Growth index',
      :            .false., g%out_growth_index)
-      call Expose('death_pheno', 'kg/ha', 'Death by age', 
+      call Expose('death_pheno', 'kg/ha', 'Death by age',
      :            .false., g%out_death_pheno_tot)
-      call Expose('death_water', 'kg/ha', 'Death by water stress', 
+      call Expose('death_water', 'kg/ha', 'Death by water stress',
      :            .false., g%out_death_water_tot)
-      call Expose('death_frost', 'kg/ha', 'Death by frost', 
+      call Expose('death_frost', 'kg/ha', 'Death by frost',
      :            .false., g%out_death_frost_tot)
-      call Expose('dlt_dm', 'g/m2', 'Growth', 
+      call Expose('dlt_dm', 'g/m2', 'Growth',
      :            .false., g%out_dlt_dm)
-      call Expose('sw_uptake', 'mm', 'Soil water uptake', .false., 
+      call Expose('sw_uptake', 'mm', 'Soil water uptake', .false.,
      :            g%out_sw_uptake,g%out_numlayers,max_layer)
-      call Expose('ep', 'mm', 'Transpiration', 
+      call Expose('ep', 'mm', 'Transpiration',
      :            .false., g%out_ep)
-      call Expose('stemsenescedwt', 'g/m2', 'Senesced stem', 
+      call Expose('stemsenescedwt', 'g/m2', 'Senesced stem',
      :            .false., g%out_stemsenescedwt)
-      call Expose('leafsenescedwt', 'g/m2', 'Senesced leaf', 
+      call Expose('leafsenescedwt', 'g/m2', 'Senesced leaf',
      :            .false., g%out_leafsenescedwt)
-      call Expose('stemgreenwt', 'g/m2', 'Green stem', 
+      call Expose('stemgreenwt', 'g/m2', 'Green stem',
      :            .false., g%out_stemgreenwt)
-      call Expose('leafgreenwt', 'g/m2', 'Green leaf', 
+      call Expose('leafgreenwt', 'g/m2', 'Green leaf',
      :            .false., g%out_leafgreenwt)
-      call Expose('dm_senesced', 'g/m2', 'Dead leaf and stem', 
+      call Expose('dm_senesced', 'g/m2', 'Dead leaf and stem',
      :            .false., g%out_dm_senesced,g%out_numlayers,max_layer)
-      call Expose('dlt_dm_green', 'g/m2', 'Green growth', 
+      call Expose('dlt_dm_green', 'g/m2', 'Green growth',
      :            .false.,g%out_dlt_dm_green,g%out_numlayers,max_layer)
-      call Expose('dm_green', 'g/m2', 'Green leaf and stem', 
+      call Expose('dm_green', 'g/m2', 'Green leaf and stem',
      :            .false.,g%out_dm_green,g%out_numlayers,max_layer)
-      call Expose('n_green', 'g/m2', 'N in green leaf and stem', 
+      call Expose('n_green', 'g/m2', 'N in green leaf and stem',
      :            .false.,g%out_n_dead,g%out_numlayers,max_layer)
-      call Expose('n_dead', 'g/m2', 'N in green leaf and stem', 
+      call Expose('n_dead', 'g/m2', 'N in green leaf and stem',
      :            .false.,g%out_n_green,g%out_numlayers,max_layer)
-      call Expose('tsdm', 'kg/ha', 'Total Standing Dry Matter', 
+      call Expose('tsdm', 'kg/ha', 'Total Standing Dry Matter',
      :            .false.,g%out_tsdm)
 
-      call ExposeAvailableToAnimalType('AvailableToAnimal', 
+      call ExposeAvailableToAnimalType('AvailableToAnimal',
      :                                 'Material available to animals',
      :                                 .false., g%dmAvailable)
 
-      call ExposeRealFunction('green_pool', 'kg/ha', 
-     :                        'Green leaf and stem', 
-     :                        grasp_get_real_variable, 
+      call ExposeRealFunction('green_pool', 'kg/ha',
+     :                        'Green leaf and stem',
+     :                        grasp_get_real_variable,
      :                        grasp_set_real_variable)
 
-      call ExposeRealFunction('dead_pool', 'kg/ha', 
-     :                        'Dead leaf and stem', 
-     :                        grasp_get_real_variable, 
+      call ExposeRealFunction('dead_pool', 'kg/ha',
+     :                        'Dead leaf and stem',
+     :                        grasp_get_real_variable,
      :                        grasp_set_real_variable)
 
-      call ExposeRealFunction('dlt_green_pool', 'kg/ha', 
-     :                        'Change in green leaf and stem', 
-     :                        grasp_get_real_variable, 
+      call ExposeRealFunction('dlt_green_pool', 'kg/ha',
+     :                        'Change in green leaf and stem',
+     :                        grasp_get_real_variable,
      :                        grasp_set_real_variable)
 
-      call ExposeRealFunction('dlt_dead_pool', 'kg/ha', 
-     :                        'Change in dead leaf and stem', 
-     :                        grasp_get_real_variable, 
-     :                        grasp_set_real_variable)
- 
-      call ExposeRealFunction('green_leaf', 'kg/ha', 
-     :                        'Weight of green leaves', 
-     :                        grasp_get_real_variable, 
+      call ExposeRealFunction('dlt_dead_pool', 'kg/ha',
+     :                        'Change in dead leaf and stem',
+     :                        grasp_get_real_variable,
      :                        grasp_set_real_variable)
 
-      call ExposeRealFunction('green_stem', 'kg/ha', 
-     :                        'Weight of green stem', 
-     :                        grasp_get_real_variable, 
+      call ExposeRealFunction('green_leaf', 'kg/ha',
+     :                        'Weight of green leaves',
+     :                        grasp_get_real_variable,
      :                        grasp_set_real_variable)
 
-      call ExposeRealFunction('dlt_green_leaf', 'kg/ha', 
-     :                        'Change in weight of green leaves', 
-     :                        grasp_get_real_variable, 
+      call ExposeRealFunction('green_stem', 'kg/ha',
+     :                        'Weight of green stem',
+     :                        grasp_get_real_variable,
      :                        grasp_set_real_variable)
 
-      call ExposeRealFunction('dlt_green_stem', 'kg/ha', 
-     :                        'Change in weight of green stem', 
-     :                        grasp_get_real_variable, 
+      call ExposeRealFunction('dlt_green_leaf', 'kg/ha',
+     :                        'Change in weight of green leaves',
+     :                        grasp_get_real_variable,
+     :                        grasp_set_real_variable)
+
+      call ExposeRealFunction('dlt_green_stem', 'kg/ha',
+     :                        'Change in weight of green stem',
+     :                        grasp_get_real_variable,
      :                        grasp_set_real_variable )
 
-      call ExposeRealFunction('green_root', 'kg/ha', 
-     :                        'Weight of green roots', 
-     :                        grasp_get_real_variable, 
+      call ExposeRealFunction('green_root', 'kg/ha',
+     :                        'Weight of green roots',
+     :                        grasp_get_real_variable,
      :                        grasp_set_real_variable)
 
-      call ExposeRealFunction('dead_leaf', 'kg/ha', 
-     :                        'Weight of dead leaves', 
-     :                        grasp_get_real_variable, 
+      call ExposeRealFunction('dead_leaf', 'kg/ha',
+     :                        'Weight of dead leaves',
+     :                        grasp_get_real_variable,
      :                        grasp_set_real_variable)
-      call ExposeRealFunction('dead_stem', 'kg/ha', 
-     :                        'Weight of dead stem', 
-     :                        grasp_get_real_variable, 
+      call ExposeRealFunction('dead_stem', 'kg/ha',
+     :                        'Weight of dead stem',
+     :                        grasp_get_real_variable,
      :                        grasp_set_real_variable)
-      call ExposeRealFunction('dead_root', 'kg/ha', 
-     :                        'Weight of dead roots', 
-     :                        grasp_get_real_variable, 
+      call ExposeRealFunction('dead_root', 'kg/ha',
+     :                        'Weight of dead roots',
+     :                        grasp_get_real_variable,
      :                        grasp_set_real_variable)
-      call ExposeRealFunction('dlt_dead_leaf', 'kg/ha', 
-     :                        'Change in weight of dead leaves', 
-     :                        grasp_get_real_variable, 
+      call ExposeRealFunction('dlt_dead_leaf', 'kg/ha',
+     :                        'Change in weight of dead leaves',
+     :                        grasp_get_real_variable,
      :                        grasp_set_real_variable)
-      call ExposeRealFunction('dlt_dead_stem', 'kg/ha', 
-     :                        'Change in weight of dead stem', 
-     :                        grasp_get_real_variable, 
+      call ExposeRealFunction('dlt_dead_stem', 'kg/ha',
+     :                        'Change in weight of dead stem',
+     :                        grasp_get_real_variable,
      :                        grasp_set_real_variable)
-      call ExposeRealFunction('root_depth', 'mm', 
-     :                        'Depth of roots', 
-     :                        grasp_get_real_variable, 
+      call ExposeRealFunction('root_depth', 'mm',
+     :                        'Depth of roots',
+     :                        grasp_get_real_variable,
      :                        grasp_set_real_variable)
-      call ExposeRealFunction('basal_area', 'm^2/ha', 
-     :                        'Area of tussocks', 
-     :                        grasp_get_real_variable, 
+      call ExposeRealFunction('basal_area', 'm^2/ha',
+     :                        'Area of tussocks',
+     :                        grasp_get_real_variable,
      :                        grasp_set_real_variable)
-      call ExposeRealFunction('kl2rlv', ' ', 
-     :                        'Conversion factor in rlv', 
-     :                        grasp_get_real_variable, 
+      call ExposeRealFunction('kl2rlv', ' ',
+     :                        'Conversion factor in rlv',
+     :                        grasp_get_real_variable,
      :                        grasp_set_real_variable)
-      call ExposeRealFunction('height_1000kg', 'mm/tonne', 
-     :                        'Conversion factor for canopy height', 
-     :                        grasp_get_real_variable, 
+      call ExposeRealFunction('height_1000kg', 'mm/tonne',
+     :                        'Conversion factor for canopy height',
+     :                        grasp_get_real_variable,
      :                        grasp_set_real_variable)
 
       return
@@ -3965,81 +3973,81 @@ c     real       N_demand              ! sum N demand for plant parts (g/plant)
       ! Green leaf
       if (greenLeafPart .gt. 0) then
         if (g%dm_green(leaf) .gt. 0.0) then
-          n_conc = divide(g%n_green(leaf), 
+          n_conc = divide(g%n_green(leaf),
      :                    g%dm_green(leaf), 0.0)
         else
           n_conc = c%litter_n / 100.0
         endif
-        dlt = RemovedByAnimal%cohorts(greenLeafPart)%WeightRemoved 
+        dlt = RemovedByAnimal%cohorts(greenLeafPart)%WeightRemoved
         g%dm_green(leaf) = g%dm_green(leaf) - dlt
         if (g%dm_green(leaf) .lt. 0.0 ) then
            g%dm_green(leaf) = 0.0
-        endif   
-        g%n_green(leaf) = g%n_green(leaf) - 
+        endif
+        g%n_green(leaf) = g%n_green(leaf) -
      :            dlt * n_conc
         if (g%n_green(leaf) .lt. 0.0 ) then
           g%n_green(leaf) = 0.0
-        endif   
+        endif
       endif
 
       ! Green stem
       if (greenStemPart .gt. 0) then
         if (g%dm_green(stem) .gt. 0.0) then
-          n_conc = divide(g%n_green(stem), 
+          n_conc = divide(g%n_green(stem),
      :                    g%dm_green(stem), 0.0)
         else
           n_conc = c%litter_n / 100.0
         endif
-        dlt = RemovedByAnimal%cohorts(greenStemPart)%WeightRemoved 
+        dlt = RemovedByAnimal%cohorts(greenStemPart)%WeightRemoved
         g%dm_green(stem) = g%dm_green(stem) - dlt
         if (g%dm_green(stem) .lt. 0.0 ) then
            g%dm_green(stem) = 0.0
-        endif   
-        g%n_green(stem) = g%n_green(stem) - 
+        endif
+        g%n_green(stem) = g%n_green(stem) -
      :            dlt * n_conc
         if (g%n_green(stem) .lt. 0.0 ) then
           g%n_green(stem) = 0.0
-        endif   
+        endif
       endif
 
       ! Dead leaf
       if (deadLeafPart .gt. 0) then
         if (g%dm_dead(leaf) .gt. 0.0) then
-          n_conc = divide(g%n_dead(leaf), 
+          n_conc = divide(g%n_dead(leaf),
      :                    g%dm_dead(leaf), 0.0)
         else
           n_conc = c%litter_n / 100.0
         endif
-        dlt = RemovedByAnimal%cohorts(deadLeafPart)%WeightRemoved 
+        dlt = RemovedByAnimal%cohorts(deadLeafPart)%WeightRemoved
         g%dm_dead(leaf) = g%dm_dead(leaf) - dlt
         if (g%dm_dead(leaf) .lt. 0.0 ) then
            g%dm_dead(leaf) = 0.0
-        endif   
-        g%n_dead(leaf) = g%n_dead(leaf) - 
+        endif
+        g%n_dead(leaf) = g%n_dead(leaf) -
      :            dlt * n_conc
         if (g%n_dead(leaf) .lt. 0.0 ) then
           g%n_dead(leaf) = 0.0
-        endif   
+        endif
       endif
 
       ! Dead stem
       if (deadStemPart .gt. 0) then
         if (g%dm_dead(stem) .gt. 0.0) then
-          n_conc = divide(g%n_dead(stem), 
+          n_conc = divide(g%n_dead(stem),
      :                    g%dm_dead(stem), 0.0)
         else
           n_conc = c%litter_n / 100.0
         endif
-        dlt = RemovedByAnimal%cohorts(deadStemPart)%WeightRemoved 
+        dlt = RemovedByAnimal%cohorts(deadStemPart)%WeightRemoved
         g%dm_dead(stem) = g%dm_dead(stem) - dlt
         if (g%dm_dead(stem) .lt. 0.0 ) then
            g%dm_dead(stem) = 0.0
-        endif   
-        g%n_dead(stem) = g%n_dead(stem) - 
+        endif
+        g%n_dead(stem) = g%n_dead(stem) -
      :            dlt * n_conc
         if (g%n_dead(stem) .lt. 0.0 ) then
           g%n_dead(stem) = 0.0
-        endif   
+        endif
       endif
 
 
@@ -4072,7 +4080,7 @@ c     real       N_demand              ! sum N demand for plant parts (g/plant)
 *- Implementation Section ----------------------------------
 
       call SetSearchOrder(section_name)
-      
+
                                 ! Bounds
       numvals = ReadParam ( 'll_ub', '()', 0
      :                    , c%ll_ub
@@ -4286,7 +4294,7 @@ c     :                    , 0.0, 365.0)
 
                                 ! Initial values
       numvals = ReadParam ( 'root_depth_init', '(mm)', 0
-     :                    , p%root_depth_init 
+     :                    , p%root_depth_init
      :                    , 0.0, 20000.0)
 
       numvals = ReadParam ( 'dm_green_leaf_init', '(kg/ha)', 0
@@ -4456,14 +4464,14 @@ c     :                    , 0.0, 10000.0)
      :                   , 0.0, 1500.0)
 
       numvals = ReadParam ('height_1000kg', '(mm)', 0
-     :                   , c%height_1000kg 
+     :                   , c%height_1000kg
      :                   , 0.0, 10000.0)
 
       numvals = ReadParam ('et_use_efficiency', '()', 0
      :                   , c%et_use_efficiency
      :                   , 0.0, 1000.0)
 
-      numvals = ReadParam ('frac_leaf2total', '()',0 
+      numvals = ReadParam ('frac_leaf2total', '()',0
      :                   , c%frac_leaf2total
      :                   , 0.0, 1.0)
 
@@ -4508,7 +4516,7 @@ c     :                    , 0.0, 10000.0)
      :                   , 0.0, 1000.0)
 
       numvals = ReadParam ('n_uptk_per100 ', '()', 0
-     :                   , c%N_uptk_per100 
+     :                   , c%N_uptk_per100
      :                   , 0.0, 10000.0)
 
       numvals = ReadParam ('frost_start', '()', 0
@@ -5098,11 +5106,11 @@ C     zero a few important state variables
       g%dm_green(leaf) = g%dm_green(leaf) - dlt
       if (g%dm_green(leaf) .lt. 0.0 ) then
          g%dm_green(leaf) = 0.0
-      endif   
+      endif
       g%n_green(leaf) = g%n_green(leaf) - dlt * n_conc
       if (g%n_green(leaf) .lt. 0.0 ) then
          g%n_green(leaf) = 0.0
-      endif   
+      endif
 
       ! Green stem
       if (g%dm_green(stem) .gt. 0.0) then
@@ -5114,11 +5122,11 @@ C     zero a few important state variables
       g%dm_green(stem) = g%dm_green(stem) - dlt
       if (g%dm_green(stem) .lt. 0.0 ) then
          g%dm_green(stem) = 0.0
-      endif   
+      endif
       g%n_green(stem) = g%n_green(stem) - dlt * n_conc
       if (g%n_green(stem) .lt. 0.0 ) then
          g%n_green(stem) = 0.0
-      endif   
+      endif
 
 
       deadEaten = eaten%dm(deadPart)
@@ -5149,11 +5157,11 @@ C     zero a few important state variables
       g%dm_dead(leaf) = g%dm_dead(leaf) - dlt
       if (g%dm_dead(leaf) .lt. 0.0 ) then
          g%dm_dead(leaf) = 0.0
-      endif   
+      endif
       g%n_dead(leaf) = g%n_dead(leaf) - dlt * n_conc
       if (g%n_dead(leaf) .lt. 0.0 ) then
          g%n_dead(leaf) = 0.0
-      endif   
+      endif
 
       if (g%dm_dead(stem) .gt. 0.0) then
          n_conc = divide(g%n_dead(stem), g%dm_dead(stem),0.0)
@@ -5164,11 +5172,11 @@ C     zero a few important state variables
       g%dm_dead(stem) = g%dm_dead(stem) - dlt
       if (g%dm_dead(stem) .lt. 0.0 ) then
          g%dm_dead(stem) = 0.0
-      endif   
+      endif
       g%n_dead(stem) = g%n_dead(stem) - dlt * n_conc
       if (g%n_dead(stem) .lt. 0.0 ) then
          g%n_dead(stem) = 0.0
-      endif   
+      endif
 
       if ((g%dm_green(leaf) .lt. 0.0) .or.
      :     (g%dm_green(stem) .lt. 0.0) .or.
@@ -5235,7 +5243,7 @@ C     zero a few important state variables
       integer pool, part
       real dlt, n_conc
       real dlt_dm(max_part), dlt_n(max_part)
-      
+
 *- Implementation Section ----------------------------------
 
       deadPart = 0
@@ -5285,7 +5293,7 @@ C     zero a few important state variables
         g%dm_dead(leaf) = g%dm_dead(leaf) - dlt
         dlt_dm(leaf) = dlt
         dlt_n(leaf) = dlt * n_conc
-      endif   
+      endif
 
       if (g%dm_dead(stem) .gt. 0.0) then
          n_conc = divide(g%n_dead(stem), g%dm_dead(stem),0.0)
@@ -5301,7 +5309,7 @@ C     zero a few important state variables
         g%dm_dead(stem) = g%dm_dead(stem) - dlt
         dlt_dm(stem) = dlt
         dlt_n(stem) = dlt * n_conc
-      endif   
+      endif
 
       call Grasp_Send_Crop_Chopped_Event (dlt_dm, dlt_n)
 
@@ -5371,19 +5379,19 @@ C     zero a few important state variables
       call SubscribeNullType('prepare', grasp_prepare)
       call SubscribeNullType('process', grasp_process)
       call SubscribeNullType('kill', Grasp_kill)
-      
-!      call SubscribeRemoveCropBiomassType('remove_crop_biomass', 
+
+!      call SubscribeRemoveCropBiomassType('remove_crop_biomass',
 !     :                                     Grasp_remove_crop_biomass)
-      call SubscribeRemoveCropBiomassType('detach_crop_biomass_rate', 
+      call SubscribeRemoveCropBiomassType('detach_crop_biomass_rate',
      :                                     Grasp_detach_crop_biomass)
 
-      call ExposeRemovedByAnimalTypeFunction('RemovedByAnimal', 
+      call ExposeRemovedByAnimalTypeFunction('RemovedByAnimal',
      :                            'Get/Set Material removed by animals',
-     :                            graspGetRemovedByAnimal, 
+     :                            graspGetRemovedByAnimal,
      :                            graspSetRemovedByAnimal)
 
       call grasp_export_variables()
-     
+
       end subroutine
 
 *     ===========================================================
@@ -5413,7 +5421,7 @@ C     zero a few important state variables
 
       return
       end subroutine
-             
+
 
 
 

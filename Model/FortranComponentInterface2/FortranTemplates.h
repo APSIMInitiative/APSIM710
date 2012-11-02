@@ -88,44 +88,46 @@ class FortranDualMethod : public Packable
    };
 
 template <class FT, class T>
-class FortranNamedDualMethod : public Packable
+class FortranNamedDualMethod : public CMPBuiltIn<T&>
    {
    private:
       std::string apsimName;
       FT getter;
       FT setter;
-      T variable;
+      T fortVariable;
       FortranComponentWrapper* componentInterface;
    public:
-       FortranNamedDualMethod(FortranComponentWrapper* componentI, const std::string & name, T initvalue, FT getterFn, FT setterFn)
+       FortranNamedDualMethod(FortranComponentWrapper* componentI,
+                              const std::string & name, T initvalue, FT getterFn, FT setterFn) :
+         CMPBuiltIn<T&>(fortVariable)
          {
          apsimName = name;
          getter = getterFn;
          setter = setterFn;
          componentInterface = componentI;
-         variable = initvalue;
+         fortVariable = initvalue;
          }
       virtual unsigned memorySize()
          {
          componentInterface->swapInstanceIn();
-         getter(apsimName.c_str(), &variable, apsimName.length());
+         getter(apsimName.c_str(), &fortVariable, apsimName.length());
          componentInterface->swapInstanceOut();
-         return ::memorySize(variable);
+         return ::memorySize(fortVariable);
          }
       virtual void pack(MessageData& messageData)
          {
          componentInterface->swapInstanceIn();
-         ::pack(messageData, variable);
+         ::pack(messageData, fortVariable);
          componentInterface->swapInstanceOut();
          }
       virtual void unpack(MessageData& messageData, const std::string& sourceDDML)
          {
          componentInterface->swapInstanceIn();
-         ::unpack(messageData, /*sourceDDML, */ variable);
-         setter(apsimName.c_str(), &variable, apsimName.length());
+         CMPBuiltIn<T&>::unpack(messageData, sourceDDML);
+         setter(apsimName.c_str(), &fortVariable, apsimName.length());
          componentInterface->swapInstanceOut();
          }
-      virtual std::string ddml() {return DDML(variable);}
+      virtual std::string ddml() {return DDML(fortVariable);}
 
    };
 
