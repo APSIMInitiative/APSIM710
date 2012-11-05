@@ -872,7 +872,7 @@
       <field name="SO4S"                 unit="kg/ha"  kind="double"  array="F"  descr=""/>
    </type>
 
-   <type name="UrineDeposition">
+   <type name="UrineExcreted">
       <field name="Sender"             unit="-"    kind="string"  array="F"  descr="name of module raising the event"/>
       <field name="AnimalType"         unit="-"    kind="string"  array="F"  descr="animal type"/>
       <field name="Urinations"         unit="-"    kind="double"  array="F"  descr="number of urine depositions"/>
@@ -883,7 +883,7 @@
       <field name="AshAlkPerUrination" unit="ppm"  kind="double"  array="T"  descr="ash amount in each urine deposition"/>
    </type>
 
-   <type name="FaecesDeposition">
+   <type name="FaecesExcreted">
       <field name="Sender"               unit="-"    kind="string"  array="F"  descr="name of module raising the event"/>
       <field name="AnimalType"           unit="-"    kind="string"  array="F"  descr="animal type"/>
       <field name="Defaecations"         unit="-"    kind="double"  array="F"  descr="number of faeces depositions"/>
@@ -915,12 +915,12 @@
    </type>
 
    <!-- used to send data to soil. SoilNitrogen will deal with N (adding patches if appropriate), water will be handled by a water module -->
-   <type name="AddUrinePatch">
+   <type name="AddSoilCNPatch">
       <field name="Sender"           unit="-"      kind="string"   array="F"  descr="name of module raising the event"/>
       <field name="DepositionType"   unit="-"      kind="string"   array="F"  descr="Homogeneous, ToSpecificPatch, NewSimplePatch, NewOverlappingPatch"/>
-      <field name="AddToPatches_nm"  unit="-"      kind="string"   array="T"  descr="the name of patches to add urine"/>
-      <field name="AddToPatches_id"  unit="-"      kind="integer4" array="T"  descr="the id of patches to add urine"/>
-      <field name="PatchArea"        unit="m^2"    kind="double"   array="F"  descr="area of the urine patch"/>
+      <field name="AddToPatches_nm"  unit="-"      kind="string"   array="T"  descr="the name of patches affected by new patch"/>
+      <field name="AddToPatches_id"  unit="-"      kind="integer4" array="T"  descr="the id of patches affected by new patch"/>
+      <field name="PatchArea"        unit="0-1"    kind="double"   array="F"  descr="patch area fraction"/>
       <field name="UrineWater"       unit="mm"     kind="double"   array="T"  descr="amount of water to add per layer"/>
       <field name="Urea"             unit="kgN/ha" kind="double"   array="T"  descr="amount of urea to add per layer"/>
       <field name="POX"              unit="kgP/ha" kind="double"   array="T"  descr="amount of POx to add per layer"/>

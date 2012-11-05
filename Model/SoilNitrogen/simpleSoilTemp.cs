@@ -14,19 +14,9 @@ using System.Xml;
 public class simpleSoilTemp
 {
 
-    public simpleSoilTemp(double latitude, double tav, double amp, double mint, double maxt)
-    {
-        _latitude = latitude;
-        _tav = tav;
-        _amp = amp;
+    #region Parameters and inputs provided by the user or APSIM
 
-        // need to initialise some values for surf_temp, repeat the value of ave_temp for the first day
-        double ave_temp = (maxt + mint) * 0.5;
-        for (int i = 0; i < surf_temp.Length; i++)
-            surf_temp[i] = ave_temp;
-    }
-
-    #region Parameters used to initialise the model
+    #region Parameters used on initialisation only
 
     // local latitude
     private double _latitude = -999.0;
@@ -39,7 +29,7 @@ public class simpleSoilTemp
 
     #endregion
 
-    #region Values needed daily
+    #region Parameters that do or may change during simulation
 
     // today's net solar radiation
     private double _radn = 0.0;
@@ -64,6 +54,8 @@ public class simpleSoilTemp
     public float[] _ll15_dep;
 
     public float[] _sw_dep;
+
+    #endregion
 
     #endregion
 
@@ -104,6 +96,18 @@ public class simpleSoilTemp
     private const int ndays = 5;
 
     #endregion
+
+    public simpleSoilTemp(double latitude, double tav, double amp, double mint, double maxt)
+    {
+        _latitude = latitude;
+        _tav = tav;
+        _amp = amp;
+
+        // need to initialise some values for surf_temp, repeat the value of ave_temp for the first day
+        double ave_temp = (maxt + mint) * 0.5;
+        for (int i = 0; i < surf_temp.Length; i++)
+            surf_temp[i] = ave_temp;
+    }
 
     public double[] SoilTemperature(DateTime today, double mint, double maxt, double radn, double salb, float[] dlayer, float[] bd, float[] ll15_dep, float[] sw_dep)
     {

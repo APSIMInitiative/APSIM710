@@ -16,42 +16,21 @@ class soilCNPatch
     public soilCNPatch()
     { }
 
-    #region Parameters provided by the user or by APSIM
+    #region Parameters and inputs provided by the user or APSIM
 
-    // today's date
-    public DateTime Today;
+    #region Parameters added by RCichota
 
-    #region Values used on initialisation only
+    // marker for what set of functions will be used (original or new)
+    public bool useNewFunctions = false;
+
+    #endregion
+
+    #region Parameters used on initialisation only
+
+    #region General setting parameters
 
     // soil model type, spec used to determine some mineralisation model variations
-    public string SoilN_MinerModel = "standard";
-
-    // value to evaluate precision
-    public double epsilon = 0.0;
-
-    // weight fraction of C in carbohydrates
-    public float c_in_fom = 0.4F;
-
-    public double[] urea_min;       // minimum allowable urea
-
-    public double[] nh4_min;       // minimum allowable NH4
-
-    public double[] no3_min;       // minimum allowable NO3
-
-    // initial weight of fom in the soil (kgDM/ha)
-    public double fom_ini_wt = 0.0;
-
-    // initial depth over which fom is distributed within the soil profile (mm)
-    public double fom_ini_depth = 0.0;
-
-    // initial C:N ratio FOM pools
-    public double[] fomPools_cn = null;
-
-    // enrichment equation coefficient a
-    public double enr_a_coeff = 0.0;
-
-    // enrichment equation coefficient b
-    public double enr_b_coeff = 0.0;
+    public string soilparam = "standard";
 
     // switch indicating whether soil profile reduction is allowed (from erosion)
     public bool AllowProfileReduction = false;
@@ -59,35 +38,98 @@ class soilCNPatch
     // marker for whether organic solute are to be simulated (always false as it is not implemented)
     public bool useOrganicSolutes = false;
 
+    // minimum allowable Urea content (ppm), per layer
+    public double[] urea_min;
+
+    // minimum allowable NH4 content (ppm), per layer
+    public double[] nh4_min;
+
+    // minimum allowable NO3 content (ppm), per layer
+    public double[] no3_min;
+
+    // minimum allowable FOM content (kg/ha), per layer
+    public double fom_min;
+
+    // conversion from OC to OM
+    public double oc2om_factor;
+
+    // weight fraction of C in carbohydrates
+    public double c_in_fom = 0.40;
+
+    // value to evaluate precision
+    public double epsilon = 0.0;
+
+    #endregion
+
+    #region Parameters for handling soil loss process
+
+    // enrichment equation coefficient a
+    public double enr_a_coeff = 0.0;
+
+    // enrichment equation coefficient b
+    public double enr_b_coeff = 0.0;
+
+    #endregion
+
+    #region Parameters for setting soil organic matter
+
+    // the C:N ratio of soil humus
+    public double hum_cn = 0.0;
+
+    // the C:N ratio of microbial biomass
+    public double biom_cn = 8.0;
+
     // initial ratio of biomass-C to mineralizable humic-C (0-1)
     public double[] fbiom = null;
 
     // initial proportion of total soil C that is not subject to mineralization (0-1)
     public double[] finert = null;
 
-    // C:N ratio of microbes ()
-    public double biom_cn = 8.0;
+    #endregion
 
-    // the soil C:N ratio (actually of humus)
-    public double hum_cn = 0.0;
+    #region Parameters for setting fresh organic matter (FOM)
 
-    public double ef_fom;               // fraction of FOM C mineralized retained in system (0-1)   
+    // initial weight of fom in the soil (kgDM/ha)
+    public double fom_ini_wt = 0.0;
 
-    public double fr_fom_biom;          // fraction of retained FOM C transferred to biomass (0-1)
+    // initial depth over which fom is distributed within the soil profile (mm)
+    public double fom_ini_depth = 0.0;
 
-    public double ef_biom;              // fraction of biomass C mineralized retained in system (0-1)
+    // list of fom types
+    public String[] fom_types;
 
-    public double fr_biom_biom;         // fraction of retained biomass C returned to biomass (0-1)
+    // initial C:N ratio FOM pools
+    public double[] fomPools_cn = null;
 
-    public double ef_hum;               // fraction of humic C mineralized retained in system (0-1)
+    // fraction of carbohydrate in FOM (0-1), for each FOM type
+    public double[] fract_carb;
 
-    public double[] rd_biom = null;     // potential rate of soil biomass mineralization (per day)
+    // fraction of cellulose in FOM (0-1), for each FOM type
+    public double[] fract_cell;
 
-    public double[] rd_hum = null;      // potential rate of humus mineralization (per day)
+    // fraction of lignin in FOM (0-1), for each FOM type
+    public double[] fract_lign;
 
-    public double ef_res;               // fraction of residue C mineralized retained in system (0-1)
+    #endregion
 
-    public double fr_res_biom;          // fraction of retained residue C transferred to biomass (0-1)
+    #region Parameters for FOM and SurfOM mineralisation process
+
+    #region Surface OM
+
+    // fraction of residue C mineralised retained in system (0-1)
+    public double ef_res;
+
+    // fraction of retained residue C transferred to biomass (0-1)
+    public double fr_res_biom;
+
+    // depth from which mineral N can be immobilised by decomposing residues (mm)
+    public double min_depth;
+
+    #endregion
+
+    #region Fresh OM
+
+    #region Old parameters
 
     public double[] rd_carb;            // maximum rate constants for decomposition of FOM pools [carbohydrate component] (0-1)
 
@@ -95,23 +137,47 @@ class soilCNPatch
 
     public double[] rd_lign;            // maximum rate constants for decomposition of FOM pools [lignin component] (0-1)
 
-    public String[] fom_types;           // list of fom types
+    public double ef_fom;               // fraction of FOM C mineralized retained in system (0-1)   
 
-    public double[] fract_carb;            // carbohydrate fraction of FOM (0-1)          
-
-    public double[] fract_cell;            // cellulose fraction of FOM (0-1)          
-
-    public double[] fract_lign;            // lignin fraction of FOM (0-1)          
-
-    public double oc2om_factor;         // conversion from OC to OM
-
-    public double fom_min;              // minimum allowable FOM (kg/ha)
-
-    public double min_depth;            // depth from which mineral N can be immobilized by decomposing residues (mm)
+    public double fr_fom_biom;          // fraction of retained FOM C transferred to biomass (0-1)
 
     public double cnrf_coeff;           // coeff. to determine the magnitude of C:N effects on decomposition of FOM ()
 
     public double cnrf_optcn;           // C:N above which decomposition rate of FOM declines ()
+
+    #endregion
+
+    #region New parameters
+    
+    // parameters for temperature factor for FOM mineralisation
+    public TempFactorData TempFactor_minerFOM = new TempFactorData();
+
+    // parameters for soil moisture factor for FOM mineralisation
+    public XYData MoistFactor_minerFOM = new XYData();
+
+    // parameters for C:N factor for OM mineralisation
+    public double CNFactorMinerFOM_OptCN;
+    public double CNFactorMinerFOM_RateCN;
+
+    #endregion
+
+    #endregion
+
+    #endregion
+
+    #region Parameters for SOM mineralisation/immobilisation process
+
+    #region Old parameters
+
+    public double[] rd_biom = null;     // potential rate of soil biomass mineralization (per day)
+
+    public double ef_biom;              // fraction of biomass C mineralized retained in system (0-1)
+
+    public double fr_biom_biom;         // fraction of retained biomass C returned to biomass (0-1)
+
+    public double[] rd_hum = null;      // potential rate of humus mineralization (per day)
+
+    public double ef_hum;               // fraction of humic C mineralized retained in system (0-1)
 
     public double[] opt_temp;           // Soil temperature above which there is no further effect on mineralisation and nitrification (oC)
 
@@ -119,17 +185,92 @@ class soilCNPatch
 
     public double[] wfmin_values;       // value of water factor(mineralization) function at given index values
 
-    public double[] wfnit_index;        // index specifying water content for water factor for nitrification
+    #endregion
 
-    public double[] wfnit_values;       // value of water factor(nitrification) function at given index values
+    #region New parameters
+
+        // whether mineralisation factors are computed single or for each type
+    public bool useSingleMinerFactors = true;
+
+    // parameters for temperature factor for OM mineralisation
+    public TempFactorData TempFactor_Miner = new TempFactorData();
+
+    // parameters for soil moisture factor for OM mineralisation
+    public XYData MoistFactor_Miner = new XYData();
+
+    #region parameters for each OM type
+
+    // parameters for temperature factor for humus mineralisation
+    public TempFactorData TempFactor_minerHum = new TempFactorData();
+
+    // parameters for soil moisture factor for humus mineralisation
+    public XYData MoistFactor_minerHum = new XYData();
+
+    // parameters for temperature factor for OM biomass mineralisation
+    public TempFactorData TempFactor_minerBiom = new TempFactorData();
+
+    // parameters for soil moisture factor for OM biomass mineralisation
+    public XYData MoistFactor_minerBiom = new XYData();
+
+    #endregion
+
+    #endregion
+
+    #endregion
+
+    #region Parameters for urea hydrolisys process
+
+        // parameters for temperature factor for urea hydrolisys
+    public TempFactorData TempFactor_Hydrol = new TempFactorData();
+
+    // parameters for soil moisture factor for hydrolisys
+    public XYData MoistFactor_Hydrol = new XYData();
+
+    // parameters for potential urea hydrolisys
+    public double pot_hydrol_min;  // minimum value
+    public double pot_hydrol_termA;
+    public double pot_hydrol_termB;
+    public double pot_hydrol_termC;
+    public double pot_hydrol_termD;
+
+    #endregion
+    
+    #region Parameters for nitrification process
+
+    #region Old parameters
 
     public double nitrification_pot;    // Potential nitrification by soil (ppm)
 
     public double nh4_at_half_pot;      // nh4 conc at half potential (ppm)   
 
+    public double[] wfnit_index;        // index specifying water content for water factor for nitrification
+
+    public double[] wfnit_values;       // value of water factor(nitrification) function at given index values
+
     public double[] pHf_nit_pH;         // pH values for specifying pH factor for nitrification
 
     public double[] pHf_nit_values;     // value of pH factor(nitrification) function for given pH values
+
+    #endregion
+
+    #region New parameters
+
+        // parameters for temperature factor for nitrification
+    public TempFactorData TempFactor_Nitrif = new TempFactorData();
+
+    // parameters for soil moisture factor for nitrification
+    public XYData MoistFactor_Nitrif = new XYData();
+
+    // parameters for soil pH factor for nitrification
+    public XYData pHFactor_Nitrif = new XYData();
+
+    #endregion
+
+    #endregion
+
+    #region Parameters for denitrification and N2O emission processes
+
+    #region Old parameters
 
     public double dnit_rate_coeff;      // denitrification rate coefficient (kg/mg)
 
@@ -145,46 +286,8 @@ class soilCNPatch
 
     #endregion
 
-    #region Parameters added by RCichota
-
-    // marker for what set of functions will be used (original or new)
-    public bool useNewFunctions = false;
-
-    // minimum relative area (fraction of paddock) for any patch
-    public double minPatchArea = 0.001;
-
-    #region Parameters for hydrolisys process
-
-    // parameters for temperature factor for urea hydrolisys
-    public TempFactorData TempFactor_Hydrol = new TempFactorData();
-
-    // parameters for soil moisture factor for hydrolisys
-    public XYData MoistFactor_Hydrol = new XYData();
-
-    // parameters for potential urea hydrolisys
-    public double pot_hydrol_min;  // minimum value
-    public double pot_hydrol_termA;
-    public double pot_hydrol_termB;
-    public double pot_hydrol_termC;
-    public double pot_hydrol_termD;
-
-    #endregion
-
-    #region Parameters for nitrification process
-
-    // parameters for temperature factor for nitrification
-    public TempFactorData TempFactor_Nitrif = new TempFactorData();
-
-    // parameters for soil moisture factor for nitrification
-    public XYData MoistFactor_Nitrif = new XYData();
-
-    // parameters for soil pH factor for nitrification
-    public XYData pHFactor_Nitrif = new XYData();
-
-    #endregion
-
-    #region Parameters for denitrification and N2O emission processes
-
+    #region New parameters
+    
     // parameters for temperature factor for denitrification
     public TempFactorData TempFactor_Denit = new TempFactorData();
 
@@ -208,88 +311,22 @@ class soilCNPatch
 
     #endregion
 
-    #region Parameters for mineralisation/immobilisation process
-
-    // whether mineralisation factors are computed single or for each type
-    public bool useSingleMinerFactors = true;
-
-    // parameters for temperature factor for OM mineralisation
-    public TempFactorData TempFactor_Miner = new TempFactorData();
-
-    // parameters for soil moisture factor for OM mineralisation
-    public XYData MoistFactor_Miner = new XYData();
-
-    // parameters for C:N factor for OM mineralisation
-    public double CNFactorMiner_Opt;
-    public double CNFactorMiner_rate;
-
-    #region parameters for each OM type
-
-    // parameters for temperature factor for humus mineralisation
-    public TempFactorData TempFactor_minerHum = new TempFactorData();
-
-    // parameters for soil moisture factor for humus mineralisation
-    public XYData MoistFactor_minerHum = new XYData();
-
-    // parameters for temperature factor for OM biomass mineralisation
-    public TempFactorData TempFactor_minerBiom = new TempFactorData();
-
-    // parameters for soil moisture factor for OM biomass mineralisation
-    public XYData MoistFactor_minerBiom = new XYData();
-
-
-    // parameters for temperature factor for FOM mineralisation
-    public TempFactorData TempFactor_minerFOM = new TempFactorData();
-
-    // parameters for soil moisture factor for FOM mineralisation
-    public XYData MoistFactor_minerFOM = new XYData();
-
-    // parameters for C:N factor for FOM mineralisation
-    public double CNFactorMinerFOM_Opt;
-    public double CNFactorMinerFOM_rate;
-
     #endregion
 
     #endregion
 
-    #endregion
+    #region Parameters that do or may change during simulation
 
-    #region Values that are used on initialisation, but can change during the simulation
+    // today's date
+    public DateTime Today;
 
-    #region Soil physics data
-
+    #region Parameters to set soil pH
+    
     public double[] ph;
 
-    // soil layers' thichness (mm)
-    public float[] dlayer;
-
-    // soil bulk density for each layer (kg/dm3)
-    public float[] bd;
-
-    // soil water content at saturation
-    public float[] sat_dep;
-
-    // soil water content at drainage upper limit
-    public float[] dul_dep;
-
-    // soil water content at drainage lower limit
-    public float[] ll15_dep;
-
-    // today's soil water content
-    public float[] sw_dep;
-
-    // soil albedo (0-1)
-    public double salb;
-
-    // soil temperature (as computed by another module - SoilTemp)
-    public double[] st;
-
-    // soil loss, due to erosion (?)
-    public double soil_loss = 0.0;
-
     #endregion
 
-    #region Soil organic matter data
+    #region Values for soil organic matter (som)
 
     // total soil organic carbon content (%)
     public double[] oc
@@ -306,9 +343,9 @@ class soilCNPatch
 
     #endregion
 
-    #region Soil mineral N data
+    #region Values for soil mineral N
 
-    // soil urea nitrogen amount (kgN/ha)
+        // soil urea nitrogen amount (kgN/ha)
     private double[] _urea;     // Internal variable holding the urea amounts
     public double[] urea
     {
@@ -407,6 +444,41 @@ class soilCNPatch
 
     #endregion
 
+    #region Soil physics data
+
+    // soil layers' thichness (mm)
+    public float[] dlayer;
+
+    // soil bulk density for each layer (kg/dm3)
+    public float[] bd;
+
+    // soil water content at saturation
+    public float[] sat_dep;
+
+    // soil water content at drainage upper limit
+    public float[] dul_dep;
+
+    // soil water content at drainage lower limit
+    public float[] ll15_dep;
+
+    // today's soil water content
+    public float[] sw_dep;
+
+    // soil albedo (0-1)
+    public double salb;
+
+    // soil temperature (as computed by another module - SoilTemp)
+    public double[] st;
+
+    #endregion
+
+    #region Soil loss data
+
+    // soil loss, due to erosion (?)
+    public double soil_loss = 0.0;
+
+    #endregion
+
     #region Pond data
 
     // switch indicating whether pond is active or not
@@ -435,7 +507,7 @@ class soilCNPatch
 
     #endregion
 
-    #region Values not used on initialisation, but can be set during the simulation
+    #region Settable variables
 
     #region Mineral nitrogen
 
@@ -597,16 +669,6 @@ class soilCNPatch
     }
 
     #endregion
-
-    #endregion
-
-    #region Values that other components can get or set
-
-    // these are declared below
-    //public double[] fom_c_pool1; // Doesn't seem to be fully implemented
-    //public double[] fom_c_pool2; // Doesn't seem to be fully implemented
-    //public double[] fom_c_pool3; // Doesn't seem to be fully implemented
-    //public double[] fom_n; // Doesn't seem to be fully implemented
 
     #endregion
 
@@ -903,7 +965,7 @@ class soilCNPatch
 
     #endregion
 
-    #region  Various internal variables
+    #region Internal variables
 
     private double[] nh4_yesterday;                 // yesterday's ammonium nitrogen(kg/ha)
     private double[] no3_yesterday;                 // yesterday's nitrate nitrogen (kg/ha)
@@ -946,7 +1008,7 @@ class soilCNPatch
 
     #endregion
 
-    #region Initial setup calculations
+    #region Setup calculations
 
     public void InitCalc()
     {
@@ -960,7 +1022,7 @@ class soilCNPatch
 
     #endregion
 
-    #region Daily calculations
+    #region Process calculations
 
     #region Main processes and events
 
@@ -1193,7 +1255,7 @@ class soilCNPatch
         {
             // If the caller specified CNR values then use them to calculate N from Amount.
             if (FOMdata.Layer[layer].CNR > 0.0)
-                FOMdata.Layer[layer].FOM.N = (FOMdata.Layer[layer].FOM.amount * c_in_fom) / FOMdata.Layer[layer].CNR;
+                FOMdata.Layer[layer].FOM.N = (FOMdata.Layer[layer].FOM.amount * (float)c_in_fom) / FOMdata.Layer[layer].CNR;
             // Was any N specified?
             nSpecified |= FOMdata.Layer[layer].FOM.N != 0.0;
         }
@@ -1492,7 +1554,7 @@ class soilCNPatch
         int index = (!is_pond_active) ? 1 : 2;
 
         // get the soil temperature factor
-        double tf = (SoilN_MinerModel == "rothc") ? RothcTF(layer, index) : TF(layer, index);
+        double tf = (soilparam == "rothc") ? RothcTF(layer, index) : TF(layer, index);
         if (useNewFunctions)
             if (useSingleMinerFactors)
             {
@@ -1534,7 +1596,7 @@ class soilCNPatch
         int index = (!is_pond_active) ? 1 : 2;
 
         // get the soil temperature factor
-        double tf = (SoilN_MinerModel == "rothc") ? RothcTF(layer, index) : TF(layer, index);
+        double tf = (soilparam == "rothc") ? RothcTF(layer, index) : TF(layer, index);
         if (useNewFunctions)
             if (useSingleMinerFactors)
             {
@@ -1599,10 +1661,10 @@ class soilCNPatch
         // calculate the C:N ratio factor - Bound to [0, 1]
         double cnrf = Math.Max(0.0, Math.Min(1.0, Math.Exp(-cnrf_coeff * (cnr - cnrf_optcn) / cnrf_optcn)));
         if (useNewFunctions)
-            cnrf = CNorgFactor(layer, index, CNFactorMiner_Opt, CNFactorMiner_rate);
+            cnrf = CNorgFactor(layer, index, CNFactorMinerFOM_OptCN, CNFactorMinerFOM_RateCN);
 
         // get the soil temperature factor
-        double tf = (SoilN_MinerModel == "rothc") ? RothcTF(layer, index) : TF(layer, index);
+        double tf = (soilparam == "rothc") ? RothcTF(layer, index) : TF(layer, index);
         if (useNewFunctions)
             tf = SoilTempFactor(layer, index, TempFactor_Miner);
 
@@ -1703,17 +1765,10 @@ class soilCNPatch
         // calculate the C:N ratio factor - Bound to [0, 1]
         double cnrf = Math.Max(0.0, Math.Min(1.0, Math.Exp(-cnrf_coeff * (cnr - cnrf_optcn) / cnrf_optcn)));
         if (useNewFunctions)
-            if (useNewFunctions)
-            {
-                cnrf = CNorgFactor(layer, index, CNFactorMiner_Opt, CNFactorMiner_rate);
-            }
-            else
-            {
-                cnrf = CNorgFactor(layer, index, CNFactorMinerFOM_Opt, CNFactorMinerFOM_rate);
-            }
+            cnrf = CNorgFactor(layer, index, CNFactorMinerFOM_OptCN, CNFactorMinerFOM_RateCN);
 
         // get the soil temperature factor
-        double tf = (SoilN_MinerModel == "rothc") ? RothcTF(layer, index) : TF(layer, index);
+        double tf = (soilparam == "rothc") ? RothcTF(layer, index) : TF(layer, index);
         if (useNewFunctions)
             if (useNewFunctions)
             {
@@ -2429,7 +2484,6 @@ class soilCNPatch
 
         return Math.Max(0.0, Math.Min(1.0, Math.Exp(-rateCN * (cnr - OptCN) / OptCN)));
     }
-
 
     #endregion
 
