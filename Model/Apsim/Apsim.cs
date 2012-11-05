@@ -255,6 +255,7 @@ public class Apsim
         if (C.Enabled)
         {
             SimFileName = ApsimToSim.WriteSimFile(C);
+            NumJobsBeingRun = 1;
             StartSIM(SimFileName);
         }
     }
@@ -342,7 +343,8 @@ public class Apsim
     /// </summary>
     void OnExited(object sender, EventArgs e)
     {
-		_P.WaitForExit(-1);
+        if (_P != null)
+		  _P.WaitForExit(-1);
         Sum.Close();
         File.Delete(SimFileName);
         HasExited = true;
@@ -366,7 +368,7 @@ public class Apsim
         get
         {
             if (JobScheduler != null)
-                return 100 * NumJobsCompleted / NumJobs;
+                return 100 * NumJobsCompleted / NumJobs + taskProgress / NumJobs;
             else
                 return taskProgress;
         }
