@@ -32,20 +32,16 @@ endif
 
 SRC = TclLink.cpp TclComponent.cpp 
 
-PREBUILD = dummy
+PREBUILD = dummy CIDataTypes.tcl
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
 
-
 # ---------------------------------------------------------------------------
-# This bit sucks in external files into the build and install dirs
+# This unpacks a SFX tcl install into our install dir
 # ---------------------------------------------------------------------------
-dummy:
+dummy: 
 ifeq ($(PLATFORM),WIN32VS)
 	if not exist $(APSIM)\Model\TclLink\include\nul $(APSIM)\Model\RunTime\Tcl8.5.9.exe x -o"$(APSIM)\Model\TclLink" -y
-else
-	#if [ -s $(APSIM)/Model/TclLink/lib ]; then 
-
 endif
 
 clean:
@@ -55,6 +51,5 @@ ifeq ($(PLATFORM),WIN32VS)
 	@if exist $(APSIM)\Model\TclLink\include\nul rmdir /s /q $(APSIM)\Model\TclLink\include
 endif
 
-
-
-
+CIDataTypes.tcl: ../DataTypes/Datatypes.xml TclComponent.macro
+	$(APSIM)/Model/ProcessDataTypesInterface.exe ../DataTypes/Datatypes.xml TclComponent.macro

@@ -1,0 +1,279 @@
+##################################################
+[file CIDataTypes.tcl]
+;# Automatically generated - do not edit
+
+proc unpack_Variant {data} {
+   array set result {}
+   set ok [expr [string bytelength $data] > 0]
+   while {$ok} {
+      set nchar 0
+      binary scan $data i nchar
+      if {$nchar > 0} {
+         set name [string range $data 4 [expr 4+$nchar-1]]         ;# Name
+         set data [string range $data [expr 4+$nchar] end]
+         binary scan $data iic nchar typeCode isArray              ;# type & array flag
+         set data [string range $data 9 end]
+         if {$isArray} {binary scan $data i nelem; set data [string range $data 4 end]} else {set nelem 1}
+         set value {}
+         if {$typeCode == 8} {
+            for {set i 0} {$i < $nelem} {incr i} {
+               binary scan $data i nchar                              ;# string value
+               lappend value [string range $data 4 [expr 4+$nchar-1]]
+               set data [string range $data [expr 4+$nchar] end]
+            }  
+         } elseif {$typeCode == 2} {
+            for {set i 0} {$i < $nelem} {incr i} {
+               binary scan $data i datum                              ;# integer
+               lappend value $datum
+               set data [string range $data 4 end]
+            }   
+         } elseif {$typeCode == 4} {
+            for {set i 0} {$i < $nelem} {incr i} {
+               binary scan $data f datum                              ;# float
+               lappend value $datum
+               set data [string range $data 4 end]
+            }   
+         } elseif {$typeCode == 5} {
+            for {set i 0} {$i < $nelem} {incr i} {
+               binary scan $data d datum                              ;# double
+               lappend value $datum
+               set data [string range $data 8 end]
+            }   
+         } else {
+            ;#set value "<undef>"
+            error "Unhandled variant typecode $typeCode"
+         }
+         set result($name) $value
+         set ok [expr [string bytelength $data] > 0]
+      } else {
+         set ok 0
+      }
+   }
+   return [array get result]
+}
+
+
+proc unpack_MessageData {data} {
+   binary scan $data ii result(id) result(publishedByID)  ;# id, publishedByID
+   set data [string range $data 8 end]
+
+   set nchar 0
+   binary scan $data i nchar                              ;# typeXML
+   if {$nchar > 0} {
+     set result(typeXML) [string range $data 4 [expr 4+$nchar-1]]
+     set data [string range $data [expr 4+$nchar] end]
+   } else {
+     set result(typeXML) ""
+   }
+
+   set ok [expr [string bytelength $data] > 0]
+   while {$ok} {
+      set nchar 0
+      binary scan $data i nchar
+      if {$nchar > 0} {
+         ;##//messageData << variableName << protocol::memorySize(value)+5 << typeCode << isArray << value;
+         set name [string range $data 4 [expr 4+$nchar-1]]         ;# Name
+         set data [string range $data [expr 4+$nchar] end]
+         binary scan $data iic nchar5 typeCode isArray             ;# type & array flag
+         set data [string range $data 9 end]
+         if {$typeCode == 8} {
+            binary scan $data i nchar                              ;# string value
+            set value [string range $data 4 [expr 4+$nchar-1]]
+            set data [string range $data [expr 4+$nchar] end]
+         } elseif {$typeCode == 2} {
+            binary scan $data i value                              ;# integer
+            set data [string range $data 4 end]
+         } elseif {$typeCode == 4} {
+            binary scan $data f value                              ;# float
+            set data [string range $data 4 end]
+         } elseif {$typeCode == 5} {
+            binary scan $data d value                              ;# double
+            set data [string range $data 8 end]
+         } else {
+            ;#set value "<undef>"
+            error "Unhandled variant typecode $typeCode"
+         }
+         set result($name) $value
+         set ok [expr [string bytelength $data] > 0]
+      } else {
+         set ok 0
+      }
+   }
+   return [array get result]
+}
+
+[foreach types.type]
+proc unpack_[type.name] {data} {
+[foreach type.field]
+[if [field.array] = T]
+   binary scan $data i n ; set data [string range $data 4 end]
+   for {set i 0} {$i < $n} {incr i} {
+      set idx ".$i"
+[else]
+      set idx ""
+[endif]
+ [if [field.rawcpptype] = double]
+     binary scan $data d result([field.name]$idx); set data [string range $data 8 end]
+ [elseif [field.rawcpptype] = bool]
+     binary scan $data i result([field.name]$idx); set data [string range $data 4 end]
+ [elseif [field.rawcpptype] = int]
+     binary scan $data i result([field.name]$idx); set data [string range $data 4 end]
+ [elseif [field.rawcpptype] = float]
+     binary scan $data f result([field.name]$idx); set data [string range $data 4 end]
+ [elseif [field.rawcpptype] = std::string]
+     binary scan $data i stringlength ; set data [string range $data 4 end]
+     binary scan $data a$stringlength result([field.name]$idx) ; set data [string range $data $stringlength end]
+ [else]
+     array set result [process_ddml [type.cddml] $data]
+ [endif]
+[if [field.array] = T]
+   }
+[endif]
+[endfor]
+   if {[string bytelength $data] != 0 && [info exists result(ddml)]} {
+      array set result [process_ddml $result(ddml) $data]
+   }
+   return [array get result]
+}
+
+proc pack_[type.name] {args} {
+   foreach {_name _value} $args { set ${_name} ${_value} }
+[foreach type.field]
+[if [field.array] = T]
+   append _msg [binary format d [llength $[field.name]]]
+   for {set i 0} {$i < [llength $[field.name]]} {incr i} {
+     set _field [lindex $[field.name] $i]
+[elseif [field.rawcpptype] = double]
+     if {[info exists [field.name]] } {set _field $[field.name]} else { set _field  0.0 }
+[elseif [field.rawcpptype] = bool]
+     if {[info exists [field.name]] } {set _field $[field.name]} else { set _field  0 }
+[elseif [field.rawcpptype] = int]
+     if {[info exists [field.name]] } {set _field $[field.name]} else { set _field  0 }
+[elseif [field.rawcpptype] = float]
+     if {[info exists [field.name]] } {set _field $[field.name]} else { set _field  0.0 }
+[elseif [field.rawcpptype] = std::string]
+     if {[info exists [field.name]] } {set _field $[field.name]} else { set _field  "" }
+[else]
+     error "cant deal with [field.rawcpptype] yet"
+[endif]
+ [if [field.rawcpptype] = double]
+     append _msg [binary format d ${_field}]
+ [elseif [field.rawcpptype] = bool]
+     append _msg [binary format i ${_field}] 
+ [elseif [field.rawcpptype] = int]
+     append _msg [binary format i ${_field}] 
+ [elseif [field.rawcpptype] = float]
+     append _msg [binary format f ${_field}]
+ [elseif [field.rawcpptype] = std::string]
+     append _msg [binary format i [string length ${_field}]]
+     append _msg [binary format a[string length ${_field}] ${_field}]
+ [endif]
+ 
+[if [field.array] = T]
+   }
+[endif]
+[endfor]
+   return ${_msg}
+}
+[endfor]
+
+package require tdom
+proc process_ddml {ddml chunk} {
+   set doc [dom parse $ddml]
+   set docroot [$doc documentElement]
+   array set result [list data $chunk]
+   if {[catch {array set result [process_node $docroot $result(data)]} msg]} {
+      lappend result(emsg) "Error:$msg"
+      puts "Error:$msg"
+   }
+   if {[string bytelength $result(data)] > 0} {
+      lappend result(emsg) "NB. unread data ([string bytelength $result(data)] bytes)"
+   }
+   return [array get result]
+}
+
+proc process_node {node chunk} {
+   array set result [list data $chunk]
+   if {[$node hasAttribute "name"]} {set name [$node getAttribute "name"]} else {set name "<anonymous>"}
+   if {[$node hasAttribute "array"] && [$node getAttribute "array"] == "T"} {
+     # Array types
+     if {[$node hasAttribute "kind"]} {
+        set kind [$node getAttribute "kind"]
+        if {[binary scan $result(data) i n] == 1} {
+           set result(data) [string range $result(data) 4 end]
+        } else {
+           set n 0
+        }
+        if {$kind == "double"} {
+          set arr $name
+          for {set i 0} {$i < $n} {incr i} {
+             if {[binary scan $result(data) d x]==1} {lappend arr $x; set result(data) [string range $result(data) 8 end]} else {error "error reading array double"}
+          }
+          lappend result($name) $arr
+        } elseif {$kind == "boolean"} {
+          set arr $name
+          for {set i 0} {$i < $n} {incr i} {
+             if {[binary scan $result(data) i x]==1} {lappend arr $x; set result(data) [string range $result(data) 4 end]} else {error "error reading array bool"}
+          }
+          lappend result($name) $arr
+        } elseif {$kind == "integer4"} {
+          for {set i 0} {$i < $n} {incr i} {
+             if {[binary scan $result(data) i x]==1} {lappend arr $x; set result(data) [string range $result(data) 4 end]} else {error "error reading arrray int"}
+          }
+          lappend result($name) $arr
+        } elseif {$kind == "single"} {
+          set arr $name
+          for {set i 0} {$i < $n} {incr i} {
+             if {[binary scan $result(data) f x]==1} {lappend arr $x; set result(data) [string range $result(data) 4 end]} else {error "error reading array float (at $i of $n)"}
+          }
+          lappend result($name) $arr
+        } elseif {$kind == "string"} {
+          set arr $name
+          for {set i 0} {$i < $n} {incr i} {
+             if {[binary scan $result(data) i stringlength] ==  1} {
+                set result(data) [string range $result(data) 4 end]
+                if {[binary scan $result(data) a$stringlength x]==1} {lappend arr $x; set result(data) [string range $result(data) $stringlength end]} else {error "error reading array string of $stringlength bytes"}
+             }
+          }
+          lappend result($name) $arr
+        } else {
+          error "unimplemented array type kind=$kind"
+        }
+     } else {
+        # an array of structures of some sort. Should probably do this $n times
+        foreach child [$node childNodes] {
+           array set result [process_node $child $result(data)]
+        }
+     }
+  } else {
+     if {[$node hasAttribute "kind"]} {
+        set kind [$node getAttribute "kind"]
+        # Scalar types
+        if {$kind == "double"} {
+          if {[binary scan $result(data) d x]==1} {lappend result($name) $x; set result(data) [string range $result(data) 8 end]} else {error "error reading scalar double"}
+        } elseif {$kind == "boolean"} {
+          if {[binary scan $result(data) i x]==1} {lappend result($name) $x; set result(data) [string range $result(data) 4 end]} else {error "error reading scalar bool"}
+        } elseif {$kind == "integer4"} {
+          if {[binary scan $result(data) i x]==1} {lappend result($name) $x; set result(data) [string range $result(data) 4 end]} else {error "error reading scalar int"}
+        } elseif {$kind == "single"} {
+          if {[binary scan $result(data) f x]==1} {lappend result($name) $x; set result(data) [string range $result(data) 4 end]} else {error "error reading scalar float"}
+        } elseif {$kind == "string"} {
+          if {[binary scan $result(data) i stringlength]==1} {
+             set result(data) [string range $result(data) 4 end]
+             if {[binary scan $result(data) a$stringlength x]==1} {lappend result($name) $x; set result(data) [string range $result(data) $stringlength end]}  else {error "error reading scalar string ($stringlength bytes)"}
+          } else {
+             error "error reading scalar string length"
+          }
+        } else {
+          error "unimplemented scalar type kind=$kind"
+        }
+     } else {
+        # a structure of some sort
+        foreach child [$node childNodes] {
+           array set result [process_node $child $result(data)]
+        }
+     }
+   }
+   return [array get result]
+}
+[endfile]
