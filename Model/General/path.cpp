@@ -525,13 +525,8 @@ std::string fileTail(const std::string &filename)
    //---------------------------------------------------------------------------
    // Return the tail (anything after final "/") of a filename.
    {
-   int pos = (int) filename.size();
-   while (pos >= 0 &&
-          filename[pos] != '\\'  &&
-          filename[pos] != '/')
-      pos--;
-
-   if (pos >= 0)
+   size_t pos = filename.find_last_of("/\\");
+   if (pos != string::npos)
       return filename.substr(pos+1);
 
    return filename;
