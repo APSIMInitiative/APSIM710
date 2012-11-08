@@ -30,7 +30,7 @@ class soilCNPatch
     #region General setting parameters
 
     // soil model type, spec used to determine some mineralisation model variations
-    public string soilparam = "standard";
+    public string SoilParamSet = "standard";
 
     // switch indicating whether soil profile reduction is allowed (from erosion)
     public bool AllowProfileReduction = false;
@@ -227,11 +227,11 @@ class soilCNPatch
     public XYData MoistFactor_Hydrol = new XYData();
 
     // parameters for potential urea hydrolisys
-    public double pot_hydrol_min;  // minimum value
-    public double pot_hydrol_termA;
-    public double pot_hydrol_termB;
-    public double pot_hydrol_termC;
-    public double pot_hydrol_termD;
+    public double potHydrol_min;  // minimum value
+    public double potHydrol_parmA;
+    public double potHydrol_parmB;
+    public double potHydrol_parmC;
+    public double potHydrol_parmD;
 
     #endregion
     
@@ -295,19 +295,19 @@ class soilCNPatch
     public XYData MoistFactor_Denit = new XYData();
 
     // parameter for TermA in N2N2O function
-    public double dnit_A;
+    public double N2N2O_parmA;
 
     // parameter for TermB in N2N2O function
-    public double dnit_B;
+    public double N2N2O_parmB;
 
     // parameter for TermC in N2N2O function
-    public double dnit_C;
+    public double N2N2O_parmC;
 
     // parameter 1 to compute active carbon (for denitrification)
-    public double actC_p1;
+    public double actC_parmA;
 
     // parameter 2 to compute active carbon (for denitrification)
-    public double actC_p2;
+    public double actC_parmB;
 
     #endregion
 
@@ -1024,7 +1024,7 @@ class soilCNPatch
 
     #region Process calculations
 
-    #region Main processes and events
+    #region Daily processses
 
     public void Process()
     {
@@ -1244,6 +1244,699 @@ class soilCNPatch
         Array.Resize(ref pot_p_decomp, 0);
     }
 
+    private void DecomposeResidues()
+    {
+        // + Purpose
+        //     Calculate the actual C and N mineralised/immobilised from residue decomposition
+        //      Check whether adequate mineral nitrogen is available to sustain potential rate of decomposition of surface
+        //       residues and calculate net rate of nitrogen mineralisation/immobilisation
+
+        // Initialise to zero by assigning new
+        int nLayers = dlayer.Length;
+        double[] no3_available = new double[nLayers]; // no3 available for mineralisation
+        double[] nh4_available = new double[nLayers]; // nh4 available for mineralisation
+        dlt_c_decomp = new double[nLayers][];
+        dlt_n_decomp = new double[nLayers][];
+        dlt_c_res_2_biom = new double[nLayers][];
+        dlt_c_res_2_hum = new double[nLayers][];
+        dlt_c_res_2_atm = new double[nLayers][];
+        for (int layer = 0; layer < nLayers; layer++)
+        {
+            dlt_c_decomp[layer] = new double[num_residues];
+            dlt_n_decomp[layer] = new double[num_residues];
+            dlt_c_res_2_biom[layer] = new double[num_residues];
+            dlt_c_res_2_hum[layer] = new double[num_residues];
+            dlt_c_res_2_atm[layer] = new double[num_residues];
+        }
+        dlt_nh4_decomp = new double[nLayers];
+        dlt_no3_decomp = new double[nLayers];
+
+        // get total available mineral N in soil layer which can supply N to decomposition (min_depth)
+        double[] fracLayer = new double[dlayer.Length];
+        double cumFracLayer = 0.0;
+        double cumDepth = 0.0;
+        int DecompLayer = 0;
+        for (int layer = 0; layer < nLayers; layer++)
+        {
+            fracLayer[layer] = Math.Min(1, Math.Max(0, min_depth - cumDepth) / dlayer[layer]);
+            if (fracLayer[layer] <= epsilon)
+                break;  // no need to continue calculating
+            cumFracLayer += fracLayer[layer];
+            cumDepth += dlayer[layer];
+            DecompLayer = layer;
+            no3_available[layer] = Math.Max(0.0, _no3[layer] - no3_min[layer]) * fracLayer[layer];
+            nh4_available[layer] = Math.Max(0.0, _nh4[layer] - nh4_min[layer]) * fracLayer[layer];
+        }
+
+        double n_available = SumDoubleArray(no3_available) + SumDoubleArray(nh4_available) + SumDoubleArray(pot_n_decomp);
+
+        // get N demand from potential decomposition
+        double n_demand = MathUtility.Divide(SumDoubleArray(pot_c_decomp) * ef_res * fr_res_biom, biom_cn, 0.0) +
+                          MathUtility.Divide(SumDoubleArray(pot_c_decomp) * ef_res * (1.0 - fr_res_biom), hum_cn, 0.0);
+
+        // test whether there is adequate N available to meet potential immobilisation demand
+        //      if not, calculate a factor to reduce the mineralisation rates
+        double ReductionFactor = 1.0;
+        if (n_demand > n_available)
+            ReductionFactor = Math.Max(0.0, Math.Min(1.0, MathUtility.Divide(SumDoubleArray(no3_available) + SumDoubleArray(nh4_available), n_demand - SumDoubleArray(pot_n_decomp), 0.0)));
+
+        // Partition the additions of C and N to layers
+        double dlt_n_decomp_tot = 0.0;
+        for (int layer = 0; layer <= DecompLayer; layer++)
+        {
+            double DecompFraction = fracLayer[layer] / cumFracLayer;  // the fraction of decomposition for each soil layer
+            for (int residue = 0; residue < num_residues; residue++)
+            {
+                // adjust carbon transformations and distribute over the layers
+                dlt_c_decomp[layer][residue] = pot_c_decomp[residue] * ReductionFactor * DecompFraction;
+                dlt_n_decomp[layer][residue] = pot_n_decomp[residue] * ReductionFactor * DecompFraction;
+                dlt_n_decomp_tot += dlt_n_decomp[layer][residue];
+
+                // partition the decomposed C between pools and losses
+                dlt_c_res_2_biom[layer][residue] = dlt_c_decomp[layer][residue] * ef_res * fr_res_biom;
+                dlt_c_res_2_hum[layer][residue] = dlt_c_decomp[layer][residue] * ef_res * (1.0 - fr_res_biom);
+                dlt_c_res_2_atm[layer][residue] = dlt_c_decomp[layer][residue] - dlt_c_res_2_biom[layer][residue] - dlt_c_res_2_hum[layer][residue];
+            }
+        }
+
+        // net N mineralised (hg/ha)
+        double dlt_n_min = dlt_n_decomp_tot - n_demand * ReductionFactor;
+
+        if (dlt_n_min > 0.0)
+        {
+            // Mineralisation occurred - distribute NH4 over the layers
+            for (int layer = 0; layer <= DecompLayer; layer++)
+            {
+                double DecompFraction = fracLayer[layer] / cumFracLayer;  // the fraction of decomposition for each soil layer
+                dlt_nh4_decomp[layer] = dlt_n_min * DecompFraction;
+            }
+        }
+        else if (dlt_n_min < 0.0)
+        {
+            // Immobilisation occurred - soak up any N required, from NH4 first then NO3 if needed
+            for (int layer = 0; layer <= DecompLayer; layer++)
+            {
+                dlt_nh4_decomp[layer] = -Math.Min(nh4_available[layer], Math.Abs(dlt_n_min));
+                dlt_n_min -= dlt_nh4_decomp[layer];
+            }
+            for (int layer = 0; layer <= DecompLayer; layer++)
+            {
+                dlt_no3_decomp[layer] = -Math.Min(no3_available[layer], Math.Abs(dlt_n_min));
+                dlt_n_min -= dlt_no3_decomp[layer];
+            }
+
+            // There should now be no remaining immobilisation demand
+            if (dlt_n_min < -0.001 || dlt_n_min > 0.001)
+                throw new Exception("Value for remaining immobilisation is out of range");
+        }
+
+        // gather the info for 'SendActualResidueDecompositionCalculated'
+        PackActualResidueDecomposition();
+    }
+
+    private void MineraliseHumus(int layer)
+    {
+        // + Purpose
+        //     Calculate the daily transformation of the the soil humic pool, mineralisation (+ve) or immobilisation (-ve)
+
+        // + Assumptions
+        //     There is an inert_C component of the humic pool that is not subject to mineralisation
+
+        // dsg 200508  use different values for some constants when there's a pond and anaerobic conditions dominate
+        int index = (!is_pond_active) ? 1 : 2;
+
+        // get the soil temperature factor
+        double tf = (SoilParamSet == "rothc") ? RothcTF(layer, index) : TF(layer, index);
+        if (useNewFunctions)
+            if (useSingleMinerFactors)
+            {
+                tf = SoilTempFactor(layer, index, TempFactor_Miner);
+            }
+            else
+            {
+                tf = SoilTempFactor(layer, index, TempFactor_minerHum);
+            }
+
+        // get the soil water factor
+        double wf = WF(layer, index);
+        if (useNewFunctions)
+            if (useSingleMinerFactors)
+            {
+                wf = SoilMoistFactor(layer, index, MoistFactor_Miner);
+            }
+            else
+            {
+                wf = SoilMoistFactor(layer, index, MoistFactor_minerHum);
+            }
+
+        // get the rate of mineralisation of N from the humic pool
+        double dlt_c_min_hum = (hum_c[layer] - inert_c[layer]) * rd_hum[index - 1] * tf * wf;
+        double dlt_n_min_hum = MathUtility.Divide(dlt_c_min_hum, hum_cn, 0.0);
+
+        // distribute the mineralised N and C
+        dlt_c_hum_2_biom[layer] = dlt_c_min_hum * ef_hum;
+        dlt_c_hum_2_atm[layer] = dlt_c_min_hum * (1.0 - ef_hum);
+        dlt_n_hum_2_min[layer] = dlt_n_min_hum - MathUtility.Divide(dlt_c_hum_2_biom[layer], biom_cn, 0.0);
+    }
+
+    private void MineraliseBiomass(int layer)
+    {
+        // + Purpose
+        //     Calculate the daily transformation of the soil biomass pool, mineralisation (+ve) or immobilisation (-ve)
+
+        // dsg 200508  use different values for some constants when anaerobic conditions dominate
+        int index = (!is_pond_active) ? 1 : 2;
+
+        // get the soil temperature factor
+        double tf = (SoilParamSet == "rothc") ? RothcTF(layer, index) : TF(layer, index);
+        if (useNewFunctions)
+            if (useSingleMinerFactors)
+            {
+                tf = SoilTempFactor(layer, index, TempFactor_Miner);
+            }
+            else
+            {
+                tf = SoilTempFactor(layer, index, TempFactor_minerBiom);
+            }
+
+        // get the soil water factor
+        double wf = WF(layer, index);
+        if (useSingleMinerFactors)
+            if (useNewFunctions)
+            {
+                wf = SoilMoistFactor(layer, index, MoistFactor_Miner);
+            }
+            else
+            {
+                wf = SoilMoistFactor(layer, index, MoistFactor_minerBiom);
+            }
+
+        // get the rate of mineralisation of C & N from the biomass pool
+        double dlt_n_min_biom = biom_n[layer] * rd_biom[index - 1] * tf * wf;       // why the calculation is on n while for hum is on C?
+        double dlt_c_min_biom = dlt_n_min_biom * biom_cn;
+
+        // distribute the carbon
+        dlt_c_biom_2_hum[layer] = dlt_c_min_biom * ef_biom * (1.0 - fr_biom_biom);
+        dlt_c_biom_2_atm[layer] = dlt_c_min_biom * (1.0 - ef_biom);
+
+        // calculate net N mineralisation
+        dlt_n_biom_2_min[layer] = dlt_n_min_biom - MathUtility.Divide(dlt_c_biom_2_hum[layer], hum_cn, 0.0) - MathUtility.Divide((dlt_c_min_biom - dlt_c_biom_2_atm[layer] - dlt_c_biom_2_hum[layer]), biom_cn, 0.0);
+    }
+
+    private void MineraliseFOM(int layer, out double[] dlt_c_biom, out double[] dlt_c_hum, out double[] dlt_c_atm, out double[] dlt_fom_n, out double dlt_n_min)
+    {
+        // + Purpose
+        //     Calculate the daily transformation of the soil fresh organic matter pools, mineralisation (+ve) or immobilisation (-ve)
+
+        dlt_c_hum = new double[3];
+        dlt_c_biom = new double[3];
+        dlt_c_atm = new double[3];
+        dlt_fom_n = new double[3];
+        dlt_n_min = 0.0;
+
+        // dsg 200508  use different values for some constants when anaerobic conditions dominate
+        // index = 1 for aerobic conditions, 2 for anaerobic conditions
+        int index = (!is_pond_active) ? 1 : 2;
+
+        // get total available mineral N (kg/ha)
+        double nitTot = Math.Max(0.0, (_no3[layer] - no3_min[layer]) + (_nh4[layer] - nh4_min[layer]));
+
+        // fresh organic carbon (kg/ha)
+        double fomC = fom_c_pool1[layer] + fom_c_pool2[layer] + fom_c_pool3[layer];
+
+        // fresh organic nitrogen (kg/ha)
+        double fomN = fom_n_pool1[layer] + fom_n_pool2[layer] + fom_n_pool3[layer];
+
+        // ratio of C in fresh OM to N available for decay
+        double cnr = MathUtility.Divide(fomC, fomN + nitTot, 0.0);
+
+        // calculate the C:N ratio factor - Bound to [0, 1]
+        double cnrf = Math.Max(0.0, Math.Min(1.0, Math.Exp(-cnrf_coeff * (cnr - cnrf_optcn) / cnrf_optcn)));
+        if (useNewFunctions)
+            cnrf = CNorgFactor(layer, index, CNFactorMinerFOM_OptCN, CNFactorMinerFOM_RateCN);
+
+        // get the soil temperature factor
+        double tf = (SoilParamSet == "rothc") ? RothcTF(layer, index) : TF(layer, index);
+        if (useNewFunctions)
+            tf = SoilTempFactor(layer, index, TempFactor_Miner);
+
+        // get the soil water factor
+        double wf = WF(layer, index);
+        if (useNewFunctions)
+            wf = SoilMoistFactor(layer, index, MoistFactor_Miner);
+
+        // calculate gross amount of C & N released due to mineralisation of the fresh organic matter.
+        if (fomC >= fom_min)
+        {
+            double dlt_n_min_fom = 0.0; // amount of fresh organic N mineralised across fpools (kg/ha)
+            double dlt_c_min_fom = 0.0; // total C mineralised (kg/ha) summed across fpools
+            double[] dlt_n_min_tot = new double[3]; // amount of fresh organic N mineralised in each pool (kg/ha)
+            double[] dlt_c_min_tot = new double[3]; // amount of C mineralised (kg/ha) from each pool
+
+            // C:N ratio of fom
+            double fom_cn = MathUtility.Divide(fomC, fomN, 0.0);
+
+            // get the decomposition of carbohydrate-like, cellulose-like and lignin-like fractions (fpools) in turn.
+            for (int fractn = 0; fractn < 3; fractn++)
+            {
+                // get the max decomposition rate for each fpool
+                double decomp_rate = FractRDFom(fractn)[index - 1] * cnrf * tf * wf;
+
+                // calculate the gross amount of fresh organic carbon mineralised (kg/ha)
+                double gross_c_decomp = decomp_rate * FractFomC(fractn)[layer];
+
+                // calculate the gross amount of N released from fresh organic matter (kg/ha)
+                double gross_n_decomp = decomp_rate * FractFomN(fractn)[layer];
+
+                dlt_n_min_fom += gross_n_decomp;
+                dlt_c_min_tot[fractn] = gross_c_decomp;
+                dlt_n_min_tot[fractn] = gross_n_decomp;
+                dlt_c_min_fom += gross_c_decomp;
+            }
+
+            // calculate potential transfers of C mineralised to biomass
+            double dlt_c_biom_tot = dlt_c_min_fom * ef_fom * fr_fom_biom;
+
+            // calculate potential transfers of C mineralised to humus
+            double dlt_c_hum_tot = dlt_c_min_fom * ef_fom * (1.0 - fr_fom_biom);
+
+            // test whether there is adequate N available to meet immobilisation demand
+            double n_demand = MathUtility.Divide(dlt_c_biom_tot, biom_cn, 0.0) + MathUtility.Divide(dlt_c_hum_tot, hum_cn, 0.0);
+            double n_avail = nitTot + dlt_n_min_fom;
+
+            // factor to reduce mineralisation rates if insufficient N to meet immobilisation demand
+            double Navail_factor = 1.0;
+            if (n_demand > n_avail)
+                Navail_factor = Math.Max(0.0, Math.Min(1.0, MathUtility.Divide(nitTot, n_demand - dlt_n_min_fom, 0.0)));
+
+            // now adjust carbon transformations etc. and similarly for npools
+            for (int fractn = 0; fractn < 3; fractn++)
+            {
+                dlt_c_hum[fractn] = dlt_c_min_tot[fractn] * ef_fom * (1.0 - fr_fom_biom) * Navail_factor;
+                dlt_c_biom[fractn] = dlt_c_min_tot[fractn] * ef_fom * fr_fom_biom * Navail_factor;
+                dlt_c_atm[fractn] = dlt_c_min_tot[fractn] * (1.0 - ef_fom) * Navail_factor;
+                dlt_fom_n[fractn] = dlt_n_min_tot[fractn] * Navail_factor;
+
+                dlt_c_hum[fractn] = MathUtility.RoundToZero(dlt_c_hum[fractn]);
+                dlt_c_biom[fractn] = MathUtility.RoundToZero(dlt_c_biom[fractn]);
+                dlt_c_atm[fractn] = MathUtility.RoundToZero(dlt_c_atm[fractn]);
+                dlt_fom_n[fractn] = MathUtility.RoundToZero(dlt_fom_n[fractn]);
+            }
+
+            dlt_n_min = (dlt_n_min_fom - n_demand) * Navail_factor;
+        }
+    }
+
+    private FOMdecompData MineraliseFOM1(int layer)
+    {
+        // + Purpose
+        //     Calculate the daily transformation of the soil fresh organic matter pools, mineralisation (+ve) or immobilisation (-ve)
+
+        double[] dlt_c_hum = new double[3];     // dlt_c from fom to humus
+        double[] dlt_c_biom = new double[3];    // dlt_c from fom to biomass
+        double[] dlt_c_atm = new double[3];     // dlt_c from fom to atmosphere
+        double[] dlt_fom_n = new double[3];     // dlt_n from fom pools to OM
+        double dlt_n_min = 0.0;                 // dlt_n from fom to mineral
+
+        // dsg 200508  use different values for some constants when anaerobic conditions dominate
+        // index = 1 for aerobic conditions, 2 for anaerobic conditions
+        int index = (!is_pond_active) ? 1 : 2;
+
+        // get total available mineral N (kg/ha)
+        double nitTot = Math.Max(0.0, (_no3[layer] - no3_min[layer]) + (_nh4[layer] - nh4_min[layer]));
+
+        // fresh organic carbon (kg/ha)
+        double fomC = fom_c_pool1[layer] + fom_c_pool2[layer] + fom_c_pool3[layer];
+
+        // fresh organic nitrogen (kg/ha)
+        double fomN = fom_n_pool1[layer] + fom_n_pool2[layer] + fom_n_pool3[layer];
+
+        // ratio of C in fresh OM to N available for decay
+        double cnr = MathUtility.Divide(fomC, fomN + nitTot, 0.0);
+
+        // calculate the C:N ratio factor - Bound to [0, 1]
+        double cnrf = Math.Max(0.0, Math.Min(1.0, Math.Exp(-cnrf_coeff * (cnr - cnrf_optcn) / cnrf_optcn)));
+        if (useNewFunctions)
+            cnrf = CNorgFactor(layer, index, CNFactorMinerFOM_OptCN, CNFactorMinerFOM_RateCN);
+
+        // get the soil temperature factor
+        double tf = (SoilParamSet == "rothc") ? RothcTF(layer, index) : TF(layer, index);
+        if (useNewFunctions)
+            if (useNewFunctions)
+            {
+                tf = SoilTempFactor(layer, index, TempFactor_Miner);
+            }
+            else
+            {
+                tf = SoilTempFactor(layer, index, TempFactor_minerFOM);
+            }
+
+        // get the soil water factor
+        double wf = WF(layer, index);
+        if (useNewFunctions)
+            if (useNewFunctions)
+            {
+                wf = SoilMoistFactor(layer, index, MoistFactor_Miner);
+            }
+            else
+            {
+                wf = SoilMoistFactor(layer, index, MoistFactor_minerFOM);
+            }
+
+        // calculate gross amount of C & N released due to mineralisation of the fresh organic matter.
+        if (fomC >= fom_min)
+        {
+            double dlt_n_min_fom = 0.0; // amount of fresh organic N mineralised across fpools (kg/ha)
+            double dlt_c_min_fom = 0.0; // total C mineralised (kg/ha) summed across fpools
+            double[] dlt_n_min_tot = new double[3]; // amount of fresh organic N mineralised in each pool (kg/ha)
+            double[] dlt_c_min_tot = new double[3]; // amount of C mineralised (kg/ha) from each pool
+
+            // C:N ratio of fom
+            double fom_cn = MathUtility.Divide(fomC, fomN, 0.0);
+
+            // get the decomposition of carbohydrate-like, cellulose-like and lignin-like fractions (fpools) in turn.
+            for (int fractn = 0; fractn < 3; fractn++)
+            {
+                // get the max decomposition rate for each fpool
+                double decomp_rate = FractRDFom(fractn)[index - 1] * cnrf * tf * wf;
+
+                // calculate the gross amount of fresh organic carbon mineralised (kg/ha)
+                double gross_c_decomp = decomp_rate * FractFomC(fractn)[layer];
+
+                // calculate the gross amount of N released from fresh organic matter (kg/ha)
+                double gross_n_decomp = decomp_rate * FractFomN(fractn)[layer];
+
+                dlt_n_min_fom += gross_n_decomp;
+                dlt_c_min_tot[fractn] = gross_c_decomp;
+                dlt_n_min_tot[fractn] = gross_n_decomp;
+                dlt_c_min_fom += gross_c_decomp;
+            }
+
+            // calculate potential transfers of C mineralised to biomass
+            double dlt_c_biom_tot = dlt_c_min_fom * ef_fom * fr_fom_biom;
+
+            // calculate potential transfers of C mineralised to humus
+            double dlt_c_hum_tot = dlt_c_min_fom * ef_fom * (1.0 - fr_fom_biom);
+
+            // test whether there is adequate N available to meet immobilisation demand
+            double n_demand = MathUtility.Divide(dlt_c_biom_tot, biom_cn, 0.0) + MathUtility.Divide(dlt_c_hum_tot, hum_cn, 0.0);
+            double n_avail = nitTot + dlt_n_min_fom;
+
+            // factor to reduce mineralisation rates if insufficient N to meet immobilisation demand
+            double Navail_factor = 1.0;
+            if (n_demand > n_avail)
+                Navail_factor = Math.Max(0.0, Math.Min(1.0, MathUtility.Divide(nitTot, n_demand - dlt_n_min_fom, 0.0)));
+
+            // now adjust carbon transformations etc. and similarly for npools
+            for (int fractn = 0; fractn < 3; fractn++)
+            {
+                dlt_c_hum[fractn] = dlt_c_min_tot[fractn] * ef_fom * (1.0 - fr_fom_biom) * Navail_factor;
+                dlt_c_biom[fractn] = dlt_c_min_tot[fractn] * ef_fom * fr_fom_biom * Navail_factor;
+                dlt_c_atm[fractn] = dlt_c_min_tot[fractn] * (1.0 - ef_fom) * Navail_factor;
+                dlt_fom_n[fractn] = dlt_n_min_tot[fractn] * Navail_factor;
+
+                dlt_c_hum[fractn] = MathUtility.RoundToZero(dlt_c_hum[fractn]);
+                dlt_c_biom[fractn] = MathUtility.RoundToZero(dlt_c_biom[fractn]);
+                dlt_c_atm[fractn] = MathUtility.RoundToZero(dlt_c_atm[fractn]);
+                dlt_fom_n[fractn] = MathUtility.RoundToZero(dlt_fom_n[fractn]);
+            }
+
+            dlt_n_min = (dlt_n_min_fom - n_demand) * Navail_factor;
+        }
+
+        FOMdecompData Result = new FOMdecompData();
+        Result.dlt_c_hum = dlt_c_hum;
+        Result.dlt_c_biom = dlt_c_biom;
+        Result.dlt_c_atm = dlt_c_atm;
+        Result.dlt_fom_n = dlt_fom_n;
+        Result.dlt_n_min = dlt_n_min;
+
+        return Result;
+    }
+
+    private double UreaHydrolysis(int layer)
+    {
+        // + Purpose
+        //     Calculate the amount of urea converted to NH4 via hydrolysis
+
+        // dsg 200508  use different values for some constants when anaerobic conditions dominate
+        double result;
+        int index = (!is_pond_active) ? 1 : 2;
+
+        if (_urea[layer] > 0.0)
+        {
+            // we have urea, so can do some hydrolysis
+            double LowUrea = 0.1 * dlayer[layer] / 200;  //original value was 0.1, now it is corrected by dlayer, assuming'typical' was 20cm
+            if (_urea[layer] < 0.1)
+                // urea amount is too small, all will be hydrolised
+                result = _urea[layer];
+            else
+            {
+                // get the soil water factor
+                double swf = Math.Max(0.0, Math.Min(1.0, WF(layer, index) + 0.20));
+                if (useNewFunctions)
+                    swf = SoilMoistFactor(layer, index, MoistFactor_Hydrol);
+
+                // get the soil temperature factor
+                double stf = Math.Max(0.0, Math.Min(1.0, (st[layer] / 40.0) + 0.20));
+                if (useNewFunctions)
+                    stf = SoilTempFactor(layer, index, TempFactor_Hydrol);
+
+                // note (jngh) oc & ph are not updated during simulation
+                //      mep    following equation would be better written in terms of hum_C and biom_C
+                //      mep    oc(layer) = (hum_C(layer) + biom_C(layer))*soiln2_fac (layer)*10000.
+
+                // get potential fraction of urea for hydrolysis
+                double ak = potHydrol_parmA +
+                            potHydrol_parmB * (hum_c[layer] + biom_c[layer]) +
+                            potHydrol_parmC * ph[layer] +
+                            potHydrol_parmD * (hum_c[layer] + biom_c[layer]) * ph[layer];
+                ak = Math.Max(potHydrol_min, Math.Min(1.0, ak));
+                //change oc on eq.: double ak = Math.Max(0.25, Math.Min(1.0, -1.12 + 1.31 * (hum_c[layer] + biom_c[layer]) + 0.203 * ph[layer] - 0.155 * (hum_c[layer] + biom_c[layer]) * ph[layer]));
+                //original eq.: double ak = Math.Max(0.25, Math.Min(1.0, -1.12 + 1.31 * OC_reset[layer] + 0.203 * ph[layer] - 0.155 * OC_reset[layer] * ph[layer]));
+
+                //get amount hydrolysed;
+                result = Math.Max(0.0, Math.Min(_urea[layer], ak * _urea[layer] * Math.Min(swf, stf)));
+            }
+        }
+        else
+            result = 0.0;
+        return result;
+    }
+
+    private double Nitrification(int layer)
+    {
+        // + Purpose
+        //     Calculate the amount of NH4 converted to NO3 via nitrification
+
+        // + Notes
+        //        This routine is much simplified from original CERES code
+        //        pH effect on nitrification is not invoked
+
+        // dsg 200508  use different values for some constants when anaerobic conditions dominate
+        int index;                 // index = 1 for aerobic and 2 for anaerobic conditions
+        index = (!is_pond_active) ? 1 : 2;
+
+        // get the soil ph factor
+        double phf = pHFNitrf(layer);
+        if (useNewFunctions)
+            phf = SoilpHFactor(layer, index, pHFactor_Nitrif);
+
+        // get the soil  water factor
+        double wfd = WFNitrf(layer, index);
+        if (useNewFunctions)
+            wfd = SoilMoistFactor(layer, index, MoistFactor_Nitrif);
+
+        // get the soil temperature factor
+        double tf = TF(layer, index);
+        if (useNewFunctions)
+            tf = SoilTempFactor(layer, index, TempFactor_Nitrif);
+
+        // calculate the optimum nitrification rate (ppm)
+        double nh4_ppm = _nh4[layer] * convFactor_kgha2ppm(layer);
+        double opt_nitrif_rate_ppm = MathUtility.Divide(nitrification_pot * nh4_ppm, nh4_ppm + nh4_at_half_pot, 0.0);
+
+        // calculate the optimum nitrification rate (kgN/ha)
+        double opt_nitrif_rate = MathUtility.Divide(opt_nitrif_rate_ppm, convFactor_kgha2ppm(layer), 0.0);
+
+        // calculate the theoretical nitrification rate (after limiting factor and inhibition)
+        double theor_nitrif_rate = opt_nitrif_rate * Math.Min(wfd, Math.Min(tf, phf)) * Math.Max(0.0, 1.0 - nitrification_inhibition[layer]);
+        // NOTE: factors to adjust rate of nitrification are used combined index, with phn removed to match CERES v1
+
+        // calculate the actual nitrification rate (make sure NH4 will not go below minimum value)
+        double actual_nitrif_rate = Math.Max(0.0, Math.Min(theor_nitrif_rate, _nh4[layer] - nh4_min[layer]));
+
+        //dlt_nh4_dnit[layer] = actual_nitrif_rate * dnit_nitrf_loss;
+        //effective_nitrification[layer] = actual_nitrif_rate - dlt_nh4_dnit[layer];
+        //n2o_atm[layer] += dlt_nh4_dnit[layer];
+
+        return actual_nitrif_rate;
+    }
+
+    private double DenitrificationInNitrification(int layer)
+    {
+        // + Purpose
+        //     Calculate the amount of N2O produced during nitrification
+
+        double result = dlt_nitrification[layer] * dnit_nitrf_loss;
+
+        return result;
+    }
+
+    private double Denitrification(int layer)
+    {
+        // + Purpose
+        //     Calculate the amount of N2O produced during denitrification
+
+        //+  Purpose
+        //     Calculate amount of NO3 transformed via denitrification.
+        //       Will happend whenever: 
+        //         - the soil water in the layer > the drained upper limit (Godwin et al., 1984),
+        //         - the NO3 nitrogen concentration > 1 mg N/kg soil,
+        //         - the soil temperature >= a minimum temperature.
+
+        // + Assumptions
+        //     That there is a root system present.  Rolston et al. say that the denitrification rate coeffficient (dnit_rate_coeff) of non-cropped
+        //       plots was 0.000168 and for cropped plots 3.6 times more (dnit_rate_coeff = 0.0006). The larger rate coefficient was required
+        //       to account for the effects of the root system in consuming oxygen and in adding soluble organic C to the soil.
+
+        //+  Notes
+        //       Reference: Rolston DE, Rao PSC, Davidson JM, Jessup RE (1984). "Simulation of denitrification losses of Nitrate fertiliser applied
+        //        to uncropped, cropped, and manure-amended field plots". Soil Science Vol 137, No 4, pp 270-278.
+        //
+        //       Reference for Carbon availability factor: Reddy KR, Khaleel R, Overcash MR (). "Carbon transformations in land areas receiving 
+        //        organic wastes in relation to nonpoint source pollution: A conceptual model".  J.Environ. Qual. 9:434-442.
+
+        // make sure no3 will not go below minimum
+        if (_no3[layer] < no3_min[layer])
+            return 0.0;
+
+
+        // get available carbon from soil organic pools
+        double active_c = actC_parmA * (hum_c[layer] + fom_c_pool1[layer] + fom_c_pool2[layer] + fom_c_pool3[layer]) * convFactor_kgha2ppm(layer) + actC_parmB;
+        // Note CM V2 had active_c = fom_C_conc + 0.0031*hum_C_conc + 24.5
+
+        int index = 0; // denitrification calcs are not different whether there is pond or not. use 1 as default
+        // get the soil water factor
+        double wf = WFDenit(layer);
+        if (useNewFunctions)
+            wf = SoilMoistFactor(layer, index, MoistFactor_Denit);
+
+        // get the soil temperature factor
+        double tf = Math.Max(0.0, Math.Min(1.0, 0.1 * Math.Exp(0.046 * st[layer])));
+        // This is an empirical dimensionless function to account for the effect of temperature.
+        // The upper limit of 1.0 means that optimum denitrification temperature is 50 oC and above.  At 0 oC it is 0.1 of optimum, and at -20 oC is about 0.04.
+        if (useNewFunctions)
+            tf = SoilTempFactor(layer, index, TempFactor_Denit);
+
+        // calculate denitrification rate  - kg/ha
+        double result = dnit_rate_coeff * active_c * wf * tf * _no3[layer];
+
+        // prevent no3 from falling below NO3_min
+        result = Math.Max(0.0, Math.Min(result, _no3[layer] - no3_min[layer]));
+
+        return result;
+    }
+
+    private double Denitrification_Nratio(int layer)
+    {
+        // + Purpose
+        //     Calculate the N2 to N2O ration during denitrification
+
+        // the water filled pore space (%)
+        double WFPS = sw_dep[layer] / sat_dep[layer] * 100.0;
+
+        // CO2 production today (kgC/ha)
+        double CO2_prod = (dlt_c_fom_2_atm[0][layer] + dlt_c_fom_2_atm[1][layer] + dlt_c_fom_2_atm[2][layer] + dlt_c_biom_2_atm[layer] + dlt_c_hum_2_atm[layer]);
+
+        // calculate the terms for the formula from Thornburn et al (2010)
+        double RtermA = N2N2O_parmA * dnit_k1;
+        double RtermB = 0.0;
+        if (CO2_prod > 0.0)
+            RtermB = dnit_k1 * Math.Exp(-N2N2O_parmB * (_no3[layer] / CO2_prod));
+        double RtermC = N2N2O_parmC;
+        bool didInterpolate;
+        double RtermD = MathUtility.LinearInterpReal(WFPS, dnit_wfps, dnit_n2o_factor, out didInterpolate);
+        // RTermD = (0.015 * WFPS) - 0.32;
+
+        double result = Math.Max(RtermA, RtermB) * Math.Max(RtermC, RtermD);
+
+        return result;
+    }
+
+    private void PackActualResidueDecomposition()
+    {
+        // + Purpose
+        //     Send back the information about actual decomposition
+        //      Potential decomposition was given to this module by a residue/surfaceOM module.  Now we explicitly tell the module the actual decomposition
+        //      rate for each of its residues.  If there wasn't enough mineral N to decompose, the rate will be reduced from the potential value.
+
+        int nLayers = dlayer.Length;
+
+        soilp_dlt_res_c_atm = new double[nLayers];
+        soilp_dlt_res_c_hum = new double[nLayers];
+        soilp_dlt_res_c_biom = new double[nLayers];
+        soilp_dlt_org_p = new double[nLayers];
+        double soilp_cpr = MathUtility.Divide(SumDoubleArray(pot_p_decomp), SumDoubleArray(pot_c_decomp), 0.0);  // P:C ratio for potential decomposition
+
+        //SurfaceOrganicMatterDecompType SOMDecomp = new SurfaceOrganicMatterDecompType();
+        SOMDecomp = new SurfaceOrganicMatterDecompType();
+        Array.Resize(ref SOMDecomp.Pool, num_residues);
+
+
+        for (int residue = 0; residue < num_residues; residue++)
+        {
+            double c_summed = 0.0;
+            double n_summed = 0.0;
+            double[] dlt_res_c_decomp = new double[nLayers];
+            double[] dlt_res_n_decomp = new double[nLayers];
+            for (int layer = 0; layer < nLayers; layer++)
+            {
+                dlt_res_c_decomp[layer] = dlt_c_res_2_hum[layer][residue] +
+                                          dlt_c_res_2_biom[layer][residue] +
+                                          dlt_c_res_2_atm[layer][residue];
+                c_summed += dlt_res_c_decomp[layer];
+
+                //dlt_res_n_decomp[layer] = this.dlt_n_decomp[layer][residue];
+                dlt_res_n_decomp[layer] = dlt_n_decomp[layer][residue];
+                n_summed += dlt_res_n_decomp[layer];
+            }
+
+            // dsg 131103  Now, pack up the structure to return decompositions to SurfaceOrganicMatter
+            SOMDecomp.Pool[residue] = new SurfaceOrganicMatterDecompPoolType();
+            SOMDecomp.Pool[residue].FOM = new FOMType();
+            SOMDecomp.Pool[residue].Name = residue_name[residue];
+            SOMDecomp.Pool[residue].OrganicMatterType = residue_type[residue];
+
+            // dsg 131103   The 'amount' value will not be used by SurfaceOrganicMatter, so send zero as default
+            SOMDecomp.Pool[residue].FOM.amount = 0.0F;
+            if (Math.Abs(c_summed) < epsilon)
+                c_summed = 0.0;
+            if (Math.Abs(n_summed) < epsilon)
+                n_summed = 0.0;
+            SOMDecomp.Pool[residue].FOM.C = (float)c_summed;
+            SOMDecomp.Pool[residue].FOM.N = (float)n_summed;
+
+            // dsg 131103   The 'P' value will not be collected by SurfaceOrganicMatter, so send zero as default.
+            SOMDecomp.Pool[residue].FOM.P = 0.0F;
+            SOMDecomp.Pool[residue].FOM.AshAlk = 0.0F;
+
+            // dsg 131004 soilp needs some stuff - very ugly process - needs to be streamlined
+            //  create some variables which soilp can "get" - layer based arrays independent of residues
+            for (int layer = 0; layer < nLayers; layer++)
+            {
+                soilp_dlt_res_c_atm[layer] += dlt_c_res_2_atm[layer][residue];
+                soilp_dlt_res_c_hum[layer] += dlt_c_res_2_hum[layer][residue];
+                soilp_dlt_res_c_biom[layer] += dlt_c_res_2_biom[layer][residue];
+                soilp_dlt_org_p[layer] += dlt_res_c_decomp[layer] * soilp_cpr;
+            }
+        }
+    }
+    
+    #endregion
+
+    #region Frequent and sporadic processes
+
     public void OnIncorpFOM(FOMLayerType FOMdata)
     {
         // +  Purpose:
@@ -1432,694 +2125,6 @@ class soilCNPatch
         Array.Resize(ref dlt_c_biom_2_hum, nLayers);
     }
 
-    private void DecomposeResidues()
-    {
-        // + Purpose
-        //     Calculate the actual C and N mineralised/immobilised from residue decomposition
-        //      Check whether adequate mineral nitrogen is available to sustain potential rate of decomposition of surface
-        //       residues and calculate net rate of nitrogen mineralisation/immobilisation
-
-        // Initialise to zero by assigning new
-        int nLayers = dlayer.Length;
-        double[] no3_available = new double[nLayers]; // no3 available for mineralisation
-        double[] nh4_available = new double[nLayers]; // nh4 available for mineralisation
-        dlt_c_decomp = new double[nLayers][];
-        dlt_n_decomp = new double[nLayers][];
-        dlt_c_res_2_biom = new double[nLayers][];
-        dlt_c_res_2_hum = new double[nLayers][];
-        dlt_c_res_2_atm = new double[nLayers][];
-        for (int layer = 0; layer < nLayers; layer++)
-        {
-            dlt_c_decomp[layer] = new double[num_residues];
-            dlt_n_decomp[layer] = new double[num_residues];
-            dlt_c_res_2_biom[layer] = new double[num_residues];
-            dlt_c_res_2_hum[layer] = new double[num_residues];
-            dlt_c_res_2_atm[layer] = new double[num_residues];
-        }
-        dlt_nh4_decomp = new double[nLayers];
-        dlt_no3_decomp = new double[nLayers];
-
-        // get total available mineral N in soil layer which can supply N to decomposition (min_depth)
-        double[] fracLayer = new double[dlayer.Length];
-        double cumFracLayer = 0.0;
-        double cumDepth = 0.0;
-        int DecompLayer = 0;
-        for (int layer = 0; layer < nLayers; layer++)
-        {
-            fracLayer[layer] = Math.Min(1, Math.Max(0, min_depth - cumDepth) / dlayer[layer]);
-            if (fracLayer[layer] <= epsilon)
-                break;  // no need to continue calculating
-            cumFracLayer += fracLayer[layer];
-            cumDepth += dlayer[layer];
-            DecompLayer = layer;
-            no3_available[layer] = Math.Max(0.0, _no3[layer] - no3_min[layer]) * fracLayer[layer];
-            nh4_available[layer] = Math.Max(0.0, _nh4[layer] - nh4_min[layer]) * fracLayer[layer];
-        }
-
-        double n_available = SumDoubleArray(no3_available) + SumDoubleArray(nh4_available) + SumDoubleArray(pot_n_decomp);
-
-        // get N demand from potential decomposition
-        double n_demand = MathUtility.Divide(SumDoubleArray(pot_c_decomp) * ef_res * fr_res_biom, biom_cn, 0.0) +
-                          MathUtility.Divide(SumDoubleArray(pot_c_decomp) * ef_res * (1.0 - fr_res_biom), hum_cn, 0.0);
-
-        // test whether there is adequate N available to meet potential immobilisation demand
-        //      if not, calculate a factor to reduce the mineralisation rates
-        double ReductionFactor = 1.0;
-        if (n_demand > n_available)
-            ReductionFactor = Math.Max(0.0, Math.Min(1.0, MathUtility.Divide(SumDoubleArray(no3_available) + SumDoubleArray(nh4_available), n_demand - SumDoubleArray(pot_n_decomp), 0.0)));
-
-        // Partition the additions of C and N to layers
-        double dlt_n_decomp_tot = 0.0;
-        for (int layer = 0; layer <= DecompLayer; layer++)
-        {
-            double DecompFraction = fracLayer[layer] / cumFracLayer;  // the fraction of decomposition for each soil layer
-            for (int residue = 0; residue < num_residues; residue++)
-            {
-                // adjust carbon transformations and distribute over the layers
-                dlt_c_decomp[layer][residue] = pot_c_decomp[residue] * ReductionFactor * DecompFraction;
-                dlt_n_decomp[layer][residue] = pot_n_decomp[residue] * ReductionFactor * DecompFraction;
-                dlt_n_decomp_tot += dlt_n_decomp[layer][residue];
-
-                // partition the decomposed C between pools and losses
-                dlt_c_res_2_biom[layer][residue] = dlt_c_decomp[layer][residue] * ef_res * fr_res_biom;
-                dlt_c_res_2_hum[layer][residue] = dlt_c_decomp[layer][residue] * ef_res * (1.0 - fr_res_biom);
-                dlt_c_res_2_atm[layer][residue] = dlt_c_decomp[layer][residue] - dlt_c_res_2_biom[layer][residue] - dlt_c_res_2_hum[layer][residue];
-            }
-        }
-
-        // net N mineralised (hg/ha)
-        double dlt_n_min = dlt_n_decomp_tot - n_demand * ReductionFactor;
-
-        if (dlt_n_min > 0.0)
-        {
-            // Mineralisation occurred - distribute NH4 over the layers
-            for (int layer = 0; layer <= DecompLayer; layer++)
-            {
-                double DecompFraction = fracLayer[layer] / cumFracLayer;  // the fraction of decomposition for each soil layer
-                dlt_nh4_decomp[layer] = dlt_n_min * DecompFraction;
-            }
-        }
-        else if (dlt_n_min < 0.0)
-        {
-            // Immobilisation occurred - soak up any N required, from NH4 first then NO3 if needed
-            for (int layer = 0; layer <= DecompLayer; layer++)
-            {
-                dlt_nh4_decomp[layer] = -Math.Min(nh4_available[layer], Math.Abs(dlt_n_min));
-                dlt_n_min -= dlt_nh4_decomp[layer];
-            }
-            for (int layer = 0; layer <= DecompLayer; layer++)
-            {
-                dlt_no3_decomp[layer] = -Math.Min(no3_available[layer], Math.Abs(dlt_n_min));
-                dlt_n_min -= dlt_no3_decomp[layer];
-            }
-
-            // There should now be no remaining immobilisation demand
-            if (dlt_n_min < -0.001 || dlt_n_min > 0.001)
-                throw new Exception("Value for remaining immobilisation is out of range");
-        }
-
-        // gather the info for 'SendActualResidueDecompositionCalculated'
-        PackActualResidueDecomposition();
-    }
-
-    private void MineraliseHumus(int layer)
-    {
-        // + Purpose
-        //     Calculate the daily transformation of the the soil humic pool, mineralisation (+ve) or immobilisation (-ve)
-
-        // + Assumptions
-        //     There is an inert_C component of the humic pool that is not subject to mineralisation
-
-        // dsg 200508  use different values for some constants when there's a pond and anaerobic conditions dominate
-        int index = (!is_pond_active) ? 1 : 2;
-
-        // get the soil temperature factor
-        double tf = (soilparam == "rothc") ? RothcTF(layer, index) : TF(layer, index);
-        if (useNewFunctions)
-            if (useSingleMinerFactors)
-            {
-                tf = SoilTempFactor(layer, index, TempFactor_Miner);
-            }
-            else
-            {
-                tf = SoilTempFactor(layer, index, TempFactor_minerHum);
-            }
-
-        // get the soil water factor
-        double wf = WF(layer, index);
-        if (useNewFunctions)
-            if (useSingleMinerFactors)
-            {
-                wf = SoilMoistFactor(layer, index, MoistFactor_Miner);
-            }
-            else
-            {
-                wf = SoilMoistFactor(layer, index, MoistFactor_minerHum);
-            }
-
-        // get the rate of mineralisation of N from the humic pool
-        double dlt_c_min_hum = (hum_c[layer] - inert_c[layer]) * rd_hum[index - 1] * tf * wf;
-        double dlt_n_min_hum = MathUtility.Divide(dlt_c_min_hum, hum_cn, 0.0);
-
-        // distribute the mineralised N and C
-        dlt_c_hum_2_biom[layer] = dlt_c_min_hum * ef_hum;
-        dlt_c_hum_2_atm[layer] = dlt_c_min_hum * (1.0 - ef_hum);
-        dlt_n_hum_2_min[layer] = dlt_n_min_hum - MathUtility.Divide(dlt_c_hum_2_biom[layer], biom_cn, 0.0);
-    }
-
-    private void MineraliseBiomass(int layer)
-    {
-        // + Purpose
-        //     Calculate the daily transformation of the soil biomass pool, mineralisation (+ve) or immobilisation (-ve)
-
-        // dsg 200508  use different values for some constants when anaerobic conditions dominate
-        int index = (!is_pond_active) ? 1 : 2;
-
-        // get the soil temperature factor
-        double tf = (soilparam == "rothc") ? RothcTF(layer, index) : TF(layer, index);
-        if (useNewFunctions)
-            if (useSingleMinerFactors)
-            {
-                tf = SoilTempFactor(layer, index, TempFactor_Miner);
-            }
-            else
-            {
-                tf = SoilTempFactor(layer, index, TempFactor_minerBiom);
-            }
-
-        // get the soil water factor
-        double wf = WF(layer, index);
-        if (useSingleMinerFactors)
-            if (useNewFunctions)
-            {
-                wf = SoilMoistFactor(layer, index, MoistFactor_Miner);
-            }
-            else
-            {
-                wf = SoilMoistFactor(layer, index, MoistFactor_minerBiom);
-            }
-
-        // get the rate of mineralisation of C & N from the biomass pool
-        double dlt_n_min_biom = biom_n[layer] * rd_biom[index - 1] * tf * wf;       // why the calculation is on n while for hum is on C?
-        double dlt_c_min_biom = dlt_n_min_biom * biom_cn;
-
-        // distribute the carbon
-        dlt_c_biom_2_hum[layer] = dlt_c_min_biom * ef_biom * (1.0 - fr_biom_biom);
-        dlt_c_biom_2_atm[layer] = dlt_c_min_biom * (1.0 - ef_biom);
-
-        // calculate net N mineralisation
-        dlt_n_biom_2_min[layer] = dlt_n_min_biom - MathUtility.Divide(dlt_c_biom_2_hum[layer], hum_cn, 0.0) - MathUtility.Divide((dlt_c_min_biom - dlt_c_biom_2_atm[layer] - dlt_c_biom_2_hum[layer]), biom_cn, 0.0);
-    }
-
-    private void MineraliseFOM(int layer, out double[] dlt_c_biom, out double[] dlt_c_hum, out double[] dlt_c_atm, out double[] dlt_fom_n, out double dlt_n_min)
-    {
-        // + Purpose
-        //     Calculate the daily transformation of the soil fresh organic matter pools, mineralisation (+ve) or immobilisation (-ve)
-
-        dlt_c_hum = new double[3];
-        dlt_c_biom = new double[3];
-        dlt_c_atm = new double[3];
-        dlt_fom_n = new double[3];
-        dlt_n_min = 0.0;
-
-        // dsg 200508  use different values for some constants when anaerobic conditions dominate
-        // index = 1 for aerobic conditions, 2 for anaerobic conditions
-        int index = (!is_pond_active) ? 1 : 2;
-
-        // get total available mineral N (kg/ha)
-        double nitTot = Math.Max(0.0, (_no3[layer] - no3_min[layer]) + (_nh4[layer] - nh4_min[layer]));
-
-        // fresh organic carbon (kg/ha)
-        double fomC = fom_c_pool1[layer] + fom_c_pool2[layer] + fom_c_pool3[layer];
-
-        // fresh organic nitrogen (kg/ha)
-        double fomN = fom_n_pool1[layer] + fom_n_pool2[layer] + fom_n_pool3[layer];
-
-        // ratio of C in fresh OM to N available for decay
-        double cnr = MathUtility.Divide(fomC, fomN + nitTot, 0.0);
-
-        // calculate the C:N ratio factor - Bound to [0, 1]
-        double cnrf = Math.Max(0.0, Math.Min(1.0, Math.Exp(-cnrf_coeff * (cnr - cnrf_optcn) / cnrf_optcn)));
-        if (useNewFunctions)
-            cnrf = CNorgFactor(layer, index, CNFactorMinerFOM_OptCN, CNFactorMinerFOM_RateCN);
-
-        // get the soil temperature factor
-        double tf = (soilparam == "rothc") ? RothcTF(layer, index) : TF(layer, index);
-        if (useNewFunctions)
-            tf = SoilTempFactor(layer, index, TempFactor_Miner);
-
-        // get the soil water factor
-        double wf = WF(layer, index);
-        if (useNewFunctions)
-            wf = SoilMoistFactor(layer, index, MoistFactor_Miner);
-
-        // calculate gross amount of C & N released due to mineralisation of the fresh organic matter.
-        if (fomC >= fom_min)
-        {
-            double dlt_n_min_fom = 0.0; // amount of fresh organic N mineralised across fpools (kg/ha)
-            double dlt_c_min_fom = 0.0; // total C mineralised (kg/ha) summed across fpools
-            double[] dlt_n_min_tot = new double[3]; // amount of fresh organic N mineralised in each pool (kg/ha)
-            double[] dlt_c_min_tot = new double[3]; // amount of C mineralised (kg/ha) from each pool
-
-            // C:N ratio of fom
-            double fom_cn = MathUtility.Divide(fomC, fomN, 0.0);
-
-            // get the decomposition of carbohydrate-like, cellulose-like and lignin-like fractions (fpools) in turn.
-            for (int fractn = 0; fractn < 3; fractn++)
-            {
-                // get the max decomposition rate for each fpool
-                double decomp_rate = FractRDFom(fractn)[index - 1] * cnrf * tf * wf;
-
-                // calculate the gross amount of fresh organic carbon mineralised (kg/ha)
-                double gross_c_decomp = decomp_rate * FractFomC(fractn)[layer];
-
-                // calculate the gross amount of N released from fresh organic matter (kg/ha)
-                double gross_n_decomp = decomp_rate * FractFomN(fractn)[layer];
-
-                dlt_n_min_fom += gross_n_decomp;
-                dlt_c_min_tot[fractn] = gross_c_decomp;
-                dlt_n_min_tot[fractn] = gross_n_decomp;
-                dlt_c_min_fom += gross_c_decomp;
-            }
-
-            // calculate potential transfers of C mineralised to biomass
-            double dlt_c_biom_tot = dlt_c_min_fom * ef_fom * fr_fom_biom;
-
-            // calculate potential transfers of C mineralised to humus
-            double dlt_c_hum_tot = dlt_c_min_fom * ef_fom * (1.0 - fr_fom_biom);
-
-            // test whether there is adequate N available to meet immobilisation demand
-            double n_demand = MathUtility.Divide(dlt_c_biom_tot, biom_cn, 0.0) + MathUtility.Divide(dlt_c_hum_tot, hum_cn, 0.0);
-            double n_avail = nitTot + dlt_n_min_fom;
-
-            // factor to reduce mineralisation rates if insufficient N to meet immobilisation demand
-            double Navail_factor = 1.0;
-            if (n_demand > n_avail)
-                Navail_factor = Math.Max(0.0, Math.Min(1.0, MathUtility.Divide(nitTot, n_demand - dlt_n_min_fom, 0.0)));
-
-            // now adjust carbon transformations etc. and similarly for npools
-            for (int fractn = 0; fractn < 3; fractn++)
-            {
-                dlt_c_hum[fractn] = dlt_c_min_tot[fractn] * ef_fom * (1.0 - fr_fom_biom) * Navail_factor;
-                dlt_c_biom[fractn] = dlt_c_min_tot[fractn] * ef_fom * fr_fom_biom * Navail_factor;
-                dlt_c_atm[fractn] = dlt_c_min_tot[fractn] * (1.0 - ef_fom) * Navail_factor;
-                dlt_fom_n[fractn] = dlt_n_min_tot[fractn] * Navail_factor;
-
-                dlt_c_hum[fractn] = MathUtility.RoundToZero(dlt_c_hum[fractn]);
-                dlt_c_biom[fractn] = MathUtility.RoundToZero(dlt_c_biom[fractn]);
-                dlt_c_atm[fractn] = MathUtility.RoundToZero(dlt_c_atm[fractn]);
-                dlt_fom_n[fractn] = MathUtility.RoundToZero(dlt_fom_n[fractn]);
-            }
-
-            dlt_n_min = (dlt_n_min_fom - n_demand) * Navail_factor;
-        }
-    }
-
-    private FOMdecompData MineraliseFOM1(int layer)
-    {
-        // + Purpose
-        //     Calculate the daily transformation of the soil fresh organic matter pools, mineralisation (+ve) or immobilisation (-ve)
-
-        double[] dlt_c_hum = new double[3];     // dlt_c from fom to humus
-        double[] dlt_c_biom = new double[3];    // dlt_c from fom to biomass
-        double[] dlt_c_atm = new double[3];     // dlt_c from fom to atmosphere
-        double[] dlt_fom_n = new double[3];     // dlt_n from fom pools to OM
-        double dlt_n_min = 0.0;                 // dlt_n from fom to mineral
-
-        // dsg 200508  use different values for some constants when anaerobic conditions dominate
-        // index = 1 for aerobic conditions, 2 for anaerobic conditions
-        int index = (!is_pond_active) ? 1 : 2;
-
-        // get total available mineral N (kg/ha)
-        double nitTot = Math.Max(0.0, (_no3[layer] - no3_min[layer]) + (_nh4[layer] - nh4_min[layer]));
-
-        // fresh organic carbon (kg/ha)
-        double fomC = fom_c_pool1[layer] + fom_c_pool2[layer] + fom_c_pool3[layer];
-
-        // fresh organic nitrogen (kg/ha)
-        double fomN = fom_n_pool1[layer] + fom_n_pool2[layer] + fom_n_pool3[layer];
-
-        // ratio of C in fresh OM to N available for decay
-        double cnr = MathUtility.Divide(fomC, fomN + nitTot, 0.0);
-
-        // calculate the C:N ratio factor - Bound to [0, 1]
-        double cnrf = Math.Max(0.0, Math.Min(1.0, Math.Exp(-cnrf_coeff * (cnr - cnrf_optcn) / cnrf_optcn)));
-        if (useNewFunctions)
-            cnrf = CNorgFactor(layer, index, CNFactorMinerFOM_OptCN, CNFactorMinerFOM_RateCN);
-
-        // get the soil temperature factor
-        double tf = (soilparam == "rothc") ? RothcTF(layer, index) : TF(layer, index);
-        if (useNewFunctions)
-            if (useNewFunctions)
-            {
-                tf = SoilTempFactor(layer, index, TempFactor_Miner);
-            }
-            else
-            {
-                tf = SoilTempFactor(layer, index, TempFactor_minerFOM);
-            }
-
-        // get the soil water factor
-        double wf = WF(layer, index);
-        if (useNewFunctions)
-            if (useNewFunctions)
-            {
-                wf = SoilMoistFactor(layer, index, MoistFactor_Miner);
-            }
-            else
-            {
-                wf = SoilMoistFactor(layer, index, MoistFactor_minerFOM);
-            }
-
-        // calculate gross amount of C & N released due to mineralisation of the fresh organic matter.
-        if (fomC >= fom_min)
-        {
-            double dlt_n_min_fom = 0.0; // amount of fresh organic N mineralised across fpools (kg/ha)
-            double dlt_c_min_fom = 0.0; // total C mineralised (kg/ha) summed across fpools
-            double[] dlt_n_min_tot = new double[3]; // amount of fresh organic N mineralised in each pool (kg/ha)
-            double[] dlt_c_min_tot = new double[3]; // amount of C mineralised (kg/ha) from each pool
-
-            // C:N ratio of fom
-            double fom_cn = MathUtility.Divide(fomC, fomN, 0.0);
-
-            // get the decomposition of carbohydrate-like, cellulose-like and lignin-like fractions (fpools) in turn.
-            for (int fractn = 0; fractn < 3; fractn++)
-            {
-                // get the max decomposition rate for each fpool
-                double decomp_rate = FractRDFom(fractn)[index - 1] * cnrf * tf * wf;
-
-                // calculate the gross amount of fresh organic carbon mineralised (kg/ha)
-                double gross_c_decomp = decomp_rate * FractFomC(fractn)[layer];
-
-                // calculate the gross amount of N released from fresh organic matter (kg/ha)
-                double gross_n_decomp = decomp_rate * FractFomN(fractn)[layer];
-
-                dlt_n_min_fom += gross_n_decomp;
-                dlt_c_min_tot[fractn] = gross_c_decomp;
-                dlt_n_min_tot[fractn] = gross_n_decomp;
-                dlt_c_min_fom += gross_c_decomp;
-            }
-
-            // calculate potential transfers of C mineralised to biomass
-            double dlt_c_biom_tot = dlt_c_min_fom * ef_fom * fr_fom_biom;
-
-            // calculate potential transfers of C mineralised to humus
-            double dlt_c_hum_tot = dlt_c_min_fom * ef_fom * (1.0 - fr_fom_biom);
-
-            // test whether there is adequate N available to meet immobilisation demand
-            double n_demand = MathUtility.Divide(dlt_c_biom_tot, biom_cn, 0.0) + MathUtility.Divide(dlt_c_hum_tot, hum_cn, 0.0);
-            double n_avail = nitTot + dlt_n_min_fom;
-
-            // factor to reduce mineralisation rates if insufficient N to meet immobilisation demand
-            double Navail_factor = 1.0;
-            if (n_demand > n_avail)
-                Navail_factor = Math.Max(0.0, Math.Min(1.0, MathUtility.Divide(nitTot, n_demand - dlt_n_min_fom, 0.0)));
-
-            // now adjust carbon transformations etc. and similarly for npools
-            for (int fractn = 0; fractn < 3; fractn++)
-            {
-                dlt_c_hum[fractn] = dlt_c_min_tot[fractn] * ef_fom * (1.0 - fr_fom_biom) * Navail_factor;
-                dlt_c_biom[fractn] = dlt_c_min_tot[fractn] * ef_fom * fr_fom_biom * Navail_factor;
-                dlt_c_atm[fractn] = dlt_c_min_tot[fractn] * (1.0 - ef_fom) * Navail_factor;
-                dlt_fom_n[fractn] = dlt_n_min_tot[fractn] * Navail_factor;
-
-                dlt_c_hum[fractn] = MathUtility.RoundToZero(dlt_c_hum[fractn]);
-                dlt_c_biom[fractn] = MathUtility.RoundToZero(dlt_c_biom[fractn]);
-                dlt_c_atm[fractn] = MathUtility.RoundToZero(dlt_c_atm[fractn]);
-                dlt_fom_n[fractn] = MathUtility.RoundToZero(dlt_fom_n[fractn]);
-            }
-
-            dlt_n_min = (dlt_n_min_fom - n_demand) * Navail_factor;
-        }
-
-        FOMdecompData Result = new FOMdecompData();
-        Result.dlt_c_hum=dlt_c_hum;
-        Result.dlt_c_biom = dlt_c_biom;
-        Result.dlt_c_atm = dlt_c_atm;
-        Result.dlt_fom_n = dlt_fom_n;
-        Result.dlt_n_min = dlt_n_min;
-
-        return Result;
-    }
-    
-    private double UreaHydrolysis(int layer)
-    {
-        // + Purpose
-        //     Calculate the amount of urea converted to NH4 via hydrolysis
-
-        // dsg 200508  use different values for some constants when anaerobic conditions dominate
-        double result;
-        int index = (!is_pond_active) ? 1 : 2;
-
-        if (_urea[layer] > 0.0)
-        {
-            // we have urea, so can do some hydrolysis
-            if (_urea[layer] < 0.1)
-                // urea amount is too small, all is hydrolised
-                result = _urea[layer];
-            else
-            {
-                // get the soil water factor
-                double swf = Math.Max(0.0, Math.Min(1.0, WF(layer, index) + 0.20));
-                if (useNewFunctions)
-                    swf = SoilMoistFactor(layer, index, MoistFactor_Hydrol);
-
-                // get the soil temperature factor
-                double tf = Math.Max(0.0, Math.Min(1.0, (st[layer] / 40.0) + 0.20));
-                if (useNewFunctions)
-                    tf = SoilTempFactor(layer, index, TempFactor_Hydrol);
-
-                // note (jngh) oc & ph are not updated during simulation
-                //      mep    following equation would be better written in terms of hum_C and biom_C
-                //      mep    oc(layer) = (hum_C(layer) + biom_C(layer))*soiln2_fac (layer)*10000.
-
-                // get potential fraction of urea for hydrolysis
-                double ak = pot_hydrol_termA + 
-                            pot_hydrol_termB * (hum_c[layer] + biom_c[layer]) + 
-                            pot_hydrol_termC * ph[layer] +
-                            pot_hydrol_termD * (hum_c[layer] + biom_c[layer]) * ph[layer];
-                ak = Math.Max(pot_hydrol_min, Math.Min(1.0, ak));
-                //change oc on eq.: double ak = Math.Max(0.25, Math.Min(1.0, -1.12 + 1.31 * (hum_c[layer] + biom_c[layer]) + 0.203 * ph[layer] - 0.155 * (hum_c[layer] + biom_c[layer]) * ph[layer]));
-                //original eq.: double ak = Math.Max(0.25, Math.Min(1.0, -1.12 + 1.31 * OC_reset[layer] + 0.203 * ph[layer] - 0.155 * OC_reset[layer] * ph[layer]));
-
-                //get amount hydrolysed;
-                result = Math.Max(0.0, Math.Min(_urea[layer], ak * _urea[layer] * Math.Min(swf, tf)));
-            }
-        }
-        else
-            result = 0.0;
-        return result;
-    }
-
-    private double Nitrification(int layer)
-    {
-        // + Purpose
-        //     Calculate the amount of NH4 converted to NO3 via nitrification
-
-        // + Notes
-        //        This routine is much simplified from original CERES code
-        //        pH effect on nitrification is not invoked
-
-        // dsg 200508  use different values for some constants when anaerobic conditions dominate
-        int index;                 // index = 1 for aerobic and 2 for anaerobic conditions
-        index = (!is_pond_active) ? 1 : 2;
-
-        // get the soil ph factor
-        double phf = pHFNitrf(layer);
-        if (useNewFunctions)
-            phf = SoilpHFactor(layer, index, pHFactor_Nitrif);
-
-        // get the soil  water factor
-        double wfd = WFNitrf(layer, index);
-        if (useNewFunctions)
-            wfd = SoilMoistFactor(layer, index, MoistFactor_Nitrif);
-
-        // get the soil temperature factor
-        double tf = TF(layer, index);
-        if (useNewFunctions)
-            tf = SoilTempFactor(layer, index, TempFactor_Nitrif);
-
-        // calculate the optimum nitrification rate (ppm)
-        double nh4_ppm = _nh4[layer] * convFactor_kgha2ppm(layer);
-        double opt_nitrif_rate_ppm = MathUtility.Divide(nitrification_pot * nh4_ppm, nh4_ppm + nh4_at_half_pot, 0.0);
-
-        // calculate the optimum nitrification rate (kgN/ha)
-        double opt_nitrif_rate = MathUtility.Divide(opt_nitrif_rate_ppm, convFactor_kgha2ppm(layer), 0.0);
-
-        // calculate the theoretical nitrification rate (after limiting factor and inhibition)
-        double theor_nitrif_rate = opt_nitrif_rate * Math.Min(wfd, Math.Min(tf, phf)) * Math.Max(0.0, 1.0 - nitrification_inhibition[layer]);
-        // NOTE: factors to adjust rate of nitrification are used combined index, with phn removed to match CERES v1
-
-        // calculate the actual nitrification rate (make sure NH4 will not go below minimum value)
-        double actual_nitrif_rate = Math.Max(0.0, Math.Min(theor_nitrif_rate, _nh4[layer] - nh4_min[layer]));
-
-        //dlt_nh4_dnit[layer] = actual_nitrif_rate * dnit_nitrf_loss;
-        //effective_nitrification[layer] = actual_nitrif_rate - dlt_nh4_dnit[layer];
-        //n2o_atm[layer] += dlt_nh4_dnit[layer];
-
-        return actual_nitrif_rate;
-    }
-
-    private double DenitrificationInNitrification(int layer)
-    {
-        // + Purpose
-        //     Calculate the amount of N2O produced during nitrification
-
-        double result = dlt_nitrification[layer] * dnit_nitrf_loss;
-
-        return result;
-    }
-
-    private double Denitrification(int layer)
-    {
-        // + Purpose
-        //     Calculate the amount of N2O produced during denitrification
-
-        //+  Purpose
-        //     Calculate amount of NO3 transformed via denitrification.
-        //       Will happend whenever: 
-        //         - the soil water in the layer > the drained upper limit (Godwin et al., 1984),
-        //         - the NO3 nitrogen concentration > 1 mg N/kg soil,
-        //         - the soil temperature >= a minimum temperature.
-
-        // + Assumptions
-        //     That there is a root system present.  Rolston et al. say that the denitrification rate coeffficient (dnit_rate_coeff) of non-cropped
-        //       plots was 0.000168 and for cropped plots 3.6 times more (dnit_rate_coeff = 0.0006). The larger rate coefficient was required
-        //       to account for the effects of the root system in consuming oxygen and in adding soluble organic C to the soil.
-
-        //+  Notes
-        //       Reference: Rolston DE, Rao PSC, Davidson JM, Jessup RE (1984). "Simulation of denitrification losses of Nitrate fertiliser applied
-        //        to uncropped, cropped, and manure-amended field plots". Soil Science Vol 137, No 4, pp 270-278.
-        //
-        //       Reference for Carbon availability factor: Reddy KR, Khaleel R, Overcash MR (). "Carbon transformations in land areas receiving 
-        //        organic wastes in relation to nonpoint source pollution: A conceptual model".  J.Environ. Qual. 9:434-442.
-
-        // make sure no3 will not go below minimum
-        if (_no3[layer] < no3_min[layer])
-            return 0.0;
-
-
-        // get available carbon from soil organic pools
-        double active_c = actC_p1 * (hum_c[layer] + fom_c_pool1[layer] + fom_c_pool2[layer] + fom_c_pool3[layer]) * convFactor_kgha2ppm(layer) + actC_p2;
-        // Note CM V2 had active_c = fom_C_conc + 0.0031*hum_C_conc + 24.5
-
-        int index = 0; // denitrification calcs are not different whether there is pond or not. use 1 as default
-        // get the soil water factor
-        double wf = WFDenit(layer);
-        if (useNewFunctions)
-            wf = SoilMoistFactor(layer, index, MoistFactor_Denit);
-
-        // get the soil temperature factor
-        double tf = Math.Max(0.0, Math.Min(1.0, 0.1 * Math.Exp(0.046 * st[layer])));
-        // This is an empirical dimensionless function to account for the effect of temperature.
-        // The upper limit of 1.0 means that optimum denitrification temperature is 50 oC and above.  At 0 oC it is 0.1 of optimum, and at -20 oC is about 0.04.
-        if (useNewFunctions)
-            tf = SoilTempFactor(layer, index, TempFactor_Denit);
-
-        // calculate denitrification rate  - kg/ha
-        double result = dnit_rate_coeff * active_c * wf * tf * _no3[layer];
-
-        // prevent no3 from falling below NO3_min
-        result = Math.Max(0.0, Math.Min(result, _no3[layer] - no3_min[layer]));
-
-        return result;
-    }
-
-    private double Denitrification_Nratio(int layer)
-    {
-        // + Purpose
-        //     Calculate the N2 to N2O ration during denitrification
-
-        // the water filled pore space (%)
-        double WFPS = sw_dep[layer] / sat_dep[layer] * 100.0;
-
-        // CO2 production today (kgC/ha)
-        double CO2_prod = (dlt_c_fom_2_atm[0][layer] + dlt_c_fom_2_atm[1][layer] + dlt_c_fom_2_atm[2][layer] + dlt_c_biom_2_atm[layer] + dlt_c_hum_2_atm[layer]);
-
-        // calculate the terms for the formula from Thornburn et al (2010)
-        double RtermA = dnit_A * dnit_k1;
-        double RtermB = 0.0;
-        if (CO2_prod > 0.0)
-            RtermB = dnit_k1 * Math.Exp(-dnit_B * (_no3[layer] / CO2_prod));
-        double RtermC = dnit_C;
-        bool didInterpolate;
-        double RtermD = MathUtility.LinearInterpReal(WFPS, dnit_wfps, dnit_n2o_factor, out didInterpolate);
-        // RTermD = (0.015 * WFPS) - 0.32;
-
-        double result = Math.Max(RtermA, RtermB) * Math.Max(RtermC, RtermD);
-
-        return result;
-    }
-
-    private void PackActualResidueDecomposition()
-    {
-        // + Purpose
-        //     Send back the information about actual decomposition
-        //      Potential decomposition was given to this module by a residue/surfaceOM module.  Now we explicitly tell the module the actual decomposition
-        //      rate for each of its residues.  If there wasn't enough mineral N to decompose, the rate will be reduced from the potential value.
-
-        int nLayers = dlayer.Length;
-
-        soilp_dlt_res_c_atm = new double[nLayers];
-        soilp_dlt_res_c_hum = new double[nLayers];
-        soilp_dlt_res_c_biom = new double[nLayers];
-        soilp_dlt_org_p = new double[nLayers];
-        double soilp_cpr = MathUtility.Divide(SumDoubleArray(pot_p_decomp), SumDoubleArray(pot_c_decomp), 0.0);  // P:C ratio for potential decomposition
-
-        //SurfaceOrganicMatterDecompType SOMDecomp = new SurfaceOrganicMatterDecompType();
-        SOMDecomp = new SurfaceOrganicMatterDecompType();
-        Array.Resize(ref SOMDecomp.Pool, num_residues);
-
-
-        for (int residue = 0; residue < num_residues; residue++)
-        {
-            double c_summed = 0.0;
-            double n_summed = 0.0;
-            double[] dlt_res_c_decomp = new double[nLayers];
-            double[] dlt_res_n_decomp = new double[nLayers];
-            for (int layer = 0; layer < nLayers; layer++)
-            {
-                dlt_res_c_decomp[layer] = dlt_c_res_2_hum[layer][residue] +
-                                          dlt_c_res_2_biom[layer][residue] +
-                                          dlt_c_res_2_atm[layer][residue];
-                c_summed += dlt_res_c_decomp[layer];
-
-                //dlt_res_n_decomp[layer] = this.dlt_n_decomp[layer][residue];
-                dlt_res_n_decomp[layer] = dlt_n_decomp[layer][residue];
-                n_summed += dlt_res_n_decomp[layer];
-            }
-
-            // dsg 131103  Now, pack up the structure to return decompositions to SurfaceOrganicMatter
-            SOMDecomp.Pool[residue] = new SurfaceOrganicMatterDecompPoolType();
-            SOMDecomp.Pool[residue].FOM = new FOMType();
-            SOMDecomp.Pool[residue].Name = residue_name[residue];
-            SOMDecomp.Pool[residue].OrganicMatterType = residue_type[residue];
-
-            // dsg 131103   The 'amount' value will not be used by SurfaceOrganicMatter, so send zero as default
-            SOMDecomp.Pool[residue].FOM.amount = 0.0F;
-            if (Math.Abs(c_summed) < epsilon)
-                c_summed = 0.0;
-            if (Math.Abs(n_summed) < epsilon)
-                n_summed = 0.0;
-            SOMDecomp.Pool[residue].FOM.C = (float)c_summed;
-            SOMDecomp.Pool[residue].FOM.N = (float)n_summed;
-
-            // dsg 131103   The 'P' value will not be collected by SurfaceOrganicMatter, so send zero as default.
-            SOMDecomp.Pool[residue].FOM.P = 0.0F;
-            SOMDecomp.Pool[residue].FOM.AshAlk = 0.0F;
-
-            // dsg 131004 soilp needs some stuff - very ugly process - needs to be streamlined
-            //  create some variables which soilp can "get" - layer based arrays independent of residues
-            for (int layer = 0; layer < nLayers; layer++)
-            {
-                soilp_dlt_res_c_atm[layer] += dlt_c_res_2_atm[layer][residue];
-                soilp_dlt_res_c_hum[layer] += dlt_c_res_2_hum[layer][residue];
-                soilp_dlt_res_c_biom[layer] += dlt_c_res_2_biom[layer][residue];
-                soilp_dlt_org_p[layer] += dlt_res_c_decomp[layer] * soilp_cpr;
-            }
-        }
-    }
-
     private void CheckProfile(float[] newProfile)
     {
         // + Purpose
@@ -2224,7 +2229,7 @@ class soilCNPatch
         }
         return profile_loss;
     }
-
+    
     #endregion
 
     #region Factor's calculation
@@ -2491,7 +2496,7 @@ class soilCNPatch
 
     #endregion
 
-    #region Auxiliar procedures
+    #region Auxiliary functions
 
     private double convFactor_kgha2ppm(int layer)
     {

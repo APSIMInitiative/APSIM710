@@ -30,7 +30,7 @@ public partial class SoilNitrogen
         #region General setting parameters
 
         // soil parameterisation to use, used to determine which node of xml file will be used to read [Param]
-        Patch[k].soilparam = soilparam;
+        Patch[k].SoilParamSet = SoilParamSet;
 
         // switch indicating whether soil profile reduction is allowed (from erosion)
         Patch[k].AllowProfileReduction = AllowProfileReduction;
@@ -291,11 +291,11 @@ public partial class SoilNitrogen
         Patch[k].MoistFactor_Hydrol.yVals = MoistFactor_Hydrol.yVals;
 
         // parameters for potential urea hydrolisys
-        Patch[k].pot_hydrol_min = potHydrol_min;
-        Patch[k].pot_hydrol_termA = potHydrol_parmA;
-        Patch[k].pot_hydrol_termB = potHydrol_parmB;
-        Patch[k].pot_hydrol_termC = potHydrol_parmC;
-        Patch[k].pot_hydrol_termD = potHydrol_parmD;
+        Patch[k].potHydrol_min = potHydrol_min;
+        Patch[k].potHydrol_parmA = potHydrol_parmA;
+        Patch[k].potHydrol_parmB = potHydrol_parmB;
+        Patch[k].potHydrol_parmC = potHydrol_parmC;
+        Patch[k].potHydrol_parmD = potHydrol_parmD;
 
         #endregion
 
@@ -384,19 +384,19 @@ public partial class SoilNitrogen
         Patch[k].MoistFactor_Denit.yVals = MoistFactor_Denit.yVals;
 
         // parameter for TermA in N2N2O function
-        Patch[k].dnit_A = N2N2O_parmA;
+        Patch[k].N2N2O_parmA = N2N2O_parmA;
 
         // parameter for TermB in N2N2O function
-        Patch[k].dnit_B = N2N2O_parmB;
+        Patch[k].N2N2O_parmB = N2N2O_parmB;
 
         // parameter for TermC in N2N2O function
-        Patch[k].dnit_C = N2N2O_parmC;
+        Patch[k].N2N2O_parmC = N2N2O_parmC;
 
         // parameter 1 to compute active carbon (for denitrification)
-        Patch[k].actC_p1 = actC_parmA;
+        Patch[k].actC_parmA = actC_parmA;
 
         // parameter 2 to compute active carbon (for denitrification)
-        Patch[k].actC_p2 = actC_parmB;
+        Patch[k].actC_parmB = actC_parmB;
 
         #endregion
 
@@ -656,7 +656,7 @@ public partial class SoilNitrogen
         return result;
     }
 
-    private PatchIDs comparePatches()
+    private PatchIDs ComparePatches()
     {
         // +  Purpose:
         //      Compare all existing patches, return the pairs that can be merged

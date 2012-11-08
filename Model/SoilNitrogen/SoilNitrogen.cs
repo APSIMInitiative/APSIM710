@@ -46,7 +46,7 @@ public partial class SoilNitrogen
 
     #endregion
 
-    #region Events to which we subscribe, and their handlers
+    #region Setup events handlers and methods
 
     [EventHandler]
     public void OnInitialised()
@@ -95,9 +95,6 @@ public partial class SoilNitrogen
         // Save present state
         SaveState();
 
-        // Zero internal state variables - not used yet
-        ZeroVariables();
-
         // reset the size of arrays - so it zeroes them
         ResizeLayerArrays(dlayer.Length);
 
@@ -138,324 +135,6 @@ public partial class SoilNitrogen
         inReset = false;
     }
 
-    [EventHandler(EventName = "process")]
-    public void OnProcess()
-    {
-        // +  Purpose:
-        //      Performs every-day calculations - main process phase
-
-        // update soil temperature
-        if (use_external_st)
-            st = ave_soil_temp;
-        else
-            st = simpleST.SoilTemperature(today, mint, maxt, radn, salb, dlayer, bd, ll15_dep, sw_dep);
-
-        // update patch data
-        UpdatePatches();
-
-        // calculate C and N processes
-        Process();
-
-        // send actual decomposition back to surface OM
-        if (!is_pond_active)
-            SendActualResidueDecompositionCalculated();
-    }
-
-    [EventHandler(EventName = "post")]
-    public void OnPost()
-    {
-        // +  Purpose:
-        //      Performs every-day calculations - end of day processes
-
-        if (Patch.Count > 10) // must set this to zero later
-        {
-            // we have more than one patch, check whether they are similar enough to be merged
-            PatchIDs Patches = new PatchIDs();
-            Patches = comparePatches();
-
-            if (Patches.disappearing.Count > 0)
-            {  // there are patches that will be merged
-                for (int k = 0; k < Patches.disappearing.Count; k++)
-                {
-                    MergePatches(Patches.recipient[k], Patches.disappearing[k]);
-                    Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.MergePatch:");
-                    Console.WriteLine("   merging Patch(" + Patches.disappearing[k].ToString() + ") into Patch(" + Patches.recipient[k].ToString() +
-                        "). New patch area = " + Patch[Patches.recipient[k]].PatchArea.ToString("#0.00#"));
-                }
-            }
-        }
-    }
-
-    [EventHandler(EventName = "sum_report")]
-    public void OnSum_report()
-    {
-        WriteSummaryReport();
-    }
-
-    [EventHandler(EventName = "tick")]
-    public void OnTick(TimeType time)
-    {
-        // +  Purpose:
-        //      Reset potential decomposition variables and get initial C and N status
-
-        foreach (soilCNPatch aPatch in Patch)
-            aPatch.OnTick();
-
-        // Calculations for NEW sysbal component
-        dailyInitialC = SumDoubleArray(carbon_tot);
-        dailyInitialN = SumDoubleArray(nit_tot);
-    }
-
-    [EventHandler(EventName = "IncorpFOM")]
-    public void OnIncorpFOM(FOMLayerType FOMdata)
-    {
-        // +  Purpose:
-        //      Partition the given FOM C and N into fractions in each layer.
-        //      In this event all FOM is given as one, so it will be assumed that the CN ratios of all fractions are equal
-
-        foreach (soilCNPatch aPatch in Patch)
-            aPatch.OnIncorpFOM(FOMdata);
-
-        fom_type = Patch[0].fom_type;
-    }
-
-    [EventHandler(EventName = "IncorpFOMPool")]
-    public void OnIncorpFOMPool(FOMPoolType FOMPoolData)
-    {
-        // +  Purpose:
-        //      Partition the given FOM C and N into fractions in each layer.
-        //      In this event each of the three pools is given
-
-        foreach (soilCNPatch aPatch in Patch)
-            aPatch.OnIncorpFOMPool(FOMPoolData);
-    }
-
-    [EventHandler(EventName = "PotentialResidueDecompositionCalculated")]
-    public void OnPotentialResidueDecompositionCalculated(SurfaceOrganicMatterDecompType SurfaceOrganicMatterDecomp)
-    {
-        //+  Purpose
-        //     Get information of potential residue decomposition
-
-        foreach (soilCNPatch aPatch in Patch)
-            aPatch.OnPotentialResidueDecompositionCalculated(SurfaceOrganicMatterDecomp);
-
-        num_residues = SurfaceOrganicMatterDecomp.Pool.Length;
-    }
-
-    [EventHandler(EventName = "new_profile")]
-    public void OnNew_profile(NewProfileType NewProfile)
-    {
-        //+  Purpose
-        //     Consider soil profile changes - primarily due to by erosion (??)
-
-        foreach (soilCNPatch aPatch in Patch)
-            aPatch.OnNew_profile(NewProfile);
-    }
-
-    [EventHandler(EventName = "NitrogenChanged")]
-    public void OnNitrogenChanged(NitrogenChangedType NitrogenChanges)
-    {
-        //+  Purpose
-        //     Get the delta mineral N from other module
-        //     Send deltas to each patch, if delta comes from soil or plant then the values are modified (partioned)
-        //      based on N content. If sender is any other module then values are passed to patches as they come
-
-        string module = NitrogenChanges.Sender.ToLower();
-        if (module == "soilwat" || module == "agpasture" || module == "plant")
-        {
-            // values supplied by a module from which a different treatment for each patch is required,
-            //  they will be partitioned according to the N content in each patch
-
-            // 1- consider urea:
-            if (hasValues(NitrogenChanges.DeltaUrea, epsilon))
-            {
-                // send incoming dlt to be partitioned amongst patches
-                double[][] newDelta = partitionDelta(NitrogenChanges.DeltaUrea, "urea");
-                // 1.1- send dlt's to each patch
-                for (int k = 0; k < Patch.Count; k++)
-                    Patch[k].dlt_urea = newDelta[k];
-            }
-
-            // 2- consider nh4:
-            if (hasValues(NitrogenChanges.DeltaNH4, epsilon))
-            {
-                // send incoming dlt to be partitioned amongst patches
-                double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNH4, "nh4");
-                // 2.1- send dlt's to each patch
-                for (int k = 0; k < Patch.Count; k++)
-                    Patch[k].dlt_nh4 = newDelta[k];
-            }
-
-             // 3- consider no3:
-            if (hasValues(NitrogenChanges.DeltaNO3, epsilon))
-            {
-                // send incoming dlt to be partitioned amongst patches
-                double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNO3, "no3");
-                // 3.1- send dlt's to each patch
-                for (int k = 0; k < Patch.Count; k++)
-                    Patch[k].dlt_no3 = newDelta[k];
-            }
-        }
-        else
-        {
-            // values will passed to patches as they come
-            for (int k = 0; k < Patch.Count; k++)
-            {
-                Patch[k].dlt_urea = NitrogenChanges.DeltaUrea;
-                Patch[k].dlt_nh4 = NitrogenChanges.DeltaNH4;
-                Patch[k].dlt_no3 = NitrogenChanges.DeltaNO3;
-            }
-        }
-    }
-
-    [EventHandler(EventName = "AddUrine")]
-    public void OnAddUrine(AddUrineType UrineAdded)
-    {
-        //+  Purpose
-        //     Add urine
-
-        // Starting with the minimalist version. To be updated by Val's group to
-        // include a urine patch algorithm
-
-        // test for adding urine patches
-        // if VolumePerUrination = 0.0 then no patch will be added, otherwise a patch will be added (based on 'base' patch)
-        // assuming new PatchArea is passed as a fraction and this will be subtracted from original
-        // urea will be added to the top layer for now
-
-        double[] newUrea = new double[dlayer.Length];
-        newUrea[0] = UrineAdded.Urea;
-        
-        if (UrineAdded.VolumePerUrination > 0.0)
-        {
-            SplitPatch(0);
-            double oldArea = Patch[0].PatchArea;
-            double newArea = oldArea - UrineAdded.AreaPerUrination;
-            Patch[0].PatchArea = newArea;
-            int k = Patch.Count - 1;  // make it explicit for now to ease reading
-            Patch[k].PatchArea = UrineAdded.AreaPerUrination;
-            Patch[k].PatchName = "Patch" + k.ToString();
-            if (UrineAdded.Urea > epsilon)
-                Patch[k].dlt_urea = newUrea;
-        }
-        else
-            for (int k = 0; k < Patch.Count; k++)
-                Patch[k].dlt_urea = newUrea;
-    }
-
-    [EventHandler(EventName = "AddSoilCNPatch")]
-    public void OnAddSoilCNPatch(AddSoilCNPatchType PatchtoAdd)
-    {
-        //+  Purpose
-        //     Handling the addition of urine patches
-
-        // data passed with this event:
-        //.Sender: the name of the module that raised this event
-        //.DepositionType: the type of deposition:
-        //  - Homogeneous: No patch is created, add urine as given to all patches. It is the default
-        //  - ToSpecificPatch: No patch is created, add urine to selected patches (given by id or name if supplied, or default to Homogenous)
-        //  - NewSimplePatch: create new patch(es) based on an existing patch (given by id or name if supplied, or by default the base/Patch[0])
-        //  - NewOverlappingPatch, create new patch(es), overlaps with all existing patches, provided the new area is larger than a minimum (minPatchArea)
-        //.AddToPatches_id: the index of the existing patches to which urine will be added
-        //.AddToPatches_nm: the name of the existing patches to which urine will be added
-        //.PatchArea: the relative area of the patch (0-1)
-        //.UrineWater: amount of water to add, not handled here
-        //.Urea: amount of urea to add, per layer
-
-        double[] deltaUrea = new double[PatchtoAdd.Urea.Length];
-        double totalUrea = SumDoubleArray(deltaUrea);
-
-        //int[] fakeIDs = new int[PatchtoAdd.AddToPatches_id.Length];
-        List<int> PatchesToDelete = new List<int>();
-
-        if ((PatchtoAdd.DepositionType.ToLower() == "NewSimplePatch".ToLower()) || (PatchtoAdd.DepositionType.ToLower() == "NewOverlappingPatch".ToLower()))
-        {
-            // get the list of patch id's to which urine will be added, and the area affected
-            int[] PatchIDs;
-            double AreaAffected = 0;
-            if (PatchtoAdd.DepositionType.ToLower() == "NewOverlappingPatch".ToLower())
-            {
-                PatchIDs = new int[Patch.Count - 1];
-                for (int k = 0; k < Patch.Count; k++)
-                    PatchIDs[k] = k;
-                AreaAffected = 1.0;
-            }
-            else
-            {
-                PatchIDs = CheckPatchIDs(PatchtoAdd.AddToPatches_id, PatchtoAdd.AddToPatches_nm);
-                for (int i = 0; i < PatchIDs.Length; i++)
-                    AreaAffected += Patch[PatchIDs[i]].PatchArea;
-            }
-
-            for (int i = 0; i < PatchIDs.Length; i++)
-            {
-                // check the areas:
-                double OldPatch_oldArea = Patch[PatchIDs[i]].PatchArea;
-                double NewPatch_area = (OldPatch_oldArea / AreaAffected) * PatchtoAdd.PatchArea;
-                double OldPatch_newArea = NewPatch_area - NewPatch_area;
-                if (NewPatch_area < minPatchArea)
-                {  // area to create is too small, patch will not be created
-                    Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
-                    Console.WriteLine("   attempt to create a new patch with area too small or negative (" + NewPatch_area.ToString("#0.00#") + "). The patch will not be created");
-                }
-                else if (OldPatch_newArea < minPatchArea)
-                {  // negative or too small area, patch will be created but old one will be deleted
-                    Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
-                    Console.WriteLine(" attempt to set the area of existing patch(" + PatchIDs[i].ToString() + ") to a value too small or negative (" + OldPatch_newArea.ToString("#0.00#") + "). The patch will be eliminated");
-                    
-                    // mark old patch for deletion
-                    PatchesToDelete.Add(PatchIDs[i]);
-
-                    // create new patch by taking the old one
-                    soilCNPatch OldPatch = Patch[PatchIDs[i]];
-                    Patch.Add(OldPatch);
-                    int k = Patch.Count - 1;
-                    Patch[k].PatchName = "Patch" + k.ToString();
-                    Patch[k].dlt_urea = deltaUrea;
-                    Console.WriteLine(" create new patch, with area = " + OldPatch_oldArea.ToString("#0.00#") + ", based on extint patch(" + PatchIDs[i].ToString() +
-                        "), area = " + OldPatch_oldArea.ToString("#0.00#"));
-                }
-                else
-                {  // create new patch by spliting an existing one
-                    SplitPatch(PatchIDs[i]);
-                    Patch[PatchIDs[i]].PatchArea = OldPatch_newArea;
-                    int k = Patch.Count - 1;
-                    Patch[k].PatchArea = NewPatch_area;
-                    Patch[k].PatchName = "Patch" + k.ToString();
-                    Patch[k].dlt_urea = deltaUrea;
-                    Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
-                    Console.WriteLine(" create new patch, with area = " + NewPatch_area.ToString("#0.00#") + ", based on existing patch(" + PatchIDs[i].ToString() + 
-                        ") - Old area = " + NewPatch_area.ToString("#0.00#") + ", new area = "+ NewPatch_area.ToString("#0.00#"));
-                }
-            }
-        }
-        else if (PatchtoAdd.DepositionType.ToLower() == "ToSpecificPatch".ToLower())
-        {
-        // add urine to selected patches, no new patch will be created
-            // 1. check whether N is being added, if not skip this
-            if (totalUrea > epsilon)
-            {
-                // 2. get the list of patch id's to which urine will be added
-                int[] PatchIDs = CheckPatchIDs(PatchtoAdd.AddToPatches_id, PatchtoAdd.AddToPatches_nm);
-                // 3. Add deltaUrea to each patch
-                for (int i = 0; i < PatchIDs.Length; i++)
-                    Patch[i].dlt_urea = deltaUrea;
-            }
-        }
-        else
-        // add urine to all existing patches, no new patch will be created
-            // 1. check whether N is being added, if not skip this
-            if (totalUrea > epsilon)
-            {
-                // 2. Add deltaUrea to each patch
-                for (int k = 0; k < Patch.Count; k++)
-                    Patch[k].dlt_urea = deltaUrea;
-            }
-    }
-
-    #endregion
-
-    #region Setup calculations
-
     private void CheckParams()
     {
         // +  Purpose:
@@ -464,9 +143,9 @@ public partial class SoilNitrogen
         Console.WriteLine();
         Console.WriteLine("        - Reading/checking parameters");
 
-        soilparam = soilparam.Trim();
+        SoilParamSet = SoilParamSet.Trim();
 
-        Console.WriteLine("           - Using " + soilparam + " soil mineralisation specification");
+        Console.WriteLine("           - Using " + SoilParamSet + " soil mineralisation specification");
 
         // check whether soil temperature is present. If not, check whether the basic params for simpleSoilTemp have been supplied
         if (AllowsimpleSoilTemp)
@@ -591,9 +270,9 @@ public partial class SoilNitrogen
                 Patch[k].fom_c_pool1[layer] = fom * fract_carb[0] * c_in_fom;
                 Patch[k].fom_c_pool2[layer] = fom * fract_cell[0] * c_in_fom;
                 Patch[k].fom_c_pool3[layer] = fom * fract_lign[0] * c_in_fom;
-                Patch[k].fom_n_pool1[layer] = MathUtility.Divide(Patch[k].fom_c_pool1[layer], root_cn_pool[0], 0.0);
-                Patch[k].fom_n_pool2[layer] = MathUtility.Divide(Patch[k].fom_c_pool2[layer], root_cn_pool[1], 0.0);
-                Patch[k].fom_n_pool3[layer] = MathUtility.Divide(Patch[k].fom_c_pool3[layer], root_cn_pool[2], 0.0);
+                Patch[k].fom_n_pool1[layer] = MathUtility.Divide(Patch[k].fom_c_pool1[layer], fomPools_cn[0], 0.0);
+                Patch[k].fom_n_pool2[layer] = MathUtility.Divide(Patch[k].fom_c_pool2[layer], fomPools_cn[1], 0.0);
+                Patch[k].fom_n_pool3[layer] = MathUtility.Divide(Patch[k].fom_c_pool3[layer], fomPools_cn[2], 0.0);
             }
 
             // store today's values
@@ -606,12 +285,6 @@ public partial class SoilNitrogen
         dailyInitialN = SumDoubleArray(nit_tot);
 
         initDone = true;
-    }
-
-    private void ZeroVariables()
-    {
-        // +  Purpose:
-        //      Wait and see whether this is needed
     }
 
     private void ResizeLayerArrays(int nLayers)
@@ -732,7 +405,71 @@ public partial class SoilNitrogen
 
     #endregion
 
-    #region Process calculations
+    #region Process events handlers and methods
+
+    #region Daily processes
+
+    [EventHandler(EventName = "process")]
+    public void OnProcess()
+    {
+        // + Purpose:
+        //     Performs every-day calculations - main process phase
+
+        // update soil temperature
+        if (use_external_st)
+            st = ave_soil_temp;
+        else
+            st = simpleST.SoilTemperature(today, mint, maxt, radn, salb, dlayer, bd, ll15_dep, sw_dep);
+
+        // update patch data
+        UpdatePatches();
+
+        // calculate C and N processes
+        Process();
+
+        // send actual decomposition back to surface OM
+        if (!is_pond_active)
+            SendActualResidueDecompositionCalculated();
+    }
+
+    [EventHandler(EventName = "tick")]
+    public void OnTick(TimeType time)
+    {
+        // + Purpose:
+        //     Reset potential decomposition variables and get initial C and N status
+
+        foreach (soilCNPatch aPatch in Patch)
+            aPatch.OnTick();
+
+        // Calculations for NEW sysbal component
+        dailyInitialC = SumDoubleArray(carbon_tot);
+        dailyInitialN = SumDoubleArray(nit_tot);
+    }
+
+    [EventHandler(EventName = "post")]
+    public void OnPost()
+    {
+        // + Purpose:
+        //     Performs every-day calculations - end of day processes
+
+        if (Patch.Count > 10) // must set this to one later
+        {
+            // we have more than one patch, check whether they are similar enough to be merged
+            PatchIDs Patches = new PatchIDs();
+            Patches = ComparePatches();
+
+            if (Patches.disappearing.Count > 0)
+            {  // there are patches that will be merged
+                for (int k = 0; k < Patches.disappearing.Count; k++)
+                {
+                    MergePatches(Patches.recipient[k], Patches.disappearing[k]);
+                    Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.MergePatch:");
+                    Console.WriteLine("   merging Patch(" + Patches.disappearing[k].ToString() + ") into Patch(" + Patches.recipient[k].ToString() +
+                        "). New patch area = " + Patch[Patches.recipient[k]].PatchArea.ToString("#0.00#"));
+                }
+            }
+        }
+    }
 
     private void Process()
     {
@@ -743,34 +480,6 @@ public partial class SoilNitrogen
 
         for (int k = 0; k < Patch.Count; k++)
             Patch[k].Process();
-    }
-
-    private void SendExternalMassFlowN(double dltN)
-    {
-        // + Purpose
-        //     Let other components know that N amount in the soil has changed
-
-        ExternalMassFlowType massBalanceChange = new ExternalMassFlowType();
-        if (Math.Abs(dltN) <= epsilon)
-            dltN = 0.0;
-        massBalanceChange.FlowType = dltN >= 0 ? "gain" : "loss";
-        massBalanceChange.PoolClass = "soil";
-        massBalanceChange.N = (float)Math.Abs(dltN);
-        ExternalMassFlow.Invoke(massBalanceChange);
-    }
-
-    private void SendExternalMassFlowC(double dltC)
-    {
-        // + Purpose
-        //     Let other components know that soil C has changed
-
-        ExternalMassFlowType massBalanceChange = new ExternalMassFlowType();
-        if (Math.Abs(dltC) <= epsilon)
-            dltC = 0.0;
-        massBalanceChange.FlowType = dltC >= 0 ? "gain" : "loss";
-        massBalanceChange.PoolClass = "soil";
-        massBalanceChange.N = (float)Math.Abs(dltC);
-        ExternalMassFlow.Invoke(massBalanceChange);
     }
 
     private void SendActualResidueDecompositionCalculated()
@@ -818,7 +527,294 @@ public partial class SoilNitrogen
 
     #endregion
 
-    #region Auxiliar functions
+    #region Frequent and sporadic processes
+
+    [EventHandler(EventName = "sum_report")]
+    public void OnSum_report()
+    {
+        WriteSummaryReport();
+    }
+
+    [EventHandler(EventName = "IncorpFOM")]
+    public void OnIncorpFOM(FOMLayerType inFOMdata)
+    {
+        // +  Purpose:
+        //      Partition the given FOM C and N into fractions in each layer.
+        //      In this event all FOM is given as one, so it will be assumed that the CN ratios of all fractions are equal
+
+        foreach (soilCNPatch aPatch in Patch)
+            aPatch.OnIncorpFOM(inFOMdata);
+
+        fom_type = Patch[0].fom_type;
+    }
+
+    [EventHandler(EventName = "IncorpFOMPool")]
+    public void OnIncorpFOMPool(FOMPoolType inFOMPoolData)
+    {
+        // +  Purpose:
+        //      Partition the given FOM C and N into fractions in each layer.
+        //      In this event each of the three pools is given
+
+        foreach (soilCNPatch aPatch in Patch)
+            aPatch.OnIncorpFOMPool(inFOMPoolData);
+    }
+
+    [EventHandler(EventName = "PotentialResidueDecompositionCalculated")]
+    public void OnPotentialResidueDecompositionCalculated(SurfaceOrganicMatterDecompType SurfaceOrganicMatterDecomp)
+    {
+        //+  Purpose
+        //     Get information of potential residue decomposition
+
+        foreach (soilCNPatch aPatch in Patch)
+            aPatch.OnPotentialResidueDecompositionCalculated(SurfaceOrganicMatterDecomp);
+
+        num_residues = SurfaceOrganicMatterDecomp.Pool.Length;
+    }
+
+    [EventHandler(EventName = "new_profile")]
+    public void OnNew_profile(NewProfileType NewProfile)
+    {
+        //+  Purpose
+        //     Consider soil profile changes - primarily due to by erosion (??)
+
+        foreach (soilCNPatch aPatch in Patch)
+            aPatch.OnNew_profile(NewProfile);
+    }
+
+    [EventHandler(EventName = "NitrogenChanged")]
+    public void OnNitrogenChanged(NitrogenChangedType NitrogenChanges)
+    {
+        //+  Purpose
+        //     Get the delta mineral N from other module
+        //     Send deltas to each patch, if delta comes from soil or plant then the values are modified (partioned)
+        //      based on N content. If sender is any other module then values are passed to patches as they come
+
+        string module = NitrogenChanges.Sender.ToLower();
+        if (module == "soilwat" || module == "agpasture" || module == "plant")
+        {
+            // values supplied by a module from which a different treatment for each patch is required,
+            //  they will be partitioned according to the N content in each patch
+
+            // 1- consider urea:
+            if (hasValues(NitrogenChanges.DeltaUrea, epsilon))
+            {
+                // send incoming dlt to be partitioned amongst patches
+                double[][] newDelta = partitionDelta(NitrogenChanges.DeltaUrea, "urea");
+                // 1.1- send dlt's to each patch
+                for (int k = 0; k < Patch.Count; k++)
+                    Patch[k].dlt_urea = newDelta[k];
+            }
+
+            // 2- consider nh4:
+            if (hasValues(NitrogenChanges.DeltaNH4, epsilon))
+            {
+                // send incoming dlt to be partitioned amongst patches
+                double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNH4, "nh4");
+                // 2.1- send dlt's to each patch
+                for (int k = 0; k < Patch.Count; k++)
+                    Patch[k].dlt_nh4 = newDelta[k];
+            }
+
+             // 3- consider no3:
+            if (hasValues(NitrogenChanges.DeltaNO3, epsilon))
+            {
+                // send incoming dlt to be partitioned amongst patches
+                double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNO3, "no3");
+                // 3.1- send dlt's to each patch
+                for (int k = 0; k < Patch.Count; k++)
+                    Patch[k].dlt_no3 = newDelta[k];
+            }
+        }
+        else
+        {
+            // values will passed to patches as they come
+            for (int k = 0; k < Patch.Count; k++)
+            {
+                Patch[k].dlt_urea = NitrogenChanges.DeltaUrea;
+                Patch[k].dlt_nh4 = NitrogenChanges.DeltaNH4;
+                Patch[k].dlt_no3 = NitrogenChanges.DeltaNO3;
+            }
+        }
+    }
+
+    [EventHandler(EventName = "AddUrine")]
+    public void OnAddUrine(AddUrineType UrineAdded)
+    {
+        //+  Purpose
+        //     Add urine
+
+        // Starting with the minimalist version. To be updated by Val's group to include a urine patch algorithm
+
+        // test for adding urine patches
+        // if VolumePerUrination = 0.0 then no patch will be added, otherwise a patch will be added (based on 'base' patch)
+        // assuming new PatchArea is passed as a fraction and this will be subtracted from original
+        // urea will be added to the top layer for now
+
+        double[] newUrea = new double[dlayer.Length];
+        newUrea[0] = UrineAdded.Urea;
+
+        if (UrineAdded.VolumePerUrination > 0.0)
+        {
+            SplitPatch(0);
+            double oldArea = Patch[0].PatchArea;
+            double newArea = oldArea - UrineAdded.AreaPerUrination;
+            Patch[0].PatchArea = newArea;
+            int k = Patch.Count - 1;  // make it explicit for now to ease reading
+            Patch[k].PatchArea = UrineAdded.AreaPerUrination;
+            Patch[k].PatchName = "Patch" + k.ToString();
+            if (UrineAdded.Urea > epsilon)
+                Patch[k].dlt_urea = newUrea;
+        }
+        else
+            for (int k = 0; k < Patch.Count; k++)
+                Patch[k].dlt_urea = newUrea;
+
+    }
+
+    //    public void OnAddSoilCNPatch(AddSoilCNPatchType PatchtoAdd)
+    [EventHandler(EventName = "AddSoilCNPatch")]
+    public void OnAddSoilCNPatch(AddSoilCNPatchType PatchtoAdd)
+    {
+        //+  Purpose
+        //     Handling the addition of urine patches
+
+        // data passed with this event:
+        //.Sender: the name of the module that raised this event
+        //.DepositionType: the type of deposition:
+        //  - Homogeneous: No patch is created, add urine as given to all patches. It is the default
+        //  - ToSpecificPatch: No patch is created, add urine to selected patches (given by id or name if supplied, or default to Homogenous)
+        //  - NewSimplePatch: create new patch(es) based on an existing patch (given by id or name if supplied, or by default the base/Patch[0])
+        //  - NewOverlappingPatch, create new patch(es), overlaps with all existing patches, provided the new area is larger than a minimum (minPatchArea)
+        //.AddToPatches_id: the index of the existing patches to which urine will be added
+        //.AddToPatches_nm: the name of the existing patches to which urine will be added
+        //.PatchArea: the relative area of the patch (0-1)
+        //.UrineWater: amount of water to add, not handled here
+        //.Urea: amount of urea to add, per layer
+
+        double[] deltaUrea = new double[PatchtoAdd.Urea.Length];
+        double totalUrea = SumDoubleArray(deltaUrea);
+
+        //int[] fakeIDs = new int[PatchtoAdd.AddToPatches_id.Length];
+        List<int> PatchesToDelete = new List<int>();
+
+        if ((PatchtoAdd.DepositionType.ToLower() == "NewSimplePatch".ToLower()) || (PatchtoAdd.DepositionType.ToLower() == "NewOverlappingPatch".ToLower()))
+        {
+            // get the list of patch id's to which urine will be added, and the area affected
+            int[] PatchIDs;
+            double AreaAffected = 0;
+            if (PatchtoAdd.DepositionType.ToLower() == "NewOverlappingPatch".ToLower())
+            {
+                PatchIDs = new int[Patch.Count - 1];
+                for (int k = 0; k < Patch.Count; k++)
+                    PatchIDs[k] = k;
+                AreaAffected = 1.0;
+            }
+            else
+            {
+                PatchIDs = CheckPatchIDs(PatchtoAdd.AddToPatches_id, PatchtoAdd.AddToPatches_nm);
+                for (int i = 0; i < PatchIDs.Length; i++)
+                    AreaAffected += Patch[PatchIDs[i]].PatchArea;
+            }
+
+            for (int i = 0; i < PatchIDs.Length; i++)
+            {
+                // check the areas:
+                double OldPatch_oldArea = Patch[PatchIDs[i]].PatchArea;
+                double NewPatch_area = (OldPatch_oldArea / AreaAffected) * PatchtoAdd.PatchArea;
+                double OldPatch_newArea = NewPatch_area - NewPatch_area;
+                if (NewPatch_area < minPatchArea)
+                {  // area to create is too small, patch will not be created
+                    Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
+                    Console.WriteLine("   attempt to create a new patch with area too small or negative (" + NewPatch_area.ToString("#0.00#") + "). The patch will not be created");
+                }
+                else if (OldPatch_newArea < minPatchArea)
+                {  // negative or too small area, patch will be created but old one will be deleted
+                    Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
+                    Console.WriteLine(" attempt to set the area of existing patch(" + PatchIDs[i].ToString() + ") to a value too small or negative (" + OldPatch_newArea.ToString("#0.00#") + "). The patch will be eliminated");
+                    
+                    // mark old patch for deletion
+                    PatchesToDelete.Add(PatchIDs[i]);
+
+                    // create new patch by re-using the old one
+                    soilCNPatch OldPatch = Patch[PatchIDs[i]];
+                    Patch.Add(OldPatch);
+                    int k = Patch.Count - 1;
+                    Patch[k].PatchName = "Patch" + k.ToString();
+                    Patch[k].dlt_urea = deltaUrea;
+                    Console.WriteLine(" create new patch, with area = " + OldPatch_oldArea.ToString("#0.00#") + ", based on extint patch(" + PatchIDs[i].ToString() +
+                        "), area = " + OldPatch_oldArea.ToString("#0.00#"));
+                }
+                else
+                {  // create new patch by spliting an existing one
+                    SplitPatch(PatchIDs[i]);
+                    Patch[PatchIDs[i]].PatchArea = OldPatch_newArea;
+                    int k = Patch.Count - 1;
+                    Patch[k].PatchArea = NewPatch_area;
+                    Patch[k].PatchName = "Patch" + k.ToString();
+                    Patch[k].dlt_urea = deltaUrea;
+                    Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
+                    Console.WriteLine(" create new patch, with area = " + NewPatch_area.ToString("#0.00#") + ", based on existing patch(" + PatchIDs[i].ToString() + 
+                        ") - Old area = " + NewPatch_area.ToString("#0.00#") + ", new area = "+ NewPatch_area.ToString("#0.00#"));
+                }
+            }
+        }
+        else if (PatchtoAdd.DepositionType.ToLower() == "ToSpecificPatch".ToLower())
+        {
+        // add urine to selected patches, no new patch will be created
+            // 1. check whether N is being added, if not skip this
+            if (totalUrea > epsilon)
+            {
+                // 2. get the list of patch id's to which urine will be added
+                int[] PatchIDs = CheckPatchIDs(PatchtoAdd.AddToPatches_id, PatchtoAdd.AddToPatches_nm);
+                // 3. Add deltaUrea to each patch
+                for (int i = 0; i < PatchIDs.Length; i++)
+                    Patch[i].dlt_urea = deltaUrea;
+            }
+        }
+        else
+        // add urine to all existing patches, no new patch will be created
+            // 1. check whether N is being added, if not skip this
+            if (totalUrea > epsilon)
+            {
+                // 2. Add deltaUrea to each patch
+                for (int k = 0; k < Patch.Count; k++)
+                    Patch[k].dlt_urea = deltaUrea;
+            }
+    }
+
+    private void SendExternalMassFlowN(double dltN)
+    {
+        // + Purpose
+        //     Let other components know that N amount in the soil has changed
+
+        ExternalMassFlowType massBalanceChange = new ExternalMassFlowType();
+        if (Math.Abs(dltN) <= epsilon)
+            dltN = 0.0;
+        massBalanceChange.FlowType = dltN >= 0 ? "gain" : "loss";
+        massBalanceChange.PoolClass = "soil";
+        massBalanceChange.N = (float)Math.Abs(dltN);
+        ExternalMassFlow.Invoke(massBalanceChange);
+    }
+
+    private void SendExternalMassFlowC(double dltC)
+    {
+        // + Purpose
+        //     Let other components know that soil C has changed
+
+        ExternalMassFlowType massBalanceChange = new ExternalMassFlowType();
+        if (Math.Abs(dltC) <= epsilon)
+            dltC = 0.0;
+        massBalanceChange.FlowType = dltC >= 0 ? "gain" : "loss";
+        massBalanceChange.PoolClass = "soil";
+        massBalanceChange.N = (float)Math.Abs(dltC);
+        ExternalMassFlow.Invoke(massBalanceChange);
+    }
+
+    #endregion
+
+    #endregion
+
+    #region Auxiliary functions
 
     private double convFactor_kgha2ppm(int layer)
     {

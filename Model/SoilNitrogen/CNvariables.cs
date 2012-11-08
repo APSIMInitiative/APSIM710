@@ -31,7 +31,7 @@ public partial class SoilNitrogen
 
     // soil parameterisation to use, used to determine which node of xml file will be used to read [Param]
     [Param(IsOptional = true)]
-    private string soilparam = "standard";
+    private string SoilParamSet = "standard";
 
     // whether simpleSoilTemp is allowed, if 'no' SoiTemp must be present, if 'yes' SoilTemp will be used if present
     private bool AllowsimpleSoilTemp = false;
