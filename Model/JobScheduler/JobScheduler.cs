@@ -496,13 +496,11 @@ public class JobScheduler
                 // Write log message.
                 J.WriteLogMessage();
 
-                bool ok = Project.SignalJobHasFinsihed(J);
+                Project.SignalJobHasFinsihed(J);
 
                 // Add the job to our log.
                 Log.Targets[0].Jobs.Add(J);
 
-                if (!ok)
-                    return "ERROR";
             }
             return "OK";
         }

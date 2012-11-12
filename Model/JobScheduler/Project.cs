@@ -64,9 +64,10 @@ public class Project
     /// <summary>
     /// Signal that the specified job has completed. Return true if all ok. False otherwise.
     /// </summary>
-    internal bool SignalJobHasFinsihed(Job Job)
+    internal void SignalJobHasFinsihed(Job Job)
     {
         // Try and find the job.
+        bool found = false;
         foreach (Target t in Targets)
         {
             Job J = t.FindJob(Job.Name);
@@ -74,10 +75,15 @@ public class Project
             {
                 J.CopyFrom(Job);
                 t.CheckAllJobsForCompletion();
-                return true;
+                found = true;
+                break;
             }
         }
-        throw new Exception("Cannot find job: " + Job.Name);
+        if (!found) throw new Exception("Cannot find job: " + Job.Name);
+
+        // Check that all targets are finished
+        foreach (Target t in Targets)
+            t.CheckAllJobsForCompletion();
     }
 
 
