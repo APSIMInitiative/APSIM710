@@ -15,6 +15,8 @@ public class Apsim
 {
     private JobScheduler JobScheduler = null;
     private int NumJobsBeingRun = 0;
+    private int linesOut;
+    private int maxLines = -1;
 
     /// <summary>
     /// Command line entry point.
@@ -52,6 +54,16 @@ public class Apsim
 			    }
 			}
 
+            Apsim.maxLines = -1;  // No limit by default
+            if (Macros.ContainsKey("MaxOutputLines"))
+                Int32.TryParse(Macros["MaxOutputLines"], out Apsim.maxLines);
+            else
+            {
+                string maxOutput = System.Environment.GetEnvironmentVariable("MAX_APSIM_OUTPUT_LINES");
+                int newMax;
+                if (maxOutput != null && Int32.TryParse(maxOutput, out newMax))
+                    Apsim.maxLines = newMax;
+            }
 			// If they've specified a simulation name on the command line, then run just
 			// that simulation.
             PlugIns.LoadAll();
@@ -89,8 +101,10 @@ public class Apsim
 
 				for (int iarg = 0; iarg < args.Length; iarg++)
 	            {
-    	            // Assume each argument is a filename
+    	            // Assume each argument is a filename, unless it contains "="
         	        string thisFileName = realNameOfFile(args[iarg]);
+                    if (thisFileName.Contains("="))
+                        continue;
 					if (File.Exists(thisFileName)) 
 					{
                     	if (Path.GetExtension(thisFileName).ToLower() == ".con")
@@ -153,7 +167,9 @@ public class Apsim
         	foreach (string SimulationPath in SimulationPaths)
 	        {
         	    string Arguments = StringManip.DQuote(F.FileName) + " " + StringManip.DQuote("Simulation=" + SimulationPath);
-    	        Job J = new Job(Apsim + " " + Arguments, Path.GetDirectoryName(F.FileName));
+                if (maxLines > 0)
+                    Arguments += " MaxOutputLines=" + maxLines.ToString();
+                Job J = new Job(Apsim + " " + Arguments, Path.GetDirectoryName(F.FileName));
             	J.Name = SimulationPath;
 				J.IgnoreErrors = true;
     	        T.Jobs.Add(J);
@@ -184,6 +200,8 @@ public class Apsim
             foreach (string SimulationPath in SimulationPaths)
             {
                 string Arguments = StringManip.DQuote(F.FileName) + " " + StringManip.DQuote("Simulation=" + SimulationPath);
+                if (maxLines > 0)
+                    Arguments += " MaxOutputLines=" + maxLines.ToString();
                 Job J = new Job(Executable + " " + Arguments, Path.GetDirectoryName(F.FileName));
                 J.Name = SimulationPath;
   				J.IgnoreErrors = true;
@@ -208,6 +226,8 @@ public class Apsim
         foreach (string SimulationPath in SimulationPaths)
         {
             string Arguments =  StringManip.DQuote(FileName) + " " + StringManip.DQuote("Simulation=" + SimulationPath);
+            if (maxLines > 0)
+                Arguments += " MaxOutputLines=" + maxLines.ToString();
             Job J = new Job(Executable + " " + Arguments, Path.GetDirectoryName(FileName));
             J.Name = SimulationPath;
 			J.IgnoreErrors = true;
@@ -299,6 +319,7 @@ public class Apsim
         _P.EnableRaisingEvents = true;
         _P.Exited += OnExited;
         _P.Start();
+        linesOut = 0;
         _P.BeginOutputReadLine();
         _P.BeginErrorReadLine();
     }
@@ -356,7 +377,12 @@ public class Apsim
     protected virtual void OnStdOut(object sender, DataReceivedEventArgs e)
     {
         if (e.Data != null)
-            Sum.WriteLine(e.Data);
+        {
+            if (linesOut == maxLines)
+                Sum.WriteLine("Number of output lines exceeds maximum. Output truncated");
+            if (maxLines < 0 || linesOut++ < maxLines)
+                Sum.WriteLine(e.Data);
+        }
     }
 
     int taskProgress = 0;
