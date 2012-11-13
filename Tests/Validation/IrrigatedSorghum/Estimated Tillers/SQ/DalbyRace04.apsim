@@ -1,29 +1,28 @@
-<folder version="19" name="Dalby Racecourse Skip row">
+<folder version="32" name="Dalby Racecourse Skip row">
   <simulation name="DalbyRaceDSHD04">
     <clock>
       <start_date type="date" description="Select the start date of the simulation">16/11/2004</start_date>
       <end_date type="date" description="Select the end date of the simulation">31/3/2005</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Sorghum_Dalby Racecourse Skip row_MR Buster_DS_HD.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Dalby Racecourse Skip row.met</filename>
+      <filename name="filename" input="yes">Dalby Racecourse Skip row.met</filename>
     </metfile>
     <area name="paddock">
       <folder name="Manager folder">
         <manager name="Sow SkipRow on a fixed date">
           <ui>
-            <category description="Sowing criteria" />
+            <category description="Sowing criteria" type="category" />
             <date type="text" description="Enter sowing date (d/m/yyyy) : ">16/11/2004</date>
-            <category description="Sowing parameters" />
+            <category description="Sowing parameters" type="category" />
             <crop type="modulename" description="Enter name of crop to sow : ">Sorghum</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">5</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
             <cultivar type="cultivars" description="Enter cultivar : ">Buster</cultivar>
             <row_spacing type="text" description="Enter row spacing (m) : ">1</row_spacing>
             <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">double</RowConfiguration>
-            <ftn type="text" description="Enter Fertile Tiller No. : "></ftn>
+            <ftn type="text" description="Enter Fertile Tiller No. : ">
+            </ftn>
           </ui>
           <script name="start_of_day">
             <text><![CDATA[     if (biomass > 0) then
@@ -69,224 +68,491 @@ ftn = 0
             <event>end_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <crop type="modulename" description="Enter name of crop to harvest when ripe : ">Sorghum</crop>
           </ui>
         </manager>
       </folder>
       <soil name="Racecourse2004">
-        <Site>Dalby Racecourse</Site>
-        <Region>Darling Downs</Region>
+        <Langitude description="Longitude (WGS84)" />
+        <Comment type="multiedit" description="Comments" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description">DalbyRacecourseBox</SoilType>
         <LocalName>Dalby Racecourse</LocalName>
-        <SoilType>DalbyRacecourseBox</SoilType>
-        <NearestTown>Unknown</NearestTown>
-        <NaturalVegetation>Unknown</NaturalVegetation>
-        <profile>
-          <layer>
-            <thickness>150</thickness>
-            <bd>1.490</bd>
-            <ll15>0.260</ll15>
-            <airdry>0.190</airdry>
-            <dul>0.370</dul>
-            <sat>0.420</sat>
-            <sw>0.355</sw>
-            <swcon>0</swcon>
-            <oc>0.910</oc>
-            <ph>7.100</ph>
-            <fbiom>0.050</fbiom>
-            <finert>0.390</finert>
-            <ll name="Sorghum">0.260</ll>
-            <kl name="Sorghum">0.070</kl>
-            <xf name="Sorghum">1</xf>
-          </layer>
-          <layer>
-            <thickness>150</thickness>
-            <bd>1.520</bd>
-            <ll15>0.260</ll15>
-            <airdry>0.190</airdry>
-            <dul>0.350</dul>
-            <sat>0.400</sat>
-            <sw>0.341</sw>
-            <swcon>0</swcon>
-            <oc>0.450</oc>
-            <ph>7.600</ph>
-            <fbiom>0.020</fbiom>
-            <finert>0.470</finert>
-            <ll name="Sorghum">0.260</ll>
-            <kl name="Sorghum">0.070</kl>
-            <xf name="Sorghum">1</xf>
-          </layer>
-          <layer>
-            <thickness>300</thickness>
-            <bd>1.360</bd>
-            <ll15>0.230</ll15>
-            <airdry>0.160</airdry>
-            <dul>0.410</dul>
-            <sat>0.460</sat>
-            <sw>0.418</sw>
-            <swcon>0</swcon>
-            <oc>0.320</oc>
-            <ph>8.500</ph>
-            <fbiom>0.010</fbiom>
-            <finert>0.520</finert>
-            <ll name="Sorghum">0.230</ll>
-            <kl name="Sorghum">0.070</kl>
-            <xf name="Sorghum">1</xf>
-          </layer>
-          <layer>
-            <thickness>300</thickness>
-            <bd>1.340</bd>
-            <ll15>0.250</ll15>
-            <airdry>0.180</airdry>
-            <dul>0.410</dul>
-            <sat>0.460</sat>
-            <sw>0.439</sw>
-            <swcon>0</swcon>
-            <oc>0.290</oc>
-            <ph>7.900</ph>
-            <fbiom>0.010</fbiom>
-            <finert>0.620</finert>
-            <ll name="Sorghum">0.250</ll>
-            <kl name="Sorghum">0.050</kl>
-            <xf name="Sorghum">1</xf>
-          </layer>
-          <layer>
-            <thickness>300</thickness>
-            <bd>1.420</bd>
-            <ll15>0.260</ll15>
-            <airdry>0.180</airdry>
-            <dul>0.390</dul>
-            <sat>0.440</sat>
-            <sw>0.350</sw>
-            <swcon>0</swcon>
-            <oc>0.230</oc>
-            <ph>7.900</ph>
-            <fbiom>0.010</fbiom>
-            <finert>0.740</finert>
-            <ll name="Sorghum">0.260</ll>
-            <kl name="Sorghum">0.050</kl>
-            <xf name="Sorghum">1</xf>
-          </layer>
-          <layer>
-            <thickness>300</thickness>
-            <bd>1.400</bd>
-            <ll15>0.290</ll15>
-            <airdry>0.200</airdry>
-            <dul>0.400</dul>
-            <sat>0.450</sat>
-            <sw>0.363</sw>
-            <swcon>0</swcon>
-            <oc>0.270</oc>
-            <ph>7.600</ph>
-            <fbiom>0.010</fbiom>
-            <finert>0.830</finert>
-            <ll name="Sorghum">0.290</ll>
-            <kl name="Sorghum">0.040</kl>
-            <xf name="Sorghum">1</xf>
-          </layer>
-          <layer>
-            <thickness>300</thickness>
-            <bd>1.400</bd>
-            <ll15>0.280</ll15>
-            <airdry>0.190</airdry>
-            <dul>0.390</dul>
-            <sat>0.440</sat>
-            <sw>0.368</sw>
-            <swcon>0</swcon>
-            <oc>0.300</oc>
-            <ph>7.400</ph>
-            <fbiom>0.010</fbiom>
-            <finert>0.930</finert>
-            <ll name="Sorghum">0.280</ll>
-            <kl name="Sorghum">0.040</kl>
-            <xf name="Sorghum">1</xf>
-          </layer>
-        </profile>
-        <Cona>3.5</Cona>
-        <DiffusConst>40</DiffusConst>
-        <DiffusSlope>16</DiffusSlope>
-        <U>6</U>
-        <Salb>0.11</Salb>
-        <Cn2Bare>85</Cn2Bare>
-        <CnRed>0.8</CnRed>
-        <CnCov>0.2</CnCov>
-        <CnCanopyFact>0.2</CnCanopyFact>
-        <RootCn>45</RootCn>
-        <RootWt>1000</RootWt>
-        <SoilCn>14.5</SoilCn>
-        <EnrACoeff>7.4</EnrACoeff>
-        <EnrBCoeff>0.2</EnrBCoeff>
-        <InitWater>
-          <profile>
-            <layer>
-              <sw>0.320</sw>
-              <thickness>150</thickness>
-            </layer>
-            <layer>
-              <sw>0.310</sw>
-              <thickness>150</thickness>
-            </layer>
-            <layer>
-              <sw>0.310</sw>
-              <thickness>300</thickness>
-            </layer>
-            <layer>
-              <sw>0.310</sw>
-              <thickness>300</thickness>
-            </layer>
-            <layer>
-              <sw>0.320</sw>
-              <thickness>300</thickness>
-            </layer>
-            <layer>
-              <sw>0.330</sw>
-              <thickness>300</thickness>
-            </layer>
-            <layer>
-              <sw>0.340</sw>
-              <thickness>300</thickness>
-            </layer>
-          </profile>
-        </InitWater>
-        <InitNitrogen>
-          <profile>
-            <layer>
-              <no3>28.1129949394033</no3>
-              <nh4>0.10001978239367</nh4>
-              <thickness>150</thickness>
-            </layer>
-            <layer>
-              <no3>19.9059964167382</no3>
-              <nh4>0.10001978239367</nh4>
-              <thickness>150</thickness>
-            </layer>
-            <layer>
-              <no3>10.3769981320452</no3>
-              <nh4>0.10001978239367</nh4>
-              <thickness>300</thickness>
-            </layer>
-            <layer>
-              <no3>9.52799828487299</no3>
-              <nh4>0.10001978239367</nh4>
-              <thickness>300</thickness>
-            </layer>
-            <layer>
-              <no3>5.75499896404745</no3>
-              <nh4>0.10001978239367</nh4>
-              <thickness>300</thickness>
-            </layer>
-            <layer>
-              <no3>21.9439960498796</no3>
-              <nh4>0.10001978239367</nh4>
-              <thickness>300</thickness>
-            </layer>
-            <layer>
-              <no3>0</no3>
-              <nh4>0.10001978239367</nh4>
-              <thickness>300</thickness>
-            </layer>
-          </profile>
-        </InitNitrogen>
+        <Site>Dalby Racecourse</Site>
+        <NearestTown description="Nearest town">Unknown</NearestTown>
+        <Region>Darling Downs</Region>
+        <State />
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Unknown</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source" />
+        <Comments />
+        <Water>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <KS units="mm/day" />
+            <BD units="g/cc">1.490</BD>
+            <AirDry units="mm/mm">0.190</AirDry>
+            <LL15 units="mm/mm">0.260</LL15>
+            <DUL units="mm/mm">0.370</DUL>
+            <SAT units="mm/mm">0.420</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <KS units="mm/day" />
+            <BD>1.520</BD>
+            <AirDry>0.190</AirDry>
+            <LL15>0.260</LL15>
+            <DUL>0.350</DUL>
+            <SAT>0.400</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.360</BD>
+            <AirDry>0.160</AirDry>
+            <LL15>0.230</LL15>
+            <DUL>0.410</DUL>
+            <SAT>0.460</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.340</BD>
+            <AirDry>0.180</AirDry>
+            <LL15>0.250</LL15>
+            <DUL>0.410</DUL>
+            <SAT>0.460</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.420</BD>
+            <AirDry>0.180</AirDry>
+            <LL15>0.260</LL15>
+            <DUL>0.390</DUL>
+            <SAT>0.440</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.400</BD>
+            <AirDry>0.200</AirDry>
+            <LL15>0.290</LL15>
+            <DUL>0.400</DUL>
+            <SAT>0.450</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.400</BD>
+            <AirDry>0.190</AirDry>
+            <LL15>0.280</LL15>
+            <DUL>0.390</DUL>
+            <SAT>0.440</SAT>
+          </Layer>
+          <SoilCrop name="Sorghum">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.260</LL>
+              <KL units="/day">0.070</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.260</LL>
+              <KL>0.070</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.230</LL>
+              <KL>0.070</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.250</LL>
+              <KL>0.050</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.260</LL>
+              <KL>0.050</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.290</LL>
+              <KL>0.040</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.280</LL>
+              <KL>0.040</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+        </Water>
+        <SoilWat>
+          <SummerCona>3.5</SummerCona>
+          <SummerU>6</SummerU>
+          <SummerDate>1-Nov</SummerDate>
+          <WinterCona>3.5</WinterCona>
+          <WinterU>6</WinterU>
+          <WinterDate>1-Apr</WinterDate>
+          <DiffusConst>40</DiffusConst>
+          <DiffusSlope>16</DiffusSlope>
+          <Salb>0.11</Salb>
+          <Cn2Bare>85</Cn2Bare>
+          <CnRed>0.8</CnRed>
+          <CnCov>0.2</CnCov>
+          <Slope>
+          </Slope>
+          <DischargeWidth>
+          </DischargeWidth>
+          <CatchmentArea>
+          </CatchmentArea>
+          <MaxPond>
+          </MaxPond>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <SWCON units="0-1">0</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <SWCON>0</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+        </SoilWat>
+        <SoilOrganicMatter>
+          <RootCn>45</RootCn>
+          <RootWt>1000</RootWt>
+          <SoilCn>14.5</SoilCn>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <OC units="Total %">0.910</OC>
+            <FBiom units="0-1">0.050</FBiom>
+            <FInert units="0-1">0.390</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <OC>0.450</OC>
+            <FBiom>0.020</FBiom>
+            <FInert>0.470</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.320</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.520</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.290</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.620</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.230</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.740</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.270</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.830</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.300</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.930</FInert>
+          </Layer>
+        </SoilOrganicMatter>
+        <Analysis>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH units="1:5 water">7.100</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>7.600</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>8.500</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>7.900</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>7.900</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>7.600</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>7.400</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+        </Analysis>
+        <Sample name="Initial nitrogen">
+          <Date type="date" description="Sample date:" />
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <NO3 units="ppm">28.1129949394033</NO3>
+            <NH4 units="ppm">0.10001978239367</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <NO3>19.9059964167382</NO3>
+            <NH4>0.10001978239367</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>10.3769981320452</NO3>
+            <NH4>0.10001978239367</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>9.52799828487299</NO3>
+            <NH4>0.10001978239367</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>5.75499896404745</NO3>
+            <NH4>0.10001978239367</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>21.9439960498796</NO3>
+            <NH4>0.10001978239367</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>0</NO3>
+            <NH4>0.10001978239367</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+        </Sample>
+        <Sample name="Initial water">
+          <Date type="date" description="Sample date:" />
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <NO3 units="ppm" />
+            <NH4 units="ppm" />
+            <SW units="mm/mm">0.320</SW>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <NO3 units="ppm" />
+            <NH4 units="ppm" />
+            <SW>0.310</SW>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3 units="ppm" />
+            <NH4 units="ppm" />
+            <SW>0.310</SW>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3 units="ppm" />
+            <NH4 units="ppm" />
+            <SW>0.310</SW>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3 units="ppm" />
+            <NH4 units="ppm" />
+            <SW>0.320</SW>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3 units="ppm" />
+            <NH4 units="ppm" />
+            <SW>0.330</SW>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3 units="ppm" />
+            <NH4 units="ppm" />
+            <SW>0.340</SW>
+          </Layer>
+        </Sample>
       </soil>
       <manager name="Logic">
         <script name="init">
@@ -311,25 +577,27 @@ ftn = 0
         </script>
       </manager>
       <outputfile name="Outputfile">
+        <filename output="yes">DalbyRaceDSHD04.out</filename>
+        <title>DalbyRaceDSHD04</title>
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as date" array="?" description="Date (dd/mm/yyyy)" />
-          <variable name="DaysAfterSowing" array="No" description="Days after sowing" />
-          <variable name="sw_dep()" />
-          <variable name="ll15_dep()" />
-          <variable name="dul_dep()" />
-          <variable name="WaterSD" />
-          <variable name="Biomass" array="No" description="Total above-ground biomass" />
-          <variable name="yield" />
-          <variable name="lai" />
-          <variable name="GrainNo" />
-          <variable name="stage" />
-          <variable name="biomass_wt" array="No" description="Total above-ground biomass" />
-          <variable name="GrainGreenWt" array="No" description="Live grain dry weight" />
-          <variable name="RachisGreenWt" array="No" description="Live rachis dry weight" />
-          <variable name="StemGreenWt" array="No" description="Stem dry weight" />
-          <variable name="GrainSize" array="No" description="1000 grain weight" />
-          <variable name="LeafSenescedWt" array="No" description="Senesced leaf dry weight" />
-          <variable name="TillerNoFertile" />
+          <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as date</variable>
+          <variable array="No" description="Days after sowing">DaysAfterSowing</variable>
+          <variable>sw_dep()</variable>
+          <variable>ll15_dep()</variable>
+          <variable>dul_dep()</variable>
+          <variable>WaterSD</variable>
+          <variable array="No" description="Total above-ground biomass">Biomass</variable>
+          <variable>yield</variable>
+          <variable>lai</variable>
+          <variable>GrainNo</variable>
+          <variable>stage</variable>
+          <variable array="No" description="Total above-ground biomass">biomass_wt</variable>
+          <variable array="No" description="Live grain dry weight">GrainGreenWt</variable>
+          <variable array="No" description="Live rachis dry weight">RachisGreenWt</variable>
+          <variable array="No" description="Stem dry weight">StemGreenWt</variable>
+          <variable array="No" description="1000 grain weight">GrainSize</variable>
+          <variable array="No" description="Senesced leaf dry weight">LeafSenescedWt</variable>
+          <variable>TillerNoFertile</variable>
         </variables>
       </outputfile>
       <sorghum />
@@ -338,22 +606,25 @@ ftn = 0
   <simulation name="DalbyRaceDSLD04" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04">
     <clock shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/clock" />
     <summaryfile shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/summaryfile" />
-    <metfile name="met" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/met" />
+    <metfile name="met" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/met">
+      <filename shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/met/filename" input="yes" />
+    </metfile>
     <area name="paddock" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock">
       <folder name="Manager folder" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Manager folder">
         <manager name="Harvesting rule" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Manager folder/Harvesting rule" />
         <manager name="Sow SkipRow on a fixed date">
           <ui>
-            <category description="Sowing criteria" />
+            <category description="Sowing criteria" type="category" />
             <date type="text" description="Enter sowing date (d/m/yyyy) : ">16/11/2004</date>
-            <category description="Sowing parameters" />
+            <category description="Sowing parameters" type="category" />
             <crop type="modulename" description="Enter name of crop to sow : ">Sorghum</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">2.5</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
             <cultivar type="cultivars" description="Enter cultivar : ">Buster</cultivar>
             <row_spacing type="text" description="Enter row spacing (m) : ">1</row_spacing>
             <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">double</RowConfiguration>
-            <ftn type="text" description="Enter Fertile Tiller No. : "></ftn>
+            <ftn type="text" description="Enter Fertile Tiller No. : ">
+            </ftn>
           </ui>
           <script name="start_of_day">
             <text><![CDATA[     if (biomass > 0) then
@@ -387,11 +658,35 @@ ftn = 0
         </manager>
       </folder>
       <soil name="Racecourse2004" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004">
-        <InitWater shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004/InitWater" />
-        <InitNitrogen shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004/InitNitrogen" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
+        <Water shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004/Water">
+          <SoilCrop name="Sorghum" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004/Water/Sorghum" />
+        </Water>
+        <SoilWat shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004/SoilWat" />
+        <SoilOrganicMatter shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004/SoilOrganicMatter" />
+        <Analysis shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004/Analysis" />
+        <Sample name="Initial Water" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004/Initial water" />
+        <Sample name="Initial Nitrogen" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004/Initial nitrogen" />
       </soil>
       <manager name="Logic" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Logic" />
       <outputfile name="Outputfile" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Outputfile">
+        <filename output="yes">DalbyRaceDSLD04.out</filename>
+        <title>DalbyRaceDSLD04</title>
         <variables name="Variables" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Outputfile/Variables" />
       </outputfile>
       <sorghum shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/sorghum" />
@@ -400,21 +695,24 @@ ftn = 0
   <simulation name="DalbyRaceSHD04" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04">
     <clock shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/clock" />
     <summaryfile shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/summaryfile" />
-    <metfile name="met" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/met" />
+    <metfile name="met" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/met">
+      <filename shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/met/filename" input="yes" />
+    </metfile>
     <area name="paddock" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock">
       <folder name="Manager folder" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Manager folder">
         <manager name="Sow SkipRow on a fixed date">
           <ui>
-            <category description="Sowing criteria" />
+            <category description="Sowing criteria" type="category" />
             <date type="text" description="Enter sowing date (d/m/yyyy) : ">16/11/2004</date>
-            <category description="Sowing parameters" />
+            <category description="Sowing parameters" type="category" />
             <crop type="modulename" description="Enter name of crop to sow : ">Sorghum</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">5</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
             <cultivar type="cultivars" description="Enter cultivar : ">Buster</cultivar>
             <row_spacing type="text" description="Enter row spacing (m) : ">1</row_spacing>
             <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
-            <ftn type="text" description="Enter Fertile Tiller No. : "></ftn>
+            <ftn type="text" description="Enter Fertile Tiller No. : ">
+            </ftn>
           </ui>
           <script name="start_of_day">
             <text><![CDATA[     if (biomass > 0) then
@@ -450,11 +748,35 @@ ftn = 0
         <manager name="Harvesting rule" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Manager folder/Harvesting rule" />
       </folder>
       <soil name="Racecourse2004" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004">
-        <InitWater shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004/InitWater" />
-        <InitNitrogen shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004/InitNitrogen" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
+        <Water shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004/Water">
+          <SoilCrop name="Sorghum" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004/Water/Sorghum" />
+        </Water>
+        <SoilWat shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004/SoilWat" />
+        <SoilOrganicMatter shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004/SoilOrganicMatter" />
+        <Analysis shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004/Analysis" />
+        <Sample name="Initial Water" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004/Initial water" />
+        <Sample name="Initial Nitrogen" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Racecourse2004/Initial nitrogen" />
       </soil>
       <manager name="Logic" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Logic" />
       <outputfile name="Outputfile" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Outputfile">
+        <filename output="yes">DalbyRaceSHD04.out</filename>
+        <title>DalbyRaceSHD04</title>
         <variables name="Variables" shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/Outputfile/Variables" />
       </outputfile>
       <sorghum shortcut="/Dalby Racecourse Skip row/DalbyRaceDSHD04/paddock/sorghum" />

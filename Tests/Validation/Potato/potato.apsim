@@ -1,15 +1,13 @@
-<folder version="25" name="Simulations">
+<folder version="32" name="Simulations">
   <simulation name="Pukekohe_FSP_highN">
     <metfile name="met">
-      <filename name="filename">Pukehohe.met</filename>
+      <filename name="filename" input="yes">Pukehohe.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">1/05/2000</start_date>
       <end_date type="date" description="Enter the end date of the simulation">1/12/2000</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Continuous Wheat Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <fertiliser />
       <surfaceom name="surface organic matter">
@@ -22,14 +20,14 @@
       <folder name="Manager folder">
         <manager name="Sowing rule">
           <ui>
-            <category description="Sowing criteria" />
+            <category description="Sowing criteria" type="category" />
             <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">2-may</date1>
             <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">2-may</date2>
             <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
             <raincrit type="text" description="Amount of rainfall : ">10</raincrit>
             <rainnumdays type="text" description="Number of days of rainfall : ">7</rainnumdays>
             <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">10</esw_amount>
-            <category description="Sowing parameters" />
+            <category description="Sowing parameters" type="category" />
             <crop type="crop" description="Enter name of crop to sow : ">potato</crop>
             <seeds type="text" description="Enter sowing density  (seeds/m2) : ">5</seeds>
             <depth type="text" description="Enter sowing depth  (mm) : ">200</depth>
@@ -71,7 +69,7 @@
         </manager>
         <manager name="Harvesting rule">
           <ui>
-            <category description="Harvesting criteria" />
+            <category description="Harvesting criteria" type="category" />
             <crop type="crop" description="Enter name of crop to harvest when ripe : ">potato</crop>
           </ui>
           <script name="end_of_day">
@@ -112,31 +110,33 @@
         </irrigation>
       </folder>
       <outputfile>
+        <filename output="yes">Pukekohe_FSP_highN.out</filename>
+        <title>Pukekohe_FSP_highN</title>
         <events name="Reporting Frequency">
-          <event name="Daily" array="End of day" />
+          <event array="End of day">Daily</event>
         </events>
         <variables name="Variables">
-          <variable name="dd/mmm/yyyy" array="No" description="Date (dd/mmm/yyyy)" />
-          <variable name="biomass" array="?" description="Biomass" />
-          <variable name="leafgreenwt" array="No" />
-          <variable name="leafgreenn" array="No" />
-          <variable name="leafsenescedwt" array="No" />
-          <variable name="stemgreenwt" array="No" />
-          <variable name="stemgreenn" array="No" />
-          <variable name="TuberGreenWt" array="No" />
-          <variable name="TuberGreenN" array="No" />
-          <variable name="nfact_expan" />
-          <variable name="nfact_photo" />
-          <variable name="lai" array="No" />
-          <variable name="leaf_no" array="No" />
-          <variable name="stagename" array="No" />
-          <variable name="tt" />
-          <variable name="node_no" />
-          <variable name="height" />
-          <variable name="node_no_fx" />
-          <variable name="node_no_sen" />
-          <variable name="ttafteremergence" />
-          <variable name="ttaftersowing" />
+          <variable array="No" description="Date (dd/mmm/yyyy)">dd/mmm/yyyy</variable>
+          <variable array="?" description="Biomass">biomass</variable>
+          <variable array="No">leafgreenwt</variable>
+          <variable array="No">leafgreenn</variable>
+          <variable array="No">leafsenescedwt</variable>
+          <variable array="No">stemgreenwt</variable>
+          <variable array="No">stemgreenn</variable>
+          <variable array="No">TuberGreenWt</variable>
+          <variable array="No">TuberGreenN</variable>
+          <variable>nfact_expan</variable>
+          <variable>nfact_photo</variable>
+          <variable array="No">lai</variable>
+          <variable array="No">leaf_no</variable>
+          <variable array="No">stagename</variable>
+          <variable>tt</variable>
+          <variable>node_no</variable>
+          <variable>height</variable>
+          <variable>node_no_fx</variable>
+          <variable>node_no_sen</variable>
+          <variable>ttafteremergence</variable>
+          <variable>ttaftersowing</variable>
         </variables>
         <Graph name="XY">
           <Plot>
@@ -153,22 +153,24 @@
         </Graph>
       </outputfile>
       <soil name="Templeton">
-        <Country />
-        <Site />
-        <Region />
+        <Langitude description="Longitude (WGS84)" />
+        <Comment type="multiedit" description="Comments" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
         <LocalName />
-        <SoilType description="Classification" />
+        <Site />
         <NearestTown description="Nearest town" />
-        <NaturalVegetation description="Natural vegetation" />
+        <Region />
         <State />
+        <Country />
+        <NaturalVegetation description="Natural vegetation" />
         <ApsoilNumber description="Apsoil number" />
         <Latitude description="Latitude (WGS84)" />
         <Longitude />
         <LocationAccuracy description="Location accuracy" />
         <DataSource type="multiedit" description="Data source" />
         <Comments />
-        <Langitude description="Longitude (WGS84)" />
-        <Comment type="multiedit" description="Comments" />
         <InitWater name="Initial water">
           <PercentMethod>
             <Percent>1.00</Percent>
@@ -320,7 +322,6 @@
           <CN2Bare>68</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -620,15 +621,13 @@
   <folder name="FUE">
     <simulation name="FUE_300">
       <metfile name="met">
-        <filename name="filename">lincoln.met</filename>
+        <filename name="filename" input="yes">lincoln.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">18/10/1999</start_date>
         <end_date type="date" description="Enter the end date of the simulation">1/06/2000</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <fertiliser />
         <surfaceom name="surface organic matter">
@@ -641,14 +640,14 @@
         <folder name="Manager folder">
           <manager name="Sowing rule">
             <ui>
-              <category description="Sowing criteria" />
+              <category description="Sowing criteria" type="category" />
               <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">19-oct</date1>
               <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">19-oct</date2>
               <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
               <raincrit type="text" description="Amount of rainfall : ">10</raincrit>
               <rainnumdays type="text" description="Number of days of rainfall : ">7</rainnumdays>
               <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">10</esw_amount>
-              <category description="Sowing parameters" />
+              <category description="Sowing parameters" type="category" />
               <crop type="crop" description="Enter name of crop to sow : ">potato</crop>
               <seeds type="text" description="Enter sowing density  (seeds/m2) : ">6</seeds>
               <depth type="text" description="Enter sowing depth  (mm) : ">150</depth>
@@ -690,7 +689,7 @@
           </manager>
           <manager name="Harvesting rule">
             <ui>
-              <category description="Harvesting criteria" />
+              <category description="Harvesting criteria" type="category" />
               <crop type="crop" description="Enter name of crop to harvest when ripe : ">potato</crop>
             </ui>
             <script name="end_of_day">
@@ -759,37 +758,39 @@
           </irrigation>
         </folder>
         <outputfile>
+          <filename output="yes">FUE_300.out</filename>
+          <title>FUE_300</title>
           <events name="Reporting Frequency">
-            <event name="Daily" array="End of day" />
+            <event array="End of day">Daily</event>
           </events>
           <variables name="Variables">
-            <variable name="dd/mmm/yyyy" array="No" description="Date (dd/mmm/yyyy)" />
-            <variable name="biomass" array="?" description="Biomass" />
-            <variable name="leafgreenwt" array="No" />
-            <variable name="leafgreenn" array="No" />
-            <variable name="leafsenescedwt" array="No" />
-            <variable name="stemgreenwt" array="No" />
-            <variable name="stemgreenn" array="No" />
-            <variable name="TuberGreenWt" array="No" />
-            <variable name="TuberGreenN" array="No" />
-            <variable name="nfact_expan" />
-            <variable name="nfact_photo" />
-            <variable name="lai" array="No" />
-            <variable name="leaf_no" array="No" />
-            <variable name="stagename" array="No" />
-            <variable name="tt" />
-            <variable name="node_no" />
-            <variable name="height" />
-            <variable name="node_no_fx" />
-            <variable name="node_no_sen" />
-            <variable name="ttafteremergence" />
-            <variable name="ttaftersowing" />
-            <variable name="dlt_lai_carbon" array="No" description="Potential change in lai allowing for growth" />
-            <variable name="dlt_lai_pot" array="Potential change in live plant lai" />
-            <variable name="no3()" />
-            <variable name="swdef_photo" />
-            <variable name="root_depth" />
-            <variable name="no3_demand" />
+            <variable array="No" description="Date (dd/mmm/yyyy)">dd/mmm/yyyy</variable>
+            <variable array="?" description="Biomass">biomass</variable>
+            <variable array="No">leafgreenwt</variable>
+            <variable array="No">leafgreenn</variable>
+            <variable array="No">leafsenescedwt</variable>
+            <variable array="No">stemgreenwt</variable>
+            <variable array="No">stemgreenn</variable>
+            <variable array="No">TuberGreenWt</variable>
+            <variable array="No">TuberGreenN</variable>
+            <variable>nfact_expan</variable>
+            <variable>nfact_photo</variable>
+            <variable array="No">lai</variable>
+            <variable array="No">leaf_no</variable>
+            <variable array="No">stagename</variable>
+            <variable>tt</variable>
+            <variable>node_no</variable>
+            <variable>height</variable>
+            <variable>node_no_fx</variable>
+            <variable>node_no_sen</variable>
+            <variable>ttafteremergence</variable>
+            <variable>ttaftersowing</variable>
+            <variable array="No" description="Potential change in lai allowing for growth">dlt_lai_carbon</variable>
+            <variable array="Potential change in live plant lai">dlt_lai_pot</variable>
+            <variable>no3()</variable>
+            <variable>swdef_photo</variable>
+            <variable>root_depth</variable>
+            <variable>no3_demand</variable>
           </variables>
           <Graph name="LeafNo">
             <Plot>
@@ -856,22 +857,24 @@
           </Graph>
         </outputfile>
         <soil name="Templeton">
-          <Country />
-          <Site />
-          <Region />
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
           <LocalName />
-          <SoilType description="Classification" />
+          <Site />
           <NearestTown description="Nearest town" />
-          <NaturalVegetation description="Natural vegetation" />
+          <Region />
           <State />
+          <Country />
+          <NaturalVegetation description="Natural vegetation" />
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <InitWater name="Initial water">
             <PercentMethod>
               <Percent>1.00</Percent>
@@ -1023,7 +1026,6 @@
             <CN2Bare>68</CN2Bare>
             <CNRed>20</CNRed>
             <CNCov>0.8</CNCov>
-            <CnCanopyFact />
             <Slope>
             </Slope>
             <DischargeWidth>
@@ -1295,7 +1297,9 @@
       </area>
     </simulation>
     <simulation name="FUE_0" shortcut="/Simulations/FUE/FUE_300">
-      <metfile name="met" shortcut="/Simulations/FUE/FUE_300/met" />
+      <metfile name="met" shortcut="/Simulations/FUE/FUE_300/met">
+        <filename shortcut="/Simulations/FUE/FUE_300/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/Simulations/FUE/FUE_300/clock" />
       <summaryfile shortcut="/Simulations/FUE/FUE_300/summaryfile" />
       <area name="paddock" shortcut="/Simulations/FUE/FUE_300/paddock">
@@ -1345,10 +1349,28 @@
           <manager name="Sowing rule" shortcut="/Simulations/FUE/FUE_300/paddock/Manager folder/Sowing rule" />
         </folder>
         <outputfile shortcut="/Simulations/FUE/FUE_300/paddock/outputfile">
+          <filename output="yes">FUE_0.out</filename>
+          <title>FUE_0</title>
           <events name="Reporting Frequency" shortcut="/Simulations/FUE/FUE_300/paddock/outputfile/Reporting Frequency" />
           <variables name="Variables" shortcut="/Simulations/FUE/FUE_300/paddock/outputfile/Variables" />
         </outputfile>
         <soil name="Templeton" shortcut="/Simulations/FUE/FUE_300/paddock/Templeton">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <Water shortcut="/Simulations/FUE/FUE_300/paddock/Templeton/Water">
             <SoilCrop name="wheat" shortcut="/Simulations/FUE/FUE_300/paddock/Templeton/Water/wheat" />
             <SoilCrop name="potato" shortcut="/Simulations/FUE/FUE_300/paddock/Templeton/Water/potato" />
@@ -1366,7 +1388,9 @@
       </area>
     </simulation>
     <simulation name="FUE_150" shortcut="/Simulations/FUE/FUE_300">
-      <metfile name="met" shortcut="/Simulations/FUE/FUE_300/met" />
+      <metfile name="met" shortcut="/Simulations/FUE/FUE_300/met">
+        <filename shortcut="/Simulations/FUE/FUE_300/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/Simulations/FUE/FUE_300/clock" />
       <summaryfile shortcut="/Simulations/FUE/FUE_300/summaryfile" />
       <area name="paddock" shortcut="/Simulations/FUE/FUE_300/paddock">
@@ -1412,10 +1436,28 @@
           <irrigation name="Irrigation" shortcut="/Simulations/FUE/FUE_300/paddock/Manager folder/Irrigation" />
         </folder>
         <outputfile shortcut="/Simulations/FUE/FUE_300/paddock/outputfile">
+          <filename output="yes">FUE_150.out</filename>
+          <title>FUE_150</title>
           <events name="Reporting Frequency" shortcut="/Simulations/FUE/FUE_300/paddock/outputfile/Reporting Frequency" />
           <variables name="Variables" shortcut="/Simulations/FUE/FUE_300/paddock/outputfile/Variables" />
         </outputfile>
         <soil name="Templeton" shortcut="/Simulations/FUE/FUE_300/paddock/Templeton">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <Water shortcut="/Simulations/FUE/FUE_300/paddock/Templeton/Water">
             <SoilCrop name="wheat" shortcut="/Simulations/FUE/FUE_300/paddock/Templeton/Water/wheat" />
             <SoilCrop name="potato" shortcut="/Simulations/FUE/FUE_300/paddock/Templeton/Water/potato" />
@@ -1433,7 +1475,9 @@
       </area>
     </simulation>
     <simulation name="FUE_275" shortcut="/Simulations/FUE/FUE_300">
-      <metfile name="met" shortcut="/Simulations/FUE/FUE_300/met" />
+      <metfile name="met" shortcut="/Simulations/FUE/FUE_300/met">
+        <filename shortcut="/Simulations/FUE/FUE_300/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/Simulations/FUE/FUE_300/clock" />
       <summaryfile shortcut="/Simulations/FUE/FUE_300/summaryfile" />
       <area name="paddock" shortcut="/Simulations/FUE/FUE_300/paddock">
@@ -1535,10 +1579,28 @@
           <manager name="Sowing rule" shortcut="/Simulations/FUE/FUE_300/paddock/Manager folder/Sowing rule" />
         </folder>
         <outputfile shortcut="/Simulations/FUE/FUE_300/paddock/outputfile">
+          <filename output="yes">FUE_275.out</filename>
+          <title>FUE_275</title>
           <events name="Reporting Frequency" shortcut="/Simulations/FUE/FUE_300/paddock/outputfile/Reporting Frequency" />
           <variables name="Variables" shortcut="/Simulations/FUE/FUE_300/paddock/outputfile/Variables" />
         </outputfile>
         <soil name="Templeton" shortcut="/Simulations/FUE/FUE_300/paddock/Templeton">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <Water shortcut="/Simulations/FUE/FUE_300/paddock/Templeton/Water">
             <SoilCrop name="wheat" shortcut="/Simulations/FUE/FUE_300/paddock/Templeton/Water/wheat" />
             <SoilCrop name="potato" shortcut="/Simulations/FUE/FUE_300/paddock/Templeton/Water/potato" />
@@ -1694,15 +1756,13 @@
   <folder name="Baxters">
     <simulation name="Baxters_14Oct_high">
       <metfile name="met">
-        <filename name="filename">lincoln.met</filename>
+        <filename name="filename" input="yes">lincoln.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">14/10/1998</start_date>
         <end_date type="date" description="Enter the end date of the simulation">1/06/1999</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <fertiliser />
         <surfaceom name="surface organic matter">
@@ -1715,7 +1775,7 @@
         <folder name="Manager folder">
           <manager name="Harvesting rule">
             <ui>
-              <category description="Harvesting criteria" />
+              <category description="Harvesting criteria" type="category" />
               <crop type="crop" description="Enter name of crop to harvest when ripe : ">potato</crop>
             </ui>
             <script name="end_of_day">
@@ -1792,14 +1852,14 @@
           </irrigation>
           <manager name="Sowing rule">
             <ui>
-              <category description="Sowing criteria" />
+              <category description="Sowing criteria" type="category" />
               <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">14-oct</date1>
               <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">14-oct</date2>
               <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
               <raincrit type="text" description="Amount of rainfall : ">10</raincrit>
               <rainnumdays type="text" description="Number of days of rainfall : ">7</rainnumdays>
               <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">10</esw_amount>
-              <category description="Sowing parameters" />
+              <category description="Sowing parameters" type="category" />
               <crop type="crop" description="Enter name of crop to sow : ">potato</crop>
               <seeds type="text" description="Enter sowing density  (seeds/m2) : ">4.3</seeds>
               <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
@@ -1841,45 +1901,49 @@
           </manager>
         </folder>
         <outputfile>
+          <filename output="yes">Baxters_14Oct_high.out</filename>
+          <title>Baxters_14Oct_high</title>
           <events name="Reporting Frequency">
-            <event name="Daily" array="End of day" />
+            <event array="End of day">Daily</event>
           </events>
           <variables name="Variables">
-            <variable name="dd/mmm/yyyy" array="No" description="Date (dd/mmm/yyyy)" />
-            <variable name="biomass" array="?" description="Biomass" />
-            <variable name="leafgreenwt" array="No" />
-            <variable name="leafgreenn" array="No" />
-            <variable name="leafsenescedwt" array="No" />
-            <variable name="stemgreenwt" array="No" />
-            <variable name="stemgreenn" array="No" />
-            <variable name="TuberGreenWt" array="No" />
-            <variable name="TuberGreenN" array="No" />
-            <variable name="nfact_expan" />
-            <variable name="nfact_photo" />
-            <variable name="lai" array="No" />
-            <variable name="leaf_no" array="No" />
-            <variable name="stagename" array="No" />
-            <variable name="tt" />
-            <variable name="node_no" />
+            <variable array="No" description="Date (dd/mmm/yyyy)">dd/mmm/yyyy</variable>
+            <variable array="?" description="Biomass">biomass</variable>
+            <variable array="No">leafgreenwt</variable>
+            <variable array="No">leafgreenn</variable>
+            <variable array="No">leafsenescedwt</variable>
+            <variable array="No">stemgreenwt</variable>
+            <variable array="No">stemgreenn</variable>
+            <variable array="No">TuberGreenWt</variable>
+            <variable array="No">TuberGreenN</variable>
+            <variable>nfact_expan</variable>
+            <variable>nfact_photo</variable>
+            <variable array="No">lai</variable>
+            <variable array="No">leaf_no</variable>
+            <variable array="No">stagename</variable>
+            <variable>tt</variable>
+            <variable>node_no</variable>
           </variables>
         </outputfile>
         <soil name="Baxters_compact">
-          <Country />
-          <Site />
-          <Region />
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
           <LocalName />
-          <SoilType description="Classification" />
+          <Site />
           <NearestTown description="Nearest town" />
-          <NaturalVegetation description="Natural vegetation" />
+          <Region />
           <State />
+          <Country />
+          <NaturalVegetation description="Natural vegetation" />
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <InitWater name="Initial water">
             <PercentMethod>
               <Percent>1.00</Percent>
@@ -2031,7 +2095,6 @@
             <CN2Bare>68</CN2Bare>
             <CNRed>20</CNRed>
             <CNCov>0.8</CNCov>
-            <CnCanopyFact />
             <Slope>
             </Slope>
             <DischargeWidth>
@@ -2295,7 +2358,9 @@
       </area>
     </simulation>
     <simulation name="Baxters_14Oct_low" shortcut="/Simulations/Baxters/Baxters_14Oct_high">
-      <metfile name="met" shortcut="/Simulations/Baxters/Baxters_14Oct_high/met" />
+      <metfile name="met" shortcut="/Simulations/Baxters/Baxters_14Oct_high/met">
+        <filename shortcut="/Simulations/Baxters/Baxters_14Oct_high/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/Simulations/Baxters/Baxters_14Oct_high/clock" />
       <summaryfile shortcut="/Simulations/Baxters/Baxters_14Oct_high/summaryfile" />
       <area name="paddock" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock">
@@ -2307,14 +2372,14 @@
           <irrigation name="Irrigation" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Manager folder/Irrigation" />
           <manager name="Sowing rule">
             <ui>
-              <category description="Sowing criteria" />
+              <category description="Sowing criteria" type="category" />
               <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">19-oct</date1>
               <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">19-oct</date2>
               <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
               <raincrit type="text" description="Amount of rainfall : ">10</raincrit>
               <rainnumdays type="text" description="Number of days of rainfall : ">7</rainnumdays>
               <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">10</esw_amount>
-              <category description="Sowing parameters" />
+              <category description="Sowing parameters" type="category" />
               <crop type="crop" description="Enter name of crop to sow : ">potato</crop>
               <seeds type="text" description="Enter sowing density  (seeds/m2) : ">2.16</seeds>
               <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
@@ -2356,10 +2421,28 @@
           </manager>
         </folder>
         <outputfile shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/outputfile">
+          <filename output="yes">Baxters_14Oct_low.out</filename>
+          <title>Baxters_14Oct_low</title>
           <events name="Reporting Frequency" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/outputfile/Reporting Frequency" />
           <variables name="Variables" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/outputfile/Variables" />
         </outputfile>
         <soil name="Baxters_compact" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <Water shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact/Water">
             <SoilCrop name="wheat" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact/Water/wheat" />
             <SoilCrop name="potato" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact/Water/potato" />
@@ -2377,7 +2460,9 @@
       </area>
     </simulation>
     <simulation name="Baxters_2Nov_high" shortcut="/Simulations/Baxters/Baxters_14Oct_high">
-      <metfile name="met" shortcut="/Simulations/Baxters/Baxters_14Oct_high/met" />
+      <metfile name="met" shortcut="/Simulations/Baxters/Baxters_14Oct_high/met">
+        <filename shortcut="/Simulations/Baxters/Baxters_14Oct_high/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/Simulations/Baxters/Baxters_14Oct_high/clock" />
       <summaryfile shortcut="/Simulations/Baxters/Baxters_14Oct_high/summaryfile" />
       <area name="paddock" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock">
@@ -2389,14 +2474,14 @@
           <irrigation name="Irrigation" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Manager folder/Irrigation" />
           <manager name="Sowing rule">
             <ui>
-              <category description="Sowing criteria" />
+              <category description="Sowing criteria" type="category" />
               <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">2-nov</date1>
               <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">2-nov</date2>
               <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
               <raincrit type="text" description="Amount of rainfall : ">10</raincrit>
               <rainnumdays type="text" description="Number of days of rainfall : ">7</rainnumdays>
               <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">10</esw_amount>
-              <category description="Sowing parameters" />
+              <category description="Sowing parameters" type="category" />
               <crop type="crop" description="Enter name of crop to sow : ">potato</crop>
               <seeds type="text" description="Enter sowing density  (seeds/m2) : ">4.3</seeds>
               <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
@@ -2438,10 +2523,28 @@
           </manager>
         </folder>
         <outputfile shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/outputfile">
+          <filename output="yes">Baxters_2Nov_high.out</filename>
+          <title>Baxters_2Nov_high</title>
           <events name="Reporting Frequency" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/outputfile/Reporting Frequency" />
           <variables name="Variables" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/outputfile/Variables" />
         </outputfile>
         <soil name="Baxters_compact" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <Water shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact/Water">
             <SoilCrop name="wheat" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact/Water/wheat" />
             <SoilCrop name="potato" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact/Water/potato" />
@@ -2459,7 +2562,9 @@
       </area>
     </simulation>
     <simulation name="Baxters_2Nov_low" shortcut="/Simulations/Baxters/Baxters_14Oct_high">
-      <metfile name="met" shortcut="/Simulations/Baxters/Baxters_14Oct_high/met" />
+      <metfile name="met" shortcut="/Simulations/Baxters/Baxters_14Oct_high/met">
+        <filename shortcut="/Simulations/Baxters/Baxters_14Oct_high/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/Simulations/Baxters/Baxters_14Oct_high/clock" />
       <summaryfile shortcut="/Simulations/Baxters/Baxters_14Oct_high/summaryfile" />
       <area name="paddock" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock">
@@ -2471,14 +2576,14 @@
           <irrigation name="Irrigation" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Manager folder/Irrigation" />
           <manager name="Sowing rule">
             <ui>
-              <category description="Sowing criteria" />
+              <category description="Sowing criteria" type="category" />
               <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">2-nov</date1>
               <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">2-nov</date2>
               <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
               <raincrit type="text" description="Amount of rainfall : ">10</raincrit>
               <rainnumdays type="text" description="Number of days of rainfall : ">7</rainnumdays>
               <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">10</esw_amount>
-              <category description="Sowing parameters" />
+              <category description="Sowing parameters" type="category" />
               <crop type="crop" description="Enter name of crop to sow : ">potato</crop>
               <seeds type="text" description="Enter sowing density  (seeds/m2) : ">2.16</seeds>
               <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
@@ -2520,10 +2625,28 @@
           </manager>
         </folder>
         <outputfile shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/outputfile">
+          <filename output="yes">Baxters_2Nov_low.out</filename>
+          <title>Baxters_2Nov_low</title>
           <events name="Reporting Frequency" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/outputfile/Reporting Frequency" />
           <variables name="Variables" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/outputfile/Variables" />
         </outputfile>
         <soil name="Baxters_compact" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <Water shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact/Water">
             <SoilCrop name="wheat" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact/Water/wheat" />
             <SoilCrop name="potato" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact/Water/potato" />
@@ -2541,7 +2664,9 @@
       </area>
     </simulation>
     <simulation name="Baxters_23Nov_high" shortcut="/Simulations/Baxters/Baxters_14Oct_high">
-      <metfile name="met" shortcut="/Simulations/Baxters/Baxters_14Oct_high/met" />
+      <metfile name="met" shortcut="/Simulations/Baxters/Baxters_14Oct_high/met">
+        <filename shortcut="/Simulations/Baxters/Baxters_14Oct_high/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/Simulations/Baxters/Baxters_14Oct_high/clock" />
       <summaryfile shortcut="/Simulations/Baxters/Baxters_14Oct_high/summaryfile" />
       <area name="paddock" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock">
@@ -2553,14 +2678,14 @@
           <irrigation name="Irrigation" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Manager folder/Irrigation" />
           <manager name="Sowing rule">
             <ui>
-              <category description="Sowing criteria" />
+              <category description="Sowing criteria" type="category" />
               <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">23-nov</date1>
               <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">23-nov</date2>
               <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
               <raincrit type="text" description="Amount of rainfall : ">10</raincrit>
               <rainnumdays type="text" description="Number of days of rainfall : ">7</rainnumdays>
               <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">10</esw_amount>
-              <category description="Sowing parameters" />
+              <category description="Sowing parameters" type="category" />
               <crop type="crop" description="Enter name of crop to sow : ">potato</crop>
               <seeds type="text" description="Enter sowing density  (seeds/m2) : ">4.3</seeds>
               <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
@@ -2602,10 +2727,28 @@
           </manager>
         </folder>
         <outputfile shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/outputfile">
+          <filename output="yes">Baxters_23Nov_high.out</filename>
+          <title>Baxters_23Nov_high</title>
           <events name="Reporting Frequency" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/outputfile/Reporting Frequency" />
           <variables name="Variables" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/outputfile/Variables" />
         </outputfile>
         <soil name="Baxters_compact" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <Water shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact/Water">
             <SoilCrop name="wheat" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact/Water/wheat" />
             <SoilCrop name="potato" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact/Water/potato" />
@@ -2623,7 +2766,9 @@
       </area>
     </simulation>
     <simulation name="Baxters_23Nov_low" shortcut="/Simulations/Baxters/Baxters_14Oct_high">
-      <metfile name="met" shortcut="/Simulations/Baxters/Baxters_14Oct_high/met" />
+      <metfile name="met" shortcut="/Simulations/Baxters/Baxters_14Oct_high/met">
+        <filename shortcut="/Simulations/Baxters/Baxters_14Oct_high/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/Simulations/Baxters/Baxters_14Oct_high/clock" />
       <summaryfile shortcut="/Simulations/Baxters/Baxters_14Oct_high/summaryfile" />
       <area name="paddock" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock">
@@ -2635,14 +2780,14 @@
           <irrigation name="Irrigation" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Manager folder/Irrigation" />
           <manager name="Sowing rule">
             <ui>
-              <category description="Sowing criteria" />
+              <category description="Sowing criteria" type="category" />
               <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">23-nov</date1>
               <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">23-nov</date2>
               <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
               <raincrit type="text" description="Amount of rainfall : ">10</raincrit>
               <rainnumdays type="text" description="Number of days of rainfall : ">7</rainnumdays>
               <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">10</esw_amount>
-              <category description="Sowing parameters" />
+              <category description="Sowing parameters" type="category" />
               <crop type="crop" description="Enter name of crop to sow : ">potato</crop>
               <seeds type="text" description="Enter sowing density  (seeds/m2) : ">2.16</seeds>
               <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
@@ -2684,10 +2829,28 @@
           </manager>
         </folder>
         <outputfile shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/outputfile">
+          <filename output="yes">Baxters_23Nov_low.out</filename>
+          <title>Baxters_23Nov_low</title>
           <events name="Reporting Frequency" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/outputfile/Reporting Frequency" />
           <variables name="Variables" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/outputfile/Variables" />
         </outputfile>
         <soil name="Baxters_compact" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <Water shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact/Water">
             <SoilCrop name="wheat" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact/Water/wheat" />
             <SoilCrop name="potato" shortcut="/Simulations/Baxters/Baxters_14Oct_high/paddock/Baxters_compact/Water/potato" />
@@ -2796,15 +2959,13 @@
   <folder name="PYM">
     <simulation name="PYM_Nov98">
       <metfile name="met">
-        <filename name="filename">LawnRoad.met</filename>
+        <filename name="filename" input="yes">LawnRoad.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">15/11/1998</start_date>
         <end_date type="date" description="Enter the end date of the simulation">1/06/1999</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <fertiliser />
         <surfaceom name="surface organic matter">
@@ -2817,14 +2978,14 @@
         <folder name="Manager folder">
           <manager name="Sowing rule">
             <ui>
-              <category description="Sowing criteria" />
+              <category description="Sowing criteria" type="category" />
               <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">16-nov</date1>
               <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">16-nov</date2>
               <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
               <raincrit type="text" description="Amount of rainfall : ">10</raincrit>
               <rainnumdays type="text" description="Number of days of rainfall : ">7</rainnumdays>
               <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">10</esw_amount>
-              <category description="Sowing parameters" />
+              <category description="Sowing parameters" type="category" />
               <crop type="crop" description="Enter name of crop to sow : ">potato</crop>
               <seeds type="text" description="Enter sowing density  (seeds/m2) : ">5</seeds>
               <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
@@ -2866,7 +3027,7 @@
           </manager>
           <manager name="Harvesting rule">
             <ui>
-              <category description="Harvesting criteria" />
+              <category description="Harvesting criteria" type="category" />
               <crop type="crop" description="Enter name of crop to harvest when ripe : ">potato</crop>
             </ui>
             <script name="end_of_day">
@@ -2951,26 +3112,30 @@
           </irrigation>
         </folder>
         <outputfile>
+          <filename output="yes">PYM_Nov98.out</filename>
+          <title>PYM_Nov98</title>
           <events name="Reporting Frequency" shortcut="/Simulations/FUE/FUE_300/paddock/outputfile/Reporting Frequency" />
           <variables name="Variables" shortcut="/Simulations/FUE/FUE_300/paddock/outputfile/Variables" />
         </outputfile>
         <soil name="Templeton">
-          <Country />
-          <Site />
-          <Region />
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
           <LocalName />
-          <SoilType description="Classification" />
+          <Site />
           <NearestTown description="Nearest town" />
-          <NaturalVegetation description="Natural vegetation" />
+          <Region />
           <State />
+          <Country />
+          <NaturalVegetation description="Natural vegetation" />
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <InitWater name="Initial water">
             <PercentMethod>
               <Percent>1.00</Percent>
@@ -3122,7 +3287,6 @@
             <CN2Bare>68</CN2Bare>
             <CNRed>20</CNRed>
             <CNCov>0.8</CNCov>
-            <CnCanopyFact />
             <Slope>
             </Slope>
             <DischargeWidth>
@@ -3386,7 +3550,9 @@
       </area>
     </simulation>
     <simulation name="PYM_Dec98" shortcut="/Simulations/PYM/PYM_Nov98">
-      <metfile name="met" shortcut="/Simulations/PYM/PYM_Nov98/met" />
+      <metfile name="met" shortcut="/Simulations/PYM/PYM_Nov98/met">
+        <filename shortcut="/Simulations/PYM/PYM_Nov98/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/Simulations/PYM/PYM_Nov98/clock" />
       <summaryfile shortcut="/Simulations/PYM/PYM_Nov98/summaryfile" />
       <area name="paddock" shortcut="/Simulations/PYM/PYM_Nov98/paddock">
@@ -3395,14 +3561,14 @@
         <folder name="Manager folder" shortcut="/Simulations/PYM/PYM_Nov98/paddock/Manager folder">
           <manager name="Sowing rule">
             <ui>
-              <category description="Sowing criteria" />
+              <category description="Sowing criteria" type="category" />
               <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">14-dec</date1>
               <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">14-dec</date2>
               <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
               <raincrit type="text" description="Amount of rainfall : ">10</raincrit>
               <rainnumdays type="text" description="Number of days of rainfall : ">7</rainnumdays>
               <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">10</esw_amount>
-              <category description="Sowing parameters" />
+              <category description="Sowing parameters" type="category" />
               <crop type="crop" description="Enter name of crop to sow : ">potato</crop>
               <seeds type="text" description="Enter sowing density  (seeds/m2) : ">5</seeds>
               <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
@@ -3488,10 +3654,28 @@
           <irrigation name="Irrigation" shortcut="/Simulations/PYM/PYM_Nov98/paddock/Manager folder/Irrigation" />
         </folder>
         <outputfile shortcut="/Simulations/PYM/PYM_Nov98/paddock/outputfile">
+          <filename output="yes">PYM_Dec98.out</filename>
+          <title>PYM_Dec98</title>
           <events name="Reporting Frequency" shortcut="/Simulations/PYM/PYM_Nov98/paddock/outputfile/Reporting Frequency" />
           <variables name="Variables" shortcut="/Simulations/PYM/PYM_Nov98/paddock/outputfile/Variables" />
         </outputfile>
         <soil name="Templeton" shortcut="/Simulations/PYM/PYM_Nov98/paddock/Templeton">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <Water shortcut="/Simulations/PYM/PYM_Nov98/paddock/Templeton/Water">
             <SoilCrop name="wheat" shortcut="/Simulations/PYM/PYM_Nov98/paddock/Templeton/Water/wheat" />
             <SoilCrop name="potato" shortcut="/Simulations/PYM/PYM_Nov98/paddock/Templeton/Water/potato" />
@@ -3509,7 +3693,9 @@
       </area>
     </simulation>
     <simulation name="PYM_Oct99" shortcut="/Simulations/PYM/PYM_Dec98">
-      <metfile name="met" shortcut="/Simulations/PYM/PYM_Dec98/met" />
+      <metfile name="met" shortcut="/Simulations/PYM/PYM_Dec98/met">
+        <filename shortcut="/Simulations/PYM/PYM_Dec98/met/filename" input="yes" />
+      </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">13/10/1999</start_date>
         <end_date type="date" description="Enter the end date of the simulation">1/06/2000</end_date>
@@ -3521,14 +3707,14 @@
         <folder name="Manager folder" shortcut="/Simulations/PYM/PYM_Dec98/paddock/Manager folder">
           <manager name="Sowing rule">
             <ui>
-              <category description="Sowing criteria" />
+              <category description="Sowing criteria" type="category" />
               <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">14-oct</date1>
               <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">14-oct</date2>
               <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
               <raincrit type="text" description="Amount of rainfall : ">10</raincrit>
               <rainnumdays type="text" description="Number of days of rainfall : ">7</rainnumdays>
               <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">10</esw_amount>
-              <category description="Sowing parameters" />
+              <category description="Sowing parameters" type="category" />
               <crop type="crop" description="Enter name of crop to sow : ">potato</crop>
               <seeds type="text" description="Enter sowing density  (seeds/m2) : ">5</seeds>
               <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
@@ -3626,10 +3812,28 @@
           <irrigation name="Irrigation" shortcut="/Simulations/PYM/PYM_Dec98/paddock/Manager folder/Irrigation" />
         </folder>
         <outputfile shortcut="/Simulations/PYM/PYM_Dec98/paddock/outputfile">
+          <filename output="yes">PYM_Oct99.out</filename>
+          <title>PYM_Oct99</title>
           <events name="Reporting Frequency" shortcut="/Simulations/PYM/PYM_Dec98/paddock/outputfile/Reporting Frequency" />
           <variables name="Variables" shortcut="/Simulations/PYM/PYM_Dec98/paddock/outputfile/Variables" />
         </outputfile>
         <soil name="Templeton" shortcut="/Simulations/PYM/PYM_Dec98/paddock/Templeton">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <Water shortcut="/Simulations/PYM/PYM_Dec98/paddock/Templeton/Water">
             <SoilCrop name="wheat" shortcut="/Simulations/PYM/PYM_Dec98/paddock/Templeton/Water/wheat" />
             <SoilCrop name="potato" shortcut="/Simulations/PYM/PYM_Dec98/paddock/Templeton/Water/potato" />
@@ -3647,7 +3851,9 @@
       </area>
     </simulation>
     <simulation name="PYM_Nov99" shortcut="/Simulations/PYM/PYM_Nov98">
-      <metfile name="met" shortcut="/Simulations/PYM/PYM_Nov98/met" />
+      <metfile name="met" shortcut="/Simulations/PYM/PYM_Nov98/met">
+        <filename shortcut="/Simulations/PYM/PYM_Nov98/met/filename" input="yes" />
+      </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">13/10/1999</start_date>
         <end_date type="date" description="Enter the end date of the simulation">1/06/2000</end_date>
@@ -3659,14 +3865,14 @@
         <folder name="Manager folder" shortcut="/Simulations/PYM/PYM_Nov98/paddock/Manager folder">
           <manager name="Sowing rule">
             <ui>
-              <category description="Sowing criteria" />
+              <category description="Sowing criteria" type="category" />
               <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">4-nov</date1>
               <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">4-nov</date2>
               <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
               <raincrit type="text" description="Amount of rainfall : ">10</raincrit>
               <rainnumdays type="text" description="Number of days of rainfall : ">7</rainnumdays>
               <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">10</esw_amount>
-              <category description="Sowing parameters" />
+              <category description="Sowing parameters" type="category" />
               <crop type="crop" description="Enter name of crop to sow : ">potato</crop>
               <seeds type="text" description="Enter sowing density  (seeds/m2) : ">5</seeds>
               <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
@@ -3768,10 +3974,28 @@
           <irrigation name="Irrigation" shortcut="/Simulations/PYM/PYM_Nov98/paddock/Manager folder/Irrigation" />
         </folder>
         <outputfile shortcut="/Simulations/PYM/PYM_Nov98/paddock/outputfile">
+          <filename output="yes">PYM_Nov99.out</filename>
+          <title>PYM_Nov99</title>
           <events name="Reporting Frequency" shortcut="/Simulations/PYM/PYM_Nov98/paddock/outputfile/Reporting Frequency" />
           <variables name="Variables" shortcut="/Simulations/PYM/PYM_Nov98/paddock/outputfile/Variables" />
         </outputfile>
         <soil name="Templeton" shortcut="/Simulations/PYM/PYM_Nov98/paddock/Templeton">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <Water shortcut="/Simulations/PYM/PYM_Nov98/paddock/Templeton/Water">
             <SoilCrop name="wheat" shortcut="/Simulations/PYM/PYM_Nov98/paddock/Templeton/Water/wheat" />
             <SoilCrop name="potato" shortcut="/Simulations/PYM/PYM_Nov98/paddock/Templeton/Water/potato" />
@@ -3880,15 +4104,13 @@
   <folder name="Parilla">
     <simulation name="Parilla_23Nov_highN">
       <metfile name="met">
-        <filename name="filename">Lameroo.met</filename>
+        <filename name="filename" input="yes">Lameroo.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">22/11/2007</start_date>
         <end_date type="date" description="Enter the end date of the simulation">1/06/2008</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <fertiliser />
         <surfaceom name="surface organic matter">
@@ -3901,14 +4123,14 @@
         <folder name="Manager folder">
           <manager name="Sowing rule">
             <ui>
-              <category description="Sowing criteria" />
+              <category description="Sowing criteria" type="category" />
               <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">23-nov</date1>
               <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">23-nov</date2>
               <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
               <raincrit type="text" description="Amount of rainfall : ">10</raincrit>
               <rainnumdays type="text" description="Number of days of rainfall : ">7</rainnumdays>
               <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">10</esw_amount>
-              <category description="Sowing parameters" />
+              <category description="Sowing parameters" type="category" />
               <crop type="crop" description="Enter name of crop to sow : ">potato</crop>
               <seeds type="text" description="Enter sowing density  (seeds/m2) : ">5</seeds>
               <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
@@ -3950,7 +4172,7 @@
           </manager>
           <manager name="Harvesting rule">
             <ui>
-              <category description="Harvesting criteria" />
+              <category description="Harvesting criteria" type="category" />
               <crop type="crop" description="Enter name of crop to harvest when ripe : ">potato</crop>
             </ui>
             <script name="end_of_day">
@@ -4619,26 +4841,30 @@
           </irrigation>
         </folder>
         <outputfile>
+          <filename output="yes">Parilla_23Nov_highN.out</filename>
+          <title>Parilla_23Nov_highN</title>
           <events name="Reporting Frequency" shortcut="/Simulations/FUE/FUE_300/paddock/outputfile/Reporting Frequency" />
           <variables name="Variables" shortcut="/Simulations/FUE/FUE_300/paddock/outputfile/Variables" />
         </outputfile>
         <soil name="Pinarro_sand">
-          <Country />
-          <Site />
-          <Region />
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
           <LocalName />
-          <SoilType description="Classification" />
+          <Site />
           <NearestTown description="Nearest town" />
-          <NaturalVegetation description="Natural vegetation" />
+          <Region />
           <State />
+          <Country />
+          <NaturalVegetation description="Natural vegetation" />
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <InitWater name="Initial water">
             <PercentMethod>
               <Percent>1.00</Percent>
@@ -4752,7 +4978,6 @@
             <CN2Bare>68</CN2Bare>
             <CNRed>20</CNRed>
             <CNCov>0.8</CNCov>
-            <CnCanopyFact />
             <Slope>
             </Slope>
             <DischargeWidth>
@@ -5016,7 +5241,9 @@
       </area>
     </simulation>
     <simulation name="Parilla_3Dec_highN" shortcut="/Simulations/Parilla/Parilla_23Nov_highN">
-      <metfile name="met" shortcut="/Simulations/Parilla/Parilla_23Nov_highN/met" />
+      <metfile name="met" shortcut="/Simulations/Parilla/Parilla_23Nov_highN/met">
+        <filename shortcut="/Simulations/Parilla/Parilla_23Nov_highN/met/filename" input="yes" />
+      </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">2/12/2007</start_date>
         <end_date type="date" description="Enter the end date of the simulation">1/06/2008</end_date>
@@ -5028,14 +5255,14 @@
         <folder name="Manager folder" shortcut="/Simulations/Parilla/Parilla_23Nov_highN/paddock/Manager folder">
           <manager name="Sowing rule">
             <ui>
-              <category description="Sowing criteria" />
+              <category description="Sowing criteria" type="category" />
               <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">3-dec</date1>
               <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">3-dec</date2>
               <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
               <raincrit type="text" description="Amount of rainfall : ">10</raincrit>
               <rainnumdays type="text" description="Number of days of rainfall : ">7</rainnumdays>
               <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">10</esw_amount>
-              <category description="Sowing parameters" />
+              <category description="Sowing parameters" type="category" />
               <crop type="crop" description="Enter name of crop to sow : ">potato</crop>
               <seeds type="text" description="Enter sowing density  (seeds/m2) : ">5</seeds>
               <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
@@ -5713,26 +5940,30 @@
           <irrigation name="Irrigation" shortcut="/Simulations/Parilla/Parilla_23Nov_highN/paddock/Manager folder/Irrigation" />
         </folder>
         <outputfile shortcut="/Simulations/Parilla/Parilla_23Nov_highN/paddock/outputfile">
+          <filename output="yes">Parilla_3Dec_highN.out</filename>
+          <title>Parilla_3Dec_highN</title>
           <events name="Reporting Frequency" shortcut="/Simulations/Parilla/Parilla_23Nov_highN/paddock/outputfile/Reporting Frequency" />
           <variables name="Variables" shortcut="/Simulations/Parilla/Parilla_23Nov_highN/paddock/outputfile/Variables" />
         </outputfile>
         <soil name="Pinarro_sand">
-          <Country />
-          <Site />
-          <Region />
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
           <LocalName />
-          <SoilType description="Classification" />
+          <Site />
           <NearestTown description="Nearest town" />
-          <NaturalVegetation description="Natural vegetation" />
+          <Region />
           <State />
+          <Country />
+          <NaturalVegetation description="Natural vegetation" />
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <InitWater name="Initial water">
             <PercentMethod>
               <Percent>1.00</Percent>
@@ -5846,7 +6077,6 @@
             <CN2Bare>68</CN2Bare>
             <CNRed>20</CNRed>
             <CNCov>0.8</CNCov>
-            <CnCanopyFact />
             <Slope>
             </Slope>
             <DischargeWidth>
@@ -6110,7 +6340,9 @@
       </area>
     </simulation>
     <simulation name="Parilla_17Dec_highN" shortcut="/Simulations/Parilla/Parilla_23Nov_highN">
-      <metfile name="met" shortcut="/Simulations/Parilla/Parilla_23Nov_highN/met" />
+      <metfile name="met" shortcut="/Simulations/Parilla/Parilla_23Nov_highN/met">
+        <filename shortcut="/Simulations/Parilla/Parilla_23Nov_highN/met/filename" input="yes" />
+      </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">16/12/2007</start_date>
         <end_date type="date" description="Enter the end date of the simulation">1/06/2008</end_date>
@@ -6122,14 +6354,14 @@
         <folder name="Manager folder" shortcut="/Simulations/Parilla/Parilla_23Nov_highN/paddock/Manager folder">
           <manager name="Sowing rule">
             <ui>
-              <category description="Sowing criteria" />
+              <category description="Sowing criteria" type="category" />
               <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">17-dec</date1>
               <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">17-dec</date2>
               <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
               <raincrit type="text" description="Amount of rainfall : ">10</raincrit>
               <rainnumdays type="text" description="Number of days of rainfall : ">7</rainnumdays>
               <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">10</esw_amount>
-              <category description="Sowing parameters" />
+              <category description="Sowing parameters" type="category" />
               <crop type="crop" description="Enter name of crop to sow : ">potato</crop>
               <seeds type="text" description="Enter sowing density  (seeds/m2) : ">5</seeds>
               <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
@@ -6807,6 +7039,8 @@
           <irrigation name="Irrigation" shortcut="/Simulations/Parilla/Parilla_23Nov_highN/paddock/Manager folder/Irrigation" />
         </folder>
         <outputfile shortcut="/Simulations/Parilla/Parilla_23Nov_highN/paddock/outputfile">
+          <filename output="yes">Parilla_17Dec_highN.out</filename>
+          <title>Parilla_17Dec_highN</title>
           <events name="Reporting Frequency" shortcut="/Simulations/Parilla/Parilla_23Nov_highN/paddock/outputfile/Reporting Frequency" />
           <variables name="Variables" shortcut="/Simulations/Parilla/Parilla_23Nov_highN/paddock/outputfile/Variables" />
         </outputfile>
@@ -6815,22 +7049,24 @@
         </potato>
         <micromet name="Micromet" shortcut="/Simulations/FUE/FUE_300/paddock/Micromet" />
         <soil name="Pinarro_sand">
-          <Country />
-          <Site />
-          <Region />
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
           <LocalName />
-          <SoilType description="Classification" />
+          <Site />
           <NearestTown description="Nearest town" />
-          <NaturalVegetation description="Natural vegetation" />
+          <Region />
           <State />
+          <Country />
+          <NaturalVegetation description="Natural vegetation" />
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <InitWater name="Initial water">
             <PercentMethod>
               <Percent>1.00</Percent>
@@ -6944,7 +7180,6 @@
             <CN2Bare>68</CN2Bare>
             <CNRed>20</CNRed>
             <CNCov>0.8</CNCov>
-            <CnCanopyFact />
             <Slope>
             </Slope>
             <DischargeWidth>

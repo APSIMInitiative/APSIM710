@@ -1,15 +1,13 @@
-<folder version="27" name="Simulations">
+<folder version="32" name="Simulations">
   <simulation name="RS_Wheat_9192_Control">
     <metfile name="met">
-      <filename name="filename">%apsim%\Examples\MetFiles\lincoln.met</filename>
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\lincoln.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">1/06/1991</start_date>
       <end_date type="date" description="Enter the end date of the simulation">1/03/1992</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Continuous Wheat Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <fertiliser />
       <wheat />
@@ -253,62 +251,66 @@ if (date_within('[date1], [date2]') = 1) then
         </manager>
       </folder>
       <outputfile>
+        <filename output="yes">RS_Wheat_9192_Control.out</filename>
+        <title>RS_Wheat_9192_Control</title>
         <events name="Reporting Frequency">
-          <event name="Daily" />
+          <event>Daily</event>
         </events>
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as date" />
-          <variable name="biomass" />
-          <variable name="yield" />
-          <variable name="rain" />
-          <variable name="es" />
-          <variable name="sw_uptake" />
-          <variable name="sw_demand" />
-          <variable name="sw_supply" />
-          <variable name="leafgreenwt" />
-          <variable name="leafgreenn" />
-          <variable name="leafsenescedwt" />
-          <variable name="stemgreenwt" />
-          <variable name="stemgreenn" />
-          <variable name="headgreenwt" />
-          <variable name="headgreenn" />
-          <variable name="nfact_expan" />
-          <variable name="nfact_photo" />
-          <variable name="biomass_n" />
-          <variable name="lai" />
-          <variable name="ep" />
-          <variable name="height" />
-          <variable name="sw_dep()" />
-          <variable name="runoff" />
-          <variable name="drain" />
-          <variable name="biomass_wt" />
-          <variable name="eo_penman_x_cover" />
-          <variable name="irrigation" />
-          <variable name="grain_no" />
-          <variable name="plants" />
-          <variable name="grain_no_per_head" />
-          <variable name="green_biomass" />
-          <variable name="podgreenwt" />
-          <variable name="esw" />
-          <variable name="grain_wt" />
-          <variable name="senescedn" />
-          <variable name="senescedwt" />
-          <variable name="totaln" />
-          <variable name="sw" />
-          <variable name="root_depth" />
-          <variable name="sw_stress_photo" />
-          <variable name="n_stress_photo" />
+          <variable>dd/mm/yyyy as date</variable>
+          <variable>biomass</variable>
+          <variable>yield</variable>
+          <variable>rain</variable>
+          <variable>es</variable>
+          <variable>sw_uptake</variable>
+          <variable>sw_demand</variable>
+          <variable>sw_supply</variable>
+          <variable>leafgreenwt</variable>
+          <variable>leafgreenn</variable>
+          <variable>leafsenescedwt</variable>
+          <variable>stemgreenwt</variable>
+          <variable>stemgreenn</variable>
+          <variable>headgreenwt</variable>
+          <variable>headgreenn</variable>
+          <variable>nfact_expan</variable>
+          <variable>nfact_photo</variable>
+          <variable>biomass_n</variable>
+          <variable>lai</variable>
+          <variable>ep</variable>
+          <variable>height</variable>
+          <variable>sw_dep()</variable>
+          <variable>runoff</variable>
+          <variable>drain</variable>
+          <variable>biomass_wt</variable>
+          <variable>eo_penman_x_cover</variable>
+          <variable>irrigation</variable>
+          <variable>grain_no</variable>
+          <variable>plants</variable>
+          <variable>grain_no_per_head</variable>
+          <variable>green_biomass</variable>
+          <variable>podgreenwt</variable>
+          <variable>esw</variable>
+          <variable>grain_wt</variable>
+          <variable>senescedn</variable>
+          <variable>senescedwt</variable>
+          <variable>totaln</variable>
+          <variable>sw</variable>
+          <variable>root_depth</variable>
+          <variable>sw_stress_photo</variable>
+          <variable>n_stress_photo</variable>
         </variables>
       </outputfile>
       <soil name="Templeton deep 1 ">
-        <Country>New Zealand</Country>
-        <Site>-</Site>
-        <Region>Plains</Region>
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description">NZ_sedementary</SoilType>
         <LocalName />
-        <SoilType>NZ_sedementary</SoilType>
+        <Site>-</Site>
         <NearestTown>-</NearestTown>
-        <NaturalVegetation />
+        <Region>Plains</Region>
         <State>Canterbury</State>
+        <Country>New Zealand</Country>
+        <NaturalVegetation />
         <ApsoilNumber />
         <Latitude />
         <Longitude />
@@ -1343,7 +1345,9 @@ if (date_within('[date1], [date2]') = 1) then
     </Graph>
   </simulation>
   <simulation name="RS_Wheat_9192_SpringD1" shortcut="/Simulations/RS_Wheat_9192_Control">
-    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met" />
+    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met">
+      <filename shortcut="/Simulations/RS_Wheat_9192_Control/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/Simulations/RS_Wheat_9192_Control/clock" />
     <summaryfile shortcut="/Simulations/RS_Wheat_9192_Control/summaryfile" />
     <area name="paddock" shortcut="/Simulations/RS_Wheat_9192_Control/paddock">
@@ -1464,11 +1468,29 @@ if (date_within('[date1], [date2]') = 1) then
         <manager name="New variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Manager folder/New variables" />
       </folder>
       <outputfile shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile">
+        <filename output="yes">RS_Wheat_9192_SpringD1.out</filename>
+        <title>RS_Wheat_9192_SpringD1</title>
         <events name="Reporting Frequency" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Reporting Frequency" />
         <variables name="Variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Variables" />
       </outputfile>
       <wheat shortcut="/Simulations/RS_Wheat_9192_Control/paddock/wheat" />
       <soil name="Templeton deep 1 " shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 ">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Analysis shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 /Analysis" />
         <Water>
           <Layer>
@@ -2328,7 +2350,9 @@ if (date_within('[date1], [date2]') = 1) then
     </Graph>
   </simulation>
   <simulation name="RS_Wheat_9192_SpringD2" shortcut="/Simulations/RS_Wheat_9192_Control">
-    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met" />
+    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met">
+      <filename shortcut="/Simulations/RS_Wheat_9192_Control/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/Simulations/RS_Wheat_9192_Control/clock" />
     <summaryfile shortcut="/Simulations/RS_Wheat_9192_Control/summaryfile" />
     <area name="paddock" shortcut="/Simulations/RS_Wheat_9192_Control/paddock">
@@ -2447,11 +2471,29 @@ if (date_within('[date1], [date2]') = 1) then
         <manager name="New variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Manager folder/New variables" />
       </folder>
       <outputfile shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile">
+        <filename output="yes">RS_Wheat_9192_SpringD2.out</filename>
+        <title>RS_Wheat_9192_SpringD2</title>
         <events name="Reporting Frequency" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Reporting Frequency" />
         <variables name="Variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Variables" />
       </outputfile>
       <wheat shortcut="/Simulations/RS_Wheat_9192_Control/paddock/wheat" />
       <soil name="Templeton deep 1 " shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 ">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Analysis shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 /Analysis" />
         <Water>
           <Layer>
@@ -3311,7 +3353,9 @@ if (date_within('[date1], [date2]') = 1) then
     </Graph>
   </simulation>
   <simulation name="RS_Wheat_9192_SpringD3" shortcut="/Simulations/RS_Wheat_9192_Control">
-    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met" />
+    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met">
+      <filename shortcut="/Simulations/RS_Wheat_9192_Control/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/Simulations/RS_Wheat_9192_Control/clock" />
     <summaryfile shortcut="/Simulations/RS_Wheat_9192_Control/summaryfile" />
     <area name="paddock" shortcut="/Simulations/RS_Wheat_9192_Control/paddock">
@@ -3430,11 +3474,29 @@ if (date_within('[date1], [date2]') = 1) then
         <manager name="New variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Manager folder/New variables" />
       </folder>
       <outputfile shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile">
+        <filename output="yes">RS_Wheat_9192_SpringD3.out</filename>
+        <title>RS_Wheat_9192_SpringD3</title>
         <events name="Reporting Frequency" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Reporting Frequency" />
         <variables name="Variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Variables" />
       </outputfile>
       <wheat shortcut="/Simulations/RS_Wheat_9192_Control/paddock/wheat" />
       <soil name="Templeton deep 1 " shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 ">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Analysis shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 /Analysis" />
         <Water>
           <Layer>
@@ -4234,7 +4296,9 @@ if (date_within('[date1], [date2]') = 1) then
     </Graph>
   </simulation>
   <simulation name="RS_Wheat_9192_SpringD4" shortcut="/Simulations/RS_Wheat_9192_Control">
-    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met" />
+    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met">
+      <filename shortcut="/Simulations/RS_Wheat_9192_Control/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/Simulations/RS_Wheat_9192_Control/clock" />
     <summaryfile shortcut="/Simulations/RS_Wheat_9192_Control/summaryfile" />
     <area name="paddock" shortcut="/Simulations/RS_Wheat_9192_Control/paddock">
@@ -4353,11 +4417,29 @@ if (date_within('[date1], [date2]') = 1) then
         <manager name="New variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Manager folder/New variables" />
       </folder>
       <outputfile shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile">
+        <filename output="yes">RS_Wheat_9192_SpringD4.out</filename>
+        <title>RS_Wheat_9192_SpringD4</title>
         <events name="Reporting Frequency" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Reporting Frequency" />
         <variables name="Variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Variables" />
       </outputfile>
       <wheat shortcut="/Simulations/RS_Wheat_9192_Control/paddock/wheat" />
       <soil name="Templeton deep 1 " shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 ">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Analysis shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 /Analysis" />
         <Water>
           <Layer>
@@ -5228,7 +5310,9 @@ if (date_within('[date1], [date2]') = 1) then
     </Graph>
   </simulation>
   <simulation name="RS_Wheat_9192_SummerD1" shortcut="/Simulations/RS_Wheat_9192_Control">
-    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met" />
+    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met">
+      <filename shortcut="/Simulations/RS_Wheat_9192_Control/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/Simulations/RS_Wheat_9192_Control/clock" />
     <summaryfile shortcut="/Simulations/RS_Wheat_9192_Control/summaryfile" />
     <area name="paddock" shortcut="/Simulations/RS_Wheat_9192_Control/paddock">
@@ -5347,11 +5431,29 @@ if (date_within('[date1], [date2]') = 1) then
         <manager name="New variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Manager folder/New variables" />
       </folder>
       <outputfile shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile">
+        <filename output="yes">RS_Wheat_9192_SummerD1.out</filename>
+        <title>RS_Wheat_9192_SummerD1</title>
         <events name="Reporting Frequency" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Reporting Frequency" />
         <variables name="Variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Variables" />
       </outputfile>
       <wheat shortcut="/Simulations/RS_Wheat_9192_Control/paddock/wheat" />
       <soil name="Templeton deep 1 " shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 ">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Analysis shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 /Analysis" />
         <Water>
           <Layer>
@@ -6210,7 +6312,9 @@ if (date_within('[date1], [date2]') = 1) then
     </Graph>
   </simulation>
   <simulation name="RS_Wheat_9192_SummerD2" shortcut="/Simulations/RS_Wheat_9192_Control">
-    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met" />
+    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met">
+      <filename shortcut="/Simulations/RS_Wheat_9192_Control/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/Simulations/RS_Wheat_9192_Control/clock" />
     <summaryfile shortcut="/Simulations/RS_Wheat_9192_Control/summaryfile" />
     <area name="paddock" shortcut="/Simulations/RS_Wheat_9192_Control/paddock">
@@ -6329,11 +6433,29 @@ if (date_within('[date1], [date2]') = 1) then
         <manager name="New variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Manager folder/New variables" />
       </folder>
       <outputfile shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile">
+        <filename output="yes">RS_Wheat_9192_SummerD2.out</filename>
+        <title>RS_Wheat_9192_SummerD2</title>
         <events name="Reporting Frequency" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Reporting Frequency" />
         <variables name="Variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Variables" />
       </outputfile>
       <wheat shortcut="/Simulations/RS_Wheat_9192_Control/paddock/wheat" />
       <soil name="Templeton deep 1 " shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 ">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Analysis shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 /Analysis" />
         <Water>
           <Layer>
@@ -7192,7 +7314,9 @@ if (date_within('[date1], [date2]') = 1) then
     </Graph>
   </simulation>
   <simulation name="RS_Wheat_9192_SummerD3" shortcut="/Simulations/RS_Wheat_9192_Control">
-    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met" />
+    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met">
+      <filename shortcut="/Simulations/RS_Wheat_9192_Control/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/Simulations/RS_Wheat_9192_Control/clock" />
     <summaryfile shortcut="/Simulations/RS_Wheat_9192_Control/summaryfile" />
     <area name="paddock" shortcut="/Simulations/RS_Wheat_9192_Control/paddock">
@@ -7311,11 +7435,29 @@ if (date_within('[date1], [date2]') = 1) then
         <manager name="New variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Manager folder/New variables" />
       </folder>
       <outputfile shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile">
+        <filename output="yes">RS_Wheat_9192_SummerD3.out</filename>
+        <title>RS_Wheat_9192_SummerD3</title>
         <events name="Reporting Frequency" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Reporting Frequency" />
         <variables name="Variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Variables" />
       </outputfile>
       <wheat shortcut="/Simulations/RS_Wheat_9192_Control/paddock/wheat" />
       <soil name="Templeton deep 1 " shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 ">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Analysis shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 /Analysis" />
         <Water>
           <Layer>
@@ -8174,7 +8316,9 @@ if (date_within('[date1], [date2]') = 1) then
     </Graph>
   </simulation>
   <simulation name="RS_Wheat_9192_SummerD4" shortcut="/Simulations/RS_Wheat_9192_Control">
-    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met" />
+    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met">
+      <filename shortcut="/Simulations/RS_Wheat_9192_Control/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/Simulations/RS_Wheat_9192_Control/clock" />
     <summaryfile shortcut="/Simulations/RS_Wheat_9192_Control/summaryfile" />
     <area name="paddock" shortcut="/Simulations/RS_Wheat_9192_Control/paddock">
@@ -8293,11 +8437,29 @@ if (date_within('[date1], [date2]') = 1) then
         <manager name="New variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Manager folder/New variables" />
       </folder>
       <outputfile shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile">
+        <filename output="yes">RS_Wheat_9192_SummerD4.out</filename>
+        <title>RS_Wheat_9192_SummerD4</title>
         <events name="Reporting Frequency" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Reporting Frequency" />
         <variables name="Variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Variables" />
       </outputfile>
       <wheat shortcut="/Simulations/RS_Wheat_9192_Control/paddock/wheat" />
       <soil name="Templeton deep 1 " shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 ">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Analysis shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 /Analysis" />
         <Water>
           <Layer>
@@ -9156,7 +9318,9 @@ if (date_within('[date1], [date2]') = 1) then
     </Graph>
   </simulation>
   <simulation name="RS_Wheat_9192_SummerD5" shortcut="/Simulations/RS_Wheat_9192_Control">
-    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met" />
+    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met">
+      <filename shortcut="/Simulations/RS_Wheat_9192_Control/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/Simulations/RS_Wheat_9192_Control/clock" />
     <summaryfile shortcut="/Simulations/RS_Wheat_9192_Control/summaryfile" />
     <area name="paddock" shortcut="/Simulations/RS_Wheat_9192_Control/paddock">
@@ -9275,11 +9439,29 @@ if (date_within('[date1], [date2]') = 1) then
         <manager name="New variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Manager folder/New variables" />
       </folder>
       <outputfile shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile">
+        <filename output="yes">RS_Wheat_9192_SummerD5.out</filename>
+        <title>RS_Wheat_9192_SummerD5</title>
         <events name="Reporting Frequency" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Reporting Frequency" />
         <variables name="Variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Variables" />
       </outputfile>
       <wheat shortcut="/Simulations/RS_Wheat_9192_Control/paddock/wheat" />
       <soil name="Templeton deep 1 " shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 ">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Analysis shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 /Analysis" />
         <Water>
           <Layer>
@@ -10138,7 +10320,9 @@ if (date_within('[date1], [date2]') = 1) then
     </Graph>
   </simulation>
   <simulation name="RS_Wheat_9192_Nil" shortcut="/Simulations/RS_Wheat_9192_Control">
-    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met" />
+    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met">
+      <filename shortcut="/Simulations/RS_Wheat_9192_Control/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/Simulations/RS_Wheat_9192_Control/clock" />
     <summaryfile shortcut="/Simulations/RS_Wheat_9192_Control/summaryfile" />
     <area name="paddock" shortcut="/Simulations/RS_Wheat_9192_Control/paddock">
@@ -10257,11 +10441,29 @@ if (date_within('[date1], [date2]') = 1) then
         <manager name="New variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Manager folder/New variables" />
       </folder>
       <outputfile shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile">
+        <filename output="yes">RS_Wheat_9192_Nil.out</filename>
+        <title>RS_Wheat_9192_Nil</title>
         <events name="Reporting Frequency" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Reporting Frequency" />
         <variables name="Variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Variables" />
       </outputfile>
       <wheat shortcut="/Simulations/RS_Wheat_9192_Control/paddock/wheat" />
       <soil name="Templeton deep 1 " shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 ">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Analysis shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 /Analysis" />
         <Water>
           <Layer>
@@ -11151,7 +11353,9 @@ if (date_within('[date1], [date2]') = 1) then
     </Graph>
   </simulation>
   <simulation name="RS_Wheat_9192_Half" shortcut="/Simulations/RS_Wheat_9192_Control">
-    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met" />
+    <metfile name="met" shortcut="/Simulations/RS_Wheat_9192_Control/met">
+      <filename shortcut="/Simulations/RS_Wheat_9192_Control/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/Simulations/RS_Wheat_9192_Control/clock" />
     <summaryfile shortcut="/Simulations/RS_Wheat_9192_Control/summaryfile" />
     <area name="paddock" shortcut="/Simulations/RS_Wheat_9192_Control/paddock">
@@ -11270,11 +11474,29 @@ if (date_within('[date1], [date2]') = 1) then
         <manager name="New variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Manager folder/New variables" />
       </folder>
       <outputfile shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile">
+        <filename output="yes">RS_Wheat_9192_Half.out</filename>
+        <title>RS_Wheat_9192_Half</title>
         <events name="Reporting Frequency" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Reporting Frequency" />
         <variables name="Variables" shortcut="/Simulations/RS_Wheat_9192_Control/paddock/outputfile/Variables" />
       </outputfile>
       <wheat shortcut="/Simulations/RS_Wheat_9192_Control/paddock/wheat" />
       <soil name="Templeton deep 1 " shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 ">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Analysis shortcut="/Simulations/RS_Wheat_9192_Control/paddock/Templeton deep 1 /Analysis" />
         <Water>
           <Layer>

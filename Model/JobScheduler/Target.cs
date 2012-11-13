@@ -144,20 +144,17 @@ public class Target
                     AllJobsHaveRun = false;
             }
 
-        if (Jobs.Count == 0 && StartTime.Ticks == 0)
-               StartTime = DateTime.Now;   // This is a "virtual" target. Set start time once dependencies have passed
-
         // Check for the situation where there are no dependencies and no jobs. This happens with
         // the Tests target in BuildAll.xml. In this situation the jobs will be added later so 
         // don't flag it as having passed.
         if (DependsOn.Count == 0 && Jobs.Count == 0)
             return;
 
+        if (StartTime.Ticks == 0)
+            StartTime = DateTime.Now;   // Set start time once dependencies have passed
+
         if (AllJobsHaveRun)
         {
-            if (StartTime.Year == 1)
-                StartTime = DateTime.Now;
-
             FinishTime = DateTime.Now;
             ElapsedTime = Convert.ToInt32((FinishTime - StartTime).TotalSeconds);
             if (AllPassed)

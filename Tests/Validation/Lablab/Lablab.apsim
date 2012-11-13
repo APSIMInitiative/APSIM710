@@ -1,17 +1,14 @@
-<folder version="17" name="Simulations">
+<folder version="32" name="Simulations">
   <simulation name="Gatton_LabLab_2000exp_P5">
     <metfile name="met">
-      <filename name="filename">gatton_2000.met</filename>
+      <filename name="filename" input="yes">gatton_2000.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Select the start date of the simulation">1/01/2000</start_date>
       <end_date type="date" description="Select the end date of the simulation">1/06/2000</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Continuous Wheat Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
-      <registrations name="global" />
       <burgundybean>
         <ini>
           <filename>C:\DATA\Temp\NPD\West_Timor\APSIMV6\burgundybean.ini</filename>
@@ -20,14 +17,14 @@
       <folder name="Manager folder">
         <manager name="Sowing rule">
           <ui>
-            <category description="Sowing criteria" />
+            <category description="Sowing criteria" type="category" />
             <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">24-Jan-2000</date1>
             <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">24-Jan-2000</date2>
             <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
             <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
             <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
             <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">200</esw_amount>
-            <category description="Sowing parameters" />
+            <category description="Sowing parameters" type="category" />
             <crop type="crop" description="Enter name of crop to sow : ">lablab</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">5</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
@@ -55,7 +52,7 @@
         </manager>
         <manager name="Harvesting rule">
           <ui>
-            <category description="Harvesting criteria" />
+            <category description="Harvesting criteria" type="category" />
             <crop type="crop" description="Enter name of crop to harvest when ripe : ">lablab</crop>
           </ui>
           <script name="end_of_day">
@@ -129,360 +126,752 @@ green_leaves = 0</text>
       </surfaceom>
       <lablab />
       <soil name="Prarie-Lockyer">
-        <state>Queensland</state>
-        <region>Lockyer</region>
-        <nearesttown>Lawes, Q 4350</nearesttown>
-        <site>Lawes</site>
-        <SoilType>Prarie</SoilType>
-        <Latitude>-27.5338629</Latitude>
+        <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number); oc and ph estimated</Comment>
+        <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description">Prarie</SoilType>
+        <LocalName />
+        <Site>Lawes</Site>
+        <NearestTown description="Nearest town">Lawes, Q 4350</NearestTown>
+        <Region>Lockyer</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Blue Gum, Moreton Bay Ash, Tea Tree</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)">-27.5338629</Latitude>
         <Longitude>152.3384387</Longitude>
-        <LocationAccuracy>+-20m</LocationAccuracy>
-        <DataSource>CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <comment>Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number); oc and ph estimated</comment>
-        <naturalvegetation>Blue Gum, Moreton Bay Ash, Tea Tree</naturalvegetation>
-        <SummerCona>3.5</SummerCona>
-        <WinterCona>2.5</WinterCona>
-        <SummerU>6</SummerU>
-        <WinterU>4</WinterU>
-        <SummerDate>1-Nov</SummerDate>
-        <WinterDate>1-apr</WinterDate>
-        <Salb>0.12</Salb>
-        <DiffusConst>40</DiffusConst>
-        <DiffusSlope>16</DiffusSlope>
-        <CN2Bare>73</CN2Bare>
-        <CNRed>20</CNRed>
-        <CNCov>0.8</CNCov>
-        <RootCN>40</RootCN>
-        <RootWT>1000</RootWT>
-        <SoilCN>12</SoilCN>
-        <EnrACoeff>7.4</EnrACoeff>
-        <EnrBCoeff>0.2</EnrBCoeff>
-        <profile>
-          <layer>
-            <thickness>150</thickness>
-            <bd>1.38</bd>
-            <ll15>0.19</ll15>
-            <airdry>0.1</airdry>
-            <dul>0.38</dul>
-            <sat>0.45</sat>
-            <swcon>0.3</swcon>
-            <fbiom>0.04</fbiom>
-            <finert>0.4</finert>
-            <oc>1.2</oc>
-            <ph>7</ph>
-            <ll name="chickpea">0.2</ll>
-            <kl name="chickpea">0.06</kl>
-            <xf name="chickpea">1</xf>
-            <ll name="butterflypea">0.2</ll>
-            <kl name="butterflypea">0.06</kl>
-            <xf name="butterflypea">1</xf>
-            <ll name="centro">0.19</ll>
-            <kl name="centro">0.06</kl>
-            <xf name="centro">1</xf>
-            <ll name="macroptilium">0.19</ll>
-            <kl name="macroptilium">0.06</kl>
-            <xf name="macroptilium">1</xf>
-            <ll name="lablab">0.19</ll>
-            <kl name="lablab">0.06</kl>
-            <xf name="lablab">1</xf>
-          </layer>
-          <layer>
-            <thickness>150</thickness>
-            <bd>1.38</bd>
-            <ll15>0.195</ll15>
-            <airdry>0.168</airdry>
-            <dul>0.38</dul>
-            <sat>0.45</sat>
-            <swcon>0.3</swcon>
-            <fbiom>0.02</fbiom>
-            <finert>0.6</finert>
-            <oc>1.2</oc>
-            <ph>7</ph>
-            <ll name="chickpea">0.21</ll>
-            <kl name="chickpea">0.06</kl>
-            <xf name="chickpea">1</xf>
-            <ll name="butterflypea">0.21</ll>
-            <kl name="butterflypea">0.06</kl>
-            <xf name="butterflypea">1</xf>
-            <ll name="centro">0.195</ll>
-            <kl name="centro">0.06</kl>
-            <xf name="centro">1</xf>
-            <ll name="macroptilium">0.195</ll>
-            <kl name="macroptilium">0.06</kl>
-            <xf name="macroptilium">1</xf>
-            <ll name="lablab">0.195</ll>
-            <kl name="lablab">0.06</kl>
-            <xf name="lablab">1</xf>
-          </layer>
-          <layer>
-            <thickness>300</thickness>
-            <bd>1.28</bd>
-            <ll15>0.2</ll15>
-            <airdry>0.2</airdry>
-            <dul>0.39</dul>
-            <sat>0.45</sat>
-            <swcon>0.3</swcon>
-            <fbiom>0.02</fbiom>
-            <finert>0.8</finert>
-            <oc>1.2</oc>
-            <ph>7</ph>
-            <ll name="chickpea">0.2</ll>
-            <kl name="chickpea">0.06</kl>
-            <xf name="chickpea">1</xf>
-            <ll name="butterflypea">0.2</ll>
-            <kl name="butterflypea">0.06</kl>
-            <xf name="butterflypea">1</xf>
-            <ll name="centro">0.2</ll>
-            <kl name="centro">0.06</kl>
-            <xf name="centro">1</xf>
-            <ll name="macroptilium">0.2</ll>
-            <kl name="macroptilium">0.06</kl>
-            <xf name="macroptilium">1</xf>
-            <ll name="lablab">0.2</ll>
-            <kl name="lablab">0.06</kl>
-            <xf name="lablab">1</xf>
-          </layer>
-          <layer>
-            <thickness>300</thickness>
-            <bd>1.38</bd>
-            <ll15>0.22</ll15>
-            <airdry>0.22</airdry>
-            <dul>0.4</dul>
-            <sat>0.45</sat>
-            <swcon>0.3</swcon>
-            <fbiom>0.02</fbiom>
-            <finert>1</finert>
-            <oc>1.1</oc>
-            <ph>7</ph>
-            <ll name="chickpea">0.22</ll>
-            <kl name="chickpea">0.06</kl>
-            <xf name="chickpea">1</xf>
-            <ll name="butterflypea">0.22</ll>
-            <kl name="butterflypea">0.06</kl>
-            <xf name="butterflypea">1</xf>
-            <ll name="centro">0.22</ll>
-            <kl name="centro">0.06</kl>
-            <xf name="centro">1</xf>
-            <ll name="macroptilium">0.22</ll>
-            <kl name="macroptilium">0.06</kl>
-            <xf name="macroptilium">1</xf>
-            <ll name="lablab">0.22</ll>
-            <kl name="lablab">0.06</kl>
-            <xf name="lablab">1</xf>
-          </layer>
-          <layer>
-            <thickness>300</thickness>
-            <bd>1.4</bd>
-            <ll15>0.23</ll15>
-            <airdry>0.23</airdry>
-            <dul>0.39</dul>
-            <sat>0.44</sat>
-            <swcon>0.3</swcon>
-            <fbiom>0.01</fbiom>
-            <finert>1</finert>
-            <oc>0.7</oc>
-            <ph>7</ph>
-            <ll name="chickpea">0.23</ll>
-            <kl name="chickpea">0.06</kl>
-            <xf name="chickpea">1</xf>
-            <ll name="butterflypea">0.24</ll>
-            <kl name="butterflypea">0.06</kl>
-            <xf name="butterflypea">1</xf>
-            <ll name="centro">0.23</ll>
-            <kl name="centro">0.06</kl>
-            <xf name="centro">1</xf>
-            <ll name="macroptilium">0.23</ll>
-            <kl name="macroptilium">0.06</kl>
-            <xf name="macroptilium">1</xf>
-            <ll name="lablab">0.23</ll>
-            <kl name="lablab">0.06</kl>
-            <xf name="lablab">1</xf>
-          </layer>
-          <layer>
-            <thickness>300</thickness>
-            <bd>1.46</bd>
-            <ll15>0.25</ll15>
-            <airdry>0.25</airdry>
-            <dul>0.37</dul>
-            <sat>0.42</sat>
-            <swcon>0.3</swcon>
-            <fbiom>0.01</fbiom>
-            <finert>1</finert>
-            <oc>0.3</oc>
-            <ph>7</ph>
-            <ll name="chickpea">0.3</ll>
-            <kl name="chickpea">0.06</kl>
-            <xf name="chickpea">1</xf>
-            <ll name="butterflypea">0.28</ll>
-            <kl name="butterflypea">0.06</kl>
-            <xf name="butterflypea">1</xf>
-            <ll name="centro">0.25</ll>
-            <kl name="centro">0.06</kl>
-            <xf name="centro">1</xf>
-            <ll name="macroptilium">0.25</ll>
-            <kl name="macroptilium">0.06</kl>
-            <xf name="macroptilium">1</xf>
-            <ll name="lablab">0.25</ll>
-            <kl name="lablab">0.06</kl>
-            <xf name="lablab">1</xf>
-          </layer>
-          <layer>
-            <thickness>300</thickness>
-            <bd>1.47</bd>
-            <ll15>0.26</ll15>
-            <airdry>0.26</airdry>
-            <dul>0.34</dul>
-            <sat>0.42</sat>
-            <swcon>0.3</swcon>
-            <fbiom>0.01</fbiom>
-            <finert>1</finert>
-            <oc>0.3</oc>
-            <ph>7</ph>
-            <ll name="chickpea">0.34</ll>
-            <kl name="chickpea">0.06</kl>
-            <xf name="chickpea">1</xf>
-            <ll name="butterflypea">0.3</ll>
-            <kl name="butterflypea">0.06</kl>
-            <xf name="butterflypea">1</xf>
-            <ll name="centro">0.26</ll>
-            <kl name="centro">0.06</kl>
-            <xf name="centro">1</xf>
-            <ll name="macroptilium">0.26</ll>
-            <kl name="macroptilium">0.06</kl>
-            <xf name="macroptilium">1</xf>
-            <ll name="lablab">0.26</ll>
-            <kl name="lablab">0.06</kl>
-            <xf name="lablab">1</xf>
-          </layer>
-          <layer>
-            <thickness>300</thickness>
-            <bd>1.47</bd>
-            <sat>0.42</sat>
-            <dul>0.34</dul>
-            <airdry>0.27</airdry>
-            <ll15>0.27</ll15>
-            <swcon>0.3</swcon>
-            <fbiom>0.01</fbiom>
-            <finert>1</finert>
-            <oc>0.3</oc>
-            <ph>7</ph>
-            <ll name="chickpea">0.34</ll>
-            <kl name="chickpea">0.06</kl>
-            <xf name="chickpea">1</xf>
-            <ll name="butterflypea">0.3</ll>
-            <kl name="butterflypea">0.06</kl>
-            <xf name="butterflypea">1</xf>
-            <ll name="centro">0.27</ll>
-            <kl name="centro">0.06</kl>
-            <xf name="centro">1</xf>
-            <ll name="macroptilium">0.27</ll>
-            <kl name="macroptilium">0.06</kl>
-            <xf name="macroptilium">1</xf>
-            <ll name="lablab">0.27</ll>
-            <kl name="lablab">0.06</kl>
-            <xf name="lablab">1</xf>
-          </layer>
-        </profile>
-        <InitWater>
+        <LocationAccuracy description="Location accuracy">+-20m</LocationAccuracy>
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
+        <InitWater name="Initial water">
           <RelativeTo>lablab</RelativeTo>
           <PercentMethod>
             <Percent>1.00</Percent>
             <Distributed>Evenly distributed</Distributed>
           </PercentMethod>
         </InitWater>
-        <InitNitrogen>
-          <profile>
-            <layer>
-              <thickness>150</thickness>
-              <no3>2.710027100271</no3>
-              <nh4>0.1</nh4>
-            </layer>
-            <layer>
-              <thickness>150</thickness>
-              <no3>2.710027100271</no3>
-              <nh4>0.1</nh4>
-            </layer>
-            <layer>
-              <thickness>300</thickness>
-              <no3>2.710027100271</no3>
-              <nh4>0.1</nh4>
-            </layer>
-            <layer>
-              <thickness>300</thickness>
-              <no3>2.710027100271</no3>
-              <nh4>0.1</nh4>
-            </layer>
-            <layer>
-              <thickness>300</thickness>
-              <no3>2.710027100271</no3>
-              <nh4>0.1</nh4>
-            </layer>
-            <layer>
-              <thickness>300</thickness>
-              <no3>2.710027100271</no3>
-              <nh4>0.1</nh4>
-            </layer>
-            <layer>
-              <thickness>300</thickness>
-              <no3>2.710027100271</no3>
-              <nh4>0.1</nh4>
-            </layer>
-            <layer>
-              <thickness>300</thickness>
-              <no3>2.710027100271</no3>
-              <nh4>0.1</nh4>
-            </layer>
-          </profile>
-        </InitNitrogen>
+        <Water>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <KS units="mm/day" />
+            <BD units="g/cc">1.38</BD>
+            <AirDry units="mm/mm">0.1</AirDry>
+            <LL15 units="mm/mm">0.19</LL15>
+            <DUL units="mm/mm">0.38</DUL>
+            <SAT units="mm/mm">0.45</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <KS units="mm/day" />
+            <BD>1.38</BD>
+            <AirDry>0.168</AirDry>
+            <LL15>0.195</LL15>
+            <DUL>0.38</DUL>
+            <SAT>0.45</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.28</BD>
+            <AirDry>0.2</AirDry>
+            <LL15>0.2</LL15>
+            <DUL>0.39</DUL>
+            <SAT>0.45</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.38</BD>
+            <AirDry>0.22</AirDry>
+            <LL15>0.22</LL15>
+            <DUL>0.4</DUL>
+            <SAT>0.45</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.4</BD>
+            <AirDry>0.23</AirDry>
+            <LL15>0.23</LL15>
+            <DUL>0.39</DUL>
+            <SAT>0.44</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.46</BD>
+            <AirDry>0.25</AirDry>
+            <LL15>0.25</LL15>
+            <DUL>0.37</DUL>
+            <SAT>0.42</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.47</BD>
+            <AirDry>0.26</AirDry>
+            <LL15>0.26</LL15>
+            <DUL>0.34</DUL>
+            <SAT>0.42</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.47</BD>
+            <AirDry>0.27</AirDry>
+            <LL15>0.27</LL15>
+            <DUL>0.34</DUL>
+            <SAT>0.42</SAT>
+          </Layer>
+          <SoilCrop name="chickpea">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.2</LL>
+              <KL units="/day">0.06</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.21</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.2</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.22</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.23</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.3</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.34</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.34</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+          <SoilCrop name="butterflypea">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.2</LL>
+              <KL units="/day">0.06</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.21</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.2</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.22</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.24</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.28</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.3</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.3</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+          <SoilCrop name="centro">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.19</LL>
+              <KL units="/day">0.06</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.195</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.2</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.22</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.23</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.25</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.26</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.27</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+          <SoilCrop name="macroptilium">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.19</LL>
+              <KL units="/day">0.06</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.195</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.2</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.22</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.23</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.25</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.26</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.27</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+          <SoilCrop name="lablab">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.19</LL>
+              <KL units="/day">0.06</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.195</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.2</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.22</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.23</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.25</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.26</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.27</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+        </Water>
+        <SoilWat>
+          <SummerCona>3.5</SummerCona>
+          <SummerU>6</SummerU>
+          <SummerDate>1-Nov</SummerDate>
+          <WinterCona>2.5</WinterCona>
+          <WinterU>4</WinterU>
+          <WinterDate>1-apr</WinterDate>
+          <DiffusConst>40</DiffusConst>
+          <DiffusSlope>16</DiffusSlope>
+          <Salb>0.12</Salb>
+          <CN2Bare>73</CN2Bare>
+          <CNRed>20</CNRed>
+          <CNCov>0.8</CNCov>
+          <Slope>
+          </Slope>
+          <DischargeWidth>
+          </DischargeWidth>
+          <CatchmentArea>
+          </CatchmentArea>
+          <MaxPond>
+          </MaxPond>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <SWCON units="0-1">0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+        </SoilWat>
+        <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWT>1000</RootWT>
+          <SoilCN>12</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <OC units="Total %">1.2</OC>
+            <FBiom units="0-1">0.04</FBiom>
+            <FInert units="0-1">0.4</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <OC>1.2</OC>
+            <FBiom>0.02</FBiom>
+            <FInert>0.6</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>1.2</OC>
+            <FBiom>0.02</FBiom>
+            <FInert>0.8</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>1.1</OC>
+            <FBiom>0.02</FBiom>
+            <FInert>1</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.7</OC>
+            <FBiom>0.01</FBiom>
+            <FInert>1</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.3</OC>
+            <FBiom>0.01</FBiom>
+            <FInert>1</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.3</OC>
+            <FBiom>0.01</FBiom>
+            <FInert>1</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.3</OC>
+            <FBiom>0.01</FBiom>
+            <FInert>1</FInert>
+          </Layer>
+        </SoilOrganicMatter>
+        <Analysis>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH units="1:5 water">7</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>7</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>7</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>7</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>7</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>7</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>7</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>7</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+        </Analysis>
+        <Sample name="Initial nitrogen">
+          <Date type="date" description="Sample date:" />
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <NO3 units="ppm">2.710027100271</NO3>
+            <NH4 units="ppm">0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <NO3>2.710027100271</NO3>
+            <NH4>0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>2.710027100271</NO3>
+            <NH4>0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>2.710027100271</NO3>
+            <NH4>0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>2.710027100271</NO3>
+            <NH4>0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>2.710027100271</NO3>
+            <NH4>0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>2.710027100271</NO3>
+            <NH4>0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>2.710027100271</NO3>
+            <NH4>0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+        </Sample>
       </soil>
       <outputfile>
+        <filename output="yes">Gatton_LabLab_2000exp_P5.out</filename>
+        <title>Gatton_LabLab_2000exp_P5</title>
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="DaysAfterSowing" array="No" description="Days after Sowing" />
-          <variable name="flowering_das" array="No" description="Days from sowing to flowering" />
-          <variable name="flowering_date" array="No" description="Day number of flowering" />
-          <variable name="StageName" array="No" description="Plant stage name" />
-          <variable name="yield" array="No" description="Yield" />
-          <variable name="biomass_wt" array="No" description="Biomass weight" />
-          <variable name="LeafTotalWt" array="No" description="Total Leaf dry matter" />
-          <variable name="StemTotalWt" array="No" description="Total Stem dry matter" />
-          <variable name="podTotalWt" array="No" description="Total pod dry matter" />
-          <variable name="LeafSenescedWt" array="No" description="Senesced Leaf dry matter" />
-          <variable name="biom as green_biomass" array="No" description="Green Biomass weight" />
-          <variable name="LeafGreenWt" array="No" description="Green Leaf dry matter" />
-          <variable name="StemGreenWt" array="No" description="Green Stem dry matter" />
-          <variable name="leaf_no" array="No" description="Number of leaves per plant" />
-          <variable name="leaf_no_sen" array="No" description="Number of senesced leaves per square meter" />
-          <variable name="leaf_area()" array="Yes" description="Leaf area for each node" />
-          <variable name="node_no" array="No" description="Number of mainstem nodes per plant" />
-          <variable name="lai" array="No" description="Leaf area index" />
-          <variable name="stover_wt" array="No" description="Stover Biomass weight" />
-          <variable name="ep" array="No" description="Plant water uptake" />
-          <variable name="esw_layr()" array="Yes" description="Extractable soil water" />
-          <variable name="root_depth" array="No" description="depth of roots" />
-          <variable name="no3()" array="Yes" />
-          <variable name="manager.total_minN" />
-          <variable name="height" />
-          <variable name="dlt_dm_green_grain" />
-          <variable name="dlt_dm_green_leaf" />
-          <variable name="dlt_dm_green_meal" />
-          <variable name="dlt_dm_green_pod" />
-          <variable name="dlt_dm_green_root" />
-          <variable name="dlt_dm_green_stem" />
-          <variable name="leaves_per_node" array="No" />
-          <variable name="swdef_pheno" />
-          <variable name="swdef_photo" />
-          <variable name="swdef_expan" />
-          <variable name="swdef_fixation" />
-          <variable name="lai_sum" array="No" description="LAI of all leaf components" />
-          <variable name="green_leaves" />
-          <variable name="tt_" />
-          <variable name="acc_TT" />
+          <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Days after Sowing">DaysAfterSowing</variable>
+          <variable array="No" description="Days from sowing to flowering">flowering_das</variable>
+          <variable array="No" description="Day number of flowering">flowering_date</variable>
+          <variable array="No" description="Plant stage name">StageName</variable>
+          <variable array="No" description="Yield">yield</variable>
+          <variable array="No" description="Biomass weight">biomass_wt</variable>
+          <variable array="No" description="Total Leaf dry matter">LeafTotalWt</variable>
+          <variable array="No" description="Total Stem dry matter">StemTotalWt</variable>
+          <variable array="No" description="Total pod dry matter">podTotalWt</variable>
+          <variable array="No" description="Senesced Leaf dry matter">LeafSenescedWt</variable>
+          <variable array="No" description="Green Biomass weight">biom as green_biomass</variable>
+          <variable array="No" description="Green Leaf dry matter">LeafGreenWt</variable>
+          <variable array="No" description="Green Stem dry matter">StemGreenWt</variable>
+          <variable array="No" description="Number of leaves per plant">leaf_no</variable>
+          <variable array="No" description="Number of senesced leaves per square meter">leaf_no_sen</variable>
+          <variable array="Yes" description="Leaf area for each node">leaf_area()</variable>
+          <variable array="No" description="Number of mainstem nodes per plant">node_no</variable>
+          <variable array="No" description="Leaf area index">lai</variable>
+          <variable array="No" description="Stover Biomass weight">stover_wt</variable>
+          <variable array="No" description="Plant water uptake">ep</variable>
+          <variable array="Yes" description="Extractable soil water">esw_layr()</variable>
+          <variable array="No" description="depth of roots">root_depth</variable>
+          <variable array="Yes">no3()</variable>
+          <variable>manager.total_minN</variable>
+          <variable>height</variable>
+          <variable>dlt_dm_green_grain</variable>
+          <variable>dlt_dm_green_leaf</variable>
+          <variable>dlt_dm_green_meal</variable>
+          <variable>dlt_dm_green_pod</variable>
+          <variable>dlt_dm_green_root</variable>
+          <variable>dlt_dm_green_stem</variable>
+          <variable array="No">leaves_per_node</variable>
+          <variable>swdef_pheno</variable>
+          <variable>swdef_photo</variable>
+          <variable>swdef_expan</variable>
+          <variable>swdef_fixation</variable>
+          <variable array="No" description="LAI of all leaf components">lai_sum</variable>
+          <variable>green_leaves</variable>
+          <variable>tt_</variable>
+          <variable>acc_TT</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="Daily" array="No" description="End of day" />
+          <event array="No" description="End of day">Daily</event>
         </events>
         <Graph name="Biomass">
           <Plot>
@@ -609,28 +998,25 @@ green_leaves = 0</text>
   </simulation>
   <simulation name="Gatton_LabLab_2000exp_P10">
     <metfile name="met">
-      <filename name="filename">gatton_2000.met</filename>
+      <filename name="filename" input="yes">gatton_2000.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Select the start date of the simulation">23/01/2000</start_date>
       <end_date type="date" description="Select the end date of the simulation">1/06/2000</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Continuous Wheat Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
-      <registrations name="global" />
       <folder name="Manager folder">
         <manager name="Sowing rule">
           <ui>
-            <category description="Sowing criteria" />
+            <category description="Sowing criteria" type="category" />
             <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">24-Jan-2000</date1>
             <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">24-Jan-2000</date2>
             <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
             <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
             <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
             <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">200</esw_amount>
-            <category description="Sowing parameters" />
+            <category description="Sowing parameters" type="category" />
             <crop type="crop" description="Enter name of crop to sow : ">lablab</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
@@ -658,7 +1044,7 @@ green_leaves = 0</text>
         </manager>
         <manager name="Harvesting rule">
           <ui>
-            <category description="Harvesting criteria" />
+            <category description="Harvesting criteria" type="category" />
             <crop type="crop" description="Enter name of crop to harvest when ripe : ">lablab</crop>
           </ui>
           <script name="end_of_day">
@@ -737,332 +1123,680 @@ acc_TT = tt_ + acc_tt
       </surfaceom>
       <lablab />
       <soil name="Prarie-Lockyer">
-        <state>Queensland</state>
-        <region>Lockyer</region>
-        <nearesttown>Lawes, Q 4350</nearesttown>
-        <site>Lawes</site>
-        <SoilType>Prarie</SoilType>
-        <Latitude>-27.5338629</Latitude>
+        <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number); oc and ph estimated</Comment>
+        <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description">Prarie</SoilType>
+        <LocalName />
+        <Site>Lawes</Site>
+        <NearestTown description="Nearest town">Lawes, Q 4350</NearestTown>
+        <Region>Lockyer</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Blue Gum, Moreton Bay Ash, Tea Tree</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)">-27.5338629</Latitude>
         <Longitude>152.3384387</Longitude>
-        <LocationAccuracy>+-20m</LocationAccuracy>
-        <DataSource>CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <comment>Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number); oc and ph estimated</comment>
-        <naturalvegetation>Blue Gum, Moreton Bay Ash, Tea Tree</naturalvegetation>
-        <SummerCona>4</SummerCona>
-        <WinterCona>2.5</WinterCona>
-        <SummerU>6</SummerU>
-        <WinterU>4</WinterU>
-        <SummerDate>1-Nov</SummerDate>
-        <WinterDate>1-apr</WinterDate>
-        <Salb>0.12</Salb>
-        <DiffusConst>40</DiffusConst>
-        <DiffusSlope>16</DiffusSlope>
-        <CN2Bare>73</CN2Bare>
-        <CNRed>20</CNRed>
-        <CNCov>0.8</CNCov>
-        <RootCN>40</RootCN>
-        <RootWT>1500</RootWT>
-        <SoilCN>12</SoilCN>
-        <EnrACoeff>7.4</EnrACoeff>
-        <EnrBCoeff>0.2</EnrBCoeff>
-        <profile>
-          <layer>
-            <thickness>150</thickness>
-            <bd>1.38</bd>
-            <ll15>0.19</ll15>
-            <airdry>0.1</airdry>
-            <dul>0.38</dul>
-            <sat>0.45</sat>
-            <swcon>0.3</swcon>
-            <fbiom>0.04</fbiom>
-            <finert>0.4</finert>
-            <oc>1.2</oc>
-            <ph>7</ph>
-            <ll name="chickpea">0.2</ll>
-            <kl name="chickpea">0.06</kl>
-            <xf name="chickpea">1</xf>
-            <ll name="butterflypea">0.2</ll>
-            <kl name="butterflypea">0.06</kl>
-            <xf name="butterflypea">1</xf>
-            <ll name="centro">0.19</ll>
-            <kl name="centro">0.06</kl>
-            <xf name="centro">1</xf>
-            <ll name="macroptilium">0.19</ll>
-            <kl name="macroptilium">0.06</kl>
-            <xf name="macroptilium">1</xf>
-            <ll name="lablab">0.19</ll>
-            <kl name="lablab">0.06</kl>
-            <xf name="lablab">1</xf>
-          </layer>
-          <layer>
-            <thickness>150</thickness>
-            <bd>1.38</bd>
-            <ll15>0.195</ll15>
-            <airdry>0.168</airdry>
-            <dul>0.38</dul>
-            <sat>0.45</sat>
-            <swcon>0.3</swcon>
-            <fbiom>0.02</fbiom>
-            <finert>0.6</finert>
-            <oc>1.2</oc>
-            <ph>7</ph>
-            <ll name="chickpea">0.21</ll>
-            <kl name="chickpea">0.06</kl>
-            <xf name="chickpea">1</xf>
-            <ll name="butterflypea">0.21</ll>
-            <kl name="butterflypea">0.06</kl>
-            <xf name="butterflypea">1</xf>
-            <ll name="centro">0.195</ll>
-            <kl name="centro">0.06</kl>
-            <xf name="centro">1</xf>
-            <ll name="macroptilium">0.195</ll>
-            <kl name="macroptilium">0.06</kl>
-            <xf name="macroptilium">1</xf>
-            <ll name="lablab">0.195</ll>
-            <kl name="lablab">0.06</kl>
-            <xf name="lablab">1</xf>
-          </layer>
-          <layer>
-            <thickness>300</thickness>
-            <bd>1.28</bd>
-            <ll15>0.2</ll15>
-            <airdry>0.2</airdry>
-            <dul>0.39</dul>
-            <sat>0.45</sat>
-            <swcon>0.3</swcon>
-            <fbiom>0.02</fbiom>
-            <finert>0.8</finert>
-            <oc>1.2</oc>
-            <ph>7</ph>
-            <ll name="chickpea">0.2</ll>
-            <kl name="chickpea">0.06</kl>
-            <xf name="chickpea">1</xf>
-            <ll name="butterflypea">0.2</ll>
-            <kl name="butterflypea">0.06</kl>
-            <xf name="butterflypea">1</xf>
-            <ll name="centro">0.2</ll>
-            <kl name="centro">0.06</kl>
-            <xf name="centro">1</xf>
-            <ll name="macroptilium">0.2</ll>
-            <kl name="macroptilium">0.06</kl>
-            <xf name="macroptilium">1</xf>
-            <ll name="lablab">0.2</ll>
-            <kl name="lablab">0.06</kl>
-            <xf name="lablab">1</xf>
-          </layer>
-          <layer>
-            <thickness>300</thickness>
-            <bd>1.38</bd>
-            <ll15>0.22</ll15>
-            <airdry>0.22</airdry>
-            <dul>0.4</dul>
-            <sat>0.45</sat>
-            <swcon>0.3</swcon>
-            <fbiom>0.02</fbiom>
-            <finert>1</finert>
-            <oc>1.1</oc>
-            <ph>7</ph>
-            <ll name="chickpea">0.22</ll>
-            <kl name="chickpea">0.06</kl>
-            <xf name="chickpea">1</xf>
-            <ll name="butterflypea">0.22</ll>
-            <kl name="butterflypea">0.06</kl>
-            <xf name="butterflypea">1</xf>
-            <ll name="centro">0.22</ll>
-            <kl name="centro">0.06</kl>
-            <xf name="centro">1</xf>
-            <ll name="macroptilium">0.22</ll>
-            <kl name="macroptilium">0.06</kl>
-            <xf name="macroptilium">1</xf>
-            <ll name="lablab">0.22</ll>
-            <kl name="lablab">0.06</kl>
-            <xf name="lablab">1</xf>
-          </layer>
-          <layer>
-            <thickness>300</thickness>
-            <bd>1.4</bd>
-            <ll15>0.23</ll15>
-            <airdry>0.23</airdry>
-            <dul>0.39</dul>
-            <sat>0.44</sat>
-            <swcon>0.3</swcon>
-            <fbiom>0.01</fbiom>
-            <finert>1</finert>
-            <oc>0.7</oc>
-            <ph>7</ph>
-            <ll name="chickpea">0.23</ll>
-            <kl name="chickpea">0.06</kl>
-            <xf name="chickpea">1</xf>
-            <ll name="butterflypea">0.24</ll>
-            <kl name="butterflypea">0.06</kl>
-            <xf name="butterflypea">1</xf>
-            <ll name="centro">0.23</ll>
-            <kl name="centro">0.06</kl>
-            <xf name="centro">1</xf>
-            <ll name="macroptilium">0.23</ll>
-            <kl name="macroptilium">0.06</kl>
-            <xf name="macroptilium">1</xf>
-            <ll name="lablab">0.23</ll>
-            <kl name="lablab">0.04</kl>
-            <xf name="lablab">1</xf>
-          </layer>
-          <layer>
-            <thickness>300</thickness>
-            <bd>1.46</bd>
-            <ll15>0.25</ll15>
-            <airdry>0.25</airdry>
-            <dul>0.37</dul>
-            <sat>0.42</sat>
-            <swcon>0.3</swcon>
-            <fbiom>0.01</fbiom>
-            <finert>1</finert>
-            <oc>0.3</oc>
-            <ph>7</ph>
-            <ll name="chickpea">0.3</ll>
-            <kl name="chickpea">0.06</kl>
-            <xf name="chickpea">1</xf>
-            <ll name="butterflypea">0.28</ll>
-            <kl name="butterflypea">0.06</kl>
-            <xf name="butterflypea">1</xf>
-            <ll name="centro">0.25</ll>
-            <kl name="centro">0.06</kl>
-            <xf name="centro">1</xf>
-            <ll name="macroptilium">0.25</ll>
-            <kl name="macroptilium">0.06</kl>
-            <xf name="macroptilium">1</xf>
-            <ll name="lablab">0.25</ll>
-            <kl name="lablab">0.04</kl>
-            <xf name="lablab">1</xf>
-          </layer>
-          <layer>
-            <thickness>300</thickness>
-            <bd>1.47</bd>
-            <ll15>0.26</ll15>
-            <airdry>0.26</airdry>
-            <dul>0.34</dul>
-            <sat>0.42</sat>
-            <swcon>0.3</swcon>
-            <fbiom>0.01</fbiom>
-            <finert>1</finert>
-            <oc>0.3</oc>
-            <ph>7</ph>
-            <ll name="chickpea">0.34</ll>
-            <kl name="chickpea">0.06</kl>
-            <xf name="chickpea">1</xf>
-            <ll name="butterflypea">0.3</ll>
-            <kl name="butterflypea">0.06</kl>
-            <xf name="butterflypea">1</xf>
-            <ll name="centro">0.26</ll>
-            <kl name="centro">0.06</kl>
-            <xf name="centro">1</xf>
-            <ll name="macroptilium">0.26</ll>
-            <kl name="macroptilium">0.06</kl>
-            <xf name="macroptilium">1</xf>
-            <ll name="lablab">0.26</ll>
-            <kl name="lablab">0.02</kl>
-            <xf name="lablab">1</xf>
-          </layer>
-        </profile>
-        <InitWater>
+        <LocationAccuracy description="Location accuracy">+-20m</LocationAccuracy>
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
+        <InitWater name="Initial water">
           <RelativeTo>lablab</RelativeTo>
           <PercentMethod>
             <Percent>1.00</Percent>
             <Distributed>Evenly distributed</Distributed>
           </PercentMethod>
         </InitWater>
-        <InitNitrogen>
-          <profile>
-            <layer>
-              <thickness>150</thickness>
-              <no3>2.710027100271</no3>
-              <nh4>0.1</nh4>
-            </layer>
-            <layer>
-              <thickness>150</thickness>
-              <no3>2.710027100271</no3>
-              <nh4>0.1</nh4>
-            </layer>
-            <layer>
-              <thickness>300</thickness>
-              <no3>2.710027100271</no3>
-              <nh4>0.1</nh4>
-            </layer>
-            <layer>
-              <thickness>300</thickness>
-              <no3>2.710027100271</no3>
-              <nh4>0.1</nh4>
-            </layer>
-            <layer>
-              <thickness>300</thickness>
-              <no3>2.710027100271</no3>
-              <nh4>0.1</nh4>
-            </layer>
-            <layer>
-              <thickness>300</thickness>
-              <no3>2.710027100271</no3>
-              <nh4>0.1</nh4>
-            </layer>
-            <layer>
-              <thickness>300</thickness>
-              <no3>2.710027100271</no3>
-              <nh4>0.1</nh4>
-            </layer>
-            <layer>
-              <thickness>300</thickness>
-              <no3>2.710027100271</no3>
-              <nh4>0.1</nh4>
-            </layer>
-          </profile>
-        </InitNitrogen>
+        <Water>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <KS units="mm/day" />
+            <BD units="g/cc">1.38</BD>
+            <AirDry units="mm/mm">0.1</AirDry>
+            <LL15 units="mm/mm">0.19</LL15>
+            <DUL units="mm/mm">0.38</DUL>
+            <SAT units="mm/mm">0.45</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <KS units="mm/day" />
+            <BD>1.38</BD>
+            <AirDry>0.168</AirDry>
+            <LL15>0.195</LL15>
+            <DUL>0.38</DUL>
+            <SAT>0.45</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.28</BD>
+            <AirDry>0.2</AirDry>
+            <LL15>0.2</LL15>
+            <DUL>0.39</DUL>
+            <SAT>0.45</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.38</BD>
+            <AirDry>0.22</AirDry>
+            <LL15>0.22</LL15>
+            <DUL>0.4</DUL>
+            <SAT>0.45</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.4</BD>
+            <AirDry>0.23</AirDry>
+            <LL15>0.23</LL15>
+            <DUL>0.39</DUL>
+            <SAT>0.44</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.46</BD>
+            <AirDry>0.25</AirDry>
+            <LL15>0.25</LL15>
+            <DUL>0.37</DUL>
+            <SAT>0.42</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.47</BD>
+            <AirDry>0.26</AirDry>
+            <LL15>0.26</LL15>
+            <DUL>0.34</DUL>
+            <SAT>0.42</SAT>
+          </Layer>
+          <SoilCrop name="chickpea">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.2</LL>
+              <KL units="/day">0.06</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.21</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.2</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.22</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.23</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.3</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.34</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+          <SoilCrop name="butterflypea">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.2</LL>
+              <KL units="/day">0.06</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.21</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.2</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.22</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.24</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.28</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.3</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+          <SoilCrop name="centro">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.19</LL>
+              <KL units="/day">0.06</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.195</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.2</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.22</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.23</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.25</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.26</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+          <SoilCrop name="macroptilium">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.19</LL>
+              <KL units="/day">0.06</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.195</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.2</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.22</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.23</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.25</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.26</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+          <SoilCrop name="lablab">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.19</LL>
+              <KL units="/day">0.06</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.195</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.2</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.22</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.23</LL>
+              <KL>0.04</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.25</LL>
+              <KL>0.04</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.26</LL>
+              <KL>0.02</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+        </Water>
+        <SoilWat>
+          <SummerCona>4</SummerCona>
+          <SummerU>6</SummerU>
+          <SummerDate>1-Nov</SummerDate>
+          <WinterCona>2.5</WinterCona>
+          <WinterU>4</WinterU>
+          <WinterDate>1-apr</WinterDate>
+          <DiffusConst>40</DiffusConst>
+          <DiffusSlope>16</DiffusSlope>
+          <Salb>0.12</Salb>
+          <CN2Bare>73</CN2Bare>
+          <CNRed>20</CNRed>
+          <CNCov>0.8</CNCov>
+          <Slope>
+          </Slope>
+          <DischargeWidth>
+          </DischargeWidth>
+          <CatchmentArea>
+          </CatchmentArea>
+          <MaxPond>
+          </MaxPond>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <SWCON units="0-1">0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+        </SoilWat>
+        <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWT>1500</RootWT>
+          <SoilCN>12</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <OC units="Total %">1.2</OC>
+            <FBiom units="0-1">0.04</FBiom>
+            <FInert units="0-1">0.4</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <OC>1.2</OC>
+            <FBiom>0.02</FBiom>
+            <FInert>0.6</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>1.2</OC>
+            <FBiom>0.02</FBiom>
+            <FInert>0.8</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>1.1</OC>
+            <FBiom>0.02</FBiom>
+            <FInert>1</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.7</OC>
+            <FBiom>0.01</FBiom>
+            <FInert>1</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.3</OC>
+            <FBiom>0.01</FBiom>
+            <FInert>1</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.3</OC>
+            <FBiom>0.01</FBiom>
+            <FInert>1</FInert>
+          </Layer>
+        </SoilOrganicMatter>
+        <Analysis>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH units="1:5 water">7</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>7</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>7</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>7</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>7</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>7</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>7</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+        </Analysis>
+        <Sample name="Initial nitrogen">
+          <Date type="date" description="Sample date:" />
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <NO3 units="ppm">2.710027100271</NO3>
+            <NH4 units="ppm">0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <NO3>2.710027100271</NO3>
+            <NH4>0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>2.710027100271</NO3>
+            <NH4>0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>2.710027100271</NO3>
+            <NH4>0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>2.710027100271</NO3>
+            <NH4>0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>2.710027100271</NO3>
+            <NH4>0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>2.710027100271</NO3>
+            <NH4>0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>2.710027100271</NO3>
+            <NH4>0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+        </Sample>
       </soil>
       <outputfile>
+        <filename output="yes">Gatton_LabLab_2000exp_P10.out</filename>
+        <title>Gatton_LabLab_2000exp_P10</title>
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="DaysAfterSowing" array="No" description="Days after Sowing" />
-          <variable name="flowering_das" array="No" description="Days from sowing to flowering" />
-          <variable name="flowering_date" array="No" description="Day number of flowering" />
-          <variable name="StageName" array="No" description="Plant stage name" />
-          <variable name="yield" array="No" description="Yield" />
-          <variable name="biomass_wt" array="No" description="Biomass weight" />
-          <variable name="LeafTotalWt" array="No" description="Total Leaf dry matter" />
-          <variable name="StemTotalWt" array="No" description="Total Stem dry matter" />
-          <variable name="podTotalWt" array="No" description="Total pod dry matter" />
-          <variable name="LeafSenescedWt" array="No" description="Senesced Leaf dry matter" />
-          <variable name="biom as green_biomass" array="No" description="Green Biomass weight" />
-          <variable name="LeafGreenWt" array="No" description="Green Leaf dry matter" />
-          <variable name="StemGreenWt" array="No" description="Green Stem dry matter" />
-          <variable name="leaf_no" array="No" description="Number of leaves per plant" />
-          <variable name="leaf_no_sen" array="No" description="Number of senesced leaves per square meter" />
-          <variable name="leaf_area()" array="Yes" description="Leaf area for each node" />
-          <variable name="node_no" array="No" description="Number of mainstem nodes per plant" />
-          <variable name="lai" array="No" description="Leaf area index" />
-          <variable name="stover_wt" array="No" description="Stover Biomass weight" />
-          <variable name="ep" array="No" description="Plant water uptake" />
-          <variable name="esw_layr()" array="Yes" description="Extractable soil water" />
-          <variable name="root_depth" array="No" description="depth of roots" />
-          <variable name="no3()" array="Yes" />
-          <variable name="manager.total_minN" />
-          <variable name="height" />
-          <variable name="dlt_dm_green_grain" />
-          <variable name="dlt_dm_green_leaf" />
-          <variable name="dlt_dm_green_meal" />
-          <variable name="dlt_dm_green_pod" />
-          <variable name="dlt_dm_green_root" />
-          <variable name="dlt_dm_green_stem" />
-          <variable name="leaves_per_node" array="No" />
-          <variable name="swdef_pheno" />
-          <variable name="swdef_photo" />
-          <variable name="swdef_expan" />
-          <variable name="swdef_fixation" />
-          <variable name="lai_sum" array="No" description="LAI of all leaf components" />
-          <variable name="green_leaves" />
-          <variable name="tt_" />
-          <variable name="acc_TT" />
+          <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Days after Sowing">DaysAfterSowing</variable>
+          <variable array="No" description="Days from sowing to flowering">flowering_das</variable>
+          <variable array="No" description="Day number of flowering">flowering_date</variable>
+          <variable array="No" description="Plant stage name">StageName</variable>
+          <variable array="No" description="Yield">yield</variable>
+          <variable array="No" description="Biomass weight">biomass_wt</variable>
+          <variable array="No" description="Total Leaf dry matter">LeafTotalWt</variable>
+          <variable array="No" description="Total Stem dry matter">StemTotalWt</variable>
+          <variable array="No" description="Total pod dry matter">podTotalWt</variable>
+          <variable array="No" description="Senesced Leaf dry matter">LeafSenescedWt</variable>
+          <variable array="No" description="Green Biomass weight">biom as green_biomass</variable>
+          <variable array="No" description="Green Leaf dry matter">LeafGreenWt</variable>
+          <variable array="No" description="Green Stem dry matter">StemGreenWt</variable>
+          <variable array="No" description="Number of leaves per plant">leaf_no</variable>
+          <variable array="No" description="Number of senesced leaves per square meter">leaf_no_sen</variable>
+          <variable array="Yes" description="Leaf area for each node">leaf_area()</variable>
+          <variable array="No" description="Number of mainstem nodes per plant">node_no</variable>
+          <variable array="No" description="Leaf area index">lai</variable>
+          <variable array="No" description="Stover Biomass weight">stover_wt</variable>
+          <variable array="No" description="Plant water uptake">ep</variable>
+          <variable array="Yes" description="Extractable soil water">esw_layr()</variable>
+          <variable array="No" description="depth of roots">root_depth</variable>
+          <variable array="Yes">no3()</variable>
+          <variable>manager.total_minN</variable>
+          <variable>height</variable>
+          <variable>dlt_dm_green_grain</variable>
+          <variable>dlt_dm_green_leaf</variable>
+          <variable>dlt_dm_green_meal</variable>
+          <variable>dlt_dm_green_pod</variable>
+          <variable>dlt_dm_green_root</variable>
+          <variable>dlt_dm_green_stem</variable>
+          <variable array="No">leaves_per_node</variable>
+          <variable>swdef_pheno</variable>
+          <variable>swdef_photo</variable>
+          <variable>swdef_expan</variable>
+          <variable>swdef_fixation</variable>
+          <variable array="No" description="LAI of all leaf components">lai_sum</variable>
+          <variable>green_leaves</variable>
+          <variable>tt_</variable>
+          <variable>acc_TT</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="Daily" array="No" description="End of day" />
+          <event array="No" description="End of day">Daily</event>
         </events>
         <Graph name="Biomass">
           <Plot>

@@ -1,16 +1,14 @@
-<folder version="27" name="simulations">
+<folder version="32" name="simulations">
   <folder name="SoilWat">
     <simulation name="Standing_stubble_treatment_a_SoilWat">
       <metfile name="met">
-        <filename name="filename">lincoln.met</filename>
+        <filename name="filename" input="yes">lincoln.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">25/02/2010</start_date>
         <end_date type="date" description="Enter the end date of the simulation">11/08/2010</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <surfaceom name="surface organic matter">
           <PoolName type="text" description="Organic Matter pool name">barley</PoolName>
@@ -135,51 +133,55 @@ Residue_water = Residue_water - Evaporated_interception</text>
           </manager>
         </folder>
         <outputfile>
+          <filename output="yes">Standing_stubble_treatment_a_SoilWat.out</filename>
+          <title>Standing_stubble_treatment_a_SoilWat</title>
           <variables name="Variables">
-            <variable name="dd/mm/yyyy as Date" />
-            <variable name="surfaceom_cover" />
-            <variable name="surfaceom_wt" />
-            <variable name="sw_dep" />
-            <variable name="rain" />
-            <variable name="flow" />
-            <variable name="dlayer" />
-            <variable name="es" />
-            <variable name="irrigation" />
-            <variable name="sw" />
-            <variable name="runoff" />
-            <variable name="infiltration" />
-            <variable name="flux(1)" />
-            <variable name="ll15" />
-            <variable name="dul" />
-            <variable name="ll15_dep" />
-            <variable name="dul_dep" />
-            <variable name="drainage" />
-            <variable name="SW_dep_0_20cm" />
-            <variable name="SW_dep_20_40cm" />
-            <variable name="SW_dep_40_60cm" />
-            <variable name="SW_dep_0_60cm" />
+            <variable>dd/mm/yyyy as Date</variable>
+            <variable>surfaceom_cover</variable>
+            <variable>surfaceom_wt</variable>
+            <variable>sw_dep</variable>
+            <variable>rain</variable>
+            <variable>flow</variable>
+            <variable>dlayer</variable>
+            <variable>es</variable>
+            <variable>irrigation</variable>
+            <variable>sw</variable>
+            <variable>runoff</variable>
+            <variable>infiltration</variable>
+            <variable>flux(1)</variable>
+            <variable>ll15</variable>
+            <variable>dul</variable>
+            <variable>ll15_dep</variable>
+            <variable>dul_dep</variable>
+            <variable>drainage</variable>
+            <variable>SW_dep_0_20cm</variable>
+            <variable>SW_dep_20_40cm</variable>
+            <variable>SW_dep_40_60cm</variable>
+            <variable>SW_dep_0_60cm</variable>
           </variables>
           <events name="Reporting Frequency">
-            <event name="daily" />
+            <event>daily</event>
           </events>
         </outputfile>
         <soil name="A_block_templeton">
-          <Country />
-          <Site />
-          <Region>Generic soil types</Region>
+          <Comment type="multiedit" description="Comments">Bulk density values were measured on the fine earth fraction so values entered into apsim soil are adjusted down to account for stone content (assuming stones are inert from all soil process so their mass and volume is removed from model paramaters).  SAT, DUL, LL15 and Air dry have been adjusted down to account for stone content.  OC has not been adjusted so the model will get the correct carbon and N amounts using the adjusted BD.</Comment>
+          <Langitude description="Longitude (WGS84)" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description">NZ_Sedementary</SoilType>
           <LocalName />
-          <SoilType description="Classification">NZ_Sedementary</SoilType>
+          <Site />
           <NearestTown description="Nearest town" />
-          <NaturalVegetation description="Natural vegetation" />
+          <Region>Generic soil types</Region>
           <State>Canterbury</State>
+          <Country />
+          <NaturalVegetation description="Natural vegetation" />
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)">999999</Latitude>
           <Longitude>999999</Longitude>
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source">Profile descriptions provided by Trevor Webb and data for functional horizions based on SWAMP project results</DataSource>
           <Comments />
-          <Comment type="multiedit" description="Comments">Bulk density values were measured on the fine earth fraction so values entered into apsim soil are adjusted down to account for stone content (assuming stones are inert from all soil process so their mass and volume is removed from model paramaters).  SAT, DUL, LL15 and Air dry have been adjusted down to account for stone content.  OC has not been adjusted so the model will get the correct carbon and N amounts using the adjusted BD.</Comment>
-          <Langitude description="Longitude (WGS84)" />
           <Water>
             <Layer>
               <Thickness units="mm">200</Thickness>
@@ -1219,7 +1221,9 @@ Residue_water = Residue_water - Evaporated_interception</text>
       </Graph>
     </simulation>
     <simulation name="Mown_stubble_treatment_b_SoilWat" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat">
-      <metfile name="met" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/met" />
+      <metfile name="met" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/met">
+        <filename shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/clock" />
       <summaryfile shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/summaryfile" />
       <area name="paddock" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock">
@@ -1237,10 +1241,28 @@ Residue_water = Residue_water - Evaporated_interception</text>
           <manager name="Residue interception" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/Manager folder/Residue percipitation interception" />
         </folder>
         <outputfile shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile">
+          <filename output="yes">Mown_stubble_treatment_b_SoilWat.out</filename>
+          <title>Mown_stubble_treatment_b_SoilWat</title>
           <variables name="Variables" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
         <soil name="A_block_templeton" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <Water shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/Water" />
           <SoilWat shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/SoilWat" />
           <SoilOrganicMatter shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/SoilOrganicMatter" />
@@ -1397,7 +1419,9 @@ Residue_water = Residue_water - Evaporated_interception</text>
       </Graph>
     </simulation>
     <simulation name="Mown_stubble_removed_treatment_c_SoilWat" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat">
-      <metfile name="met" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/met" />
+      <metfile name="met" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/met">
+        <filename shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/clock" />
       <summaryfile shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/summaryfile" />
       <area name="paddock" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock">
@@ -1415,10 +1439,28 @@ Residue_water = Residue_water - Evaporated_interception</text>
           <manager name="Residue interception" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/Manager folder/Residue percipitation interception" />
         </folder>
         <outputfile shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile">
+          <filename output="yes">Mown_stubble_removed_treatment_c_SoilWat.out</filename>
+          <title>Mown_stubble_removed_treatment_c_SoilWat</title>
           <variables name="Variables" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
         <soil name="A_block_templeton" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <Water shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/Water" />
           <SoilWat shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/SoilWat" />
           <SoilOrganicMatter shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/SoilOrganicMatter" />
@@ -1575,7 +1617,9 @@ Residue_water = Residue_water - Evaporated_interception</text>
       </Graph>
     </simulation>
     <simulation name="Mown_stubble_removed_cultivated_treatment_d_SoilWat" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat">
-      <metfile name="met" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/met" />
+      <metfile name="met" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/met">
+        <filename shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/clock" />
       <summaryfile shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/summaryfile" />
       <area name="paddock" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock">
@@ -1593,10 +1637,28 @@ Residue_water = Residue_water - Evaporated_interception</text>
           <manager name="Residue interception" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/Manager folder/Residue percipitation interception" />
         </folder>
         <outputfile shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile">
+          <filename output="yes">Mown_stubble_removed_cultivated_treatment_d_SoilWat.out</filename>
+          <title>Mown_stubble_removed_cultivated_treatment_d_SoilWat</title>
           <variables name="Variables" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
         <soil name="A_block_templeton" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <Water shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/Water" />
           <SoilWat shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/SoilWat" />
           <SoilOrganicMatter shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/SoilOrganicMatter" />
@@ -1882,7 +1944,9 @@ Residue_water = Residue_water - Evaporated_interception</text>
   </folder>
   <folder name="SWIM2" shortcut="/simulations/SoilWat">
     <simulation name="Standing_stubble_treatment_a_SWIM2" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat">
-      <metfile name="met" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/met" />
+      <metfile name="met" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/met">
+        <filename shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/clock" />
       <summaryfile shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/summaryfile" />
       <area name="paddock" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock">
@@ -1916,6 +1980,8 @@ drainage = flow_water(8)</text>
           <manager name="Residue interception" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/Manager folder/Residue percipitation interception" />
         </folder>
         <outputfile shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile">
+          <filename output="yes">Standing_stubble_treatment_a_SWIM2.out</filename>
+          <title>Standing_stubble_treatment_a_SWIM2</title>
           <variables name="Variables" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
@@ -2012,7 +2078,9 @@ drainage = flow_water(8)</text>
       </Graph>
     </simulation>
     <simulation name="Mown_stubble_treatment_b_SWIM2" shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat">
-      <metfile name="met" shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/met" />
+      <metfile name="met" shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/met">
+        <filename shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/clock" />
       <summaryfile shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/summaryfile" />
       <area name="paddock" shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/paddock">
@@ -2024,6 +2092,8 @@ drainage = flow_water(8)</text>
           <manager name="Residue interception" shortcut="/simulations/SWIM2/Standing_stubble_treatment_a_SWIM2/paddock/Manager folder/Residue interception" />
         </folder>
         <outputfile shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/paddock/outputfile">
+          <filename output="yes">Mown_stubble_treatment_b_SWIM2.out</filename>
+          <title>Mown_stubble_treatment_b_SWIM2</title>
           <variables name="Variables" shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
@@ -2101,7 +2171,9 @@ drainage = flow_water(8)</text>
       </Graph>
     </simulation>
     <simulation name="Mown_stubble_removed_treatment_c_SWIM2" shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat">
-      <metfile name="met" shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/met" />
+      <metfile name="met" shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/met">
+        <filename shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/clock" />
       <summaryfile shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/summaryfile" />
       <area name="paddock" shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/paddock">
@@ -2113,6 +2185,8 @@ drainage = flow_water(8)</text>
           <manager name="Residue interception" shortcut="/simulations/SWIM2/Standing_stubble_treatment_a_SWIM2/paddock/Manager folder/Residue interception" />
         </folder>
         <outputfile shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/paddock/outputfile">
+          <filename output="yes">Mown_stubble_removed_treatment_c_SWIM2.out</filename>
+          <title>Mown_stubble_removed_treatment_c_SWIM2</title>
           <variables name="Variables" shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
@@ -2190,7 +2264,9 @@ drainage = flow_water(8)</text>
       </Graph>
     </simulation>
     <simulation name="Mown_stubble_removed_cultivated_treatment_d_SWIM2" shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat">
-      <metfile name="met" shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/met" />
+      <metfile name="met" shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/met">
+        <filename shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/clock" />
       <summaryfile shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/summaryfile" />
       <area name="paddock" shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/paddock">
@@ -2202,6 +2278,8 @@ drainage = flow_water(8)</text>
           <manager name="Residue interception" shortcut="/simulations/SWIM2/Standing_stubble_treatment_a_SWIM2/paddock/Manager folder/Residue interception" />
         </folder>
         <outputfile shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/paddock/outputfile">
+          <filename output="yes">Mown_stubble_removed_cultivated_treatment_d_SWIM2.out</filename>
+          <title>Mown_stubble_removed_cultivated_treatment_d_SWIM2</title>
           <variables name="Variables" shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
@@ -2325,12 +2403,16 @@ drainage = flow_water(8)</text>
   </folder>
   <folder name="SWIM3" shortcut="/simulations/SoilWat">
     <simulation name="Standing_stubble_treatment_a_SWIM3" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat">
-      <metfile name="met" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/met" />
+      <metfile name="met" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/met">
+        <filename shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/clock" />
       <summaryfile shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/summaryfile" />
       <area name="paddock" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock">
         <surfaceom name="surface organic matter" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/surface organic matter" />
         <outputfile shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile">
+          <filename output="yes">Standing_stubble_treatment_a_SWIM3.out</filename>
+          <title>Standing_stubble_treatment_a_SWIM3</title>
           <variables name="Variables" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
@@ -2363,28 +2445,30 @@ drainage = flow_water(8)</text>
           <manager name="Residue interception" shortcut="/simulations/SWIM2/Standing_stubble_treatment_a_SWIM2/paddock/Manager folder/Residue interception" />
         </folder>
         <soil name="SWIM Soil">
-          <Country />
-          <Site>
-          </Site>
-          <Region>
-          </Region>
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description">
+          </SoilType>
           <LocalName>
           </LocalName>
-          <SoilType description="Classification">
-          </SoilType>
+          <Site>
+          </Site>
           <NearestTown description="Nearest town">
           </NearestTown>
+          <Region>
+          </Region>
+          <State />
+          <Country />
           <NaturalVegetation description="Natural vegetation">
           </NaturalVegetation>
-          <State />
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <Thickness>
             <Values type="text" description="Enter soil profile thickness values for APSIM (mm)">10 20 30 40 100 100 100 200 200 300 300 300 100 </Values>
           </Thickness>
@@ -3255,7 +3339,9 @@ drainage = flow_water(8)</text>
       </Graph>
     </simulation>
     <simulation name="Mown_stubble_treatment_b_SWIM3" shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat">
-      <metfile name="met" shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/met" />
+      <metfile name="met" shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/met">
+        <filename shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/clock" />
       <summaryfile shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/summaryfile" />
       <area name="paddock" shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/paddock">
@@ -3267,10 +3353,28 @@ drainage = flow_water(8)</text>
           <manager name="Residue interception" shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/Manager folder/Residue interception" />
         </folder>
         <outputfile shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/paddock/outputfile">
+          <filename output="yes">Mown_stubble_treatment_b_SWIM3.out</filename>
+          <title>Mown_stubble_treatment_b_SWIM3</title>
           <variables name="Variables" shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
         <soil name="SWIM Soil" shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <Thickness shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Thickness" />
           <Swim shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Swim">
             <SwimSoluteParameters shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Swim/SwimSoluteParameters" />
@@ -3351,7 +3455,9 @@ drainage = flow_water(8)</text>
       </Graph>
     </simulation>
     <simulation name="Mown_stubble_removed_treatment_c_SWIM3" shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat">
-      <metfile name="met" shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/met" />
+      <metfile name="met" shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/met">
+        <filename shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/clock" />
       <summaryfile shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/summaryfile" />
       <area name="paddock" shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/paddock">
@@ -3363,10 +3469,28 @@ drainage = flow_water(8)</text>
           <manager name="Residue interception" shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/Manager folder/Residue interception" />
         </folder>
         <outputfile shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/paddock/outputfile">
+          <filename output="yes">Mown_stubble_removed_treatment_c_SWIM3.out</filename>
+          <title>Mown_stubble_removed_treatment_c_SWIM3</title>
           <variables name="Variables" shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
         <soil name="SWIM Soil" shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <Thickness shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Thickness" />
           <Swim shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Swim">
             <SwimSoluteParameters shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Swim/SwimSoluteParameters" />
@@ -3447,16 +3571,36 @@ drainage = flow_water(8)</text>
       </Graph>
     </simulation>
     <simulation name="Mown_stubble_removed_cultivated_treatment_d_SWIM3" shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat">
-      <metfile name="met" shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/met" />
+      <metfile name="met" shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/met">
+        <filename shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/clock" />
       <summaryfile shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/summaryfile" />
       <area name="paddock" shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/paddock">
         <surfaceom name="surface organic matter" shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/paddock/surface organic matter" />
         <outputfile shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/paddock/outputfile">
+          <filename output="yes">Mown_stubble_removed_cultivated_treatment_d_SWIM3.out</filename>
+          <title>Mown_stubble_removed_cultivated_treatment_d_SWIM3</title>
           <variables name="Variables" shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
         <soil name="SWIM Soil" shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <Thickness shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Thickness" />
           <Swim shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Swim">
             <SwimSoluteParameters shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Swim/SwimSoluteParameters" />

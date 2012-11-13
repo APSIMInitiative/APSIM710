@@ -178,7 +178,7 @@ public class JobScheduler
         }
         else
         {
-            Target T = Project.FindTarget(Macros["Target"]);
+            Target T = Project.FindTarget(TargetToRun);
             if (T == null)
                 throw new Exception("Cannot find target: " + TargetToRun);
             T.NeedToRun = true;

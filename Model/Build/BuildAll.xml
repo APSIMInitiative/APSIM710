@@ -791,16 +791,6 @@
       <DependsOn>Compile</DependsOn>
       <DependsOn>Post-Compile</DependsOn>
       <DependsOn>RunAll</DependsOn>
-     <Job name="Create Diff Zip">
-  		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-		<CommandLine>%APSIM%/Model/CreateDiffZip.exe Directory=%Apsim% PatchFileName=%PatchFileName%</CommandLine>
-     </Job>
-     <Job name="Upload Diff Zip">
-      <!-- The windows build will copy it to the local filesystem. -->
-      <DependsOn>Create Diff Zip</DependsOn>
-	  <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-	  <CommandLineUnix>curl -T %PatchFileNameShort%.diffs.zip -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.Linux.diffs.zip</CommandLineUnix>
-     </Job>
    </Target>
 
    <!-- ############### Top level BOB jobs ############### -->
@@ -808,7 +798,16 @@
       <DependsOn IgnoreErrors="true">BobBuildAndRun</DependsOn>
       <DependsOn IgnoreErrors="true">Documentation</DependsOn>
       <DependsOn IgnoreErrors="true">Release</DependsOn>
-
+      <Job name="Create Diff Zip">
+  		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+		<CommandLine>%APSIM%/Model/CreateDiffZip.exe Directory=APSIM% PatchFileName=%PatchFileName%</CommandLine>
+      </Job>
+      <Job name="Upload Diff Zip">
+      <!-- The windows build will copy it to the local filesystem. -->
+          <DependsOn>Create Diff Zip</DependsOn>
+	  <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+	  <CommandLineUnix>curl -T %PatchFileNameShort%.diffs.zip -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.Linux.diffs.zip</CommandLineUnix>
+      </Job>
 		<Job name="Create Build Tree Zip">
 			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
 			<CommandLine>"C:\Program Files\7-Zip\7z.exe" -xr!.svn a -mx=7 -mmt=on C:\inetpub\wwwroot\Files\%PatchFileNameShort%.buildtree.zip %Apsim%</CommandLine>

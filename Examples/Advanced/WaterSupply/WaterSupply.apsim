@@ -1,4 +1,4 @@
-<folder version="28" name="Simulations">
+<folder version="32" name="Simulations">
   <simulation name="WaterSupply">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
@@ -90,37 +90,39 @@
         <filename output="yes">WaterSupply.out</filename>
         <title>WaterSupply</title>
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
-          <variable name="wheat.biomass" description="Biomass" array="?" units="kg/ha" />
-          <variable name="wheat.yield" description="Yield" array="?" units="kg/ha" />
-          <variable name="wheat.grain_protein" description="grain protein content" array="?" units="%" />
-          <variable name="wheat.grain_size" description="Size of each grain" array="?" units="g" />
-          <variable name="esw" array="?" description="Extractable Soil Water (mm)" VariableType="Water" />
-          <variable name="dam.available_water as dam_water" array="" description="" />
-          <variable name="channel.available_water as channel_water" array="" description="" />
-          <variable name="bore.available_water as bore_water" array="" description="" />
-          <variable name="irrigation" array="No" description="Irrigation entering the profile (mm)" />
-          <variable name="logic.deficit" />
+          <variable description="Date (dd/mm/yyyy)" array="?">dd/mm/yyyy as Date</variable>
+          <variable description="Biomass" array="?" units="kg/ha">wheat.biomass</variable>
+          <variable description="Yield" array="?" units="kg/ha">wheat.yield</variable>
+          <variable description="grain protein content" array="?" units="%">wheat.grain_protein</variable>
+          <variable description="Size of each grain" array="?" units="g">wheat.grain_size</variable>
+          <variable array="?" description="Extractable Soil Water (mm)" VariableType="Water">esw</variable>
+          <variable array="" description="">dam.available_water as dam_water</variable>
+          <variable array="" description="">channel.available_water as channel_water</variable>
+          <variable array="" description="">bore.available_water as bore_water</variable>
+          <variable array="No" description="Irrigation entering the profile (mm)">irrigation</variable>
+          <variable>logic.deficit</variable>
         </variables>
         <events name="Reporting Frequency" />
       </outputfile>
       <soil name="Jimbour,Waco (#016)">
-        <Country />
-        <Site>Jimbour</Site>
-        <Region>South East Queensland</Region>
+        <Langitude description="Longitude (WGS84)" />
+        <Comment type="multiedit" description="Comments" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description">Black Vertosol</SoilType>
         <LocalName>Waco</LocalName>
-        <SoilType description="Classification">Black Vertosol</SoilType>
+        <Site>Jimbour</Site>
         <NearestTown description="Nearest town">Jimbour, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
+        <Region>South East Queensland</Region>
         <State />
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
         <ApsoilNumber description="Apsoil number" />
         <Latitude description="Latitude (WGS84)" />
         <Longitude />
         <LocationAccuracy description="Location accuracy" />
         <DataSource type="multiedit" description="Data source" />
         <Comments />
-        <Langitude description="Longitude (WGS84)" />
-        <Comment type="multiedit" description="Comments" />
         <InitWater name="Initial water">
           <PercentMethod>
             <Percent>0.22</Percent>
@@ -1291,14 +1293,14 @@ outputfile do_output</text>
       <filename output="yes">Multipaddock Watersupply.out</filename>
       <title>Multipaddock Watersupply</title>
       <variables name="Variables">
-        <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-        <variable name="reportKey" />
-        <variable name=".masterpm.paddock1.wheat.biomass as p1bio" array="?" description="Biomass" />
-        <variable name=".masterpm.paddock1.wheat.yield as p1yld" array="?" description="Yield" />
-        <variable name=".masterpm.paddock2.wheat.biomass as p2bio" />
-        <variable name=".masterpm.paddock2.wheat.yield as p2yld" />
-        <variable name=".masterpm.paddock1.Soil Water.sw_dep() as p1esw" array="?" description="Extractable Soil Water (mm)" />
-        <variable name=".masterpm.paddock2.Soil Water.esw as p2esw" />
+        <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
+        <variable>reportKey</variable>
+        <variable array="?" description="Biomass">.masterpm.paddock1.wheat.biomass as p1bio</variable>
+        <variable array="?" description="Yield">.masterpm.paddock1.wheat.yield as p1yld</variable>
+        <variable>.masterpm.paddock2.wheat.biomass as p2bio</variable>
+        <variable>.masterpm.paddock2.wheat.yield as p2yld</variable>
+        <variable array="?" description="Extractable Soil Water (mm)">.masterpm.paddock1.Soil Water.sw_dep() as p1esw</variable>
+        <variable>.masterpm.paddock2.Soil Water.esw as p2esw</variable>
       </variables>
       <events name="Reporting Frequency" />
     </outputfile>
@@ -1597,22 +1599,24 @@ if {[apsimGet ${paddockName}InCrop] == "yes" } {
       </surfaceom>
       <Wheat />
       <soil name="Soil">
-        <Country />
-        <Site>Jimbour</Site>
-        <Region>South East Queensland</Region>
+        <Langitude description="Longitude (WGS84)" />
+        <Comment type="multiedit" description="Comments" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description">Black Vertosol</SoilType>
         <LocalName>Waco</LocalName>
-        <SoilType description="Classification">Black Vertosol</SoilType>
+        <Site>Jimbour</Site>
         <NearestTown description="Nearest town">Jimbour, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
+        <Region>South East Queensland</Region>
         <State />
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
         <ApsoilNumber description="Apsoil number" />
         <Latitude description="Latitude (WGS84)" />
         <Longitude />
         <LocationAccuracy description="Location accuracy" />
         <DataSource type="multiedit" description="Data source" />
         <Comments />
-        <Langitude description="Longitude (WGS84)" />
-        <Comment type="multiedit" description="Comments" />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -2686,22 +2690,24 @@ if {[apsimGet ${paddockName}InCrop] == "yes" } {
       </surfaceom>
       <Wheat />
       <soil name="Soil">
-        <Country />
-        <Site>Jimbour</Site>
-        <Region>South East Queensland</Region>
+        <Langitude description="Longitude (WGS84)" />
+        <Comment type="multiedit" description="Comments" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description">Black Vertosol</SoilType>
         <LocalName>Waco</LocalName>
-        <SoilType description="Classification">Black Vertosol</SoilType>
+        <Site>Jimbour</Site>
         <NearestTown description="Nearest town">Jimbour, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
+        <Region>South East Queensland</Region>
         <State />
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
         <ApsoilNumber description="Apsoil number" />
         <Latitude description="Latitude (WGS84)" />
         <Longitude />
         <LocationAccuracy description="Location accuracy" />
         <DataSource type="multiedit" description="Data source" />
         <Comments />
-        <Langitude description="Longitude (WGS84)" />
-        <Comment type="multiedit" description="Comments" />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>

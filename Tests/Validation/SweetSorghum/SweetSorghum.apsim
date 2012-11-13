@@ -1,17 +1,14 @@
-<simulations name="untitled" version="15">
+<folder version="32" name="untitled">
   <simulation name="PacSeeds">
-    <clock name="clock">
+    <clock>
       <start_date name="start_date" description="Select the start date of the simulation" type="date">1/09/2004</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date">30/06/2005</end_date>
     </clock>
-    <summaryfile name="summaryfile">
-      <filename name="filename">PacSeeds.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">lawes0405.met</filename>
+      <filename name="filename" input="yes">lawes0405.met</filename>
     </metfile>
     <area name="Planting1">
-      <registrations name="global" />
       <folder name="Manager folder">
         <manager name="Harvesting rule">
           <script>
@@ -26,7 +23,7 @@
             <event>end_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <crop type="modulename" description="Enter name of crop to harvest when ripe : ">SweetSorghum</crop>
           </ui>
         </manager>
@@ -38,10 +35,10 @@
             <event>[modulename].[eventname]</event>
           </script>
           <ui>
-            <category name="When should fertiliser be applied" />
+            <category type="category" description="When should fertiliser be applied" />
             <modulename type="modulename" description="On which module should the event come from : ">SweetSorghum</modulename>
             <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
-            <category name="Fertiliser application details" />
+            <category type="category" description="Fertiliser application details" />
             <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
             <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">300</fert_amount_sow>
             <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">NO3_N</fert_type_sow>
@@ -57,18 +54,18 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-sep</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">SweetSorghum</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">sugargraze</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">sugargraze</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
       </folder>
-      <fertiliser name="fertiliser" />
+      <fertiliser />
       <surfaceom name="surface organic matter">
         <PoolName description="Organic Matter pool name">wheat</PoolName>
         <type description="Organic Matter type">wheat</type>
@@ -77,23 +74,46 @@
         <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
       </surfaceom>
       <soil name="LawesSoil" shortcut="/untitled/shared/LawesSoil">
-        <InitWater shortcut="/untitled/shared/LawesSoil/InitWater" />
-        <InitNitrogen shortcut="/untitled/shared/LawesSoil/InitNitrogen" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
+        <Water shortcut="/untitled/shared/LawesSoil/Water">
+          <SoilCrop name="SweetSorghum" shortcut="/untitled/shared/LawesSoil/Water/SweetSorghum" />
+        </Water>
+        <SoilWat shortcut="/untitled/shared/LawesSoil/SoilWat" />
+        <SoilOrganicMatter shortcut="/untitled/shared/LawesSoil/SoilOrganicMatter" />
+        <Analysis shortcut="/untitled/shared/LawesSoil/Analysis" />
+        <InitWater name="Initial Water" shortcut="/untitled/shared/LawesSoil/Initial water" />
+        <Sample name="Initial Nitrogen" shortcut="/untitled/shared/LawesSoil/Initial nitrogen" />
       </soil>
       <SweetSorghum />
-      <outputfile name="outputfile">
-        <filename name="filename">PacSeeds Planting1.out</filename>
+      <outputfile>
+        <filename name="filename" output="yes">PacSeeds Planting1.out</filename>
+        <title>PacSeeds Planting1</title>
         <variables name="My Variables">
-          <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
-          <variable name="SweetSorghum.zadok_stage" description="Zadok's growth developmental stage" array="?" units="0-100" />
-          <variable name="SweetSorghum.lai" description="Leaf area index" array="?" units="m^2/m^2" />
-          <variable name="SweetSorghum.LeafGreenWt" description="Weight of leaf" array="?" units="g/m^2" />
-          <variable name="SweetSorghum.StemGreenWt" description="Weight of stem" array="?" units="g/m^2" />
-          <variable name="SweetSorghum.HeadTotalWt" description="Weight of heads" array="?" units="g/m^2" />
-          <variable name="SweetSorghum.biomass_wt" description="Biomass weight" array="?" units="g/m^2" />
+          <variable description="Date (dd/mm/yyyy)" array="?">dd/mm/yyyy as Date</variable>
+          <variable description="Zadok's growth developmental stage" array="?" units="0-100">SweetSorghum.zadok_stage</variable>
+          <variable description="Leaf area index" array="?" units="m^2/m^2">SweetSorghum.lai</variable>
+          <variable description="Weight of leaf" array="?" units="g/m^2">SweetSorghum.LeafGreenWt</variable>
+          <variable description="Weight of stem" array="?" units="g/m^2">SweetSorghum.StemGreenWt</variable>
+          <variable description="Weight of heads" array="?" units="g/m^2">SweetSorghum.HeadTotalWt</variable>
+          <variable description="Biomass weight" array="?" units="g/m^2">SweetSorghum.biomass_wt</variable>
         </variables>
         <events name="My Variables Events">
-          <event name="Daily" description="End of day" />
+          <event description="End of day">Daily</event>
         </events>
       </outputfile>
       <irrigation name="Irrigation">
@@ -107,7 +127,6 @@
       </irrigation>
     </area>
     <area name="Planting2">
-      <registrations name="global" />
       <folder name="Manager folder">
         <manager name="Harvesting rule">
           <script>
@@ -122,7 +141,7 @@
             <event>end_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <crop type="modulename" description="Enter name of crop to harvest when ripe : ">SweetSorghum</crop>
           </ui>
         </manager>
@@ -134,10 +153,10 @@
             <event>[modulename].[eventname]</event>
           </script>
           <ui>
-            <category name="When should fertiliser be applied" />
+            <category type="category" description="When should fertiliser be applied" />
             <modulename type="modulename" description="On which module should the event come from : ">SweetSorghum</modulename>
             <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
-            <category name="Fertiliser application details" />
+            <category type="category" description="Fertiliser application details" />
             <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
             <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">300</fert_amount_sow>
             <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">NO3_N</fert_type_sow>
@@ -153,18 +172,18 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">12-jan</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">SweetSorghum</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">sugargraze</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">sugargraze</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
       </folder>
-      <fertiliser name="fertiliser" />
+      <fertiliser />
       <surfaceom name="surface organic matter">
         <PoolName description="Organic Matter pool name">wheat</PoolName>
         <type description="Organic Matter type">wheat</type>
@@ -173,23 +192,46 @@
         <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
       </surfaceom>
       <soil name="LawesSoil" shortcut="/untitled/shared/LawesSoil">
-        <InitWater shortcut="/untitled/shared/LawesSoil/InitWater" />
-        <InitNitrogen shortcut="/untitled/shared/LawesSoil/InitNitrogen" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
+        <Water shortcut="/untitled/shared/LawesSoil/Water">
+          <SoilCrop name="SweetSorghum" shortcut="/untitled/shared/LawesSoil/Water/SweetSorghum" />
+        </Water>
+        <SoilWat shortcut="/untitled/shared/LawesSoil/SoilWat" />
+        <SoilOrganicMatter shortcut="/untitled/shared/LawesSoil/SoilOrganicMatter" />
+        <Analysis shortcut="/untitled/shared/LawesSoil/Analysis" />
+        <InitWater name="Initial Water" shortcut="/untitled/shared/LawesSoil/Initial water" />
+        <Sample name="Initial Nitrogen" shortcut="/untitled/shared/LawesSoil/Initial nitrogen" />
       </soil>
       <SweetSorghum />
-      <outputfile name="outputfile">
-        <filename name="filename">PacSeeds Planting2.out</filename>
+      <outputfile>
+        <filename name="filename" output="yes">PacSeeds Planting2.out</filename>
+        <title>PacSeeds Planting2</title>
         <variables name="My Variables">
-          <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
-          <variable name="SweetSorghum.zadok_stage" description="Zadok's growth developmental stage" array="?" units="0-100" />
-          <variable name="SweetSorghum.lai" description="Leaf area index" array="?" units="m^2/m^2" />
-          <variable name="SweetSorghum.LeafGreenWt" description="Weight of leaf" array="?" units="g/m^2" />
-          <variable name="SweetSorghum.StemGreenWt" description="Weight of stem" array="?" units="g/m^2" />
-          <variable name="SweetSorghum.HeadTotalWt" description="Weight of heads" array="?" units="g/m^2" />
-          <variable name="SweetSorghum.biomass_wt" description="Biomass weight" array="?" units="g/m^2" />
+          <variable description="Date (dd/mm/yyyy)" array="?">dd/mm/yyyy as Date</variable>
+          <variable description="Zadok's growth developmental stage" array="?" units="0-100">SweetSorghum.zadok_stage</variable>
+          <variable description="Leaf area index" array="?" units="m^2/m^2">SweetSorghum.lai</variable>
+          <variable description="Weight of leaf" array="?" units="g/m^2">SweetSorghum.LeafGreenWt</variable>
+          <variable description="Weight of stem" array="?" units="g/m^2">SweetSorghum.StemGreenWt</variable>
+          <variable description="Weight of heads" array="?" units="g/m^2">SweetSorghum.HeadTotalWt</variable>
+          <variable description="Biomass weight" array="?" units="g/m^2">SweetSorghum.biomass_wt</variable>
         </variables>
         <events name="My Variables Events">
-          <event name="Daily" description="End of day" />
+          <event description="End of day">Daily</event>
         </events>
       </outputfile>
       <irrigation name="Irrigation">
@@ -205,221 +247,458 @@
   </simulation>
   <folder name="shared">
     <soil name="LawesSoil">
+      <Comment type="multiedit" description="Comments">oc and ph not measured</Comment>
+      <Langitude description="Longitude (WGS84)" />
+      <ASC_Order description="Australian Soil Classification Order" />
+      <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+      <SoilType description="Soil description">Black Vertosol</SoilType>
+      <LocalName />
       <Site>UQ, Lawes</Site>
+      <NearestTown description="Nearest town">Gatton, Q 4343</NearestTown>
       <Region>Lockyer</Region>
-      <SoilType>Black Vertosol</SoilType>
-      <NearestTown>Gatton, Q 4343</NearestTown>
-      <NaturalVegetation>Blue Gum, Moreton Bay Ash, Tea Tree</NaturalVegetation>
-      <Comment>oc and ph not measured</Comment>
-      <InitWater>
+      <State />
+      <Country />
+      <NaturalVegetation description="Natural vegetation">Blue Gum, Moreton Bay Ash, Tea Tree</NaturalVegetation>
+      <ApsoilNumber description="Apsoil number" />
+      <Latitude description="Latitude (WGS84)" />
+      <Longitude />
+      <LocationAccuracy description="Location accuracy" />
+      <DataSource type="multiedit" description="Data source" />
+      <Comments />
+      <InitWater name="Initial water">
         <PercentMethod>
           <Percent>0.83</Percent>
           <Distributed>Filled from top</Distributed>
         </PercentMethod>
       </InitWater>
-      <InitNitrogen>
-        <profile>
-          <layer>
-            <no3>6.494</no3>
-            <nh4>0.608</nh4>
-            <thickness>150</thickness>
-          </layer>
-          <layer>
-            <no3>2.098</no3>
-            <nh4>0.101</nh4>
-            <thickness>150</thickness>
-          </layer>
-          <layer>
-            <no3>2.098</no3>
-            <nh4>0.101</nh4>
-            <thickness>300</thickness>
-          </layer>
-          <layer>
-            <no3>1.698</no3>
-            <nh4>0.101</nh4>
-            <thickness>300</thickness>
-          </layer>
-          <layer>
-            <no3>1.698</no3>
-            <nh4>0.101</nh4>
-            <thickness>300</thickness>
-          </layer>
-          <layer>
-            <no3>1.698</no3>
-            <nh4>0.101</nh4>
-            <thickness>300</thickness>
-          </layer>
-          <layer>
-            <no3>1.698</no3>
-            <nh4>0.101</nh4>
-            <thickness>300</thickness>
-          </layer>
-        </profile>
-      </InitNitrogen>
-      <profile>
-        <layer>
-          <thickness>150</thickness>
-          <bd>1.320</bd>
-          <ll15>0.260</ll15>
-          <airdry>0.130</airdry>
-          <dul>0.410</dul>
-          <sat>0.470</sat>
-          <sw>9999.990</sw>
-          <swcon>0.300</swcon>
-          <fbiom>0.030</fbiom>
-          <finert>0.400</finert>
-          <no3>6.500</no3>
-          <nh4>0.600</nh4>
-          <oc>1.240</oc>
-          <ph>7</ph>
-          <ll name="SweetSorghum">0.260</ll>
-          <kl name="SweetSorghum">0.100</kl>
-          <xf name="SweetSorghum">1</xf>
-        </layer>
-        <layer>
-          <thickness>150</thickness>
-          <bd>1.300</bd>
-          <ll15>0.260</ll15>
-          <airdry>0.234</airdry>
-          <dul>0.430</dul>
-          <sat>0.480</sat>
-          <sw>9999.990</sw>
-          <swcon>0.300</swcon>
-          <fbiom>0.020</fbiom>
-          <finert>0.600</finert>
-          <no3>2.100</no3>
-          <nh4>0.100</nh4>
-          <oc>1.240</oc>
-          <ph>7</ph>
-          <ll name="SweetSorghum">0.260</ll>
-          <kl name="SweetSorghum">0.100</kl>
-          <xf name="SweetSorghum">1</xf>
-        </layer>
-        <layer>
-          <thickness>300</thickness>
-          <bd>1.230</bd>
-          <ll15>0.260</ll15>
-          <airdry>0.260</airdry>
-          <dul>0.460</dul>
-          <sat>0.510</sat>
-          <sw>9999.990</sw>
-          <swcon>0.300</swcon>
-          <fbiom>0.010</fbiom>
-          <finert>0.800</finert>
-          <no3>2.100</no3>
-          <nh4>0.100</nh4>
-          <oc>1.250</oc>
-          <ph>7</ph>
-          <ll name="SweetSorghum">0.260</ll>
-          <kl name="SweetSorghum">0.080</kl>
-          <xf name="SweetSorghum">1</xf>
-        </layer>
-        <layer>
-          <thickness>300</thickness>
-          <bd>1.270</bd>
-          <ll15>0.260</ll15>
-          <airdry>0.260</airdry>
-          <dul>0.440</dul>
-          <sat>0.490</sat>
-          <sw>9999.990</sw>
-          <swcon>0.300</swcon>
-          <fbiom>0.010</fbiom>
-          <finert>0.900</finert>
-          <no3>1.700</no3>
-          <nh4>0.100</nh4>
-          <oc>1.100</oc>
-          <ph>7</ph>
-          <ll name="SweetSorghum">0.260</ll>
-          <kl name="SweetSorghum">0.060</kl>
-          <xf name="SweetSorghum">1</xf>
-        </layer>
-        <layer>
-          <thickness>300</thickness>
-          <bd>1.370</bd>
-          <ll15>0.250</ll15>
-          <airdry>0.250</airdry>
-          <dul>0.400</dul>
-          <sat>0.450</sat>
-          <sw>9999.990</sw>
-          <swcon>0.300</swcon>
-          <fbiom>0.010</fbiom>
-          <finert>0.950</finert>
-          <no3>1.700</no3>
-          <nh4>0.100</nh4>
-          <oc>0.710</oc>
-          <ph>7</ph>
-          <ll name="SweetSorghum">0.250</ll>
-          <kl name="SweetSorghum">0.040</kl>
-          <xf name="SweetSorghum">1</xf>
-        </layer>
-        <layer>
-          <thickness>300</thickness>
-          <bd>1.350</bd>
-          <ll15>0.280</ll15>
-          <airdry>0.280</airdry>
-          <dul>0.410</dul>
-          <sat>0.460</sat>
-          <sw>9999.990</sw>
-          <swcon>0.300</swcon>
-          <fbiom>0.010</fbiom>
-          <finert>0.950</finert>
-          <no3>1.700</no3>
-          <nh4>0.100</nh4>
-          <oc>0.340</oc>
-          <ph>7</ph>
-          <ll name="SweetSorghum">0.290</ll>
-          <kl name="SweetSorghum">0.020</kl>
-          <xf name="SweetSorghum">1</xf>
-        </layer>
-        <layer>
-          <thickness>300</thickness>
-          <bd>1.350</bd>
-          <ll15>0.310</ll15>
-          <airdry>0.310</airdry>
-          <dul>0.380</dul>
-          <sat>0.460</sat>
-          <sw>9999.990</sw>
-          <swcon>0.300</swcon>
-          <fbiom>0.010</fbiom>
-          <finert>0.950</finert>
-          <no3>1.700</no3>
-          <nh4>0.100</nh4>
-          <oc>0.260</oc>
-          <ph>7</ph>
-          <ll name="SweetSorghum">0.380</ll>
-          <kl name="SweetSorghum">0.010</kl>
-          <xf name="SweetSorghum">1</xf>
-        </layer>
-      </profile>
-      <Cona>3.5</Cona>
-      <DiffusConst>40</DiffusConst>
-      <DiffusSlope>16</DiffusSlope>
-      <U>6</U>
-      <Salb>0.13</Salb>
-      <Cn2Bare>73</Cn2Bare>
-      <CnRed>20</CnRed>
-      <CnCov>0.8</CnCov>
-      <CnCanopyFact>1</CnCanopyFact>
-      <RootCn>40</RootCn>
-      <RootWt>200</RootWt>
-      <SoilCn>12.5</SoilCn>
-      <EnrACoeff>7.4</EnrACoeff>
-      <EnrBCoeff>0.2</EnrBCoeff>
+      <Water>
+        <Layer>
+          <Thickness units="mm">150</Thickness>
+          <KS units="mm/day" />
+          <BD units="g/cc">1.320</BD>
+          <AirDry units="mm/mm">0.130</AirDry>
+          <LL15 units="mm/mm">0.260</LL15>
+          <DUL units="mm/mm">0.410</DUL>
+          <SAT units="mm/mm">0.470</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <KS units="mm/day" />
+          <BD>1.300</BD>
+          <AirDry>0.234</AirDry>
+          <LL15>0.260</LL15>
+          <DUL>0.430</DUL>
+          <SAT>0.480</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <KS units="mm/day" />
+          <BD>1.230</BD>
+          <AirDry>0.260</AirDry>
+          <LL15>0.260</LL15>
+          <DUL>0.460</DUL>
+          <SAT>0.510</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <KS units="mm/day" />
+          <BD>1.270</BD>
+          <AirDry>0.260</AirDry>
+          <LL15>0.260</LL15>
+          <DUL>0.440</DUL>
+          <SAT>0.490</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <KS units="mm/day" />
+          <BD>1.370</BD>
+          <AirDry>0.250</AirDry>
+          <LL15>0.250</LL15>
+          <DUL>0.400</DUL>
+          <SAT>0.450</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <KS units="mm/day" />
+          <BD>1.350</BD>
+          <AirDry>0.280</AirDry>
+          <LL15>0.280</LL15>
+          <DUL>0.410</DUL>
+          <SAT>0.460</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <KS units="mm/day" />
+          <BD>1.350</BD>
+          <AirDry>0.310</AirDry>
+          <LL15>0.310</LL15>
+          <DUL>0.380</DUL>
+          <SAT>0.460</SAT>
+        </Layer>
+        <SoilCrop name="SweetSorghum">
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <LL units="mm/mm">0.260</LL>
+            <KL units="/day">0.100</KL>
+            <XF units="0-1">1</XF>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL>0.260</LL>
+            <KL>0.100</KL>
+            <XF>1</XF>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL>0.260</LL>
+            <KL>0.080</KL>
+            <XF>1</XF>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL>0.260</LL>
+            <KL>0.060</KL>
+            <XF>1</XF>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL>0.250</LL>
+            <KL>0.040</KL>
+            <XF>1</XF>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL>0.290</LL>
+            <KL>0.020</KL>
+            <XF>1</XF>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL>0.380</LL>
+            <KL>0.010</KL>
+            <XF>1</XF>
+          </Layer>
+        </SoilCrop>
+      </Water>
+      <SoilWat>
+        <SummerCona>3.5</SummerCona>
+        <SummerU>6</SummerU>
+        <SummerDate>1-Nov</SummerDate>
+        <WinterCona>3.5</WinterCona>
+        <WinterU>6</WinterU>
+        <WinterDate>1-Apr</WinterDate>
+        <DiffusConst>40</DiffusConst>
+        <DiffusSlope>16</DiffusSlope>
+        <Salb>0.13</Salb>
+        <Cn2Bare>73</Cn2Bare>
+        <CnRed>20</CnRed>
+        <CnCov>0.8</CnCov>
+        <Slope>
+        </Slope>
+        <DischargeWidth>
+        </DischargeWidth>
+        <CatchmentArea>
+        </CatchmentArea>
+        <MaxPond>
+        </MaxPond>
+        <Layer>
+          <Thickness units="mm">150</Thickness>
+          <SWCON units="0-1">0.300</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <SWCON>0.300</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.300</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.300</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.300</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.300</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.300</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+      </SoilWat>
+      <SoilOrganicMatter>
+        <RootCn>40</RootCn>
+        <RootWt>200</RootWt>
+        <SoilCn>12.5</SoilCn>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <Layer>
+          <Thickness units="mm">150</Thickness>
+          <OC units="Total %">1.240</OC>
+          <FBiom units="0-1">0.030</FBiom>
+          <FInert units="0-1">0.400</FInert>
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <OC>1.240</OC>
+          <FBiom>0.020</FBiom>
+          <FInert>0.600</FInert>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <OC>1.250</OC>
+          <FBiom>0.010</FBiom>
+          <FInert>0.800</FInert>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <OC>1.100</OC>
+          <FBiom>0.010</FBiom>
+          <FInert>0.900</FInert>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <OC>0.710</OC>
+          <FBiom>0.010</FBiom>
+          <FInert>0.950</FInert>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <OC>0.340</OC>
+          <FBiom>0.010</FBiom>
+          <FInert>0.950</FInert>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <OC>0.260</OC>
+          <FBiom>0.010</FBiom>
+          <FInert>0.950</FInert>
+        </Layer>
+      </SoilOrganicMatter>
+      <Analysis>
+        <Layer>
+          <Thickness units="mm">150</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
+          <PH units="1:5 water">7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
+          <PH>7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
+          <PH>7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
+          <PH>7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
+          <PH>7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
+          <PH>7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
+          <PH>7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
+        </Layer>
+      </Analysis>
+      <Sample name="Initial nitrogen">
+        <Date type="date" description="Sample date:" />
+        <Layer>
+          <Thickness units="mm">150</Thickness>
+          <NO3 units="ppm">6.494</NO3>
+          <NH4 units="ppm">0.608</NH4>
+          <SW units="mm/mm" />
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <NO3>2.098</NO3>
+          <NH4>0.101</NH4>
+          <SW units="mm/mm" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <NO3>2.098</NO3>
+          <NH4>0.101</NH4>
+          <SW units="mm/mm" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <NO3>1.698</NO3>
+          <NH4>0.101</NH4>
+          <SW units="mm/mm" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <NO3>1.698</NO3>
+          <NH4>0.101</NH4>
+          <SW units="mm/mm" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <NO3>1.698</NO3>
+          <NH4>0.101</NH4>
+          <SW units="mm/mm" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <NO3>1.698</NO3>
+          <NH4>0.101</NH4>
+          <SW units="mm/mm" />
+        </Layer>
+      </Sample>
     </soil>
   </folder>
   <simulation name="Lawes0102">
-    <clock name="clock">
+    <clock>
       <start_date name="start_date" description="Select the start date of the simulation" type="date">1/11/2001</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date">30/06/2002</end_date>
     </clock>
-    <summaryfile name="summaryfile">
-      <filename name="filename">Lawes0102.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">UQG0102.met</filename>
+      <filename name="filename" input="yes">UQG0102.met</filename>
     </metfile>
     <area name="Planting1">
-      <registrations name="global" />
       <folder name="Manager folder">
         <manager name="Harvesting rule">
           <script>
@@ -434,7 +713,7 @@
             <event>end_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <crop type="modulename" description="Enter name of crop to harvest when ripe : ">SweetSorghum</crop>
           </ui>
         </manager>
@@ -446,10 +725,10 @@
             <event>[modulename].[eventname]</event>
           </script>
           <ui>
-            <category name="When should fertiliser be applied" />
+            <category type="category" description="When should fertiliser be applied" />
             <modulename type="modulename" description="On which module should the event come from : ">SweetSorghum</modulename>
             <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
-            <category name="Fertiliser application details" />
+            <category type="category" description="Fertiliser application details" />
             <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
             <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">300</fert_amount_sow>
             <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">NO3_N</fert_type_sow>
@@ -465,18 +744,18 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">23-nov</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">SweetSorghum</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">sugargraze</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">sugargraze</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
       </folder>
-      <fertiliser name="fertiliser" />
+      <fertiliser />
       <surfaceom name="surface organic matter">
         <PoolName description="Organic Matter pool name">wheat</PoolName>
         <type description="Organic Matter type">wheat</type>
@@ -485,23 +764,46 @@
         <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
       </surfaceom>
       <soil name="LawesSoil" shortcut="/untitled/shared/LawesSoil">
-        <InitWater shortcut="/untitled/shared/LawesSoil/InitWater" />
-        <InitNitrogen shortcut="/untitled/shared/LawesSoil/InitNitrogen" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
+        <Water shortcut="/untitled/shared/LawesSoil/Water">
+          <SoilCrop name="SweetSorghum" shortcut="/untitled/shared/LawesSoil/Water/SweetSorghum" />
+        </Water>
+        <SoilWat shortcut="/untitled/shared/LawesSoil/SoilWat" />
+        <SoilOrganicMatter shortcut="/untitled/shared/LawesSoil/SoilOrganicMatter" />
+        <Analysis shortcut="/untitled/shared/LawesSoil/Analysis" />
+        <InitWater name="Initial Water" shortcut="/untitled/shared/LawesSoil/Initial water" />
+        <Sample name="Initial Nitrogen" shortcut="/untitled/shared/LawesSoil/Initial nitrogen" />
       </soil>
       <SweetSorghum />
-      <outputfile name="outputfile">
-        <filename name="filename">Lawes0102 Planting1.out</filename>
+      <outputfile>
+        <filename name="filename" output="yes">Lawes0102 Planting1.out</filename>
+        <title>Lawes0102 Planting1</title>
         <variables name="My Variables">
-          <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
-          <variable name="SweetSorghum.zadok_stage" description="Zadok's growth developmental stage" array="?" units="0-100" />
-          <variable name="SweetSorghum.lai" description="Leaf area index" array="?" units="m^2/m^2" />
-          <variable name="SweetSorghum.LeafGreenWt" description="Weight of leaf" array="?" units="g/m^2" />
-          <variable name="SweetSorghum.StemGreenWt" description="Weight of stem" array="?" units="g/m^2" />
-          <variable name="SweetSorghum.HeadTotalWt" description="Weight of heads" array="?" units="g/m^2" />
-          <variable name="SweetSorghum.biomass_wt" description="Biomass weight" array="?" units="g/m^2" />
+          <variable description="Date (dd/mm/yyyy)" array="?">dd/mm/yyyy as Date</variable>
+          <variable description="Zadok's growth developmental stage" array="?" units="0-100">SweetSorghum.zadok_stage</variable>
+          <variable description="Leaf area index" array="?" units="m^2/m^2">SweetSorghum.lai</variable>
+          <variable description="Weight of leaf" array="?" units="g/m^2">SweetSorghum.LeafGreenWt</variable>
+          <variable description="Weight of stem" array="?" units="g/m^2">SweetSorghum.StemGreenWt</variable>
+          <variable description="Weight of heads" array="?" units="g/m^2">SweetSorghum.HeadTotalWt</variable>
+          <variable description="Biomass weight" array="?" units="g/m^2">SweetSorghum.biomass_wt</variable>
         </variables>
         <events name="My Variables Events">
-          <event name="Daily" description="End of day" />
+          <event description="End of day">Daily</event>
         </events>
       </outputfile>
       <irrigation name="Irrigation">
@@ -515,7 +817,6 @@
       </irrigation>
     </area>
     <area name="Planting2">
-      <registrations name="global" />
       <folder name="Manager folder">
         <manager name="Harvesting rule">
           <script>
@@ -530,7 +831,7 @@
             <event>end_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <crop type="modulename" description="Enter name of crop to harvest when ripe : ">SweetSorghum</crop>
           </ui>
         </manager>
@@ -542,10 +843,10 @@
             <event>[modulename].[eventname]</event>
           </script>
           <ui>
-            <category name="When should fertiliser be applied" />
+            <category type="category" description="When should fertiliser be applied" />
             <modulename type="modulename" description="On which module should the event come from : ">SweetSorghum</modulename>
             <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
-            <category name="Fertiliser application details" />
+            <category type="category" description="Fertiliser application details" />
             <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
             <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">300</fert_amount_sow>
             <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">NO3_N</fert_type_sow>
@@ -561,18 +862,18 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">21-dec</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">SweetSorghum</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">sugargraze</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">sugargraze</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
       </folder>
-      <fertiliser name="fertiliser" />
+      <fertiliser />
       <surfaceom name="surface organic matter">
         <PoolName description="Organic Matter pool name">wheat</PoolName>
         <type description="Organic Matter type">wheat</type>
@@ -581,23 +882,46 @@
         <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
       </surfaceom>
       <soil name="LawesSoil" shortcut="/untitled/shared/LawesSoil">
-        <InitWater shortcut="/untitled/shared/LawesSoil/InitWater" />
-        <InitNitrogen shortcut="/untitled/shared/LawesSoil/InitNitrogen" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
+        <Water shortcut="/untitled/shared/LawesSoil/Water">
+          <SoilCrop name="SweetSorghum" shortcut="/untitled/shared/LawesSoil/Water/SweetSorghum" />
+        </Water>
+        <SoilWat shortcut="/untitled/shared/LawesSoil/SoilWat" />
+        <SoilOrganicMatter shortcut="/untitled/shared/LawesSoil/SoilOrganicMatter" />
+        <Analysis shortcut="/untitled/shared/LawesSoil/Analysis" />
+        <InitWater name="Initial Water" shortcut="/untitled/shared/LawesSoil/Initial water" />
+        <Sample name="Initial Nitrogen" shortcut="/untitled/shared/LawesSoil/Initial nitrogen" />
       </soil>
       <SweetSorghum />
-      <outputfile name="outputfile">
-        <filename name="filename">Lawes0102 Planting2.out</filename>
+      <outputfile>
+        <filename name="filename" output="yes">Lawes0102 Planting2.out</filename>
+        <title>Lawes0102 Planting2</title>
         <variables name="My Variables">
-          <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
-          <variable name="SweetSorghum.zadok_stage" description="Zadok's growth developmental stage" array="?" units="0-100" />
-          <variable name="SweetSorghum.lai" description="Leaf area index" array="?" units="m^2/m^2" />
-          <variable name="SweetSorghum.LeafGreenWt" description="Weight of leaf" array="?" units="g/m^2" />
-          <variable name="SweetSorghum.StemGreenWt" description="Weight of stem" array="?" units="g/m^2" />
-          <variable name="SweetSorghum.HeadTotalWt" description="Weight of heads" array="?" units="g/m^2" />
-          <variable name="SweetSorghum.biomass_wt" description="Biomass weight" array="?" units="g/m^2" />
+          <variable description="Date (dd/mm/yyyy)" array="?">dd/mm/yyyy as Date</variable>
+          <variable description="Zadok's growth developmental stage" array="?" units="0-100">SweetSorghum.zadok_stage</variable>
+          <variable description="Leaf area index" array="?" units="m^2/m^2">SweetSorghum.lai</variable>
+          <variable description="Weight of leaf" array="?" units="g/m^2">SweetSorghum.LeafGreenWt</variable>
+          <variable description="Weight of stem" array="?" units="g/m^2">SweetSorghum.StemGreenWt</variable>
+          <variable description="Weight of heads" array="?" units="g/m^2">SweetSorghum.HeadTotalWt</variable>
+          <variable description="Biomass weight" array="?" units="g/m^2">SweetSorghum.biomass_wt</variable>
         </variables>
         <events name="My Variables Events">
-          <event name="Daily" description="End of day" />
+          <event description="End of day">Daily</event>
         </events>
       </outputfile>
       <irrigation name="Irrigation">
@@ -611,7 +935,6 @@
       </irrigation>
     </area>
     <area name="Planting3">
-      <registrations name="global" />
       <folder name="Manager folder">
         <manager name="Harvesting rule">
           <script>
@@ -626,7 +949,7 @@
             <event>end_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <crop type="modulename" description="Enter name of crop to harvest when ripe : ">SweetSorghum</crop>
           </ui>
         </manager>
@@ -638,10 +961,10 @@
             <event>[modulename].[eventname]</event>
           </script>
           <ui>
-            <category name="When should fertiliser be applied" />
+            <category type="category" description="When should fertiliser be applied" />
             <modulename type="modulename" description="On which module should the event come from : ">SweetSorghum</modulename>
             <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
-            <category name="Fertiliser application details" />
+            <category type="category" description="Fertiliser application details" />
             <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
             <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">300</fert_amount_sow>
             <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">NO3_N</fert_type_sow>
@@ -657,18 +980,18 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">22-jan</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">SweetSorghum</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">sugargraze</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">sugargraze</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
       </folder>
-      <fertiliser name="fertiliser" />
+      <fertiliser />
       <surfaceom name="surface organic matter">
         <PoolName description="Organic Matter pool name">wheat</PoolName>
         <type description="Organic Matter type">wheat</type>
@@ -677,23 +1000,46 @@
         <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
       </surfaceom>
       <soil name="LawesSoil" shortcut="/untitled/shared/LawesSoil">
-        <InitWater shortcut="/untitled/shared/LawesSoil/InitWater" />
-        <InitNitrogen shortcut="/untitled/shared/LawesSoil/InitNitrogen" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
+        <Water shortcut="/untitled/shared/LawesSoil/Water">
+          <SoilCrop name="SweetSorghum" shortcut="/untitled/shared/LawesSoil/Water/SweetSorghum" />
+        </Water>
+        <SoilWat shortcut="/untitled/shared/LawesSoil/SoilWat" />
+        <SoilOrganicMatter shortcut="/untitled/shared/LawesSoil/SoilOrganicMatter" />
+        <Analysis shortcut="/untitled/shared/LawesSoil/Analysis" />
+        <InitWater name="Initial Water" shortcut="/untitled/shared/LawesSoil/Initial water" />
+        <Sample name="Initial Nitrogen" shortcut="/untitled/shared/LawesSoil/Initial nitrogen" />
       </soil>
       <SweetSorghum />
-      <outputfile name="outputfile">
-        <filename name="filename">Lawes0102 Planting3.out</filename>
+      <outputfile>
+        <filename name="filename" output="yes">Lawes0102 Planting3.out</filename>
+        <title>Lawes0102 Planting3</title>
         <variables name="My Variables">
-          <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
-          <variable name="SweetSorghum.zadok_stage" description="Zadok's growth developmental stage" array="?" units="0-100" />
-          <variable name="SweetSorghum.lai" description="Leaf area index" array="?" units="m^2/m^2" />
-          <variable name="SweetSorghum.LeafGreenWt" description="Weight of leaf" array="?" units="g/m^2" />
-          <variable name="SweetSorghum.StemGreenWt" description="Weight of stem" array="?" units="g/m^2" />
-          <variable name="SweetSorghum.HeadTotalWt" description="Weight of heads" array="?" units="g/m^2" />
-          <variable name="SweetSorghum.biomass_wt" description="Biomass weight" array="?" units="g/m^2" />
+          <variable description="Date (dd/mm/yyyy)" array="?">dd/mm/yyyy as Date</variable>
+          <variable description="Zadok's growth developmental stage" array="?" units="0-100">SweetSorghum.zadok_stage</variable>
+          <variable description="Leaf area index" array="?" units="m^2/m^2">SweetSorghum.lai</variable>
+          <variable description="Weight of leaf" array="?" units="g/m^2">SweetSorghum.LeafGreenWt</variable>
+          <variable description="Weight of stem" array="?" units="g/m^2">SweetSorghum.StemGreenWt</variable>
+          <variable description="Weight of heads" array="?" units="g/m^2">SweetSorghum.HeadTotalWt</variable>
+          <variable description="Biomass weight" array="?" units="g/m^2">SweetSorghum.biomass_wt</variable>
         </variables>
         <events name="My Variables Events">
-          <event name="Daily" description="End of day" />
+          <event description="End of day">Daily</event>
         </events>
       </outputfile>
       <irrigation name="Irrigation">
@@ -707,7 +1053,6 @@
       </irrigation>
     </area>
     <area name="Planting4">
-      <registrations name="global" />
       <folder name="Manager folder">
         <manager name="Harvesting rule">
           <script>
@@ -722,7 +1067,7 @@
             <event>end_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <crop type="modulename" description="Enter name of crop to harvest when ripe : ">SweetSorghum</crop>
           </ui>
         </manager>
@@ -734,10 +1079,10 @@
             <event>[modulename].[eventname]</event>
           </script>
           <ui>
-            <category name="When should fertiliser be applied" />
+            <category type="category" description="When should fertiliser be applied" />
             <modulename type="modulename" description="On which module should the event come from : ">SweetSorghum</modulename>
             <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
-            <category name="Fertiliser application details" />
+            <category type="category" description="Fertiliser application details" />
             <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
             <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">300</fert_amount_sow>
             <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">NO3_N</fert_type_sow>
@@ -753,18 +1098,18 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">21-feb</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">SweetSorghum</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">sugargraze</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">sugargraze</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
       </folder>
-      <fertiliser name="fertiliser" />
+      <fertiliser />
       <surfaceom name="surface organic matter">
         <PoolName description="Organic Matter pool name">wheat</PoolName>
         <type description="Organic Matter type">wheat</type>
@@ -773,23 +1118,46 @@
         <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
       </surfaceom>
       <soil name="LawesSoil" shortcut="/untitled/shared/LawesSoil">
-        <InitWater shortcut="/untitled/shared/LawesSoil/InitWater" />
-        <InitNitrogen shortcut="/untitled/shared/LawesSoil/InitNitrogen" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
+        <Water shortcut="/untitled/shared/LawesSoil/Water">
+          <SoilCrop name="SweetSorghum" shortcut="/untitled/shared/LawesSoil/Water/SweetSorghum" />
+        </Water>
+        <SoilWat shortcut="/untitled/shared/LawesSoil/SoilWat" />
+        <SoilOrganicMatter shortcut="/untitled/shared/LawesSoil/SoilOrganicMatter" />
+        <Analysis shortcut="/untitled/shared/LawesSoil/Analysis" />
+        <InitWater name="Initial Water" shortcut="/untitled/shared/LawesSoil/Initial water" />
+        <Sample name="Initial Nitrogen" shortcut="/untitled/shared/LawesSoil/Initial nitrogen" />
       </soil>
       <SweetSorghum />
-      <outputfile name="outputfile">
-        <filename name="filename">Lawes0102 Planting4.out</filename>
+      <outputfile>
+        <filename name="filename" output="yes">Lawes0102 Planting4.out</filename>
+        <title>Lawes0102 Planting4</title>
         <variables name="My Variables">
-          <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
-          <variable name="SweetSorghum.zadok_stage" description="Zadok's growth developmental stage" array="?" units="0-100" />
-          <variable name="SweetSorghum.lai" description="Leaf area index" array="?" units="m^2/m^2" />
-          <variable name="SweetSorghum.LeafGreenWt" description="Weight of leaf" array="?" units="g/m^2" />
-          <variable name="SweetSorghum.StemGreenWt" description="Weight of stem" array="?" units="g/m^2" />
-          <variable name="SweetSorghum.HeadTotalWt" description="Weight of heads" array="?" units="g/m^2" />
-          <variable name="SweetSorghum.biomass_wt" description="Biomass weight" array="?" units="g/m^2" />
+          <variable description="Date (dd/mm/yyyy)" array="?">dd/mm/yyyy as Date</variable>
+          <variable description="Zadok's growth developmental stage" array="?" units="0-100">SweetSorghum.zadok_stage</variable>
+          <variable description="Leaf area index" array="?" units="m^2/m^2">SweetSorghum.lai</variable>
+          <variable description="Weight of leaf" array="?" units="g/m^2">SweetSorghum.LeafGreenWt</variable>
+          <variable description="Weight of stem" array="?" units="g/m^2">SweetSorghum.StemGreenWt</variable>
+          <variable description="Weight of heads" array="?" units="g/m^2">SweetSorghum.HeadTotalWt</variable>
+          <variable description="Biomass weight" array="?" units="g/m^2">SweetSorghum.biomass_wt</variable>
         </variables>
         <events name="My Variables Events">
-          <event name="Daily" description="End of day" />
+          <event description="End of day">Daily</event>
         </events>
       </outputfile>
       <irrigation name="Irrigation">
@@ -803,4 +1171,4 @@
       </irrigation>
     </area>
   </simulation>
-</simulations>
+</folder>

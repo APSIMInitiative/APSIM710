@@ -1,14 +1,12 @@
-<folder version="25" name="simulations">
+<folder version="32" name="simulations">
   <simulation name="Patagonia1">
     <clock>
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">2-May-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -22,13 +20,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">2-May-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -43,29 +41,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -73,6 +57,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -201,7 +201,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -462,15 +461,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia1.out</filename>
+        <title>Patagonia1</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -480,11 +481,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">9-May-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -498,13 +497,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">9-May-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -519,29 +518,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -549,6 +534,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -677,7 +678,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -938,15 +938,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia2.out</filename>
+        <title>Patagonia2</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -956,11 +958,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15-May-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -974,13 +974,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-May-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -995,29 +995,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -1025,6 +1011,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -1153,7 +1155,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -1414,15 +1415,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia3.out</filename>
+        <title>Patagonia3</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -1432,11 +1435,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">23-May-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -1450,13 +1451,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">23-May-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -1471,29 +1472,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -1501,6 +1488,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -1629,7 +1632,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -1890,15 +1892,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia4.out</filename>
+        <title>Patagonia4</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -1908,11 +1912,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">30-May-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -1926,13 +1928,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">30-May-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -1947,29 +1949,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -1977,6 +1965,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -2105,7 +2109,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -2366,15 +2369,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia5.out</filename>
+        <title>Patagonia5</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -2384,11 +2389,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">5-Jun-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -2402,13 +2405,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">5-Jun-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -2423,29 +2426,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -2453,6 +2442,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -2581,7 +2586,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -2842,15 +2846,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia6.out</filename>
+        <title>Patagonia6</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -2860,11 +2866,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">12-Jun-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -2878,13 +2882,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">12-Jun-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -2899,29 +2903,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -2929,6 +2919,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -3057,7 +3063,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -3318,15 +3323,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia7.out</filename>
+        <title>Patagonia7</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -3336,11 +3343,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">22-Jun-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -3354,13 +3359,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">22-Jun-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -3375,29 +3380,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -3405,6 +3396,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -3533,7 +3540,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -3794,15 +3800,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia8.out</filename>
+        <title>Patagonia8</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -3812,11 +3820,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">25-Jun-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -3830,13 +3836,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">25-Jun-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -3851,29 +3857,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -3881,6 +3873,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -4009,7 +4017,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -4270,15 +4277,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia9.out</filename>
+        <title>Patagonia9</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -4288,11 +4297,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">3-Jul-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -4306,13 +4313,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">3-Jul-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -4327,29 +4334,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -4357,6 +4350,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -4485,7 +4494,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -4746,15 +4754,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia10.out</filename>
+        <title>Patagonia10</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -4764,11 +4774,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">3-Apr-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -4782,13 +4790,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">3-Apr-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -4803,29 +4811,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -4833,6 +4827,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -4961,7 +4971,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -5222,15 +5231,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Annie1.out</filename>
+        <title>Annie1</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -5240,11 +5251,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">11-Apr-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -5258,13 +5267,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">11-Apr-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -5279,29 +5288,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -5309,6 +5304,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -5437,7 +5448,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -5698,15 +5708,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Annie2.out</filename>
+        <title>Annie2</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -5716,11 +5728,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">17-Apr-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -5734,13 +5744,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">17-Apr-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -5755,29 +5765,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -5785,6 +5781,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -5913,7 +5925,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -6174,15 +6185,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Annie3.out</filename>
+        <title>Annie3</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -6192,11 +6205,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">24-Apr-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -6210,13 +6221,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">24-Apr-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -6231,29 +6242,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -6261,6 +6258,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -6389,7 +6402,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -6650,15 +6662,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Annie4.out</filename>
+        <title>Annie4</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -6668,11 +6682,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">17-Jul-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -6686,13 +6698,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">17-Jul-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -6707,29 +6719,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -6737,6 +6735,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -6865,7 +6879,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -7126,15 +7139,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Annie5.out</filename>
+        <title>Annie5</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -7144,11 +7159,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">26-Jul-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -7162,13 +7175,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">26-Jul-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -7183,29 +7196,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -7213,6 +7212,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -7341,7 +7356,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -7602,15 +7616,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Annie6.out</filename>
+        <title>Annie6</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -7620,11 +7636,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">1-Aug-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -7638,13 +7652,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-Aug-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -7659,29 +7673,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -7689,6 +7689,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -7817,7 +7833,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -8078,15 +8093,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Annie7.out</filename>
+        <title>Annie7</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -8096,11 +8113,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">8-Aug-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -8114,13 +8129,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">8-Aug-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -8135,29 +8150,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -8165,6 +8166,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -8293,7 +8310,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -8554,15 +8570,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Annie8.out</filename>
+        <title>Annie8</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -8572,11 +8590,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">3-Apr-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -8590,13 +8606,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">3-Apr-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">AztecSun</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">AztecSun</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -8611,29 +8627,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -8641,6 +8643,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -8769,7 +8787,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -9030,15 +9047,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">AztecSun1.out</filename>
+        <title>AztecSun1</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -9048,11 +9067,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">11-Apr-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -9066,13 +9083,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">11-Apr-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">AztecSun</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">AztecSun</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -9087,29 +9104,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -9117,6 +9120,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -9245,7 +9264,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -9506,15 +9524,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">AztecSun2.out</filename>
+        <title>AztecSun2</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -9524,11 +9544,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">29-mar-2004</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -9542,13 +9560,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">29-mar-2004</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Raider</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Raider</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -9563,29 +9581,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -9593,6 +9597,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -9721,7 +9741,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -9982,15 +10001,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Raider1.out</filename>
+        <title>Raider1</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -10000,11 +10021,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">30-mar-2004</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -10018,13 +10037,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">30-mar-2004</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Raider</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Raider</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -10039,29 +10058,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -10069,6 +10074,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -10197,7 +10218,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -10458,15 +10478,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Raider2.out</filename>
+        <title>Raider2</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -10476,11 +10498,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15-jul-2004</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -10494,13 +10514,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-jul-2004</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Raider</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Raider</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -10515,29 +10535,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -10545,6 +10551,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -10673,7 +10695,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -10934,15 +10955,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Raider3.out</filename>
+        <title>Raider3</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -10952,11 +10975,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">16-jul-2004</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -10970,13 +10991,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">16-jul-2004</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Raider</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Raider</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -10991,29 +11012,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -11021,6 +11028,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -11149,7 +11172,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -11410,15 +11432,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Raider4.out</filename>
+        <title>Raider4</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -11428,11 +11452,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">27-jul-2004</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -11446,13 +11468,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">27-jul-2004</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Raider</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Raider</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -11467,29 +11489,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -11497,6 +11505,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -11625,7 +11649,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -11886,15 +11909,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Raider5.out</filename>
+        <title>Raider5</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -11904,11 +11929,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">12-jul-2001</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -11922,13 +11945,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">12-jul-2001</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Raider</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Raider</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -11943,29 +11966,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -11973,6 +11982,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -12101,7 +12126,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -12362,15 +12386,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Raider6.out</filename>
+        <title>Raider6</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -12380,11 +12406,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">27-apr-2004</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -12398,13 +12422,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">27-apr-2004</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Oxford</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Oxford</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -12419,29 +12443,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -12449,6 +12459,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -12577,7 +12603,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -12838,15 +12863,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Oxford1.out</filename>
+        <title>Oxford1</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -12856,11 +12883,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">3-may-2004</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -12874,13 +12899,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">3-may-2004</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Oxford</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Oxford</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -12895,29 +12920,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -12925,6 +12936,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -13053,7 +13080,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -13314,15 +13340,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Oxford2.out</filename>
+        <title>Oxford2</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -13332,11 +13360,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">18-may-2004</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -13350,13 +13376,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">18-may-2004</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Oxford</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Oxford</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -13371,29 +13397,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -13401,6 +13413,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -13529,7 +13557,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -13790,15 +13817,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Oxford3.out</filename>
+        <title>Oxford3</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -13808,11 +13837,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">12-jul-2001</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -13826,13 +13853,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">12-jul-2001</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Oxford</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Oxford</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -13847,29 +13874,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -13877,6 +13890,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -14005,7 +14034,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -14266,15 +14294,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Oxford4.out</filename>
+        <title>Oxford4</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -14284,11 +14314,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">26-may-2004</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -14302,13 +14330,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">26-may-2004</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Titanic</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Titanic</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -14323,29 +14351,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -14353,6 +14367,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -14481,7 +14511,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -14742,15 +14771,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Titanic1.out</filename>
+        <title>Titanic1</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -14760,11 +14791,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">7-jun-2004</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -14778,13 +14807,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">7-jun-2004</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Titanic</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Titanic</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -14799,29 +14828,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -14829,6 +14844,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -14957,7 +14988,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -15218,15 +15248,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Titanic2.out</filename>
+        <title>Titanic2</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>
@@ -15236,11 +15268,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">12-apr-2007</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/2000" ubound="15/10/2007">15/10/2007</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton.met</filename>
+      <filename name="filename" input="yes">Gatton.met</filename>
     </metfile>
     <area name="Paddock">
       <folder name="Manager folder">
@@ -15254,13 +15284,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">12-apr-2007</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Titanic</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Titanic</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -15275,29 +15305,15 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <soil name="Soil">
-        <Country />
-        <Site>Brookstead</Site>
-        <Region>Darling Downs</Region>
-        <LocalName />
-        <SoilType description="Classification" />
-        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-        <State>Queensland</State>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
         <InitNitrogen name="Initial nitrogen">
           <PercentMethod>
@@ -15305,6 +15321,22 @@
           </PercentMethod>
         </InitNitrogen>
         <Langitude description="Longitude (WGS84)" />
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site>Brookstead</Site>
+        <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country />
+        <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments />
         <InitWater name="Initial water">
           <percentmethod>
             <percent>1</percent>
@@ -15433,7 +15465,6 @@
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <CnCanopyFact />
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -15694,15 +15725,17 @@
         </Sample>
       </soil>
       <outputfile name="Outputfile">
+        <filename output="yes">Titanic3.out</filename>
+        <title>Titanic3</title>
         <variables name="Variables">
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="sowing_das" array="No" description="Days from sowing to sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="maturity_date" array="No" description="Day number of maturity" />
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to sowing">sowing_das</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Day number of maturity">maturity_date</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
     </area>

@@ -21,7 +21,7 @@ class Program
     {
         try
         {
-            Go(args);
+            Console.WriteLine("Added " + Go(args) + " Jobs");
         }
         catch (Exception err)
         {
@@ -34,7 +34,7 @@ class Program
     /// <summary>
     /// Go find all files matching the specified filespec.
     /// </summary>
-    private static void Go(string[] args)
+    private static int Go(string[] args)
     {
         // Parse the command line.
         Dictionary<string, string> Macros = Utility.ParseCommandLine(args);
@@ -42,9 +42,6 @@ class Program
             throw new Exception("Usage FindJobs Filespec=*.apsim TargetName=Tests Server=bob.apsim.info Port=13000");
 
         string DirFileSpec = Macros["Filespec"].Replace("\"", "");
-
-        string ApsimExe = "%APSIM%/Model/Apsim.exe";
-        string ApsimXExe = "%APSIM%/Model/ApsimX.exe";
 
         string RootDirectory = Path.GetDirectoryName(DirFileSpec);
 
@@ -60,17 +57,48 @@ class Program
         {
             if (File.Exists(FileName))
             {
-                string Exe = ApsimExe;
-                List<string> SimulationNames = GetSimulationNamesFrom(FileName);
+                string Exe = "";
+                if (Path.GetExtension(FileName).ToLower() == ".con")
+                    Exe = "%APSIM%/Model/ConToSim.exe";
+                else if (Path.GetExtension(FileName).ToLower() == ".apsim")
+                    Exe = "%APSIM%/Model/ApsimToSim.exe";
+                Job convJob = new Job();
+                convJob.Name = "";
+                if (Exe != "")
+                {
+                    convJob.Name = "Convert " + FileName;
+                    convJob.CommandLine = StringManip.DQuote(Exe) + " " + StringManip.DQuote(FileName);
+                    convJob.WorkingDirectory = Path.GetDirectoryName(FileName);
+                    Target.Jobs.Add(convJob);
+                }
 
-                if (Path.GetExtension(FileName).ToLower() == ".apsimx")
-                    Exe = ApsimXExe;
-
-                foreach (string SimulationName in SimulationNames)
+                foreach (string SimulationName in GetSimulationNamesFrom(FileName))
                 {
                     Job J = new Job();
                     J.Name = FileName + ":" + SimulationName;
-                    J.CommandLine = StringManip.DQuote(Exe) + " " + StringManip.DQuote(FileName) + " " + StringManip.DQuote("Simulation=" + SimulationName);
+                    if (Path.GetExtension(FileName).ToLower() == ".apsim")
+                    {
+                        J.CommandLine = StringManip.DQuote("%APSIM%/Model/ApsimModel.exe") + " " +
+                                         StringManip.DQuote(SimulationName + ".sim");
+                        J.DependsOn = new List<DependsOn>();
+                        J.DependsOn.Add(new DependsOn(convJob.Name));
+                        J.StdOutFilename = Path.Combine(Path.GetDirectoryName(FileName), SimulationName + ".sum");
+                    }
+                    else if (Path.GetExtension(FileName).ToLower() == ".con")
+                    {
+                        string simfile = Path.ChangeExtension(FileName, "." + SimulationName + ".sim");
+                        J.CommandLine = StringManip.DQuote("%APSIM%/Model/ApsimModel.exe") + " " +
+                                         StringManip.DQuote(simfile);
+                        J.DependsOn = new List<DependsOn>();
+                        J.DependsOn.Add(new DependsOn(convJob.Name));
+                        J.StdOutFilename = Path.Combine(Path.GetDirectoryName(FileName), Path.ChangeExtension(simfile, ".sum"));
+                    }
+                    else
+                    {
+                        J.CommandLine = StringManip.DQuote("%APSIM%/Model/ApsimX.exe") + " " +
+                                      StringManip.DQuote(FileName) + " " +
+                                      StringManip.DQuote("Simulation=" + SimulationName);
+                    }
                     J.WorkingDirectory = Path.GetDirectoryName(FileName);
                     Target.Jobs.Add(J);
                 }
@@ -80,8 +108,9 @@ class Program
         StringWriter s = new StringWriter();
         x.Serialize(s, Target);
 
-        Utility.SocketSend(Macros["Server"], Convert.ToInt32(Macros["Port"]), 
+        Utility.SocketSend(Macros["Server"], Convert.ToInt32(Macros["Port"]),
                            "AddTarget~" + s.ToString());
+        return (Target.Jobs.Count);
     }
 
     private static List<string> GetSimulationNamesFrom(string FileName)
@@ -89,7 +118,7 @@ class Program
         StreamReader In = new StreamReader(FileName);
         string Contents = In.ReadToEnd();
         In.Close();
-        
+
         string Pattern;
         if (Path.GetExtension(FileName).ToLower() == ".con")
             Pattern = "^\\[(.+)\\]";
@@ -102,8 +131,12 @@ class Program
         Regex rgx = new Regex(Pattern, RegexOptions.IgnoreCase | RegexOptions.Multiline);
         foreach (Match match in rgx.Matches(Contents))
             if (match.Groups.Count == 2)
-                Matches.Add(match.Groups[1].Value);
-        
+            {
+                string sim = match.Groups[1].Value;
+                if (sim.IndexOf("enabled=\"no") < 0)
+                  Matches.Add(StringManip.RemoveAfter(sim, '\"'));
+            }
+
         return Matches;
     }
 

@@ -1,14 +1,12 @@
-<folder version="25" name="LettuceSensibility">
+<folder version="32" name="LettuceSensibility">
   <simulation name="PatagoniaBaseline">
     <clock>
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/1961" ubound="1/09/2007">1/01/1961</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/1961" ubound="1/09/2007">30/12/1990</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">UQ Gatton_historical.met</filename>
+      <filename name="filename" input="yes">UQ Gatton_historical.met</filename>
     </metfile>
     <area name="May1">
       <folder name="Manager folder">
@@ -22,13 +20,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-may</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -43,28 +41,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">PatagoniaBaseline May1.out</filename>
+        <title>PatagoniaBaseline May1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -83,8 +99,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="May15">
@@ -99,13 +115,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-may</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -120,28 +136,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">PatagoniaBaseline May15.out</filename>
+        <title>PatagoniaBaseline May15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -160,8 +194,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="jun1">
@@ -176,13 +210,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-jun</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -197,28 +231,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">PatagoniaBaseline jun1.out</filename>
+        <title>PatagoniaBaseline jun1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -237,8 +289,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="jun15">
@@ -253,13 +305,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-jun</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -274,28 +326,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">PatagoniaBaseline jun15.out</filename>
+        <title>PatagoniaBaseline jun15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -314,8 +384,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="jul1">
@@ -330,13 +400,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-jul</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -351,28 +421,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">PatagoniaBaseline jul1.out</filename>
+        <title>PatagoniaBaseline jul1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -391,8 +479,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
   </simulation>
@@ -401,11 +489,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/1961" ubound="1/09/2007">1/01/1961</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/1961" ubound="1/09/2007">30/12/1990</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton_2020low.met</filename>
+      <filename name="filename" input="yes">Gatton_2020low.met</filename>
     </metfile>
     <area name="May1">
       <folder name="Manager folder">
@@ -419,13 +505,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-may</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -440,28 +526,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia2020Low May1.out</filename>
+        <title>Patagonia2020Low May1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -480,8 +584,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="May15">
@@ -496,13 +600,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-may</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -517,28 +621,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia2020Low May15.out</filename>
+        <title>Patagonia2020Low May15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -557,8 +679,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="jun1">
@@ -573,13 +695,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-jun</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -594,28 +716,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia2020Low jun1.out</filename>
+        <title>Patagonia2020Low jun1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -634,8 +774,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="jun15">
@@ -650,13 +790,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-jun</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -671,28 +811,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia2020Low jun15.out</filename>
+        <title>Patagonia2020Low jun15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -711,8 +869,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="jul1">
@@ -727,13 +885,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-jul</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -748,28 +906,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia2020Low jul1.out</filename>
+        <title>Patagonia2020Low jul1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -788,8 +964,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
   </simulation>
@@ -798,11 +974,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/1961" ubound="1/09/2007">1/01/1961</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/1961" ubound="1/09/2007">30/12/1990</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton_2020high.met</filename>
+      <filename name="filename" input="yes">Gatton_2020high.met</filename>
     </metfile>
     <area name="May1">
       <folder name="Manager folder">
@@ -816,13 +990,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-may</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -837,28 +1011,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia2020High May1.out</filename>
+        <title>Patagonia2020High May1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -877,8 +1069,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="May15">
@@ -893,13 +1085,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-may</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -914,28 +1106,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia2020High May15.out</filename>
+        <title>Patagonia2020High May15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -954,8 +1164,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="jun1">
@@ -970,13 +1180,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-jun</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -991,28 +1201,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia2020High jun1.out</filename>
+        <title>Patagonia2020High jun1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -1031,8 +1259,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="jun15">
@@ -1047,13 +1275,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-jun</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -1068,28 +1296,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia2020High jun15.out</filename>
+        <title>Patagonia2020High jun15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -1108,8 +1354,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="jul1">
@@ -1124,13 +1370,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-jul</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -1145,28 +1391,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Patagonia2020High jul1.out</filename>
+        <title>Patagonia2020High jul1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -1185,27 +1449,13 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
   </simulation>
   <folder name="shared">
     <soil name="Soil">
-      <Country />
-      <Site>Brookstead</Site>
-      <Region>Darling Downs</Region>
-      <LocalName />
-      <SoilType description="Classification" />
-      <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
-      <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
-      <State>Queensland</State>
-      <ApsoilNumber description="Apsoil number" />
-      <Latitude description="Latitude (WGS84)" />
-      <Longitude />
-      <LocationAccuracy description="Location accuracy" />
-      <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-      <Comments />
       <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
       <InitNitrogen name="Initial nitrogen">
         <PercentMethod>
@@ -1213,6 +1463,22 @@
         </PercentMethod>
       </InitNitrogen>
       <Langitude description="Longitude (WGS84)" />
+      <ASC_Order description="Australian Soil Classification Order" />
+      <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+      <SoilType description="Soil description" />
+      <LocalName />
+      <Site>Brookstead</Site>
+      <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
+      <Region>Darling Downs</Region>
+      <State>Queensland</State>
+      <Country />
+      <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+      <ApsoilNumber description="Apsoil number" />
+      <Latitude description="Latitude (WGS84)" />
+      <Longitude />
+      <LocationAccuracy description="Location accuracy" />
+      <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+      <Comments />
       <InitWater name="Initial water">
         <percentmethod>
           <percent>1</percent>
@@ -1341,7 +1607,6 @@
         <CN2Bare>73</CN2Bare>
         <CNRed>20</CNRed>
         <CNCov>0.8</CNCov>
-        <CnCanopyFact />
         <Slope>
         </Slope>
         <DischargeWidth>
@@ -1598,11 +1863,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/1961" ubound="1/09/2007">1/01/1961</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/1961" ubound="1/09/2007">30/12/1990</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">UQ Gatton_historical.met</filename>
+      <filename name="filename" input="yes">UQ Gatton_historical.met</filename>
     </metfile>
     <area name="Apr1">
       <folder name="Manager folder">
@@ -1616,13 +1879,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-apr</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -1637,28 +1900,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">AnnieBaseline Apr1.out</filename>
+        <title>AnnieBaseline Apr1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -1677,8 +1958,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="Apr15">
@@ -1693,13 +1974,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-Apr</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -1714,28 +1995,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">AnnieBaseline Apr15.out</filename>
+        <title>AnnieBaseline Apr15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -1754,8 +2053,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="jul15">
@@ -1770,13 +2069,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-Jul</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -1791,28 +2090,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">AnnieBaseline jul15.out</filename>
+        <title>AnnieBaseline jul15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -1831,8 +2148,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="Aug1">
@@ -1847,13 +2164,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-Aug</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -1868,28 +2185,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">AnnieBaseline Aug1.out</filename>
+        <title>AnnieBaseline Aug1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -1908,8 +2243,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="Aug15">
@@ -1924,13 +2259,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-Aug</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -1945,28 +2280,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">AnnieBaseline Aug15.out</filename>
+        <title>AnnieBaseline Aug15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -1985,8 +2338,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
   </simulation>
@@ -1995,11 +2348,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/1961" ubound="1/09/2007">1/01/1961</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/1961" ubound="1/09/2007">30/12/1990</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton_2020low.met</filename>
+      <filename name="filename" input="yes">Gatton_2020low.met</filename>
     </metfile>
     <area name="Apr1">
       <folder name="Manager folder">
@@ -2013,13 +2364,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-apr</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -2034,28 +2385,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Annie2020Low Apr1.out</filename>
+        <title>Annie2020Low Apr1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -2074,8 +2443,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="Apr15">
@@ -2090,13 +2459,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-Apr</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -2111,28 +2480,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Annie2020Low Apr15.out</filename>
+        <title>Annie2020Low Apr15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -2151,8 +2538,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="jul15">
@@ -2167,13 +2554,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-Jul</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -2188,28 +2575,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Annie2020Low jul15.out</filename>
+        <title>Annie2020Low jul15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -2228,8 +2633,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="Aug1">
@@ -2244,13 +2649,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-Aug</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -2265,28 +2670,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Annie2020Low Aug1.out</filename>
+        <title>Annie2020Low Aug1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -2305,8 +2728,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="Aug15">
@@ -2321,13 +2744,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-Aug</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -2342,28 +2765,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Annie2020Low Aug15.out</filename>
+        <title>Annie2020Low Aug15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -2382,8 +2823,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
   </simulation>
@@ -2392,11 +2833,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/1961" ubound="1/09/2007">1/01/1961</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/1961" ubound="1/09/2007">30/12/1990</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">Gatton_2020high.met</filename>
+      <filename name="filename" input="yes">Gatton_2020high.met</filename>
     </metfile>
     <area name="Apr1">
       <folder name="Manager folder">
@@ -2410,13 +2849,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-apr</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -2431,28 +2870,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Annie2020High Apr1.out</filename>
+        <title>Annie2020High Apr1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -2471,8 +2928,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="Apr15">
@@ -2487,13 +2944,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-Apr</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -2508,28 +2965,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Annie2020High Apr15.out</filename>
+        <title>Annie2020High Apr15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -2548,8 +3023,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="jul15">
@@ -2564,13 +3039,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-Jul</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -2585,28 +3060,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Annie2020High jul15.out</filename>
+        <title>Annie2020High jul15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -2625,8 +3118,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="Aug1">
@@ -2641,13 +3134,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-Aug</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -2662,28 +3155,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Annie2020High Aug1.out</filename>
+        <title>Annie2020High Aug1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -2702,8 +3213,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="Aug15">
@@ -2718,13 +3229,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-Aug</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -2739,28 +3250,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">Annie2020High Aug15.out</filename>
+        <title>Annie2020High Aug15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -2779,8 +3308,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
   </simulation>
@@ -2789,11 +3318,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/1961" ubound="1/09/2007">1/01/1991</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/1961" ubound="1/09/2007">30/12/2006</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">UQ Gatton_historical.met</filename>
+      <filename name="filename" input="yes">UQ Gatton_historical.met</filename>
     </metfile>
     <area name="May1">
       <folder name="Manager folder">
@@ -2807,13 +3334,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-may</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -2828,28 +3355,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">PatagoniaCurrent May1.out</filename>
+        <title>PatagoniaCurrent May1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -2868,8 +3413,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="May15">
@@ -2884,13 +3429,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-may</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -2905,28 +3450,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">PatagoniaCurrent May15.out</filename>
+        <title>PatagoniaCurrent May15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -2945,8 +3508,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="jun1">
@@ -2961,13 +3524,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-jun</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -2982,28 +3545,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">PatagoniaCurrent jun1.out</filename>
+        <title>PatagoniaCurrent jun1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -3022,8 +3603,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="jun15">
@@ -3038,13 +3619,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-jun</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -3059,28 +3640,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">PatagoniaCurrent jun15.out</filename>
+        <title>PatagoniaCurrent jun15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -3099,8 +3698,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="jul1">
@@ -3115,13 +3714,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-jul</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">patagonia</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">patagonia</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -3136,28 +3735,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">PatagoniaCurrent jul1.out</filename>
+        <title>PatagoniaCurrent jul1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -3176,8 +3793,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
   </simulation>
@@ -3186,11 +3803,9 @@
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/1961" ubound="1/09/2007">1/01/1991</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/1961" ubound="1/09/2007">30/12/2006</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">GreenBelt1997.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">UQ Gatton_historical.met</filename>
+      <filename name="filename" input="yes">UQ Gatton_historical.met</filename>
     </metfile>
     <area name="Apr1">
       <folder name="Manager folder">
@@ -3204,13 +3819,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-apr</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -3225,28 +3840,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">AnnieCurrent Apr1.out</filename>
+        <title>AnnieCurrent Apr1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -3265,8 +3898,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="Apr15">
@@ -3281,13 +3914,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-Apr</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -3302,28 +3935,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">AnnieCurrent Apr15.out</filename>
+        <title>AnnieCurrent Apr15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -3342,8 +3993,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="jul15">
@@ -3358,13 +4009,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-Jul</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -3379,28 +4030,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">AnnieCurrent jul15.out</filename>
+        <title>AnnieCurrent jul15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -3419,8 +4088,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="Aug1">
@@ -3435,13 +4104,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-Aug</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -3456,28 +4125,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">AnnieCurrent Aug1.out</filename>
+        <title>AnnieCurrent Aug1</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -3496,8 +4183,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
     <area name="Aug15">
@@ -3512,13 +4199,13 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Sowing criteria" />
+            <category type="category" description="Sowing criteria" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">15-Aug</date>
-            <category name="Sowing parameters" />
+            <category type="category" description="Sowing parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">Annie</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">Annie</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
           </ui>
         </manager>
@@ -3533,28 +4220,46 @@
             <event>start_of_day</event>
           </script>
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <stage type="text" description="Enter stage name : ">maturity</stage>
-            <category name="Harvesting parameters" />
+            <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
         </manager>
       </folder>
       <lettuce />
       <outputfile name="Outputfile">
+        <filename output="yes">AnnieCurrent Aug15.out</filename>
+        <title>AnnieCurrent Aug15</title>
         <variables name="Variables">
-          <variable name="year" array="No" description="Year" />
-          <variable name="day" array="No" description="Day" />
-          <variable name="sowing_date" array="No" description="Day number of sowing" />
-          <variable name="maturity_das" array="No" description="Days from sowing to maturity" />
-          <variable name="Avmax" array="No" description="Average Maxt in crop" />
-          <variable name="Avmin" array="No" description="Average Mint in crop" />
+          <variable array="No" description="Year">year</variable>
+          <variable array="No" description="Day">day</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
+          <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
+          <variable array="No" description="Average Maxt in crop">Avmax</variable>
+          <variable array="No" description="Average Mint in crop">Avmin</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="harvesting" description="Day" array="No" />
+          <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
       <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
@@ -3573,8 +4278,8 @@
         </Sample>
       </soil>
       <tracker>
-        <variable name="average of maxt on start_of_day from sowing to now as AvMax" array="No" description="Sum of rainfall from sowing to now" />
-        <variable name="average of mint on start_of_day from sowing to now as AvMin" array="No" description="Sum of rainfall from sowing to now" />
+        <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
+        <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
       </tracker>
     </area>
   </simulation>

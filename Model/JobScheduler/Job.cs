@@ -5,6 +5,7 @@ using CSGeneral;
 using System.IO;
 using System.Diagnostics;
 using System.Xml;
+using System.Reflection;
 using System.Collections.Specialized;
 using System.Xml.Serialization;
 
@@ -19,12 +20,14 @@ public class Job
     public string CommandLine { get; set; }
     public string CommandLineUnix { get; set; }
     public string WorkingDirectory { get; set; }
+    private StreamWriter StdOutStream = null;
     private StringBuilder StdOutBuf = new StringBuilder();
     private StringBuilder StdErrBuf = new StringBuilder();
     public int ExitCode { get; set; }
     public int JobSchedulerProcessID { get; set; }
     public DateTime StartTime { get; set; }
     public DateTime FinishTime { get; set; }
+    private int taskProgress;
 
     [XmlAttribute("name")]
     public string Name { get; set; }
@@ -34,6 +37,9 @@ public class Job
 
     [XmlAttribute("ElapsedTime")]
     public int ElapsedTime { get; set; }
+
+    [XmlElement("StdOutFilename")]
+    public string StdOutFilename { get; set; }
 
     [XmlElement("StdOut")]
     public string StdOut {
@@ -58,6 +64,7 @@ public class Job
     /// </summary>
     public Job()
     {
+        StdOutFilename = "";
         IgnoreErrors = false;
     }
 
@@ -67,6 +74,7 @@ public class Job
     public Job(string _CommandLine, string dir)
     {
         CommandLine = _CommandLine;
+        StdOutFilename = "";
         WorkingDirectory = dir;
         IgnoreErrors = false;
     }
@@ -130,7 +138,7 @@ public class Job
             if (IsRunning)
                 return 0;
             else
-                return 100;
+                return Math.Max((int)0, (int)Math.Min((int)100, taskProgress));
         }
     }
 
@@ -186,6 +194,23 @@ public class Job
            _P.StartInfo.RedirectStandardOutput = true;
            _P.StartInfo.RedirectStandardError = true;
            _P.StartInfo.WorkingDirectory = WorkingDirectory;
+           if (Path.DirectorySeparatorChar == '/')
+           {
+               string ldPath = Environment.GetEnvironmentVariable("LD_LIBRARY_PATH");
+               string APSIMModelDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+               if (ldPath != null && ldPath.Length > 0)
+                   ldPath += ":" + APSIMModelDirectory;
+               else
+                   ldPath = APSIMModelDirectory;
+               _P.StartInfo.EnvironmentVariables.Remove("LD_LIBRARY_PATH");
+               _P.StartInfo.EnvironmentVariables.Add("LD_LIBRARY_PATH", ldPath);
+           }
+           if (StdOutFilename != "")
+               StdOutStream = new StreamWriter(StdOutFilename);
+           else
+               StdOutStream = null;
+
            _P.OutputDataReceived += OnStdOut;
            _P.ErrorDataReceived += OnStdError;
            _P.Exited += OnExited;
@@ -209,6 +234,12 @@ public class Job
             Status = "Pass";
         else
             Status = "Fail";
+        if (StdOutStream != null)
+        {
+            if (_P != null) { _P.EnableRaisingEvents = false; }
+            StdOutStream.Close();
+            StdOutStream = null;
+        }
     }
 
     /// <summary>
@@ -249,7 +280,10 @@ public class Job
     /// </summary>
     protected virtual void OnStdOut(object sender, DataReceivedEventArgs e)
     {
-        StdOutBuf.AppendLine( e.Data );
+            if (StdOutStream != null)
+                StdOutStream.WriteLine(e.Data);
+            else
+                StdOutBuf.AppendLine(e.Data);
     }
 
     /// <summary>
@@ -257,7 +291,17 @@ public class Job
     /// </summary>
     protected virtual void OnStdError(object sender, DataReceivedEventArgs e)
     {
-        StdErrBuf.AppendLine(e.Data);
+        if (e.Data != null && e.Data.Length > 0)
+        {
+            if (e.Data[0] == '%' && e.Data[1] == ' ')
+            {
+                int percent;
+                if (Int32.TryParse(e.Data.Substring(2), out percent))
+                    taskProgress = percent;
+            }
+            else
+                StdErrBuf.AppendLine(e.Data);
+        }
     }
 
     /// <summary>
@@ -318,7 +362,7 @@ public class Job
                 {
                     Status = "Fail";
                     ExitCode = 1;
-                    StdErrBuf.AppendLine("Cannot find dependency: " + Dependency);
+                    StdErrBuf.AppendLine("Cannot find dependency: " + Dependency.Name);
                     return false;
                 }
             }
@@ -338,4 +382,5 @@ public class Job
         }
     }
 }
+
 
