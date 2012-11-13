@@ -236,7 +236,8 @@ public class Job
             Status = "Fail";
         if (StdOutStream != null)
         {
-            if (_P != null) { _P.EnableRaisingEvents = false; }
+            // Some data may still be buffered. Wait for a bit
+            System.Threading.Thread.Sleep(100);
             StdOutStream.Close();
             StdOutStream = null;
         }
@@ -280,6 +281,7 @@ public class Job
     /// </summary>
     protected virtual void OnStdOut(object sender, DataReceivedEventArgs e)
     {
+        lock(this)
             if (StdOutStream != null)
                 StdOutStream.WriteLine(e.Data);
             else

@@ -1,15 +1,13 @@
-<folder version="27" name="simulations">
+<folder version="32" name="simulations">
   <simulation name="Easy">
     <metfile name="met">
-      <filename name="filename">%apsim%\Examples\MetFiles\Goond.met</filename>
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\Goond.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">01/01/1970</start_date>
       <end_date type="date" description="Enter the end date of the simulation">14/07/1970</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">P21_Base.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <SWIM2uiForDean>
         <ini name="Ini_SWIM2">
@@ -122,15 +120,17 @@
         <waterStressFactor type="text" description="Scale factor of water stress on plant growth">1         1           1</waterStressFactor>
       </AgPasture>
       <outputfile name="Results">
+        <filename output="yes">Easy Results.out</filename>
+        <title>Easy Results</title>
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" />
-          <variable name="leach_no3 as NO3Flow(150cm)" />
-          <variable name="removed_n as RemovedN" />
-          <variable name="NitrogenUptake as UptakeN" />
-          <variable name="ave_soil_temp" array="Yes" description="Average soil surface temperature during the Apsim timestep. (oC)" />
+          <variable>dd/mm/yyyy as Date</variable>
+          <variable>leach_no3 as NO3Flow(150cm)</variable>
+          <variable>removed_n as RemovedN</variable>
+          <variable>NitrogenUptake as UptakeN</variable>
+          <variable array="Yes" description="Average soil surface temperature during the Apsim timestep. (oC)">ave_soil_temp</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="Daily" array="End of day" />
+          <event array="End of day">Daily</event>
         </events>
       </outputfile>
       <manager name="Cut or graze AgPasture">

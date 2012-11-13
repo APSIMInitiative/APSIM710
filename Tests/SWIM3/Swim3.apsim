@@ -1,34 +1,34 @@
-<folder version="25" name="simulations">
+<folder version="32" name="simulations">
   <folder name="BareDrainage">
     <simulation name="BareDrainSWIM">
       <metfile name="met">
-        <filename name="filename">%apsim%\Tests\SWIM3\GoondNoEvap.met</filename>
+        <filename name="filename" input="yes">%apsim%\Tests\SWIM3\GoondNoEvap.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">01/01/1940</start_date>
         <end_date type="date" description="Enter the end date of the simulation">31/12/1945</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <soil name="Soil">
-          <Country />
-          <Site>Jimbour</Site>
-          <Region>South East Queensland</Region>
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description">Black Vertosol</SoilType>
           <LocalName>Waco</LocalName>
-          <SoilType description="Classification">Black Vertosol</SoilType>
+          <Site>Jimbour</Site>
           <NearestTown description="Nearest town">Jimbour, Q 4352</NearestTown>
-          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
+          <Region>South East Queensland</Region>
           <State />
+          <Country />
+          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <InitWater name="Initial water">
             <percentmethod>
               <percent>1</percent>
@@ -1058,20 +1058,22 @@
           <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
         </surfaceom>
         <outputfile>
+          <filename output="yes">BareDrainSWIM.out</filename>
+          <title>BareDrainSWIM</title>
           <variables name="Variables">
-            <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-            <variable name="sw" />
-            <variable name="es" />
-            <variable name="runoff" />
-            <variable name="sw_dep()" />
-            <variable name="drain" />
-            <variable name="no3()" />
-            <variable name="irrigation" />
-            <variable name="dul_dep()" />
-            <variable name="ll15_dep()" />
+            <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
+            <variable>sw</variable>
+            <variable>es</variable>
+            <variable>runoff</variable>
+            <variable>sw_dep()</variable>
+            <variable>drain</variable>
+            <variable>no3()</variable>
+            <variable>irrigation</variable>
+            <variable>dul_dep()</variable>
+            <variable>ll15_dep()</variable>
           </variables>
           <events name="Reporting Frequency">
-            <event name="daily" />
+            <event>daily</event>
           </events>
           <Graph name="SWdep">
             <Plot>
@@ -1111,33 +1113,33 @@
     </simulation>
     <simulation name="BareDrainSoilWat">
       <metfile name="met">
-        <filename name="filename">%apsim%\Tests\SWIM3\Goond.met</filename>
+        <filename name="filename" input="yes">%apsim%\Tests\SWIM3\Goond.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">01/01/1940</start_date>
         <end_date type="date" description="Enter the end date of the simulation">31/12/1945</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <soil name="Soil">
-          <Country />
-          <Site>Jimbour</Site>
-          <Region>South East Queensland</Region>
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description">Black Vertosol</SoilType>
           <LocalName>Waco</LocalName>
-          <SoilType description="Classification">Black Vertosol</SoilType>
+          <Site>Jimbour</Site>
           <NearestTown description="Nearest town">Jimbour, Q 4352</NearestTown>
-          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
+          <Region>South East Queensland</Region>
           <State />
+          <Country />
+          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <InitWater name="Initial water">
             <percentmethod>
               <percent>1</percent>
@@ -2112,7 +2114,6 @@
             <Cn2Bare type="text" description="Cn2Bare">0</Cn2Bare>
             <CnRed type="text" description="CnRed">20</CnRed>
             <CnCov type="text" description="CnCov">0.8</CnCov>
-            <CnCanopyFact type="text" description="CnCanopyFact">1</CnCanopyFact>
             <Slope type="text" description="Slope" />
             <DischargeWidth type="text" description="DischargeWidth" />
             <CatchmentArea type="text" description="CatchmentArea" />
@@ -2193,20 +2194,22 @@
           <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
         </surfaceom>
         <outputfile>
+          <filename output="yes">BareDrainSoilWat.out</filename>
+          <title>BareDrainSoilWat</title>
           <variables name="Variables">
-            <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-            <variable name="sw" />
-            <variable name="es" />
-            <variable name="runoff" />
-            <variable name="sw_dep()" />
-            <variable name="drain" />
-            <variable name="no3()" />
-            <variable name="irrigation" />
-            <variable name="dul_dep()" />
-            <variable name="ll15_dep()" />
+            <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
+            <variable>sw</variable>
+            <variable>es</variable>
+            <variable>runoff</variable>
+            <variable>sw_dep()</variable>
+            <variable>drain</variable>
+            <variable>no3()</variable>
+            <variable>irrigation</variable>
+            <variable>dul_dep()</variable>
+            <variable>ll15_dep()</variable>
           </variables>
           <events name="Reporting Frequency">
-            <event name="daily" />
+            <event>daily</event>
           </events>
           <Graph name="SWdep">
             <Plot>
@@ -2294,33 +2297,33 @@
   <folder name="Bare">
     <simulation name="BareSWIM">
       <metfile name="met">
-        <filename name="filename">%apsim%\Tests\SWIM3\Goond.met</filename>
+        <filename name="filename" input="yes">%apsim%\Tests\SWIM3\Goond.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">01/01/1940</start_date>
         <end_date type="date" description="Enter the end date of the simulation">31/12/1945</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <soil name="Soil">
-          <Country />
-          <Site>Jimbour</Site>
-          <Region>South East Queensland</Region>
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description">Black Vertosol</SoilType>
           <LocalName>Waco</LocalName>
-          <SoilType description="Classification">Black Vertosol</SoilType>
+          <Site>Jimbour</Site>
           <NearestTown description="Nearest town">Jimbour, Q 4352</NearestTown>
-          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
+          <Region>South East Queensland</Region>
           <State />
+          <Country />
+          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <InitWater name="Initial water">
             <percentmethod>
               <percent>1</percent>
@@ -3350,20 +3353,22 @@
           <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
         </surfaceom>
         <outputfile>
+          <filename output="yes">BareSWIM.out</filename>
+          <title>BareSWIM</title>
           <variables name="Variables">
-            <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-            <variable name="sw" />
-            <variable name="es" />
-            <variable name="runoff" />
-            <variable name="sw_dep()" />
-            <variable name="drain" />
-            <variable name="no3()" />
-            <variable name="irrigation" />
-            <variable name="dul_dep()" />
-            <variable name="ll15_dep()" />
+            <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
+            <variable>sw</variable>
+            <variable>es</variable>
+            <variable>runoff</variable>
+            <variable>sw_dep()</variable>
+            <variable>drain</variable>
+            <variable>no3()</variable>
+            <variable>irrigation</variable>
+            <variable>dul_dep()</variable>
+            <variable>ll15_dep()</variable>
           </variables>
           <events name="Reporting Frequency">
-            <event name="daily" />
+            <event>daily</event>
           </events>
           <Graph name="SWdep">
             <Plot>
@@ -3403,33 +3408,33 @@
     </simulation>
     <simulation name="BareSoilWat">
       <metfile name="met">
-        <filename name="filename">%apsim%\Tests\SWIM3\Goond.met</filename>
+        <filename name="filename" input="yes">%apsim%\Tests\SWIM3\Goond.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">01/01/1940</start_date>
         <end_date type="date" description="Enter the end date of the simulation">31/12/1945</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <soil name="Soil">
-          <Country />
-          <Site>Jimbour</Site>
-          <Region>South East Queensland</Region>
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description">Black Vertosol</SoilType>
           <LocalName>Waco</LocalName>
-          <SoilType description="Classification">Black Vertosol</SoilType>
+          <Site>Jimbour</Site>
           <NearestTown description="Nearest town">Jimbour, Q 4352</NearestTown>
-          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
+          <Region>South East Queensland</Region>
           <State />
+          <Country />
+          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <InitWater name="Initial water">
             <percentmethod>
               <percent>1</percent>
@@ -4404,7 +4409,6 @@
             <Cn2Bare>0</Cn2Bare>
             <CnRed>20</CnRed>
             <CnCov>0.8</CnCov>
-            <CnCanopyFact>1</CnCanopyFact>
             <Slope>
             </Slope>
             <DischargeWidth>
@@ -4488,22 +4492,24 @@
           <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
         </surfaceom>
         <outputfile>
+          <filename output="yes">BareSoilWat.out</filename>
+          <title>BareSoilWat</title>
           <variables name="Variables">
-            <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-            <variable name="sw" />
-            <variable name="es" />
-            <variable name="runoff" />
-            <variable name="sw_dep()" />
-            <variable name="drain" />
-            <variable name="no3()" />
-            <variable name="irrigation" />
-            <variable name="dul_dep()" />
-            <variable name="ll15_dep()" />
-            <variable name="t" />
-            <variable name="rain" array="Rainfall" />
+            <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
+            <variable>sw</variable>
+            <variable>es</variable>
+            <variable>runoff</variable>
+            <variable>sw_dep()</variable>
+            <variable>drain</variable>
+            <variable>no3()</variable>
+            <variable>irrigation</variable>
+            <variable>dul_dep()</variable>
+            <variable>ll15_dep()</variable>
+            <variable>t</variable>
+            <variable array="Rainfall">rain</variable>
           </variables>
           <events name="Reporting Frequency">
-            <event name="daily" />
+            <event>daily</event>
           </events>
           <Graph name="SWdep">
             <Plot>
@@ -4614,33 +4620,33 @@
   <folder name="Stubble">
     <simulation name="NoStubble">
       <metfile name="met">
-        <filename name="filename">%apsim%\Tests\SWIM3\Goond.met</filename>
+        <filename name="filename" input="yes">%apsim%\Tests\SWIM3\Goond.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">01/01/1940</start_date>
         <end_date type="date" description="Enter the end date of the simulation">31/12/1943</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <soil name="Soil">
-          <Country />
-          <Site>Jimbour</Site>
-          <Region>South East Queensland</Region>
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description">Black Vertosol</SoilType>
           <LocalName>Waco</LocalName>
-          <SoilType description="Classification">Black Vertosol</SoilType>
+          <Site>Jimbour</Site>
           <NearestTown description="Nearest town">Jimbour, Q 4352</NearestTown>
-          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
+          <Region>South East Queensland</Region>
           <State />
+          <Country />
+          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <InitWater name="Initial water">
             <percentmethod>
               <percent>1</percent>
@@ -5670,20 +5676,22 @@
           <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
         </surfaceom>
         <outputfile>
+          <filename output="yes">NoStubble.out</filename>
+          <title>NoStubble</title>
           <variables name="Variables">
-            <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-            <variable name="sw" />
-            <variable name="es" />
-            <variable name="runoff" />
-            <variable name="sw_dep()" />
-            <variable name="drain" />
-            <variable name="no3()" />
-            <variable name="irrigation" />
-            <variable name="dul_dep()" />
-            <variable name="ll15_dep()" />
+            <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
+            <variable>sw</variable>
+            <variable>es</variable>
+            <variable>runoff</variable>
+            <variable>sw_dep()</variable>
+            <variable>drain</variable>
+            <variable>no3()</variable>
+            <variable>irrigation</variable>
+            <variable>dul_dep()</variable>
+            <variable>ll15_dep()</variable>
           </variables>
           <events name="Reporting Frequency">
-            <event name="daily" />
+            <event>daily</event>
           </events>
           <Graph name="SWdep">
             <Plot>
@@ -5722,11 +5730,29 @@
       </area>
     </simulation>
     <simulation name="LowStubble" shortcut="/simulations/Stubble/NoStubble">
-      <metfile name="met" shortcut="/simulations/Stubble/NoStubble/met" />
+      <metfile name="met" shortcut="/simulations/Stubble/NoStubble/met">
+        <filename shortcut="/simulations/Stubble/NoStubble/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/Stubble/NoStubble/clock" />
       <summaryfile shortcut="/simulations/Stubble/NoStubble/summaryfile" />
       <area name="paddock" shortcut="/simulations/Stubble/NoStubble/paddock">
         <soil name="Soil" shortcut="/simulations/Stubble/NoStubble/paddock/Soil">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <InitWater name="Initial water" shortcut="/simulations/Stubble/NoStubble/paddock/Soil/Initial water" />
           <Water shortcut="/simulations/Stubble/NoStubble/paddock/Soil/Water">
             <SoilCrop name="Barley" shortcut="/simulations/Stubble/NoStubble/paddock/Soil/Water/Barley" />
@@ -5796,6 +5822,8 @@
           <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
         </surfaceom>
         <outputfile shortcut="/simulations/Stubble/NoStubble/paddock/outputfile">
+          <filename output="yes">LowStubble.out</filename>
+          <title>LowStubble</title>
           <variables name="Variables" shortcut="/simulations/Stubble/NoStubble/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/Stubble/NoStubble/paddock/outputfile/Reporting Frequency" />
           <Graph name="SWdep" shortcut="/simulations/Stubble/NoStubble/paddock/outputfile/SWdep">
@@ -5813,11 +5841,29 @@
       </area>
     </simulation>
     <simulation name="HighStubble" shortcut="/simulations/Stubble/NoStubble">
-      <metfile name="met" shortcut="/simulations/Stubble/NoStubble/met" />
+      <metfile name="met" shortcut="/simulations/Stubble/NoStubble/met">
+        <filename shortcut="/simulations/Stubble/NoStubble/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/Stubble/NoStubble/clock" />
       <summaryfile shortcut="/simulations/Stubble/NoStubble/summaryfile" />
       <area name="paddock" shortcut="/simulations/Stubble/NoStubble/paddock">
         <soil name="Soil" shortcut="/simulations/Stubble/NoStubble/paddock/Soil">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <InitWater name="Initial water" shortcut="/simulations/Stubble/NoStubble/paddock/Soil/Initial water" />
           <Water shortcut="/simulations/Stubble/NoStubble/paddock/Soil/Water">
             <SoilCrop name="Barley" shortcut="/simulations/Stubble/NoStubble/paddock/Soil/Water/Barley" />
@@ -5887,6 +5933,8 @@
           <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
         </surfaceom>
         <outputfile shortcut="/simulations/Stubble/NoStubble/paddock/outputfile">
+          <filename output="yes">HighStubble.out</filename>
+          <title>HighStubble</title>
           <variables name="Variables" shortcut="/simulations/Stubble/NoStubble/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/Stubble/NoStubble/paddock/outputfile/Reporting Frequency" />
           <Graph name="SWdep" shortcut="/simulations/Stubble/NoStubble/paddock/outputfile/SWdep">
@@ -5952,11 +6000,29 @@
   </folder>
   <folder name="System">
     <simulation name="SWIMSystem" shortcut="/simulations/System/SoilwatSystem">
-      <metfile name="met" shortcut="/simulations/System/SoilwatSystem/met" />
+      <metfile name="met" shortcut="/simulations/System/SoilwatSystem/met">
+        <filename shortcut="/simulations/System/SoilwatSystem/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/System/SoilwatSystem/clock" />
       <summaryfile shortcut="/simulations/System/SoilwatSystem/summaryfile" />
       <area name="paddock" shortcut="/simulations/System/SoilwatSystem/paddock">
         <soil name="Soil" shortcut="/simulations/System/SoilwatSystem/paddock/Soil">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <InitWater name="Initial water" shortcut="/simulations/System/SoilwatSystem/paddock/Soil/Initial water" />
           <Water shortcut="/simulations/System/SoilwatSystem/paddock/Soil/Water">
             <SoilCrop name="Barley" shortcut="/simulations/System/SoilwatSystem/paddock/Soil/Water/Barley" />
@@ -6035,6 +6101,8 @@
         </soil>
         <surfaceom name="surface organic matter" shortcut="/simulations/System/SoilwatSystem/paddock/surface organic matter" />
         <outputfile shortcut="/simulations/System/SoilwatSystem/paddock/outputfile">
+          <filename output="yes">SWIMSystem.out</filename>
+          <title>SWIMSystem</title>
           <variables name="Variables" shortcut="/simulations/System/SoilwatSystem/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/System/SoilwatSystem/paddock/outputfile/Reporting Frequency" />
         </outputfile>
@@ -6049,33 +6117,33 @@
     </simulation>
     <simulation name="SoilwatSystem">
       <metfile name="met">
-        <filename name="filename">%apsim%\Tests\SWIM3\Goond.met</filename>
+        <filename name="filename" input="yes">%apsim%\Tests\SWIM3\Goond.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">01/01/1940</start_date>
         <end_date type="date" description="Enter the end date of the simulation">31/12/1980</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <soil name="Soil">
-          <Country />
-          <Site>Jimbour</Site>
-          <Region>South East Queensland</Region>
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description">Black Vertosol</SoilType>
           <LocalName>Waco</LocalName>
-          <SoilType description="Classification">Black Vertosol</SoilType>
+          <Site>Jimbour</Site>
           <NearestTown description="Nearest town">Jimbour, Q 4352</NearestTown>
-          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
+          <Region>South East Queensland</Region>
           <State />
+          <Country />
+          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <InitWater name="Initial water">
             <percentmethod>
               <percent>1</percent>
@@ -7050,7 +7118,6 @@
             <Cn2Bare type="text" description="Cn2Bare">75</Cn2Bare>
             <CnRed type="text" description="CnRed">20</CnRed>
             <CnCov type="text" description="CnCov">0.8</CnCov>
-            <CnCanopyFact type="text" description="CnCanopyFact">1</CnCanopyFact>
             <Slope type="text" description="Slope" />
             <DischargeWidth type="text" description="DischargeWidth" />
             <CatchmentArea type="text" description="CatchmentArea" />
@@ -7131,20 +7198,22 @@
           <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
         </surfaceom>
         <outputfile>
+          <filename output="yes">SoilwatSystem.out</filename>
+          <title>SoilwatSystem</title>
           <variables name="Variables">
-            <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-            <variable name="biomass" />
-            <variable name="yield" />
-            <variable name="CumEs" />
-            <variable name="CumRunoff" />
-            <variable name="InCropPlantWaterUptake" />
-            <variable name="no3()" />
-            <variable name="sw_dep()" />
-            <variable name="surfaceom_wt" />
-            <variable name="work" />
+            <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
+            <variable>biomass</variable>
+            <variable>yield</variable>
+            <variable>CumEs</variable>
+            <variable>CumRunoff</variable>
+            <variable>InCropPlantWaterUptake</variable>
+            <variable>no3()</variable>
+            <variable>sw_dep()</variable>
+            <variable>surfaceom_wt</variable>
+            <variable>work</variable>
           </variables>
           <events name="Reporting Frequency">
-            <event name="harvesting" />
+            <event>harvesting</event>
           </events>
         </outputfile>
         <irrigation name="Irrigation">
@@ -7182,7 +7251,7 @@
         </manager>
         <manager name="Harvesting rule">
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <crop type="crop" description="Enter name of crop to harvest when ripe : ">wheat</crop>
           </ui>
           <script name="end_of_day">
@@ -7218,9 +7287,9 @@
         </manager>
         <fertiliser name="Fertiliser" />
         <tracker>
-          <variable name="sum of ep on end_of_day from sowing to harvesting as InCropPlantWaterUptake" array="No" description="Sum of plant water uptake from sowing to harvesting" />
-          <variable name="sum of es on end_of_day from harvesting to now as CumEs" array="No" description="Total rainfall since last report" />
-          <variable name="sum of runoff on end_of_day from harvesting to now as CumRunoff" />
+          <variable array="No" description="Sum of plant water uptake from sowing to harvesting">sum of ep on end_of_day from sowing to harvesting as InCropPlantWaterUptake</variable>
+          <variable array="No" description="Total rainfall since last report">sum of es on end_of_day from harvesting to now as CumEs</variable>
+          <variable>sum of runoff on end_of_day from harvesting to now as CumRunoff</variable>
         </tracker>
       </area>
     </simulation>
@@ -7317,11 +7386,29 @@
   </folder>
   <folder name="WheatComparison">
     <simulation name="WheatSWIM" shortcut="/simulations/WheatComparison/WheatSoilwat">
-      <metfile name="met" shortcut="/simulations/WheatComparison/WheatSoilwat/met" />
+      <metfile name="met" shortcut="/simulations/WheatComparison/WheatSoilwat/met">
+        <filename shortcut="/simulations/WheatComparison/WheatSoilwat/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/WheatComparison/WheatSoilwat/clock" />
       <summaryfile shortcut="/simulations/WheatComparison/WheatSoilwat/summaryfile" />
       <area name="paddock" shortcut="/simulations/WheatComparison/WheatSoilwat/paddock">
         <soil name="Soil" shortcut="/simulations/WheatComparison/WheatSoilwat/paddock/Soil">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <InitWater name="Initial water" shortcut="/simulations/WheatComparison/WheatSoilwat/paddock/Soil/Initial water" />
           <Water shortcut="/simulations/WheatComparison/WheatSoilwat/paddock/Soil/Water">
             <SoilCrop name="Wheat" shortcut="/simulations/WheatComparison/WheatSoilwat/paddock/Soil/Water/Wheat" />
@@ -7394,6 +7481,8 @@
         </soil>
         <surfaceom name="surface organic matter" shortcut="/simulations/WheatComparison/WheatSoilwat/paddock/surface organic matter" />
         <outputfile shortcut="/simulations/WheatComparison/WheatSoilwat/paddock/outputfile">
+          <filename output="yes">WheatSWIM.out</filename>
+          <title>WheatSWIM</title>
           <variables name="Variables" shortcut="/simulations/WheatComparison/WheatSoilwat/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/WheatComparison/WheatSoilwat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
@@ -7408,33 +7497,33 @@
     </simulation>
     <simulation name="WheatSoilwat">
       <metfile name="met">
-        <filename name="filename">Goond.met</filename>
+        <filename name="filename" input="yes">Goond.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">01/01/1940</start_date>
         <end_date type="date" description="Enter the end date of the simulation">31/12/1943</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <soil name="Soil">
-          <Country />
-          <Site>Jimbour</Site>
-          <Region>South East Queensland</Region>
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description">Black Vertosol</SoilType>
           <LocalName>Waco</LocalName>
-          <SoilType description="Classification">Black Vertosol</SoilType>
+          <Site>Jimbour</Site>
           <NearestTown description="Nearest town">Jimbour, Q 4352</NearestTown>
-          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
+          <Region>South East Queensland</Region>
           <State />
+          <Country />
+          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <InitWater name="Initial water">
             <percentmethod>
               <percent>1</percent>
@@ -8069,7 +8158,6 @@
             <Cn2Bare type="text" description="Cn2Bare">75</Cn2Bare>
             <CnRed type="text" description="CnRed">20</CnRed>
             <CnCov type="text" description="CnCov">0.8</CnCov>
-            <CnCanopyFact type="text" description="CnCanopyFact">1</CnCanopyFact>
             <Slope type="text" description="Slope" />
             <DischargeWidth type="text" description="DischargeWidth" />
             <CatchmentArea type="text" description="CatchmentArea" />
@@ -8150,27 +8238,29 @@
           <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
         </surfaceom>
         <outputfile>
+          <filename output="yes">WheatSoilwat.out</filename>
+          <title>WheatSoilwat</title>
           <variables name="Variables">
-            <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-            <variable name="sw_dep()" />
-            <variable name="no3()" />
-            <variable name="dul_dep()" />
-            <variable name="ll15_dep()" />
-            <variable name="lai" />
-            <variable name="biomass" />
-            <variable name="yield" />
-            <variable name="surfaceom_wt" />
-            <variable name="es" />
-            <variable name="runoff" />
-            <variable name="nfact_photo" />
-            <variable name="swdef_photo" />
-            <variable name="nit_tot()" />
-            <variable name="nh4()" />
-            <variable name="urea()" />
-            <variable name="work" />
+            <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
+            <variable>sw_dep()</variable>
+            <variable>no3()</variable>
+            <variable>dul_dep()</variable>
+            <variable>ll15_dep()</variable>
+            <variable>lai</variable>
+            <variable>biomass</variable>
+            <variable>yield</variable>
+            <variable>surfaceom_wt</variable>
+            <variable>es</variable>
+            <variable>runoff</variable>
+            <variable>nfact_photo</variable>
+            <variable>swdef_photo</variable>
+            <variable>nit_tot()</variable>
+            <variable>nh4()</variable>
+            <variable>urea()</variable>
+            <variable>work</variable>
           </variables>
           <events name="Reporting Frequency">
-            <event name="daily" />
+            <event>daily</event>
           </events>
         </outputfile>
         <irrigation name="Irrigation">
@@ -8208,7 +8298,7 @@
         </manager>
         <manager name="Harvesting rule">
           <ui>
-            <category name="Harvesting criteria" />
+            <category type="category" description="Harvesting criteria" />
             <crop type="crop" description="Enter name of crop to harvest when ripe : ">wheat</crop>
           </ui>
           <script name="end_of_day">
@@ -8417,33 +8507,33 @@
   <folder name="WaterTable">
     <simulation name="BareSWIMWT">
       <metfile name="met">
-        <filename name="filename">%apsim%\Tests\SWIM3\Goond.met</filename>
+        <filename name="filename" input="yes">%apsim%\Tests\SWIM3\Goond.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">01/01/1940</start_date>
         <end_date type="date" description="Enter the end date of the simulation">31/12/1940</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <soil name="Soil">
-          <Country />
-          <Site>Jimbour</Site>
-          <Region>South East Queensland</Region>
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description">Black Vertosol</SoilType>
           <LocalName>Waco</LocalName>
-          <SoilType description="Classification">Black Vertosol</SoilType>
+          <Site>Jimbour</Site>
           <NearestTown description="Nearest town">Jimbour, Q 4352</NearestTown>
-          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
+          <Region>South East Queensland</Region>
           <State />
+          <Country />
+          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <InitWater name="Initial water">
             <PercentMethod>
               <Percent>1</Percent>
@@ -9069,24 +9159,26 @@
           <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
         </surfaceom>
         <outputfile>
+          <filename output="yes">BareSWIMWT.out</filename>
+          <title>BareSWIMWT</title>
           <variables name="Variables">
-            <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-            <variable name="sw" />
-            <variable name="es" />
-            <variable name="runoff" />
-            <variable name="sw_dep()" />
-            <variable name="drain" />
-            <variable name="no3()" />
-            <variable name="irrigation" />
-            <variable name="dul_dep()" />
-            <variable name="ll15_dep()" />
-            <variable name="watertable" />
-            <variable name="psi(15)" />
-            <variable name="subsurface_drain" />
-            <variable name="no3" />
+            <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
+            <variable>sw</variable>
+            <variable>es</variable>
+            <variable>runoff</variable>
+            <variable>sw_dep()</variable>
+            <variable>drain</variable>
+            <variable>no3()</variable>
+            <variable>irrigation</variable>
+            <variable>dul_dep()</variable>
+            <variable>ll15_dep()</variable>
+            <variable>watertable</variable>
+            <variable>psi(15)</variable>
+            <variable>subsurface_drain</variable>
+            <variable>no3</variable>
           </variables>
           <events name="Reporting Frequency">
-            <event name="daily" />
+            <event>daily</event>
           </events>
           <Graph name="SWdep">
             <Plot>
@@ -9125,11 +9217,29 @@
       </area>
     </simulation>
     <simulation name="BareSWIMNoWT" shortcut="/simulations/WaterTable/BareSWIMWT">
-      <metfile name="met" shortcut="/simulations/WaterTable/BareSWIMWT/met" />
+      <metfile name="met" shortcut="/simulations/WaterTable/BareSWIMWT/met">
+        <filename shortcut="/simulations/WaterTable/BareSWIMWT/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/WaterTable/BareSWIMWT/clock" />
       <summaryfile shortcut="/simulations/WaterTable/BareSWIMWT/summaryfile" />
       <area name="paddock" shortcut="/simulations/WaterTable/BareSWIMWT/paddock">
         <soil name="Soil" shortcut="/simulations/WaterTable/BareSWIMWT/paddock/Soil">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <InitWater name="Initial water" shortcut="/simulations/WaterTable/BareSWIMWT/paddock/Soil/Initial water" />
           <Water shortcut="/simulations/WaterTable/BareSWIMWT/paddock/Soil/Water">
             <SoilCrop name="Wheat" shortcut="/simulations/WaterTable/BareSWIMWT/paddock/Soil/Water/Wheat" />
@@ -9144,6 +9254,8 @@
         </soil>
         <surfaceom name="surface organic matter" shortcut="/simulations/WaterTable/BareSWIMWT/paddock/surface organic matter" />
         <outputfile shortcut="/simulations/WaterTable/BareSWIMWT/paddock/outputfile">
+          <filename output="yes">BareSWIMNoWT.out</filename>
+          <title>BareSWIMNoWT</title>
           <variables name="Variables" shortcut="/simulations/WaterTable/BareSWIMWT/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/WaterTable/BareSWIMWT/paddock/outputfile/Reporting Frequency" />
           <Graph name="SWdep" shortcut="/simulations/WaterTable/BareSWIMWT/paddock/outputfile/SWdep">
@@ -9161,11 +9273,29 @@
       </area>
     </simulation>
     <simulation name="BareSWIMWTDrain" shortcut="/simulations/WaterTable/BareSWIMWT">
-      <metfile name="met" shortcut="/simulations/WaterTable/BareSWIMWT/met" />
+      <metfile name="met" shortcut="/simulations/WaterTable/BareSWIMWT/met">
+        <filename shortcut="/simulations/WaterTable/BareSWIMWT/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/WaterTable/BareSWIMWT/clock" />
       <summaryfile shortcut="/simulations/WaterTable/BareSWIMWT/summaryfile" />
       <area name="paddock" shortcut="/simulations/WaterTable/BareSWIMWT/paddock">
         <soil name="Soil" shortcut="/simulations/WaterTable/BareSWIMWT/paddock/Soil">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <InitWater name="Initial water" shortcut="/simulations/WaterTable/BareSWIMWT/paddock/Soil/Initial water" />
           <Water shortcut="/simulations/WaterTable/BareSWIMWT/paddock/Soil/Water">
             <SoilCrop name="Wheat" shortcut="/simulations/WaterTable/BareSWIMWT/paddock/Soil/Water/Wheat" />
@@ -9190,6 +9320,8 @@
         </soil>
         <surfaceom name="surface organic matter" shortcut="/simulations/WaterTable/BareSWIMWT/paddock/surface organic matter" />
         <outputfile shortcut="/simulations/WaterTable/BareSWIMWT/paddock/outputfile">
+          <filename output="yes">BareSWIMWTDrain.out</filename>
+          <title>BareSWIMWTDrain</title>
           <variables name="Variables" shortcut="/simulations/WaterTable/BareSWIMWT/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/WaterTable/BareSWIMWT/paddock/outputfile/Reporting Frequency" />
           <Graph name="SWdep" shortcut="/simulations/WaterTable/BareSWIMWT/paddock/outputfile/SWdep">
@@ -9276,11 +9408,29 @@
   </folder>
   <folder name="SugarComparison">
     <simulation name="SugarSwim" shortcut="/simulations/SugarComparison/SugarSoilwat">
-      <metfile name="met" shortcut="/simulations/SugarComparison/SugarSoilwat/met" />
+      <metfile name="met" shortcut="/simulations/SugarComparison/SugarSoilwat/met">
+        <filename shortcut="/simulations/SugarComparison/SugarSoilwat/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/SugarComparison/SugarSoilwat/clock" />
       <summaryfile shortcut="/simulations/SugarComparison/SugarSoilwat/summaryfile" />
       <area name="paddock" shortcut="/simulations/SugarComparison/SugarSoilwat/paddock">
         <soil name="Soil" shortcut="/simulations/SugarComparison/SugarSoilwat/paddock/Soil">
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description" />
+          <LocalName />
+          <Site />
+          <NearestTown />
+          <Region />
+          <State />
+          <Country />
+          <NaturalVegetation />
+          <ApsoilNumber />
+          <Latitude />
+          <Longitude />
+          <LocationAccuracy />
+          <DataSource />
+          <Comments />
           <InitWater name="Initial water" shortcut="/simulations/SugarComparison/SugarSoilwat/paddock/Soil/Initial water" />
           <Water shortcut="/simulations/SugarComparison/SugarSoilwat/paddock/Soil/Water">
             <SoilCrop name="Sugar" shortcut="/simulations/SugarComparison/SugarSoilwat/paddock/Soil/Water/Sugar" />
@@ -9351,6 +9501,8 @@
         </soil>
         <surfaceom name="SurfaceOM" shortcut="/simulations/SugarComparison/SugarSoilwat/paddock/SurfaceOM" />
         <outputfile shortcut="/simulations/SugarComparison/SugarSoilwat/paddock/outputfile">
+          <filename output="yes">SugarSwim.out</filename>
+          <title>SugarSwim</title>
           <variables name="Variables" shortcut="/simulations/SugarComparison/SugarSoilwat/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/SugarComparison/SugarSoilwat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
@@ -9363,33 +9515,33 @@
     </simulation>
     <simulation name="SugarSoilwat">
       <metfile name="met">
-        <filename name="filename">tully.met</filename>
+        <filename name="filename" input="yes">tully.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">01/01/1993</start_date>
         <end_date type="date" description="Enter the end date of the simulation">31/12/2000</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <soil name="Soil">
-          <Country />
-          <Site>Jimbour</Site>
-          <Region>South East Queensland</Region>
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description">Black Vertosol</SoilType>
           <LocalName>Waco</LocalName>
-          <SoilType description="Classification">Black Vertosol</SoilType>
+          <Site>Jimbour</Site>
           <NearestTown description="Nearest town">Jimbour, Q 4352</NearestTown>
-          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
+          <Region>South East Queensland</Region>
           <State />
+          <Country />
+          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <InitWater name="Initial water">
             <percentmethod>
               <percent>1</percent>
@@ -9956,7 +10108,6 @@
             <Cn2Bare type="text" description="Cn2Bare">75</Cn2Bare>
             <CnRed type="text" description="CnRed">20</CnRed>
             <CnCov type="text" description="CnCov">0.8</CnCov>
-            <CnCanopyFact type="text" description="CnCanopyFact">1</CnCanopyFact>
             <Slope type="text" description="Slope" />
             <DischargeWidth type="text" description="DischargeWidth" />
             <CatchmentArea type="text" description="CatchmentArea" />
@@ -10037,31 +10188,33 @@
           <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
         </surfaceom>
         <outputfile>
+          <filename output="yes">SugarSoilwat.out</filename>
+          <title>SugarSoilwat</title>
           <variables name="Variables">
-            <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-            <variable name="sw_dep()" />
-            <variable name="no3()" />
-            <variable name="dul_dep()" />
-            <variable name="ll15_dep()" />
-            <variable name="lai" />
-            <variable name="biomass" />
-            <variable name="yield" />
-            <variable name="surfaceom_wt" />
-            <variable name="es" />
-            <variable name="runoff" />
-            <variable name="nfact_photo" />
-            <variable name="swdef_photo" />
-            <variable name="nit_tot()" />
-            <variable name="nh4()" />
-            <variable name="urea()" />
-            <variable name="work" />
-            <variable name="SurfaceOM.tf" />
-            <variable name="wf" />
-            <variable name="cf" />
-            <variable name="cnrf_sugar" />
+            <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
+            <variable>sw_dep()</variable>
+            <variable>no3()</variable>
+            <variable>dul_dep()</variable>
+            <variable>ll15_dep()</variable>
+            <variable>lai</variable>
+            <variable>biomass</variable>
+            <variable>yield</variable>
+            <variable>surfaceom_wt</variable>
+            <variable>es</variable>
+            <variable>runoff</variable>
+            <variable>nfact_photo</variable>
+            <variable>swdef_photo</variable>
+            <variable>nit_tot()</variable>
+            <variable>nh4()</variable>
+            <variable>urea()</variable>
+            <variable>work</variable>
+            <variable>SurfaceOM.tf</variable>
+            <variable>wf</variable>
+            <variable>cf</variable>
+            <variable>cnrf_sugar</variable>
           </variables>
           <events name="Reporting Frequency">
-            <event name="daily" />
+            <event>daily</event>
           </events>
         </outputfile>
         <irrigation name="Irrigation">
@@ -10078,14 +10231,14 @@
         <sugar />
         <manager name="SUGAR management">
           <ui>
-            <category description="Sugar plant crop management parameters" />
+            <category description="Sugar plant crop management parameters" type="category" />
             <crop type="crop" description="Enter name of crop to sow : ">sugar</crop>
             <planting_day type="ddmmmdate" description="Enter planting date (dd-mmm) : ">1-apr</planting_day>
             <plantlen type="text" description="Duration of a plant crop (days) (30 days/month * 15 months) : ">450</plantlen>
             <plant_stalks type="text" description="Stalk density of plant crop (/m2) :">10</plant_stalks>
             <variety type="list" listvalues="q117,q96,q138,ts65-28,h73,q141,nco376,n12,n14,cp51,r570,m1356,m55560,q124" description="Planting variety :">q117</variety>
             <sowing_depth type="text" description="Planting depth mm) :">150</sowing_depth>
-            <category description="Ratoon management parameters" />
+            <category description="Ratoon management parameters" type="category" />
             <NoRatoons type="text" description="Number of ratoons (max = 5): ">4</NoRatoons>
             <ratoonlen type="text" description="Duration of a ratoon crop (days) (30 days/month * 13 months) : ">390</ratoonlen>
             <ratoon_stalks type="text" description="Stalk density of ratoon crop (/m2) :">10</ratoon_stalks>
@@ -10149,10 +10302,10 @@
         </manager>
         <manager name="Fertilise on fixed date">
           <ui>
-            <category description="When should fertiliser be applied" />
+            <category description="When should fertiliser be applied" type="category" />
             <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">01-sep</fert_date>
             <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
-            <category description="Fertiliser application details" />
+            <category description="Fertiliser application details" type="category" />
             <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
             <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">200</fert_amount>
             <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type>
@@ -10333,33 +10486,33 @@
   <folder name="Chloride">
     <simulation name="ChlorideSWIM">
       <metfile name="met">
-        <filename name="filename">%apsim%\Tests\SWIM3\GoondNoEvap.met</filename>
+        <filename name="filename" input="yes">%apsim%\Tests\SWIM3\GoondNoEvap.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">01/01/1940</start_date>
         <end_date type="date" description="Enter the end date of the simulation">31/12/1945</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <soil name="Soil">
-          <Country />
-          <Site>Jimbour</Site>
-          <Region>South East Queensland</Region>
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description">Black Vertosol</SoilType>
           <LocalName>Waco</LocalName>
-          <SoilType description="Classification">Black Vertosol</SoilType>
+          <Site>Jimbour</Site>
           <NearestTown description="Nearest town">Jimbour, Q 4352</NearestTown>
-          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
+          <Region>South East Queensland</Region>
           <State />
+          <Country />
+          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <InitWater name="Initial water">
             <percentmethod>
               <percent>1</percent>
@@ -11389,23 +11542,25 @@
           <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
         </surfaceom>
         <outputfile>
+          <filename output="yes">ChlorideSWIM.out</filename>
+          <title>ChlorideSWIM</title>
           <variables name="Variables">
-            <variable name="dd/mm/yyyy as Date" />
-            <variable name="sw" />
-            <variable name="es" />
-            <variable name="runoff" />
-            <variable name="sw_dep()" />
-            <variable name="drain" />
-            <variable name="no3()" />
-            <variable name="irrigation" />
-            <variable name="dul_dep()" />
-            <variable name="ll15_dep()" />
-            <variable name="cl()" />
-            <variable name="cl_ppm" />
-            <variable name="dlayer" />
+            <variable>dd/mm/yyyy as Date</variable>
+            <variable>sw</variable>
+            <variable>es</variable>
+            <variable>runoff</variable>
+            <variable>sw_dep()</variable>
+            <variable>drain</variable>
+            <variable>no3()</variable>
+            <variable>irrigation</variable>
+            <variable>dul_dep()</variable>
+            <variable>ll15_dep()</variable>
+            <variable>cl()</variable>
+            <variable>cl_ppm</variable>
+            <variable>dlayer</variable>
           </variables>
           <events name="Reporting Frequency">
-            <event name="daily" />
+            <event>daily</event>
           </events>
           <Graph name="SWdep">
             <Plot>
@@ -11445,33 +11600,33 @@
     </simulation>
     <simulation name="ChlorideSoilWat">
       <metfile name="met">
-        <filename name="filename">%apsim%\Tests\SWIM3\Goond.met</filename>
+        <filename name="filename" input="yes">%apsim%\Tests\SWIM3\Goond.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">01/01/1940</start_date>
         <end_date type="date" description="Enter the end date of the simulation">31/12/1945</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <soil name="Soil">
-          <Country />
-          <Site>Jimbour</Site>
-          <Region>South East Queensland</Region>
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description">Black Vertosol</SoilType>
           <LocalName>Waco</LocalName>
-          <SoilType description="Classification">Black Vertosol</SoilType>
+          <Site>Jimbour</Site>
           <NearestTown description="Nearest town">Jimbour, Q 4352</NearestTown>
-          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
+          <Region>South East Queensland</Region>
           <State />
+          <Country />
+          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <InitWater name="Initial water">
             <percentmethod>
               <percent>1</percent>
@@ -12446,7 +12601,6 @@
             <Cn2Bare type="text" description="Cn2Bare">0</Cn2Bare>
             <CnRed type="text" description="CnRed">20</CnRed>
             <CnCov type="text" description="CnCov">0.8</CnCov>
-            <CnCanopyFact type="text" description="CnCanopyFact">1</CnCanopyFact>
             <Slope type="text" description="Slope" />
             <DischargeWidth type="text" description="DischargeWidth" />
             <CatchmentArea type="text" description="CatchmentArea" />
@@ -12527,23 +12681,25 @@
           <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
         </surfaceom>
         <outputfile>
+          <filename output="yes">ChlorideSoilWat.out</filename>
+          <title>ChlorideSoilWat</title>
           <variables name="Variables">
-            <variable name="dd/mm/yyyy as Date" />
-            <variable name="sw" />
-            <variable name="es" />
-            <variable name="runoff" />
-            <variable name="sw_dep()" />
-            <variable name="drain" />
-            <variable name="no3()" />
-            <variable name="irrigation" />
-            <variable name="dul_dep()" />
-            <variable name="ll15_dep()" />
-            <variable name="cl()" />
-            <variable name="cl_ppm" />
-            <variable name="dlayer" />
+            <variable>dd/mm/yyyy as Date</variable>
+            <variable>sw</variable>
+            <variable>es</variable>
+            <variable>runoff</variable>
+            <variable>sw_dep()</variable>
+            <variable>drain</variable>
+            <variable>no3()</variable>
+            <variable>irrigation</variable>
+            <variable>dul_dep()</variable>
+            <variable>ll15_dep()</variable>
+            <variable>cl()</variable>
+            <variable>cl_ppm</variable>
+            <variable>dlayer</variable>
           </variables>
           <events name="Reporting Frequency">
-            <event name="daily" />
+            <event>daily</event>
           </events>
           <Graph name="SWdep">
             <Plot>
@@ -12583,33 +12739,33 @@
     </simulation>
     <simulation name="NoChlorideSWIM">
       <metfile name="met">
-        <filename name="filename">%apsim%\Tests\SWIM3\GoondNoEvap.met</filename>
+        <filename name="filename" input="yes">%apsim%\Tests\SWIM3\GoondNoEvap.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">01/01/1940</start_date>
         <end_date type="date" description="Enter the end date of the simulation">31/12/1945</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <soil name="Soil">
-          <Country />
-          <Site>Jimbour</Site>
-          <Region>South East Queensland</Region>
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description">Black Vertosol</SoilType>
           <LocalName>Waco</LocalName>
-          <SoilType description="Classification">Black Vertosol</SoilType>
+          <Site>Jimbour</Site>
           <NearestTown description="Nearest town">Jimbour, Q 4352</NearestTown>
-          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
+          <Region>South East Queensland</Region>
           <State />
+          <Country />
+          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <InitWater name="Initial water">
             <percentmethod>
               <percent>1</percent>
@@ -13650,23 +13806,25 @@
           <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
         </surfaceom>
         <outputfile>
+          <filename output="yes">NoChlorideSWIM.out</filename>
+          <title>NoChlorideSWIM</title>
           <variables name="Variables">
-            <variable name="dd/mm/yyyy as Date" />
-            <variable name="sw" />
-            <variable name="es" />
-            <variable name="runoff" />
-            <variable name="sw_dep()" />
-            <variable name="drain" />
-            <variable name="no3()" />
-            <variable name="irrigation" />
-            <variable name="dul_dep()" />
-            <variable name="ll15_dep()" />
-            <variable name="cl()" />
-            <variable name="cl_ppm" />
-            <variable name="dlayer" />
+            <variable>dd/mm/yyyy as Date</variable>
+            <variable>sw</variable>
+            <variable>es</variable>
+            <variable>runoff</variable>
+            <variable>sw_dep()</variable>
+            <variable>drain</variable>
+            <variable>no3()</variable>
+            <variable>irrigation</variable>
+            <variable>dul_dep()</variable>
+            <variable>ll15_dep()</variable>
+            <variable>cl()</variable>
+            <variable>cl_ppm</variable>
+            <variable>dlayer</variable>
           </variables>
           <events name="Reporting Frequency">
-            <event name="daily" />
+            <event>daily</event>
           </events>
           <Graph name="SWdep">
             <Plot>
@@ -13706,33 +13864,33 @@
     </simulation>
     <simulation name="NoChlorideSoilWat">
       <metfile name="met">
-        <filename name="filename">%apsim%\Tests\SWIM3\Goond.met</filename>
+        <filename name="filename" input="yes">%apsim%\Tests\SWIM3\Goond.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">01/01/1940</start_date>
         <end_date type="date" description="Enter the end date of the simulation">31/12/1945</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <soil name="Soil">
-          <Country />
-          <Site>Jimbour</Site>
-          <Region>South East Queensland</Region>
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <ASC_Order description="Australian Soil Classification Order" />
+          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+          <SoilType description="Soil description">Black Vertosol</SoilType>
           <LocalName>Waco</LocalName>
-          <SoilType description="Classification">Black Vertosol</SoilType>
+          <Site>Jimbour</Site>
           <NearestTown description="Nearest town">Jimbour, Q 4352</NearestTown>
-          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
+          <Region>South East Queensland</Region>
           <State />
+          <Country />
+          <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
           <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)" />
           <Longitude />
           <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source" />
           <Comments />
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
           <InitWater name="Initial water">
             <percentmethod>
               <percent>1</percent>
@@ -14718,7 +14876,6 @@
             <Cn2Bare type="text" description="Cn2Bare">0</Cn2Bare>
             <CnRed type="text" description="CnRed">20</CnRed>
             <CnCov type="text" description="CnCov">0.8</CnCov>
-            <CnCanopyFact type="text" description="CnCanopyFact">1</CnCanopyFact>
             <Slope type="text" description="Slope" />
             <DischargeWidth type="text" description="DischargeWidth" />
             <CatchmentArea type="text" description="CatchmentArea" />
@@ -14799,23 +14956,25 @@
           <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
         </surfaceom>
         <outputfile>
+          <filename output="yes">NoChlorideSoilWat.out</filename>
+          <title>NoChlorideSoilWat</title>
           <variables name="Variables">
-            <variable name="dd/mm/yyyy as Date" />
-            <variable name="sw" />
-            <variable name="es" />
-            <variable name="runoff" />
-            <variable name="sw_dep()" />
-            <variable name="drain" />
-            <variable name="no3()" />
-            <variable name="irrigation" />
-            <variable name="dul_dep()" />
-            <variable name="ll15_dep()" />
-            <variable name="cl()" />
-            <variable name="cl_ppm" />
-            <variable name="dlayer" />
+            <variable>dd/mm/yyyy as Date</variable>
+            <variable>sw</variable>
+            <variable>es</variable>
+            <variable>runoff</variable>
+            <variable>sw_dep()</variable>
+            <variable>drain</variable>
+            <variable>no3()</variable>
+            <variable>irrigation</variable>
+            <variable>dul_dep()</variable>
+            <variable>ll15_dep()</variable>
+            <variable>cl()</variable>
+            <variable>cl_ppm</variable>
+            <variable>dlayer</variable>
           </variables>
           <events name="Reporting Frequency">
-            <event name="daily" />
+            <event>daily</event>
           </events>
           <Graph name="SWdep">
             <Plot>
