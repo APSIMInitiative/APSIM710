@@ -97,8 +97,8 @@ public class Target
         {
             if (J.CanRun(Parent, this))
             {
-                if (StartTime.Ticks == 0)
-                    StartTime = DateTime.Now;   // This is the first job for this target-set start time.
+                if (StartTime.Ticks == 0) StartTime = DateTime.Now;
+                if (Status == null) { Status = "Running"; }
                 J.Status = "Running";
                 return J;
             }
@@ -114,60 +114,56 @@ public class Target
                 return J;
         return null;
     }
-
-    internal void CheckAllJobsForCompletion()
+    /// <summary>
+    /// Check all the jobs in this target for completion. 
+    /// </summary>
+    /// <returns>
+    /// true if this target has just changed state
+    /// </returns>
+    internal bool CheckAllJobsForCompletion()
     {
         if (!NeedToRun || HasFinished)
-            return;
+            return false;
+
+        if (!DependenciesHaveFinished)
+            return false;
 
         bool AllPassed = true;
-        bool AllJobsHaveRun = true;
-        if (!DependenciesHaveFinished)
-            return;
-        
         if (!DependenciesHavePassed)
-            AllPassed = false;
+            AllPassed = false; 
         else
             foreach (Job J in Jobs)
             {
                 if (J.Status != null)
                 {
                     if (J.Status == "Running")
-                    {
-                        Status = "Running";
-                        return;
-                    }
+                        return false;
+
                     if (J.Status == "Fail")
                         AllPassed = false;
                 }
                 else
-                    AllJobsHaveRun = false;
+                    return false;
             }
 
         // Check for the situation where there are no dependencies and no jobs. This happens with
         // the Tests target in BuildAll.xml. In this situation the jobs will be added later so 
         // don't flag it as having passed.
         if (DependsOn.Count == 0 && Jobs.Count == 0)
-            return;
+            return false;
+        
+        if (StartTime.Ticks == 0) StartTime = DateTime.Now;
 
-        if (StartTime.Ticks == 0)
-            StartTime = DateTime.Now;   // Set start time once dependencies have passed
+        FinishTime = DateTime.Now;
+        ElapsedTime = Convert.ToInt32((FinishTime - StartTime).TotalSeconds);
+        if (AllPassed)
+            Status = "Pass";
+        else
+            Status = "Fail";
 
-        if (AllJobsHaveRun)
-        {
-            FinishTime = DateTime.Now;
-            ElapsedTime = Convert.ToInt32((FinishTime - StartTime).TotalSeconds);
-            if (AllPassed)
-                Status = "Pass";
-            else
-                Status = "Fail";
-
-            Console.WriteLine("[" + Status + "] Target: " + Name + " [" + ElapsedTime.ToString() + "sec]");
+        Console.WriteLine("[" + Status + "] Target: " + Name + " [" + ElapsedTime.ToString() + "sec]");
             
-            // Recheck all targets for completion because other targets may have "this" target as a dependent.
-            foreach (Target t in Project.Targets)
-                t.CheckAllJobsForCompletion();
-        }
+        return true;
     }
 
     /// <summary>

@@ -501,6 +501,7 @@ public class JobScheduler
                 // Add the job to our log.
                 Log.Targets[0].Jobs.Add(J);
 
+                Project.CheckAllJobsForCompletion();
             }
             return "OK";
         }
@@ -510,6 +511,8 @@ public class JobScheduler
             Target T = x.Deserialize(new StringReader(CommandBits[1])) as Target;
 
             Project.AddTarget(T);
+            Project.CheckAllJobsForCompletion();
+
             return "OK";
         }
 

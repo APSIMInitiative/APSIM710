@@ -74,18 +74,28 @@ public class Project
             if (J != null)
             {
                 J.CopyFrom(Job);
-                t.CheckAllJobsForCompletion();
                 found = true;
                 break;
             }
         }
         if (!found) throw new Exception("Cannot find job: " + Job.Name);
-
-        // Check that all targets are finished
-        foreach (Target t in Targets)
-            t.CheckAllJobsForCompletion();
+        CheckAllJobsForCompletion();
     }
+/// <summary>
+/// Check all our targets for completion. If one of them changes, keep 
+/// reevaluating so that any chained dependancies can catch up
+/// </summary>
+    internal void CheckAllJobsForCompletion()
+    {
+        bool wasChanged;
+        do
+        {
+            wasChanged = false;
+            foreach (Target t in Targets)
+                wasChanged |= t.CheckAllJobsForCompletion();
+        } while (wasChanged);
 
+    }
 
     internal void AddTarget(Target T)
     {
