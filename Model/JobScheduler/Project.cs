@@ -103,8 +103,8 @@ public class Project
         if (ExistingTarget != null)
         {
             ExistingTarget.Jobs.AddRange(T.Jobs);
-            if (ExistingTarget.HasFinished)
-                ExistingTarget.Status = "Running";
+            //if (ExistingTarget.HasFinished)
+            //    ExistingTarget.Status = "Running";
         }
         else
             Targets.Add(T);
@@ -123,6 +123,19 @@ public class Project
         }
     }
 
+
+    public bool AllTargetsPassed
+    {
+        get
+        {
+            foreach (Target t in Targets)
+            {
+                if (t.NeedToRun && t.Status != null && t.Status != "Pass")
+                    return false;
+            }
+            return true;
+        }
+    }
 
 
     internal void CheckForDuplicateJobNames()

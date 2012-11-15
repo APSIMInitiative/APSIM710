@@ -83,10 +83,8 @@ public class JobScheduler
     private bool CancelWorkerThread;
     private Thread SocketListener = null;
     private Dictionary<string, string> Macros = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
-    private bool SomeJobsHaveFailed = false;
     private Project Project;
     private Project Log = new Project();
-    private int NumJobsRunning = 0;
 
     private Int32 listenPort = 0;
     private IPAddress listenIP = IPAddress.Parse("127.0.0.1");
@@ -113,7 +111,6 @@ public class JobScheduler
 
         // Now wait for socket listener to abort or for the target to finish
         CancelWorkerThread = false;
-        SomeJobsHaveFailed = false;
         while (!CancelWorkerThread && !Project.AllTargetsFinished)
         {
             Thread.Sleep(100);
@@ -141,7 +138,7 @@ public class JobScheduler
 
         // Write log message.
         Console.WriteLine("");
-        if (SomeJobsHaveFailed)
+        if (HasErrors)
             Console.Write("[Fail] ");
         else
             Console.Write("[Pass] ");
@@ -155,7 +152,7 @@ public class JobScheduler
         StreamWriter s = new StreamWriter(JobFileName.Replace(".xml", "Output.xml"));
         x.Serialize(s, Project);
         s.Close();
-        return SomeJobsHaveFailed;
+        return HasErrors;
     }
 
     /// <summary>
@@ -198,7 +195,6 @@ public class JobScheduler
         // Make sure that there aren't 2 jobs with the same name.
         Project.CheckForDuplicateJobNames();
 
-        NumJobsRunning = 0;
         RunnerProcess = null;
 
 
@@ -224,7 +220,7 @@ public class JobScheduler
             Info.WorkingDirectory = BinDir;
             Info.FileName = Path.Combine(BinDir, "JobRunner.exe");
             Info.Arguments = "Server=" + listenIP.ToString() +  " Port=" + listenPort + " AutoClose=Yes";
-            Info.CreateNoWindow = true;
+            Info.CreateNoWindow = false;
             Info.UseShellExecute = false;
             if (Environment.MachineName.ToLower() == "bob")
                 Info.Arguments += " NumCPUs=64";
@@ -270,7 +266,7 @@ public class JobScheduler
     /// <summary>
     /// Return true if some jobs have errors.
     /// </summary>
-    public bool HasErrors { get { return SomeJobsHaveFailed; } }
+    public bool HasErrors { get { return !Project.AllTargetsPassed; } }
 
     /// <summary>
     /// Return the number of jobs completed to caller (GUI)
@@ -366,6 +362,7 @@ public class JobScheduler
             {
                listenIP = ((IPEndPoint) server.LocalEndpoint).Address;
                listenPort = ((IPEndPoint) server.LocalEndpoint).Port;
+               Console.WriteLine("Listening on " + listenIP.ToString() + ":" + listenPort);
             }
 
             // Buffer for reading data
@@ -405,7 +402,6 @@ public class JobScheduler
                         Console.WriteLine(err.Message + "\r\n" + err.StackTrace);
                         Response = "NULL";
                         CancelWorkerThread = true;
-                        SomeJobsHaveFailed = true;
                     }
 
                     // Shutdown and end connection
@@ -451,11 +447,7 @@ public class JobScheduler
             int NumJobs = Convert.ToInt32(CommandBits[1]);
             List<Job> NextJobs = Project.FindNextJobToRun(NumJobs);
             if (NextJobs == null)
-            {
-                if (NumJobsRunning == 0)
-                    CancelWorkerThread = true;
                 return "NULL";
-            }
             else
             {
                 foreach (Job J in NextJobs)
@@ -465,7 +457,6 @@ public class JobScheduler
                     J.CommandLineUnix = ReplaceEnvironmentVariables(J.CommandLineUnix);
                     J.WorkingDirectory = ReplaceEnvironmentVariables(J.WorkingDirectory);
                 }
-                NumJobsRunning += NextJobs.Count;
                 XmlSerializer x = new XmlSerializer(typeof(List<Job>));
                 StringWriter s = new StringWriter();
                 x.Serialize(s, NextJobs);
@@ -482,16 +473,11 @@ public class JobScheduler
             }
             List<Job> Jobs = x.Deserialize(new StringReader(CommandBits[1])) as List<Job>;
 
-            NumJobsRunning -= Jobs.Count;
             foreach (Job J in Jobs)
             {
                 // Check that the job scheduler hasn't restarted since the job went to the client.
                 if (J.JobSchedulerProcessID != Process.GetCurrentProcess().Id)
                     return "ERROR";
-
-                if (J.Status == "Fail")
-                    SomeJobsHaveFailed = true;
-
 
                 // Write log message.
                 J.WriteLogMessage();
@@ -528,7 +514,7 @@ public class JobScheduler
                 return Value;
             else if (CommandBits[1] == "SomeJobsHaveFailed")
             {
-                if (SomeJobsHaveFailed)
+                if (!Project.AllTargetsPassed)
                     return "Yes";
                 else
                     return "No";
@@ -539,7 +525,6 @@ public class JobScheduler
         else if (CommandBits.Length == 2 && CommandBits[0] == "Error")
         {
             Console.WriteLine("Error from JobRunner: " + CommandBits[1]);
-            SomeJobsHaveFailed = true;
             CancelWorkerThread = true;
         }
         else if (Data != "")

@@ -226,10 +226,11 @@ public class Job
     /// </summary>
     void OnExited(object sender, EventArgs e)
     {
+        Process P = (Process)sender;
         // Job has finished.
         FinishTime = DateTime.Now;
         ElapsedTime = Convert.ToInt32((FinishTime - StartTime).TotalSeconds);
-        ExitCode = (_P == null ? 0 : _P.ExitCode);
+        ExitCode = (P != null) ? P.ExitCode : 0;
         if (ExitCode == 0 || IgnoreErrors)
             Status = "Pass";
         else
@@ -237,7 +238,8 @@ public class Job
         if (StdOutStream != null)
         {
             // Some data may still be buffered. Wait for a bit
-            System.Threading.Thread.Sleep(100);
+            if (P != null) 
+			  if (P.WaitForExit(0)) { System.Threading.Thread.Sleep(5000); P.WaitForExit(); }
             StdOutStream.Close();
             StdOutStream = null;
         }
@@ -281,11 +283,10 @@ public class Job
     /// </summary>
     protected virtual void OnStdOut(object sender, DataReceivedEventArgs e)
     {
-        lock(this)
-            if (StdOutStream != null)
-                StdOutStream.WriteLine(e.Data);
-            else
-                StdOutBuf.AppendLine(e.Data);
+        if (StdOutStream != null)
+            StdOutStream.WriteLine(e.Data);
+        else
+            StdOutBuf.AppendLine(e.Data);
     }
 
     /// <summary>

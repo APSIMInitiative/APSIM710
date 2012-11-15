@@ -66,8 +66,11 @@ class JobRunner
                 {
                     List<Job> NewJobs = GetNextJobToRun(Macros, NumCPUsToUse-Jobs.Count);
 
-					if (NewJobs == null && Jobs.Count == 0) 
-						ESCWasPressed = true; // All done. 
+                    if (NewJobs == null && Jobs.Count == 0)
+                    {
+                        Console.WriteLine("No more jobs and none running - exiting");
+                        ESCWasPressed = true; // All done. 
+                    }
 					
                     if (NewJobs != null)
                     {
@@ -201,8 +204,9 @@ class JobRunner
     private static List<Job> GetNextJobToRun(Dictionary<string, string> Macros, int NumJobs)
     {
         string Response = Utility.SocketSend(Macros["Server"],
-                                      Convert.ToInt32(Macros["Port"]),
-                                      "GetJob~" + NumJobs.ToString());
+                                          Convert.ToInt32(Macros["Port"]),
+                                          "GetJob~" + NumJobs.ToString());
+
         if (Response == null || Response == "NULL")
             return null;
 
@@ -211,9 +215,11 @@ class JobRunner
         List<Job> Jobs = x.Deserialize(s) as List<Job>;
         foreach (Job J in Jobs)
             {
-            J.CommandLine = J.CommandLine.Replace("%Server%", Macros["server"]);
+            if (J.CommandLine != null) 
+                J.CommandLine = J.CommandLine.Replace("%Server%", Macros["server"]).Replace("%Port%", Macros["Port"]);
+
             if (J.CommandLineUnix != null)
-                J.CommandLineUnix = J.CommandLineUnix.Replace("%Server%", Macros["server"]);
+                J.CommandLineUnix = J.CommandLineUnix.Replace("%Server%", Macros["server"]).Replace("%Port%", Macros["Port"]);
             }
         return Jobs;
     }

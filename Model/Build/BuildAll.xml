@@ -793,14 +793,13 @@
       <DependsOn>RunAll</DependsOn>
    </Target>
 
-   <!-- ############### Top level BOB jobs ############### -->
    <Target name="Bob">
       <DependsOn IgnoreErrors="true">BobBuildAndRun</DependsOn>
       <DependsOn IgnoreErrors="true">Documentation</DependsOn>
       <DependsOn IgnoreErrors="true">Release</DependsOn>
       <Job name="Create Diff Zip">
-  		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-		<CommandLine>%APSIM%/Model/CreateDiffZip.exe Directory=APSIM% PatchFileName=%PatchFileName%</CommandLine>
+  		 <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+		   <CommandLine>%APSIM%/Model/CreateDiffZip.exe Directory=%APSIM% PatchFileName=%PatchFileName%</CommandLine>
       </Job>
       <Job name="Upload Diff Zip">
       <!-- The windows build will copy it to the local filesystem. -->
@@ -837,7 +836,7 @@
    </Target>
 
    <!-- ############### Testing targets ############### -->
-   <Target name="FindTests">
+    <Target name="FindTests">
       <DependsOn>Clean</DependsOn>
       <Job name="Compile FindJobs">
          <WorkingDirectory>%APSIM%/Model/JobScheduler/FindJobs</WorkingDirectory>
@@ -876,7 +875,7 @@
       </Job>
    </Target>
 
-   <!-- ############### All test simulations will go here ############### -->
+  <!-- ############### All test simulations will go here ############### -->
    <Target name="Tests">
       <DependsOn>Post-Compile</DependsOn>
    </Target>

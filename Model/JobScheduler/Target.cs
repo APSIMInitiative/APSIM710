@@ -61,7 +61,7 @@ public class Target
     {
         get
         {
-            return Status != null && Status != "Running";
+            return DependenciesHaveFinished && Status != null && Status != "Running";
         }
     }
 
@@ -118,7 +118,7 @@ public class Target
     /// Check all the jobs in this target for completion. 
     /// </summary>
     /// <returns>
-    /// true if this target has just changed state
+    /// true if this target has just finshed
     /// </returns>
     internal bool CheckAllJobsForCompletion()
     {
