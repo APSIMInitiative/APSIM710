@@ -60,7 +60,7 @@ class Program
         string TempDirectory = (Path.GetTempPath() + Path.GetFileNameWithoutExtension(PatchFileName)).Replace('\\','/');
         if (Directory.Exists(TempDirectory))
             Directory.Delete(TempDirectory, true);
-
+        Directory.CreateDirectory(TempDirectory);
         // Copy all files reported to be different to our temporary directory.
         List<string> ModifiedFiles = new List<string>();
         foreach (string Line in Lines)
@@ -183,12 +183,12 @@ class Program
         {
             Directory.CreateDirectory(SVNDestDirectory);
             File.SetAttributes(SVNDestDirectory, FileAttributes.Hidden);
-
-            foreach (string SVNName in Directory.GetFiles(SVNSourceDirectory))
-            {
-                File.Copy(SVNName, Path.Combine(SVNDestDirectory, Path.GetFileName(SVNName)), true);
-                File.SetAttributes(Path.Combine(SVNDestDirectory, Path.GetFileName(SVNName)), FileAttributes.Archive);
-            }
+            if (Directory.Exists(SVNSourceDirectory))
+                foreach (string SVNName in Directory.GetFiles(SVNSourceDirectory))
+                {
+                    File.Copy(SVNName, Path.Combine(SVNDestDirectory, Path.GetFileName(SVNName)), true);
+                    File.SetAttributes(Path.Combine(SVNDestDirectory, Path.GetFileName(SVNName)), FileAttributes.Archive);
+                }
             // Now see if we need to do parent directory as well.
             SVNSourceDirectory = Path.GetFullPath(Path.Combine(SVNSourceDirectory, "..", ".."));
             if (Directory.Exists(Path.Combine(SVNSourceDirectory,  ".svn")))
