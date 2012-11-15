@@ -183,7 +183,7 @@ public class Job
 
         StartTime = DateTime.Now;
         if (Executable == "")
-           OnExited(this, null);
+           OnExited(null, null);
         else
            {
            _P = new Process();
@@ -226,7 +226,8 @@ public class Job
     /// </summary>
     void OnExited(object sender, EventArgs e)
     {
-        Process P = (Process)sender;
+        Process P = null;
+        if (sender != null) P = (Process)sender;
         // Job has finished.
         FinishTime = DateTime.Now;
         ElapsedTime = Convert.ToInt32((FinishTime - StartTime).TotalSeconds);
