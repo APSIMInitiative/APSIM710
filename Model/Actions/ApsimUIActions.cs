@@ -173,6 +173,52 @@ namespace Actions
 			}
 		}
 
+        public static void MakeSims(BaseController Controller)
+        {
+            System.Collections.Specialized.StringCollection PathsToConvert = Controller.SelectedPaths;
+            List<String> SimsToConvert = new List<String>();
+            foreach (String SimulationPath in PathsToConvert)
+                ApsimFile.ApsimFile.ExpandSimsToRun(Controller.ApsimData.Find(SimulationPath), ref SimsToConvert);
+            String UserMsg = "No simulations selected!";
+            if (SimsToConvert.Count > 0)
+            {
+                if (SimsToConvert.Count == 1)
+                    UserMsg = "Created simulation file:";
+                else
+                    UserMsg = "Created simulation files:";
+                FolderBrowserDialog FolderChooser = new FolderBrowserDialog();
+                FolderChooser.Description = "Select the directory in which to save the .sim files";
+                FolderChooser.SelectedPath = Directory.GetCurrentDirectory();
+                if (FolderChooser.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        foreach (String SimulationPath in SimsToConvert)
+                        {
+                            try
+                            {
+                                Component Simulation = Controller.ApsimData.Find(SimulationPath);
+                                String SimFileName = FolderChooser.SelectedPath + Path.DirectorySeparatorChar + Simulation.Name + ".sim";
+                                StreamWriter fp = new StreamWriter(SimFileName);
+                                ApsimToSim.GetSimDoc(Simulation, Configuration.getArchitecture()).Save(fp);
+                                fp.Close();
+                                UserMsg += "\n" + SimFileName;
+                            }
+                            catch (Exception err)
+                            {
+                                MessageBox.Show("Simulation: " + SimulationPath + ". " + err.Message, "Error generating .sim file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                    catch (Exception err)
+                    {
+                        MessageBox.Show("Unexpected Error while generating .sim files:\n " + err.Message, "Error generating .sim file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            MessageBox.Show(UserMsg, "Create .SIM", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
 		public static void Enable(BaseController Controller)
 		{
 			foreach (string NodePath in Controller.SelectedPaths) {

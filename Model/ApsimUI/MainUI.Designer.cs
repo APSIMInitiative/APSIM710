@@ -38,7 +38,6 @@
             this.StopButton = new System.Windows.Forms.ToolStripButton();
             this.RunProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.PercentLabel = new System.Windows.Forms.ToolStripLabel();
-            this.ToolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.ErrorsButton = new System.Windows.Forms.ToolStripButton();
             this.ContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -118,7 +117,6 @@
             this.StopButton,
             this.RunProgress,
             this.PercentLabel,
-            this.ToolStripButton1,
             this.ErrorsButton});
             this.RunToolStrip.Location = new System.Drawing.Point(105, 0);
             this.RunToolStrip.Name = "RunToolStrip";
@@ -150,16 +148,6 @@
             // 
             this.PercentLabel.Name = "PercentLabel";
             this.PercentLabel.Size = new System.Drawing.Size(0, 41);
-            // 
-            // ToolStripButton1
-            // 
-            this.ToolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripButton1.Image")));
-            this.ToolStripButton1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.ToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ToolStripButton1.Name = "ToolStripButton1";
-            this.ToolStripButton1.Size = new System.Drawing.Size(66, 41);
-            this.ToolStripButton1.Text = "Create .sim";
-            this.ToolStripButton1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
             // ErrorsButton
             // 
@@ -368,7 +356,6 @@
         internal System.Windows.Forms.ToolStripButton StopButton;
         internal System.Windows.Forms.ToolStripProgressBar RunProgress;
         internal System.Windows.Forms.ToolStripLabel PercentLabel;
-        internal System.Windows.Forms.ToolStripButton ToolStripButton1;
         internal System.Windows.Forms.ToolStripButton ErrorsButton;
         internal System.Windows.Forms.Splitter ToolboxSplitter;
         internal System.Windows.Forms.ContextMenuStrip ContextMenuStrip1;
