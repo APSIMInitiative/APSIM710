@@ -483,11 +483,9 @@ class EXPORT Component
       protocol::TimeType tick;
       unsigned currentMsgID;
 
-      int garbage;  // FIXME - buffer overrun somewhere in Linux x32??
       UInt2InfoMap getVarMap;                  // List of variables we can send to system
       UInt2SetInfoMap setVarMap;                  // List of variables we can send to system
       UInt2EventMap eventMap;                  // List of events we handle
-      int moregarbage; // FIXME - buffer overrun somewhere in Linux x32???
 
       const uintptr_t* callbackArg;
       CallbackType* messageCallback;

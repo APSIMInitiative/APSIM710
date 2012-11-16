@@ -1104,25 +1104,20 @@ std::string Component::getDescription()
    }
 
 void Component::removeGettableVar(const char *systemName)
-// remove a variable from our list of variables
-   {
-   //newend = getVarMap.remove_if(....??XXX
-   //getVarMap.erase(newend, getVarMap.end());
-   bool found = 1;
-   while (found)
-	  {
-	  found = 0;
-	  UInt2InfoMap::iterator i;
-	  for (i = getVarMap.begin();i != getVarMap.end();i++)
-		 if ((*i).second->name() == systemName)
-			{
-			delete i->second;
-			getVarMap.erase(i);  // and should probably deleteReg too..?? fixme
-			found = 1;
-			break;
-			}
-	  }
-   }
+    // remove a variable from our list of variables
+{
+    for (UInt2InfoMap::iterator i = getVarMap.begin(); i != getVarMap.end(); )  // the iterator is incremented below, as "erase" may make it invalid
+    {
+        if (i->second->name() == systemName)
+        {
+            delete i->second;
+            getVarMap.erase(i++);  // Note that the post increment increments the iterator before using the original value in the function
+            // and should probably deleteReg too..?? fixme
+        }
+        else
+            ++i;
+    }
+}
 
 // A component has sent us a Variant. Pack it into a registration entry
 void Component::addReturnValueMessage(ReturnValueData &returnValueData)
