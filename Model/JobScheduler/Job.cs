@@ -27,7 +27,9 @@ public class Job
     public int JobSchedulerProcessID { get; set; }
     public DateTime StartTime { get; set; }
     public DateTime FinishTime { get; set; }
-    private int taskProgress;
+    public int taskProgress;
+    public int maxLines { get; set; }
+    private int lineCount;
 
     [XmlAttribute("name")]
     public string Name { get; set; }
@@ -66,6 +68,7 @@ public class Job
     {
         StdOutFilename = "";
         IgnoreErrors = false;
+        maxLines = -1;
     }
 
     /// <summary>
@@ -77,6 +80,7 @@ public class Job
         StdOutFilename = "";
         WorkingDirectory = dir;
         IgnoreErrors = false;
+        maxLines = -1;
     }
 
     /// <summary>
@@ -157,6 +161,13 @@ public class Job
     /// Returns true if job has already been run.
     /// </summary>
     public bool HasRun { get { return Status != null; } }
+    public bool HasExited
+    {
+        get
+        {
+            return (Status != null && Status != "Running");
+        }
+    }
 
     /// <summary>
     /// Copy fields from the specified job.
@@ -210,7 +221,7 @@ public class Job
                StdOutStream = new StreamWriter(StdOutFilename);
            else
                StdOutStream = null;
-
+           lineCount = 0;
            _P.OutputDataReceived += OnStdOut;
            _P.ErrorDataReceived += OnStdError;
            _P.Exited += OnExited;
@@ -284,10 +295,14 @@ public class Job
     /// </summary>
     protected virtual void OnStdOut(object sender, DataReceivedEventArgs e)
     {
-        if (StdOutStream != null)
-            StdOutStream.WriteLine(e.Data);
-        else
-            StdOutBuf.AppendLine(e.Data);
+        lineCount++;
+        if (maxLines < 0  || (maxLines >= 0 && lineCount < maxLines))
+        {
+            if (StdOutStream != null)
+                StdOutStream.WriteLine(e.Data);
+            else
+                StdOutBuf.AppendLine(e.Data);
+        }
     }
 
     /// <summary>

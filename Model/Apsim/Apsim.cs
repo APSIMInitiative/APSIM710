@@ -15,7 +15,6 @@ public class Apsim
 {
     private JobScheduler JobScheduler = null;
     private int NumJobsBeingRun = 0;
-    private int linesOut;
     private int maxLines = -1;
 
     /// <summary>
@@ -241,7 +240,7 @@ public class Apsim
     public void StartMultipleSIM(Target T, string FileName)
     {
         string Arguments =  StringManip.DQuote(FileName);
-        string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "Apsim.exe");
+        string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "ApsimModel.exe");
         Job J = new Job(Executable + " " + Arguments, Path.GetDirectoryName(FileName));
         J.Name = Path.GetFileNameWithoutExtension(FileName);
 		J.IgnoreErrors = true;
@@ -250,11 +249,9 @@ public class Apsim
     }
 
     #region Code to manage a single running APSIM process
-    private Process _P = null;
+    private Job _J = null;
     private string SimulationNameBeingRun = "";
-    private StreamWriter Sum;
     private string SimFileName;
-    private bool HasExited = false;
 
     /// <summary>
     /// Run a single simulation in a .apsim file
@@ -283,45 +280,15 @@ public class Apsim
     /// <summary>
     /// Run a .sim file
     /// </summary>
-    public void StartSIM(string FileName)
+    public void StartSIM(string SimFileName)
     {
-        HasExited = false;
-        taskProgress = 0;
-        SimFileName = FileName;
-
-        // Create a .sum
-        string SumFileName = Path.ChangeExtension(FileName, ".sum");
-        Sum = new StreamWriter(SumFileName);
-		
-		if (_P != null) throw new Exception("Already running a process in Apsim::StartSIM() !");
-
-		// Run the apsim process.
-        _P = new Process();
-		if (Configuration.getArchitecture() == Configuration.architecture.unix)
-		{
-	        string ldPath = Environment.GetEnvironmentVariable("LD_LIBRARY_PATH");
-			if (ldPath != null && ldPath.Length > 0)
-				ldPath += ":" + Configuration.ApsimBinDirectory();
-			else
-				ldPath = Configuration.ApsimBinDirectory();
-            _P.StartInfo.EnvironmentVariables.Remove("LD_LIBRARY_PATH");
-            _P.StartInfo.EnvironmentVariables.Add("LD_LIBRARY_PATH", ldPath);
-		}
-        _P.StartInfo.FileName = Path.Combine(Configuration.ApsimBinDirectory(), "ApsimModel.exe");
-        _P.StartInfo.Arguments = StringManip.DQuote(SimFileName);
-        _P.StartInfo.UseShellExecute = false;
-        _P.StartInfo.CreateNoWindow = true;
-        _P.StartInfo.RedirectStandardOutput = true;
-        _P.StartInfo.RedirectStandardError = true;
-        _P.OutputDataReceived += OnStdOut;
-        _P.ErrorDataReceived += OnStdError;
-        _P.StartInfo.WorkingDirectory = Path.GetDirectoryName(SimFileName);
-        _P.EnableRaisingEvents = true;
-        _P.Exited += OnExited;
-        _P.Start();
-        linesOut = 0;
-        _P.BeginOutputReadLine();
-        _P.BeginErrorReadLine();
+        _J = new Job();
+        _J.WorkingDirectory = Path.GetDirectoryName(SimFileName);
+        _J.CommandLine = StringManip.DQuote(Path.Combine(Configuration.ApsimBinDirectory(), "ApsimModel.exe")) + " " +
+                         StringManip.DQuote(SimFileName);
+        _J.StdOutFilename = Path.ChangeExtension(SimFileName, ".sum");
+        _J.maxLines = maxLines;
+        _J.Run();
     }
 
     /// <summary>
@@ -364,28 +331,11 @@ public class Apsim
     /// </summary>
     void OnExited(object sender, EventArgs e)
     {
-        if (_P != null)
-		  _P.WaitForExit(-1);
-        Sum.Close();
+        if (_J != null)
+            _J.WaitUntilExit();
         File.Delete(SimFileName);
-        HasExited = true;
     }
 
-    /// <summary>
-    /// An event handler to collect the standard output.
-    /// </summary>
-    protected virtual void OnStdOut(object sender, DataReceivedEventArgs e)
-    {
-        if (e.Data != null)
-        {
-            if (linesOut == maxLines)
-                Sum.WriteLine("Number of output lines exceeds maximum. Output truncated");
-            if (maxLines < 0 || linesOut++ < maxLines)
-                Sum.WriteLine(e.Data);
-        }
-    }
-
-    int taskProgress = 0;
     /// <summary>
     /// Return the number of APSIM simulations being run.
     /// </summary>
@@ -394,31 +344,13 @@ public class Apsim
         get
         {
             if (JobScheduler != null)
-                return 100 * NumJobsCompleted / NumJobs + taskProgress / NumJobs;
+                return JobScheduler.PercentComplete; 
+            else if (_J != null)
+                return _J.PercentComplete;
             else
-                return taskProgress;
+                return (0);
         }
     }
-    /// <summary>
-    /// An event handler to collect the standard error.
-    /// </summary>
-    protected virtual void OnStdError(object sender, DataReceivedEventArgs e)
-    {
-        if (e.Data != null && e.Data.Length > 0)
-        {
-            if (e.Data[0] == '%' && e.Data[1] == ' ')
-            {
-                int percent;
-                if (Int32.TryParse(e.Data.Substring(2), out percent))
-                    taskProgress = percent;
-            }
-			else
-			{
-                Sum.Write(e.Data);
-			}
-        }
-    }
-
     #endregion
 
     /// <summary>
@@ -426,8 +358,7 @@ public class Apsim
     /// </summary>
     public void WaitForAPSIMToFinish()
     {
-        while (_P != null && !HasExited)
-		   Thread.Sleep(500);
+        if (_J != null) _J.WaitUntilExit();
 
 		if (JobScheduler != null)
 		   JobScheduler.WaitForFinish();
@@ -441,10 +372,10 @@ public class Apsim
     {
         if (JobScheduler != null)
             JobScheduler.Stop();
-        if (_P != null && !_P.HasExited)
-            _P.Kill();
+        if (_J != null && !_J.HasExited)
+            _J.Stop();
         JobScheduler = null;
-        _P = null;
+        _J = null;
     }
 
     /// <summary>
@@ -456,8 +387,8 @@ public class Apsim
         {
             if (JobScheduler != null)
                 return JobScheduler.HasErrors;
-            else if (_P != null && _P.HasExited)
-                return _P.ExitCode != 0;
+            else if (_J != null && _J.HasExited)
+                return _J.ExitCode != 0;
             else
                 return false;
         }
@@ -483,7 +414,7 @@ public class Apsim
         {
             if (JobScheduler != null)
                 return JobScheduler.NumJobsCompleted;
-            else if (_P != null && _P.HasExited)
+            else if (_J != null && _J.HasExited)
                 return 1;
             else
                 return 0;
@@ -499,7 +430,7 @@ public class Apsim
         {
             if (JobScheduler != null)
                 return JobScheduler.FirstJobWithError;
-            else if (_P != null && _P.HasExited && _P.ExitCode != 0)
+            else if (_J != null && _J.HasExited && _J.ExitCode != 0)
                 return SimulationNameBeingRun;
             else
                 return "";

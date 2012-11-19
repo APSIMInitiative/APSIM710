@@ -216,16 +216,31 @@ public class JobScheduler
         {
             string BinDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            ProcessStartInfo Info = new ProcessStartInfo();
-            Info.WorkingDirectory = BinDir;
-            Info.FileName = Path.Combine(BinDir, "JobRunner.exe");
-            Info.Arguments = "Server=" + listenIP.ToString() +  " Port=" + listenPort + " AutoClose=Yes";
-            Info.CreateNoWindow = false;
-            Info.UseShellExecute = false;
+            RunnerProcess = new Process();
+            RunnerProcess.StartInfo.WorkingDirectory = BinDir;
+            RunnerProcess.StartInfo.FileName = Path.Combine(BinDir, "JobRunner.exe");
+            RunnerProcess.StartInfo.Arguments = "Server=" + listenIP.ToString() + " Port=" + listenPort + " AutoClose=Yes";
+            RunnerProcess.StartInfo.CreateNoWindow = true;
+            RunnerProcess.StartInfo.UseShellExecute = false;
+            RunnerProcess.StartInfo.RedirectStandardOutput = true;
+            RunnerProcess.StartInfo.RedirectStandardError = true;
             if (Environment.MachineName.ToLower() == "bob")
-                Info.Arguments += " NumCPUs=64";
-            RunnerProcess = Process.Start(Info);
+                RunnerProcess.StartInfo.Arguments += " NumCPUs=64";
+            RunnerProcess.OutputDataReceived += OnRunnerStdOut;
+            RunnerProcess.ErrorDataReceived += OnRunnerStdError;
+            RunnerProcess.EnableRaisingEvents = true;
+            RunnerProcess.Start();
+            RunnerProcess.BeginOutputReadLine();
+            RunnerProcess.BeginErrorReadLine();
         }
+    }
+    private void OnRunnerStdOut(object sender, DataReceivedEventArgs e)
+    {
+        Console.WriteLine(e.Data);
+    }
+    private void OnRunnerStdError(object sender, DataReceivedEventArgs e)
+    {
+        Console.WriteLine(e.Data);
     }
 
 
@@ -266,7 +281,7 @@ public class JobScheduler
     /// <summary>
     /// Return true if some jobs have errors.
     /// </summary>
-    public bool HasErrors { get { return !Project.AllTargetsPassed; } }
+    public bool HasErrors { get { return Project.AllTargetsFinished && !Project.AllTargetsPassed; } }
 
     /// <summary>
     /// Return the number of jobs completed to caller (GUI)
@@ -295,7 +310,20 @@ public class JobScheduler
             return "";
         }
     }
-
+    public int PercentComplete
+    {
+        get
+        {
+            if (Log.Targets[0].Jobs.Count > 0)
+            {
+                double x = 0;
+                foreach (Job J in Log.Targets[0].Jobs)
+                    x += 0.01 * J.PercentComplete;
+                return (int) Math.Max(0, Math.Min(100, 100.0 * x / Log.Targets[0].Jobs.Count));
+            }
+            return 0;
+        }
+    }
     /// <summary>
     /// Look through the specified string for an environment variable name surrounded by
     /// % characters. Replace them with the environment variable value.
