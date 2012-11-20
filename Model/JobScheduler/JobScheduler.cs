@@ -270,12 +270,6 @@ public class JobScheduler
         if (!RunnerProcess.HasExited)
             RunnerProcess.Kill();
 
-        if (RunnerProcess.HasExited && RunnerProcess.ExitCode != 0)
-        {
-            string StdOut = Utility.CheckProcessExitedProperly(RunnerProcess);
-            if (StdOut != "")
-                throw new Exception("JobRunner error: " + StdOut);
-        }
     }
 
     /// <summary>
