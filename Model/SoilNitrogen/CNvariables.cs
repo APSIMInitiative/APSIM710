@@ -17,12 +17,84 @@ public partial class SoilNitrogen
 
     #region Parameters added by RCichota
 
-    // marker for what set of functions will be used (original or new)
-    private bool useNewFunctions = false;
+    // whether to use new functions to compute temp and moist factors
+    private bool useNewSTFFunction = false;  // for stf
+    private bool useNewSWFFunction = false;  // for swf
+    private bool useNewProcesses = false;    // for processes
     [Param]
-    private string functions2use
-    { set { useNewFunctions = value.ToLower().Contains("new"); } }
+    private string useAllNewFunctions
+    { 
+        set
+        {
+            useNewSTFFunction = value.ToLower().Contains("yes");
+            useNewSWFFunction = useNewSTFFunction;
+            useNewProcesses = useNewSTFFunction;
+        }
+    }
+    [Param]
+    private string useNewFunction4TF
+    { set { useNewSTFFunction = value.ToLower().Contains("yes"); } } // for stf
+    [Param]
+    private string useNewFunction4WF
+    { set { useNewSWFFunction = value.ToLower().Contains("yes"); } } // for swf
 
+    // whether to use single temp and moist factors for SOM and FOM mineralisation ir separated
+    private bool useSingleMinerFactors = true;
+    [Param]
+    private string useSingleFactors4Miner
+    { set { useSingleMinerFactors = value.ToLower().Contains("yes"); } }
+
+    // whether calculate one set of mineralisation factors (stf and swf) or one for each pool
+    private bool useFactorsBySOMpool = false;
+    [Param]
+    private string useMultiFactors4MinerSOM
+    { set { useFactorsBySOMpool = value.ToLower().Contains("yes"); } }
+    private bool useFactorsByFOMpool = false;
+    [Param]
+    private string useMultiFactors4MinerFOM
+    { set { useFactorsByFOMpool = value.ToLower().Contains("yes"); } }
+
+
+    #endregion
+
+    //*Following parameters might be better merged into other regions but it is clear to have it separtately, FLi 
+    #region ALTERNATIVE Params for alternarive nitrification/denirification processes
+
+    // soil texture by layer: COARSE = 1.0;/MEDIUM = 2.0; FINE = 3.0; VERYFINE = 4.0;
+    [Param(IsOptional = true, MinVal = 1.0, MaxVal = 4.0)]
+    [Input(IsOptional = true)]
+    private double[] texture;
+   
+    //Alternative N2O emission
+    [Param(MinVal = 0, MaxVal = 10)]
+    private int n2o_approach = 0;           // Approches used for nitri/denitri process for n2o emission 
+
+    //WNMM
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    private double wnmm_n_alpha = 0.002;             // maximum fraction of nitrification rate as N2O
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    private double wnmm_dn_alpha = 0.5;            // maximum fraction of denitrification rate at wfps = 0.8
+
+    //NWMIS
+    [Param(MinVal = 0.0, MaxVal = 50.0)]
+    private double nemis_dn_km = 22;              // half-saturation consntant for NO3 reduction (unit ppm = mgN/kg)
+
+    [Param(MinVal = 0.0, MaxVal = 50.0)]
+    private double nemis_dn_pot = 7.194; 	        // default = 7.194; potential denitrification rate at 20C, on undisturbed soil 
+    // saturated with water in the lab and placed at a nitrate content near to 200 mgN/kg
+    //CENTURY
+    [Param(MinVal = 0.0, MaxVal = 60.0)]
+    private double cent_n_soilt_ave = 15;             // average soil surface temperature
+
+    [Param(MinVal = 0.0, MaxVal = 60.0)]
+    private double cent_n_maxt_ave = 25; 	            // long term average maximum monthly temperature of the hottest month	
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    private double cent_n_wfps_ave = 0.7;              // default = 0.7; average wfps in top nitrifyDepth of soil
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    private double cent_n_max_rate = 0.1;              // default = 0.1, maximum fraction of ammonium to NO3 during nitrification (gN/m2)
     #endregion
 
     #region Parameters used on initialisation only
@@ -314,12 +386,6 @@ public partial class SoilNitrogen
 
     #region New parameters
 
-    // whether mineralisation factors use single calculation of for each type
-    private bool useSingleMinerFactors = false;
-    [Param]
-    private string useSingleFactors
-    { set { useSingleMinerFactors = value.ToLower().Contains("yes"); } }
-
     // optimum temperature for OM mineralisation
     private TempFactorData TempFactor_Miner = new TempFactorData();
     [Param]
@@ -538,6 +604,14 @@ public partial class SoilNitrogen
 
     #region New parameters
 
+    // parameter A to compute active carbon (for denitrification)
+    [Param]
+    private double actC_parmB;
+
+    // parameter B to compute active carbon (for denitrification)
+    [Param]
+    private double actC_parmA;
+
     // optimum temperature for denitrification
     private TempFactorData TempFactor_Denit = new TempFactorData();
     [Param]
@@ -571,17 +645,14 @@ public partial class SoilNitrogen
     [Param]
     private double N2N2O_parmB;
 
-    // parameter C in the N2N2O function
+    // parameters for soil moisture factor for denitrification
+    private XYData WFPSFactor_N2N2O = new XYData();
     [Param]
-    private double N2N2O_parmC;
-
-    // parameter A to compute active carbon (for denitrification)
+    private double[] wfpsN2N2O_x
+    { set { WFPSFactor_N2N2O.xVals = value; } }
     [Param]
-    private double actC_parmA;
-
-    // parameter B to compute active carbon (for denitrification)
-    [Param]
-    private double actC_parmB;
+    private double[] wfpsN2N2O_y
+    { set { WFPSFactor_N2N2O.yVals = value; } }
 
     #endregion
 

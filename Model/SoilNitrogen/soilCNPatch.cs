@@ -20,9 +20,35 @@ class soilCNPatch
 
     #region Parameters added by RCichota
 
-    // marker for what set of functions will be used (original or new)
-    public bool useNewFunctions = false;
+    // whether to use new functions to compute temp and moist factors
+    public bool useNewSTFFunction = false;
+    public bool useNewSWFFunction = false;
+    public bool useNewProcesses = false;
+    public bool useSingleMinerFactors = true;
 
+    // whether calculate one set of mineralisation factors (stf and swf) or one for each pool
+    public bool useFactorsBySOMpool = false;
+    public bool useFactorsByFOMpool = false;
+
+    #endregion
+
+    //Following parameters might be better merged into other regions but it is clear to have it separtately FLi
+    #region ALTERNATIVE Params for alternarive nitrification/denirification processes
+
+    public double[] SoilTextureID;                  // soil texture by layer
+    public int n2o_approach;                // Approches used for nitri/denitri process for n2o emission 
+
+    public double wnmm_n_alpha;             // maximum fraction of nitrification rate as N2O 
+    public double wnmm_dn_alpha;            // maximum fraction of denitrification rate at wfps = 0.8
+
+    public double nemis_dn_km;              // half-saturation consntant for NO3 reduction (unit ppm = mgN/kg)   
+    public double nemis_dn_pot; 	        // default = 7.194; potential denitrification rate at 20C, on undisturbed soil 
+    // saturated with water in the lab and placed at a nitrate content near to 200 mgN/kg
+    public double cent_n_soilt_ave;         // average soil surface temperature
+    public double cent_n_maxt_ave; 	        // long term average maximum monthly temperature of the hottest month	
+    public double cent_n_wfps_ave;          // default = 0.7; average wfps in top nitrifyDepth of soil
+    public double cent_n_max_rate;          // default = 0.1, maximum fraction of ammonium to NO3 during nitrification (gN/m2)
+    
     #endregion
 
     #region Parameters used on initialisation only
@@ -150,10 +176,10 @@ class soilCNPatch
     #region New parameters
     
     // parameters for temperature factor for FOM mineralisation
-    public TempFactorData TempFactor_minerFOM = new TempFactorData();
+    public TempFactorData stfData_MinerFOM = new TempFactorData();
 
     // parameters for soil moisture factor for FOM mineralisation
-    public XYData MoistFactor_minerFOM = new XYData();
+    public XYData swfData_MinerFOM = new XYData();
 
     // parameters for C:N factor for OM mineralisation
     public double CNFactorMinerFOM_OptCN;
@@ -189,28 +215,25 @@ class soilCNPatch
 
     #region New parameters
 
-        // whether mineralisation factors are computed single or for each type
-    public bool useSingleMinerFactors = true;
-
     // parameters for temperature factor for OM mineralisation
-    public TempFactorData TempFactor_Miner = new TempFactorData();
+    public TempFactorData stfData_MinerSOM = new TempFactorData();
 
     // parameters for soil moisture factor for OM mineralisation
-    public XYData MoistFactor_Miner = new XYData();
+    public XYData swfData_MinerSOM = new XYData();
 
     #region parameters for each OM type
 
     // parameters for temperature factor for humus mineralisation
-    public TempFactorData TempFactor_minerHum = new TempFactorData();
+    public TempFactorData stfData_MinerHum = new TempFactorData();
 
     // parameters for soil moisture factor for humus mineralisation
-    public XYData MoistFactor_minerHum = new XYData();
+    public XYData swfData_MinerHum = new XYData();
 
     // parameters for temperature factor for OM biomass mineralisation
-    public TempFactorData TempFactor_minerBiom = new TempFactorData();
+    public TempFactorData stfData_MinerBiom = new TempFactorData();
 
     // parameters for soil moisture factor for OM biomass mineralisation
-    public XYData MoistFactor_minerBiom = new XYData();
+    public XYData swfData_MinerBiom = new XYData();
 
     #endregion
 
@@ -287,7 +310,15 @@ class soilCNPatch
     #endregion
 
     #region New parameters
-    
+
+    // parameter 2 to compute active carbon (for denitrification)
+    public double actC_parmA;
+
+    // parameter 1 to compute active carbon (for denitrification)
+    public double actC_parmB;
+    //[Param]
+    //private double actC_parmB;
+
     // parameters for temperature factor for denitrification
     public TempFactorData TempFactor_Denit = new TempFactorData();
 
@@ -300,14 +331,8 @@ class soilCNPatch
     // parameter for TermB in N2N2O function
     public double N2N2O_parmB;
 
-    // parameter for TermC in N2N2O function
-    public double N2N2O_parmC;
-
-    // parameter 1 to compute active carbon (for denitrification)
-    public double actC_parmA;
-
-    // parameter 2 to compute active carbon (for denitrification)
-    public double actC_parmB;
+    // parameters for soil moisture factor for OM biomass mineralisation
+    public XYData wfpsfData_n2n2o = new XYData();
 
     #endregion
 
@@ -915,6 +940,8 @@ class soilCNPatch
 
     #region Amounts in various pools
 
+    public double[] OC_reset;  // initial OC - needed for urea hydrolysis
+
     public double[] fom_c         // fresh organic C
     {
         get
@@ -1086,6 +1113,27 @@ class soilCNPatch
             dlt_no3_dnit[layer] = Denitrification(layer);
             _no3[layer] -= dlt_no3_dnit[layer];
 
+            switch (n2o_approach)
+            {
+                case 1:
+                    dlt_no3_dnit[layer] = Denitrification_NEMIS(layer);
+                    //n2o_atm[layer] is calculated in Nitrification_NEMIS
+
+                    break;
+                case 2:
+                    dlt_no3_dnit[layer] = Denitrification_WNMM(layer);
+                    //n2o_atm[layer] is calculated in Nitrification_WNMM
+                    break;
+                case 3:
+                    dlt_no3_dnit[layer] = Denitrification_CENT(layer);
+                    //n2o_atm[layer] is calculated in Nitrification_CENT
+                    break;
+                case 0:
+                default:
+                    dlt_no3_dnit[layer] = Denitrification(layer);
+                    break;
+            }
+
             // N2O loss to atmosphere - due to denitrification
             n2o_atm[layer] = 0.0;
             double N2N2O = Denitrification_Nratio(layer);
@@ -1115,7 +1163,7 @@ class soilCNPatch
             double[] dlt_fc_hum;
             double[] dlt_fc_atm;
             FOMdecompData MineralisedFOM = new FOMdecompData();
-            if (useNewFunctions)
+            if (useNewProcesses)
             {
                 MineralisedFOM = MineraliseFOM1(layer);
                 for (int fract = 0; fract < 3; fract++)
@@ -1189,17 +1237,34 @@ class soilCNPatch
                 throw new Exception("N immobilisation resulted in mineral N in layer(" + (layer + 1).ToString() + ") to go below minimum");
             }
 
-            // nitrification of ammonium-N (total)
-            dlt_nitrification[layer] = Nitrification(layer);
-
-            // denitrification loss during nitrification
-            dlt_nh4_dnit[layer] = DenitrificationInNitrification(layer);
+            // NITRIFICATION
+            switch (n2o_approach)
+            {
+                case 1:
+                    dlt_nitrification[layer] = Nitrification(layer);                //using default APSIM process for NEMIS
+                    dlt_nh4_dnit[layer] = DenitrificationInNitrification(layer);
+                    break;
+                case 2:
+                    dlt_nitrification[layer] = Nitrification_WNMM(layer);
+                    // dlt_nh4_dnit[layer] & n2o_atm[layer] are calculated in Nitrification_WNMM
+                    break;
+                case 3:
+                    dlt_nitrification[layer] = Nitrification_CENT(layer);
+                    // dlt_nh4_dnit[layer] & n2o_atm[layer] are calculated in Nitrification_CENT
+                    break;
+                case 0:
+                default:
+                    // nitrification of ammonium-N (total)
+                    dlt_nitrification[layer] = Nitrification(layer);
+                    // denitrification loss during nitrification  (- n2o_atm )
+                    dlt_nh4_dnit[layer] = DenitrificationInNitrification(layer);
+                    // N2O loss to atmosphere from nitrification
+                    n2o_atm[layer] += dlt_nh4_dnit[layer];
+                   break;
+            }
 
             // effective or net nitrification
             effective_nitrification[layer] = dlt_nitrification[layer] - dlt_nh4_dnit[layer];
-
-            // N2O loss to atmosphere from nitrification
-            n2o_atm[layer] += dlt_nh4_dnit[layer];
 
             // update soil mineral N
             _no3[layer] += effective_nitrification[layer];
@@ -1367,26 +1432,26 @@ class soilCNPatch
 
         // get the soil temperature factor
         double tf = (SoilParamSet == "rothc") ? RothcTF(layer, index) : TF(layer, index);
-        if (useNewFunctions)
-            if (useSingleMinerFactors)
+        if (useNewSTFFunction)
+            if (useFactorsBySOMpool)
             {
-                tf = SoilTempFactor(layer, index, TempFactor_Miner);
+                tf = SoilTempFactor(layer, index, stfData_MinerHum);
             }
             else
             {
-                tf = SoilTempFactor(layer, index, TempFactor_minerHum);
+                tf = SoilTempFactor(layer, index, stfData_MinerSOM);
             }
 
         // get the soil water factor
         double wf = WF(layer, index);
-        if (useNewFunctions)
-            if (useSingleMinerFactors)
+        if (useNewSWFFunction)
+            if (useFactorsBySOMpool)
             {
-                wf = SoilMoistFactor(layer, index, MoistFactor_Miner);
+                wf = SoilMoistFactor(layer, index, swfData_MinerHum);
             }
             else
             {
-                wf = SoilMoistFactor(layer, index, MoistFactor_minerHum);
+                wf = SoilMoistFactor(layer, index, swfData_MinerSOM);
             }
 
         // get the rate of mineralisation of N from the humic pool
@@ -1409,26 +1474,26 @@ class soilCNPatch
 
         // get the soil temperature factor
         double tf = (SoilParamSet == "rothc") ? RothcTF(layer, index) : TF(layer, index);
-        if (useNewFunctions)
-            if (useSingleMinerFactors)
+        if (useNewSTFFunction)
+            if (useFactorsBySOMpool)
             {
-                tf = SoilTempFactor(layer, index, TempFactor_Miner);
+                tf = SoilTempFactor(layer, index, stfData_MinerBiom);
             }
             else
             {
-                tf = SoilTempFactor(layer, index, TempFactor_minerBiom);
+                tf = SoilTempFactor(layer, index, stfData_MinerSOM);
             }
 
         // get the soil water factor
         double wf = WF(layer, index);
-        if (useSingleMinerFactors)
-            if (useNewFunctions)
+        if (useFactorsBySOMpool)
+            if (useNewSWFFunction)
             {
-                wf = SoilMoistFactor(layer, index, MoistFactor_Miner);
+                wf = SoilMoistFactor(layer, index, swfData_MinerBiom);
             }
             else
             {
-                wf = SoilMoistFactor(layer, index, MoistFactor_minerBiom);
+                wf = SoilMoistFactor(layer, index, swfData_MinerSOM);
             }
 
         // get the rate of mineralisation of C & N from the biomass pool
@@ -1472,18 +1537,18 @@ class soilCNPatch
 
         // calculate the C:N ratio factor - Bound to [0, 1]
         double cnrf = Math.Max(0.0, Math.Min(1.0, Math.Exp(-cnrf_coeff * (cnr - cnrf_optcn) / cnrf_optcn)));
-        if (useNewFunctions)
+        if (useNewProcesses)
             cnrf = CNorgFactor(layer, index, CNFactorMinerFOM_OptCN, CNFactorMinerFOM_RateCN);
 
         // get the soil temperature factor
         double tf = (SoilParamSet == "rothc") ? RothcTF(layer, index) : TF(layer, index);
-        if (useNewFunctions)
-            tf = SoilTempFactor(layer, index, TempFactor_Miner);
+        if (useNewSTFFunction)
+            tf = SoilTempFactor(layer, index, stfData_MinerSOM);
 
         // get the soil water factor
         double wf = WF(layer, index);
-        if (useNewFunctions)
-            wf = SoilMoistFactor(layer, index, MoistFactor_Miner);
+        if (useNewSWFFunction)
+            wf = SoilMoistFactor(layer, index, swfData_MinerSOM);
 
         // calculate gross amount of C & N released due to mineralisation of the fresh organic matter.
         if (fomC >= fom_min)
@@ -1576,31 +1641,43 @@ class soilCNPatch
 
         // calculate the C:N ratio factor - Bound to [0, 1]
         double cnrf = Math.Max(0.0, Math.Min(1.0, Math.Exp(-cnrf_coeff * (cnr - cnrf_optcn) / cnrf_optcn)));
-        if (useNewFunctions)
+        if (useNewProcesses)
             cnrf = CNorgFactor(layer, index, CNFactorMinerFOM_OptCN, CNFactorMinerFOM_RateCN);
 
         // get the soil temperature factor
         double tf = (SoilParamSet == "rothc") ? RothcTF(layer, index) : TF(layer, index);
-        if (useNewFunctions)
-            if (useNewFunctions)
+        if (useNewSTFFunction)
+            if (useSingleMinerFactors)
             {
-                tf = SoilTempFactor(layer, index, TempFactor_Miner);
+                tf = SoilTempFactor(layer, index, stfData_MinerSOM);
             }
             else
             {
-                tf = SoilTempFactor(layer, index, TempFactor_minerFOM);
+                if (useFactorsByFOMpool)
+                {
+                }
+                else
+                {
+                    tf = SoilTempFactor(layer, index, stfData_MinerFOM);
+                }
             }
 
         // get the soil water factor
         double wf = WF(layer, index);
-        if (useNewFunctions)
-            if (useNewFunctions)
+        if (useNewSWFFunction)
+            if (useSingleMinerFactors)
             {
-                wf = SoilMoistFactor(layer, index, MoistFactor_Miner);
+                wf = SoilMoistFactor(layer, index, swfData_MinerSOM);
             }
             else
             {
-                wf = SoilMoistFactor(layer, index, MoistFactor_minerFOM);
+                if (useFactorsByFOMpool)
+                {
+                }
+                else
+                {
+                    wf = SoilMoistFactor(layer, index, swfData_MinerFOM);
+                }
             }
 
         // calculate gross amount of C & N released due to mineralisation of the fresh organic matter.
@@ -1694,12 +1771,12 @@ class soilCNPatch
             {
                 // get the soil water factor
                 double swf = Math.Max(0.0, Math.Min(1.0, WF(layer, index) + 0.20));
-                if (useNewFunctions)
+                if (useNewSWFFunction)
                     swf = SoilMoistFactor(layer, index, MoistFactor_Hydrol);
 
                 // get the soil temperature factor
                 double stf = Math.Max(0.0, Math.Min(1.0, (st[layer] / 40.0) + 0.20));
-                if (useNewFunctions)
+                if (useNewSTFFunction)
                     stf = SoilTempFactor(layer, index, TempFactor_Hydrol);
 
                 // note (jngh) oc & ph are not updated during simulation
@@ -1707,10 +1784,15 @@ class soilCNPatch
                 //      mep    oc(layer) = (hum_C(layer) + biom_C(layer))*soiln2_fac (layer)*10000.
 
                 // get potential fraction of urea for hydrolysis
-                double ak = potHydrol_parmA +
-                            potHydrol_parmB * (hum_c[layer] + biom_c[layer]) +
-                            potHydrol_parmC * ph[layer] +
-                            potHydrol_parmD * (hum_c[layer] + biom_c[layer]) * ph[layer];
+
+                double ak = Math.Max(0.25, Math.Min(1.0, -1.12 + 1.31 * OC_reset[layer] + 0.203 * ph[layer] - 0.155 * OC_reset[layer] * ph[layer]));
+                if (useNewProcesses)
+                {
+                    ak = potHydrol_parmA +
+                         potHydrol_parmB * (hum_c[layer] + biom_c[layer]) +
+                         potHydrol_parmC * ph[layer] +
+                         potHydrol_parmD * (hum_c[layer] + biom_c[layer]) * ph[layer];
+                }
                 ak = Math.Max(potHydrol_min, Math.Min(1.0, ak));
                 //change oc on eq.: double ak = Math.Max(0.25, Math.Min(1.0, -1.12 + 1.31 * (hum_c[layer] + biom_c[layer]) + 0.203 * ph[layer] - 0.155 * (hum_c[layer] + biom_c[layer]) * ph[layer]));
                 //original eq.: double ak = Math.Max(0.25, Math.Min(1.0, -1.12 + 1.31 * OC_reset[layer] + 0.203 * ph[layer] - 0.155 * OC_reset[layer] * ph[layer]));
@@ -1739,17 +1821,17 @@ class soilCNPatch
 
         // get the soil ph factor
         double phf = pHFNitrf(layer);
-        if (useNewFunctions)
+        if (useNewProcesses)
             phf = SoilpHFactor(layer, index, pHFactor_Nitrif);
 
         // get the soil  water factor
         double wfd = WFNitrf(layer, index);
-        if (useNewFunctions)
+        if (useNewSWFFunction)
             wfd = SoilMoistFactor(layer, index, MoistFactor_Nitrif);
 
         // get the soil temperature factor
         double tf = TF(layer, index);
-        if (useNewFunctions)
+        if (useNewSTFFunction)
             tf = SoilTempFactor(layer, index, TempFactor_Nitrif);
 
         // calculate the optimum nitrification rate (ppm)
@@ -1813,20 +1895,21 @@ class soilCNPatch
 
 
         // get available carbon from soil organic pools
-        double active_c = actC_parmA * (hum_c[layer] + fom_c_pool1[layer] + fom_c_pool2[layer] + fom_c_pool3[layer]) * convFactor_kgha2ppm(layer) + actC_parmB;
-        // Note CM V2 had active_c = fom_C_conc + 0.0031*hum_C_conc + 24.5
+        double active_c = actC_parmB * (hum_c[layer] + fom_c_pool1[layer] + fom_c_pool2[layer] + fom_c_pool3[layer]) * convFactor_kgha2ppm(layer) + actC_parmA;
+        // Note: CM V2 had active_c = fom_C_conc + 0.0031*hum_C_conc + 24.5
+        // Note: Ceres wheat has active_c = 0.4* fom_C_pool1 + 0.0031 * 0.58 * hum_C_conc + 24.5
 
         int index = 0; // denitrification calcs are not different whether there is pond or not. use 1 as default
         // get the soil water factor
         double wf = WFDenit(layer);
-        if (useNewFunctions)
+        if (useNewSWFFunction)
             wf = SoilMoistFactor(layer, index, MoistFactor_Denit);
 
         // get the soil temperature factor
         double tf = Math.Max(0.0, Math.Min(1.0, 0.1 * Math.Exp(0.046 * st[layer])));
         // This is an empirical dimensionless function to account for the effect of temperature.
         // The upper limit of 1.0 means that optimum denitrification temperature is 50 oC and above.  At 0 oC it is 0.1 of optimum, and at -20 oC is about 0.04.
-        if (useNewFunctions)
+        if (useNewSTFFunction)
             tf = SoilTempFactor(layer, index, TempFactor_Denit);
 
         // calculate denitrification rate  - kg/ha
@@ -1843,6 +1926,8 @@ class soilCNPatch
         // + Purpose
         //     Calculate the N2 to N2O ration during denitrification
 
+        int index = 0; // denitrification calcs are not different whether there is pond or not. use 1 as default
+
         // the water filled pore space (%)
         double WFPS = sw_dep[layer] / sat_dep[layer] * 100.0;
 
@@ -1853,16 +1938,502 @@ class soilCNPatch
         double RtermA = N2N2O_parmA * dnit_k1;
         double RtermB = 0.0;
         if (CO2_prod > 0.0)
-            RtermB = dnit_k1 * Math.Exp(-N2N2O_parmB * (_no3[layer] / CO2_prod));
-        double RtermC = N2N2O_parmC;
+            RtermB = dnit_k1 * Math.Exp(N2N2O_parmB * (_no3[layer] / CO2_prod));
+        double RtermC = 0.1;
         bool didInterpolate;
         double RtermD = MathUtility.LinearInterpReal(WFPS, dnit_wfps, dnit_n2o_factor, out didInterpolate);
         // RTermD = (0.015 * WFPS) - 0.32;
 
         double result = Math.Max(RtermA, RtermB) * Math.Max(RtermC, RtermD);
 
+        double nco2f = 0.0;
+        double wfpsf = 0.0;
+
+        if (useNewProcesses)
+        {
+            nco2f = Math.Max(N2N2O_parmA,Math.Exp(N2N2O_parmB * (_no3[layer] / CO2_prod)));
+            wfpsf = WaterFilledPoreSpaceFactor(layer, index, wfpsfData_n2n2o);
+            result = dnit_k1 * nco2f * wfpsf;
+        }
+
         return result;
     }
+
+    #region N2O alternative routines, mergerd 15 Nov 2012 FLi
+
+    private double Nitrification_WNMM(int layer)
+    {
+        // Calculates nitrification of NH4 in a given soil layer as WNMM.
+        // Sub-Program Arguments
+
+        double nRate;                 // rate of nitrification
+        double phf;                   // g_ph factor
+        double pni;                   // potential nitrification index (0-1)
+        double nh4_avail;             // available ammonium (kg/ha)
+        double tf;                    // temperature factor (0-1)
+        double wfd;                   // water factor (0-1)
+
+        //const double alpha = wnmm_n_alpha;   // maximum fraciton of nitrification rate as n2o  
+
+        //pH effects:  
+        phf = 1.0;
+        if (ph[layer] < 7.0) phf = 0.307 * ph[layer] - 1.269;
+        if (ph[layer] > 7.4) phf = 5.367 - 0.599 * ph[layer];
+
+        // water effects:        
+        wfd = 1.0;                      //when sw25 <= sw < dul 
+        double sw25 = 0.25 * (dul_dep[layer] - ll15_dep[layer]);     // confirm?
+        if (sw_dep[layer] > dul_dep[layer])
+            wfd = 1.0 - (sw_dep[layer] - dul_dep[layer]) / (sat_dep[layer] - dul_dep[layer]);
+        if (sw_dep[layer] < sw25)
+            wfd = (sw_dep[layer] - ll15_dep[layer]) / (sw25 - ll15_dep[layer]);
+
+        // soil temperature effects
+        tf = Math.Max(0.0, 0.41 * (st[layer] - 5.0) / 10.0);
+
+        // use a combined index to adjust rate of nitrification
+        pni = wfd * tf * phf;
+
+        // get actual rate of nitrification for layer
+        nRate = _nh4[layer] * (1 - Math.Exp(-pni));            //Unit: kg N/Ha
+
+        // Inhibitor - no more enabled?
+        // nRate *= Math.Max(0.0, 1.0 - _nitrification_inhibition[layer]);
+
+        // Booundary check
+        nh4_avail = Math.Max(_nh4[layer] - nh4_min[layer], 0.0);
+        nRate = Math.Max(0.0, Math.Min(nh4_avail, nRate));
+
+        // n2o
+        double fTemp = 0.1 + 0.9 * (st[layer] / (st[layer] + Math.Exp(9.93 - 0.312 * st[layer])));
+        dlt_nh4_dnit[layer] = wnmm_n_alpha * nRate * wfd * fTemp;        // alpha is 'dnit_nitrf_loss';
+        effective_nitrification[layer] = nRate - dlt_nh4_dnit[layer];
+        n2o_atm[layer] += dlt_nh4_dnit[layer];
+
+        return nRate;
+    }
+
+    //N2O alternatives--------------------------------------------------------------
+    private double Nitrification_CENT(int layer)
+    {
+        // layer            //input: soil layer count
+        // return           //return: nh4->no3 and &
+        // n2o_atm          //must calc: N2O production 
+
+        //+  Purpose:  
+        //  1) Calculates nitrification of NH4 in a given soil layer
+        //      using the approach in DayCent, based on the 'Nitrify' 
+        //      process in DayCent as in 2006; 
+        //  2) Need to decide weather this process will produce N2O     
+        //     FLi 11-April-2011
+
+        //find way to get this parameters in code, set a temperary average    
+        double surfTempAvg = cent_n_soilt_ave;  // 15.0  --  average soil surface temperature (deg C)
+        double maxt = cent_n_maxt_ave;   // 25.0  --  Long term avg max monthly air temp of the hottest month (deg C)
+        double avgWFPS = cent_n_wfps_ave;   // 0.7	  --  avg wfps in top nitrifyDepth cm of soil (0-1)
+        double pHLayer = ph[layer];              // 6.0   --   pH of the soil layer
+
+        //soil_texture      
+        const int COARSE = 1;
+        const int MEDIUM = 2;
+        const int FINE = 3;
+        const int VERYFINE = 4;
+        int textureIndex = (int)SoilTextureID[layer];             // default: fine-medium. Only distinguish "coarse" and others         
+
+        //***** Following block calculation using unit of 'gN/m2' as in DayCent          
+        double MaxNitrifRate = cent_n_max_rate; //default = 0.10, max fraction of ammonium to NO3 during nitrification (gN/m^2)
+        const double Ha_to_SqM = 0.0001;	    // factor to convert ha to sq meters
+        const double kgHa_to_gM2 = 0.1;        // @ 1 kg/ha = 0.1 g/m2
+        const double min_ammonium = 0.015; 	    // min. total ammonium in soil (gN/m^2)  @ not nh4_min[layer]; 0.15
+
+        double NH4_to_NO3 = 0.0;		        // amount of NH4 converted to NO3 due to nitrification (gN/m^2)
+        double ammonium = _nh4[layer] * kgHa_to_gM2; 		  //convert layer nh4 into ammonium (gN/m^2)  
+        if (ammonium >= min_ammonium)
+        {
+            //  Compute the effect of wfps on Nitrification (0-1)
+            double a, b, c, d;
+            switch (textureIndex)
+            {
+                case COARSE:
+                    a = 0.5;
+                    b = 0.0;
+                    c = 1.5;
+                    d = 4.5;
+                    break;
+
+                case FINE:
+                case VERYFINE:
+                case MEDIUM:
+                default:
+                    a = 0.65;
+                    b = 0.0;
+                    c = 1.2;
+                    d = 2.5;
+                    break;
+            }
+            double base1 = ((avgWFPS - b) / (a - b));
+            double base2 = ((avgWFPS - c) / (a - c));
+            double e1 = d * ((b - a) / (a - c));
+            double e2 = d;
+            double fNwfps = Math.Pow(base1, e1) * Math.Pow(base2, e2);
+
+            //  Compute temperature effect on Nitrification (0-1)
+            double A0 = maxt;                // A0-A4 are parameters to parton-innis functions
+            double A1 = -5.0;
+            double A2 = 4.5;
+            double A3 = 7.0;
+            double tmp1 = (A1 - surfTempAvg) / (A1 - A0);
+            double tmp2 = 1 - Math.Pow(tmp1, A3);
+            double tmp3 = Math.Pow(tmp1, A2);
+            double fNsoilt = 0;
+            if (tmp1 > 0 && A1 != A0)
+                fNsoilt = Math.Exp(A2 * tmp2 / A3) * tmp3;
+
+            //  Compute pH effect on nitrification
+            const double AA0 = 5.0;
+            const double AA1 = 0.56;
+            const double AA2 = 1.0;
+            const double AA3 = 0.45;
+            double fNph = AA1 + (AA2 / Math.PI) * Math.Atan(Math.PI * AA3 * (pHLayer - AA0));
+
+            // Ammonium that goes to nitrate during nitrification.
+            const double base_flux = 0.1 * Ha_to_SqM;	                //convert into 0.1 gN/ha/day
+            NH4_to_NO3 = ammonium * MaxNitrifRate * fNph * fNwfps * fNsoilt + base_flux;
+            /* alternative, was in LUCI1 for reference
+            double sitepar_Ncoeff = 0.03;
+            double abiotic = Math.Max(fNwfps * fNsoilt, sitepar_Ncoeff);
+            NH4_to_NO3 = ammonium * MaxNitrifRate * fNph * abiotic + base_flux;
+            */
+
+            // Effects of inhibitor - disabled 
+            // NH4_to_NO3 *= Math.Max(0.0, 1.0 - _nitrification_inhibition[layer]);
+
+            // Do not decrease below minimum NH4
+            if ((ammonium - NH4_to_NO3) > min_ammonium)
+                ammonium -= NH4_to_NO3;
+            else
+                NH4_to_NO3 = 0.0;
+            //***** End of block using unit gN/m2
+        }
+
+        //Convert back to unit: kg/ha, and use same approach of APSIM in estimating N2O produciton 
+        double result = NH4_to_NO3 / kgHa_to_gM2;   //change back to unit: kg/ha
+
+        dlt_nh4_dnit[layer] = result * dnit_nitrf_loss;
+        effective_nitrification[layer] = result - dlt_nh4_dnit[layer];
+        n2o_atm[layer] += dlt_nh4_dnit[layer];
+
+        return result;
+    }
+
+    //N2O alternatives--------------------------------------------------------------
+    private double Denitrification_CENT(int layer)
+    {
+        //layer                     Soil layer counter
+        //n2o_atm                   // calc: n2o_atm,  - kg/ha/day
+        //dlt_dnR                   // total denitrificaiton - kg/ha/day
+        //  Calculates denitrification using the approach of DayCent as in 2006, Frank Li
+
+        // constants
+        // min. nitrate concentration required in a layer for trace gas calc. (ppm N)
+        double minNitratePPM = 0.1;
+        // min. allowable nitrate per laye at end of day (ppm N)
+        double minNitratePPM_final = 0.05;
+
+        //if (_no3ppm[layer] < minNitratePPM)
+        double _no3ppm = no3[layer] * convFactor_kgha2ppm(layer);
+        if (_no3ppm < minNitratePPM)
+        {
+            n2o_atm[layer] = 0.0;
+            return 0.0;
+        }
+        //Note : sat, dul, ll15, and sw are water content fraction (mm/mm) in a layer
+        //       sat_dep, dul_dep, ll15_dep and sw_dep are water content (mm) in a layer     
+        float ll15 = ll15_dep[layer] / dlayer[layer];
+        float dul = dul_dep[layer] / dlayer[layer];
+        float sat = sat_dep[layer] / dlayer[layer];
+        float sw = sw_dep[layer] / dlayer[layer];
+
+
+        // normalized diffusivity in aggregate soil media, at a standard field capacity (0-1) why
+        //  water filled pore space at field capacity (0-1)
+        double wfps_fc = dul / sat;                         // dul = field capacity, sat = porosity;
+        double dD0_fc = diffusivity(layer, dul);            // original code calculats diffusivity when sw = dul (i.e. at fieled capacity) 
+        // why not use actual sw.
+        // water filled pore space threshold (0-1)
+        double WFPS_threshold = (dD0_fc >= 0.15) ? 0.80 : (dD0_fc * 250.0 + 43.0) / 100.0;
+        double layerWFPS = sw / sat;
+
+        // CO2 correction factor when WFPS has reached threshold
+        double co2ppm = (dlt_c_fom_2_atm[0][layer] + dlt_c_fom_2_atm[1][layer] + dlt_c_fom_2_atm[2][layer] +
+                     dlt_c_biom_2_atm[layer] + dlt_c_hum_2_atm[layer]) /
+                      (bd[layer] * dlayer[layer]) * 100.0;                          // ppm
+
+        double co2ppm_correction = co2ppm;
+        if (layerWFPS > WFPS_threshold)
+        {
+            double a = (dD0_fc >= 0.15) ? 0.004 : (-0.1 * dD0_fc + 0.019);
+            co2ppm_correction = co2ppm * (1.0 + a * (layerWFPS - WFPS_threshold) * 100.0);
+        }
+
+        //  denitrification flux due to soil nitrate (ppm N/day), Del Grosso et. al, GBC.
+        //parameters to parton-innis functions
+        double AA0 = 9.23;
+        double AA1 = 1.556;
+        double AA2 = 76.91;
+        double AA3 = 0.00222;
+        //double fDno3 = Math.Max(0.0, f_arctangent(nitratePPM(layer), A));   //no3_N ppm or no3_ppm?
+        double fDno3 = AA1 + (AA2 / Math.PI) * Math.Atan(Math.PI * AA3 * (_no3ppm - AA0));
+        fDno3 = Math.Max(0.0, fDno3);
+
+        //  fDco2 (ppm N) Del Grosso et. al, GBC,
+        //  denitrification flux due to CO2 concentration (ppm N/day)
+        double fDco2 = Math.Max(0.0, (0.1 * Math.Pow(co2ppm_correction, 1.3) - minNitratePPM));
+
+        // wfps effect (fDwfps, 0-1?) Del Grosso et. al, GBC
+        // The x_inflection calculation should take into account the corrected CO2 concentration, 
+        double M = Math.Min(0.113, dD0_fc) * (-1.25) + 0.145;
+        double x_inflection = 9.0 - M * co2ppm_correction;
+        double fDwfps = Math.Max(0.0, 0.45 + (Math.Atan(0.6 * Math.PI * (10.0 * layerWFPS - x_inflection))) / Math.PI);
+
+        //Total Denitrification
+        double fluxTotalDenitPPM = (fDno3 < fDco2) ? fDno3 : fDco2;  // total (N2+N2O) denitrif. flux of the layer (ppm N/day)
+        fluxTotalDenitPPM = Math.Max(0.066, fluxTotalDenitPPM);
+        // Minimum value for potential denitrification in simulation layer (0.066)
+        // To Do: consider - adjust constant 0.066 for change in sim. depth?
+        fluxTotalDenitPPM *= fDwfps;    //wfps effects
+        double dlt_dnR = fluxTotalDenitPPM * (bd[layer] * dlayer[layer]) / 100.0;            //total denitrification: ppm ->kg/ha
+
+        //  Nitrate effect on the ratio of N2 to N2O,  Del Grosso et. al, GBC
+        double k1 = Math.Max(1.5, 38.4 - 350 * dD0_fc);
+        double fRno3_co2 = Math.Max(0.16 * k1, k1 * Math.Exp(-0.8 * _no3ppm / co2ppm));
+
+        //  WFPS effect on the N2/N2O Ratio Del Grosso et. al, GBC
+        double fRwfps = Math.Max(0.1, 0.015 * layerWFPS * 100.0 - 0.32);
+
+        double ratioN2N2O = Math.Max(0.1, fRno3_co2 * fRwfps);	// N2:N2O Ratio
+        n2o_atm[layer] = dlt_dnR / (ratioN2N2O + 1.0);
+
+        //Reduce nitrate in soil outside of this  funciton after return
+        return dlt_dnR;
+    }
+
+    // ----------------------------------------------------------------------------
+    //	Function: Estimates normalized diffusivity in soils, called by denitrification_CENT.
+    //	Returns the normalized diffusivity in aggregate soil media, units 0-1:
+    //	ratio of gas diffusivity through soil to gas diffusivity through air
+    //	at optimum water content. Reference: Millington and Shearer (1971) Soil Science 
+    //	Davidson, E.A. and S.E. Trumbore (1995).
+    //* If pore space is saturated, then diffusivity = 0//	
+    // ----------------------------------------------------------------------------
+    //  As in DayCent 2006, used by denitrification_DayCent, FrankLi
+    private double diffusivity(int layer)
+    {
+        double sw = sw_dep[layer] / dlayer[layer];      //fraction: soil water content (mm/mm)
+        return diffusivity(layer, sw);
+    }
+
+    private double diffusivity(int layer, double sw)   //for specified water content, not current content
+    {
+        double dul = dul_dep[layer] / dlayer[layer];    //fraction: soil water content (mm/mm)
+        double sat = sat_dep[layer] / dlayer[layer];    //fraction: soil water content (mm/mm)
+
+        double dDO = 0;
+        // volumetric air content fraction
+        double vac = Math.Min(1.0, Math.Max(0.0, sat - sw));
+        if (vac > 0.0)	//unsaturated
+        {
+            // volumetric water content of the soil bed volume
+            double theta_V = sw;
+
+            // volumeetric water content per unit bed volume in inter-aggregate pore space ( of > DUL )
+            double theta_P = 0;
+            if (sw > dul) theta_P = sw - dul;
+
+            // volumetric water content per unit bed volume in intra-aggregate pore space (of < DUL)
+            double theta_A = sw;
+            if (sw > dul) theta_A = dul;
+
+            // fractional liquid saturation of the A component of total pore volume [<DUL]
+            double s_wat = Math.Min(1.0, theta_A / dul);
+
+            // fractional liquid saturation of the P component of total pore volume [>DUL]
+            double sw_p = Math.Min(1.0, theta_P / (sat - dul));
+
+            double A = dul;
+            double porosity = sat;
+
+            double tp1, tp2, tp3, tp4, tp5, tp6, tp7, tp8;          // intermediate variables
+            if (1.0 - s_wat > 0.0)
+                tp1 = Math.Pow((1.0 - s_wat), 2.0);
+            else
+                tp1 = 0.0;
+
+            tp2 = (A - theta_A) / (A + (1.0 - porosity));
+            if (tp2 > 0.0)
+                tp3 = Math.Pow(tp2, (0.5 * tp2 + 1.16));
+            else
+                tp3 = 0.0;
+
+            tp4 = 1.0 - Math.Pow(vac, (0.5 * vac + 1.16));
+            tp5 = vac - theta_P;
+            if (tp5 > 0.0)
+                tp6 = Math.Pow(tp5, (0.5 * tp5 + 1.16));
+            else
+                tp6 = 0.0;
+
+            tp7 = Math.Pow((1.0 - sw_p), 2.0);
+
+            tp8 = Math.Max(0.0, ((tp1 * tp3 * tp4 * (tp5 - tp6)) /
+                    (1.0E-6 + (tp1 * tp3 * tp4) + tp5 - tp6) * 1.0E7));
+
+            // normalized diffusivity in aggregate soil media (0-1)
+            dDO = Math.Max(0.0, (tp8 / 1.0E7 + tp7 * tp6));
+        }
+        return dDO;
+    }
+
+    //N2O alternatives--------------------------------------------------------------
+    private double Denitrification_NEMIS(int layer)
+    {
+        //+  Sub-Program Arguments
+        //      snRate              // (OUTPUT) denitrification rate    - kg/ha/day
+        //      n2o_atm             //  N2O emission 
+
+        //+  Purpose
+        //      Calculates denitrification using NEMIS approach
+        //      Herault & Germon (2000) European J of Soil Sci.
+        double tf = 1.0;              // temperature factor affecting denitrification rate (0-1)
+        double wf = 0.0;              // soil moisture factor affecting denitrification rate (0-1), = 0 when wfps <0.62
+        double phf = 1.0;             // pH factor affecting denitrification 0-1    
+        double no3_avail;             // soil nitrate available (kg/ha)
+
+        // nemis_dn_km = 22;         //ppm  these two parameters are input form UI 
+        // nemis_dn_pot = 7.194;     // kgN/ha/day 
+
+
+        if (_no3[layer] < no3_min[layer])
+        {
+            n2o_atm[layer] = 0.0;
+            return 0.0;
+        }
+
+        //water effects (0-1)
+        wf = 0.0;
+        double wfps = (sw_dep[layer] - ll15_dep[layer]) / (sat_dep[layer] - ll15_dep[layer]);
+        if (wfps > 0.62)
+        {
+            wf = Math.Pow((wfps - 0.62) / 0.38, 1.74);    // 
+            wf = Math.Max(0.0, Math.Min(1.0, wf));
+        }
+
+
+        // soil temperature effects (0-1)       
+        tf = 1.0;
+        if (st[layer] < 11.0)
+            tf = Math.Exp(0.1 * (st[layer] - 11.0) * Math.Log(89, Math.E) - 9 * Math.Log(2.1, Math.E));
+        else //st >= 11
+            tf = Math.Exp(0.1 * (st[layer] - 20.0) * Math.Log(2.1, Math.E));
+
+        //pH effects
+        phf = 1.0;
+        if (ph[layer] < 6.5 && ph[layer] > 3.5)
+            phf = (ph[layer] - 3.5) / 3.0;
+        else if (ph[layer] <= 3.5)
+            phf = 0.0;
+
+        //no3 factor
+        double _no3ppm = _no3[layer] * convFactor_kgha2ppm(layer);          // calculate in ppm 
+        double fno3 = _no3ppm / (_no3ppm + nemis_dn_km);
+        //double fno3 = no3ppm[layer] / (no3ppm[layer] + nemis_dn_km);                   
+
+        //calculate denitrification rate  - dnRAte_pot in kg/ha !
+        double dnRate = nemis_dn_pot * wf * tf * phf * fno3;
+        // dnit_rate_coeff relavent? 
+
+        // prevent NO3 - N concentration from falling below NO3_min
+        no3_avail = _no3[layer] - no3_min[layer];
+        dnRate = Math.Max(0.0, Math.Min(no3_avail, dnRate));
+
+        //apsim exisiting gapproch for fraction of N2O, which is similar to that in DayCent 
+        double WFPS = sw_dep[layer] / sat_dep[layer] * 100.0; // Water filled pore space (%)
+        double CO2 = (dlt_c_fom_2_atm[0][layer] + dlt_c_fom_2_atm[1][layer] + dlt_c_fom_2_atm[2][layer] +
+                      dlt_c_biom_2_atm[layer] + dlt_c_hum_2_atm[layer]) /
+                      (bd[layer] * dlayer[layer]) * 100.0;                  //ppm
+
+        double RtermA = 0.16 * dnit_k1;
+        double RtermB = (CO2 > 0.0) ?
+             dnit_k1 * (Math.Exp(-0.8 * (_no3[layer] * convFactor_kgha2ppm(layer) / CO2))) : 0.0;
+        double RtermC = 0.1;
+        bool didInterpolate;
+        double RtermD = MathUtility.LinearInterpReal(WFPS, dnit_wfps, dnit_n2o_factor, out didInterpolate);
+        // RTermD = (0.015 * WFPS) - 0.32;
+        double N2N2O = Math.Max(RtermA, RtermB) * Math.Max(RtermC, RtermD);
+
+        n2o_atm[layer] = dnRate / (N2N2O + 1.0);
+
+        return dnRate;
+    }
+
+    //N2O alternatives--------------------------------------------------------------
+    private double Denitrification_WNMM(int layer)
+    {
+        //+  Sub-Program Arguments
+        //      snRate              // (OUTPUT) denitrification rate    - kg/ha/day
+        //      n2o_atm             //  N2O emission 
+
+        //+  Purpose
+        //      Calculates denitrification using NEMIS approach
+        //      Herault & Germon (2000) European J of Soil Sci.
+        double tf;                    // temperature factor affecting denitrification rate (0-1)
+        double wf;                    // soil moisture factor affecting denitrification rate (0-1)
+        //double phf;                   // pH factor affecting denitrification 0-1    
+        double no3_avail;             // soil nitrate available (kg/ha)
+
+        //const double alpha = 0.5;     // n2o as fraction of dnRAte when wfps = 0.8   
+
+
+        if (_no3[layer] < no3_min[layer])
+        {
+            n2o_atm[layer] = 0.0;
+            return 0.0;
+        }
+
+        //water effects (0-1)
+        double wfps = sw_dep[layer] / sat_dep[layer];
+        if (wfps < 0.8)
+        {
+            n2o_atm[layer] = 0.0;
+            return 0.0;
+        }
+        wf = Math.Exp(-23.77 + 23.77 * wfps);    // 
+
+        // soil temperature effects (0-1)       
+        tf = 0.1 + 0.9 * st[layer] / (st[layer] + Math.Exp(9.93 - 0.312 * st[layer]));
+
+        //pH effects (No)
+
+        //SOC % in soil 
+        double SOC = 0.01 * (fom_c[layer] + biom_c[layer] + hum_c[layer]) / (bd[layer] * dlayer[layer]);
+        /**** Note: 1 (kg/ha)/(g.cm^-3 * mm) = 0.0001, i.e., 0.01% */
+
+        //calculate denitrification rate  - dnRAte_pot in kg/ha !
+        double dnRate = _no3[layer] * (1 - Math.Exp(-1.4 * wf * tf * SOC));    //kgN/ha
+
+        // prevent NO3 - N concentration from falling below NO3_min
+        no3_avail = _no3[layer] - no3_min[layer];
+        dnRate = Math.Max(0.0, Math.Min(no3_avail, dnRate));
+
+        //n2o_atm
+        if (wfps >= 1)
+            n2o_atm[layer] = 0.05 * dnRate;
+        else
+            n2o_atm[layer] = wnmm_dn_alpha * dnRate * (1 - wf);
+
+        return dnRate;
+    }
+
+    #endregion
 
     private void PackActualResidueDecomposition()
     {
@@ -2075,6 +2646,7 @@ class soilCNPatch
         Array.Resize(ref no3_min, nLayers);
         Array.Resize(ref no3_yesterday, nLayers);
         Array.Resize(ref nh4_yesterday, nLayers);
+        Array.Resize(ref OC_reset, nLayers);
         Array.Resize(ref fbiom, nLayers);
         Array.Resize(ref finert, nLayers);
         Array.Resize(ref inert_c, nLayers);
@@ -2454,6 +3026,31 @@ class soilCNPatch
 
             // get the soil moist factor
             return MathUtility.LinearInterpReal(myX, Parameters.xVals, Parameters.yVals, out didInterpolate);
+        }
+        else if (index == 1) // if pond is active
+            return 1.0;
+        else
+            throw new Exception("SoilNitrogen.SoilMoistFactor - invalid value for \"index\" parameter");
+    }
+
+    private double WaterFilledPoreSpaceFactor(int layer, int index, XYData Parameters)
+    {
+        // + Purpose
+        //     Calculate a water filled pore space factor for denitrification processes
+
+        // + Assumptions
+        //     index = 0 for aerobic conditions, 1 for anaerobic
+
+        index -= 1;  // use this untill can change the whole code. (index used to be [1-2]
+        if (index == 0)
+        {
+            bool didInterpolate;
+
+            // get the WFPS value (%)
+            double WFPS = sw_dep[layer] / sat_dep[layer] * 100.0;
+
+            // get the WFPS factor
+            return MathUtility.LinearInterpReal(WFPS, Parameters.xVals, Parameters.yVals, out didInterpolate);
         }
         else if (index == 1) // if pond is active
             return 1.0;

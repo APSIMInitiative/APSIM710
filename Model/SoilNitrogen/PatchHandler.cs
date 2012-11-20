@@ -20,9 +20,43 @@ public partial class SoilNitrogen
 
         #region Parameters added by RCichota
 
-        // marker for what set of functions will be used (original or new)
-        Patch[k].useNewFunctions = useNewFunctions;
+        // whether to use new functions to compute temp and moist factors
+        Patch[k].useNewSTFFunction = useNewSTFFunction;
+        Patch[k].useNewSTFFunction = useNewSWFFunction;
+        Patch[k].useNewProcesses = useNewProcesses;
+        Patch[k].useSingleMinerFactors = useSingleMinerFactors;
 
+        // whether calculate one set of mineralisation factors (stf and swf) or one for each pool
+        Patch[k].useFactorsBySOMpool = useFactorsBySOMpool;
+        Patch[k].useFactorsByFOMpool = useFactorsByFOMpool;
+
+        #endregion
+
+        #region Parameters for alternative N2O emission processes FLi
+        //passing params from SoilNitrogen to Patch
+
+        //Console.Out.WriteLine("#### 1Passing n2o_approch = " + n2o_approach);
+        Patch[k].SoilTextureID = new double[dlayer.Length];
+        double value = 2.0;  // default texture is medium
+        for (int layer = 0; layer < dlayer.Length; layer++)
+        {
+            if (texture != null)
+                value = texture[layer];
+            Patch[k].SoilTextureID[layer] = value;
+        }
+
+        Patch[k].n2o_approach = n2o_approach;                          // Approches used for nitri/denitri process for n2o emission 
+
+        Patch[k].wnmm_n_alpha = wnmm_n_alpha;
+        Patch[k].wnmm_dn_alpha = wnmm_dn_alpha;
+
+        Patch[k].nemis_dn_km = nemis_dn_km;
+        Patch[k].nemis_dn_pot = nemis_dn_pot;
+
+        Patch[k].cent_n_soilt_ave = cent_n_soilt_ave;
+        Patch[k].cent_n_maxt_ave = cent_n_maxt_ave;
+        Patch[k].cent_n_wfps_ave = cent_n_wfps_ave;
+        Patch[k].cent_n_max_rate = cent_n_max_rate;
         #endregion
 
         #region Values needed for initalisation only
@@ -84,6 +118,9 @@ public partial class SoilNitrogen
 
         for (int layer = 0; layer < dlayer.Length; layer++)
         {
+            // the initial soil OC
+            Patch[k].OC_reset[layer] = OC_reset[layer];
+
             // initial ratio of biomass-C to mineralizable humic-C (0-1)
             Patch[k].fbiom[layer] = fbiom[layer];
 
@@ -181,13 +218,13 @@ public partial class SoilNitrogen
         #region New parameters
 
         // parameters for temperature factor for FOM mineralisation
-        Patch[k].TempFactor_minerFOM.TempOptimum = TempFactor_minerFOM.TempOptimum;
-        Patch[k].TempFactor_minerFOM.FactorAtZero = TempFactor_minerFOM.FactorAtZero;
-        Patch[k].TempFactor_minerFOM.CurveExponent = TempFactor_minerFOM.CurveExponent;
+        Patch[k].stfData_MinerFOM.TempOptimum = TempFactor_minerFOM.TempOptimum;
+        Patch[k].stfData_MinerFOM.FactorAtZero = TempFactor_minerFOM.FactorAtZero;
+        Patch[k].stfData_MinerFOM.CurveExponent = TempFactor_minerFOM.CurveExponent;
 
         // parameters for soil moisture factor for FOM mineralisation
-        Patch[k].MoistFactor_minerFOM.xVals = MoistFactor_minerFOM.xVals;
-        Patch[k].MoistFactor_minerFOM.yVals = MoistFactor_minerFOM.yVals;
+        Patch[k].swfData_MinerFOM.xVals = MoistFactor_minerFOM.xVals;
+        Patch[k].swfData_MinerFOM.yVals = MoistFactor_minerFOM.yVals;
 
         // parameters for C:N factor for FOM mineralisation
         Patch[k].CNFactorMinerFOM_OptCN = CNFactorMinerFOM_OptCN;
@@ -241,37 +278,34 @@ public partial class SoilNitrogen
 
         #region New parameters
 
-        // whether mineralisation factors are computed single or for each type
-        Patch[k].useSingleMinerFactors = useSingleMinerFactors;
-
         // parameters for temperature factor for mineralisation
-        Patch[k].TempFactor_Miner.TempOptimum = TempFactor_Miner.TempOptimum;
-        Patch[k].TempFactor_Miner.FactorAtZero = TempFactor_Miner.FactorAtZero;
-        Patch[k].TempFactor_Miner.CurveExponent = TempFactor_Miner.CurveExponent;
+        Patch[k].stfData_MinerSOM.TempOptimum = TempFactor_Miner.TempOptimum;
+        Patch[k].stfData_MinerSOM.FactorAtZero = TempFactor_Miner.FactorAtZero;
+        Patch[k].stfData_MinerSOM.CurveExponent = TempFactor_Miner.CurveExponent;
 
         // parameters for soil moisture factor for OM mineralisation
-        Patch[k].MoistFactor_Miner.xVals = MoistFactor_Miner.xVals;
-        Patch[k].MoistFactor_Miner.yVals = MoistFactor_Miner.yVals;
+        Patch[k].swfData_MinerSOM.xVals = MoistFactor_Miner.xVals;
+        Patch[k].swfData_MinerSOM.yVals = MoistFactor_Miner.yVals;
 
         #region parameter for each OM type
 
         // parameters for temperature factor for humus mineralisation
-        Patch[k].TempFactor_minerHum.TempOptimum = TempFactor_minerHum.TempOptimum;
-        Patch[k].TempFactor_minerHum.FactorAtZero = TempFactor_minerHum.FactorAtZero;
-        Patch[k].TempFactor_minerHum.CurveExponent = TempFactor_minerHum.CurveExponent;
+        Patch[k].stfData_MinerHum.TempOptimum = TempFactor_minerHum.TempOptimum;
+        Patch[k].stfData_MinerHum.FactorAtZero = TempFactor_minerHum.FactorAtZero;
+        Patch[k].stfData_MinerHum.CurveExponent = TempFactor_minerHum.CurveExponent;
 
         // parameters for soil moisture factor for humus mineralisation
-        Patch[k].MoistFactor_minerHum.xVals = MoistFactor_minerHum.xVals;
-        Patch[k].MoistFactor_minerHum.yVals = MoistFactor_minerHum.yVals;
+        Patch[k].swfData_MinerHum.xVals = MoistFactor_minerHum.xVals;
+        Patch[k].swfData_MinerHum.yVals = MoistFactor_minerHum.yVals;
 
         // parameters for temperature factor for OM biomass mineralisation
-        Patch[k].TempFactor_minerBiom.TempOptimum = TempFactor_minerBiom.TempOptimum;
-        Patch[k].TempFactor_minerBiom.FactorAtZero = TempFactor_minerBiom.FactorAtZero;
-        Patch[k].TempFactor_minerBiom.CurveExponent = TempFactor_minerBiom.CurveExponent;
+        Patch[k].stfData_MinerBiom.TempOptimum = TempFactor_minerBiom.TempOptimum;
+        Patch[k].stfData_MinerBiom.FactorAtZero = TempFactor_minerBiom.FactorAtZero;
+        Patch[k].stfData_MinerBiom.CurveExponent = TempFactor_minerBiom.CurveExponent;
 
         // parameters for soil moisture factor for OM biomass mineralisation
-        Patch[k].MoistFactor_minerBiom.xVals = MoistFactor_minerBiom.xVals;
-        Patch[k].MoistFactor_minerBiom.yVals = MoistFactor_minerBiom.yVals;
+        Patch[k].swfData_MinerBiom.xVals = MoistFactor_minerBiom.xVals;
+        Patch[k].swfData_MinerBiom.yVals = MoistFactor_minerBiom.yVals;
 
         #endregion
 
@@ -374,6 +408,12 @@ public partial class SoilNitrogen
 
         #region New parameters
 
+        // parameter 2 to compute active carbon (for denitrification)
+        Patch[k].actC_parmA = actC_parmA;
+
+        // parameter 1 to compute active carbon (for denitrification)
+        Patch[k].actC_parmB = actC_parmB;
+
         // parameters for temperature factor for denitrification
         Patch[k].TempFactor_Denit.TempOptimum = TempFactor_Denit.TempOptimum;
         Patch[k].TempFactor_Denit.FactorAtZero = TempFactor_Denit.FactorAtZero;
@@ -389,14 +429,9 @@ public partial class SoilNitrogen
         // parameter for TermB in N2N2O function
         Patch[k].N2N2O_parmB = N2N2O_parmB;
 
-        // parameter for TermC in N2N2O function
-        Patch[k].N2N2O_parmC = N2N2O_parmC;
-
-        // parameter 1 to compute active carbon (for denitrification)
-        Patch[k].actC_parmA = actC_parmA;
-
-        // parameter 2 to compute active carbon (for denitrification)
-        Patch[k].actC_parmB = actC_parmB;
+        // parameters to compute WFPS factors on N2:N2O ration calc
+        Patch[k].wfpsfData_n2n2o.xVals = WFPSFactor_N2N2O.xVals;
+        Patch[k].wfpsfData_n2n2o.yVals = WFPSFactor_N2N2O.yVals;
 
         #endregion
 
