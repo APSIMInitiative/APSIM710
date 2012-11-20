@@ -63,6 +63,11 @@ public class AgPasture
     private double[] dRootDepth;	    //int:Daily root growth (mm)
     [Param]
     private double[] maxRootDepth;	    //int:Maximum root depth (mm)
+    [Param]
+    private double[] allocationSeasonF;	    //growth allocation (shoot/root) season factor,
+                                            //made this accessable from xml 
+    [Param]
+    private double[] NdilutCoeff;           //N dilution coefficient, making it accessible on 23 Mar 2012
 
     private double[] myRootDepth;          //int:current root depth (mm)
     [Param]
@@ -214,8 +219,10 @@ public class AgPasture
     [Param]
     private double[] Frgr;           // Relative growth rate factor (in most cases, Frgr=1)
     // not used till Mar2010
-    [Param]
-    private double CO2ambient = 380; //ambient [CO2]
+//    [Param]
+//    private double CO2ambient = 380; //ambient [CO2]
+    [Input(IsOptional = true)]
+    private double CO2ambient = 380; //expected to be updated from MET  
     [Param]
     private double[] CO2PmaxScale;
     [Param]
@@ -225,7 +232,7 @@ public class AgPasture
     [Param]
     private double[] CO2NCurvature;
     [Input(IsOptional = true)]
-    private double co2 = 380; //expected to be updated from ClimateControl 
+    private double co2 = 380; //expected to be updated from MAE and ClimateControl 
 
     [Link]
     private LinearInterpolation FVPDFunction = null;    //Senescence rate is affected by min(gf-N, gf_water)
@@ -543,6 +550,8 @@ public class AgPasture
         //** SP[s].maxResidCover = maxResidCover[s];
         SP[s].dRootDepth = (int)dRootDepth[s];
         SP[s].maxRootDepth = (int)maxRootDepth[s];
+        SP[s].allocationSeasonF = allocationSeasonF[s];
+        SP[s].NdilutCoeff = NdilutCoeff[s];
         SP[s].rootDepth = (int)rootDepth[s];
         //**SP[s].rootFnType = (int)rootFnType[s];
         SP[s].growthTmin = growthTmin[s];
@@ -740,6 +749,19 @@ public class AgPasture
                 SP[s].intRadn = IntRadn * SP[s].intRadnFrac;
             }
         }
+       
+        //testing SNF decline by factor df 
+        double dFrac = 1.0;
+        if (co2 == 475)
+        {
+            for (int s = 0; s < Nsp; s++)
+            {
+                SP[s].MaxFix = 0.5;// dFrac;
+                SP[s].MinFix = 0.2;// dFrac;
+            }
+        }
+
+
         return true;
     }
 
@@ -768,7 +790,6 @@ public class AgPasture
         }
 
         p_gfwater = p_waterUptake / p_waterDemand;
-
         float spDepth = 0;              // soil profile depth
         if (p_gfwater > 0.999)  //possible saturation
         {
@@ -803,20 +824,23 @@ public class AgPasture
                     SP[s].gfwater = 1 - SP[s].soilSatFactor * (SW - FC) / (Sat - FC);
                     accum_gfwater += SP[s].gfwater * SP[s].greenLAI;   //weighted by greenLAI 
                     p_greenLAI += SP[s].greenLAI;                      //FLi 19 Sept 2011 for avoiding error of an unupdated  
-                }                                                      //p_greenLAI when usinf SWIM for waterUptake    
+                }                                                      //p_greenLAI when using SWIM for waterUptake    
                 if (p_greenLAI > 0)
                     p_gfwater = accum_gfwater / p_greenLAI;
                 else
                     p_gfwater = 1.0;
+                return;                         //case (3) return
             }
-            return;                                  //case (3) return
+            //Reaching here is possible (SW < FC) even with a p_gfwater ==1     //FLi 20 Oct 2012
+            //not return, but go though to the case (4) below                                               
         }
 
         //Original block Set specieS.gfwater = p_gfwater, to distinguish them later    
         for (int s = 0; s < Nsp; s++)
         {
-            SP[s].gfwater = p_gfwater;
+            SP[s].gfwater = p_gfwater;           
         }
+        //Console.Out.WriteLine("gfwater4: " + p_gfwater);
         return;                                     //case (4) return
 
 
@@ -1148,7 +1172,7 @@ public class AgPasture
 
         //**Calculate soil N available in root zone                          
         p_soilNavailable = calcPlantAvailableN();
-
+        //p_soilNavailable = calcPlantExtractableN();   //need to do more validation/calibration for activating this
         //**Water supply & uptake        
         if (WaterUptakeSource == "calc")
         {
@@ -1175,6 +1199,39 @@ public class AgPasture
             p_dGrowth += SP[s].DailyGrowthAct();
         }
 
+        /*trick species for specified clover% 
+        DateTime d97J1 = new DateTime(1997, 7, 1, 0, 0, 0);
+        DateTime d98J1 = new DateTime(1998, 7, 1, 0, 0, 0);
+        DateTime d99J1 = new DateTime(1999, 7, 1, 0, 0, 0);
+        DateTime d00J1 = new DateTime(2000, 7, 1, 0, 0, 0);
+        DateTime d01J1 = new DateTime(2001, 7, 1, 0, 0, 0);
+        DateTime d02J1 = new DateTime(2002, 7, 1, 0, 0, 0);
+        DateTime d03J1 = new DateTime(2003, 7, 1, 0, 0, 0);
+        DateTime d04J1 = new DateTime(2004, 7, 1, 0, 0, 0);
+        DateTime d05J1 = new DateTime(2005, 7, 1, 0, 0, 0);
+        DateTime d06J1 = new DateTime(2006, 7, 1, 0, 0, 0);
+        DateTime d07J1 = new DateTime(2007, 7, 1, 0, 0, 0);
+        DateTime d08J1 = new DateTime(2008, 7, 1, 0, 0, 0);
+        double legumeF = 0.10;                                                                      //ElevObs  //AmbObs     
+        if (DateTime.Compare(Today, d97J1) >= 0 && DateTime.Compare(Today, d98J1) < 0) legumeF = 0.03;//0.05;//0.03; 
+        else if (DateTime.Compare(Today, d98J1) >= 0 && DateTime.Compare(Today, d99J1) < 0) legumeF = 0.06;//0.19;//0.06; 
+        else if (DateTime.Compare(Today, d99J1) >= 0 && DateTime.Compare(Today, d00J1) < 0) legumeF = 0.17;//0.31;//0.17;
+        else if (DateTime.Compare(Today, d00J1) >= 0 && DateTime.Compare(Today, d01J1) < 0) legumeF = 0.21;//0.34;//0.21;
+        else if (DateTime.Compare(Today, d01J1) >= 0 && DateTime.Compare(Today, d02J1) < 0) legumeF = 0.03;//0.04;//0.03; 
+        else if (DateTime.Compare(Today, d02J1) >= 0 && DateTime.Compare(Today, d03J1) < 0) legumeF = 0.03;//0.07;//0.03; 
+        else if (DateTime.Compare(Today, d03J1) >= 0 && DateTime.Compare(Today, d04J1) < 0) legumeF = 0.09;//0.06;//0.09;
+        else if (DateTime.Compare(Today, d04J1) >= 0 && DateTime.Compare(Today, d05J1) < 0) legumeF = 0.10;//0.22;//0.10;
+        else if (DateTime.Compare(Today, d05J1) >= 0 && DateTime.Compare(Today, d06J1) < 0) legumeF = 0.11;//0.07;//0.11;
+        else if (DateTime.Compare(Today, d06J1) >= 0 && DateTime.Compare(Today, d07J1) < 0) legumeF = 0.02;//0.05;//0.02;
+        else if (DateTime.Compare(Today, d07J1) >= 0 && DateTime.Compare(Today, d08J1) < 0) legumeF = 0.05;//0.06;//0.05; 
+        
+        SP[0].dGrowth = p_dGrowth * (1 - legumeF);
+        SP[1].dGrowth = p_dGrowth * legumeF;
+        Console.WriteLine(" legumeF = " + legumeF); 
+        //end of trick#
+        */ 
+       
+      
         //**partitioning & turnover   
         GrowthAndPartition();       // litter returns to surfaceOM; Root returns to soil FOM dead in this turnover routines                                                                  
 
@@ -1323,6 +1380,7 @@ public class AgPasture
     [EventHandler]
     public void OnGraze(GrazeType GZ)
     {
+        Console.WriteLine("Agpasture.ongraze");
         if ((!p_Live) || p_totalDM == 0)
             return;
 
@@ -1514,7 +1572,45 @@ public class AgPasture
 
         return p_soilNavailable;
     }
+    
+    //-----------------------------------------------------------------------
+    private double calcPlantExtractableN()    // not all minN is extractable
+    {
+        p_soilNavailable = 0;
+        double spDepth = 0;         // depth before next soil layer
+        int sLayer = 0;
+        for (sLayer = 0; sLayer < dlayer.Length; sLayer++)
+        {
+            if (spDepth <= p_rootFrontier)
+            {
+                //an approach for controlling N uptake
+                const float KNO3 = 0.1F;
+                const float KNH4 = 0.1F;
+                double swaf = 1.0;
+                swaf = (sw_dep[sLayer] - ll[sLayer]) / (DUL[sLayer] - ll[sLayer]);
+                swaf = Math.Max(0.0, Math.Min(swaf, 1.0));                                
+                p_soilNavailable += (no3[sLayer] * KNO3 + nh4[sLayer] * KNH4 ) * Math.Pow(swaf,0.25);
+                SNSupply[sLayer] = (no3[sLayer] * KNO3 + nh4[sLayer] * KNH4 ) * (float)Math.Pow(swaf,0.25);
+                
+                //original below
+                //p_soilNavailable += (no3[sLayer] + nh4[sLayer]);
+                //SNSupply[sLayer] = (no3[sLayer] + nh4[sLayer]);
+            }
+            else
+            {
+                p_bottomRootLayer = sLayer;
+                break;
+            }
 
+            spDepth += (double)dlayer[sLayer];
+
+        }
+
+        if (p_bottomRootLayer == 0 && sLayer > 0)
+            p_bottomRootLayer = sLayer - 1;
+
+        return p_soilNavailable;
+    }
     //-------------------------------------------------------
     private double NBudgetAndUptake()
     {
@@ -2941,7 +3037,7 @@ public class AgPasture
     #region "Utilities"
     //-----------------------------------------------------------------
     /// <summary>
-    /// The following helper functions [VDP & svp] are for calculating Fvdp
+    /// The following helper functions [VDP and svp] are for calculating Fvdp
     /// </summary>
     /// <returns></returns>
     private double VPD()
@@ -3011,7 +3107,7 @@ public class Species
     const double DM2C = 0.4;            //DM to C converion
     const double N2Protein = 6.25;      //this is for plants... (higher amino acids)
     const double C2N_protein = 3.5;     //C:N in remobilised material 
-
+    //const double growthTref = 20.0;      //reference temperature
 
     //static variables for common parameters among species    
     public static NewMetType MetData = new NewMetType();    //climate data applied to all species    
@@ -3060,6 +3156,8 @@ public class Species
     //**public double maxResidCover;//Maximum Residue Cover (0-1) (added to ccov to define cover)
     public int dRootDepth;	    //Daily root growth (mm)
     public int maxRootDepth;	//Maximum root depth (mm)
+    public double allocationSeasonF; //factor for different biomass allocation among seasons 
+    public double NdilutCoeff;
     public int rootDepth;       //current root depth (mm)
     //**public int rootFnType;	    //Root function 0=default 1=Ritchie 2=power_law 3=proportional_depth
 
@@ -3370,7 +3468,7 @@ public class Species
 /*
         //2) Remove more standing dead and scenescent dm
         //   will result in a slight higher yield and less litter, but 
-        //   affact little on the differnce of litter formation between different rotational periods  
+        //   affact little on the difference of litter formation between different rotational periods  
         double pRemove = 1 - pRest;
         double dm1 = dmleaf1 + dmstem1;
         double dm2 = dmleaf2 + dmstem2;
@@ -3829,8 +3927,8 @@ public class Species
         const double theta = 0.8;                 //P_th, curvature parameter: J /kg/s
 
         //following parometers are from input (.xml)
-        double maint_coeff = 0.01 * maintRespiration;  //reference maintnance respiration as 3% of live weight
-        double Yg = growthEfficiency;                //default =0.75; //Efficiency of plant photosynthesis growth)
+        double maint_coeff = 0.01 * maintRespiration;  //reference maintnance respiration as % of live weight
+        double Yg = growthEfficiency;                  //default =0.75; //Efficiency of plant photosynthesis growth)
         //Pm is an input
 
         //Add temp effects to Pm
@@ -3973,8 +4071,8 @@ public class Species
     //Plant photosynthesis increase to eleveated [CO2]
     public double PCO2Effects()
     {
-        if (CO2 == CO2ambient)
-            return 1;
+        if (Math.Abs(CO2 - CO2ambient) < 0.5)
+            return 1.0;
 
         double Kp = CO2PmaxScale; //700; for C3 plants & 150 for C4
         if (photoPath == 4)     //C4 plants
@@ -3988,8 +4086,8 @@ public class Species
     // Plant nitrogen [N] decline to elevated [CO2]
     public double NCO2Effects()
     {
-        if (CO2 == CO2ambient)
-            return 1;
+        if (Math.Abs(CO2 - CO2ambient) < 0.5)
+            return 1.0;
 
         double L = CO2NMin;         // 0.7 - lamda: same for C3 & C4 plants
         double Kn = CO2NScale;      // 600 - ppm,   when CO2 = 600ppm, Fn = 0.5*(1+lamda);
@@ -4004,8 +4102,8 @@ public class Species
     //Canopy conductiance decline to elevated [CO2]
     public double ConductanceCO2Effects()
     {
-        if (CO2 == CO2ambient)
-            return 1;
+        if (Math.Abs(CO2 - CO2ambient) < 0.5)
+            return 1.0;
         //Hard coded here, not used, should go to Micromet!
         double Gmin = 0.2;      //Fc = Gmin when CO2->unlimited
         double Gmax = 1.25;     //Fc = Gmax when CO2 = 0;
@@ -4079,6 +4177,15 @@ public class Species
         // NcFactor were addeded in Pm and Resp_m, Dec 10
         //  dGrowthW = dGrowthPot * Math.Min(gfwater, Ncfactor);
         dGrowthW = dGrowthPot * Math.Pow(gfwater, waterStressFactor);
+
+        /*if (dGrowthPot > 0)
+        {
+            Console.Out.WriteLine(" growthPot: " + dGrowthPot); 
+            Console.Out.WriteLine(" gfwater: " + gfwater);
+            Console.Out.WriteLine(" WstressW: " + waterStressFactor);
+            Console.Out.WriteLine(" growthW: " + dGrowthW);
+           
+        }*/
         return dGrowthW;
     }
 
@@ -4086,9 +4193,9 @@ public class Species
     public double DailyGrowthAct()
     {
         if (!isLegume)
-            dGrowth = dGrowthW * Math.Sqrt(gfn);        // sqrt = more DM growth than N limitaed (dilution) 
+            dGrowth = dGrowthW * Math.Pow(gfn, NdilutCoeff);    //Math.Sqrt(gfn);        // sqrt = more DM growth than N limitaed (dilution) 
         else
-            dGrowth = dGrowthW * gfn;                   //legume no dilution, but reducing more DM (therefore LAI) 
+            dGrowth = dGrowthW * gfn;                           //legume no dilution, but reducing more DM (therefore LAI) 
 
         return dGrowth;
 
@@ -4398,11 +4505,11 @@ public class Species
 
         //Variable maxSR - maximum shoot/root ratio accoding to phenoloty
         double maxSR = maxSRratio;
-        // fac: Assuming the new growth paritoning is towards a shoot:root ratio of 'maxSR' during reproductive stage,
-        //      then the partitiing will towards a lower shoot:root ratio of (frac*maxSRratio) during vegetative stage 
+        // fac: Assuming the new growth partition is towards a shoot:root ratio of 'maxSR' during reproductive stage,
+        //      then the partition will be towards a lower shoot:root ratio of (frac*maxSRratio) during vegetative stage 
 
-        double minF = 0.6;
-        double fac = 1.0;   //day-to-day fraction of reduction        
+        double minF = allocationSeasonF;    //default = 0.8;
+        double fac = 1.0;                   //day-to-day fraction of reduction        
         int doy = day_of_month + (int)((month - 1) * 30.5);
 
         // double pd = 4*Math.PI* doy/365;
@@ -4434,8 +4541,8 @@ public class Species
                 fac = 1 - (1 - minF) * (365 + doy - doyD) / (doyE - doyD);
 
         }
-        maxSR = 1.25 * fac * maxSRratio;    //maxR is bigger in reproductive stage (i.e., less PHT going to root
-        //fac = 0.6 ~ 1; i.e., maxSR = 0.8 ~ 1.2 of maxSRratio
+        maxSR = 1.25 * fac * maxSRratio;    //maxR is bigger in reproductive stage (i.e., less PHT going to root)
+        //fac = 0.8 ~ 1; i.e., maxSR = 1.0 ~ 1.25 of maxSRratio (i.e., SRratio may be 1.25 times of specified maxSRratio during reproductive stage)
 
         phenoFactor = fac;
         //calculate shoot:root partitioning: fShoot = fraction to shoot [eq.4.12c]
