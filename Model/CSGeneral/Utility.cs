@@ -347,16 +347,29 @@ namespace CSGeneral
 
         public static object GetValueOfFieldOrProperty(string Name, object Obj)
         {
-            BindingFlags Flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.IgnoreCase;
-            FieldInfo F = Obj.GetType().GetField(Name, Flags);
-            if (F != null)
-                return F.GetValue(Obj);
+            if (Name.Contains("."))
+            {
+                int Pos = Name.IndexOf('.');
+                string FieldName = Name.Substring(0, Pos);
+                Obj = GetValueOfFieldOrProperty(FieldName, Obj);
+                if (Obj == null)
+                    return null;
+                else
+                    return GetValueOfFieldOrProperty(Name.Substring(Pos + 1), Obj);
+            }
+            else
+            {
+                BindingFlags Flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.IgnoreCase;
+                FieldInfo F = Obj.GetType().GetField(Name, Flags);
+                if (F != null)
+                    return F.GetValue(Obj);
 
-            PropertyInfo P = Obj.GetType().GetProperty(Name, Flags);
-            if (P != null)
-                return P.GetValue(Obj, null);
+                PropertyInfo P = Obj.GetType().GetProperty(Name, Flags);
+                if (P != null)
+                    return P.GetValue(Obj, null);
 
-            return null;
+                return null;
+            }
         }
 
         /// <summary>

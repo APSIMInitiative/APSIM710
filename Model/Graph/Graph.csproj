@@ -53,19 +53,19 @@
     </Reference>
   </ItemGroup>
   <Choose>
-      <When Condition="'$(OS)' != 'Windows_NT'">
+    <When Condition="'$(OS)' != 'Windows_NT'">
       <ItemGroup>
-         <Reference Include="Mono.Data.Sqlite" /> 
+        <Reference Include="Mono.Data.Sqlite" />
       </ItemGroup>
-      </When>
-      <Otherwise>
-       <ItemGroup>
-         <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139,  processorArchitecture=x86">
-           <SpecificVersion>False</SpecificVersion>
-           <HintPath>..\System.Data.SQLite.DLL</HintPath>
-         </Reference>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139,  processorArchitecture=x86">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>..\System.Data.SQLite.DLL</HintPath>
+        </Reference>
       </ItemGroup>
-      </Otherwise>
+    </Otherwise>
   </Choose>
   <ItemGroup>
     <Compile Include="AddSeriesForm.cs">
@@ -86,7 +86,6 @@
     <Compile Include="REMSUI.Designer.cs">
       <DependentUpon>REMSUI.cs</DependentUpon>
     </Compile>
-    <Compile Include="DataProcessor.cs" />
     <Compile Include="DataUserInterface.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -277,7 +276,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SoilGraphUI.resx">
       <DependentUpon>SoilGraphUI.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="SOIUI.resx">
       <SubType>Designer</SubType>

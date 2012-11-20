@@ -46,8 +46,9 @@ namespace Actions
 		}
 		public static void AddSoil(BaseController Controller)
 		{
-			XmlNode NewSoil = Soil.Create("Soil");
-			Controller.Selection.Add(NewSoil.OuterXml);
+            throw new NotImplementedException();
+            //XmlNode NewSoil = Soil.Create("Soil");
+            //Controller.Selection.Add(NewSoil.OuterXml);
 		}
 
 
@@ -80,7 +81,7 @@ namespace Actions
 			if (Dialog.ShowDialog() == DialogResult.OK) {
 				foreach (string FileName in Dialog.FileNames) {
 					Cursor.Current = Cursors.WaitCursor;
-					Controller.Selection.Add(SoilParFileImporter.Import(FileName));
+					Controller.Selection.Add(SoilParFile.Import(FileName));
 					Cursor.Current = Cursors.Default;
 				}
 			}
@@ -101,7 +102,7 @@ namespace Actions
 			if (Dialog.ShowDialog() == DialogResult.OK) {
 				Cursor.Current = Cursors.WaitCursor;
 				DataTable Table = ExcelUtility.ExcelHelper.GetDataFromSheet(Dialog.FileName, "SoilData");
-				XmlNode Data = SoilDataTable.TableToXML(Table, UpdateProgress);
+                XmlNode Data = SoilDataTable.TableToSoilXML(Table, UpdateProgress);
 				Controller.ApsimData = new ApsimFile.ApsimFile(Data.OuterXml);
 				Cursor.Current = Cursors.Default;
 			}
@@ -158,7 +159,7 @@ namespace Actions
 				foreach (string Path in Controller.SelectedPaths) {
 					Paths.Add(Path);
 				}
-				DataTable Table = SoilDataTable.XMLToTable(Doc.DocumentElement, Paths);
+                DataTable Table = SoilDataTable.SoilXMLToTable(Doc.DocumentElement, Paths);
 				ExcelHelper.SendDataToSheet(Dialog.FileName, "SoilData", Table);
 
 				MessageBox.Show("Soils have been successfully exported to '" + Dialog.FileName + "'. It is suggested that you rename soils within the new file to avoid confusion.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -189,11 +190,12 @@ namespace Actions
 		private static void CheckSoils(ApsimFile.Component Data, ref string ErrorMessage)
 		{
 			if (Data.Type.ToLower() == "soil") {
-				XmlNode ThisSoil = Soil.CreateFromXML(Data.FullXML());
-				string Errors = Soil.CheckForErrors(ThisSoil, true);
-				if (!string.IsNullOrEmpty(Errors)) {
-					ErrorMessage += Environment.NewLine + XmlHelper.Name(ThisSoil) + Environment.NewLine + StringManip.IndentText(Errors, 6);
-				}
+                throw new NotImplementedException();
+                //XmlNode ThisSoil = Soil.CreateFromXML(Data.FullXML());
+				//string Errors = Soil.CheckForErrors(ThisSoil, true);
+                //if (!string.IsNullOrEmpty(Errors)) {
+                //    ErrorMessage += Environment.NewLine + XmlHelper.Name(ThisSoil) + Environment.NewLine + StringManip.IndentText(Errors, 6);
+				//}
 			} else if (Data.Type.ToLower() == "folder") {
 				foreach (ApsimFile.Component Child in Data.ChildNodes) {
 					CheckSoils(Child, ref ErrorMessage);
