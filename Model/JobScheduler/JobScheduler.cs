@@ -501,6 +501,9 @@ public class JobScheduler
                 if (J.JobSchedulerProcessID != Process.GetCurrentProcess().Id)
                     return "ERROR";
 
+                if (J.Status != null && J.Status == "Running")
+                    throw new Exception("Job is finished, but still running!!\n" + CommandBits[1]);
+
                 // Write log message.
                 J.WriteLogMessage();
 

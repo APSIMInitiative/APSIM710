@@ -153,7 +153,7 @@ public class Job
     {
         get
         {
-            return Status == "Running";
+            return Status != null && Status == "Running";
         }
     }
 
