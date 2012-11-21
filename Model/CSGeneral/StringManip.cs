@@ -325,7 +325,7 @@ namespace CSGeneral
         {
             Type ColumnType;
             if (Value == "?")
-                ColumnType = Type.GetType("System.String");
+                ColumnType = Type.GetType("System.Byte");
 
             else if (MathUtility.IsNumericalenUS(Value))
                 ColumnType = Type.GetType("System.Single");

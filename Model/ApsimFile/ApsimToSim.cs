@@ -259,7 +259,7 @@ public class ApsimToSim
     }
     private static string ReplaceSoilMacros(string ApsimToSimContents, Component ApsimComponent)
     {
-        // Replace the [soil.] macros with values.
+        // Replace the [soil.] macros will values.         
         if (ApsimToSimContents.Contains("[soil."))
         {
             // Firstly we need to locate the nearest soil.
@@ -282,86 +282,12 @@ public class ApsimToSim
                 Doc.LoadXml(SoilComponent.FullXMLNoShortCuts());
                 XmlNode SoilNode = Doc.DocumentElement;
 
-                
-
                 // Now do all soil macro replacements.
-                ApsimToSimContents = ReplaceSoilMacros(SoilNode, ApsimToSimContents);
+                ApsimToSimContents = Soil.ReplaceSoilMacros(SoilNode, ApsimToSimContents);
             }
         }
         return ApsimToSimContents;
     }
-
-    private static string ReplaceSoilMacros(XmlNode SoilNode, string ApsimToSimContents)
-    {
-        Soil Soil = Soil.Create(SoilNode.OuterXml);
-
-        // Loop through all soil macros.
-        int PosMacro = 0;
-        PosMacro = ApsimToSimContents.IndexOf("[soil.", PosMacro);
-        while (PosMacro != -1)
-        {
-            int PosEndMacro = ApsimToSimContents.IndexOf(']', PosMacro);
-            if (PosEndMacro == -1)
-                throw new Exception("Invalid soil macro found: " + ApsimToSimContents.Substring(PosMacro));
-
-            // Get macro name e.g. soil.thickness
-            string MacroName = ApsimToSimContents.Substring(PosMacro + 1, PosEndMacro - PosMacro - 1);
-
-            //if (MacroName.Contains("soil."))
-            {
-                // remove the soil. prefix from the MacroName.
-                MacroName = MacroName.Substring(MacroName.IndexOf('.') + 1);
-
-                // Is it a crop macro i.e. wheat ll
-                object Obj = null;
-                if (MacroName.Contains(" "))
-                {
-                    string CropName = MacroName.Substring(0, MacroName.IndexOf(' '));
-                    string VariableName = MacroName.Substring(MacroName.IndexOf(' ') + 1);
-                    if (VariableName.Equals("ll", StringComparison.CurrentCultureIgnoreCase))
-                        Obj = Soil.LL(CropName);
-                    else if (VariableName.Equals("kl", StringComparison.CurrentCultureIgnoreCase))
-                        Obj = Soil.KL(CropName);
-                    else if (VariableName.Equals("xf", StringComparison.CurrentCultureIgnoreCase))
-                        Obj = Soil.XF(CropName);
-                }
-                else
-                    Obj = Utility.GetValueOfFieldOrProperty(MacroName, Soil);
-
-                if (Obj != null)
-                {
-                    string MacroValue = "";
-                    if (Obj is IList)
-                    {
-                        foreach (object I in Obj as IList)
-                        {
-                            if (I is double)
-                                MacroValue += ((double)I).ToString("f3") + " ";
-                            else
-                                MacroValue += I.ToString() + " ";
-                        }
-                    }
-                    else if (Obj is double)
-                    {
-                        if (double.IsNaN(Convert.ToDouble(Obj)))
-                            MacroValue = "";
-                        else
-                            MacroValue = ((Double)Obj).ToString("f3");
-                    }
-                    else
-                        MacroValue = Obj.ToString();
-
-                    ApsimToSimContents = ApsimToSimContents.Remove(PosMacro, PosEndMacro - PosMacro + 1);
-                    ApsimToSimContents = ApsimToSimContents.Insert(PosMacro, MacroValue);
-                }
-                PosMacro = ApsimToSimContents.IndexOf("[soil.", PosMacro + 1);
-            }
-        }
-
-        return ApsimToSimContents;
-    }
-
-
     private static string ReplaceChildrenMacro(string ApsimToSimContents, Component ApsimComponent, Configuration.architecture arch)
     {
         // Replace the [Children] macro with child sim script.
@@ -497,9 +423,7 @@ public class ApsimToSim
             SameName = ApsimFile.ComponentUtility.FindSameNameRecursively(Paddock);
             if (SameName != "")
             {
-                throw new Exception("You can not have two components with the same name in a paddock." + "\r\n" + 
-                                    "Simulation: " + Simulation.Name + "\r\n" + 
-                                    "Component Name: " + SameName);
+                throw new Exception("You can not have two components with the same name in a paddock." + "\r\n" + "Simulation: " + Simulation.Name + "\r\n" + "Component Name: " + SameName);
             }
         }
     }

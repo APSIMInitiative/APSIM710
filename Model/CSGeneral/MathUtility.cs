@@ -162,23 +162,6 @@ namespace CSGeneral
             return results;
         }
 
-        public static double[] Subtract(double[] value1, double[] value2)
-        {
-            double[] results = null;
-            if (value1.Length == value2.Length)
-            {
-                results = new double[value1.Length];
-                for (int iIndex = 0; iIndex < value1.Length; iIndex++)
-                {
-                    if (value1[iIndex] == MissingValue || value2[iIndex] == MissingValue)
-                        results[iIndex] = MissingValue;
-                    else
-                        results[iIndex] = (value1[iIndex] - value2[iIndex]);
-                }
-            }
-            return results;
-        }
-
         //-------------------------------------------------------------------------
         //
         //-------------------------------------------------------------------------
@@ -356,7 +339,7 @@ namespace CSGeneral
             {
                 foreach (double Value in Values)
                 {
-                    if (Value != MathUtility.MissingValue && !double.IsNaN(Value))
+                    if (Value != MathUtility.MissingValue)
                         return true;
                 }
             }
@@ -670,15 +653,6 @@ namespace CSGeneral
             else
                 return true;
         }
-
-        static public bool IsNumerical(string[] Values)
-        {
-            foreach (string Value in Values)
-                if (!IsNumerical(Value))
-                    return false;
-            return true;
-        }
-
         static public bool ValuesAreNumerical(string[] Values)
         {
             for (int i = 0; i < Values.Length; i++)
@@ -713,7 +687,7 @@ namespace CSGeneral
             int i;
             for (i = Values.Length - 1; i >= 0; i--)
             {
-                if (Values[i] != MissingValue && !double.IsNaN(Values[i]))
+                if (Values[i] != MissingValue)
                     break;
             }
             if (i < 0)
@@ -772,18 +746,6 @@ namespace CSGeneral
             }
 
             return Math.Sqrt(2 * Math.PI) * Math.Pow(t, x + 0.5) * Math.Exp(-t) * a;
-        }
-
-
-        static public bool AreEqual(IList L1, IList L2)
-        {
-            if (L1.Count != L2.Count)
-                return false;
-            for (int i = 0; i < L1.Count; i++)
-                if (L1[i] != L2[i])
-                    return false;
-
-            return true;
         }
 
     }

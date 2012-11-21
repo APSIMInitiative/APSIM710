@@ -9,216 +9,226 @@ using System.Xml;
 using ApsimFile;
 using Controllers;
 using CSGeneral;
+using UIUtility;
 using System.Data;
 using System.Collections.Generic;
 using System.Globalization;    //GridUtility.cs
 
 
 namespace CSUserInterface
-{
-    public partial class InitWaterUI : BaseView
-    {
-        private bool UserChange = true;
-        private Soil Soil;
-        private ApsimFile.Component OurComponent;
+   {
+   public partial class InitWaterUI : BaseView
+      {
+      private bool UserChange = true;
+      private XmlNode SoilNode;
+      private XmlNode OurNode;
 
 
-        /// <summary>
-        /// constructor.
-        /// </summary>
-        public InitWaterUI()
-        {
-            // This call is required by the Windows Form Designer.
-            InitializeComponent();
-        }
+      /// <summary>
+      /// constructor.
+      /// </summary>
+      public InitWaterUI()
+         {
+         // This call is required by the Windows Form Designer.
+         InitializeComponent();
+         }
 
-        protected override void OnLoad()
-        {
-            base.OnLoad();
+      protected override void OnLoad()
+         {
+         base.OnLoad();
 
-            // We need not just the XML for this profile node but the whole soil XML.
-            OurComponent = Controller.ApsimData.Find(NodePath);
-            ApsimFile.Component SoilComponent = OurComponent.Parent;
-            if (SoilComponent.Type.ToLower() != "soil")
-                SoilComponent = SoilComponent.Parent;
-            Soil = Soil.Create(SoilComponent.FullXMLNoShortCuts());
+         ApsimFile.Component SoilComponent = Controller.ApsimData.Find(NodePath);
+         if (SoilComponent != null && SoilComponent.Parent != null)
+            {
+            SoilComponent = SoilComponent.Parent;
 
             XmlDocument Doc = new XmlDocument();
             Doc.LoadXml(SoilComponent.FullXMLNoShortCuts());
+            SoilNode = Doc.DocumentElement;
+            OurNode = XmlHelper.Find(SoilNode, XmlHelper.Name(Data));
 
             RelativeToCombo.Items.Add("ll15");
-            RelativeToCombo.Items.AddRange(Soil.Water.CropNames);
-        }
+            RelativeToCombo.Items.AddRange(Soil.Crops(SoilNode));
 
-        /// <summary>
-        /// Refresh the form
-        /// </summary>
-        override public void OnRefresh()
-        {
+            SoilGraph.OnLoad(Controller, NodePath, OurNode.OuterXml); 
+            }
+         }
+
+      /// <summary>
+      /// Refresh the form
+      /// </summary>
+      override public void OnRefresh()
+         {
+         PopulateControls();
+         }
+
+      public override void OnSave()
+         {
+         base.OnSave();
+         SoilGraph.OnSave();
+         Data = OurNode.Clone();
+         }
+      /// <summary>
+      /// Populate all controls from the soil
+      /// </summary>
+      private void PopulateControls()
+         {
+         UserChange = false;
+
+         RelativeToCombo.Text = XmlHelper.Value(OurNode, "RelativeTo");
+         if (RelativeToCombo.Text == "")
+            RelativeToCombo.Text = "ll15";
+
+         Soil.Variable PAWCVar;
+         Soil.Variable PAWVar;
+         if (RelativeToCombo.Text == "ll15")
+            {
+            PAWCVar = Soil.Get(SoilNode, "PAWC");
+            PAWVar = Soil.Get(SoilNode, "PAW");
+            }
+         else
+            {
+            PAWCVar = Soil.Get(SoilNode, RelativeToCombo.Text + " PAWC");
+            PAWVar = Soil.Get(SoilNode, RelativeToCombo.Text + " PAW");
+            }
+         PAWCVar.Units = "mm";
+         PAWVar.Units = "mm";
+         double PAWC = MathUtility.Sum(PAWCVar.Doubles);
+         double PAW = MathUtility.Sum(PAWVar.Doubles);
+
+         double Percent = PAW / PAWC * 100;
+         PercentEdit.Text = Percent.ToString("f0");
+         PAWEdit.Text = PAW.ToString("f0");
+
+         if (XmlHelper.Value(OurNode, "DepthWetSoilMethod/Depth") == "")
+            {
+            FilledFromTopRadio.Checked = XmlHelper.Value(OurNode, "PercentMethod/Distributed").ToLower() == "filled from top";
+            EvenlyDistributedRadio.Checked = !FilledFromTopRadio.Checked;
+            }
+         else
+            {
+            int DepthCM = Convert.ToInt32(XmlHelper.Value(OurNode, "DepthWetSoilMethod/Depth")) / 10;
+            DepthEdit.Text = DepthCM.ToString();
+            }
+         PopulateGraph();
+         UserChange = true;
+         }
+
+
+      /// <summary>
+      /// Update the graph.
+      /// </summary>
+      private void UpdateGraph()
+         {
+         }
+
+      /// <summary>
+      /// Save initwater using the percent method
+      /// </summary>
+      private void SaveUsingPercentMethod()
+         {
+         OurNode.RemoveAll();
+         double Percent = Convert.ToDouble(PercentEdit.Value) / 100;
+         XmlHelper.SetValue(OurNode, "PercentMethod/Percent", Percent.ToString(new CultureInfo("en-US")));
+         if (FilledFromTopRadio.Checked)
+            XmlHelper.SetValue(OurNode, "PercentMethod/Distributed", "Filled from top");
+         else
+            XmlHelper.SetValue(OurNode, "PercentMethod/Distributed", "Evenly distributed");
+         XmlHelper.SetValue(OurNode, "RelativeTo", RelativeToCombo.Text);
+         }
+
+      /// <summary>
+      /// Save initwater using the percent method
+      /// </summary>
+      private void SaveUsingDepthWetSoilMethod()
+         {
+         OurNode.RemoveAll();
+         double Depth = 0;
+         if (DepthEdit.Text != "")
+            Depth = Convert.ToDouble(DepthEdit.Text) * 10;
+         XmlHelper.SetValue(OurNode, "DepthWetSoilMethod/Depth", Depth.ToString(new CultureInfo("en-US")));
+         XmlHelper.SetValue(OurNode, "RelativeTo", RelativeToCombo.Text);
+         }
+
+      /// <summary>
+      /// The value of percent has changed.
+      /// </summary>
+      private void OnPercentChanged(object sender, EventArgs e)
+         {
+         if (UserChange)
+            {
+            SaveUsingPercentMethod();
             PopulateControls();
-        }
+            }
+         }
 
-        public override void OnSave()
-        {
-            base.OnSave();
-            SoilGraph.OnSave();
-            XmlDocument Doc = new XmlDocument();
-            Doc.LoadXml(Soil.ToXml());
-            XmlNode NodeWereInterestedIn = XmlHelper.Find(Doc.DocumentElement, OurComponent.Name);
-            Data.InnerXml = NodeWereInterestedIn.InnerXml;
-        }
-        /// <summary>
-        /// Populate all controls from the soil
-        /// </summary>
-        private void PopulateControls()
-        {
+      /// <summary>
+      /// User has changed the depth of wet soil.
+      /// </summary>
+      private void OnDepthWetSoilChanged(object sender, EventArgs e)
+         {
+         if (UserChange)
+            {
+            SaveUsingDepthWetSoilMethod();
+            PopulateControls();
+            }
+         }
+
+      /// <summary>
+      /// User has changed the PAW amount.
+      /// </summary>
+      private void OnPAWChanged(object sender, EventArgs e)
+         {
+         if (UserChange)
+            {
             UserChange = false;
-
-            RelativeToCombo.Text = Soil.InitialWater.RelativeTo;
-            if (RelativeToCombo.Text == "")
-                RelativeToCombo.Text = "ll15";
-
-            double[] PAWCLayered;
-            double[] PAWLayered;
+  
+            Soil.Variable PAWCVar;
             if (RelativeToCombo.Text == "ll15")
-            {
-                PAWCLayered = Soil.PAWC;
-                PAWLayered = Soil.PAW;
-            }
+               PAWCVar = Soil.Get(SoilNode, "PAWC");
             else
-            {
-                PAWCLayered = Soil.PAWCCrop(RelativeToCombo.Text);
-                PAWLayered = Soil.PAWCrop(RelativeToCombo.Text);
-            }
-            // Convert to mm
-            PAWCLayered = MathUtility.Multiply(PAWCLayered, Soil.Water.Thickness);
-            PAWLayered = MathUtility.Multiply(PAWLayered, Soil.Water.Thickness);
+               PAWCVar = Soil.Get(SoilNode, RelativeToCombo.Text + " " + "PAWC");
+            PAWCVar.Units = "mm";
+            double[] pawc = PAWCVar.Doubles;
 
-            double PAWC = MathUtility.Sum(PAWCLayered);
-            double PAW = MathUtility.Sum(PAWLayered);
-            
-            double Percent = PAW / PAWC * 100;
-            PercentEdit.Text = Percent.ToString("f0");
-            PAWEdit.Text = PAW.ToString("f0");
-
-            if (double.IsNaN(Soil.InitialWater.DepthWetSoil))
-            {
-                FilledFromTopRadio.Checked = Soil.InitialWater.PercentMethod == InitialWater.PercentMethodEnum.FilledFromTop;
-                EvenlyDistributedRadio.Checked = !FilledFromTopRadio.Checked;
-            }
-            else
-            {
-                int DepthCM = Convert.ToInt32(Soil.InitialWater.DepthWetSoil) / 10;
-                DepthEdit.Text = DepthCM.ToString();
-            }
+            double TotalPAWC = MathUtility.Sum(pawc);
+            int Percent = 0;
+            if (PAWEdit.Text != "")
+               Percent = Convert.ToInt32(Convert.ToDouble(PAWEdit.Text) / TotalPAWC * 100);
+            Percent = Math.Min(Percent, 100);
+            Percent = Math.Max(Percent, 0);
+            PercentEdit.Value = Percent;  // this will trigger an event and call to OnPercentChanged
+            SaveUsingPercentMethod();
             PopulateGraph();
             UserChange = true;
-        }
-
-
-        /// <summary>
-        /// Update the graph.
-        /// </summary>
-        private void UpdateGraph()
-        {
-        }
-
-        /// <summary>
-        /// Save initwater using the percent method
-        /// </summary>
-        private void SaveUsingPercentMethod()
-        {
-            Soil.InitialWater.FractionFull = Convert.ToDouble(PercentEdit.Value) / 100;
-            if (FilledFromTopRadio.Checked)
-                Soil.InitialWater.PercentMethod = InitialWater.PercentMethodEnum.FilledFromTop;
-            else
-                Soil.InitialWater.PercentMethod = InitialWater.PercentMethodEnum.EvenlyDistributed;
-            Soil.InitialWater.RelativeTo = RelativeToCombo.Text;
-        }
-
-        /// <summary>
-        /// Save initwater using the percent method
-        /// </summary>
-        private void SaveUsingDepthWetSoilMethod()
-        {
-            double Depth = double.NaN;
-            if (DepthEdit.Text != "")
-                Depth = Convert.ToDouble(DepthEdit.Text) * 10;
-            Soil.InitialWater.DepthWetSoil = Depth;
-            Soil.InitialWater.RelativeTo = RelativeToCombo.Text;
-        }
-
-        /// <summary>
-        /// The value of percent has changed.
-        /// </summary>
-        private void OnPercentChanged(object sender, EventArgs e)
-        {
-            if (UserChange)
-            {
-                SaveUsingPercentMethod();
-                PopulateControls();
             }
-        }
+         }
 
-        /// <summary>
-        /// User has changed the depth of wet soil.
-        /// </summary>
-        private void OnDepthWetSoilChanged(object sender, EventArgs e)
-        {
-            if (UserChange)
-            {
-                SaveUsingDepthWetSoilMethod();
-                PopulateControls();
-            }
-        }
+      /// <summary>
+      /// Populate the graph.
+      /// </summary>
+      private void PopulateGraph()
+         {
+         List<string> Names = new List<string>();
+         //Names.AddRange(Soil.ValidVariablesForProfileNode(Data));
+         Names.Add("SW (mm/mm)");
+         Names.Add("AirDry (mm/mm)");
+         Names.Add("LL15 (mm/mm)");
+         Names.Add("DUL (mm/mm)");
+         Names.Add("SAT (mm/mm)");
 
-        /// <summary>
-        /// User has changed the PAW amount.
-        /// </summary>
-        private void OnPAWChanged(object sender, EventArgs e)
-        {
-            if (UserChange)
-            {
-                UserChange = false;
+         // Remove the thickness column and add in a depth mid points column
+         //Names.RemoveAt(0);
+         Names.Insert(0, "DepthMidPoints (mm)");
 
-                double[] pawc;
-                if (RelativeToCombo.Text == "ll15")
-                    pawc = Soil.PAWC;
-                else
-                    pawc = Soil.PAWCCrop(RelativeToCombo.Text);
-                pawc = MathUtility.Multiply(pawc, Soil.Water.Thickness);
+         DataTable Table = new DataTable();
+         Soil.WriteToTable(SoilNode, Table, Names);
+         Table.TableName = "InitWater";
 
-                double TotalPAWC = MathUtility.Sum(pawc);
-                int Percent = 0;
-                if (PAWEdit.Text != "")
-                    Percent = Convert.ToInt32(Convert.ToDouble(PAWEdit.Text) / TotalPAWC * 100);
-                Percent = Math.Min(Percent, 100);
-                Percent = Math.Max(Percent, 0);
-                PercentEdit.Value = Percent;  // this will trigger an event and call to OnPercentChanged
-                SaveUsingPercentMethod();
-                PopulateGraph();
-                UserChange = true;
-            }
-        }
+         SoilGraph.AddDataSource(Table);
+         SoilGraph.OnRefresh();
+         }
 
-        /// <summary>
-        /// Populate the graph.
-        /// </summary>
-        private void PopulateGraph()
-        {
-            DataTable Table = new DataTable();
-            Table.TableName = "InitWater";
-            DataTableUtility.AddColumn(Table, "DepthMidPoints (mm)", Soil.ToMidPoints(Soil.Water.Thickness));
-            DataTableUtility.AddColumn(Table, "SW (mm/mm)", Soil.SW);
-            DataTableUtility.AddColumn(Table, "AirDry (mm/mm)", Soil.Water.AirDry);
-            DataTableUtility.AddColumn(Table, "LL15 (mm/mm)", Soil.Water.LL15);
-            DataTableUtility.AddColumn(Table, "DUL (mm/mm)", Soil.Water.DUL);
-            DataTableUtility.AddColumn(Table, "SAT (mm/mm)", Soil.Water.SAT);
-
-            SoilGraph.AddDataSource(Table);
-            SoilGraph.Populate(Table, "InitWater", Soil);
-        }
-
-    }
-}
+      }
+   }
 

@@ -2,41 +2,23 @@ using System.Data;
 using System.Windows.Forms;
 using ApsimFile;
 using Controllers;
+using UIUtility;
 using CSGeneral;
 using System.Xml;
 using System.Collections.Generic;
-using System.Linq;
 using System.Drawing;
 using System;
-using Graph;
-using System.Reflection;
+
 
 namespace CSUserInterface
 {
-
-    /// <summary>
-    /// This UI is a soil generic UI that can display profile (layered) data in a grid.
-    /// It uses reflection to look for public properties that are read/write, don't have an
-    /// [XmlIgnore] attribute and return either double[] or string[].
-    /// 
-    /// For each property found it will
-    ///   1. optionally look for units via a units attribute:
-    ///         [Units("kg/ha")]
-    ///   2. optionally look for changable units via the presense of these properties/  methods:
-    ///         public Enum {Property}Units { get; set; }
-    ///         public string {Property}UnitsToString(Enum Units)
-    ///         public void   {Property}UnitsSet(Enum ToUnits)
-    ///     
-    ///         where {Property} is the name of the property being examined.
-    ///   3. optionally look for a metadata property named:
-    ///     {Property}Metadata { get; set; }
-    /// </summary>
     public partial class ProfileUI : BaseView
     {
-        private SoilGraphUI Graph;
-        private Soil Soil;
-        private Component OurComponent;
-        private object OurObject;
+        private Graph.SoilGraphUI Graph = new Graph.SoilGraphUI();
+        private DataTable Table;
+        private XmlNode _SoilNode;
+        private XmlNode ProfileNode;
+        private List<string> EditableColumnNames = new List<string>();
 
         /// <summary>
         /// Constructor
@@ -44,6 +26,7 @@ namespace CSUserInterface
         public ProfileUI()
         {
             InitializeComponent();
+
         }
 
         /// <summary>
@@ -55,17 +38,19 @@ namespace CSUserInterface
             Component SoilComponent = Controller.ApsimData.Find(NodePath).Parent;
             if (SoilComponent.Type.ToLower() != "soil")
                 SoilComponent = SoilComponent.Parent;
-            Soil = Soil.Create(SoilComponent.FullXMLNoShortCuts());
+            _SoilNode = Soil.CreateFromXML(SoilComponent.FullXMLNoShortCuts());
             Properties.OnLoad(Controller, NodePath, Data.OuterXml);
-            Properties.OnLoad(Soil);
 
-            // Get a component that represents the node we're to 
-            OurComponent = Controller.ApsimData.Find(NodePath);
-            if (OurComponent.ShortCutTo != null)
-                OurComponent = OurComponent.ShortCutTo;
+            // Find the node under _SoilNode that is our node that we're to work with.
+            List<XmlNode> Nodes = new List<XmlNode>();
+            XmlHelper.FindAllRecursively(_SoilNode, XmlHelper.Name(Data), ref Nodes);
+            if (Nodes.Count != 1)
+                throw new Exception("Cannot find soil node: " + XmlHelper.Name(Data));
+            ProfileNode = Nodes[0];
 
             // Call OnLoad in our graph
-            Graph = new SoilGraphUI();
+            Graph.SoilNode = _SoilNode;
+            Graph.OnLoad(Controller, NodePath, Controller.ApsimData.Find(NodePath).Contents);
             Graph.Parent = this;
             Graph.Visible = true;
             Graph.Dock = DockStyle.Fill;
@@ -75,414 +60,391 @@ namespace CSUserInterface
             string SplitterPositionString = Configuration.Instance.Setting("SoilSplitterPosition");
             if (SplitterPositionString != "")
                 TopPanel.Height = Convert.ToInt32(SplitterPositionString);
-
-            // add some extra items to the context menu.
-            if (Grid.ContextMenuStrip.Items.Count != 8)
-            {
-                Grid.ContextMenuStrip.Items.Add(new ToolStripSeparator());
-
-                ToolStripMenuItem Item = (ToolStripMenuItem)Grid.ContextMenuStrip.Items.Add("Edit Metadata...");
-                Item.ShortcutKeys = Keys.Control | Keys.M;
-                Item.Click += new System.EventHandler(OnMetadataClick);
-            }
-            panel1.Visible = OurComponent.Type == "Water";
+            Table = new DataTable();
+            Table.TableName = Data.Name;
+            Grid.DataSourceTable = null;
         }
+
 
         /// <summary>
         /// Called whenever the user interface wants us to refresh ourselves.
         /// </summary>
         override public void OnRefresh()
         {
-           
+            this.Grid.ColumnWidthChanged -= new System.Windows.Forms.DataGridViewColumnEventHandler(this.OnColumnWidthChanged);
+            Grid.TableColumnChangedEvent -= new UIBits.EnhancedGrid.TableColumnChangedDelegate(OnTableColumnChanged);
+
+            Grid.SaveSelection();
             Properties.OnRefresh();
             Properties.Visible = !Properties.IsEmpty;
 
-            if (OurComponent.Type == "Sample")
+            // Create and fill a datatable from our soil
+            Table.Rows.Clear();
+            Table.Columns.Clear();
+
+            if (ProfileNode.Name == "Sample")
+            {
                 HelpText = "These values are used to initialise the simulation. Sample date is not used by APSIM.";
+                Soil.WriteToTableFromProfileNode(ProfileNode, Table, GetVariableNames());
+            }
             else
+            {
                 HelpText = "";
-            
-            Grid.Columns.Clear();
-
-            OurObject = null;
-            if (OurComponent.Type == "Sample")
-                OurObject = Soil.FindSample(OurComponent.Name);
-            else if (OurComponent.Type.StartsWith("Swim"))
-            {
-                PropertyInfo Property = Soil.Swim.GetType().GetProperty(OurComponent.Type);
-                if (Property != null)
-                    OurObject = Property.GetValue(Soil.Swim, null);
+                Soil.WriteToTable(_SoilNode, Table, GetVariableNames());
             }
-            else
-            {
-                PropertyInfo Property = Soil.GetType().GetProperty(OurComponent.Type);
-                if (Property != null)
-                    OurObject = Property.GetValue(Soil, null);
-            }
-            if (OurObject == null)
-                throw new Exception("Cannot find a soil object named: " + OurComponent.Type);
 
-            SetupGrid();
+            Grid.DataSourceTable = Table;
+            Grid.AllowUserToAddRows = true;
 
-            Grid.RowCount = 30;
-
+            // Give data to grid.
+            Grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             foreach (DataGridViewColumn Col in Grid.Columns)
+            {
                 Col.SortMode = DataGridViewColumnSortMode.NotSortable;
+                Col.HeaderText = Col.HeaderText.Replace(" (", "\n(");
+                Col.DefaultCellStyle.Format = "f3";
+            }
+            Grid.Columns[0].Visible = false; // hide the depthMidpoints column
             Grid.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
             foreach (DataGridViewColumn Col in Grid.Columns)
                 Col.Width += 10;
-            Graph.Populate(Grid.ToTable(), OurComponent.Type, Soil);
+
+            RefreshGraph();
+
+            ApplyCodesToColumns();
+
+            ColourCropColumns();
+
+            UpdateTotalGrid();
+
+            AdjustDecPlaces();
+
+            CreateUnitsMenus();
             Label.Visible = Label.Text != "";
+
+            Grid.RestoreSelection(0);
+
+            this.Grid.ColumnWidthChanged += new System.Windows.Forms.DataGridViewColumnEventHandler(this.OnColumnWidthChanged);
+            Grid.TableColumnChangedEvent += new UIBits.EnhancedGrid.TableColumnChangedDelegate(OnTableColumnChanged);
         }
 
         /// <summary>
-        /// Save our grid contents back to soil and then give XML back to Controller.
+        /// Refresh the graph.
+        /// </summary>
+        private void RefreshGraph()
+        {
+            // Give data to graph.
+            Graph.AddDataSource(Table);
+            Graph.OnRefresh();
+        }
+
+        private void CreateUnitsMenus()
+        {
+            string LabelText = "";
+            for (int Col = 0; Col < Grid.Columns.Count; Col++)
+            {
+                string RawVariableName = Grid.Columns[Col].HeaderText;
+                string Units = StringManip.SplitOffBracketedValue(ref RawVariableName, '(', ')');
+                List<string> ValidUnits = Soil.ValidUnits(RawVariableName);
+                if (ValidUnits.Count > 1)
+                {
+                    ContextMenuStrip PopupMenu = new ContextMenuStrip();
+                    foreach (string Unit in ValidUnits)
+                    {
+                        ToolStripMenuItem NewMenuItem = new ToolStripMenuItem(Unit);
+                        NewMenuItem.Tag = Col;
+                        PopupMenu.Items.Add(NewMenuItem);
+                    }
+                    PopupMenu.ItemClicked += new ToolStripItemClickedEventHandler(OnUnitMenuClicked);
+                    Grid.Columns[Col].HeaderCell.ContextMenuStrip = PopupMenu;
+
+                    // Add to label text.
+                    if (LabelText != "")
+                        LabelText += ", ";
+                    LabelText += RawVariableName;
+                }
+            }
+            if (LabelText != "")
+                Label.Text = "By right clicking on column headings, you can change the units of these variables: " + LabelText;
+        }
+
+        /// <summary>
+        /// Make all pawc columns readonly.
+        /// </summary>
+        private void ApplyCodesToColumns()
+        {
+            EditableColumnNames.Clear();
+
+            string[] DepthStrings = GridUtility.GetColumnAsStrings(Grid, 1);
+            double[] ThicknessMM = SoilUtility.ToThickness(DepthStrings);
+            ThicknessMM = MathUtility.Multiply_Value(ThicknessMM, 10);
+            //Soil.Variable Thickness = Soil.Get(_SoilNode, "Thickness");
+            for (int Col = 0; Col < Grid.Columns.Count; Col++)
+            {
+                string RawVariableName = Grid.Columns[Col].HeaderText;
+                string Units = StringManip.SplitOffBracketedValue(ref RawVariableName, '(', ')');
+                if (RawVariableName != "Thickness" && RawVariableName != "Depth" && RawVariableName != "DepthMidPoints")
+                {
+                    Soil.Variable Var = Soil.GetOptionalFromProfileNode(_SoilNode, ProfileNode, RawVariableName);
+                    Var.ThicknessMM = ThicknessMM;
+                    if (Var != null && Var.Codes != null)
+                    {
+                        if (Var.Codes.Length > 0 && (Var.Codes[0].Contains("Calculated") || Var.Codes[0].Contains("Predicted")))
+                            Grid.Columns[Col].ReadOnly = true;
+                        else
+                            EditableColumnNames.Add(Grid.Columns[Col].HeaderText);
+
+                        // Put codes as tooltips.
+                        if (Var.Codes.Length == Grid.Rows.Count - 1)
+                        {
+                            for (int Row = 0; Row < Var.Codes.Length; Row++)
+                            {
+                                string CodeText = Var.Codes[Row];
+                                if (CodeText != "")
+                                {
+                                    if (CodeText != "Calculated")
+                                    {
+                                        CodeText = Soil.GetFullCodeName(CodeText, Var.Name);
+                                    }
+                                    Grid.Columns[Col].ToolTipText = CodeText;
+                                    Grid.Rows[Row].Cells[Col].ToolTipText = CodeText;
+                                    if (CodeText == "Calculated")
+                                        Grid.Rows[Row].Cells[Col].Style.ForeColor = Color.Gray;
+                                    else
+                                        Grid.Rows[Row].Cells[Col].Style.ForeColor = Color.Blue;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adjust the number of decimal places.
+        /// </summary>
+        private void AdjustDecPlaces()
+        {
+            for (int Col = 0; Col < Grid.Columns.Count; Col++)
+            {
+                if (Table.Columns[Col].ColumnName.Contains("PAWC"))
+                    Grid.Columns[Col].DefaultCellStyle.Format = "f1";
+                else if (Table.Columns[Col].ColumnName.Contains("KL"))
+                    Grid.Columns[Col].DefaultCellStyle.Format = "f2";
+                else if (Table.Columns[Col].ColumnName.Contains("XF"))
+                    Grid.Columns[Col].DefaultCellStyle.Format = "f1";
+                else if (Table.Columns[Col].ColumnName.Contains("%"))
+                    Grid.Columns[Col].DefaultCellStyle.Format = "f3";
+
+                if (Table.Columns[Col].DataType == typeof(double))
+                {
+                    double[] Values = DataTableUtility.GetColumnAsDoubles(Table, Table.Columns[Col].ColumnName);
+                    bool AllValuesBig = true;
+                    foreach (double Value in Values)
+                        AllValuesBig = AllValuesBig && (Value >= 1000);
+                    if (AllValuesBig)
+                        Grid.Columns[Col].DefaultCellStyle.Format = "f0";
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Colour the crop columns shades of green.
+        /// </summary>
+        private void ColourCropColumns()
+        {
+            Color[] CropColors = { Color.FromArgb(173, 221, 142), Color.FromArgb(247, 252, 185) };
+            Color[] PredictedCropColors = { Color.FromArgb(233, 191, 255), Color.FromArgb(244, 226, 255) };
+            int CropIndex = 0;
+            bool DoingCrops = false;
+            bool UsePredictedColour = false;
+            bool HaveSetHelpText = false;
+            foreach (DataGridViewColumn Col in Grid.Columns)
+            {
+                if (Col.HeaderText.Contains(" LL"))
+                {
+                    DoingCrops = true;
+                    UsePredictedColour = Col.ToolTipText == "Predicted";
+                }
+
+                if (Data.Name == "Water")
+                    Col.Frozen = !DoingCrops;
+
+                if (DoingCrops)
+                {
+                    Col.ReadOnly = Data.Name == "Water" || UsePredictedColour || Col.HeaderText.Contains("PAWC");
+                    if (UsePredictedColour)
+                    {
+                        Col.DefaultCellStyle.BackColor = PredictedCropColors[CropIndex];
+                        if (!HaveSetHelpText)
+                        {
+                            HaveSetHelpText = true;
+                            MyHelpLabel.BackColor = PredictedCropColors[0];
+                            HelpText = "The values in pink are calculated using an approach described by Hochman et. al., Aust. J. Agric. Res., 2001, 52, 955–961";
+                        }
+                    }
+                    else
+                        Col.DefaultCellStyle.BackColor = CropColors[CropIndex];
+                    if (Col.HeaderText.Contains("XF"))
+                    {
+                        CropIndex++;
+                        if (CropIndex >= CropColors.Length)
+                            CropIndex = 0;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Return a list of variable names to put into the grid.
+        /// </summary>
+        private List<string> GetVariableNames()
+        {
+            List<string> Names = new List<string>();
+            Names.AddRange(Soil.ValidVariablesForProfileNode(ProfileNode));
+
+            // Remove the thickness column.
+            Names.RemoveAt(0);
+
+            // If this is the water node then add in the crop variables as well.
+            if (Data.Name == "Water")
+            {
+                foreach (string Crop in Soil.Crops(_SoilNode))
+                {
+                    Names.Add(Crop + " LL (mm/mm)");
+                    Names.Add(Crop + " PAWC (mm)");
+                    Names.Add(Crop + " KL (/day)");
+                    Names.Add(Crop + " XF (0-1)");
+                }
+            }
+            else if (Data.Name == "SoilCrop")
+            {
+                Names.Insert(1, "PAWC (mm)");
+                // Add the crop name in front of each.
+                for (int i = 0; i < Names.Count; i++)
+                    Names[i] = XmlHelper.Name(Data) + " " + Names[i];
+            }
+            else if (Data.Name == "SoilOrganicMatter")
+            {
+                Names.Add("InertC (kg/ha)");
+                Names.Add("BiomC (kg/ha)");
+                Names.Add("HumC (kg/ha)");
+            }
+
+            // Add in some extra columns.
+            Names.Insert(0, "DepthMidPoints (mm)");
+            Names.Insert(1, "Depth (cm)");
+
+            return Names;
+        }
+
+        /// <summary>
+        /// Called whenever the user interface wants us to save ourselves.
         /// </summary>
         public override void OnSave()
         {
-            base.OnSave();
+            if (Grid.IsCurrentCellInEditMode)
+                Grid.EndEditMode();
 
-            if (OurComponent == null)
-                return;
-
+            // Make sure we save the properties.
             if (Properties.Visible)
+            {
                 Properties.OnSave();
+                Data.OwnerDocument.LoadXml(Properties.GetData());
+                Data = Data.OwnerDocument.DocumentElement;
+            }
 
-            SaveGrid();
+            // Copy the <SoilCrop> and <Layer> nodes from the soil (Doc.DocumentElement) to our Data node, removing
+            // the existing ones first.
+            foreach (XmlNode Child in XmlHelper.ChildNodes(Data, "Layer"))
+                Data.RemoveChild(Child);
 
-            // Save our part of soil (eg. <Water>) back to 'Data'
-            XmlDocument Doc = new XmlDocument();
-            Doc.LoadXml(Soil.ToXml());
-            XmlNode NodeWereInterestedIn = XmlHelper.FindRecursively(Doc.DocumentElement, OurComponent.Name);
-            Data.InnerXml = NodeWereInterestedIn.InnerXml;
+            XmlNode ProfileNode = XmlHelper.Find(_SoilNode, XmlHelper.Name(Data));
+            if (Data.Name == "SoilCrop")
+                ProfileNode = XmlHelper.Find(_SoilNode, "Water/" + XmlHelper.Name(Data));
+
+            if (Data.Name == "SwimSoluteParameters")
+                ProfileNode = XmlHelper.Find(_SoilNode, "Swim/" + XmlHelper.Name(Data));
+
+            foreach (XmlNode Child in XmlHelper.ChildNodes(ProfileNode, "SoilCrop"))
+                ProfileNode.RemoveChild(Child);
+            foreach (XmlNode Node in XmlHelper.ChildNodes(ProfileNode, "Layer"))
+                Data.AppendChild(Data.OwnerDocument.ImportNode(Node, true));
+            foreach (XmlNode Node in XmlHelper.ChildNodes(ProfileNode, "SoilCrop"))
+                Data.AppendChild(Data.OwnerDocument.ImportNode(Node, true));
 
             Graph.OnSave();
         }
 
-
-
         /// <summary>
-        /// Setup the grid based on the properties in the specified object.
+        /// Populate the special grid that displays totals.
         /// </summary>
-        private void SetupGrid()
+        private void UpdateTotalGrid()
         {
-            foreach (PropertyInfo Property in OurObject.GetType().GetProperties())
+            this.TotalGrid.CellValueChanged -= new System.Windows.Forms.DataGridViewCellEventHandler(this.OnTotalGridCellValueChanged);
+
+            bool TotalsFound = false;
+            TotalGrid.RowCount = 1;
+            TotalGrid.ColumnCount = Grid.Columns.Count;
+            for (int Col = 0; Col < Grid.Columns.Count; Col++)
             {
-                bool Ignore = Property.IsDefined(typeof(System.Xml.Serialization.XmlIgnoreAttribute), false);
-                if (!Ignore && Property.CanWrite)
+                TotalGrid.Columns[Col].Visible = Grid.Columns[Col].Visible;
+                TotalGrid.Columns[Col].Width = Grid.Columns[Col].Width;
+                TotalGrid.Columns[Col].Frozen = Grid.Columns[Col].Frozen;
+                TotalGrid.Columns[Col].ReadOnly = !Grid.Columns[Col].HeaderText.Contains("NO3") &&
+                                                  !Grid.Columns[Col].HeaderText.Contains("NH4");
+                TotalGrid.Columns[Col].DefaultCellStyle.Format = "f1";
+                string RawVariableName = Grid.Columns[Col].HeaderText;
+                string Units = StringManip.SplitOffBracketedValue(ref RawVariableName, '(', ')');
+                if (Grid.RowCount > 1 && Units != "ppm" &&
+                   (Grid.Columns[Col].HeaderText.Contains("NO3") ||
+                    Grid.Columns[Col].HeaderText.Contains("NH4") ||
+                    Grid.Columns[Col].HeaderText.Contains("PAWC")))
                 {
-                    // Get metadata from property.
-                    string[] Metadata = null;
-                    PropertyInfo MetadataInfo = OurObject.GetType().GetProperty(Property.Name + "Metadata");
-                    if (MetadataInfo != null)
-                        Metadata = (string[])MetadataInfo.GetValue(OurObject, null);
-
-                    //////// double[]
-                    if (Property.PropertyType.Name == "Double[]")
+                    double[] Values = GridUtility.GetColumnAsDoubles(Grid, Col);
+                    if (MathUtility.ValuesInArray(Values))
                     {
-                        // Get values.
-                        double[] Values = (double[]) Property.GetValue(OurObject, null);
-
-                        // Create a column in the grid.
-                        if (Property.Name == "Thickness")
-                            GridUtility.AddColumn(Grid, "Depth\r\n(cm)", Soil.ToDepthStrings(Values));
-                        else
-                        {
-                            string Format = "f3";
-
-                            // Get units from property
-                            string Units;
-                            PropertyInfo UnitsInfo = OurObject.GetType().GetProperty(Property.Name + "Units");
-                            MethodInfo UnitsToStringInfo = OurObject.GetType().GetMethod(Property.Name + "UnitsToString");
-                            ContextMenuStrip UnitsMenu = null;
-                            if (UnitsInfo == null)
-                                Units = GetAttribute(Property, "Units");
-                            else
-                            {
-                                // Get the units string and create a units context menu.
-                                Enum U = UnitsInfo.GetValue(OurObject, null) as Enum;
-                                Units = (string) UnitsToStringInfo.Invoke(OurObject, new object[] { U });
-                                UnitsMenu = new ContextMenuStrip();
-                                UnitsMenu.ItemClicked += UnitsMenuItemClicked;
-                                UnitsMenu.Tag = OurObject.GetType().GetMethod(Property.Name + "UnitsSet");
-                                foreach (object E in Enum.GetValues(U.GetType()))
-                                {
-                                    ToolStripItem Item = UnitsMenu.Items.Add((string)UnitsToStringInfo.Invoke(OurObject, new object[] { E }));
-                                    Item.Tag = E;
-                                }
-                            }
-
-                            // Create a column.
-                            string ColumnName = Property.Name;
-                            if (Units != "")
-                                ColumnName += "\r\n(" + Units + ")";
-                            DataGridViewColumn Column = GridUtility.AddColumn(Grid, ColumnName, Values, Format, ToolTips: Metadata);
-
-                            // Attach a unit menu if necessary
-                            if (UnitsMenu != null)
-                            {
-                                Column.HeaderCell.ContextMenuStrip = UnitsMenu;
-                            }
-                        }
+                        TotalGrid.Rows[0].Cells[Col].Value = MathUtility.Sum(Values);
+                        TotalsFound = true;
                     }
-
-                    //////// string[]
-                    else if (!Property.Name.Contains("Metadata") && Property.PropertyType.Name == "String[]")
-                    {
-                        // Get values.
-                        string[] Values = (string[])Property.GetValue(OurObject, null);
-                        GridUtility.AddColumn(Grid, Property.Name, Values, ToolTips: Metadata);
-                    }
-
-                    //////// SoilCrop[]
-                    else if (Property.PropertyType.FullName.Contains("SoilCrop"))
-                        AddCropColumns();
                 }
             }
-            if (OurObject is SoilOrganicMatter)
-                AddSoilOrganicMatterColumns();
-        }
-
-        /// <summary>
-        /// Save the grid as a water grid.
-        /// </summary>
-        private void SaveGrid()
-        {
-            // Loop through all columns in grid.
-            foreach (DataGridViewColumn Col in Grid.Columns)
+            TotalPanel.Visible = TotalsFound;
+            if (TotalPanel.Visible)
             {
-                // Extract the property name from the column header.
-                string PropertyName = Col.HeaderText;
-                if (PropertyName.Contains("\r\n"))
-                    PropertyName = PropertyName.Remove(PropertyName.IndexOf("\r\n"));
-
-                // Set the properties values.
-                PropertyInfo Property = null;
-                object Values = null;
-                if (PropertyName == "Depth")
-                {
-                    Property = OurObject.GetType().GetProperty("Thickness");
-                    Values = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, Col.Index));
-                }
+                TotalGrid.Rows[0].Cells[1].Value = "Total:";
+                if (Grid.ScrollBars == ScrollBars.None)
+                    TotalGrid.Dock = DockStyle.Fill;
                 else
                 {
-                    // Find the property in Obj.
-                    Property = OurObject.GetType().GetProperty(PropertyName);
-
-                    if (Property != null)
-                    {
-                        if (Property.PropertyType.Name == "Double[]")
-                            Values = GridUtility.GetColumnAsDoubles(Grid, Col.Index);
-
-                        else if (Property.PropertyType.Name == "String[]")
-                            Values = GridUtility.GetColumnAsStrings(Grid, Col.Index);
-                    }
+                    TotalGrid.Dock = DockStyle.None;
+                    TotalGrid.Width = TotalPanel.Width - DummyScrollBar.Width;
                 }
-                if (Property != null)
-                    Property.SetValue(OurObject, Values, null);
-
-                // Set the metadata.
-                PropertyInfo Metadata = OurObject.GetType().GetProperty(PropertyName + "Metadata");
-                if (Metadata != null)
-                {
-                    string[] MetadataStrings = GridUtility.GetColumnOfToolTips(Grid, Col.Index);
-                    Metadata.SetValue(OurObject, MetadataStrings, null);
-                }
+                TotalGrid.HorizontalScrollingOffset = Grid.HorizontalScrollingOffset;
             }
-
-            if (OurObject is Water)
-                SaveCropColumns();
+            this.TotalGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnTotalGridCellValueChanged);
         }
 
         /// <summary>
-        /// Setup the grid as a water grid.
+        /// User has changed the column width for a column. Update the total grid accordingly.
         /// </summary>
-        private void AddCropColumns()
+        private void OnColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
         {
-            Color[] CropColors = { Color.FromArgb(173, 221, 142), Color.FromArgb(247, 252, 185) };
-            Color[] PredictedCropColors = { Color.FromArgb(233, 191, 255), Color.FromArgb(244, 226, 255) };
+            UpdateTotalGrid();
+        }
 
-            DataGridViewColumn SAT = Grid.Columns["SAT\r\n(mm/mm)"];
-            SAT.Frozen = true;
-
-            int CropIndex = 0;
-            int PredictedCropIndex = 0;
-            foreach (string CropName in Soil.CropNames.Union(Soil.PredictedCropNames))
+        /// <summary>
+        /// User has scrolled the grid. Scroll the total grid accordingly.
+        /// </summary>
+        private void OnGridScroll(object sender, ScrollEventArgs e)
+        {
+            if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll)
             {
-                SoilCrop Crop = Soil.Crop(CropName);
-
-                bool IsReadonly;
-                Color CropColour;
-                Color ForeColour = Color.Black;
-                if (Crop.LLMetadata != null && Crop.LLMetadata.First() == "Estimated")
-                {
-                    CropColour = PredictedCropColors[PredictedCropIndex];
-                    ForeColour = Color.Gray;
-                    IsReadonly = true;
-                    PredictedCropIndex++;
-                    if (PredictedCropIndex >= PredictedCropColors.Length)
-                        PredictedCropIndex = 0;
-                }
-                else
-                {
-                    CropColour = CropColors[CropIndex];
-                    IsReadonly = false;
-                    CropIndex++;
-                    if (CropIndex >= CropColors.Length)
-                        CropIndex = 0;
-                }
-
-                DataGridViewColumn LL = GridUtility.AddColumn(Grid, CropName + " LL\r\n(mm/mm)", Crop.LL, "f3", CropColour, ForeColour, ToolTips: Crop.LLMetadata, ReadOnly: IsReadonly);
-                DataGridViewColumn PAWC = GridUtility.AddColumn(Grid, CropName + " PAWC\r\n(mm)", Soil.PAWmm(CropName), "f1", CropColour, ForeColour);
-                DataGridViewColumn KL = GridUtility.AddColumn(Grid, CropName + " KL\r\n(/day)", Crop.KL, "f2", CropColour, ForeColour, ToolTips: Crop.KLMetadata, ReadOnly: IsReadonly);
-                DataGridViewColumn XF = GridUtility.AddColumn(Grid, CropName + " XF\r\n(0-1)", Crop.XF, "f1", CropColour, ForeColour, ToolTips: Crop.XFMetadata, ReadOnly: IsReadonly);
-
-                PAWC.ToolTipText = "Calculated from crop LL and DUL";
-                PAWC.ReadOnly = true;
-                UpdateTotal(PAWC);
+                // Need to scroll the total grid to match the main grid.
+                TotalGrid.HorizontalScrollingOffset = e.NewValue;
+                Grid.Refresh();   // For some reason the grid headers are messed up when scrolling - do a refresh.
             }
-        }
-        
-        /// <summary>
-        ///  Save all crop columns.
-        /// </summary>
-        private void SaveCropColumns()
-        {
-            for (int Col = 7; Col < Grid.Columns.Count; Col += 4)
-            {
-                string CropName = CropNameFromColumn(Col);
-                SoilCrop Crop = Soil.Crop(CropName);
-                if (Crop.LLMetadata == null || Crop.LLMetadata.First() != "Estimated")
-                {
-                    Crop.LL = GridUtility.GetColumnAsDoubles(Grid, Col);
-                    Crop.LLMetadata = GridUtility.GetColumnOfToolTips(Grid, Col);
-                    Crop.KL = GridUtility.GetColumnAsDoubles(Grid, Col + 2);
-                    Crop.KLMetadata = GridUtility.GetColumnOfToolTips(Grid, Col + 2);
-                    Crop.XF = GridUtility.GetColumnAsDoubles(Grid, Col + 3);
-                    Crop.XFMetadata = GridUtility.GetColumnOfToolTips(Grid, Col + 3);
-                }
-            }
-
-        }
-
-        /// <summary>
-        /// Return an attribute of the specified property or "" if not found.
-        /// </summary>
-        internal static string GetAttribute(PropertyInfo Property, string AttributeName)
-        {
-            Object[] Attributes = Property.GetCustomAttributes(false);
-            foreach (Object Attr in Attributes)
-            {
-                if (Attr.GetType().Name == AttributeName)
-                    return Attr.ToString();
-            }
-            return "";
-        }
-
-        /// <summary>
-        /// Setup the grid as a soil organic matter grid.
-        /// </summary>
-        private void AddSoilOrganicMatterColumns()
-        {
-            DataGridViewColumn InertC = GridUtility.AddColumn(Grid, "InertC\r\n(kg/ha)", Soil.SoilOrganicMatter.InertC(Soil), "f0", ReadOnly: true);
-            InertC.ToolTipText = "Calculated";
-            DataGridViewColumn BiomC = GridUtility.AddColumn(Grid, "BiomC\r\n(kg/ha)", Soil.SoilOrganicMatter.BiomC(Soil), "f3", ReadOnly: true);
-            BiomC.ToolTipText = "Calculated";
-            DataGridViewColumn HumC = GridUtility.AddColumn(Grid, "HumC\r\n(kg/ha)", Soil.SoilOrganicMatter.HumC(Soil), "f3", ReadOnly: true);
-            HumC.ToolTipText = "Calculated";
-        }
-
-        /// <summary>
-        /// User has finished editing a cell. Update PAWC column or total in header if necessary.
-        /// </summary>
-        private void OnEndEdit(object sender, DataGridViewCellEventArgs e)
-        {
-            if (Grid.Columns[e.ColumnIndex].HeaderText.Contains("DUL"))
-            {
-                Soil.Water.DUL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
-
-                // Update all PAWC columns.
-                foreach (DataGridViewColumn Column in Grid.Columns)
-                {
-                    if (Column.HeaderText.Contains("PAWC"))
-                        UpdatePAWCColumn(Column);
-                }
-            }
-            else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" LL"))
-            {
-                string CropName = CropNameFromColumn(e.ColumnIndex);
-                Soil.Crop(CropName).LL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
-                UpdatePAWCColumn(Grid.Columns[e.ColumnIndex + 1]);
-            }
-            else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" KL"))
-            {
-                string CropName = CropNameFromColumn(e.ColumnIndex);
-                Soil.Crop(CropName).KL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
-                UpdatePAWCColumn(Grid.Columns[e.ColumnIndex - 1]);
-            }
-            else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" XF"))
-            {
-                string CropName = CropNameFromColumn(e.ColumnIndex);
-                Soil.Crop(CropName).XF = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
-                UpdatePAWCColumn(Grid.Columns[e.ColumnIndex - 2]);
-            }
-            Graph.Populate(Grid.ToTable(), OurComponent.Type, Soil);
-        }
-
-        /// <summary>
-        /// Extract the crop name from the specified column number.
-        /// </summary>
-        private string CropNameFromColumn(int Col)
-        {
-            string CropName = Grid.Columns[Col].HeaderText;
-            int Pos = CropName.IndexOf('\r');
-            if (Pos != -1)
-                CropName = CropName.Remove(Pos);
-            Pos = CropName.LastIndexOf(' ');
-            if (Pos != -1)
-                CropName = CropName.Remove(Pos);
-            return CropName;
-        }
-
-        /// <summary>
-        /// Extract the units from the specifeid column number.
-        /// </summary>
-        private string UnitsFromColumn(int Col)
-        {
-            string HeaderText = Grid.Columns[Col].HeaderText;
-            return StringManip.SplitOffBracketedValue(ref HeaderText, '(', ')');
-        }
-
-        /// <summary>
-        /// Update the specified PAWC column
-        /// </summary>
-        /// <param name="PAWC"></param>
-        /// <param name="Row"></param>
-        private void UpdatePAWCColumn(DataGridViewColumn PAWC)
-        {
-            string CropName = CropNameFromColumn(PAWC.Index);
-            GridUtility.SetColumnValues(Grid, PAWC.Index, Soil.PAWmm(CropName));
-            UpdateTotal(PAWC);
-        }
-
-        /// <summary>
-        /// Update the total in the HeaderText property of the specified Column.
-        /// </summary>
-        /// <param name="Col"></param>
-        private void UpdateTotal(DataGridViewColumn Col)
-        {
-            double Total = MathUtility.Sum(GridUtility.GetColumnAsDoubles(Grid, Col.Index));
-
-            string BaseText;
-            if (Col.HeaderText.Contains("\r\nTotal:"))
-            {
-                int Pos = Col.HeaderText.IndexOf("\r\nTotal:");
-                BaseText = Col.HeaderText.Substring(0, Pos);
-            }
-            else
-                BaseText = Col.HeaderText;
-            Col.HeaderText = BaseText + "\r\nTotal: " + Total.ToString("f1");
-
         }
 
         /// <summary>
@@ -494,64 +456,85 @@ namespace CSUserInterface
         }
 
         /// <summary>
-        /// User has clicked on manage crops - show them the manage crops form.
+        /// One more more columns in our table have been changed by the user.
         /// </summary>
-        private void ManageCropsButtonClick(object sender, EventArgs e)
+        void OnTableColumnChanged(List<string> ColumnNames)
         {
-            ManageCropsForm F = new ManageCropsForm(Soil);
-            if (F.ShowDialog() == DialogResult.OK)
-            {
-                Soil.CropNames = F.CropNames;
-                OnRefresh();
-            }
-        }
+            int ColIndex = Grid.CurrentCell.ColumnIndex;
+            int RowIndex = Grid.CurrentCell.RowIndex;
 
-        /// <summary>
-        /// User has clicked on metadata - allow them to edit the data.
-        /// </summary>
-        private void OnMetadataClick(object sender, EventArgs e)
-        {
-            string CurrentMetadata;
-            if (Grid.SelectedCells.Count >= 1)
+            bool SomethingWasSaved = false;
+            if (ColumnNames.Contains("Depth (cm)"))
             {
-                CurrentMetadata = Grid.SelectedCells[0].ToolTipText;
-            
-                string NewMetadata = UIBits.InputDialog.InputBox("Enter metadata:", "Metadata", CurrentMetadata, false);
-                if (NewMetadata != CurrentMetadata)
+                // User has changed depth column - go update all variables.
+                ColumnNames = EditableColumnNames;
+            }
+            foreach (string ColumnName in ColumnNames)
+            {
+                if (!ColumnName.Contains("Depth"))
                 {
-                    foreach (DataGridViewCell Cell in Grid.SelectedCells)
-                        Cell.ToolTipText = NewMetadata;
+                    SomethingWasSaved = true;
+                    Soil.ReadFromTable(_SoilNode, ProfileNode, Grid.DataSourceTable, ColumnName.Replace("\n", " "));
                 }
             }
+
+            if (SomethingWasSaved)
+            {
+                OnRefresh();
+                RefreshGraph();
+                if (RowIndex < Grid.Rows.Count - 1 && ColIndex <= Grid.Columns.Count - 1)
+                    Grid.CurrentCell = Grid.Rows[RowIndex].Cells[ColIndex];
+            }
         }
 
         /// <summary>
-        /// User has changed the units.
+        /// User has changed the units for a variable.
         /// </summary>
-        private void UnitsMenuItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        void OnUnitMenuClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            object Units = e.ClickedItem.Tag;
-            MethodInfo UnitChangeMethod = (sender as ContextMenuStrip).Tag as MethodInfo;
-            if (UnitChangeMethod.GetParameters().Length == 1)
-                UnitChangeMethod.Invoke(OurObject, new object[] {Units});
-            else
-                UnitChangeMethod.Invoke(OurObject, new object[] { Units, Soil });
+            int Col = (int)e.ClickedItem.Tag;
+
+            Grid.Columns[Col].HeaderCell.ContextMenuStrip = null;
+
+            string RawVariableName = Grid.Columns[Col].HeaderText;
+            string Units = StringManip.SplitOffBracketedValue(ref RawVariableName, '(', ')');
+            string NewUnits = e.ClickedItem.Text;
+
+            string OldColumnName = Grid.Columns[Col].HeaderText.Replace("\n", " ");
+            string NewColumnName = RawVariableName + " (" + NewUnits + ")";
+
+            Table.Columns[OldColumnName].ColumnName = NewColumnName;
+
+            Soil.ReadFromTable(_SoilNode, ProfileNode, Grid.DataSourceTable, NewColumnName);
+
             OnRefresh();
         }
 
         /// <summary>
-        /// User has clicked the check button - display any errors found in soil.
+        /// User has changed a total value.
         /// </summary>
-        private void CheckButtonClick(object sender, EventArgs e)
+        private void OnTotalGridCellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            OnSave();
-            string Msg = Soil.Check(true);
-            if (Msg == "")
-                MessageBox.Show("No errors found", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            else
-                MessageBox.Show(Msg, "Soil Errors", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            double[] Values = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
+            double OldSum = MathUtility.Sum(Values);
+            double NewSum = Convert.ToDouble(TotalGrid.CurrentCell.Value);
+            double Scale = NewSum / OldSum;
+            for (int i = 0; i < Values.Length; i++)
+                Grid.Rows[i].Cells[e.ColumnIndex].Value = Values[i] * Scale;
+
+            string ColumnName = Grid.Columns[e.ColumnIndex].HeaderText.Replace("\n", " "); ;
+            Soil.ReadFromTable(_SoilNode, ProfileNode, Grid.DataSourceTable, ColumnName);
+
+            OnRefresh();
         }
 
-    }
+        private void OnCellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            TotalGrid.BeginEdit(true);
+        }
 
+
+
+    }
 }
+

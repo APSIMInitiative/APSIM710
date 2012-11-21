@@ -11,16 +11,16 @@ using System.IO;
 using Steema.TeeChart.Styles;
 using CSGeneral;
 using Steema.TeeChart.Themes;
-using Graph;
 
 namespace Graph
 {
     public partial class SoilGraphUI : Graph.GraphUI2
     {
         private string FileName;
+        private XmlNode OurData;
         private bool AdjustTopAxisTitle = false;
-        private Soil Soil;
-        private DataTable Table;
+        private string CurrentChartType;
+        private XmlNode _SoilNode;
 
         /// <summary>
         /// Constructor
@@ -31,124 +31,112 @@ namespace Graph
         }
 
         /// <summary>
-        /// Refresh the chart from data in the specified datasource.
+        /// UI has been loaded. Set ourselves up.
         /// </summary>
-        public void Populate(DataTable DataSource, string ChartType, Soil Soil)
+        protected override void OnLoad()
         {
-            this.Soil = Soil;
-            this.Table = DataSource;
+            base.OnLoad();
+            OurData = Data;
+            Chart.Series.Clear();
+            CurrentChartType = OurData.Name;
+        }
 
-            DataSource.TableName = ChartType;
+        /// <summary>
+        /// A property to allow the parent to give us a soil object.
+        /// </summary>
+        public XmlNode SoilNode
+        {
+            get { return _SoilNode; }
+            set { _SoilNode = value; }
+        }
+
+        /// <summary>
+        /// Refresh the chart.
+        /// </summary>
+        public override void OnRefresh()
+        {
             Chart.Axes.Left.Automatic = true;
             Chart.Axes.Top.Automatic = true;
             Chart.Axes.Right.Automatic = true;
             Chart.Axes.Bottom.Automatic = true;
-            //Chart.Series.Clear();
+            Chart.Series.Clear();
 
             // Try and load an appropriate template.
             if (Directory.Exists(Path.Combine(Configuration.ApsimDirectory(), "UserInterface")))
-                FileName = Path.Combine(Configuration.ApsimDirectory(), "UserInterface", ChartType + ".xml");
+                FileName = Path.Combine(Configuration.ApsimDirectory(), "UserInterface", CurrentChartType + ".xml");
             else
-                FileName = Path.Combine(Configuration.ApsimDirectory(), ChartType + ".xml");
+                FileName = Path.Combine(Configuration.ApsimDirectory(), CurrentChartType + ".xml");
             XmlDocument Doc = new XmlDocument();
             if (File.Exists(FileName))
-            {
                 Doc.Load(FileName);
-                Data = Doc.DocumentElement;
-            }
             else
-                Data = null;
+            {
+                Doc.AppendChild(Doc.CreateElement(Data.Name));
+                XmlHelper.SetName(Doc.DocumentElement, XmlHelper.Name(Data));
+            }
+            Data = Doc.DocumentElement;
 
             // Get the base chart to do it's thing.
             base.OnRefresh();
 
-            // Make sure there is a DepthMidPoints column
-            if (DataSource.Columns.IndexOf("DepthMidPoints (mm)") == -1)
-            {
-                string[] Depths = DataTableUtility.GetColumnAsStrings(DataSource, "Depth (cm)");
-                double[] Thickness = Soil.ToThickness(Depths);
-                double[] DepthMidPoints = Soil.ToMidPoints(Thickness);
-                DataTableUtility.AddColumn(DataSource, "DepthMidPoints (mm)", DepthMidPoints);
-            }
-
-            // Add in LL series.
-            foreach (DataColumn Column in DataSource.Columns)
-            {
-                if (Column.ColumnName.Contains(" LL"))
-                {
-                    Line Line = new Line();
-                    Line.LinePen.Width = 2;
-                    AddSeries(DataSource, Column.ColumnName, Line); 
-                }
-            }
-
             // Get our data.
-            AddDataSource(DataSource);
+            DataTable DataSource = GetDataSourceWithName(CurrentChartType);
+
+            if (DataSource == null && CurrentChartType == "Water")
+            {
+                // Create a minimal water table. This happens for soil samples when the user
+                // clicks on the SW legend checkbox.
+                // Get our data.
+                List<string> VariableNames = new List<string>();
+                VariableNames.Add("DepthMidPoints (mm)");
+                VariableNames.Add("Airdry (mm/mm)");
+                VariableNames.Add("LL15 (mm/mm)");
+                VariableNames.Add("DUL (mm/mm)");
+                VariableNames.Add("SAT (mm/mm)");
+
+                DataTable Table = new DataTable();
+                Soil.WriteToTable(SoilNode, Table, VariableNames);
+                Table.TableName = "Water";
+                AddDataSource(Table);
+            }
 
             AdjustTopAxisTitle = false;
+            if (DataSource != null)
+            {
+                if (CurrentChartType == "Water" || CurrentChartType == "InitWater")
+                    AddLLSeries(DataSource);
 
+                else if (Chart.Series.Count == 0)
+                {
+                    AdjustTopAxisTitle = true;
+                    for (int Col = 1; Col < DataSource.Columns.Count; Col++)
+                    {
+                        Line Line = new Line();
+                        Line.LinePen.Width = 2;
+                        AddSeries(DataSource, DataSource.Columns[Col].ColumnName, Line);
+                    }
+                    FormatTopAxis();
+                }
+            }
             // For some charts were we don't have a predefined chart XML file we need to set
             // up some default chart settings.
             Chart.Axes.Left.Inverted = true;
 
-            // If there are no series then add some e.g. Analysis
-            if (Chart.Series.Count == 0)
+            // If this is a water chart AND the node the user is on is a sample node then
+            // the user has clicked on the "SW" in the legend. In this case we want to
+            // not only show the water chart but also overlay a SW series on top of it.
+            if (CurrentChartType == "Water" && OurData.Name == "Sample")
             {
-                bool FirstSeries = true;
-                foreach (DataColumn Column in DataSource.Columns)
-                {
-                    if (Column.DataType == typeof(double) && !Column.ColumnName.Contains("Depth"))
-                    {
-                        string[] Values = DataTableUtility.GetColumnAsStrings(DataSource, Column.ColumnName);
-                        if (MathUtility.ValuesInArray(Values))
-                        {
-                            Line Line = new Line();
-                            Line.LinePen.Width = 2;
-                            AddSeries(DataSource, Column.ColumnName, Line);
-                            Line.Active = FirstSeries;
-                            FirstSeries = false;
-                        }
-                    }
-                }
-                AdjustTopAxisTitle = true;
-                FormatTopAxis();
-            }
+                DataTable SampleDataSource = GetDataSourceWithName(OurData.Name);
+                Line Line = new Line();
+                Line.LinePen.Width = 2;
 
+                Series SWSeries = AddSeries(SampleDataSource, "SW (mm/mm)", Line);
+                SWSeries.Active = true;
+            }
 
             // Now we can populate all series as we've created our series.
             PopulateSeries();
-            Chart.Refresh();
-        }
-
-        /// <summary>
-        /// Refresh the chart from data in the specified soil.
-        /// </summary>
-        public void Populate(Soil Soil, string ChartType)
-        {
-            DataTable Table = new DataTable();
-
-            if (ChartType == "Water")
-            {
-                DataTableUtility.AddColumn(Table, "DepthMidPoints (mm)", Soil.ToMidPoints(Soil.Water.Thickness));
-                DataTableUtility.AddColumn(Table, "Airdry (mm/mm)", Soil.Water.AirDry);
-                DataTableUtility.AddColumn(Table, "LL15 (mm/mm)", Soil.Water.LL15);
-                DataTableUtility.AddColumn(Table, "DUL (mm/mm)", Soil.Water.DUL);
-                DataTableUtility.AddColumn(Table, "SAT (mm/mm)", Soil.Water.SAT);
-                foreach (string CropName in Soil.CropNames)
-                {
-                    string LegendTitle = CropName + " LL (PAWC: " + MathUtility.Sum(Soil.PAWmm(CropName)).ToString("f0") + "mm)";
-                    DataTableUtility.AddColumn(Table, LegendTitle, Soil.Crop(CropName).LL);
-                   
-                }
-            }
-            else if (ChartType == "SoilOrganicMatter")
-            {
-                DataTableUtility.AddColumn(Table, "DepthMidPoints (mm)", Soil.ToMidPoints(Soil.SoilOrganicMatter.Thickness));
-                DataTableUtility.AddColumn(Table, "InertC (kg/ha)", Soil.SoilOrganicMatter.InertC(Soil));
-                DataTableUtility.AddColumn(Table, "BiomC (kg/ha)", Soil.SoilOrganicMatter.BiomC(Soil));
-                DataTableUtility.AddColumn(Table, "HumC (kg/ha)", Soil.SoilOrganicMatter.HumC(Soil));
-            }
-            Populate(Table, ChartType, Soil);
         }
 
         /// <summary>
@@ -170,6 +158,25 @@ namespace Graph
             }
         }
 
+        /// <summary>
+        /// Add all LL series found in the specified table to the chart.
+        /// </summary>
+        private void AddLLSeries(DataTable Table)
+        {
+            // Assumes that col 0 is the y axis variable.
+            for (int Col = 1; Col < Table.Columns.Count; Col++)
+            {
+                string ColumnName = Table.Columns[Col].ColumnName;
+                // If this is a water chart then we only want to add crop LL series. Otherwise
+                // we want to add all series.
+                if (ColumnName.Contains(" LL"))
+                {
+                    Line Line = new Line();
+                    Line.LinePen.Width = 2;
+                    AddSeries(Table, ColumnName, Line);
+                }
+            }
+        }
 
         /// <summary>
         /// A helper method to add a series to the chart.
@@ -184,12 +191,28 @@ namespace Graph
                 if (MathUtility.ValuesInArray(x))
                 {
                     string Title = ColumnName;
+                    string CropName = "";
+                    if (ColumnName.IndexOf(' ') != -1)
+                        CropName = ColumnName.Substring(0, ColumnName.IndexOf(' '));
+                    if (CropName != "" && Array.IndexOf(Soil.Crops(_SoilNode), CropName) != -1)
+                    {
+                        Title = CropName + " LL";
+                        Soil.Variable PAWC = Soil.GetOptional(SoilNode, CropName + " PAWC");
+                        if (PAWC != null)
+                        {
+                            PAWC.Units = "mm";
+                            double PAWCValue = MathUtility.Sum(PAWC.Doubles);
+                            Title = CropName + " LL (PAWC: " + PAWCValue.ToString("f0") + "mm)";
+                        }
+                    }
+
 
                     Line.DataSource = Table;
                     Line.Active = NoSeriesIsActive;
                     Line.HorizAxis = HorizontalAxis.Top;
+
                     Line.Title = Title;
-                    AddSeries(Line, Table.TableName, ColumnName, "DepthMidPoints (mm)");
+                    AddSeries(Line, Table.TableName, ColumnName, Table.Columns[0].ColumnName);
                     return Line;
                 }
             }
@@ -221,17 +244,13 @@ namespace Graph
 
             if (Chart.Legend.ShapeBounds.Contains(e.Location))
             {
-                string SWColumnName = "";
                 bool SWSelected = false;
                 foreach (Series s in Chart.Series)
                 {
                     if (s.Active)
                     {
                         if (s.Title.Contains("SW "))
-                        {
                             SWSelected = true;
-                            SWColumnName = s.Title;
-                        }
                         else
                         {
                             SWSelected = false;
@@ -241,18 +260,15 @@ namespace Graph
                 }
                 if (SWSelected)
                 {
-                    DataTable SampleData = Table;
-
-                    // Get a soil object.
-                    Populate(Soil, "Water");
-
-                    AddDataSource(SampleData);
-                    Line Line = new Line();
-                    Line.LinePen.Width = 2;
-                    Line.Color = Color.Blue;
-                    AddSeries(SampleData, SWColumnName, Line);
-                    Line.Active = true;
-                    PopulateSeries();
+                    Chart.Series.Clear();
+                    CurrentChartType = "Water";
+                    OnRefresh();
+                }
+                else if (OurData.Name != "Water" && FileName.Contains("Water.xml"))
+                {
+                    Chart.Series.Clear();
+                    CurrentChartType = OurData.Name;
+                    OnRefresh();
                 }
             }
         }

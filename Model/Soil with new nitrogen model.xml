@@ -1,6 +1,6 @@
 <Type name="soil">
   <MetaData>
-    <UItype>CSUserInterface.SoilPropertyUI</UItype>
+    <UItype>CSUserInterface.GenericUI</UItype>
     <ShowInMainTree>Yes</ShowInMainTree>
     <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
     <Documentation name="Water science documentation">%apsim%\Documentation\4 Module Reference\SoilWat.htm</Documentation>
@@ -9,7 +9,7 @@
     <LargeIcon>%apsim%\UserInterface\Images\shovel32.bmp</LargeIcon>
     <SmallIcon>%apsim%\UserInterface\Images\shovel16.bmp</SmallIcon>
     <dll>%apsim%/Model/SoilWat.%dllext%</dll>
-    <dll>%apsim%/Model/SoilNitrogen.%dllext%</dll>
+    <dll>%apsim%/Model/SoilNitrogen.dll</dll>
     <dll>%apsim%/Model/SoilP.%dllext%</dll>
     <drops>
       <drop>toolbox</drop>
@@ -19,125 +19,92 @@
       <drop>factor</drop>
     </drops>
     <ApsimToSim>
-      [foreach Soil.SoilWater]
+      [foreach Soil.SoilWat]
       <component name="[soil.Name] Water" executable="%apsim%/Model/SoilWat.%dllext%" class="SoilWat">
-         <executable name="%apsim%/Model/SoilWat.%dllext%" version="1.0" class="SoilWat" />
-         <initdata>
-               [Model SoilWat]
-               <diffus_const>[soil.SoilWater.DiffusConst]</diffus_const>
-               <diffus_slope>[soil.SoilWater.DiffusSlope]</diffus_slope>
-               <cn2_bare>[soil.SoilWater.CN2Bare]</cn2_bare>
-               <cn_red>[soil.SoilWater.CNRed]</cn_red>
-               <cn_cov>[soil.SoilWater.CNCov]</cn_cov>
-               <salb>[soil.SoilWater.Salb]</salb>
-               <SummerCona>[soil.SoilWater.SummerCona]</SummerCona>
-               <WinterCona>[soil.SoilWater.WinterCona]</WinterCona>
-               <SummerU>[soil.SoilWater.SummerU]</SummerU>
-               <WinterU>[soil.SoilWater.WinterU]</WinterU>
-               <SummerDate>[soil.SoilWater.SummerDate]</SummerDate>
-               <WinterDate>[soil.SoilWater.WinterDate]</WinterDate>
-               
-               <dlayer>[soil.Thickness]</dlayer>
-               <sat>[soil.Sat]</sat>
-               <dul>[soil.Dul]</dul>
-               <ll15>[soil.LL15]</ll15>
-               <air_dry>[soil.AirDry]</air_dry>
-               <swcon>[soil.SWCon]</swcon>
-               <bd>[soil.BD]</bd>
-               <sw>[soil.SW]</sw>
-               
-               [if [soil.MWCon]]<mwcon>[soil.MWCon]</mwcon>[endif]
-               [if [soil.KS]]<ks>[soil.KS]</ks>[endif]
-               [if [soil.SoilWater.Slope]]<slope>[soil.SoilWater.Slope]</slope>[endif]
-               [if [soil.SoilWater.DischargeWidth]]<discharge_width>[soil.SoilWater.DischargeWidth]</discharge_width>[endif]
-               [if [soil.SoilWater.CatchmentArea]]<catchment_area>[soil.SoilWater.CatchmentArea]</catchment_area>[endif]
-               [if [soil.SoilWater.KLAT]]<klat>[soil.SoilWater.KLAT]</klat>[endif]
-               [if [soil.SoilWater.MaxPond]]<max_pond>[soil.SoilWater.MaxPond]</max_pond>[endif]
-         </initdata>
+        <executable name="%apsim%/Model/SoilWat.%dllext%" version="1.0" />
+        <initdata>
+          [Model SoilWat]
+          <diffus_const>[soil.DiffusConst]</diffus_const><diffus_slope>[soil.DiffusSlope]</diffus_slope><cn2_bare>[soil.CN2Bare]</cn2_bare><cn_red>[soil.CNRed]</cn_red><cn_cov>[soil.CNCov]</cn_cov><salb>[soil.Salb]</salb><SummerCona>[soil.SummerCona]</SummerCona><WinterCona>[soil.WinterCona]</WinterCona><SummerU>[soil.SummerU]</SummerU><WinterU>[soil.WinterU]</WinterU><SummerDate>[soil.SummerDate]</SummerDate><WinterDate>[soil.WinterDate]</WinterDate><dlayer>[soil.Thickness(mm)]</dlayer><sat>[soil.Sat(mm/mm)]</sat><dul>[soil.Dul(mm/mm)]</dul><ll15>[soil.LL15(mm/mm)]</ll15><air_dry>[soil.AirDry(mm/mm)]</air_dry><swcon>[soil.SWCon(0-1)]</swcon><bd>[soil.BD(g/cc)]</bd><sw>[soil.SW(mm/mm)]</sw>
+          [if [soil.MWCon(0-1)]]
+          <mwcon>[soil.MWCon(0-1)]</mwcon>
+          [endif]
+          [if [soil.KS(mm/day)]]
+          <ks>[soil.KS(mm/day)]</ks>
+          [endif]
+          [if [soil.Slope]]
+          <slope>[soil.Slope]</slope>
+          [endif]
+          [if [soil.DischargeWidth]]
+          <discharge_width>[soil.DischargeWidth]</discharge_width>
+          [endif]
+          [if [soil.CatchmentArea]]
+          <catchment_area>[soil.CatchmentArea]</catchment_area>
+          [endif]
+          [if [soil.KLAT]]
+          <klat>[soil.KLAT]</klat>
+          [endif]
+          [if [soil.MaxPond]]
+          <max_pond>[soil.MaxPond]</max_pond>
+          [endif]
+        </initdata>
       </component>
       [endfor]
       [foreach Soil.Swim]
-      <component name="SWIM" executable="%apsim%/Model/SWIM3.%dllext%" class="Swim3">
-         <executable name="%apsim%/Model/SWIM3.%dllext%" version="1.0" class="Swim3" />
-         <initdata>
-               [Model Swim3]
-               <cn2_bare>[Swim.Cn2Bare]</cn2_bare>
-               <cn_red>[Swim.CnRed]</cn_red>
-               <cn_cov>[Swim.CnCov]</cn_cov>
-               <salb>[Swim.Salb]</salb>
-               <dlayer>[soil.Thickness]</dlayer>
-               <air_dry>[soil.AirDry]</air_dry>
-               <sat>[soil.Sat]</sat>
-               <dul>[soil.Dul]</dul>
-               <ll15>[soil.LL15]</ll15>
-               <bd>[soil.BD]</bd>
-               <theta>[soil.SW]</theta>
-               <ks>[soil.KS]</ks>
-               <Kdul>[soil.Swim.Kdul]</Kdul>
-               <psidul>[soil.Swim.PsiDUL]</psidul>
-               <vapour_conductivity>[soil.Swim.VC]</vapour_conductivity>
-               <rainfall_source>apsim</rainfall_source>
-               <evap_source>calc</evap_source>
-               <dtmin>[soil.Swim.dtmin]</dtmin>
-               <dtmax>[soil.Swim.dtmax]</dtmax>
-               <max_water_increment>[soil.Swim.MaxWaterIncrement]</max_water_increment>
-               <swt>[soil.Swim.SpaceWeightingFactor]</swt>
-               <slswt>[soil.Swim.SoluteSpaceWeightingFactor]</slswt>
-               <diagnostics>[soil.Swim.diagnostics]</diagnostics>
-               [if [soil.Swim.SwimSubsurfaceDrain.DrainDepth]]
-                  <DrainDepth>[soil.Swim.SwimSubsurfaceDrain.DrainDepth]</DrainDepth>
-                  <DrainSpacing>[soil.Swim.SwimSubsurfaceDrain.DrainSpacing]</DrainSpacing>
-                  <DrainRadius>[soil.Swim.SwimSubsurfaceDrain.DrainRadius]</DrainRadius>
-                  <Klat>[soil.Swim.SwimSubsurfaceDrain.Klat]</Klat>
-                  <ImpermDepth>[soil.Swim.SwimSubsurfaceDrain.ImpermDepth]</ImpermDepth>
-               [endif]
-               [if [soil.Swim.SwimWaterTable.WaterTableDepth]]
-                  <WaterTableDepth>[soil.Swim.SwimWaterTable.WaterTableDepth]</WaterTableDepth>               
-               [endif]
-               <solute>
-                  <a>[soil.Swim.SwimSoluteParameters.a]</a>
-                  <dthc>[soil.Swim.SwimSoluteParameters.dthc]</dthc>
-                  <dthp>[soil.Swim.SwimSoluteParameters.dthp]</dthp>
-                  <dis> [soil.Swim.SwimSoluteParameters.dis]</dis>
-                  <disp>[soil.Swim.SwimSoluteParameters.disp]</disp>
-                  <WaterTableNO3>[soil.Swim.SwimSoluteParameters.WaterTableNO3]</WaterTableNO3>
-                  <WaterTableNH4>[soil.Swim.SwimSoluteParameters.WaterTableNH4]</WaterTableNH4>
-                  <WaterTableUrea>[soil.Swim.SwimSoluteParameters.WaterTableUrea]</WaterTableUrea>
-                  <WaterTableCl>[soil.Swim.SwimSoluteParameters.WaterTableCl]</WaterTableCl>
-                  <NO3Exco>[soil.NO3Exco]</NO3Exco>
-                  <NO3FIP>[soil.NO3FIP]</NO3FIP>
-                  <NH4Exco>[soil.NH4Exco]</NH4Exco>
-                  <NH4FIP>[soil.NH4FIP]</NH4FIP>
-                  <UreaExco>[soil.UreaExco]</UreaExco>
-                  <UreaFIP>[soil.UreaFIP]</UreaFIP>
-                  <ClExco>[soil.ClExco]</ClExco>
-                  <ClFIP>[soil.ClFIP]</ClFIP>
-               </solute>
-            </initdata>
-         </component>
+      <component name="SWIM" executable="%apsim%/Model/swim3.%dllext%" class="Swim3">
+        <executable name="%apsim%/Model/Swim3.%dllext%" version="1.0" />
+        <initdata>
+          [Model Swim3]
+          <cn2_bare>[soil.CN2Bare]</cn2_bare><cn_red>[soil.CNRed]</cn_red><cn_cov>[soil.CNCov]</cn_cov><salb>[soil.Salb]</salb><dlayer>[soil.Thickness (mm)]</dlayer><air_dry>[soil.AirDry]</air_dry><sat>[soil.Sat]</sat><dul>[soil.Dul]</dul><ll15>[soil.LL15]</ll15><bd>[soil.BD]</bd><theta>[soil.SW(mm/mm)]</theta><ks>[soil.KS]</ks><Kdul>[soil.Kdul]</Kdul><psidul>[soil.PsiDUL]</psidul><vapour_conductivity>[soil.VC]</vapour_conductivity><rainfall_source>apsim</rainfall_source><evap_source>calc</evap_source><dtmin>[soil.dtmin]</dtmin><dtmax>[soil.dtmax]</dtmax><max_water_increment>[soil.MaxWaterIncrement]</max_water_increment><swt>[soil.SpaceWeightingFactor]</swt><slswt>[soil.SoluteSpaceWeightingFactor]</slswt><diagnostics>[soil.diagnostics]</diagnostics>
+          [foreach Swim.SwimSubsurfaceDrain]
+          <DrainDepth>[SwimSubsurfaceDrain.DrainDepth]</DrainDepth><DrainSpacing>[SwimSubsurfaceDrain.DrainSpacing]</DrainSpacing><DrainRadius>[SwimSubsurfaceDrain.DrainRadius]</DrainRadius><Klat>[SwimSubsurfaceDrain.Klat]</Klat><ImpermDepth>[SwimSubsurfaceDrain.ImpermDepth]</ImpermDepth>
+          [endfor]
+          [foreach Swim.SwimWaterTable]
+          <WaterTableDepth>[SwimWaterTable.WaterTableDepth]</WaterTableDepth>
+          [endfor]
+          <solute>
+            <a>[Swim.SwimSoluteParameters.a]</a>
+            <dthc>[Swim.SwimSoluteParameters.dthc]</dthc>
+            <dthp>[Swim.SwimSoluteParameters.dthp]</dthp>
+            <dis> [Swim.SwimSoluteParameters.dis]</dis>
+            <disp>[Swim.SwimSoluteParameters.disp]</disp>
+            <NO3Exco>[soil.NO3Exco]</NO3Exco>
+            <NO3FIP>[soil.NO3FIP]</NO3FIP>
+            <NH4Exco>[soil.NH4Exco]</NH4Exco>
+            <NH4FIP>[soil.NH4FIP]</NH4FIP>
+            <UreaExco>[soil.UreaExco]</UreaExco>
+            <UreaFIP>[soil.UreaFIP]</UreaFIP>
+            <ClExco>[soil.ClExco]</ClExco>
+            <ClFIP>[soil.ClFIP]</ClFIP>
+            <WaterTableNO3>[Swim.SwimSoluteParameters.WaterTableNO3]</WaterTableNO3>
+            <WaterTableNH4>[Swim.SwimSoluteParameters.WaterTableNH4]</WaterTableNH4>
+            <WaterTableUrea>[Swim.SwimSoluteParameters.WaterTableUrea]</WaterTableUrea>
+            <WaterTableCl>[Swim.SwimSoluteParameters.WaterTableCl]</WaterTableCl>
+          </solute>
+        </initdata>
+      </component>
       [endfor]
-      <component name="[soil.Name] Nitrogen" executable="%apsim%/Model/SoilNitrogen.%dllext%" class="SoilN">
-         <executable name="%apsim%/Model/SoilNitrogen.%dllext%" version="1.0" class="SoilN"/>
-         <initdata>
-         [Model SoilN]
-         <PerformInstructions>
-           <ConstructModel>
-             <SoilNitrogen>
+      <component name="[soil.Name] Nitrogen" executable="%apsim%/Model/SoilNitrogen.dll" class="SoilN">
+        <executable name="%apsim%/Model/SoilNitrogen.dll" version="1.0" />
+        <initdata>
+          [Model SoilNitrogen]
 
-               [if [soil.SoilType]]<soiltype>[soil.SoilType]</soiltype>[else]<soiltype></soiltype>[endif]
-               <root_cn>[soil.SoilOrganicMatter.RootCN]</root_cn>
-               <root_wt>[soil.SoilOrganicMatter.RootWt]</root_wt>
-               <soil_cn>[soil.SoilOrganicMatter.SoilCN]</soil_cn>
-               <enr_a_coeff>[soil.SoilOrganicMatter.EnrACoeff]</enr_a_coeff>
-               <enr_b_coeff>[soil.SoilOrganicMatter.EnrBCoeff]</enr_b_coeff>
-               <profile_reduction>off</profile_reduction>
-               <oc>[soil.OC]</oc>
-               <ph>[soil.PH]</ph>
-               <fbiom>[soil.FBIOM]</fbiom>
-               <finert>[soil.FINERT]</finert>
-               <no3ppm>[soil.NO3]</no3ppm>
-               <nh4ppm>[soil.NH4]</nh4ppm>
-               [if [soil.Rocks]]<rocks>[soil.Rocks]</rocks>[endif]
+          <PerformInstructions>
+            <ConstructModel>
+              <SoilNitrogen>
+
+                <!-- Typicial Soil interface values -->
+                <soiltype>[soil.SoilType]</soiltype>
+                <root_cn>[soil.RootCN]</root_cn>
+                <root_wt>[soil.RootWT]</root_wt>
+                <soil_cn>[soil.SoilCN]</soil_cn>
+                <enr_a_coeff>[soil.EnrACoeff]</enr_a_coeff>
+                <enr_b_coeff>[soil.EnrBCoeff]</enr_b_coeff>
+                <oc>[soil.OC(Total %)]</oc>
+                <ph>[soil.PH(1:5 water)]</ph>
+                <fbiom>[soil.FBIOM(0-1)]</fbiom>
+                <finert>[soil.FINERT(0-1)]</finert>
+                <no3ppm>[soil.NO3(ppm)]</no3ppm>
+                <nh4ppm>[soil.NH4(ppm)]</nh4ppm>
 
                 <!-- additions by RCichota - temporary? -->
                 <useAllNewFunctions description="whether all set of new functions is to be used (include processes and factors)"> no </useAllNewFunctions>
@@ -148,7 +115,7 @@
                 <useMultiFactors4MinerFOM description="whether mineralisation factors are calculated for each FOM pool"> no </useMultiFactors4MinerFOM>
 
                 <!-- alternative N2O routines specified from interface  FLi -->
-                <!--<texture>[soil.Texture]</texture> -->
+                <texture>[soil.Texture]</texture>
                 <n2o_approach description ="Alternative nit/dnit approaches for n2o calculation (0def 1wnmm 2nemis 3cent)">0 </n2o_approach>
                 <wnmm_n_alpha description ="WNMM: maximum fraction of nitrification rate as N2O">0.002</wnmm_n_alpha>
                 <wnmm_dn_alpha description ="WNMM: maximum fraction of denitrification rate at wfps = 0.8 ">0.5</wnmm_dn_alpha>
@@ -408,36 +375,31 @@
               <profile_reduction>on</profile_reduction>
             </OverrideIf>
           </PerformInstructions>
-         </initdata>
+        </initdata>
       </component>
       [foreach Soil.Phosphorus]
       <component name="Phosphorus" executable="%apsim%/Model/SoilP.%dllext%" class="SoilP">
-         <executable name="%apsim%/Model/SoilP.%dllext%" version="1.0" class="SoilP"/>
-         <initdata>
-               [Model SoilP]
-               <root_cp>[soil.Phosphorus.RootCP]</root_cp>
-               <rate_dissol_rock_P>[soil.Phosphorus.RateDissolRock]</rate_dissol_rock_P>
-               <rate_loss_avail_P>[soil.Phosphorus.RateLossAvail]</rate_loss_avail_P>
-               <sorption_coeff>[soil.Phosphorus.SorptionCoeff]</sorption_coeff>
-               <labile_p>[soil.LabileP]</labile_p>
-               <banded_p>[soil.BandedP]</banded_p>
-               <rock_p>[soil.RockP]</rock_p>
-               <sorption>[soil.Sorption]</sorption>
-         </initdata>
+        <executable name="%apsim%/Model/SoilP.%dllext%" version="1.0" />
+        <initdata>
+          [Model SoilP]
+          <root_cp>[soil.RootCP]</root_cp><rate_dissol_rock_P>[soil.RateDissolRock]</rate_dissol_rock_P><rate_loss_avail_P>[soil.RateLossAvail]</rate_loss_avail_P><labile_p>[soil.LabileP(mg/kg)]</labile_p><banded_p>[soil.BandedP(kg/ha)]</banded_p><rock_p>[soil.RockP(kg/ha)]</rock_p><sorption>[soil.Sorption(-)]</sorption><sorption_coeff>[soil.SorptionCoeff]</sorption_coeff>
+        </initdata>
       </component>
       [endfor]
-      [if [soil.Cl]]
+      [if [soil.Cl (mg/kg)]]
       <component name="Cl" executable="%apsim%/Model/Solute.%dllext%" class="Solute.Cl">
-         <executable name="%apsim%/Model/Solute.%dllext%" version="1.0" class="Solute" />
-         <initdata>
-            <ub_solute>1000</ub_solute>
-            <lb_solute>0</lb_solute>
-            <solute_names>cl</solute_names>
-            <d0_cl>0</d0_cl>
-            <cl_ppm>[soil.Cl]</cl_ppm>
-         </initdata>
+        <executable name="%apsim%/Model/Solute.%dllext%" version="1.0" />
+        <initdata>
+          [Model Cl]
+          <ub_solute description="Upper bound for solutes">1000    </ub_solute>
+          <lb_solute description="Lower bound for solutes">0       </lb_solute>
+          <solute_names>cl</solute_names>
+          <d0_cl>0</d0_cl>
+          <cl_ppm>[soil.Cl (mg/kg)]</cl_ppm>
+        </initdata>
       </component>
       [endif]
+
     </ApsimToSim>
   </MetaData>
   <Model name="SoilWat">
@@ -551,7 +513,10 @@
       <burn>0.0           0.</burn>
     </tillage>
   </Model>
+  <Model name="SoilNitrogen">
 
+
+  </Model>
   <Model name="SoilP">
     <!--  CHANGES by MEP
       -->
@@ -601,7 +566,7 @@
       p_supply_factor =   4      4.0                                         (??)   ! used with sorpt_coeff = 0.5
       **************************************************
       -->
-    <crit_p_rlv units="mm/mm^3" description="critical P rlv">          0.00001 0.00001 0.00001 0.00001  0.00001 0.00001 0.00001 0.00001 0.00001 0.00001  0.00001  0.00001 0.00001 0.00001 0.00001 0.00001  0.00001  0.00001 0.00001 </crit_p_rlv>
+    <crit_p_rlv units="mm/mm^3" description="critical P rlv">          0.00001 0.00001 0.00001 0.00001  0.00001 0.00001 0.00001 0.00001 0.00001 0.00001  0.00001  0.00001 0.00001 0.00001 0.00001 0.00001 0.00001 0.00001 0.00001 </crit_p_rlv>
     <!-- upper and lower bounds for soil P pools
       -->
     <lb_labile_p_ppm>0</lb_labile_p_ppm>
@@ -658,9 +623,9 @@
     <crop_name>wheat   sugar   default </crop_name>
     <min_xylem_potential> -15000. -15000. -15000.</min_xylem_potential>
     <root_radius>  0.25 0.25 0.25    </root_radius>
-    <root_conductance> 1.4e-7 1.4e-7 1.4e-7 </root_conductance>
-   ! ------------------------------------------
-      <!--    ******************************
+    <root_conductance> 1.4d-7 1.4d-7 1.4d-7 </root_conductance>
+    ! ------------------------------------------
+    <!--    ******************************
       Residue and Crop Cover Effects
       ******************************
       The effect of residue and canopy cover is implemented as in the soilwat model.
@@ -675,7 +640,10 @@
       --><canopy_fact>1.0  1.0  0.0  0.0</canopy_fact><canopy_fact_height units="mm">0  600  1800 30000</canopy_fact_height><canopy_fact_default description="canopy factor to use if height is missing">0.5</canopy_fact_default><hydrol_effective_depth units="mm">450</hydrol_effective_depth><no3slos>0.000</no3slos><nh4slos>0.000</nh4slos><ureaslos>0.000</ureaslos><clslos>0.61</clslos><no3d0>0.05</no3d0><nh4d0>0.05</nh4d0><uread0>0.05</uread0><cld0>0.05</cld0><default_rain_time>0:00</default_rain_time><default_rain_duration>1440.</default_rain_duration><default_evap_time>6:00</default_evap_time><default_evap_duration>720.</default_evap_duration><!--    ******
       Bounds
       ******
-      --><lb_exco>0</lb_exco><ub_exco>15000</ub_exco><lb_fip>0</lb_fip><ub_fip>100</ub_fip><lb_dis>0</lb_dis><ub_dis>20</ub_dis><lb_slupf>0</lb_slupf><ub_slupf>1</ub_slupf><lb_slos>0</lb_slos><ub_slos>10</ub_slos><lb_d0>0</lb_d0><ub_d0>1</ub_d0><lb_a>0</lb_a><ub_a>100</ub_a><lb_dthc>0</lb_dthc><ub_dthc>1</ub_dthc><lb_dthp>0</lb_dthp><ub_dthp>10</ub_dthp><lb_disp>0</lb_disp><ub_disp>5</ub_disp><lb_solute>0</lb_solute><ub_solute>1000</ub_solute></Model>
+      --><lb_exco>0</lb_exco><ub_exco>15000</ub_exco><lb_fip>0</lb_fip><ub_fip>100</ub_fip><lb_dis>0</lb_dis><ub_dis>20</ub_dis><lb_slupf>0</lb_slupf><ub_slupf>1</ub_slupf><lb_slos>0</lb_slos><ub_slos>10</ub_slos><lb_d0>0</lb_d0><ub_d0>1</ub_d0><lb_a>0</lb_a><ub_a>100</ub_a><lb_dthc>0</lb_dthc><ub_dthc>1</ub_dthc><lb_dthp>0</lb_dthp><ub_dthp>10</ub_dthp><lb_disp>0</lb_disp><ub_disp>5</ub_disp><lb_solute>0</lb_solute><ub_solute>1000</ub_solute>
+  </Model>
+  <Model name="Cl" />
+
   <Info name="SoilWat">
     <variables>
       <variable name="active" description="" read="T" write="F" kind="integer4" array="F" units="" />
@@ -736,99 +704,7 @@
       <event name="runoffevent" description="" />
     </events>
   </Info>
-  <Info name="SoilN">
-    <variables>
-      <variable name="active" description="" read="T" write="F" kind="integer4" array="F" units="" />
-      <variable name="author" description="" read="T" write="F" kind="string" array="F" units="" />
-      <variable name="biom_c" description="Biomass C" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="biom_n" description="Biomass nitrogen" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="carbon_tot" description="Total carbon" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_biom_c_atm" description="Biomass C lost to atmosphere" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_biom_c_hum" description="Biomass C converted to humic" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_biom_n_min" description="Net biomass N mineralized" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_c_loss_in_sed" description="Carbon loss in sediment" read="T" write="F" kind="single" array="" units="kg" />
-      <variable name="dlt_fom_c_atm" description="Fom C lost to atmosphere" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_fom_c_biom" description="Fom C converted to biomass" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_fom_c_hum" description="Fom C converted to humic" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_fom_c_pool1" description="delta fom C pool in fraction 1" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_fom_c_pool2" description="delta fom C pool in fraction 2" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_fom_c_pool3" description="delta fom C pool in fraction 3" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_fom_n_min" description="Net FOM N mineralized, negative for immobilization" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_hum_c_atm" description="Humic C lost to atmosphere" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_hum_c_biom" description="Humic C converted to biomass" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_hum_n_min" description="Net humic N mineralized" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_n_loss_in_sed" description="N loss in sediment" read="T" write="F" kind="single" array="" units="kg" />
-      <variable name="dlt_n_min" description="Net N mineralized" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_n_min_res" description="Net Residue N mineralisation" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_n_min_tot" description="Humic N mineralized" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_nh4" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_nh4_dnit" description="NH4 N denitrified" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_nh4_net" description="Net NH4 change today" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_nh4ppm" description="" read="F" write="T" kind="single" array="T" units="mg/kg" />
-      <variable name="dlt_no3" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_no3_dnit" description="NO3 N denitrified" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_no3_net" description="Net NO3 change today" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_no3ppm" description="" read="F" write="T" kind="single" array="T" units="mg/kg" />
-      <variable name="dlt_org_c_pool1" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_org_c_pool2" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_org_c_pool3" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_org_n" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_res_c_atm" description="Carbon from residues lost to atmosphere" read="T" write="F" kind="single" array="" units="kg/ha" />
-      <variable name="dlt_res_c_biom" description="Carbon from residues lost to atmosphere" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_res_c_hum" description="Carbon from residues converted to humic" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_res_nh4_min" description="Net NH4 transformation" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_res_no3_min" description="Net Residue NO3 mineralisation" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_urea" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_urea_hydrol" description="Nitrogen moved by hydrolysis" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dnit" description="Denitrification" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="effective_nitrification" description="Effective nitrogen moved by nitrification" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="excess_nh4" description="Excess N required above NH4 supply" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_c" description="FOM C" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_c_pool1" description="FOM C in pool1" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_c_pool2" description="FOM C in pool2" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_c_pool3" description="FOM C in pool3" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_n" description="Nitrogen in FOM" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_n_pool1" description="Nitrogen in FOM pool 1" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_n_pool2" description="Nitrogen in FOM pool 2" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_n_pool3" description="Nitrogen in FOM pool 3" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fr_carb" description="Fraction of carbohydrate" read="T" write="F" kind="single" array="" units="" />
-      <variable name="fr_cell" description="Fraction of cellulose" read="T" write="F" kind="single" array="" units="" />
-      <variable name="fr_lign" description="Fraction of lignin" read="T" write="F" kind="single" array="" units="" />
-      <variable name="hum_c" description="Humic C" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="hum_n" description="Humic nitrogen" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="n2o_atm" description="Amount of N20 produced" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="n_reduction" description="" read="F" write="T" kind="string" array="" units="" />
-      <variable name="name" description="" read="T" write="F" kind="string" array="F" units="" />
-      <variable name="nh4" description="Ammonium nitrogen" read="T" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="nh4_min" description="Minimum allowable NH4" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="nh4_transform_net" description="Net NH4 transformation" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="nh4ppm" description="Ammonium nitrogen" read="T" write="T" kind="single" array="T" units="mg/kg" />
-      <variable name="nit_tot" description="total N in soil" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="nitrification" description="Nitrogen moved by nitrification" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="no3" description="Nitrate nitrogen" read="T" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="no3_min" description="Minimum allowable NO3" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="no3_transform_net" description="Net NO3 transformation" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="no3ppm" description="Nitrate nitrogen" read="T" write="T" kind="single" array="T" units="mg/kg" />
-      <variable name="num_fom_types" description="Number of FOM types" read="T" write="F" kind="integer4" array="" units="" />
-      <variable name="oc" description="Organic carbon" read="T" write="F" kind="single" array="T" units="%" />
-      <variable name="org_c_pool" description="Organic C" read="T" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="org_n" description="Organic N" read="T" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="soilp_dlt_org_p" description="variable needed by soilp in its calculations" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="soilp_dlt_res_c_atm" description="Carbon from all residues to atmosphere" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="soilp_dlt_res_c_biom" description="Carbon from all residues to biomass" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="soilp_dlt_res_c_hum" description="Carbon from all residues to humic" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="st" description="Surface temperature" read="T" write="F" kind="single" array="T" units="oC" />
-      <variable name="state" description="" read="T" write="F" kind="string" array="F" units="" />
-      <variable name="type" description="" read="T" write="F" kind="string" array="F" units="" />
-      <variable name="urea" description="Urea nitrogen" read="T" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="version" description="" read="T" write="F" kind="string" array="F" units="" />
-    </variables>
-    <events>
-      <event name="actualresiduedecompositioncalculated" description="" />
-      <event name="externalmassflow" description="" />
-      <event name="new_solute" description="" />
-    </events>
-  </Info>
+
   <Info name="SoilP">
     <variables>
       <variable name="active" description="" read="T" write="F" kind="integer4" array="F" units="" />

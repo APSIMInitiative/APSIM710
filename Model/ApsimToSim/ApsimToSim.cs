@@ -70,8 +70,8 @@ class ApsimToSimExe
 
         // FIXME WRONG!!!
         // In case the file is now dirty due to .apsim file converter then save it
-        //if (Apsim.IsDirty)
-        //    Apsim.Save();
+        if (Apsim.IsDirty)
+            Apsim.Save();
         // FIXME WRONG!!!
 
         return FindSimsAndConvert(Apsim.RootComponent, SimNames);
