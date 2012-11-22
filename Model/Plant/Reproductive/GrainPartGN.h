@@ -36,10 +36,11 @@ public:                                             // member functions
 protected:
    void doDMDemandGrain(void) ;
 
-   float grainNumber (float stem_dm
+   float grainNumber (float stem_dm, float ear_dm
                       ,float pGrains_per_gram_stem);
 
    float gGrain_no;                 // multiplier of grain weight to account for seed energy content
+   string pGrain_No_Determinant;
    float pGrains_per_gram_stem;
    float pPotential_grain_filling_rate;
    float pPotential_grain_growth_rate;

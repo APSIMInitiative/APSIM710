@@ -27,6 +27,7 @@ class Population;
 class Fixation;
 class Leaf;
 class Stem;
+class plantPart;
 
 class pheno_stress_t {
    public:
@@ -61,6 +62,7 @@ class plantInterface {
       virtual Fixation& fixation() = 0;
       virtual Leaf& leaf() = 0;
       virtual Stem& stem() = 0;
+	  virtual plantPart& fruit() = 0;
       virtual CompositePart& All() = 0;
       virtual CompositePart& Tops() = 0;
       virtual CompositePart& Grain() = 0;

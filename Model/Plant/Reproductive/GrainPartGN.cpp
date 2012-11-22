@@ -64,12 +64,12 @@ void fruitGrainPartGN::doGrainNumber (void)
    //===========================================================================
    //       Calculate Grain Number
 {
-      gGrain_no = grainNumber (plant->stem().Green.DM()
+      gGrain_no = grainNumber (plant->stem().Green.DM(),plant->fruit().Green.DM()
                               , pGrains_per_gram_stem);
       Debug("Grian.GrainNumber=%f", gGrain_no);
 }
 
-float fruitGrainPartGN::grainNumber (float stem_dm_green
+float fruitGrainPartGN::grainNumber (float stem_dm_green, float ear_dm_green
                                       , float p_grains_per_gram_stem)    // OUTPUT
    //===========================================================================
    //       Perform grain number calculations
@@ -83,7 +83,12 @@ float fruitGrainPartGN::grainNumber (float stem_dm_green
    else if (plant->phenology().onDayOf("flowering"))
       {
       // we are at first day of grainfill.
-      grain_no = p_grains_per_gram_stem * stem_dm_green;
+	  if(pGrain_No_Determinant=="stem")
+         grain_no = p_grains_per_gram_stem * stem_dm_green;
+      else if (pGrain_No_Determinant=="ear")
+	     grain_no = p_grains_per_gram_stem * ear_dm_green;
+	  else
+	     throw std::runtime_error ("Unknown Grain Number Determinant Specified");
       }
    else
       {
@@ -100,6 +105,7 @@ void fruitGrainPartGN::readCultivarParameters (protocol::Component *system, cons
    scienceAPI.read("potential_grain_filling_rate", pPotential_grain_filling_rate, 0.0f, 1.0f);
    scienceAPI.read("potential_grain_growth_rate", pPotential_grain_growth_rate, 0.0f, 1.0f);
    scienceAPI.read("max_grain_size", pMaxGrainSize, 0.0f, 1.0f);
+   scienceAPI.read("grain_no_determinant",pGrain_No_Determinant);
    }
 
 void fruitGrainPartGN::writeCultivarInfo (protocol::Component *system)
