@@ -354,6 +354,7 @@ namespace CSUserInterface
                 SoilCrop Crop = Soil.Crop(CropName);
                 if (Crop.LLMetadata == null || Crop.LLMetadata.First() != "Estimated")
                 {
+                    Crop.Thickness = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0));
                     Crop.LL = GridUtility.GetColumnAsDoubles(Grid, Col);
                     Crop.LLMetadata = GridUtility.GetColumnOfToolTips(Grid, Col);
                     Crop.KL = GridUtility.GetColumnAsDoubles(Grid, Col + 2);

@@ -102,7 +102,7 @@ namespace APSIM.Tests
         [Test]
         public void PAW()
         {
-            Assert.AreEqual(MathUtility.Sum(Soil.PAWmm("Barley")), 80.0, 0.1);
+            Assert.AreEqual(MathUtility.Sum(Soil.PAWmm("Barley")), 151.25, 0.1);
             Assert.AreEqual(MathUtility.Sum(Soil.PAWmm("chickpea")), 80.75, 0.1);
         }
 

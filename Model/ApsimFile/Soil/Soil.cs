@@ -308,7 +308,7 @@ namespace ApsimFile
         public double[] KL(string CropName)
         {
             SoilCrop SoilCrop = Crop(CropName);
-            return Map(SoilCrop.KL, SoilCrop.Thickness, Thickness, MapType.Concentration, 0.0/*SoilCrop.KL.Last()*/);
+            return Map(SoilCrop.KL, SoilCrop.Thickness, Thickness, MapType.Concentration, SoilCrop.KL.Last());
         }
 
         /// <summary>
@@ -317,7 +317,8 @@ namespace ApsimFile
         public double[] XF(string CropName)
         {
             SoilCrop SoilCrop = Crop(CropName);
-            return Map(SoilCrop.XF, SoilCrop.Thickness, Thickness, MapType.Concentration, 0.0/*SoilCrop.XF.Last()*/);
+            if (SoilCrop.XF == null) return null;
+            return Map(SoilCrop.XF, SoilCrop.Thickness, Thickness, MapType.Concentration, SoilCrop.XF.Last());
         }
 
         /// <summary>
@@ -578,7 +579,7 @@ namespace ApsimFile
             {
                 if (SoilOrganicMatter.FBiom == null) return null;
                 return Map(SoilOrganicMatter.FBiom, SoilOrganicMatter.Thickness, Thickness,
-                           MapType.Concentration, 0.0);
+                           MapType.Concentration, LastValue(SoilOrganicMatter.FBiom));
             }
         }
 
@@ -591,7 +592,7 @@ namespace ApsimFile
             {
                 if (SoilOrganicMatter.FInert == null) return null;
                 return Map(SoilOrganicMatter.FInert, SoilOrganicMatter.Thickness, Thickness,
-                           MapType.Concentration, 0.0);
+                           MapType.Concentration, LastValue(SoilOrganicMatter.FInert));
             }
         }
         #endregion
@@ -625,7 +626,7 @@ namespace ApsimFile
             {
                 if (Analysis.ParticleSizeSand == null) return null;
                 return Map(Analysis.ParticleSizeSand, Analysis.Thickness, Thickness,
-                           MapType.Concentration, 0.0);
+                           MapType.Concentration, LastValue(Analysis.ParticleSizeSand));
             }
         }
 
@@ -638,7 +639,7 @@ namespace ApsimFile
             {
                 if (Analysis.ParticleSizeSilt == null) return null;
                 return Map(Analysis.ParticleSizeSilt, Analysis.Thickness, Thickness,
-                           MapType.Concentration, 0.0);
+                           MapType.Concentration, LastValue(Analysis.ParticleSizeSilt));
             }
         }
 
@@ -651,7 +652,7 @@ namespace ApsimFile
             {
                 if (Analysis.ParticleSizeClay == null) return null;
                 return Map(Analysis.ParticleSizeClay, Analysis.Thickness, Thickness,
-                           MapType.Concentration, 0.0);
+                           MapType.Concentration, LastValue(Analysis.ParticleSizeClay));
             }
         }
         #endregion
@@ -682,7 +683,7 @@ namespace ApsimFile
                     {
                         double[] Values = Sample.NO3ppm(this);
                         double[] Thicknesses = Sample.Thickness;                
-                        return Map(Values, Thicknesses, Thickness, MapType.Concentration, 1.0 /*Sample.NO3ppm(this).Last()*/);
+                        return Map(Values, Thicknesses, Thickness, MapType.Concentration, 1.0);
                     }
                 }
                 return null;
@@ -725,7 +726,7 @@ namespace ApsimFile
                         break;
                 if (Values != null)
                     return Map(Values, Thicknesses, Thickness,
-                               MapType.Concentration, 0.0 /*LastValue(Values)*/);
+                               MapType.Concentration, 0.0);
                 return Values;
             }
         }
@@ -941,7 +942,7 @@ namespace ApsimFile
         /// </summary>
         internal double[] BDMapped(double[] ToThickness)
         {
-            return Map(Water.BD, Water.Thickness, ToThickness, MapType.Concentration, 0.0 /*Water.BD.Last()*/);
+            return Map(Water.BD, Water.Thickness, ToThickness, MapType.Concentration, Water.BD.Last());
         }
 
         /// <summary>
@@ -1202,7 +1203,8 @@ namespace ApsimFile
         static private double[] CalcPAWC(double[] Thickness, double[] LL, double[] DUL, double[] XF)
         {
             double[] PAWC = new double[Thickness.Length];
-
+            if (LL == null)
+                return PAWC;
             if (Thickness.Length != DUL.Length || Thickness.Length != LL.Length)
                 return null;
 
