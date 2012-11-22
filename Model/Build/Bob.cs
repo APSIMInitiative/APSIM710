@@ -1,7 +1,7 @@
 ﻿//css_ref System.Data.dll;
-//css_import ..\CSGeneral\Utility.cs
-//css_import ..\CSGeneral\StringManip.cs
-//css_import ..\CSGeneral\MathUtility.cs
+//css_import ../CSGeneral/Utility.cs
+//css_import ../CSGeneral/StringManip.cs
+//css_import ../CSGeneral/MathUtility.cs
 
 using System;
 using System.Text;
@@ -35,7 +35,7 @@ class Bob
 	  
       if (Path.DirectorySeparatorChar == '/')
          {
-       	 svnExe = "svn"; sevenZipExe = "7zr";
+       	 svnExe = "svn"; sevenZipExe = "unzip";
          }
 
       string ConnectionString = "Data Source=www.apsim.info\\SQLEXPRESS;Database=\"APSIM Builds\";Trusted_Connection=False;User ID=sv-login-external;password=P@ssword123";
@@ -67,7 +67,12 @@ class Bob
                System.Environment.SetEnvironmentVariable("APSIM", Directory.GetCurrentDirectory());
 
                // Open log file.
-               string LogDirectory = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(PatchFileName), ".."));
+               string LogDirectory = null;
+               if (System.Environment.MachineName.ToUpper() == "BOB")
+                  LogDirectory = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(PatchFileName), ".."));
+               else
+                  LogDirectory = "/tmp";
+                  
                string LogFileName = Path.Combine(LogDirectory, Path.ChangeExtension(Path.GetFileName(PatchFileName), ".txt"));
                StreamWriter Log = new StreamWriter(LogFileName);
 
@@ -75,15 +80,16 @@ class Bob
                RemoveUnwantedFiles(Directory.GetCurrentDirectory());
                Run("SVN revert", svnExe, "revert -R %APSIM%", Log);
                Run("SVN update", svnExe, "update %APSIM%", Log);
+               Log.Flush();
 
                if (System.Environment.MachineName.ToUpper() != "BOB")
                   {
                   PatchFileName = Path.GetFileName(PatchFileName);
                   Run("Downloading patch: " + PatchFileName,
-                      "wget", "-nd \"http://bob.apsim.info/Files/Upload/" + PatchFileName + ".zip\"",
+                      "wget", "-nd http://bob.apsim.info/Files/Upload/" + PatchFileName,
                       Log);
                   Run("Extracting patch: " + PatchFileName,
-                      sevenZipExe, "x -y " + PatchFileName,
+                      sevenZipExe, "-oq " + PatchFileName,
                       Log);
                   }
                else
@@ -94,7 +100,7 @@ class Bob
                       "x -y " + PatchFileName,
                       Log);
                   }
-
+               Log.Flush();
                // Set some environment variables.
                System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
                System.Environment.SetEnvironmentVariable("PatchFileName", PatchFileName);

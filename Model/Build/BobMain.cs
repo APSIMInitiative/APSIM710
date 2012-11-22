@@ -30,7 +30,7 @@ class BobMain
       string APSIMFolder = System.Environment.GetEnvironmentVariable("APSIM");
       string PatchFileName = System.Environment.GetEnvironmentVariable("PatchFileName");
       int JobID = Convert.ToInt32(System.Environment.GetEnvironmentVariable("JobID"));
-      
+
       int ErrorCode = 0;
       try
       {
@@ -38,40 +38,43 @@ class BobMain
          if (System.Environment.MachineName.ToUpper() == "BOB")
             DB.UpdateStartDateToNow(JobID);
 
-         // Check the previous job to see if it has stalled. If so then set its 
+         // Check the previous job to see if it has stalled. If so then set its
          // status accordingly. Otherwise we get multiple "Running" status'.
          if (JobID > 0)
          {
             string PreviousStatus = DB.Get("Status", JobID-1).ToString();
             if (PreviousStatus == "Running")
               DB.UpdateStatus(JobID-1, "Aborted");
-         }            
-            
+         }
+
          // Apply the patch.
-         Run("Apply patch", "%APSIM%\\Model\\cscs.exe", 
-             "/r:ICSharpCode.SharpZipLib.dll %APSIM%\\Model\\Build\\ApplyPatch.cs %APSIM%",
-             "%APSIM%\\Model");   
-         
+
+         Run("Apply patch", "%APSIM%/Model/cscs.exe",
+             "/r:ICSharpCode.SharpZipLib.dll %APSIM%/Model/Build/ApplyPatch.cs %APSIM%",
+             "%APSIM%/Model");
+
          // Run the version stamper.
-         Run("Run version stamper", "%APSIM%\\Model\\cscs.exe", 
-             "%APSIM%\\Model\\Build\\VersionStamper.cs Directory=%APSIM% [Increment=Yes]", 
-             "%APSIM%\\Model\\Build");
+         Run("Run version stamper", "%APSIM%/Model/cscs.exe",
+             "%APSIM%/Model/Build/VersionStamper.cs Directory=%APSIM% [Increment=Yes]",
+             "%APSIM%/Model/Build");
 
          // Compile the JobScheduler.
-         // Run("Compile job scheduler", "make.exe", "--always-make", "%APSIM%\\Model\\JobScheduler");
-         Run("Compile job scheduler", "%VS100COMNTOOLS%\\..\\IDE\\devenv.exe",
-                                      "%APSIM%\\Model\\JobScheduler\\JobScheduler.sln /build debug", 
-                                      "%APSIM%\\Model\\JobScheduler");
-         
+         Run("Compile job scheduler",
+             (Path.DirectorySeparatorChar != '/' ? "%VS100COMNTOOLS%\\..\\IDE\\devenv.exe" : "xbuild"),
+             (Path.DirectorySeparatorChar != '/' ? "%APSIM%/Model/JobScheduler/JobScheduler.sln /build debug" : "%APSIM%/Model/JobScheduler/JobScheduler.sln /target:Build"),
+             "%APSIM%/Model/JobScheduler");
+
          // Run the JobScheduler.
-         Run("Run job scheduler", "Model\\JobScheduler.exe", "%APSIM%\\Model\\Build\\BuildAll.xml Target=Bob");
-         
+         Run("Run job scheduler", "%APSIM%/Model/JobScheduler.exe", "%APSIM%/Model/Build/BuildAll.xml Target=Bob");
+
          // ******* If we get this far then assume everything ran clean.
-         
-         // If it ran cleanly then update status and send email.
-         Run("Set status of job", "UpdateFieldInDB.exe", "Status Pass", "%APSIM%\\Model");
-         Run("Do commit if clean", "IfCleanDoCommit.exe", "%APSIM%", "%APSIM%");
-            
+
+         // Bob (ie. windows reference platform) is the only machine that commits to svn
+         if (System.Environment.MachineName.ToUpper() == "BOB") 
+         {
+            Run("Set status of job", "UpdateFieldInDB.exe", "Status Pass", "%APSIM%\\Model");
+            Run("Do commit if clean", "%APSIM%/Model/IfCleanDoCommit.exe", "%APSIM%", "%APSIM%");
+         }
          // Get revision number and save in DB.
          string StdOut = Run("Get tip revision number", "svn.exe", "info http://apsrunet.apsim.info/svn/apsim/trunk", "%APSIM%");
          string[] StdOutLines = StdOut.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
@@ -83,36 +86,38 @@ class BobMain
       catch (Exception err)
       {
          Console.WriteLine(err.Message);
-         Run("Set status of job", "%APSIM%\\Model\\UpdateFieldInDB.exe", "Status Fail", "%APSIM%\\Model");
+         Run("Set status of job", "%APSIM%/Model/UpdateFieldInDB.exe", "Status Fail", "%APSIM%/Model");
          ErrorCode = 1;
       }
 
       // Copy the BuildAllOutput.xml to the web folder.
       string SourceBuildAllOutputFileName = Path.Combine(APSIMFolder, "Model", "Build", "BuildAllOutput.xml");
-      string DestBuildAllOutputFileName = Path.Combine("C:\\inetpub\\wwwroot\\Files", Path.GetFileName(PatchFileName));
+      string DestBuildAllOutputFileName = Path.Combine("C:/inetpub/wwwroot/Files", Path.GetFileName(PatchFileName));
       DestBuildAllOutputFileName = Path.ChangeExtension(DestBuildAllOutputFileName, ".xml");
+
       Console.WriteLine("Creating " + DestBuildAllOutputFileName);
       File.Copy(SourceBuildAllOutputFileName, DestBuildAllOutputFileName, true);
 
       // Send email to all.
       Run("Create summary Html for email", "CreateSummaryHtml.exe", "", "%APSIM%\\Model");
-      Run("Send email", "SendEmail.exe", "@Build\\MailList.txt", "%APSIM%\\Model");         
+      Run("Send email", "SendEmail.exe", "@Build\\MailList.txt", "%APSIM%\\Model");
 
       // Set the finish date.
       if (System.Environment.MachineName.ToUpper() == "BOB")
          DB.UpdateEndDateToNow(JobID);
- 
+
       // Close the database.
       if (DB != null)
          DB.Close();
-         
+
+
       return ErrorCode;
    }
-   
+
    /////////////////////////////////////////////////////////////////////////////////////////////
    /////////////////////////////////////////////////////////////////////////////////////////////
    /////////////////////////////////////////////////////////////////////////////////////////////
-  
+
    // Returns StdOut.
    static string Run(string Name, string Executable, string Arguments, string JobFolder = null)
    {
@@ -120,19 +125,17 @@ class BobMain
       Executable = ReplaceEnvironmentVariables(Executable);
       if (!File.Exists(Executable))
       {
-         if (Path.DirectorySeparatorChar == '/') 
-            Executable = Path.ChangeExtension(Executable, "");   // linux - remove extension
          Executable = FindFileOnPath(Executable);
       }
       Arguments = ReplaceEnvironmentVariables(Arguments);
       if (JobFolder != null)
          JobFolder = ReplaceEnvironmentVariables(JobFolder);
       if (!File.Exists(Executable))
-         throw new Exception("Cannot find executable: " + OriginalExe + ". Working directory: " + JobFolder);      
+         throw new Exception("Cannot find executable: " + OriginalExe + ". Working directory: " + JobFolder);
       Process P = RunProcess(Executable, Arguments, JobFolder);
       return CheckProcessExitedProperly(Name, P);
    }
-   
+
    static Process RunProcess(string Executable, string Arguments, string JobFolder)
    {
       if (!File.Exists(Executable))
@@ -152,7 +155,7 @@ class BobMain
       PlugInProcess.Start();
       return PlugInProcess;
    }
-   
+
    static string CheckProcessExitedProperly(string Name, Process PlugInProcess)
    {
       string msg = PlugInProcess.StandardOutput.ReadToEnd();
@@ -161,7 +164,7 @@ class BobMain
       {
          msg = "[Fail] " + Name + "\r\n" +
               IndentText(PlugInProcess.StartInfo.FileName + " " + PlugInProcess.StartInfo.Arguments + "\r\n\r\n" +
-                         msg + "\r\n" + 
+                         msg + "\r\n" +
                          PlugInProcess.StandardError.ReadToEnd(), 4);
          throw new Exception(msg);
       }
@@ -171,8 +174,8 @@ class BobMain
          Console.WriteLine(IndentText(msg, 4));
          return msg;
       }
-   }   
-   
+   }
+
    /// <summary>
    /// Look through the specified string for an environment variable name surrounded by
    /// % characters. Replace them with the environment variable value.
@@ -211,8 +214,8 @@ class BobMain
               PosPercent = CommandLine.IndexOf('%', PosPercent);
       }
       return CommandLine;
-   }   
-   
+   }
+
    public static string FindFileOnPath(string FileName)
    {
       string PathVariable = Environment.GetEnvironmentVariable("PATH");
@@ -221,7 +224,7 @@ class BobMain
       string[] Paths;
       string PathSeparator;
 
-      if (Path.VolumeSeparatorChar == '/') 
+      if (Path.DirectorySeparatorChar == '/')
       PathSeparator = ":";
       else
       PathSeparator = ";";
@@ -235,8 +238,8 @@ class BobMain
               return FullPath;
       }
       return "";
-      }   
-      
+      }
+
    // -------------------------------------------------------
    // Indent the specified string a certain number of spaces.
    // -------------------------------------------------------
@@ -245,6 +248,6 @@ class BobMain
       string space = new string(' ', numChars);
       return space + St.Replace("\n", "\n" + space);
    }
-      
-   
+
+
 }

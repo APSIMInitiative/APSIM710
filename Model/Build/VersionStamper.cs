@@ -24,23 +24,25 @@ class VersionStamper
             // Find SVN
             string svnexe = "svn.exe";
             if (Path.DirectorySeparatorChar == '/') svnexe = "svn";
-            string SVNFileName = FindFileOnPath(svnexe);
-            if (SVNFileName == "")
-                throw new Exception("Cannot find " + svnexe + " on PATH");
-
-            // Start an SVN process and get head revision number
-            string Arguments = "log -q -r HEAD " + Macros["Directory"];
-
-            Process P = RunProcess(SVNFileName, Arguments, Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            string StdOut = CheckProcessExitedProperly(P);
-            string[] StdOutLines = StdOut.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            if (StdOutLines.Length != 3)
-                throw new Exception("Invalid string returned from svn: " + StdOut);
-            string[] Bits = StdOutLines[1].Split(" ".ToCharArray());
-            if (Bits.Length == 0)
-                throw new Exception("Invalid revision number line from svn: " + Bits[1]);
-            int RevisionNumber = Convert.ToInt32(Bits[0].Replace("r", ""));
-
+            int RevisionNumber = 0;
+            try
+            {
+                // Start an SVN process and get head revision number
+                string SVNFileName = FindFileOnPath(svnexe);
+                string Arguments = "log -q -r HEAD " + Macros["Directory"];
+                
+                Process P = RunProcess(SVNFileName, Arguments, Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+                string StdOut = CheckProcessExitedProperly(P);
+                string[] StdOutLines = StdOut.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                if (StdOutLines.Length != 3)
+                    throw new Exception("Invalid string returned from svn: " + StdOut);
+                string[] Bits = StdOutLines[1].Split(" ".ToCharArray());
+                if (Bits.Length == 0)
+                    throw new Exception("Invalid revision number line from svn: " + Bits[1]);
+                RevisionNumber = Convert.ToInt32(Bits[0].Replace("r", ""));
+            }
+            catch (Exception e) {Console.WriteLine("WARNING - while finding svn revision number" + e.Message);}
+            
             // Increment the revision number if necessary.
             // If Bob is running this, then we will increment the revision number.
             // Explanation: Because Bob does a commit at the end of

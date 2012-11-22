@@ -1,7 +1,13 @@
 #! /bin/bash
 
 export MONO_PREFIX=/usr
-export APSIM=/home/bob/apsim
+
+# Work out install dir
+me="`readlink -f $0`"
+APSIMBUILD=`dirname "$me"`
+APSIMMODEL=`dirname "$APSIMBUILD"`
+export APSIM=`dirname "$APSIMMODEL"`
+
 export LD_LIBRARY_PATH=$APSIM/Model
 export LANG=en_AU.UTF-8
 

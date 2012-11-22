@@ -4,14 +4,15 @@ pushd %~dp0..\..
 set APSIM=%CD%
 popd
 
+rem ----- This will tell the versionstamper not to increment the revision number.
+%APSIM%\Model\cscs.exe %APSIM%\Model\Build\VersionStamper.cs Directory=%APSIM% Increment=no
+
 rem ----- Change to model directory
 pushd %APSIM%\Model
 
 rem ----- Setup the Visual Studio 2010 compiler tools
 if "%LIBPATH%" == "" call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat"
 
-rem ----- This will tell the versionstamper not to increment the revision number.
-set INCREMENT=
 
 rem ----- Compile the job scheduler.
 echo Compiling the JobScheduler
