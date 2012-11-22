@@ -14,6 +14,11 @@
          <WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
          <CommandLine>%APSIM%/Model/cscs.exe RemoveUnwantedFiles.cs Directory=%APSIM%/Model</CommandLine>
       </Job>
+      <Job name="Remove the %APPDATA%\APSIM">
+         <WorkingDirectory>%APSIM%</WorkingDirectory>
+         <CommandLine>cmd.exe /c rd /S /Q %APPDATA%\APSIM</CommandLine>
+         <CommandLineUnix>/bin/true</CommandLineUnix>
+      </Job>      
       <Job name="Version stamp the build">
          <DependsOn>Clean model directory</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
