@@ -133,7 +133,10 @@ namespace CSUserInterface
 			Table.Columns.Add("Value", typeof(string));
 
 			foreach (XmlNode Child in Data.ChildNodes) {
-				if (Child.ChildNodes.Count <= 1 && Child.Name != "TeeChartFormat" && Child.Name != "XY" && Child.Name.ToLower() != "layer") {
+				if (Child.ChildNodes.Count <= 1 && Child.Name != "TeeChartFormat" && Child.Name != "XY" &&
+                    Child.Name != "OCUnits" && Child.Name != "PHUnits" && Child.Name != "BoronUnits" &&
+                    Child.Name != "NO3Units" && Child.Name != "NH4Units" && Child.Name != "SWUnits")
+                {
 					DataRow NewRow = Table.NewRow();
 					Table.Rows.Add(NewRow);
 					if (Child.Name == "category") {

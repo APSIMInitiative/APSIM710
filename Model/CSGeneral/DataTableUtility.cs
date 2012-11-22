@@ -47,6 +47,9 @@ namespace CSGeneral
             if (Table.Columns.IndexOf(ColumnName) == -1)
                 Table.Columns.Add(ColumnName, typeof(double));
 
+            if (Values == null)
+                return;
+
             // Make sure there are enough values in the table.
             while (Table.Rows.Count < Values.Length + StartRow)
                 Table.Rows.Add(Table.NewRow());
@@ -67,7 +70,10 @@ namespace CSGeneral
         // ---------------------------------------------------
         static public void AddColumn(DataTable Table, string ColumnName, double[] Values)
         {
-            AddColumn(Table, ColumnName, Values, 0, Values.Length);
+            int Count = 0;
+            if (Values != null)
+                Count = Values.Length;
+            AddColumn(Table, ColumnName, Values, 0, Count);
         }
 
         // ---------------------------------------------------
@@ -75,7 +81,10 @@ namespace CSGeneral
         // ---------------------------------------------------
         static public void AddColumn(DataTable Table, string ColumnName, string[] Values)
         {
-            AddColumn(Table, ColumnName, Values, 0, Values.Length);
+            int Count = 0;
+            if (Values != null)
+                Count = Values.Length;
+            AddColumn(Table, ColumnName, Values, 0, Count);
         }
 
         // ---------------------------------------------------
@@ -85,6 +94,9 @@ namespace CSGeneral
         {
             if (Table.Columns.IndexOf(ColumnName) == -1)
                 Table.Columns.Add(ColumnName, typeof(string));
+
+            if (Values == null)
+                return;
 
             // Make sure there are enough values in the table.
             while (Table.Rows.Count < Values.Length + StartRow)
@@ -113,7 +125,7 @@ namespace CSGeneral
             for (int Row = 0; Row != Table.Rows.Count && Row != NumValues; Row++)
             {
                 if (Table.Rows[Row][ColumnName].ToString() == "")
-                    Values[Row] = MathUtility.MissingValue;
+                    Values[Row] = double.NaN;
                 else
                     Values[Row] = Convert.ToDouble(Table.Rows[Row][ColumnName]);
             }

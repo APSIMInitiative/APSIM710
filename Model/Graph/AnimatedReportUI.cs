@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using CSGeneral;
 using System.Xml;
 using System.Threading;
+using ApsimFile;
 
 namespace Graph
    {

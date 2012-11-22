@@ -1601,7 +1601,7 @@ cnh                  g(i)=1./(g%rc(i,iveg)/thk(i)+1./(gr*g%rld(i,iveg)*p%dx(i)))
                         ! first in the pairs of log suction vs p%wc
       if (thsat.eq.0.0) thsat = p%sat(ix)
 
-      if(p%ivap.ne.0)then
+      if(p%ivap)then
 *        add vapour conductivity hkv
          phi=thsat/.93-tth
          hkv=vcon1*phi*exp(vcon2*tpsi)

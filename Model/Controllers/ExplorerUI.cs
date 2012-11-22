@@ -98,7 +98,10 @@ namespace Controllers
 						View.Show();
 						View.OnRefresh();
 					} catch (Exception ex) {
-						MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        if (ex.InnerException != null)
+                            MessageBox.Show(ex.Message + " " + ex.InnerException.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        else
+                            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					}
 				}
 			}

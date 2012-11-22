@@ -83,7 +83,7 @@ namespace ApsimFile
             this.MyParent = Parent;
             MyShortCutTo = Source;
         }
-        internal void Read(XmlNode Node)
+        public void Read(XmlNode Node)
         {
             // ------------------------------------------------------
             // Read this component from the specified XmlNode. Also

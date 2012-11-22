@@ -219,7 +219,7 @@
          sequence
          character        evap_source*50
          character        echo_directives*5
-         character        diagnostics*3
+         logical          diagnostics
          real             salb
 
          double precision dlayer(0:M)
@@ -231,7 +231,7 @@
          double precision P(0:M),c(0:M),k(0:M)
          double precision psid(0:M)
 
-         integer          ivap
+         logical          ivap
          integer          isbc
          integer          itbc
          integer          ibbc
@@ -415,7 +415,6 @@
 *      Read in all parameters from parameter file.
 
 *+  Local Variables
-       character ivap_switch*5         ! flag for vapour flow (yes/no)
        integer node                    ! node counter variable
        integer num_nodes               ! number of specified nodes
        integer numvals                 ! number of values read from file
@@ -520,18 +519,12 @@ c     :              1d0)
 
          ! Read in vapour conductivity flag from parameter file
          ! ----------------------------------------------------
-      call Read_char_var (
+      call Read_logical_var (
      :              parameters_section,
      :              'vapour_conductivity',
      :              '(??)',
-     :              ivap_switch,
+     :              p%ivap,
      :              numvals)
-      if (ivap_switch.eq.'on') then
-         p%ivap = 1
-      else
-         p%ivap = 0
-      endif
-
 
       ! Read in flag for echoing incoming messages
       call Read_char_var_optional (
@@ -541,15 +534,12 @@ c     :              1d0)
      :              p%echo_directives,
      :              numvals)
      
-      call Read_char_var_optional (
+      call Read_logical_var_optional (
      :              parameters_section,
      :              'diagnostics',
      :              '()',
      :              p%diagnostics,
      :              numvals)
-      if (numvals.eq.0) then
-         p%diagnostics='yes'
-      endif
 
             call Read_double_array (
      :              parameters_section,
@@ -1738,7 +1728,7 @@ cnh      slbp0 = 0d0
   211 continue
       p%Kdul = 0d0
       p%Psidul = 0d0
-      p%ivap = 0
+      p%ivap = .false.
 
 * =====================================================================
 *      common/solute/g%slon,g%sloff,g%slex,g%slbp,g%slinf,g%slh0,g%slsadd,g%slp,g%slp0,
@@ -3014,13 +3004,10 @@ c     :           ,-1d7/
      :                 'bad bottom boundary conditions switch')
       endif
 
-      if (p%ivap.eq.0) then
-         call write_string ('     vapour conductivity       = off')
-      elseif (p%ivap.eq.1) then
+      if (p%ivap) then
          call write_string ('     vapour conductivity       = on')
       else
-         call fatal_error(err_user,
-     :                 'bad vapour flag')
+         call write_string ('     vapour conductivity       = off')
       endif
 
 
@@ -7068,7 +7055,7 @@ cRC            Changes by RCichota, 30/Jan/2010
 
 *- Implementation Section ----------------------------------
 
-      if (p%diagnostics.eq.'yes') then
+      if (p%diagnostics) then
 
       string =     '     APSwim Numerical Diagnostics'
       call write_string (string)

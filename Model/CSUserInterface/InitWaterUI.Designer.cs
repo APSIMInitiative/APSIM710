@@ -248,7 +248,6 @@ namespace CSUserInterface
             this.SoilGraph.Location = new System.Drawing.Point(299, 16);
             this.SoilGraph.Name = "SoilGraph";
             this.SoilGraph.Size = new System.Drawing.Size(444, 701);
-            this.SoilGraph.SoilNode = null;
             this.SoilGraph.TabIndex = 22;
             this.SoilGraph.UserHasChangedProperties = false;
             // 

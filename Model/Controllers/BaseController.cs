@@ -872,14 +872,12 @@ namespace Controllers
                 {
                     throw new Exception("No namespace specified in action: " + ClassToCall);
                 }
-                string NameSpaceName = ClassToCall.Substring(0, PosPeriod);
                 Type t = null;
                 foreach (Assembly Assemb in AppDomain.CurrentDomain.GetAssemblies())
                 {
-                    if (NameSpaceName.ToLower() == Assemb.GetName().Name.ToLower())
-                    {
-                        t = Assemb.GetType(ClassToCall, true, true);
-                    }
+                    t = Assemb.GetType(ClassToCall, false, true);
+                    if (t != null)
+                        break;
                 }
                 if ((t == null))
                 {
