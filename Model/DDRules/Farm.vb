@@ -778,8 +778,8 @@ Public Class Farm
         N_Eaten_Supplement = myMilkingHerd.N_Eaten_Supplement / FarmArea()
         N_to_milk = myMilkingHerd.N_to_Milk / FarmArea()
         N_to_BC = myMilkingHerd.N_to_BC / FarmArea()
-        N_to_feaces = myMilkingHerd.N_to_feaces / FarmArea()
-        DM_to_feaces = myMilkingHerd.DM_to_feaces / FarmArea()
+        N_to_faeces = myMilkingHerd.N_to_faeces / FarmArea()
+        DM_to_faeces = myMilkingHerd.DM_to_faeces / FarmArea()
         N_to_urine = myMilkingHerd.N_to_urine / FarmArea()
         N_Balance = myMilkingHerd.N_Balance / FarmArea()
         N_Out = myMilkingHerd.N_Out / FarmArea()
@@ -796,7 +796,7 @@ Public Class Farm
         N_Eaten_Supplement_Cow = myMilkingHerd.N_Eaten_Supplement_Cow()
         N_to_milk_Cow = myMilkingHerd.N_to_milk_Cow()
         N_to_BC_Cow = myMilkingHerd.N_to_BC_Cow()
-        N_to_feaces_Cow = myMilkingHerd.N_to_feaces_Cow()
+        N_to_faeces_Cow = myMilkingHerd.N_to_faeces_Cow()
         N_to_urine_Cow = myMilkingHerd.N_to_urine_Cow()
     End Sub
 
@@ -832,9 +832,9 @@ Public Class Farm
     Public N_Eaten_Supplement As Double
     Public N_to_milk As Double
     Public N_to_BC As Double
-    Public N_to_feaces As Double
+    Public N_to_faeces As Double
     Public N_to_urine As Double
-    Public DM_to_feaces As Double ' added
+    Public DM_to_faeces As Double ' added
 
     Public ReadOnly Property PaddockStatus() As String()
         Get
@@ -953,12 +953,12 @@ Public Class Farm
     Public N_Eaten_Supplement_Pdks As Single()
     Public N_to_milk_Pdks As Single()
     Public N_to_BC_Pdks As Single()
-    Public ReadOnly Property N_to_feaces_Pdks() As Single()
+    Public ReadOnly Property N_to_faeces_Pdks() As Single()
         Get
             Dim result(myPaddocks.Count - 1) As Single
             'sort by index
             For i As Integer = 0 To (myPaddocks.Count - 1)
-                result(i) = CSng(myPaddocks(i).N_From_Feaces())
+                result(i) = CSng(myPaddocks(i).N_From_faeces())
             Next
             Return result
         End Get
@@ -985,7 +985,7 @@ Public Class Farm
     Public N_Eaten_Supplement_Cow As Double
     Public N_to_milk_Cow As Double
     Public N_to_BC_Cow As Double
-    Public N_to_feaces_Cow As Double
+    Public N_to_faeces_Cow As Double
     Public N_to_urine_Cow As Double
     Public ReadOnly Property LWt_Change_Cow() As Single
         Get

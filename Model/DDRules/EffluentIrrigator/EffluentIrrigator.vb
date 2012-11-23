@@ -19,7 +19,7 @@ Public Class EffluentIrrigator
             'apply proportion of pond on paddock
             Dim temp As Excreta = total.Multiply(proportion)
             pdk.UrineApplication(temp.N_to_urine, temp.N_to_urine / 0.08, 0) 'urine N concentration of 8g/l
-            pdk.DungApplication(temp.N_to_feaces, temp.DM_to_feaces)
+            pdk.DungApplication(temp.N_to_faeces, temp.DM_to_faeces)
         Next
     End Sub
 End Class

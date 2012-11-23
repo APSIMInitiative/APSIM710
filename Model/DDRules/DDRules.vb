@@ -86,7 +86,7 @@ Public Class DDRules
 
 
     Public Function StringtoIntegerArray(ByVal strArray As String) As Integer()
-        Dim strvalues As String() = strArray.Split(New [Char]() {","c})
+        Dim strvalues As String() = strArray.Split(",")
         Dim dblvalues(strvalues.Length - 1) As Integer
         For i As Integer = 0 To strvalues.Length - 1
             dblvalues(i) = CInt(strvalues(i))
@@ -95,7 +95,7 @@ Public Class DDRules
     End Function
 
     Public Function StringtoDoubleArray(ByVal text As String) As Double()
-        Dim stringdoubles() As String = text.Split(New [Char]() {","c})
+        Dim stringdoubles() As String = text.Split(",")
         Dim doubleArray(stringdoubles.Length - 1) As Double
         For i As Integer = 0 To stringdoubles.Length - 1
             doubleArray(i) = Convert.ToDouble(stringdoubles(i))
@@ -244,6 +244,7 @@ Public Class DDRules
 
     <Description("Do whole farm fertiliser events apply fertiliser to effluent paddocks")> _
     <Output()> Public ApplyFertToEffluentPdks As Boolean = False
+    '<Param()> <Output()> Public ApplyFertToEffluentPdks As Boolean = False
     'Whole farm fertiliser application
 
     <Description("Whole farm fertiliser event - this will become a manager script")> _
@@ -252,7 +253,7 @@ Public Class DDRules
     End Sub
 
     <Description("Default [N])")> _
- <Output()> Public Property Default_N_Conc__() As Double
+ <Param()> <Output()> Public Property Default_N_Conc__() As Double
         Get
             Return PaddockWrapper.Default_N_Conc
         End Get
@@ -261,7 +262,7 @@ Public Class DDRules
         End Set
     End Property
     <Description("Default Digestibility)")> _
- <Output()> Public Property Default_Digestibility__() As Double
+ <Param()> <Output()> Public Property Default_Digestibility__() As Double
         Get
             Return PaddockWrapper.Default_Digestibility
         End Get
@@ -270,7 +271,7 @@ Public Class DDRules
         End Set
     End Property
     <Description("Default Fert Application Depth")> _
- <Output()> Public Property DefaultApplicationDepth__() As Double
+ <Param()> <Output()> Public Property DefaultApplicationDepth__() As Double
         Get
             Return PaddockWrapper.Default_Application_Depth
         End Get
@@ -327,6 +328,7 @@ Public Class DDRules
 
     <Description("Effective farm area [ha]")> _
     <Output()> <Units("ha")> Public Property FarmArea() As Double
+        '<Param()> <Output()> <Units("ha")> Public Property FarmArea() As Double
         Get
             Return TotalFarmArea
         End Get
@@ -340,7 +342,7 @@ Public Class DDRules
 
     <Description("Take dry stock off farm")> _
     <Param()> <Output()> <Units("")> Public Property WinterOffDryStock__() As Integer
-    '<Description("Take dry stock off farm")> _
+        '<Description("Take dry stock off farm")> _
         '<Output()> <Units("")> Public Property WinterOffDryStock__() As Integer
         Get
             If (myFarm.boolWinterOffDryStock) Then
@@ -692,7 +694,7 @@ Public Class DDRules
 
     <Description("Energy content of purchased supplement")> _
     <Param()> <Output()> <Units("MJME/kgDM")> Public Property SupplementME__() As Double
-    '<Description("Energy content of purchased supplement")> _
+        '<Description("Energy content of purchased supplement")> _
         '<Output()> <Units("MJME/kgDM")> Public Property SupplementME__() As Double
         Get
             Return myFarm.SupplementME
@@ -704,7 +706,7 @@ Public Class DDRules
 
     <Description("Nitrogen content of purchased supplement")> _
     <Param()> <Output()> <Units("kgN/kgDM")> Public Property SupplementN__() As Double
-    '<Description("Nitrogen content of purchased supplement")> _
+        '<Description("Nitrogen content of purchased supplement")> _
         '<Output()> <Units("kgN/kgDM")> Public Property SupplementN__() As Double
         Get
             Return myFarm.SupplementN
@@ -728,7 +730,7 @@ Public Class DDRules
 
     <Description("Supplment loss at feeding out")> _
     <Param()> <Output()> <Units("%")> Public Property SupplementWastage__() As Double
-    '<Description("Supplment loss at feeding out")> _
+        '<Description("Supplment loss at feeding out")> _
         '<Output()> <Units("%")> Public Property SupplementWastage__() As Double
         Get
             Return myFarm.SupplementWastage * 100
@@ -740,7 +742,7 @@ Public Class DDRules
 
     <Description("Energy content of purchased supplement")> _
     <Param()> <Output()> <Units("MJME/kgDM")> Public Property GrassSilageSupplementME__() As Double
-    '<Description("Energy content of purchased supplement")> _
+        '<Description("Energy content of purchased supplement")> _
         '<Output()> <Units("MJME/kgDM")> Public Property GrassSilageSupplementME__() As Double
         Get
             Return myFarm.GrassSilageSupplementME
@@ -752,7 +754,7 @@ Public Class DDRules
 
     <Description("Nitrogen content of purchased supplement")> _
     <Param()> <Output()> <Units("kgN/kgDM")> Public Property GrassSilageSupplementN__() As Double
-    '<Description("Nitrogen content of purchased supplement")> _
+        '<Description("Nitrogen content of purchased supplement")> _
         '<Output()> <Units("kgN/kgDM")> Public Property GrassSilageSupplementN__() As Double
 
         Get
@@ -777,7 +779,7 @@ Public Class DDRules
 
     <Description("Supplement loss at feeding out")> _
     <Param()> <Output()> <Units("%")> Public Property GrassSilageSupplementWastage__() As Double
-    '<Description("Supplement loss at feeding out")> _
+        '<Description("Supplement loss at feeding out")> _
         '<Output()> <Units("%")> Public Property GrassSilageSupplementWastage__() As Double
         Get
             Return myFarm.GrassSilageSupplementWastage * 100
@@ -789,7 +791,7 @@ Public Class DDRules
 
     <Description("Energy content of purchased supplement")> _
     <Param()> <Output()> <Units("MJME/kgDM")> Public Property GrainOrConcentrateSupplementME__() As Double
-    '<Description("Energy content of purchased supplement")> _
+        '<Description("Energy content of purchased supplement")> _
         '<Output()> <Units("MJME/kgDM")> Public Property GrainOrConcentrateSupplementME__() As Double
         Get
             Return myFarm.GrainOrConcentrateSupplementME
@@ -801,7 +803,7 @@ Public Class DDRules
 
     <Description("Nitrogen content of purchased supplement")> _
     <Param()> <Output()> <Units("kgN/kgDM")> Public Property GrainOrConcentrateSupplementN__() As Double
-    '<Description("Nitrogen content of purchased supplement")> _
+        '<Description("Nitrogen content of purchased supplement")> _
         '<Output()> <Units("kgN/kgDM")> Public Property GrainOrConcentrateSupplementN__() As Double
         Get
             Return myFarm.GrainOrConcentrateSupplementN
@@ -813,7 +815,7 @@ Public Class DDRules
 
     <Description("Supplement Digestibility")> _
     <Param()> <Output()> <Units("0-1")> Public Property GrainOrConcentrateSupplementDigestibility__() As Double
-    '<Description("Supplement Digestibility")> _
+        '<Description("Supplement Digestibility")> _
         '<Output()> <Units("0-1")> Public Property GrainOrConcentrateSupplementDigestibility__() As Double
         Get
             Return myFarm.GrainOrConcentrateSupplementDigestibility
@@ -825,7 +827,7 @@ Public Class DDRules
 
     <Description("Supplement loss at feeding out")> _
     <Param()> <Output()> <Units("%")> Public Property GrainOrConcentrateSupplementWastage__() As Double
-    '<Description("Supplement loss at feeding out")> _
+        '<Description("Supplement loss at feeding out")> _
         '<Output()> <Units("%")> Public Property GrainOrConcentrateSupplementWastage__() As Double
 
         Get
@@ -838,7 +840,7 @@ Public Class DDRules
 
     <Description("Proportion of silage lost during feeding out (Default = 15%, source DairyNZ)")> _
     <Param()> <Output()> <Units("0-1")> Public Property SilageWastage__() As Double
-    '<Description("Proportion of silage lost during feeding out (Default = 15%, source DairyNZ)")> _
+        '<Description("Proportion of silage lost during feeding out (Default = 15%, source DairyNZ)")> _
         '<Output()> <Units("0-1")> Public Property SilageWastage__() As Double
         Get
             Return myFarm.SilageWastage * 100
@@ -850,7 +852,7 @@ Public Class DDRules
 
     <Description("Silage Digestibility (could this be made read only once the store has been refactored)")> _
     <Param()> <Output()> <Units("0-1")> Public Property SilageDigestibility__() As Double
-    '<Description("Silage Digestibility (could this be made read only once the store has been refactored)")> _
+        '<Description("Silage Digestibility (could this be made read only once the store has been refactored)")> _
         '<Output()> <Units("0-1")> Public Property SilageDigestibility__() As Double
         Get
             Return myFarm.SilageDigestibility
@@ -862,7 +864,7 @@ Public Class DDRules
 
     <Description("proportion of pasture ME captured during silage making [default = 0.9, e.g. 12 ME pasture produces 10.8 ME silage")> _
     <Param()> <Output()> <Units("0-1")> Public Property SilageQualityModifier__() As Double
-    '<Description("proportion of pasture ME captured during silage making [default = 0.9, e.g. 12 ME pasture produces 10.8 ME silage")> _
+        '<Description("proportion of pasture ME captured during silage making [default = 0.9, e.g. 12 ME pasture produces 10.8 ME silage")> _
         '<Output()> <Units("0-1")> Public Property SilageQualityModifier__() As Double
         Get
             Return myFarm.SilageQualityModifier
@@ -874,7 +876,7 @@ Public Class DDRules
 
     <Description("Energy content of silage produced on farm")> _
     <Param()> <Output()> <Units("MJME/kgDM")> Public Property SilageME__() As Double
-    '<Description("Energy content of silage produced on farm")> _
+        '<Description("Energy content of silage produced on farm")> _
         '<Output()> <Units("MJME/kgDM")> Public Property SilageME__() As Double
         Get
             Return myFarm.SilageME
@@ -886,7 +888,7 @@ Public Class DDRules
 
     <Description("Nitrogen content of silage produced on farm")> _
     <Param()> <Output()> <Units("kgN/kgDM")> Public Property SilageN__() As Double
-    '<Description("Nitrogen content of silage produced on farm")> _
+        '<Description("Nitrogen content of silage produced on farm")> _
         '<Output()> <Units("kgN/kgDM")> Public Property SilageN__() As Double
         Get
             Return myFarm.SilageN
@@ -898,7 +900,7 @@ Public Class DDRules
 
     <Description("Supplment/silage loss during cutting")> _
     <Param()> <Output()> <Units("%")> Public Property SilageCutWastage__() As Double
-    '<Description("Supplment/silage loss during cutting")> _
+        '<Description("Supplment/silage loss during cutting")> _
         '<Output()> <Units("%")> Public Property SilageCutWastage__() As Double
         Get
             Return myFarm.SilageCutWastage * 100
@@ -1018,8 +1020,8 @@ Public Class DDRules
         N_Eaten_Supplement = CSng(myFarm.N_Eaten_Supplement)
         N_to_milk = CSng(myFarm.N_to_milk)
         N_to_BC = CSng(myFarm.N_to_BC)
-        N_to_feaces = CSng(myFarm.N_to_feaces)
-        DM_to_feaces = CSng(myFarm.DM_to_feaces)
+        N_to_faeces = CSng(myFarm.N_to_faeces)
+        DM_to_faeces = CSng(myFarm.DM_to_faeces)
         N_to_urine = CSng(myFarm.N_to_urine)
         N_Balance = CSng(myFarm.N_Balance)
         N_Out = CSng(myFarm.N_Out)
@@ -1036,7 +1038,7 @@ Public Class DDRules
         N_Eaten_Supplement_Cow = CSng(myHerd.N_Eaten_Supplement_Cow())
         N_to_milk_Cow = CSng(myHerd.N_to_milk_Cow())
         N_to_BC_Cow = CSng(myHerd.N_to_BC_Cow())
-        N_to_feaces_Cow = CSng(myHerd.N_to_feaces_Cow())
+        N_to_faeces_Cow = CSng(myHerd.N_to_faeces_Cow())
         N_to_urine_Cow = CSng(myHerd.N_to_urine_Cow())
     End Sub
 
@@ -1090,11 +1092,11 @@ Public Class DDRules
     <Description("Nitrogen partitioned to body condition")> _
     <Output()> <Units("kgN/ha")> Public N_to_BC As Single
     <Description("Nitrogen partitioned to dung")> _
-    <Output()> <Units("kgN/ha")> Public N_to_feaces As Single
+    <Output()> <Units("kgN/ha")> Public N_to_faeces As Single
     <Description("Nitrogen partitioned to urine")> _
     <Output()> <Units("kgN/ha")> Public N_to_urine As Double
     <Description("Drymatter partitioned to dung")> _
-    <Output()> <Units("kgDM/ha")> Public DM_to_feaces As Single
+    <Output()> <Units("kgDM/ha")> Public DM_to_faeces As Single
 
     <Description("Current status of paddocks")> _
     <Output()> <Units("")> Public ReadOnly Property PaddockStatus() As String()
@@ -1158,9 +1160,9 @@ Public Class DDRules
     <Description("Nitrogen partitioned to body contition per paddock")> _
     <Output()> <Units("kgN/ha")> Public N_to_BC_Pdks As Single()
     <Description("Nitrogen partitioned to dung per paddock")> _
-    <Output()> <Units("kgN/ha")> Public ReadOnly Property N_to_feaces_Pdks() As Single()
+    <Output()> <Units("kgN/ha")> Public ReadOnly Property N_to_faeces_Pdks() As Single()
         Get
-            Return myFarm.N_to_feaces_Pdks
+            Return myFarm.N_to_faeces_Pdks
         End Get
     End Property
     <Description("Nitrogen partitioned to urine per paddock")> _
@@ -1194,7 +1196,7 @@ Public Class DDRules
     <Description("Nitrogen partitioned to body condition per cow")> _
     <Output()> <Units("kgN/cow")> Public N_to_BC_Cow As Single
     <Description("Nitrogen partitioned to dung per cow")> _
-    <Output()> <Units("kgN/cow")> Public N_to_feaces_Cow As Single
+    <Output()> <Units("kgN/cow")> Public N_to_faeces_Cow As Single
     <Description("Nitrogen partitioned to urine per cow")> _
     <Output()> <Units("kgN/cow")> Public N_to_urine_Cow As Double
     'Daily per cow live weight change
@@ -1207,7 +1209,7 @@ Public Class DDRules
     ' 2) winter off between specific dates
     <Description("Proportion (PWO) of herd wintered off-farm (range 0-1.0)")> _
     <Param()> <Output()> <Units("0-1")> Public Property PWO__() As Single
-    '<Description("Proportion (PWO) of herd wintered off-farm (range 0-1.0)")> _
+        '<Description("Proportion (PWO) of herd wintered off-farm (range 0-1.0)")> _
         '<Output()> <Units("0-1")> Public Property PWO__() As Single
         Get
             Return myFarm.PWO
@@ -1218,7 +1220,7 @@ Public Class DDRules
     End Property
     <Description("Date commence winter off")> _
     <Param()> <Output()> <Units("")> Public Property DCWO__() As String
-    '<Description("Date commence winter off")> _
+        '<Description("Date commence winter off")> _
         '<Output()> <Units("")> Public Property DCWO__() As String
         Get
             Return myFarm.DCWO.ToString()
@@ -1229,7 +1231,7 @@ Public Class DDRules
     End Property
     <Description("Date to stop winter off")> _
     <Param()> <Output()> <Units("")> Public Property DSWO__() As String
-    '<Description("Date to stop winter off")> _
+        '<Description("Date to stop winter off")> _
         '<Output()> <Units("")> Public Property DSWO__() As String
         Get
             Return myFarm.DSWO.ToString()
@@ -1323,10 +1325,10 @@ Public Class DDRules
     End Function
     <Description("Monthly grazing intervals")> _
     <Param()> <Output()> Public Property GrazingIntervalByMonth() As String
-    '<Description("Monthly grazing intervals")> _
+        '<Description("Monthly grazing intervals")> _
         '<Output()> Public Property GrazingIntervalByMonth() As String
         Get
-            Dim b() As String = Array.ConvertAll(Of Integer, String)(dairyNZ_mg, New Converter(Of Integer, String)(AddressOf MyCStr))
+            Dim b() As String = Array.ConvertAll(dairyNZ_mg, New Converter(Of Integer, String)(AddressOf MyCStr))
             Dim c As String = String.Join(",", b)
             Return c
         End Get
@@ -1336,10 +1338,10 @@ Public Class DDRules
     End Property
     <Description("Monthly grazing residuals")> _
     <Param()> <Output()> Public Property GrazingResidualByMonth() As String
-    '<Description("Monthly grazing residuals")> _
+        '<Description("Monthly grazing residuals")> _
         '<Output()> Public Property GrazingResidualByMonth() As String
         Get
-            Dim b() As String = Array.ConvertAll(Of Integer, String)(dairyNZ_gr, New Converter(Of Integer, String)(AddressOf MyCStr))
+            Dim b() As String = Array.ConvertAll(dairyNZ_gr, New Converter(Of Integer, String)(AddressOf MyCStr))
             Dim c As String = String.Join(",", b)
             Return c
         End Get
@@ -1349,10 +1351,10 @@ Public Class DDRules
     End Property
     <Description("Monthly grazing residuals (Val)")> _
         <Param()> <Output()> Public Property GrazingResidualValByMonth() As String
-    '<Description("Monthly grazing residuals (Val)")> _
+        '<Description("Monthly grazing residuals (Val)")> _
         '<Output()> Public Property GrazingResidualValByMonth() As String
         Get
-            Dim b() As String = Array.ConvertAll(Of Integer, String)(Val_gr, New Converter(Of Integer, String)(AddressOf MyCStr))
+            Dim b() As String = Array.ConvertAll(Val_gr, New Converter(Of Integer, String)(AddressOf MyCStr))
             Dim c As String = String.Join(",", b)
             Return c
         End Get
@@ -1402,7 +1404,7 @@ Public Class DDRules
     End Property
     <Description("Surplus cover")> _
      <Param()> <Output()> <Units("0-1")> Public Property SurplusCover() As Double
-    '<Description("Surplus cover")> _
+        '<Description("Surplus cover")> _
         '<Output()> <Units("0-1")> Public Property SurplusCover() As Double
         Get
             Return myFarm.Surplus
@@ -1414,7 +1416,7 @@ Public Class DDRules
     End Property
     <Description("Stocking rate threshold")> _
     <Param()> <Output()> <Units("0-1")> Public Property Stocking_Rate_Threshold__() As Double
-    '<Description("Stocking rate threshold")> _
+        '<Description("Stocking rate threshold")> _
         '<Output()> <Units("0-1")> Public Property Stocking_Rate_Threshold__() As Double
         Get
             Return myFarm.Stocking_Rate_Threshold_
@@ -1425,7 +1427,7 @@ Public Class DDRules
     End Property
     <Description("Pre-grazing cover target")> _
         <Param()> <Output()> Public Property PreGrazingCoverTarget__() As Double
-    '<Description("Pre-grazing cover target")> _
+        '<Description("Pre-grazing cover target")> _
         '<Output()> Public Property PreGrazingCoverTarget__() As Double
         Get
             Return myFarm.PreGrazingCoverTarget
@@ -1436,7 +1438,7 @@ Public Class DDRules
     End Property
     <Description("Max pre-grazing cover target")> _
        <Param()> <Output()> Public Property MaxPreGrazingCoverTarget__() As Double
-    '<Description("Max pre-grazing cover target")> _
+        '<Description("Max pre-grazing cover target")> _
         '<Output()> Public Property MaxPreGrazingCoverTarget__() As Double
         Get
             Return myFarm.MaxPreGrazingCoverTarget
@@ -1447,7 +1449,7 @@ Public Class DDRules
     End Property
     <Description("Simple cow live weight")> _
        <Param()> <Output()> Public Property Live_Weight__() As Double
-    '<Description("Simple cow live weight")> _
+        '<Description("Simple cow live weight")> _
         '<Output()> Public Property Live_Weight__() As Double
         Get
             Return Live_Weight
@@ -1458,7 +1460,7 @@ Public Class DDRules
     End Property
     <Description("Simple cow condition score")> _
         <Param()> <Output()> Public Property ConditionScore__() As Double
-    '<Description("Simple cow condition score")> _
+        '<Description("Simple cow condition score")> _
         '<Output()> Public Property ConditionScore__() As Double
         Get
             Return ConditionScore
@@ -1472,7 +1474,7 @@ Public Class DDRules
 
     <Description("Proportion of farm to return effluent to")> _
     <Param()> <Output()> <Units("0-1")> Public Property EffluentPaddocksPercentage() As Double
-    '<Description("Proportion of farm to return effluent to")> _
+        '<Description("Proportion of farm to return effluent to")> _
         '<Output()> <Units("0-1")> Public Property EffluentPaddocksPercentage() As Double
         Get
             Return myFarm.EffluentPaddocksPercentage
@@ -1625,7 +1627,7 @@ Public Class DDRules
     'End Property
 
     <Description("Set milk production data")> _
-    <Output()> <Units("kgMS/cow/day")> Public Property MilkCurve As String
+    <Param()> <Output()> <Units("kgMS/cow/day")> Public Property MilkCurve As String
         Get
             Return myFarm.getMilkSolids()
         End Get
@@ -1659,7 +1661,7 @@ Public Class DDRules
     End Property
 
     <Description("Set paddocks to return dairyshed effluent to")> _
-    <Output()> <Units("")> Public Property EffluentPaddocks As String()
+    <Param()> <Output()> <Units("")> Public Property EffluentPaddocks As String()
         Get
             If (strEffluentPaddocks Is Nothing) Then
                 Return New String() {""}
@@ -1713,14 +1715,14 @@ Public Class DDRules
     End Property
     Private Function strToDoubleArray(ByVal s As String, ByVal l As Integer) As Double()
         Dim values(l - 1) As Double
-        Dim strValues() As String = s.Split(New [Char]() {","c})
+        Dim strValues() As String = s.Split(",")
         For i As Integer = 0 To l - 1
             values(i) = CDbl(strValues(i))
         Next
         Return values
     End Function
     <Description("Set Live Weight Profile")> _
-    <Output()> <Units("kg")> Public Property LWtCurve As String
+    <Param()> <Output()> <Units("kg")> Public Property LWtCurve As String
         Get
             Return myFarm.getLiveWeight()
         End Get
@@ -1745,7 +1747,7 @@ Public Class DDRules
     End Property
 
     <Description("Proportion of total cows to dry off [0-1]")> _
-    <Output()> <Units("0-1")> Public Property DryOffProportion() As Double
+       <Param()> <Output()> <Units("0-1")> Public Property DryOffProportion() As Double
         Get
             Return myFarm.DryOffProportion
         End Get
@@ -1756,7 +1758,7 @@ Public Class DDRules
 
     <Description("Default pasture ME")> _
     <Param()> <Output()> Public Property DefaultPastureMetEnergy() As String
-    '<Description("Default pasture ME")> _
+        '<Description("Default pasture ME")> _
         '<Output()> Public Property DefaultPastureMetEnergy() As String
         Get
             Return myFarm.DefaultPastureMetEnergy

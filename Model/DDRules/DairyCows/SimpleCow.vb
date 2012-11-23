@@ -21,7 +21,7 @@
     Private RFD As Double = 0
     Public Shared DoInterpolate As Boolean = True
 
-    Public N_to_feaces, DM_to_feaces, N_to_urine, N_to_Milk, N_to_BC As Double
+    Public N_to_faeces, DM_to_faeces, N_to_urine, N_to_Milk, N_to_BC As Double
 
     Public myExcreta As New Excreta()
     Public myTempExcreta As New Excreta()
@@ -129,7 +129,7 @@
         Total_Supplement_Eaten = New BioMass()
         N_to_BC = 0.0
         N_to_Milk = 0.0
-        N_to_feaces = 0.0
+        N_to_faeces = 0.0
         N_to_urine = 0.0
     End Sub
 
@@ -236,16 +236,16 @@
 
         'finally Dung and Urine 40:60 split as per Dawn's documentation
         Dim N_Excreta As Double = N_in - (N_to_Milk + N_to_BC)
-        N_to_feaces = N_Excreta * 0.4
-        N_to_urine = N_Excreta - N_to_feaces
+        N_to_faeces = N_Excreta * 0.4
+        N_to_urine = N_Excreta - N_to_faeces
         If (N_to_urine.ToString.Contains("NaN")) Then
             Console.WriteLine("DDRules (debug) - " & "Urine: N not a number")
         End If
 
         Dim DM_out As Double = Total_DM_Eaten.DM_Total * (1 - Total_DM_Eaten.digestibility) 'Digestibility = 70% grass, 55% hay, 80% grain, time = 18-24, 30-40 & 12-14 Farm Tech manual A-154
-        DM_to_feaces = DM_out
+        DM_to_faeces = DM_out
 
-        myExcreta = New Excreta(N_to_urine, N_to_feaces, DM_to_feaces) ' this is used from reporting
+        myExcreta = New Excreta(N_to_urine, N_to_faeces, DM_to_faeces) ' this is used from reporting
         myTempExcreta = New Excreta(myExcreta) ' this for returning
 
     End Sub

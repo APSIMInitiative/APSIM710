@@ -104,14 +104,14 @@
 #End Region
 #Region "Output Variables - Outputs"
 #Region "Output Variables - Outputs - Nitrogen/Carbon"
-    Public ReadOnly Property N_to_feaces() As Double
+    Public ReadOnly Property N_to_faeces() As Double
         Get
-            Return ReferenceCow.N_to_feaces * TotalCows
+            Return ReferenceCow.N_to_faeces * TotalCows
         End Get
     End Property
-    Public ReadOnly Property DM_to_feaces() As Double
+    Public ReadOnly Property DM_to_faeces() As Double
         Get
-            Return ReferenceCow.DM_to_feaces * TotalCows
+            Return ReferenceCow.DM_to_faeces * TotalCows
         End Get
     End Property
     Public ReadOnly Property N_to_urine() As Double
@@ -136,7 +136,7 @@
     End Property
     Public ReadOnly Property N_Out() As Double
         Get
-            Return N_to_Milk + N_to_feaces + N_to_urine + N_to_BC
+            Return N_to_Milk + N_to_faeces + N_to_urine + N_to_BC
         End Get
     End Property
 #End Region
@@ -321,8 +321,8 @@
     ' Todo: distribute nutrients by amount of drymatter removal (if grazed)
     Public Sub doNutrientReturns(ByVal myGrazedPaddocks As List(Of PaddockWrapper))
         Dim urineN As Double = N_to_urine
-        Dim dungN As Double = N_to_feaces
-        Dim dungDM As Double = DM_to_feaces
+        Dim dungN As Double = N_to_faeces
+        Dim dungDM As Double = DM_to_faeces
 
         Dim totalMERemoved As Double = 0
         For Each pdk As PaddockWrapper In myGrazedPaddocks
@@ -359,12 +359,12 @@
         Dim amountHa As Excreta = amountTotal.Multiply(1 / area)
         For Each pdk As PaddockWrapper In paddock
             Dim amount As Excreta = amountHa.Multiply(pdk.Area)
-            ReferenceCow.doNutrientReturns(pdk, amount.N_to_urine, amount.N_to_feaces, amount.DM_to_feaces, TotalCows / pdk.Area * proporiton)
+            ReferenceCow.doNutrientReturns(pdk, amount.N_to_urine, amount.N_to_faeces, amount.DM_to_faeces, TotalCows / pdk.Area * proporiton)
         Next
     End Sub
 
     Public Sub doNutrientReturnsToPaddock(ByVal paddock As PaddockWrapper, ByVal amount As Excreta, Optional ByVal proporiton As Double = 1.0)
-        ReferenceCow.doNutrientReturns(paddock, amount.N_to_urine, amount.N_to_feaces, amount.DM_to_feaces, TotalCows / paddock.Area * proporiton)
+        ReferenceCow.doNutrientReturns(paddock, amount.N_to_urine, amount.N_to_faeces, amount.DM_to_faeces, TotalCows / paddock.Area * proporiton)
     End Sub
 
     '       Public Sub doNutrientReturns(ByVal myPaddocks As List(Of PaddockWrapper), Optional ByVal proporiton As Double = 1.0)
@@ -407,8 +407,8 @@
     Public Function N_to_BC_Cow() As Double
         Return ReferenceCow.N_to_BC
     End Function
-    Public Function N_to_feaces_Cow() As Double
-        Return ReferenceCow.N_to_feaces
+    Public Function N_to_faeces_Cow() As Double
+        Return ReferenceCow.N_to_faeces
     End Function
     Public Function N_to_urine_Cow() As Double
         Return ReferenceCow.N_to_urine

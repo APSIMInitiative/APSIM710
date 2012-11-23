@@ -34,7 +34,7 @@ Public Class PaddockWrapper
     Public index As Integer
     Public GrazingResidual As Double = 0
     Dim DM_Grazed As BioMass = New BioMass()
-    Dim N_Feaces, C_Feaces, N_Urine As Double
+    Dim N_Faeces, C_Faeces, N_Urine As Double
     Public GrazingCounter As Integer = 0 'number of days this paddocked will be grazed for given the current rotation length
     Public Shared Default_Application_Depth As Double = 300 'mm
 
@@ -66,8 +66,8 @@ Public Class PaddockWrapper
         'If (i > 0) Then
         '        Console.WriteLine("AREA IS SET ******************************************************* " + ApSim_SubPaddock.Name + " " + i.ToString)
         'End If
-        N_Feaces = 0
-        C_Feaces = 0
+        N_Faeces = 0
+        C_Faeces = 0
         N_Urine = 0
         DM_Grazed = New BioMass()
         UpdatedGrowth = False
@@ -580,8 +580,8 @@ Public Class PaddockWrapper
     Public Function N_Eaten() As Double
         Return DM_Grazed.N_Total
     End Function
-    Public Function N_From_Feaces() As Double
-        Return N_Feaces
+    Public Function N_From_Faeces() As Double
+        Return N_Faeces
     End Function
     Public Function N_From_Urine() As Double
         Return N_Urine

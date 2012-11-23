@@ -22,9 +22,11 @@
           <Lane_Paddocks type="text" description="Laneway paddocks">Lanes</Lane_Paddocks>
           <Lane_Time type="text" description="Time in laneways [0-24]">24</Lane_Time>
           <Milk_Time type="text" description="Time in the milking shed [0-24]">0</Milk_Time>
+          <apply_fert_to_eff_pdks type="text" description="Apply fertiliser to effluent paddocks">0</apply_fert_to_eff_pdks>
         </ui>
         <script>
           <text>DDRules.FarmArea = [farm_area]
+!DDRules.ApplyFertToEffluentPdks = [apply_fert_to_eff_pdks]
 DDRules.PeakStockingRate = [stocking_rate]
 DDRules.StockingRate = [stocking_rate]
 !DDRules.SupplementME = 12.5
@@ -61,7 +63,8 @@ DDRules.HoursOnLaneWays = [Lane_Time]
           <WinterOffDryStock_ type="text" description="WinterOffDryStock">1</WinterOffDryStock_>
           <DCWO_ type="text" description="DCWO">01-May</DCWO_>
           <DSWO_ type="text" description="DSWO">01-Aug</DSWO_>
-          <PWO_ type="text" description="PWO">0</PWO_>
+          <PWO_ type="text" description="PWO">0.0</PWO_>
+          <Dry_Off_Proportion type="text" description="Proportion of cows dried off">0</Dry_Off_Proportion>
           <a_RPM_ type="text" description="intercept of the Rising Plate Meter equation"> 500 </a_RPM_>
           <b_RPM_ type="text" description="slope of the Rising Plate Meter equation"> 140 </b_RPM_>
           <RotationInterval_ type="text" description="RotationInterval">21</RotationInterval_>
@@ -129,6 +132,8 @@ DDRules.HoursOnLaneWays = [Lane_Time]
           [Param()]
           private string PWO_;
  	       [Param()]
+          private string Dry_Off_Proportion;
+          [Param()]
 	       private string DefaultPastureMetE;
           [Param()]
           private string a_RPM_;
@@ -220,6 +225,8 @@ DDRules.HoursOnLaneWays = [Lane_Time]
           MyDDRules.DCWO__ = DCWO_;
           MyDDRules.DSWO__ = DSWO_;
           MyDDRules.PWO__ = float.Parse(PWO_, CultureInfo.InvariantCulture);
+
+          MyDDRules.DryOffProportion = Double.Parse(Dry_Off_Proportion);
 
           MyDDRules.a_RPM__ = Double.Parse(a_RPM_);
           MyDDRules.b_RPM__ = Double.Parse(b_RPM_);
@@ -22295,7 +22302,7 @@ NTotalBalance = 0</text>
         <text>TotalNIn = N_Eaten_Pasture + N_Eaten_Supplement
 NIntakeBalance = TotalNIn - N_Eaten
 
-TotalNOut = N_to_BC + N_to_feaces + N_to_milk + N_to_urine
+TotalNOut = N_to_BC + N_to_faeces + N_to_milk + N_to_urine
 NOutBalance = TotalNOut - N_Out
 
 NTotalBalance = NIntakeBalance - NOutBalance</text>
@@ -22406,7 +22413,7 @@ NTotalBalance = NIntakeBalance - NOutBalance</text>
         <variable>N_Eaten_Supplement</variable>
         <variable>N_Out</variable>
         <variable>N_to_BC</variable>
-        <variable>N_to_feaces</variable>
+        <variable>N_to_faeces</variable>
         <variable>N_to_milk</variable>
         <variable>N_to_urine</variable>
         <variable>NIntakeBalance</variable>

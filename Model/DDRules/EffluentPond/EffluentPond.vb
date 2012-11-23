@@ -20,7 +20,7 @@ Public Class EffluentPond
     <Description("Amount of effluient being held in storage")> _
         <Output()> <Units("TBC")> Public ReadOnly Property Volume() As Double
         Get
-            Return myExcreta.N_to_feaces + myExcreta.DM_to_feaces + myExcreta.N_to_urine
+            Return myExcreta.N_to_faeces + myExcreta.DM_to_faeces + myExcreta.N_to_urine
         End Get
     End Property
 End Class
