@@ -8,9 +8,8 @@ using System.Xml;
 
 /// <summary>
 /// Calculates the average soil temperature at the centre of each layer, based on the soil temperature model of EPIC (Williams et al 1984)
-/// This code was separated form old SoilN - tidied up but not updated (RCichota)
+/// This code was separated from old SoilN - tidied up but not updated (RCichota, sep/2012)
 /// </summary>
-
 public class simpleSoilTemp
 {
 
@@ -45,15 +44,15 @@ public class simpleSoilTemp
 
     // values passed via SoilTemperature()
 
-    public DateTime _today;
+    private DateTime _today;
 
-    public float[] _dlayer;
+    private float[] _dlayer;
 
-    public float[] _bd;
+    private float[] _bd;
 
-    public float[] _ll15_dep;
+    private float[] _ll15_dep;
 
-    public float[] _sw_dep;
+    private float[] _sw_dep;
 
     #endregion
 
@@ -62,7 +61,7 @@ public class simpleSoilTemp
     #region Internal variables
 
     // estimated soil surface temperatures (oC)
-    private double[] surf_temp = new double[366];
+    private double[] surf_temp;
 
     // estimated soil temperature profile (oC)
     private double[] st;
@@ -73,6 +72,9 @@ public class simpleSoilTemp
     #endregion
 
     #region Internal constants
+
+    // Maximum number of days in a year
+    private const int MaxDaysInYear = 366;
 
     // day of year of nthrn summer solstice
     private const double nth_solst = 173.0;
@@ -89,26 +91,55 @@ public class simpleSoilTemp
     // warmest day of year of sth hemisphere
     private const double sth_hot = sth_solst + temp_delay;
 
-    // length of one day in radians
-    private const double ang = (2.0 * Math.PI) / 365.25;
+    //
+    private const double my_pi = 3.14159;
 
-    // number of days to compute surface soil temperature
+    // length of one day in radians
+    //private const double ang = (2.0 * Math.PI) / 365.25;
+    private const double ang = (2.0 * my_pi) / 365.25;
+
+    // number of days to compute moving average of surface soil temperature
     private const int ndays = 5;
+
 
     #endregion
 
+    /// <summary>
+    /// Initialise method for computing the temperature for each layer in the soil
+    /// </summary>
+    /// <param name="latitude">latitude of present location</param>
+    /// <param name="tav">annual average of daily temperature</param>
+    /// <param name="amp">annual amplitude of daily temperature</param>
+    /// <param name="mint">Today's minimum temperature</param>
+    /// <param name="maxt">Today's maximum temperature</param>
     public simpleSoilTemp(double latitude, double tav, double amp, double mint, double maxt)
     {
         _latitude = latitude;
         _tav = tav;
         _amp = amp;
 
-        // need to initialise some values for surf_temp, repeat the value of ave_temp for the first day
+        // need to initialise some values for surf_temp, repeat the value of ave_temp for the first day (RCichota: why not tav?)
+        surf_temp = new double[MaxDaysInYear];
         double ave_temp = (maxt + mint) * 0.5;
-        for (int i = 0; i < surf_temp.Length; i++)
-            surf_temp[i] = ave_temp;
+        for (int day = 0; day < MaxDaysInYear; day++)
+            surf_temp[day] = ave_temp;
     }
 
+    double[] teste = new double[40];
+
+    /// <summary>
+    /// Calculate today's temperature for each layer in the soil
+    /// </summary>
+    /// <param name="today">Today's date</param>
+    /// <param name="mint">Today's minimum temperature</param>
+    /// <param name="maxt">Today's maximum temperature</param>
+    /// <param name="radn">Today's solar radiation</param>
+    /// <param name="salb">Today's soil surface albedo</param>
+    /// <param name="dlayer">Soil layers</param>
+    /// <param name="bd">Soil bulk density</param>
+    /// <param name="ll15_dep">Soil water amount at lower limit (mm)</param>
+    /// <param name="sw_dep">Today's soil water amount (mm)</param>
+    /// <returns></returns>
     public double[] SoilTemperature(DateTime today, double mint, double maxt, double radn, double salb, float[] dlayer, float[] bd, float[] ll15_dep, float[] sw_dep)
     {
         _today = today;
@@ -123,17 +154,22 @@ public class simpleSoilTemp
 
         st = new double[dlayer.Length];
 
-        ave_temp = (_maxt + _mint) * 0.5;
+        ave_temp = (maxt + mint) * 0.5;
 
-        // Calculate "normal" soil temperature from the day of year assumed to have the warmest average soil temperature over the year
+        // Calculate "normal" soil temperature from the day of year assumed to have the warmest average soil temperature
         // The normal soil temperature varies as a cosine function of alx, with average tav and amplitude amp
 
-        // time of year, in radians, from hottest instance to current day
+        // get the time of year, in radians, from hottest instance to current day
         double alx;
         if (_latitude >= 0)
-            alx = ang * _today.AddDays(-nth_hot).DayOfYear;
+            alx = ang * _today.AddDays(-(int)nth_hot).DayOfYear;
         else
-            alx = ang * _today.AddDays(-sth_hot).DayOfYear;
+            alx = ang * _today.AddDays(-(int)sth_hot).DayOfYear;
+
+        // RCichota: had to cast nth_hot and sth_hot to integer due to differences in how DayOfYear are handled in here as compared to the fortran version
+        //  there was a one day offset for sth_hot. Ex.:  
+        //  if today = 1-Jan and sht_hot = 382.625, fortran gives day of year = 349, while here, without casting, we get 348
+
         if (alx < 0.0 || alx > 6.31)
             throw new Exception("Value for alx is out of range");
 
@@ -143,11 +179,11 @@ public class simpleSoilTemp
         // get temperature dumping depth (mm per radian of a year)
         double DampingDepth = DampDepth();
 
-        // compute soil temp for each of the remaining layer
+        // compute soil temp for each of the remaining layers
         double cum_depth = 0.0;
         for (int layer = 0; layer < _dlayer.Length; layer++)
         {
-            // cumulative depth to bottom of current layer
+            // cumulative depth to the bottom of current layer
             cum_depth += _dlayer[layer];
 
             // depth lag factor - This reduces changes in soil temperature with depth (radians of a year)
@@ -166,17 +202,24 @@ public class simpleSoilTemp
     private double dlt_temp(double alx)
     {
         // + Purpose
-        //     Calculates  the rate of change in soil surface temperature with time.
+        //     Calculates the rate of change in soil surface temperature with time.
         //       This is a correction to adjust today's normal sinusoidal soil surface temperature to the current temperature conditions.
 
         // estimate today's top layer temperature from yesterdays temp and today's weather conditions.
-        surf_temp[_today.DayOfYear - 1] = (1.0 - _salb) * (ave_temp + (_maxt - ave_temp) * Math.Sqrt(_radn * 23.8846 / 800.0)) + _salb * surf_temp[_today.AddDays(-1).DayOfYear - 1];
+        int todayDoY = _today.DayOfYear - 1;
+        int yesterdayDoY = _today.AddDays(-1).DayOfYear - 1;
+        double TodayTempAmp = _maxt - ave_temp;
+        double SunEffect = Math.Sqrt(_radn * 23.8846 / 800.0);
+        surf_temp[todayDoY] = (1.0 - _salb) * (ave_temp + TodayTempAmp * SunEffect) + _salb * surf_temp[yesterdayDoY];
 
         // average of soil surface temperature over last ndays
         double ave_surf_temp = 0;
         for (int day = 0; day < ndays; day++)
-            ave_surf_temp += surf_temp[_today.AddDays(-day).DayOfYear - 1];
-        ave_surf_temp = ave_surf_temp / ndays;
+        {
+            int dayDoY = _today.AddDays(- day).DayOfYear - 1;
+            ave_surf_temp += surf_temp[dayDoY];
+        }
+        ave_surf_temp = MathUtility.Divide(ave_surf_temp, ndays, 0.0);
 
         // Calculate today's normal surface soil temperature.
         // There is no depth lag, being the surface, and there is no adjustment for the current temperature conditions
@@ -201,7 +244,7 @@ public class simpleSoilTemp
         //      The difference in temperature between surface and layers is an exponential function of the ratio of
         //        the depth to the bottom of the layer and the temperature damping depth of the soil.
 
-        return _tav + (_amp / 2.0 * Math.Cos(alx - depth_lag) + dlt_temp) * Math.Exp(-depth_lag);
+        return _tav + ((_amp / 2.0) * Math.Cos(alx - depth_lag) + dlt_temp) * Math.Exp(-depth_lag);
     }
 
     private double DampDepth()
@@ -217,21 +260,22 @@ public class simpleSoilTemp
 
         const double sw_avail_tot_min = 0.01;
 
-        // get average bulk density and total sw
+        // get average bulk density and its factor
         double cum_depth = 0.0;
-        double bd_tot = 0.0;
+        double ave_bd = 0.0;
         double ll_tot = 0.0;
         double sw_dep_tot = 0.0;
         for (int layer = 0; layer < _dlayer.Length; layer++)
         {
-            bd_tot += _bd[layer] * _dlayer[layer];
+            ave_bd += _bd[layer] * _dlayer[layer];
             ll_tot += _ll15_dep[layer];
             sw_dep_tot += _sw_dep[layer];
             cum_depth += _dlayer[layer];
         }
-        double ave_bd = MathUtility.Divide(bd_tot, cum_depth, 0.0);
 
-        // favbd ranges from almost 0 to almost 1
+        ave_bd = MathUtility.Divide(ave_bd, cum_depth, 0.0);
+
+        // bd factor ranges from almost 0 to almost 1 (sigmoid funtion)
         double favbd = ave_bd / (ave_bd + 686.0 * Math.Exp(-5.63 * ave_bd));
 
         // damp_depth_max ranges from 1000 to almost 3500
@@ -240,7 +284,7 @@ public class simpleSoilTemp
 
         // Potential sw above lower limit - mm water/mm soil depth
         //   Note that this function says that average bulk density can't go above 2.47222,
-        //    otherwise potential becomes negative.  This function allows potential (ww) to go from 0 to .356
+        //    otherwise potential sw becomes negative.  This function allows potential (ww) to go from 0 to .356
         double ww = Math.Max(0.0, 0.356 - 0.144 * ave_bd);
 
         // calculate amount of soil water, using lower limit as the reference point.
@@ -248,7 +292,7 @@ public class simpleSoilTemp
 
         // get fractional water content
         // wc can range from 0 to 1 while wcf ranges from 1 to 0
-        double wc = MathUtility.Divide(sw_avail_tot, ww * cum_depth, 0.0);
+        double wc = MathUtility.Divide(sw_avail_tot, ww * cum_depth, 1.0);
         wc = Math.Max(0.0, Math.Min(1.0, wc));
         double wcf = (1.0 - wc) / (1.0 + wc);
 
@@ -256,7 +300,8 @@ public class simpleSoilTemp
         // When wc is 0, wcf=1 and f=500/damp_depth_max and soiln2_SoilTemp_DampDepth=500
         // When wc is 1, wcf=0 and f=1 and soiln2_SoilTemp_DampDepth=damp_depth_max
         //   and that damp_depth_max is the maximum.
-        double b = Math.Log(MathUtility.Divide(500.0, damp_depth_max, 1.0e10));
+        //double b = Math.Log(MathUtility.Divide(500.0, damp_depth_max, 1.0e10));
+        double b = Math.Log(500.0 / damp_depth_max);
         double f = Math.Exp(b * wcf * wcf);
 
         // Get the temperature damping depth. (mm soil/radian of a g_year)

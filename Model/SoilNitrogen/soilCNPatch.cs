@@ -6,6 +6,7 @@ using System.Linq;
 using ModelFramework;
 using CSGeneral;
 using System.Xml;
+using SoilNitrogenVars;
 
 class soilCNPatch
 {
@@ -29,6 +30,10 @@ class soilCNPatch
     // whether calculate one set of mineralisation factors (stf and swf) or one for each pool
     public bool useFactorsBySOMpool = false;
     public bool useFactorsByFOMpool = false;
+
+    UreaHydrolysisApproach UreaHydrolysisApproach = UreaHydrolysisApproach.APSIMdefault;
+    NitrificationApproach NitrificationApproach = NitrificationApproach.APSIMdefault;
+    DenitrificationApproach DenitrificationApproach = DenitrificationApproach.APSIMdefault;
 
     #endregion
 
@@ -1110,9 +1115,6 @@ class soilCNPatch
             _urea[layer] -= dlt_urea_hydrolised[layer];
 
             // nitrate-N denitrification
-            dlt_no3_dnit[layer] = Denitrification(layer);
-            _no3[layer] -= dlt_no3_dnit[layer];
-
             switch (n2o_approach)
             {
                 case 1:
@@ -1133,6 +1135,8 @@ class soilCNPatch
                     dlt_no3_dnit[layer] = Denitrification(layer);
                     break;
             }
+            _no3[layer] -= dlt_no3_dnit[layer];
+
 
             // N2O loss to atmosphere - due to denitrification
             n2o_atm[layer] = 0.0;
@@ -1242,7 +1246,7 @@ class soilCNPatch
             {
                 case 1:
                     dlt_nitrification[layer] = Nitrification(layer);                //using default APSIM process for NEMIS
-                    dlt_nh4_dnit[layer] = DenitrificationInNitrification(layer);
+                    dlt_nh4_dnit[layer] = N2OLostInNitrification_ApsimSoilNitrogen(layer);
                     break;
                 case 2:
                     dlt_nitrification[layer] = Nitrification_WNMM(layer);
@@ -1257,7 +1261,7 @@ class soilCNPatch
                     // nitrification of ammonium-N (total)
                     dlt_nitrification[layer] = Nitrification(layer);
                     // denitrification loss during nitrification  (- n2o_atm )
-                    dlt_nh4_dnit[layer] = DenitrificationInNitrification(layer);
+                    dlt_nh4_dnit[layer] = N2OLostInNitrification_ApsimSoilNitrogen(layer);
                     // N2O loss to atmosphere from nitrification
                     n2o_atm[layer] += dlt_nh4_dnit[layer];
                    break;
@@ -1471,7 +1475,7 @@ class soilCNPatch
 
         // dsg 200508  use different values for some constants when anaerobic conditions dominate
         int index = (!is_pond_active) ? 1 : 2;
-
+        
         // get the soil temperature factor
         double tf = (SoilParamSet == "rothc") ? RothcTF(layer, index) : TF(layer, index);
         if (useNewSTFFunction)
@@ -1751,58 +1755,161 @@ class soilCNPatch
         return Result;
     }
 
+    /// <summary>
+    /// + Purpose:
+    ///     Calculate the amount of urea converted to NH4 via hydrolysis (kgN/ha)
+    /// </summary>
+    /// <remarks>
+    /// + Assumptions:
+    ///     - very small amounts of urea are hydrolysed promptly, regardless the hydrolysis approach
+    ///     - the actual hydrolysis is computed in another method according to the approach chosen
+    ///     - parameters are given in pairs, for aerobic and anaerobic conditions (with pond)
+    /// </remarks>
+    /// <documentation>
+    /// 
+    /// </documentation>
+    /// <param name="layer">the node number representing soil layer for which calculations will be made</param>
+    /// <returns>delta N coverted from urea into NH4</returns>
     private double UreaHydrolysis(int layer)
     {
-        // + Purpose
-        //     Calculate the amount of urea converted to NH4 via hydrolysis
-
-        // dsg 200508  use different values for some constants when anaerobic conditions dominate
-        double result;
-        int index = (!is_pond_active) ? 1 : 2;
+        double result = 0.0;
 
         if (_urea[layer] > 0.0)
         {
             // we have urea, so can do some hydrolysis
-            double LowUrea = 0.1 * dlayer[layer] / 200;  //original value was 0.1, now it is corrected by dlayer, assuming'typical' was 20cm
-            if (_urea[layer] < 0.1)
-                // urea amount is too small, all will be hydrolised
-                result = _urea[layer];
+            if (!useNewProcesses)
+            {
+                // using old APSIM-SoilN method
+                result = UreaHydrolysis_ApsimSoilN(layer);
+            }
             else
             {
-                // get the soil water factor
-                double swf = Math.Max(0.0, Math.Min(1.0, WF(layer, index) + 0.20));
-                if (useNewSWFFunction)
-                    swf = SoilMoistFactor(layer, index, MoistFactor_Hydrol);
+                // get the minimum urea amount we bother to calc hydrolysis
+                double LowUrea = 0.1 * dlayer[layer] / 200;
+                //  its original value was 0.1 kg/ha, assuming 'typical' thickness as 20cm it was 0.005
 
-                // get the soil temperature factor
-                double stf = Math.Max(0.0, Math.Min(1.0, (st[layer] / 40.0) + 0.20));
-                if (useNewSTFFunction)
-                    stf = SoilTempFactor(layer, index, TempFactor_Hydrol);
-
-                // note (jngh) oc & ph are not updated during simulation
-                //      mep    following equation would be better written in terms of hum_C and biom_C
-                //      mep    oc(layer) = (hum_C(layer) + biom_C(layer))*soiln2_fac (layer)*10000.
-
-                // get potential fraction of urea for hydrolysis
-
-                double ak = Math.Max(0.25, Math.Min(1.0, -1.12 + 1.31 * OC_reset[layer] + 0.203 * ph[layer] - 0.155 * OC_reset[layer] * ph[layer]));
-                if (useNewProcesses)
+                if (_urea[layer] < LowUrea)
                 {
-                    ak = potHydrol_parmA +
-                         potHydrol_parmB * (hum_c[layer] + biom_c[layer]) +
-                         potHydrol_parmC * ph[layer] +
-                         potHydrol_parmD * (hum_c[layer] + biom_c[layer]) * ph[layer];
+                    // urea amount is too small, all will be hydrolised
+                    result = _urea[layer];
                 }
-                ak = Math.Max(potHydrol_min, Math.Min(1.0, ak));
-                //change oc on eq.: double ak = Math.Max(0.25, Math.Min(1.0, -1.12 + 1.31 * (hum_c[layer] + biom_c[layer]) + 0.203 * ph[layer] - 0.155 * (hum_c[layer] + biom_c[layer]) * ph[layer]));
-                //original eq.: double ak = Math.Max(0.25, Math.Min(1.0, -1.12 + 1.31 * OC_reset[layer] + 0.203 * ph[layer] - 0.155 * OC_reset[layer] * ph[layer]));
-
-                //get amount hydrolysed;
-                result = Math.Max(0.0, Math.Min(_urea[layer], ak * _urea[layer] * Math.Min(swf, stf)));
+                else
+                {
+                    switch (UreaHydrolysisApproach)
+                    {
+                        case UreaHydrolysisApproach.APSIMdefault:
+                            // use default soilNitrogen function
+                            result = UreaHydrolysis_ApsimSoilNitrogen(layer);
+                            break;
+                        case UreaHydrolysisApproach.RCichota:
+                            // use function define by RCichota
+                            result = 0;
+                            break;
+                        default:
+                            throw new Exception("Method for computing urea hydrolysis is not valid");
+                    }
+                }
             }
         }
+
+        return result;
+    }
+
+    /// <summary>
+    /// + Purpose:
+    ///     Compute the hydrolysis of urea using the approach from APSIM-SoilN
+    /// </summary>
+    /// <remarks>
+    /// + Assumptions:
+    ///     - parameters are given in pairs, for aerobic and anaerobic conditions (with pond)
+    /// </remarks>
+    /// <documentation>
+    /// This approach was used in APSIM-SoilN module, and has been adapted from CERES. See Godwin, D.C. and Jones, C.A. (1991). Nitrogen dynamics in
+    ///  soil-plant systems. In: Hanks, J. and Ritchie, J.T. Modeling plant and soil systems. pp. 287-321.
+    /// This has not been tested especifically in APSIM
+    /// </documentation>
+    /// <param name="layer">the node number representing soil layer for which calculations will be made</param>
+    /// <returns>delta N coverted from urea into NH4</returns>
+    private double UreaHydrolysis_ApsimSoilN(int layer)
+    {
+
+        double result;
+        if (_urea[layer] < 0.1)
+            // urea amount is too small, all will be hydrolised
+            result = _urea[layer];
         else
-            result = 0.0;
+        {
+            // get the index for aerobic/anaerobic conditions
+            int index = (!is_pond_active) ? 1 : 2;
+
+            // get the soil water factor
+            double swf = Math.Max(0.0, Math.Min(1.0, WF(layer, index) + 0.20));
+
+            // get the soil temperature factor
+            double stf = Math.Max(0.0, Math.Min(1.0, (st[layer] / 40.0) + 0.20));
+
+            // note (jngh) oc & ph are not updated during simulation
+            //      mep    following equation would be better written using oc(layer) = (hum_C(layer) + biom_C(layer))
+
+            // get potential fraction of urea for hydrolysis
+            double ak = -1.12 + 1.31 * OC_reset[layer] + 0.203 * ph[layer] - 0.155 * OC_reset[layer] * ph[layer];
+            ak = Math.Max(0.25, Math.Min(1.0, ak));
+
+            //get amount hydrolysed;
+            result = Math.Max(0.0, Math.Min(_urea[layer], ak * _urea[layer] * Math.Min(swf, stf)));
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// + Purpose:
+    ///     Compute the hydrolysis of urea using the approach from APSIM-SoilNitrogen
+    /// </summary>
+    /// <remarks>
+    /// + Assumptions:
+    ///     - parameters are given in pairs, for aerobic and anaerobic conditions (with pond)
+    /// </remarks>
+    /// <documentation>
+    /// This approach is an updated version of original used in APSIM-SoilN module. Initially based on CERES, see Godwin, D.C. and Jones, C.A. (1991).
+    ///  Nitrogen dynamics in soil-plant systems. In: Hanks, J. and Ritchie, J.T. Modeling plant and soil systems. pp. 287-321.
+    /// Major differences include renaming some of the variables and allowing paramater values to be changed by user. Also organic carbon is updated
+    ///  at each time step.
+    /// This has not been tested especifically in APSIM
+    /// </documentation>
+    /// <param name="layer">the node number representing soil layer for which calculations will be made</param>
+    /// <returns>delta N coverted from urea into NH4</returns>
+    private double UreaHydrolysis_ApsimSoilNitrogen(int layer)
+    {
+        // get the index for aerobic/anaerobic conditions
+        int index = (!is_pond_active) ? 1 : 2;
+
+        // get the soil water factor
+        double swf = Math.Max(0.0, Math.Min(1.0, WF(layer, index) + 0.20));
+        if (useNewSWFFunction)
+            swf = SoilMoistFactor(layer, index, MoistFactor_Hydrol);
+
+        // get the soil temperature factor
+        double stf = Math.Max(0.0, Math.Min(1.0, (st[layer] / 40.0) + 0.20));
+        if (useNewSTFFunction)
+            stf = SoilTempFactor(layer, index, TempFactor_Hydrol);
+
+        // get the total C amount
+        double totalC = OC_reset[layer];
+        if (useNewProcesses)
+            totalC = hum_c[layer] + biom_c[layer] * convFactor_kgha2ppm(layer) / 10000;  // (100/1000000) = convert to ppm and then to %
+                // RCichota: why not FOM?
+
+        // get potential fraction of urea for hydrolysis
+        double ak = potHydrol_parmA +
+                potHydrol_parmB * totalC +
+                potHydrol_parmC * ph[layer] +
+                potHydrol_parmD * totalC * ph[layer];
+        ak = Math.Max(potHydrol_min, Math.Min(1.0, ak));
+        //original eq.: double ak = Math.Max(0.25, Math.Min(1.0, -1.12 + 1.31 * OC_reset[layer] + 0.203 * ph[layer] - 0.155 * OC_reset[layer] * ph[layer]));
+
+        //get amount N hydrolysed;
+        double result = Math.Max(0.0, Math.Min(_urea[layer], ak * _urea[layer] * Math.Min(swf, stf)));
         return result;
     }
 
@@ -1815,38 +1922,75 @@ class soilCNPatch
         //        This routine is much simplified from original CERES code
         //        pH effect on nitrification is not invoked
 
+        double result = 0.0;
+        if (_nh4[layer] > nh4_min[layer])
+        {
+            // we have ammonium, so can do some nitrification
+            if (!useNewProcesses)
+            {
+                // using old APSIM-SoilN method
+                result = Nitrification_ApsimSoilN(layer);
+            }
+            else
+            {
+                switch (NitrificationApproach)
+                {
+                    case NitrificationApproach.APSIMdefault:
+                        // use default soilNitrogen function
+                        result = Nitrification_ApsimSoilNitrogen(layer);
+                        break;
+                    case NitrificationApproach.RCichota:
+                        // use RCichota function
+                        result = 0.0;
+                        break;
+                    default:
+                        throw new Exception("Method for computing nitrification is not valid");
+                }
+            }
+        }
+
+        // check the actual nitrification rate (make sure NH4 will not go below minimum value)
+        result = Math.Max(0.0, Math.Min(result, _nh4[layer] - nh4_min[layer]));
+
+        return result;
+    }
+
+    private double Nitrification_ApsimSoilN(int layer)
+    {
+        // + Purpose
+        //     Calculate the amount of NH4 converted to NO3 via nitrification
+
+        // + Notes
+        //        This routine is much simplified from original CERES code
+        //        pH effect on nitrification is not invoked
+
         // dsg 200508  use different values for some constants when anaerobic conditions dominate
-        int index;                 // index = 1 for aerobic and 2 for anaerobic conditions
-        index = (!is_pond_active) ? 1 : 2;
+        // index = 1 for aerobic and 2 for anaerobic conditions
+        int index = (!is_pond_active) ? 1 : 2;
 
         // get the soil ph factor
         double phf = pHFNitrf(layer);
-        if (useNewProcesses)
-            phf = SoilpHFactor(layer, index, pHFactor_Nitrif);
 
         // get the soil  water factor
-        double wfd = WFNitrf(layer, index);
-        if (useNewSWFFunction)
-            wfd = SoilMoistFactor(layer, index, MoistFactor_Nitrif);
+        double swf = WFNitrf(layer, index);
 
         // get the soil temperature factor
-        double tf = TF(layer, index);
-        if (useNewSTFFunction)
-            tf = SoilTempFactor(layer, index, TempFactor_Nitrif);
+        double stf = TF(layer, index);
+
+        // get most limiting factor
+        double pni = Math.Min(Math.Min(stf, swf), phf);
+        // NOTE: factors to adjust rate of nitrification are used combined, with phf removed to match CERES v1
 
         // calculate the optimum nitrification rate (ppm)
         double nh4_ppm = _nh4[layer] * convFactor_kgha2ppm(layer);
         double opt_nitrif_rate_ppm = MathUtility.Divide(nitrification_pot * nh4_ppm, nh4_ppm + nh4_at_half_pot, 0.0);
 
-        // calculate the optimum nitrification rate (kgN/ha)
+        // convert the optimum nitrification rate (kgN/ha)
         double opt_nitrif_rate = MathUtility.Divide(opt_nitrif_rate_ppm, convFactor_kgha2ppm(layer), 0.0);
 
-        // calculate the theoretical nitrification rate (after limiting factor and inhibition)
-        double theor_nitrif_rate = opt_nitrif_rate * Math.Min(wfd, Math.Min(tf, phf)) * Math.Max(0.0, 1.0 - nitrification_inhibition[layer]);
-        // NOTE: factors to adjust rate of nitrification are used combined index, with phn removed to match CERES v1
-
-        // calculate the actual nitrification rate (make sure NH4 will not go below minimum value)
-        double actual_nitrif_rate = Math.Max(0.0, Math.Min(theor_nitrif_rate, _nh4[layer] - nh4_min[layer]));
+        // calculate the actual nitrification rate (after limiting factor and inhibition)
+        double actual_nitrif_rate = opt_nitrif_rate * pni * Math.Max(0.0, 1.0 - nitrification_inhibition[layer]);
+        // Changes by VOS 13 Dec 09, Reviewed by RCichota (9/02/2010). Adding nitrification inhibiton
 
         //dlt_nh4_dnit[layer] = actual_nitrif_rate * dnit_nitrf_loss;
         //effective_nitrification[layer] = actual_nitrif_rate - dlt_nh4_dnit[layer];
@@ -1855,7 +1999,47 @@ class soilCNPatch
         return actual_nitrif_rate;
     }
 
-    private double DenitrificationInNitrification(int layer)
+    private double Nitrification_ApsimSoilNitrogen(int layer)
+    {
+        // + Purpose
+        //      Calculate the amount of NH4 converted to NO3 via nitrification
+
+        // + Notes
+        //      This routine is much simplified from original CERES code, pH effect on nitrification is not invoked
+        //      includes nitrification inhibition
+
+        // get the index for aerobic/anaerobic conditions
+        int index = (!is_pond_active) ? 1 : 2;
+
+        // get the soil ph factor
+        double phf = pHFNitrf(layer);
+        if (useNewProcesses)
+            phf = SoilpHFactor(layer, index, pHFactor_Nitrif);
+
+        // get the soil  water factor
+        double swf = WFNitrf(layer, index);
+        if (useNewSWFFunction)
+            swf = SoilMoistFactor(layer, index, MoistFactor_Nitrif);
+
+        // get the soil temperature factor
+        double stf = TF(layer, index);
+        if (useNewSTFFunction)
+            stf = SoilTempFactor(layer, index, TempFactor_Nitrif);
+
+        // calculate the optimum nitrification rate (ppm)
+        double nh4_ppm = _nh4[layer] * convFactor_kgha2ppm(layer);
+        double opt_nitrif_rate_ppm = MathUtility.Divide(nitrification_pot * nh4_ppm, nh4_ppm + nh4_at_half_pot, 0.0);
+
+        // calculate the optimum nitrification rate (kgN/ha)
+        double opt_nitrif_rate = MathUtility.Divide(opt_nitrif_rate_ppm, convFactor_kgha2ppm(layer), 0.0);
+
+        // calculate the actual nitrification rate (after limiting factors and inhibition)
+        double actual_nitrif_rate = opt_nitrif_rate * Math.Min(swf, Math.Min(stf, phf)) * Math.Max(0.0, 1.0 - nitrification_inhibition[layer]);
+
+        return actual_nitrif_rate;
+    }
+    
+    private double N2OLostInNitrification_ApsimSoilNitrogen(int layer)
     {
         // + Purpose
         //     Calculate the amount of N2O produced during nitrification
@@ -1889,31 +2073,126 @@ class soilCNPatch
         //       Reference for Carbon availability factor: Reddy KR, Khaleel R, Overcash MR (). "Carbon transformations in land areas receiving 
         //        organic wastes in relation to nonpoint source pollution: A conceptual model".  J.Environ. Qual. 9:434-442.
 
-        // make sure no3 will not go below minimum
-        if (_no3[layer] < no3_min[layer])
-            return 0.0;
 
+        double result = 0.0;
+        if (_no3[layer] > no3_min[layer])
+        {
+            // we have nitrate, so can do some denitrification
+            if (!useNewProcesses)
+            {
+                // using old APSIM-SoilN method
+                result = Denitrification_ApsimSoilN(layer);
+            }
+            else
+            {
+                switch (DenitrificationApproach)
+                {
+                    case DenitrificationApproach.APSIMdefault:
+                        // use default soilNitrogen function
+                        result = Denitrification_ApsimSoilNitrogen(layer);
+                        break;
+                    case DenitrificationApproach.RCichota:
+                        // use RCichota function
+                        result = 0.0;
+                        break;
+                    default:
+                        throw new Exception("Method for computing denitrification is not valid");
+                }
+            }
+        }
+
+        // prevent no3 from falling below NO3_min
+        result = Math.Max(0.0, Math.Min(result, _no3[layer] - no3_min[layer]));
+
+        return result;
+    }
+
+    private double Denitrification_ApsimSoilN(int layer)
+    {
+        // + Purpose
+        //     Calculate the amount of N2O produced during denitrification
+
+        //+  Purpose
+        //     Calculate amount of NO3 transformed via denitrification.
+        //       Will happend whenever: 
+        //         - the soil water in the layer > the drained upper limit (Godwin et al., 1984),
+        //         - the NO3 nitrogen concentration > 1 mg N/kg soil,
+        //         - the soil temperature >= a minimum temperature.
+
+        // + Assumptions
+        //     That there is a root system present.  Rolston et al. say that the denitrification rate coeffficient (dnit_rate_coeff) of non-cropped
+        //       plots was 0.000168 and for cropped plots 3.6 times more (dnit_rate_coeff = 0.0006). The larger rate coefficient was required
+        //       to account for the effects of the root system in consuming oxygen and in adding soluble organic C to the soil.
+
+        //+  Notes
+        //       Reference: Rolston DE, Rao PSC, Davidson JM, Jessup RE (1984). "Simulation of denitrification losses of Nitrate fertiliser applied
+        //        to uncropped, cropped, and manure-amended field plots". Soil Science Vol 137, No 4, pp 270-278.
+        //
+        //       Reference for Carbon availability factor: Reddy KR, Khaleel R, Overcash MR (). "Carbon transformations in land areas receiving 
+        //        organic wastes in relation to nonpoint source pollution: A conceptual model".  J.Environ. Qual. 9:434-442.
+        // make sure no3 will not go below minimum
 
         // get available carbon from soil organic pools
-        double active_c = actC_parmB * (hum_c[layer] + fom_c_pool1[layer] + fom_c_pool2[layer] + fom_c_pool3[layer]) * convFactor_kgha2ppm(layer) + actC_parmA;
+        double totalC = (hum_c[layer] + fom_c[layer]) * convFactor_kgha2ppm(layer);
+        double active_c = 0.0031 * totalC + 24.5;
         // Note: CM V2 had active_c = fom_C_conc + 0.0031*hum_C_conc + 24.5
         // Note: Ceres wheat has active_c = 0.4* fom_C_pool1 + 0.0031 * 0.58 * hum_C_conc + 24.5
 
-        int index = 0; // denitrification calcs are not different whether there is pond or not. use 1 as default
         // get the soil water factor
-        double wf = WFDenit(layer);
-        if (useNewSWFFunction)
-            wf = SoilMoistFactor(layer, index, MoistFactor_Denit);
+        double swf = WFDenit(layer);
 
         // get the soil temperature factor
-        double tf = Math.Max(0.0, Math.Min(1.0, 0.1 * Math.Exp(0.046 * st[layer])));
+        double stf = Math.Max(0.0, Math.Min(1.0, 0.1 * Math.Exp(0.046 * st[layer])));
         // This is an empirical dimensionless function to account for the effect of temperature.
         // The upper limit of 1.0 means that optimum denitrification temperature is 50 oC and above.  At 0 oC it is 0.1 of optimum, and at -20 oC is about 0.04.
-        if (useNewSTFFunction)
-            tf = SoilTempFactor(layer, index, TempFactor_Denit);
 
         // calculate denitrification rate  - kg/ha
-        double result = dnit_rate_coeff * active_c * wf * tf * _no3[layer];
+        double result = dnit_rate_coeff * active_c * swf * stf * _no3[layer];
+
+        return result;
+    }
+
+    private double Denitrification_ApsimSoilNitrogen(int layer)
+    {
+        // + Purpose
+        //     Calculate the amount of N2O produced during denitrification
+
+        //+  Purpose
+        //     Calculate amount of NO3 transformed via denitrification.
+        //       Will happend whenever: 
+        //         - the soil water in the layer > the drained upper limit (Godwin et al., 1984),
+        //         - the NO3 nitrogen concentration > 1 mg N/kg soil,
+        //         - the soil temperature >= a minimum temperature.
+
+        // + Assumptions
+        //     That there is a root system present.  Rolston et al. say that the denitrification rate coeffficient (dnit_rate_coeff) of non-cropped
+        //       plots was 0.000168 and for cropped plots 3.6 times more (dnit_rate_coeff = 0.0006). The larger rate coefficient was required
+        //       to account for the effects of the root system in consuming oxygen and in adding soluble organic C to the soil.
+
+        //+  Notes
+        //       Reference: Rolston DE, Rao PSC, Davidson JM, Jessup RE (1984). "Simulation of denitrification losses of Nitrate fertiliser applied
+        //        to uncropped, cropped, and manure-amended field plots". Soil Science Vol 137, No 4, pp 270-278.
+        //
+        //       Reference for Carbon availability factor: Reddy KR, Khaleel R, Overcash MR (). "Carbon transformations in land areas receiving 
+        //        organic wastes in relation to nonpoint source pollution: A conceptual model".  J.Environ. Qual. 9:434-442.
+        // make sure no3 will not go below minimum
+
+        // get water-soluble organic carbon, readily available for soil microbes
+        double WaterSolubleCarbon = actC_parmA + actC_parmB * (hum_c[layer] + fom_c_pool1[layer] + fom_c_pool2[layer] + fom_c_pool3[layer]) * convFactor_kgha2ppm(layer);
+
+        int index = 1; // denitrification calcs are not different whether there is pond or not. use 1 as default
+        // get the soil water factor
+        double swf = WFDenit(layer);
+        if (useNewSWFFunction)
+            swf = SoilMoistFactor(layer, index, MoistFactor_Denit);
+
+        // get the soil temperature factor
+        double stf = Math.Max(0.0, Math.Min(1.0, 0.1 * Math.Exp(0.046 * st[layer])));
+        if (useNewSTFFunction)
+            stf = SoilTempFactor(layer, index, TempFactor_Denit);
+
+        // calculate denitrification rate - kg/ha
+        double result = dnit_rate_coeff * WaterSolubleCarbon * swf * stf * _no3[layer];
 
         // prevent no3 from falling below NO3_min
         result = Math.Max(0.0, Math.Min(result, _no3[layer] - no3_min[layer]));
@@ -1926,7 +2205,7 @@ class soilCNPatch
         // + Purpose
         //     Calculate the N2 to N2O ration during denitrification
 
-        int index = 0; // denitrification calcs are not different whether there is pond or not. use 1 as default
+        int index = 1; // denitrification calcs are not different whether there is pond or not. use 1 as default
 
         // the water filled pore space (%)
         double WFPS = sw_dep[layer] / sat_dep[layer] * 100.0;
@@ -2871,8 +3150,8 @@ class soilCNPatch
 
         // temporary water factor (0-1); 0 is used if unsaturated
         double wfd = 0.0;
-        if (sw_dep[layer] > dul_dep[layer] && sat_dep[layer] > dul_dep[layer])  // saturated
-            wfd = Math.Pow((sw_dep[layer] - dul_dep[layer]) / (sat_dep[layer] - dul_dep[layer]), dnit_wf_power);
+        if (sw_dep[layer] > dul_dep[layer])  // saturated
+            wfd = Math.Pow(MathUtility.Divide(sw_dep[layer] - dul_dep[layer], sat_dep[layer] - dul_dep[layer], 0.0), dnit_wf_power);
         return Math.Max(0.0, Math.Min(1.0, wfd));
     }
 
@@ -2888,19 +3167,13 @@ class soilCNPatch
         double wfd;
         if (sw_dep[layer] > dul_dep[layer])
         { // saturated
-            if (sat_dep[layer] == dul_dep[layer])
-                wfd = 1.0;
-            else
-                wfd = Math.Max(1.0, Math.Min(2.0,
-                    1.0 + (sw_dep[layer] - dul_dep[layer]) / (sat_dep[layer] - dul_dep[layer])));
+            wfd = Math.Max(1.0, Math.Min(2.0, 1.0 +
+                MathUtility.Divide(sw_dep[layer] - dul_dep[layer], sat_dep[layer] - dul_dep[layer], 0.0)));
         }
         else
         { // unsaturated
             // assumes rate of mineralisation is at optimum rate until soil moisture midway between dul and ll15
-            if (dul_dep[layer] == ll15_dep[layer])
-                wfd = 0.0;
-            else
-                wfd = Math.Max(0.0, Math.Min(1.0, (sw_dep[layer] - ll15_dep[layer]) / (dul_dep[layer] - ll15_dep[layer])));
+            wfd = Math.Max(0.0, Math.Min(1.0, MathUtility.Divide(sw_dep[layer] - ll15_dep[layer], dul_dep[layer] - ll15_dep[layer], 0.0)));
         }
 
         if (index == 1)
@@ -2928,14 +3201,9 @@ class soilCNPatch
         // alternative quadratic temperature function is preferred with optimum temperature (CM - used 32 deg)
 
         if (st[layer] > 0.0)
-        {
-            if (opt_temp[index - 1] == 0.0)
-                return 0.0;
-            else
-                return Math.Max(0.0, Math.Min(1.0, (st[layer] * st[layer]) / Math.Pow(opt_temp[index - 1], 2.0)));
-        }
-        else // soil is too cold for mineralisation
-            return 0.0;
+            return Math.Max(0.0, Math.Min(1.0, MathUtility.Divide(st[layer] * st[layer], opt_temp[index - 1] * opt_temp[index - 1], 0.0)));
+        else
+            return 0.0;     // soil is too cold for mineralisation
     }
 
     private double RothcTF(int layer, int index)
