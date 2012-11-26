@@ -314,7 +314,7 @@ extern "C" void onApsimNullEvent(const char *handler) {
      f();
    } catch (std::exception e) {
      fprintf(stderr, "Rinside exception: %s.\n", e.what());
-     std::string msg = R->parseEval("paste(geterrmessage(), traceback())");
+     std::string msg = ptrR->parseEval("paste(geterrmessage(), traceback())");
      fprintf(stderr, "%s", msg.c_str());
      apsimFatalError(msg.c_str());
    }
@@ -367,7 +367,7 @@ extern "C" void onApsim[type.name]Event(const char *handler , R[type.name]Type *
      f(args);
    } catch (std::exception e) {
      fprintf(stderr, "Rinside exception: %s.\n", e.what());
-     std::string msg = R->parseEval("paste(geterrmessage(), traceback())");
+     std::string msg = ptrR->parseEval("paste(geterrmessage(), traceback())");
      fprintf(stderr, "%s", msg.c_str());
      apsimFatalError(msg.c_str());
    }

@@ -145,7 +145,7 @@ RCPP_MODULE(apsim){
 }  
 
 ///////////////////START
-RInside *R = NULL;
+RInside *ptrR = NULL;
 // These "Embedded_xxxx" routines are called via dlsym() from the apsim component
 // Return false on error
 extern "C" bool EmbeddedR_Start(const char *R_Home, const char *UserLibs)
@@ -170,28 +170,28 @@ extern "C" bool EmbeddedR_Start(const char *R_Home, const char *UserLibs)
    // R_USER??
 
    try {
-     R = new RInside(argc, argv, true); 
+     ptrR = new RInside(argc, argv, true); 
    } catch (std::exception& ex) {
         std::cerr << "R Exception: " << ex.what() << std::endl; std::cerr.flush();
 		return false; 
    } 	 
 
    try {
-     R->parseEval("library(\"methods\")");
-     (*R)["apsim"] = LOAD_RCPP_MODULE(apsim) ;
+     ptrR->parseEval("library(\"methods\")");
+     (*ptrR)["apsim"] = LOAD_RCPP_MODULE(apsim) ;
    } catch (std::exception& ex) {
         std::cerr << "R Exception: " << ex.what() << std::endl; std::cerr.flush();
-        std::string msg = R->parseEval("geterrmessage()");
+        std::string msg = ptrR->parseEval("geterrmessage()");
         std::cerr << msg << std::endl; std::cerr.flush();
 		return false; 
    }
 
-   R->parseEval("apsimPublish<-apsim$publish");
-   R->parseEval("apsimSubscribe<-apsim$subscribe");
-   R->parseEval("apsimGet<-apsim$get");
-   R->parseEval("apsimSet<-apsim$set");
-   R->parseEval("apsimExpose<-apsim$expose");
-   R->parseEval("apsimFatal<-apsim$fatal");
+   ptrR->parseEval("apsimPublish<-apsim$publish");
+   ptrR->parseEval("apsimSubscribe<-apsim$subscribe");
+   ptrR->parseEval("apsimGet<-apsim$get");
+   ptrR->parseEval("apsimSet<-apsim$set");
+   ptrR->parseEval("apsimExpose<-apsim$expose");
+   ptrR->parseEval("apsimFatal<-apsim$fatal");
 
 #ifdef WIN32
    chdir(oldWD);
@@ -202,12 +202,12 @@ extern "C" bool EmbeddedR_Start(const char *R_Home, const char *UserLibs)
 
 extern "C" bool EmbeddedR_Stop(void)
 {
-  if (R == NULL)
+  if (ptrR == NULL)
      return false;
 
-  delete R;
+  delete ptrR;
 
-  R = NULL;
+  ptrR = NULL;
   return true;
 }
 
@@ -219,10 +219,10 @@ extern "C" bool EmbeddedR_SetComponent(void *fPtr)
 
 extern "C" bool EmbeddedR_Eval(const char *cmd)
 {
-  if (R == NULL)
+  if (ptrR == NULL)
      return false;
 
-  R->parseEval(cmd);
+  ptrR->parseEval(cmd);
   return true;
 }
 
@@ -231,11 +231,11 @@ extern "C" bool EmbeddedR_GetVector(const char *variable, char *result,
                                     unsigned int *numReturned)
 {
   *numReturned = 0;
-  if (R == NULL)
+  if (ptrR == NULL)
      return false;
   try 
     {
-    Rcpp::CharacterVector resultVec = (*R)[variable];
+    Rcpp::CharacterVector resultVec = (*ptrR)[variable];
     char *ptr = result;
     for (int i = 0; i < resultVec.size() && ptr  < result + resultlen; i++)
         {
@@ -249,7 +249,7 @@ extern "C" bool EmbeddedR_GetVector(const char *variable, char *result,
     } 
   catch(std::exception& ex) {
     std::cout << "R Exception getting " << variable << ":" << ex.what() << std::endl;
-    std::string msg = R->parseEval("geterrmessage()");
+    std::string msg = ptrR->parseEval("geterrmessage()");
     std::cout << msg << std::endl; std::cout.flush();
   }
   return false;
@@ -258,10 +258,10 @@ extern "C" bool EmbeddedR_GetVector(const char *variable, char *result,
 extern "C" bool EmbeddedR_SimpleCharEval(const char *cmd, char *buf, int buflen)
 {
   buf[0] = '\0';
-  if (R == NULL)
+  if (ptrR == NULL)
      return false;
 
-  std::string result = R->parseEval(cmd);
+  std::string result = ptrR->parseEval(cmd);
   strncpy(buf, result.c_str(), buflen);
   return true;
 }
@@ -272,16 +272,16 @@ void StopR(void) {EmbeddedR_Stop();}
 
 void REvalQ(const char *s) 
   {
-  if (R != NULL)
-     R->parseEval(s);
+  if (ptrR != NULL)
+     ptrR->parseEval(s);
   }
 
 void RGetVector(const char *variable, std::vector<std::string> &result)
   {
   result.clear();
-  if (R != NULL) 
+  if (ptrR != NULL) 
      {
-     Rcpp::CharacterVector resultVec = (*R)[variable];
+     Rcpp::CharacterVector resultVec = (*ptrR)[variable];
      for (int i = 0; i < resultVec.size(); i++)
        result.push_back(std::string(resultVec[i]));
      }
@@ -289,9 +289,9 @@ void RGetVector(const char *variable, std::vector<std::string> &result)
 
 std::string SimpleREval(const char *s)
   {
-  if (R != NULL)
+  if (ptrR != NULL)
      {
-     std::string result = R->parseEval(s);
+     std::string result = ptrR->parseEval(s);
      return result;
      }
   return "";  

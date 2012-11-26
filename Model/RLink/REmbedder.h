@@ -15,6 +15,6 @@ typedef void (*V_CHAR4_FN)(const char*, const char*, char*, void *);
 extern V_CHAR4_FN apsimCallback;
 
 class RInside;
-extern RInside *R;
+extern RInside *ptrR;
 
 #endif
