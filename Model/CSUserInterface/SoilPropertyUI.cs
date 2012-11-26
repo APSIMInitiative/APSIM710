@@ -128,7 +128,7 @@ namespace CSUserInterface
 
             foreach (PropertyInfo Property in OurObject.GetType().GetProperties())
             {
-                bool Ignore = Property.IsDefined(typeof(Model.UIIgnore), false);
+                bool Ignore = Property.IsDefined(typeof(ModelAttributes.UIIgnore), false);
                 if (!Ignore && Property.CanWrite && 
                     (Property.PropertyType.Name == "String" || 
                      Property.PropertyType.Name == "Double" ||
@@ -144,7 +144,7 @@ namespace CSUserInterface
                         DataGridViewCheckBoxCell CheckBox = new DataGridViewCheckBoxCell();
                         Grid.Rows[Row].Cells[1] = CheckBox;
                     }
-                    if (Property.IsDefined(typeof(Model.UILargeText), false))
+                    if (Property.IsDefined(typeof(ModelAttributes.UILargeText), false))
                     {
                         Grid.Rows[Row].Height = 150;
                         DataGridViewTextBoxCell DataSourceCell = Grid.Rows[Row].Cells[1] as DataGridViewTextBoxCell;
@@ -169,7 +169,7 @@ namespace CSUserInterface
             int Row = 0;
             foreach (PropertyInfo Property in OurObject.GetType().GetProperties())
             {
-                bool Ignore = Property.IsDefined(typeof(Model.UIIgnore), false);
+                bool Ignore = Property.IsDefined(typeof(ModelAttributes.UIIgnore), false);
                 if (!Ignore && Property.CanWrite &&
                     (Property.PropertyType.Name == "String" ||
                      Property.PropertyType.Name == "Double" ||

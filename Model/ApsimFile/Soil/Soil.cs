@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 using CSGeneral;
 using System.Data;
 using System.IO;
-using Model;
+using ModelAttributes;
 
 namespace ApsimFile
 {

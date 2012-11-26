@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using CSGeneral;
 using System.Xml.Serialization;
-using Model;
+using ModelAttributes;
 
 namespace ApsimFile
 {

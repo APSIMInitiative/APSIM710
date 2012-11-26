@@ -73,6 +73,21 @@
     <DebugType>none</DebugType>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
+  <Choose>
+    <When Condition="'$(OS)' != 'Windows_NT'">
+      <ItemGroup>
+        <Reference Include="Mono.Data.Sqlite" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="System.Data.SQLite, Version=1.0.73.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>..\System.Data.SQLite.dll</HintPath>
+        </Reference>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
   <ItemGroup>
     <Reference Include="CSGeneral, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null">
       <SpecificVersion>False</SpecificVersion>
@@ -83,10 +98,6 @@
     </Reference>
     <Reference Include="System.Data">
       <Name>System.Data</Name>
-    </Reference>
-    <Reference Include="System.Data.SQLite, Version=1.0.73.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing">
     </Reference>

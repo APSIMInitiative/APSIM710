@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CSGeneral;
-using Model;
+using ModelAttributes;
 
 namespace ApsimFile
 {
