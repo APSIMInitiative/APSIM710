@@ -16,7 +16,7 @@
       </Job>
       <Job name="Remove the %APPDATA%\APSIM">
          <WorkingDirectory>%APSIM%</WorkingDirectory>
-         <CommandLine>cmd.exe /c rd /S /Q "%APPDATA%\APSIM"</CommandLine>
+         <CommandLine>cmd.exe /c if exist "%APPDATA%\APSIM" rd /S /Q "%APPDATA%\APSIM"</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>      
       <Job name="Version stamp the build">
