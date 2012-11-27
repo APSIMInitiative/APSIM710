@@ -17,68 +17,68 @@ class Water : public PlantProcess
    TableFn swPhenoTable;
    TableFn swExpansionTable;
 
-   vector<float> dLayer;
-   vector<float> dulDep;
-   vector<float> satDep;
-   vector<float> bd;
-   vector<float> eswCap;           // extractable soil water capacity
-   vector<float> ll;
-   vector<float> ll15Dep;
-   vector<float> kl;
-   vector<float> xf;
-   vector<float> llDep;
+   vector<double> dLayer;
+   vector<double> dulDep;
+   vector<double> satDep;
+   vector<double> bd;
+   vector<double> eswCap;           // extractable soil water capacity
+   vector<double> ll;
+   vector<double> ll15Dep;
+   vector<double> kl;
+   vector<double> xf;
+   vector<double> llDep;
 
-   float profileDepth;
+   double profileDepth;
    int    nLayers;
 
 //  Variables  -----------------------------------------------------
 
    int   currentLayer;             // number of the layer that the roots are in now (starts at 0)
-   float lastLayerPropn;           // proportion of the currentLayer occupied
-   float totalAvail;
-   float totalAvailPot;
-   float totalSupply;
-   float AccTotalSupply;
-   float dltUptake;
-   float totalUptake;
-   float eswTot;
+   double lastLayerPropn;           // proportion of the currentLayer occupied
+   double totalAvail;
+   double totalAvailPot;
+   double totalSupply;
+   double AccTotalSupply;
+   double dltUptake;
+   double totalUptake;
+   double eswTot;
 
-   vector<float> available;
-   vector<float> availablePot;
-   vector<float> supply;
-   vector<float> swUptake;
-   vector<float> swDep;
-   vector<float> esw;              // extractable soil water  (swDep[i] - llDep[i])
-   vector<float> swDef;
-   float ep;
+   vector<double> available;
+   vector<double> availablePot;
+   vector<double> supply;
+   vector<double> swUptake;
+   vector<double> swDep;
+   vector<double> esw;              // extractable soil water  (swDep[i] - llDep[i])
+   vector<double> swDef;
+   double ep;
    // uptake
-   vector<float> dltSwDep;
+   vector<double> dltSwDep;
 
 
-   float swDemand;
-   float sdRatio;
+   double swDemand;
+   double sdRatio;
    // stresses
-   float photoStress;
-   float phenoStress;
-   float expansionStress;
+   double photoStress;
+   double phenoStress;
+   double expansionStress;
 
-   float rootDepth;
+   double rootDepth;
 
-   vector<float> photoStressTotal;
-   vector<float> phenoStressTotal;
-   vector<float> expanStressTotal;
+   vector<double> photoStressTotal;
+   vector<double> phenoStressTotal;
+   vector<double> expanStressTotal;
 
    
 // Private Methods -------------------------------------------------------
    void  doRegistrations(void);
    void  initialize(void);
    void  calcAvailable(void);
-   float layerProportion(void);
+   double layerProportion(void);
    void  calcAvailablePot(void);
    void  calcSupply(void);
-   float calcSwDefPheno(void);
-   float calcSwDefPhoto(void);
-   float calcSwDefExpansion(void);
+   double calcSwDefPheno(void);
+   double calcSwDefPhoto(void);
+   double calcSwDefExpansion(void);
 
    void   setOtherVariables (void);
 
@@ -97,25 +97,25 @@ class Water : public PlantProcess
    void  readLL(void);
    void  updateVars(void);
    void  process(void);
-   float calcDemand(void);
+   double calcDemand(void);
 
    void  onNewProfile(NewProfileType &);
 
    // Roots
-   float swAvailRatio(int currentLayer);
+   double swAvailRatio(int currentLayer);
 
    // Phenology
-   float calcPeswSeed(void);
-   float phenologyStress(void){return phenoStress;}
+   double calcPeswSeed(void);
+   double phenologyStress(void){return phenoStress;}
 
 
-   float photosynthesisStress(void){return photoStress;}
-   float getExpansionStress(void){return expansionStress;}
-   float getTotalSupply(void)const{return totalSupply;}
-   float getSdRatio(void)const{return sdRatio;}
-   float swAvailFracLayer(int layer);
-   float swDepLayer(int layer){return swDep[layer];}
-   float dltSwDepLayer(int layer){return dltSwDep[layer];}
+   double photosynthesisStress(void){return photoStress;}
+   double getExpansionStress(void){return expansionStress;}
+   double getTotalSupply(void)const{return totalSupply;}
+   double getSdRatio(void)const{return sdRatio;}
+   double swAvailFracLayer(int layer);
+   double swDepLayer(int layer){return swDep[layer];}
+   double dltSwDepLayer(int layer){return dltSwDep[layer];}
 
    //Registration functions
    void  getEswLayers(vector<float> &);
@@ -124,10 +124,10 @@ class Water : public PlantProcess
    void  getEpLayers(vector<float> &);
    void  getllDep(vector<float> &);
 
-   float getESW(void){return sumVector(esw);}
-   float getESWAvail(void)const{return totalAvail;}
-   float sumPhotoStressTotal(int from, int to);
-   float sumExpanStressTotal(int from, int to);
+   double getESW(void){return sumVector(esw);}
+   double getESWAvail(void)const{return totalAvail;}
+   double sumPhotoStressTotal(int from, int to);
+   double sumExpanStressTotal(int from, int to);
 
    // phenology
    void  phenologyEvent(int){};

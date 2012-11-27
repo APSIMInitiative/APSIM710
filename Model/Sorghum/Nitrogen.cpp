@@ -13,6 +13,9 @@ using namespace Sorghum;
 Nitrogen::Nitrogen(ScienceAPI2 &api, Plant *p) : PlantProcess(api)
    {
    plant = p;
+	//soil is updated once, initialize can be called more often
+	nLayers = 0;
+	profileDepth = 0.0;
 
    initialize();
    doRegistrations();
@@ -86,7 +89,11 @@ void Nitrogen::initialize(void)
    nSenesced.assign    (nParts,0.0);
    dltNDetached.assign (nParts,0.0);
    photoStressTotal.assign(nStages+1,0.0);
-
+	
+   if(nLayers > 0  && nLayers < 100)
+   {
+     no3.assign(nLayers, 0.0);
+   }
 
    massFlowSupply.clear();
    diffusionSupply.clear();
@@ -94,6 +101,9 @@ void Nitrogen::initialize(void)
    dltNo3.clear();
 
    rootDepth = 0.0;
+	sumDiffSupply = 0.0;
+	totalDemand = 0.0;
+	supplyDemandRatio = 0.0;
    }
 //------------------------------------------------------------------------------------------------
 //----------- read Nitrogen parameters
@@ -110,7 +120,7 @@ void Nitrogen::readParams (void)
 //------------------------------------------------------------------------------------------------
 void Nitrogen::getOtherVariables (void)
    {
-   std::vector<float> values;
+   std::vector<double> values;
 
    if (!scienceAPI.get("no3", "kg/ha", true, values, 0.0, 10000.0))
       {
@@ -141,7 +151,7 @@ void Nitrogen::getOtherVariables (void)
 //------------------------------------------------------------------------------------------------
 void Nitrogen::setOtherVariables (void)
    {
-   std::vector<float> dltNo3Values;
+   std::vector<double> dltNo3Values;
    for(int i=0;i < nLayers;i++)dltNo3Values.push_back(0.0);
 
    for(unsigned i=0;i < dltNo3.size();i++)
@@ -155,7 +165,7 @@ void Nitrogen::setOtherVariables (void)
 //------------------------------------------------------------------------------------------------
 void Nitrogen::onNewProfile(NewProfileType &v /* message */)
    {
-   dLayer = v.dlayer;
+   FVecToDVec(&dLayer, v.dlayer);
 
    // dlayer may be changed from its last setting due to erosion
    profileDepth = sumVector(dLayer);      // depth of soil profile (mm)
@@ -182,7 +192,7 @@ void Nitrogen::process(void)
 void Nitrogen::updateVars(void)
    {
    // calc stress factors
-   float SLN = plant->leaf->getSLN();
+   double SLN = plant->leaf->getSLN();
 
    phenoStress = (1.0/0.7) * SLN * 1.25 - (3.0/7.0);
    phenoStress = bound(phenoStress,0.0,1.0);
@@ -254,8 +264,8 @@ void Nitrogen::calcMassFlow(void)
    massFlowSupply.clear();
    for(int layer = 0;layer <= currentLayer;layer++)
       {
-      float no3ConcLayer = divide(no3[layer],plant->water->swDepLayer(layer));
-      float no3MassFlow = no3ConcLayer * (-plant->water->dltSwDepLayer(layer));
+      double no3ConcLayer = divide(no3[layer],plant->water->swDepLayer(layer));
+      double no3MassFlow = no3ConcLayer * (-plant->water->dltSwDepLayer(layer));
       massFlowSupply.push_back(Min(no3MassFlow,no3[layer] - no3Min[layer]));
       }
    }
@@ -268,8 +278,8 @@ void Nitrogen::calcDiffusion(void)
    for(int layer = 0;layer <= currentLayer;layer++)
       {
       // restricts NO3 available for diffusion to NO3 in plant available water range
-      float swAvailFrac = plant->water->swAvailFracLayer(layer);
-      float no3Diffn = bound(swAvailFrac,0,1.0) * no3[layer];
+      double swAvailFrac = plant->water->swAvailFracLayer(layer);
+      double no3Diffn = bound(swAvailFrac,0,1.0) * no3[layer];
       diffusionSupply.push_back(Min(no3Diffn,no3[layer] - no3Min[layer]));
       }
    diffusionSupply[currentLayer] *= layerProportion();
@@ -302,12 +312,12 @@ void Nitrogen::demand(void)
 void Nitrogen::uptake(void)
    {
    // no3 (g/m2) available from diffusion
-   vector<float> diffnAvailable;
+   vector<double> diffnAvailable;
    for(int layer = 0;layer <= currentLayer;layer++)
       diffnAvailable.push_back(Max(diffusionSupply[layer] - massFlowSupply[layer],0.0));
-   float totalMassFlowSupply = sumVector(massFlowSupply);
-   float totalDiffusionSupply = sumVector(diffnAvailable);
-   float potentialSupply = totalMassFlowSupply + totalDiffusionSupply;
+   double totalMassFlowSupply = sumVector(massFlowSupply);
+   double totalDiffusionSupply = sumVector(diffnAvailable);
+   double potentialSupply = totalMassFlowSupply + totalDiffusionSupply;
 
    // get actual total nitrogen uptake for diffusion and mass flow.
    // If demand is not satisfied by mass flow, then use diffusion.
@@ -334,29 +344,29 @@ void Nitrogen::uptake(void)
       // reduce maxUptakeRate by total / 100kgha-1
 
 //      nSupplyFrac (5) to limit n uptake
-      float maxUptakeRateFrac = Min(1.0,potentialSupply / nSupplyFrac) * maxUptakeRate;
+      double maxUptakeRateFrac = Min(1.0,potentialSupply / nSupplyFrac) * maxUptakeRate;
 
       actualDiffusion = Min(actualDiffusion,
             maxUptakeRateFrac * plant->phenology->getDltTT() - actualMassFlow);
       }
 
-   vector<float> mff,df;
+   vector<double> mff,df;
    //get actual change in N contents
    dltNo3.clear();
 
    for(int layer = 0;layer <= currentLayer;layer++)
       {
-      float massFlowFraction = divide(massFlowSupply[layer],totalMassFlowSupply);
+      double massFlowFraction = divide(massFlowSupply[layer],totalMassFlowSupply);
       mff.push_back(massFlowFraction);
-      float diffusionFraction = divide(diffnAvailable[layer],totalDiffusionSupply);
+      double diffusionFraction = divide(diffnAvailable[layer],totalDiffusionSupply);
       df.push_back(diffusionFraction);
-      float layerUptake = actualMassFlow * massFlowFraction +
+      double layerUptake = actualMassFlow * massFlowFraction +
                              actualDiffusion  * diffusionFraction;
       dltNo3.push_back(-layerUptake);
       }
 
    supplyDemandRatio = 0.0;
-//   float totalUptake = sumVector(dltNo3);
+//   double totalUptake = sumVector(dltNo3);
    nSupply = actualMassFlow + actualDiffusion;
 
    if(plantNDemand > 0.0)
@@ -368,9 +378,9 @@ void Nitrogen::uptake(void)
 //     allocate N to each plant part
 void Nitrogen::partition(void)
    {
-   float nAvailable = nSupply;
+   double nAvailable = nSupply;
    // 1. allocate to roots in proportion to demand
-   float nRequired = supplyDemandRatio * plant->roots->calcNDemand();
+   double nRequired = supplyDemandRatio * plant->roots->calcNDemand();
    plant->roots->partitionN(nRequired);
    nAvailable -= nRequired;
 
@@ -425,7 +435,7 @@ void Nitrogen::partition(void)
          nRequired -= nAvailable;
          nAvailable =0.0;
          /* get from stem and canopy to provide new LAI deficit */
-         float transN = plant->stem->provideN(nRequired);
+         double transN = plant->stem->provideN(nRequired);
          plant->leaf->partitionN(transN);
          nRequired -= transN;
          if(nRequired > 0)
@@ -437,15 +447,15 @@ void Nitrogen::partition(void)
       }
 
    // 4. Allocate to leaf and stem_rachis in proportion to demand
-   float leafDemand = plant->leaf->calcNDemand();
-   float stemDemand = plant->stem->calcNDemand();
-   float rachisDemand = plant->rachis->calcNDemand();
-   float totalDemand = leafDemand + stemDemand + rachisDemand;
+   double leafDemand = plant->leaf->calcNDemand();
+   double stemDemand = plant->stem->calcNDemand();
+   double rachisDemand = plant->rachis->calcNDemand();
+   double totalDemand = leafDemand + stemDemand + rachisDemand;
 
-   float toLeaf = Min(1.0,divide(leafDemand,totalDemand) * nAvailable);
+   double toLeaf = Min(1.0,divide(leafDemand,totalDemand) * nAvailable);
    plant->leaf->partitionN(toLeaf);
 
-   float toRachis = Min(1.0,divide(rachisDemand,totalDemand) * nAvailable);
+   double toRachis = Min(1.0,divide(rachisDemand,totalDemand) * nAvailable);
    plant->rachis->partitionN(toRachis);
 
    // rest to stem
@@ -455,7 +465,7 @@ void Nitrogen::partition(void)
    // get the grain N demand
    // translocate from Stem, rachis and leaf to meet demand
    nRequired = plant->grain->calcNDemand();
-   float nRachis,nStem,nLeaf;
+   double nRachis,nStem,nLeaf;
    if(nRequired > 0)
       {
       nRachis = plant->rachis->provideN(nRequired);
@@ -477,7 +487,7 @@ void Nitrogen::partition(void)
 //------------------------------------------------------------------------------------------------
 //------- Calculate plant Nitrogen detachment from senesced and dead pools
 //------------------------------------------------------------------------------------------------
-void Nitrogen::detachment(vector<float> senDetachFrac)
+void Nitrogen::detachment(vector<double> senDetachFrac)
    {
    for(unsigned i = 0; i < plant->PlantParts.size(); i++)
       {
@@ -485,33 +495,33 @@ void Nitrogen::detachment(vector<float> senDetachFrac)
       }
    }
 //------------------------------------------------------------------------------------------------
-float Nitrogen::layerProportion(void)
+double Nitrogen::layerProportion(void)
    {
    // calculates the proportion of the current root layer that is populated by roots
-   float layerTop    = sumVector(dLayer, currentLayer);
-   float layerBottom = sumVector(dLayer, currentLayer+1);
+   double layerTop    = sumVector(dLayer, currentLayer);
+   double layerBottom = sumVector(dLayer, currentLayer+1);
 
    return Min(divide(rootDepth - layerTop,layerBottom - layerTop),1.0);
    }
 //------------------------------------------------------------------------------------------------
 void Nitrogen::getNGreen(float &result)
    {
-   result = sumVector(nGreen);
+   result = (float)sumVector(nGreen);
    }
 //------------------------------------------------------------------------------------------------
 void Nitrogen::getDltNGreen(vector<float> &result)
    {
-   result = dltNGreen;
+   DVecToFVec(result, dltNGreen);
    }
 //------------------------------------------------------------------------------------------------
 void Nitrogen::getDltNRetrans(vector<float> &result)
    {
-   result = dltNRetrans;
+   DVecToFVec(result, dltNRetrans);
    }
 //------------------------------------------------------------------------------------------------
 void Nitrogen::getNSenesced(float &result)
    {
-   result = sumVector(nSenesced);
+   result = (float)sumVector(nSenesced);
    }
 //------------------------------------------------------------------------------------------------
 void Nitrogen::Summary(void)
@@ -525,7 +535,7 @@ void Nitrogen::Summary(void)
             sumVector(nGreen) * 10.0 - plant->grain->getNGreen() * 10.0); scienceAPI.write(msg);
    }
 //------------------------------------------------------------------------------------------------
-float Nitrogen::sumPhotoStressTotal(int from, int to)
+double Nitrogen::sumPhotoStressTotal(int from, int to)
    {
    return sumVector(photoStressTotal,from,to);
    }

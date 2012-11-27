@@ -13,43 +13,43 @@ class Grain : public PlantPart
    private:
 
 // Parameters ----------------------------------------------------------
-   float dmPerSeed;
-   float waterContent;
+   double dmPerSeed;
+   double maxGFRate;             // maximum grain filling rate in g/grain/oCd
+   double waterContent;
 
    // nitrogen
-   float grainFillRate;
-   float targetNConc;
+   double grainFillRate;
+   double targetNConc;
 
    // heat effects on grain number
-   vector<float> grainTempWindow;
-   vector<float> grainTempOrdinals;
+   vector<double> grainTempWindow;
+   vector<double> grainTempOrdinals;
    TableFn grainTempTable;
-   float tempFactor;
 
 
 // Variables ----------------------------------------------------------
 
-   float totDMGreenFI;          // total plant dm at FI
-   float grainNo;
-   float finalGrainNo;
-   float grainSize;
-   float yield;
-   float potGFRate;             // potential grain filling rate in g/grain/oCd
-   float maxGFRate;             // maximum grain filling rate in g/grain/oCd
+   double totDMGreenFI;          // total plant dm at FI
+   double grainNo;
+   double finalGrainNo;
+   double grainSize;
+   double yield;
+   double potGFRate;             // potential grain filling rate in g/grain/oCd
 
+   double dltDMStressMax;
+   double dltDMGrainDemand;
 
-   float dltDMStressMax;
-   float dltDMGrainDemand;
+	double tempFactor;
 
 // Private Methods -------------------------------------------------------
    void  doRegistrations(void);
    void  initialize(void);
-   float calcGrainNumber(void);
-   float yieldPartDemandStress(void);
-   float calcDMGrainSourceSink(void);
+   double calcGrainNumber(void);
+   double yieldPartDemandStress(void);
+   double calcDMGrainSourceSink(void);
    void  calcDemandStress(void);
    void  calcBiomassDemand(void);
-   float  calcTempFactor(void);              // high temp stress on grain number
+   double  calcTempFactor(void);              // high temp stress on grain number
 
 // public Methods -------------------------------------------------------
    public:
@@ -62,22 +62,22 @@ class Grain : public PlantPart
    void  process(void);
 
    // nitrogen
-   float calcNDemand(void);
-   void  RetranslocateN(float N);
+   double calcNDemand(void);
+   void  RetranslocateN(double N);
 
    // biomass
-   float partitionDM(float dltDM);
-   float grainDMDifferential(void);
-   void  dmRetrans(float dltDm){dmRetranslocate = dltDm;}
+   double partitionDM(double dltDM);
+   double grainDMDifferential(void);
+   void  dmRetrans(double dltDm){dmRetranslocate = dltDm;}
    void  Harvest(void);
 
    // nitrogen
-   float getNConc(void)const{return nConc;}
+   double getNConc(void)const{return nConc;}
 
    // phosphorus
-   float calcPDemand(void);
-   float calcPRetransDemand(void);
-   float getPConc(void)const{return pConc;}
+   double calcPDemand(void);
+   double calcPRetransDemand(void);
+   double getPConc(void)const{return pConc;}
 
    // phenology
    void  phenologyEvent(int);

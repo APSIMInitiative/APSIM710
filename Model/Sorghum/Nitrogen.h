@@ -14,60 +14,60 @@ class Nitrogen : public PlantProcess
 
 // Parameters ----------------------------------------------------------
 
-   float diffnConstant;
+   double diffnConstant;
    int   nLayers;
-   vector<float> dLayer;
+   vector<double> dLayer;
+
+	// uptake
+   double maxUptakeRate;
+   double nUptakeCease;        // tt after flowering when uptake ceases
+   double nSupplyFrac;
 
 //  Variables  ---------------------------------------------------------
-   float profileDepth;
+   double profileDepth;
 
    // stress
-   float phenoStress;
-   float expansionStress;
-   float photoStress;
-   vector<float> photoStressTotal;
+   double phenoStress;
+   double expansionStress;
+   double photoStress;
+   vector<double> photoStressTotal;
 
-   float nBiomass;
-   float nStover;
-   float nGreenBiomass;
-   float nUptakeTotal;
-   float nPlant;
-
-   // uptake
-   float maxUptakeRate;
-   float nUptakeCease;        // tt after flowering when uptake ceases
-   float nSupplyFrac;
+   double nBiomass;
+   double nStover;
+   double nGreenBiomass;
+   double nUptakeTotal;
+   double nPlant;
 
    // supply
-   vector<float> massFlowSupply;
-   vector<float> diffusionSupply;
-   vector<float> fixationSupply;
+   vector<double> massFlowSupply;
+   vector<double> diffusionSupply;
+   vector<double> fixationSupply;
 
-   vector<float> nGreen;
-   vector<float> dltNGreen;
-   vector<float> dltNRetrans;
-   vector<float> nSenesced;
-   vector<float> dltNDetached;
+   vector<double> nGreen;
+   vector<double> dltNGreen;
+   vector<double> dltNRetrans;
+   vector<double> nSenesced;
+   vector<double> dltNDetached;
 
-   float sumDiffSupply;            // debug
+   double sumDiffSupply;            // debug
 
 
-   float actualMassFlow;
-   float actualDiffusion;
-   float actualTotal;
-   float plantNDemand;    // plant demand - grain demand
+   double actualMassFlow;
+   double actualDiffusion;
+   double actualTotal;
+   double plantNDemand;    // plant demand - grain demand
 
    // demand
-   float totalDemand;
-   float supplyDemandRatio;
-   float nSupply;
+   double totalDemand;
+   double supplyDemandRatio;
+   double nSupply;
 
-   vector<float> no3;
-   vector<float> no3Min;
-   vector<float> dltNo3;
+   vector<double> no3;
+   vector<double> no3Min;
+   vector<double> dltNo3;
 
    int   currentLayer;                   // number of the layer that the roots are in now (starts at 0)
-   float rootDepth;
+   double rootDepth;
 
 
 // Private Methods -------------------------------------------------------
@@ -78,7 +78,7 @@ class Nitrogen : public PlantProcess
    void  calcFixation(void);
 
    void  setOtherVariables (void);
-   float layerProportion(void);
+   double layerProportion(void);
 
    void  getOtherVariables (void);
    // plant
@@ -100,21 +100,21 @@ class Nitrogen : public PlantProcess
    void  onNewProfile(NewProfileType &);
 
    // Leaf
-   float getExpansionStress(void){return expansionStress;}
-   float getPhotoStress(void){return photoStress;}
+   double getExpansionStress(void){return expansionStress;}
+   double getPhotoStress(void){return photoStress;}
 
-   float sumPhotoStressTotal(int from, int to);
+   double sumPhotoStressTotal(int from, int to);
 
    // phenology
-   float getPhenoStress(void){return phenoStress;}
-   void  detachment(vector<float> senDetachFrac);
+   double getPhenoStress(void){return phenoStress;}
+   void  detachment(vector<double> senDetachFrac);
 
    void  getNGreen(float &);
    void  getDltNGreen(vector<float> &);
    void  getDltNRetrans(vector<float> &);
    void  getNSenesced(float &);
 
-   float getNStover(void){return nStover;}
+   double getNStover(void){return nStover;}
    void  Summary(void);
 
    // phenology

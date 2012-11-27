@@ -21,35 +21,35 @@ class Phenology : public PlantProcess
 // Parameters ----------------------------------------------------------
 
    vector<string> stageNames;
-   vector<float> ttTarget;       // phenology targets for each stage
+   vector<double> ttTarget;       // phenology targets for each stage
 
    // first cut at phenology -    sowing is sowing to germination
 
-   float ttEndJuvInit;
-   float ttFlowerMaturity;
-   float peswGerm;
+   double ttEndJuvInit;
+   double ttFlowerMaturity;
+   double peswGerm;
 
    TableFn photoParams;
    TableFn ttParams;
    TableFn ttFmParams;
 
-   float latitude;
-   float twilight;
-   float stageCode;
+   double latitude;
+   double twilight;
+   double stageCode;
 
 //  Variables  ---------------------------------------------------------
    string stageName;
 
-   vector<float> ttTotal;
-   vector<float> ttTotalFM;
-   vector<float> daysTotal;
+   vector<double> ttTotal;
+   vector<double> ttTotalFM;
+   vector<double> daysTotal;
 
-   float dltPhase;
-   float dltStage;
-   float stage;
-   float dltTT;
-   float dltTTFM;
-   float ttCurrStage;
+   double dltPhase;
+   double dltStage;
+   double stage;
+   double dltTT;
+   double dltTTFM;
+   double ttCurrStage;
 
    int   floweringDAS;
    int   floweringDOY;
@@ -65,12 +65,12 @@ class Phenology : public PlantProcess
    void  calcPhaseDevelopment(void);
    void  calcDevelopment(void);
 
-   float calcStressesTT(void);
-   float germinationPhase (void);
-   float phaseFraction(float stage, vector<float> ttTotal,float dltTT,vector<float> stageTT);
-   float calcDailyTT(Today *today);
-   float calcDailyTTFM(Today *today);
-   float temp3Hr (float tMax, float tMin, float period);
+   double calcStressesTT(void);
+   double germinationPhase (void);
+   double phaseFraction(double stage, vector<double> ttTotal,double dltTT,vector<double> stageTT);
+   double calcDailyTT(Today *today);
+   double calcDailyTTFM(Today *today);
+   double temp3Hr (double tMax, double tMin, double period);
 
 // public Methods -------------------------------------------------------
    public:
@@ -81,17 +81,17 @@ class Phenology : public PlantProcess
    void  updateVars(void);
    virtual void   development(void);
 
-   void  setStage(float stageNow);
-   float currentStage(void) {return stage;}
+   void  setStage(double stageNow);
+   double currentStage(void) {return stage;}
 
-   float sumTTtarget (int from, int to);
-   float sumTTtotal  (int from, int to);
-   float sumTTtotalFM(int from, int to);
-   float sumDaysTotal(int from, int to);
+   double sumTTtarget (int from, int to);
+   double sumTTtotal  (int from, int to);
+   double sumTTtotalFM(int from, int to);
+   double sumDaysTotal(int from, int to);
 
-   float getDltTTFM(void)const{return dltTTFM;}
-   float getDltTT(void)const{return dltTT;}
-   float getDltStage(void)const{return dltStage;}
+   double getDltTTFM(void)const{return dltTTFM;}
+   double getDltTT(void)const{return dltTT;}
+   double getDltStage(void)const{return dltStage;}
 
    void  getTTTot(vector<float>&);
    void  getPhaseTT(vector<float>&);

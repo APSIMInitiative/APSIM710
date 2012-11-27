@@ -11,35 +11,35 @@ namespace Sorghum {
 class Biomass : public PlantProcess
    {
    private:
-   float effectiveRue;
+   double effectiveRue;
 
 
    public:
 // Parameters ----------------------------------------------------------
-   vector<float> ratioRootShoot;
-   float stem2FlowerFrac;
+   vector<double> ratioRootShoot;
+   double stem2FlowerFrac;
 
 //  Variables  ---------------------------------------------------------
-   float aboveGroundBiomass;
-   float aboveGroundGreenBiomass;
-   float totalBiomass;
-   float greenBiomass;
-   float hi;
-   float dltDMPotTE;
-   float dltDMPotRUE;
-   float dltDM;
-   float stage;
+   double aboveGroundBiomass;
+   double aboveGroundGreenBiomass;
+   double totalBiomass;
+   double greenBiomass;
+   double hi;
+   double dltDMPotTE;
+   double dltDMPotRUE;
+   double dltDM;
+   double stage;
 
-   vector<float> greenDM;
-   vector<float> senescedDM;
-   vector<float> dltDMGreen;
-   vector<float> dltDMDetachedSen;
-   vector<float> dltDMRetranslocate;
+   vector<double> greenDM;
+   vector<double> senescedDM;
+   vector<double> dltDMGreen;
+   vector<double> dltDMDetachedSen;
+   vector<double> dltDMRetranslocate;
 
 // Private Methods -------------------------------------------------------
    void  doRegistrations(void);
    void  initialize(void);
-   float calcDltDMPotTE(void);
+   double calcDltDMPotTE(void);
    void  calcBiomassPartitioning(void);
    void  calcBiomassRetranslocation(void);
 
@@ -59,17 +59,17 @@ class Biomass : public PlantProcess
    void  readParams (void);
    void  updateVars(void);
    void  process(void);
-   void  calcBiomassRUE(float rue, float radnIntercepted);
-   float getDltDMPotRUE(void)const{return dltDMPotRUE;}
-   float getDltDMPotTE(void)const{return dltDMPotTE;}
-   float getEffectiveRue(void)const{return effectiveRue;}
+   void  calcBiomassRUE(double rue, double radnIntercepted);
+   double getDltDMPotRUE(void)const{return dltDMPotRUE;}
+   double getDltDMPotTE(void)const{return dltDMPotTE;}
+   double getEffectiveRue(void)const{return effectiveRue;}
 
    // grain
-   float getTotalBiomass(void)const{return totalBiomass;}
-   float getAboveGroundBiomass(void)const{return aboveGroundBiomass;}
-   float getDltDM(void)const{return dltDM;}
+   double getTotalBiomass(void)const{return totalBiomass;}
+   double getAboveGroundBiomass(void)const{return aboveGroundBiomass;}
+   double getDltDM(void)const{return dltDM;}
 
-   void  detachment(vector<float> senDetachFrac);
+   void  detachment(vector<double> senDetachFrac);
    void  incorporateResidue(void);
 
    void  getDMGreen(float &);

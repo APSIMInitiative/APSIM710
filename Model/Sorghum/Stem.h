@@ -13,28 +13,28 @@ class Stem : public PlantPart
 
 // Parameters ----------------------------------------------------------
 
-   float initialDM;
+   double initialDM;
    TableFn heightFn;
-   float translocFrac;
+   double translocFrac;
    // nitrogen
-   float initialNConc;
+   double initialNConc;
    TableFn targetNFn;
    TableFn structNFn;
-   float dilnNSlope;
-   float dilnNInt;
-   float retransRate;           // rate that stem biomass can be retranslocated to grain
+   double dilnNSlope;
+   double dilnNInt;
+   double retransRate;           // rate that stem biomass can be retranslocated to grain
 
 //  Variables  -----------------------------------------------------
 
-   float density;
-   float canopyHeight;
-   float dltCanopyHeight;
+   double density;
+   double canopyHeight;
+   double dltCanopyHeight;
 
    // biomass
-   float dmGreenStem;           // stem dry weight / plant
+   double dmGreenStem;           // stem dry weight / plant
 
    // nitrogen
-   float dltNConc;
+   double dltNConc;
 
 // Private Methods -------------------------------------------------------
    void  doRegistrations(void);
@@ -50,20 +50,20 @@ class Stem : public PlantPart
    void  readParams (void);
    void  updateVars(void);
    void  process(void);
-   float getCanopyHeight(void)const{return canopyHeight;}
+   double getCanopyHeight(void)const{return canopyHeight;}
 
    // nitrogen
-   float calcNDemand(void);
-   float calcStructNDemand(void);
-   float provideN(float requiredN);
+   double calcNDemand(void);
+   double calcStructNDemand(void);
+   double provideN(double requiredN);
 
    // phosphorus
-   float calcPDemand(void);
+   double calcPDemand(void);
 
    // biomass
-   void  partitionDM(float dltDM){dltDmGreen = dltDM;}
-   float dmRetransAvailable(void);
-   void  dmRetrans(float dltDm){dmRetranslocate = dltDm;}
+   void  partitionDM(double dltDM){dltDmGreen = dltDM;}
+   double dmRetransAvailable(void);
+   void  dmRetrans(double dltDm){dmRetranslocate = dltDm;}
 
    // phenology
    void  phenologyEvent(int);

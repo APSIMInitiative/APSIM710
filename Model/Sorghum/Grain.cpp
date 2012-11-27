@@ -52,6 +52,9 @@ void Grain::initialize(void)
    dltDMGrainDemand = 0.0;
    yield = 0.0;
    tempFactor = 1.0;
+	totDMGreenFI = 0.0;
+   potGFRate = 0.0;
+   dltDMStressMax = 0.0;
 
    PlantPart::initialize();
    }
@@ -77,7 +80,7 @@ void Grain::readParams (void)
    // heat effects on grain number
    scienceAPI.read("GrainTempWindow","", 0, grainTempWindow);
    scienceAPI.read("GrainTempOrdinals","", 0, grainTempOrdinals);
-   vector<float> y;y.push_back(0.0);y.push_back(1.0);
+   vector<double> y;y.push_back(0.0);y.push_back(1.0);
    grainTempTable.load(grainTempOrdinals,y);
 
 
@@ -102,7 +105,7 @@ void Grain::updateVars(void)
    stage = plant->phenology->currentStage();
 
    // Ramp grain number from 0 at StartGrainFill to finalGrainNo at SGF + 100dd
-   float gfTTNow = plant->phenology->sumTTtotalFM(startGrainFill,maturity);
+   double gfTTNow = plant->phenology->sumTTtotalFM(startGrainFill,maturity);
    grainNo = Min((gfTTNow/100.0 *  finalGrainNo),finalGrainNo) * tempFactor;
 
    yield = dmGreen * 10.0;                   // yield in kg/ha for reporting
@@ -144,7 +147,7 @@ void Grain::process(void)
       }
    }
 //------------------------------------------------------------------------------------------------
-float Grain::calcTempFactor(void)
+double Grain::calcTempFactor(void)
    {
    // calculate a daily contribution to stress on grain number
    // if we are within the grain stress window (grainTempWindow)calculate stress factor
@@ -155,22 +158,22 @@ float Grain::calcTempFactor(void)
 
    // then see if we are in the pre flag or post-flag window window
    // if not return 0                                      (grainTempWindow[0] is -ve)
-   float targetTT = plant->phenology->sumTTtarget (fi, flag) + grainTempWindow[0];
-   float eTT = plant->phenology->sumTTtotal (fi, flag);
+   double targetTT = plant->phenology->sumTTtarget (fi, flag) + grainTempWindow[0];
+   double eTT = plant->phenology->sumTTtotal (fi, flag);
    if(eTT < targetTT)return 0.0;
    // see if in the post flag window
-   float eTTpostFlag = plant->phenology->sumTTtotal (flag, flowering);
+   double eTTpostFlag = plant->phenology->sumTTtotal (flag, flowering);
    if(eTTpostFlag > grainTempWindow[1]) return 0.0;
 
-   float dltTT = plant->phenology->getDltTT();
-   float ttContrib;
+   double dltTT = plant->phenology->getDltTT();
+   double ttContrib;
    // check  window
    if(eTTpostFlag > 0.0)  // post flag
       ttContrib = Min(grainTempWindow[1] - eTTpostFlag, dltTT);      // allow for overlap
    else                   // pre flag
       ttContrib = Min(eTT - targetTT, dltTT);      // allow for overlap
 
-   float dayFract = ttContrib / (-grainTempWindow[0] + grainTempWindow[1]);
+   double dayFract = ttContrib / (-grainTempWindow[0] + grainTempWindow[1]);
    return dayFract * grainTempTable.value(plant->today.maxT);
    }
 //------------------------------------------------------------------------------------------------
@@ -195,7 +198,7 @@ void Grain::calcBiomassDemand(void)
 //     GRAIN demand to keep grain N filling rate at 0.001mg/grain/dd up to halfway
 //       between sgf and maturity where dd is degree days from start_grain_fill
 //       then target [N] (1.75%)
-float Grain::calcNDemand(void)
+double Grain::calcNDemand(void)
    {
    nDemand = 0.0;
    // if not in grain fill, no demand
@@ -206,7 +209,7 @@ float Grain::calcNDemand(void)
    // filling rate per grain per oCd
    // rest on target N concentration
 
-   float gfFract = divide(plant->phenology->sumTTtotal(startGrainFill, maturity),
+   double gfFract = divide(plant->phenology->sumTTtotal(startGrainFill, maturity),
                         plant->phenology->sumTTtarget(startGrainFill, maturity));
 
    if(gfFract < 0.5)
@@ -218,62 +221,62 @@ float Grain::calcNDemand(void)
    return nDemand;
    }
 //------------------------------------------------------------------------------------------------
-float Grain::calcGrainNumber(void)
+double Grain::calcGrainNumber(void)
    {
    // increase in plant biomass between fi and start grain fill
-   float dltDMPlant = plant->biomass->getTotalBiomass()  - totDMGreenFI;
+   double dltDMPlant = plant->biomass->getTotalBiomass()  - totDMGreenFI;
 
    // growth rate per day
-   float nDays = plant->phenology->sumDaysTotal(fi,startGrainFill);
-   float growthRate = divide(dltDMPlant,nDays);
+   double nDays = plant->phenology->sumDaysTotal(fi,startGrainFill);
+   double growthRate = divide(dltDMPlant,nDays);
    return divide(growthRate, dmPerSeed);
    }
 //------------------------------------------------------------------------------------------------
 // Calculate the stress factor for diminishing potential harvest index
-float Grain::yieldPartDemandStress(void)
+double Grain::yieldPartDemandStress(void)
    {
-   float rueReduction = Min(Min(plant->getTempStress(),plant->nitrogen->getPhotoStress()),plant->phosphorus->getPhotoStress());
+   double rueReduction = Min(Min(plant->getTempStress(),plant->nitrogen->getPhotoStress()),plant->phosphorus->getPhotoStress());
    return plant->water->photosynthesisStress() * rueReduction;
    }
 //------------------------------------------------------------------------------------------------
 // calculate daily grain dm demand using source / sink approach
-float Grain::calcDMGrainSourceSink(void)
+double Grain::calcDMGrainSourceSink(void)
    {
 
-   float totDMCaryopsis = divide(plant->biomass->getDltDM() , grainNo);
+   double totDMCaryopsis = divide(plant->biomass->getDltDM() , grainNo);
    totDMCaryopsis = divide(totDMCaryopsis, plant->phenology->getDltTTFM());
    potGFRate = (0.0000319 + 0.4026 * totDMCaryopsis) * 1000;     // in mg/grain/oCd
    potGFRate = Min(potGFRate, maxGFRate);
    return potGFRate * plant->phenology->getDltTTFM() * grainNo / 1000;   // in g/m2
    }
 //------------------------------------------------------------------------------------------------
-void Grain::RetranslocateN(float N)
+void Grain::RetranslocateN(double N)
    {
    dltNRetranslocate += N;
    }
 //------------------------------------------------------------------------------------------------
-float Grain::partitionDM(float dltDM)
+double Grain::partitionDM(double dltDM)
    {
    dltDmGreen = Min(dltDMGrainDemand, dltDM);
    return Max(dltDmGreen,0.0);
    }
 //------------------------------------------------------------------------------------------------
-float Grain::grainDMDifferential(void)
+double Grain::grainDMDifferential(void)
    {
    return dltDMGrainDemand - dltDmGreen;
    }
 //------------------------------------------------------------------------------------------------
-float Grain::calcPDemand(void)
+double Grain::calcPDemand(void)
    {
    // Grain P demand   (demand from soil)
    pDemand = 0.0;
    return pDemand;
    }
 //------------------------------------------------------------------------------------------------
-float Grain::calcPRetransDemand(void)
+double Grain::calcPRetransDemand(void)
    {
    // Grain P demand
-   float maxP = pConcMax() * dmGreen;
+   double maxP = pConcMax() * dmGreen;
    return Max(maxP - pGreen,0.0);
    }
 //------------------------------------------------------------------------------------------------
@@ -304,7 +307,7 @@ void  Grain::Harvest(void)
       vector<float> dlt_dm_n;                      // N content of changed dry matter (kg/ha)
       vector<float> dlt_dm_p;                      // P content of changed dry matter (kg/ha)
 
-      float fracts[] = {0.0, 0.0, 0.0, 0.0, 0.0};  // No root or grain to residue.
+      double fracts[] = {0.0, 0.0, 0.0, 0.0, 0.0};  // No root or grain to residue.
 
       for (unsigned part = 0; part < plant->PlantParts.size(); part++)
          {
@@ -317,15 +320,15 @@ void  Grain::Harvest(void)
             }
          else
             {
-            dlt_dm_crop.push_back((plant->PlantParts[part]->getDmGreen() +
-                  plant->PlantParts[part]->getDmSenesced()) * gm2kg/sm2ha);
-            dlt_dm_n.push_back((plant->PlantParts[part]->getNGreen() +
-                  plant->PlantParts[part]->getNSenesced()) * gm2kg/sm2ha);
-            dlt_dm_p.push_back((plant->PlantParts[part]->getPGreen() +
-                  plant->PlantParts[part]->getPSenesced()) * gm2kg/sm2ha);
+            dlt_dm_crop.push_back((float)((plant->PlantParts[part]->getDmGreen() +
+                  plant->PlantParts[part]->getDmSenesced()) * gm2kg/sm2ha));
+            dlt_dm_n.push_back((float)((plant->PlantParts[part]->getNGreen() +
+                  plant->PlantParts[part]->getNSenesced()) * gm2kg/sm2ha));
+            dlt_dm_p.push_back((float)((plant->PlantParts[part]->getPGreen() +
+                  plant->PlantParts[part]->getPSenesced()) * gm2kg/sm2ha));
             }
 
-         fraction_to_residue.push_back(fracts[part]);
+         fraction_to_residue.push_back((float)fracts[part]);
          }
 
       Variant chopped;

@@ -14,57 +14,53 @@ class Phosphorus : public PlantProcess
    // Active - has the SoilP module been included?
    bool active;
 
-   float stage;
+   double stage;
    vector<PlantPart *> StressParts;
 
 
 // Parameters ----------------------------------------------------------
 
-//   float diffnConstant;
-   int nLayers;
-   vector<float> dLayer;
-
-   float phenoSlope;
-   float photoSlope;
-   float expansionSlope;
-   float grainSlope;
+   double phenoSlope;
+   double photoSlope;
+   double expansionSlope;
+   double grainSlope;
 
    //  Variables  ---------------------------------------------------------
-   float profileDepth;
+   //double profileDepth; //not used
 
-   float phenoStress;
-   float expansionStress;
-   float photoStress;
-   float grainStress;
+   double phenoStress;
+   double expansionStress;
+   double photoStress;
+   double grainStress;
 
-   float pBiomass;
-   float pStover;
-   float pGreenBiomass;
-   float pUptakeTotal;
-   float pPlant;
+   double pBiomass;
+   double pStover;
+   double pGreenBiomass;
+   double pUptakeTotal;
+   double pPlant;
 
    // supply
 
-   vector<float> pGreen;
-   vector<float> dltPGreen;
-   vector<float> dltPRetrans;
-   vector<float> pSenesced;
-   vector<float> pDead;
-   vector<float> dltPDead;
-   vector<float> dltPDetached;
-   vector<float> dltPDetachedDead;
-   vector<float> pDemand;
+   vector<double> pGreen;
+   vector<double> dltPGreen;
+   vector<double> dltPRetrans;
+   vector<double> pSenesced;
+//   vector<double> pDead;
+//   vector<double> dltPDead;
+   vector<double> dltPDetached;
+//   vector<double> dltPDetachedDead;
+   vector<double> pDemand;
 
-   float plantPDemand;    // plant demand - grain demand
+   //double plantPDemand;    // plant demand - grain demand
 
    // demand
-   float totalDemand;
-   float supplyDemandRatio;
-   float pSupply;
+   double totalDemand;
+//   double supplyDemandRatio;
+//   double pSupply;
 
 
-   int currentLayer;                   // number of the layer that the roots are in now (starts at 0)
-   float rootDepth;
+//   int currentLayer;                   // number of the layer that the roots are in now (starts at 0)
+//   double rootDepth;
 
 
 // Private Methods -------------------------------------------------------
@@ -72,10 +68,9 @@ class Phosphorus : public PlantProcess
    void  initialize(void);
 
    void  setOtherVariables (void);
-   float layerProportion(void);
 
    void  calcStress(void);
-   float pStress(void);
+   double pStress(void);
 
 
    // plant
@@ -104,12 +99,12 @@ class Phosphorus : public PlantProcess
    void  onNewProfile(NewProfileType &p);
 
    // Leaf
-   float getExpansionStress(void){return expansionStress;}
-   float getPhotoStress(void){return photoStress;}
+   double getExpansionStress(void){return expansionStress;}
+   double getPhotoStress(void){return photoStress;}
 
    // phenology
-   float getPhenoStress(void){return phenoStress;}
-   void  detachment(vector<float> senDetachFrac);
+   double getPhenoStress(void){return phenoStress;}
+   void  detachment(vector<double> senDetachFrac);
 
    void  getPGreen(float &);
    void  getDltPGreen(vector<float> &);
@@ -123,7 +118,7 @@ class Phosphorus : public PlantProcess
 
    bool  Active(void){return active;}
    void  Summary(void);
-   float getPStover(void){return pStover;}
+   double getPStover(void){return pStover;}
 
    // phenology
    void  phenologyEvent(int){};

@@ -16,11 +16,11 @@ class Rachis : public PlantPart
 // Parameters ----------------------------------------------------------
 
    // nitrogen
-   float initialNConc;
-   float targetNConc;
-   float structRachisNConc;
-   float dilnNSlope;
-   float dilnNInt;
+   double initialNConc;
+   double targetNConc;
+   double structRachisNConc;
+   double dilnNSlope;
+   double dilnNInt;
 
 //  Variables  ----------------------------------------------------------
 
@@ -38,15 +38,15 @@ class Rachis : public PlantPart
    void  updateVars(void);
 
    // biomass
-   float partitionDM(float dltDM);
+   double partitionDM(double dltDM);
 
    // nitrogen
-   float calcNDemand(void);
-   float calcStructNDemand(void);
-   float provideN(float requiredN);
+   double calcNDemand(void);
+   double calcStructNDemand(void);
+   double provideN(double requiredN);
 
    // phosphorus
-   float calcPDemand(void);
+   double calcPDemand(void);
 
    // phenology
    void  phenologyEvent(int);

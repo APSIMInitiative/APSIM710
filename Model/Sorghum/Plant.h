@@ -35,7 +35,7 @@ class Plant
    {
    private:
    ScienceAPI2& scienceAPI;
-   float stage;
+   double stage;
 
    public:
    Plant(ScienceAPI2 &api);
@@ -70,55 +70,56 @@ class Plant
    string defaultCropClass;
    string cropType;
 
-   float rowSpacingDefault;
+   double rowSpacingDefault;
    float rowSpacing;
-   float skipRow;
+   double skipRow;
    float sowingDepth;
    float plantDensity;
-   float ftn;                   // fertile tiller number
-   float vpd;
+   double ftn;                   // fertile tiller number
+   double vpd;
 
-   vector<float> rue;
-   float radnIntercepted;
-   float transpEff;
+   vector<double> rue;
+   double radnIntercepted;
+   double transpEff;
 
-   float tempStress;
+   double tempStress;
 
-   vector<float> transpEffCf;
-   float svpFract;
+   vector<double> transpEffCf;
+   double svpFract;
 
 
-   float ttEmergeLimit;
+   double ttEmergeLimit;
 
    //Detachment Parameters
-   vector<float> senDetachFrac;
-   vector<float> deadDetachFrac;
+   vector<double> senDetachFrac;
+//   vector<float> deadDetachFrac;
 
-   float latitude;
+   double latitude;
 
 
 //  Variables  -----------------------------------------------------
    Status plantStatus;               // plant status - out, dead, alive
    string statusString;
 //   int das;
-   float dltPlants;
-   float frIntcRadn;
-   float eo;
+   double dltPlants;
+   double frIntcRadn;
+   double eo;
 
-   float co2;
-   float coverGreen;
-   float dltDeadPlants;
+   double co2;
+   double coverGreen;
+   double dltDeadPlants;
    TableFn tempStressTable;
 
-   float radnInt(void);
+   double radnInt(void);
 
    void  initialize(void);
    void  endPlant (void);
-   float rue_co2_modifier(void);
+   double rue_co2_modifier(void);
    TableFn co2_te_modifier;
 
 
-   bool estimateTillers(float &ftn);
+   bool estimateTillers(double &ftn);
+   string leafAreaCalcType; //tpla or bellcurve
 
    public:
    // ------------------------------------------------------
@@ -153,21 +154,21 @@ class Plant
    void detachment(void);
    void cleanup(void);
 
-   float transpEfficiency(void);
-   float svp(float temp);
+   double transpEfficiency(void);
+   double svp(double temp);
 
-   float getTempStress(void)const{return tempStress;}
-   float getTranspEff(void)const;
-   float getSowingDepth(void)const{return sowingDepth;}
+   double getTempStress(void)const{return tempStress;}
+   double getTranspEff(void)const;
+   double getSowingDepth(void)const{return sowingDepth;}
    string getCropType(void)const{return cropType;}
 
-   float getRadnInt(void)const{return radnIntercepted;}
+   double getRadnInt(void)const{return radnIntercepted;}
 
 
-   float getPlantDensity(void)const{return plantDensity;}
-   float getRowSpacing(void)const{return rowSpacing;}
-   float getSkipRow(void)const{return skipRow;}
-   float getFtn(void)const{return ftn;}
+   double getPlantDensity(void)const{return plantDensity;}
+   double getRowSpacing(void)const{return rowSpacing;}
+   double getSkipRow(void)const{return skipRow;}
+   double getFtn(void)const{return ftn;}
    void  killCrop(void);
 
    void getPlantStatus(string &);
@@ -177,6 +178,9 @@ class Plant
    void get_height(float &);
 
    void   phenologyEvent(int stage);
+
+	void manageLeafCalcType(void);
+
    };  // Plant
 
 //------------------------------------------------------------------------------------------------

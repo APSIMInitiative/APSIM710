@@ -11,6 +11,13 @@ using namespace Sorghum;
 //------------------------------------------------------------------------------------------------
 Water::Water(ScienceAPI2 &api, Plant *p) : PlantProcess(api)
    {
+   nLayers = 0;
+   totalAvail = 0.0;
+   totalAvailPot = 0.0;
+   totalSupply = 0.0;
+   dltUptake = 0.0;
+   eswTot = 0.0;
+
    plant = p;
    doRegistrations();
    initialize();
@@ -168,12 +175,12 @@ void Water::setOtherVariables (void)
 //------------------------------------------------------------------------------------------------
 void Water::onNewProfile(NewProfileType &v /* message */)
    {
-   dLayer = v.dlayer;
-   ll15Dep = v.ll15_dep;
-   dulDep = v.dul_dep;
-   satDep = v.sat_dep;
-   swDep = v.sw_dep;
-   bd = v.bd;
+   FVecToDVec(&dLayer, v.dlayer);
+   FVecToDVec(&ll15Dep, v.ll15_dep);
+   FVecToDVec(&dulDep, v.dul_dep);
+   FVecToDVec(&satDep, v.sat_dep);
+   FVecToDVec(&swDep, v.sw_dep);
+   FVecToDVec(&bd, v.bd);
 
    // dlayer may be changed from its last setting due to erosion
    profileDepth = sumVector(dLayer);      // depth of soil profile (mm)
@@ -215,7 +222,7 @@ void Water::process(void)
    calcUptake();
    }
 //------------------------------------------------------------------------------------------------
-float Water::swAvailRatio(int currentLayer)
+double Water::swAvailRatio(int currentLayer)
    {
    return  divide (esw[currentLayer],eswCap[currentLayer], 10.0);
    }
@@ -223,7 +230,7 @@ float Water::swAvailRatio(int currentLayer)
 //--------------- Plant transpiration and soil water extraction
 //-----------     Calculate daily water demand - called from plant->prepare
 //------------------------------------------------------------------------------------------------
-float Water::calcDemand(void)
+double Water::calcDemand(void)
    {
    swDemand = divide (plant->biomass->getDltDMPotRUE(),plant->getTranspEff());
    return swDemand;
@@ -261,11 +268,11 @@ void Water::calcAvailable(void)
    totalAvail = sumVector(available);
    }
 //------------------------------------------------------------------------------------------------
-float Water::layerProportion(void)
+double Water::layerProportion(void)
    {
    // calculates the proportion of the current root layer that is populated by roots
-   float layerTop    = sumVector(dLayer, currentLayer);
-   float layerBottom = sumVector(dLayer, currentLayer+1);
+   double layerTop    = sumVector(dLayer, currentLayer);
+   double layerBottom = sumVector(dLayer, currentLayer+1);
 
    return Min(divide(rootDepth - layerTop,layerBottom - layerTop),1.0);
    }
@@ -289,7 +296,7 @@ void Water::calcSupply(void)
 
    for(int layer = 0;layer <= currentLayer;layer++)
       {
-      float prop = plant->roots->RootProportionInLayer(layer);
+      double prop = plant->roots->RootProportionInLayer(layer);
       supply[layer] = Max(available[layer] * kl[layer] *  prop,0.0);
       }
    totalSupply = sumVector(supply);
@@ -298,21 +305,21 @@ void Water::calcSupply(void)
 //------------------------------------------------------------------------------------------------
 //-------- Calculate the daily crop water stresses
 //------------------------------------------------------------------------------------------------
-float Water::calcSwDefPhoto(void)
+double Water::calcSwDefPhoto(void)
    {
    return bound(divide(totalSupply,swDemand,1.0),0.0,1.0);
    }
 //------------------------------------------------------------------------------------------------
-float Water::calcSwDefPheno(void)
+double Water::calcSwDefPheno(void)
    {
-   float swAvailRatio = divide(totalAvail,totalAvailPot,1.0);
+   double swAvailRatio = divide(totalAvail,totalAvailPot,1.0);
    swAvailRatio = bound(swAvailRatio,0.0,1.0);
    return swPhenoTable.value(swAvailRatio);
    }
 //------------------------------------------------------------------------------------------------
-float Water::calcSwDefExpansion(void)
+double Water::calcSwDefExpansion(void)
   {
-  float sdRatio = divide(totalSupply,swDemand,10.0);
+  double sdRatio = divide(totalSupply,swDemand,10.0);
   return swExpansionTable.value(sdRatio);
   }
 //------------------------------------------------------------------------------------------------
@@ -345,12 +352,12 @@ void Water::calcUptake(void)
    totalUptake += sumVector(dltSwDep) * -1;
    }
 //------------------------------------------------------------------------------------------------
-float Water::calcPeswSeed(void)
+double Water::calcPeswSeed(void)
    {
    return divide(esw[currentLayer],dLayer[currentLayer],0.0);
    }
 //------------------------------------------------------------------------------------------------
-float Water::swAvailFracLayer(int layer)
+double Water::swAvailFracLayer(int layer)
    {
    return divide(available[layer],availablePot[layer]);
    }
@@ -360,30 +367,30 @@ float Water::swAvailFracLayer(int layer)
 //------------------------------------------------------------------------------------------------
 void Water::getEswLayers(vector<float> &result)
    {
-   result = esw;
+   DVecToFVec(result, esw);
    }
 //------------------------------------------------------------------------------------------------
 void Water::getSwDefLayers(vector<float> &result)
    {
-   result = swDef;
+   DVecToFVec(result, swDef);
    }
 //------------------------------------------------------------------------------------------------
 void Water::getSwUptakeLayers(vector<float> &result)
    {
-   result = swUptake;
+   DVecToFVec(result, swUptake);
    }
 //------------------------------------------------------------------------------------------------
 void Water::getllDep(vector<float> &result)
    {
-   result = llDep;
+   DVecToFVec(result, llDep);
    }
 //------------------------------------------------------------------------------------------------
-float Water::sumPhotoStressTotal(int from, int to)
+double Water::sumPhotoStressTotal(int from, int to)
    {
    return sumVector(photoStressTotal,from,to);
    }
 //------------------------------------------------------------------------------------------------
-float Water::sumExpanStressTotal(int from, int to)
+double Water::sumExpanStressTotal(int from, int to)
    {
    return sumVector(expanStressTotal,from,to);
    }

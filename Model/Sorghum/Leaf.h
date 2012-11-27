@@ -13,113 +13,112 @@ namespace Sorghum {
 //------------------------------------------------------------------------------------------------
 class Leaf : public PlantPart
    {
-   private:
+   protected:
 
 // Parameters ----------------------------------------------------------
-
-   float noSeed;
-   float noEmergence;
-   float initRate;
-   float initialTPLA;
-   float tplaInflectionRatio,tplaProductionCoef;
+   double noSeed;
+   double noEmergence;
+   double initRate;
+   double initialTPLA;
+   double tplaInflectionRatio,tplaProductionCoef;
    // leaf appearance
-   float appearanceRate1;
-   float appearanceRate2;
-   float noRateChange;
-   float minLeafNo,maxLeafNo;
+   double appearanceRate1;
+   double appearanceRate2;
+   double noRateChange;
+   double minLeafNo,maxLeafNo;
 
    // leaf dry mass
-   float initialDM;
-   float translocFrac;
-   float leafPartitionRate;
-   float dmTotal;
+   double initialDM;
+   double translocFrac;
+   double leafPartitionRate;
+   double dmTotal;
 
    // leaf area
-   float tillerCoef;
-   float mainStemCoef;
+   double tillerCoef;
+   double mainStemCoef;
 
-   float slaMin;
-   float slaMax;
+   double slaMin;
+   double slaMax;
 
    // sencescence
-   float senRadnCrit;        // radiation level for onset of light senescence
-   float senLightTimeConst;  // delay factor for light senescence
-   float senWaterTimeConst;  // delay factor for water senescence
-   float senThreshold;       // supply:demand ratio for onset of water senescence
-   float frostKill;          // temperature threshold for leaf death
+   double senRadnCrit;        // radiation level for onset of light senescence
+   double senLightTimeConst;  // delay factor for light senescence
+   double senWaterTimeConst;  // delay factor for water senescence
+   double senThreshold;       // supply:demand ratio for onset of water senescence
+   double frostKill;          // temperature threshold for leaf death
 
    // nitrogen
-   float initialSLN;
-   float targetSLN;
-   float newLeafSLN;
-   float senescedLeafSLN;
-   float dilnNSlope;
-   float dilnNInt;
+   double initialSLN;
+   double targetSLN;
+   double newLeafSLN;
+   double senescedLeafSLN;
+   double dilnNSlope;
+   double dilnNInt;
 
    // plant
-   float density;
+   double density;
 
 //  Variables  -----------------------------------------------------
    // Leaf Number
-   vector<float> leafNo;              // leaf number per stage
-   vector<float> nodeNo;              // node number per stage
+   vector<double> leafNo;              // leaf number per stage
+   vector<double> nodeNo;              // node number per stage
 
-   float finalLeafNo;
-   float dltLeafNo;
-   float nLeaves;
+   double finalLeafNo;
+   double dltLeafNo;
+   double nLeaves;
 
    // LAI
-   float lai;
-   float dltPotentialLAI;
-   float dltStressedLAI;
-   float dltLAI;
-   float maxLai;
+   double lai;
+   double dltPotentialLAI;
+   double dltStressedLAI;
+   double dltLAI;
+   double maxLai;
 
-   float extinctionCoef;
-   float coverGreen;
-   float coverSen;
-   float coverTot;
+   double extinctionCoef;
+   double coverGreen;
+   double coverSen;
+   double coverTot;
    // TPLA
-   float tplaMax;                     // maximum possible total plant leaf area
-   float tplaPot;
-   float tpla;
-   float spla;
-   float gpla;
+   double tplaMax;                     // maximum possible total plant leaf area
+   double tplaPot;
+   double tpla;
+   double spla;
+   double gpla;
 
    // senescence
-   float sLai;
-   float dltSlai;
-   float maxLaiPossible;
-   float waterStressLaiLoss;
-   float dltSlaiLight;
-   float dltSlaiWater;
-   float dltSlaiFrost;
-//   float dltDmSenesced;
-   vector<float> laiEquilibLight;
-   vector<float> laiEquilibWater;
-   vector<float> avSD;
-   float dltSlaiN;
+   double sLai;
+   double dltSlai;
+   double maxLaiPossible;
+   double waterStressLaiLoss;
+   double dltSlaiLight;
+   double dltSlaiWater;
+   double dltSlaiFrost;
+//   double dltDmSenesced;
+   vector<double> laiEquilibLight;
+   vector<double> laiEquilibWater;
+   vector<double> avSD;
+   double dltSlaiN;
 
    // SLN
-   float SLN;
-   float SLN0;
+   double SLN;
+   double SLN0;
 
 
 // Private Methods -------------------------------------------------------
-   void  doRegistrations(void);
-   void  initialize(void);
-   void  initLeafNo(void);
+   virtual void  doRegistrations(void);
+   virtual void  initialize(void);
+   virtual void  initLeafNo(void);
    void  calcFinalLeafNo(void);
    void  calcLeafAppearance(void);
    void  calcTplaMax(void);
-   float calcDltPotentialTPLA(void);
-   float calcStressedLeafArea(void);
-   float calcMaxLaiPossible(void);
-   float calcLaiSenescenceLight(void);
-   float calcLaiSenescenceWater(void);
-   float calcLaiSenescenceFrost(void);
-   float calcSLN(void);
-   float calcLAI(void);
+   double calcDltPotentialTPLA(void);
+   double calcStressedLeafArea(void);
+   double calcMaxLaiPossible(void);
+   double calcLaiSenescenceLight(void);
+   double calcLaiSenescenceWater(void);
+   double calcLaiSenescenceFrost(void);
+   double calcSLN(void);
+   double calcLAI(void);
    void  calcCover(void);
 
 
@@ -129,46 +128,46 @@ class Leaf : public PlantPart
    ~Leaf();
 
    // plant
-   float dltNSenesced;
+   double dltNSenesced;
    void  areaActual(void);
    void  senesceArea(void);
 
-   void  readParams (void);
-   void  updateVars(void);
+   virtual void  readParams (void);
+   virtual void  updateVars(void);
 
    void  process(void);
-   void  calcLeafNo(void);
-   void  calcPotentialArea(void);
+   virtual void  calcLeafNo(void);
+   virtual void  calcPotentialArea(void);
 
     // phenology
-   float calcEmergFlagTT(void);
+   double calcEmergFlagTT(void);
 
    // nitrogen
-   float calcNDemand(void);
-   float calcNewLeafNDemand(void);
-   float provideN(float requiredN);
-   float getSLN(void)const{return SLN;}
-   float laiToday(void)const;
+   double calcNDemand(void);
+   double calcNewLeafNDemand(void);
+   double provideN(double requiredN);
+   double getSLN(void)const{return SLN;}
+   double laiToday(void)const;
 
-   float getDltLAI(void)const{return dltLAI;}
-   float getLAI(void)const{return lai;}
-   float getDltSlai(void)const{return dltSlai;}
-   void  addDltSlai(float add);
+   double getDltLAI(void)const{return dltLAI;}
+   double getLAI(void)const{return lai;}
+   double getDltSlai(void)const{return dltSlai;}
+   void  addDltSlai(double add);
 
 
-   float getCoverGreen(void)const{return coverGreen;}
-   float getCoverTot(void)const{return coverTot;}
+   double getCoverGreen(void)const{return coverGreen;}
+   double getCoverTot(void)const{return coverTot;}
 
    // phosphorus
-   float calcPDemand(void);
+   double calcPDemand(void);
 
    // biomass
    void  calcSenescence(void);
-   float partitionDM(float dltDM);
-   float dmRetransAvailable(void);
-   void  dmRetrans(float dltDm){dmRetranslocate = dltDm;}
-   float getLeafNo(void){return nLeaves;}
-   void  laiDetachment(vector<float> senDetachFrac);
+   double partitionDM(double dltDM);
+   double dmRetransAvailable(void);
+   void  dmRetrans(double dltDm){dmRetranslocate = dltDm;}
+   double getLeafNo(void){return nLeaves;}
+   void  laiDetachment(vector<double> senDetachFrac);
 
 
    void  Summary(void);
@@ -177,6 +176,5 @@ class Leaf : public PlantPart
    void  phenologyEvent(int);
 
    };  // Leaf
-//------------------------------------------------------------------------------------------------
 }
 #endif

@@ -40,98 +40,98 @@ class PlantPart : public PlantComponent
    protected:
 
    // variables
-   float stage;
+   double stage;
    int   partNo;
    std::string name;
 
 
    // Biomass
-   float dmGreen;
-   float dltDmGreen;
+   double dmGreen;
+   double dltDmGreen;
 
-   float dmSenesced;
-   float dltDmSenesced;
-   float dltDetDmSenesced;
+   double dmSenesced;
+   double dltDmSenesced;
+   double dltDetDmSenesced;
 
-   float dmPlantMin;
-   float dmRetranslocate;
+   double dmPlantMin;
+   double dmRetranslocate;
    
 
    // Nitrogen
-   float nGreen;
-   float dltNGreen;
+   double nGreen;
+   double dltNGreen;
 
-   float nDemand;
-   float dltNRetranslocate;
+   double nDemand;
+   double dltNRetranslocate;
 
-   float nSenesced;
-   float dltNSenesced;
-   float dltDetNSenesced;
+   double nSenesced;
+   double dltNSenesced;
+   double dltDetNSenesced;
 
-   float nConc;
+   double nConc;
 
    // Phosphorus
-   float pGreen;
-   float pSenesced;
-   float dltPGreen;
-   float dltPSenesced;
-   float dltPDetached;
-   float pDemand;
-   float dltPRetranslocate;
-   float pConc;
+   double pGreen;
+   double pSenesced;
+   double dltPGreen;
+   double dltPSenesced;
+   double dltPDetached;
+   double pDemand;
+   double dltPRetranslocate;
+   double pConc;
 
    // phosphorus  parameters
    TableFn pMaxTable;
    TableFn pMinTable;
    TableFn pSenTable;
-   float initialPConc;
+   double initialPConc;
 
 
    public:
    PlantPart(ScienceAPI2 &api) ;
    void initialize(void);
    virtual void  phenologyEvent(int) = 0;
-   virtual float calcNDemand(void) = 0;
-   virtual float calcPDemand(void) = 0;
+   virtual double calcNDemand(void) = 0;
+   virtual double calcPDemand(void) = 0;
 
    //Detatchmenet Routines
-   virtual void dmDetachment(std::vector<float>);
-   virtual void NDetachment(std::vector<float>);
+   virtual void dmDetachment(std::vector<double>);
+   virtual void NDetachment(std::vector<double>);
 
    //Getters
-   virtual float getNGreen(void){return nGreen;};
-   virtual float getNSenesced(void){return nSenesced;};
+   virtual double getNGreen(void){return nGreen;};
+   virtual double getNSenesced(void){return nSenesced;};
 
-   virtual float getDmGreen(void){return dmGreen;};
-   virtual float getDmSenesced(void){return dmSenesced;};
+   virtual double getDmGreen(void){return dmGreen;};
+   virtual double getDmSenesced(void){return dmSenesced;};
 
-   virtual float getDltNGreen(void){return dltNGreen;};
-   virtual float getDltDetNSenesced(void){return dltDetNSenesced;};
+   virtual double getDltNGreen(void){return dltNGreen;};
+   virtual double getDltDetNSenesced(void){return dltDetNSenesced;};
 
-   virtual float getDltDmGreen(void){return dltDmGreen;};
-   virtual float getDltDetDmSenesced(void){return dltDetDmSenesced;};
+   virtual double getDltDmGreen(void){return dltDmGreen;};
+   virtual double getDltDetDmSenesced(void){return dltDetDmSenesced;};
 
-   virtual float getNDemand(void){return nDemand;};
-   virtual float getDltDmRetranslocate(void){return dmRetranslocate;};
-   virtual float getDltNRetranslocate(void){return dltNRetranslocate;};
+   virtual double getNDemand(void){return nDemand;};
+   virtual double getDltDmRetranslocate(void){return dmRetranslocate;};
+   virtual double getDltNRetranslocate(void){return dltNRetranslocate;};
 
    virtual void  resetDailyVars(void);
 
-   virtual float pConcMax(void){return pMaxTable.value(stage);}
-   virtual float pConcMin(void){return pMinTable.value(stage);}
-   virtual float pConcSen(void){return pSenTable.value(stage);}
-   virtual float getPGreen(void){return pGreen;};
-   virtual float getPSenesced(void){return pSenesced;};
-   virtual float getPDemand(void){return pDemand;};
-   virtual float getDltPGreen(void){return dltPGreen;};
-   virtual float getDltPRetrans(void){return dltPRetranslocate;};
+   virtual double pConcMax(void){return pMaxTable.value(stage);}
+   virtual double pConcMin(void){return pMinTable.value(stage);}
+   virtual double pConcSen(void){return pSenTable.value(stage);}
+   virtual double getPGreen(void){return pGreen;};
+   virtual double getPSenesced(void){return pSenesced;};
+   virtual double getPDemand(void){return pDemand;};
+   virtual double getDltPGreen(void){return dltPGreen;};
+   virtual double getDltPRetrans(void){return dltPRetranslocate;};
 
 
-   virtual void setPRetrans(float P){dltPRetranslocate = P;}
+   virtual void setPRetrans(double P){dltPRetranslocate = P;}
 
 
-   void partitionN(float N){dltNGreen += N;}
-   void partitionP(float P){dltPGreen += P;}
+   void partitionN(double N){dltNGreen += N;}
+   void partitionP(double P){dltPGreen += P;}
    void calcDltPSenesced(void);
    void calcDltPDetached(void);
    void updateP(void);

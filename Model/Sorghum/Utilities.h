@@ -20,37 +20,39 @@ class ScienceAPI2;
 //      crop status names
 typedef enum {out, dead, alive} Status;
 //typedef enum {warning, fatal} errSeverity;
-inline bool isEqual(float A, float B, float C) {return(fabs(A-B)<C);}
-inline bool isEqual(float A, float B) {return(fabs(A-B)<1.0E-6);}
+inline bool isEqual(double A, double B, double C) {return(fabs(A-B)<C);}
+inline bool isEqual(double A, double B) {return(fabs(A-B)<1.0E-6);}
 
 #define Max(a, b)  (((a) > (b)) ? (a) : (b))
 #define Min(a, b)  (((a) < (b)) ? (a) : (b))
 
 //------------------------------------------------------------------------------------------------
-void checkRange(ScienceAPI2 &api, float value, float lower, float upper, const std::string &msg);
+void checkRange(ScienceAPI2 &api, double value, double lower, double upper, const std::string &msg);
 
-int   findIndex(float value, std::vector<float> items);
-void  fillVector(vector<float> &temp,std::vector<float> &newVect);
-float layerProportion(std::vector<float> dLayer,float rootDepth,int rootLayer);
-float sumVector(vector<float> vec);
-float avgVector(vector<float> vec);
-float movingAvgVector(vector<float> &vec, int sz);
-float maxVector(vector<float> vec);
-float sumVector(vector<float> vec, int index);
-float sumVector(vector<float> vec, int from, int to);
-float divide (float dividend, float divisor, float default_value = 0.0);
-float bound(float value,float lower, float upper);
-float dayLength (int doy, float latitude, float twilight);
+int   findIndex(double value, std::vector<double> items);
+void  fillVector(vector<double> &temp,std::vector<double> &newVect);
+double layerProportion(std::vector<double> dLayer,double rootDepth,int rootLayer);
 
-void  accumulate (float value, std::vector<float> &array, float p_index, float dlt_index);
-void  calcPoolFractionDelta (int numParts, std::vector<float> fraction, std::vector<float> pool,
-        std::vector<float> &dltPool);
+double sumVector(vector<double>);
+double avgVector(vector<double>);
+double movingAvgVector(vector<double>&, int);
+double maxVector(vector<double>);
+double sumVector(vector<double>, int);
+double sumVector(vector<double>, int, int);
 
-void  calcPartFractionDelta (int partNo, std::vector<float> fraction, float part,
-      float &dltPart);
+double divide (double dividend, double divisor, double default_value = 0.0);
+double bound(double value,double lower, double upper);
+double dayLength (int doy, double latitude, double twilight);
+
+void  accumulate (double value, std::vector<double> &array, double p_index, double dlt_index);
+void  calcPoolFractionDelta (int numParts, std::vector<double> fraction, std::vector<double> pool,
+        std::vector<double> &dltPool);
+
+void  calcPartFractionDelta (int partNo, std::vector<double> fraction, double part,
+      double &dltPart);
 
 
-void  JulianToCalendar(float jDay,int &day,int &month,int &year);
+void  JulianToCalendar(double jDay,int &day,int &month,int &year);
 int   CalendarToJulian(int day,int month,int year);
 
 string convertName(string name);
@@ -62,13 +64,13 @@ class Today
    public:
    int   doy;                      // (Julian) day number of year
    int   day, month, year;         // day of month etc..
-   float radn;                     // solar radiation (Mj/m^2/day)
-   float minT;                     // minimum air temperature (oC)
-   float maxT;                     // maximum air temperature (oC)
-   float avgT;                     // average air temperature (oC)
-   float rain;                     // rain in mm
-   float vp;                       // VP
-   float getPhotoPeriod(float latitude,float twilight){return dayLength (doy,latitude,twilight);}
+   double radn;                     // solar radiation (Mj/m^2/day)
+   double minT;                     // minimum air temperature (oC)
+   double maxT;                     // maximum air temperature (oC)
+   double avgT;                     // average air temperature (oC)
+   double rain;                     // rain in mm
+   double vp;                       // VP
+   double getPhotoPeriod(double latitude,double twilight){return dayLength (doy,latitude,twilight);}
    };
 //------------------------------------------------------------------------------------------------
 // class to handle table functions
@@ -77,15 +79,19 @@ class TableFn
    {
    public:
    std::string xName,yName;
-   std::vector<float> x;
-   std::vector<float> y;
+   std::vector<double> x;
+   std::vector<double> y;
 
    TableFn(void){};
    TableFn(ScienceAPI2 &api,  std::string xName, std::string yName);
-   TableFn(std::vector<float> xVec,std::vector<float> yVec);
+   TableFn(std::vector<double> xVec,std::vector<double> yVec);
    void  read(ScienceAPI2 &api,  std::string xName, std::string yName);
-   void  load(std::vector<float> xVec,std::vector<float> yVec);
-   float value(float v) const;
+   void  load(std::vector<double> xVec,std::vector<double> yVec);
+   double value(double v) const;
    };
 //------------------------------------------------------------------------------------------------
+
+void DVecToFVec(vector<float>&, vector<double>);
+void FVecToDVec(vector<double>*, vector<float>);
+
 #endif

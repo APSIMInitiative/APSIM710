@@ -9,6 +9,10 @@ using namespace Sorghum;
 //---------------------------------------------------------------------------
 PlantPart::PlantPart(ScienceAPI2 &api) : PlantComponent (api)
    {
+   pConc = 0.0;
+   dmPlantMin = 0.0;
+   initialPConc = 0.0;
+
    initialize();
    }
 //---------------------------------------------------------------------------
@@ -48,12 +52,12 @@ void PlantPart::initialize(void)
    dltPRetranslocate = 0.0;
    }
 //---------------------------------------------------------------------------
-void PlantPart::dmDetachment(vector<float> senDetachFrac)
+void PlantPart::dmDetachment(vector<double> senDetachFrac)
    {
    calcPartFractionDelta (partNo, senDetachFrac, dmSenesced, dltDetDmSenesced);
    }
 //---------------------------------------------------------------------------
-void PlantPart::NDetachment(vector<float> senDetachFrac)
+void PlantPart::NDetachment(vector<double> senDetachFrac)
    {
    calcPartFractionDelta (partNo, senDetachFrac, nSenesced, dltDetNSenesced);
    }
@@ -78,14 +82,14 @@ void PlantPart::resetDailyVars(void)
 /* TODO : Move this to the P class where it should be */
 void PlantPart::calcDltPSenesced(void)
    {
-   float p_conc_green = divide (pGreen,dmGreen,0.0);
-   float p_conc_sen = pSenTable.value(stage);
+   double p_conc_green = divide (pGreen,dmGreen,0.0);
+   double p_conc_sen = pSenTable.value(stage);
    dltPSenesced = Min(p_conc_green,p_conc_sen) * dltDmSenesced;
    }
 //---------------------------------------------------------------------------
 void PlantPart::calcDltPDetached(void)
    {
-   float sen_detach_frac = divide (dltDetDmSenesced,dmSenesced,0.0);
+   double sen_detach_frac = divide (dltDetDmSenesced,dmSenesced,0.0);
    dltPDetached = dltPSenesced * sen_detach_frac;
    }
 //---------------------------------------------------------------------------

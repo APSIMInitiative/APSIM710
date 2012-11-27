@@ -17,6 +17,7 @@ using namespace Sorghum;
 //------------------------------------------------------------------------------------------------
 Plant::Plant(ScienceAPI2 &api) : scienceAPI(api)
    {
+   leafAreaCalcType = "tpla";
    initialize();
    }
 //------------------------------------------------------------------------------------------------
@@ -91,9 +92,8 @@ void Plant::plantInit1(void)
    scienceAPI.read("default_crop_class",  "", false, defaultCropClass);
    scienceAPI.read("row_spacing_default", "", false, rowSpacingDefault);
 
-
    roots     = new Roots(scienceAPI, this);   PlantComponents.push_back(roots); PlantParts.push_back(roots);
-   leaf      = new Leaf(scienceAPI, this);    PlantComponents.push_back(leaf);  PlantParts.push_back(leaf);
+	leaf      = new Leaf(scienceAPI, this);    PlantComponents.push_back(leaf);  PlantParts.push_back(leaf);
    stem      = new Stem(scienceAPI, this);    PlantComponents.push_back(stem);  PlantParts.push_back(stem);
    rachis    = new Rachis(scienceAPI, this);  PlantComponents.push_back(rachis);PlantParts.push_back(rachis);
    grain     = new Grain(scienceAPI, this);   PlantComponents.push_back(grain); PlantParts.push_back(grain);
@@ -119,6 +119,8 @@ void Plant::plantInit1(void)
    
    // DeanH - Fix for bug#: 1242 - How many other variables should be zero'd??
    transpEff = 0.0;
+   co2 = 0.0;
+   coverGreen = 0.0;
   }
 //------------------------------------------------------------------------------------------------
 void Plant::plantInit2(void)
@@ -152,21 +154,21 @@ void Plant::onSowCrop(SowType &sow)
    else
       cultivar = sow.Cultivar;
 
-   plantDensity = sow.plants;
+   plantDensity = (float)sow.plants;
    if (plantDensity == 0)
       throw std::runtime_error("plant density ('plants') not specified");
 
    checkRange(scienceAPI, plantDensity, 0.0, 1000.0, "plants");
 
-   sowingDepth = sow.sowing_depth;
+   sowingDepth = (float)sow.sowing_depth;
    if (sowingDepth == 0)
       throw std::runtime_error("sowing depth not specified");
 
    checkRange(scienceAPI,sowingDepth, 0.0, 100.0, "sowing_depth");
 
-   rowSpacing = sow.row_spacing;
+   rowSpacing = (float)sow.row_spacing;
    if (rowSpacing == 0)
-      rowSpacing = rowSpacingDefault;
+      rowSpacing = (float)rowSpacingDefault;
    // row spacing was originally in metres
    // for compatibility, is now in mm
    // if < 10, assume metres and convert
@@ -251,7 +253,7 @@ void Plant::prepare (void)
 
    radnIntercepted = radnInt();
 
-   float rueToday = rue[(int) stage] * rue_co2_modifier();
+   float rueToday = (float)(rue[(int) stage] * rue_co2_modifier());
 
    biomass->calcBiomassRUE(rueToday,radnIntercepted);
    transpEff = transpEfficiency();
@@ -274,7 +276,7 @@ void Plant::prepare (void)
 void Plant::process (void)                 // do crop preparation
    {
 
-   stage = phenology->currentStage();
+   stage = (float)phenology->currentStage();
 
    water->getOtherVariables();
    water->calcDailySupply();
@@ -346,14 +348,14 @@ void Plant::updateVars(void)
    {
    das++;
 
-   stage = phenology->currentStage();
+   stage = (float)phenology->currentStage();
    // this is here for sysbal - needs to move!
    if(stage == emergence)
       {
       ExternalMassFlowType EMF;
       EMF.PoolClass = "crop";
       EMF.FlowType = "gain";
-      EMF.DM = biomass->getTotalBiomass() * gm2kg/sm2ha;
+      EMF.DM = (float)(biomass->getTotalBiomass() * gm2kg/sm2ha);
       EMF.N  = 0.0;
       EMF.P  = 0.0;
       EMF.C = 0.0; // ?????
@@ -405,7 +407,7 @@ void Plant::death(void)
 //- Science --------------------------------------------------------------------------------------
 //----------  Radiation intercepted by leaves (mj/m^2)
 //------------------------------------------------------------------------------------------------
-float Plant::radnInt(void)
+double Plant::radnInt(void)
    {
    if (isEqual(frIntcRadn,0.0))return leaf->getCoverGreen() * today.radn;
    else
@@ -417,7 +419,7 @@ float Plant::radnInt(void)
 //---   Calculate today's transpiration efficiency from the transpiration efficiency coefficient
 //---   and vapour pressure deficit, which is calculated from min and max temperatures.
 //------------------------------------------------------------------------------------------------
-float Plant::transpEfficiency(void)
+double Plant::transpEfficiency(void)
    {
    // get vapour pressure deficit when net radiation is positive.
    vpd = Max(svpFract * (svp(today.maxT) - svp(today.minT)), 0.01);
@@ -427,7 +429,7 @@ float Plant::transpEfficiency(void)
 //------------------------------------------------------------------------------------------------
 //-------- function to get saturation vapour pressure for a given temperature in oC (kpa)
 //------------------------------------------------------------------------------------------------
-float Plant::svp(float temp)
+double Plant::svp(double temp)
    {
    return 6.1078 * exp(17.269 * temp / (237.3 + temp)) * mb2kpa;
    }
@@ -453,7 +455,6 @@ void Plant::cleanup(void)
 
 void Plant::killCrop(void)
    {
-   float AGBiomass;
    if (plantStatus == alive)
       {
       setStatus(dead);
@@ -486,26 +487,26 @@ void Plant::phenologyEvent(int iStage)
 //------------------------------------------------------------------------------------------------
 void Plant::get_cover_green(float &result)
       {
-   result = leaf->getCoverGreen();
+   result = (float)leaf->getCoverGreen();
       }
 //------------------------------------------------------------------------------------------------
 void Plant::get_cover_tot(float &result)
       {
-   result = leaf->getCoverTot();
+   result =(float) leaf->getCoverTot();
       }
 //------------------------------------------------------------------------------------------------
 void Plant::get_height(float &result)
       {
-   result = stem->getCanopyHeight();
+   result = (float)stem->getCanopyHeight();
    }
 //------------------------------------------------------------------------------------------------
-float Plant::rue_co2_modifier(void)                 //!CO2 level (ppm)
+double Plant::rue_co2_modifier(void)                 //!CO2 level (ppm)
    {
    //  Purpose : Calculation of the CO2 modification on rue
-   const float scale = 1.0 / 350.0 * 0.05;
+   const double scale = 1.0 / 350.0 * 0.05;
    return (scale * this->co2 + 0.95); //Mark Howden, personal communication
    }
-float Plant::getTranspEff(void) const
+double Plant::getTranspEff(void) const
    {
    if (co2_te_modifier.x.size() > 0)
      return (transpEff * co2_te_modifier.value(co2));
@@ -514,7 +515,7 @@ float Plant::getTranspEff(void) const
 //------------------------------------------------------------------------------------------------
 //------------------- Estimate tillers
 //------------------------------------------------------------------------------------------------
-bool Plant::estimateTillers(float &ftn)
+bool Plant::estimateTillers(double &ftn)
    {
    // estimate tillering given latitude, density, time of planting and row configuration
    // this will be replaced with dynamic calculations in the near future

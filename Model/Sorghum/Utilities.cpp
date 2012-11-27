@@ -11,20 +11,20 @@ using namespace std;
 // Conversion from a Julian date to a Gregorian calendar date.
 // Reference: Fliegel, H. F. and van Flandern, T. C. (1968).
 //    Communications of the ACM, Vol. 11, No. 10 (October, 1968).
-void JulianToCalendar(float jDay,int &day,int &month,int &year)
+void JulianToCalendar(double jDay,int &day,int &month,int &year)
    {
-   float work = jDay + 68569.0;
-   float work0 = int(4.0 * work / 146097.0);
+   double work = jDay + 68569.0;
+   double work0 = int(4.0 * work / 146097.0);
    work = work - int((146097.0 * work0 + 3.0) / 4.0);
-   float yy = int(4000.0 * (work + 1.0) / 1461001.0);
+   double yy = int(4000.0 * (work + 1.0) / 1461001.0);
 
    work = work - int(1461.0 * yy / 4.0) + 31.0;
-   float mm = int(80.0 * work / 2447.0);
-   float dayd = work - int(2447.0 * mm / 80.0);
+   double mm = int(80.0 * work / 2447.0);
+   double dayd = work - int(2447.0 * mm / 80.0);
 
    work = int(mm / 11.0);
-   float monthd = mm + 2.0 - 12.0 * work;
-   float yeard = 100.0 * (work0 - 49.0) + yy + work;
+   double monthd = mm + 2.0 - 12.0 * work;
+   double yeard = 100.0 * (work0 - 49.0) + yy + work;
 
    day = int(dayd + 0.5);
    month = int(monthd + 0.5);
@@ -37,8 +37,8 @@ int CalendarToJulian(int day,int month,int year)
    if (year > 1582)
       {
       // Fliegel calculations
-      float quotnt = int ((month - 14.0)/12.0);
-      return day - 32075.0
+      double quotnt = int ((month - 14.0)/12.0);
+      return day - 32075
          + int(1461.0* (year + 4800.0 + quotnt) /4.0)
          + int(367.0* (month - 2.0 - quotnt*12.0) /12.0)
          - int(3.0 * int((year + 4900.0 + quotnt) /100.0) /4.0);
@@ -46,22 +46,22 @@ int CalendarToJulian(int day,int month,int year)
    else return 0;
    }
 //------------------------------------------------------------------------------------------------
-//------ sum up a vector of float
+//------ sum up a vector of double
 //------------------------------------------------------------------------------------------------
-float sumVector(vector<float> vec)
+double sumVector(vector<double> vec)
    {
-   float vecSum = 0.0;
+   double vecSum = 0.0;
    for(unsigned i=0;i < vec.size();i++)vecSum += vec[i];
    return vecSum;
    }
 //------------------------------------------------------------------------------------------------
-float avgVector(vector<float> vec)
+double avgVector(vector<double> vec)
    {
    if(!vec.size())return 0.0;
    return sumVector(vec)/vec.size();
    }
 //------------------------------------------------------------------------------------------------
-float movingAvgVector(vector<float> &vec, int sz)
+double movingAvgVector(vector<double> &vec, int sz)
    {
    if(!vec.size())return 0.0;
    for(int i=0;i < (int)vec.size() - sz; i++)
@@ -69,31 +69,31 @@ float movingAvgVector(vector<float> &vec, int sz)
    return avgVector(vec);
    }
 //------------------------------------------------------------------------------------------------//------------------------------------------------------------------------------------------------
-float maxVector(vector<float> vec)
+double maxVector(vector<double> vec)
    {
-   float vecMax = 1e-23;
+   double vecMax = 1e-23;
    for(unsigned i=0;i < vec.size();i++)
       if(vec[i] > vecMax)vecMax = vec[i];
    return vecMax;
    }
 //------------------------------------------------------------------------------------------------
-float sumVector(vector<float> vec, int index)
+double sumVector(vector<double> vec, int index)
    {
-   float vecSum = 0.0;
+   double vecSum = 0.0;
    for(int i=0;i < index;i++)vecSum += vec[i];
    return vecSum;
    }
 //------------------------------------------------------------------------------------------------
-float sumVector(vector<float> vec, int from, int to)
+double sumVector(vector<double> vec, int from, int to)
    {
-   float vecSum = 0.0;
+   double vecSum = 0.0;
    for(int i=from;i < to;i++)vecSum += vec[i];
    return vecSum;
    }
 //------------------------------------------------------------------------------------------------
 //---  Checks if a variable lies outside lower and upper bounds.
 //------------------------------------------------------------------------------------------------
-void checkRange(ScienceAPI2 &api, float value, float lower, float upper, const std::string &vName)
+void checkRange(ScienceAPI2 &api, double value, double lower, double upper, const std::string &vName)
    {
    char msg[512];
    char m1[] = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
@@ -127,7 +127,7 @@ void checkRange(ScienceAPI2 &api, float value, float lower, float upper, const s
  /* TODO : Needs looking at! */
 //XX Needs to be replaced with try/catch of EOverflow/EUnderflow etc..    XXXXXXXXXXXXXXXXXXXXXXX
 //===========================================================================
-float divide (float dividend, float divisor, float default_value)
+double divide (double dividend, double divisor, double default_value)
 //===========================================================================
 
 /*Definition
@@ -147,12 +147,12 @@ float divide (float dividend, float divisor, float default_value)
 
    {
    //Constant Values
-   float LARGEST = 1.0e30;    //largest acceptable no. for quotient
-   float SMALLEST = 1.0e-30;  //smallest acceptable no. for quotient
-   float nought = 0.0;
+   double LARGEST = 1.0e30;    //largest acceptable no. for quotient
+   double SMALLEST = 1.0e-30;  //smallest acceptable no. for quotient
+   double nought = 0.0;
 
    //Local Varialbes
-   float quotient;
+   double quotient;
 
    //Implementation
    if(isEqual(dividend, 0.0))      //multiplying by 0
@@ -195,10 +195,10 @@ float divide (float dividend, float divisor, float default_value)
 //-------- function to get index number from a vector
 // --       index is the number where Sigma(i=0,index){items[i]} > value
 //------------------------------------------------------------------------------------------------
-int findIndex(float value, vector<float> items)
+int findIndex(double value, vector<double> items)
    {
    unsigned index;
-   float accum = 0.0;
+   double accum = 0.0;
    for(index =0;index < items.size();index++)
       {
       accum += items[index];
@@ -209,7 +209,7 @@ int findIndex(float value, vector<float> items)
 //------------------------------------------------------------------------------------------------
 //-------- function to copy a vector to a vector
 //------------------------------------------------------------------------------------------------
-void fillVector(vector<float> &temp,vector<float> &newVect)
+void fillVector(vector<double> &temp,vector<double> &newVect)
    {
    newVect.clear();
    for(unsigned i=0;i < temp.size();i++)
@@ -220,16 +220,16 @@ void fillVector(vector<float> &temp,vector<float> &newVect)
    }
 //------------------------------------------------------------------------------------------------
 
-float layerProportion(vector<float> dLayer,float rootDepth,int rootLayer)
+double layerProportion(vector<double> dLayer,double rootDepth,int rootLayer)
    {
-   float layerTop = sumVector(dLayer, rootLayer);
-   float layerBottom = sumVector(dLayer, rootLayer+1);
+   double layerTop = sumVector(dLayer, rootLayer);
+   double layerBottom = sumVector(dLayer, rootLayer+1);
 
    return divide(rootDepth - layerTop,layerBottom - layerTop);
    }
 //------------------------------------------------------------------------------------------------
 
-float bound(float value,float lower, float upper)
+double bound(double value,double lower, double upper)
    {
    if(value < lower)return lower;
    else return Min(value,upper);
@@ -256,7 +256,7 @@ void TableFn::read(ScienceAPI2 &P, string xName,string yName)
 //------------------------------------------------------------------------------------------------
 //----------- Table Function constructor
 //------------------------------------------------------------------------------------------------
-TableFn::TableFn(vector<float> xVec,vector<float> yVec)
+TableFn::TableFn(vector<double> xVec,vector<double> yVec)
    {
    x = xVec;
    y = yVec;
@@ -264,7 +264,7 @@ TableFn::TableFn(vector<float> xVec,vector<float> yVec)
 //------------------------------------------------------------------------------------------------
 //----------- Table Function load
 //------------------------------------------------------------------------------------------------
-void TableFn::load(vector<float> xVec,vector<float> yVec)
+void TableFn::load(vector<double> xVec,vector<double> yVec)
    {
    x = xVec;
    y = yVec;
@@ -272,7 +272,7 @@ void TableFn::load(vector<float> xVec,vector<float> yVec)
 //------------------------------------------------------------------------------------------------
 //------------ Return a y value from a table function
 //------------------------------------------------------------------------------------------------
-float TableFn::value(float v) const
+double TableFn::value(double v) const
    {
    // find which sector of the function that v falls in
    unsigned sector;
@@ -284,7 +284,7 @@ float TableFn::value(float v) const
    if(sector == x.size())return y[y.size()-1];
    if(isEqual(v,x[sector]))return y[sector]; // prevent roundoff errors
    // y = mx + c
-   float slope = isEqual(x[sector],x[sector-1]) ? 0 :
+   double slope = isEqual(x[sector],x[sector-1]) ? 0 :
                         (y[sector]-y[sector-1])/(x[sector]-x[sector-1]);
 
    return y[sector-1] + slope * (v - x[sector - 1]);
@@ -292,10 +292,10 @@ float TableFn::value(float v) const
 
 /* TODO : Needs Work */
 //==========================================================================
-void accumulate (float value,             //  (INPUT) value to add to array
-                 vector<float> &array,            //  (INPUT/OUTPUT) array to split
-                 float p_index,           //  (INPUT) current p_index no
-                 float dlt_index)         //  (INPUT) increment in p_index no
+void accumulate (double value,             //  (INPUT) value to add to array
+                 vector<double> &array,            //  (INPUT/OUTPUT) array to split
+                 double p_index,           //  (INPUT) current p_index no
+                 double dlt_index)         //  (INPUT) increment in p_index no
 //==========================================================================
 /* Purpose
 *     Accumulates a value in an array, at the specified index.
@@ -319,11 +319,11 @@ void accumulate (float value,             //  (INPUT) value to add to array
    {
    // Local Variables
    int current_index;           // current index number ()
-   float fract_in_old;           // fraction of value in last index
-   float index_devel;            // fraction_of of current index elapsed ()
+   double fract_in_old;           // fraction of value in last index
+   double index_devel;            // fraction_of of current index elapsed ()
    int new_index;                // number of index just starting ()
-   float portion_in_new;         // portion of value in next index
-   float portion_in_old;         // portion of value in last index
+   double portion_in_new;         // portion of value in next index
+   double portion_in_old;         // portion of value in last index
 
    // (implicit) assert(dlt_index <= 1.0);
    current_index = int(p_index);
@@ -336,7 +336,7 @@ void accumulate (float value,             //  (INPUT) value to add to array
          {
          // now we need to divvy
          new_index = (int) (p_index + Min(1.0, dlt_index));
-         if (isEqual(fmod(p_index,1.0F),0.0))
+         if (isEqual(fmod(p_index,1.0),0.0))
             {
             fract_in_old = 1.0 - divide(index_devel - 1.0, dlt_index, 0.0);
             portion_in_old = fract_in_old * (value + array[current_index])-
@@ -364,32 +364,32 @@ void accumulate (float value,             //  (INPUT) value to add to array
 
 
 /* TODO : Check all this */
-float dayLength (int doy, float latitude, float twilight)
+double dayLength (int doy, double latitude, double twilight)
    {
-   const float  aeqnox = 79.25 ;//  average day number of autumnal equinox
-   const float  pi = 3.14159265359 ;
-   const float  dg2rdn =  (2.0*pi) /360.0 ; // convert degrees to radians
-   const float  decsol = 23.45116 * dg2rdn ; // amplitude of declination of sun
+   const double  aeqnox = 79.25 ;//  average day number of autumnal equinox
+   const double  pi = 3.14159265359 ;
+   const double  dg2rdn =  (2.0*pi) /360.0 ; // convert degrees to radians
+   const double  decsol = 23.45116 * dg2rdn ; // amplitude of declination of sun
                                             //   - declination of sun at solstices.
    // cm says here that the maximum declination is 23.45116 or 23 degrees 27 minutes.
    // I have seen else_where that it should be 23 degrees 26 minutes 30 seconds - 23.44167
-   const float  dy2rdn =  (2.0*pi) /365.25 ; // convert days to radians
-   const float  rdn2hr = 24.0/(2.0*pi)  ; // convert radians to hours
+   const double  dy2rdn =  (2.0*pi) /365.25 ; // convert days to radians
+   const double  rdn2hr = 24.0/(2.0*pi)  ; // convert radians to hours
 
    //+ Local Variables
-   float alt;    // twilight altitude limited to max/min sun altitudes end of twilight
+   double alt;    // twilight altitude limited to max/min sun altitudes end of twilight
                   //   - altitude of sun. (radians)
-   float altmn;  // altitude of sun at midnight
-   float altmx;  // altitude of sun at midday
-   float clcd;   // cos of latitude * cos of declination
-   float coshra; // cos of hour angle - angle between the sun and the meridian.
-   float dec;    // declination of sun in radians - this is the angular distance at solar
+   double altmn;  // altitude of sun at midnight
+   double altmx;  // altitude of sun at midday
+   double clcd;   // cos of latitude * cos of declination
+   double coshra; // cos of hour angle - angle between the sun and the meridian.
+   double dec;    // declination of sun in radians - this is the angular distance at solar
                   //   noon between the sun and the equator.
-   float hrangl; // hour angle - angle between the sun and the meridian (radians).
-   float hrlt;   // day_length in hours
-   float latrn;  // latitude in radians
-   float slsd;   // sin of latitude * sin of declination
-   float sun_alt;// angular distance between sunset and end of twilight - altitude of sun. (radians)
+   double hrangl; // hour angle - angle between the sun and the meridian (radians).
+   double hrlt;   // day_length in hours
+   double latrn;  // latitude in radians
+   double slsd;   // sin of latitude * sin of declination
+   double sun_alt;// angular distance between sunset and end of twilight - altitude of sun. (radians)
    // Twilight is defined as the interval between sunrise or sunset and the time when the
    // true centre of the sun is 6 degrees below the horizon.
    // Sunrise or sunset is defined as when the true centre of the sun is 50' below the horizon.
@@ -403,7 +403,7 @@ float dayLength (int doy, float latitude, float twilight)
 
    // declination ranges from -.41 to .41 (summer and winter solstices)
 
-   dec = decsol*sin (dy2rdn* ((float)doy - aeqnox));
+   dec = decsol*sin (dy2rdn* ((double)doy - aeqnox));
 
    // get the max and min altitude of sun for today and limit the twilight altitude between these.
 
@@ -434,8 +434,8 @@ float dayLength (int doy, float latitude, float twilight)
 //------------------------------------------------------------------------------------------------
 //------- Calculate change in %3 based on fractional decay rates.
 //------------------------------------------------------------------------------------------------
-void calcPoolFractionDelta (int numParts, vector<float> fraction, vector<float> pool,
-        vector<float> &dltPool)
+void calcPoolFractionDelta (int numParts, vector<double> fraction, vector<double> pool,
+        vector<double> &dltPool)
    {
    for(int i = 0; i < numParts; i++)
       {
@@ -445,8 +445,8 @@ void calcPoolFractionDelta (int numParts, vector<float> fraction, vector<float> 
 //------------------------------------------------------------------------------------------------
 //------- Calculate change in a particular plant pool
 //------------------------------------------------------------------------------------------------
-void calcPartFractionDelta (int partNo, vector<float> fraction, float part,
-      float &dltPart)
+void calcPartFractionDelta (int partNo, vector<double> fraction, double part,
+      double &dltPart)
    {
    dltPart = part * fraction[partNo];
    }
@@ -473,3 +473,22 @@ string convertName(string name)
    return newName;
    }
 //------------------------------------------------------------------------------------------------
+void DVecToFVec(vector<float> &fVec, vector<double> dVec)
+   {
+   fVec.clear();
+   for(unsigned i = 0; i < dVec.size(); i++)
+      {
+      fVec.push_back((float)dVec[i]);
+      }
+   }
+//------------------------------------------------------------------------------------------------
+void FVecToDVec(vector<double> *dVec, vector<float> fVec)
+   {
+   (*dVec).clear();
+   for(unsigned i = 0; i < fVec.size(); i++)
+      {
+      (*dVec).push_back(fVec[i]);
+      }
+   }
+//------------------------------------------------------------------------------------------------
+   

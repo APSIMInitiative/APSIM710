@@ -55,6 +55,8 @@ void Biomass::initialize(void)
    dltDMPotRUE = 0.0;
    aboveGroundBiomass = 0.0;
    greenBiomass = 0.0;
+	totalBiomass = 0.0;
+	aboveGroundGreenBiomass = 0.0;
    //Setup report vectors
 
    int nParts = plant->PlantParts.size();
@@ -115,7 +117,7 @@ void Biomass::updateVars(void)
    totalBiomass = greenBiomass + sumVector(senescedDM);
 
    aboveGroundGreenBiomass = greenBiomass - plant->roots->getDmGreen();
-   float aboveGroundSenescedBiomass = sumVector(senescedDM) - plant->roots->getDmSenesced();
+   double aboveGroundSenescedBiomass = sumVector(senescedDM) - plant->roots->getDmSenesced();
    aboveGroundBiomass = (aboveGroundGreenBiomass + aboveGroundSenescedBiomass) * 10.0;  // in kg/ha
 
    //Calculate harvest index
@@ -135,7 +137,7 @@ void Biomass::calcBiomassTE(void)
 //------------------------------------------------------------------------------------------------
 //------------------- calculate biomass production due to light (limited by water and n)
 //------------------------------------------------------------------------------------------------
-void Biomass::calcBiomassRUE(float rue, float radnIntercepted)
+void Biomass::calcBiomassRUE(double rue, double radnIntercepted)
    {
    effectiveRue = rue * Min(Min(plant->getTempStress(),plant->nitrogen->getPhotoStress()),plant->phosphorus->getPhotoStress());
    dltDMPotRUE =  effectiveRue * radnIntercepted;
@@ -171,7 +173,7 @@ void Biomass::dmScenescence(void)
    }
 
 //------------------------------------------------------------------------------------------------
-float Biomass::calcDltDMPotTE(void)
+double Biomass::calcDltDMPotTE(void)
    {
    return plant->water->getTotalSupply() * plant->getTranspEff();
    }
@@ -182,7 +184,7 @@ void Biomass::calcBiomassPartitioning(void)
    // Root must be satisfied. The roots don't take any of the carbohydrate produced
    //  - that is for tops only.  Here we assume that enough extra was produced to meet demand.
    // Thus the root growth is not removed from the carbo produced by the model.
-   float biomPool = dltDM;
+   double biomPool = dltDM;
 
    int currentPhase = (int) stage;
    plant->roots->partitionDM(ratioRootShoot[currentPhase] * biomPool);
@@ -222,18 +224,18 @@ void Biomass::calcBiomassPartitioning(void)
 // Calculate plant dry matter delta's due to retranslocation to grain (g/m^2)
 void Biomass::calcBiomassRetranslocation(void)
    {
-   float grainDifferential = plant->grain->grainDMDifferential();
+   double grainDifferential = plant->grain->grainDMDifferential();
    if(grainDifferential > 0)
       {
       // we can translocate stem and leaf carbohydrate to grain if needed
 
-      float stemWtAvail = plant->stem->dmRetransAvailable();
-      float stemRetrans = Min(grainDifferential,stemWtAvail);
+      double stemWtAvail = plant->stem->dmRetransAvailable();
+      double stemRetrans = Min(grainDifferential,stemWtAvail);
       grainDifferential -= stemRetrans;
       plant->stem->dmRetrans(-1 * stemRetrans);
 
-      float leafWtAvail = plant->leaf->dmRetransAvailable();
-      float leafRetrans = Min(grainDifferential,leafWtAvail);
+      double leafWtAvail = plant->leaf->dmRetransAvailable();
+      double leafRetrans = Min(grainDifferential,leafWtAvail);
 
       plant->leaf->dmRetrans(-1 * leafRetrans);
       plant->grain->dmRetrans(stemRetrans + leafRetrans);
@@ -242,7 +244,7 @@ void Biomass::calcBiomassRetranslocation(void)
 //------------------------------------------------------------------------------------------------
 //------- Calculate Dry Matter detachment
 //------------------------------------------------------------------------------------------------
-void Biomass::detachment(vector<float> senDetachFrac)
+void Biomass::detachment(vector<double> senDetachFrac)
    {
    for(unsigned i = 0; i < plant->PlantParts.size(); i++)
       {
@@ -252,32 +254,32 @@ void Biomass::detachment(vector<float> senDetachFrac)
 //------------------------------------------------------------------------------------------------
 void Biomass::getDMGreen(float &result)
    {
-   result = sumVector(greenDM);
+   result = (float)sumVector(greenDM);
    }
 //------------------------------------------------------------------------------------------------
 void Biomass::getDMSenesced(float &result)
    {
-   result = sumVector(senescedDM);
+   result = (float)sumVector(senescedDM);
    }
 //------------------------------------------------------------------------------------------------
 void Biomass::getDltDMGreen(float &result)
    {
-   result = sumVector(dltDMGreen);
+   result = (float)sumVector(dltDMGreen);
    }
 //------------------------------------------------------------------------------------------------
 void Biomass::getDltDMDetached(vector<float> &result)
    {
-   result = dltDMDetachedSen;
+   DVecToFVec(result, dltDMDetachedSen);
    }
 //------------------------------------------------------------------------------------------------
 void Biomass::getDltDMGreenRetrans(vector<float> &result)
    {
-   result = dltDMRetranslocate;
+   DVecToFVec(result, dltDMRetranslocate);
    }
 //------------------------------------------------------------------------------------------------
 void Biomass::getBiomass(float &result)
    {
-   result = aboveGroundBiomass / 10;
+   result = (float)(aboveGroundBiomass / 10); //jkb testing output
    }
 //------------------------------------------------------------------------------------------------
 void Biomass::Summary(void)
@@ -305,12 +307,12 @@ void Biomass::incorporateResidue(void)
       for (unsigned part = 0; part < plant->PlantParts.size(); part++)
          {
          part_name.push_back(plant->PlantParts[part]->getName());
-         dlt_dm_crop.push_back((plant->PlantParts[part]->getDmGreen() +
-               plant->PlantParts[part]->getDmSenesced()) * gm2kg/sm2ha);
-         dlt_dm_n.push_back((plant->PlantParts[part]->getNGreen() +
-               plant->PlantParts[part]->getNSenesced()) * gm2kg/sm2ha);
-         dlt_dm_p.push_back((plant->PlantParts[part]->getPGreen() +
-               plant->PlantParts[part]->getPSenesced()) * gm2kg/sm2ha);
+         dlt_dm_crop.push_back((float)((plant->PlantParts[part]->getDmGreen() +
+               plant->PlantParts[part]->getDmSenesced()) * gm2kg/sm2ha));
+         dlt_dm_n.push_back((float)((plant->PlantParts[part]->getNGreen() +
+               plant->PlantParts[part]->getNSenesced()) * gm2kg/sm2ha));
+         dlt_dm_p.push_back((float)((plant->PlantParts[part]->getPGreen() +
+               plant->PlantParts[part]->getPSenesced()) * gm2kg/sm2ha));
 
          fraction_to_residue.push_back(fracts[part]);
          }
