@@ -4,6 +4,8 @@ using System.Text;
 using System.IO;
 using ModelFramework;
 using CSGeneral;
+//using ApsimFile;
+using System.Xml.Serialization;
 #if (APSIMX == false)
 using CMPServices;
 #endif
@@ -14,9 +16,17 @@ using CMPServices;
 /// Extended by Eric Zurcher Mar 2012
 ///</summary> 
 
-
+[XmlType("SoilWater.NET")]
 public class SoilWater
 {
+    [Link]
+    public Clock Clock;
+
+    [Link]
+    public MetFile MetFile;
+
+    [Link]
+    public Paddock Paddock;
 
     #region Constants
 
@@ -41,114 +51,115 @@ public class SoilWater
     [Param(MinVal = 0.0, MaxVal = 10.0)]
     [Units("oC")]
     [Description("Temperature below which eeq decreases")]
-    private double min_crit_temp;             //! temperature below which eeq decreases (oC)
+    public double min_crit_temp = 5.0;             //! temperature below which eeq decreases (oC)
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 50.0)]
     [Units("oC")]
     [Description("Temperature above which eeq increases")]
-    private double max_crit_temp;             //! temperature above which eeq increases (oC)
+    public double max_crit_temp = 35.0;             //! temperature above which eeq increases (oC)
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Maximum bare ground soil albedo")]
-    private double max_albedo;                //! maximum bare ground soil albedo (0-1)
+    public double max_albedo = 0.23;                //! maximum bare ground soil albedo (0-1)
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Factor to convert \"A\" to coefficient in Adam's type residue effect on Eos")]
-    private double A_to_evap_fact;            //! factor to convert "A" to coefficient in Adam's type residue effect on Eos
+    public double A_to_evap_fact = 0.44;            //! factor to convert "A" to coefficient in Adam's type residue effect on Eos
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 10.0)]
     [Units("0-10")]
     [Description("Coefficient in cover Eos reduction equation")]
-    private double canopy_eos_coef;           //! coef in cover Eos reduction eqn
+    public double canopy_eos_coef = 1.7;           //! coef in cover Eos reduction eqn
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Critical sw ratio in top layer below which stage 2 evaporation occurs")]
-    private double sw_top_crit;               //! critical sw ratio in top layer below which stage 2 evaporation occurs
+    public double sw_top_crit = 0.9;               //! critical sw ratio in top layer below which stage 2 evaporation occurs
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1000.0)]
     [Units("mm")]
     [Description("Upper limit of sumes1")]
-    private double sumes1_max;                //! upper limit of sumes1
+    public double sumes1_max = 100;                //! upper limit of sumes1
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1000.0)]
     [Units("mm")]
     [Description("Upper limit of sumes2")]
-    private double sumes2_max;                //! upper limit of sumes2
+    public double sumes2_max = 25;                //! upper limit of sumes2
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Efficiency of moving solute with unsaturated flow")]
-    private double[] solute_flow_eff;          //sv- Unsaturated Flow   //! efficiency of moving solute with flow (0-1)
+    public double[] solute_flow_eff = new double[] {1.0};          //sv- Unsaturated Flow   //! efficiency of moving solute with flow (0-1)
     private int num_solute_flow;   //bound_check_real_array() gives this a value in soilwat2_read_constants()
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Efficiency of moving solute with flux (saturated flow)")]
-    private double[] solute_flux_eff;         //sv- Drainage (Saturated Flow)   //! efficiency of moving solute with flux (0-1) 
+    public double[] solute_flux_eff = new double[] { 1.0 };         //sv- Drainage (Saturated Flow)   //! efficiency of moving solute with flux (0-1) 
     private int num_solute_flux; //bound_check_real_array() gives this a value in soilwat2_read_constants()
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Gradient due to hydraulic differentials")]
-    private double gravity_gradient;          //! gradient due to hydraulic differentials (0-1)
+    public double gravity_gradient = 0.00002;          //! gradient due to hydraulic differentials (0-1)
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 3.0)]
     [Units("g/cm^3")]
     [Description("Specific bulk density")]
-    private double specific_bd;               //! specific bulk density (g/cc)
+    public double specific_bd = 2.65;               //! specific bulk density (g/cc)
 
     [Output]
     [Param(MinVal = 1.0, MaxVal = 1000.0)]
     [Units("mm")]
     [Description("Hydrologically effective depth for runoff")]
-    private double hydrol_effective_depth;    //! hydrologically effective depth for runoff (mm)
+    public double hydrol_effective_depth = 450;    //! hydrologically effective depth for runoff (mm)
 
     [Output]
     [Param]
     [Description("Names of all possible mobile solutes")]
-    private string[] mobile_solutes;     //! names of all possible mobile solutes
+    public string[] mobile_solutes = new string[] {"no3", "urea", "cl", "br", "org_n", "org_c_pool1", "org_c_pool2", 
+                                                   "org_c_pool3"};     //! names of all possible mobile solutes
 
     [Output]
     [Param]
     [Description("Names of all possible immobile solutes")]
-    private string[] immobile_solutes;   //! names of all possible immobile solutes
+    public string[] immobile_solutes = new string[] {"nh4"};   //! names of all possible immobile solutes
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Canopy factors for cover runoff effect")]
-    private double[] canopy_fact;        //! canopy factors for cover runoff effect ()
+    public double[] canopy_fact = new double[] {1, 1, 0, 0};        //! canopy factors for cover runoff effect ()
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 100000.0)]
     [Units("mm")]
     [Description("Heights for canopy factors")]
-    private double[] canopy_fact_height; //! heights for canopy factors (mm)
+    public double[] canopy_fact_height = new double[] {0,  600,  1800, 30000}; //! heights for canopy factors (mm)
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Default canopy factor in absence of height")]
-    private double canopy_fact_default;       //! default canopy factor in absence of height ()
+    public double canopy_fact_default = 0.5;       //! default canopy factor in absence of height ()
 
     [Output]
     [Param]
     [Description("Actual soil evaporation model being used")]
-    private string act_evap_method;           //! actual soil evaporation model being used //sv- hard wired to "ritchie" in the init event handler. 
+    public string act_evap_method = "ritchie";           //! actual soil evaporation model being used //sv- hard wired to "ritchie" in the init event handler. 
     private int evap_method;               //sv- integer representation of act_evap_method   
 
     //Soilwat2Constants
@@ -314,7 +325,7 @@ public class SoilWater
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10000.0)]
     [Units("mm")]
     [Description("Initial depth of soil filled to drained upper limit (field capacity)")]
-    private double wet_soil_depth   //! initial depth of soil filled to drained upper limit (field capacity) (mm)
+    public double wet_soil_depth   //! initial depth of soil filled to drained upper limit (field capacity) (mm)
     {
         get { return _wet_soil_depth; }
         set
@@ -344,12 +355,12 @@ public class SoilWater
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1000.0)]
     [Description("Diffusivity constant for soil testure")]
-    private double diffus_const = Double.NaN;     //! diffusivity constant for soil testure
+    public double diffus_const = Double.NaN;     //! diffusivity constant for soil testure
 
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 100.0)]
     [Description("Slope for diffusivity/soil water content relationship")]
-    private double diffus_slope = Double.NaN;     //! slope for diffusivity/soil water content relationship
+    public double diffus_slope = Double.NaN;     //! slope for diffusivity/soil water content relationship
 
     private double _cn2_bare = Double.NaN;
     [Output]
@@ -435,7 +446,7 @@ public class SoilWater
     [Units("0-1")]
     [Output]
     [Description("Bare soil albedo")]
-    private double salb;           //! bare soil albedo (unitless)
+    public double salb;           //! bare soil albedo (unitless)
 
     //Extra parameters for evaporation models (this module only has Ritchie Evaporation)  
     //(see soilwat2_init() for which u and cona is used)
@@ -467,35 +478,35 @@ public class SoilWater
     [Output]
     [Param(IsOptional = true)]
     [Description("Date for start of summer evaporation (dd-mmm)")]
-    private string summerdate = "not_read";       //! Date for start of summer evaporation (dd-mmm)
+    public string summerdate = "not_read";       //! Date for start of summer evaporation (dd-mmm)
 
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 40.0)]
     [Units("mm")]
     [Description("Upper limit of stage 1 soil evaporation during summer")]
-    private double summeru = Double.NaN;
+    public double summeru = Double.NaN;
 
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10.0)]
     [Description("Stage 2 drying coefficient during summer")]
-    private double summercona = Double.NaN;
+    public double summercona = Double.NaN;
 
     //winter
     [Output]
     [Param(IsOptional = true)]
     [Description("Date for start of winter evaporation (dd-mmm)")]
-    private string winterdate = "not_read";       //! Date for start of winter evaporation (dd-mmm)
+    public string winterdate = "not_read";       //! Date for start of winter evaporation (dd-mmm)
 
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10.0)]
     [Units("mm")]
     [Description("Upper limit of stage 1 soil evaporation during winter")]
-    private double winteru = Double.NaN;
+    public double winteru = Double.NaN;
 
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10.0)]
     [Description("Stage 2 drying coefficient during winter")]
-    private double wintercona = Double.NaN;
+    public double wintercona = Double.NaN;
 
     //end of Extra parameters for evaporation models
 
@@ -506,18 +517,18 @@ public class SoilWater
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Slope")]
-    private double slope = Double.NaN;
+    public double slope = Double.NaN;
 
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0e8F)]     //1.0e8F = 100000000
     [Units("m")]
     [Description("Basal width of discharge area")]
-    private double discharge_width = Double.NaN;  //! basal width of discharge area (m)
+    public double discharge_width = Double.NaN;  //! basal width of discharge area (m)
 
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0e8F)]     //1.0e8F = 100000000
     [Units("m^2")]
     [Description("Area over which lateral flow is occuring")]
-    private double catchment_area = Double.NaN;   //! area over which lateral flow is occuring (m2)
+    public double catchment_area = Double.NaN;   //! area over which lateral flow is occuring (m2)
 
     //sv- end of Lateral flow properties
 
@@ -897,13 +908,13 @@ public class SoilWater
     [Units("/d")]
     [Output(Immutable = true)]
     [Description("Soil water conductivity constant")]
-    private double[] swcon;     //! soil water conductivity constant (1/d) //! ie day**-1 for each soil layer
+    public double[] swcon;     //! soil water conductivity constant (1/d) //! ie day**-1 for each soil layer
 
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Output(Immutable = true)]
     [Description("Impermeable soil layer indicator")]
-    private double[] mwcon = null;     //! impermeable soil layer indicator
+    public double[] mwcon = null;     //! impermeable soil layer indicator
 
     [Output]
     [Description("Flag to determine if Ks has been chosen for use")]
@@ -913,13 +924,13 @@ public class SoilWater
     [Units("mm/d")]
     [Output(Immutable = true)]
     [Description("Saturated conductivity")]
-    private double[] ks = null;        //! saturated conductivity (mm/d)
+    public double[] ks = null;        //! saturated conductivity (mm/d)
 
     [Param(MinVal = 0.01, MaxVal = 3.0)]
     [Units("g/cm^3")]
     [Output(Immutable = true)]
     [Description("Bulk density of soil")]
-    private double[] bd;      //! moist bulk density of soil (g/cm^3) // ??? Is this "moist" or "dry"; how moist?
+    public double[] bd;      //! moist bulk density of soil (g/cm^3) // ??? Is this "moist" or "dry"; how moist?
 
 
     //sv- Lateral Flow profile   //sv- also from Lateral_read_param()
@@ -927,7 +938,7 @@ public class SoilWater
     [Param(IsOptional = true, MinVal = 0, MaxVal = 1.0e3F)] //1.0e3F = 1000
     [Units("mm/d")]
     [Output(Immutable = true)]
-    private double[] klat = null;
+    public double[] klat = null;
 
 
     private double[] _sat_dep;
@@ -1234,8 +1245,6 @@ public class SoilWater
 
     //end of Lateral_process()
 
-    [Input]
-    DateTime Today;
 
     #endregion
 
@@ -1253,6 +1262,7 @@ public class SoilWater
         //*+  Mission Statement
         //*     Get crop Variables
 
+        #if (APSIMX == false)
         Double covgreen;
         Double covtot;
         Double height;
@@ -1260,7 +1270,6 @@ public class SoilWater
         int i = 0;
         foreach (Component Comp in MyPaddock.Crops)
         {
-
             MyPaddock.Get(Comp.FullName + ".cover_green", out covgreen);
             MyPaddock.Get(Comp.FullName + ".cover_tot", out covtot);
             MyPaddock.Get(Comp.FullName + ".height", out height);
@@ -1276,8 +1285,8 @@ public class SoilWater
             cover_tot[i] = covtot;
             canopy_height[i] = height;
             i++;
-
         }
+        #endif
 
     }
 
@@ -1285,6 +1294,7 @@ public class SoilWater
     private void soilwat2_get_solute_variables()
     {
         //for the number of solutes that was read in by OnNewSolute event handler)
+        #if (APSIMX == false)
         for (int solnum = 0; solnum < num_solutes; solnum++)
         {
             double[] Value;
@@ -1297,6 +1307,7 @@ public class SoilWater
               // Should check array size here to be sure it matches...
               Array.Copy(Value, solutes[solnum].amount, Math.Min(Value.Length, solutes[solnum].amount.Length));
         }
+        #endif
     }
 
     //this is called in the On Process event handler
@@ -1351,6 +1362,7 @@ public class SoilWater
         NitrogenChanges.DeltaNO3 = new double[dlayer.Length];
 
         //for all solutes in this simulation.
+        #if (APSIMX == false)
         for (int solnum = 0; solnum < num_solutes; solnum++)
         {
             //convert to float array
@@ -1374,6 +1386,7 @@ public class SoilWater
             }
         }
         NitrogenChanged.Invoke(NitrogenChanges);
+        #endif
     }
 
     //this is called in the On Process event handler
@@ -1695,17 +1708,21 @@ public class SoilWater
 
 
     #region Bounds checking and warning functions
-    [Link]
-    private Component My = null;  // Get access to "Warning" function
 
+#if (APSIMX == true)
     private void IssueWarning(string warningText)
     {
-#if (APSIMX == true)
         Console.WriteLine(warningText);
-#else
-        My.Warning(warningText);
-#endif
     }
+#else
+    [Link]
+    private Component My = null;  // Get access to "Warning" function
+    private void IssueWarning(string warningText)
+    {
+    My.Warning(warningText);
+    }
+#endif
+
 
     private double bound(double A, double MinVal, double MaxVal)
     {
@@ -2259,7 +2276,7 @@ public class SoilWater
 
         //assign u and cona to either sumer or winter values
         // Need to add 12 hours to move from "midnight" to "noon", or this won't work as expected
-        if (DateUtility.WithinDates(winterdate, Today, summerdate))
+        if (DateUtility.WithinDates(winterdate, Clock.Today, summerdate))
         {
             _cona = wintercona;
             _u = winteru;
@@ -2707,9 +2724,9 @@ public class SoilWater
             else
             {
                 obsrunoff = Double.NaN;
-                if (My.Get(obsrunoff_name, out obsrunoff) && !Double.IsNaN(obsrunoff))
-                    runoff = obsrunoff;
-                else
+                //if (My.Get(obsrunoff_name, out obsrunoff) && !Double.IsNaN(obsrunoff))
+                //    runoff = obsrunoff;
+                //else
                 {
                     //          write (line, '(a,i4,a,i3,a)')
                     string line = String.Format("{0} {1} {2} {3} {4}",
@@ -3033,11 +3050,11 @@ public class SoilWater
         //*       the user specified.
 
         eo_system = Double.NaN;
-        if (_eo_source != "" &&  My.Get(_eo_source, out eo_system) && !Double.IsNaN(eo_system))
-        {
-            eo = eo_system;                     //! eo is provided by system
-        }
-        else
+        //if (_eo_source != "" &&  My.Get(_eo_source, out eo_system) && !Double.IsNaN(eo_system))
+        //{
+        //    eo = eo_system;                     //! eo is provided by system
+        //}
+        //else
         {
             soilwat2_priestly_taylor();    //! eo from priestly taylor
         }
@@ -3275,7 +3292,7 @@ public class SoilWater
 
 
         // Need to add 12 hours to move from "midnight" to "noon", or this won't work as expected
-        if (DateUtility.WithinDates(winterdate, Today, summerdate))
+        if (DateUtility.WithinDates(winterdate, Clock.Today, summerdate))
         {
             _cona = wintercona;
             _u = winteru;
@@ -4859,8 +4876,46 @@ public class SoilWater
     public void OnInitialised()
     {
 
-        day = Today.DayOfYear;
-        year = Today.Year;
+        day = Clock.Today.DayOfYear;
+        year = Clock.Today.Year;
+
+        #if (APSIMX == true)
+        initDone = false;
+        Clock.Prepare += new NullTypeDelegate(OnPrepare);
+        Clock.Process += new NullTypeDelegate(OnProcess);
+        MetFile.NewMet += new NewMetDelegate(OnNewMet);
+        ApsimFile.Soil Soil = (ApsimFile.Soil) Paddock.Get("Soil");
+        diffus_const = Soil.SoilWater.DiffusConst;
+        diffus_slope = Soil.SoilWater.DiffusSlope;
+        cn2_bare = Soil.SoilWater.CN2Bare;
+        cn_red = Soil.SoilWater.CNRed;
+        cn_cov = Soil.SoilWater.CNCov;
+        if (!double.IsNaN(Soil.SoilWater.MaxPond))
+            max_pond = Soil.SoilWater.MaxPond;
+        salb = Soil.SoilWater.Salb;
+        summerdate = Soil.SoilWater.SummerDate;
+        summeru = Soil.SoilWater.SummerU;
+        summercona = Soil.SoilWater.SummerCona;
+        winterdate = Soil.SoilWater.WinterDate;
+        winteru = Soil.SoilWater.WinterU;
+        wintercona = Soil.SoilWater.WinterCona;
+        slope = Soil.SoilWater.Slope;
+        discharge_width = Soil.SoilWater.DischargeWidth;
+        catchment_area = Soil.SoilWater.CatchmentArea;
+        
+        dlayer = Soil.Thickness;
+        sat = Soil.SAT;
+        dul = Soil.DUL;
+        sw = Soil.SW;
+        ll15 = Soil.LL15;
+        air_dry = Soil.AirDry;
+        swcon = Soil.SoilWater.SWCON;
+        mwcon = Soil.SoilWater.MWCON;
+        ks = Soil.Water.KS;
+        bd = Soil.Water.BD;
+        klat = Soil.SoilWater.KLAT;
+        initDone = true;
+        #endif
 
         //Save State
         soilwat2_save_state();
@@ -4871,6 +4926,7 @@ public class SoilWater
 
         //Change State
         soilwat2_delta_state();
+
     }
 
 
@@ -4890,8 +4946,8 @@ public class SoilWater
 
         //*- Implementation Section ----------------------------------
 
-        day = Today.DayOfYear;
-        year = Today.Year;
+        day = Clock.Today.DayOfYear;
+        year = Clock.Today.Year;
 
         soilwat2_zero_daily_variables();
         Lateral_zero_daily_variables();     //sv- I added this from Lateral_prepare()
@@ -5392,19 +5448,21 @@ public class SoilWater
     {
         //*+  Mission Statement
         //*     Advise other modules of new profile specification
-
-        NewProfileType newProfile = new NewProfileType();
-        int nLayers = _dlayer.Length;
-        // Convert array values from doubles to floats
-        newProfile.air_dry_dep = ToFloatArray(_air_dry_dep);
-        newProfile.bd = ToFloatArray(bd);
-        newProfile.dlayer = ToFloatArray(_dlayer);
-        newProfile.dul_dep = ToFloatArray(_dul_dep);
-        newProfile.ll15_dep = ToFloatArray(_ll15_dep);
-        newProfile.sat_dep = ToFloatArray(_sat_dep);
-        newProfile.sw_dep = ToFloatArray(_sw_dep);
-        if (newProfile != null)
-            New_profile.Invoke(newProfile);
+        if (New_profile != null)
+        {
+            NewProfileType newProfile = new NewProfileType();
+            int nLayers = _dlayer.Length;
+            // Convert array values from doubles to floats
+            newProfile.air_dry_dep = ToFloatArray(_air_dry_dep);
+            newProfile.bd = ToFloatArray(bd);
+            newProfile.dlayer = ToFloatArray(_dlayer);
+            newProfile.dul_dep = ToFloatArray(_dul_dep);
+            newProfile.ll15_dep = ToFloatArray(_ll15_dep);
+            newProfile.sat_dep = ToFloatArray(_sat_dep);
+            newProfile.sw_dep = ToFloatArray(_sw_dep);
+            if (newProfile != null)
+                New_profile.Invoke(newProfile);
+        }
     }
 
 

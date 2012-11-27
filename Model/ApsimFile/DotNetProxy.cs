@@ -202,9 +202,19 @@ class DLLProber
                             PropertyCode = PropertyCode.Replace("$SETTER$", SetterCode);
                         else
                             PropertyCode = PropertyCode.Replace("$SETTER$\r\n", "");
+
+                        string PropertyName = XmlHelper.Name(Node);
+                        string DotNetType = GetDotNetTypeName(TypeNode);
+                        if (PropertyName == "today")
+                        { 
+                            PropertyName = "Today";
+                            PropertyTypeName = "DateTime";
+                            DotNetType = "DateTime";
+                        }
+
                         PropertyCode = PropertyCode.Replace("$TYPE$", PropertyTypeName);
-                        PropertyCode = PropertyCode.Replace("$DOTNETTYPE$", GetDotNetTypeName(TypeNode));
-                        PropertyCode = PropertyCode.Replace("$NAME$", XmlHelper.Name(Node));
+                        PropertyCode = PropertyCode.Replace("$DOTNETTYPE$", DotNetType);
+                        PropertyCode = PropertyCode.Replace("$NAME$", PropertyName);
                         PropertyCode = PropertyCode.Replace("$DESCRIPTION$", Description);
                         PropertyCode = PropertyCode.Replace("$UNITS$", Units);
                         ClassCode += PropertyCode;

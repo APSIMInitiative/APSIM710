@@ -373,6 +373,59 @@ namespace CSGeneral
         }
 
         /// <summary>
+        /// Trys to set the value of a public or private field or property. Name can have '.' characters. Will
+        /// return true if successfull. Will throw if Value is the wrong type for the field
+        /// or property. Supports strings/double/int conversion or direct setting.
+        /// </summary>
+        public static bool SetValueOfFieldOrProperty(string Name, object Obj, object Value)
+        {
+            if (Name.Contains("."))
+            {
+                int Pos = Name.IndexOf('.');
+                string FieldName = Name.Substring(0, Pos);
+                Obj = SetValueOfFieldOrProperty(FieldName, Obj, Value);
+                if (Obj == null)
+                    return false;
+                else
+                    return SetValueOfFieldOrProperty(Name.Substring(Pos + 1), Obj, Value);
+            }
+            else
+            {
+                BindingFlags Flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.IgnoreCase;
+                FieldInfo F = Obj.GetType().GetField(Name, Flags);
+                if (F != null)
+                {
+                    if (F.FieldType == typeof(string))
+                        F.SetValue(Obj, Value.ToString());
+                    else if (F.FieldType == typeof(double))
+                        F.SetValue(Obj, Convert.ToDouble(Value));
+                    else if (F.FieldType == typeof(int))
+                        F.SetValue(Obj, Convert.ToInt32(Value));
+                    else
+                        F.SetValue(Obj, Value);
+                    return true;
+                }
+
+                PropertyInfo P = Obj.GetType().GetProperty(Name, Flags);
+                if (P != null)
+                {
+                    if (P.PropertyType == typeof(string))
+                        P.SetValue(Obj, Value.ToString(), null);
+                    else if (P.PropertyType == typeof(double))
+                        P.SetValue(Obj, Convert.ToDouble(Value), null);
+                    else if (P.PropertyType == typeof(int))
+                        P.SetValue(Obj, Convert.ToInt32(Value), null);
+                    else
+                        P.SetValue(Obj, Value, null);
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+
+        /// <summary>
         ///  Upload a file via ftp
         /// </summary>
         /// <param name="localFileName">Name of the file to be uploaded</param>

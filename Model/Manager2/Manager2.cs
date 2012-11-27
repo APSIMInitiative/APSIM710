@@ -10,68 +10,93 @@ using System.IO;
 using ApsimFile;
 using CSGeneral;
 using System.Reflection;
+using System.Xml.Serialization;
 
 [ComVisible(true)]
 public class Manager2
 {
+    [XmlAnyElement]
+    public XmlElement[] Nodes = null;
+
     [Param(Name = "Manager2")]
-    XmlNode Manager2Xml = null;
+    public XmlNode Manager2Xml = null;
 
     [Link]
-    ModelFramework.Component My = null;
+    public Paddock MyPaddock = null;
 
     string DllFileName;
 
     [EventHandler]
     public void OnInitialised()
     {
+        if (Nodes != null)
+        {
+            XmlDocument Doc = new XmlDocument();
+            Manager2Xml = Doc.AppendChild(Doc.CreateElement("Manager2"));
+            foreach (XmlNode Child in Nodes)
+                Manager2Xml.AppendChild(Doc.ImportNode(Child, true));
+        }
+
         DllFileName = Assembly.GetExecutingAssembly().Location;
 
         Assembly CompiledAssembly = CompileTextToAssembly();
 
         // Go look for our class name.
         string ScriptClassName = null;
-        foreach (Type t in CompiledAssembly.GetTypes())
-        {
-            if (t.BaseType != null && t.BaseType.Name == "Instance")
-                ScriptClassName = t.Name;
-        }
-        if (ScriptClassName == null)
-        {
-            // Look for a class called Script
-            Type t = CompiledAssembly.GetType("Script");
-            if (t == null)
-                throw new Exception("Cannot find a public class called Script");
-            ScriptClassName = "Script";
-
-        }
+        // Look for a class called Script
+        Type t = CompiledAssembly.GetType("Script");
+        if (t == null)
+            throw new Exception("Cannot find a public class called Script");
+        ScriptClassName = "Script";
 
         // Create an XML model that we can pass to BuildObjects.
         XmlDocument NewDoc = new XmlDocument();
         XmlNode ScriptNode = NewDoc.AppendChild(NewDoc.CreateElement(ScriptClassName));
         XmlNode ui = XmlHelper.Find(Manager2Xml, "ui");
 
-        if (ui != null)
-        {
-            foreach (XmlNode Child in XmlHelper.ChildNodes(ui, ""))
-            {
-                if (XmlHelper.Attribute(Child, "description").Contains("Create child class"))
-                    ScriptNode.AppendChild(NewDoc.CreateElement(Child.InnerText));
-
-                else if (XmlHelper.Attribute(Child, "type").ToLower() != "category")
-                    XmlHelper.SetValue(ScriptNode, Child.Name, Child.InnerText);
-            }
-        }
-
-        foreach (XmlNode Child in XmlHelper.ChildNodes(Manager2Xml, ""))
-        {
-            if (Child.Name != "ui" && Child.Name != "Reference" && Child.Name != "text")
-                ScriptNode.AppendChild(ScriptNode.OwnerDocument.ImportNode(Child, true));
-        }
-
+        object Model;
         try
         {
-            My.AddModel(ScriptNode, CompiledAssembly);
+            // Create an instance of the model object.
+            Model = CompiledAssembly.CreateInstance(ScriptClassName);
+
+            // Populate its params from the UI.
+            #if (APSIMX == false)
+                if (ui != null)
+                {
+                    foreach (XmlNode Child in XmlHelper.ChildNodes(ui, ""))
+                    {
+                        if (XmlHelper.Attribute(Child, "description").Contains("Create child class"))
+                            ScriptNode.AppendChild(NewDoc.CreateElement(Child.InnerText));
+
+                        else if (XmlHelper.Attribute(Child, "type").ToLower() != "category")
+                            XmlHelper.SetValue(ScriptNode, Child.Name, Child.InnerText);
+                    }
+                }
+
+                foreach (XmlNode Child in XmlHelper.ChildNodes(Manager2Xml, ""))
+                {
+                    if (Child.Name != "ui" && Child.Name != "Reference" && Child.Name != "text")
+                        ScriptNode.AppendChild(ScriptNode.OwnerDocument.ImportNode(Child, true));
+                }
+                MyPaddock.AddModel(ScriptNode, CompiledAssembly);
+
+
+            #else
+                if (ui != null)
+                {
+                    foreach (XmlNode Child in XmlHelper.ChildNodes(ui, ""))
+                    {
+                        if (!XmlHelper.Attribute(Child, "type").Equals("category", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            // Find a public field or property with the childs name.
+                            Utility.SetValueOfFieldOrProperty(Child.Name, Model, Child.InnerText);
+                        }
+                    }
+                }
+                MyPaddock.Add(Model);
+#endif
+
         }
         catch (Exception err)
         {
@@ -104,7 +129,7 @@ public class Manager2
                 Params.WarningLevel = 2;
                 Params.ReferencedAssemblies.Add("System.dll");
                 Params.ReferencedAssemblies.Add("System.Xml.dll");
-                if (Path.GetFileNameWithoutExtension(DllFileName).ToLower() == "manager2x")
+                if (Path.GetFileNameWithoutExtension(DllFileName).ToLower() == "apsimx")
                 {
                     Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "ApsimX.exe"));
                     foreach (string ApsimXFileName in Directory.GetFiles(Configuration.ApsimBinDirectory(), "*X.dll"))

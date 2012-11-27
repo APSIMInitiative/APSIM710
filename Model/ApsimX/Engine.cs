@@ -5,78 +5,102 @@ using System.Xml;
 using System.IO;
 using System.Reflection;
 using CSGeneral;
+using System.Xml.Serialization;
+using System.Xml.Schema;
+using ApsimFile;
 
-
-public class FinishedException : Exception
-   {
-   public FinishedException(string msg)
-      : base(msg)
-      
-      {
-      }
-   }
-
-public class ApsimX
+namespace ModelFramework
 {
-    /// <summary>
-    /// Main program entry point.
-    /// </summary>
-    static int Main(string[] args)
+    public class ApsimX
     {
-        if (args.Length < 1)
+        /// <summary>
+        /// Main program entry point.
+        /// </summary>
+        static int Main(string[] args)
         {
-            Console.WriteLine("Usage: ApsimX .ApsimFileName");
-            return 1;
-        }
-
-        string SumFileName = Path.ChangeExtension(args[0], ".sum");
-        StreamWriter sw = new StreamWriter(SumFileName);
-        Console.SetOut(sw);
-        try
-        {
-            ModelInstance Simulation = Load(args[0]);
-
-            Simulation.Run();
-        }
-        catch (Exception err)
-        {
-            if (err.InnerException is FinishedException)
+            if (args.Length < 1)
             {
-                Console.WriteLine(err.InnerException.Message);
+                Console.WriteLine("Usage: ApsimX .ApsimFileName");
+                return 1;
             }
-            else
+
+            string SumFileName = Path.ChangeExtension(args[0], ".sum");
+            StreamWriter sw = new StreamWriter(SumFileName);
+            Console.SetOut(sw);
+            try
+            {
+                Simulation Simulation = Load(args[0]);
+                Simulation.Run();
+            }
+            catch (Exception err)
+            {
                 Console.WriteLine(err.ToString());
+            }
+            finally
+            {
+                sw.Close();
+            }
+            return 0;
         }
-        finally
+
+        /// <summary>
+        /// Load a simulation from the specified file.
+        /// </summary>
+        public static Simulation Load(string FileName)
         {
-            sw.Close();
+            if (!File.Exists(FileName))
+                throw new Exception("Cannot find file: " + FileName);
+
+            XmlDocument Doc = new XmlDocument();
+            Doc.Load(FileName);
+            Doc.DocumentElement.SetAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+            Doc.DocumentElement.SetAttribute("xmlns:xsd", "http://www.w3.org/2001/XMLSchema");
+            PreProcessXml(Doc.DocumentElement);
+
+            Type[] AllTypes = new Type[] { typeof(Clock), 
+                                       typeof(SummaryFile), 
+                                       typeof(Paddock), 
+                                       typeof(MetFile), 
+                                       typeof(Report),
+                                       typeof(Manager2),
+                                       typeof(Soil),
+                                       typeof(SoilWater) };
+
+            XmlSerializer x = new XmlSerializer(typeof(Simulation), AllTypes);
+            XmlReader Reader = new XmlNodeReader(Doc.DocumentElement);
+            Simulation Simulation = x.Deserialize(Reader) as Simulation;
+            return Simulation;
         }
-        return 0;
+
+        /// <summary>
+        /// Need to preprocess the XML to change from:
+        /// <Simulation name="Test">
+        ///    <Clock />
+        ///    <summaryfile />
+        ///    <area name="paddock">
+        /// </Simulation>
+        /// To
+        /// <Simulation name="Test" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        ///    <Component xsi:type="Clock" />
+        ///    <Component xsi:type="summaryfile" />
+        ///    <Component name="paddock" xsi:type="area" />
+        /// </Simulation>
+        /// </summary>
+        private static void PreProcessXml(XmlNode Node)
+        {
+            foreach (XmlNode Child in XmlHelper.ChildNodes(Node, ""))
+            {
+                string ChildClassName = Child.Name;
+                XmlNode NewChild = XmlHelper.ChangeType(Child, "Component");
+                XmlAttribute attr = Node.OwnerDocument.CreateAttribute("xsi:type", "http://www.w3.org/2001/XMLSchema-instance");
+                attr.Value = ChildClassName;
+                NewChild.Attributes.Append(attr);
+
+                if (Child.Name == "area")
+                    PreProcessXml(NewChild);
+            }
+        }
     }
 
-    /// <summary>
-    /// Load a simulation from the specified file.
-    /// </summary>
-    public static ModelInstance Load(string FileName)
-    {
-        if (!File.Exists(FileName))
-            throw new Exception("Cannot find file: " + FileName);
-
-        StreamReader In = new StreamReader(FileName);
-
-        ModelInstance Simulation = CreateModelInstance(In);
-        return Simulation;
-    }
-
-    /// <summary>
-    /// Create instances of all objects specified by the XmlNode. Returns the top 
-    /// level instance.
-    /// </summary>
-    public static ModelInstance CreateModelInstance(TextReader Reader)
-    {
-        ModelInstance RootInstance = XmlSerialiser.Deserialise(Reader);
-        RootInstance.Initialise();
-        return RootInstance;
-    }
 
 }

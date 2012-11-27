@@ -66,6 +66,13 @@ namespace ModelFramework
             Component.Get(Name, Data, false);
             return Data.Value;
         }
+        public DateTime ToDateTime()
+        {
+            WrapBuiltInVariable<int> Data = new WrapBuiltInVariable<int>();
+            Component.Get(Name, Data, false);
+            int JulianDate = Data.Value;
+            return DateUtility.JulianDayNumberToDateTime(JulianDate);
+        }
         public int[] ToInt32Array()
         {
             WrapBuiltInVariable<int[]> Data = new WrapBuiltInVariable<int[]>();

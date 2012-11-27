@@ -7,6 +7,7 @@ using CSGeneral;
 using System.Data;
 using System.IO;
 using ModelAttributes;
+using System.Reflection;
 
 namespace ApsimFile
 {
