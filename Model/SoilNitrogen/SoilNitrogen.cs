@@ -15,9 +15,8 @@ using System.Xml;
     /// </summary>
     public partial class SoilNitrogen
     {
-
         [Link]
-        Component My = null;
+        public Paddock Paddock;
 
         List<soilCNPatch> Patch;
 
@@ -54,6 +53,36 @@ using System.Xml;
             // +  Purpose:
             //      Performs the initial checks and setup
 
+            #if (APSIMX == true)
+            initDone = false;
+            ApsimFile.Soil Soil = (ApsimFile.Soil)Paddock.Get("Soil");
+            dlayer = MathUtility.DoublesToSingles(Soil.Thickness);
+            bd = MathUtility.DoublesToSingles(Soil.Water.BD);
+            sat_dep = MathUtility.DoublesToSingles(MathUtility.Multiply(Soil.Water.SAT, Soil.Thickness));
+            dul_dep = MathUtility.DoublesToSingles(MathUtility.Multiply(Soil.Water.DUL, Soil.Thickness));
+            ll15_dep = MathUtility.DoublesToSingles(MathUtility.Multiply(Soil.Water.LL15, Soil.Thickness));
+            sw_dep = MathUtility.DoublesToSingles(MathUtility.Multiply(Soil.SW, Soil.Thickness));
+            oc = Soil.OC;
+            ph = Soil.Analysis.PH;
+            salb = Soil.SoilWater.Salb;
+            no3ppm = Soil.NO3;
+            nh4ppm = Soil.NH4;
+
+            fbiom = Soil.SoilOrganicMatter.FBiom;
+            finert = Soil.SoilOrganicMatter.FInert;
+            soil_cn = Soil.SoilOrganicMatter.SoilCN;
+            root_wt = Soil.SoilOrganicMatter.RootWt;
+            root_cn = Soil.SoilOrganicMatter.RootCN;
+            enr_a_coeff = Soil.SoilOrganicMatter.EnrACoeff;
+            enr_b_coeff = Soil.SoilOrganicMatter.EnrBCoeff;
+            Clock.Tick += new TimeDelegate(OnTick);
+            Clock.Process += new NullTypeDelegate(OnProcess);
+            Clock.Post += new NullTypeDelegate(OnPost);
+
+            initDone = true;
+            #endif
+
+
             // set the size of arrays
             ResizeLayerArrays(dlayer.Length);
             foreach (soilCNPatch aPatch in Patch)
@@ -78,7 +107,7 @@ using System.Xml;
             //}
 
             if(!use_external_st)
-                simpleST = new simpleSoilTemp(latitude, tav, amp, mint, maxt);
+                simpleST = new simpleSoilTemp(MetFile.Latitude, MetFile.tav, MetFile.amp, MetFile.MinT, MetFile.MaxT);
 
             // notifify apsim about solutes
             AdvertiseMySolutes();
@@ -125,8 +154,8 @@ using System.Xml;
                 st = ave_soil_temp;
             else
             {
-                simpleST = new simpleSoilTemp(latitude, tav, amp, mint, maxt);
-                st = simpleST.SoilTemperature(today, mint, maxt, radn, salb, dlayer, bd, ll15_dep, sw_dep);
+                simpleST = new simpleSoilTemp(MetFile.Latitude, MetFile.tav, MetFile.amp, MetFile.MinT, MetFile.MaxT);
+                st = simpleST.SoilTemperature(Clock.Today, MetFile.MinT, MetFile.MaxT, MetFile.Radn, salb, dlayer, bd, ll15_dep, sw_dep);
             }
 
             // get the changes of state and publish (let other component to know)
@@ -155,11 +184,11 @@ using System.Xml;
                 use_external_st = (ave_soil_temp != null);
             if (!use_external_st)
             {
-                if (latitude == -999.0)
+                if (MetFile.Latitude == -999.0)
                     throw new Exception("Value for latitude was not supplied");
-                if (tav == -999.0)
+                if (MetFile.tav == -999.0)
                     throw new Exception("Value for TAV was not supplied");
-                if (amp == -999.0)
+                if (MetFile.amp == -999.0)
                     throw new Exception("Value for AMP was not supplied");
             }
 
@@ -422,7 +451,7 @@ using System.Xml;
             if (use_external_st)
                 st = ave_soil_temp;
             else
-                st = simpleST.SoilTemperature(today, mint, maxt, radn, salb, dlayer, bd, ll15_dep, sw_dep);
+                st = simpleST.SoilTemperature(Clock.Today, MetFile.MinT, MetFile.MaxT, MetFile.Radn, salb, dlayer, bd, ll15_dep, sw_dep);
             
             // update patch data
             UpdatePatches();
@@ -466,7 +495,7 @@ using System.Xml;
                     for (int k = 0; k < Patches.disappearing.Count; k++)
                     {
                         MergePatches(Patches.recipient[k], Patches.disappearing[k]);
-                        Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.MergePatch:");
+                        Console.WriteLine(Clock.Today.ToString("dd MMMM yyyy") + "(Day of year=" + Clock.Today.DayOfYear.ToString() + "), SoilNitrogen.MergePatch:");
                         Console.WriteLine("   merging Patch(" + Patches.disappearing[k].ToString() + ") into Patch(" + Patches.recipient[k].ToString() +
                             "). New patch area = " + Patch[Patches.recipient[k]].PatchArea.ToString("#0.00#"));
                     }
@@ -727,12 +756,12 @@ using System.Xml;
                     double OldPatch_newArea = NewPatch_area - NewPatch_area;
                     if (NewPatch_area < minPatchArea)
                     {  // area to create is too small, patch will not be created
-                        Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
+                        Console.WriteLine(Clock.Today.ToString("dd MMMM yyyy") + "(Day of year=" + Clock.Today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
                         Console.WriteLine("   attempt to create a new patch with area too small or negative (" + NewPatch_area.ToString("#0.00#") + "). The patch will not be created");
                     }
                     else if (OldPatch_newArea < minPatchArea)
                     {  // negative or too small area, patch will be created but old one will be deleted
-                        Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
+                        Console.WriteLine(Clock.Today.ToString("dd MMMM yyyy") + "(Day of year=" + Clock.Today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
                         Console.WriteLine(" attempt to set the area of existing patch(" + PatchIDs[i].ToString() + ") to a value too small or negative (" + OldPatch_newArea.ToString("#0.00#") + "). The patch will be eliminated");
 
                         // mark old patch for deletion
@@ -755,7 +784,7 @@ using System.Xml;
                         Patch[k].PatchArea = NewPatch_area;
                         Patch[k].PatchName = "Patch" + k.ToString();
                         Patch[k].dlt_urea = deltaUrea;
-                        Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
+                        Console.WriteLine(Clock.Today.ToString("dd MMMM yyyy") + "(Day of year=" + Clock.Today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
                         Console.WriteLine(" create new patch, with area = " + NewPatch_area.ToString("#0.00#") + ", based on existing patch(" + PatchIDs[i].ToString() +
                             ") - Old area = " + NewPatch_area.ToString("#0.00#") + ", new area = " + NewPatch_area.ToString("#0.00#"));
                     }

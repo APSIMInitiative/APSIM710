@@ -48,7 +48,11 @@ public abstract class ReflectedType : NamedItem
                 SetObject(Value);
             else if (Typ.Name == "Double[]")
             {
-                List<String> StringValues = XmlHelper.Values(Node.ParentNode, Node.Name);
+                List<String> StringValues;
+                if (XmlHelper.Find(Node, "double") != null)
+                    StringValues = XmlHelper.Values(Node, "double");
+                else
+                    StringValues = XmlHelper.Values(Node.ParentNode, Node.Name);
                 double[] DoubleValues = null;
                 if (StringValues.Count > 1)
                     DoubleValues = MathUtility.StringsToDoubles(StringValues);
@@ -62,7 +66,11 @@ public abstract class ReflectedType : NamedItem
             }
             else if (Typ.Name == "String[]")
             {
-                List<String> StringValues = XmlHelper.Values(Node.ParentNode, Node.Name);
+                List<String> StringValues;
+                if (XmlHelper.Find(Node, "string") != null)
+                    StringValues = XmlHelper.Values(Node, "string");
+                else
+                    StringValues = XmlHelper.Values(Node.ParentNode, Node.Name);
                 String[] Values = null;
                 if (StringValues.Count > 1)
                 {

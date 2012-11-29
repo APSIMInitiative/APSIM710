@@ -742,6 +742,13 @@ namespace CSGeneral
             return Values;
         }
 
+        public static float[] DoublesToSingles(double[] DoubleValues)
+        {
+            float[] Values = new float[DoubleValues.Length];
+            for (int i = 0; i < DoubleValues.Length; i++)
+                Values[i] = Convert.ToSingle(DoubleValues[i]);
+            return Values;
+        }
         public static double Sqr(double x) { return x * x; }
 
         public static double LnGamma(double xx)

@@ -116,7 +116,7 @@ void InputComponent::doInit1(const protocol::Init1Data& init1Data)
       static const char* getDataDDML = "<type kind=\"string\" array=\"T\"/>";
       static const char* stringDDML = "<type kind=\"string\"/>";
       static const char* singleType = "<type kind=\"single\"/>";
-
+ 
       // register a few things.
 	  tickID = addRegistration(::respondToEvent, 0, "tick", DDML(protocol::TimeType()).c_str());
 	  preNewmetID = addRegistration(::event, 0, "preNewmet", DDML(protocol::NewMetType()).c_str());
@@ -155,10 +155,13 @@ void InputComponent::doInit1(const protocol::Init1Data& init1Data)
      // and other tools can see the met variables.
      if (ToLower(getName()) == "input" && getVariableValue("maxt") == 0.0)
         {
-          addRegistration(::respondToGetSet, 0, "maxt", singleType);       
-          addRegistration(::respondToGetSet, 0, "mint", singleType);       
-          addRegistration(::respondToGetSet, 0, "radn", singleType);       
-          addRegistration(::respondToGetSet, 0, "rain", singleType);       
+          addRegistration(::respondToGetSet, 0, "MaxT", singleType);       
+          addRegistration(::respondToGetSet, 0, "MinT", singleType);       
+          addRegistration(::respondToGetSet, 0, "Radn", singleType);       
+          addRegistration(::respondToGetSet, 0, "Rain", singleType); 
+          addRegistration(::respondToGet, 0, "Latitude", singleType);
+          addRegistration(::respondToGet, 0, "tav", singleType);
+          addRegistration(::respondToGet, 0, "amp", singleType);
         } 
 	  }
    catch (const runtime_error& err)

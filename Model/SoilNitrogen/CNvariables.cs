@@ -5,6 +5,7 @@ using System.Text;
 using ModelFramework;
 using CSGeneral;
 using System.Xml;
+using System.Xml.Serialization;
 
 /// <summary>
 /// This partial class contains most of the variables and properties of SoilNitrogen
@@ -103,53 +104,53 @@ using System.Xml;
 
         // soil parameterisation to use, used to determine which node of xml file will be used to read [Param]
         [Param(IsOptional = true)]
-        private string SoilParamSet = "standard";
+        public string SoilParamSet = "standard";
 
         // whether simpleSoilTemp is allowed, if 'no' SoiTemp must be present, if 'yes' SoilTemp will be used if present
         private bool AllowsimpleSoilTemp = false;
         [Param]
-        private string allow_simpleSoilTemp
+        public string allow_simpleSoilTemp
         { set { AllowsimpleSoilTemp = value.ToLower().Contains("yes"); } }
 
         // switch indicating whether soil profile reduction is allowed (from erosion)
         private bool AllowProfileReduction = false;
         [Param]
-        private string profile_reduction
+        public string profile_reduction
         { set { AllowProfileReduction = value.ToLower().StartsWith("on"); } }
 
         // marker for whether organic solute are to be simulated (always false as it is not implemented)
         private bool useOrganicSolutes = false;
         [Param(IsOptional = true)]
-        private string use_organic_solutes
+        public string use_organic_solutes
         { set { useOrganicSolutes = value.ToLower().StartsWith("on"); } }
 
         // minimum allowable Urea content (ppm), per layer
         [Param(MinVal = 0.0, MaxVal = 1000.0)]
-        private double ureappm_min = 0.0;
+        public double ureappm_min = 0.0;
 
         // minimum allowable NH4 content (ppm), per layer
         [Param(MinVal = 0.0, MaxVal = 1000.0)]
-        private double nh4ppm_min = 0.0;
+        public double nh4ppm_min = 0.0;
 
         // minimum allowable NO3 content (ppm), per layer
         [Param(MinVal = 0.0, MaxVal = 1000.0)]
-        private double no3ppm_min = 0.0;
+        public double no3ppm_min = 0.0;
 
         // minimum allowable FOM content (kg/ha), per layer
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double fom_min;
+        public double fom_min;
 
         // conversion from OC to OM
         [Param(MinVal = 0.0, MaxVal = 3.0)]
-        private double oc2om_factor = 1.7;
+        public double oc2om_factor = 1.7;
 
         // weight fraction of C in carbohydrates
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double c_in_fom = 0.4;
+        public double c_in_fom = 0.4;
 
         // minimum relative area (fraction of paddock) for any patch
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double minPatchArea = 0.001;
+        public double minPatchArea = 0.001;
 
         #endregion
 
@@ -157,11 +158,11 @@ using System.Xml;
 
         // enrichment equation coefficient a
         [Param]
-        private double enr_a_coeff = 0.0;
+        public double enr_a_coeff = 0.0;
 
         // enrichment equation coefficient b
         [Param]
-        private double enr_b_coeff = 0.0;
+        public double enr_b_coeff = 0.0;
 
         #endregion
 
@@ -170,7 +171,7 @@ using System.Xml;
         // the soil C:N ratio (actually of humus)
         private double hum_cn = 0.0;
         [Param(MinVal = 1.0, MaxVal = 25.0)]
-        private double soil_cn
+        public double soil_cn
         {
             get { return hum_cn; }
             set { hum_cn = value; }
@@ -179,7 +180,7 @@ using System.Xml;
         // the C:N ratio of microbial biomass
         private double biom_cn = 8.0;
         [Param(IsOptional = true, MinVal = 1.0, MaxVal = 50.0)]
-        private double mcn
+        public double mcn
         {
             get { return biom_cn; }
             set { biom_cn = value; }
@@ -187,11 +188,11 @@ using System.Xml;
 
         // initial ratio of biomass-C to mineralizable humic-C (0-1)
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double[] fbiom = null;
+        public double[] fbiom = null;
 
         // initial proportion of total soil C that is not subject to mineralisation (0-1)
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double[] finert = null;
+        public double[] finert = null;
 
         #endregion
 
@@ -200,7 +201,7 @@ using System.Xml;
         // initial weight of fom in the soil (kgDM/ha)
         private double fom_ini_wt = 0.0;
         [Param(MinVal = 0.0, MaxVal = 10000.0)]
-        private double root_wt
+        public double root_wt
         {
             get { return fom_ini_wt; }
             set { fom_ini_wt = value; }
@@ -209,7 +210,7 @@ using System.Xml;
         // initial depth over which fom is distributed within the soil profile (mm)
         private double fom_ini_depth = 0.0;
         [Param(IsOptional = true, MinVal = 0.0, MaxVal = 5000.0)]
-        private double root_depth
+        public double root_depth
         {
             get { return fom_ini_depth; }
             set { fom_ini_depth = value; }
@@ -218,7 +219,7 @@ using System.Xml;
         // initial C:N ratio of roots (actually FOM)
         private double fom_ini_cn = 0.0;
         [Param(MinVal = 0.1, MaxVal = 750.0)]
-        private double root_cn
+        public double root_cn
         {
             get { return fom_ini_cn; }
             set { fom_ini_cn = value; }
@@ -227,7 +228,7 @@ using System.Xml;
         // initial C:N ratio of each of the three fom composition pools (carbohydrate, cellulose, and lignin) - case not given, fom_cn is used
         private double[] fomPools_cn = null;
         [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1000.0)]
-        private double[] root_cn_pool
+        public double[] root_cn_pool
         {
             get { return fomPools_cn; }
             set { fomPools_cn = value; }
@@ -235,19 +236,20 @@ using System.Xml;
 
         // list of fom types
         [Param(Name = "fom_type")]
-        private String[] fom_types;
+        [XmlArray("fom_type")]
+        public String[] fom_types;
 
         // fraction of carbohydrate in FOM (0-1), for each FOM type
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double[] fract_carb;
+        public double[] fract_carb;
 
         // fraction of cellulose in FOM (0-1), for each FOM type
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double[] fract_cell;
+        public double[] fract_cell;
 
         // fraction of lignin in FOM (0-1), for each FOM type
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double[] fract_lign;
+        public double[] fract_lign;
 
         #endregion
 
@@ -257,15 +259,15 @@ using System.Xml;
 
         // fraction of residue C mineralised retained in system (0-1)
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double ef_res;
+        public double ef_res;
 
         // fraction of retained residue C transferred to biomass (0-1)
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double fr_res_biom;
+        public double fr_res_biom;
 
         // depth from which mineral N can be immobilised by decomposing residues (mm)
         [Param(MinVal = 0.0, MaxVal = 1000.0)]
-        private double min_depth;
+        public double min_depth;
 
         #endregion
 
@@ -275,31 +277,31 @@ using System.Xml;
 
         // maximum rate constants for decomposition of FOM pools [carbohydrate component] (0-1)
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double[] rd_carb;
+        public double[] rd_carb;
 
         // maximum rate constants for decomposition of FOM pools [cellulose component] (0-1)
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double[] rd_cell;
+        public double[] rd_cell;
 
         // maximum rate constants for decomposition of FOM pools [lignin component] (0-1)
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double[] rd_lign;
+        public double[] rd_lign;
 
         // fraction of FOM C mineralised retained in system (0-1)   
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double ef_fom;
+        public double ef_fom;
 
         // fraction of retained FOM C transferred to biomass (0-1)
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double fr_fom_biom;
+        public double fr_fom_biom;
 
         // coeff. to determine the magnitude of C:N effects on decomposition of FOM ()
         [Param(MinVal = 0.0, MaxVal = 10.0)]
-        private double cnrf_coeff;
+        public double cnrf_coeff;
 
         // C:N above which decomposition rate of FOM declines ()
         [Param(MinVal = 5.0, MaxVal = 100.0)]
-        private double cnrf_optcn;
+        public double cnrf_optcn;
 
         #endregion
 
@@ -308,36 +310,36 @@ using System.Xml;
         // optimum temperature for mineralisation of FOM
         private TempFactorData TempFactor_minerFOM = new TempFactorData();
         [Param]
-        private double[] stfMinerFOM_Topt
+        public double[] stfMinerFOM_Topt
         { set { TempFactor_minerFOM.TempOptimum = value; } }
 
         // temperature factor for mineralisation of FOM at zero degrees
         [Param]
-        private double[] stfMinerFOM_FctrZero
+        public double[] stfMinerFOM_FctrZero
         { set { TempFactor_minerFOM.FactorAtZero = value; } }
 
         // curve exponent for temperature factor for mineralisation of FOM
         [Param]
-        private double[] stfMinerFOM_CvExp
+        public double[] stfMinerFOM_CvExp
         { set { TempFactor_minerFOM.CurveExponent = value; } }
 
         // parameters for soil moisture factor for mineralisation of FOM
         private XYData MoistFactor_minerFOM = new XYData();
         [Param]
-        private double[] swfMinerFOM_x
+        public double[] swfMinerFOM_x
         { set { MoistFactor_minerFOM.xVals = value; } }
         [Param]
-        private double[] swfMinerFOM_y
+        public double[] swfMinerFOM_y
         { set { MoistFactor_minerFOM.yVals = value; } }
 
         // parameters for C:N factor mineralisation of FOM
         private double CNFactorMinerFOM_OptCN;
         [Param]
-        private double cnfMinerFOM_OptCN
+        public double cnfMinerFOM_OptCN
         { set { CNFactorMinerFOM_OptCN = value; } }
         private double CNFactorMinerFOM_RateCN;
         [Param]
-        private double cnfMinerFOM_RateCN
+        public double cnfMinerFOM_RateCN
         { set { CNFactorMinerFOM_RateCN = value; } }
 
         #endregion
@@ -350,37 +352,37 @@ using System.Xml;
 
         // potential rate of soil biomass mineralisation (per day)
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double[] rd_biom = null;
+        public double[] rd_biom = null;
 
         // fraction of biomass C mineralised retained in system (0-1)
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double ef_biom;
+        public double ef_biom;
 
         // fraction of retained biomass C returned to biomass (0-1)
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double fr_biom_biom;
+        public double fr_biom_biom;
 
         // potential rate of humus mineralisation (per day)
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double[] rd_hum = null;
+        public double[] rd_hum = null;
 
         // fraction of humic C mineralised retained in system (0-1)
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double ef_hum;
+        public double ef_hum;
 
         #region Old parameters
 
         // Soil temperature above which there is no further effect on mineralisation and nitrification (oC)
         [Param(MinVal = 5.0, MaxVal = 100.0)]
-        private double[] opt_temp;
+        public double[] opt_temp;
 
         // index specifying water content for water factor for mineralisation
         [Param(MinVal = 0.0, MaxVal = 2.0)]
-        private double[] wfmin_index;
+        public double[] wfmin_index;
 
         // value of water factor(mineralisation) function at given index values
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double[] wfmin_values;
+        public double[] wfmin_values;
 
         #endregion
 
@@ -389,26 +391,26 @@ using System.Xml;
         // optimum temperature for OM mineralisation
         private TempFactorData TempFactor_Miner = new TempFactorData();
         [Param]
-        private double[] stfMiner_Topt
+        public double[] stfMiner_Topt
         { set { TempFactor_Miner.TempOptimum = value; } }
 
         // temperature factor for OM mineralisation at zero degrees
         [Param]
-        private double[] stfMiner_FctrZero
+        public double[] stfMiner_FctrZero
         { set { TempFactor_Miner.FactorAtZero = value; } }
 
         // curve exponent for temperature factor for OM mineralisation
         [Param]
-        private double[] stfMiner_CvExp
+        public double[] stfMiner_CvExp
         { set { TempFactor_Miner.CurveExponent = value; } }
 
         // parameters for soil moisture factor for OM mineralisation
         private XYData MoistFactor_Miner = new XYData();
         [Param]
-        private double[] swfMiner_x
+        public double[] swfMiner_x
         { set { MoistFactor_Miner.xVals = value; } }
         [Param]
-        private double[] swfMiner_y
+        public double[] swfMiner_y
         { set { MoistFactor_Miner.yVals = value; } }
 
         #region Parameters for each OM type
@@ -416,51 +418,51 @@ using System.Xml;
         // optimum temperature for mineralisation of humus
         private TempFactorData TempFactor_minerHum = new TempFactorData();
         [Param]
-        private double[] stfMinerHum_Topt
+        public double[] stfMinerHum_Topt
         { set { TempFactor_minerHum.TempOptimum = value; } }
 
         // temperature factor for mineralisation of humus at zero degrees
         [Param]
-        private double[] stfMinerHum_FctrZero
+        public double[] stfMinerHum_FctrZero
         { set { TempFactor_minerHum.FactorAtZero = value; } }
 
         // curve exponent for temperature factor for mineralisation of humus
         [Param]
-        private double[] stfMinerHum_CvExp
+        public double[] stfMinerHum_CvExp
         { set { TempFactor_minerHum.CurveExponent = value; } }
 
         // parameters for soil moisture factor for mineralisation of humus
         private XYData MoistFactor_minerHum = new XYData();
         [Param]
-        private double[] swfMinerHum_x
+        public double[] swfMinerHum_x
         { set { MoistFactor_minerHum.xVals = value; } }
         [Param]
-        private double[] swfMinerHum_y
+        public double[] swfMinerHum_y
         { set { MoistFactor_minerHum.yVals = value; } }
 
         // optimum temperature for mineralisation of OM biomass
         private TempFactorData TempFactor_minerBiom = new TempFactorData();
         [Param]
-        private double[] stfMinerBiom_Topt
+        public double[] stfMinerBiom_Topt
         { set { TempFactor_minerBiom.TempOptimum = value; } }
 
         // temperature factor for mineralisation of OM biomass at zero degrees
         [Param]
-        private double[] stfMinerBiom_FctrZero
+        public double[] stfMinerBiom_FctrZero
         { set { TempFactor_minerBiom.FactorAtZero = value; } }
 
         // curve exponent for temperature factor for mineralisation of OM biomass
         [Param]
-        private double[] stfMinerBiom_CvExp
+        public double[] stfMinerBiom_CvExp
         { set { TempFactor_minerBiom.CurveExponent = value; } }
 
         // parameters for soil moisture factor for mineralisation of OM biomass
         private XYData MoistFactor_minerBiom = new XYData();
         [Param]
-        private double[] swfMinerBiom_x
+        public double[] swfMinerBiom_x
         { set { MoistFactor_minerBiom.xVals = value; } }
         [Param]
-        private double[] swfMinerBiom_y
+        public double[] swfMinerBiom_y
         { set { MoistFactor_minerBiom.yVals = value; } }
 
         #endregion
@@ -474,67 +476,67 @@ using System.Xml;
         // optimum temperature for urea hydrolisys
         private TempFactorData TempFactor_Hydrol = new TempFactorData();
         [Param]
-        private double[] stfHydrol_Topt
+        public double[] stfHydrol_Topt
         { set { TempFactor_Hydrol.TempOptimum = value; } }
 
         // temperature factor for urea hydrolisys at zero degrees
         [Param]
-        private double[] stfHydrol_FctrZero
+        public double[] stfHydrol_FctrZero
         { set { TempFactor_Hydrol.FactorAtZero = value; } }
 
         // curve exponent for temperature factor for urea hydrolisys
         [Param]
-        private double[] stfHydrol_CvExp
+        public double[] stfHydrol_CvExp
         { set { TempFactor_Hydrol.CurveExponent = value; } }
 
         // parameters for soil moisture factor for hydrolisys
         private XYData MoistFactor_Hydrol = new XYData();
         [Param]
-        private double[] swfHydrol_x
+        public double[] swfHydrol_x
         { set { MoistFactor_Hydrol.xVals = value; } }
         [Param]
-        private double[] swfHydrol_y
+        public double[] swfHydrol_y
         { set { MoistFactor_Hydrol.yVals = value; } }
 
         // parameters for potential urea hydrolisys
         [Param]
-        private double potHydrol_min;  // minimum value
+        public double potHydrol_min;  // minimum value
 
         [Param]
-        private double potHydrol_parmA;
+        public double potHydrol_parmA;
 
         [Param]
-        private double potHydrol_parmB;
+        public double potHydrol_parmB;
 
         [Param]
-        private double potHydrol_parmC;
+        public double potHydrol_parmC;
 
         [Param]
-        private double potHydrol_parmD;
+        public double potHydrol_parmD;
 
         #endregion
 
         #region Parameters for nitrification process
 
         [Param(MinVal = 0.0, MaxVal = 100.0)]
-        private double nitrification_pot;    // Potential nitrification by soil (ppm)
+        public double nitrification_pot;    // Potential nitrification by soil (ppm)
 
         [Param(MinVal = 0.0, MaxVal = 200.0)]
-        private double nh4_at_half_pot;      // nh4 conc at half potential (ppm)   
+        public double nh4_at_half_pot;      // nh4 conc at half potential (ppm)   
 
         #region Old parameters
 
         [Param(MinVal = 0.0, MaxVal = 2.0)]
-        private double[] wfnit_index;        // index specifying water content for water factor for nitrification
+        public double[] wfnit_index;        // index specifying water content for water factor for nitrification
 
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double[] wfnit_values;       // value of water factor(nitrification) function at given index values
+        public double[] wfnit_values;       // value of water factor(nitrification) function at given index values
 
         [Param(MinVal = 0.0, MaxVal = 14.0)]
-        private double[] pHf_nit_pH;         // pH values for specifying pH factor for nitrification
+        public double[] pHf_nit_pH;         // pH values for specifying pH factor for nitrification
 
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double[] pHf_nit_values;     // value of pH factor(nitrification) function for given pH values
+        public double[] pHf_nit_values;     // value of pH factor(nitrification) function for given pH values
 
         #endregion
 
@@ -543,35 +545,35 @@ using System.Xml;
         // optimum temperature for nitrification
         private TempFactorData TempFactor_Nitrif = new TempFactorData();
         [Param]
-        private double[] stfNitrif_Topt
+        public double[] stfNitrif_Topt
         { set { TempFactor_Nitrif.TempOptimum = value; } }
 
         // temperature factor for nitrification at zero degrees
         [Param]
-        private double[] stfNitrif_FctrZero
+        public double[] stfNitrif_FctrZero
         { set { TempFactor_Nitrif.FactorAtZero = value; } }
 
         // curve exponent for temperature factor for nitrification
         [Param]
-        private double[] stfNitrif_CvExp
+        public double[] stfNitrif_CvExp
         { set { TempFactor_Nitrif.CurveExponent = value; } }
 
         // parameters for soil moisture factor for nitrification
         private XYData MoistFactor_Nitrif = new XYData();
         [Param]
-        private double[] swfNitrif_x
+        public double[] swfNitrif_x
         { set { MoistFactor_Nitrif.xVals = value; } }
         [Param]
-        private double[] swfNitrif_y
+        public double[] swfNitrif_y
         { set { MoistFactor_Nitrif.yVals = value; } }
 
         // parameters for soil pH factor for nitrification
         private XYData pHFactor_Nitrif = new XYData();
         [Param]
-        private double[] sphfNitrif_x
+        public double[] sphfNitrif_x
         { set { pHFactor_Nitrif.xVals = value; } }
         [Param]
-        private double[] sphfNitrif_y
+        public double[] sphfNitrif_y
         { set { pHFactor_Nitrif.yVals = value; } }
 
         #endregion
@@ -581,24 +583,24 @@ using System.Xml;
         #region Parameters for denitrification and N2O emission processes
 
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double dnit_rate_coeff;      // denitrification rate coefficient (kg/mg)
+        public double dnit_rate_coeff;      // denitrification rate coefficient (kg/mg)
 
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double dnit_nitrf_loss;      // Fraction of nitrification lost as denitrification
+        public double dnit_nitrf_loss;      // Fraction of nitrification lost as denitrification
 
         [Param(MinVal = 0.0, MaxVal = 100.0)]
-        private double dnit_k1;              // K1 parameter from Thorburn et al (2010) for N2O model
+        public double dnit_k1;              // K1 parameter from Thorburn et al (2010) for N2O model
 
         #region Old parameters
 
         [Param(MinVal = 0.0, MaxVal = 5.0)]
-        private double dnit_wf_power;        // denitrification water factor power term
+        public double dnit_wf_power;        // denitrification water factor power term
 
         [Param(MinVal = 0.0, MaxVal = 100.0)]
-        private double[] dnit_wfps;            // WFPS for calculating the n2o fraction of denitrification
+        public double[] dnit_wfps;            // WFPS for calculating the n2o fraction of denitrification
 
         [Param(MinVal = 0.0, MaxVal = 100.0)]
-        private double[] dnit_n2o_factor;      // WFPS factor for n2o fraction of denitrification
+        public double[] dnit_n2o_factor;      // WFPS factor for n2o fraction of denitrification
 
         #endregion
 
@@ -606,52 +608,52 @@ using System.Xml;
 
         // parameter A to compute active carbon (for denitrification)
         [Param]
-        private double actC_parmB;
+        public double actC_parmB;
 
         // parameter B to compute active carbon (for denitrification)
         [Param]
-        private double actC_parmA;
+        public double actC_parmA;
 
         // optimum temperature for denitrification
         private TempFactorData TempFactor_Denit = new TempFactorData();
         [Param]
-        private double[] stfDenit_Topt
+        public double[] stfDenit_Topt
         { set { TempFactor_Denit.TempOptimum = value; } }
 
         // temperature factor for denitrification at zero degrees
         [Param]
-        private double[] stfDenit_FctrZero
+        public double[] stfDenit_FctrZero
         { set { TempFactor_Denit.FactorAtZero = value; } }
 
         // curve exponent for temperature factor for denitrification
         [Param]
-        private double[] stfDenit_CvExp
+        public double[] stfDenit_CvExp
         { set { TempFactor_Denit.CurveExponent = value; } }
 
         // parameters for soil moisture factor for denitrification
         private XYData MoistFactor_Denit = new XYData();
         [Param]
-        private double[] swfDenit_x
+        public double[] swfDenit_x
         { set { MoistFactor_Denit.xVals = value; } }
         [Param]
-        private double[] swfDenit_y
+        public double[] swfDenit_y
         { set { MoistFactor_Denit.yVals = value; } }
 
         // parameter A in the N2N2O function
         [Param]
-        private double N2N2O_parmA;
+        public double N2N2O_parmA;
 
         // parameter B in the N2N2O function
         [Param]
-        private double N2N2O_parmB;
+        public double N2N2O_parmB;
 
         // parameters for soil moisture factor for denitrification
         private XYData WFPSFactor_N2N2O = new XYData();
         [Param]
-        private double[] wfpsN2N2O_x
+        public double[] wfpsN2N2O_x
         { set { WFPSFactor_N2N2O.xVals = value; } }
         [Param]
-        private double[] wfpsN2N2O_y
+        public double[] wfpsN2N2O_y
         { set { WFPSFactor_N2N2O.yVals = value; } }
 
         #endregion
@@ -662,16 +664,18 @@ using System.Xml;
 
         #region Parameters that do or may change during simulation
 
-        // today's date
-        [Input]
-        DateTime today;
+        [Link]
+        public Clock Clock = null;
+
+        [Link]
+        public MetFile MetFile = null;
 
         #region Parameters to set soil pH
 
         // pH of soil (assumed equivalent to a 1:1 soil-water slurry)
         [Param(IsOptional = true, MinVal = 3.5, MaxVal = 11.0)]
         [Input(IsOptional = true)]
-        private double[] ph = null;
+        public double[] ph = null;
 
         #endregion
 
@@ -683,7 +687,7 @@ using System.Xml;
         [Output]
         [Units("%")]
         [Description("Soil organic carbon (exclude FOM)")]
-        double[] oc
+        public double[] oc
         {
             get
             {
@@ -720,7 +724,7 @@ using System.Xml;
         [Output]
         [Units("mg/kg")]
         [Description("Soil urea nitrogen content")]
-        private double[] ureappm
+        public double[] ureappm
         {
             get
             {
@@ -760,7 +764,7 @@ using System.Xml;
         [Output]
         [Units("kgN/ha")]
         [Description("Soil urea nitrogen amount")]
-        double[] urea
+        public double[] urea
         {
             get
             {
@@ -787,7 +791,7 @@ using System.Xml;
         [Output]
         [Units("mg/kg")]
         [Description("Soil ammonium nitrogen content")]
-        private double[] nh4ppm
+        public double[] nh4ppm
         {
             get
             {
@@ -826,7 +830,7 @@ using System.Xml;
         [Output]
         [Units("kgN/ha")]
         [Description("Soil ammonium nitrogen amount")]
-        double[] nh4
+        public double[] nh4
         {
             get
             {
@@ -853,7 +857,7 @@ using System.Xml;
         [Output]
         [Units("mg/kg")]
         [Description("Soil nitrate nitrogen content")]
-        private double[] no3ppm
+        public double[] no3ppm
         {
             get
             {
@@ -892,7 +896,7 @@ using System.Xml;
         [Output]
         [Units("kgN/ha")]
         [Description("Soil nitrate nitrogen amount")]
-        double[] no3
+        public double[] no3
         {
             get
             {
@@ -912,40 +916,6 @@ using System.Xml;
                 SendExternalMassFlowN(SumDoubleArray(no3) - sumOld);
             }
         }
-
-        #endregion
-
-        #region Values for simpleSoilTemp
-
-        // local latitude
-        [Input(IsOptional = true)]
-        [Units("deg")]
-        private double latitude = -999.0;
-
-        // annual average ambient air temperature (oC)
-        [Input(IsOptional = true)]
-        [Units("oC")]
-        private double tav = -999.0;
-
-        // annual amplitude of the mean monthly air temperature (oC)
-        [Input(IsOptional = true)]
-        [Units("oC")]
-        private double amp = -999.0;
-
-        // today's net solar radiation
-        [Input]
-        [Units("oC")]
-        private double radn = 0.0;
-
-        // today's maximun air temperature
-        [Input]
-        [Units("oC")]
-        private double maxt = 0.0;
-
-        // today's minimun air temperature
-        [Input]
-        [Units("oC")]
-        private double mint = 0.0;
 
         #endregion
 

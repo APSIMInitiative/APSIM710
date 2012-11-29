@@ -633,7 +633,7 @@ std::string ApsimRegistry::getDescription(int componentID)
          if (reg->getTypeCode() == ::respondToGet)
 			   {
                string st = "   <property name=\"";
-               st += reg->getName();
+               st += reg->getNameProperCase();
                st += "\" access=\"read\" init=\"F\">\n";
                st += reg->getDDML();
                st += "</property>\n";
@@ -642,7 +642,7 @@ std::string ApsimRegistry::getDescription(int componentID)
          else if (reg->getTypeCode() == ::respondToSet)
                {
                string st = "   <property name=\"";
-               st += reg->getName();
+               st += reg->getNameProperCase();
                st += "\" access=\"write\" init=\"F\">\n";
                st += reg->getDDML();
                st += "</property>\n";
@@ -651,7 +651,7 @@ std::string ApsimRegistry::getDescription(int componentID)
          else if (reg->getTypeCode() == ::respondToGetSet)
                {
                string st = "   <property name=\"";
-               st += reg->getName();
+               st += reg->getNameProperCase();
                st += "\" access=\"both\" init=\"F\">\n";
                st += reg->getDDML();
                st += "</property>\n";
@@ -662,7 +662,7 @@ std::string ApsimRegistry::getDescription(int componentID)
             XMLDocument* doc = new XMLDocument(reg->getDDML(), XMLDocument::xmlContents);
             string typeName = doc->documentElement().getAttribute("typename");
             string st = "   <event name=\"";
-            st += reg->getName() + "\"";
+            st += reg->getNameProperCase() + "\"";
             if (typeName != "")
                st += " typename=\"" + typeName + "\"";
             st += " kind=\"subscribed\">";
@@ -676,7 +676,7 @@ std::string ApsimRegistry::getDescription(int componentID)
             XMLDocument* doc = new XMLDocument(reg->getDDML(), XMLDocument::xmlContents);
             string typeName = doc->documentElement().getAttribute("typename");
             string st = "   <event name=\"";
-            st += reg->getName() + "\"";
+            st += reg->getNameProperCase() + "\"";
             if (typeName != "")
                st += " typename=\"" + typeName + "\"";
             
@@ -689,7 +689,7 @@ std::string ApsimRegistry::getDescription(int componentID)
          else if (reg->getTypeCode() == ::get)
             {
             string st = "   <driver name=\"";
-            st += reg->getName();
+            st += reg->getNameProperCase();
             st += "\">\n";
             st += reg->getDDML();
             st += "</driver>\n";

@@ -64,7 +64,8 @@ namespace ModelFramework
                                        typeof(Report),
                                        typeof(Manager2),
                                        typeof(Soil),
-                                       typeof(SoilWater) };
+                                       typeof(SoilWater),
+                                       typeof(SoilNitrogen) };
 
             XmlSerializer x = new XmlSerializer(typeof(Simulation), AllTypes);
             XmlReader Reader = new XmlNodeReader(Doc.DocumentElement);
@@ -98,6 +99,28 @@ namespace ModelFramework
 
                 if (Child.Name == "area")
                     PreProcessXml(NewChild);
+                else if (Child.Name == "Soil")
+                {
+                    NewChild = Node.AppendChild(Node.OwnerDocument.CreateElement("Component"));
+                    attr = Node.OwnerDocument.CreateAttribute("xsi:type", "http://www.w3.org/2001/XMLSchema-instance");
+                    attr.Value = "SoilWater.NET";
+                    NewChild.Attributes.Append(attr);
+
+                    NewChild = Node.AppendChild(Node.OwnerDocument.CreateElement("Component"));
+                    attr = Node.OwnerDocument.CreateAttribute("xsi:type", "http://www.w3.org/2001/XMLSchema-instance");
+                    attr.Value = "SoilNitrogen";
+                    NewChild.Attributes.Append(attr);       
+                    string PathToSoilNitrogenXML = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                                                                "Soil with new nitrogen model.xml");
+                    if (!File.Exists(PathToSoilNitrogenXML))
+                        throw new Exception("Cannot find SoilNitrogen XML file: " + PathToSoilNitrogenXML);
+                    XmlDocument Doc = new XmlDocument();
+                    Doc.Load(PathToSoilNitrogenXML);
+                    XmlNode Model = XmlHelper.Find(Doc.DocumentElement, "SoilN");
+                    if (Model == null)
+                        throw new Exception("Cannot find a <Model> node for SoilN in file: " + PathToSoilNitrogenXML);
+                    NewChild.InnerXml = Model.InnerXml;
+                }
             }
         }
     }

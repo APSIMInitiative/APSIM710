@@ -22,11 +22,12 @@ class EXPORT  ApsimRegistration
                         int _componentID) :
               type(_type),
               registrationName(ToLower(_registrationName)),
+              registrationNameProperCase(_registrationName),
               ddml(_ddml),
               componentID(_componentID),
               destinationID(_destinationID)
         {
-			setName(registrationName);
+         setName(_registrationName);
         };
 
       virtual ~ApsimRegistration(void) {};
@@ -58,12 +59,14 @@ class EXPORT  ApsimRegistration
 	  const std::string getType(void) const {return typeCodeToString(type);}
 	  EventTypeCode getTypeCode(void) const {return type;}
 	  const std::string& getName(void) const {return registrationName;};
+	  const std::string& getNameProperCase(void) const {return registrationNameProperCase;};
 	  const std::string& getNameWithoutBrackets(void) const {return registrationNameWithoutBrackets;}
 	  const std::string& getDDML(void) const {return ddml;};
 	  int getComponentID(void) const {return componentID;};
       int getDestinationID(void) const {return destinationID;};
 	  void setName(const std::string& name) { 
 		registrationName = ToLower(name);
+      registrationNameProperCase = name;
         size_t pos = registrationName.find('(');
         if (pos != std::string::npos)
            {
@@ -87,6 +90,7 @@ class EXPORT  ApsimRegistration
    protected:
       EventTypeCode type;
       std::string registrationName;
+      std::string registrationNameProperCase;
       std::string registrationNameWithoutBrackets;
       std::string arraySpecifier;
       std::string ddml;

@@ -32,46 +32,46 @@ namespace SoilCN
         // optimum temperature for urea hydrolisys
         private static BendingStickData TempFactor_UHydrol = new BendingStickData();
         [Param]
-        private double[] stfHydrol_Topt
+        public double[] stfHydrol_Topt
         { set { TempFactor_UHydrol.xValueAtOptimum = value; } }
 
         // temperature factor for urea hydrolisys at zero degrees
         [Param]
-        private double[] stfHydrol_FctrZero
+        public double[] stfHydrol_FctrZero
         { set { TempFactor_UHydrol.yValueAtZero = value; } }
 
         // curve exponent for temperature factor for urea hydrolisys
         [Param]
-        private double[] stfHydrol_CvExp
+        public double[] stfHydrol_CvExp
         { set { TempFactor_UHydrol.CurveExponent = value; } }
 
         // parameters for soil moisture factor for hydrolisys
         private static BrokenStickData MoistFactor_UHydrol = new BrokenStickData();
         [Param]
-        private double[] swfHydrol_x
+        public double[] swfHydrol_x
         { set { MoistFactor_UHydrol.xVals = value; } }
         [Param]
-        private double[] swfHydrol_y
+        public double[] swfHydrol_y
         { set { MoistFactor_UHydrol.yVals = value; } }
 
         // parameters for computing potential urea hydrolisys - after CERES, see GoodWin and Jones (1991)
         private static double MinPotentialHydrolisys;
         [Param(MinVal = 0.0, MaxVal = 1.0)]
         [Units("0-1")]
-        private double potHydrol_min
+        public double potHydrol_min
         { set { MinPotentialHydrolisys = value; } }
 
         [Param]
-        private static double potHydrol_parmA;
+        public static double potHydrol_parmA;
 
         [Param]
-        private static double potHydrol_parmB;
+        public static double potHydrol_parmB;
 
         [Param]
-        private static double potHydrol_parmC;
+        public static double potHydrol_parmC;
 
         [Param]
-        private static double potHydrol_parmD;
+        public static double potHydrol_parmD;
 
         #endregion
 
@@ -81,36 +81,36 @@ namespace SoilCN
         private double MaxPotentialNitrificationRate;
         [Param(MinVal = 0.0, MaxVal = 100.0)]
         [Units("ppm/day")]
-        private double nitrification_pot
+        public double nitrification_pot
         { set { MaxPotentialNitrificationRate = value; } }
 
         // nh4 concentration at half potential nitrification (ppm) - Michaelis-Menten equation
         private double NH4atHalfPotentialNitrification;
         [Param(MinVal = 0.0, MaxVal = 200.0)]
         [Units("ppm")]
-        private double nh4_at_half_pot
+        public double nh4_at_half_pot
         { set { NH4atHalfPotentialNitrification = value; } }
 
         // Fraction of nitrification lost as denitrification
         private double NitrousFractionOnDenit;
         [Param(MinVal = 0.0, MaxVal = 1.0)]
         [Units("0-1")]
-        private double dnit_nitrf_loss
+        public double dnit_nitrf_loss
         { set { NitrousFractionOnDenit = value; } }
 
         #region Old parameters
 
         [Param(MinVal = 0.0, MaxVal = 2.0)]
-        private double[] wfnit_index;        // index specifying water content for water factor for nitrification
+        public double[] wfnit_index;        // index specifying water content for water factor for nitrification
 
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double[] wfnit_values;       // value of water factor(nitrification) function at given index values
+        public double[] wfnit_values;       // value of water factor(nitrification) function at given index values
 
         [Param(MinVal = 0.0, MaxVal = 14.0)]
-        private double[] pHf_nit_pH;         // pH values for specifying pH factor for nitrification
+        public double[] pHf_nit_pH;         // pH values for specifying pH factor for nitrification
 
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        private double[] pHf_nit_values;     // value of pH factor(nitrification) function for given pH values
+        public double[] pHf_nit_values;     // value of pH factor(nitrification) function for given pH values
 
         #endregion
 
@@ -160,25 +160,25 @@ namespace SoilCN
         private double DenitRateCoefficient;
         [Param(MinVal = 0.0, MaxVal = 1.0)]
         [Units("/ppmC/day")]
-        private double dnit_rate_coeff
+        public double dnit_rate_coeff
         { set { DenitRateCoefficient = value; } }
 
         // Parameter K1 from Thorburn et al (2010) for N2O model
         private double N2N2O_parmK1;
         [Param(MinVal = 0.0, MaxVal = 100.0)]
-        private double dnit_k1
+        public double dnit_k1
         { set { N2N2O_parmK1 = value; } }
 
         #region Old parameters
 
         [Param(MinVal = 0.0, MaxVal = 5.0)]
-        private double dnit_wf_power;        // denitrification water factor power term
+        public double dnit_wf_power;        // denitrification water factor power term
 
         [Param(MinVal = 0.0, MaxVal = 100.0)]
-        private double[] dnit_wfps;            // WFPS for calculating the n2o fraction of denitrification
+        public double[] dnit_wfps;            // WFPS for calculating the n2o fraction of denitrification
 
         [Param(MinVal = 0.0, MaxVal = 100.0)]
-        private double[] dnit_n2o_factor;      // WFPS factor for n2o fraction of denitrification
+        public double[] dnit_n2o_factor;      // WFPS factor for n2o fraction of denitrification
 
         #endregion
 
@@ -186,52 +186,52 @@ namespace SoilCN
 
         // parameter A to compute water soluble organic carbon (for denitrification)
         [Param]
-        private double actC_parmA;
+        public double actC_parmA;
 
         // parameter B to compute water soluble organic carbon (for denitrification)
         [Param]
-        private double actC_parmB;
+        public double actC_parmB;
 
         // optimum temperature for denitrification
         private BendingStickData TempFactor_Denit1 = new BendingStickData();
         [Param]
-        private double[] stfDenit_Topt
+        public double[] stfDenit_Topt
         { set { TempFactor_Denit1.xValueAtOptimum = value; } }
 
         // temperature factor for denitrification at zero degrees
         [Param]
-        private double[] stfDenit_FctrZero
+        public double[] stfDenit_FctrZero
         { set { TempFactor_Denit1.yValueAtZero = value; } }
 
         // curve exponent for temperature factor for denitrification
         [Param]
-        private double[] stfDenit_CvExp
+        public double[] stfDenit_CvExp
         { set { TempFactor_Denit1.CurveExponent = value; } }
 
         // parameters for soil moisture factor for denitrification
         private BrokenStickData MoistFactor_Denit1 = new BrokenStickData();
         [Param]
-        private double[] swfDenit_x
+        public double[] swfDenit_x
         { set { MoistFactor_Denit1.xVals = value; } }
         [Param]
-        private double[] swfDenit_y
+        public double[] swfDenit_y
         { set { MoistFactor_Denit1.yVals = value; } }
 
         // parameter A in the N2N2O function
         [Param]
-        private double N2N2O_parmA;
+        public double N2N2O_parmA;
 
         // parameter B in the N2N2O function
         [Param]
-        private double N2N2O_parmB;
+        public double N2N2O_parmB;
 
         // parameters for soil moisture factor for denitrification
         private BrokenStickData WFPSFactor_N2N2O1 = new BrokenStickData();
         [Param]
-        private double[] wfpsN2N2O_x
+        public double[] wfpsN2N2O_x
         { set { WFPSFactor_N2N2O1.xVals = value; } }
         [Param]
-        private double[] wfpsN2N2O_y
+        public double[] wfpsN2N2O_y
         { set { WFPSFactor_N2N2O1.yVals = value; } }
 
         #endregion

@@ -503,7 +503,7 @@ using System.Xml;
             for (int k = 0; k < Patch.Count; k++)
             {
                 // today's date
-                Patch[k].Today = today;
+                Patch[k].Today = Clock.Today;
 
                 for (int layer = 0; layer < dlayer.Length; layer++)
                 {
@@ -643,7 +643,7 @@ using System.Xml;
                             }
                             else
                             {  // name passed did not correspond to any patch
-                                Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
+                                Console.WriteLine(Clock.Today.ToString("dd MMMM yyyy") + "(Day of year=" + Clock.Today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
                                 Console.WriteLine("  the patch name '" + Names[pName] + "' did not correspond to any existing patch. Patch will be ignored.");
                             }
                         }
@@ -674,7 +674,7 @@ using System.Xml;
                             }
                             else
                             {  // id passed did not correspond to any patch
-                                Console.WriteLine(today.ToString("dd MMMM yyyy") + "(Day of year=" + today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
+                                Console.WriteLine(Clock.Today.ToString("dd MMMM yyyy") + "(Day of year=" + Clock.Today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
                                 Console.WriteLine("  the patch id '" + IDs[pId] + "' did not correspond to any existing patch. Patch will be ignored.");
                             }
                         }
