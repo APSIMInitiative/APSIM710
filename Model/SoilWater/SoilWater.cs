@@ -2417,7 +2417,7 @@ public class SoilWater
             double swr_top;       //! stage 2 evaporation occurs ratio available sw potentially available sw in top layer
 
             //! set up evaporation stage
-            swr_top = MathUtility.Divide((_sw_dep[0] - ll15[0]), (_dul_dep[0] - _ll15_dep[0]), 0.0);
+            swr_top = MathUtility.Divide((_sw_dep[0] - ll15_dep[0]), (_dul_dep[0] - _ll15_dep[0]), 0.0);
             swr_top = bound(swr_top, 0.0, 1.0);
 
             //! are we in stage1 or stage2 evap?
@@ -3609,7 +3609,7 @@ public class SoilWater
                     //! now back up to saturation for this layer up out of the
                     //! backup water keeping account for reduction of actual
                     //! flow rates (flux) for N movement.         
-                    for (i = layer - 1; i >= 0; layer--)
+                    for (i = layer - 1; i >= 0; i--)
                     {
                         flux[i] = flux[i] - backup;
                         add = Math.Min((_sat_dep[i] - new_sw_dep[i]), backup);
