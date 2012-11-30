@@ -21,8 +21,8 @@ module Registrations
       integer :: process
       integer :: post
       integer :: WaterUptakesCalculated
+      integer :: NitrogenChanged
       integer :: RunoffEvent
-
    end type IDsType
 
    contains
@@ -51,6 +51,7 @@ module Registrations
          id%process = add_registration(respondToEventReg, 'process', nullTypeDDML, '')
          id%post = add_registration(respondToEventReg, 'post', nullTypeDDML, '')
          id%WaterUptakesCalculated = add_registration(eventReg, 'WaterUptakesCalculated', nullTypeDDML, '')
+         id%NitrogenChanged = add_registration(eventReg, 'NitrogenChanged', NitrogenChangedTypeDDML, '')
          id%RunoffEvent = add_registration(eventReg, 'RunoffEvent', RunoffEventTypeDDML, '')
          
       ! variables that are gettable and settable

@@ -5347,8 +5347,19 @@ c                     p%beta(solnum,node) = table_beta(solnum2)
       double precision solute_n(0:M)   ! solute concn in layers(kg/ha)
       double precision dlt_solute_n(0:M)   ! solute concn in layers(kg/ha)
       character string*100
+      type(NitrogenChangedType) :: NchgData  ! structure holding NitrogenChanged data
+      real dlt_solute_s(0:p%n)               ! solute concn in layers(kg/ha) - single precision
 
 *- Implementation Section ----------------------------------
+
+      ! initialise the NitrogenChanged data to zero
+      call fill_real_array(dlt_solute_s, 0.0, p%n+1)
+      NchgData%num_DeltaUrea = p%n+1
+      NchgData%DeltaUrea = dlt_solute_s
+      NchgData%num_DeltaNH4 = p%n+1
+      NchgData%DeltaNH4 = dlt_solute_s
+      NchgData%num_DeltaNO3 = p%n+1
+      NchgData%DeltaNO3 = dlt_solute_s
 
       do 100 solnum = 1, p%num_solutes
          do 50 node=0,p%n
@@ -5385,11 +5396,11 @@ c                     p%beta(solnum,node) = table_beta(solnum2)
      :               ,p%solute_names(solnum)
      :               (:lastnb(p%solute_names(solnum)))
      :               ,'(',node,') = ',Ctot
-            call fatal_error(err_internal,
-     :            '-ve value for solute concentration' 
-     :            //new_line//string)
+               call fatal_error(err_internal,
+     :              '-ve value for solute concentration' 
+     :              //new_line//string)
 
-            Ctot = 0d0
+               Ctot = 0d0
 
             else
                ! Ctot is positive
@@ -5408,18 +5419,35 @@ c                     p%beta(solnum,node) = table_beta(solnum2)
             ! finished testing - assign value to array element
             solute_n(node) = Ctot
             dlt_solute_n(node) = Ctot - g%cslstart(solnum,node)
+            dlt_solute_s(node) = real(dlt_solute_n(node))
 
    50    continue
 
 
-         call Set_double_array (
-     :           g%solute_owners(solnum),
-     :           'dlt_'//p%solute_names(solnum),
-     :           '(kg/ha)',
-     :           dlt_solute_n(0),
-     :           p%n+1)
+         ! Added by RCichota - using NitrogenChanged event to modify dlt_N's
+         !if (p%solute_names(solnum) .eq. 'urea') then
+         !   NchgData%num_DeltaUrea = p%n+1
+         !   NchgData%DeltaUrea = dlt_solute_s
+         !elseif (p%solute_names(solnum) .eq. 'nh4') then
+         !   NchgData%num_DeltaNH4 = p%n+1
+         !   NchgData%DeltaNH4 = dlt_solute_s
+         !elseif (p%solute_names(solnum) .eq. 'no3') then
+         !   NchgData%num_DeltaNO3 = p%n+1
+         !   NchgData%DeltaNO3 = dlt_solute_s
+         !else
+            call Set_double_array (
+     :              g%solute_owners(solnum),
+     :              'dlt_'//p%solute_names(solnum),
+     :              '(kg/ha)',
+     :              dlt_solute_n(0),
+     :              p%n+1)
+         !endif
 
   100 continue
+
+      ! Send a NitrogenChanged event to the system
+      !NchgData%Sender = 'SWIM'
+      !call publish_NitrogenChanged(ID%NitrogenChanged, NchgData)
 
       return
       end subroutine
@@ -9386,19 +9414,18 @@ c      pause
 
       if (solnum .gt. 0) then
          ! only continue if solute exists.
-         if (g%solute_owners(solnum).ne.0) then
 
-            call get_double_array (
-     :              g%solute_owners(solnum),
-     :               solname,
-     :              p%n+1,
-     :              '(kg/ha)',
-     :              solute_n(0),
-     :              numvals,
-     :              c%lb_solute,
-     :              c%ub_solute)
+         call get_double_array (
+     :           g%solute_owners(solnum),
+     :            solname,
+     :           p%n+1,
+     :           '(kg/ha)',
+     :           solute_n(0),
+     :           numvals,
+     :           c%lb_solute,
+     :           c%ub_solute)
 
-         else
+         if (numvals.eq.0) then
                call fatal_error (Err_User,
      :            'No module has registered ownership for solute: '
      :            //solname)
