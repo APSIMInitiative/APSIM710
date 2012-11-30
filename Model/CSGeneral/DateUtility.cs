@@ -176,9 +176,14 @@ namespace CSGeneral
                 start = GetDate(ddMMM_start, today.Year),
                 end = GetDate(ddMMM_end, today.Year);
 
-            //if start after end (could be after if spanning years)
+            //if start after end (spans end-of-year boundary)
             if (start.CompareTo(end) > 0)
-                end = end.AddYears(1);
+            {
+                if (today.CompareTo(start) >= 0)
+                    end = end.AddYears(1);
+                else
+                    start = start.AddYears(-1);
+            }
 
             return WithinDates(start, today, end);
         }
