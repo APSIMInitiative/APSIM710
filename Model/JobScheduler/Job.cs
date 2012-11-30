@@ -218,7 +218,10 @@ public class Job
                _P.StartInfo.EnvironmentVariables.Add("LD_LIBRARY_PATH", ldPath);
            }
            if (StdOutFilename != "")
+           {
                StdOutStream = new StreamWriter(StdOutFilename);
+               StdOutStream.AutoFlush = true;
+           }
            else
                StdOutStream = null;
            lineCount = 0;
