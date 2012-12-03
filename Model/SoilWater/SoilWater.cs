@@ -3046,18 +3046,21 @@ public class SoilWater
         //*+  Notes
         //*       Eventually eo will be in a separate module entirely, and
         //*       will appear to soilwat when get_other_varaibles() runs.
-        //*       But, for now we use either priestly-taylor, or whatever
-        //*       the user specified.
+        //*       But, for now we either retrieve it "manually", or use priestly-taylor.
 
         eo_system = Double.NaN;
-        //if (_eo_source != "" &&  My.Get(_eo_source, out eo_system) && !Double.IsNaN(eo_system))
-        //{
-        //    eo = eo_system;                     //! eo is provided by system
-        //}
-        //else
+#if (APSIMX == false)
+        if (_eo_source != "" && My.Get(_eo_source, out eo_system) && !Double.IsNaN(eo_system))
+        {
+            eo = eo_system;                     //! eo is provided by system
+        }
+        else
         {
             soilwat2_priestly_taylor();    //! eo from priestly taylor
         }
+#else
+            soilwat2_priestly_taylor();    //! eo from priestly taylor
+#endif
     }
 
     private void soilwat2_pot_evapotranspiration_effective()
@@ -3102,7 +3105,10 @@ public class SoilWater
         //                ! find equilibrium evap rate as a
         //                ! function of radiation, albedo, and temp.
 
-        cover_green_sum = 0.0; //  ApsimUtil.sum_cover_array(cover_green, num_crops); // This is a fallow water balance
+        cover_green_sum = 0.0;
+        for (int crop = 0; crop < num_crops; ++crop)
+            cover_green_sum = 1.0 - (1.0 - cover_green_sum) * (1.0 - cover_green[crop]);
+
         albedo = max_albedo - (max_albedo - salb) * (1.0 - cover_green_sum);
 
         // ! wt_ave_temp is mean temp, weighted towards max.
