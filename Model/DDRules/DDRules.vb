@@ -34,7 +34,7 @@ Imports ModelFramework
 '       average 2300-2400
 '       rotation: 20 days during peak growth
 '                 out to 35 days at drying off
-'       Paddocks over pre-graze taken out and cut imediatly
+'       Paddocks over pre-graze taken out and cut immediately
 
 ' Silage cutting
 '   Only remove surplus e.g. if in surplus by 18TDM only remove 18 TDM at cutting by changing the residual (not realistic, see weekly notes)
@@ -66,7 +66,7 @@ Public Class DDRules
     Public default_gr As Integer() = dairyNZ_gr
 
     Dim strEffluentPaddocks() As String = {"10T", "11P", "12P"}
-    Dim strLanewayPaddocks() As String
+    Dim strLanewayPaddocks() As String = {"Lanes"}
     'Dim myIrrigationAmount As Double = 0
     Dim myFertiliserAmount As Double = 0
     Private TotalFarmArea As Double = 0
@@ -86,7 +86,7 @@ Public Class DDRules
 
 
     Public Function StringtoIntegerArray(ByVal strArray As String) As Integer()
-        Dim strvalues As String() = strArray.Split(New [Char]() {","c})
+        Dim strvalues As String() = strArray.Split(",".ToCharArray())
         Dim dblvalues(strvalues.Length - 1) As Integer
         For i As Integer = 0 To strvalues.Length - 1
             dblvalues(i) = CInt(strvalues(i))
@@ -95,7 +95,7 @@ Public Class DDRules
     End Function
 
     Public Function StringtoDoubleArray(ByVal text As String) As Double()
-        Dim stringdoubles() As String = text.Split(New [Char]() {","c})
+        Dim stringdoubles() As String = text.Split(",".ToCharArray())
         Dim doubleArray(stringdoubles.Length - 1) As Double
         For i As Integer = 0 To stringdoubles.Length - 1
             doubleArray(i) = Convert.ToDouble(stringdoubles(i))
@@ -142,7 +142,7 @@ Public Class DDRules
         End If
 
         myFarm.Init(MySimulation, MyClock.year, MyClock.month, TotalFarmArea)
-        myFarm.setEffluent(myEffluentPond, myEffluentIrrigator)
+        myFarm.setEffluent(myEffluentPond, myEffluentIrrigator) 'This sets myEffluentPond to myEffluentPond, and myEffluentIrrigator to myEffluentIrrigator.  Eh??!
         myFarm.setEffluentPaddocks(strEffluentPaddocks)
         myFarm.setLanewayPaddocks(strLanewayPaddocks)
 
@@ -327,7 +327,8 @@ Public Class DDRules
     'End Property
 
     <Description("Effective farm area [ha]")> _
-    <Output()> <Units("ha")> Public Property FarmArea() As Double
+    <Param()> <Output()> <Units("ha")> Public Property FarmArea() As Double
+        '<Param()> <Output()> <Units("ha")> Public Property FarmArea() As Double
         '<Param()> <Output()> <Units("ha")> Public Property FarmArea() As Double
         Get
             Return TotalFarmArea
@@ -1328,7 +1329,7 @@ Public Class DDRules
         '<Description("Monthly grazing intervals")> _
         '<Output()> Public Property GrazingIntervalByMonth() As String
         Get
-            Dim b() As String = Array.ConvertAll(Of Integer, String)(dairyNZ_mg, New Converter(Of Integer, String)(AddressOf MyCStr))
+            Dim b() As String = Array.ConvertAll(dairyNZ_mg, New Converter(Of Integer, String)(AddressOf MyCStr))
             Dim c As String = String.Join(",", b)
             Return c
         End Get
@@ -1341,7 +1342,7 @@ Public Class DDRules
         '<Description("Monthly grazing residuals")> _
         '<Output()> Public Property GrazingResidualByMonth() As String
         Get
-            Dim b() As String = Array.ConvertAll(Of Integer, String)(dairyNZ_gr, New Converter(Of Integer, String)(AddressOf MyCStr))
+            Dim b() As String = Array.ConvertAll(dairyNZ_gr, New Converter(Of Integer, String)(AddressOf MyCStr))
             Dim c As String = String.Join(",", b)
             Return c
         End Get
@@ -1354,7 +1355,7 @@ Public Class DDRules
         '<Description("Monthly grazing residuals (Val)")> _
         '<Output()> Public Property GrazingResidualValByMonth() As String
         Get
-            Dim b() As String = Array.ConvertAll(Of Integer, String)(Val_gr, New Converter(Of Integer, String)(AddressOf MyCStr))
+            Dim b() As String = Array.ConvertAll(Val_gr, New Converter(Of Integer, String)(AddressOf MyCStr))
             Dim c As String = String.Join(",", b)
             Return c
         End Get
@@ -1675,12 +1676,13 @@ Public Class DDRules
                 If (DebugLevel > 0) Then
                     Console.Write("EffluentPaddocks = " + strValues(i))
                 End If
-                strEffluentPaddocks(i) = strValues(i).TrimEnd
+                strEffluentPaddocks(i) = strValues(i).TrimEnd(",").TrimStart(" ")
+
                 If (DebugLevel > 0) Then
                     Console.WriteLine(" = " + strEffluentPaddocks(i))
                 End If
             Next
-            'myFarm.setEffluentPaddocks(strEffluentPaddocks) have to do this later, set before farm is initilised
+            'myFarm.setEffluentPaddocks(strEffluentPaddocks) have to do this later, set after farm is initialised
         End Set
     End Property
 
@@ -1715,7 +1717,7 @@ Public Class DDRules
     End Property
     Private Function strToDoubleArray(ByVal s As String, ByVal l As Integer) As Double()
         Dim values(l - 1) As Double
-        Dim strValues() As String = s.Split(New [Char]() {","c})
+        Dim strValues() As String = s.Split(",".ToCharArray())
         For i As Integer = 0 To l - 1
             values(i) = CDbl(strValues(i))
         Next

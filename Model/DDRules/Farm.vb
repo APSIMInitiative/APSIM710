@@ -3,7 +3,7 @@
 Public Class Farm
     Private myDebugLevel As Integer = 0
     Private myPaddocks As List(Of PaddockWrapper)         ' Full list of apsim paddocks
-    Private myPaddocks2 As Dictionary(Of String, PaddockWrapper)         ' Full list of apsim paddocks
+    Private myPaddocks2 As Dictionary(Of String, PaddockWrapper)         ' Full list of apsim paddocks with names
     Private myMilkingHerd As SimpleHerd                            ' Dairy herd / on milking platform
     Private myDryCowHerd As SimpleHerd                            ' Dry Cow herd / on or off milking platform
     Private MyFarmArea As Double
@@ -67,7 +67,7 @@ Public Class Farm
 
         Dim SpecifiedArea As Double = 0
         Dim TempList As New Dictionary(Of String, Double)
-        'How do we get the area of indervidual paddocks?
+        'How do we get the area of individual paddocks?
         MyFarmArea = FarmArea
         Dim j As Integer = 0
         'If (DebugLevel > 0) Then
@@ -129,6 +129,12 @@ Public Class Farm
                 Console.WriteLine(SubPaddock.Name)
             End If
             i += 1
+
+            'Here area is set to farm area / number of paddocks !!!
+            'But see Sub setLanewayPaddocks, where area is set again.
+            'How can paddock area be surfaced as a published property 
+            'which can be set for each paddock in the simulation, in the GUI?
+
             Dim TempArea As Double = DefaultArea
             'If (TempList.ContainsKey(SubPaddock.Name)) Then
             '    TempArea = TempList(SubPaddock.Name).ToString
@@ -136,22 +142,25 @@ Public Class Farm
             '    myPaddocks.Add(myLaneways)
             '    MyFarmArea -= myLaneways.Area
             'Else
+
+
             Dim pdk As New PaddockWrapper(i, SubPaddock, TempArea)
             myPaddocks.Add(pdk)
             'End If
 
-            If (myDebugLevel > 0) Then
-                Console.WriteLine("Dubug Level = " & myDebugLevel)
-                Console.WriteLine("Predefined = " & SubPaddock.Name)
-                Console.WriteLine("i = " & i)
-                Console.WriteLine("Area = " & TempArea)
-                Console.WriteLine("   Paddock " & SubPaddock.ToString)
-                Console.WriteLine("   Cover " & pdk.Cover.ToString("0"))
-                Console.WriteLine("Done.")
-            End If
+            'If (myDebugLevel > 0) Then
+            Console.WriteLine("Dubug Level = " & myDebugLevel)
+            Console.WriteLine("Predefined = " & SubPaddock.Name)
+            Console.WriteLine("i = " & i)
+            Console.WriteLine("Area = " & TempArea)
+            Console.WriteLine("   Paddock " & SubPaddock.ToString)
+            Console.WriteLine("   Cover " & pdk.Cover.ToString("0"))
+            Console.WriteLine("Done.")
+            'End If
         Next
 
         For Each pdk As PaddockWrapper In myPaddocks
+            'Use lowercase because string vars passed in from Manager1 scripts are lowercased!
             myPaddocks2.Add(pdk.Name.ToLower, pdk)
         Next
 
@@ -1258,10 +1267,10 @@ Public Class Farm
         If (values.Length > 0) Then
             myEffluentPaddocks = New List(Of PaddockWrapper)(values.Length)
             For Each strPaddockName As String In values
-                If (myPaddocks2.ContainsKey(strPaddockName)) Then
-                    Dim p As PaddockWrapper = myPaddocks2(strPaddockName)
+                If (myPaddocks2.ContainsKey(strPaddockName.ToLower)) Then
+                    Dim p As PaddockWrapper = myPaddocks2(strPaddockName.ToLower)
                     Console.WriteLine(p)
-                    myEffluentPaddocks.Add(myPaddocks2(strPaddockName))
+                    myEffluentPaddocks.Add(myPaddocks2(strPaddockName.ToLower))
                 End If
             Next
         Else
@@ -1308,10 +1317,10 @@ Public Class Farm
         myLanewayPaddocks = New List(Of PaddockWrapper)()
         If (values IsNot Nothing) AndAlso (values.Length > 0) Then
             For Each strPaddockName As String In values
-                If (myPaddocks2.ContainsKey(strPaddockName)) Then
-                    Dim p As PaddockWrapper = myPaddocks2(strPaddockName)
+                If (myPaddocks2.ContainsKey(strPaddockName.ToLower)) Then
+                    Dim p As PaddockWrapper = myPaddocks2(strPaddockName.ToLower)
                     p.Grazable = False 'not part of grazing rotation
-                    myLanewayPaddocks.Add(myPaddocks2(strPaddockName))
+                    myLanewayPaddocks.Add(myPaddocks2(strPaddockName.ToLower))
                     myPaddocks.Remove(p)
                 End If
             Next
