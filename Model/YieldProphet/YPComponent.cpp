@@ -53,7 +53,7 @@ YPComponent::YPComponent(void)
 void YPComponent::doInit1(const protocol::Init1Data& initData)
    {
    Component::doInit1(initData);
-   static const char* realArrayType = "<type kind=\"single\" array=\"T\" />";
+   static const char* doubleArrayType = "<type kind=\"double\" array=\"T\" />";
    static const char* doubleType = "<type kind=\"double\" />";
 
    cllID = addRegistration(::respondToGet, 0, "CLLToday", doubleType);
@@ -64,13 +64,13 @@ void YPComponent::doInit1(const protocol::Init1Data& initData)
    satID = addRegistration(::respondToGet, 0, "SATToday", doubleType);
 
    rootDepthID = addRegistration(::get, 0, "root_depth", doubleType);
-   lldepID = addRegistration(::get, 0, "ll_dep", realArrayType);
-   duldepID = addRegistration(::get, 0, "dul_dep", realArrayType);
-   satdepID = addRegistration(::get, 0, "sat_dep", realArrayType);
-   swdepID = addRegistration(::get, 0, "sw_dep", realArrayType);
-   dlayerID = addRegistration(::get, 0, "dlayer", realArrayType);
-   no3ID = addRegistration(::get, 0, "no3", realArrayType);
-   nh4ID = addRegistration(::get, 0, "nh4", realArrayType);
+   lldepID = addRegistration(::get, 0, "ll_dep", doubleArrayType);
+   duldepID = addRegistration(::get, 0, "dul_dep", doubleArrayType);
+   satdepID = addRegistration(::get, 0, "sat_dep", doubleArrayType);
+   swdepID = addRegistration(::get, 0, "sw_dep", doubleArrayType);
+   dlayerID = addRegistration(::get, 0, "dlayer", doubleArrayType);
+   no3ID = addRegistration(::get, 0, "no3", doubleArrayType);
+   nh4ID = addRegistration(::get, 0, "nh4", doubleArrayType);
    }
 // ------------------------------------------------------------------
 // return a variable to caller.
@@ -202,15 +202,5 @@ std::vector<double> YPComponent::Accum(std::vector<double>& values)
 // ------------------------------------------------------------------
 void YPComponent::getDoubles(unsigned id, std::vector<double>& values, bool optional)
    {
-   values.clear();
-
-   protocol::Variant* variant;
-   if (getVariable(id, &variant, optional))
-      {
-      std::vector<float> singleValues;
-      variant->unpack(singleValues);
-
-      for (unsigned i = 0; i != singleValues.size(); i++)
-         values.push_back(singleValues[i]);
-      }
+    getVariable (id, values, -DBL_MAX, DBL_MAX, true);
    }
