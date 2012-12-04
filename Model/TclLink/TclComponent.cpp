@@ -15,6 +15,11 @@
 #define USE_TCL_STUBS
 #include <tcl.h>
 
+#ifndef __WIN32__
+// will need to hunt for the tcl library on Linux platform
+#include <glob.h>
+#endif
+
 typedef Tcl_Interp *(*CREATEINTERPFN)();
 
 #include "TclComponent.h"
@@ -108,6 +113,37 @@ void StopTcl(Tcl_Interp *interp)
 		Tcl_DeleteInterp(interp);
 }
 
+#ifndef __WIN32__
+// find tcl shared library (Linux only)
+static const char *tclSharedLibraryPathname()
+{
+  static glob_t glob_result;
+  static const char *path = NULL;
+
+  if (path == NULL) {
+    // library could be in /usr/lib or /usr/lib64,
+    // and who know's what version may be installed, so:
+    const char *glob_pattern = "/usr/lib*/libtcl?*.so";
+    // this allocates memory, but we only ever call it once
+    int rc = glob(glob_pattern,
+                  0,              // flags
+                  NULL,           // errorfunc,
+                  &glob_result);
+    if (rc == 0) {
+      // found one or more, choose the last, which will be the latest
+      path = glob_result.gl_pathv[glob_result.gl_pathc - 1];
+    } else if (rc == GLOB_NOMATCH) {
+      throw std::runtime_error("Can't glob TCL library " + string(glob_pattern));
+    } else {
+      // some other error
+      throw std::runtime_error("Glob TCL library failed");
+    }
+  }
+  return path;
+}
+#endif
+
+
 //---------------------------APSIM dll entrypoints
 extern "C" EXPORT TclComponent  * STDCALL createComponent(ScienceAPI2& scienceAPI)
    {
@@ -116,7 +152,7 @@ extern "C" EXPORT TclComponent  * STDCALL createComponent(ScienceAPI2& scienceAP
 #ifdef __WIN32__
    string tclEXE = fileDirName(apsimDLL) + "/TclLink/bin/tcl85.dll";
 #else
-   string tclEXE = "/usr/lib/libtcl8.5.so";
+   string tclEXE = tclSharedLibraryPathname();
 #endif
    StartTcl(tclEXE);
 
