@@ -453,7 +453,7 @@ void Soil::crop_check_sw(
    {
    //  Local Variables
    float dul;              // drained upper limit water content of layer (mm water/mm soil)
-   char err_msg[80];          // error message
+   char err_msg[120];          // error message
    int layer;              // layer number
    float ll;               // lower limit water content of layer (mm water/mm soil)
    float sw;               // soil water content of layer l (mm water/mm soil)
