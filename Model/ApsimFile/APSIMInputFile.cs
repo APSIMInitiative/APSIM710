@@ -255,7 +255,19 @@ namespace ApsimFile
                     }
                     else if (Data.Columns[TableColumnNumber].DataType == typeof(float))
                     {
-                        NewMetRow[TableColumnNumber] = Convert.ToDouble(Words[w] /*, new CultureInfo("en-US")*/);
+                        try
+                        {
+                            NewMetRow[TableColumnNumber] = Convert.ToDouble(Words[w] /*, new CultureInfo("en-US")*/);
+                        }
+                        catch (Exception e)
+                        {
+                            string err = "";
+                            for(int i=0;i<Words.Count;i++)
+                                err += Words[i] + " ";
+
+                            System.Windows.Forms.MessageBox.Show("Error in column " + (w + 1).ToString() + ":\r\n" + err);
+                            return;
+                        }
                     }
                     else
                         NewMetRow[TableColumnNumber] = Words[w];
@@ -342,7 +354,7 @@ namespace ApsimFile
             try
             {
                 In.Seek(0, SeekOrigin.End);
-                if (In.Position >= 1000)
+                if (In.Position >= 1000 && In.Position -1000 > SavedPosition)
                 {
                     In.Seek(-1000, SeekOrigin.End);
                     In.ReadLine(); // throw away partial line.

@@ -2419,6 +2419,7 @@ public class Script
        </text>
       </manager2>
     <manager2 name="Report on specific days">
+
 	<ui>
 	<title type="category" description="Don't forget to remove any reporting frquency variables from your selected Outputfile." />
 	<reportDays type="text" description="Enter a list of dates to report on, seperated by spaces (e.g. 1-Jan 1-Jul 31-Dec)." />
@@ -2456,6 +2457,65 @@ public class Script
 }
        </text>
 	   </manager2>
+	<manager2 name="Reset on or after event"><ui><surfaceOM type="modulename" description="Enter name of SurfaceOM module:">SurfaceOrganicMatter</surfaceOM><soil type="modulename" description="Enter name of soil module:">Sandy Loam</soil><eventName type="text" description="Name of event to trigger on:">harvesting</eventName><days type="text" description="Number of days after event to reset (0 for same day):">0</days><resetSWat type="yesno" description="Reset soil water?">yes</resetSWat><resetSNit type="yesno" description="Reset soil nitrogen?">yes</resetSNit><resetSOM type="yesno" description="Reset surface organic matter?">yes</resetSOM></ui><text>
+using System;
+using ModelFramework;
+using CSGeneral;
+
+public class Script 
+{      
+   [Link] Paddock MyPaddock; // Can be used to dynamically get access to simulation structure and variables
+   [Input] DateTime Today;   // Equates to the value of the current simulation date - value comes from CLOCK
+   [Param] string surfaceOM; 
+   [Param] string eventName; // The value for this will come from the Properties page.
+   [Param] string soil;
+   [Param] string resetSWat;
+   [Param] string resetSNit;
+   [Param] string resetSOM;
+   [Param] int days;
+   
+   //SWIM has been disabled until it's released as there's no proxy for it.
+   private SurfaceOM SOMmodule;
+   private SoilWat soilWatModule;
+  // private SWIM3 SWIMmodule;
+   private SoilN soilNModule;
+   private DateTime harvestDate;
+
+   
+   // The following event handler will be called once at the beginning of the simulation
+   [EventHandler] public void OnInitialised()
+   {
+      SOMmodule = (SurfaceOM) MyPaddock.LinkByName(surfaceOM);
+      soilWatModule = (SoilWat) MyPaddock.LinkByName(soil + " Water");
+    //  if (soilWatModule == null)
+    //     SWIMmodule = (SWIM3) MyPaddock.LinkByName("Swim");
+      soilNModule = (SoilN) MyPaddock.LinkByName(soil + " Nitrogen"); 
+   }
+      
+   // The following event handler will be called each day at the end of the day
+   [EventHandler] public void OnPost()
+   {
+      if (Today == harvestDate.AddDays(days))
+      {
+         if (resetSOM.Equals("yes"))
+            SOMmodule.Reset();
+         if (resetSWat.Equals("yes"))
+          //  if (soilWatModule != null)
+               soilWatModule.Reset();
+          //  else 
+          //     SWIMmodule.Reset();
+         if (resetSNit.Equals("yes"))
+            soilNModule.Reset();
+      }
+   }
+   
+   [EventHandler] public void OnHarvesting()
+   {
+      harvestDate = Today;
+   }
+   
+}
+       </text></manager2>
 	</folder>
     <folder name="Weed management">
       <manager name="Weed sowing">
