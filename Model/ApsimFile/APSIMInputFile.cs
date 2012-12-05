@@ -265,8 +265,7 @@ namespace ApsimFile
                             for(int i=0;i<Words.Count;i++)
                                 err += Words[i] + " ";
 
-                            System.Windows.Forms.MessageBox.Show("Error in column " + (w + 1).ToString() + ":\r\n" + err);
-                            return;
+                            throw new FormatException("Error in column " + (w + 1).ToString() + ":\r\n" + err);
                         }
                     }
                     else
