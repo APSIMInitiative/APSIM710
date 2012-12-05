@@ -1,0 +1,991 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.5
+Title                  = WithDCD+1week
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                      "Outputs" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component             "Operations1-Fert" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component           "Experiment manager" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component                      "SWIM2ui" = %apsim%\Model\SWIM2.dll
+   Component         "SoilTemp2 (withSWIM)" = %apsim%\Model\SoilTemp2.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component                 "SoilNitrogen" = %apsim%\Model\SoilNitrogen.dll
+   Component                          "DCD" = %apsim%\Model\Solute.dll
+   Component                    "Inhibitor" = %apsim%\Model\Inhibitor.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+   Component   "Cut rotation for AgPasture" = %apsim%\Model\Manager2.dll
+   Component       "UrinePatchDeposition-2" = %apsim%\Model\Manager2.dll
+   Component           "nh3_volatilisation" = %apsim%\Model\Manager2.dll
+   Component                    "Apply_DCD" = %apsim%\Model\Manager2.dll
+   Component        "CentrePivotIrrigation" = %apsim%\Model\Manager2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/03/2000
+     Simulation end date   = 31/12/2000
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\MildTemperate.met
+
+------- Outputs Initialisation ------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        isExpDay as isExpDay
+        ave_soil_temp(7) as Tsoil(10cm)
+        rain as Rain
+        irrigation as Irrigation
+        Urine_Water_added as UrineWater format 2
+        pond as WaterPonded
+        es as Evaporation format 2
+        WaterUptake as Transpiration format 2
+        drain as Drainage format 2
+        sw_dep() as SoilWaterContent format 2
+        SoilpH(3) as SoilpH(5cm) format 2
+        fertiliser as FertiliserN format 2
+        Urine_N_added as UrineN format 2
+        PlantFixedN as FixedN format 2
+        dlt_urea_hydrol() as HydrolisedN format 2
+        nitrification() as NitrifiedN format 2
+        dnit() as DenitrifiedN format 2
+        emission_nh3() as VolatilisedN format 2
+        leach_urea as LeachedUrea format 2
+        leach_nh4 as LeachedNH4 format 2
+        leach_no3 as LeachedNO3 format 2
+        removed_n as removedN format 2
+        n2o_atm() as N2Oemissions format 3
+        urea() as UreaTotal format 2
+        nh4() as NH4Total format 2
+        no3() as NO3Total format 2
+        surfaceom_n as SurfaceOM_N format 2
+        fom_n() as FOM_N format 2
+        biom_n() as Biom_N format 2
+        hum_n() as Hum_N format 2
+        TotalPlantN as PlantN format 2
+        removed_dm as RemovedDM
+        TotalPlantWt as PastureDM
+        CloverContent as CloverContent
+        dcd_added as DCDadded format 2
+        leach_dcd as DCDleached format 3
+        DCD_degradation() as DCDdegraded format 3
+        dcd() as TotalDCD format 3
+        DCDtop  as dcd(0-20cm) format 3
+        DCD_inhibitionEffect as NitrificationInhibition format 3
+        dcd format 5
+        flow_dcd(2) format 3
+        sat_dep()
+        dul_dep()
+        ll15_dep()
+
+     Output file = WithDCD+1week Outputs.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Operations1-Fert Initialisation ---------------------------------------
+     Operations Schedule
+     ===================
+          12-Aug  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+          12-Aug  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+          12-Sep  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+          12-Sep  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+          12-Oct  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+          12-Oct  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+          12-Nov  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+          12-Nov  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+          12-Dec  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+          12-Dec  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+          12-Jan  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+          12-Jan  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+          12-Feb  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+          12-Feb  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+          12-Mar  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+          12-Mar  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+          12-Apr  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+          12-Apr  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+          12-May  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+          12-May  Prepare      fertiliser apply amount = 10, depth = 10 (mm), type = urea_n
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Experiment manager Initialisation -------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     ini_date = date('15/05/2008')
+     end_date = date('14/05/2009')
+     day_of_experiment = -1
+     
+     SECTION:- start_of_day
+     clovercontent = speciestotalwt(2)/(speciestotalwt(1) + speciestotalwt(2))
+     if today >= ini_date then
+        isexpday = 1
+        day_of_experiment = day_of_experiment + 1
+     else
+        isexpday = 0
+        day_of_experiment = -1
+     endif
+     
+     SECTION:- end_of_day
+     dcdtop = dcd(1) + dcd(2) + dcd(3) + dcd(4) + dcd(5) + dcd(6) + dcd(7) + dcd(8) + dcd(9) + dcd(10)
+     END of rules
+     
+     Manager creating a new local real variable : ini_date = 2454602.00000
+     Manager creating a new local real variable : end_date = 2454966.00000
+     Manager creating a new local real variable : day_of_experiment = -1.00000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- SWIM2ui Initialisation ------------------------------------------------
+     Initialising
+     
+     
+           APSIM soil profile
+           ------------------
+     
+     
+           ---------------------------------------
+           dlayer   BD   SW     LL15   DUL   SAT
+           ---------------------------------------
+             5.0  1.04  0.425  0.190  0.425  0.526
+            10.0  1.04  0.425  0.190  0.425  0.526
+            10.0  1.04  0.425  0.190  0.425  0.526
+            15.0  1.04  0.425  0.190  0.425  0.526
+            20.0  1.04  0.425  0.190  0.425  0.526
+            20.0  1.04  0.425  0.190  0.425  0.526
+            20.0  1.04  0.425  0.190  0.425  0.526
+            25.0  1.04  0.425  0.190  0.425  0.526
+            25.0  1.04  0.425  0.190  0.425  0.526
+            25.0  1.10  0.410  0.180  0.410  0.509
+            25.0  1.20  0.388  0.164  0.388  0.482
+            30.0  1.26  0.372  0.153  0.372  0.465
+            30.0  1.26  0.372  0.153  0.372  0.465
+            40.0  1.26  0.372  0.153  0.372  0.465
+            50.0  1.32  0.327  0.130  0.327  0.444
+            50.0  1.37  0.296  0.115  0.296  0.429
+            50.0  1.43  0.251  0.091  0.251  0.408
+            50.0  1.43  0.251  0.091  0.251  0.408
+            50.0  1.43  0.251  0.091  0.251  0.408
+            60.0  1.43  0.251  0.091  0.251  0.408
+            70.0  1.43  0.251  0.091  0.251  0.408
+            70.0  1.43  0.251  0.091  0.251  0.408
+            75.0  1.43  0.251  0.091  0.251  0.408
+            75.0  1.46  0.221  0.077  0.221  0.395
+           100.0  1.50  0.186  0.061  0.186  0.380
+           100.0  1.56  0.135  0.036  0.135  0.357
+           100.0  1.56  0.135  0.036  0.135  0.357
+           100.0  1.56  0.135  0.036  0.135  0.357
+            90.0  1.56  0.135  0.036  0.135  0.357
+            80.0  1.56  0.135  0.036  0.135  0.357
+            30.0  1.56  0.135  0.036  0.135  0.357
+     
+     
+           APSWIM soil profile
+           -------------------
+     
+     
+          -------------------------------------------------
+           depth   Soil Type     Theta    Psi        Ks
+           ------------------------------------------------
+             0.0  A_ZL_mC       0.4251137     -0.100     56.573
+            10.0  A_ZL_mC       0.4251137     -0.100     56.573
+            20.0  A_ZL_mC       0.4251137     -0.100     56.573
+            30.0  A_ZL_mC       0.4251137     -0.100     56.573
+            50.0  A_ZL_mC       0.4251137     -0.100     56.573
+            70.0  A_ZL_mC       0.4251137     -0.100     56.573
+            90.0  A_ZL_mC       0.4251137     -0.100     56.573
+           110.0  A_ZL_mC       0.4251137     -0.100     56.573
+           140.0  A_ZL_mC       0.4251137     -0.100     56.573
+           160.0  -             0.4100698     -0.100     40.284
+           190.0  -             0.3875038     -0.100     24.205
+           210.0  B1_ZL_mC      0.3724598     -0.100     17.236
+           250.0  B1_ZL_mC      0.3724598     -0.100     17.236
+           270.0  B1_ZL_mC      0.3724598     -0.100     17.236
+           330.0  -             0.3267269     -0.100     21.506
+           370.0  -             0.2962384     -0.100     24.926
+           430.0  B2_SL_mC      0.2505055     -0.100     31.102
+           470.0  B2_SL_mC      0.2505055     -0.100     31.102
+           530.0  B2_SL_mC      0.2505055     -0.100     31.102
+           570.0  B2_SL_mC      0.2505055     -0.100     31.102
+           650.0  B2_SL_mC      0.2505055     -0.100     31.102
+           710.0  B2_SL_mC      0.2505055     -0.100     31.102
+           790.0  B2_SL_mC      0.2505055     -0.100     31.102
+           860.0  -             0.2206242     -0.100     40.237
+           940.0  -             0.1864742     -0.100     54.007
+          1060.0  BC_S_mC       0.1352491     -0.100     83.981
+          1140.0  BC_S_mC       0.1352491     -0.100     83.981
+          1260.0  BC_S_mC       0.1352491     -0.100     83.981
+          1340.0  BC_S_mC       0.1352491     -0.100     83.981
+          1440.0  BC_S_mC       0.1352491     -0.100     83.981
+          1500.0  BC_S_mC       0.1352491     -0.100     83.981
+     
+     
+           Soil Moisture Characteristics
+           -----------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.19022    0.19022    0.19022    0.19022    0.19022    0.19022    0.19022
+            -1.00 |    0.29067    0.29067    0.29067    0.29067    0.29067    0.29067    0.29067
+            -0.10 |    0.42511    0.42511    0.42511    0.42511    0.42511    0.42511    0.42511
+            -0.01 |    0.52408    0.52408    0.52408    0.52408    0.52408    0.52408    0.52408
+     
+     
+           Soil Hydraulic Conductivity
+           ---------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -1.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -0.10 |    0.01059    0.01059    0.01059    0.01059    0.01059    0.01059    0.01059
+            -0.01 |    2.11697    2.11697    2.11697    2.11697    2.11697    2.11697    2.11697
+     
+     
+           Swim calculation parameters
+           ---------------------------
+           p%dtmin p%dtmax   p%ersoil   p%ernode    p%errex p%dppl p%dpnl max_water_increment
+           --------------------------------------------------------------------
+     
+            0.0   0.5 .100E-03 .100E-03 .100E-01 2.00 1.00        0.050
+     
+     
+     
+     
+          Bypass flow is INactive
+          Total ponding (no runoff)
+          top boundary condition = infinite conductance
+          bottom boundary condition = specified gradient (     0.000)
+     
+     
+     
+     
+          vapour conductivity = on
+          Rainfall Source: rain
+     
+     
+          Evaporation Source: calc
+     
+     
+     
+     
+     
+
+------- SoilTemp2 (withSWIM) Initialisation -----------------------------------
+
+------- soiltemp Initialisation -----------------------------------------------
+     Initialising :
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          grass     grass           20.0     8.0     0.5     0.0   0.008     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- SoilNitrogen Initialisation -------------------------------------------
+
+        - Reading/checking parameters
+           - Using standard soil mineralisation specification
+           - Soil temperature supplied by apsim
+           - Soil pH supplied by apsim
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  4.82    0.08    0.03    0.00
+             2     6.00  4.79    0.21    0.07    0.00
+             3     6.00  4.76    0.25    0.08    0.00
+             4     6.00  4.72    0.39    0.12    0.00
+             5     6.00  4.67    0.52    0.17    0.00
+             6     6.00  4.61    0.52    0.17    0.00
+             7     6.00  4.33    0.52    0.17    0.00
+             8     6.00  3.98    0.65    0.21    0.00
+             9     6.00  3.67    0.65    0.21    0.00
+            10     6.00  3.40    0.68    0.22    0.00
+            11     6.00  3.15    0.69    0.24    0.00
+            12     6.00  2.88    0.81    0.27    0.00
+            13     6.00  2.63    0.76    0.23    0.00
+            14     6.00  2.34    0.93    0.25    0.00
+            15     6.00  2.02    1.06    0.26    0.00
+            16     6.00  1.76    0.92    0.27    0.00
+            17     6.00  1.55    0.82    0.21    0.00
+            18     6.00  1.38    0.64    0.21    0.00
+            19     6.00  1.24    0.57    0.14    0.00
+            20     6.00  1.11    0.61    0.17    0.00
+            21     6.00  1.00    0.65    0.20    0.00
+            22     6.00  0.91    0.59    0.20    0.00
+            23     6.00  0.84    0.55    0.21    0.00
+            24     6.00  0.80    0.48    0.11    0.00
+            25     6.00  0.75    0.58    0.15    0.00
+            26     6.00  0.72    0.53    0.16    0.00
+            27     6.00  0.70    0.47    0.16    0.00
+            28     6.00  0.69    0.40    0.12    0.00
+            29     6.00  0.69    0.29    0.10    0.00
+            30     6.00  0.68    0.25    0.09    0.00
+            31     6.00  0.68    0.09    0.03    0.00
+          ------------------------------------------------
+           Totals               17.17    5.23    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1       2401.2   200.1   101.2    12.7    26.7     0.9
+             2       4777.1   398.1   198.7    24.8    26.2     0.9
+             3       4750.7   395.9   194.9    24.4    25.7     0.9
+             4       7065.0   588.8   286.4    35.8    24.9     0.8
+             5       9329.8   777.5   364.1    45.5    23.9     0.8
+             6       9249.4   770.8   336.4    42.0    23.0     0.8
+             7       8730.5   727.5   269.4    33.7    22.1     0.7
+             8      10080.9   840.1   249.4    31.2    21.0     0.7
+             9       9348.7   779.1   176.3    22.0    20.0     0.7
+            10       9236.3   769.7   125.7    15.7    19.0     0.6
+            11       9341.6   778.5    88.9    11.1    18.1     0.6
+            12      10826.6   902.2    65.7     8.2    17.0     0.6
+            13       9920.1   826.7    37.1     4.6    16.0     0.5
+            14      11768.4   980.7    23.8     3.0    14.8     0.5
+            15      13385.4  1115.4    13.2     1.6    13.4     0.4
+            16      12020.9  1001.7    10.0     1.3    12.1     0.4
+            17      11067.3   922.3     7.5     0.9    11.0     0.4
+            18       9847.2   820.6     5.7     0.7     9.9     0.3
+            19       8862.7   738.6     4.2     0.5     9.0     0.3
+            20       9521.7   793.5     4.0     0.5     8.0     0.3
+            21       9959.7   830.0     3.3     0.4     6.9     0.2
+            22       9120.1   760.0     2.6     0.3     6.0     0.2
+            23       9043.5   753.6     2.1     0.3     5.2     0.2
+            24       8737.0   728.1     1.7     0.2     4.5     0.1
+            25      11274.9   939.6     1.8     0.2     3.7     0.1
+            26      11248.5   937.4     1.3     0.2     3.0     0.1
+            27      10953.2   912.8     1.0     0.1     2.4     0.1
+            28      10766.7   897.2     0.9     0.1     2.0     0.1
+            29       9592.1   799.3     0.6     0.1     1.7     0.1
+            30       8476.6   706.4     0.5     0.1     1.4     0.0
+            31       3174.1   264.5     0.2     0.0     1.3     0.0
+          ---------------------------------------------------------
+           Totals  283878.0 23656.5  2578.4   322.3   400.0    13.3
+          ---------------------------------------------------------
+
+
+------- DCD Initialisation ----------------------------------------------------
+     Initialising
+     
+        - Reading Constants
+
+------- Inhibitor Initialisation ----------------------------------------------
+   Inhibitor initialised
+
+
+------- AgPasture Initialisation ----------------------------------------------
+
+------- Cut rotation for AgPasture Initialisation -----------------------------
+
+  Cut rotation for AgPasture initialised
+   rotation rule valid between 01/01/1900 and 31/07/2012
+   cut type: Target standing mass, cut when DM reaches 2000 kgDM/ha
+   remove down to residual dm = 1250 kg/ha
+   fraction to return as residue: 0.0%
+
+
+------- UrinePatchDeposition-2 Initialisation ---------------------------------
+
+Distribution type: Linearly decreasing over depth, down to 350mm depth
+
+    Urine_prop(0) = 0.0353326
+    Urine_prop(1) = 0.06839109
+    Urine_prop(2) = 0.06539634
+    Urine_prop(3) = 0.09257785
+    Urine_prop(4) = 0.1133815
+    Urine_prop(5) = 0.1022366
+    Urine_prop(6) = 0.09148295
+    Urine_prop(7) = 0.09985174
+    Urine_prop(8) = 0.08451546
+    Urine_prop(9) = 0.07005724
+    Urine_prop(10) = 0.05653418
+    Urine_prop(11) = 0.05141168
+    Urine_prop(12) = 0.03530063
+    Urine_prop(13) = 0.02581664
+    Urine_prop(14) = 0.00771356
+    Urine_prop(15) = 0
+    Urine_prop(16) = 0
+    Urine_prop(17) = 0
+    Urine_prop(18) = 0
+    Urine_prop(19) = 0
+    Urine_prop(20) = 0
+    Urine_prop(21) = 0
+    Urine_prop(22) = 0
+    Urine_prop(23) = 0
+    Urine_prop(24) = 0
+    Urine_prop(25) = 0
+    Urine_prop(26) = 0
+    Urine_prop(27) = 0
+    Urine_prop(28) = 0
+    Urine_prop(29) = 0
+    Urine_prop(30) = 0
+
+
+------- nh3_volatilisation Initialisation -------------------------------------
+
+Volatilization will be calculated by manager
+   Top 50mm are considered,
+   pH variation is mimicked by dlt_urea_hydrol + dlt_nh4_nitrif
+
+
+------- Apply_DCD Initialisation ----------------------------------------------
+
+------- CentrePivotIrrigation Initialisation ----------------------------------
+
+ Irrigation by centre-pivot is disabled
+
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : clovercontent = 0.35484
+     Manager creating a new local real variable : isexpday = 0.00000
+     Manager creating a new local real variable : dcdtop = 0.00000
+5/03/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.70147516215247E-09 will be reset to minimum value
+5/03/2000 - Attempt to change nh4[4] in Patch[base] to a value below the lower limit
+  The value -1.17811135846857E-09 will be reset to minimum value
+5/03/2000 - Attempt to change nh4[9] in Patch[base] to a value below the lower limit
+  The value -2.83291415326126E-09 will be reset to minimum value
+5/03/2000 - Attempt to change no3[2] in Patch[base] to a value below the lower limit
+  The value -1.73329801206323E-09 will be reset to minimum value
+5/03/2000 - Attempt to change no3[3] in Patch[base] to a value below the lower limit
+  The value -1.34876496082903E-09 will be reset to minimum value
+5/03/2000 - Attempt to change no3[7] in Patch[base] to a value below the lower limit
+  The value -2.5275211368303E-09 will be reset to minimum value
+5/03/2000 - Attempt to change no3[8] in Patch[base] to a value below the lower limit
+  The value -4.31081598195604E-09 will be reset to minimum value
+5/03/2000 - Attempt to change no3[13] in Patch[base] to a value below the lower limit
+  The value -3.66353349046111E-09 will be reset to minimum value
+5/03/2000 - Attempt to change no3[14] in Patch[base] to a value below the lower limit
+  The value -5.00565036642975E-09 will be reset to minimum value
+5/03/2000 - Attempt to change no3[15] in Patch[base] to a value below the lower limit
+  The value -5.29402943705293E-09 will be reset to minimum value
+5/03/2000 - Attempt to change no3[16] in Patch[base] to a value below the lower limit
+  The value -2.01900821061862E-09 will be reset to minimum value
+5/03/2000 - Attempt to change no3[18] in Patch[base] to a value below the lower limit
+  The value -2.16795939533831E-09 will be reset to minimum value
+5/03/2000 - Attempt to change no3[19] in Patch[base] to a value below the lower limit
+  The value -3.01836228233654E-09 will be reset to minimum value
+5/03/2000 - Attempt to change no3[20] in Patch[base] to a value below the lower limit
+  The value -1.47172274367335E-09 will be reset to minimum value
+5/03/2000 - Attempt to change no3[23] in Patch[base] to a value below the lower limit
+  The value -2.15703782613375E-09 will be reset to minimum value
+Agpasture.ongraze
+06 March 2000 (Day of year=66), Cut rotation for AgPasture:
+     Removing 823kg DM/ha, with 29.5kg N/ha
+ResidueTreatment_type: Return as residue
+6/03/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.52704816847038E-09 will be reset to minimum value
+6/03/2000 - Attempt to change nh4[3] in Patch[base] to a value below the lower limit
+  The value -1.85490293957979E-09 will be reset to minimum value
+6/03/2000 - Attempt to change nh4[8] in Patch[base] to a value below the lower limit
+  The value -1.58586198339972E-09 will be reset to minimum value
+7/03/2000 - Attempt to change nh4[5] in Patch[base] to a value below the lower limit
+  The value -3.5395388564563E-09 will be reset to minimum value
+9/03/2000 - Attempt to change nh4[4] in Patch[base] to a value below the lower limit
+  The value -1.09654577085117E-09 will be reset to minimum value
+9/03/2000 - Attempt to change nh4[5] in Patch[base] to a value below the lower limit
+  The value -1.11798433011234E-09 will be reset to minimum value
+10/03/2000 - Attempt to change nh4[5] in Patch[base] to a value below the lower limit
+  The value -1.81671702681463E-09 will be reset to minimum value
+10/03/2000 - Attempt to change nh4[6] in Patch[base] to a value below the lower limit
+  The value -2.70216517217481E-09 will be reset to minimum value
+10/03/2000 - Attempt to change nh4[7] in Patch[base] to a value below the lower limit
+  The value -1.00582497886137E-09 will be reset to minimum value
+10/03/2000 - Attempt to change nh4[9] in Patch[base] to a value below the lower limit
+  The value -1.07966604406817E-09 will be reset to minimum value
+11/03/2000 - Attempt to change nh4[4] in Patch[base] to a value below the lower limit
+  The value -1.21837646221978E-09 will be reset to minimum value
+11/03/2000 - Attempt to change nh4[5] in Patch[base] to a value below the lower limit
+  The value -1.44299230897538E-09 will be reset to minimum value
+12 March 2000(Day of year=72), Operations1-Fert: 
+      Sending apply message to fertiliser
+12 March 2000(Day of year=72), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+Agpasture.ongraze
+18 March 2000 (Day of year=78), Cut rotation for AgPasture:
+     Removing 789kg DM/ha, with 28.0kg N/ha
+ResidueTreatment_type: Return as residue
+18/03/2000 - Attempt to change nh4[3] in Patch[base] to a value below the lower limit
+  The value -2.83915210785857E-09 will be reset to minimum value
+18/03/2000 - Attempt to change nh4[4] in Patch[base] to a value below the lower limit
+  The value -2.65374172636612E-09 will be reset to minimum value
+18/03/2000 - Attempt to change nh4[5] in Patch[base] to a value below the lower limit
+  The value -1.67199501466264E-09 will be reset to minimum value
+18/03/2000 - Attempt to change nh4[8] in Patch[base] to a value below the lower limit
+  The value -1.24888487745833E-09 will be reset to minimum value
+18/03/2000 - Attempt to change no3[2] in Patch[base] to a value below the lower limit
+  The value -1.34761533182592E-09 will be reset to minimum value
+19/03/2000 - Attempt to change nh4[5] in Patch[base] to a value below the lower limit
+  The value -2.53146340001287E-09 will be reset to minimum value
+20/03/2000 - Attempt to change nh4[6] in Patch[base] to a value below the lower limit
+  The value -1.72593202230065E-09 will be reset to minimum value
+20/03/2000 - Attempt to change nh4[9] in Patch[base] to a value below the lower limit
+  The value -1.0778814577006E-09 will be reset to minimum value
+21/03/2000 - Attempt to change nh4[9] in Patch[base] to a value below the lower limit
+  The value -1.44271823654396E-09 will be reset to minimum value
+22/03/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.483284724213E-09 will be reset to minimum value
+22/03/2000 - Attempt to change nh4[3] in Patch[base] to a value below the lower limit
+  The value -1.27211283867945E-09 will be reset to minimum value
+22/03/2000 - Attempt to change nh4[6] in Patch[base] to a value below the lower limit
+  The value -2.02841114738117E-09 will be reset to minimum value
+22/03/2000 - Attempt to change nh4[8] in Patch[base] to a value below the lower limit
+  The value -1.46642058912461E-09 will be reset to minimum value
+23/03/2000 - Attempt to change nh4[5] in Patch[base] to a value below the lower limit
+  The value -1.01603883639889E-09 will be reset to minimum value
+23/03/2000 - Attempt to change nh4[6] in Patch[base] to a value below the lower limit
+  The value -3.0746235418766E-09 will be reset to minimum value
+24/03/2000 - Attempt to change nh4[6] in Patch[base] to a value below the lower limit
+  The value -1.534363469613E-09 will be reset to minimum value
+24/03/2000 - Attempt to change nh4[8] in Patch[base] to a value below the lower limit
+  The value -1.14115254745695E-09 will be reset to minimum value
+25/03/2000 - Attempt to change nh4[5] in Patch[base] to a value below the lower limit
+  The value -3.49153357614984E-09 will be reset to minimum value
+25/03/2000 - Attempt to change nh4[6] in Patch[base] to a value below the lower limit
+  The value -2.07512590444381E-09 will be reset to minimum value
+26/03/2000 - Attempt to change nh4[3] in Patch[base] to a value below the lower limit
+  The value -1.05872417777153E-09 will be reset to minimum value
+26/03/2000 - Attempt to change nh4[4] in Patch[base] to a value below the lower limit
+  The value -1.78804490658102E-09 will be reset to minimum value
+26/03/2000 - Attempt to change nh4[7] in Patch[base] to a value below the lower limit
+  The value -1.34683953573189E-09 will be reset to minimum value
+27/03/2000 - Attempt to change nh4[7] in Patch[base] to a value below the lower limit
+  The value -1.00498636496082E-09 will be reset to minimum value
+27/03/2000 - Attempt to change nh4[9] in Patch[base] to a value below the lower limit
+  The value -1.13356068975889E-09 will be reset to minimum value
+28/03/2000 - Attempt to change nh4[4] in Patch[base] to a value below the lower limit
+  The value -1.55571643761787E-09 will be reset to minimum value
+29/03/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.46559835795257E-09 will be reset to minimum value
+29/03/2000 - Attempt to change nh4[3] in Patch[base] to a value below the lower limit
+  The value -1.12078737263266E-09 will be reset to minimum value
+29/03/2000 - Attempt to change nh4[6] in Patch[base] to a value below the lower limit
+  The value -2.95217854329177E-09 will be reset to minimum value
+29/03/2000 - Attempt to change nh4[9] in Patch[base] to a value below the lower limit
+  The value -1.717152503522E-09 will be reset to minimum value
+30/03/2000 - Attempt to change nh4[5] in Patch[base] to a value below the lower limit
+  The value -1.79406914324609E-09 will be reset to minimum value
+30/03/2000 - Attempt to change nh4[7] in Patch[base] to a value below the lower limit
+  The value -1.01316562778342E-09 will be reset to minimum value
+31/03/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.85148583964345E-09 will be reset to minimum value
+31/03/2000 - Attempt to change nh4[6] in Patch[base] to a value below the lower limit
+  The value -3.36708635972904E-09 will be reset to minimum value
+31/03/2000 - Attempt to change nh4[8] in Patch[base] to a value below the lower limit
+  The value -1.30486893512582E-09 will be reset to minimum value
+31/03/2000 - Attempt to change nh4[9] in Patch[base] to a value below the lower limit
+  The value -1.83592676478161E-09 will be reset to minimum value
+1/04/2000 - Attempt to change nh4[3] in Patch[base] to a value below the lower limit
+  The value -1.59295831386741E-09 will be reset to minimum value
+1/04/2000 - Attempt to change nh4[5] in Patch[base] to a value below the lower limit
+  The value -2.90931188862142E-09 will be reset to minimum value
+2/04/2000 - Attempt to change nh4[3] in Patch[base] to a value below the lower limit
+  The value -1.36201760980725E-09 will be reset to minimum value
+2/04/2000 - Attempt to change nh4[5] in Patch[base] to a value below the lower limit
+  The value -2.37250992463078E-09 will be reset to minimum value
+2/04/2000 - Attempt to change nh4[8] in Patch[base] to a value below the lower limit
+  The value -1.39710753382927E-09 will be reset to minimum value
+3/04/2000 - Attempt to change nh4[5] in Patch[base] to a value below the lower limit
+  The value -2.31525040805813E-09 will be reset to minimum value
+3/04/2000 - Attempt to change nh4[6] in Patch[base] to a value below the lower limit
+  The value -1.06955572870548E-09 will be reset to minimum value
+Agpasture.ongraze
+04 April 2000 (Day of year=95), Cut rotation for AgPasture:
+     Removing 770kg DM/ha, with 23.6kg N/ha
+ResidueTreatment_type: Return as residue
+5/04/2000 - Attempt to change nh4[3] in Patch[base] to a value below the lower limit
+  The value -1.66294895909136E-09 will be reset to minimum value
+5/04/2000 - Attempt to change nh4[5] in Patch[base] to a value below the lower limit
+  The value -1.87444193500141E-09 will be reset to minimum value
+5/04/2000 - Attempt to change nh4[8] in Patch[base] to a value below the lower limit
+  The value -1.55702435666871E-09 will be reset to minimum value
+7/04/2000 - Attempt to change nh4[6] in Patch[base] to a value below the lower limit
+  The value -1.17183122233522E-09 will be reset to minimum value
+8/04/2000 - Attempt to change nh4[5] in Patch[base] to a value below the lower limit
+  The value -1.67192373834446E-09 will be reset to minimum value
+8/04/2000 - Attempt to change nh4[6] in Patch[base] to a value below the lower limit
+  The value -1.48135202715505E-09 will be reset to minimum value
+8/04/2000 - Attempt to change nh4[7] in Patch[base] to a value below the lower limit
+  The value -1.81106060009872E-09 will be reset to minimum value
+8/04/2000 - Attempt to change nh4[8] in Patch[base] to a value below the lower limit
+  The value -1.41229575256752E-09 will be reset to minimum value
+9/04/2000 - Attempt to change nh4[4] in Patch[base] to a value below the lower limit
+  The value -1.6251170409376E-09 will be reset to minimum value
+10/04/2000 - Attempt to change nh4[3] in Patch[base] to a value below the lower limit
+  The value -1.20640707146347E-09 will be reset to minimum value
+11/04/2000 - Attempt to change nh4[3] in Patch[base] to a value below the lower limit
+  The value -1.14442839926898E-09 will be reset to minimum value
+11/04/2000 - Attempt to change nh4[6] in Patch[base] to a value below the lower limit
+  The value -1.25410937190651E-09 will be reset to minimum value
+11/04/2000 - Attempt to change nh4[7] in Patch[base] to a value below the lower limit
+  The value -1.76438872540041E-09 will be reset to minimum value
+12 April 2000(Day of year=103), Operations1-Fert: 
+      Sending apply message to fertiliser
+12 April 2000(Day of year=103), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+15 April 2000 (Day of year=106), Urine patch deposition:
+     Urine patch being applied. Nitrogen load = 500kg/ha. Water amount = 5mm
+Agpasture.ongraze
+20 April 2000 (Day of year=111), Cut rotation for AgPasture:
+     Removing 790kg DM/ha, with 25.1kg N/ha
+ResidueTreatment_type: Return as residue
+21 April 2000 (Day of year=112), Apply_DCD:
+     DCD being applied. 10kg/ha added at depth 1mm
+Agpasture.ongraze
+04 May 2000 (Day of year=125), Cut rotation for AgPasture:
+     Removing 802kg DM/ha, with 29.3kg N/ha
+ResidueTreatment_type: Return as residue
+12 May 2000(Day of year=133), Operations1-Fert: 
+      Sending apply message to fertiliser
+12 May 2000(Day of year=133), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+Agpasture.ongraze
+19 May 2000 (Day of year=140), Cut rotation for AgPasture:
+     Removing 798kg DM/ha, with 31.3kg N/ha
+ResidueTreatment_type: Return as residue
+Agpasture.ongraze
+04 June 2000 (Day of year=156), Cut rotation for AgPasture:
+     Removing 782kg DM/ha, with 31.7kg N/ha
+ResidueTreatment_type: Return as residue
+Agpasture.ongraze
+21 June 2000 (Day of year=173), Cut rotation for AgPasture:
+     Removing 777kg DM/ha, with 32.1kg N/ha
+ResidueTreatment_type: Return as residue
+Agpasture.ongraze
+08 July 2000 (Day of year=190), Cut rotation for AgPasture:
+     Removing 754kg DM/ha, with 31.5kg N/ha
+ResidueTreatment_type: Return as residue
+Agpasture.ongraze
+25 July 2000 (Day of year=207), Cut rotation for AgPasture:
+     Removing 773kg DM/ha, with 32.5kg N/ha
+ResidueTreatment_type: Return as residue
+Agpasture.ongraze
+10 August 2000 (Day of year=223), Cut rotation for AgPasture:
+     Removing 793kg DM/ha, with 33.5kg N/ha
+ResidueTreatment_type: Return as residue
+12 August 2000(Day of year=225), Operations1-Fert: 
+      Sending apply message to fertiliser
+12 August 2000(Day of year=225), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+Agpasture.ongraze
+24 August 2000 (Day of year=237), Cut rotation for AgPasture:
+     Removing 784kg DM/ha, with 33.2kg N/ha
+ResidueTreatment_type: Return as residue
+Agpasture.ongraze
+05 September 2000 (Day of year=249), Cut rotation for AgPasture:
+     Removing 777kg DM/ha, with 33.0kg N/ha
+ResidueTreatment_type: Return as residue
+12 September 2000(Day of year=256), Operations1-Fert: 
+      Sending apply message to fertiliser
+12 September 2000(Day of year=256), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+Agpasture.ongraze
+16 September 2000 (Day of year=260), Cut rotation for AgPasture:
+     Removing 819kg DM/ha, with 34.8kg N/ha
+ResidueTreatment_type: Return as residue
+Agpasture.ongraze
+25 September 2000 (Day of year=269), Cut rotation for AgPasture:
+     Removing 752kg DM/ha, with 32.0kg N/ha
+ResidueTreatment_type: Return as residue
+Agpasture.ongraze
+04 October 2000 (Day of year=278), Cut rotation for AgPasture:
+     Removing 827kg DM/ha, with 35.2kg N/ha
+ResidueTreatment_type: Return as residue
+12 October 2000(Day of year=286), Operations1-Fert: 
+      Sending apply message to fertiliser
+12 October 2000(Day of year=286), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+Agpasture.ongraze
+12 October 2000 (Day of year=286), Cut rotation for AgPasture:
+     Removing 799kg DM/ha, with 34.1kg N/ha
+ResidueTreatment_type: Return as residue
+Agpasture.ongraze
+20 October 2000 (Day of year=294), Cut rotation for AgPasture:
+     Removing 856kg DM/ha, with 36.5kg N/ha
+ResidueTreatment_type: Return as residue
+Agpasture.ongraze
+27 October 2000 (Day of year=301), Cut rotation for AgPasture:
+     Removing 795kg DM/ha, with 33.9kg N/ha
+ResidueTreatment_type: Return as residue
+Agpasture.ongraze
+03 November 2000 (Day of year=308), Cut rotation for AgPasture:
+     Removing 831kg DM/ha, with 35.5kg N/ha
+ResidueTreatment_type: Return as residue
+9/11/2000 - Attempt to change nh4[3] in Patch[base] to a value below the lower limit
+  The value -1.20673908365898E-09 will be reset to minimum value
+9/11/2000 - Attempt to change nh4[5] in Patch[base] to a value below the lower limit
+  The value -2.33509317437708E-09 will be reset to minimum value
+9/11/2000 - Attempt to change nh4[6] in Patch[base] to a value below the lower limit
+  The value -2.14536607923144E-09 will be reset to minimum value
+9/11/2000 - Attempt to change nh4[10] in Patch[base] to a value below the lower limit
+  The value -1.03284916036506E-09 will be reset to minimum value
+9/11/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.27883822975683E-09 will be reset to minimum value
+9/11/2000 - Attempt to change no3[3] in Patch[base] to a value below the lower limit
+  The value -1.02503558419009E-09 will be reset to minimum value
+9/11/2000 - Attempt to change no3[5] in Patch[base] to a value below the lower limit
+  The value -5.01673788622092E-09 will be reset to minimum value
+9/11/2000 - Attempt to change no3[6] in Patch[base] to a value below the lower limit
+  The value -3.50829046369405E-09 will be reset to minimum value
+9/11/2000 - Attempt to change no3[7] in Patch[base] to a value below the lower limit
+  The value -6.52622778041234E-09 will be reset to minimum value
+9/11/2000 - Attempt to change no3[8] in Patch[base] to a value below the lower limit
+  The value -1.8793216427504E-09 will be reset to minimum value
+9/11/2000 - Attempt to change no3[11] in Patch[base] to a value below the lower limit
+  The value -3.22148571707537E-09 will be reset to minimum value
+9/11/2000 - Attempt to change no3[13] in Patch[base] to a value below the lower limit
+  The value -3.59628322954553E-09 will be reset to minimum value
+9/11/2000 - Attempt to change no3[15] in Patch[base] to a value below the lower limit
+  The value -3.6245154516612E-09 will be reset to minimum value
+9/11/2000 - Attempt to change no3[17] in Patch[base] to a value below the lower limit
+  The value -3.32946120673583E-09 will be reset to minimum value
+9/11/2000 - Attempt to change no3[18] in Patch[base] to a value below the lower limit
+  The value -3.10698242134144E-09 will be reset to minimum value
+9/11/2000 - Attempt to change no3[20] in Patch[base] to a value below the lower limit
+  The value -2.39849902439193E-09 will be reset to minimum value
+9/11/2000 - Attempt to change no3[21] in Patch[base] to a value below the lower limit
+  The value -3.3991289088986E-09 will be reset to minimum value
+9/11/2000 - Attempt to change no3[22] in Patch[base] to a value below the lower limit
+  The value -1.73129344194223E-09 will be reset to minimum value
+9/11/2000 - Attempt to change no3[23] in Patch[base] to a value below the lower limit
+  The value -1.80637925450977E-09 will be reset to minimum value
+Agpasture.ongraze
+10 November 2000 (Day of year=315), Cut rotation for AgPasture:
+     Removing 843kg DM/ha, with 35.7kg N/ha
+ResidueTreatment_type: Return as residue
+10/11/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.08247131397343E-09 will be reset to minimum value
+10/11/2000 - Attempt to change nh4[7] in Patch[base] to a value below the lower limit
+  The value -1.10006609377322E-09 will be reset to minimum value
+11/11/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.03998325229337E-09 will be reset to minimum value
+11/11/2000 - Attempt to change nh4[3] in Patch[base] to a value below the lower limit
+  The value -1.35576585374997E-09 will be reset to minimum value
+11/11/2000 - Attempt to change nh4[6] in Patch[base] to a value below the lower limit
+  The value -1.78272831913295E-09 will be reset to minimum value
+11/11/2000 - Attempt to change nh4[7] in Patch[base] to a value below the lower limit
+  The value -1.85227246735087E-09 will be reset to minimum value
+12 November 2000(Day of year=317), Operations1-Fert: 
+      Sending apply message to fertiliser
+12 November 2000(Day of year=317), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+16/11/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.61746385676886E-09 will be reset to minimum value
+16/11/2000 - Attempt to change nh4[8] in Patch[base] to a value below the lower limit
+  The value -1.07638048474357E-09 will be reset to minimum value
+16/11/2000 - Attempt to change nh4[9] in Patch[base] to a value below the lower limit
+  The value -1.02811505142686E-09 will be reset to minimum value
+16/11/2000 - Attempt to change no3[2] in Patch[base] to a value below the lower limit
+  The value -2.02265143522951E-09 will be reset to minimum value
+16/11/2000 - Attempt to change no3[4] in Patch[base] to a value below the lower limit
+  The value -1.39269384913376E-09 will be reset to minimum value
+16/11/2000 - Attempt to change no3[5] in Patch[base] to a value below the lower limit
+  The value -2.67814967425117E-09 will be reset to minimum value
+18/11/2000 - Attempt to change nh4[3] in Patch[base] to a value below the lower limit
+  The value -1.1061762617004E-09 will be reset to minimum value
+18/11/2000 - Attempt to change nh4[4] in Patch[base] to a value below the lower limit
+  The value -1.59192044962841E-09 will be reset to minimum value
+Agpasture.ongraze
+19 November 2000 (Day of year=324), Cut rotation for AgPasture:
+     Removing 790kg DM/ha, with 31.5kg N/ha
+ResidueTreatment_type: Return as residue
+19/11/2000 - Attempt to change nh4[3] in Patch[base] to a value below the lower limit
+  The value -1.59218520312532E-09 will be reset to minimum value
+19/11/2000 - Attempt to change nh4[5] in Patch[base] to a value below the lower limit
+  The value -1.86484233610784E-09 will be reset to minimum value
+19/11/2000 - Attempt to change nh4[7] in Patch[base] to a value below the lower limit
+  The value -1.03215974656123E-09 will be reset to minimum value
+20/11/2000 - Attempt to change nh4[5] in Patch[base] to a value below the lower limit
+  The value -1.9184026311958E-09 will be reset to minimum value
+22/11/2000 - Attempt to change nh4[3] in Patch[base] to a value below the lower limit
+  The value -1.1940976263336E-09 will be reset to minimum value
+22/11/2000 - Attempt to change nh4[5] in Patch[base] to a value below the lower limit
+  The value -2.29531790796322E-09 will be reset to minimum value
+22/11/2000 - Attempt to change nh4[7] in Patch[base] to a value below the lower limit
+  The value -1.51282071592096E-09 will be reset to minimum value
+23/11/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.54200721635966E-09 will be reset to minimum value
+23/11/2000 - Attempt to change nh4[6] in Patch[base] to a value below the lower limit
+  The value -1.05016487866871E-09 will be reset to minimum value
+24/11/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.669886104394E-09 will be reset to minimum value
+24/11/2000 - Attempt to change nh4[6] in Patch[base] to a value below the lower limit
+  The value -1.33943391100733E-09 will be reset to minimum value
+25/11/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.38726723164506E-09 will be reset to minimum value
+25/11/2000 - Attempt to change nh4[4] in Patch[base] to a value below the lower limit
+  The value -1.69145642631152E-09 will be reset to minimum value
+25/11/2000 - Attempt to change nh4[6] in Patch[base] to a value below the lower limit
+  The value -1.07113842101603E-09 will be reset to minimum value
+26/11/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.84455221929891E-09 will be reset to minimum value
+26/11/2000 - Attempt to change nh4[6] in Patch[base] to a value below the lower limit
+  The value -1.03042079729887E-09 will be reset to minimum value
+29/11/2000 - Attempt to change nh4[3] in Patch[base] to a value below the lower limit
+  The value -1.17389661880019E-09 will be reset to minimum value
+29/11/2000 - Attempt to change nh4[4] in Patch[base] to a value below the lower limit
+  The value -1.85684861930824E-09 will be reset to minimum value
+30/11/2000 - Attempt to change nh4[4] in Patch[base] to a value below the lower limit
+  The value -1.27329001509136E-09 will be reset to minimum value
+Agpasture.ongraze
+02 December 2000 (Day of year=337), Cut rotation for AgPasture:
+     Removing 804kg DM/ha, with 26.6kg N/ha
+ResidueTreatment_type: Return as residue
+4/12/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.31097934591429E-09 will be reset to minimum value
+6/12/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.51811959531178E-09 will be reset to minimum value
+8/12/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.74127153668158E-09 will be reset to minimum value
+12 December 2000(Day of year=347), Operations1-Fert: 
+      Sending apply message to fertiliser
+12 December 2000(Day of year=347), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+Agpasture.ongraze
+14 December 2000 (Day of year=349), Cut rotation for AgPasture:
+     Removing 753kg DM/ha, with 22.6kg N/ha
+ResidueTreatment_type: Return as residue
+17/12/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.85925427778722E-09 will be reset to minimum value
+Agpasture.ongraze
+28 December 2000 (Day of year=363), Cut rotation for AgPasture:
+     Removing 773kg DM/ha, with 23.3kg N/ha
+ResidueTreatment_type: Return as residue
+31 December 2000(Day of year=366), clock: 
+     Simulation is terminating due to end criteria being met.
+

@@ -1,0 +1,2667 @@
+<folder version="33" name="simulations">
+  <simulation name="NoDCD">
+    <clock>
+      <start_date type="date" description="Enter the start date of the simulation">01/03/2000</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">31/12/2000</end_date>
+    </clock>
+    <metfile name="met">
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\MildTemperate.met</filename>
+    </metfile>
+    <summaryfile />
+    <memo name="Info">
+From RCichota  - generic tests for dcdAction
+
+This simulation uses no DCD
+
+ </memo>
+    <area name="paddock">
+      <SoilN_dcd>
+        <category description="Parameters to initialise soil organic matter" />
+        <root_wt type="text" description="Type the amount of dead roots in the soil (kg/ha):">1000</root_wt>
+        <root_cn type="text" description="Type the C:N ratio of dead roots:">50</root_cn>
+        <soil_cn type="text" description="Type the C:N ratio of soil humus:">12.5</soil_cn>
+        <category description="Enter the values for each layer" />
+        <ph type="text" description="Type the inital soil pH:">6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0</ph>
+        <oc type="text" description="Type the initial soil organic carbon content (%):">5.796 5.743 5.690 5.610 5.510 5.410 5.322 5.222 5.133 5.056 4.971 4.498 4.059 3.534 2.964 2.480 2.082 1.754 1.485 1.263 1.033 0.930</oc>
+        <fbiom type="text" description="Type the microbial biomass fraction of OC (0-1):">0.080  0.080  0.080  0.080  0.079  0.077  0.072  0.063  0.048  0.031  0.017  0.010  0.008  0.008  0.008  0.008  0.008  0.008</fbiom>
+        <finert type="text" description="Type the inert fraction of soil humus (0-1):">0.489 0.496 0.503 0.509 0.521 0.532 0.544 0.555 0.571 0.582 0.597 0.630 0.667 0.699 0.745 0.778 0.812 0.837 0.862 0.881 0.903 0.917</finert>
+        <no3ppm type="text" description="Type the initial concentration of NO3 is the soil (ppm):">4.50  6.00  7.20  7.50  7.50  7.50  7.50  7.50  7.50  7.35  6.90  6.45  6.00  5.55  4.80  4.05  3.45  2.70  2.40  2.13  1.95  1.77</no3ppm>
+        <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">1.50  2.00  2.40  2.50  2.50  2.50  2.50  2.50  2.50  2.45  2.30  2.15  2.00  1.85  1.60  1.35  1.15  0.90  0.80  0.71  0.65  0.59</nh4ppm>
+        <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</ureappm>
+        <category description="Other parameters" />
+        <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil):">40</nitrification_pot>
+        <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">90</nh4_at_half_pot>
+        <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">28</opt_temp>
+      </SoilN_dcd>
+      <folder name="Manager folder">
+        <manager name="Experiment manager">
+          <script>
+            <text>Ini_Date = date('15/05/2008')
+End_Date = date('14/05/2009')
+Day_of_Experiment = -1
+</text>
+            <event>init</event>
+          </script>
+          <script>
+            <text>
+CloverContent = SpeciesTotalWt(2)/(SpeciesTotalWt(1) + SpeciesTotalWt(2))
+
+!CloverContent = SpeciesTotalWt(2)/(SpeciesTotalWt(1) + SpeciesTotalWt(2) + +SpeciesTotalWt(3))
+
+if today &gt;= Ini_Date then
+   isExpDay = 1
+   Day_of_Experiment = Day_of_Experiment + 1
+else
+   isExpDay = 0
+   Day_of_Experiment = -1
+endif
+
+</text>
+            <event>start_of_day</event>
+          </script>
+          <script>
+            <text>
+DCDtop = dcd(1) + dcd(2) + dcd(3) + dcd(4) + dcd(5) + dcd(6) + dcd(7) + dcd(8) + dcd(9) + dcd(10)</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager2 name="Cut rotation for AgPasture">
+          <ui>
+            <Dummy1 type="category" description="Setup cut rotation for AgPasture" />
+            <CutPasture_StartDate type="ddmmmdate" description="Enter date to start rotation (dd/mm/yyyy): ">01/01/1900</CutPasture_StartDate>
+            <CutPasture_EndDate type="ddmmmdate" description="Enter date to end rotation (dd/mm/yyyy): ">31/07/2012</CutPasture_EndDate>
+            <AgPasture_type type="list" listvalues="AgPasture,ryegrass_clover,ryegrass,clover" description="Enter pasture module:">AgPasture</AgPasture_type>
+            <CutTrigger_type type="list" listvalues="Fixed interval,Target interval,Target standing mass,Target mass above residual to cut,Target DM cover" description="Enter the cut trigger type: ">Target standing mass</CutTrigger_type>
+            <CutInterval type="text" description="   If trigger is interval between cuttings, enter its value (days):">1</CutInterval>
+            <UpperThreshold type="text" description="   If trigger is the sward standing mass, enter the amount (kgDM/ha):">2000</UpperThreshold>
+            <CoverTarget type="text" description="   If targeting a cover, enter the values over the year (kgDM/ha):">2750  2600  2250  1950  1700  1450  1250  1275  1450  1575  1875  2500  2750</CoverTarget>
+            <RemoveAmount_type type="list" listvalues="Set amount,Target amount,Down to residual DM,Set interval (for target cover only)" description="Enter how removed amount is computed:">Down to residual DM</RemoveAmount_type>
+            <Amount2Remove type="text" description="   If targeting amount or cover, enter the value to remove at each cut (kgDM/ha):">185</Amount2Remove>
+            <FractAboveTarget type="text" description="   If targeting cover, enter the fraction above target to trigger cut (0-1):">0.75</FractAboveTarget>
+            <LowerThreshold type="text" description="   If not targeting cover, enter the minimum residual after cut (kgDM/ha):">1250</LowerThreshold>
+            <Dummy2 type="category" description="Management of cut material" />
+            <ResidueTreatment_type type="list" listvalues="Return as residue,Return as dung &amp; urine" description="Enter the treatment type for the cut material:">Return as residue</ResidueTreatment_type>
+            <DMRemovalOption type="list" listvalues="Based on digestibility,type a fraction (0-1)" description="Enter fraction of DM that is removed from field (0-1):">1.00</DMRemovalOption>
+            <FracN2Remove type="text" description="Enter fraction of N that is removed from field (0-1):">1.00</FracN2Remove>
+            <Dummy3 type="category" description="   If returning as dung &amp; urine" />
+            <FracN2Dung type="text" description="   Enter proportion of N returned in dung (0-1):">0.0</FracN2Dung>
+          </ui>
+          <text>Imports System
+Imports ModelFramework
+
+'This manager sets up a cutting rotation for AgPasture. The rotation is bounded between two dates. Cuts happens in the first day,
+' if possible, and thereof can follow various rotation types. Cut is done on above ground stem and leaf DM (dead and green).
+' + Cut trigger types:
+'  - Fixed interval:
+'     Cut is allowed at given days only (set by start rotation date and then at regular intervals)
+'     Cut happens if amount to remove is set or if existing DM is greater than LowerTheshold
+'  - Target interval: 
+'     Cut is allowed from given days (begins at start rotation date and at regular intervals after last cut)
+'     Cut happens if amount to remove is set or if existing DM is greater than LowerTheshold
+'  - Target standing mass:
+'     Cut is allowed when existing DM reaches the target value (UpperThreshold)
+'     Cut always happens (unless UpperThreshold is bellow LowerTheshold
+'  - Target mass above residual to cut:
+'     Cut is allowed when existing DM is larger than the LowerTheshold plus the given amount to remove
+'     Cut allways happens, (this option is not only valid with remove amount option 'Set interval')
+'  - Target DM cover: Cut when DM is above target cover (trigger based on interval or amount)
+'     Cut is allowed:
+'        1) When existing DM is larger than the target cover DM plus a given amount to remove (times fraction above target)
+'        2) From given dates (begins at start rotation date and at regular intervals after last cut)
+'     Cut happens if existing DM is above target cover DM
+'
+' + Remove amount options:
+'  - Set amount: The amount to remove is fixed, if this amount is not available, no cut is performed
+'  - Target amount: The amount is the smallest of a given value and difference between existing DM and a target (LowerTheshold of CoverTarget)
+'  - Down to residual DM: Amount to remove is the difference between existing DM and LowerTheshold (option is not valid if CutTrigger is 'Target DM cover')
+'  - Set interval: Amount to remove is computed, any time DM is above target ([existing DM - target cover]/fraction above target)
+'     (option only valid if CutTrigger is 'Target DM cover'
+'
+' + Manage residues options:
+'  - 
+'  - Return as residue: A fraction of the DM cut is added as grass residue to the surfaceOM module;
+'  - Return as dung &amp; urine: A fraction of the amount cut is returned to the soil as evenly distributed urine and dung. 
+'     This is a very simplified approach where the fractions of DM (C) and N to be removed are set separately. Also,
+'      the partition of N between urine and dung is set by the user. 
+'     N urine is added as urea fertiliser (top 10cm) and teh rmaining DM and N are added to surfaceOM as dung (RuminantDung_PastureFed).
+
+
+'--&gt;  Last uptaded in: 7/Aug/2012 ..................
+
+
+Public Class Script 
+   
+   'Parameter variables:
+   &lt;param&gt; Private CutPasture_StartDate As String        'Date to start the cutting rotation
+   &lt;param&gt; Private CutPasture_EndDate As String          'Date to end cutting rotation
+   &lt;param&gt; Private AgPasture_type As String              'The pasture module
+
+   &lt;param&gt; Private CutTrigger_type As String             'The cut trigger type
+   &lt;param&gt; Private CutInterval As Integer                'The interval between cuts, if cut type is fixed intervals (days)
+   &lt;param&gt; Private UpperThreshold As Double              'The DM amount to trigger a cut, if cut type is target DM (kg/ha, DM above ground)
+   &lt;param&gt; Private CoverTarget As String                 'The target cover over the year (values will be interpolated using DoY)
+
+   &lt;param&gt; Private RemoveAmount_type As String           'The way to compute how much pasture is cut
+   &lt;param&gt; Private Amount2Remove As Double               'The amount of DM to be removed at each cut, limited to residual DM (LowerThreshold) (kg/ha, DM above ground)
+   &lt;param&gt; Private FractAboveTarget As Double                  'The fraction of the target amount to remove above the target cover that triggers a cut
+   &lt;param&gt; Private LowerThreshold As Double              'The residual DM amount left after cut  (kg/ha, DM above ground); cut only happens if DM is greater than this
+
+   &lt;param&gt; Private ResidueTreatment_type As String       'The treatment to the material cut
+   &lt;param&gt; Private DMRemovalOption As String             'The option to remove DM, based on digestibility of a fraction (0-1)
+   &lt;param&gt; Private FracN2Remove As Double                'Fraction of the N in the material cut that is removed from simulation (0-1)
+   &lt;param&gt; Private FracN2Dung As Double                  'The fraction of returned N that goes into dung, if return is as dung and urine (0-1)
+     
+         
+   'Links and events:
+   &lt;Link&gt; Private MyAgPasture As AgPasture
+   &lt;Link&gt; Private MySelf As Component
+   &lt;[Event]()&gt; Public Event Graze As GrazeDelegate
+   &lt;[Event]()&gt; Public Event BiomassRemoved As BiomassRemovedDelegate   
+   &lt;[Event]()&gt; Public Event FertiliserApplication As FertiliserApplicationDelegate
+
+   
+   'Variables read from other modules
+   &lt;Input&gt; Private today As DateTime                     'Today's date
+   &lt;Input&gt; Private day As Integer                        'Today's day of year
+   &lt;input&gt; Private StemWt As Double                      'The DM of stems (above ground DM)
+   &lt;input&gt; Private LeafWt As Double                      'The DM of leaves (above ground DM)
+   &lt;input&gt; Private StemN As Double                       'The N amount in stems (above ground N)
+   &lt;input&gt; Private LeafN As Double                       'The N amount in leaves (above ground N)
+   &lt;input&gt; Private HarvestWt As Double                   'The DM harvested (kg/ha)
+   &lt;input&gt; Private HarvestN As Double                    'The N amount harvested (kgN/ha)
+   &lt;input&gt; Private DefoliatedDigestibility As Double     'The pasture digestibility (0-1)
+   
+   'Outputs
+   &lt;output&gt;&lt;units("")&gt; Public Can_Cut As String                  'Whether todays is a cutting day
+   &lt;output&gt;&lt;units("")&gt; Public Has_Cut As String                  'Whether todays cut was done
+   &lt;output&gt;&lt;units("kg/ha")&gt; Public harvested_dm As Double        'Pasture DM harvested today (kg/ha)
+   &lt;output&gt;&lt;units("kgN/ha")&gt; Public harvested_n As Double        'N harvested today
+   &lt;output&gt;&lt;units("kg/ha")&gt; Public removed_dm As Double          'DM removed from the simulation
+   &lt;output&gt;&lt;units("kgN/ha")&gt; Public removed_n As Double          'N removed from the simulation
+   &lt;output&gt;&lt;units("kgN/ha")&gt; Public returned_dm As Double        'DM returned to the paddock
+   &lt;output&gt;&lt;units("kgN/ha")&gt; Public returned_n As Double         'N returned to the paddock
+   &lt;output&gt;&lt;units("kgN/ha")&gt; Public NReturn_asDung As Double     'N returned as dung (SurfOM)
+   &lt;output&gt;&lt;units("kgN/ha")&gt; Public NReturn_asUrine As Double    'N returned as urine (urea)
+   &lt;output&gt;&lt;units("kg/ha/day")&gt; Public GrowthRateCalc As Double  'Average growth rate for this cut
+   &lt;output&gt;&lt;units("%")&gt; Public Nconc_inRemoved As Double         'N concentration on the cut material
+   &lt;output&gt;&lt;units("days")&gt; Public DaysAfterCut As Integer        'Number of days after last cut
+   &lt;output&gt;&lt;units("kg/ha")&gt; Public TodaysCoverTarget As Double   'Todays cover target
+   &lt;output&gt;&lt;units("kg/ha")&gt; Public StandingWt As Double          'Total standing DM (Stem + Leaf)
+   &lt;output&gt;&lt;units("kg/ha")&gt; Public PostHarvestDM As Double       'Total standing DM (Stem + Leaf) after cut
+
+   'Internal variables
+   Private StartDate As DateTime             'The date when cutting starts (in date format)
+   Private EndDate As DateTime               'The date when cuttings finish (in date format)
+   Private FracDM2Remove As Double           'The fraction of DM to be removed from the simulation (0-1)
+   Private TargetCoverDays() As Integer
+   Private TargetCoverValues() As Double
+   Private Allow_Cut As String
+   
+   &lt;EventHandler()&gt; Public Sub OnInit2()
+
+      'Put the dates into date format:
+      StartDate = DateTime.Parse(CutPasture_StartDate &amp; " 06:00:00 am")
+      EndDate = DateTime.Parse(CutPasture_EndDate &amp; " 06:00:00 pm")
+      
+      'Verify that fractions are within limits
+      If FractAboveTarget &lt; 0 Or FractAboveTarget &gt; 1 Then
+         Throw New Exception("Fraction above target is out of bounds")
+      End If
+            
+      'Set the target cover arrays
+      TargetCoverValues = makeArray(CoverTarget)
+      TargetCoverDays = setDays(TargetCoverValues)
+      
+      'Reset variables
+      DaysAfterCut = CutInterval - 1
+      Allow_Cut = "no" 
+      Can_Cut = Allow_Cut
+      Has_Cut = "no"
+      TodaysCoverTarget = 0.0
+  
+      'The fraction of DM to remove
+      ' - DMRemovalOption can be a value (0-1 = FracDM2Remove) or a string, which tell us that FracDM2Remove is based on digestibility
+      If DMRemovalOption.ToLower = "based on digestibility" Then
+         FracDM2Remove = 1 - DefoliatedDigestibility
+      Else
+         Try
+            FracDM2Remove = DMRemovalOption
+            If (FracDM2Remove &lt; 0) Or FracDM2Remove &gt; 1 Then
+               Throw New Exception("Fraction of DM to remove is out of bounds")
+            End If
+         Catch
+            Throw New Exception("Fraction of DM to remove is not valid")
+         End Try
+      End If
+      If (FracN2Remove &lt; 0) Or FracN2Remove &gt; 1 Then
+         Throw New Exception("Fraction of N to remove is out of bounds")
+      End If
+      If ResidueTreatment_type.Contains("urine") And ((FracN2Dung &lt; 0) Or FracN2Dung &gt; 1) Then
+         Throw New Exception("Proportion of N to return as dung is out of bounds")
+      End If
+      
+      'Check whether choices are allowed and prepare messages     
+      Dim myMessage1 As String
+      Dim myMessage2 As String
+      Select Case CutTrigger_type.ToLower
+         Case "fixed interval"
+            If RemoveAmount_type.ToLower.Contains("interval") Then
+               Throw New Exception("Fixed interval trigger is not valid with Cut amount defined by 'set interval'")
+            ElseIf RemoveAmount_type.ToLower.Contains("amount") Then
+               myMessage2 = "   remove " &amp; RemoveAmount_type.ToLower &amp; " = " &amp; Amount2Remove.ToString("#0") &amp; " kg/ha"
+            Else
+               myMessage2 = "   remove " &amp; RemoveAmount_type.ToLower &amp; " = " &amp; LowerThreshold.ToString("#0") &amp; " kg/ha"
+            End If
+            myMessage1 = ", cut only every " &amp; CutInterval.ToString &amp; " days"
+         Case "target interval"
+            If RemoveAmount_type.ToLower.Contains("interval") Then
+               Throw New Exception("Target interval trigger is not valid with cut amount defined by 'set interval'")
+            ElseIf RemoveAmount_type.ToLower.Contains("amount") Then
+               myMessage2 = "   remove " &amp; RemoveAmount_type.ToLower &amp; " = " &amp; Amount2Remove.ToString("#0") &amp; " kg/ha"
+            Else
+               myMessage2 = "   remove " &amp; RemoveAmount_type.ToLower &amp; " = " &amp; LowerThreshold.ToString("#0") &amp; " kg/ha"
+            End If
+            myMessage1 = ", cut every " &amp; CutInterval.ToString &amp; " days, or when possible"
+         Case "target standing mass" 
+            If RemoveAmount_type.ToLower.Contains("interval") Then
+               Throw New Exception("Target standing mass trigger is not valid with cut amount defined by 'set interval'")
+            ElseIf RemoveAmount_type.ToLower.Contains("amount") Then
+               myMessage2 = "   remove " &amp; RemoveAmount_type.ToLower &amp; " = " &amp; Amount2Remove.ToString("#0") &amp; " kg/ha"
+            Else
+               myMessage2 = "   remove " &amp; RemoveAmount_type.ToLower &amp; " = " &amp; LowerThreshold.ToString("#0") &amp; " kg/ha"
+            End If
+            myMessage1 = ", cut when DM reaches " &amp; UpperThreshold.ToString("#0") &amp; " kgDM/ha"
+         Case "target mass above residual to cut"
+            If RemoveAmount_type.ToLower.Contains("interval") Then
+               Throw New Exception("Target cut mass trigger is only valid with a set interval")
+            End If
+            Dim myValue As Double = Amount2Remove + LowerThreshold
+            myMessage1 = ", cut whenever DM is higher than " &amp; myValue.ToString("#0") &amp; " kgDM/ha"
+            myMessage2 = "   remove " &amp; RemoveAmount_type.ToLower &amp; " ~ " &amp; Amount2Remove.ToString("#0") &amp; " kg/ha"
+         Case "target dm cover"
+            If RemoveAmount_type.ToLower.Contains("amount") Then
+               Dim myValue As Double = Amount2Remove * FractAboveTarget
+               myMessage1 = ", cut when standing DM is " &amp; myValue.ToString("#0") &amp; " kgDM/ha above the target cover"
+               myMessage2 = "   remove given amount (" &amp; Amount2Remove.ToString("#0") &amp; " kg/ha) at variable interval"
+            ElseIf RemoveAmount_type.ToLower.Contains("interval") Then
+               myMessage1 = ", cut every " &amp; CutInterval.ToString &amp; " days, if standing DM is above the target cover"
+               myMessage2 = "   remove variable amount at set interval"
+            Else
+               Throw New Exception("Target DM cover cannot be selected with amount to cut 'down to residual DM'")
+            End If
+         Case Else
+            Throw New Exception("Cut trigger type is not valid")
+      End Select
+      
+      'write messages on summary file
+      Console.WriteLine("")
+      Console.WriteLine("  Cut rotation for AgPasture initialised")
+      Console.WriteLine("   rotation rule valid between " &amp; StartDate.ToString("dd/MM/yyyy") &amp; " and " &amp; EndDate.ToString("dd/MM/yyyy"))
+      Console.WriteLine("   cut type: " &amp; CutTrigger_type &amp; myMessage1)
+      Console.WriteLine(myMessage2)
+      Dim myValue1 As Double = (1 - FracDM2Remove) * 100
+      Console.WriteLine("   fraction to " &amp; ResidueTreatment_type.ToLower &amp; ": " &amp; myValue1.ToString("#0.0") &amp; "%")
+      Console.WriteLine("")
+      
+   End Sub
+      
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+      
+      StandingWt = StemWt + LeafWt
+      Dim preharvest_dm As Double = StandingWt
+      Dim preharvest_n As Double = StemN + LeafN
+      Dim Amount2Cut As Double
+      Dim AmountCuttable As Double
+      
+      'Reset variables:
+      Has_Cut = "no"
+      harvested_dm = 0.0
+      harvested_n = 0.0
+      removed_dm = 0.0
+      removed_n = 0.0
+      returned_dm = 0.0
+      returned_n = 0.0
+      GrowthRateCalc = 0.0
+      Nconc_inRemoved = 0.0
+      NReturn_asDung = 0.0
+      NReturn_asUrine = 0.0
+      DaysAfterCut = DaysAfterCut + 1
+
+      'Decide whether cut is allowed:
+      If (Today.Date &gt;= StartDate.Date And Today.Date &lt;= EndDate.Date) Then
+         Select Case CutTrigger_type.ToLower
+            Case "fixed interval"
+               'Allways send an Allow_Cut if interval is right, it will be reset in the end of the day
+               If DaysAfterCut &gt;= CutInterval Then
+                  Allow_Cut = "yes"
+                  DaysAfterCut = 0  'always reset counter
+               Else
+                  Allow_Cut = "no"  'always reset allow_cut
+               End If
+            Case "target interval" 
+               'Allways send an Allow_Cut if interval is right, it will be reset only if cut actually happens (depends on amount type)
+               If DaysAfterCut &gt;= CutInterval Then
+                  Allow_Cut = "yes"
+               End If
+            Case "target standing mass"
+               'Send an Allow_Cut if DM amount is above the target (UpperThreshold), it will be reset if cut actually happens
+               If preharvest_dm &gt;= UpperThreshold Then
+                  Allow_Cut = "yes"
+               End If
+            Case "target mass above residual to cut"
+               'Send an Allow_Cut if mass above residual is higher than residual (LowerThreshold) plus target, will be reset after cut
+               If preharvest_dm &gt;= LowerThreshold + Amount2Remove Then
+                  Allow_Cut = "yes"
+               End If            
+            Case "target dm cover"
+               TodaysCoverTarget = InterpolateVals(day, TargetCoverDays, TargetCoverValues)
+               If RemoveAmount_type.ToLower.Contains("amount") Then
+                  'Send an Allow_Cut if mass above cover target is higher than a threshold, will be reset after cut
+                  If preharvest_dm &gt;= TodaysCoverTarget + Amount2Remove * FractAboveTarget Then
+                     Allow_Cut = "yes"
+                     LowerThreshold = preharvest_dm - Amount2Remove
+                  End If
+               Else
+                  'Send an Allow_Cut if interval between cuts is reached and standing mass is above cover target, will be reset after cut
+                  If DaysAfterCut &gt;= CutInterval And preharvest_dm &gt; TodaysCoverTarget Then 
+                     Allow_Cut = "yes"
+                  End If
+               End If
+         End Select
+
+         'The use of these avoid (or reduces) problems when two managers are used in the same simulation
+         Can_Cut = Allow_Cut
+         
+         'Decide how much to cut:
+         If Allow_Cut = "yes" Then
+            Select Case RemoveAmount_type.ToLower
+               Case "set amount"
+                  Amount2Cut = Amount2Remove
+                  If CutTrigger_type.ToLower = "fixed interval" Then
+                     AmountCuttable = preharvest_dm
+                  else
+                     AmountCuttable = math.Max(0, preharvest_dm - LowerThreshold)
+                  End If
+               Case "target amount"
+                  Amount2Cut = math.Min(math.Max(0, preharvest_dm - LowerThreshold), Amount2Remove)
+                  AmountCuttable = math.Max(0, preharvest_dm - LowerThreshold)
+               Case "down to residual dm"
+                  Amount2Cut = math.Max(0, preharvest_dm - LowerThreshold)
+                  AmountCuttable = math.Max(0, preharvest_dm - LowerThreshold)
+               Case "set interval (for target cover only)"
+                  Amount2Cut = (preharvest_dm - TodaysCoverTarget) / FractAboveTarget
+                  AmountCuttable = preharvest_dm
+               Case Else
+                  Throw New Exception("Option to compute DM amount to remove is not valid")
+            End Select  
+            
+
+            'Decide whether cut actually happens:
+            If (AmountCuttable &gt;= Amount2Cut) Then
+               Call CutPasture(Amount2Cut)
+               'reset cut variables
+               DaysAfterCut = 0
+               Has_Cut = "yes"
+               Allow_Cut = "no"
+               PostHarvestDM = MyAgPasture.StemWt + MyAgPasture.LeafWt
+            End If
+         Else
+            Amount2Cut = 0
+            AmountCuttable = 0
+         End If         
+      End If
+
+   End Sub 
+   
+  
+   Sub CutPasture(ByVal Amount2Cut As Double) 
+       
+      ' --------------------------------------------------------------------------------------------
+      ' Cutting pasture
+      ' --------------------------------------------------------------------------------------------
+            
+      Dim CutData As New GrazeType
+      CutData.sender = AgPasture_type
+      CutData.amount = Amount2Cut
+      Cutdata.type = "removal"
+      RaiseEvent Graze(CutData)
+      harvested_dm = MyAgPasture.HarvestWt
+      harvested_n = MyAgPasture.HarvestN
+
+      GrowthRateCalc = harvested_dm / DaysAfterCut
+      If harvested_dm &gt; 0 Then
+         Nconc_inRemoved = harvested_n * 100 / harvested_dm
+      End If
+                  
+      'Let user know (via summary) that a cut was made
+      Console.WriteLine(Today.ToString("dd MMMM yyyy") + " (Day of year=" + Today.DayOfYear.ToString + "), " &amp; MySelf.Name &amp; ":")
+      Console.WriteLine("     Removing " + harvested_dm.ToString("#0") + "kg DM/ha, with " &amp; harvested_n.ToString("#0.0") &amp; "kg N/ha")
+
+      ' -- Residue management -------------------------------------------------------------------------
+      If DMRemovalOption.ToLower = "based on digestibility" Then
+         FracDM2Remove = 1 - DefoliatedDigestibility
+      End If
+      removed_dm = harvested_dm * FracDM2Remove
+      removed_n = harvested_n * FracN2Remove
+      returned_dm = harvested_dm - removed_dm 
+      returned_n = harvested_n - removed_n 
+      
+      console.WriteLine("ResidueTreatment_type: " &amp; ResidueTreatment_type)
+      If ResidueTreatment_type.ToLower = "return as residue" Then
+         If FracDM2Remove &lt; 1 Then
+            Dim SOMData As New BiomassRemovedType
+            SOMData.crop_type = "grass"
+            SOMData.dm_type = New String() {"grass"}
+            SOMData.dlt_crop_dm = New Single() {returned_dm}
+            SOMData.dlt_dm_n = New Single() {returned_n}
+            SOMData.dlt_dm_p = New Single() {0.0}
+            SOMData.fraction_to_residue = New Single() {1.0}
+            RaiseEvent BiomassRemoved(SOMData)     'this works        
+         End If
+         
+      ElseIf ResidueTreatment_type.ToLower = "return as dung &amp; urine" Then
+         ' It is advised that dung and urine return should be done using another manager or modules, such as 'UrinePatch' 
+         
+         NReturn_asDung = returned_n * FracN2Dung
+         NReturn_asUrine = math.Max(0, returned_n - NReturn_asDung)
+         Dim SOMData As New BiomassRemovedType
+         SOMData.crop_type = "RuminantDung_PastureFed"
+         SOMData.dm_type = New String() {"dung"}
+         SOMData.dlt_crop_dm = New Single() {returned_dm}
+         SOMData.dlt_dm_n = New Single() {NReturn_asDung}
+         SOMData.dlt_dm_p = New Single() {0.0}
+         SOMData.fraction_to_residue = New Single() {1.0}
+         RaiseEvent BiomassRemoved(SOMData)
+         
+         If NReturn_asUrine &gt; 0 Then
+            Dim UrineData As New FertiliserApplicationType
+            UrineData.Amount = NReturn_asUrine
+            UrineData.Depth = 10
+            UrineData.Type = "urea"
+            RaiseEvent FertiliserApplication(UrineData)
+         End If
+         
+      Else
+         Throw New Exception("Residue management type is not valid")
+      End If
+      
+   End Sub
+ 
+   Function makeArray(ByVal ArrayString As String) As Double()
+      
+      'Get the string with values from the user interface and put the values in an numeric array
+      
+      Dim MyArray_string As String()
+      Dim MyArray_numeric As Double()
+      Dim Separator As Char() = " "
+      
+      '1-Split string into array
+      MyArray_string = ArrayString.Split(Separator, StringSplitOptions.RemoveEmptyEntries)
+      
+      '2-convert array into type single
+      ReDim MyArray_numeric(MyArray_string.Length - 1)      
+      For i As Integer = 0 To MyArray_numeric.length - 1
+         MyArray_numeric(i) = CDbl(MyArray_string(i))
+      Next
+      Return MyArray_numeric
+      
+   End Function
+   
+   Function setDays(ByVal yArray As Double()) As Integer()
+      
+      'Define the day of year for each value on yArray - first value, day=1; last value day = 365; dates in between spread evenly (rounded)
+      Dim NumDates = yArray.Length
+      Dim xArray(yArray.Length - 1) As Integer
+      xArray(0) = 1
+      If NumDates &lt; 366 Then
+         If yArray.Length &gt; 1 Then
+            xArray(yArray.Length - 1) = 365
+            If yArray.Length &gt; 2 Then
+               For i As Integer = 0 To yArray.Length - 1
+                  xArray(i) = 365 * i / (yArray.Length - 1)
+               Next
+            End If
+         End If
+      Else
+         Throw New Exception("Number of items on CoverTarget greater than maximum allowed (365)")
+      End If
+      Return xArray
+      
+   End Function
+
+   Function InterpolateVals(ByVal my_x As Integer, ByVal xArray As Integer(), ByVal yArray As Double()) As Double
+      
+      'Find out the value correspondig to my_x in the function described by the x and y arrays
+      Dim my_y As Double
+      If my_x &lt;= xArray(0) Then
+         'values below x(0) are set to y(0)
+         my_y = yArray(0)
+      ElseIf my_x &gt;= xArray(xArray.length - 1) Then
+         'value above x(n) are set to y(n)
+         my_y = yArray(yArray.length - 1)
+      Else
+         'find the nearest neighbours and interpolate (linear)
+         For i As Integer = 1 To xArray.length - 1
+            If my_x &lt;= xArray(i) Then
+               my_y = yArray(i - 1) + ((my_x - xArray(i - 1)) * (yArray(i) - yArray(i - 1)) / (xArray(i) - xArray(i - 1)))
+               i = xArray.length 
+            End If
+         Next
+      End If
+      Return my_y
+      
+   End Function
+
+End Class
+</text>
+        </manager2>
+        <manager2 name="UrinePatchDeposition">
+          <ui>
+            <Dummy1 type="category" description="Date and amount for urine deposition" />
+            <UrinePatch_start_date type="ddmmmdate" description="Date to start applications (dd/mm/yyyy):">15/04/2000</UrinePatch_start_date>
+            <UrinePatch_end_date type="ddmmmdate" description="Date to end applications (dd/mm/yyyy):">31/12/2010</UrinePatch_end_date>
+            <Apply_interval type="text" description="Type the interval between applications (days):">1461</Apply_interval>
+            <Apply_times type="text" description="Number of applications:">1</Apply_times>
+            <doFirstTime type="yesno" description="Apply first urine patch?">yes</doFirstTime>
+            <Urine_Water_to_add type="text" description="Type the amount of water to apply (mm):">5.0</Urine_Water_to_add>
+            <Urine_N_to_add type="text" description="Type the amount of urea N to apply (kg/ha):">500</Urine_N_to_add>
+            <Dummy2 type="category" description="Urine patch parameters" />
+            <Apply_WeN type="list" listvalues="Yes,No" description="Apply water and N combined?">No</Apply_WeN>
+            <p_eq_urine type="text" description="Max proportion of SAT-DUL that urine can fill:">0.95</p_eq_urine>
+            <Dist_type type="list" listvalues="Free,At a given depth,Uniformly distributed,Linearly decreasing over depth" description="Choose the type urine distribution in the soil profile:">Linearly decreasing over depth</Dist_type>
+            <Depth_for_urine type="text" description="The depth reached by urine (mm):">350</Depth_for_urine>
+            <line_factor type="text" description="Type the factor (exponent) to modify the linear dist.:">1.5</line_factor>
+          </ui>
+          <text>Imports System
+Imports ModelFramework
+
+'This manager applies urine (water plus urea) at the amount and depth specified.
+' it can also distribute it in the soil profile according to rules give (to simulate fast infiltration/prefential flow)
+' (The deposition can also be set to be repeated periodically - also specify the number of depostions and whether the first one happens)
+'  [Used to test temporal overlaps]
+
+'--&gt;  Last uptaded in: 7/Jul/2011 ..................
+
+
+Public Class Script 
+   
+   'Parameter variables:
+   &lt;param&gt; Private UrinePatch_start_date As String
+   &lt;param&gt; Private UrinePatch_end_date As String
+   &lt;param&gt; Private Apply_interval As Integer
+   &lt;param&gt; Private Apply_times As Integer
+   &lt;param&gt; Private doFirstTime As String
+   &lt;param&gt;&lt;Output&gt;&lt;Units("mm")&gt; Private Urine_Water_to_add As Single
+   &lt;param&gt;&lt;Output&gt;&lt;Units("kg/ha")&gt; Private Urine_N_to_add As Single
+   &lt;param&gt; Private p_eq_urine As Single
+   &lt;param&gt; Private Dist_type As String
+   &lt;param&gt; Private Apply_WeN As String 
+   &lt;param&gt; Private Depth_for_urine As Single
+   &lt;param&gt; Private line_factor As Single
+   
+   'Link to other modules:
+   &lt;Link&gt; Private MyPaddock As Paddock
+   &lt;Link&gt; Private Irrigator As Irrigation   
+   &lt;Link&gt; Private FertModule As Fertiliser
+   Private SoilWaterModule As Object
+   Private SoilNModule As Object
+   
+   'Variables read from other modules
+   &lt;Input&gt; Private today As DateTime         'Today's date
+   &lt;Input&gt; Private dlayer As Single()        'Thickness of soil layers (mm)
+   &lt;Input&gt; Private sw As Single()            'Soil water content (cm3/cm3)
+   &lt;Input&gt; Private sw_dep As Single()        'Soil water content (mm)
+   &lt;Input&gt; Private sat_dep As Single()       'Saturated soil water content (mm)
+
+   'Output variables
+   &lt;Output&gt;&lt;Units("")&gt; Public Urine_frac As Single()              'The actual fraction of urine added to each layer
+   &lt;Output&gt;&lt;Units("mm")&gt; Public Urine_depth As Single             'The depth reached by the urine infiltration at application
+   &lt;Output&gt;&lt;Units("mm")&gt; Public Urine_Wprofile_added As Single    'The amount of urine water added in the soil profile (exclude added as pond)
+   &lt;Output&gt;&lt;Units("mm")&gt; Public Urine_Wpond_added As Single       'The amount of urine water added as pond (irrigation)
+   &lt;Output&gt;&lt;Units("mm")&gt; Public Urine_Water_added As Single       'The total amount of urine water added
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public Urine_Nprofile_added As Single 'The amount of urea N added to the profile
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public Urine_Npond_added As Single    'The amount of urea N added as pond (fertiliser at layer zero)
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public Urine_N_added As Single        'The total amount of urea N added
+   
+   'Internal variables
+   Private StartDate As Date                'The date when urine applications start (in date format)
+   Private EndDate As Date                'The date when urine applications finish (in date format)
+   Private TimeAfterApplication As Integer 'Number of days after a urine application
+   Private Urine_prop As Single()          'The potential proportion of urine for each soil layer
+   Private SoilDepth As Single             'The soil depth (mm)
+   Private NumberOfDepositions As Integer             'Number of urine depositons
+
+   &lt;EventHandler()&gt; Public Sub OnInit2()
+
+      'check the presence of one of the soil modules
+      Call CheckModules()
+
+      'Put the dates into date format:
+      StartDate = Date.Parse(UrinePatch_start_date)
+      EndDate = Date.Parse(UrinePatch_end_date)
+      NumberOfDepositions = 0
+      
+      'Calculates the proportion of urine to be added at each layer:
+      ReDim Urine_prop(dlayer.Length - 1)
+      If Dist_type.ToLower = "free" Then    'Urine will be added according to 'water infiltration'
+         For z As Integer = 0 To dlayer.length - 1
+            Urine_prop(z) = 1
+         Next
+      Else        
+         'A given distribution over depth has been chosen, 
+         ' urine will be applied up to or at a given depth.
+         
+         Dim Depth_from_surface  As Single = 0
+         For z As Integer = 0 To dlayer.length - 1
+            SoilDepth = SoilDepth + dlayer(z)
+         Next
+         
+         'Check that the urine depth is not larger that the soil depth
+         If Depth_for_urine &gt; SoilDepth Then Depth_for_urine = SoilDepth
+           
+         If Dist_type.ToLower = "at a given depth" Then
+            For z As Integer = 0 To dlayer.length - 1
+               If Depth_for_urine &gt;= Depth_from_surface And Depth_for_urine &lt; Depth_from_surface + dlayer(z) Then
+                  Urine_prop(z) = 1
+               Else 
+                  Urine_prop(z) = 0
+               End If
+               Depth_from_surface = Depth_from_surface + dlayer(z)
+            Next
+         ElseIf Dist_type.ToLower = "uniformly distributed" Then
+            For z As Integer = 0 To dlayer.length - 1
+               If Depth_for_urine &gt;= Depth_from_surface  Then
+                  If Depth_for_urine &gt; Depth_from_surface + dlayer(z) Then
+                     If Depth_for_urine &gt; 0 Then
+                        Urine_prop(z) = dlayer(z) / Depth_for_urine
+                     Else
+                        Urine_prop(z) = 1
+                     End If
+                  Else
+                     If Depth_for_urine &gt; 0 Then
+                        Urine_prop(z) = (Depth_for_urine - Depth_from_surface) / Depth_for_urine
+                     Else
+                        Urine_prop(z) = 1
+                     End If
+                  End If
+                  Depth_from_surface = Depth_from_surface + dlayer(z)
+               Else
+                  Urine_prop(z) = 0
+               End If 
+            Next
+         ElseIf Dist_type.ToLower = "linearly decreasing over depth" Then
+            'The parameter 'line_factor' makes the line a curve...
+            Dim atZ0 As Single
+            Dim atZ1 As Single
+            Dim Tot_prop As Single = Depth_for_urine * (1 ^ line_factor) / (line_factor + 1)
+            
+            atZ1 = (Depth_for_urine - Depth_from_surface) * ((1 - Depth_from_surface / Depth_for_urine) ^ line_factor) / (line_factor + 1)
+            For z As Integer = 0 To dlayer.length - 1
+               atZ0 = atZ1
+               Depth_from_surface = Depth_from_surface + dlayer(z)
+               atZ1 = (Depth_for_urine - Depth_from_surface) * ((1 - Depth_from_surface / Depth_for_urine) ^ line_factor) / (line_factor + 1)
+               If (1 - (Depth_from_surface / Depth_for_urine)) &lt; 0 Then atZ1 = 0
+               Urine_prop(z) = (atZ0 - atZ1) / Tot_prop
+            Next
+         End If
+      End If
+      Console.WriteLine("")
+      Console.WriteLine("Distribution type: " + Dist_type + ", down to " + Depth_for_urine.ToString + "mm depth")
+      Console.WriteLine("")
+      For z As Integer = 0 To dlayer.length - 1
+         Console.WriteLine("    Urine_prop(" + z.ToString + ") = " + Urine_prop(z).ToString)
+      Next
+      Console.WriteLine("")
+   End Sub
+   
+   'Public WaterChanged As ApsimTypeDelegate WaterChanged.DeltaWater()
+   
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+      
+      Dim urea_conc As Single = 100 * Urine_N_to_add / Urine_Water_to_add  'Urea concentration in urine (ppm)
+      Dim sw_deficit(dlayer.Length - 1) As Single                     'Soil water deficit (mm)
+      Dim Add_Urine As Boolean = False                            'Indicate whether urine is to be applied or not
+      Dim PondedUrine As IrrigationApplicationType = New IrrigationApplicationType
+
+      'Re-set variables
+      ReDim Urine_frac(dlayer.Length - 1)
+      Urine_Wprofile_added = 0
+      Urine_Wpond_added = 0
+      Urine_Water_added = 0
+      Urine_Nprofile_added = 0
+      Urine_Npond_added = 0
+      Urine_N_added = 0
+      Urine_depth = 0
+
+      If (Today &gt;= StartDate And Today &lt;= EndDate) And (Urine_N_to_add &gt; 0) And (NumberOfDepositions &lt; Apply_times) Then
+         'Decide whether it is time to apply urine:
+         If Today = StartDate Then
+            If doFirstTime.ToLower = "yes" Then               
+               Add_Urine = True
+            End If
+            TimeAfterApplication = 1
+            NumberOfDepositions += 1
+         Else
+            If TimeAfterApplication &gt;= Apply_interval Then
+               Add_Urine = True
+               TimeAfterApplication = 1
+               NumberOfDepositions += 1
+            Else 
+               Add_Urine = False
+               TimeAfterApplication += 1
+            End If
+         End If
+
+         If Add_Urine = True Then
+            'Apply urine according to the Dist_type chosen:
+            
+            Dim delta_sw_dep(dlayer.Length-1) As Single
+            Dim delta_urea(dlayer.Length-1) As Single
+            Dim New_sw(dlayer.Length-1) As Single
+            Dim Cum_water_added As Single = 0 
+            Dim Cum_sw_deficit As Single = 0 
+            SoilDepth = 0
+            
+            'Compute the pore space that is available to be filled with urine water
+            'it is the value between the actual water content and a fraction of SAT
+            For z As Integer = 0 To dlayer.Length - 1
+               sw_deficit(z) = Math.Max(0, (sat_dep(z) * p_eq_urine) - sw_dep(z))
+               SoilDepth = SoilDepth + dlayer(z)
+               If SoilDepth &lt;= Depth_for_urine Then Cum_sw_deficit += sw_deficit(z)
+            Next
+            
+            'Calculates the actual fraction for each layer
+            For z As Integer = 0 To dlayer.Length - 1
+               If Dist_type.ToLower = "free" Then
+                  'to be coded
+               Else
+                  'Distribution is given in the UI
+                  If sw_deficit(z) &gt; 0 And Urine_prop(z) &gt; 0
+                     delta_sw_dep(z) = Math.Min(Urine_Water_to_add * Urine_prop(z), sw_deficit(z))
+                     If Cum_water_added + delta_sw_dep(z) &gt; Urine_Water_to_add Then
+                        delta_sw_dep(z) = Urine_Water_to_add - Cum_water_added 
+                        Cum_water_added = Urine_Water_to_add
+                     Else
+                        Cum_water_added = Cum_water_added + delta_sw_dep(z)
+                     End If
+                     New_sw(z) = sw(z) + (delta_sw_dep(z) / dlayer(z))
+                  Else
+                     delta_sw_dep(z) = 0
+                     New_sw(z) = sw(z)
+                  End If
+                  If Apply_WeN = "yes" Then
+                     delta_urea(z) = delta_sw_dep(z) * urea_conc / 100
+                  Else
+                     delta_urea(z) = Urine_prop(z) * Urine_N_to_add
+                  End If
+                  Urine_Nprofile_added += delta_urea(z)
+                  
+                  Urine_frac(z) = delta_sw_dep(z) / Urine_Water_to_add
+                  If Urine_frac(z) &gt; 0 Then 
+                     Urine_depth = Urine_depth + dlayer(z)
+                  End If
+
+                  If Cum_water_added &lt; Urine_Water_to_add Then
+                     Urine_Wpond_added = Urine_Water_to_add - Cum_water_added
+                     PondedUrine.Amount = Urine_Wpond_added
+                     PondedUrine.source = New String() {}
+                     PondedUrine.time = ""
+                     PondedUrine.Duration = 0
+                     PondedUrine.Crop_Area = 0
+                     PondedUrine.NH4 = 0
+                     PondedUrine.NO3 = 0
+                     PondedUrine.CL = 0
+                     If Apply_WeN = "yes" Then
+                        Urine_Npond_added = Urine_Wpond_added * urea_conc
+                     else
+                        Urine_Npond_added = 0
+                     End If
+                  Else
+                     Urine_Wpond_added = 0
+                     Urine_Npond_added = 0
+                  End If
+               End If
+            Next
+            SoilNModule.dlt_urea = delta_urea
+            SoilWaterModule.sw = New_sw
+            If Urine_Wpond_added &gt; 0 Then
+               Irrigator.Variable("irrigation_efficiency").Set(1.0)
+               Irrigator.Apply(PondedUrine)
+            End If
+            If Urine_Npond_added &gt; 0 Then FertModule.Apply(Urine_Npond_added, 0, "Urea_N")
+            Urine_Wprofile_added = Cum_water_added
+            Urine_Water_added = Urine_Wprofile_added + Urine_Wpond_added
+            Urine_N_added = Urine_Nprofile_added + Urine_Npond_added
+            Console.WriteLine(Today.ToString("dd MMMM yyyy") + " (Day of year=" + Today.DayOfYear.ToString + "), Urine patch deposition:")
+            Console.WriteLine("     Urine patch being applied. Nitrogen load = " + Urine_N_added.ToString + "kg/ha. Water amount = " + Urine_Water_added.ToString + "mm")
+         Else
+            Array.Clear(Urine_frac, 0, Urine_frac.Length - 1)
+            Urine_Wprofile_added = 0
+            Urine_Nprofile_added = 0
+         End If
+      End If      
+   End Sub
+
+   Private Sub CheckModules()
+   
+      If Irrigator Is Nothing Then
+         Throw New Exception("Centre pivot manager requires the presense of the irrigation module in the paddock")
+      End If
+      If FertModule Is Nothing Then
+         Throw New Exception("Centre pivot manager requires the presense of the fertiliser module in the paddock")
+      End If
+      
+      If MyPaddock.LinkByType("SoilWat") Is Nothing Then
+         If MyPaddock.LinkByType("SWIM2ui") Is Nothing Then
+            Throw New Exception("Urine_patch manager didn't find a valid soil water module in the paddock")
+         Else
+            SoilWaterModule = MyPaddock.LinkByType("SWIM2ui")
+         End If
+      Else
+         SoilWaterModule = MyPaddock.LinkByType("SoilWat")
+      End If
+      
+      If MyPaddock.LinkByType("SoilN") Is Nothing Then
+         If MyPaddock.LinkByType("SoilNui") Is Nothing Then
+            Throw New Exception("Urine_Patch manager didn't find a valid SoilN module in the paddock")
+         Else
+            SoilNModule = MyPaddock.LinkByType("SoilNui")
+         End If
+      Else
+         SoilNModule = MyPaddock.LinkByType("SoilN")
+      End If
+      
+   End Sub
+
+End Class
+</text>
+        </manager2>
+        <manager2 name="nh3_volatilisation">
+          <ui>
+            <Dummy type="category" description="NH3 volatilisation parameters" />
+            <Depth_for_NH3 type="text" description="Depth to which NH3 volatilisation is considered (mm):">50</Depth_for_NH3>
+            <Dummy1 type="category" description="Base soil and pH change parameters" />
+            <Soil_pH_base type="text" description="The base soil pH for each soil layer:">6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0</Soil_pH_base>
+            <Soil_CEC_strng type="text" description="The CEC for each soil layer (meq/100g):">24.30  24.30  24.30  24.30  24.30  24.30  24.30  24.30  24.30  21.30  18.30  15.31  15.31  15.31  14.41  13.51  12.61  12.61  12.61  12.61  12.61  12.61  12.61  12.18  11.75  11.32  11.32  11.32  11.32  11.32  11.32</Soil_CEC_strng>
+            <k_BC type="text" description="Soil buffer capacity factor:">0.03</k_BC>
+            <k_pH_hyd type="text" description="Factor to convert dlt_urea_hydrol into pH changes:">1</k_pH_hyd>
+            <k_pH_nit type="text" description="Factor to convert dlt_nh4_nitrif into pH changes:">1</k_pH_nit>
+            <k_pH_x type="text" description="Minimum pH fraction decaying per day (0-1):">0.2</k_pH_x>
+            <Dummy2 type="category" description="Gas exchange parameters" />
+            <k_AFPV type="text" description="Factor for soil/atmosphere gas exchange (AFPV/mm):">75</k_AFPV>
+            <f_NV_strng type="text" description="Fractor for volatilisable NH3, per soil layer (0-1):">1.0  0.8  0.5  0.1  0.0  0.0  0.0  0.0</f_NV_strng>
+            <Dummy3 type="category" description="Additional limits for volatilisation" />
+            <f_AV type="text" description="Fraction of total soil NH4 that can be volatilised per day:">0.5</f_AV>
+            <CritRain1 type="text" description="Rain+irrigation below which volatilisation is not limited (mm):">3</CritRain1>
+            <CritRain2 type="text" description="Rain+irrigation above which no volatilisation occur (mm):">10</CritRain2>
+          </ui>
+          <text>Imports System
+Imports ModelFramework
+
+'This module estimate the amount of NH3 in the soil and its volatilisation
+
+'--&gt;  Last uptaded in: 12/Oct/2012 ..................
+
+
+Public Class Script
+   
+   'Parameter variables:
+   &lt;param&gt; Private Depth_for_NH3 As Single            'The depth to which volatilisation is considered (mm)
+   &lt;param&gt; Private Soil_pH_base As String             'The base soil pH, apsim will try to keep to this value, same for all layers
+   &lt;param&gt; Private Soil_CEC_strng As String           'The CEC for each layer (meq/100g)
+   &lt;param&gt; Private k_BC As Single                     'Soil buffer capacity factor ()
+   &lt;param&gt; Private k_pH_hyd As Single                 'Factor to convert urea hydrolysed into H+ changes ()
+   &lt;param&gt; Private k_pH_nit As Single                 'Factor to convert NH4 nitrified into H+ changes ()
+   &lt;param&gt; Private k_pH_x As Single                   'Minimum decrease for pH (fraction/day)
+   &lt;param&gt; Private k_AFPV As Single                   'Factor to transform potential evaporation in air filled pore volumes that are potential exchanged with to atmosphere
+   &lt;param&gt; Private f_NV_strng As String               'The fraction of potential NH3 volatilisation for each layer that is transpoted to the soil surface ()
+   &lt;param&gt; Private f_AV As Single                     'Fraction of total soil NH4 that can be volatilised per day, limits volatilisation and ensure mass balance ()
+   &lt;param&gt; Private CritRain1 As Single                'Critial rainfall. Below this volatilisation is not limited by rainfall or irrigation
+   &lt;param&gt; Private CritRain2 As Single                'Critial rainfall. Above this no volatilisation occurs
+    
+   'Events to be raised:
+   Event ChangeSoilNitrogen As NitrogenChangedDelegate
+
+   'Variables read from other modules
+   &lt;Input&gt; Private rain As Single                     'Rainfall (mm)
+   &lt;Input&gt; Private eo As Single                       'Potential evapotranspiration (mm)
+   &lt;Input&gt; Private irrigation As Single               'Irrigation amount today (mm)
+   &lt;Input&gt; Private dlayer As Single()                 'Soil layers thickness
+   &lt;Input&gt; Private bd As Single()                     'Soil bulk density (g/cm3 = kg/L)
+   &lt;Input&gt; Private sw As Single()                     'Soil water content (cm3/cm3)
+   &lt;Input&gt; Private sat As Single()                    'Soil water content at saturarion, porosity (cm3/cm3)
+   &lt;Input(IsOptional:=True)&gt; Private ave_soil_temp As Single()    'Soil temperature from SoilTemp - for each layer (oC)
+   &lt;Input(IsOptional:=True)&gt; Private st As Single()               'Soil temperature from SoilN - for each layer (oC)
+   &lt;Input&gt; Private nh4 As Single()                    'Amount of NH4 in the soil (kg/ha)
+   &lt;Input&gt; Private nh4ppm As Single()                 'Amount of NH4 in the soil (ppm)
+   &lt;Input&gt; Private conc_water_nh4 As Single()         'Amount of NH4 not adsorbed (ppm)
+   &lt;Input&gt; Private dlt_rntrf As Single()              'Amount of N nitrified (kg/ha)   
+   &lt;Input&gt; Private dlt_urea_hydrol As Single()        'Amount of urea N hydrolised (kg/ha)
+   
+   'Output variables
+   &lt;Output&gt;&lt;Units("ppm")&gt; Public nh3ppm As Single()               'The estimated amount of NH3 in the soil (ppm)
+   &lt;Output&gt;&lt;Units("kgN/ha")&gt; Public nh3 As Single()               'The estimated amount of NH3 in the soil (kg/ha)
+   &lt;Output&gt;&lt;Units("g/ha")&gt; Public nh3_gas As Single()             'The estimated amount of NH3 in the soil in gaseous form (g/ha)
+   &lt;Output&gt;&lt;Units("kgN/ha")&gt; Public emission_nh3 As Single()      'The estimated amount of NH3 volatilised (kg/ha/day)
+   &lt;Output&gt;&lt;Units("")&gt; Public SoilpH  As Single()                 'dummy soil pH
+   &lt;Output&gt;&lt;Units("kgN/ha")&gt; Public nh4_sol As Single()           'The amount of NH4 in the soil solution (kg/ha)   
+   &lt;Output&gt;&lt;Units("oC")&gt; Public SoilTemp As Single()              'The soil temperature (oC)
+
+   &lt;Output&gt;&lt;Units("AFPV/day")&gt; Public PotGasExchangeNH As Single  'The potential soil-atmosphere gas exchange (Air-filled-pore-spaces/day)
+   &lt;Output&gt;&lt;Units("L/m2/day")&gt; Public GasExchangeNH As Single()   'The volume of gas exchanged (L/m2/day)
+   &lt;Output&gt;&lt;Units("L/m2")&gt; Public AirFilledPoreVolume As Single() 'The volume of air filled pore space in each soil layer (L_air/m2)
+   &lt;Output&gt;&lt;Units("")&gt; Public NH3toNHx_ratio As Single()          'The ratio between NH3 and NHx in the soil solution
+   &lt;Output&gt;&lt;Units("x1000")&gt; Public NH3GtoNH3A_ratio As Single()   'The ratio between NH3 liquide and gas in the soil, times 1000
+   &lt;Output&gt;&lt;Units("")&gt; Public pK_NHx As Single()                  'The equilibrium constant for NH4-NH3
+   &lt;Output&gt;&lt;Units("")&gt; Public pG_NH3 As Single()                  'The equilibrium constant for NH3A-NH3G
+
+   'Internal variables
+   Private NH3_z As Integer                           'The layer to consider NH3 volatilization
+   Private f_NV As Single()                           'The fraction of NH3 transport from each layer
+   Private Ini_SoilpH As Single()                     'The initial, or base, soil pH
+   Private SoilCEC As Single()                        'The CEC (mol/kg)
+   
+   &lt;EventHandler()&gt; Public Sub OnInit2()
+
+      ReDim SoilpH(dlayer.length - 1)
+      ReDim Ini_SoilpH(dlayer.length - 1)
+
+      'Split the read values of f_NV into an array
+      f_NV = makeArray(f_NV_strng)
+      'Split the read values of pH into an array
+      Ini_SoilpH = makeArray(Soil_pH_base)
+      'Split the read values of CEC into an array
+      SoilCEC = makeArray(Soil_CEC_strng)
+      ReDim Preserve Ini_SoilpH(dlayer.length - 1)
+      ReDim Preserve SoilCEC(dlayer.length - 1)
+      'Assign initial pH values and convert CEC from meq to mol
+      For z As Integer = 0 To dlayer.length - 1
+         Ini_SoilpH(z) = math.Max(0, Ini_SoilpH(z))
+         SoilpH(z) = Ini_SoilpH(z)
+         SoilCEC(z) = 0.01 * math.Max(0.1, SoilCEC(z))     'mol/kg
+      Next
+
+      'Identify the layer down to which volatilization is considered
+      Dim Depth_from_surface As Single = 0
+      For z As Integer = 0 To dlayer.length - 1
+         Depth_from_surface = Depth_from_surface + dlayer(z)
+         If Depth_from_surface &lt;= Depth_for_NH3 Then
+            NH3_z = z
+         Else
+            z = dlayer.length
+         End If
+      Next
+
+      'verify the bounds of the pH converting factor
+      k_pH_hyd = math.Min(1, math.Max(0, k_pH_hyd))
+      k_pH_nit = math.Min(1, math.Max(0, k_pH_nit))
+      k_pH_x = math.Min(1, math.Max(0, k_pH_x))
+      k_BC = math.Max(0, k_BC)
+      ReDim Preserve f_NV(dlayer.length - 1)
+      For z As Integer = 0 To dlayer.length - 1
+         f_NV(z) = math.Min(1, math.Max(0, f_NV(z)))
+      Next
+
+      '----------- NH3 volatilization ---------------------------------------------------
+      Console.WriteLine("")
+      Console.WriteLine("Volatilization will be calculated by manager")
+      Console.WriteLine("   Top " &amp; Depth_for_NH3.ToString &amp; "mm are considered,")
+      Console.WriteLine("   pH variation is mimicked by dlt_urea_hydrol + dlt_nh4_nitrif")
+      Console.WriteLine("")
+
+   End Sub
+
+   
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+            
+      Dim urea_hydrol As Single                    'The amount of urea hydrolised (mol/L)
+      Dim nh4_nitrif As Single                     'The amount of NH4 nitrified (mol/L)
+      Dim dlt_H As Single                          'Estimated variation of H+ in the soil (mol/L)
+      Dim delta_pH_Hyd As Single = 0               'Variation in soil pH due to urea hydrolysis
+      Dim delta_pH_Nit As Single = 0               'Variation in soil pH due to NH4 nitrification
+      Dim delta_pH_X As Single = 0                 'Minimum decrease in soil pH, to ensure pH returns to base after urea deposition
+      Dim delta_pH_Vol As Single = 0               'Variatin in pH due to volatilisation
+      Dim Beta As Single = 1                       'The soil buffer capacity ()
+      Dim delta_nh4(dlayer.length - 1) As Double   'The variation in NH4 content due to volatilisation (kg/ha)
+      Dim RainFactor As Single = 1.0               'The rain factor
+
+      Try  'to get the soil temperature from SoilTemp, otherwise use SoilN's:
+         SoilTemp = ave_soil_temp
+      Catch
+         SoilTemp = st
+      End Try
+      
+      ReDim nh3ppm(dlayer.length - 1)
+      ReDim nh4_sol(dlayer.length - 1)
+      ReDim nh3(dlayer.length - 1)
+      ReDim nh3_gas(dlayer.length - 1)
+      ReDim emission_nh3(dlayer.length - 1)
+      ReDim GasExchangeNH(dlayer.length - 1)
+      ReDim AirFilledPoreVolume(dlayer.length - 1)
+      ReDim NH3toNHx_ratio(dlayer.length - 1)
+      ReDim NH3GtoNH3A_ratio(dlayer.length - 1)
+      ReDim pK_NHx(dlayer.length - 1)
+      ReDim pG_NH3(dlayer.length - 1)
+
+      'Calc the irrigation factor
+      If Rain + Irrigation &lt; CritRain1 Then
+         RainFactor = 1.0
+      ElseIf Rain + Irrigation &gt; CritRain2 Then
+         RainFactor = 0.0
+      Else
+         RainFactor = (Rain + Irrigation - CritRain1) / (CritRain2 - CritRain1) 
+      End If
+      
+      '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+      '  NOTES:
+      '     The RainFactor accounts for the downwards transport of NH3 gas when water from rain or irrigation is being drained throught the soil.
+      '        Below RainCrit1, precipitation has no effect, above RainCrit2 volatilisation is zero.  A linear relationship is used between
+      '        these two limits:
+      '
+      '                              |
+      '                         F   1+                /-----------
+      '                       R a    |               /:
+      '                       a c    |              / :
+      '                       i t    |             /  :
+      '                       n o    |            /   :
+      '                         r    |           /    :
+      '                              |          /     :
+      '                              |         /      :
+      '                             0+========+-------+--------------&gt; Rain + Irrigation
+      '                              |      Rain    Rain
+      '                                     Crit1   Crit2
+      '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+      For z As Integer = 0 To dlayer.length - 1
+         
+         '0-Compute the value of Beta
+         Beta = k_BC * bd(z) * SoilCEC(z) / sw(z)
+
+         '1-Compute the consumption of H+ by urea hydrolysis
+         urea_hydrol = dlt_urea_hydrol(z) / (dlayer(z) * 10000)   'kg_urea_N/L_soil
+         urea_hydrol = urea_hydrol * 1000 / sw(z)                 'g_urea_N/L_water
+         urea_hydrol = urea_hydrol / 14.00674                     'mol_urea_N/L_water  - All N pools as expresseed in kg_N, so molecular mass is 14
+         dlt_H = -2 * urea_hydrol * k_pH_hyd                      'mol/L
+
+         '2-Compute changes in soil pH due to urea hydrolysis
+         If dlt_H &lt; 0 Then
+            delta_pH_Hyd = (14 / (1 + ((14 - soilpH(z)) / SoilpH(z)) * 10 ^ (dlt_H / Beta))) - SoilpH(z)
+         Else
+            delta_pH_Hyd = 0
+         End If
+         SoilpH(z) = SoilpH(z) + delta_pH_Hyd
+
+         '3-Compute the production of H+ by nitrification and its effect on soil pH
+         nh4_nitrif = dlt_rntrf(z) / (dlayer(z) * 10000)          'kg_nh4_N/L_soil
+         nh4_nitrif = nh4_nitrif * 1000 / sw(z)                   'g_nh4_N/L_water
+         nh4_nitrif = nh4_nitrif / 14.0067                        'mol_nh4_N/L_water  - All N pools as expresseed in kg_N, so molecular mass is 14
+         dlt_H = 2 * nh4_nitrif * k_pH_nit                        'mol/L
+         If dlt_H &gt; 0 Then
+            delta_pH_Nit = (14 / (1 + ((14 - soilpH(z)) / SoilpH(z)) * 10 ^ (dlt_H / Beta))) - SoilpH(z)
+         Else
+            delta_pH_Nit = 0
+         End If
+         
+         '4-Compute soil forced pH change - this is to ensure pH will decline to its base value
+         If SoilpH(z) &gt; Ini_SoilpH(z) Then
+            delta_pH_x = -(SoilpH(z) - Ini_SoilpH(z)) * k_pH_x
+         Else
+            delta_pH_x = 0
+         End If
+         SoilpH(z) = SoilpH(z) + math.Min(delta_pH_Nit, delta_pH_X)
+
+         '5-bound pH between base and 14
+         SoilpH(z) = math.Min(14, math.Max(Ini_SoilpH(z), SoilpH(z)))
+
+         
+         '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+         '  NOTES:
+         '     The changes in pH are due to the consumption of H+ as urea is hydrolysed or the production of H+ by nitrification,
+         '        in theory for each mol of N hydrolised two mols of H+ are consumed, while two mols are produced by nitrification;
+         '     The k_pH_nit ad k_pH_hyd factors allow to control the extent that H+ is affected by hydrolysis and nitrification,
+         '        when set to zero there's no effect, while setting it to one causes full theoretical effect
+         '     The parameter Beta describes the soil buffer capacity, which is a function of CEC, k_BC is used for adjusting the relationship.
+         '     k_pH_x stablish a minimum rate for pH decay, it mimicks soil buffering and other reactions that bring pH down
+         '        after urea/urine deposition. Used when nitrification is not enough to bring the pH down.
+         '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+         '6-compute the NH3 equilibrium factors
+         pK_NHx(z) = pK("aq", soilTemp(z) + 273.15)      'Aqueous equilibrium [NH4 &lt;--&gt; NH3]
+         pG_NH3(z) = pK("gs", soilTemp(z) + 273.15)      'Gaseous equilibrium [NH3_liquid &lt;--&gt; NH3_gas]
+         
+         '7-Calc the proportion of total NHx that is in the form of NH3
+         Dim NH3toNHx As Single = 1 / (1 + 10 ^ (pK_NHx(z) - SoilpH(z)))
+         NH3toNHx_ratio(z) = NH3toNHx
+         
+         '8-Calc the amount of NH3 in aqueous solution (original equation uses mol/L, thus the ratio of molecular mass is needed)
+         nh3ppm(z) = conc_water_nh4(z) * NH3toNHx * (17.03 / 18.04 )      'ppm (ug/cm3_water)
+         
+         '9-Calc the proportion of total NH3 that is in the gaseous form
+         Dim NH3GtoNH3A As Single = 1 / (1 + 10 ^ (pG_NH3(z)))
+         NH3GtoNH3A_ratio(z) = NH3GtoNH3A * 1000
+         
+         '10-Calc the amount of NH3 in gaseous form
+         nh3_gas(z) = nh3ppm(z) * NH3GtoNH3A                   'ppm (ug/cm3_air in soil = mg/L)
+
+         '11-Calc the amount of NH3 in gaseous form and the amount effectivelly lost by volatilization
+         PotGasExchangeNH = eo * k_AFPV   'air filled pore volumes/day
+         AirFilledPoreVolume(z) = (sat(z) - sw(z)) * dlayer(z)    'L_air/m2
+         If z &lt;= NH3_z Then
+            GasExchangeNH(z) = PotGasExchangeNH * AirFilledPoreVolume(z)      'L_air/m2/day
+            GasExchangeNH(z) = GasExchangeNH(z) * RainFactor
+            If GasExchangeNH(z) &gt; 0 Then
+               emission_nh3(z) = nh3_gas(z) * GasExchangeNH(z) * f_NV(z)      'mg/m2
+               emission_nh3(z) = emission_nh3(z) * 10E+4                      'mg/ha
+               emission_nh3(z) = emission_nh3(z) * 10E-6                      'kg/ha
+            Else
+               emission_nh3(z) = 0
+            End If
+            'Limit volatilisation to a fraction of NH4 for each layer
+            emission_nh3(z) = Math.Min(emission_nh3(z), f_AV * nh4(z))
+         Else
+            GasExchangeNH(z) = 0
+            emission_nh3(z) = 0
+         End If
+         
+         
+         '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+         '  NOTES:
+         '     To estimate the amount of NH3 volatilised during the day, it is assumed that the amount of NH3 in gaseous form in the
+         '        beginning of the day represents well the proportion of NHx 'volatilisable'. It is assumed also that the potential evaporation
+         '        is a good estimator for the gas exchange between soil and atmosphere (this makes volatilisation sensible to temperature and
+         '        wind).  By scaling the gas exchange to the air filled pore space in the soil, we get volatilisation also sensible to water
+         '        content, which mimicks the decrease in gas transport when the soil is wet.  Finally a factor (f_NV) is used to limit the
+         '        contribution of each soil layer to the overall volatilisation (deep layers would volatilise less because NH3 needs to move
+         '        transport to the surface.
+         '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+         
+         '12-Compute soil pH change due to volatilisation
+         Dim emission_nh3ised As Single = emission_nh3(z) / (dlayer(z) * 10000)  'kg_nh3_N/L_soil
+         emission_nh3ised = emission_nh3ised * 1000 / sw(z)                      'g_nh3_N/L_water
+         emission_nh3ised = emission_nh3ised / 14.0067                           'mol_nh3_N/L_water  - All N pools as expresseed in kg_N, so molecular mass is 14
+         dlt_H = emission_nh3ised                                                'mol/L
+         If dlt_H &gt; 0 Then
+            delta_pH_vol = (14 / (1 + ((14 - soilpH(z)) / SoilpH(z)) * 10 ^ (dlt_H / Beta))) - SoilpH(z)
+         Else
+            delta_pH_vol = 0
+         End If
+
+         '13- Calc new pH and bound it between base and 14
+         SoilpH(z) = SoilpH(z) + delta_pH_vol
+         SoilpH(z) = math.Min(14, math.Max(Ini_SoilpH(z), SoilpH(z)))
+
+         '14-Transform variables to publishable units
+         nh3(z) = nh3ppm(z) * sw(z) / 1000                     'mg/cm3_soil = g/L_soil
+         nh3(z) = nh3(z) * dlayer(z) * 10000                   'g/ha_soil
+         nh3(z) = nh3(z) / 1000                                'kg/ha
+
+         nh3_gas(z) = nh3_gas(z) * (sat(z) - sw(z)) / 1000     'mg/cm3_soil = g/L_soil
+         nh3_gas(z) = nh3_gas(z) * dlayer(z) * 10000           'g/ha_soil
+
+         nh4_sol(z) = conc_water_nh4(z) * sw(z) / 1000         'mg/cm3_soil = g/L_soil
+         nh4_sol(z) = nh4_sol(z) * dlayer(z) * 10000           'g/ha_soil
+         nh4_sol(z) = nh4_sol(z) / 1000                        'kg/ha
+
+         'Compute the delta in nh4 amount
+         delta_nh4(z) = -emission_nh3(z)
+      Next
+      
+      'send the delta nh4 to soil
+      Dim NitrogenChanges As NitrogenChangedType = New NitrogenChangedType
+      NitrogenChanges.Sender = "Volatilisation"
+      NitrogenChanges.DeltaUrea = New Double() {}
+      NitrogenChanges.DeltaNH4 = delta_nh4
+      NitrogenChanges.DeltaNO3 = New Double() {}
+      RaiseEvent ChangeSoilNitrogen(NitrogenChanges)     
+
+   End Sub
+      
+
+   Function makeArray(ByVal ArrayString As String) As Single()
+      
+      'Get the string with values from the user interface and put the values in an numeric array
+      
+      Dim MyArray_string As String()
+      Dim MyArray_single As Single()
+      Dim Separator As Char() = " "
+      
+      '1-Split string into array
+      MyArray_string = ArrayString.Split(Separator, StringSplitOptions.RemoveEmptyEntries)
+      
+      '2-convert array into type single
+      ReDim MyArray_single(MyArray_string.Length - 1)      
+      For i As Integer = 0 To MyArray_single.length - 1
+         MyArray_single(i) = MyArray_string(i)
+      Next
+      Return MyArray_single
+      
+   End Function
+
+   
+   Function pK(ByVal N_species As String, ByVal Temp As Single) As Single
+      
+      'Calculates the equilibrium constants, 
+      '  if 'aq' then nh4-nh3 equilibrium in water
+      '  if 'gs' then gas-liquid equilibrium for nh3
+      
+      Dim a_pK As Single() = {0.09018, -1.69}
+      Dim b_pK As Single() = {2729.92, 1477.7}
+      Dim sp As Integer
+      
+      If n_species = "aq" Then
+         sp = 0
+      ElseIf n_species = "gs"
+         sp = 1
+      End If
+      pK = a_pK(sp) + b_pK(sp) / Temp
+         
+   End Function
+   
+End Class
+</text>
+        </manager2>
+        <manager2 name="Apply_DCD">
+          <ui>
+            <Dummy1 type="category" description="Date to start applications (dd/mm/yyyy):" />
+            <ApplyDCD_start_date type="ddmmmdate" description="Date to start applications (dd/mm/yyyy):">31/12/2010</ApplyDCD_start_date>
+            <ApplyDCD_end_date type="ddmmmdate" description="Date to end applications (dd/mm/yyyy):">31/12/2010</ApplyDCD_end_date>
+            <ApplyDCD_interval type="text" description="Type the interval between applications (days):">1461</ApplyDCD_interval>
+            <DCD_to_add type="text" description="Type the amount of DCD to apply ((kg/ha):">10</DCD_to_add>
+            <Depth_for_DCD type="text" description="Type the depth to apply DCD mm):">1</Depth_for_DCD>
+          </ui>
+          <text>Imports System
+Imports ModelFramework
+
+'This manager applies dcd at the amount and depth specified (it also can repeat the application periodically)
+'It also calculated the nitrification inhibiton factor and DCD degradation following functions given in the UI
+
+Public Class Script
+   
+   'Parameter variables:
+   &lt;param&gt; Private ApplyDCD_start_date As String
+   &lt;param&gt; Private ApplyDCD_end_date As String
+   &lt;param&gt; Private ApplyDCD_interval As Integer
+   &lt;param&gt; Private DCD_to_add As Single
+   &lt;param&gt; Private Depth_for_DCD As Single
+   
+   &lt;Link&gt; Private MyPaddock As Paddock
+   Private MyDCD As Component
+   
+   'Variables read from other modules
+   &lt;Input&gt; Private dd_mmm_yyyy As String
+   &lt;Input&gt; Private dlayer As Single()
+   &lt;Input&gt; Private dcd As Single()
+
+   'Output variables
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public dcd_added As Single       'The amount of dcd added
+
+   Private Ini_Date As Date                     'The date when DCD applications start (in date format)
+   Private End_Date As Date                     'The date when DCD applications finish (in date format)
+   Private Today_Date As Date                   'The date of today (in date format)
+   Private TimeAfterApplication As Integer      'Number of days after a urine application
+   Private SoilDepth As Single                  'The soil depth (mm)
+   Private dcd_layer As Integer                 'The layer at which dcd will be applied
+
+   &lt;EventHandler()&gt; Public Sub OnInit2()
+
+      'Put the dates into date format:
+      Ini_Date = ApplyDCD_start_date
+      End_Date = ApplyDCD_end_date
+        
+      
+      'Computes the layer at which dcd will be applied
+      Dim Depth_from_surface As Single = 0
+      For z As Integer = 0 To dlayer.length - 1
+         If Depth_from_surface &lt;= Depth_for_DCD Then dcd_layer = z
+         Depth_from_surface = Depth_from_surface + dlayer(z)
+      Next
+      
+      MyDCD = MyPaddock.LinkByName("DCD")
+
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+
+      'ComponentType = MyPaddock.Component("solute")
+      Dim delta_dcd As Single()
+
+      'Re-set variables
+      Today_Date = dd_mmm_yyyy.Replace("_", "/")
+      ReDim delta_dcd(dlayer.Length - 1)
+      dcd_added = 0
+
+      'Decide whether it is time to apply DCD:
+      If Today_date &gt;= Ini_date And Today_date &lt;= End_date Then
+         If Today_date = Ini_date Then
+            delta_dcd(dcd_layer) = DCD_to_add
+            dcd_added += DCD_to_add
+            TimeAfterApplication = 1
+         Else
+            If TimeAfterApplication &gt;= ApplyDCD_interval Then
+               delta_dcd(dcd_layer) = DCD_to_add
+               dcd_added += DCD_to_add
+               TimeAfterApplication = 1
+            Else
+               TimeAfterApplication = TimeAfterApplication + 1
+               dcd_added = 0
+            End If
+         End If
+
+         If TimeAfterApplication = 1 Then
+            MyDCD.Variable("dlt_dcd").Set(delta_dcd)
+            Console.WriteLine(Today_date.ToString("dd MMMM yyyy") + " (Day of year=" + today_date.DayOfYear.ToString + "), Apply_DCD:")
+            Console.WriteLine("     DCD being applied. " + DCD_added.ToString + "kg/ha added at depth " + Depth_for_DCD.ToString + "mm")
+         End If
+      End If            
+      
+   End Sub
+
+End Class
+    </text>
+        </manager2>
+        <manager2 name="CentrePivotIrrigation">
+          <ui>
+            <Dummy type="category" description="Centre Pivot Irrigation Manager" />
+            <AllowIrrigation type="yesno" description="Turn irrigation on?">no</AllowIrrigation>
+            <Dummy type="category" description="General irrigation parameters" />
+            <Irrigation_start_date type="ddmmmdate" description="Start of irrigation season (dd-mmm):">1-Oct</Irrigation_start_date>
+            <Irrigation_end_date type="ddmmmdate" description="End of irrigation season (dd-mmm):">30-Apr</Irrigation_end_date>
+            <DepthToCalcPAW type="text" description="Enter the soil depth to which water deficit is computed (mm):">500</DepthToCalcPAW>
+            <CritRainToPause type="text" description="Critical rainfall - amount over 3 days after which irrigation is paused (mm):">30</CritRainToPause>
+            <DaysToPauseOnCritRain type="text" description="Number of days irrigation is paused once critical rainfall is reached (days):">3</DaysToPauseOnCritRain>
+            <IrrigSetup type="list" listvalues="specify,calculate" description="Select whether irrigation setup is specified or calculated internally">calculate</IrrigSetup>
+            <category type="category" description="Irrigation setup (if not to calculate)" />
+            <IrrigTrigger type="text" description="Soil water deficit at which irrigation starts (mm):">40</IrrigTrigger>
+            <IrrigAmount type="text" description="Amount of irrigation to apply (mm):">30</IrrigAmount>
+            <IrrigReturn type="text" description="Irrigation return period (days):">4</IrrigReturn>
+            <IrrigEfficiency type="text" description="Irrigation efficiency (%):">85</IrrigEfficiency>
+          </ui>
+          <text>Imports System
+Imports ModelFramework
+
+'This manager applies irrigation following rules mimicking centre-pivot management.
+' Irrigation parameters can be given or be left to be calculated by the module (based on the soil PAW)
+
+'--&gt;  Last uptaded in: 12/Jul/2011 ..................
+
+
+Public Class Script 
+   
+   'Parameter variables:
+   &lt;param&gt; Private AllowIrrigation As String                   'Indicates whether irrigation is on (yes) or off (no)
+   &lt;param&gt; Private Irrigation_start_date As String             'Start of the irrigation season (dd-mmm)
+   &lt;param&gt; Private Irrigation_end_date As String               'End of the irrigation season (dd-mmm)
+   &lt;param&gt; Private DepthToCalcPAW As Single                    'Depth to consider plant available water, and deficit (mm)
+   &lt;param&gt; Private CritRainToPause As Single                   'Value of rain (sum over 3 days) when irrigation is paused (mm)
+   &lt;param&gt; Private DaysToPauseOnCritRain As Single             'Number of days irrigations is paused when CritRain is reached
+   &lt;param&gt; Private IrrigSetup As String                        'Define wheter the irrgation parameters are define by user of calculated
+   &lt;param&gt; Private IrrigTrigger As Single                      'User defined irrigation trigger (mm)
+   &lt;param&gt; Private IrrigAmount As Single                       'User defined irrigation amount (mm)
+   &lt;param&gt; Private IrrigReturn As Single                       'User defined irrigation return period (days)
+   &lt;param&gt; Private IrrigEfficiency As Single                   'User defined irrigation efficiency (%)
+      
+   'Link to other modules:
+   &lt;Link&gt; Private Irrigator As Irrigation   
+   
+   'Variables read from other modules
+   &lt;Input&gt; Private today As DateTime                           'Today's date
+   &lt;Input&gt; Private dlayer As Single()                          'Thickness of soil layers (mm)
+   &lt;Input&gt; Private rain As Single                              'Rainfall (mm)
+   &lt;Input&gt; Private sw_dep As Single()                          'Soil water content (mm)
+   &lt;Input&gt; Private dul_dep As Single()                          'Soil water content at DUL (mm)
+   &lt;Input&gt; Private ll15_dep As Single()                          'Soil water content at LL15 (mm)
+
+   'Output variables
+   &lt;Output&gt;&lt;Units("mm")&gt; Public SoilWaterDeficit As Single     'Soil water deficit (mm)
+   &lt;Output&gt;&lt;Units("")&gt; Public DaysAfterIrrigation As Single    'The number of days after irrigation was applied
+   &lt;Output&gt;&lt;Units("")&gt; Public SoilPAWforIrrigation As Single   'The soil plant available water (mm)
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigationTrigger As Single      'The soil water deficit that triggers irrigation (mm)
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigationReturnPeriod As Integer'The return period for irrigation
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigationAmount As Single       'The amount of water to add in an irrigation event (mm/day)
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigationEfficiency As Single   'The irrigaton efficiency (%)
+   &lt;Output&gt;&lt;Units("mm")&gt; Public RainOnPrevious3Days As Single  'The amount of rainfall over the previous 3 days
+   &lt;Output&gt;&lt;Units("")&gt; Public Days2Pause As Single             'The number of days that irrigation is paused due to large rainfall
+
+   'Internal variables
+   Private StartDate As Date                                   'The date when irrigation start (in date format)
+   Private EndDate As Date                                     'The date when irrigation finish (in date format)
+   Private RainOnPreviousDays(2) As Single                     'Record the rain of the previous 3 days (mm)
+   
+   &lt;EventHandler()&gt; Public Sub OnInit2()
+
+      'check the presence of the irrigation module and one of the soil modules
+      Call CheckModules()
+      
+      'Put the dates into date format:
+      StartDate = Date.Parse(Irrigation_start_date)
+      EndDate = Date.Parse(Irrigation_end_date)
+
+      DaysAfterIrrigation = IrrigationReturnPeriod
+
+      'Zero rain on previous 3 days
+      RainOnPrevious3Days = 0.0
+      Array.Clear(RainOnPreviousDays, 0, RainOnPreviousDays.Length)
+
+      'Calculate soil PAW for irrigation
+      Dim DepthFromSurface As Single = 0
+      SoilPAWforIrrigation = 0.0
+      For z As Integer = 0 To dlayer.length - 1
+         If DepthFromSurface &lt; DepthToCalcPAW Then
+            Dim FractionLayer As Single = math.Min(1, math.Max(0, DepthToCalcPAW - DepthFromSurface) / dlayer(z))
+            '  if depth does not coincide with the end of the layer, only a corresponding fraction of it is used
+            SoilPAWforIrrigation += (dul_dep(z) - ll15_dep(z)) * FractionLayer
+         Else
+            z = dlayer.Length - 1
+         End If
+         DepthFromSurface += dlayer(z)
+         'DepthFromSurface = DepthFromSurface + dlayer(z)
+      Next
+      
+      Dim IrrigParamType As String
+      If IrrigSetup.ToLower = "specify" Then
+         'Irrgation parameters are given by the user (no check is made on their values)
+         IrrigParamType = "specified by user"
+         IrrigationTrigger = IrrigTrigger
+         IrrigationAmount = IrrigAmount
+         IrrigationReturnPeriod = IrrigReturn
+         IrrigationEfficiency = IrrigEfficiency
+      Else 'IrrigSetup = "calculate"
+         'Determine the irrigation parameters based on soil PAW and equipment type
+         IrrigParamType = "calculated by manager"
+         '  Assumptions:  -capacity to supply water is not limiting (pump and pipes are well dimensioned)
+         '                -irrigation ideally starts when soil available water is half of PAW, but trigger is limited to between 10 and 40mm
+         '                -amount of irrigation applied aim to fill up to 90% of PAW, but is limited between 10 and 30mm/day
+         '                -rotation of the pivot is function of a fixed irrigation rate (7.5mm/day)
+         '                -the efficiency is function of PAW, set a minimum of 70% and a maximum of 90%, and the rate of change (slope) is 0.15.
+         IrrigationTrigger = Math.Min(40.0, Math.Max(10.0, SoilPAWforIrrigation / 2.0))
+         IrrigationAmount = Math.Max(10.0, Math.Min(30.0, 0.9 * SoilPAWforIrrigation - IrrigationTrigger))
+         IrrigationReturnPeriod = Math.Round(IrrigationAmount / 7.5)
+         IrrigationEfficiency = Math.Min(90.0, 70.0 + 0.15 * SoilPAWforIrrigation)
+      End If
+
+      Console.WriteLine("")
+      If AllowIrrigation.ToLower = "yes" Then
+         Console.WriteLine(" Irrigation by centre-pivot is enabled")
+         Console.WriteLine("   Parameters have been " &amp; IrrigParamType)
+         Console.WriteLine("   Irrigation season between " &amp; StartDate.ToString("dd MMMM") &amp; " and " &amp; EndDate.ToString("dd MMMM"))
+         Console.WriteLine("   Soil layer depth for calculating irrigation is " &amp; DepthToCalcPAW.ToString("0.0") &amp; " mm")
+         Console.WriteLine("     With plant available water of " &amp; SoilPAWforIrrigation.ToString("0.0") &amp; " mm")
+         Console.WriteLine("   Amount applied per irrigation event: " &amp; IrrigationAmount.ToString("#0"))
+         Console.WriteLine("   Soil water deficit to trigger irrigation : " &amp; IrrigationTrigger.ToString("#0"))
+         Console.WriteLine("   Return period for : " &amp; IrrigationReturnPeriod.ToString("#0"))
+         Console.WriteLine("   Efficiency of the irrigation system: " &amp; IrrigationEfficiency.ToString("0.0"))
+         
+      Else
+         Console.WriteLine(" Irrigation by centre-pivot is disabled")
+      End If
+      Console.WriteLine("")
+
+   End Sub
+
+   
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+      
+      'Calc the soil water deficit     
+      Dim DepthFromSurface As Integer = 0
+      SoilWaterDeficit = 0.0         
+      For z As Integer = 0 To dlayer.length - 1
+         If DepthFromSurface &lt; DepthToCalcPAW Then
+            Dim FractionLayer As Single = math.Min(1, math.Max(0, DepthToCalcPAW - DepthFromSurface) / dlayer(z))
+            '  if depth does not coincide with the end of the layer, only a corresponding fraction of it is used
+            SoilWaterDeficit += Math.Max(0, math.Min(dul_dep(z) - ll15_dep(z), dul_dep(z) - sw_dep(z))) * FractionLayer
+         Else
+            z = dlayer.Length - 1
+         End If
+         DepthFromSurface += dlayer(z)
+      Next
+      SoilWaterDeficit = -SoilWaterDeficit
+      
+      'Decide whether to irrigate
+      If AllowIrrigation.ToLower = "yes" Then
+         'Calc the amount of rain today plus the previous two days
+         RainOnPreviousDays(2) = RainOnPreviousDays(1)
+         RainOnPreviousDays(1) = RainOnPreviousDays(0)
+         RainOnPreviousDays(0) = rain
+         RainOnPrevious3Days = RainOnPreviousDays(0) + RainOnPreviousDays(1) + RainOnPreviousDays(2)
+            
+         DaysAfterIrrigation = DaysAfterIrrigation + 1
+
+         If isBetween(today, StartDate, EndDate) Then   'We are at the irrigation season     
+
+            'Calc the number of days to pause irrigation after large rainfal events
+            If RainOnPrevious3Days &gt;= CritRainToPause Then
+               Days2Pause = DaysToPauseOnCritRain
+            Else
+               Days2Pause = math.Max(0, Days2Pause - 1)
+            End If
+
+            'Check whether irrigation is paused
+            If Days2Pause &lt; 0.5 Then
+               'Irrigation is not paused, check return period
+               If DaysAfterIrrigation &gt; IrrigationReturnPeriod Then    'Irrigation is allowed
+                  'Check whether soil needs irrigation
+                  If SoilWaterDeficit &lt;= -IrrigationTrigger Then
+                     Dim MyIrrigation As IrrigationApplicationType = New IrrigationApplicationType
+                     MyIrrigation.Amount = IrrigationAmount / (IrrigationEfficiency * 0.01)
+                     MyIrrigation.time = ""
+                     MyIrrigation.Duration = 0
+                     MyIrrigation.source = New String() {}
+                     MyIrrigation.Crop_Area = 0
+                     MyIrrigation.NH4 = 0
+                     MyIrrigation.NO3 = 0
+                     MyIrrigation.CL = 0
+                     Irrigator.Variable("irrigation_efficiency").Set(IrrigationEfficiency * 0.01)
+                     Irrigator.Apply(MyIrrigation)
+                     DaysAfterIrrigation = 1
+                     Console.WriteLine(Today.ToString("dd MMMM yyyy") + " (Day of year=" + Today.DayOfYear.ToString + "), Irrigation:")
+                     Console.WriteLine("  Centre-pivot is applying irrigation. Amount = " &amp; MyIrrigation.Amount.ToString("0.0") &amp; " mm")
+                  End If
+               End If
+            End If
+         End If
+      End If
+         
+   End Sub
+
+   
+   Private Function isBetween(ByVal today As Date, ByVal startdate As Date, ByVal enddate As Date) As Boolean
+      
+      'Check whether today is between the start and the end dates.  This is needed because start and end dates don't have year
+      
+      Dim date1 As Date = New Date(today.Year, startdate.Month, startdate.Day)
+      Dim date2 As Date = New Date(today.Year, enddate.Month, enddate.Day)
+
+      If (date1 &gt; date2) Then
+         'Irrigation in the middle of the year - ex: summer in the northern hemisphere
+         Return (today &gt;= date1 Or today &lt;= date2)
+      Else
+         'Irrigation in the end of the year - ex: summer in the southern hemisphere
+         Return (today &gt;= date1 And today &lt;= date2)
+      End If
+      
+   End Function
+
+
+   Private Sub CheckModules()
+   
+      If Irrigator Is Nothing Then
+         Throw New Exception("Centre pivot manager requires the presense of the irrigation module in the paddock")
+      End If
+      
+   End Sub
+   
+End Class
+</text>
+        </manager2>
+        <operations name="Operations1-Fert">
+          <operation condition="start_of_day">
+            <date>12-Aug</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>12-Aug</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>12-Sep</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>12-Sep</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>12-Oct</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>12-Oct</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>12-Nov</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>12-Nov</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>12-Dec</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>12-Dec</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>12-Jan</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>12-Jan</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>12-Feb</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>12-Feb</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>12-Mar</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>12-Mar</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>12-Apr</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>12-Apr</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>12-May</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>12-May</date>
+            <action>fertiliser apply amount = 10, depth = 10 (mm), type = urea_n</action>
+          </operation>
+        </operations>
+      </folder>
+      <micromet name="Micromet">
+        <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
+        <a_interception type="text" description="a_interception">0</a_interception>
+        <b_interception type="text" description="b_interception">0</b_interception>
+        <c_interception type="text" description="c_interception">0</c_interception>
+        <d_interception type="text" description="d_interception">0</d_interception>
+      </micromet>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">off</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">0.8</irrigation_efficiency>
+        <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+        <allocation type="text" description="Allocation in ML">0</allocation>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+      </irrigation>
+      <fertiliser />
+      <DCD>
+        <d0 type="text" description="dcd diffusivity in water (mm2/d)">0</d0>
+        <layers type="text" description="dcd in each layer (kg/ha)">0 0 0 0 0 0 0 0 0 0 0 0</layers>
+      </DCD>
+      <Inhibitor>
+        <Dummy1 type="category" description="DCD effect function" />
+        <dcd_x type="text" description="Type the dcd concent. [ppm] (x values for dcd effect):">0.000  0.007  0.051  0.127  0.317  0.445  0.793  1.123  1.981  3.692  5.751  100.3</dcd_x>
+        <dcd_y type="text" description="Type the inhibition factor [0-1] (y values for dcd effect):">0.000  0.010  0.100  0.250  0.500  0.600  0.750  0.820  0.900  0.950  0.970  1.000</dcd_y>
+        <Dummy2 type="category" description="DCD degradation functions" />
+        <dcd_degrad_pot type="text" description="Type the dcd degradation rate at optimum cond. (%/day):">12</dcd_degrad_pot>
+        <sw_dcd_x type="text" description="Type the water content [% of WP-SAT] (x values for sw effect on dcd):">0.0  0.10  0.2  0.4  0.5  0.8  0.9  1.0</sw_dcd_x>
+        <sw_dcd_y type="text" description="Type the dcd degradation (y values for sw effect on dcd):">0.0  0.05  0.2  0.8  1.0  1.0  0.8  0.3</sw_dcd_y>
+        <temp_dcd_x type="text" description="Type the soil temp. (x values for temp. effect on dcd):">4.00  10.0  15.0  20.0  24.0  27.0  30.0  33.0  37.0</temp_dcd_x>
+        <temp_dcd_y type="text" description="Type the dcd degrad. (y values for temp. effect on dcd):">0.00  0.10  0.22  0.50  0.90  1.00  0.97  0.75  0.00</temp_dcd_y>
+        <ph_dcd_x type="text" description="Type the soil pH (x values for pH effect on dcd):">4.0  5.0  7.5  9.0</ph_dcd_x>
+        <ph_dcd_y type="text" description="Type the dcd degrad. (y values for pH effect on dcd):">0.0  1.0  1.0  0.0</ph_dcd_y>
+        <carbon_dcd_x type="text" description="Type the soil org. carbon[%] (x values for C effect on dcd):">0.10  1.00  2.00  3.00  4.00  5.00  7.00</carbon_dcd_x>
+        <carbon_dcd_y type="text" description="Type the dcd degrad. (y values for C effect on dcd):">0.00  0.03  0.15  0.50  0.75  0.90  1.00</carbon_dcd_y>
+      </Inhibitor>
+      <surfaceom name="surface organic matter">
+        <PoolName type="text" description="Organic Matter pool name">grass</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">grass</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">20</mass>
+        <cnr type="text" description="C:N ratio of initial residue">17</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <SWIM2ui>
+        <ini name="Ini_SWIM2">
+          <filename input="yes">ini_SWIM(GenericSiltLoam).xml</filename>
+        </ini>
+      </SWIM2ui>
+      <SoilNitrogen>
+        <category type="category" description="Parameters to initialise soil organic matter" />
+        <root_wt type="text" description="Type the initial FOM amount in the soil (kgDM/ha):">1000</root_wt>
+        <root_cn type="text" description="Type the initial C:N ratio of FOM:">30</root_cn>
+        <soil_cn type="text" description="Type the C:N ratio of soil humus:">12</soil_cn>
+        <mcn type="text" description="Type the C:N ratio of soil microbial biomass:">8</mcn>
+        <category type="category" description="Enter the values for each layer" />
+        <ph type="text" description="Type the inital soil pH:">6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0</ph>
+        <oc type="text" description="Type the initial soil organic carbon content (%):">4.817  4.789  4.760  4.717  4.665  4.613  4.331  3.977  3.667  3.396  3.148  2.877  2.630  2.336  2.023  1.761  1.550  1.379  1.241  1.111  0.996  0.912  0.844  0.797  0.752  0.723  0.704  0.692  0.685  0.681  0.680</oc>
+        <fbiom type="text" description="Type the microbial biomass fraction of OC (0-1):">0.080  0.080  0.080  0.080  0.079  0.078  0.075  0.069  0.061  0.050  0.040  0.029  0.021  0.013  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008</fbiom>
+        <finert type="text" description="Type the inert fraction of soil humus (0-1):">0.454  0.461  0.468  0.474  0.487  0.515  0.571  0.626  0.678  0.718  0.755  0.786  0.819  0.843  0.876  0.895  0.915  0.927  0.940  0.947  0.958  0.964  0.971  0.976  0.980  0.985  0.988  0.990  0.992  0.993  0.994</finert>
+        <no3ppm type="text" description="Type the initial concentration of NO3 is the soil (ppm):">1.50   2.00   2.40   2.50   2.50   2.50   2.50   2.50   2.50   2.45   2.30   2.15   2.00   1.85   1.60   1.35   1.15   0.90   0.80   0.71   0.65   0.59   0.51   0.44   0.39   0.34   0.30   0.26   0.21   0.20   0.20</no3ppm>
+        <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">0.50   0.70   0.80   0.80   0.80   0.80   0.80   0.80   0.80   0.80   0.80   0.70   0.60   0.50   0.40   0.40   0.30   0.30   0.20   0.20   0.20   0.20   0.20   0.10   0.10   0.10   0.10   0.08   0.07   0.07   0.07</nh4ppm>
+        <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00</ureappm>
+      </SoilNitrogen>
+      <SoilTemp2 name="SoilTemp2 (withSWIM)">
+        <maxt_time_default type="text" description="hours">14</maxt_time_default>
+        <bound_layer_cond_source type="text" description="boundary layer conductance source (calc/constant)">calc</bound_layer_cond_source>
+        <bound_layer_cond type="text" description="boundary layer conductance">20</bound_layer_cond>
+        <boundary_layer_conductance_iterations type="text" description="Number of iterations to calc boundary layer conductance (0-10)">1</boundary_layer_conductance_iterations>
+        <net_radn_source type="text" description="net radiation source (calc/eos)">calc</net_radn_source>
+        <default_wind_speed type="text" description="m/s">3</default_wind_speed>
+        <default_altitude type="text" description="default altitude (m) 275m (700 ft) is approx 980 hPa">18</default_altitude>
+        <default_instrum_height type="text" description="default instrument height for wind and temperature (m)">1.2</default_instrum_height>
+        <bare_soil_height type="text" description="height of bare soil (mm)">57</bare_soil_height>
+        <clay type="text" description="The clay content for each soil layer (%):">15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0</clay>
+      </SoilTemp2>
+      <AgPasture>
+        <Nspecies type="text" description="Number of species">2</Nspecies>
+        <thisCropName type="text" description="Crop name shown as on the simulation tree">AgPasture</thisCropName>
+        <cropName type="text" description="Species names">ryegrass whiteclover paspalum</cropName>
+        <micrometType type="text" description="Crop type for MicroMet">grass     grass    grass</micrometType>
+        <isAnnual type="text" description="Annual species? no=0, yes=1">0           0          0</isAnnual>
+        <isLegume type="text" description="Legume species? no=0, yes=1">0           1          0</isLegume>
+        <photoPath type="text" description="C3 or C4 species? C3=3, C4=4">3           3          4</photoPath>
+        <rootDepth type="text" description="Root depth">750       350      1000</rootDepth>
+        <growthTmin type="text" description="Minimum temperature for growth">2           3          10</growthTmin>
+        <growthTmax type="text" description="Maximum temperature for growth">32        32         40</growthTmax>
+        <growthTopt type="text" description="Optimum temperature for growth">20        20         22</growthTopt>
+        <growthTq type="text" description="Curvature of growth response to temperature">1.75     1.75        2.0</growthTq>
+        <massFluxTmin type="text" description="Minimum temperature for mass flux">2           3          7.5  </massFluxTmin>
+        <massFluxTopt type="text" description="Optimum temperature for mass flux">20        20         22</massFluxTopt>
+        <massFluxW0 type="text" description="Scale factor for response of mass flux to soil moisture">2          2           2</massFluxW0>
+        <massFluxWopt type="text" description="Optimum soil moisture for mass flux">0.5       0.5        0.5</massFluxWopt>
+        <heatOnsetT type="text" description="Heat effects- Onset temperature">32.5     32.5      40</heatOnsetT>
+        <heatFullT type="text" description="Heat effects- Full temperature">100      100      100</heatFullT>
+        <heatSumT type="text" description="Heat effects- Temperature sum for recovery">30        30         50</heatSumT>
+        <coldOnsetT type="text" description="Cold effects- Onset temperature">0          0           8</coldOnsetT>
+        <coldFullT type="text" description="Cold effects- Full temperature">-3          -3         3</coldFullT>
+        <coldSumT type="text" description="Cold effects- Temperature sum for recovery">20         20        50</coldSumT>
+        <Pm type="text" description="Reference CO2 assimilation rate (mg CO2/m2.s)">1           1          1.2</Pm>
+        <maintRespiration type="text" description="Maintenance respiration coefficient (%)">3           3          3</maintRespiration>
+        <growthEfficiency type="text" description="Growth efficiency">0.75      0.75     0.75</growthEfficiency>
+        <SLA type="text" description="Specific leaf area">20        20         20</SLA>
+        <lightExtCoeff type="text" description="Light extinction coefficient">0.5       0.8        0.6</lightExtCoeff>
+        <stockParameter type="text" description="Stock influence parameter">0.05     0.05      0.05</stockParameter>
+        <maxRootFraction type="text" description="Maximum biomass fraction allocated to root">0.2       0.2        0.2</maxRootFraction>
+        <leafRate type="text" description="Reference leaf appearance rate without stress">3          3           3.5</leafRate>
+        <fLeaf type="text" description="Reference growth partition to leaves">0.7       0.7        0.7</fLeaf>
+        <fStolon type="text" description="Reference growth partition to stolon">0.0       0.2        0.0</fStolon>
+        <digestLive type="text" description="Digestibility of live plant material">0.6       0.6        0.6</digestLive>
+        <digestDead type="text" description="Digestibility of dead plant material">0.2       0.2        0.2</digestDead>
+        <dmtotal type="text" description="Initial shoot dry matter (kg/ha)">1150    575       150</dmtotal>
+        <dmlitter type="text" description="Initial litter dry matter (kg/ha)">250      50         10</dmlitter>
+        <dmgreenmin type="text" description="Minimum green dry matter (kg/ha)">350      100       25</dmgreenmin>
+        <NcleafOpt type="text" description="N concentration - leaf optimum">4.0       4.5        3.0</NcleafOpt>
+        <NcleafMax type="text" description="N concentration - leaf luxury">5.0       5.5        3.5</NcleafMax>
+        <NcleafMin type="text" description="N concentration - leaf scenescent">1.2       2.0        0.5</NcleafMin>
+        <NcstemFr type="text" description="Stem N concentration as fraction of leaf N concentration">0.5      0.5         0.5</NcstemFr>
+        <NcstolFr type="text" description="Stolon N concentration as fraction of leaf N concentration">0.0      0.5         0.0 </NcstolFr>
+        <NcrootFr type="text" description="Root N concentration as fraction of leaf N concentration">0.5      0.5         0.5</NcrootFr>
+        <NMinFix type="text" description="Minimum N fixation (when soil N is sufficient)">0.0      0.2         0.0</NMinFix>
+        <NMaxFix type="text" description="Maximum N fixation (when soil N is unavailable)">0.0      0.6         0.0</NMaxFix>
+        <CO2PmaxScale type="text" description="CO2 - Scale factor for CO2 effect on photosynthesis">700     700       150</CO2PmaxScale>
+        <CO2NScale type="text" description="CO2 - Scale factor for CO2 effects on plant N concentration">600     600       600</CO2NScale>
+        <CO2NMin type="text" description="CO2 - Minimum fraction that plant N concentration may reduce to uder elevated CO2">0.7      0.7        0.7</CO2NMin>
+        <CO2NCurvature type="text" description="CO2 - Curvature factor of CO2 effect on plant N concentration">2         2           2</CO2NCurvature>
+        <Frgr type="text" description="Relative growth factor">1         1           1</Frgr>
+        <waterStressFactor type="text" description="Scale factor of water stress on plant growth [0-1]">1         1           1</waterStressFactor>
+        <rlvp type="text" description="Root distribution of swards (relative to each soil layer)">0.107  0.112  0.112  0.110  0.106  0.097  0.085  0.070  0.055  0.042  0.032  0.023  0.017  0.012  0.007  0.004  0.003  0.002  0.001  0.001  0.001  0.001  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000</rlvp>
+        <WaterUptakeSource type="text" description="Water uptake done by AgPasture (calc) or by apsim?">apsim</WaterUptakeSource>
+      </AgPasture>
+      <outputfile name="Outputs">
+        <filename output="yes">NoDCD Outputs.out</filename>
+        <title>NoDCD Outputs</title>
+        <variables name="Variables">
+          <variable>dd/mmm/yyyy as Date</variable>
+          <variable>day as DoY</variable>
+          <variable>isExpDay as isExpDay</variable>
+          <variable>ave_soil_temp(7) as Tsoil(10cm)</variable>
+          <variable>rain as Rain</variable>
+          <variable>irrigation as Irrigation</variable>
+          <variable>Urine_Water_added as UrineWater format 2</variable>
+          <variable>pond as WaterPonded</variable>
+          <variable>es as Evaporation format 2</variable>
+          <variable>WaterUptake as Transpiration format 2</variable>
+          <variable>drain as Drainage format 2</variable>
+          <variable>sw_dep() as SoilWaterContent format 2</variable>
+          <variable>SoilpH(3) as SoilpH(5cm) format 2</variable>
+          <variable>fertiliser as FertiliserN format 2</variable>
+          <variable>Urine_N_added as UrineN format 2</variable>
+          <variable>PlantFixedN as FixedN format 2</variable>
+          <variable>dlt_urea_hydrol() as HydrolisedN format 2</variable>
+          <variable>nitrification() as NitrifiedN format 2</variable>
+          <variable>dnit() as DenitrifiedN format 2</variable>
+          <variable>emission_nh3() as VolatilisedN format 2</variable>
+          <variable>leach_urea as LeachedUrea format 2</variable>
+          <variable>leach_nh4 as LeachedNH4 format 2</variable>
+          <variable>leach_no3 as LeachedNO3 format 2</variable>
+          <variable>removed_n as removedN format 2</variable>
+          <variable>n2o_atm() as N2Oemissions format 3</variable>
+          <variable>urea() as UreaTotal format 2</variable>
+          <variable>nh4() as NH4Total format 2</variable>
+          <variable>no3() as NO3Total format 2</variable>
+          <variable>surfaceom_n as SurfaceOM_N format 2</variable>
+          <variable>fom_n() as FOM_N format 2</variable>
+          <variable>biom_n() as Biom_N format 2</variable>
+          <variable>hum_n() as Hum_N format 2</variable>
+          <variable>TotalPlantN as PlantN format 2</variable>
+          <variable>removed_dm as RemovedDM</variable>
+          <variable>TotalPlantWt as PastureDM</variable>
+          <variable>CloverContent as CloverContent</variable>
+          <variable>dcd_added as DCDadded format 2</variable>
+          <variable>leach_dcd as DCDleached format 3</variable>
+          <variable>DCD_degradation() as DCDdegraded format 3</variable>
+          <variable>dcd() as TotalDCD format 3</variable>
+          <variable>DCDtop  as dcd(0-20cm) format 3</variable>
+          <variable>DCD_inhibitionEffect as NitrificationInhibition format 3</variable>
+          <variable>dcd format 5</variable>
+          <variable>flow_dcd(2) format 3</variable>
+          <variable>sat_dep()</variable>
+          <variable>dul_dep()</variable>
+          <variable>ll15_dep()</variable>
+        </variables>
+        <events name="Reporting Frequency">
+          <event>end_day</event>
+        </events>
+        <Graph name="Rain-Drainage">
+          <Legend>
+            <CheckedTitles> SoilWaterContent</CheckedTitles>
+            <CheckedTitles> sat_dep()</CheckedTitles>
+            <CheckedTitles> dul_dep()</CheckedTitles>
+            <CheckedTitles> ll15_dep()</CheckedTitles>
+          </Legend>
+          <Plot name="Predicted">
+            <colour>
+            </colour>
+            <X>Date</X>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <Y>Cumulative Rain</Y>
+            <Y>Cumulative Irrigation</Y>
+            <Y>Cumulative Drainage</Y>
+            <Y>SoilWaterContent</Y>
+            <Y>sat_dep()</Y>
+            <Y>dul_dep()</Y>
+            <Y>ll15_dep()</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="NInputs">
+          <Legend>
+            <CheckedTitles> FertiliserN</CheckedTitles>
+            <CheckedTitles> UrineN</CheckedTitles>
+            <CheckedTitles> FixedN</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <colour>
+            </colour>
+            <X>Date</X>
+            <Y>FertiliserN</Y>
+            <Y>UrineN</Y>
+            <Y>FixedN</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Leach">
+          <Legend>
+            <CheckedTitles> Cumulative LeachedUrea</CheckedTitles>
+            <CheckedTitles> Cumulative LeachedNH4</CheckedTitles>
+            <CheckedTitles> Cumulative LeachedNO3</CheckedTitles>
+            <CheckedTitles> Cumulative DCDleached</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <colour>
+            </colour>
+            <X>Date</X>
+            <Y>Cumulative LeachedUrea</Y>
+            <Y>Cumulative LeachedNH4</Y>
+            <Y>Cumulative LeachedNO3</Y>
+            <Y>Cumulative DCDleached</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Gaseous">
+          <Legend>
+            <CheckedTitles> Cumulative DenitrifiedN</CheckedTitles>
+            <CheckedTitles> Cumulative VolatilisedN</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <colour>
+            </colour>
+            <X>Date</X>
+            <Y>Cumulative DenitrifiedN</Y>
+            <Y>Cumulative VolatilisedN</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="MineralN">
+          <Legend>
+            <CheckedTitles> UreaTotal</CheckedTitles>
+            <CheckedTitles> NH4Total</CheckedTitles>
+            <CheckedTitles> NO3Total</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <colour>
+            </colour>
+            <Y>UreaTotal</Y>
+            <Y>NH4Total</Y>
+            <Y>NO3Total</Y>
+            <X>Date</X>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="OrganicN">
+          <Legend>
+            <CheckedTitles> FOM_N</CheckedTitles>
+            <CheckedTitles> Biom_N</CheckedTitles>
+            <CheckedTitles> SurfaceOM_N</CheckedTitles>
+            <CheckedTitles> PlantN</CheckedTitles>
+            <CheckedTitles> Hum_N</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <colour>
+            </colour>
+            <Y>FOM_N</Y>
+            <Y>Biom_N</Y>
+            <Y>SurfaceOM_N</Y>
+            <YRight>Hum_N</YRight>
+            <Y>PlantN</Y>
+            <X>Date</X>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Yield">
+          <Legend>
+            <CheckedTitles> RemovedDM</CheckedTitles>
+            <CheckedTitles> Cumulative RemovedDM</CheckedTitles>
+          </Legend>
+          <Plot name="Predicted">
+            <colour>
+            </colour>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>RemovedDM</Y>
+            <YRight>Cumulative RemovedDM</YRight>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="DCD">
+          <Legend>
+            <CheckedTitles> DCDadded</CheckedTitles>
+            <CheckedTitles> TotalDCD</CheckedTitles>
+            <CheckedTitles> Cumulative DCDdegraded</CheckedTitles>
+            <CheckedTitles> Cumulative DCDleached</CheckedTitles>
+            <CheckedTitles> dcd(0-20cm)</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <colour>
+            </colour>
+            <X>Date</X>
+            <Y>DCDadded</Y>
+            <Y>TotalDCD</Y>
+            <Y>Cumulative DCDdegraded</Y>
+            <Y>Cumulative DCDleached</Y>
+            <Y>dcd(0-20cm)</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+      </outputfile>
+    </area>
+  </simulation>
+  <simulation name="WithDCD+1day" shortcut="/simulations/NoDCD">
+    <clock shortcut="/simulations/NoDCD/clock" />
+    <metfile name="met" shortcut="/simulations/NoDCD/met" />
+    <summaryfile shortcut="/simulations/NoDCD/summaryfile" />
+    <memo name="Info">
+From RCichota  - generic tests for dcdAction
+
+This simulation uses DCD, 10kg/ha, applied 1 day after urine deposition
+
+ </memo>
+    <area name="paddock" shortcut="/simulations/NoDCD/paddock">
+      <folder name="Manager folder" shortcut="/simulations/NoDCD/paddock/Manager folder">
+        <manager name="Experiment manager" shortcut="/simulations/NoDCD/paddock/Manager folder/Experiment manager" />
+        <manager2 name="Cut rotation for AgPasture" shortcut="/simulations/NoDCD/paddock/Manager folder/Cut rotation for AgPasture" />
+        <manager2 name="UrinePatchDeposition-2" shortcut="/simulations/NoDCD/paddock/Manager folder/UrinePatchDeposition" />
+        <manager2 name="nh3_volatilisation" shortcut="/simulations/NoDCD/paddock/Manager folder/nh3_volatilisation" />
+        <manager2 name="Apply_DCD">
+          <ui>
+            <Dummy1 type="category" description="Date to start applications (dd/mm/yyyy):" />
+            <ApplyDCD_start_date type="ddmmmdate" description="Date to start applications (dd/mm/yyyy):">16/04/2000</ApplyDCD_start_date>
+            <ApplyDCD_end_date type="ddmmmdate" description="Date to end applications (dd/mm/yyyy):">31/12/2010</ApplyDCD_end_date>
+            <ApplyDCD_interval type="text" description="Type the interval between applications (days):">1461</ApplyDCD_interval>
+            <DCD_to_add type="text" description="Type the amount of DCD to apply ((kg/ha):">10</DCD_to_add>
+            <Depth_for_DCD type="text" description="Type the depth to apply DCD mm):">1</Depth_for_DCD>
+          </ui>
+          <text>Imports System
+Imports ModelFramework
+
+'This manager applies dcd at the amount and depth specified (it also can repeat the application periodically)
+'It also calculated the nitrification inhibiton factor and DCD degradation following functions given in the UI
+
+Public Class Script
+   
+   'Parameter variables:
+   &lt;param&gt; Private ApplyDCD_start_date As String
+   &lt;param&gt; Private ApplyDCD_end_date As String
+   &lt;param&gt; Private ApplyDCD_interval As Integer
+   &lt;param&gt; Private DCD_to_add As Single
+   &lt;param&gt; Private Depth_for_DCD As Single
+   
+   &lt;Link&gt; Private MyPaddock As Paddock
+   Private MyDCD As Component
+   
+   'Variables read from other modules
+   &lt;Input&gt; Private today As DateTime
+   &lt;Input&gt; Private dlayer As Single()
+   &lt;Input&gt; Private dcd As Single()
+
+   'Output variables
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public dcd_added As Single       'The amount of dcd added
+
+   Private Ini_Date As DateTime                  'The date when DCD applications start (in date format)
+   Private End_Date As DateTime                  'The date when DCD applications finish (in date format)
+   'Private Today_Date As Date                   'The date of today (in date format)
+   Private TimeAfterApplication As Integer       'Number of days after a urine application
+   Private SoilDepth As Single                   'The soil depth (mm)
+   Private dcd_layer As Integer                  'The layer at which dcd will be applied
+
+   &lt;EventHandler()&gt; Public Sub OnInit2()
+
+      'Put the dates into date format:
+      Ini_Date = Date.Parse(ApplyDCD_start_date)
+      End_Date = Date.Parse(ApplyDCD_end_date)
+              
+      'Computes the layer at which dcd will be applied
+      Dim Depth_from_surface As Single = 0
+      For z As Integer = 0 To dlayer.length - 1
+         If Depth_from_surface &lt;= Depth_for_DCD Then dcd_layer = z
+         Depth_from_surface = Depth_from_surface + dlayer(z)
+      Next
+      
+      console.WriteLine(" DCD to be applied at " &amp; Depth_for_DCD.ToString() &amp; " mm depth, layer " &amp; (dcd_layer + 1).ToString())
+      
+      MyDCD = MyPaddock.LinkByName("DCD")
+
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+
+      Dim delta_dcd As Single()
+      Dim canApplyDCD As Boolean = False
+      
+      'Re-set variables
+      'Today_Date = dd_mmm_yyyy.Replace("_", "/")
+      ReDim delta_dcd(dlayer.Length - 1)
+      dcd_added = 0
+
+      'Decide whether it is time to apply DCD:
+      If today &gt;= Ini_date And today &lt;= End_date Then
+         If today = Ini_date Then
+            canApplyDCD = True
+         Else
+            If TimeAfterApplication &gt;= ApplyDCD_interval Then
+               canApplyDCD = True
+            Else
+               TimeAfterApplication = TimeAfterApplication + 1
+               dcd_added = 0
+            End If
+         End If
+         
+         If canApplyDCD Then
+            
+            'fill the delta_dcd array
+            For z As Integer=0 To dlayer.Length - 1
+               delta_dcd(z) = 0.0
+            Next
+            delta_dcd(dcd_layer) = DCD_to_add
+            dcd_added += DCD_to_add
+         
+            ' send delta_dcd to apsim
+            MyDCD.Variable("dlt_dcd").Set(delta_dcd)
+            TimeAfterApplication = 1
+
+            Console.WriteLine(today.ToString("dd MMMM yyyy") + " (Day of year=" + today.DayOfYear.ToString + "), Apply_DCD:")
+            Console.WriteLine("     DCD being applied. " + DCD_added.ToString + "kg/ha added at depth " + Depth_for_DCD.ToString + "mm")
+            
+         End If
+         
+      End If            
+      
+   End Sub
+
+End Class
+    </text>
+        </manager2>
+        <manager2 name="CentrePivotIrrigation" shortcut="/simulations/NoDCD/paddock/Manager folder/CentrePivotIrrigation" />
+        <operations name="Operations1-Fert" shortcut="/simulations/NoDCD/paddock/Manager folder/Operations1-Fert" />
+      </folder>
+      <micromet name="Micromet" shortcut="/simulations/NoDCD/paddock/Micromet" />
+      <irrigation name="Irrigation" shortcut="/simulations/NoDCD/paddock/Irrigation" />
+      <fertiliser shortcut="/simulations/NoDCD/paddock/fertiliser" />
+      <DCD shortcut="/simulations/NoDCD/paddock/DCD" />
+      <Inhibitor shortcut="/simulations/NoDCD/paddock/Inhibitor" />
+      <surfaceom name="surface organic matter" shortcut="/simulations/NoDCD/paddock/surface organic matter" />
+      <SWIM2ui shortcut="/simulations/NoDCD/paddock/SWIM2ui">
+        <ini name="Ini_SWIM2" shortcut="/simulations/NoDCD/paddock/SWIM2ui/Ini_SWIM2" />
+      </SWIM2ui>
+      <SoilNitrogen shortcut="/simulations/NoDCD/paddock/SoilNitrogen" />
+      <SoilTemp2 name="SoilTemp2 (withSWIM)" shortcut="/simulations/NoDCD/paddock/SoilTemp2 (withSWIM)" />
+      <AgPasture shortcut="/simulations/NoDCD/paddock/AgPasture" />
+      <outputfile name="Outputs" shortcut="/simulations/NoDCD/paddock/Outputs">
+        <filename output="yes">WithDCD+1day Outputs.out</filename>
+        <title>WithDCD+1day Outputs</title>
+        <variables name="Variables" shortcut="/simulations/NoDCD/paddock/Outputs/Variables" />
+        <events name="Reporting Frequency" shortcut="/simulations/NoDCD/paddock/Outputs/Reporting Frequency" />
+        <Graph name="Rain-Drainage" shortcut="/simulations/NoDCD/paddock/Outputs/Rain-Drainage">
+          <Plot name="Predicted" shortcut="/simulations/NoDCD/paddock/Outputs/Rain-Drainage/Predicted">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/Rain-Drainage/Predicted/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="NInputs" shortcut="/simulations/NoDCD/paddock/Outputs/NInputs">
+          <Plot shortcut="/simulations/NoDCD/paddock/Outputs/NInputs/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/NInputs/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Leach" shortcut="/simulations/NoDCD/paddock/Outputs/Leach">
+          <Plot shortcut="/simulations/NoDCD/paddock/Outputs/Leach/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/Leach/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Gaseous" shortcut="/simulations/NoDCD/paddock/Outputs/Gaseous">
+          <Plot shortcut="/simulations/NoDCD/paddock/Outputs/Gaseous/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/Gaseous/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="MineralN" shortcut="/simulations/NoDCD/paddock/Outputs/MineralN">
+          <Plot shortcut="/simulations/NoDCD/paddock/Outputs/MineralN/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/MineralN/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="OrganicN" shortcut="/simulations/NoDCD/paddock/Outputs/OrganicN">
+          <Plot shortcut="/simulations/NoDCD/paddock/Outputs/OrganicN/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/OrganicN/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Yield" shortcut="/simulations/NoDCD/paddock/Outputs/Yield">
+          <Plot name="Predicted" shortcut="/simulations/NoDCD/paddock/Outputs/Yield/Predicted">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/Yield/Predicted/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="DCD" shortcut="/simulations/NoDCD/paddock/Outputs/DCD">
+          <Plot shortcut="/simulations/NoDCD/paddock/Outputs/DCD/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/DCD/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+      </outputfile>
+    </area>
+  </simulation>
+  <simulation name="WithDCD+1week" shortcut="/simulations/NoDCD">
+    <clock shortcut="/simulations/NoDCD/clock" />
+    <metfile name="met" shortcut="/simulations/NoDCD/met" />
+    <summaryfile shortcut="/simulations/NoDCD/summaryfile" />
+    <memo name="Info">
+From RCichota  - generic tests for dcdAction
+
+This simulation uses DCD, 10kg/ha, applied 1 week after urine deposition
+
+ </memo>
+    <area name="paddock" shortcut="/simulations/NoDCD/paddock">
+      <folder name="Manager folder" shortcut="/simulations/NoDCD/paddock/Manager folder">
+        <manager name="Experiment manager" shortcut="/simulations/NoDCD/paddock/Manager folder/Experiment manager" />
+        <manager2 name="Cut rotation for AgPasture" shortcut="/simulations/NoDCD/paddock/Manager folder/Cut rotation for AgPasture" />
+        <manager2 name="UrinePatchDeposition-2" shortcut="/simulations/NoDCD/paddock/Manager folder/UrinePatchDeposition" />
+        <manager2 name="nh3_volatilisation" shortcut="/simulations/NoDCD/paddock/Manager folder/nh3_volatilisation" />
+        <manager2 name="Apply_DCD">
+          <ui>
+            <Dummy1 type="category" description="Date to start applications (dd/mm/yyyy):" />
+            <ApplyDCD_start_date type="ddmmmdate" description="Date to start applications (dd/mm/yyyy):">21/04/2000</ApplyDCD_start_date>
+            <ApplyDCD_end_date type="ddmmmdate" description="Date to end applications (dd/mm/yyyy):">31/12/2010</ApplyDCD_end_date>
+            <ApplyDCD_interval type="text" description="Type the interval between applications (days):">1461</ApplyDCD_interval>
+            <DCD_to_add type="text" description="Type the amount of DCD to apply ((kg/ha):">10</DCD_to_add>
+            <Depth_for_DCD type="text" description="Type the depth to apply DCD mm):">1</Depth_for_DCD>
+          </ui>
+          <text>Imports System
+Imports ModelFramework
+
+'This manager applies dcd at the amount and depth specified (it also can repeat the application periodically)
+'It also calculated the nitrification inhibiton factor and DCD degradation following functions given in the UI
+
+Public Class Script
+   
+   'Parameter variables:
+   &lt;param&gt; Private ApplyDCD_start_date As String
+   &lt;param&gt; Private ApplyDCD_end_date As String
+   &lt;param&gt; Private ApplyDCD_interval As Integer
+   &lt;param&gt; Private DCD_to_add As Single
+   &lt;param&gt; Private Depth_for_DCD As Single
+   
+   &lt;Link&gt; Private MyPaddock As Paddock
+   Private MyDCD As Component
+   
+   'Variables read from other modules
+   &lt;Input&gt; Private dd_mmm_yyyy As String
+   &lt;Input&gt; Private dlayer As Single()
+   &lt;Input&gt; Private dcd As Single()
+
+   'Output variables
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public dcd_added As Single       'The amount of dcd added
+
+   Private Ini_Date As Date                     'The date when DCD applications start (in date format)
+   Private End_Date As Date                     'The date when DCD applications finish (in date format)
+   Private Today_Date As Date                   'The date of today (in date format)
+   Private TimeAfterApplication As Integer      'Number of days after a urine application
+   Private SoilDepth As Single                  'The soil depth (mm)
+   Private dcd_layer As Integer                 'The layer at which dcd will be applied
+
+   &lt;EventHandler()&gt; Public Sub OnInit2()
+
+      'Put the dates into date format:
+      Ini_Date = ApplyDCD_start_date
+      End_Date = ApplyDCD_end_date
+        
+      
+      'Computes the layer at which dcd will be applied
+      Dim Depth_from_surface As Single = 0
+      For z As Integer = 0 To dlayer.length - 1
+         If Depth_from_surface &lt;= Depth_for_DCD Then dcd_layer = z
+         Depth_from_surface = Depth_from_surface + dlayer(z)
+      Next
+      
+      MyDCD = MyPaddock.LinkByName("DCD")
+
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+
+      'ComponentType = MyPaddock.Component("solute")
+      Dim delta_dcd As Single()
+
+      'Re-set variables
+      Today_Date = dd_mmm_yyyy.Replace("_", "/")
+      ReDim delta_dcd(dlayer.Length - 1)
+      dcd_added = 0
+
+      'Decide whether it is time to apply DCD:
+      If Today_date &gt;= Ini_date And Today_date &lt;= End_date Then
+         If Today_date = Ini_date Then
+            delta_dcd(dcd_layer) = DCD_to_add
+            dcd_added += DCD_to_add
+            TimeAfterApplication = 1
+         Else
+            If TimeAfterApplication &gt;= ApplyDCD_interval Then
+               delta_dcd(dcd_layer) = DCD_to_add
+               dcd_added += DCD_to_add
+               TimeAfterApplication = 1
+            Else
+               TimeAfterApplication = TimeAfterApplication + 1
+               dcd_added = 0
+            End If
+         End If
+
+         If TimeAfterApplication = 1 Then
+            MyDCD.Variable("dlt_dcd").Set(delta_dcd)
+            Console.WriteLine(Today_date.ToString("dd MMMM yyyy") + " (Day of year=" + today_date.DayOfYear.ToString + "), Apply_DCD:")
+            Console.WriteLine("     DCD being applied. " + DCD_added.ToString + "kg/ha added at depth " + Depth_for_DCD.ToString + "mm")
+         End If
+      End If            
+      
+   End Sub
+
+End Class
+    </text>
+        </manager2>
+        <manager2 name="CentrePivotIrrigation" shortcut="/simulations/NoDCD/paddock/Manager folder/CentrePivotIrrigation" />
+        <operations name="Operations1-Fert" shortcut="/simulations/NoDCD/paddock/Manager folder/Operations1-Fert" />
+      </folder>
+      <micromet name="Micromet" shortcut="/simulations/NoDCD/paddock/Micromet" />
+      <irrigation name="Irrigation" shortcut="/simulations/NoDCD/paddock/Irrigation" />
+      <fertiliser shortcut="/simulations/NoDCD/paddock/fertiliser" />
+      <DCD shortcut="/simulations/NoDCD/paddock/DCD" />
+      <Inhibitor shortcut="/simulations/NoDCD/paddock/Inhibitor" />
+      <surfaceom name="surface organic matter" shortcut="/simulations/NoDCD/paddock/surface organic matter" />
+      <SWIM2ui shortcut="/simulations/NoDCD/paddock/SWIM2ui">
+        <ini name="Ini_SWIM2" shortcut="/simulations/NoDCD/paddock/SWIM2ui/Ini_SWIM2" />
+      </SWIM2ui>
+      <SoilNitrogen shortcut="/simulations/NoDCD/paddock/SoilNitrogen" />
+      <SoilTemp2 name="SoilTemp2 (withSWIM)" shortcut="/simulations/NoDCD/paddock/SoilTemp2 (withSWIM)" />
+      <AgPasture shortcut="/simulations/NoDCD/paddock/AgPasture" />
+      <outputfile name="Outputs" shortcut="/simulations/NoDCD/paddock/Outputs">
+        <filename output="yes">WithDCD+1week Outputs.out</filename>
+        <title>WithDCD+1week Outputs</title>
+        <variables name="Variables" shortcut="/simulations/NoDCD/paddock/Outputs/Variables" />
+        <events name="Reporting Frequency" shortcut="/simulations/NoDCD/paddock/Outputs/Reporting Frequency" />
+        <Graph name="Rain-Drainage" shortcut="/simulations/NoDCD/paddock/Outputs/Rain-Drainage">
+          <Plot name="Predicted" shortcut="/simulations/NoDCD/paddock/Outputs/Rain-Drainage/Predicted">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/Rain-Drainage/Predicted/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="NInputs" shortcut="/simulations/NoDCD/paddock/Outputs/NInputs">
+          <Plot shortcut="/simulations/NoDCD/paddock/Outputs/NInputs/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/NInputs/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Leach" shortcut="/simulations/NoDCD/paddock/Outputs/Leach">
+          <Plot shortcut="/simulations/NoDCD/paddock/Outputs/Leach/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/Leach/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Gaseous" shortcut="/simulations/NoDCD/paddock/Outputs/Gaseous">
+          <Plot shortcut="/simulations/NoDCD/paddock/Outputs/Gaseous/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/Gaseous/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="MineralN" shortcut="/simulations/NoDCD/paddock/Outputs/MineralN">
+          <Plot shortcut="/simulations/NoDCD/paddock/Outputs/MineralN/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/MineralN/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="OrganicN" shortcut="/simulations/NoDCD/paddock/Outputs/OrganicN">
+          <Plot shortcut="/simulations/NoDCD/paddock/Outputs/OrganicN/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/OrganicN/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Yield" shortcut="/simulations/NoDCD/paddock/Outputs/Yield">
+          <Plot name="Predicted" shortcut="/simulations/NoDCD/paddock/Outputs/Yield/Predicted">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/Yield/Predicted/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="DCD" shortcut="/simulations/NoDCD/paddock/Outputs/DCD">
+          <Plot shortcut="/simulations/NoDCD/paddock/Outputs/DCD/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/DCD/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+      </outputfile>
+    </area>
+  </simulation>
+  <simulation name="WithDCD+1month" shortcut="/simulations/NoDCD">
+    <clock shortcut="/simulations/NoDCD/clock" />
+    <metfile name="met" shortcut="/simulations/NoDCD/met" />
+    <summaryfile shortcut="/simulations/NoDCD/summaryfile" />
+    <memo name="Info">
+From RCichota  - generic tests for dcdAction
+
+This simulation uses DCD, 10kg/ha, applied 1 month after urine deposition
+
+ </memo>
+    <area name="paddock" shortcut="/simulations/NoDCD/paddock">
+      <folder name="Manager folder" shortcut="/simulations/NoDCD/paddock/Manager folder">
+        <manager name="Experiment manager" shortcut="/simulations/NoDCD/paddock/Manager folder/Experiment manager" />
+        <manager2 name="Cut rotation for AgPasture" shortcut="/simulations/NoDCD/paddock/Manager folder/Cut rotation for AgPasture" />
+        <manager2 name="UrinePatchDeposition-2" shortcut="/simulations/NoDCD/paddock/Manager folder/UrinePatchDeposition" />
+        <manager2 name="nh3_volatilisation" shortcut="/simulations/NoDCD/paddock/Manager folder/nh3_volatilisation" />
+        <manager2 name="Apply_DCD">
+          <ui>
+            <Dummy1 type="category" description="Date to start applications (dd/mm/yyyy):" />
+            <ApplyDCD_start_date type="ddmmmdate" description="Date to start applications (dd/mm/yyyy):">15/05/2000</ApplyDCD_start_date>
+            <ApplyDCD_end_date type="ddmmmdate" description="Date to end applications (dd/mm/yyyy):">31/12/2010</ApplyDCD_end_date>
+            <ApplyDCD_interval type="text" description="Type the interval between applications (days):">1461</ApplyDCD_interval>
+            <DCD_to_add type="text" description="Type the amount of DCD to apply ((kg/ha):">10</DCD_to_add>
+            <Depth_for_DCD type="text" description="Type the depth to apply DCD mm):">1</Depth_for_DCD>
+          </ui>
+          <text>Imports System
+Imports ModelFramework
+
+'This manager applies dcd at the amount and depth specified (it also can repeat the application periodically)
+'It also calculated the nitrification inhibiton factor and DCD degradation following functions given in the UI
+
+Public Class Script
+   
+   'Parameter variables:
+   &lt;param&gt; Private ApplyDCD_start_date As String
+   &lt;param&gt; Private ApplyDCD_end_date As String
+   &lt;param&gt; Private ApplyDCD_interval As Integer
+   &lt;param&gt; Private DCD_to_add As Single
+   &lt;param&gt; Private Depth_for_DCD As Single
+   
+   &lt;Link&gt; Private MyPaddock As Paddock
+   Private MyDCD As Component
+   
+   'Variables read from other modules
+   &lt;Input&gt; Private dd_mmm_yyyy As String
+   &lt;Input&gt; Private dlayer As Single()
+   &lt;Input&gt; Private dcd As Single()
+
+   'Output variables
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public dcd_added As Single       'The amount of dcd added
+
+   Private Ini_Date As Date                     'The date when DCD applications start (in date format)
+   Private End_Date As Date                     'The date when DCD applications finish (in date format)
+   Private Today_Date As Date                   'The date of today (in date format)
+   Private TimeAfterApplication As Integer      'Number of days after a urine application
+   Private SoilDepth As Single                  'The soil depth (mm)
+   Private dcd_layer As Integer                 'The layer at which dcd will be applied
+
+   &lt;EventHandler()&gt; Public Sub OnInit2()
+
+      'Put the dates into date format:
+      Ini_Date = ApplyDCD_start_date
+      End_Date = ApplyDCD_end_date
+        
+      
+      'Computes the layer at which dcd will be applied
+      Dim Depth_from_surface As Single = 0
+      For z As Integer = 0 To dlayer.length - 1
+         If Depth_from_surface &lt;= Depth_for_DCD Then dcd_layer = z
+         Depth_from_surface = Depth_from_surface + dlayer(z)
+      Next
+      
+      MyDCD = MyPaddock.LinkByName("DCD")
+
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+
+      'ComponentType = MyPaddock.Component("solute")
+      Dim delta_dcd As Single()
+
+      'Re-set variables
+      Today_Date = dd_mmm_yyyy.Replace("_", "/")
+      ReDim delta_dcd(dlayer.Length - 1)
+      dcd_added = 0
+
+      'Decide whether it is time to apply DCD:
+      If Today_date &gt;= Ini_date And Today_date &lt;= End_date Then
+         If Today_date = Ini_date Then
+            delta_dcd(dcd_layer) = DCD_to_add
+            dcd_added += DCD_to_add
+            TimeAfterApplication = 1
+         Else
+            If TimeAfterApplication &gt;= ApplyDCD_interval Then
+               delta_dcd(dcd_layer) = DCD_to_add
+               dcd_added += DCD_to_add
+               TimeAfterApplication = 1
+            Else
+               TimeAfterApplication = TimeAfterApplication + 1
+               dcd_added = 0
+            End If
+         End If
+
+         If TimeAfterApplication = 1 Then
+            MyDCD.Variable("dlt_dcd").Set(delta_dcd)
+            Console.WriteLine(Today_date.ToString("dd MMMM yyyy") + " (Day of year=" + today_date.DayOfYear.ToString + "), Apply_DCD:")
+            Console.WriteLine("     DCD being applied. " + DCD_added.ToString + "kg/ha added at depth " + Depth_for_DCD.ToString + "mm")
+         End If
+      End If            
+      
+   End Sub
+
+End Class
+    </text>
+        </manager2>
+        <manager2 name="CentrePivotIrrigation" shortcut="/simulations/NoDCD/paddock/Manager folder/CentrePivotIrrigation" />
+        <operations name="Operations1-Fert" shortcut="/simulations/NoDCD/paddock/Manager folder/Operations1-Fert" />
+      </folder>
+      <micromet name="Micromet" shortcut="/simulations/NoDCD/paddock/Micromet" />
+      <irrigation name="Irrigation" shortcut="/simulations/NoDCD/paddock/Irrigation" />
+      <fertiliser shortcut="/simulations/NoDCD/paddock/fertiliser" />
+      <DCD shortcut="/simulations/NoDCD/paddock/DCD" />
+      <Inhibitor shortcut="/simulations/NoDCD/paddock/Inhibitor" />
+      <surfaceom name="surface organic matter" shortcut="/simulations/NoDCD/paddock/surface organic matter" />
+      <SWIM2ui shortcut="/simulations/NoDCD/paddock/SWIM2ui">
+        <ini name="Ini_SWIM2" shortcut="/simulations/NoDCD/paddock/SWIM2ui/Ini_SWIM2" />
+      </SWIM2ui>
+      <SoilNitrogen shortcut="/simulations/NoDCD/paddock/SoilNitrogen" />
+      <SoilTemp2 name="SoilTemp2 (withSWIM)" shortcut="/simulations/NoDCD/paddock/SoilTemp2 (withSWIM)" />
+      <AgPasture shortcut="/simulations/NoDCD/paddock/AgPasture" />
+      <outputfile name="Outputs" shortcut="/simulations/NoDCD/paddock/Outputs">
+        <filename output="yes">WithDCD+1month Outputs.out</filename>
+        <title>WithDCD+1month Outputs</title>
+        <variables name="Variables" shortcut="/simulations/NoDCD/paddock/Outputs/Variables" />
+        <events name="Reporting Frequency" shortcut="/simulations/NoDCD/paddock/Outputs/Reporting Frequency" />
+        <Graph name="Rain-Drainage" shortcut="/simulations/NoDCD/paddock/Outputs/Rain-Drainage">
+          <Plot name="Predicted" shortcut="/simulations/NoDCD/paddock/Outputs/Rain-Drainage/Predicted">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/Rain-Drainage/Predicted/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="NInputs" shortcut="/simulations/NoDCD/paddock/Outputs/NInputs">
+          <Plot shortcut="/simulations/NoDCD/paddock/Outputs/NInputs/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/NInputs/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Leach" shortcut="/simulations/NoDCD/paddock/Outputs/Leach">
+          <Plot shortcut="/simulations/NoDCD/paddock/Outputs/Leach/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/Leach/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Gaseous" shortcut="/simulations/NoDCD/paddock/Outputs/Gaseous">
+          <Plot shortcut="/simulations/NoDCD/paddock/Outputs/Gaseous/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/Gaseous/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="MineralN" shortcut="/simulations/NoDCD/paddock/Outputs/MineralN">
+          <Plot shortcut="/simulations/NoDCD/paddock/Outputs/MineralN/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/MineralN/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="OrganicN" shortcut="/simulations/NoDCD/paddock/Outputs/OrganicN">
+          <Plot shortcut="/simulations/NoDCD/paddock/Outputs/OrganicN/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/OrganicN/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Yield" shortcut="/simulations/NoDCD/paddock/Outputs/Yield">
+          <Plot name="Predicted" shortcut="/simulations/NoDCD/paddock/Outputs/Yield/Predicted">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/Yield/Predicted/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="DCD" shortcut="/simulations/NoDCD/paddock/Outputs/DCD">
+          <Plot shortcut="/simulations/NoDCD/paddock/Outputs/DCD/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/NoDCD/paddock/Outputs/DCD/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+      </outputfile>
+    </area>
+  </simulation>
+  <Graph name="DCD">
+    <Legend>
+      <CheckedTitles> TotalDCD, NoDCD Outputs</CheckedTitles>
+      <CheckedTitles> TotalDCD, WithDCD+1day Outputs</CheckedTitles>
+      <CheckedTitles> TotalDCD, WithDCD+1week Outputs</CheckedTitles>
+      <CheckedTitles> TotalDCD, WithDCD+1month Outputs</CheckedTitles>
+      <CheckedTitles> Cumulative DCDdegraded, NoDCD Outputs</CheckedTitles>
+      <CheckedTitles> Cumulative DCDdegraded, WithDCD+1day Outputs</CheckedTitles>
+      <CheckedTitles> Cumulative DCDdegraded, WithDCD+1week Outputs</CheckedTitles>
+      <CheckedTitles> Cumulative DCDdegraded, WithDCD+1month Outputs</CheckedTitles>
+      <CheckedTitles> Cumulative DCDleached, NoDCD Outputs</CheckedTitles>
+      <CheckedTitles> Cumulative DCDleached, WithDCD+1day Outputs</CheckedTitles>
+      <CheckedTitles> Cumulative DCDleached, WithDCD+1week Outputs</CheckedTitles>
+      <CheckedTitles> Cumulative DCDleached, WithDCD+1month Outputs</CheckedTitles>
+    </Legend>
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <colour>
+      </colour>
+      <X>Date</X>
+      <Y>TotalDCD</Y>
+      <Y>Cumulative DCDdegraded</Y>
+      <Y>Cumulative DCDleached</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
+  <Graph name="DCD (0-20cm)">
+    <Legend>
+      <CheckedTitles> NoDCD Outputs</CheckedTitles>
+      <CheckedTitles> WithDCD+1day Outputs</CheckedTitles>
+      <CheckedTitles> WithDCD+1week Outputs</CheckedTitles>
+      <CheckedTitles> WithDCD+1month Outputs</CheckedTitles>
+    </Legend>
+    <Plot name="Predicted">
+      <colour>
+      </colour>
+      <X>Date</X>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <Y>dcd(0-20cm)</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
+  <Graph name="DCDeffect">
+    <Legend>
+      <CheckedTitles> dcd(1), WithDCD+1day Outputs</CheckedTitles>
+    </Legend>
+    <Plot name="Predicted">
+      <colour>
+      </colour>
+      <X>Date</X>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <Y>dcd(1)</Y>
+      <Y>NitrificationInhibition(1)</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
+  <Graph name="NO3 leach">
+    <Legend>
+      <CheckedTitles> NoDCD Outputs</CheckedTitles>
+      <CheckedTitles> WithDCD+1day Outputs</CheckedTitles>
+      <CheckedTitles> WithDCD+1week Outputs</CheckedTitles>
+      <CheckedTitles> WithDCD+1month Outputs</CheckedTitles>
+    </Legend>
+    <Plot name="Predicted">
+      <colour>
+      </colour>
+      <X>Date</X>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <Y>Cumulative LeachedNO3</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
+  <Graph name="Nitrification">
+    <Legend>
+      <CheckedTitles> NoDCD Outputs</CheckedTitles>
+      <CheckedTitles> WithDCD+1day Outputs</CheckedTitles>
+      <CheckedTitles> WithDCD+1week Outputs</CheckedTitles>
+      <CheckedTitles> WithDCD+1month Outputs</CheckedTitles>
+    </Legend>
+    <Plot name="Predicted">
+      <colour>
+      </colour>
+      <X>Date</X>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <Y>Cumulative NitrifiedN</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
+</folder>
