@@ -43,7 +43,7 @@ namespace SoilCN
     }
 
     /// <summary>
-    /// BrokenStick function data - straight lines hanging in several points
+    /// BrokenStick function data - collection of straight lines defined by several points
     /// </summary>
     public struct BrokenStickData
     {
@@ -65,8 +65,15 @@ namespace SoilCN
 
     }
 
-    public class Variables
+    public class g
     {
+
+        [Param()]
+        public static double WarningThreshold = 0.0;
+        
+        [Param()]
+        public static double FatalThreshold = 0.0;
+
 
         public const double EPSILON = 2/100; //Math.Pow(2, -24);
         private double test1 = 0.0;
@@ -78,16 +85,6 @@ namespace SoilCN
     public class Params
     {
         static public double Potential = 0.0;
-    }
-
-    namespace Variables1
-    {
-        public enum SomeEnum { a, b, c }
-
-        class myteste
-        {
-            public double testa = 1.0 * 2.0;
-        }
     }
 
 }

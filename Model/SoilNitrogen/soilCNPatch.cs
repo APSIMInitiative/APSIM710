@@ -90,6 +90,10 @@ class soilCNPatch
     // value to evaluate precision
     public double epsilon = 0.0;
 
+    public double WarningThreshold = 0.0;
+
+    public double FatalThreshold = 0.0;
+
     #endregion
 
     #region Parameters for handling soil loss process
@@ -396,11 +400,11 @@ class soilCNPatch
                 }
                 else
                 {
-                    if (value[layer] < nh4_min[layer] - epsilon)
-                    {
-                        Console.WriteLine(" Attempt to set urea(" + (layer + 1).ToString() + ") to a value below the lower limit, value will be set to minimum (" + urea_min[layer].ToString() + ")");
-                        value[layer] = urea_min[layer];
-                    }
+                    // a value was supplied, check whether it is valid (positive and within bounds)
+                    bool IsVariableOK = CheckNegativeValues(urea[layer], layer, "urea");
+                    if (!IsVariableOK)
+                        urea[layer] = urea_min[layer];
+                    IsVariableOK = CheckVariableBounds(ref urea[layer], layer, "urea", urea_min[layer], 10000, false);
                 }
                 _urea[layer] = value[layer];
             }
@@ -428,11 +432,11 @@ class soilCNPatch
                 }
                 else
                 {
-                    if (value[layer] < nh4_min[layer] - epsilon)
-                    {
-                        Console.WriteLine(" Attempt to set nh4(" + (layer + 1).ToString() + ") to a value below the lower limit, value will be set to minimum (" + nh4_min[layer].ToString() + ")");
-                        value[layer] = nh4_min[layer];
-                    }
+                    // a value was supplied, check whether it is valid (positive and within bounds)
+                    bool IsVariableOK = CheckNegativeValues(nh4[layer], layer, "nh4");
+                    if (!IsVariableOK)
+                        nh4[layer] = nh4_min[layer];
+                    IsVariableOK = CheckVariableBounds(ref nh4[layer], layer, "nh4", nh4_min[layer], 10000, false);
                 }
                 _nh4[layer] = value[layer];
             }
@@ -461,11 +465,11 @@ class soilCNPatch
                 }
                 else
                 {
-                    if (value[layer] < no3_min[layer] - epsilon)
-                    {
-                        Console.WriteLine(" Attempt to set no3(" + (layer + 1).ToString() + ") to a value below the lower limit, value will be set to minimum (" + no3_min[layer].ToString() + ")");
-                        value[layer] = no3_min[layer];
-                    }
+                    // a value was supplied, check whether it is valid (positive and within bounds)
+                    bool IsVariableOK = CheckNegativeValues(no3[layer], layer, "no3");
+                    if (!IsVariableOK)
+                        no3[layer] = no3_min[layer];
+                    IsVariableOK = CheckVariableBounds(ref no3[layer], layer, "no3", no3_min[layer], 10000, false);
                 }
                 _no3[layer] = value[layer];
             }
@@ -477,22 +481,22 @@ class soilCNPatch
     #region Soil physics data
 
     // soil layers' thichness (mm)
-    public float[] dlayer;
+    public double[] dlayer;
 
     // soil bulk density for each layer (kg/dm3)
-    public float[] bd;
+    public double[] bd;
 
     // soil water content at saturation
-    public float[] sat_dep;
+    public double[] sat_dep;
 
     // soil water content at drainage upper limit
-    public float[] dul_dep;
+    public double[] dul_dep;
 
     // soil water content at drainage lower limit
-    public float[] ll15_dep;
+    public double[] ll15_dep;
 
     // today's soil water content
-    public float[] sw_dep;
+    public double[] sw_dep;
 
     // soil albedo (0-1)
     public double salb;
@@ -546,23 +550,27 @@ class soilCNPatch
     {
         set
         {
-            for (int layer = 0; layer < value.Length; ++layer)
+            for (int layer = 0; layer < Math.Max(value.Length, dlayer.Length); ++layer)
             {
-                if (layer < dlayer.Length)
+                if (layer >= dlayer.Length)
                 {
-                    _urea[layer] += value[layer];
-                    if (_urea[layer] < urea_min[layer] - epsilon)
-                    {
-                        //Console.WriteLine("Attempt to change urea(" + (layer + 1).ToString() + ") to a value below the lower limit, value will be set to " + urea_min[layer].ToString() + " kgN/ha");
-                        Console.WriteLine(Today.ToShortDateString() + " - Attempt to change urea(" + (layer + 1).ToString() + " in Patch(" + PatchName + ") to a value below the lower limit");
-                        Console.WriteLine("  The value [" + _urea[layer].ToString("#0.0###") + "] will be reset to " + urea_min[layer].ToString("#0.000#") + " kgN/ha");
-                        _urea[layer] = urea_min[layer];
-                    }
+                    Console.WriteLine(" Attempt to change the urea value of a non-existent layer - extra values will be ignored");
+                    break;
+                }
+                else if (layer >= value.Length)
+                {
+                    // not all values were supplied, ignore these layers
+                    // value[layer] = 0.0;
                 }
                 else
                 {
-                    Console.WriteLine("Attempt to change urea to a non existing layer, extra values will be ignored");
-                    break;
+                    // a value was supplied, check whether it is valid
+                    bool IsVariableOK = CheckVariableBounds(ref value[layer], layer, "dlt_urea", -2000.0, 2000.0, false);
+                    _urea[layer] += value[layer];
+                    IsVariableOK = CheckNegativeValues(_urea[layer], layer, "urea");
+                    if (!IsVariableOK)
+                        _urea[layer] = urea_min[layer];
+                    IsVariableOK = CheckVariableBounds(ref _urea[layer], layer, "urea", urea_min[layer], 10000, false);
                 }
             }
         }
@@ -573,23 +581,27 @@ class soilCNPatch
     {
         set
         {
-            for (int layer = 0; layer < value.Length; ++layer)
+            for (int layer = 0; layer < Math.Max(value.Length, dlayer.Length); ++layer)
             {
-                if (layer < dlayer.Length)
+                if (layer >= dlayer.Length)
                 {
-                    _nh4[layer] += value[layer];
-                    if (_nh4[layer] < nh4_min[layer] - epsilon)
-                    {
-                        //Console.WriteLine("Attempt to change nh4(" + (layer + 1).ToString() + ") to a value below the lower limit, value will be set to " + nh4_min[layer].ToString() + " kgN/ha");
-                        Console.WriteLine(Today.ToShortDateString() + " - Attempt to change nh4(" + (layer + 1).ToString() + " in Patch(" + PatchName + ") to a value below the lower limit");
-                        Console.WriteLine("  The value [" + _nh4[layer].ToString("#0.0###") + "] will be reset to " + nh4_min[layer].ToString("#0.000#") + " kgN/ha");
-                        _nh4[layer] = nh4_min[layer];
-                    }
+                    Console.WriteLine(" Attempt to change the ammonium value of a non-existent layer - extra values will be ignored");
+                    break;
+                }
+                else if (layer >= value.Length)
+                {
+                    // not all values were supplied, ignore these layers
+                    // value[layer] = 0.0;
                 }
                 else
                 {
-                    Console.WriteLine("Attempt to change nh4 to a non existing layer, extra values will be ignored");
-                    break;
+                    // a value was supplied, check whether it is valid
+                    bool IsVariableOK = CheckVariableBounds(ref value[layer], layer, "dlt_nh4", -2000.0, 2000.0, false);
+                    _nh4[layer] += value[layer];
+                    IsVariableOK = CheckNegativeValues(_nh4[layer], layer, "nh4");
+                    if (!IsVariableOK)
+                        _nh4[layer] = nh4_min[layer];
+                    IsVariableOK = CheckVariableBounds(ref _nh4[layer], layer, "nh4", nh4_min[layer], 10000, false);
                 }
             }
         }
@@ -600,25 +612,29 @@ class soilCNPatch
     {
         set
         {
-            for (int layer = 0; layer < value.Length; ++layer)
+            for (int layer = 0; layer < Math.Max(value.Length, dlayer.Length); ++layer)
             {
-                if (layer < dlayer.Length)
+                if (layer >= dlayer.Length)
                 {
-                    _no3[layer] += value[layer];
-                    if (_no3[layer] < no3_min[layer] - epsilon)
-                    {
-                        //Console.WriteLine("Attempt to change no3(" + (layer + 1).ToString() + ") to a value below the lower limit, value will be set to " + no3_min[layer].ToString() + " kgN/ha");
-                        Console.WriteLine(Today.ToShortDateString() + " - Attempt to change no3(" + (layer + 1).ToString() + " in Patch(" + PatchName + ") to a value below the lower limit");
-                        Console.WriteLine("  The value [" + _no3[layer].ToString("#0.0###") + "] will be reset to " + no3_min[layer].ToString("#0.000#") + " kgN/ha");
-                        _no3[layer] = no3_min[layer];
-                    }
+                    Console.WriteLine(" Attempt to change the nitrate value of a non-existent layer - extra values will be ignored");
+                    break;
+                }
+                else if (layer >= value.Length)
+                {
+                    // not all values were supplied, ignore these layers
+                    // value[layer] = 0.0;
                 }
                 else
                 {
-                    Console.WriteLine("Attempt to change no3 to a non existing layer, extra values will be ignored");
-                    break;
+                    // a value was supplied, check whether it is valid
+                    bool IsVariableOK = CheckVariableBounds(ref value[layer], layer, "dlt_no3", -2000.0, 2000.0, false);
+                    _no3[layer] += value[layer];
+                    IsVariableOK = CheckNegativeValues(_no3[layer], layer, "no3");
+                    if (!IsVariableOK)
+                        _no3[layer] = no3_min[layer];
+                    IsVariableOK = CheckVariableBounds(ref _no3[layer], layer, "no3", no3_min[layer], 10000, false);
                 }
-            }
+            }    
         }
     }
 
@@ -632,14 +648,10 @@ class soilCNPatch
         {
             for (int layer = 0; layer < value.Length; ++layer)
             {
-                fom_n[layer] += value[layer];
-                if (fom_n[layer] < 0.0)
-                {
-                    //Console.WriteLine("Attempt to change org_n(" + (layer + 1).ToString() + ") to a negative value, value will be set to 0.0 kg/ha");
-                    Console.WriteLine(Today.ToShortDateString() + " - Attempt to change fom_n(" + (layer + 1).ToString() + " in Patch(" + PatchName + ") to a negative value");
-                    Console.WriteLine("  The value [" + fom_n[layer].ToString("#0.0###") + "] will be reset to 0.000 kgN/ha");
+                bool IsVariableOK = CheckNegativeValues(fom_n[layer], layer, "fom_n");
+                if (!IsVariableOK)
                     fom_n[layer] = 0.0;
-                }
+                IsVariableOK = CheckVariableBounds(ref fom_n[layer], layer, "fom_n", 0.0, 100000, false);
             }
         }
     }
@@ -650,14 +662,10 @@ class soilCNPatch
         {
             for (int layer = 0; layer < value.Length; ++layer)
             {
-                fom_c_pool1[layer] += value[layer];
-                if (fom_c_pool1[layer] < 0.0)
-                {
-                    //Console.WriteLine("Attempt to change fom_c_pool1(" + (layer + 1).ToString() + ") to a negative value, value will be set to 0.0 kg/ha");
-                    Console.WriteLine(Today.ToShortDateString() + " - Attempt to change fom_c_pool1(" + (layer + 1).ToString() + " in Patch(" + PatchName + ") to a negative value");
-                    Console.WriteLine("  The value [" + fom_c_pool1[layer].ToString("#0.0###") + "] will be reset to 0.000 kg/ha");
+                bool IsVariableOK = CheckNegativeValues(fom_c_pool1[layer], layer, "fom_c_pool1");
+                if (!IsVariableOK)
                     fom_c_pool1[layer] = 0.0;
-                }
+                IsVariableOK = CheckVariableBounds(ref fom_c_pool1[layer], layer, "fom_c_pool1", 0.0, 1000000, false);
             }
         }
     }
@@ -668,14 +676,10 @@ class soilCNPatch
         {
             for (int layer = 0; layer < value.Length; ++layer)
             {
-                fom_c_pool2[layer] += value[layer];
-                if (fom_c_pool2[layer] < 0.0)
-                {
-                    //Console.WriteLine("Attempt to change fom_c_pool2(" + (layer + 1).ToString() + ") to a negative value, value will be set to 0.0 kg/ha");
-                    Console.WriteLine(Today.ToShortDateString() + " - Attempt to change fom_c_pool2(" + (layer + 1).ToString() + " in Patch(" + PatchName + ") to a negative value");
-                    Console.WriteLine("  The value [" + fom_c_pool2[layer].ToString("#0.0###") + "] will be reset to 0.000 kg/ha");
+                bool IsVariableOK = CheckNegativeValues(fom_c_pool2[layer], layer, "fom_c_pool2");
+                if (!IsVariableOK)
                     fom_c_pool2[layer] = 0.0;
-                }
+                IsVariableOK = CheckVariableBounds(ref fom_c_pool2[layer], layer, "fom_c_pool2", 0.0, 1000000, false);
             }
         }
     }
@@ -686,14 +690,10 @@ class soilCNPatch
         {
             for (int layer = 0; layer < value.Length; ++layer)
             {
-                fom_c_pool3[layer] += value[layer];
-                if (fom_c_pool3[layer] < 0.0)
-                {
-                    //Console.WriteLine("Attempt to change fom_c_pool3(" + (layer + 1).ToString() + ") to a negative value, value will be set to 0.0 kg/ha");
-                    Console.WriteLine(Today.ToShortDateString() + " - Attempt to change fom_c_pool3(" + (layer + 1).ToString() + " in Patch(" + PatchName + ") to a negative value");
-                    Console.WriteLine("  The value [" + fom_c_pool3[layer].ToString("#0.0###") + "] will be reset to 0.000 kg/ha");
+                bool IsVariableOK = CheckNegativeValues(fom_c_pool3[layer], layer, "fom_c_pool3");
+                if (!IsVariableOK)
                     fom_c_pool3[layer] = 0.0;
-                }
+                IsVariableOK = CheckVariableBounds(ref fom_c_pool3[layer], layer, "fom_c_pool3", 0.0, 1000000, false);
             }
         }
     }
@@ -2418,7 +2418,7 @@ class soilCNPatch
         // min. nitrate concentration required in a layer for trace gas calc. (ppm N)
         double minNitratePPM = 0.1;
         // min. allowable nitrate per laye at end of day (ppm N)
-        double minNitratePPM_final = 0.05;
+        //double minNitratePPM_final = 0.05;
 
         //if (_no3ppm[layer] < minNitratePPM)
         double _no3ppm = no3[layer] * convFactor_kgha2ppm(layer);
@@ -2429,10 +2429,10 @@ class soilCNPatch
         }
         //Note : sat, dul, ll15, and sw are water content fraction (mm/mm) in a layer
         //       sat_dep, dul_dep, ll15_dep and sw_dep are water content (mm) in a layer     
-        float ll15 = ll15_dep[layer] / dlayer[layer];
-        float dul = dul_dep[layer] / dlayer[layer];
-        float sat = sat_dep[layer] / dlayer[layer];
-        float sw = sw_dep[layer] / dlayer[layer];
+        double ll15 = ll15_dep[layer] / dlayer[layer];
+        double dul = dul_dep[layer] / dlayer[layer];
+        double sat = sat_dep[layer] / dlayer[layer];
+        double sw = sw_dep[layer] / dlayer[layer];
 
 
         // normalized diffusivity in aggregate soil media, at a standard field capacity (0-1) why
@@ -2900,16 +2900,40 @@ class soilCNPatch
 
     public void OnNew_profile(NewProfileType NewProfile)
     {
-        //+  Purpose
-        //     Consider soil profile changes - primarily due to by erosion (??)
+        // + Purpose
+        //      Consider soil profile changes - primarily due to by erosion (??)
 
-        bd = NewProfile.bd;
-        sat_dep = NewProfile.dul_dep;
-        dul_dep = NewProfile.dul_dep;
-        ll15_dep = NewProfile.ll15_dep;
-        sw_dep = NewProfile.sw_dep;
+        // check whether the basic soil parameters are of the right size
+        int NewNumLayers = NewProfile.dlayer.Length;
+        if (dlayer == null || NewProfile.dlayer.Length != dlayer.Length)
+        {
+            Array.Resize(ref bd, NewNumLayers);
+            Array.Resize(ref sat_dep, NewNumLayers);
+            Array.Resize(ref dul_dep, NewNumLayers);
+            Array.Resize(ref ll15_dep, NewNumLayers);
+            Array.Resize(ref sw_dep, NewNumLayers);
+        }
 
-        CheckProfile(NewProfile.dlayer);
+        // assign new values to soil parameters
+        double[] new_dlayer = new double[NewNumLayers];
+        for (int layer = 0; layer < NewNumLayers; layer++)
+        {
+            new_dlayer[layer] = (double)NewProfile.dlayer[layer];
+            bd[layer] = (double)NewProfile.bd[layer];
+            sat_dep[layer] = (double)NewProfile.dul_dep[layer];
+            dul_dep[layer] = (double)NewProfile.dul_dep[layer];
+            ll15_dep[layer] = (double)NewProfile.ll15_dep[layer];
+            sw_dep[layer] = (double)NewProfile.sw_dep[layer];
+        }
+
+        // check any variation in the soil C and N properties due to changes in soil profile
+        CheckProfile(new_dlayer);
+
+        // reset dlayer
+        Array.Resize(ref dlayer, NewNumLayers);
+        for (int layer = 0; layer < NewNumLayers; layer++)
+            dlayer[layer] = new_dlayer[layer];
+
     }
 
     public void ResizeLayerArrays(int nLayers)
@@ -2977,7 +3001,7 @@ class soilCNPatch
         Array.Resize(ref dlt_c_biom_2_hum, nLayers);
     }
 
-    private void CheckProfile(float[] newProfile)
+    private void CheckProfile(double[] new_dlayer)
     {
         // + Purpose
         //     Check whether profile has changed and move values between layers
@@ -2995,26 +3019,25 @@ class soilCNPatch
         {
             // move pools
             // EJZ:: Why aren't no3 and urea moved????
-            dlt_n_loss_in_sed += MoveLayers(ref _nh4, newProfile);
-            dlt_c_loss_in_sed += MoveLayers(ref inert_c, newProfile);
-            dlt_c_loss_in_sed += MoveLayers(ref biom_c, newProfile);
-            dlt_n_loss_in_sed += MoveLayers(ref biom_n, newProfile);
-            dlt_c_loss_in_sed += MoveLayers(ref hum_c, newProfile);
-            dlt_n_loss_in_sed += MoveLayers(ref hum_n, newProfile);
-            dlt_n_loss_in_sed += MoveLayers(ref fom_n_pool1, newProfile);
-            dlt_n_loss_in_sed += MoveLayers(ref fom_n_pool2, newProfile);
-            dlt_n_loss_in_sed += MoveLayers(ref fom_n_pool3, newProfile);
-            dlt_c_loss_in_sed += MoveLayers(ref fom_c_pool1, newProfile);
-            dlt_c_loss_in_sed += MoveLayers(ref fom_c_pool2, newProfile);
-            dlt_c_loss_in_sed += MoveLayers(ref fom_c_pool3, newProfile);
+            dlt_n_loss_in_sed += MoveLayers(ref _nh4, new_dlayer);
+            dlt_c_loss_in_sed += MoveLayers(ref inert_c, new_dlayer);
+            dlt_c_loss_in_sed += MoveLayers(ref biom_c, new_dlayer);
+            dlt_n_loss_in_sed += MoveLayers(ref biom_n, new_dlayer);
+            dlt_c_loss_in_sed += MoveLayers(ref hum_c, new_dlayer);
+            dlt_n_loss_in_sed += MoveLayers(ref hum_n, new_dlayer);
+            dlt_n_loss_in_sed += MoveLayers(ref fom_n_pool1, new_dlayer);
+            dlt_n_loss_in_sed += MoveLayers(ref fom_n_pool2, new_dlayer);
+            dlt_n_loss_in_sed += MoveLayers(ref fom_n_pool3, new_dlayer);
+            dlt_c_loss_in_sed += MoveLayers(ref fom_c_pool1, new_dlayer);
+            dlt_c_loss_in_sed += MoveLayers(ref fom_c_pool2, new_dlayer);
+            dlt_c_loss_in_sed += MoveLayers(ref fom_c_pool3, new_dlayer);
 
         }
-        if (dlayer == null || newProfile.Length != dlayer.Length)
-            ResizeLayerArrays(newProfile.Length);
-        dlayer = newProfile;
+        if (dlayer == null || new_dlayer.Length != dlayer.Length)
+            ResizeLayerArrays(new_dlayer.Length);
     }
 
-    private double MoveLayers(ref double[] variable, float[] newProfile)
+    private double MoveLayers(ref double[] variable, double[] new_dlayer)
     {
         // + Purpose
         //     Move the values of a given varible between layers, from bottom to top
@@ -3024,14 +3047,14 @@ class soilCNPatch
         double layer_loss = 0.0;
         double layer_gain = 0.0;
         int lowest_layer = dlayer.Length;
-        int new_lowest_layer = newProfile.Length;
+        int new_lowest_layer = new_dlayer.Length;
 
         double yesterdays_n = SumDoubleArray(variable);
 
         // initialise layer loss from below profile same as bottom layer
 
-        double profile_depth = SumFloatArray(dlayer);
-        double new_profile_depth = SumFloatArray(newProfile);
+        double profile_depth = SumDoubleArray(dlayer);
+        double new_profile_depth = SumDoubleArray(new_dlayer);
 
         if (MathUtility.FloatsAreEqual(profile_depth, new_profile_depth))
         {
@@ -3364,6 +3387,72 @@ class soilCNPatch
 
     #region Auxiliary functions
 
+    /// <summary>
+    /// Checks whether the variable is negative, consider thresholds
+    /// </summary>
+    /// <param name="TheVariable">variable to be tested</param>
+    /// <param name="layer">layer to which the variable belongs to</param>
+    /// <param name="VariableName">name of the variable</param>
+    /// <returns></returns>
+    private bool CheckNegativeValues(double TheVariable, int layer, string VariableName)
+    {
+        bool result = true;
+        if (TheVariable < FatalThreshold)
+        {
+            result = false;
+            throw new Exception("Attempt to change " + VariableName + "[" + (layer + 1).ToString() +
+                "] in Patch[" + PatchName + "] to a value below the fatal threshold, " +
+                FatalThreshold.ToString());
+        }
+        else if (TheVariable < WarningThreshold)
+        {
+            result = false;
+            Console.WriteLine(Today.ToShortDateString() + " - Attempt to change " + VariableName + "[" +
+                (layer + 1).ToString() + "] in Patch[" + PatchName + "] to a value below the lower limit");
+            Console.WriteLine("  The value " + TheVariable.ToString() + " will be reset to minimum value");
+        }
+        else if (TheVariable < 0.0)
+            result = false;
+
+        return result;
+    }
+
+    /// <summary>
+    /// Checks whether the variable is within acceptable bounds, may reset if not
+    /// </summary>
+    /// <param name="TheVariable">variable to be tested</param>
+    /// <param name="layer">layer to which the variable belongs to</param>
+    /// <param name="VariableName">name of the variable</param>
+    /// <param name="MinimumValue">minimum value for the variable</param>
+    /// <param name="MaximumValue">maximum value for the variable</param>
+    /// <param name="canReset">whether the value will be reset if not within bounds. Throw fatal error otherwise.</param>
+    /// <returns></returns>
+    private bool CheckVariableBounds(ref double TheVariable, int layer, string VariableName, double MinimumValue, double MaximumValue, bool canReset)
+    {
+        bool result = true;
+        if (TheVariable < MinimumValue)
+        {
+            result = false;
+            if (canReset)
+                TheVariable = MinimumValue;
+            else
+                throw new Exception("The value of " + VariableName + "[" + (layer + 1).ToString() +
+                "] in Patch[" + PatchName + "] is below the minimum value, , " + MinimumValue.ToString());
+        }
+        else if (TheVariable > MaximumValue)
+        {
+            result = false;
+            if (canReset)
+                TheVariable = MaximumValue;
+            else
+                throw new Exception("The value of " + VariableName + "[" + (layer + 1).ToString() +
+                "] in Patch[" + PatchName + "] is above the maximum value, , " + MinimumValue.ToString());
+        }
+
+        return result;
+
+    }
+
     private double convFactor_kgha2ppm(int layer)
     {
         // Calculate conversion factor from kg/ha to ppm (mg/kg)
@@ -3384,14 +3473,6 @@ class soilCNPatch
             foreach (double Value in anArray)
                 result += Value;
         }
-        return result;
-    }
-
-    private float SumFloatArray(float[] anArray)
-    {
-        float result = 0.0F;
-        foreach (float Value in anArray)
-            result += Value;
         return result;
     }
 

@@ -46,13 +46,13 @@ public class simpleSoilTemp
 
     private DateTime _today;
 
-    private float[] _dlayer;
+    private double[] _dlayer;
 
-    private float[] _bd;
+    private double[] _bd;
 
-    private float[] _ll15_dep;
+    private double[] _ll15_dep;
 
-    private float[] _sw_dep;
+    private double[] _sw_dep;
 
     #endregion
 
@@ -140,7 +140,7 @@ public class simpleSoilTemp
     /// <param name="ll15_dep">Soil water amount at lower limit (mm)</param>
     /// <param name="sw_dep">Today's soil water amount (mm)</param>
     /// <returns></returns>
-    public double[] SoilTemperature(DateTime today, double mint, double maxt, double radn, double salb, float[] dlayer, float[] bd, float[] ll15_dep, float[] sw_dep)
+    public double[] SoilTemperature(DateTime today, double mint, double maxt, double radn, double salb, double[] dlayer, double[] bd, double[] ll15_dep, double[] sw_dep)
     {
         _today = today;
         _mint = mint;

@@ -56,12 +56,12 @@ using System.Xml;
             #if (APSIMX == true)
             initDone = false;
             ApsimFile.Soil Soil = (ApsimFile.Soil)Paddock.Get("Soil");
-            dlayer = MathUtility.DoublesToSingles(Soil.Thickness);
-            bd = MathUtility.DoublesToSingles(Soil.Water.BD);
-            sat_dep = MathUtility.DoublesToSingles(MathUtility.Multiply(Soil.Water.SAT, Soil.Thickness));
-            dul_dep = MathUtility.DoublesToSingles(MathUtility.Multiply(Soil.Water.DUL, Soil.Thickness));
-            ll15_dep = MathUtility.DoublesToSingles(MathUtility.Multiply(Soil.Water.LL15, Soil.Thickness));
-            sw_dep = MathUtility.DoublesToSingles(MathUtility.Multiply(Soil.SW, Soil.Thickness));
+            dlayer = Soil.Thickness;
+            bd = Soil.Water.BD;
+            sat_dep = MathUtility.Multiply(Soil.Water.SAT, Soil.Thickness);
+            dul_dep = MathUtility.Multiply(Soil.Water.DUL, Soil.Thickness);
+            ll15_dep = MathUtility.Multiply(Soil.Water.LL15, Soil.Thickness);
+            sw_dep = MathUtility.Multiply(Soil.SW, Soil.Thickness);
             oc = Soil.OC;
             ph = Soil.Analysis.PH;
             salb = Soil.SoilWater.Salb;
@@ -81,7 +81,6 @@ using System.Xml;
 
             initDone = true;
             #endif
-
 
             // set the size of arrays
             ResizeLayerArrays(dlayer.Length);
@@ -348,7 +347,6 @@ using System.Xml;
                 }
 
                 NewSoluteType SoluteData = new NewSoluteType();
-                //data.sender_id = (int)ParentComponent().GetId();      I think it should have the sender's name as well
                 SoluteData.solutes = solute_names;
 
                 new_solute.Invoke(SoluteData);
@@ -895,19 +893,19 @@ using System.Xml;
             return result;
         }
 
-        private int getCumulativeIndex(double sum, float[] realArray)
+        private int getCumulativeIndex(double sumTarget, double[] anArray)
         {
             // + Purpose
             //     get the index at which the cumulative amount is equal or greater than 'sum'
 
-            float cum = 0.0f;
-            for (int i = 0; i < realArray.Length; i++)
+            double cum = 0.0f;
+            for (int i = 0; i < anArray.Length; i++)
             {
-                cum += realArray[i];
-                if (cum >= sum)
+                cum += anArray[i];
+                if (cum >= sumTarget)
                     return i;
             }
-            return realArray.Length - 1;
+            return anArray.Length - 1;
         }
 
         #endregion

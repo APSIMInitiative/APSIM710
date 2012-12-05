@@ -152,6 +152,14 @@ using System.Xml.Serialization;
         [Param(MinVal = 0.0, MaxVal = 1.0)]
         public double minPatchArea = 0.001;
 
+
+        [Param()]
+        private double WarningThreshold = 0.0;
+
+        [Param()]
+        private double FatalThreshold = 0.0;
+
+
         #endregion
 
         #region Parameters for handling soil loss process
@@ -837,7 +845,9 @@ using System.Xml.Serialization;
                 double[] result = new double[dlayer.Length];
                 for (int layer = 0; layer < dlayer.Length; ++layer)
                     for (int k = 0; k < Patch.Count; k++)
+                    {
                         result[layer] += Patch[k].nh4[layer] * Patch[k].PatchArea;
+                    }
                 return result;
             }
             set
@@ -924,32 +934,32 @@ using System.Xml.Serialization;
         // soil layers' thichness (mm)
         [Input]
         [Units("mm")]
-        private float[] dlayer = null;
+        private double[] dlayer = null;
 
         // soil bulk density for each layer (kg/dm3)
         [Input]
         [Units("g/cm3")]
-        private float[] bd = null;
+        private double[] bd = null;
 
         // soil water content at saturation
         [Input]
         [Units("mm")]
-        private float[] sat_dep = null;
+        private double[] sat_dep = null;
 
         // soil water content at drainage upper limit
         [Input]
         [Units("mm")]
-        private float[] dul_dep = null;
+        private double[] dul_dep = null;
 
         // soil water content at drainage lower limit
         [Input]
         [Units("mm")]
-        private float[] ll15_dep = null;
+        private double[] ll15_dep = null;
 
         // today's soil water content
         [Input]
         [Units("mm")]
-        private float[] sw_dep = null;
+        private double[] sw_dep = null;
 
         // soil albedo (0-1)
         [Input]
@@ -1015,32 +1025,45 @@ using System.Xml.Serialization;
         #region Inhibitors data
 
         // factor reducing nitrification due to the presence of a inhibitor
-        double[] _nitrification_inhibition;
+        double[] _nitrification_inhibition = null;
         [Input(IsOptional = true)]
         [Units("0-1")]
         double[] nitrification_inhibition
         {
-            get { return _nitrification_inhibition; }
             set
             {
-                _nitrification_inhibition = value;
-                for (int layer = 0; layer <= dlayer.Length; layer++)
+                if (initDone)
                 {
-                    if (_nitrification_inhibition[layer] < 0.0)
+                    for (int layer = 0; layer < dlayer.Length; layer++)
                     {
-                        _nitrification_inhibition[layer] = 0.0;
-                        Console.WriteLine("Value for nitrification inhibition is below lower limit, value will be adjusted to 0.0");
-                    }
-                    if (_nitrification_inhibition[layer] > 1.0)
-                    {
-                        _nitrification_inhibition[layer] = 1.0;
-                        Console.WriteLine("Value for nitrification inhibition is above upper limit, value will be adjusted to 1.0");
+                        if (layer < value.Length)
+                        {
+                            _nitrification_inhibition[layer] = value[layer];
+                            if (_nitrification_inhibition[layer] < 0.0)
+                            {
+                                _nitrification_inhibition[layer] = 0.0;
+                                Console.WriteLine("Value for nitrification inhibition is below lower limit, value will be adjusted to 0.0");
+                            }
+                            else if (_nitrification_inhibition[layer] > 1.0)
+                            {
+                                _nitrification_inhibition[layer] = 1.0;
+                                Console.WriteLine("Value for nitrification inhibition is above upper limit, value will be adjusted to 1.0");
+                            }
+                        }
+                        else
+                        {
+                            _nitrification_inhibition[layer] = 0.0;
+                        }
                     }
                 }
+                else
+                    _nitrification_inhibition = new double[dlayer.Length];
+
                 for (int k = 0; k < Patch.Count; k++)
                     Patch[k].nitrification_inhibition = _nitrification_inhibition;
             }
         }
+
 
         // factor reducing urea hydrolysis due to the presence of an inhibitor - not implemented yet
         private double[] _hydrolysis_inhibition = null;
@@ -1051,20 +1074,31 @@ using System.Xml.Serialization;
             get { return _hydrolysis_inhibition; }
             set
             {
-                _hydrolysis_inhibition = value;
-                for (int layer = 0; layer <= dlayer.Length; layer++)
-                {
-                    if (_hydrolysis_inhibition[layer] < 0.0)
+                if (initDone)
+                {                    
+                    for (int layer = 0; layer < dlayer.Length; layer++)
                     {
-                        _hydrolysis_inhibition[layer] = 0.0;
-                        Console.WriteLine("Value for hydrolysis inhibition is below lower limit, value will be adjusted to 0.0");
-                    }
-                    if (_hydrolysis_inhibition[layer] > 1.0)
-                    {
-                        _hydrolysis_inhibition[layer] = 1.0;
-                        Console.WriteLine("Value for hydrolysis inhibition is above upper limit, value will be adjusted to 1.0");
+                        if (layer < value.Length)
+                        {
+                            _hydrolysis_inhibition[layer] = value[layer];
+                            if (_hydrolysis_inhibition[layer] < 0.0)
+                            {
+                                _hydrolysis_inhibition[layer] = 0.0;
+                                Console.WriteLine("Value for hydrolysis inhibition is below lower limit, value will be adjusted to 0.0");
+                            }
+                            else if (_hydrolysis_inhibition[layer] > 1.0)
+                            {
+                                _hydrolysis_inhibition[layer] = 1.0;
+                                Console.WriteLine("Value for hydrolysis inhibition is above upper limit, value will be adjusted to 1.0");
+                            }
+                        }
+                        else
+                            _hydrolysis_inhibition[layer] = 0.0;
                     }
                 }
+                else
+                    _hydrolysis_inhibition=new double[dlayer.Length];
+
                 for (int k = 0; k < Patch.Count; k++)
                     Patch[k].hydrolysis_inhibition = _hydrolysis_inhibition;
             }
@@ -1079,20 +1113,32 @@ using System.Xml.Serialization;
             get { return _mineralisation_inhibition; }
             set
             {
-                _mineralisation_inhibition = value;
-                for (int layer = 0; layer <= dlayer.Length; layer++)
+                if (initDone)
                 {
-                    if (_mineralisation_inhibition[layer] < 0.0)
+                    for (int layer = 0; layer < dlayer.Length; layer++)
                     {
-                        _mineralisation_inhibition[layer] = 0.0;
-                        Console.WriteLine("Value for mineralisation inhibition is below lower limit, value will be adjusted to 0.0");
-                    }
-                    if (_mineralisation_inhibition[layer] > 1.0)
-                    {
-                        _mineralisation_inhibition[layer] = 1.0;
-                        Console.WriteLine("Value for mineralisation inhibition is above upper limit, value will be adjusted to 1.0");
+                        if (layer < value.Length)
+                        {
+                            _mineralisation_inhibition[layer] = value[layer];
+                            if (_mineralisation_inhibition[layer] < 0.0)
+                            {
+                                _mineralisation_inhibition[layer] = 0.0;
+                                Console.WriteLine("Value for mineralisation inhibition is below lower limit, value will be adjusted to 0.0");
+                            }
+                            else if (_mineralisation_inhibition[layer] > 1.0)
+                            {
+                                _mineralisation_inhibition[layer] = 1.0;
+                                Console.WriteLine("Value for mineralisation inhibition is above upper limit, value will be adjusted to 1.0");
+                            }
+                        }
+                        else
+                            _mineralisation_inhibition[layer] = 0.0;
                     }
                 }
+                else
+                    _mineralisation_inhibition = new double[dlayer.Length];
+
+
                 for (int k = 0; k < Patch.Count; k++)
                     Patch[k].mineralisation_inhibition = _mineralisation_inhibition;
             }

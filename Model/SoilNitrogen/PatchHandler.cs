@@ -97,6 +97,9 @@ using System.Xml;
             // value to evaluate precision
             Patch[k].epsilon = epsilon;
 
+            Patch[k].WarningThreshold = -WarningThreshold;
+            Patch[k].FatalThreshold = -FatalThreshold;
+
             #endregion
 
             #region Parameters for handling soil loss process
@@ -444,12 +447,12 @@ using System.Xml;
 
             #region Soil Data
 
-            Patch[k].dlayer = new float[dlayer.Length];
-            Patch[k].bd = new float[dlayer.Length];
-            Patch[k].sat_dep = new float[dlayer.Length];
-            Patch[k].dul_dep = new float[dlayer.Length];
-            Patch[k].ll15_dep = new float[dlayer.Length];
-            Patch[k].sw_dep = new float[dlayer.Length];
+            Patch[k].dlayer = new double[dlayer.Length];
+            Patch[k].bd = new double[dlayer.Length];
+            Patch[k].sat_dep = new double[dlayer.Length];
+            Patch[k].dul_dep = new double[dlayer.Length];
+            Patch[k].ll15_dep = new double[dlayer.Length];
+            Patch[k].sw_dep = new double[dlayer.Length];
             Patch[k].ph = new double[dlayer.Length];
             Patch[k].st = new double[dlayer.Length];
             for (int layer = 0; layer < dnit_wfps.Length; layer++)
