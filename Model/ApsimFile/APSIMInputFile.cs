@@ -7,6 +7,7 @@ using System.ComponentModel;
 
 using CSGeneral;
 using System.Globalization;
+using System.Collections.Generic;
 
 
 // An APSIMInputFile is either a ".met" file or a ".out" file.
@@ -51,6 +52,66 @@ namespace ApsimFile
         private DateTime LastDate;
         private int FirstLinePosition;
         private StringCollection Words = new StringCollection();
+        private Type[] ColumnTypes;
+
+
+        /// <summary>
+        /// Open the file ready for reading.
+        /// </summary>
+        public void Open(string FileName)
+        {
+            if (FileName == "")
+                return;
+
+            if (!File.Exists(FileName))
+                throw new Exception("Cannot find file: " + FileName);
+
+            _FileName = FileName;
+            CSV = Path.GetExtension(FileName).ToLower() == ".csv";
+
+            _Constants.Clear();
+
+            In = new StreamReaderRandomAccess(_FileName);
+            ReadApsimHeader(In);
+            FirstLinePosition = In.Position;
+
+            // Read in first line.
+            StringCollection Words = new StringCollection();
+            GetNextLine(In, ref Words);
+            ColumnTypes = DetermineColumnTypes(In, Words);
+
+            // Get first date.
+            object[] Values = ConvertWordsToObjects(Words, ColumnTypes);
+            FirstDate = GetDateFromValues(Values);
+
+            // Now we need to seek to the end of file and find the last full line in the file.
+            In.Seek(0, SeekOrigin.End);
+            if (In.Position >= 1000 && In.Position - 1000 > FirstLinePosition)
+            {
+                In.Seek(-1000, SeekOrigin.End);
+                In.ReadLine(); // throw away partial line.
+            }
+            else
+                In.Seek(FirstLinePosition, SeekOrigin.Begin);
+            while (GetNextLine(In, ref Words))
+            { }
+
+            // Get the date from the last line.
+            if (Words.Count == 0)
+                throw new Exception("Cannot find last row of file: " + FileName);
+            Values = ConvertWordsToObjects(Words, ColumnTypes);
+            LastDate = GetDateFromValues(Values);
+
+            In.Seek(FirstLinePosition, SeekOrigin.Begin);
+        }
+
+        /// <summary>
+        /// Close this file.
+        /// </summary>
+        public void Close()
+        {
+            In.Close();
+        }
 
         public ArrayList Constants
         {
@@ -86,16 +147,38 @@ namespace ApsimFile
                     c.Value = ConstantValue;
             }
         }
-        public void ReadFromFile(string FileName, DataTable Data)
+
+        /// <summary>
+        /// Convert this file to a DataTable.
+        /// </summary>
+        public DataTable ToTable()
         {
-            // ------------------------------------------------------------------------
-            // Read from the specified file and put all data into specified data table.
-            // ------------------------------------------------------------------------
-            Open(FileName);
-            ReadAllData(In, Data);
-            In.Close();
+            DataTable Data = new DataTable();
+            Data.TableName = "Data";
+
+            StringCollection Words = new StringCollection();
+            bool CheckHeadingsExist = true;
+            while (GetNextLine(In, ref Words))
+            {
+                if (CheckHeadingsExist)
+                {
+                    for (int w = 0; w != ColumnTypes.Length; w++)
+                        Data.Columns.Add(new DataColumn(Headings[w], ColumnTypes[w]));
+                }
+                DataRow NewMetRow = Data.NewRow();
+                object[] Values = ConvertWordsToObjects(Words, ColumnTypes);
+
+                for (int w = 0; w != Words.Count; w++)
+                {
+                    int TableColumnNumber = NewMetRow.Table.Columns.IndexOf(Headings[w]);
+                    NewMetRow[TableColumnNumber] = Values[TableColumnNumber];
+                }
+                Data.Rows.Add(NewMetRow);
+                CheckHeadingsExist = false;
+            }
+            return Data;
         }
-        public void ReadApsimHeaderLines(StreamReaderRandomAccess In,
+        private void ReadApsimHeaderLines(StreamReaderRandomAccess In,
                                           ref StringCollection ConstantLines,
                                           ref StringCollection HeadingLines)
         {
@@ -126,30 +209,35 @@ namespace ApsimFile
             }
 
         }
-        public void AddConstantsToData(DataTable Data, int StartRow)
+
+        /// <summary>
+        /// Add our constants to every row in the specified table beginning with the specified StartRow.
+        /// </summary>
+        public void AddConstantsToData(DataTable Table)
         {
             foreach (APSIMConstant Constant in Constants)
             {
-                if (Data.Columns.IndexOf(Constant.Name) == -1)
+                if (Table.Columns.IndexOf(Constant.Name) == -1)
                 {
                     Type ColumnType = StringManip.DetermineType(Constant.Value, "");
-                    Data.Columns.Add(new DataColumn(Constant.Name, ColumnType));
+                    Table.Columns.Add(new DataColumn(Constant.Name, ColumnType));
                 }
-                for (int Row = StartRow; Row < Data.Rows.Count; Row++)
+                for (int Row = 0; Row < Table.Rows.Count; Row++)
                 {
                     double Value;
                     if (Double.TryParse(Constant.Value, NumberStyles.Float, new CultureInfo("en-US"), out Value))
-                        Data.Rows[Row][Constant.Name] = Value;
+                        Table.Rows[Row][Constant.Name] = Value;
                     else
-                        Data.Rows[Row][Constant.Name] = Constant.Value;
+                        Table.Rows[Row][Constant.Name] = Constant.Value;
                 }
             }
         }
-        public void ReadApsimHeader(StreamReaderRandomAccess In)
+        
+        /// <summary>
+        /// Read in the APSIM header - headings/units and constants.
+        /// </summary>
+        private void ReadApsimHeader(StreamReaderRandomAccess In)
         {
-            // ----------------------------------
-            // Read in the apsim header.
-            // ----------------------------------
             StringCollection ConstantLines = new StringCollection();
             StringCollection HeadingLines = new StringCollection();
             ReadApsimHeaderLines(In, ref ConstantLines, ref HeadingLines);
@@ -201,40 +289,38 @@ namespace ApsimFile
             if (!TitleFound)
                 _Constants.Add(new APSIMConstant("Title", Path.GetFileNameWithoutExtension(_FileName), "", ""));
         }
-        private void ReadAllData(StreamReaderRandomAccess In, DataTable Data)
-        {
-            StringCollection Words = new StringCollection();
-            bool CheckHeadingsExist = true;
-            while (GetNextLine(In, ref Words))
-            {
-                StoreRowInData(In, Words, Data, CheckHeadingsExist);
-                CheckHeadingsExist = false;
-            }
-        }
 
-        private void StoreRowInData(StreamReaderRandomAccess In, StringCollection Words, DataTable Data, bool CheckHeadingsExist)
+        /// <summary>
+        /// Determine and return the data types of the specfied words.
+        /// </summary>
+        private Type[] DetermineColumnTypes(StreamReaderRandomAccess In, StringCollection Words)
         {
-            DataRow NewMetRow = Data.NewRow();
+            Type[] Types = new Type[Words.Count];
             for (int w = 0; w != Words.Count; w++)
             {
-                int TableColumnNumber = Data.Columns.IndexOf(Headings[w]);
-                if (CheckHeadingsExist)
+                if (Words[w] == "?" || Words[w] == "*" || Words[w] == "")
+                    Types[w] = StringManip.DetermineType(LookAheadForNonMissingValue(In, w), Units[w]);
+                else
+                    Types[w] = StringManip.DetermineType(Words[w], Units[w]);
+            }
+            return Types;
+        }
+
+        /// <summary>
+        /// Convert the specified words to the specified column types and return their values.
+        /// </summary>
+        private object[] ConvertWordsToObjects(StringCollection Words, Type[] ColumnTypes)
+        {
+            object[] Values = new object[Words.Count];
+            for (int w = 0; w != Words.Count; w++)
+            {
+                try
                 {
-                    if (TableColumnNumber == -1)
-                    {
-                        Type ColumnType;
-                        if (Words[w] == "?" || Words[w] == "*" || Words[w] == "")
-                            ColumnType = StringManip.DetermineType(LookAheadForNonMissingValue(In, w), Units[w]);
-                        else
-                            ColumnType = StringManip.DetermineType(Words[w], Units[w]);
-                        Data.Columns.Add(new DataColumn(Headings[w], ColumnType));
-                        TableColumnNumber = Data.Columns.Count - 1;
-                    }
-                }
-                Words[w] = Words[w].Trim();
-                if (Words[w] != "?" && Words[w] != "*" && Words[w] != "")
-                {
-                    if (Data.Columns[TableColumnNumber].DataType == typeof(DateTime))
+                    Words[w] = Words[w].Trim();
+                    if (Words[w] == "?" || Words[w] == "*" || Words[w] == "")
+                        Values[w] = DBNull.Value;
+
+                    else if (ColumnTypes[w] == typeof(DateTime))
                     {
                         // Need to get a sanitised date e.g. d/M/yyyy 
                         string DateFormat = Units[w].ToLower();
@@ -245,36 +331,32 @@ namespace ApsimFile
                         DateFormat = DateFormat.Replace("m", "M");
                         if (DateFormat == "")
                             DateFormat = "d/M/yyyy";
-                        try
-                        {
-                            DateTime Value = DateTime.ParseExact(Words[w], DateFormat, null);
-                            NewMetRow[TableColumnNumber] = Value;
-                        }
-                        catch (Exception)
-                        { }
+                        DateTime Value = DateTime.ParseExact(Words[w], DateFormat, null);
+                        Values[w] = Value;
                     }
-                    else if (Data.Columns[TableColumnNumber].DataType == typeof(float))
+                    else if (ColumnTypes[w] == typeof(float))
                     {
-                        try
-                        {
-                            NewMetRow[TableColumnNumber] = Convert.ToDouble(Words[w] /*, new CultureInfo("en-US")*/);
-                        }
-                        catch (Exception e)
-                        {
-                            string err = "";
-                            for(int i=0;i<Words.Count;i++)
-                                err += Words[i] + " ";
-
-                            throw new FormatException("Error in column " + (w + 1).ToString() + ":\r\n" + err);
-                        }
+                        double d = Convert.ToDouble(Words[w] /*, new CultureInfo("en-US")*/);
+                        Values[w] = d;
                     }
                     else
-                        NewMetRow[TableColumnNumber] = Words[w];
+                        Values[w] = Words[w];
+                }
+                catch (Exception)
+                {
+                    string err = "";
+                    for (int i = 0; i < Words.Count; i++)
+                        err += Words[i] + " ";
+
+                    throw new Exception("Error in column " + (w + 1).ToString() + " on line:\r\n" + err);
                 }
             }
-            Data.Rows.Add(NewMetRow);
+            return Values;
         }
 
+        /// <summary>
+        /// Return the next line in the file as a collection of words.
+        /// </summary>
         private bool GetNextLine(StreamReaderRandomAccess In, ref StringCollection Words)
         {
             if (In.EndOfStream)
@@ -322,72 +404,50 @@ namespace ApsimFile
                 return "?";
         }
 
+
+
         /// <summary>
-        /// Open the file ready for reading.
+        /// Return the first date from the specified objects. Will return empty DateTime if not found.
         /// </summary>
-        public void Open(string FileName)
+        public DateTime GetDateFromValues(object[] Values)
         {
-            if (FileName == "")
-                return;
-
-            if (!File.Exists(FileName))
-                throw new Exception("Cannot find file: " + FileName);
-
-            _FileName = FileName;
-            CSV = Path.GetExtension(FileName).ToLower() == ".csv";
-
-            _Constants.Clear();
-
-            In = new StreamReaderRandomAccess(_FileName);
-            ReadApsimHeader(In);
-            FirstLinePosition = In.Position;
-
-            DataTable Data = new DataTable();
-
-            int SavedPosition = In.Position;
-
-            // Get first date.
-            StringCollection Words = new StringCollection();
-            GetNextLine(In, ref Words);
-            StoreRowInData(In, Words, Data, true);
-            try
+            int Year = 0;
+            int Month = 0;
+            int Day = 0;
+            for (int Col = 0; Col != Values.Length; Col++)
             {
-                In.Seek(0, SeekOrigin.End);
-                if (In.Position >= 1000 && In.Position -1000 > SavedPosition)
+                string ColumnName = Headings[Col];
+                if (ColumnName.Equals("date", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    In.Seek(-1000, SeekOrigin.End);
-                    In.ReadLine(); // throw away partial line.
+                    if (ColumnTypes[Col] == typeof(DateTime))
+                        return (DateTime)Values[Col];
+                    else
+                        return DateTime.Parse(Values[Col].ToString());
                 }
+                else if (ColumnName.Equals("year", StringComparison.CurrentCultureIgnoreCase))
+                    Year = Convert.ToInt32(Values[Col]);
+                else if (ColumnName.Equals("month", StringComparison.CurrentCultureIgnoreCase))
+                    Month = Convert.ToInt32(Values[Col]);
+                else if (ColumnName.Equals("day", StringComparison.CurrentCultureIgnoreCase))
+                    Day = Convert.ToInt32(Values[Col]);
+            }
+            if (Year > 0)
+            {
+                if (Day > 0)
+                    return new DateTime(Year, 1, 1).AddDays(Day - 1);
                 else
-                    In.Seek(SavedPosition, SeekOrigin.Begin);
+                    Day = 1;
+                if (Month == 0)
+                    Month = 1;
+                return new DateTime(Year, Month, Day);
             }
-            catch (Exception)
-            {
-                // The seek can fail on small files.
-                In.Seek(SavedPosition, SeekOrigin.Begin);
-            }
-
-
-            while (GetNextLine(In, ref Words)) ;
-
-            if (Words.Count == 0)
-                throw new Exception("Cannot find last row of file: " + FileName);
-            StoreRowInData(In, Words, Data, false);
-
-            if (Data.Rows.Count == 2)
-            {
-                try
-                {
-                    FirstDate = DataTableUtility.GetDateFromRow(Data.Rows[0]);
-                    LastDate = DataTableUtility.GetDateFromRow(Data.Rows[1]);
-                }
-                catch (Exception)
-                {
-                    // Not all files will have a date.
-                }
-            }
-            In.Seek(FirstLinePosition, SeekOrigin.Begin);
+            return new DateTime();
         }
+
+        /// <summary>
+        /// Seek to the specified date. Will throw if date not found.
+        /// </summary>
+        /// <param name="Date"></param>
         public void SeekToDate(DateTime Date)
         {
             int NumRowsToSkip = (Date - FirstDate).Days;
@@ -403,9 +463,8 @@ namespace ApsimFile
             if (GetNextLine(In, ref Words))
             {
                 // Make sure we found the date.
-                DataTable D = new DataTable();
-                StoreRowInData(In, Words, D, true);
-                DateTime RowDate = DataTableUtility.GetDateFromRow(D.Rows[0]);
+                object[] Values = ConvertWordsToObjects(Words, ColumnTypes);
+                DateTime RowDate = GetDateFromValues(Values);
                 if (RowDate != Date)
                     throw new Exception("Non consecutive dates found in file: " + _FileName);
             }
@@ -417,11 +476,15 @@ namespace ApsimFile
             In.Seek(SavedPosition, SeekOrigin.Begin);
         }
 
-        public void GetNextLineOfData(DataTable Table)
+        /// <summary>
+        /// Return the next line of data from the file as an array of objects.
+        /// </summary>
+        public object[] GetNextLineOfData()
         {
             Words.Clear();
+
             if (GetNextLine(In, ref Words))
-                StoreRowInData(In, Words, Table, Table.Rows.Count == 0);
+                return ConvertWordsToObjects(Words, ColumnTypes);
             else
                 throw new Exception("End of file reached while reading file: " + _FileName);
         }

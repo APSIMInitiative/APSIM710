@@ -6,7 +6,7 @@ using System.Linq;
 using ModelFramework;
 using CSGeneral;
 using System.Xml;
-using SoilNitrogenVars;
+using SoilCN;
 
 class soilCNPatch
 {
@@ -825,9 +825,10 @@ class soilCNPatch
             double[] result = null;
             if (dlayer != null)
             {
+                double[] fomn = fom_n;
                 result = new double[dlayer.Length];
                 for (int layer = 0; layer < dlayer.Length; layer++)
-                    result[layer] += fom_n[layer] + hum_n[layer] + biom_n[layer] + _no3[layer] + _nh4[layer] + _urea[layer];
+                    result[layer] += fomn[layer] + hum_n[layer] + biom_n[layer] + _no3[layer] + _nh4[layer] + _urea[layer];
             }
             return result;
         }

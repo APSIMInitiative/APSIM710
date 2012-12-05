@@ -4,6 +4,7 @@ using System.Data;
 using ApsimFile;
 using CSGeneral;
 using System.Xml.Serialization;
+using System.Collections.Specialized;
 
 /// <summary>
 /// Reads in met data and makes it available for other components.
@@ -14,6 +15,10 @@ public class MetFile
     private ApsimFile.APSIMInputFile File = null;
     private DataTable Data = new DataTable();  
     private bool HaveReadData = false;
+    private int MaxTIndex;
+    private int MinTIndex;
+    private int RadnIndex;
+    private int RainIndex;
 
     public event NewMetDelegate NewMet;
 
@@ -69,6 +74,18 @@ public class MetFile
             Clock.Tick += new TimeDelegate(OnTick);
             File = new ApsimFile.APSIMInputFile();
             File.Open(Configuration.RemoveMacros(FileName));
+            MaxTIndex = StringManip.IndexOfCaseInsensitive(File.Headings, "Maxt");
+            MinTIndex = StringManip.IndexOfCaseInsensitive(File.Headings, "Mint");
+            RadnIndex = StringManip.IndexOfCaseInsensitive(File.Headings, "Radn");
+            RainIndex = StringManip.IndexOfCaseInsensitive(File.Headings, "Rain");
+            if (MaxTIndex == -1)
+                throw new Exception("Cannot find MaxT in weather file: " + FileName);
+            if (MinTIndex == -1)
+                throw new Exception("Cannot find MinT in weather file: " + FileName);
+            if (RadnIndex == -1)
+                throw new Exception("Cannot find Radn in weather file: " + FileName);
+            if (RainIndex == -1)
+                throw new Exception("Cannot find Rain in weather file: " + FileName);
         }
     }
 
@@ -83,20 +100,21 @@ public class MetFile
             HaveReadData = true;
         }
 
-        File.GetNextLineOfData(Data);
+        
+        object[] Values = File.GetNextLineOfData();
 
         int RowIndex = Data.Rows.Count - 1;
-        if (Clock.Today != DataTableUtility.GetDateFromRow(Data.Rows[RowIndex]))
+        if (Clock.Today != File.GetDateFromValues(Values))
             throw new Exception("Non consecutive dates found in file: " + FileName);
 
         MetData.today = (double)Clock.Today.Ticks;
-        MetData.radn = Convert.ToSingle(Data.Rows[RowIndex]["Radn"]);
-        MetData.maxt = Convert.ToSingle(Data.Rows[RowIndex]["MaxT"]);
-        MetData.mint = Convert.ToSingle(Data.Rows[RowIndex]["MinT"]);
-        MetData.rain = Convert.ToSingle(Data.Rows[RowIndex]["Rain"]);
-
+        MetData.radn = Convert.ToSingle(Values[RadnIndex]);
+        MetData.maxt = Convert.ToSingle(Values[MaxTIndex]);
+        MetData.mint = Convert.ToSingle(Values[MinTIndex]);
+        MetData.rain = Convert.ToSingle(Values[RainIndex]);
         if (NewMet != null)
             NewMet.Invoke(MetData);
+        
         RowIndex++;
     }
 }

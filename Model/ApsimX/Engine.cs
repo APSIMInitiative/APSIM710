@@ -56,8 +56,17 @@ namespace ModelFramework
             Doc.DocumentElement.SetAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
             Doc.DocumentElement.SetAttribute("xmlns:xsd", "http://www.w3.org/2001/XMLSchema");
             PreProcessXml(Doc.DocumentElement);
+            XmlReader Reader = new XmlNodeReader(Doc.DocumentElement);
 
-            Type[] AllTypes = new Type[] { typeof(Clock), 
+            string DeserializerFileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                                                       "ApsimX.XmlSerializers.dll");
+            Simulation Simulation = null;
+            if (File.Exists(DeserializerFileName))
+                Simulation = CallPreBuiltSerialiser(DeserializerFileName, Reader);
+
+            if (Simulation == null)
+            {
+                Type[] AllTypes = new Type[] { typeof(Clock), 
                                        typeof(SummaryFile), 
                                        typeof(Paddock), 
                                        typeof(MetFile), 
@@ -67,10 +76,27 @@ namespace ModelFramework
                                        typeof(SoilWater),
                                        typeof(SoilNitrogen) };
 
-            XmlSerializer x = new XmlSerializer(typeof(Simulation), AllTypes);
-            XmlReader Reader = new XmlNodeReader(Doc.DocumentElement);
-            Simulation Simulation = x.Deserialize(Reader) as Simulation;
+                XmlSerializer x = new XmlSerializer(typeof(Simulation), AllTypes);
+                Simulation = x.Deserialize(Reader) as Simulation;
+            }
             return Simulation;
+        }
+
+        /// <summary>
+        /// A pre-built serializer exists - use it. This is much faster than creating a brand new one.
+        /// </summary>
+        private static Simulation CallPreBuiltSerialiser(string DeserializerFileName, XmlReader Reader)
+        {
+            Assembly SerialiserAssembly = Assembly.LoadFile(DeserializerFileName);
+            object Serialiser = SerialiserAssembly.CreateInstance("Microsoft.Xml.Serialization.GeneratedAssembly.SimulationSerializer");
+
+            if (Serialiser != null)
+            {
+                MethodInfo Deserialise = Serialiser.GetType().GetMethod("Deserialize", new Type[] {typeof(XmlReader)});
+                if (Deserialise != null)
+                    return (Simulation) Deserialise.Invoke(Serialiser, new object[] { Reader });
+            }
+            return null;
         }
 
         /// <summary>

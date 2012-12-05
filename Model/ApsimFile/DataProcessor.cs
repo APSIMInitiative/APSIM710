@@ -193,8 +193,7 @@ public class DataProcessor
         if (FileNames.Count == 0)
             FileNames.AddRange(DefaultFileNames);
 
-        DataTable Data = new DataTable();
-        Data.TableName = "Data";
+        DataTable Data = null;
         foreach (string FileSpec in FileNames)
         {
             if (FileSpec != "")
@@ -212,18 +211,28 @@ public class DataProcessor
                         string CheckPointFile = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(FileName)), "CheckPoint", Path.GetFileName(FileName));
                         if (File.Exists(FileName))
                         {
-                            int StartRow = Data.Rows.Count;
                             APSIMInputFile InFile = new APSIMInputFile();
-                            InFile.ReadFromFile(FileName, Data);
-                            InFile.AddConstantsToData(Data, StartRow);
+                            InFile.Open(FileName);
+                            DataTable FileData = InFile.ToTable();
+                            InFile.Close();
+                            InFile.AddConstantsToData(FileData);
+                            if (Data == null)
+                                Data = FileData;
+                            else
+                                Data.Merge(FileData);
                         }
                         if (File.Exists(CheckPointFile))
                         {
-                            int StartRow = Data.Rows.Count;
                             APSIMInputFile InFile = new APSIMInputFile();
-                            InFile.ReadFromFile(CheckPointFile, Data);
+                            InFile.Open(CheckPointFile);
+                            DataTable FileData = InFile.ToTable();
+                            InFile.Close();
                             InFile.SetConstant("title", "{Checkpoint} " + InFile.Constant("title").Value);
-                            InFile.AddConstantsToData(Data, StartRow);
+                            InFile.AddConstantsToData(FileData);
+                            if (Data == null)
+                                Data = FileData;
+                            else
+                                Data.Merge(FileData);
                         }
                     }
                 }
@@ -307,8 +316,9 @@ public class DataProcessor
 
         // read in soi phase data.
         APSIMInputFile SOI = new APSIMInputFile();
-        DataTable SOIData = new DataTable();
-        SOI.ReadFromFile(PhaseFile, SOIData);
+        SOI.Open(PhaseFile);
+        DataTable SOIData = SOI.ToTable();
+        SOI.Close();
 
         int NumRows = Data.Rows.Count;
         for (int Row = 0; Row < NumRows; Row++)

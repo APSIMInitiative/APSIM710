@@ -110,9 +110,9 @@ public class Report
     public void OnReport()
     {
         // Get all variable values.
-        List<object> OutputValues = new List<object>();
-        foreach (string VariableName in Variables)
-           OutputValues.Add(Simulation.Get(VariableName));
+        //List<object> OutputValues = new List<object>();
+        //foreach (string VariableName in Variables)
+        //   OutputValues.Add(Simulation.Get(VariableName));
 
         //if (Connection == null)
         //{

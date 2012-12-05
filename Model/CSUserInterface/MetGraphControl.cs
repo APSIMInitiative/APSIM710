@@ -21,7 +21,7 @@ namespace CSUserInterface
     public partial class MetGraphControl : BaseView
     {
 
-        private APSIMInputFile Metfile = new APSIMInputFile();
+        private double Latitude;
         private DataTable MetData = new DataTable();
         private DataTable MonthlyData = new DataTable();
         private DataView YearlyData;
@@ -42,9 +42,15 @@ namespace CSUserInterface
             string FullFileName = Controller.ToAbsolute(FileName);
             if (File.Exists(FullFileName))
             {
-                MetData = new DataTable();
+                APSIMInputFile Metfile = new APSIMInputFile();
+                Metfile.Open(FullFileName);
+                MetData = Metfile.ToTable();
+                Metfile.Close();
                 MetData.TableName = "Met";
-                Metfile.ReadFromFile(FullFileName, MetData);
+
+                // Get latitude for later on.
+                Latitude = Convert.ToDouble(Metfile.Constant("latitude").Value, new System.Globalization.CultureInfo("en-US"));
+
                 StartDate = DataTableUtility.GetDateFromRow(MetData.Rows[0]);
                 EndDate = DataTableUtility.GetDateFromRow(MetData.Rows[MetData.Rows.Count - 1]);
                 PopulateRawData();
@@ -197,9 +203,7 @@ namespace CSUserInterface
             // Do we have a VP column?
             bool HaveVPColumn = (MetData.Columns["VP"] != null);
 
-            // Get latitude for later on.
-            float Latitude = (float)Convert.ToDouble(Metfile.Constant("latitude").Value, new System.Globalization.CultureInfo("en-US"));
-
+            
             // Loop through all rows and calculate a QMax
             int doy = Convert.ToInt32(firstDay);
             for (int Row = 0; Row <= YearlyData.Count - 1; Row++)

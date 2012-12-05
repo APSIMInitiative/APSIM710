@@ -609,6 +609,11 @@
          <WorkingDirectory>%APSIM%/Model/ApsimX</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
+      <Job name="Create ApsimX Serialiser">
+         <DependsOn>Compile ApsimX</DependsOn>
+         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+         <CommandLine>sgen ApsimX.exe /force</CommandLine>
+      </Job>      
       <Job name="Compile ApsimToSim">
          <DependsOn>Compile CSGeneral</DependsOn>
          <DependsOn>Compile ApsimFile</DependsOn>
@@ -711,12 +716,6 @@
          <DependsOn>Compile CMPServices</DependsOn>
          <DependsOn>Compile ConToApsim</DependsOn>
          <WorkingDirectory>%APSIM%/Model/ApsimUI</WorkingDirectory>
-         <CommandLine>make</CommandLine>
-      </Job>
-      <Job name="Compile MergeOutputFiles">
-         <DependsOn>Compile CSGeneral</DependsOn>
-         <DependsOn>Compile ApsimFile</DependsOn>
-         <WorkingDirectory>%APSIM%/Model/MergeOutputFiles</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile ShellExtensions">

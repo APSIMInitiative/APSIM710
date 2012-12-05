@@ -58,8 +58,9 @@ namespace APSIM.Tests
         {
             WriteDummyMetFile();
             APSIMInputFile InputFile = new APSIMInputFile();
-            DataTable MetData = new DataTable();
-            InputFile.ReadFromFile("test.met", MetData);
+            InputFile.Open("test.met");
+            DataTable MetData = InputFile.ToTable();
+            InputFile.Close();
 
             int FirstRow = 0;
             Assert.AreEqual(MetData.Rows[FirstRow]["Site"], "DALB");
@@ -85,8 +86,9 @@ namespace APSIM.Tests
         {
             WriteDummyMetFile();
             APSIMInputFile InputFile = new APSIMInputFile();
-            DataTable MetData = new DataTable();
-            InputFile.ReadFromFile("test.met", MetData);
+            InputFile.Open("test.met");
+            DataTable MetData = InputFile.ToTable();
+            InputFile.Close();
 
             ArrayList Constants = InputFile.Constants;
             Assert.AreEqual(Constants.Count, 4);
@@ -121,8 +123,9 @@ namespace APSIM.Tests
             Out.Close();
 
             APSIMInputFile InputFile = new APSIMInputFile();
-            DataTable MetData = new DataTable();
-            InputFile.ReadFromFile("test.csv", MetData);
+            InputFile.Open("test.csv");
+            DataTable MetData = InputFile.ToTable();
+            InputFile.Close();
 
             Assert.AreEqual(MetData.Rows[0]["Site"], "DALB");
             Assert.AreEqual(MetData.Rows[0]["radn"], (float)20.74);

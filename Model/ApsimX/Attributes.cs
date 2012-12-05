@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+[XmlType("ApsimX.Input")]
 public class Input : System.Attribute
 {
     private bool Optional = false;
@@ -15,6 +17,7 @@ public class Input : System.Attribute
     }
 }
 
+[XmlType("ApsimX.Param")]
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 public class Param : System.Attribute
 {
@@ -48,6 +51,7 @@ public class Param : System.Attribute
     }
 }
 
+[XmlType("ApsimX.Output")]
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 public class Output : System.Attribute
 {
@@ -69,6 +73,7 @@ public class Output : System.Attribute
     }
 }
 
+[XmlType("ApsimX.EventHandler")]
 [AttributeUsage(AttributeTargets.Method)]
 public class EventHandler : System.Attribute
 {
@@ -80,7 +85,7 @@ public class EventHandler : System.Attribute
     }
 }
 
-
+[XmlType("ApsimX.Link")]
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
 public class Link : Attribute
 {
@@ -100,7 +105,7 @@ public class Link : Attribute
 
 }
 
-
+[XmlType("ApsimX.Description")]
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Property)]
 public class Description : System.Attribute
 {
@@ -115,6 +120,7 @@ public class Description : System.Attribute
     }
 }
 
+[XmlType("ApsimX.Units")]
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 public class Units : System.Attribute
 {
@@ -123,6 +129,7 @@ public class Units : System.Attribute
     }
 }
 
+[XmlType("ApsimX.Event")]
 [AttributeUsage(AttributeTargets.Event)]
 public class Event : System.Attribute
 {
