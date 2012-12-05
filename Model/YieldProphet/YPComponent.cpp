@@ -3,6 +3,8 @@
 
 #include "YPComponent.h"
 #include <ComponentInterface/Variant.h>
+#include <float.h>
+
 using namespace std;
 using namespace protocol;
 

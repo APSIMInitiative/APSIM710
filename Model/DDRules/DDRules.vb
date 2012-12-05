@@ -1329,7 +1329,7 @@ Public Class DDRules
         '<Description("Monthly grazing intervals")> _
         '<Output()> Public Property GrazingIntervalByMonth() As String
         Get
-            Dim b() As String = Array.ConvertAll(dairyNZ_mg, New Converter(Of Integer, String)(AddressOf MyCStr))
+            Dim b() As String = Array.ConvertAll(Of Integer, String)(dairyNZ_mg, New Converter(Of Integer, String)(AddressOf MyCStr))
             Dim c As String = String.Join(",", b)
             Return c
         End Get
@@ -1342,7 +1342,7 @@ Public Class DDRules
         '<Description("Monthly grazing residuals")> _
         '<Output()> Public Property GrazingResidualByMonth() As String
         Get
-            Dim b() As String = Array.ConvertAll(dairyNZ_gr, New Converter(Of Integer, String)(AddressOf MyCStr))
+            Dim b() As String = Array.ConvertAll(Of Integer, String)(dairyNZ_gr, New Converter(Of Integer, String)(AddressOf MyCStr))
             Dim c As String = String.Join(",", b)
             Return c
         End Get
@@ -1355,7 +1355,7 @@ Public Class DDRules
         '<Description("Monthly grazing residuals (Val)")> _
         '<Output()> Public Property GrazingResidualValByMonth() As String
         Get
-            Dim b() As String = Array.ConvertAll(Val_gr, New Converter(Of Integer, String)(AddressOf MyCStr))
+            Dim b() As String = Array.ConvertAll(Of Integer, String)(Val_gr, New Converter(Of Integer, String)(AddressOf MyCStr))
             Dim c As String = String.Join(",", b)
             Return c
         End Get
@@ -1646,7 +1646,7 @@ Public Class DDRules
                     Console.WriteLine(" [ha] = " + (v(i) * StockingRate).ToString("0.00"))
                 End If
             Next
-            'Dim strValues As String() = value 'value.Split(New [Char]() {","c})
+            'Dim strValues As String() = value 'value.Split(",".ToCharArray())
             ''    Dim values(11) As Double
             ''    For i As Integer = 0 To 11 'strValues.Length - 1
             ''        If (DebugLevel > 0) Then
@@ -1670,13 +1670,13 @@ Public Class DDRules
             Return strEffluentPaddocks 'myFarm.getEffluentPaddocks()
         End Get
         Set(ByVal value As String())
-            Dim strValues As String() = value 'value.Split(New [Char]() {","c})
+            Dim strValues As String() = value 'value.Split(",".ToCharArray())
             ReDim strEffluentPaddocks(strValues.Length - 1)
             For i As Integer = 0 To strValues.Length - 1
                 If (DebugLevel > 0) Then
                     Console.Write("EffluentPaddocks = " + strValues(i))
                 End If
-                strEffluentPaddocks(i) = strValues(i).TrimEnd(",").TrimStart(" ")
+                strEffluentPaddocks(i) = strValues(i).TrimEnd(",".ToCharArray()).TrimStart(" ".ToCharArray())
 
                 If (DebugLevel > 0) Then
                     Console.WriteLine(" = " + strEffluentPaddocks(i))
@@ -1702,7 +1702,7 @@ Public Class DDRules
             Return result
         End Get
         Set(ByVal value As String)
-            Dim strValues As String() = value.Split(New [Char]() {","c})
+            Dim strValues As String() = value.Split(",".ToCharArray())
             ReDim strLanewayPaddocks(strValues.Length - 1)
             For i As Integer = 0 To strValues.Length - 1
                 If (DebugLevel > 0) Then
