@@ -2318,17 +2318,9 @@ public class SoilWater
         //sv- with mwcon: 0 is impermeable and 1 is permeable.
         //sv- if mwcon is not specified then set it to 1 and don't use ks. If it is specified then use mwcon and use ks. 
         //c dsg - if there is NO impermeable layer specified, then mwcon must be set to '1' in all layers by default.
-        if (mwcon == null)
-        {
-            mwcon = new double[_dlayer.Length];
-            for (int i = 0; i < mwcon.Length; i++)
-                mwcon[i] = 1.0;
-        }
-        else
-        {
+        if (mwcon != null)
             IssueWarning("mwcon is being replaced with a saturated conductivity (ks). " + "\n"
                                     + "See documentation for details.");
-        }
 
 
         if (ks == null)
@@ -3590,7 +3582,7 @@ public class SoilWater
             //! get water draining out of layer (mm)
             if (excess > 0.0)
             {
-                if (mwcon[layer] >= 1.0)
+                if (mwcon == null || mwcon[layer] >= 1.0)
                 {
                     //! all this excess goes on down so do nothing
                     w_out = excess + w_drain;
@@ -3768,7 +3760,7 @@ public class SoilWater
 
             //c dsg 260202
             //c dsg    this code will stop unsaturated flow downwards through an impermeable layer, but will allow flow up
-            if ((mwcon[layer] == 0) && (flow[layer] < 0.0))
+            if (mwcon != null && (mwcon[layer] == 0) && (flow[layer] < 0.0))
             {
                 flow[layer] = 0.0;
             }
@@ -4287,7 +4279,7 @@ public class SoilWater
                 break;
             }
             //Or if mwcon is set to be impermeable for this layer and above sw is above dul then consider this layer as saturated.
-            else if ((mwcon[layer] < 1.0) && (_sw_dep[layer] > _dul_dep[layer]))
+            else if (mwcon != null && (mwcon[layer] < 1.0) && (_sw_dep[layer] > _dul_dep[layer]))
             {
                 //!  dsg 150302     also check whether impermeable layer is above dul. If so then consider it to be saturated
                 sat_layer = layer;
