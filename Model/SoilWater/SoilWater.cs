@@ -38,6 +38,7 @@ public class SoilWater
 
     #endregion
 
+    private bool UseSummerWinterEvapParams;
 
     //INPUTS FROM SIM FILE & OUTPUTS OF THIS MODULE
 
@@ -1859,7 +1860,7 @@ public class SoilWater
         //sv- to create the new initial sw profile that then replaces these read in values for sw.
 
 
-
+        
         //Must specify one of Profile_esw_depth, wet_soil_depth, Profile_fesw Insoil, or Sw  to specify initial soilwater distribution.
 
         //! check for exclusiveness
@@ -2225,7 +2226,7 @@ public class SoilWater
 
         //u - can either use (one value for summer and winter) or two different values.
         //    (must also take into consideration where they enter two values [one for summer and one for winter] but they make them both the same)
-        if (Double.IsNaN(_u))
+        if (UseSummerWinterEvapParams)
         {
             if ((Double.IsNaN(summeru) || (Double.IsNaN(winteru))))
             {
@@ -2245,7 +2246,7 @@ public class SoilWater
 
         //cona - can either use (one value for summer and winter) or two different values.
         //       (must also take into consideration where they enter two values [one for summer and one for winter] but they make them both the same)
-        if (Double.IsNaN(_cona))
+        if (UseSummerWinterEvapParams)
         {
             if ((Double.IsNaN(summercona)) || (Double.IsNaN(wintercona)))
             {
@@ -4914,6 +4915,8 @@ public class SoilWater
         klat = Soil.SoilWater.KLAT;
         initDone = true;
         #endif
+
+        UseSummerWinterEvapParams = Double.IsNaN(_u);
 
         //Save State
         soilwat2_save_state();
