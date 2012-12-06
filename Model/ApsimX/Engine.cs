@@ -142,9 +142,9 @@ namespace ModelFramework
                         throw new Exception("Cannot find SoilNitrogen XML file: " + PathToSoilNitrogenXML);
                     XmlDocument Doc = new XmlDocument();
                     Doc.Load(PathToSoilNitrogenXML);
-                    XmlNode Model = XmlHelper.Find(Doc.DocumentElement, "SoilN");
+                    XmlNode Model = XmlHelper.Find(Doc.DocumentElement, "SoilNitrogen");
                     if (Model == null)
-                        throw new Exception("Cannot find a <Model> node for SoilN in file: " + PathToSoilNitrogenXML);
+                        throw new Exception("Cannot find a <Model> node for SoilNitrogen in file: " + PathToSoilNitrogenXML);
                     NewChild.InnerXml = Model.InnerXml;
                 }
             }

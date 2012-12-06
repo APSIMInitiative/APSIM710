@@ -36,6 +36,8 @@ class DLLProber
             string ModelConfiguration = Types.Instance.ModelContents(TypeName);
             if (ModelConfiguration == "")
                 ModelConfiguration = Types.Instance.ModelContents(TypeName, ModuleName);
+            if (ModuleName == "SoilWater" || ModuleName == "SoilNitrogen")
+                ModelConfiguration = "<" + ModuleName + ">" + ModelConfiguration + "</" + ModuleName + ">";
 
             // Write some .sim script to pass to the DLL.
             string initScript = "<component name=\"" + ModuleName + "\" executable=\"" + DllFileName + "\">\r\n";
