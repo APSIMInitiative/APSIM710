@@ -749,7 +749,7 @@ namespace CMPServices
         /// <param name="ptrVal">The unsigned value to be treated as a pointer.</param>
         /// <returns>The value cast to as IntPtr.</returns>
         //=========================================================================
-        public static IntPtr PtrCast(uint ptrVal)
+        public static IntPtr PtrCast(ulong ptrVal)
         {
             return (IntPtr)ptrVal;
         }
