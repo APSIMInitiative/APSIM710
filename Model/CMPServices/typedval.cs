@@ -228,10 +228,16 @@ namespace CMPServices
         private static unit match8 = new unit("0-1", "m^3/m^3");
         //============================================================================
         /// <summary>
+        /// "0-1" and "m^2/m^2" match, as both are effectively dimensionless
+        /// </summary>
+        //============================================================================
+        private static unit match9 = new unit("0-1", "m^2/m^2");
+        //============================================================================
+        /// <summary>
         /// Array of the matching units- match1, match2,...
         /// </summary>
         //============================================================================
-        private static unit[] UNITMATCHES = { match1, match2, match3, match4, match5, match6, match7, match8 };
+        private static unit[] UNITMATCHES = { match1, match2, match3, match4, match5, match6, match7, match8, match9 };
 
         private TTypedValue childTemplate;      //!<used to keep a pointer to the last element after setElementCount(0)
         /// <summary>
