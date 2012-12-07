@@ -38,7 +38,6 @@ public class SoilWater
 
     #endregion
 
-    private bool UseSummerWinterEvapParams;
 
     //INPUTS FROM SIM FILE & OUTPUTS OF THIS MODULE
 
@@ -1860,7 +1859,7 @@ public class SoilWater
         //sv- to create the new initial sw profile that then replaces these read in values for sw.
 
 
-        
+
         //Must specify one of Profile_esw_depth, wet_soil_depth, Profile_fesw Insoil, or Sw  to specify initial soilwater distribution.
 
         //! check for exclusiveness
@@ -2226,53 +2225,56 @@ public class SoilWater
 
         //u - can either use (one value for summer and winter) or two different values.
         //    (must also take into consideration where they enter two values [one for summer and one for winter] but they make them both the same)
-        if (UseSummerWinterEvapParams)
+        if (!initDone)
         {
-            if ((Double.IsNaN(summeru) || (Double.IsNaN(winteru))))
+            if (Double.IsNaN(_u))
             {
-                throw new Exception("A single value for u OR BOTH values for summeru and winteru must be specified");
+                if ((Double.IsNaN(summeru) || (Double.IsNaN(winteru))))
+                {
+                    throw new Exception("A single value for u OR BOTH values for summeru and winteru must be specified");
+                }
+                //if they entered two values but they made them the same
+                if (summeru == winteru)
+                {
+                    _u = summeru;      //u is now no longer null. As if the user had entered a value for u.
+                }
             }
-            //if they entered two values but they made them the same
-            if (summeru == winteru)
+            else
             {
-                _u = summeru;      //u is now no longer null. As if the user had entered a value for u.
+                summeru = _u;
+                winteru = _u;
             }
-        }
-        else
-        {
-            summeru = _u;
-            winteru = _u;
-        }
 
-        //cona - can either use (one value for summer and winter) or two different values.
-        //       (must also take into consideration where they enter two values [one for summer and one for winter] but they make them both the same)
-        if (UseSummerWinterEvapParams)
-        {
-            if ((Double.IsNaN(summercona)) || (Double.IsNaN(wintercona)))
+            //cona - can either use (one value for summer and winter) or two different values.
+            //       (must also take into consideration where they enter two values [one for summer and one for winter] but they make them both the same)
+            if (Double.IsNaN(_cona))
             {
-                throw new Exception("A single value for cona OR BOTH values for summercona and wintercona must be specified");
+                if ((Double.IsNaN(summercona)) || (Double.IsNaN(wintercona)))
+                {
+                    throw new Exception("A single value for cona OR BOTH values for summercona and wintercona must be specified");
+                }
+                //if they entered two values but they made them the same.
+                if (summercona == wintercona)
+                {
+                    _cona = summercona;   //cona is now no longer null. As if the user had entered a value for cona.
+                }
             }
-            //if they entered two values but they made them the same.
-            if (summercona == wintercona)
+            else
             {
-                _cona = summercona;   //cona is now no longer null. As if the user had entered a value for cona.
+                summercona = _cona;
+                wintercona = _cona;
             }
-        }
-        else
-        {
-            summercona = _cona;
-            wintercona = _cona;
-        }
 
-        //summer and winter default dates.
-        if (summerdate == "not_read")
-        {
-            summerdate = "1-oct";
-        }
+            //summer and winter default dates.
+            if (summerdate == "not_read")
+            {
+                summerdate = "1-oct";
+            }
 
-        if (winterdate == "not_read")
-        {
-            winterdate = "1-apr";
+            if (winterdate == "not_read")
+            {
+                winterdate = "1-apr";
+            }
         }
 
         //assign u and cona to either sumer or winter values
@@ -2316,32 +2318,40 @@ public class SoilWater
 
         //Initialise the Optional Array Parameters (if not read in).
 
-        //sv- with mwcon: 0 is impermeable and 1 is permeable.
-        //sv- if mwcon is not specified then set it to 1 and don't use ks. If it is specified then use mwcon and use ks. 
-        //c dsg - if there is NO impermeable layer specified, then mwcon must be set to '1' in all layers by default.
-        if (mwcon != null)
-            IssueWarning("mwcon is being replaced with a saturated conductivity (ks). " + "\n"
-                                    + "See documentation for details.");
-
-
-        if (ks == null)
+        if (!initDone) // If this is actual initialisation, establish whether we will use ks
         {
-            using_ks = false;
-            ks = new double[_dlayer.Length];
-            ZeroArray(ref ks);
+            //sv- with mwcon: 0 is impermeable and 1 is permeable.
+            //sv- if mwcon is not specified then set it to 1 and don't use ks. If it is specified then use mwcon and use ks. 
+            //c dsg - if there is NO impermeable layer specified, then mwcon must be set to '1' in all layers by default.
+            if (mwcon == null)
+            {
+                mwcon = new double[_dlayer.Length];
+                for (int i = 0; i < mwcon.Length; i++)
+                    mwcon[i] = 1.0;
+            }
+            else
+            {
+                IssueWarning("mwcon is being replaced with a saturated conductivity (ks). " + "\n"
+                                    + "See documentation for details.");
+            }
+
+           //for (klat == null) see Lateral_init().
+
+
+            if (ks == null)
+            {
+                using_ks = false;
+                ks = new double[_dlayer.Length];
+                ZeroArray(ref ks);
+            }
+            else
+            {
+                using_ks = true;
+            }
         }
         else
-        {
-            using_ks = true;
-        }
-
-
-        //for (klat == null) see Lateral_init().
-
-
         //If this function has been called by a Reset Event
         //then reset (all the variables that are "Settable" by the user) back to the original values read in by [Param]  
-        if (initDone)
         {
             inReset = true; // Temporarily turn of profile checking, until we've reset all values
             //soil profile
@@ -2419,7 +2429,7 @@ public class SoilWater
                 //! stage 2 evap
                 sumes2 = sumes2_max - (sumes2_max * MathUtility.Divide(swr_top, sw_top_crit, 0.0));
                 sumes1 = _u;
-                t = Math.Pow((MathUtility.Divide(sumes2, _cona, 0.0)), 2);
+                t = MathUtility.Sqr(MathUtility.Divide(sumes2, _cona, 0.0));
             }
             else
             {
@@ -3313,7 +3323,7 @@ public class SoilWater
             sumes1 = Math.Max(0.0, sumes1 - w_inf);
 
             //! update t (incase sumes2 changed)
-            t = Math.Pow((MathUtility.Divide(sumes2, _cona, 0.0)), 2);
+            t = MathUtility.Sqr(MathUtility.Divide(sumes2, _cona, 0.0));
         }
         else
         {
@@ -3359,7 +3369,7 @@ public class SoilWater
             //!  update 1st and 2nd stage soil evaporation.     
             sumes1 = sumes1 + esoil1;
             sumes2 = sumes2 + esoil2;
-            t = Math.Pow((MathUtility.Divide(sumes2, _cona, 0.0)), 2);
+            t = MathUtility.Sqr(MathUtility.Divide(sumes2, _cona, 0.0));
         }
         else
         {
@@ -3761,7 +3771,7 @@ public class SoilWater
 
             //c dsg 260202
             //c dsg    this code will stop unsaturated flow downwards through an impermeable layer, but will allow flow up
-            if (mwcon != null && (mwcon[layer] == 0) && (flow[layer] < 0.0))
+            if ((mwcon != null) && (mwcon[layer] == 0) && (flow[layer] < 0.0))
             {
                 flow[layer] = 0.0;
             }
@@ -4237,7 +4247,6 @@ public class SoilWater
 
     #region Water Table
 
-
     private double soilwat_water_table()
     {
         //*+  Purpose
@@ -4280,7 +4289,7 @@ public class SoilWater
                 break;
             }
             //Or if mwcon is set to be impermeable for this layer and above sw is above dul then consider this layer as saturated.
-            else if (mwcon != null && (mwcon[layer] < 1.0) && (_sw_dep[layer] > _dul_dep[layer]))
+            else if ((mwcon != null) && (mwcon[layer] < 1.0) && (_sw_dep[layer] > _dul_dep[layer]))
             {
                 //!  dsg 150302     also check whether impermeable layer is above dul. If so then consider it to be saturated
                 sat_layer = layer;
@@ -4915,8 +4924,6 @@ public class SoilWater
         klat = Soil.SoilWater.KLAT;
         initDone = true;
         #endif
-
-        UseSummerWinterEvapParams = Double.IsNaN(_u);
 
         //Save State
         soilwat2_save_state();
