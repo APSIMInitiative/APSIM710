@@ -1,7 +1,7 @@
 ﻿//css_ref System.Data.dll;
-//css_import ..\CSGeneral\ApsimBuildsDB.cs
-//css_import ..\CSGeneral\StringManip.cs
-//css_import ..\CSGeneral\MathUtility.cs
+//css_import ../CSGeneral/ApsimBuildsDB.cs
+//css_import ../CSGeneral/StringManip.cs
+//css_import ../CSGeneral/MathUtility.cs
 
 using System;
 using System.Text;
