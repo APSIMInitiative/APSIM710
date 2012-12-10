@@ -61,8 +61,8 @@ namespace ModelFramework
             string DeserializerFileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                                                        "ApsimX.XmlSerializers.dll");
             Simulation Simulation = null;
-            if (File.Exists(DeserializerFileName))
-                Simulation = CallPreBuiltSerialiser(DeserializerFileName, Reader);
+            //if (File.Exists(DeserializerFileName))
+            //    Simulation = CallPreBuiltSerialiser(DeserializerFileName, Reader);
 
             if (Simulation == null)
             {
@@ -131,23 +131,29 @@ namespace ModelFramework
                     attr = Node.OwnerDocument.CreateAttribute("xsi:type", "http://www.w3.org/2001/XMLSchema-instance");
                     attr.Value = "SoilWater.NET";
                     NewChild.Attributes.Append(attr);
+                    AddModelParams(NewChild, "Soil with new water model.xml", "SoilWater");
 
                     NewChild = Node.AppendChild(Node.OwnerDocument.CreateElement("Component"));
                     attr = Node.OwnerDocument.CreateAttribute("xsi:type", "http://www.w3.org/2001/XMLSchema-instance");
                     attr.Value = "SoilNitrogen";
-                    NewChild.Attributes.Append(attr);       
-                    string PathToSoilNitrogenXML = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                                                                "Soil with new nitrogen model.xml");
-                    if (!File.Exists(PathToSoilNitrogenXML))
-                        throw new Exception("Cannot find SoilNitrogen XML file: " + PathToSoilNitrogenXML);
-                    XmlDocument Doc = new XmlDocument();
-                    Doc.Load(PathToSoilNitrogenXML);
-                    XmlNode Model = XmlHelper.Find(Doc.DocumentElement, "SoilNitrogen");
-                    if (Model == null)
-                        throw new Exception("Cannot find a <Model> node for SoilNitrogen in file: " + PathToSoilNitrogenXML);
-                    NewChild.InnerXml = Model.InnerXml;
+                    NewChild.Attributes.Append(attr);
+                    AddModelParams(NewChild, "Soil with new nitrogen model.xml", "SoilNitrogen");
                 }
             }
+        }
+
+        private static void AddModelParams(XmlNode NewChild, string FileName, string ModelName)
+        {
+            string PathToXML = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                                            FileName);
+            if (!File.Exists(PathToXML))
+                throw new Exception("Cannot find file: " + PathToXML);
+            XmlDocument Doc = new XmlDocument();
+            Doc.Load(PathToXML);
+            XmlNode Model = XmlHelper.Find(Doc.DocumentElement, ModelName);
+            if (Model == null)
+                throw new Exception("Cannot find a <Model> node in file: " + PathToXML);
+            NewChild.InnerXml = Model.InnerXml;
         }
     }
 

@@ -123,8 +123,21 @@ namespace ModelFramework
                     {
                         object LinkedObject = FindObject(Field.FieldType);
                         if (LinkedObject == null)
-                            throw new Exception("Cannot resolve link: " + Field.FieldType.Name);
-                        Field.SetValue(Obj, LinkedObject);
+                        {
+                            if (Value == null)
+                                throw new Exception("Cannot resolve link: " + Field.FieldType.Name);
+                            else
+                            {
+                                // This might be a child object that has already been deserialised e.g. In SoilWater.cs:
+                                //     public SoilWatTillageType SoilWatTillageType;
+                                // Go see if it has an OnInitialised method that we should call.
+                                MethodInfo Initialised = Value.GetType().GetMethod("OnInitialised");
+                                if (Initialised != null)
+                                    Initialised.Invoke(Value, null);
+                            }
+                        }
+                        else
+                            Field.SetValue(Obj, LinkedObject);
                     }
                 }
             }

@@ -166,11 +166,8 @@ public class SoilWater
 
 
     //OnTillage Event
-    //***************
-    // TODO: This still isn't quite what's needed...
-    [Param(IsOptional = true, Name = "type")]  //! Array containing information about a certain type (from table)  //sv- "type" as in the type of tillage: "disc", "burn", etc. 
-    private double[] type_info_from_sim = null;   //sv- contains the tillage_cn_red and tillage_cn_rain specified in the sim file. Only used if manager module does not send it with the Event. 
-
+    [Link]
+    public SoilWatTillageType SoilWatTillageType;
 
     //Irrigation Layer
 
@@ -5388,18 +5385,21 @@ public class SoilWater
 
         //the event always gives us at least the type of tillage. Even if it does not give the cn_red and cn_rain.
         //if the event does not give us cn_red and cn_rain then use the type name to look up the values in the sim file (ini file).
+        // ez - departs slightly from the Fortran version, where cn_red and cn_rain were optional arguments
+        // They are always present here, but if the user sets the value to a negative number, we'll then
+        // try to read the values from the initialisation data.
 
         tillage_type = Tillage.type;       //sv - the event always gives us at least this.
 
-        //TODO: finish writing the code to get the entire tillage table from the ini file (sim file) and look through it to find the values for our particular tillage type.
-
-        //sv- if the Tilliage information did not come with the event.
-        if ((Tillage.cn_red == 0) || (Tillage.cn_rain == 0))
+        //sv- if the Tillage information did not come with the event.
+        if ((Tillage.cn_red < 0) || (Tillage.cn_rain < 0))
         {
             Console.WriteLine();
             Console.WriteLine("    - Reading tillage CN info");
 
-            if (type_info_from_sim.Length != 2)
+            TillageType data = SoilWatTillageType.GetTillageData(tillage_type);
+
+            if (data == null)
             {
                 //sv- Event did not give us the tillage information and the sim file does not have the tillage information.
                 //! We have an unspecified tillage type
@@ -5413,15 +5413,11 @@ public class SoilWater
             {
                 //sv- Get the values from the sim file.
                 tillage_type = "tillage specified in ini file.";
-                if (Tillage.cn_red == 0)
-                {
-                    tillage_cn_red = type_info_from_sim[0];
-                }
+                if (Tillage.cn_red < 0)
+                    tillage_cn_red = data.cn_red;
 
-                if (Tillage.cn_rain == 0)
-                {
-                    tillage_cn_rain = type_info_from_sim[1];
-                }
+                if (Tillage.cn_rain < 0)
+                    tillage_cn_rain = data.cn_rain;
             }
         }
         else
@@ -5532,4 +5528,47 @@ public class SoilWater
 
     #endregion
 
+}
+
+public class SoilWatTillageType
+{
+    Dictionary<string, float[]> tillage_types;
+
+    protected float[] strToArr(string str)
+    {
+        string[] temp = str.Split(new char[] { ' ', '\t', ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        float[] result = new float[temp.Length];
+
+        for (int i = 0; i < result.Length; i++)
+            result[i] = float.Parse(temp[i]);
+
+        return result;
+    }
+
+    [Param]
+    System.Xml.XmlNode xe = null;
+
+    [XmlAnyElement]
+    public System.Xml.XmlElement[] Nodes = null;
+
+    [EventHandler]
+    public void OnInitialised()
+    {
+        tillage_types = new Dictionary<string, float[]>();
+
+        #if (APSIMX == true)
+            foreach (System.Xml.XmlNode xnc in Nodes)
+                    if (xnc.NodeType == System.Xml.XmlNodeType.Element)
+                        tillage_types.Add(xnc.Name, strToArr(xnc.FirstChild.Value));
+        #else
+            foreach (System.Xml.XmlNode xnc in xe.ChildNodes)
+                if (xnc.NodeType == System.Xml.XmlNodeType.Element)
+                    tillage_types.Add(xnc.Name, strToArr(xnc.FirstChild.Value));
+        #endif
+    }
+
+    public TillageType GetTillageData(string name)
+    {
+        return tillage_types.ContainsKey(name) ? new TillageType() { type = name, f_incorp = tillage_types[name][0], tillage_depth = tillage_types[name][1] } : null;
+    }
 }
