@@ -43,9 +43,6 @@ class Bob
 
       try
       {
-         if (args.Length != 1)
-            throw new Exception("Usage: cscs Model\\Build\\Bob.cs Model\\Build\\BobMain.cs");
-
          Console.WriteLine("Waiting for a patch...");
 
          Connection.Open();
@@ -112,7 +109,7 @@ class Bob
                  System.Environment.SetEnvironmentVariable("HostSuffix", "-" + System.Environment.MachineName);
 
                // Run the patch.
-               Run("Running patch...", Path.Combine(APSIMDir, "Model/cscs.exe"), Path.combine(APSIMDir,"Model/Build/BobMain.cs") , Log);
+               Run("Running patch...", Path.Combine(APSIMDir, "Model/cscs.exe"), Path.Combine(APSIMDir,"Model/Build/BobMain.cs") , Log);
 
                // Close log file.
                Log.Close();
