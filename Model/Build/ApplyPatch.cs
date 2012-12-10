@@ -146,7 +146,6 @@ class JobSchedulerApplyPatch
             if (PosSlash == -1)
                 throw new Exception("Invalid directory found: " + DirectoryName);
             string ParentName = DirectoryName.Substring(0, PosSlash);
-            string ChildName = DirectoryName.Substring(PosSlash + 1);
             if (!Directory.Exists(Path.Combine(ParentName, ".svn")))
                 EnsureDirectoryIsUnderSVN(ParentName, SVNFileName);  // parent dir.
             Directory.CreateDirectory(DirectoryName);
