@@ -15,5 +15,4 @@ export MONO_XMLSERIALIZER_THS=no
 
 cd $APSIM
 
-$APSIM/Model/cscs.exe $APSIM/Model/Build/Bob.cs   $APSIM/Model/Build/BobMain.cs
-
+$APSIM/Model/cscs.exe $APSIM/Model/Build/Bob.cs

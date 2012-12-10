@@ -50,7 +50,7 @@ class BobMain
          // Apply the patch.
 
          Run("Apply patch", "%APSIM%/Model/cscs.exe",
-             "/r:ICSharpCode.SharpZipLib.dll %APSIM%/Model/Build/ApplyPatch.cs %APSIM%",
+             "%APSIM%/Model/Build/ApplyPatch.cs %APSIM%",
              "%APSIM%/Model");
 
          // Run the version stamper.
@@ -70,7 +70,7 @@ class BobMain
          // ******* If we get this far then assume everything ran clean.
 
          // Bob (ie. windows reference platform) is the only machine that commits to svn
-         if (System.Environment.MachineName.ToUpper() == "BOB") 
+         if (System.Environment.MachineName.ToUpper() == "BOB")
          {
             Run("Set status of job", "UpdateFieldInDB.exe", "Status Pass", "%APSIM%\\Model");
             Run("Do commit if clean", "%APSIM%/Model/IfCleanDoCommit.exe", "%APSIM%", "%APSIM%");

@@ -32,7 +32,7 @@ class Bob
    {
       int ReturnCode = 0;
       string CWD = Directory.GetCurrentDirectory();
-	  
+
       if (Path.DirectorySeparatorChar == '/')
          {
        	 svnExe = "svn"; sevenZipExe = "unzip";
@@ -54,8 +54,8 @@ class Bob
             int JobID = FindNextJob(Connection);
             if (JobID != -1)
             {
-			   Directory.SetCurrentDirectory(CWD);
-			
+               Directory.SetCurrentDirectory(CWD);
+
                // Update the builds database.
                DBUpdate("Status", "Running", Connection, JobID);
 
@@ -64,7 +64,8 @@ class Bob
                Console.WriteLine("Running patch: " + PatchFileName);
 
                // The current working directory will be the APSIM root directory - set the environment variable.
-               System.Environment.SetEnvironmentVariable("APSIM", Directory.GetCurrentDirectory());
+               string APSIMDir = Directory.GetCurrentDirectory();
+               System.Environment.SetEnvironmentVariable("APSIM", APSIMDir);
 
                // Open log file.
                string LogDirectory = null;
@@ -72,7 +73,7 @@ class Bob
                   LogDirectory = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(PatchFileName), ".."));
                else
                   LogDirectory = "/tmp";
-                  
+
                string LogFileName = Path.Combine(LogDirectory, Path.ChangeExtension(Path.GetFileName(PatchFileName), ".txt"));
                StreamWriter Log = new StreamWriter(LogFileName);
 
@@ -111,8 +112,7 @@ class Bob
                  System.Environment.SetEnvironmentVariable("HostSuffix", "-" + System.Environment.MachineName);
 
                // Run the patch.
-               string CSCS = Assembly.GetCallingAssembly().Location;
-               Run("Running patch...", CSCS, args[0], Log);
+               Run("Running patch...", Path.Combine(APSIMDir, "Model/cscs.exe"), Path.combine(APSIMDir,"Model/Build/BobMain.cs") , Log);
 
                // Close log file.
                Log.Close();

@@ -1,6 +1,5 @@
 ﻿//css_import ..\CSGeneral\Utility.cs
 //css_import ..\CSGeneral\StringManip.cs
-//css_import ..\CSGeneral\Zip.cs
 //css_import ..\CSGeneral\MathUtility.cs
 
 using System;
@@ -24,8 +23,9 @@ class JobSchedulerApplyPatch
     }
 
     /// <summary>
-    /// This program applies a patch to an APSIM directory. It also copies all patched files to 
-    /// a temporary directory so that they can be later compared with what Bob runs.
+    /// This program applies a patch to an APSIM directory. It is called immediately after a patch file
+    /// is unzipped into a virgin svn tree. All new files are added to svn. All deleted files (ie deleted via remote svn
+    /// but still on this disk) are deleted.
     /// </summary>
     static int Main(string[] args)
     {
@@ -58,7 +58,7 @@ class JobSchedulerApplyPatch
             if (LineBits.Count == 3)
             {
                 // Convert either '/' or '\' to the local directory separator
-                LineBits[0] = LineBits[0].Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar); 
+                LineBits[0] = LineBits[0].Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
                 FileDetails.Add(new PatchDetail {FileName=LineBits[0], Status=LineBits[1], Revision=LineBits[2] });
             }
         }
@@ -98,7 +98,7 @@ class JobSchedulerApplyPatch
             }
         }
 
-        // Some of the files in the patch file will be additions or deletions. We need to tell SVN 
+        // Some of the files in the patch file will be additions or deletions. We need to tell SVN
         // about these. We also need to check that all files are up to date.
         string OutOfDateFileNames = "";
         foreach (PatchDetail FileDetail in FileDetails)
@@ -156,8 +156,8 @@ class JobSchedulerApplyPatch
         }
     }
 
-    
-    
-    
+
+
+
 }
 
