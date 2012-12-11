@@ -80,14 +80,14 @@ namespace SoilCN
         // Maximum potential nitrification at optimum conditions () - Michaelis-Menten equation
         private double MaxPotentialNitrificationRate;
         [Param(MinVal = 0.0, MaxVal = 100.0)]
-        [Units("ppm/day")]
+        [Units("mg/kg/d")]
         public double nitrification_pot
         { set { MaxPotentialNitrificationRate = value; } }
 
         // nh4 concentration at half potential nitrification (ppm) - Michaelis-Menten equation
         private double NH4atHalfPotentialNitrification;
         [Param(MinVal = 0.0, MaxVal = 200.0)]
-        [Units("ppm")]
+        [Units("mg/kg")]
         public double nh4_at_half_pot
         { set { NH4atHalfPotentialNitrification = value; } }
 
@@ -159,7 +159,7 @@ namespace SoilCN
         // Denitrification rate coefficient at optimum conditions (fraction per ppm C per day)
         private double DenitRateCoefficient;
         [Param(MinVal = 0.0, MaxVal = 1.0)]
-        [Units("/ppmC/day")]
+        [Units("/mg/kg/d")]
         public double dnit_rate_coeff
         { set { DenitRateCoefficient = value; } }
 

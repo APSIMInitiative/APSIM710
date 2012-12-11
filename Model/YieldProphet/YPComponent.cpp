@@ -119,15 +119,13 @@ void YPComponent::respondToGet(unsigned int& fromID, QueryValueData& queryData)
 // ------------------------------------------------------------------
 double YPComponent::interpFromArray(std::vector<double>& values, const std::string& variableName)
    {
-   protocol::Variant* variant;
-   bool ok = getVariable(rootDepthID, &variant, true);
-   float rootDepth;
-   if (ok)
-      ok = variant->unpack(rootDepth);
+   double rootDepth;
+   bool ok = getVariable (rootDepthID, rootDepth, -DBL_MAX, DBL_MAX, true);
+
    if (!ok)
       throw runtime_error("Cannot find a root_depth variable belonging to any module");
 
-   if (rootDepth == 0)
+   if (rootDepth == 0.0)
       return 0.0;
    else
       {

@@ -770,7 +770,7 @@ using System.Xml.Serialization;
 
         // soil urea nitrogen amount (kgN/ha)
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Soil urea nitrogen amount")]
         public double[] urea
         {
@@ -836,7 +836,7 @@ using System.Xml.Serialization;
 
         // Soil ammonium nitrogen amount (kg/ha)
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Soil ammonium nitrogen amount")]
         public double[] nh4
         {
@@ -904,7 +904,7 @@ using System.Xml.Serialization;
 
         // soil nitrate nitrogen amount (kgN/ha)
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Soil nitrate nitrogen amount")]
         public double[] no3
         {
@@ -938,7 +938,7 @@ using System.Xml.Serialization;
 
         // soil bulk density for each layer (kg/dm3)
         [Input]
-        [Units("g/cm3")]
+        [Units("g/cm^3")]
         private double[] bd = null;
 
         // soil water content at saturation
@@ -1178,7 +1178,7 @@ using System.Xml.Serialization;
 
         // variation in urea as given by another component
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         double[] dlt_urea
         {
             set
@@ -1206,7 +1206,7 @@ using System.Xml.Serialization;
 
         // variation in nh4 as given by another component
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         double[] dlt_nh4
         {
             set
@@ -1234,7 +1234,7 @@ using System.Xml.Serialization;
 
         // variation in no3 as given by another component
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         double[] dlt_no3
         {
             set
@@ -1250,7 +1250,7 @@ using System.Xml.Serialization;
         #region Organic N and C
 
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         double[] dlt_org_n
         {
             set
@@ -1434,19 +1434,19 @@ using System.Xml.Serialization;
 
         // minimum allowable Urea
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Minimum allowable urea")]
         double[] urea_min;
 
         // minimum allowable NH4
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Minimum allowable NH4")]
         double[] nh4_min;
 
         // minimum allowable NO3
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Minimum allowable NO3")]
         double[] no3_min;
 
@@ -1471,7 +1471,7 @@ using System.Xml.Serialization;
 
         // net nh4 change today
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Net NH4 change today")]
         double[] dlt_nh4_net
         {
@@ -1487,7 +1487,7 @@ using System.Xml.Serialization;
 
         // net NH4 transformation today
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Net NH4 transformation")]
         double[] nh4_transform_net
         {
@@ -1503,7 +1503,7 @@ using System.Xml.Serialization;
 
         // net no3 change today
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Net NO3 change today")]
         double[] dlt_no3_net
         {
@@ -1519,7 +1519,7 @@ using System.Xml.Serialization;
 
         // net NO3 transformation today
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Net NO3 transformation")]
         double[] no3_transform_net
         {
@@ -1534,7 +1534,7 @@ using System.Xml.Serialization;
         }
 
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Net N mineralised in soil")]
         double[] dlt_n_min         // net mineralisation
         {
@@ -1549,7 +1549,7 @@ using System.Xml.Serialization;
         }
 
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Net N mineralisation from residue decomposition")]
         double[] dlt_n_min_res
         {
@@ -1565,7 +1565,7 @@ using System.Xml.Serialization;
 
         // Net NH4 mineralisation from residue decomposition
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Net convertion of NH4 for residue mineralisation/immobilisation")]
         double[] dlt_res_nh4_min
         {
@@ -1581,7 +1581,7 @@ using System.Xml.Serialization;
 
         // Net NO3 mineralisation from residue decomposition
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Net convertion of NO3 for residue mineralisation/immobilisation")]
         double[] dlt_res_no3_min
         {
@@ -1597,7 +1597,7 @@ using System.Xml.Serialization;
 
         // net fom N mineralised (negative for immobilisation)
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Net FOM N mineralised, negative for immobilisation")]
         double[] dlt_fom_n_min
         {
@@ -1613,7 +1613,7 @@ using System.Xml.Serialization;
 
         // net humic N mineralised
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Net humic N mineralised, negative for immobilisation")]
         double[] dlt_hum_n_min
         {
@@ -1629,7 +1629,7 @@ using System.Xml.Serialization;
 
         // net biomass N mineralised
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Net biomass N mineralised")]
         double[] dlt_biom_n_min
         {
@@ -1644,7 +1644,7 @@ using System.Xml.Serialization;
         }
 
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Total net N mineralised (soil plus residues)")]
         double[] dlt_n_min_tot
         {
@@ -1660,7 +1660,7 @@ using System.Xml.Serialization;
 
         // nitrogen coverted by hydrolysis (from urea to NH4)
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Nitrogen coverted by hydrolysis")]
         double[] dlt_urea_hydrol
         {
@@ -1676,7 +1676,7 @@ using System.Xml.Serialization;
 
         // nitrogen coverted by nitrification (from NH4 to either NO3 or N2O)
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Nitrogen coverted by nitrification")]
         double[] dlt_rntrf
         {
@@ -1691,7 +1691,7 @@ using System.Xml.Serialization;
         }
 
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Nitrogen coverted by nitrification")]
         double[] nitrification
         {
@@ -1707,7 +1707,7 @@ using System.Xml.Serialization;
 
         // effective nitrogen coverted by nitrification (from NH4 to NO3)
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Effective nitrogen coverted by nitrification")]
         double[] effective_nitrification
         {
@@ -1723,7 +1723,7 @@ using System.Xml.Serialization;
 
         // NH4 N denitrified
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("NH4 N denitrified")]
         double[] dlt_nh4_dnit
         {
@@ -1739,7 +1739,7 @@ using System.Xml.Serialization;
 
         // NO3 N denitrified
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("NO3 N denitrified")]
         double[] dlt_no3_dnit
         {
@@ -1755,7 +1755,7 @@ using System.Xml.Serialization;
 
         // amount of N2O produced
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Amount of N2O produced")]
         double[] n2o_atm
         {
@@ -1771,7 +1771,7 @@ using System.Xml.Serialization;
 
         // amount of N2 produced
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Amount of N2 produced")]
         double[] n2_atm
         {
@@ -1786,7 +1786,7 @@ using System.Xml.Serialization;
         }
 
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("N converted by denitrification")]
         double[] dnit
         {
@@ -1802,7 +1802,7 @@ using System.Xml.Serialization;
 
         // excess N required above NH4 supply
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("NH4 deficit for immobilisation")]
         double[] nh4_deficit_immob
         {
@@ -1822,7 +1822,7 @@ using System.Xml.Serialization;
 
         // nitrogen in FOM
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Nitrogen in FOM")]
         double[] fom_n
         {
@@ -1837,7 +1837,7 @@ using System.Xml.Serialization;
         }
 
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Nitrogen in FOM pool 1")]
         double[] fom_n_pool1
         {
@@ -1852,7 +1852,7 @@ using System.Xml.Serialization;
         }
 
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Nitrogen in FOM pool 2")]
         double[] fom_n_pool2
         {
@@ -1867,7 +1867,7 @@ using System.Xml.Serialization;
         }
 
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Nitrogen in FOM pool 3")]
         double[] fom_n_pool3
         {
@@ -1883,7 +1883,7 @@ using System.Xml.Serialization;
 
         // Soil humic N
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Soil humic nitrogen")]
         double[] hum_n
         {
@@ -1899,7 +1899,7 @@ using System.Xml.Serialization;
 
         // Soil biomass nitrogen
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Soil biomass nitrogen")]
         double[] biom_n
         {
@@ -1915,7 +1915,7 @@ using System.Xml.Serialization;
 
         // total N in soil   
         [Output]
-        [Units("kgN/ha")]
+        [Units("kg/ha")]
         [Description("Total N in soil")]
         double[] nit_tot
         {
