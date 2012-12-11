@@ -976,6 +976,8 @@ namespace ApsimFile
         internal double[] LLMapped(string CropName, double[] ToThickness)
         {
             SoilCrop SoilCrop = Crop(CropName);
+            if (MathUtility.AreEqual(SoilCrop.Thickness, ToThickness))
+                return SoilCrop.LL;
             double[] Values = Map(SoilCrop.LL, SoilCrop.Thickness, ToThickness, MapType.Concentration, LastValue(SoilCrop.LL));
             if (Values == null) return null;
             double[] AirDry = AirDryMapped(ToThickness);
