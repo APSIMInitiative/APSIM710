@@ -297,6 +297,10 @@ module ConstantsModule
 
       character DATA_irrigate_amount *(*)
       parameter (DATA_irrigate_amount = 'amount')
+      character DATA_irrigate_will_runoff *(*)  !sv- DATA_irrigate_calc_runoff added on 26 Nov 2012. Allow irrigation to runoff like rain does.
+      parameter (DATA_irrigate_will_runoff = 'will_runoff')	   	  
+      character DATA_irrigate_depth *(*)   		!sv- DATA_irrigate_depth added on 26 Nov 2012. Needed for subsurface irrigation
+      parameter (DATA_irrigate_depth = 'depth')	  
       character DATA_irrigate_time *(*)
       parameter (DATA_irrigate_time = 'time')
       character DATA_irrigate_duration *(*)

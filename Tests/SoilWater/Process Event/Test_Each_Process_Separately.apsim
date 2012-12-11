@@ -1629,12 +1629,14 @@ Read the module documentation for SoilWat.</memo>
     <summaryfile />
     <area name="paddock">
       <Soil>
-        <SoilType description="Soil description">Black Vertosol</SoilType>
+        <SoilType>Black Vertosol</SoilType>
         <LocalName>Waco</LocalName>
         <Site>Jimbour</Site>
-        <NearestTown description="Nearest town">Jimbour, Q 4352</NearestTown>
+        <NearestTown>Jimbour, Q 4352</NearestTown>
         <Region>South East Queensland</Region>
-        <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld bluegrass</NaturalVegetation>
+        <NaturalVegetation>Grassland, mainly Qld bluegrass</NaturalVegetation>
+        <Latitude>0</Latitude>
+        <Longitude>0</Longitude>
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:">02/01/1940</Date>
           <Thickness>
@@ -1934,6 +1936,13 @@ Read the module documentation for SoilWat.</memo>
         </events>
       </outputfile>
       <Graph name="Depth-1 Day (1 Jan)">
+        <Legend>
+          <CheckedTitles> sat_dep</CheckedTitles>
+          <CheckedTitles> dul_dep</CheckedTitles>
+          <CheckedTitles> sw_dep</CheckedTitles>
+          <CheckedTitles> ll15_dep</CheckedTitles>
+          <CheckedTitles> air_dry_dep</CheckedTitles>
+        </Legend>
         <Plot>
           <SeriesType>Solid line</SeriesType>
           <PointType>None</PointType>
@@ -1956,6 +1965,10 @@ Read the module documentation for SoilWat.</memo>
         </Plot>
       </Graph>
       <Graph name="XY">
+        <Legend>
+          <CheckedTitles> runoff</CheckedTitles>
+          <CheckedTitles> rain</CheckedTitles>
+        </Legend>
         <Plot>
           <SeriesType>Bar</SeriesType>
           <PointType>None</PointType>
@@ -7799,6 +7812,1453 @@ You will see that it happens on the "14 Jan 1940". Before this date the runoffs 
       </Graph>
     </area>
   </simulation>
+  <memo name="Runoff with Irrigation">
+
+This is a new feature only added to the new SoilWater.NET module,  it is not added to the old SoilWat module.
+
+This is an exact copy of the "Runoff Only (NEW)"
+
+The only difference is that in the met file I have zeroed the first 8 rainfalls
+10, 20, 50, 100, 250, 500,1000, 2000 mm 
+
+
+GOON 1940   2  26.30    32.2    19.4    10.0    8.48
+
+GOON 1940   5  25.92    32.7    19.4    20.0    8.48
+
+GOON 1940   8  22.91    32.2    16.1    50.0    8.31
+
+GOON 1940  11  27.46    35.5    20.0   100.0    8.31
+
+GOON 1940  14  25.53    35.5    22.7   250.0    8.31
+
+GOON 1940  17  28.30    41.1    25.0   500.0    8.09
+
+GOON 1940  20  26.15    37.2    22.7  1000.0    8.09
+
+GOON 1940  23  28.62    33.3    15.0  2000.0    7.86
+
+nb. I have left the small amounts of rainfall after these dates alone. 
+
+and have replaced them with an equivalent amount of irrigation with the new "will_runoff" argument for the irrigation apply command set turned on.
+
+irrigation apply amount = 10 (mm), will_runoff = 1
+
+(See Operations Schedule)
+
+The "will_runoff" argument is used to make the irrigation runoff in exactly the same way as it would have if it was rain. 
+This is an optional argument and if it is not provided it defaults to 0 (no runoff with the irrigation, it all goes into the soil)
+
+
+The idea of replacing the rainfall with the irrigations is that I should then be able to do a straight comparison between the output file from this simulation
+and the output file from "Runoff Only (NEW)" and the runoff column should be identical.
+It should not matter if the water was applied as rainfall or as an irrigation with "will_runoff = 1"  the runoff should be exactly the same. 
+
+</memo>
+  <simulation name="Runoff with Irrigation (NEW)">
+    <PlugIns>
+      <PlugIn enabled="yes">%apsim%\UserInterface\ApsimUIPlugIn.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\UserInterface\SoilTypes.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\UserInterface\Graph.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\UserInterface\Ausfarm.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\UserInterface\DevelopersPlugIn.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Accum.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\AgPasture.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Bambatsi.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Barley.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Br.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Bore.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Broccoli.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\ButterflyPea.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Canola.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Canopy.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Centro.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Channel.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Chickpea.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Solute.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Climatechange.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Clock.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Cowpea.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\CropUI.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Dam.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\DCD.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\EGrandis.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\EMelliodora.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Eo.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\EPopulnea.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Erosion.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Events.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Fababean.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Factorial.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Factor.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\FactorComplex.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\FrenchBean.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Fertiliser.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Fieldpea.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Gcm_data.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Grasp.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Graz.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Growth.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Horsegram.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Ini.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\InitWater.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Input.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Irrigation.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\KWTest.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Lablab.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Lettuce.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Log.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Lucerne.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Lupin.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Maize.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Manager.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Map.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Memo.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\MetFile.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\MicroMet.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Millet.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Millet1.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Millet2.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Millet3.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Millet4.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Millet5.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Mucuna.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Mungbean.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Navybean.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Oats.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Ocean_data.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Operations.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Orobanche.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Oryza.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\OutputFile.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Ozcot.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Patchinput.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Peanut.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Pigeonpea.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Pond.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Potato.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\RotPlot.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\RugPlotUI.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Root.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Rule.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Seedling.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SiloInput.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Slurp.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Soi.xml</PlugIn>
+      <PlugIn enabled="no">%apsim%\Model\Soil.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SoilNui.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SoilTemp.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Sorghum.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SorghumConstants.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SorghumGenotype.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Soybean.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Stylo.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Sugar.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Summaryfile.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Sunflower.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SurfaceOM.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SweetCorn.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SweetSorghum.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SWIM2.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SWIM2ui.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Sysbal.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Tcllink.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Tclmanager.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Tclui.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Tracker.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Tree.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Variables.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Venlink.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\vine.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\WaterSupply.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Weed.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Wheat.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\YPCalc.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Soil with new water model.xml</PlugIn>
+    </PlugIns>
+    <metfile name="met">
+      <filename name="filename" input="yes">%apsim%\Tests\SoilWater\Process Event\Runoff with Irrigation.met</filename>
+    </metfile>
+    <clock>
+      <start_date type="date" description="Enter the start date of the simulation">01/01/1940</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">31/12/1950</end_date>
+    </clock>
+    <summaryfile />
+    <area name="paddock">
+      <Soil>
+        <SoilType>Black Vertosol</SoilType>
+        <LocalName>Waco</LocalName>
+        <Site>Jimbour</Site>
+        <NearestTown>Jimbour, Q 4352</NearestTown>
+        <Region>South East Queensland</Region>
+        <NaturalVegetation>Grassland, mainly Qld bluegrass</NaturalVegetation>
+        <Latitude>0</Latitude>
+        <Longitude>0</Longitude>
+        <Sample name="Soil sample">
+          <Date type="date" description="Sample date:">02/01/1940</Date>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <NO3>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+          </NO3>
+          <NH4>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+          </NH4>
+          <SW>
+            <double>0.59</double>
+            <double>0.58</double>
+            <double>0.29</double>
+            <double>0.29</double>
+            <double>0.3</double>
+            <double>0.31</double>
+            <double>0.32</double>
+            <double>0.33</double>
+            <double>0.34</double>
+            <double>0.35</double>
+            <double>0.36</double>
+          </SW>
+        </Sample>
+        <Water>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <BD>
+            <double>1.02</double>
+            <double>1.03</double>
+            <double>1.02</double>
+            <double>1.02</double>
+            <double>1.06</double>
+            <double>1.11</double>
+            <double>1.12</double>
+            <double>1.15</double>
+            <double>1.18</double>
+            <double>1.2</double>
+            <double>1.25</double>
+          </BD>
+          <AirDry>
+            <double>0.15</double>
+            <double>0.26</double>
+            <double>0.29</double>
+            <double>0.29</double>
+            <double>0.3</double>
+            <double>0.31</double>
+            <double>0.32</double>
+            <double>0.33</double>
+            <double>0.34</double>
+            <double>0.35</double>
+            <double>0.36</double>
+          </AirDry>
+          <LL15>
+            <double>0.29</double>
+            <double>0.29</double>
+            <double>0.29</double>
+            <double>0.29</double>
+            <double>0.3</double>
+            <double>0.31</double>
+            <double>0.32</double>
+            <double>0.33</double>
+            <double>0.34</double>
+            <double>0.35</double>
+            <double>0.36</double>
+          </LL15>
+          <DUL>
+            <double>0.54</double>
+            <double>0.53</double>
+            <double>0.54</double>
+            <double>0.54</double>
+            <double>0.52</double>
+            <double>0.5</double>
+            <double>0.5</double>
+            <double>0.48</double>
+            <double>0.47</double>
+            <double>0.46</double>
+            <double>0.44</double>
+          </DUL>
+          <SAT>
+            <double>0.59</double>
+            <double>0.58</double>
+            <double>0.59</double>
+            <double>0.58</double>
+            <double>0.57</double>
+            <double>0.55</double>
+            <double>0.55</double>
+            <double>0.53</double>
+            <double>0.52</double>
+            <double>0.51</double>
+            <double>0.49</double>
+          </SAT>
+        </Water>
+        <SoilWater>
+          <SummerCona type="text" description="SummerCona">0</SummerCona>
+          <SummerU type="text" description="SummerU">0</SummerU>
+          <SummerDate type="text" description="SummerDate">1-Nov</SummerDate>
+          <WinterCona type="text" description="WinterCona">0</WinterCona>
+          <WinterU type="text" description="WinterU">0</WinterU>
+          <WinterDate type="text" description="WinterDate">1-Apr</WinterDate>
+          <DiffusConst type="text" description="DiffusConst">0</DiffusConst>
+          <DiffusSlope type="text" description="DiffusSlope">0</DiffusSlope>
+          <Salb type="text" description="Salb">0.13</Salb>
+          <CN2Bare type="text" description="Cn2Bare">73</CN2Bare>
+          <CNRed type="text" description="CnRed">0</CNRed>
+          <CNCov type="text" description="CnCov">0</CNCov>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <SWCON>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+          </SWCON>
+        </SoilWater>
+        <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWt>200</RootWt>
+          <SoilCN>12.5</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <OC>
+            <double>1.04</double>
+            <double>0.89</double>
+            <double>0.89</double>
+            <double>0.89</double>
+            <double>0.77</double>
+            <double>0.45</double>
+            <double>0.27</double>
+            <double>0.22</double>
+            <double>0.16</double>
+            <double>0.13</double>
+            <double>0.12</double>
+          </OC>
+          <FBiom>
+            <double>0.025</double>
+            <double>0.02</double>
+            <double>0.015</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+          </FBiom>
+          <FInert>
+            <double>0.4</double>
+            <double>0.6</double>
+            <double>0.8</double>
+            <double>0.9</double>
+            <double>0.95</double>
+            <double>0.95</double>
+            <double>0.95</double>
+            <double>0.95</double>
+            <double>0.95</double>
+            <double>0.95</double>
+            <double>0.95</double>
+          </FInert>
+        </SoilOrganicMatter>
+        <Analysis>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <EC>
+            <double>0.2</double>
+            <double>0.25</double>
+            <double>0.31</double>
+            <double>0.4</double>
+            <double>0.59</double>
+            <double>0.84</double>
+            <double>0.93</double>
+            <double>1.01</double>
+            <double>1.06</double>
+            <double>1.05</double>
+            <double>1.01</double>
+          </EC>
+          <PH>
+            <double>8.4</double>
+            <double>8.8</double>
+            <double>9</double>
+            <double>9.2</double>
+            <double>9.2</double>
+            <double>9.1</double>
+            <double>9</double>
+            <double>9</double>
+            <double>8.9</double>
+            <double>8.9</double>
+            <double>8.9</double>
+          </PH>
+        </Analysis>
+      </Soil>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">off</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+        <allocation type="text" description="Allocation in mm">0</allocation>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+      <operations name="Operations Schedule">
+        <operation condition="start_of_day">
+          <date>2/01/1940</date>
+          <action>irrigation apply amount = 10 (mm), will_runoff = 1</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>5/01/1940</date>
+          <action>irrigation apply amount = 20 (mm), will_runoff = 1</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>8/01/1940</date>
+          <action>irrigation apply amount = 50 (mm), will_runoff = 1</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>11/01/1940</date>
+          <action>irrigation apply amount = 100 (mm), will_runoff = 1</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>14/01/1940</date>
+          <action>irrigation apply amount = 250 (mm), will_runoff = 1</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>17/01/1940</date>
+          <action>irrigation apply amount = 500 (mm), will_runoff = 1</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20/01/1940</date>
+          <action>irrigation apply amount = 1000 (mm), will_runoff = 1</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>23/01/1940</date>
+          <action>irrigation apply amount = 2000 (mm), will_runoff = 1</action>
+        </operation>
+      </operations>
+      <outputfile>
+        <filename output="yes">Runoff with Irrigation (NEW).out</filename>
+        <title>Runoff with Irrigation (NEW)</title>
+        <variables name="Variables">
+          <variable>dd/mm/yyyy as Date</variable>
+          <variable>irrigation</variable>
+          <variable>runoff</variable>
+          <variable>dlayer</variable>
+          <variable>sat_dep</variable>
+          <variable>dul_dep</variable>
+          <variable>ll15_dep</variable>
+          <variable>air_dry_dep</variable>
+          <variable>sw_dep</variable>
+          <variable>flux</variable>
+          <variable>flow</variable>
+          <variable>drain</variable>
+          <variable>es</variable>
+        </variables>
+        <events name="Reporting Frequency">
+          <event>end_day</event>
+        </events>
+      </outputfile>
+      <Graph name="Depth-1 Day (1 Jan)">
+        <Legend>
+          <CheckedTitles> sat_dep</CheckedTitles>
+          <CheckedTitles> dul_dep</CheckedTitles>
+          <CheckedTitles> sw_dep</CheckedTitles>
+          <CheckedTitles> ll15_dep</CheckedTitles>
+          <CheckedTitles> air_dry_dep</CheckedTitles>
+        </Legend>
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <Y>Depth</Y>
+          <colour>
+          </colour>
+          <XTop>sat_dep</XTop>
+          <XTop>dul_dep</XTop>
+          <XTop>sw_dep</XTop>
+          <XTop>ll15_dep</XTop>
+          <XTop>air_dry_dep</XTop>
+          <XTop>no3</XTop>
+          <XTop>nh4</XTop>
+          <XTop>cl</XTop>
+          <GDDepth name="Depth">
+            <AllXOnTopAxis>Yes</AllXOnTopAxis>
+            <Date>1/01/1940</Date>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </GDDepth>
+        </Plot>
+      </Graph>
+      <Graph name="XY">
+        <Legend>
+          <CheckedTitles> runoff</CheckedTitles>
+          <CheckedTitles> irrigation</CheckedTitles>
+        </Legend>
+        <Plot>
+          <SeriesType>Bar</SeriesType>
+          <PointType>None</PointType>
+          <colour>
+          </colour>
+          <Y>runoff</Y>
+          <X>Date</X>
+          <Y>irrigation</Y>
+          <GDApsimFileReader name="ApsimFileReader" />
+        </Plot>
+      </Graph>
+    </area>
+  </simulation>
+  <memo name="Subsurface Irrigation">
+
+Created a copy of the 'Unsaturated Flow Only (NEW)' simulation.
+
+I zeroed the initial soilwater in the "soil sample" node.
+
+changed the clock to run over just one month instead of a decade (end (31 Jan 1940)
+
+added "irrigation_layer" and "irrigation" as an output variable.</memo>
+  <simulation name="Subsurface Irrigation (NEW)">
+    <PlugIns>
+      <PlugIn enabled="yes">%apsim%/UserInterface/ApsimUIPlugIn.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/UserInterface/SoilTypes.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/UserInterface/Graph.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/UserInterface/Ausfarm.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/UserInterface/DevelopersPlugIn.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Accum.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/AgPasture.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Bambatsi.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Barley.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Br.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Bore.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Broccoli.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/ButterflyPea.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Canola.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Canopy.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Centro.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Channel.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Chickpea.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Solute.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Climatechange.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Clock.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Cowpea.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/CropUI.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Dam.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/DCD.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/EGrandis.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/EMelliodora.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Eo.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/EPopulnea.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Erosion.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Events.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Fababean.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Factorial.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Factor.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/FactorComplex.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/FrenchBean.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Fertiliser.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Fieldpea.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Gcm_data.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Grasp.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Graz.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Growth.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Horsegram.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Ini.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/InitWater.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Input.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Irrigation.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/KWTest.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Lablab.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Lettuce.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Log.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Lucerne.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Lupin.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Maize.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Manager.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Map.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Memo.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/MetFile.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/MicroMet.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Millet.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Millet1.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Millet2.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Millet3.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Millet4.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Millet5.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Mucuna.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Mungbean.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Navybean.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Oats.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Ocean_data.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Operations.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Orobanche.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Oryza.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/OutputFile.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Ozcot.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Patchinput.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Peanut.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Pigeonpea.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Pond.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Potato.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/RotPlot.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/RugPlotUI.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Root.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Rule.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Seedling.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/SiloInput.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Slurp.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Soi.xml</PlugIn>
+      <PlugIn enabled="no">%apsim%/Model/Soil.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/SoilNui.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/SoilTemp.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Sorghum.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/SorghumConstants.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/SorghumGenotype.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Soybean.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Stylo.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Sugar.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Summaryfile.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Sunflower.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/SurfaceOM.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/SweetCorn.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/SweetSorghum.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/SWIM2.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/SWIM2ui.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Sysbal.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Tcllink.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Tclmanager.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Tclui.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Tracker.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Tree.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Variables.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Venlink.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/vine.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/WaterSupply.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Weed.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/Wheat.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%/Model/YPCalc.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Soil with new water model.xml</PlugIn>
+    </PlugIns>
+    <metfile name="met">
+      <filename name="filename" input="yes">%apsim%\Tests\SoilWater\Process Event\Subsurface Irrigation.met</filename>
+    </metfile>
+    <clock>
+      <start_date type="date" description="Enter the start date of the simulation">01/01/1940</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">31/01/1940</end_date>
+    </clock>
+    <summaryfile />
+    <area name="paddock">
+      <Soil>
+        <SoilType>Black Vertosol</SoilType>
+        <LocalName>Waco</LocalName>
+        <Site>Jimbour</Site>
+        <NearestTown>Jimbour, Q 4352</NearestTown>
+        <Region>South East Queensland</Region>
+        <NaturalVegetation>Grassland, mainly Qld bluegrass</NaturalVegetation>
+        <Latitude>0</Latitude>
+        <Longitude>0</Longitude>
+        <Sample name="Soil sample">
+          <Date>02/01/1940</Date>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <NO3>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+          </NO3>
+          <NH4>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+          </NH4>
+          <SW>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+          </SW>
+          <NO3Units>ppm</NO3Units>
+          <NH4Units>ppm</NH4Units>
+          <SWUnits>Volumetric</SWUnits>
+          <OCUnits>Total</OCUnits>
+        </Sample>
+        <Water>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <BD>
+            <double>1.02</double>
+            <double>1.03</double>
+            <double>1.02</double>
+            <double>1.02</double>
+            <double>1.06</double>
+            <double>1.11</double>
+            <double>1.12</double>
+            <double>1.15</double>
+            <double>1.18</double>
+            <double>1.2</double>
+            <double>1.25</double>
+          </BD>
+          <AirDry>
+            <double>0.15</double>
+            <double>0.26</double>
+            <double>0.29</double>
+            <double>0.29</double>
+            <double>0.3</double>
+            <double>0.31</double>
+            <double>0.32</double>
+            <double>0.33</double>
+            <double>0.34</double>
+            <double>0.35</double>
+            <double>0.36</double>
+          </AirDry>
+          <LL15>
+            <double>0.29</double>
+            <double>0.29</double>
+            <double>0.29</double>
+            <double>0.29</double>
+            <double>0.3</double>
+            <double>0.31</double>
+            <double>0.32</double>
+            <double>0.33</double>
+            <double>0.34</double>
+            <double>0.35</double>
+            <double>0.36</double>
+          </LL15>
+          <DUL>
+            <double>0.54</double>
+            <double>0.53</double>
+            <double>0.54</double>
+            <double>0.54</double>
+            <double>0.52</double>
+            <double>0.5</double>
+            <double>0.5</double>
+            <double>0.48</double>
+            <double>0.47</double>
+            <double>0.46</double>
+            <double>0.44</double>
+          </DUL>
+          <SAT>
+            <double>0.59</double>
+            <double>0.58</double>
+            <double>0.59</double>
+            <double>0.58</double>
+            <double>0.57</double>
+            <double>0.55</double>
+            <double>0.55</double>
+            <double>0.53</double>
+            <double>0.52</double>
+            <double>0.51</double>
+            <double>0.49</double>
+          </SAT>
+        </Water>
+        <SoilWater>
+          <SummerCona>0</SummerCona>
+          <SummerU>0</SummerU>
+          <SummerDate>1-Nov</SummerDate>
+          <WinterCona>0</WinterCona>
+          <WinterU>0</WinterU>
+          <WinterDate>1-Apr</WinterDate>
+          <DiffusConst>40</DiffusConst>
+          <DiffusSlope>16</DiffusSlope>
+          <Salb>0.13</Salb>
+          <CN2Bare>1</CN2Bare>
+          <CNRed>0</CNRed>
+          <CNCov>0</CNCov>
+          <Slope>0</Slope>
+          <DischargeWidth>0</DischargeWidth>
+          <CatchmentArea>0</CatchmentArea>
+          <MaxPond>0</MaxPond>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <SWCON>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+          </SWCON>
+        </SoilWater>
+        <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWt>200</RootWt>
+          <SoilCN>12.5</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <OC>
+            <double>1.04</double>
+            <double>0.89</double>
+            <double>0.89</double>
+            <double>0.89</double>
+            <double>0.77</double>
+            <double>0.45</double>
+            <double>0.27</double>
+            <double>0.22</double>
+            <double>0.16</double>
+            <double>0.13</double>
+            <double>0.12</double>
+          </OC>
+          <FBiom>
+            <double>0.025</double>
+            <double>0.02</double>
+            <double>0.015</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+          </FBiom>
+          <FInert>
+            <double>0.4</double>
+            <double>0.6</double>
+            <double>0.8</double>
+            <double>0.9</double>
+            <double>0.95</double>
+            <double>0.95</double>
+            <double>0.95</double>
+            <double>0.95</double>
+            <double>0.95</double>
+            <double>0.95</double>
+            <double>0.95</double>
+          </FInert>
+        </SoilOrganicMatter>
+        <Analysis>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <Texture>
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+          </Texture>
+          <MunsellColour>
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+          </MunsellColour>
+          <EC>
+            <double>0.2</double>
+            <double>0.25</double>
+            <double>0.31</double>
+            <double>0.4</double>
+            <double>0.59</double>
+            <double>0.84</double>
+            <double>0.93</double>
+            <double>1.01</double>
+            <double>1.06</double>
+            <double>1.05</double>
+            <double>1.01</double>
+          </EC>
+          <PH>
+            <double>8.4</double>
+            <double>8.8</double>
+            <double>9</double>
+            <double>9.2</double>
+            <double>9.2</double>
+            <double>9.1</double>
+            <double>9</double>
+            <double>9</double>
+            <double>8.9</double>
+            <double>8.9</double>
+            <double>8.9</double>
+          </PH>
+          <PHUnits>Water</PHUnits>
+          <BoronUnits>HotWater</BoronUnits>
+        </Analysis>
+      </Soil>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">off</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+        <allocation type="text" description="Allocation in mm">0</allocation>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+      <operations name="Operations Schedule">
+        <operation condition="start_of_day">
+          <date>1/01/1940</date>
+          <action>irrigation apply amount = 10 (mm), will_runoff = 1, depth = 600 (mm)           ! summary file test - setting the irrigation to runoff as well as subsurface should cause a warning in summary file.</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>2/01/1940</date>
+          <action>irrigation apply amount = 10 (mm), depth = 1550 (mm)      </action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>3/01/1940</date>
+          <action>'Soil Water' reset</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>4/01/1940</date>
+          <action>irrigation apply amount = 10 (mm), depth = 300 (mm)         ! boundary of a layer (which layer will it put it in)</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>5/01/1940</date>
+          <action>'Soil Water' reset</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>6/01/1940</date>
+          <action>irrigation apply amount = 10 (mm), depth = 0 (mm)            !  top boundary of the soil </action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>7/01/1940</date>
+          <action>'Soil Water' reset </action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>8/01/1940</date>
+          <action>irrigation apply amount = 10 (mm), depth = 3000 (mm)      !  bottom boundary of the soil</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>9/01/1940</date>
+          <action>'Soil Water' reset</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>10/01/1940</date>
+          <action>irrigation apply amount = 10 (mm), depth = -10 (mm)         ! above the top layer  ( exeed top of the soil)</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>11/01/1940</date>
+          <action>'Soil Water' reset</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>12/01/1940</date>
+          <action>irrigation apply amount = 10 (mm), depth =  3100 (mm)    ! below the bottom layer   ( exceed bottom of the soil )</action>
+        </operation>
+      </operations>
+      <outputfile>
+        <filename output="yes">Subsurface Irrigation (NEW).out</filename>
+        <title>Subsurface Irrigation (NEW)</title>
+        <variables name="Variables">
+          <variable>dd/mm/yyyy as Date</variable>
+          <variable>irrigation_layer</variable>
+          <variable>irrigation</variable>
+          <variable>dlayer</variable>
+          <variable>sat_dep</variable>
+          <variable>dul_dep</variable>
+          <variable>ll15_dep</variable>
+          <variable>air_dry_dep</variable>
+          <variable>rain</variable>
+          <variable>sw_dep</variable>
+          <variable>flow</variable>
+          <variable>drain</variable>
+          <variable>runoff</variable>
+          <variable>es</variable>
+        </variables>
+        <events name="Reporting Frequency">
+          <event>end_day</event>
+        </events>
+      </outputfile>
+      <Graph name="XY">
+        <Legend>
+          <CheckedTitles> Subsurface Irrigation</CheckedTitles>
+        </Legend>
+        <Plot>
+          <SeriesType>Bar</SeriesType>
+          <PointType>Circle</PointType>
+          <colour>
+          </colour>
+          <X>Date</X>
+          <Y>irrigation_layer</Y>
+          <GDApsimFileReader name="ApsimFileReader" />
+        </Plot>
+      </Graph>
+      <Graph name="Depth-1 Day (1 Jan)">
+        <Legend>
+          <CheckedTitles> sat_dep</CheckedTitles>
+          <CheckedTitles> dul_dep</CheckedTitles>
+          <CheckedTitles> sw_dep</CheckedTitles>
+          <CheckedTitles> ll15_dep</CheckedTitles>
+          <CheckedTitles> air_dry_dep</CheckedTitles>
+        </Legend>
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <Y>Depth</Y>
+          <colour>
+          </colour>
+          <XTop>sat_dep</XTop>
+          <XTop>dul_dep</XTop>
+          <XTop>sw_dep</XTop>
+          <XTop>ll15_dep</XTop>
+          <XTop>air_dry_dep</XTop>
+          <XTop>no3</XTop>
+          <XTop>nh4</XTop>
+          <XTop>cl</XTop>
+          <GDDepth name="Depth">
+            <AllXOnTopAxis>Yes</AllXOnTopAxis>
+            <Date>1/01/1940</Date>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </GDDepth>
+        </Plot>
+      </Graph>
+      <Graph name="Depth- Day 2">
+        <Legend>
+          <CheckedTitles> sat_dep</CheckedTitles>
+          <CheckedTitles> dul_dep</CheckedTitles>
+          <CheckedTitles> sw_dep</CheckedTitles>
+          <CheckedTitles> ll15_dep</CheckedTitles>
+          <CheckedTitles> air_dry_dep</CheckedTitles>
+        </Legend>
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <Y>Depth</Y>
+          <colour>
+          </colour>
+          <XTop>sat_dep</XTop>
+          <XTop>dul_dep</XTop>
+          <XTop>sw_dep</XTop>
+          <XTop>ll15_dep</XTop>
+          <XTop>air_dry_dep</XTop>
+          <GDDepth name="Depth">
+            <AllXOnTopAxis>Yes</AllXOnTopAxis>
+            <Date>2/1/1940</Date>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </GDDepth>
+        </Plot>
+      </Graph>
+      <Graph name="Depth- Day 3">
+        <Legend>
+          <CheckedTitles> sat_dep</CheckedTitles>
+          <CheckedTitles> dul_dep</CheckedTitles>
+          <CheckedTitles> sw_dep</CheckedTitles>
+          <CheckedTitles> ll15_dep</CheckedTitles>
+          <CheckedTitles> air_dry_dep</CheckedTitles>
+        </Legend>
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <Y>Depth</Y>
+          <colour>
+          </colour>
+          <XTop>sat_dep</XTop>
+          <XTop>dul_dep</XTop>
+          <XTop>sw_dep</XTop>
+          <XTop>ll15_dep</XTop>
+          <XTop>air_dry_dep</XTop>
+          <GDDepth name="Depth">
+            <AllXOnTopAxis>Yes</AllXOnTopAxis>
+            <Date>3/1/1940</Date>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </GDDepth>
+        </Plot>
+      </Graph>
+      <Graph name="Depth- Day 4">
+        <Legend>
+          <CheckedTitles> sat_dep</CheckedTitles>
+          <CheckedTitles> dul_dep</CheckedTitles>
+          <CheckedTitles> sw_dep</CheckedTitles>
+          <CheckedTitles> ll15_dep</CheckedTitles>
+          <CheckedTitles> air_dry_dep</CheckedTitles>
+        </Legend>
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <Y>Depth</Y>
+          <colour>
+          </colour>
+          <XTop>sat_dep</XTop>
+          <XTop>dul_dep</XTop>
+          <XTop>sw_dep</XTop>
+          <XTop>ll15_dep</XTop>
+          <XTop>air_dry_dep</XTop>
+          <GDDepth name="Depth">
+            <AllXOnTopAxis>Yes</AllXOnTopAxis>
+            <Date>4/1/1940</Date>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </GDDepth>
+        </Plot>
+      </Graph>
+      <Graph name="Depth- Day 5">
+        <Legend>
+          <CheckedTitles> sat_dep</CheckedTitles>
+          <CheckedTitles> dul_dep</CheckedTitles>
+          <CheckedTitles> sw_dep</CheckedTitles>
+          <CheckedTitles> ll15_dep</CheckedTitles>
+          <CheckedTitles> air_dry_dep</CheckedTitles>
+        </Legend>
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <Y>Depth</Y>
+          <colour>
+          </colour>
+          <XTop>sat_dep</XTop>
+          <XTop>dul_dep</XTop>
+          <XTop>sw_dep</XTop>
+          <XTop>ll15_dep</XTop>
+          <XTop>air_dry_dep</XTop>
+          <GDDepth name="Depth">
+            <AllXOnTopAxis>Yes</AllXOnTopAxis>
+            <Date>5/1/1940</Date>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </GDDepth>
+        </Plot>
+      </Graph>
+      <Graph name="Depth- Day 6">
+        <Legend>
+          <CheckedTitles> sat_dep</CheckedTitles>
+          <CheckedTitles> dul_dep</CheckedTitles>
+          <CheckedTitles> sw_dep</CheckedTitles>
+          <CheckedTitles> ll15_dep</CheckedTitles>
+          <CheckedTitles> air_dry_dep</CheckedTitles>
+        </Legend>
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <Y>Depth</Y>
+          <colour>
+          </colour>
+          <XTop>sat_dep</XTop>
+          <XTop>dul_dep</XTop>
+          <XTop>sw_dep</XTop>
+          <XTop>ll15_dep</XTop>
+          <XTop>air_dry_dep</XTop>
+          <GDDepth name="Depth">
+            <AllXOnTopAxis>Yes</AllXOnTopAxis>
+            <Date>6/1/1940</Date>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </GDDepth>
+        </Plot>
+      </Graph>
+      <Graph name="Depth- Day 7">
+        <Legend>
+          <CheckedTitles> sat_dep</CheckedTitles>
+          <CheckedTitles> dul_dep</CheckedTitles>
+          <CheckedTitles> sw_dep</CheckedTitles>
+          <CheckedTitles> ll15_dep</CheckedTitles>
+          <CheckedTitles> air_dry_dep</CheckedTitles>
+        </Legend>
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <Y>Depth</Y>
+          <colour>
+          </colour>
+          <XTop>sat_dep</XTop>
+          <XTop>dul_dep</XTop>
+          <XTop>sw_dep</XTop>
+          <XTop>ll15_dep</XTop>
+          <XTop>air_dry_dep</XTop>
+          <GDDepth name="Depth">
+            <AllXOnTopAxis>Yes</AllXOnTopAxis>
+            <Date>7/1/1940</Date>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </GDDepth>
+        </Plot>
+      </Graph>
+      <Graph name="Depth- Day 8">
+        <Legend>
+          <CheckedTitles> sat_dep</CheckedTitles>
+          <CheckedTitles> dul_dep</CheckedTitles>
+          <CheckedTitles> sw_dep</CheckedTitles>
+          <CheckedTitles> ll15_dep</CheckedTitles>
+          <CheckedTitles> air_dry_dep</CheckedTitles>
+        </Legend>
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <Y>Depth</Y>
+          <colour>
+          </colour>
+          <XTop>sat_dep</XTop>
+          <XTop>dul_dep</XTop>
+          <XTop>sw_dep</XTop>
+          <XTop>ll15_dep</XTop>
+          <XTop>air_dry_dep</XTop>
+          <GDDepth name="Depth">
+            <AllXOnTopAxis>Yes</AllXOnTopAxis>
+            <Date>8/1/1940</Date>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </GDDepth>
+        </Plot>
+      </Graph>
+      <Graph name="Depth- Day 9">
+        <Legend>
+          <CheckedTitles> sat_dep</CheckedTitles>
+          <CheckedTitles> dul_dep</CheckedTitles>
+          <CheckedTitles> sw_dep</CheckedTitles>
+          <CheckedTitles> ll15_dep</CheckedTitles>
+          <CheckedTitles> air_dry_dep</CheckedTitles>
+        </Legend>
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <Y>Depth</Y>
+          <colour>
+          </colour>
+          <XTop>sat_dep</XTop>
+          <XTop>dul_dep</XTop>
+          <XTop>sw_dep</XTop>
+          <XTop>ll15_dep</XTop>
+          <XTop>air_dry_dep</XTop>
+          <GDDepth name="Depth">
+            <AllXOnTopAxis>Yes</AllXOnTopAxis>
+            <Date>9/1/1940</Date>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </GDDepth>
+        </Plot>
+      </Graph>
+      <Graph name="Depth- Day 10">
+        <Legend>
+          <CheckedTitles> sat_dep</CheckedTitles>
+          <CheckedTitles> dul_dep</CheckedTitles>
+          <CheckedTitles> sw_dep</CheckedTitles>
+          <CheckedTitles> ll15_dep</CheckedTitles>
+          <CheckedTitles> air_dry_dep</CheckedTitles>
+        </Legend>
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <Y>Depth</Y>
+          <colour>
+          </colour>
+          <XTop>sat_dep</XTop>
+          <XTop>dul_dep</XTop>
+          <XTop>sw_dep</XTop>
+          <XTop>ll15_dep</XTop>
+          <XTop>air_dry_dep</XTop>
+          <GDDepth name="Depth">
+            <AllXOnTopAxis>Yes</AllXOnTopAxis>
+            <Date>10/1/1940</Date>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </GDDepth>
+        </Plot>
+      </Graph>
+      <Graph name="Depth- Day 11">
+        <Legend>
+          <CheckedTitles> sat_dep</CheckedTitles>
+          <CheckedTitles> dul_dep</CheckedTitles>
+          <CheckedTitles> sw_dep</CheckedTitles>
+          <CheckedTitles> ll15_dep</CheckedTitles>
+          <CheckedTitles> air_dry_dep</CheckedTitles>
+        </Legend>
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <Y>Depth</Y>
+          <colour>
+          </colour>
+          <XTop>sat_dep</XTop>
+          <XTop>dul_dep</XTop>
+          <XTop>sw_dep</XTop>
+          <XTop>ll15_dep</XTop>
+          <XTop>air_dry_dep</XTop>
+          <GDDepth name="Depth">
+            <AllXOnTopAxis>Yes</AllXOnTopAxis>
+            <Date>11/1/1940</Date>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </GDDepth>
+        </Plot>
+      </Graph>
+      <Graph name="Depth- Day 12">
+        <Legend>
+          <CheckedTitles> sat_dep</CheckedTitles>
+          <CheckedTitles> dul_dep</CheckedTitles>
+          <CheckedTitles> sw_dep</CheckedTitles>
+          <CheckedTitles> ll15_dep</CheckedTitles>
+          <CheckedTitles> air_dry_dep</CheckedTitles>
+        </Legend>
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <Y>Depth</Y>
+          <colour>
+          </colour>
+          <XTop>sat_dep</XTop>
+          <XTop>dul_dep</XTop>
+          <XTop>sw_dep</XTop>
+          <XTop>ll15_dep</XTop>
+          <XTop>air_dry_dep</XTop>
+          <GDDepth name="Depth">
+            <AllXOnTopAxis>Yes</AllXOnTopAxis>
+            <Date>12/1/1940</Date>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </GDDepth>
+        </Plot>
+      </Graph>
+    </area>
+  </simulation>
   <folder name="Solute Tests">
     <memo name="Solute">
 
@@ -9740,6 +11200,15 @@ Added the irrigations with Operations Schedule manager.
           </events>
         </outputfile>
         <Graph name="Depth - 31 Jan">
+          <Legend>
+            <CheckedTitles> dul_dep</CheckedTitles>
+            <CheckedTitles> sw_dep</CheckedTitles>
+            <CheckedTitles> ll15_dep</CheckedTitles>
+            <CheckedTitles> air_dry_dep</CheckedTitles>
+            <CheckedTitles> no3</CheckedTitles>
+            <CheckedTitles> nh4</CheckedTitles>
+            <CheckedTitles> cl</CheckedTitles>
+          </Legend>
           <Plot>
             <SeriesType>Solid line</SeriesType>
             <PointType>None</PointType>

@@ -71,8 +71,10 @@
 
          real       solute(max_solutes)   ! APPLY_variable amount of solute in irrigation ()
          character  time*10               ! APPLY_variables
-         real       duration              ! APPLY_variables
+         real       duration              ! APPLY_variables (minutes)
          real       amount                ! APPLY_variable - amount of irrigation to apply mm
+         integer    will_runoff		      ! APPLY_variable - allow irrigation to run off just like rain does. !sv- added on 29 Nov 2012
+         real       depth                 ! APPLY_variable - subsurface irrigation depth (mm) !sv- added subsurface on 21 Nov 2012
          real       area                  ! APPLY_variable - area to be irrigated
          character  irrig_source(max_sources)*(module_name_size) ! APPLY_variable - array of preferential water sources for irrigation
          integer    irrig_sourceID(max_sources)                  ! APPLY_variable - array of preferential water sources for irrigation
@@ -136,10 +138,15 @@
       ! -----------------------------------
 
       call unpack_IrrigationApplication(variant, irrigation)
+	  
       g%amount = irrigation%Amount
-
       call irrigate_check_allocation(g%amount)
 
+      g%will_runoff = irrigation%will_runoff  !sv- added 29 Nov 2012. Allow irrigation to run off just like rain does.
+	  
+	  g%depth = irrigation%Depth		!sv- added on 21 Nov 2012. Needed for subsurface irrigation.
+
+	  
       g%duration = irrigation%Duration
       if (g%duration .eq. 0) then
             !set default
@@ -206,6 +213,7 @@
          call StoreSolute("NH4", irrigation%NH4, g%amount)
          call StoreSolute("CL", irrigation%CL, g%amount)
 
+
       call irrigate_sendirrigated()
       endif
 
@@ -261,9 +269,19 @@
          ! send message regardless of fatal error - will stop anyway
 
       call post_real_var   (DATA_irrigate_amount
-     :                        ,'(mm)'
+     :                        ,'(mm)' 
      :                        , g%amount*p%irrigation_efficiency)
 
+	 !sv- added on 29 Nov 2012 for allowing irrigations to run off like rain.
+      call post_integer_var (DATA_irrigate_will_runoff
+     :                        ,'()'
+     :                        , g%will_runoff)	 	 
+	 
+	 !sv- depth was added on 26 Nov 2012 for subsurface irrigation.
+      call post_real_var   (DATA_irrigate_depth
+     :                        ,'(mm)'
+     :                        , g%depth)	  
+	 
       call post_real_var   (DATA_irrigate_duration
      :                        ,'(min)'
      :                        , g%duration)
@@ -278,7 +296,6 @@
             call post_real_var   (g%solute_names(solnum)
      :                           ,'(kg/ha)'
      :                           , g%solute(solnum))
-
 200   continue
 
       call event_send (unknown_module, EVENT_irrigated)
@@ -847,6 +864,8 @@
       g%source_counter = 0
       call fill_char_array (g%irrig_source, ' ', max_sources)
       g%amount = 0.0
+      g%will_runoff = 0   !By default irrigation does not runoff. !sv-added on 3 Dec 2012. Needed for irrigation to runoff like rain.  
+      g%depth = 0.0	      !By default irrigation is applied to the surface !sv- added on 28 Nov 2012. Needed for sub surface trickle.
       g%duration = 0.0
       g%time = ''
       g%area = 0.0

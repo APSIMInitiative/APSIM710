@@ -169,13 +169,20 @@ public class SoilWater
     [Link]
     public SoilWatTillageType SoilWatTillageType;
 
-    //Irrigation Layer
 
+    //On SendIrrigated Event
+    //**********************
+    //Irrigation Runoff
+    [Param(IsOptional = true, MinVal = 0, MaxVal = 100)]
+    [Output]
+    [Description("Irrigation will runoff (0 no runoff [default], 1 runoff like rain")]
+    private int irrigation_will_runoff = 0;  //0 means no runoff (default), 1 means allow the irrigation to runoff just like rain. (in future perhaps have other runoff methods)
+
+    //Irrigation Layer
     [Param(IsOptional = true, MinVal = 0, MaxVal = 100)]
     [Output]
     [Description("Number of soil layer to which irrigation water is applied (where top layer == 1)")]
     private int irrigation_layer = 0;      //! number of soil layer to which irrigation water is applied
-
 
     #endregion
 
@@ -3018,12 +3025,18 @@ public class SoilWater
         //! considered as consisting of two components - that from the (rain +
         //! irrigation) and that from ponding.
 
-        infiltration_1 = rain + runon - runoff_pot - interception - residueinterception;
+        
 
-        if (irrigation_layer == 0)      //sv- if the user did not enter an irrigation_layer
-        {
-            infiltration_1 = infiltration_1 + irrigation;
-        }
+        if (irrigation_layer == 0)      //if this is surface irrigation
+            {                
+            infiltration_1 = rain + irrigation + runon - runoff_pot - interception - residueinterception;
+            }
+        else
+            {                           //if this is sub surface irrigation
+            infiltration_1 = rain + runon - runoff_pot - interception - residueinterception;
+            }
+
+
 
         infiltration_2 = pond;
         infiltration = infiltration_1 + infiltration_2;
@@ -4043,6 +4056,14 @@ public class SoilWater
         int solnum;     //! solute number counter variable     
         int layer;      //! soil layer
 
+        //sv- 11 Dec 2012. 
+        //Since I have allowed irrigations to runoff just like rain (using argument "will_runoff = 1" in apply command)
+        //I should really remove a proportion of the solutes that are lost due to some of the irrigation running off.
+        //Perhaps something like (irrigation / (rain + irrigation)) * runoff 
+        //to work out how much of the runoff is caused by irrigation and remove this proportion of solutes from the surface layer.
+        //HOWEVER, when rain causes runoff we don't remove solutes from the surface layer of the soil. 
+        //So why when irrigation causes runoff should we remove solutes.  
+
         if (irrigation_layer == 0)   //sv- if user did not enter an irrigation_layer
         {
             //!addition at surface
@@ -5000,11 +5021,21 @@ public class SoilWater
 
         // RUNOFF
 
-        soilwat2_cover_surface_runoff();
+        soilwat2_cover_surface_runoff(); 
 
         //c dsg 070302 added runon
         //! NIH Need to consider if interception losses were already considered in runoff model calibration
-        soilwat2_runoff(rain, runon, (interception + residueinterception), ref runoff_pot);
+
+        if (irrigation_will_runoff == 0)  
+            {
+            soilwat2_runoff(rain, runon, (interception + residueinterception), ref runoff_pot);
+            }
+        else
+            {
+            //calculate runoff but allow irrigations to runoff just like rain.
+            soilwat2_runoff((rain + irrigation), runon, (interception + residueinterception), ref runoff_pot);
+            }
+
 
         //! DSG  041200
         //! g%runoff_pot is the runoff which would have occurred without
@@ -5026,7 +5057,7 @@ public class SoilWater
 
         // IRRIGATION
 
-        if (irrigation_layer > 0)
+        if (irrigation_layer > 0)    //if this is a sub surface irrigation
         {
             //add the irrigation
             _sw_dep[irrigation_layer - 1] = _sw_dep[irrigation_layer - 1] + irrigation;
@@ -5276,8 +5307,32 @@ public class SoilWater
 
 
         //see OnProcess event handler for where this irrigation is added to the soil water 
-        irrigation = irrigation + Irrigated.Amount;  //! amount of irrigation (mm)    
+        irrigation = Irrigated.Amount;  //! amount of irrigation (mm)    
 
+        //Added on 5 Dec 2012 to allow irrigation to runoff like rain. 
+        irrigation_will_runoff = Irrigated.will_runoff;
+
+        if ((irrigation_will_runoff == 1) && (Irrigated.Depth > 0.0))
+            {
+            irrigation_will_runoff = 0;
+            String warningText;
+            warningText = "In the irrigation 'apply' command in the line above, 'will_runoff' was set to 0 not 1" + "\n"
+            + "If irrigation depth > 0 (mm), " + "\n" 
+             + "then you can not choose to have irrigation runoff like rain as well. ('will_runoff = 1')" + "\n"
+             + "ie. Subsurface irrigations can not runoff like rain does. (Only surface irrigation can)" + "\n"
+             + "nb. Subsurface irrigations will cause runoff if ponding occurs though.";
+            IssueWarning(warningText);           
+            }
+      
+
+        //sv- added on 26 Nov 2012. Needed for subsurface irrigation. 
+        //    Manager module sends "apply" command specifying depth as a argument to irrigation module.
+        //    irrigation module sends "Irrigated" event with the depth. 
+        //    Now need to turn depth into the specific subsurface layer that the irrigation is to go into.
+        irrigation_layer = FindLayerNo(Irrigated.Depth) + 1;    //irrigation_layer is 1 based layer number but FindLayerNo() returns zero based layer number, so add 1.
+
+
+        //Solute amount in irrigation water.
         for (solnum = 0; solnum < num_solutes; solnum++)
         {
             switch (solutes[solnum].name)
@@ -5327,6 +5382,7 @@ public class SoilWater
 
 
     #endregion
+
 
     #region Manager Event Handlers
 
@@ -5442,6 +5498,7 @@ public class SoilWater
     }
 
     #endregion
+
 
     //EVENTS - SENDING
 
