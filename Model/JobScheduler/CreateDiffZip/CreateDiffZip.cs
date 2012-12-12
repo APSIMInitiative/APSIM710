@@ -317,7 +317,7 @@ class Program
         // Now we should have a list of the "real" diffs.
         ApsimBuildsDB Db = new ApsimBuildsDB();
         Db.Open();
-        int JobID = Db.GetRunningJobID();
+        int JobID = Convert.ToInt32(System.Environment.GetEnvironmentVariable("JobID"));
         Db.SetNumDiffs(JobID, ModifiedFiles.Count);
         if (ModifiedFiles.Count != 0)
         {

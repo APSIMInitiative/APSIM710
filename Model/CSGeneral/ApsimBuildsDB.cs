@@ -154,28 +154,6 @@ namespace CSGeneral
 
         }
 
-        /// <summary>
-        /// Get the current running job number.
-        /// </summary>
-        public int GetRunningJobID()
-        {
-            string SQL = "SELECT TOP 1 ID FROM BuildJobs WHERE Status = 'Running' ORDER BY ID DESC";
-            SqlDataReader Reader = null;
-            SqlCommand Command = new SqlCommand(SQL, Connection);
-            try
-            {
-                Reader = ExecuteReader(Command);
-                if (Reader.Read())
-                    return Convert.ToInt32(Reader[0]);
-                else
-                    return -1;
-            }
-            finally
-            {
-                if (Reader != null)
-                    Reader.Close();
-            }
-        }
 
         /// <summary>
         /// Get the current running job number.
