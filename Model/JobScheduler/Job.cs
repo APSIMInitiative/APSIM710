@@ -253,8 +253,8 @@ public class Job
         if (StdOutStream != null)
         {
             // Some data may still be buffered. Wait for a bit
-            if (P != null) 
-			  if (P.WaitForExit(0)) { System.Threading.Thread.Sleep(5000); P.WaitForExit(); }
+            if (P != null && P.WaitForExit(1000)) // Wait for the thread to exit (but we should never have to actually wait)
+                P.WaitForExit();  // and wait for stdout processing to complete
             StdOutStream.Close();
             StdOutStream = null;
         }
