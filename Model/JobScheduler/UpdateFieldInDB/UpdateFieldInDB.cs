@@ -32,7 +32,7 @@ class Program
         ApsimBuildsDB DB = new ApsimBuildsDB();
         DB.Open();
 
-        int JobID = DB.GetRunningJobID();
+        int JobID = Convert.ToInt32(System.Environment.GetEnvironmentVariable("JobID"));
         DB.UpdateField(JobID, FieldName, Value);
 
         DB.Close();
