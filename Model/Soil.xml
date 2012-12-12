@@ -23,7 +23,7 @@
       <component name="[soil.Name] Water" executable="%apsim%/Model/SoilWat.%dllext%" class="SoilWat">
          <executable name="%apsim%/Model/SoilWat.%dllext%" version="1.0" class="SoilWat" />
          <initdata>
-               [Model SoilWater]
+               [Model SoilWat]
                <diffus_const>[soil.SoilWater.DiffusConst]</diffus_const>
                <diffus_slope>[soil.SoilWater.DiffusSlope]</diffus_slope>
                <cn2_bare>[soil.SoilWater.CN2Bare]</cn2_bare>
@@ -119,7 +119,7 @@
       <component name="[soil.Name] Nitrogen" executable="%apsim%/Model/SoilN.%dllext%" class="SoilN">
          <executable name="%apsim%/Model/SoilN.%dllext%" version="1.0" class="SoilN"/>
          <initdata>
-               [Model SoilNitrogen]
+               [Model SoilN]
                [if "[soil.SoilType]"]<soiltype>[soil.SoilType]</soiltype>[endif]
                <root_cn>[soil.SoilOrganicMatter.RootCN]</root_cn>
                <root_wt>[soil.SoilOrganicMatter.RootWt]</root_wt>
@@ -166,7 +166,7 @@
       [endif]
     </ApsimToSim>
   </MetaData>
-  <Model name="SoilWater">
+  <Model name="SoilWat">
     <!--    ****************
       soilwat2_eeq_fac
       ****************
@@ -277,7 +277,7 @@
       <burn>0.0           0.</burn>
     </tillage>
   </Model>
-  <Model name="SoilNitrogen">
+  <Model name="SoilN">
     <standard>
       <cnrf_coeff description="coeff. to determine the magnitude">0.693  </cnrf_coeff>
       <!--  of C:N effects on decomposition of FOM ()

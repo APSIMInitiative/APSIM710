@@ -276,13 +276,6 @@ void SimCreatorSectionNew::convertLine(const std::string& line)
             {
             if (openTag != "")
                xml += "   ";
-            
-            // If this isn't a reporting variable then strip off potential units from the value
-            // e.g. u =    4 (mm)
-            if (!Str_i_Eq(key, "variable") && !Str_i_Eq(key, "module_names") &&
-                !Str_i_Eq(key, "variable_names"))               
-               splitOffBracketedValue(value, '(', ')');
-            
             xml += "         <" + key + ">" + value + "</" + key + ">\n";
 
             if (!Str_i_Eq(key, "variable") && !Str_i_Eq(key, "module_names") &&

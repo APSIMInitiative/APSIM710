@@ -47,7 +47,8 @@ class BobMain
               DB.UpdateStatus(JobID-1, "Aborted");
          }
 
-         // Apply this patch to svn.
+         // Apply the patch.
+
          Run("Apply patch", "%APSIM%/Model/cscs.exe",
              "%APSIM%/Model/Build/ApplyPatch.cs %APSIM%",
              "%APSIM%/Model");
@@ -71,42 +72,39 @@ class BobMain
          // Bob (ie. windows reference platform) is the only machine that commits to svn
          if (System.Environment.MachineName.ToUpper() == "BOB")
          {
-            Run("Set status of job", "UpdateFieldInDB.exe", "Status Pass", "%APSIM%/Model");
+            Run("Set status of job", "UpdateFieldInDB.exe", "Status Pass", "%APSIM%\\Model");
             Run("Do commit if clean", "%APSIM%/Model/IfCleanDoCommit.exe", "%APSIM%", "%APSIM%");
-            // Get revision number and save in DB.
-            string StdOut = Run("Get tip revision number", "svn.exe", "info http://apsrunet.apsim.info/svn/apsim/trunk", "%APSIM%");
-            string[] StdOutLines = StdOut.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            if (StdOutLines.Length < 6)
-               throw new Exception("Invalid output from svn INFO: \n" + StdOut);
-            int TipRevisionNumber = Convert.ToInt32(CSGeneral.StringManip.SplitOffAfterDelimiter(ref StdOutLines[4], " "));
-            DB.UpdateRevisionNumber(JobID, TipRevisionNumber);
          }
+         // Get revision number and save in DB.
+         string StdOut = Run("Get tip revision number", "svn.exe", "info http://apsrunet.apsim.info/svn/apsim/trunk", "%APSIM%");
+         string[] StdOutLines = StdOut.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+         if (StdOutLines.Length < 6)
+            throw new Exception("Invalid output from svn INFO: \n" + StdOut);
+         int TipRevisionNumber = Convert.ToInt32(CSGeneral.StringManip.SplitOffAfterDelimiter(ref StdOutLines[4], " "));
+         DB.UpdateRevisionNumber(JobID, TipRevisionNumber);
       }
       catch (Exception err)
       {
          Console.WriteLine(err.Message);
-         Run("Set status of job", "%APSIM%/Model/UpdateFieldInDB.exe", "%HostSuffix%Status Fail", "%APSIM%/Model");
+         Run("Set status of job", "%APSIM%/Model/UpdateFieldInDB.exe", "Status Fail", "%APSIM%/Model");
          ErrorCode = 1;
       }
 
       // Copy the BuildAllOutput.xml to the web folder.
       string SourceBuildAllOutputFileName = Path.Combine(APSIMFolder, "Model", "Build", "BuildAllOutput.xml");
-      if (System.Environment.MachineName.ToUpper() == "BOB")
-      {
-         string DestBuildAllOutputFileName = Path.Combine("C:/inetpub/wwwroot/Files", Path.GetFileName(PatchFileName));
-         DestBuildAllOutputFileName = Path.ChangeExtension(DestBuildAllOutputFileName, ".xml");
-         Console.WriteLine("Creating " + DestBuildAllOutputFileName);
-         File.Copy(SourceBuildAllOutputFileName, DestBuildAllOutputFileName, true);
-         // Send email to all.
-         Run("Create summary Html for email", "CreateSummaryHtml.exe", "", "%APSIM%\\Model");
-         Run("Send email", "SendEmail.exe", "@Build\\MailList.txt", "%APSIM%\\Model");
+      string DestBuildAllOutputFileName = Path.Combine("C:/inetpub/wwwroot/Files", Path.GetFileName(PatchFileName));
+      DestBuildAllOutputFileName = Path.ChangeExtension(DestBuildAllOutputFileName, ".xml");
 
-         // Set the finish date.
+      Console.WriteLine("Creating " + DestBuildAllOutputFileName);
+      File.Copy(SourceBuildAllOutputFileName, DestBuildAllOutputFileName, true);
+
+      // Send email to all.
+      Run("Create summary Html for email", "CreateSummaryHtml.exe", "", "%APSIM%\\Model");
+      Run("Send email", "SendEmail.exe", "@Build\\MailList.txt", "%APSIM%\\Model");
+
+      // Set the finish date.
+      if (System.Environment.MachineName.ToUpper() == "BOB")
          DB.UpdateEndDateToNow(JobID);
-      } else {
-         string commandArgs = "-T " + SourceBuildAllOutputFileName + " -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.%HostSuffix%.xml";
-         Run("Upload BuildAllOutput", "curl", commandArgs, "%APSIM%/Model/Build");
-      }     
 
       // Close the database.
       if (DB != null)

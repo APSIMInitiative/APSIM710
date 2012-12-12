@@ -241,17 +241,14 @@ public class SoilWater
                 reset_numvals_insoil = 1;
                 reset_insoil = value;
             }
-            else
+            soilwat2_zero_default_variables();
+            numvals_insoil = 1;     //used in soilwat2_set_default()
+            _insoil = value;
+            soilwat2_set_default();
+            int num_layers = _dlayer.Length;
+            for (int layer = 0; layer < num_layers; layer++)
             {
-                soilwat2_zero_default_variables();
-                numvals_insoil = 1;     //used in soilwat2_set_default()
-                _insoil = value;
-                soilwat2_set_default();
-                int num_layers = _dlayer.Length;
-                for (int layer = 0; layer < num_layers; layer++)
-                {
-                    soilwat2_check_profile(layer);
-                }
+                soilwat2_check_profile(layer);
             }
         }
     }
@@ -467,7 +464,7 @@ public class SoilWater
     public double u            //! upper limit of stage 1 soil evaporation (mm)
     {
         get { return _u; }
-        set { _u = value; }
+        set { throw new Exception("setting U is done via GUI"); }
     }
 
     private double _cona = Double.NaN;
@@ -477,7 +474,7 @@ public class SoilWater
     public double cona         //! stage 2 drying coefficient
     {
         get { return _cona; }
-        set { _cona = value; }
+        set { throw new Exception("setting cona is done via GUI"); }
     }
 
     //different evap for summer and winter
