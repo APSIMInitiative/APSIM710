@@ -832,8 +832,8 @@
       <DependsOn IgnoreErrors="true">Documentation</DependsOn>
       <DependsOn IgnoreErrors="true">Release</DependsOn>
       <Job name="Create Diff Zip">
-  		 <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-		   <CommandLine>%APSIM%/Model/CreateDiffZip.exe Directory=%APSIM% PatchFileName=%PatchFileName%</CommandLine>
+        <WorkingDirectory>%APSIM%</WorkingDirectory>
+        <CommandLine>%APSIM%/Model/CreateDiffZip.exe Directory=%APSIM% PatchFileName=%PatchFileName%</CommandLine>
       </Job>
       <Job name="Upload Diff Zip">
       <!-- The windows build will copy it to the local filesystem. -->
@@ -879,26 +879,28 @@
       <Job name="Find Examples">
          <DependsOn>Compile FindJobs</DependsOn>
          <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-         <CommandLine>%APSIM%\Model\FindJobs.exe Filespec=%APSIM%/Examples/*.apsim? TargetName=Tests Server=%Server% Port=%Port%</CommandLine>
+         <CommandLine>%APSIM%/Model/FindJobs.exe Filespec=%APSIM%/Examples/*.apsim? TargetName=Tests Server=%Server% Port=%Port%</CommandLine>
       </Job>
       <Job name="Find .apsim Tests">
          <DependsOn>Compile FindJobs</DependsOn>
          <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-         <CommandLine>%APSIM%\Model\FindJobs.exe Filespec=%APSIM%/Tests/*.apsim? TargetName=Tests Server=%Server% Port=%Port%</CommandLine>
+         <CommandLine>%APSIM%/Model/FindJobs.exe Filespec=%APSIM%/Tests/*.apsim? TargetName=Tests Server=%Server% Port=%Port%</CommandLine>
       </Job>
       <Job name="Find .con Tests">
          <DependsOn>Compile FindJobs</DependsOn>
          <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-         <CommandLine>%APSIM%\Model\FindJobs.exe Filespec=%APSIM%/Tests/*.con TargetName=Tests Server=%Server% Port=%Port%</CommandLine>
+         <CommandLine>%APSIM%/Model/FindJobs.exe Filespec=%APSIM%/Tests/*.con TargetName=Tests Server=%Server% Port=%Port%</CommandLine>
       </Job>
-		<Job name="Remove all .out and .sum files from Examples folder">
-			<WorkingDirectory>%APSIM%/Examples</WorkingDirectory>
-			<CommandLine>%Apsim%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>
-		</Job>
-		<Job name="Remove all .out and .sum files from Tests folder">
-			<WorkingDirectory>%APSIM%/Tests</WorkingDirectory>
-			<CommandLine>%Apsim%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>
-		</Job>
+      <Job name="Remove all .out and .sum files from Examples folder">
+         <WorkingDirectory>%APSIM%/Examples</WorkingDirectory>
+         <CommandLine>%Apsim%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>
+         <CommandLineUnix>find . ( -name "*.out" -or -name "*.sum" ) -exec rm {} ;</CommandLineUnix>
+      </Job>
+      <Job name="Remove all .out and .sum files from Tests folder">
+         <WorkingDirectory>%APSIM%/Tests</WorkingDirectory>
+         <CommandLine>%Apsim%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>
+         <CommandLineUnix>find . ( -name "*.out" -or -name "*.sum" ) -exec rm {} ;</CommandLineUnix>
+      </Job>
    </Target>
    <Target name="RunAll">
       <DependsOn>FindTests</DependsOn>
