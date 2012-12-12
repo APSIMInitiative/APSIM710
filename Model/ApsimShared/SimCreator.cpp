@@ -189,12 +189,19 @@ void SimCreator::ConvertConModule(std::string RunTitle,
 		 out << "         <title>" << RunTitle << "</title>\n";
 	     }
       std::vector<SimCreatorSection*> sectionsToOutput;
+      
+      bool IsDotNetModule = (stristr(moduleInstance.dllFileName.c_str(), "SoilWater.dll" ) ||
+                             stristr(moduleInstance.dllFileName.c_str(), "SoilNitrogen.dll" ));      
+      if (IsDotNetModule)
+          out << "         <" + moduleInstance.moduleName + ">\n";
+                             
       for (unsigned p = 0; p != moduleInstance.ParFiles.size(); p++)
          {
          string file = moduleInstance.ParFiles[p].first;
          if (stristr(file.c_str(), ".xml") != NULL)
             {
             ApsimSettings::addMacro(file);
+           
             out << "         <include>" + file;
             if (!Str_i_Eq(moduleInstance.ParFiles[p].second, "standard"))
                out << '(' << moduleInstance.ParFiles[p].second << ')';
@@ -207,10 +214,14 @@ void SimCreator::ConvertConModule(std::string RunTitle,
                                        sectionsToOutput);
          }
 
-      if (newFormat)
+         if (newFormat)
          writeNewFormat(sectionsToOutput, out);
       else
          writeOldFormat(sectionsToOutput, out);
+
+      if (IsDotNetModule)
+          out << "         </" + moduleInstance.moduleName + ">\n";
+         
       for (unsigned i = 0; i != sectionsToOutput.size(); i++)
          delete sectionsToOutput[i];
       }

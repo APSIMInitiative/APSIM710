@@ -1,4 +1,4 @@
-version = 7.3
+version = 7.5
 
 # Tests for module configurations - with/without soils etc
 [non water limited]
@@ -16,7 +16,7 @@ module = Report     oryza.par [sample] oryza.par [wl]
 module = Input(met) %apsim%/Tests/MetFiles/DarlingtonPoint.met [weather]
 module = Irrigation oryza.par [sample]
 module = Manager    oryza.par [sample] oryza.par [wl]
-module = SoilWat    %apsim%/Tests/Soils/BlackVertosol.par [BlackVertosol] %apsim%/Tests/Soils/BlackVertosol.par [1500mm] %apsim%/Model/Soil.xml [SoilWat]
+module = SoilWat    %apsim%/Tests/Soils/BlackVertosol.par [BlackVertosol] %apsim%/Tests/Soils/BlackVertosol.par [1500mm] %apsim%/Model/Soil.xml [SoilWater]
 module = Oryza      oryza.par [sample] %apsim%/Model/Oryza.xml [standard]
 
 [water n limited]
@@ -26,8 +26,8 @@ module = Report     oryza.par [sample] oryza.par [wnl]
 module = Input(met) %apsim%/Tests/MetFiles/DarlingtonPoint.met [weather]
 module = Irrigation oryza.par [sample]
 module = Manager    oryza.par [sample] oryza.par [wl] oryza.par [wnl]
-module = SoilWat    %apsim%/Tests/Soils/BlackVertosol.par [BlackVertosol] %apsim%/Tests/Soils/BlackVertosol.par [1500mm] %apsim%/Model/Soil.xml [SoilWat]
-module = SoilN      %apsim%/Tests/Soils/BlackVertosol.par [BlackVertosol] %apsim%/Tests/Soils/BlackVertosol.par [1500mm] %apsim%/Model/Soil.xml [SoilN]
+module = SoilWat    %apsim%/Tests/Soils/BlackVertosol.par [BlackVertosol] %apsim%/Tests/Soils/BlackVertosol.par [1500mm] %apsim%/Model/Soil.xml [SoilWater]
+module = SoilN      %apsim%/Tests/Soils/BlackVertosol.par [BlackVertosol] %apsim%/Tests/Soils/BlackVertosol.par [1500mm] %apsim%/Model/Soil.xml [SoilNitrogen]
 module = Oryza      oryza.par [sample] %apsim%/Model/Oryza.xml [standard]
 
 [swim]
@@ -38,7 +38,7 @@ module = Input(met) %apsim%/Tests/MetFiles/DarlingtonPoint.met [weather]
 module = Irrigation oryza.par [sample]
 module = Manager    oryza.par [sample] oryza.par [wl] oryza.par [wnl]
 module = SWIM2      oryza.par [sample] %apsim%/Model/SWIM2.xml [standard]
-module = SoilN      oryza.par [sample] %apsim%/Model/Soil.xml [SoilN]
+module = SoilN      oryza.par [sample] %apsim%/Model/Soil.xml [SoilNitrogen]
 module = SurfaceOM  oryza.par [sample] %apsim%/Model/SurfaceOM.xml [standard]
 module = Oryza      oryza.par [sample] oryza.par [swim] %apsim%/Model/Oryza.xml [standard]
 
