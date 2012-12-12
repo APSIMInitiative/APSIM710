@@ -28,10 +28,11 @@ namespace CSGeneral
             // found then the element name
             // i.e. 'Type'
             // --------------------------------------
-            if (Attribute(Node, "name") == "")
+            String value = Attribute(Node, "name");
+            if (value == "")
                 return Type(Node);
             else
-                return Attribute(Node, "name");
+                return value;
         }
         public static void SetName(XmlNode Node, string Name)
         {
