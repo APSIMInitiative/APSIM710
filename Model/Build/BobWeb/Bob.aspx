@@ -1,5 +1,7 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Bob.aspx.cs" Inherits="BobWeb.WebForm1" %>
 
+<%@ Register assembly="System.Web.DataVisualization, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" namespace="System.Web.UI.DataVisualization.Charting" tagprefix="asp" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -26,6 +28,37 @@
           AutoPostBack="True" />
     </p>
     <p>
+       <asp:Chart ID="Chart1" runat="server" Height="185px" Width="467px">
+          <series>
+             
+          <asp:Series Name="Series1" Color="Red" ChartType="StackedColumn">
+             </asp:Series><asp:Series ChartArea="ChartArea1" ChartType="StackedColumn" 
+          Color="0, 192, 0" Name="Series2"></asp:Series></series>
+          <chartareas>
+             <asp:ChartArea Name="ChartArea1">
+             </asp:ChartArea>
+          </chartareas>
+          <Titles>
+             <asp:Title Name="Title1" Text="Total number of commits">
+             </asp:Title>
+          </Titles>
+       </asp:Chart>
+       <asp:Chart ID="Chart2" runat="server" Height="185px" Width="467px">
+          <series>
+             <asp:Series Name="Series1" Color="0, 192, 0">
+             </asp:Series>
+          </series>
+          <chartareas>
+             <asp:ChartArea Name="ChartArea1">
+             </asp:ChartArea>
+          </chartareas>
+          <Titles>
+             <asp:Title Name="Title1" 
+                Text="El-Greeno: Percentage of green patches ( &gt; 9 patches)">
+             </asp:Title>
+          <asp:Title Alignment="BottomCenter" Docking="Bottom" Name="Title3" 
+                Text="Num of patches submitted in brackets"></asp:Title></Titles>
+       </asp:Chart>
        <asp:GridView ID="GridView" runat="server" 
           CellPadding="4" ForeColor="#333333" 
           GridLines="None" AutoGenerateColumns="False">
@@ -66,6 +99,7 @@
           <SortedDescendingCellStyle BackColor="#FFFDF8" />
           <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
        </asp:GridView>
+
     </p>
     <p>
        &nbsp;</p>

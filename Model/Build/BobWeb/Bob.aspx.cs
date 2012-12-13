@@ -98,8 +98,11 @@ namespace BobWeb
                     Row.Cells[5].BackColor = Color.Tomato;
 
             }
-            
+
+            PopulateChart();
         }
+
+
 
         protected void UploadButton_Click(object sender, EventArgs e)
         {
@@ -118,5 +121,94 @@ namespace BobWeb
             Page_Load(null, null);
             // Response.Redirect("BobWeb.aspx");
         }
+
+        class Commiter
+        {
+            public string Author;
+            public int NumPasses;
+            public int NumFailures;
+            public int NumPatches;
+            public double PercentagePass;
+        }
+        private void PopulateChart()
+        {
+                        
+
+            List<Commiter> Commiters = new List<Commiter>();
+            foreach (GridViewRow Row in GridView.Rows)
+            {
+                string Author = Row.Cells[1].Text;
+                Commiter Commiter = Commiters.Find(delegate(Commiter C) { return C.Author == Author; });
+                if (Commiter == null)
+                {
+                    Commiter = new Commiter() { Author = Author };
+                    Commiters.Add(Commiter);
+                }
+                if (Row.Cells[5].Text.Contains("Pass"))
+                    Commiter.NumPasses++;
+                else                
+                    Commiter.NumFailures++;
+                Commiter.NumPatches++;
+            }
+            foreach (Commiter Commiter in Commiters)
+            {
+                int TotalCommits = Commiter.NumPasses + Commiter.NumFailures;
+                if (TotalCommits > 0)
+                    Commiter.PercentagePass = Convert.ToDouble(Commiter.NumPasses) / TotalCommits * 100;
+            }
+
+            DataTable GoodCommiterData = new DataTable();
+            GoodCommiterData.Columns.Add("Author", typeof(string));
+            GoodCommiterData.Columns.Add("NumPasses", typeof(int));
+            GoodCommiterData.Columns.Add("NumFailures", typeof(int));
+            GoodCommiterData.Columns.Add("PercentagePass", typeof(int));
+            FillDataTable(Commiters.OrderByDescending(Commiter => Commiter.NumPatches), 
+                          GoodCommiterData);
+
+            DataTable BadCommiterData = new DataTable();
+            BadCommiterData.Columns.Add("Author", typeof(string));
+            BadCommiterData.Columns.Add("NumPasses", typeof(int));
+            BadCommiterData.Columns.Add("NumFailures", typeof(int));
+            BadCommiterData.Columns.Add("PercentagePass", typeof(int));
+            FillDataTable(Commiters.OrderByDescending(Commiter => Commiter.PercentagePass), 
+                          BadCommiterData,
+                          AddNumPatchesToAuthor: true, MinNumPatches: 10);
+
+            Chart1.DataSource = GoodCommiterData;
+            Chart1.Series[0].XValueMember = "Author";
+            Chart1.Series[0].YValueMembers = "NumFailures";
+            Chart1.Series[1].XValueMember = "Author";
+            Chart1.Series[1].YValueMembers = "NumPasses";
+
+            Chart2.DataSource = BadCommiterData;
+            Chart2.Series[0].XValueMember = "Author";
+            Chart2.Series[0].YValueMembers = "PercentagePass";      
+        }
+
+        private static void FillDataTable(IEnumerable<Commiter> Commiters, DataTable CommiterData, bool AddNumPatchesToAuthor = false, int MinNumPatches = 0)
+        {
+            int i = 0;
+            foreach (Commiter Commiter in Commiters)
+            {
+                if (i < 8)
+                {
+                    int NumPatches = Commiter.NumPasses + Commiter.NumFailures;
+                    if (NumPatches >= MinNumPatches)
+                    {
+                        DataRow NewRow = CommiterData.NewRow();
+                        if (AddNumPatchesToAuthor)
+                            NewRow["Author"] = Commiter.Author + "(" + NumPatches.ToString() + ")";
+                        else
+                            NewRow["Author"] = Commiter.Author;
+                        NewRow["NumPasses"] = Commiter.NumPasses;
+                        NewRow["NumFailures"] = Commiter.NumFailures;
+                        NewRow["PercentagePass"] = Commiter.PercentagePass;
+                        CommiterData.Rows.Add(NewRow);
+                    }
+                }
+                i++;
+            }
+        }
+
     }
 }
