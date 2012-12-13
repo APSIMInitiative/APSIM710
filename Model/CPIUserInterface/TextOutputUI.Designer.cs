@@ -292,19 +292,17 @@
             // 
             this.Grid.AllowDrop = true;
             this.Grid.AllowUserToResizeRows = false;
-            this.Grid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.Grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.Grid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Variable,
             this.Column1});
+            this.Grid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Grid.Location = new System.Drawing.Point(0, 0);
             this.Grid.MultiSelect = false;
             this.Grid.Name = "Grid";
             this.Grid.RowHeadersVisible = false;
             this.Grid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.Grid.Size = new System.Drawing.Size(850, 518);
+            this.Grid.Size = new System.Drawing.Size(451, 326);
             this.Grid.TabIndex = 0;
             this.Grid.DragDrop += new System.Windows.Forms.DragEventHandler(this.Grid_DragDrop);
             this.Grid.DragEnter += new System.Windows.Forms.DragEventHandler(this.Grid_DragEnter);

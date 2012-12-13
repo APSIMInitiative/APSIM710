@@ -7,6 +7,7 @@ using System.Xml;
 
 using ApsimFile;
 using CSGeneral;
+using CMPServices;
 
 namespace ProcessDataTypesInterface
    {
@@ -34,7 +35,7 @@ namespace ProcessDataTypesInterface
             string MacroContents = MacroFile.ReadToEnd();
 
             XmlDocument NewInterfaceFile = Go(InterfaceFile);
-
+            
             Macro Macro = new Macro();
             Macro.Go(NewInterfaceFile.DocumentElement, MacroContents, Directory.GetCurrentDirectory(), false);
             return 0;
@@ -55,14 +56,16 @@ namespace ProcessDataTypesInterface
          NewInterfaceFile.Load(new StringReader("<?xml version=\"1.0\"?><types/>"));
 
          foreach (XmlNode DataType in InterfaceFile.DocumentElement.ChildNodes)
-            ProcessType(DataType, NewInterfaceFile);
+         {
+             ProcessType(DataType, NewInterfaceFile, (XmlHelper.Attribute(DataType, "array") == "T"));
+         }
 
          XmlHelper.SetName(NewInterfaceFile.DocumentElement, XmlHelper.Name(InterfaceFile.DocumentElement));
 
          return NewInterfaceFile;
          }
 
-      private static void ProcessType(XmlNode Type, XmlDocument NewDataTypes)
+      private static void ProcessType(XmlNode Type, XmlDocument NewDataTypes, Boolean bIsArray)
          {
          if (Type.Name == "#comment") return;
          // -------------------------------------------------------------
@@ -74,8 +77,7 @@ namespace ProcessDataTypesInterface
             {
             TypesAlreadyDone.Add(TypeName);
             TypesAlreadyDoneXML.Add(Type);
-
-            // Go through all child types first and process them.
+           // Go through all child types first and process them.
             foreach (XmlNode SubType in Type.ChildNodes)
                {
                if (SubType.HasChildNodes)
@@ -83,12 +85,15 @@ namespace ProcessDataTypesInterface
                   // prefix our name to the name of our subtype
                   string ChildName = XmlHelper.Name(SubType);
                   XmlHelper.SetName(SubType, TypeName + ChildName);
-                  ProcessType(SubType, NewDataTypes);   // recurse
-                  XmlHelper.SetName(SubType, ChildName);
+                  ProcessType(SubType, NewDataTypes, false);   // recurse
+                  if (ChildName == "element")                   //ensure no name attr for <element>
+                    XmlHelper.DeleteAttribute(SubType, "name");
+                  else
+                    XmlHelper.SetName(SubType, ChildName);
                   XmlHelper.SetAttribute(SubType, "type", TypeName + ChildName);
                   }
                else if (SubType.Name == "variable")
-                  ProcessType(SubType, NewDataTypes);
+                  ProcessType(SubType, NewDataTypes, false);
                }
 
             // If this is a builtin then treat it as a field.
@@ -98,7 +103,7 @@ namespace ProcessDataTypesInterface
                                          (NewDataTypes.CreateElement(Type.Name));
 
                // write some DDML
-               string DDML = MakeDDML(Type).Replace("builtin", "type");
+               string DDML = MakeDDML(Type, false).Replace("builtin", "type");
                XmlHelper.SetValue(BuiltIn, "csddml", DDMLToCS(DDML));
                XmlHelper.SetValue(BuiltIn, "cddml", DDMLToCPP(DDML));
                XmlHelper.SetValue(BuiltIn, "forddml", DDMLToFOR(DDML));
@@ -119,11 +124,13 @@ namespace ProcessDataTypesInterface
                NewDataType.SetAttribute("name", TypeName);
 
                // write some DDML
-               string DDML = MakeDDML(Type);
+               string DDML = MakeDDML(Type, bIsArray);
                XmlHelper.SetValue(NewDataType, "csddml", DDMLToCS(DDML));
                XmlHelper.SetValue(NewDataType, "cddml", DDMLToCPP(DDML));
                XmlHelper.SetValue(NewDataType, "forddml", DDMLToFOR(DDML));
 
+               if (bIsArray)    //ensure the base type has field info
+                   ProcessField(Type, NewDataType);
                // copy fields to new data type.
                foreach (XmlNode child in Type.ChildNodes)
                   {
@@ -134,7 +141,7 @@ namespace ProcessDataTypesInterface
             }
          }
 
-      private static void ProcessField(XmlNode Field, XmlNode NewDataType)
+         private static void ProcessField(XmlNode Field, XmlNode NewDataType)
          {
          // -------------------------------------------------------------
          // Used to process all fields.
@@ -393,6 +400,10 @@ namespace ProcessDataTypesInterface
           {
               CTypeName += "[]";
           }
+          if (((DataType.Name == "element") && (allowArrayBrackets)))   //if the item is an array
+          {
+              CTypeName += "[]";
+          }
           return CTypeName;
       }
       private static string CalcCSTypeName(XmlNode DataType)
@@ -430,7 +441,7 @@ namespace ProcessDataTypesInterface
       private static string DDMLToCS(string DDML)
       {
           // ------------------------------------------------------------------
-          // convert a DDML string to a C formatted string
+          // convert a DDML string to a C# formatted string
           // ------------------------------------------------------------------
           string newDDML = "\"" + DDML.Replace("\"", "\\\"") + "\"";
           newDDML = newDDML.Replace("\r\n", "");
@@ -459,18 +470,23 @@ namespace ProcessDataTypesInterface
          newDDML = newDDML.Replace("><", ">\' // &\r\n      \'   <");
          return newDDML;
          }
-
-      private static string MakeDDML(XmlNode OldDataType)
+       /// <summary>
+       /// 
+       /// </summary>
+       /// <param name="OldDataType"></param>
+       /// <param name="bIsArray">Only used for the base type</param>
+       /// <returns></returns>
+      private static string MakeDDML(XmlNode OldDataType, Boolean bIsArray)
          {
          XmlDocument DDMLDoc = new XmlDocument();
          DDMLDoc.AppendChild(DDMLDoc.ImportNode(OldDataType, true));
-
+         
          // Make sure there is no array attribute - not allowed on types.
          // Is allowed on builtin types.
          if (OldDataType.Name == "type" || OldDataType.Name == "field")
             {
-            if (XmlHelper.Attribute(DDMLDoc.DocumentElement, "array") == "T")
-               XmlHelper.DeleteAttribute(DDMLDoc.DocumentElement, "array");
+                if ((XmlHelper.Attribute(DDMLDoc.DocumentElement, "array") == "T") && (!bIsArray))
+                    XmlHelper.DeleteAttribute(DDMLDoc.DocumentElement, "array");
             }
          if (OldDataType.Name == "type" && XmlHelper.Attribute(DDMLDoc.DocumentElement, "name") != "")
             XmlHelper.SetAttribute(DDMLDoc.DocumentElement, "typename", XmlHelper.Attribute(DDMLDoc.DocumentElement, "name"));
@@ -493,7 +509,18 @@ namespace ProcessDataTypesInterface
             DDML = DDML.Remove(DDML.Length - 8);
             DDML = DDML + "</type>";
             }
-
+         
+         //if this type has a <element> root then change it to <type>
+         if (DDML.Substring(0, 8) == "<element")
+         {
+             DDML = DDML.Remove(0, 8);
+             DDML = "<type" + DDML;
+         }
+         if (DDML.Substring(DDML.Length - 10) == "</element>")  //if the struct is an array
+         {
+             DDML = DDML.Remove(DDML.Length - 10);
+             DDML = DDML + "</type>";
+         }
          return DDML;
          }
 
@@ -515,7 +542,8 @@ namespace ProcessDataTypesInterface
                   DDML.AppendChild(DDML.OwnerDocument.ImportNode(ChildToAppend, true));
                }
             }
-         if (XmlHelper.Attribute(DDML, "array") == "T" && DDML.HasChildNodes)
+          //add an <element> if required and it doesn't already exist
+         if (XmlHelper.Attribute(DDML, "array") == "T" && DDML.HasChildNodes && (XmlHelper.ChildNodes(DDML, "element").Count < 1) )
             {
             XmlNode Element = DDML.OwnerDocument.CreateElement("element");
             
@@ -531,7 +559,6 @@ namespace ProcessDataTypesInterface
             MakeProtocolDDML(Child);
             }
          }
-
 
       }
    }

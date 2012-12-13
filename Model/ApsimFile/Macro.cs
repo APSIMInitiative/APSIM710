@@ -15,6 +15,7 @@ namespace ApsimFile
 
    /// <summary>
    /// This class implements a macro language  e.g.
+   /// Supports nested foreach loops and nested if blocks.
    ///
    /// [foreach sim in simulation]
    /// [foreach s in sim.soil]
@@ -23,6 +24,22 @@ namespace ApsimFile
    /// [if [simcrop.name] = [scrop.name]]
    ///   layers = [foreach l in simcrop.layer] [l.dlayer] [endfor]
    ///   Soil curve number = [s.soilwat2.cn2]
+   /// [endif]
+   /// 
+   /// [if   ]
+   /// 
+   /// [elseif   ]
+   ///   [if   ]
+   ///   
+   ///   [elseif  ]
+   ///   
+   ///   [else]
+   ///   
+   ///   [endif]
+   /// [elseif   ]
+   /// 
+   /// [else]
+   /// 
    /// [endif]
    /// [endfor]
    /// [endfor]
@@ -51,7 +68,7 @@ namespace ApsimFile
 
          Contents = ParseForEach(MacroValues, Contents);
          ReplaceGlobalMacros(ref Contents, MacroValues);
-         ParseIf(ref Contents);
+         ParseIF(ref Contents);
          ParseToLower(ref Contents);
          return Contents;
          }
@@ -163,9 +180,12 @@ namespace ApsimFile
                Pos--;
 
             if (Contents[Pos] == '\n')
-               return Pos + 1;
+                return Pos + 1;
             else
-               return PosStartOfMacro;
+                if (Pos == 0)
+                    return 0;
+                else
+                    return PosStartOfMacro;
             }
          else
             return 0;
@@ -187,32 +207,49 @@ namespace ApsimFile
               if (Contents[Pos] == '\n')
                   return Pos + 1;
               else
-                  return PosStartOfMacro;
+                  if (Pos == 0)
+                      return 0;
+                  else
+                      return PosStartOfMacro;
           }
           else
               return 0;
       }
       // ------------------------------------------------------------------
-      // Adjust the end position of a macro. This routine will remove
-      // unwanted spaces and a carriage return on end of the macro
-      // if there is nothing else between the end of the macro and
-      // the end of the line.
+      /// <summary>
+      /// Adjust the ending of a macro line to remove '      \r\n' or \n
+      /// This routine will remove
+      /// unwanted spaces and a carriage return on end of the macro
+      /// if there is nothing else between the end of the macro and
+      /// the end of the line.
+      /// </summary>
+      /// <param name="Contents"></param>
+      /// <param name="PosMacro">Position of ']'</param>
+      /// <returns>The first char position after ']' when no whitespace found.
+      /// Otherwise it returns the char after '\n'</returns>
       // ------------------------------------------------------------------
       int AdjustEndPos(ref string Contents, int PosMacro)
-         {
-         int PosEndOfMacro = PosMacro;
-         if (Contents[PosMacro] != ']')
-            PosEndOfMacro = Contents.IndexOf(']', PosMacro);
-         PosEndOfMacro++;
-         int Pos = PosEndOfMacro;
-         while (Pos < Contents.Length && (Contents[Pos] == ' ' || Contents[Pos] == '\r'))
-            Pos++;
+      {
+          int PosEndOfMacro = PosMacro;
+          if (Contents[PosMacro] != ']')
+              PosEndOfMacro = Contents.IndexOf(']', PosMacro);
+          PosEndOfMacro++;
 
-         if (Pos < Contents.Length && Contents[Pos] == '\n')
-            return Pos + 1;
-         else
-            return PosEndOfMacro;
-         }
+          int Pos = PosEndOfMacro;
+          //while spaces or CRLF in the line then increment position
+          while (Pos < Contents.Length)
+          {
+              if (Contents[Pos] == ' ' || Contents[Pos] == '\r' || Contents[Pos] == '\n')
+              {
+                  if (Contents[Pos] == '\n')    //eoln
+                      return Pos + 1;
+                  Pos++;
+              }
+              else
+                  return PosEndOfMacro;   //found something else so terminate and return
+          }
+          return PosEndOfMacro;
+      }
       // ------------------------------------------------------------------
       // Adjust the end position of a macro. This routine will remove
       // unwanted spaces and a carriage return on end of the macro
@@ -227,13 +264,19 @@ namespace ApsimFile
               PosEndOfMacro = Contents.IndexOf("]", PosMacro, false);
           PosEndOfMacro++;
           int Pos = PosEndOfMacro;
-          while (Pos < Contents.Length && (Contents[Pos] == ' ' || Contents[Pos] == '\r'))
-              Pos++;
-
-          if (Pos < Contents.Length && Contents[Pos] == '\n')
-              return Pos + 1;
-          else
-              return PosEndOfMacro;
+          //while spaces or CRLF in the line then increment position
+          while (Pos < Contents.Length)
+          {
+              if (Contents[Pos] == ' ' || Contents[Pos] == '\r' || Contents[Pos] == '\n')
+              {
+                  if (Contents[Pos] == '\n')    //eoln
+                      return Pos + 1;
+                  Pos++;
+              }
+              else
+                  return PosEndOfMacro;   //found something else so terminate and return
+          }
+          return PosEndOfMacro;
       }
       //---------------------------------------------------------------
       // Find the start of a foreach macro in the specified contents.
@@ -452,91 +495,185 @@ namespace ApsimFile
 
          return Value;
          }
+        //==================================================================================
+        /// <summary>
+        /// Parse the IF statements and return the modified string.
+        /// </summary>
+        /// <param name="Contents"></param>
+        void ParseIF(ref String Contents)
+        {
+            int startBlock, endBlock;
+            Contents = ParseEachIF(Contents, 0, out startBlock, out endBlock);
+        }
+        //==================================================================================
+        /// <summary>
+        /// Recursive parsing of IF blocks. Supports multiple elseif levels.
+        /// </summary>
+        /// <param name="Contents">Block of macro script to parse</param>
+        /// <param name="origin">Starting point in the script</param>
+        /// <param name="start"></param>
+        /// <param name="end">The end char in Contents parsed</param>
+        /// <returns>The modified IF block. Will return "" if no sub IF block is found in Contents.</returns>
+        String ParseEachIF(string Contents, int origin, out int start, out int end)
+        {
+            string SubIfBlock;
+            int startSubIf, endSubIf;
 
-      //---------------------------------------------------------------
-      // Parse all if statements.
-      //---------------------------------------------------------------
-      void ParseIf(ref string Contents)
+            StringBuilder ParsedResult = new StringBuilder();
+            start = 0;
+            end = start;
+            String IfBlock;
+            int PosIF = FindIFMacro(Contents, origin);
+            while ((PosIF != -1) && (PosIF < Contents.Length))
+            {
+                IfBlock = "";
+                int PosEndMacro = FindMatchingCloseBracket(ref Contents, PosIF + 1);    //finds ']'
+                int PosEndIF = FindMatchingEndBlock(Contents, PosEndMacro, "[endif]");
+                if (PosEndIF != -1)
+                {
+                    //evaluate the condition 
+                    int CondStart = Contents.IndexOf(" ", PosIF + 1);
+                    int CondEnd = PosEndMacro - 1;
+                    PosEndMacro = AdjustEndPos(ref Contents, PosEndMacro); //now move to first useful char after ]
+                    Boolean ok = EvaluateIf(Contents.Substring(CondStart, CondEnd - CondStart + 1));
+                    if (ok) //use IF True section
+                    {
+                        //this section is between IF - ELSEIF or IF - ELSE or IF - ENDIF
+                        String sWholeIfBlock = Contents.Substring(PosEndMacro, PosEndIF - PosEndMacro);
+                        int PosTerminateIF = findIFTerminator(sWholeIfBlock);
+                        PosTerminateIF = AdjustStartPos(ref sWholeIfBlock, PosTerminateIF);
+                        IfBlock = sWholeIfBlock.Substring(0, PosTerminateIF);
+                    }
+                    else
+                    {
+                        int PosEndPrevMacro = PosEndMacro;
+                        //look for each elseif and evaluate them until success
+                        int PosElseIF = FindElseIFMacro(Contents.Substring(PosEndPrevMacro, PosEndIF - PosEndPrevMacro));
+                        Boolean elseIfSuccess = false;
+                        while ((PosElseIF != -1) && !elseIfSuccess)
+                        {
+                            CondStart = Contents.IndexOf(" ", PosEndPrevMacro + 1 + PosElseIF);
+                            int PosEndElseIFMacro = FindMatchingCloseBracket(ref Contents, CondStart + 1);
+                            CondEnd = PosEndElseIFMacro - 1;
+                            PosEndElseIFMacro = AdjustEndPos(ref Contents, PosEndElseIFMacro); //now move to first useful char after ]
+                            String sWholeIfBlock = Contents.Substring(PosEndElseIFMacro, PosEndIF - PosEndElseIFMacro);
+                            ok = EvaluateIf(Contents.Substring(CondStart, CondEnd - CondStart + 1));
+                            if (ok)   //if condition is ok then
+                            {
+                                int PosTerminateElseIF = findIFTerminator(sWholeIfBlock);
+                                PosTerminateElseIF = AdjustStartPos(ref sWholeIfBlock, PosTerminateElseIF);
+                                IfBlock = sWholeIfBlock.Substring(0, PosTerminateElseIF);
+                                elseIfSuccess = true;   //terminate here
+                            }
+                            else
+                            {
+                                PosElseIF = FindElseIFMacro(sWholeIfBlock); //get next [elseif
+                                PosEndPrevMacro = PosEndElseIFMacro;
+                            }
+                        }
+                        //otherwise fall back to the Else (terminated by endif)
+                        if (!elseIfSuccess)
+                        {
+                            int PosElse = FindMatchingEndBlock(Contents, PosEndMacro, "[else]");
+                            if ((PosElse != -1) && (PosElse < PosEndIF))
+                            {
+                                int PosEndElseMacro = FindMatchingCloseBracket(ref Contents, PosElse + 1);
+                                PosEndElseMacro = AdjustEndPos(ref Contents, PosEndElseMacro); //now move to first useful char after ]
+                                IfBlock = Contents.Substring(PosEndElseMacro, AdjustStartPos(ref Contents, PosEndIF) - PosEndElseMacro);
+                            }
+                        }
+                    }
+
+                    start = PosIF;
+                    end = FindMatchingCloseBracket(ref Contents, PosEndIF + 1);
+                    end = AdjustEndPos(ref Contents, end); //now move to first useful char after ]
+                    string pre = Contents.Substring(origin, AdjustStartPos(ref Contents, PosIF) - origin); //store prepend if there is one
+                    SubIfBlock = ParseEachIF(IfBlock, 0, out startSubIf, out endSubIf);                       //recurse
+                    if (SubIfBlock.Length > 0)
+                    {
+                        ParsedResult.Append(pre + SubIfBlock);
+                    }
+                    else
+                        ParsedResult.Append(pre + IfBlock);
+
+                    origin = end;
+                    PosIF = FindIFMacro(Contents, origin);
+                }
+                else
+                    PosIF = -1;
+            }
+            //append any remaining script
+            if (origin < Contents.Length)
+                 ParsedResult.Append(Contents.Substring(end, Contents.Length - end));
+
+            return (ParsedResult.ToString());
+        }
+      //============================================================= 
+      int FindIFMacro(string Contents, int StartPos)
       {
-          // This routine used "Remove", which can be slow with large string objects
-          // To speed this up, we can use a StringBuilder object, for which these
-          // operations are a lot less expensive. We copy our contents string
-          // to a new StringBuilder at the start, then copy the StringBuilder back
-          // to the string at the end.
-          int PosElseIf = 0;
-          int PosElse = 0;
-          int PosCondition = Contents.IndexOf("[if", StringComparison.Ordinal);
-          if (PosCondition != -1)
-          {
-              StringBuilder Cnts = new StringBuilder(Contents);
-              while (PosCondition != -1 && PosCondition != Cnts.Length)
-              {
-                  int PosEndMacro = FindMatchingCloseBracket(ref Cnts, PosCondition + 1);
-                  int PosEndIf = Cnts.IndexOf("[endif]", PosCondition + 1, false);
-                  int PosNextElse = Cnts.IndexOf("[else]", PosCondition + 1, false);
-                  int PosNextElseIf = Cnts.IndexOf("[elseif", PosCondition + 1, false);
-                  if (PosNextElse == -1)
-                      PosNextElse = Cnts.Length;
-                  if (PosNextElseIf == -1)
-                      PosNextElseIf = Cnts.Length;
-
-                  int PosIf;
-                  int PosEndBlock = Math.Min(Math.Min(PosNextElseIf, PosNextElse), PosEndIf);
-                  if (PosEndBlock != -1)
-                  {
-                      bool ok;
-                      if (PosCondition == PosElse && PosCondition != PosElseIf)
-                          ok = true;
-
-                      else
-                      {
-                          int PosSpace = Cnts.IndexOf(" ", PosCondition, false);
-
-                          ok = EvaluateIf(Cnts.ToString(PosSpace, PosEndMacro - PosSpace));
-                      }
-                      if (ok)
-                      {
-                          PosEndBlock = AdjustStartPos(ref Cnts, PosEndBlock);
-                          PosEndIf = AdjustEndPos(ref Cnts, PosEndIf);
-
-                          // remove everything from the end of block to after the endif.
-                          Cnts.Remove(PosEndBlock, PosEndIf - PosEndBlock);
-
-                          // remove the condition line.
-                          PosEndMacro = AdjustEndPos(ref Cnts, PosEndMacro);
-                          PosCondition = AdjustStartPos(ref Cnts, PosCondition);
-                          Cnts.Remove(PosCondition, PosEndMacro - PosCondition);
-                      }
-                      else
-                      {
-                          // remove everything from start of condition down to end of block.
-                          PosCondition = AdjustStartPos(ref Cnts, PosCondition);
-                          if (PosEndBlock == PosEndIf)
-                              PosEndBlock = AdjustEndPos(ref Cnts, PosEndBlock);
-                          else
-                              PosEndBlock = AdjustStartPos(ref Cnts, PosEndBlock);
-                          Cnts.Remove(PosCondition, PosEndBlock - PosCondition);
-                      }
-                      PosIf = Cnts.IndexOf("[if", PosCondition, false);
-                  }
-                  else
-                      PosIf = Cnts.IndexOf("[if", PosCondition + 1, false);
-
-                  PosElse = Cnts.IndexOf("[else]", PosCondition, false);
-                  PosElseIf = Cnts.IndexOf("[elseif", PosCondition, false);
-                  if (PosIf == -1)
-                      PosIf = Cnts.Length;
-                  if (PosElse == -1)
-                      PosElse = Cnts.Length;
-                  if (PosElseIf == -1)
-                      PosElseIf = Cnts.Length;
-
-                  PosCondition = Math.Min(Math.Min(PosIf, PosElse), PosElseIf);
-              }
-              Contents = Cnts.ToString();
-          }
+          return Contents.IndexOf("[if ", StartPos, StringComparison.Ordinal);
       }
+      //===============================================================================
+      /// <summary>
+      /// Find the next [elseif macro in this block. 
+      /// </summary>
+      /// <param name="Contents"></param>
+      /// <returns>The position of the macro</returns>
+      int FindElseIFMacro(string Contents)
+      {
+          int PosElseIF = FindMatchingEndBlock(Contents, 0, "[elseif");
 
+          return PosElseIF;
+      }
+      //===============================================================================
+      /// <summary>
+      /// Finds the terminating macro for an IF, ELSEIF, ELSE 
+      /// from within the Contents of an IF block
+      /// </summary>
+      /// <param name="Contents">A block of code from within an [if] [endif]</param>
+      /// <returns>The index in this substring</returns>
+      private int findIFTerminator(String Contents)
+      {
+          int PosEndIF = FindMatchingEndBlock(Contents, 0, "[endif]");
+          int PosElse = FindMatchingEndBlock(Contents, 0, "[else]");
+          int PosElseIF = FindMatchingEndBlock(Contents, 0, "[elseif");
+
+          if (PosElse == -1)
+              PosElse = Contents.Length;
+          if (PosElseIF == -1)
+              PosElseIF = Contents.Length;
+          if (PosEndIF == -1)
+              PosEndIF = Contents.Length;
+
+          int PosEndBlock = Math.Min(Math.Min(PosElseIF, PosElse), PosEndIF);
+
+          return PosEndBlock;
+      }
+      //==================================================================================
+      /// <summary>
+      /// Find terminator for [if, [elseif that is of type [elseif, [else], [endif]
+      /// </summary>
+      /// <param name="Contents">Source string</param>
+      /// <param name="PosEndMacro">Position at end of [if ...]</param>
+      /// <param name="Ending">[elseif], [else], [endif]</param>
+      /// <returns>The position of the end of the code block up to the '[' in [endif</returns>
+      private int FindMatchingEndBlock(string Contents, int PosEndMacro, string Ending)
+      {
+          int CurrentPos = PosEndMacro;
+          int PosEndBlock = -1;
+          int PosIF = FindIFMacro(Contents, CurrentPos); //determine if next level starts
+          int PosNextEnd = Contents.IndexOf(Ending, CurrentPos, StringComparison.Ordinal);
+          while ((PosIF != -1) && (PosIF < PosNextEnd)) //if [IF found then recurse
+          {   //needs some validation of matching if-endif
+              PosEndBlock = FindMatchingEndBlock(Contents, FindMatchingCloseBracket(ref Contents, PosIF + 1), "[endif]");
+              CurrentPos = FindMatchingCloseBracket(ref Contents, PosEndBlock + 1);
+              PosIF = FindIFMacro(Contents, CurrentPos); //another IF macro?
+              PosNextEnd = Contents.IndexOf(Ending, CurrentPos, StringComparison.Ordinal);
+          }
+          PosEndBlock = PosNextEnd; 
+
+          return PosEndBlock;
+      }
       //---------------------------------------------------------------
       // Find the matching close bracket starting from the specified
       // position 

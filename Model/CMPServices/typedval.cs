@@ -1947,7 +1947,7 @@ namespace CMPServices
         /// <returns>The escaped string.</returns>
         // N.Herrmann Apr 2002
         //============================================================================
-        static protected String escapeText(String text)
+        static public String escapeText(String text)
         {
             int index;
 

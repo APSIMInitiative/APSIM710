@@ -404,7 +404,7 @@ namespace CMPServices
             StringBuilder sbuf = new StringBuilder(sIndent);
             sbuf.Append("<type name=\"");
             sbuf.Append(value.Name);
-            sbuf.Append("\" ");
+            sbuf.Append("\"");
             sbuf.Append(sIndent);
             sbuf.Append(writeFieldInfo(value, nextIndent, tab));
             sbuf.Append(sIndent);

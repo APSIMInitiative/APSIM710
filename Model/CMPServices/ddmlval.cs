@@ -183,7 +183,7 @@ namespace CMPServices
            StringBuilder sbuf = new StringBuilder(sIndent);
            sbuf.Append("<type name=\"");
            sbuf.Append(value.Name);
-           sbuf.Append("\" ");
+           sbuf.Append("\"");
            sbuf.Append(writeFieldInfo(value, nextIndent, tab));
            if (!value.isScalar())
            {

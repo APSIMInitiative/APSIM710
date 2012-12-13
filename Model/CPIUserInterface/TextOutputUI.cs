@@ -244,7 +244,10 @@ namespace CPIUserInterface
                             count++;
                             sdmlinit.setElementCount(sdmlinit.count() + 1);
                             sdmlinit.item(count).member("varname").setValue(VariableNames[v]);
-                            sdmlinit.item(count).member("alias").setValue(AliasNames[v]);
+                            String alias = AliasNames[v].Replace(' ', '_');
+                            if (alias.Length < 1)
+                                alias = VariableNames[v];
+                            sdmlinit.item(count).member("alias").setValue(alias);
                             sdmlinit.item(count).member("aggreg").setValue(Aggreg[v]);
                             sdmlinit.item(count).member("decplaces").setValue(DecPlaces[v]);
                         }

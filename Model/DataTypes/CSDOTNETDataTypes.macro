@@ -29,22 +29,22 @@ using CMPServices;
         }
         public TypeInterpreter(ref TDDMLValue template)
         {
-		    // Parsing the DDML can be a relatively slow operation, so as an optimisation
-			// we do the XML parsing only the first time we create an object of a given
-			// type, and save it as a template. New TDDMLValue objects are then created 
-			// via the copy constructor, which is relatively fast.
+            // Parsing the DDML can be a relatively slow operation, so as an optimisation
+            // we do the XML parsing only the first time we create an object of a given
+            // type, and save it as a template. New TDDMLValue objects are then created
+            // via the copy constructor, which is relatively fast.
             if (template == null)
                 template = new TDDMLValue(DDML(), "");
             DDMLValue = new TDDMLValue(template);
         }
         public virtual String DDML() { return "<type/>"; }
-		public virtual void setValue(TTypedValue typedValue)
-		{
-		    DDMLValue.setValue(typedValue);
-			byte[] data = new byte[DDMLValue.sizeBytes()];
-			DDMLValue.getData(ref data);
-			unpack(data);
-		}
+        public virtual void setValue(TTypedValue typedValue)
+        {
+            DDMLValue.setValue(typedValue);
+            byte[] data = new byte[DDMLValue.sizeBytes()];
+            DDMLValue.getData(ref data);
+            unpack(data);
+        }
         public virtual void pack(out byte[] messageData)
         {
             messageData = new byte[DDMLValue.sizeBytes()];
@@ -98,16 +98,16 @@ using CMPServices;
             return "<type/>";
         }
     }
-     
+
 [foreach types.builtin]
    //------ [builtin.name] ------
    public class [builtin.dotnettypename]Type : TypeInterpreter
-      {
+   {
       public [builtin.cstype] Value;
       public [builtin.dotnettypename]Type() {}
-      public [builtin.dotnettypename]Type([builtin.cstype] value) 
+      public [builtin.dotnettypename]Type([builtin.cstype] value)
       {
-      Value = value;
+         Value = value;
       }
 
       public override void pack(out byte[] messageData)
@@ -118,9 +118,9 @@ using CMPServices;
       }
       public override void unpack(byte[] messageData)
       {
-         DDMLValue.setData(messageData, messageData.Length, 0);        
+         DDMLValue.setData(messageData, messageData.Length, 0);
          Value = DDMLValue.as[builtin.cstypename]();
-      }   
+      }
       public override String DDML()
       {
          return [builtin.csddml];
@@ -128,19 +128,22 @@ using CMPServices;
    }
    public delegate void [builtin.dotnettypename]Delegate([builtin.dotnettypename]Type Data);
 [endfor]
-    
+
 [foreach types.type]
 
       //------ [type.name] ------
       public class [type.name]Type : TypeInterpreter
       {
-	     private static TDDMLValue typeTemplate;
-		 public [type.name]Type() : base (ref typeTemplate) {}
+         private static TDDMLValue typeTemplate;
+         public [type.name]Type() : base (ref typeTemplate) {}
          [foreach type.field]
          public [field.cstype] [field.name][if [field.cstype] = String] = ""[endif];
          [endfor]
          public override void pack(out byte[] messageData)
          {
+            [if [type.array] = T]
+            packArrayOfStructures([foreach type.field][field.name][endfor], DDMLValue);
+            [else]
             [foreach type.field]
             [if [field.arrayofstructures] = T]
             packArrayOfStructures([field.name], DDMLValue.member("[field.name]"));
@@ -150,12 +153,23 @@ using CMPServices;
             DDMLValue.member("[field.name]").setValue([field.name]);
             [endif]
             [endfor]
+            [endif]
             messageData = new byte[DDMLValue.sizeBytes()];
             DDMLValue.getData(ref messageData);
          }
          public override void unpack(byte[] messageData)
          {
-            DDMLValue.setData(messageData, messageData.Length, 0);        
+            DDMLValue.setData(messageData, messageData.Length, 0);
+            [if [type.array] = T]
+            [foreach type.field]
+            [field.name] = new [field.cstypebase][DDMLValue.count()];
+            for (uint i = 1; i <= [field.name].Length; i++ )
+            {
+                [field.name][i-1] = new [field.cstypebase]();
+                [field.name][i-1].unpackStructure(DDMLValue.item(i));
+            }
+            [endfor]
+            [else]
             [foreach type.field]
             [if [field.arrayofstructures] = T]
             [field.name] = new [field.cstypebase][DDMLValue.member("[field.name]").count()];
@@ -171,6 +185,7 @@ using CMPServices;
             [field.name] = DDMLValue.member("[field.name]").as[field.cstypename]();
             [endif]
             [endfor]
+            [endif]
          }
          public override String DDML()
          {
