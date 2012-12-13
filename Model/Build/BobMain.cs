@@ -85,7 +85,11 @@ class BobMain
       catch (Exception err)
       {
          Console.WriteLine(err.Message);
-         Run("Set status of job", "%APSIM%/Model/UpdateFieldInDB.exe", "%HostSuffix%Status Fail", "%APSIM%/Model");
+         if (System.Environment.MachineName.ToUpper() == "BOB")
+            Run("Set status of job", "%APSIM%/Model/UpdateFieldInDB.exe", "Status Fail", "%APSIM%/Model");
+         else
+            Run("Set status of job", "%APSIM%/Model/UpdateFieldInDB.exe", System.Environment.MachineName + "Status Fail", "%APSIM%/Model");
+
          ErrorCode = 1;
       }
 
@@ -104,9 +108,10 @@ class BobMain
          // Set the finish date.
          DB.UpdateEndDateToNow(JobID);
       } else {
-         string commandArgs = "-T " + SourceBuildAllOutputFileName + " -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.%HostSuffix%.xml";
+         string commandArgs = "-T " + SourceBuildAllOutputFileName +
+            " -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%." + System.Environment.MachineName + ".xml";
          Run("Upload BuildAllOutput", "curl", commandArgs, "%APSIM%/Model/Build");
-      }     
+      }
 
       // Close the database.
       if (DB != null)
