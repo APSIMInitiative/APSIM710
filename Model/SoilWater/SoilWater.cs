@@ -68,7 +68,7 @@ public class SoilWater
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
-    [Description("Factor to convert \"A\" to coefficient in Adam's type residue effect on Eos")]
+    [Description("Factor to convert 'A' to coefficient in Adam's type residue effect on Eos")]
     public double A_to_evap_fact = 0.44;            //! factor to convert "A" to coefficient in Adam's type residue effect on Eos
 
     [Output]
@@ -801,7 +801,11 @@ public class SoilWater
 
     private int numvals_sw = 0;                        //! number of values returned for sw 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
+#if COMPARISON
+    [Units("mm/mm")]
+#else
     [Units("0-1")]
+#endif
     [Output]
     [Description("Soil water content of layer")]
     public double[] sw        //! soil water content of layer
@@ -845,7 +849,11 @@ public class SoilWater
     }
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
+#if COMPARISON
+    [Units("mm/mm")]
+#else
     [Units("0-1")]
+#endif
     [Output(Immutable = true)]
     [Description("15 bar lower limit of extractable soil water for each soil layer")]
     public double[] ll15      //! 15 bar lower limit of extractable soil water for each soil layer
@@ -878,7 +886,11 @@ public class SoilWater
     }
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
+#if COMPARISON
+    [Units("mm/mm")]
+#else
     [Units("0-1")]
+#endif
     [Output(Immutable = true)]
     [Description("Air dry soil water content")]
     public double[] air_dry   //! air dry soil water content
@@ -2320,6 +2332,13 @@ public class SoilWater
         //Soil Profile  -->  soilwat2_soil_profile_param()
         //##################
 
+#if COMPARISON
+        Console.WriteLine("     ");
+        Console.WriteLine("     - Reading constants");
+        Console.WriteLine("     ");
+        Console.WriteLine("     - Reading Soil Property Parameters");
+        Console.WriteLine("     ");
+#endif
         Console.WriteLine("   - Reading Soil Profile Parameters");
 
 
@@ -3030,7 +3049,7 @@ public class SoilWater
 
         
 
-        if (irrigation_layer == 0)      //if this is surface irrigation
+        if (irrigation_layer <= 1)      //if this is surface irrigation
             {                
             infiltration_1 = rain + irrigation + runon - runoff_pot - interception - residueinterception;
             }
@@ -4555,6 +4574,10 @@ public class SoilWater
         dsw = new double[num_layers];
 
         Console.WriteLine();    //new line
+#if COMPARISON
+        Console.WriteLine();
+        Console.WriteLine();
+#endif
 
         line = "                 Soil Profile Properties";
         Console.WriteLine(line);
@@ -4630,6 +4653,9 @@ public class SoilWater
 
         Console.WriteLine();
         Console.WriteLine();
+#if COMPARISON
+        Console.WriteLine();
+#endif
 
         line = "             Soil Water Holding Capacity";
         Console.WriteLine(line);
@@ -4693,6 +4719,10 @@ public class SoilWater
         Console.WriteLine();
         Console.WriteLine();
         Console.WriteLine();
+#if COMPARISON
+        Console.WriteLine();
+        Console.WriteLine();
+#endif
 
         line = "             Initial Soil Parameters";
         Console.WriteLine(line);
@@ -4718,6 +4748,9 @@ public class SoilWater
         Console.WriteLine(line);
         Console.WriteLine();
         Console.WriteLine();
+#if COMPARISON
+        Console.WriteLine();
+#endif
 
         if (obsrunoff_name != "")
         {
@@ -4758,6 +4791,9 @@ public class SoilWater
 
         Console.WriteLine();
         Console.WriteLine();
+#if COMPARISON
+        Console.WriteLine();
+#endif
 
 
         if (evap_method == ritchie_method)
@@ -4818,7 +4854,9 @@ public class SoilWater
             Console.WriteLine(line);
         }
 
+#if (!COMPARISON)
         Console.WriteLine();
+#endif
 
 
         if (_eo_source != "")
@@ -4835,7 +4873,9 @@ public class SoilWater
             Console.WriteLine(line);
         }
 
+#if (!COMPARISON)
         Console.WriteLine();
+#endif
     }
 
     //Init2, Reset, UserInit
@@ -5060,7 +5100,7 @@ public class SoilWater
 
         // IRRIGATION
 
-        if (irrigation_layer > 0)    //if this is a sub surface irrigation
+        if (irrigation_layer > 1)    //if this is a sub surface irrigation
         {
             //add the irrigation
             _sw_dep[irrigation_layer - 1] = _sw_dep[irrigation_layer - 1] + irrigation;
