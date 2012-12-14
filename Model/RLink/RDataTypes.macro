@@ -388,15 +388,15 @@ struct R[type.name]Type *make[type.name]Type(Rcpp::List data) {
     if (std::find(names.begin(), names.end(), "[field.name]") != names.end()) {
      [if [field.arrayofstructures] = T]
       Rcpp::List [field.name]List = Rcpp::as<Rcpp::List>(data["[field.name]"]);
- 	  result->num[field.name] = [field.name]List.size();
-	  R[field.rawcpptype] *bufPtr = result->[field.name];
-	  for (int i = 0; i < result->num[field.name]; i++) {
+      result->num[field.name] = [field.name]List.size();
+	    R[field.rawcpptype] *bufPtr = result->[field.name];
+	    for (int i = 0; i < result->num[field.name]; i++) {
 	     Rcpp::List [field.name]SubList = [field.name]List[i];
          R[field.rawcpptype] *[field.name] = make[field.rawcpptype]([field.name]SubList);
          memcpy(bufPtr, [field.name], sizeof(R[field.rawcpptype]));
          delete [field.name];
-		 bufPtr++;
-	 }
+		   bufPtr++;
+	    }
      [elseif [field.structure] = T]
       Rcpp::List [field.name]List = Rcpp::as<Rcpp::List>(data["[field.name]"]);
       R[field.rawcpptype] *[field.name] = make[field.rawcpptype]([field.name]List);
@@ -404,66 +404,70 @@ struct R[type.name]Type *make[type.name]Type(Rcpp::List data) {
       delete [field.name];
      [elseif [field.cpptype] = std::vector<double>]
       std::vector<double> [field.name] = Rcpp::as<std::vector<double> >(data["[field.name]"]);
-	  result->num[field.name] = [field.name].size();
-	  for (unsigned int i = 0; i < [field.name].size(); i++) {result->[field.name][i] = [field.name][i]; }
-	 [elseif [field.cpptype] = double]
+      result->num[field.name] = [field.name].size();
+      for (unsigned int i = 0; i < [field.name].size(); i++) {result->[field.name][i] = [field.name][i]; }
+     [elseif [field.cpptype] = double]
       result->[field.name] = Rcpp::as<double>(data["[field.name]"]);
      [elseif [field.cpptype] = std::vector<float>]
       std::vector<float> [field.name] = Rcpp::as<std::vector<float> >(data["[field.name]"]);
-	  result->num[field.name] = [field.name].size();
-	  for (unsigned int i = 0; i < [field.name].size(); i++) {result->[field.name][i] = [field.name][i]; }
-	 [elseif [field.cpptype] = float]
+	    result->num[field.name] = [field.name].size();
+	    for (unsigned int i = 0; i < [field.name].size(); i++) {result->[field.name][i] = [field.name][i]; }
+	   [elseif [field.cpptype] = float]
       result->[field.name] = Rcpp::as<float>(data["[field.name]"]);
      [elseif [field.cpptype] = std::vector<int>]
       std::vector<int> [field.name] = Rcpp::as<std::vector<int> >(data["[field.name]"]);
-	  result->num[field.name] = [field.name].size();
-	  for (unsigned int i = 0; i < [field.name].size(); i++) {result->[field.name][i] = [field.name][i]; }
-	 [elseif [field.cpptype] = int]
+      result->num[field.name] = [field.name].size();
+      for (unsigned int i = 0; i < [field.name].size(); i++) {result->[field.name][i] = [field.name][i]; }
+     [elseif [field.cpptype] = int]
       result->[field.name] = Rcpp::as<int>(data["[field.name]"]);
      [elseif [field.cpptype] = std::vector<bool>]
       std::vector<bool> [field.name] = Rcpp::as<std::vector<bool> >(data["[field.name]"]);
-	  result->num[field.name] = [field.name].size();
-	  for (unsigned int i = 0; i < [field.name].size(); i++) {result->[field.name][i] = [field.name][i]; }
-	 [elseif [field.cpptype] = bool]
+      result->num[field.name] = [field.name].size();
+	    for (unsigned int i = 0; i < [field.name].size(); i++) {result->[field.name][i] = [field.name][i]; }
+	   [elseif [field.cpptype] = bool]
       result->[field.name] = Rcpp::as<bool>(data["[field.name]"]);
      [elseif [field.arrayandstring] = T]
 	    Rcpp::CharacterVector [field.name] = data["[field.name]"];
 	    result->num[field.name] = [field.name].size();
-		char *bufPtr = result->[field.name];
-        for (int i = 0; i < result->num[field.name]; i++) {
+		  char *bufPtr = result->[field.name];
+      for (int i = 0; i < result->num[field.name]; i++) {
            strcpy(bufPtr, [field.name][i]);
-		   bufPtr += strlen(bufPtr) + 1;
-		}
+           bufPtr += strlen(bufPtr) + 1;
+		  }
      [elseif [field.rawcpptype] = std::string]
        std::string [field.name] = data["[field.name]"];
        strncpy(result->[field.name], [field.name].c_str(), max_array_size);
-	 [else]
-      /* unimplemented [field.cpptype] [field.name]*/
-	 [endif]
-     } else {
+     [else]
+       /* unimplemented [field.cpptype] [field.name]*/
+     [endif]
+    } else {
+     [if [field.arrayofstructures] = T]
+      result->num[field.name] = 0;
+     [elseif [field.structure] = T]
+      memset(&result->[field.name], 0, sizeof(R[field.rawcpptype]));
      [elseif [field.cpptype] = std::vector<double>]
-	  result->num[field.name] = 0;
-	 [elseif [field.cpptype] = double]
+      result->num[field.name] = 0;
+     [elseif [field.cpptype] = double]
       result->[field.name] = 0.0;
      [elseif [field.cpptype] = std::vector<float>]
-	  result->num[field.name] = 0;
-	 [elseif [field.cpptype] = float]
+      result->num[field.name] = 0;
+     [elseif [field.cpptype] = float]
       result->[field.name] = 0.0;
      [elseif [field.cpptype] = std::vector<int>]
-	  result->num[field.name] = 0;
-	 [elseif [field.cpptype] = int]
+      result->num[field.name] = 0;
+     [elseif [field.cpptype] = int]
       result->[field.name] = 0;
      [elseif [field.cpptype] = std::vector<bool>]
-	  result->num[field.name] = 0;
-	 [elseif [field.cpptype] = bool]
+      result->num[field.name] = 0;
+     [elseif [field.cpptype] = bool]
         result->[field.name] = false;
      [elseif [field.arrayandstring] = T]
 	    result->num[field.name] = 0;
      [elseif [field.rawcpptype] = std::string]
-        result->[field.name][0] = '\0';
-	 [else]
+      result->[field.name][0] = '\0';
+     [else]
       /* unimplemented [field.cpptype] [field.name]*/
-	 [endif]
+     [endif]
 
      }
 	[endfor]
