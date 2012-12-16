@@ -520,13 +520,11 @@ public class SoilWater
 
     //sv- Lateral flow properties  //sv- also from Lateral_read_param()
 
-    [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Slope")]
     public double slope = Double.NaN;
 
-    [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0e8F)]     //1.0e8F = 100000000
     [Units("m")]
     [Description("Basal width of discharge area")]

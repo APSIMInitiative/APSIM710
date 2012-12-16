@@ -382,7 +382,7 @@ void NonHerbageConverter::respondToGet(unsigned int& fromID,
 
    else
    {   // Use hanlder in base class
-         protocol::Component::respondToGet(fromID, queryData);
+         system->protocol::Component::respondToGet(fromID, queryData);
    }
 }
 

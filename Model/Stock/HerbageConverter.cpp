@@ -165,7 +165,7 @@ void HerbageConverter::respondToGet(unsigned int& fromID,
 
    else
    { 
-       conversion->respondToGet(fromID, queryData);
+       system->protocol::Component::respondToGet(fromID, queryData);
    }
 }
 
