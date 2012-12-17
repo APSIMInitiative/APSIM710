@@ -31,6 +31,21 @@ namespace ModelFramework
         }
         // --------------------------------------------------------------------
         /// <summary>
+        /// Encapsulates an APSIM paddock in a simulation.
+        /// When the component Class is known.
+        /// </summary>
+        /// <param name="Nam">Name of the paddock or system</param>
+        /// <param name="CompClass"></param>
+        /// <param name="component">The hosting component</param>
+        public Paddock(String Nam, String CompClass, object component)
+            : base(Nam, CompClass, component)
+        {
+            NamePrefix = "";
+            HostComponent = component as ApsimComponent;
+            ChildCrops = new Dictionary<string, bool>();
+        }
+        // --------------------------------------------------------------------
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="In">Instance of a root/leaf/shoot/phenology</param>
@@ -73,7 +88,7 @@ namespace ModelFramework
                 {
                     if (pair.Value.CompClass.ToLower() == "paddock" || pair.Value.CompClass.ToLower() == "protocolmanager")
                     {
-                        Paddock C = new Paddock(pair.Value.name, HostComponent);
+                        Paddock C = new Paddock(pair.Value.name, pair.Value.CompClass, HostComponent);
                         Children.Add(C);
                     }
                 }
@@ -95,7 +110,7 @@ namespace ModelFramework
                 queryChildComponents();
                 foreach (KeyValuePair<uint, TComp> pair in ChildComponents)
                 {
-                    Component C = new Component(pair.Value.name, HostComponent);
+                    Component C = new Component(pair.Value.name, pair.Value.CompClass, HostComponent);
                     Children.Add(C);
                 }
                 return Children;
@@ -133,7 +148,7 @@ namespace ModelFramework
                 queryChildComponents();
                 foreach (KeyValuePair<uint, TComp> pair in ChildComponents)
                 {
-                    Component ChildComponent = new Component(pair.Value.name, HostComponent);
+                    Component ChildComponent = new Component(pair.Value.name, pair.Value.CompClass, HostComponent);
                     // How can we determine what is a "crop"?
                     // Currently, all "crops" have cover_green as an output
                     // However, the AusFarm "Paddock" component also has this as an output. Might this be a problem?

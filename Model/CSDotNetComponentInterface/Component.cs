@@ -67,6 +67,20 @@ namespace ModelFramework
                 }
             }
         }
+        //--------------------------------------------------------------------
+        //Initialise common fields of this class
+        //--------------------------------------------------------------------
+        private void InitClass(String _FQN)
+        {
+            ParentCompName = "";
+            FQN = _FQN;
+            NamePrefix = FQN + ".";
+            if (FQN.LastIndexOf('.') > -1)
+                ParentCompName = FQN.Substring(0, FQN.LastIndexOf('.')); //e.g. Paddock
+
+            ApsimObjectsByName = new Dictionary<string, object>();
+            ApsimObjectsByType = new Dictionary<string, object>();
+        }
         // --------------------------------------------------------------------
         /// <summary>
         /// Constructor
@@ -76,13 +90,9 @@ namespace ModelFramework
         internal Component(Instance _In)
         {
             In = _In;
+            //use the name of the owner component of the Instance (e.g. Plant2)
+            InitClass(In.ParentComponent().GetName());      //e.g. Paddock
 
-            //get the name of the owner component of the Instance (e.g. Plant2)
-            FQN = In.ParentComponent().GetName();
-            NamePrefix = FQN + ".";
-            ParentCompName = "";
-            if (FQN.LastIndexOf('.') > -1)
-                ParentCompName = FQN.Substring(0, FQN.LastIndexOf('.')); //e.g. Paddock
             //get the name of the host component for the calling object
             HostComponent = In.ParentComponent();   //e.g. Plant2
             FTypeName = HostComponent.CompClass;     //type of Plant2
@@ -94,15 +104,31 @@ namespace ModelFramework
         /// Constructor
         /// </summary>
         /// <param name="_FullName">Name of the actual component</param>
+        /// <param name="CompClass">The component class name. eg. Report.Ouputfile</param>
+        /// <param name="component">The apsim component that hosts this object</param>
+        // --------------------------------------------------------------------
+        public Component(String _FullName, String CompClass, object component)
+        {
+            InitClass(_FullName); 
+            
+            HostComponent = component as ApsimComponent;
+            //set the type for this component
+            if (_FullName != ".MasterPM")
+                FTypeName = CompClass;
+            else
+                FTypeName = this.GetType().Name;
+        }
+        // --------------------------------------------------------------------
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="_FullName">Name of the actual component</param>
         /// <param name="component">The apsim component that hosts this object</param>
         // --------------------------------------------------------------------
         public Component(String _FullName, object component)
         {
-            FQN = _FullName;
-            NamePrefix = FQN + ".";
-            ParentCompName = "";
-            if (FQN.LastIndexOf('.') > -1)
-                ParentCompName = FQN.Substring(0, FQN.LastIndexOf('.'));
+            InitClass(_FullName);
+
             HostComponent = component as ApsimComponent;
             //get the type for this component
             List<TComp> comps = new List<TComp>();
@@ -134,7 +160,7 @@ namespace ModelFramework
                     queryChildComponents();
                     foreach (KeyValuePair<uint, TComp> pair in ChildComponents)
                     {
-                        Paddock C = new Paddock(pair.Value.name, HostComponent);
+                        Paddock C = new Paddock(pair.Value.name, pair.Value.CompClass, HostComponent);
                         Children.Add(C);
                     }
                 }
