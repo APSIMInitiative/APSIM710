@@ -13,6 +13,7 @@ namespace ModelFramework
     public class Paddock : Component
     {
         ApsimComponent HostComponent;
+        protected Dictionary<String, Boolean> ChildCrops;   //cache the .cover_green response for child components
 
         // --------------------------------------------------------------------
         /// <summary>
@@ -26,6 +27,7 @@ namespace ModelFramework
         {
             NamePrefix = "";
             HostComponent = component as ApsimComponent;
+            ChildCrops = new Dictionary<string, bool>();
         }
         // --------------------------------------------------------------------
         /// <summary>
@@ -38,6 +40,7 @@ namespace ModelFramework
         {
             NamePrefix = "";
             HostComponent = In.ParentComponent();
+            ChildCrops = new Dictionary<string, bool>();
         }
 
         // --------------------------------------------------------------------
@@ -135,12 +138,27 @@ namespace ModelFramework
                     // Currently, all "crops" have cover_green as an output
                     // However, the AusFarm "Paddock" component also has this as an output. Might this be a problem?
                     // It shouldn't be, if we're looking only at children, and not descendants further down the tree
-                    String sSearchName = AddMasterPM(ChildComponent.FullName) + ".cover_green";    
-                    HostComponent.Host.queryEntityInfo(sSearchName, TypeSpec.KIND_OWNED, ref entityList);
-                    if (entityList.Count > 0)
+                    String sSearchName = AddMasterPM(ChildComponent.FullName) + ".cover_green";
+                    if (ChildCrops.ContainsKey(sSearchName))
                     {
-                        Children.Add(ChildComponent);
-                        entityList.Clear();
+                        if (ChildCrops[sSearchName])
+                        {
+                            Children.Add(ChildComponent); //is crop
+                        }
+                    }
+                    else
+                    {
+                        HostComponent.Host.queryEntityInfo(sSearchName, TypeSpec.KIND_OWNED, ref entityList);
+                        if (entityList.Count > 0)
+                        {
+                            Children.Add(ChildComponent);
+                            entityList.Clear();
+                            ChildCrops.Add(sSearchName, true);
+                        }
+                        else
+                        {
+                            ChildCrops.Add(sSearchName, false);
+                        }
                     }
                 }
                 return Children;

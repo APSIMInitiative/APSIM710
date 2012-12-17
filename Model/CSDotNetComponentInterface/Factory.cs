@@ -157,14 +157,15 @@ class Factory
             Object[] Attributes = Property.GetCustomAttributes(false);
             foreach (Object Attr in Attributes)
             {
+                Type attrType = Attr.GetType();
                 IsOutput = (IsOutput || (Attr.GetType() == typeof(Output)));
-                if (Attr.GetType() == typeof(Param))
+                if (attrType == typeof(Param))
                     AddProperty = true;
-                if (Attr.GetType() == typeof(Input))
+                if (attrType == typeof(Input))
                     AddProperty = true;
-                if (Attr.GetType() == typeof(Output))
+                if (attrType == typeof(Output))
                     AddProperty = true;
-                if (Attr.GetType() == typeof(Link))
+                if (attrType == typeof(Link))
                 {
                     LinkField LinkF = new LinkField(Obj, Property, (Link)Attr);
                     Links.Add(LinkF);

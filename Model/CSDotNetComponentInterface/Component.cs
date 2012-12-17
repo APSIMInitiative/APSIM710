@@ -23,6 +23,8 @@ namespace ModelFramework
         protected String FQN;                       //Name of the actual component
         internal Instance In;
         protected Dictionary<uint, TComp> ChildComponents = null;
+        protected Dictionary<String, Object> ApsimObjectsByName = null;  //cache a list of objects searched for in LinkByName()
+        protected Dictionary<String, Object> ApsimObjectsByType = null;  //cache a list of objects searched for in LinkByType()
         protected string NamePrefix = "";
 
         private String TypeName
@@ -84,6 +86,8 @@ namespace ModelFramework
             //get the name of the host component for the calling object
             HostComponent = In.ParentComponent();   //e.g. Plant2
             FTypeName = HostComponent.CompClass;     //type of Plant2
+            ApsimObjectsByName = new Dictionary<string, object>();
+            ApsimObjectsByType = new Dictionary<string, object>();
         }
         // --------------------------------------------------------------------
         /// <summary>
@@ -108,6 +112,8 @@ namespace ModelFramework
                 FTypeName = comps[0].CompClass;
             else
                 FTypeName = this.GetType().Name;
+            ApsimObjectsByName = new Dictionary<string, object>();
+            ApsimObjectsByType = new Dictionary<string, object>();
         }
 
         // --------------------------------------------------------------------
@@ -268,7 +274,16 @@ namespace ModelFramework
         //=========================================================================
         public object LinkByType(String TypeToFind)
         {
-            return LinkField.FindApsimObject(TypeToFind, null, FQN, HostComponent);
+            if (ApsimObjectsByType.ContainsKey(TypeToFind))
+            {
+                return ApsimObjectsByType[TypeToFind];
+            }
+            else
+            {
+                Object foundObject = LinkField.FindApsimObject(TypeToFind, null, FQN, HostComponent);
+                ApsimObjectsByType.Add(TypeToFind, foundObject);
+                return foundObject;
+            }
         }
         //=========================================================================
         /// <summary>
@@ -296,10 +311,21 @@ namespace ModelFramework
                 return null;
             }
             else
-                return LinkField.FindApsimObject(null, 
-                                                 AddMasterPM(NameToFind), 
-                                                 StringManip.ParentName(HostComponent.InstanceName),
-                                                 HostComponent);
+            {
+                if (ApsimObjectsByName.ContainsKey(NameToFind))   
+                {
+                    return ApsimObjectsByName[NameToFind];            //if already found
+                }
+                else
+                {
+                    Object foundObject =  LinkField.FindApsimObject(null,
+                                                     AddMasterPM(NameToFind),
+                                                     StringManip.ParentName(HostComponent.InstanceName),
+                                                     HostComponent);
+                    ApsimObjectsByName.Add(NameToFind, foundObject);  //keep this object for later searches
+                    return foundObject;
+                }
+            }
         }
 
         /// <summary>
