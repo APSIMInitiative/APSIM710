@@ -140,6 +140,7 @@ public class Manager2
                 {
                     Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSDotNetComponentInterface.dll"));
                     Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "DotNetProxies.dll"));
+                    Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CMPServices.dll"));
                 }
                 Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSGeneral.dll"));
 
