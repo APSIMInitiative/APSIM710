@@ -396,10 +396,10 @@ class Factory
     // --------------------------------------------------------------------
     private FactoryProperty FindProperty(XmlNode Child)
     {
-        String FQN = CalcParentName(Child);
+        String FQN = CalcParentName(Child).ToLower();
         foreach (FactoryProperty Property in RegisteredProperties)
         {
-            if (Property.FQN.ToLower() == FQN.ToLower())
+            if (Property.FQN.ToLower() == FQN)
                 return Property;
         }
 
@@ -407,7 +407,7 @@ class Factory
         FQN = FQN + "s";
         foreach (FactoryProperty Property in RegisteredProperties)
         {
-            if (Property.FQN.ToLower() == FQN.ToLower())
+            if (Property.FQN.ToLower() == FQN)
                 return Property;
         }
         return null;

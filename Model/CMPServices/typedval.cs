@@ -512,6 +512,7 @@ namespace CMPServices
         public TTypedValue member(String sName)
         {
             TTypedValue nMember = null;
+            TTypedValue _item;
 
             if (!FIsRecord)
                 throw (new TypeMisMatchException("Cannot access named members for scalar or array"));
@@ -519,8 +520,9 @@ namespace CMPServices
             uint i = 1;
             while ((nMember == null) && (i <= FMembers.Count))
             {
-                if (item(i).Name.Equals(sName, StringComparison.OrdinalIgnoreCase))
-                    nMember = item(i);
+                _item = item(i);
+                if (_item.Name.Equals(sName, StringComparison.OrdinalIgnoreCase))
+                    nMember = _item;
                 else
                     i++;
             }
@@ -715,13 +717,14 @@ namespace CMPServices
             {   //if number type
                 if (FIsScalar || FIsArray)
                     FUnit = sUnits;
-                if (FIsArray && (count() > 0))
+                uint iCount = count();
+                if (FIsArray && (iCount > 0))
                 {            //if has array elements
-                    for (uint i = 1; i < count(); i++)
+                    for (uint i = 1; i < iCount; i++)
                         member(i).setUnits(sUnits);
                 }
                 else
-                    if (FIsArray && (count() == 0) && (member(0) != null))         //else set the 0 element
+                    if (FIsArray && (iCount == 0) && (member(0) != null))         //else set the 0 element
                         member(0).setUnits(sUnits);
             }
         }
@@ -1243,7 +1246,8 @@ namespace CMPServices
                     {
                         setElementCount(srcValue.count());
                     }
-                    for (uint Idx = 1; Idx <= count(); Idx++)
+                    uint iCount = count();
+                    for (uint Idx = 1; Idx <= iCount; Idx++)
                     {
                         result = item(Idx).setValue(srcValue.item(Idx));
                     }
@@ -1416,7 +1420,7 @@ namespace CMPServices
             FIsRecord = typedValue.isRecord();
             setUnits(typedValue.units());
 
-            if (typedValue.isScalar())
+            if (FIsScalar)
             {
                 createScalar();
                 switch (FBaseType)
@@ -1434,16 +1438,17 @@ namespace CMPServices
                     case TBaseType.ITYPE_WSTR: setValue(typedValue.asStr()); break;
                 }
             }
-            else if (typedValue.isArray() || typedValue.isRecord())
+            else if (FIsArray || FIsRecord)
             {
-                if (typedValue.isArray() && (typedValue.count() == 0))
+                uint iCount = typedValue.count();
+                if (FIsArray && (iCount == 0))
                 {
                     if (typedValue.item(0) != null)
                         newMember(typedValue.item(0));
                     setElementCount(0);
                 }
                 else
-                    for (i = 1; i <= typedValue.count(); i++)
+                    for (i = 1; i <= iCount; i++)
                         newMember(typedValue.item(i)); //clones and adds this typed value
             }
         }
@@ -1469,13 +1474,14 @@ namespace CMPServices
         //============================================================================
         public int[] asIntArray()
         {
+            uint iCount = count();
             int[] data = new int[0];
-            if (isArray() && (count() > 0) )
+            if (isArray() && (iCount > 0) )
             {
-                data = new int[count()];
+                data = new int[iCount];
                 if (item(1).isScalar())
                 {
-                    for (uint i = 1; i <= count(); i++)
+                    for (uint i = 1; i <= iCount; i++)
                     {
                         data[i-1] = item(i).asInt();
                     }
@@ -1559,13 +1565,14 @@ namespace CMPServices
         //============================================================================
         public float[] asSingleArray()
         {
+            uint iCount = count();
             float[] data = new float[0];
-            if (isArray() && (count() > 0))
+            if (isArray() && (iCount > 0))
             {
-                data = new float[count()];
+                data = new float[iCount];
                 if (item(1).isScalar())
                 {
-                    for (uint i = 1; i <= count(); i++)
+                    for (uint i = 1; i <= iCount; i++)
                     {
                         data[i - 1] = item(i).asSingle();
                     }
@@ -1629,13 +1636,14 @@ namespace CMPServices
         //============================================================================
         public double[] asDoubleArray()
         {
+            uint iCount = count();
             double[] data = new double[0];
-            if (isArray() && (count() > 0))
+            if (isArray() && (iCount > 0))
             {
-                data = new double[count()];
+                data = new double[iCount];
                 if (item(1).isScalar())
                 {
-                    for (uint i = 1; i <= count(); i++)
+                    for (uint i = 1; i <= iCount; i++)
                     {
                         data[i - 1] = item(i).asDouble();
                     }
@@ -1698,13 +1706,14 @@ namespace CMPServices
         //============================================================================
         public Boolean[] asBoolArray()
         {
+            uint iCount = count();
             Boolean[] data = new Boolean[0];
-            if (isArray() && (count() > 0))
+            if (isArray() && (iCount > 0))
             {
-                data = new Boolean[count()];
+                data = new Boolean[iCount];
                 if (item(1).isScalar())
                 {
-                    for (uint i = 1; i <= count(); i++)
+                    for (uint i = 1; i <= iCount; i++)
                     {
                         data[i - 1] = item(i).asBool();
                     }
@@ -1821,13 +1830,14 @@ namespace CMPServices
         //============================================================================
         public String[] asStringArray()
         {
+            uint iCount = count();
             String[] data = new String[0];
-            if (isArray() && (count() > 0))
+            if (isArray() && (iCount > 0))
             {
-                data = new String[count()];
+                data = new String[iCount];
                 if (item(1).isScalar())
                 {
-                    for (uint i = 1; i <= count(); i++)
+                    for (uint i = 1; i <= iCount; i++)
                     {
                         data[i - 1] = item(i).asStr();
                     }
@@ -1913,7 +1923,8 @@ namespace CMPServices
             {
                 StringBuilder buf = new StringBuilder("[");
                 uint i;
-                for (i = 1; i <= count(); i++)
+                uint iCount = count();
+                for (i = 1; i <= iCount; i++)
                 {
                     if (i > 1) buf.Append(", ");
                     if (isRecord())
@@ -2077,11 +2088,12 @@ namespace CMPServices
                     result = ctBAD;
                 else
                 {
+                    uint iCount = count();
                     result = ctCOMP;                                                        // First, test for identity
-                    if (count() == srcValue.count())
+                    if (iCount == srcValue.count())
                     {
                         result = ctSAME;
-                        for (Idx = 1; Idx <= count(); Idx++)
+                        for (Idx = 1; Idx <= iCount; Idx++)
                         {
                             if ((member(Idx).Name.ToLower() != srcValue.member(Idx).Name.ToLower()) ||
                                   (member(Idx).canAssignFrom(srcValue.member(Idx)) != ctSAME))
@@ -2350,9 +2362,9 @@ namespace CMPServices
             }
             else
             {
+                uint dim = count(); //store the array dimension
                 if (FIsArray)
                 {   //arrays have a dimension header and then the data blocks following
-                    uint dim = count(); //store the array dimension
                     dataPtr[startIndex] = (Byte)dim;
                     dataPtr[startIndex + 1] = (Byte)(dim >> 8);
                     dataPtr[startIndex + 2] = (Byte)(dim >> 16);
@@ -2361,8 +2373,7 @@ namespace CMPServices
                 }
                 if (FIsRecord || FIsArray)      //if this is a value that has children
                 {
-                    uint elemCount = count();
-                    for (idx = 1; idx <= elemCount; idx++)     //for each member/element
+                    for (idx = 1; idx <= dim; idx++)     //for each member/element
                         item(idx).copyData(dataPtr, ref startIndex);       //var dataPtr. Ptr get moved along with each copy.
                 }
             }

@@ -147,10 +147,11 @@ class LinkField
     //----------------------------------------------------------------------
     public static Object FindInstanceObject(Instance In, String NameToFind, String TypeToFind)
     {
+        NameToFind = NameToFind.ToLower();
         // Check our children first.
         foreach (Instance Child in In.Children)
         {
-            if (NameToFind.ToLower() == Child.Name.ToLower())
+            if (NameToFind == Child.Name.ToLower())
             {
                 if (string.Equals(TypeToFind, "object", StringComparison.CurrentCultureIgnoreCase) ||
                     Utility.IsOfType(Child.Model.GetType(), TypeToFind))
@@ -166,7 +167,7 @@ class LinkField
                 return Parent;
             foreach (Instance Sibling in Parent.Children)
             {
-                if (NameToFind.ToLower() == Sibling.Name.ToLower() && Utility.IsOfType(Sibling.Model.GetType(), TypeToFind))
+                if (NameToFind == Sibling.Name.ToLower() && Utility.IsOfType(Sibling.Model.GetType(), TypeToFind))
                     return Sibling;
             }
             Parent = Parent.Parent;

@@ -207,9 +207,9 @@ public class ReflectedProperty : ReflectedType
             {
                 return Member.GetValue(Obj, null);
             }
-            catch (System.Exception)
+            catch (System.Exception e)
             {
-                throw new Exception("The property " + Member.Name + " is not a gettable property.");
+                throw new Exception("The property " + Member.Name + " is not a gettable property. (" + e.Message + ")");
             }
         }
     }
@@ -579,7 +579,10 @@ internal class FactoryProperty : Instance, ApsimType
                 Desc += "write";
             else
                 Desc += "both";
-            Desc += "\"  init=\"F\">\r\n";
+            if (IsParam)
+                Desc += "\"  init=\"T\">\r\n";
+            else
+                Desc += "\"  init=\"F\">\r\n";
             if (DDML() != "")
             {
                 XmlDocument Doc = new XmlDocument();
