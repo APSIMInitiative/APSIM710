@@ -586,7 +586,7 @@
         <manager2 name="Irrigation Rule">
           <ui>
             <Dummy06 type="category" description="Irrigation parameters" />
-            <Irrigation_ON_OFF type="yesno" description="Is Irrigation available?">no</Irrigation_ON_OFF>
+            <Irrigation_Yes_No type="yesno" description="Is Irrigation available?">yes</Irrigation_Yes_No>
             <Refull_Frac type="text" description="What is the maximum we want to refill the soil to (Relative to DUL, 0 - 1)?">.9</Refull_Frac>
             <Trigger_Frac type="text" description="What is the deficit at which irrigation will be triggered (Relative to DUL, 0-1)?">.8</Trigger_Frac>
             <Return_days type="text" description="How frequently can this paddock be irrigated (days)?">1</Return_days>
@@ -599,12 +599,12 @@ using CSGeneral;
 
 public class Script
 {
+   //Communication to other modules
    [Link] public Paddock MyPaddock;
-   //[Link] public Component My;
    [Link] public Irrigation IrrigMod;
    
    //User inputs from properties tab
-   [Param()][Output]  public string Irrigation_ON_OFF;
+   [Param()][Output]  public string Irrigation_Yes_No;
    [Param()][Output]  public double Refull_Frac;
    [Param()][Output]  public double Trigger_Frac;
    [Param()][Output]  public double Return_days;
@@ -619,6 +619,7 @@ public class Script
    
    //Class members
    private bool IrrigationAvailable = false;
+   private bool CropActive = false;
    [Output] public double Top_DUL = 0;
    [Output] public double Top_Refull = 0;
    [Output] public double Top_Trigger = 0;
@@ -632,19 +633,19 @@ public class Script
    [EventHandler]
    public void OnInit2()
    {   
-      if (Irrigation_ON_OFF == "yes")
+      if (Irrigation_Yes_No == "yes")
          IrrigationAvailable = true;
       
       //Calculated soil water variables
-         Accumulated_depth = 0;
-         for (int layer = 0; Accumulated_depth &lt; Top_Depth; layer++)
-         {
-            Top_LL += ll15_dep[layer];
-            Top_DUL += dul_dep[layer];
-            Accumulated_depth += dlayer[layer];
-         }
-         Top_Refull = Top_LL + (Top_DUL - Top_LL) * Refull_Frac;
-         Top_Trigger = Top_LL + (Top_DUL - Top_LL) * Trigger_Frac;
+       Accumulated_depth = 0;
+       for (int layer = 0; Accumulated_depth &lt; Top_Depth; layer++)
+       {
+          Top_LL += ll15_dep[layer];
+          Top_DUL += dul_dep[layer];
+          Accumulated_depth += dlayer[layer];
+       }
+       Top_Refull = Top_LL + (Top_DUL - Top_LL) * Refull_Frac;
+       Top_Trigger = Top_LL + (Top_DUL - Top_LL) * Trigger_Frac;
    }
    
   
@@ -652,24 +653,33 @@ public class Script
    [EventHandler]
    public void OnPrepare()
    {
-         Accumulated_depth = 0;
-         Top_SW = 0;
-         for (int layer = 0; Accumulated_depth &lt; Top_Depth; layer++)
-         {
-            Top_SW += sw_dep[layer];
-            Accumulated_depth += dlayer[layer];
-         }
-         
-         Amount_to_apply = Math.Min(Top_Refull - Top_SW,Maximum_Irrigation_Amount);
-         Amount_to_apply = Math.Max(Amount_to_apply, 0.0);
-         
-         //Decide to irrigate and if so do so
-         Days_since_irrigation += 1;
-         if((IrrigationAvailable == true) &amp;&amp; (Days_since_irrigation &gt;= Return_days) &amp;&amp; (Top_SW &lt;= Top_Trigger)) //The conditions are right for irrigation
-         {
-            IrrigMod.Apply((float)Amount_to_apply, 0, 0.0f, 0.0f, "", null, 0.0f, 0.0f, 0.0f, 0.0f);
-            Days_since_irrigation = 0;
-         }
+       //How much irrigation would be needed
+       Accumulated_depth = 0;
+       Top_SW = 0;
+       for (int layer = 0; Accumulated_depth &lt; Top_Depth; layer++)
+       {
+          Top_SW += sw_dep[layer];
+          Accumulated_depth += dlayer[layer];
+       }
+       
+       Amount_to_apply = Math.Min(Top_Refull - Top_SW,Maximum_Irrigation_Amount);
+       Amount_to_apply = Math.Max(Amount_to_apply, 0.0);
+       
+       //Is there a crop in the ground in a state that would require irrigation.
+       CropActive = false;
+       foreach (CropType Crop in MyPaddock.Crops)
+       {
+         if ((Crop.stage &gt;= 3.0) &amp;&amp; (Crop.stage &lt; 8.0))
+         CropActive = true;
+       }
+      
+       //Decide to irrigate and if so do so
+       Days_since_irrigation += 1;
+       if((IrrigationAvailable == true) &amp;&amp; (CropActive == true) &amp;&amp; (Days_since_irrigation &gt;= Return_days) &amp;&amp; (Top_SW &lt;= Top_Trigger)) //The conditions are right for irrigation
+       {
+          IrrigMod.Apply((float)Amount_to_apply, 0, 0.0f, 0.0f, "", null, 0.0f, 0.0f, 0.0f, 0.0f);
+          Days_since_irrigation = 0;
+       }
    }
 }</text>
         </manager2>
@@ -712,13 +722,13 @@ public class Script
         </outputfile>
         <Graph name="XY">
           <Legend>
-            <CheckedTitles> Top_DUL, Continuous Wheat IrrigationVariables</CheckedTitles>
-            <CheckedTitles> Top_Refull, Continuous Wheat IrrigationVariables</CheckedTitles>
-            <CheckedTitles> Top_Trigger, Continuous Wheat IrrigationVariables</CheckedTitles>
-            <CheckedTitles> Top_LL, Continuous Wheat IrrigationVariables</CheckedTitles>
-            <CheckedTitles> Top_SW, Continuous Wheat IrrigationVariables</CheckedTitles>
-            <CheckedTitles> irrigation, Continuous Wheat IrrigationVariables</CheckedTitles>
-            <CheckedTitles> cover_green, Continuous Wheat IrrigationVariables</CheckedTitles>
+            <CheckedTitles> Top_DUL</CheckedTitles>
+            <CheckedTitles> Top_Refull</CheckedTitles>
+            <CheckedTitles> Top_Trigger</CheckedTitles>
+            <CheckedTitles> Top_LL</CheckedTitles>
+            <CheckedTitles> Top_SW</CheckedTitles>
+            <CheckedTitles> irrigation</CheckedTitles>
+            <CheckedTitles> cover_green</CheckedTitles>
           </Legend>
           <Plot>
             <SeriesType>Solid line</SeriesType>
