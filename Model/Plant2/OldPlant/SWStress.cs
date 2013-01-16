@@ -39,6 +39,15 @@ public class SWStress
     [Link]
     Function PhenoGrainFillingFactor = null;
 
+    [Output("WaterStressPhoto")]
+    public double PhotoStress { get { return 1 - Photo; } }
+    [Output("WaterStressPheno")]
+    public double PhenoStress { get { return 1 - Pheno; } }
+    [Output("WaterStressExpansion")]
+    public double ExpansionStress { get { return 1 - Expansion; } }
+    [Output("WaterStressFixation")]
+    public double FixationStress { get { return 1 - Fixation; } }
+
     public double Photo { get { return _Photo; } }
     public double PhotoAverage { get { return MathUtility.Divide(_PhotoSum, _PhotoCount, 0.0); } }
     public double ExpansionAverage { get { return MathUtility.Divide(_ExpansionSum, _ExpansionCount, 0.0); } }

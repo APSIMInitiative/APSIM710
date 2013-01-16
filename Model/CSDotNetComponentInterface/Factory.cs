@@ -194,6 +194,11 @@ class Factory
                     AddProperty = true;
                 if (Attr.GetType() == typeof(Output))
                     AddProperty = true;
+                if (Attr.GetType() == typeof(Link))
+                {
+                    LinkField LinkF = new LinkField(Obj, Property, (Link)Attr);
+                    Links.Add(LinkF);
+                }
             }
             if (AddProperty)
             {

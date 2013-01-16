@@ -5,7 +5,7 @@ using System.Text;
 using CSGeneral;
 using ModelFramework;
 
-public class Leaf1 : Organ1, AboveGround
+public class Leaf1 : BaseOrgan1, AboveGround
 {
     #region Parameters read from XML file and links to other functions.
     [Link]
@@ -112,7 +112,7 @@ public class Leaf1 : Organ1, AboveGround
     Function DMSenescenceFraction = null;
 
     [Link]
-    CompositeBiomass TotalGreen = null;
+    CompositeBiomass TotalLive = null;
 
     [Link]
     Function GrowthStructuralFractionStage = null;
@@ -189,6 +189,7 @@ public class Leaf1 : Organ1, AboveGround
     private double transpEff;
     private double NodeNo;
     private double[] LeafNo;
+
     private double[] LeafNoSen;
     private double dltNodeNo;
     private double[] LeafArea;
@@ -197,19 +198,18 @@ public class Leaf1 : Organ1, AboveGround
 
     #region Public interface defined by Organ1
 
-    public string Name { get { return My.Name; } }
-    public Biomass Green { get; private set; }
-    public Biomass Senesced { get; private set; }
-    public Biomass Senescing { get; private set; }
-    public Biomass Retranslocation { get; private set; }
-    public Biomass Growth { get; private set; }
-    public Biomass Detaching { get; private set; }
+    public override string Name { get { return My.Name; } }
+
+    public override Biomass Senescing { get; protected set; }
+    public override Biomass Retranslocation { get; protected set; }
+    public override Biomass Growth { get; protected set; }
+    public override Biomass Detaching { get; protected set; }
 
     // Soil water
-    public double SWSupply { get { return 0; } }
-    public double SWDemand { get { return sw_demand; } }
-    public double SWUptake { get { return 0; } }
-    public void DoSWDemand(double Supply)
+    public override double SWSupply { get { return 0; } }
+    public override double SWDemand { get { return sw_demand; } }
+    public override double SWUptake { get { return 0; } }
+    public override void DoSWDemand(double Supply)
     {
         if (ExternalSWDemand == true)
         {
@@ -248,10 +248,10 @@ public class Leaf1 : Organ1, AboveGround
         Util.Debug("Leaf.sw_demand=%f", sw_demand);
         Util.Debug("Leaf.transpEff=%f", transpEff);
     }
-    public void DoSWUptake(double SWDemand) { }
+    public override void DoSWUptake(double SWDemand) { }
 
     // dry matter
-    public double DMSupply
+    public override double DMSupply
     {
         get
         {
@@ -261,15 +261,15 @@ public class Leaf1 : Organ1, AboveGround
                 return 0.0;
         }
     }
-    public double DMRetransSupply
+    public override double DMRetransSupply
     {
         get
         {
-            return MathUtility.Constrain(Green.NonStructuralWt, 0.0, double.MaxValue);
+            return MathUtility.Constrain(Live.NonStructuralWt, 0.0, double.MaxValue);
         }
     }
-    public double dltDmPotRue { get { return dlt_dm_pot_rue; } }
-    public double DMGreenDemand
+    public override double dltDmPotRue { get { return dlt_dm_pot_rue; } }
+    public override double DMGreenDemand
     {
         get
         {
@@ -277,27 +277,27 @@ public class Leaf1 : Organ1, AboveGround
             return MathUtility.Divide(dltLAI_stressed, SLAMin * Conversions.smm2sm, 0.0);
         }
     }
-    public double DMDemandDifferential { get { return 0; } }
-    public void DoDMDemand(double DMSupply) { }
-    public void DoDmRetranslocate(double dlt_dm_retrans_to_fruit, double demand_differential_begin) { }
-    public void GiveDmGreen(double Delta)
+    public override double DMDemandDifferential { get { return 0; } }
+    public override void DoDMDemand(double DMSupply) { }
+    public override void DoDmRetranslocate(double dlt_dm_retrans_to_fruit, double demand_differential_begin) { }
+    public override void GiveDmGreen(double Delta)
     {
         Growth.StructuralWt += Delta * GrowthStructuralFractionStage.Value;
         Growth.NonStructuralWt += Delta * (1.0 - GrowthStructuralFractionStage.Value);
         Util.Debug("Leaf.Growth.StructuralWt=%f", Growth.StructuralWt);
         Util.Debug("Leaf.Growth.NonStructuralWt=%f", Growth.NonStructuralWt);
     }
-    public void DoSenescence()
+    public override void DoSenescence()
     {
         double fraction_senescing = MathUtility.Constrain(DMSenescenceFraction.Value, 0.0, 1.0);
 
-        Senescing.StructuralWt = (Green.StructuralWt + Growth.StructuralWt + Retranslocation.StructuralWt) * fraction_senescing;
-        Senescing.NonStructuralWt = (Green.NonStructuralWt + Growth.NonStructuralWt + Retranslocation.NonStructuralWt) * fraction_senescing;
+        Senescing.StructuralWt = (Live.StructuralWt + Growth.StructuralWt + Retranslocation.StructuralWt) * fraction_senescing;
+        Senescing.NonStructuralWt = (Live.NonStructuralWt + Growth.NonStructuralWt + Retranslocation.NonStructuralWt) * fraction_senescing;
         Util.Debug("Leaf.Senescing.StructuralWt=%f", Senescing.StructuralWt);
         Util.Debug("Leaf.Senescing.NonStructuralWt=%f", Senescing.NonStructuralWt);
 
     }
-    public void DoDetachment()
+    public override void DoDetachment()
     {
         dltSLAI_detached = SLAI * SenescenceDetachmentFraction;
         double Density = 1.0;
@@ -317,7 +317,7 @@ public class Leaf1 : Organ1, AboveGround
             }
         }
 
-        Detaching = Senesced * SenescenceDetachmentFraction;
+        Detaching = Dead * SenescenceDetachmentFraction;
         Util.Debug("leaf.dltSLAI_detached=%f", dltSLAI_detached);
         Util.DebugArray("leaf.LeafArea=%f0", LeafArea, 10);
         Util.Debug("Leaf.Detaching.Wt=%f", Detaching.Wt);
@@ -325,30 +325,30 @@ public class Leaf1 : Organ1, AboveGround
     }
 
     // nitrogen
-    public double NDemand { get { return _NDemand; } }
-    public double NSupply { get { return 0; } }
-    public double NUptake { get { return 0; } }
-    public double SoilNDemand { get { return _SoilNDemand; } }
-    public double NCapacity
+    public override double NDemand { get { return _NDemand; } }
+    public override double NSupply { get { return 0; } }
+    public override double NUptake { get { return 0; } }
+    public override double SoilNDemand { get { return _SoilNDemand; } }
+    public override double NCapacity
     {
         get
         {
             return MathUtility.Constrain(NMax - NDemand, 0.0, double.MaxValue);
         }
     }
-    public double NDemandDifferential { get { return MathUtility.Constrain(NDemand - Growth.N, 0.0, double.MaxValue); } }
-    public double AvailableRetranslocateN
+    public override double NDemandDifferential { get { return MathUtility.Constrain(NDemand - Growth.N, 0.0, double.MaxValue); } }
+    public override double AvailableRetranslocateN
     {
         get
         {
-            double N_min = n_conc_min * Green.Wt;
-            double N_avail = MathUtility.Constrain(Green.N - N_min, 0.0, double.MaxValue);
+            double N_min = n_conc_min * Live.Wt;
+            double N_avail = MathUtility.Constrain(Live.N - N_min, 0.0, double.MaxValue);
             double n_retrans_fraction = 1.0;
             return (N_avail * n_retrans_fraction);
         }
     }
-    public double DltNSenescedRetrans { get { return dlt_n_senesced_retrans; } }
-    public void DoNDemand(bool IncludeRetransloation)
+    public override double DltNSenescedRetrans { get { return dlt_n_senesced_retrans; } }
+    public override void DoNDemand(bool IncludeRetransloation)
     {
 
         double TopsDMSupply = 0;
@@ -360,34 +360,34 @@ public class Leaf1 : Organ1, AboveGround
         }
 
         if (IncludeRetransloation)
-            Util.CalcNDemand(TopsDMSupply, TopsDltDmPotRue, n_conc_crit, n_conc_max, Growth, Green, Retranslocation.N, NDeficitUptakeFraction,
+            Util.CalcNDemand(TopsDMSupply, TopsDltDmPotRue, n_conc_crit, n_conc_max, Growth, Live, Retranslocation.N, NDeficitUptakeFraction,
                       ref _NDemand, ref NMax);
         else
-            Util.CalcNDemand(TopsDMSupply, TopsDltDmPotRue, n_conc_crit, n_conc_max, Growth, Green, 0.0, NDeficitUptakeFraction,
+            Util.CalcNDemand(TopsDMSupply, TopsDltDmPotRue, n_conc_crit, n_conc_max, Growth, Live, 0.0, NDeficitUptakeFraction,
                       ref _NDemand, ref NMax);
         Util.Debug("Leaf.NDemand=%f", _NDemand);
         Util.Debug("Leaf.NMax=%f", NMax);
     }
-    public void DoNDemand1Pot(double dltDmPotRue)
+    public override void DoNDemand1Pot(double dltDmPotRue)
     {
         Biomass OldGrowth = Growth;
-        Growth.StructuralWt = dltDmPotRue * MathUtility.Divide(Green.Wt, TotalGreen.Wt, 0.0);
+        Growth.StructuralWt = dltDmPotRue * MathUtility.Divide(Live.Wt, TotalLive.Wt, 0.0);
         Util.Debug("Leaf.Growth.StructuralWt=%f", Growth.StructuralWt);
-        Util.CalcNDemand(dltDmPotRue, dltDmPotRue, n_conc_crit, n_conc_max, Growth, Green, Retranslocation.N, 1.0,
+        Util.CalcNDemand(dltDmPotRue, dltDmPotRue, n_conc_crit, n_conc_max, Growth, Live, Retranslocation.N, 1.0,
                    ref _NDemand, ref NMax);
         Growth.StructuralWt = 0.0;
         Growth.NonStructuralWt = 0.0;
         Util.Debug("Leaf.NDemand=%f", _NDemand);
         Util.Debug("Leaf.NMax=%f", NMax);
     }
-    public void DoSoilNDemand()
+    public override void DoSoilNDemand()
     {
         _SoilNDemand = NDemand - dlt_n_senesced_retrans;
         _SoilNDemand = MathUtility.Constrain(_SoilNDemand, 0.0, double.MaxValue);
         Util.Debug("Leaf.SoilNDemand=%f", _SoilNDemand);
     }
-    public void DoNSupply() { }
-    public void DoNRetranslocate(double NSupply, double GrainNDemand)
+    public override void DoNSupply() { }
+    public override void DoNRetranslocate(double NSupply, double GrainNDemand)
     {
         if (GrainNDemand >= NSupply)
         {
@@ -403,14 +403,14 @@ public class Leaf1 : Organ1, AboveGround
         }
         Util.Debug("Leaf.Retranslocation.N=%f", Retranslocation.N);
     }
-    public void DoNSenescence()
+    public override void DoNSenescence()
     {
-        double green_n_conc = MathUtility.Divide(Green.N, Green.Wt, 0.0);
+        double green_n_conc = MathUtility.Divide(Live.N, Live.Wt, 0.0);
         double dlt_n_in_senescing_part = Senescing.Wt * green_n_conc;
         double sen_n_conc = Math.Min(NSenescenceConcentration, green_n_conc);
 
         double SenescingN = Senescing.Wt * sen_n_conc;
-        Senescing.StructuralN = MathUtility.Constrain(SenescingN, double.MinValue, Green.N);
+        Senescing.StructuralN = MathUtility.Constrain(SenescingN, double.MinValue, Live.N);
 
         dlt_n_senesced_trans = dlt_n_in_senescing_part - Senescing.N;
         dlt_n_senesced_trans = MathUtility.Constrain(dlt_n_senesced_trans, 0.0, double.MaxValue);
@@ -418,20 +418,20 @@ public class Leaf1 : Organ1, AboveGround
         Util.Debug("Leaf.SenescingN=%f", SenescingN);
         Util.Debug("Leaf.dlt.n_senesced_trans=%f", dlt_n_senesced_trans);
     }
-    public void DoNSenescedRetranslocation(double navail, double n_demand_tot)
+    public override void DoNSenescedRetranslocation(double navail, double n_demand_tot)
     {
         dlt_n_senesced_retrans = navail * MathUtility.Divide(NDemand, n_demand_tot, 0.0);
         Util.Debug("Leaf.dlt.n_senesced_retrans=%f", dlt_n_senesced_retrans);
     }
-    public void DoNPartition(double GrowthN)
+    public override void DoNPartition(double GrowthN)
     {
         Growth.StructuralN = GrowthN;
     }
-    public void DoNFixRetranslocate(double NFixUptake, double nFixDemandTotal)
+    public override void DoNFixRetranslocate(double NFixUptake, double nFixDemandTotal)
     {
         Growth.StructuralN += NFixUptake * MathUtility.Divide(NDemandDifferential, nFixDemandTotal, 0.0);
     }
-    public void DoNConccentrationLimits()
+    public override void DoNConccentrationLimits()
     {
         n_conc_crit = NConcentrationCritical.Value;
         n_conc_min = NConcentrationMinimum.Value;
@@ -445,27 +445,27 @@ public class Leaf1 : Organ1, AboveGround
         if (n_conc_crit <= n_conc_min)
             throw new Exception("nconc_crit < nconc_min!. What's happened to CO2??");
     }
-    public void ZeroDltNSenescedTrans()
+    public override void ZeroDltNSenescedTrans()
     {
         dlt_n_senesced_trans = 0;
     }
-    public void DoNUptake(double PotNFix) { }
+    public override void DoNUptake(double PotNFix) { }
 
     // cover
     [Output("cover_green")]
-    public double CoverGreen { get; private set; } // Required by soilwat for E0 calculation.
-    public double CoverSen { get; private set; }
-    public void DoPotentialRUE()
+    public override double CoverGreen { get; protected set; } // Required by soilwat for E0 calculation.
+    public override double CoverSen { get; protected set; }
+    public override void DoPotentialRUE()
     {
         dlt_dm_pot_rue = Photosynthesis.PotentialDM(radiationInterceptedGreen);
         Util.Debug("Leaf.dlt.dm_pot_rue=%f", dlt_dm_pot_rue);
     }
-    public double interceptRadiation(double incomingSolarRadiation)
+    public override double interceptRadiation(double incomingSolarRadiation)
     {
         radiationInterceptedGreen = CoverGreen * incomingSolarRadiation;
         return CoverTotal * incomingSolarRadiation;
     }
-    public void DoCover()
+    public override void DoCover()
     {
         CoverGreen = CalculateCover(LAI, ExtinctionCoefficient.Value, PlantSpatial.CanopyFactor);
         CoverSen = CalculateCover(_SLAI, ExtinctionCoefficientDead.Value, PlantSpatial.CanopyFactor);
@@ -474,7 +474,7 @@ public class Leaf1 : Organ1, AboveGround
     }
 
     // update
-    public void Update()
+    public override void Update()
     {
         double TotalDltNSenescedRetrans = 0;
         foreach (Organ1 Organ in Plant.Organ1s)
@@ -483,21 +483,21 @@ public class Leaf1 : Organ1, AboveGround
         Growth.StructuralN -= dlt_n_senesced_trans;
         Growth.StructuralN -= TotalDltNSenescedRetrans;
 
-        Green = Green + Growth - Senescing;
+        Live = Live + Growth - Senescing;
 
-        Senesced = Senesced - Detaching + Senescing;
-        Green = Green + Retranslocation;
-        Green.StructuralN = Green.N + dlt_n_senesced_retrans;
+        Dead = Dead - Detaching + Senescing;
+        Live = Live + Retranslocation;
+        Live.StructuralN = Live.N + dlt_n_senesced_retrans;
 
-        Biomass dying = Green * Population.DyingFractionPlants;
-        Green = Green - dying;
-        Senesced = Senesced + dying;
+        Biomass dying = Live * Population.DyingFractionPlants;
+        Live = Live - dying;
+        Dead = Dead + dying;
         Senescing = Senescing + dying;
 
-        Util.Debug("Leaf.Green.Wt=%f", Green.Wt);
-        Util.Debug("Leaf.Green.N=%f", Green.N);
-        Util.Debug("Leaf.Senesced.Wt=%f", Senesced.Wt);
-        Util.Debug("Leaf.Senesced.N=%f", Senesced.N);
+        Util.Debug("Leaf.Green.Wt=%f", Live.Wt);
+        Util.Debug("Leaf.Green.N=%f", Live.N);
+        Util.Debug("Leaf.Senesced.Wt=%f", Dead.Wt);
+        Util.Debug("Leaf.Senesced.N=%f", Dead.N);
         Util.Debug("Leaf.Senescing.Wt=%f", Senescing.Wt);
         Util.Debug("Leaf.Senescing.N=%f", Senescing.N);
 
@@ -556,8 +556,8 @@ public class Leaf1 : Organ1, AboveGround
     #endregion
 
     #region Public interface specific to Leaf
-    public double NCrit { get { return n_conc_crit * Green.Wt; } }
-    public double NMin { get { return n_conc_min * Green.Wt; } }
+    public double NCrit { get { return n_conc_crit * Live.Wt; } }
+    public double NMin { get { return n_conc_min * Live.Wt; } }
     public double NSenescedTrans { get { return dlt_n_senesced_trans; } }
     [Output("cover_tot")]
     public double CoverTotal
@@ -572,8 +572,17 @@ public class Leaf1 : Organ1, AboveGround
     [Output("LAI")]
     [Units("m^2/m^2")]
     public double LAI { get { return _LAI; } }
+    [Output("SLAI")]
+    [Units("m^2/m^2")]
     public double SLAI { get { return _SLAI; } }
+    [Output("LAITotal")]
+    [Units("m^2/m^2")]
+    public double LAITotal { get { return LAI + SLAI; } }
+    [Output("LeafNumber")]
     public double LeafNumber { get { return MathUtility.Sum(LeafNo); } }
+    [Output("LeafNumberDead")]
+    public double LeafNumberDead { get { return MathUtility.Sum(LeafNoSen); } }
+    [Output("NodeNumber")]
     public double NodeNumberNow { get { return NodeNo + NodeNumberCorrection; } }
     /// <summary>
     /// Ratio of actual to potential lai
@@ -708,8 +717,6 @@ public class Leaf1 : Organ1, AboveGround
     #region Event handlers
     void Initialise()
     {
-        Green = new Biomass();
-        Senesced = new Biomass();
         Senescing = new Biomass();
         Retranslocation = new Biomass();
         Growth = new Biomass();
@@ -721,7 +728,7 @@ public class Leaf1 : Organ1, AboveGround
             throw new Exception("CO2 isn't at the default level, and model: " + Plant.Name + " has no CO2 parameterisations.");
     }
 
-    public void OnPrepare()
+    public override void OnPrepare()
     {
         if (LeafNo == null)
             Initialise();
@@ -760,22 +767,22 @@ public class Leaf1 : Organ1, AboveGround
         dltNodeNoPot = 0.0;
     }
 
-    public void OnHarvest(HarvestType Harvest, BiomassRemovedType BiomassRemoved)
+    public override void OnHarvest(HarvestType Harvest, BiomassRemovedType BiomassRemoved)
     {
-        double dm_init = MathUtility.Constrain(InitialWt * Population.Density, double.MinValue, Green.Wt);
-        double n_init = MathUtility.Constrain(dm_init * InitialNConcentration, double.MinValue, Green.N);
+        double dm_init = MathUtility.Constrain(InitialWt * Population.Density, double.MinValue, Live.Wt);
+        double n_init = MathUtility.Constrain(dm_init * InitialNConcentration, double.MinValue, Live.N);
         //double p_init = MathUtility.Constrain(dm_init * SimplePart::c.p_init_conc, double.MinValue, Green.P);
 
-        double retain_fr_green = MathUtility.Divide(dm_init, Green.Wt, 0.0);
+        double retain_fr_green = MathUtility.Divide(dm_init, Live.Wt, 0.0);
         double retain_fr_sen = 0.0;
 
-        double dlt_dm_harvest = Green.Wt + Senesced.Wt - dm_init;
-        double dlt_n_harvest = Green.N + Senesced.N - n_init;
+        double dlt_dm_harvest = Live.Wt + Dead.Wt - dm_init;
+        double dlt_n_harvest = Live.N + Dead.N - n_init;
         //double dlt_p_harvest = Green.P + Senesced.P - p_init;
 
-        Senesced = Senesced * retain_fr_sen;
-        Green.StructuralWt = Green.Wt * retain_fr_green;
-        Green.StructuralN = n_init;
+        Dead = Dead * retain_fr_sen;
+        Live.StructuralWt = Live.Wt * retain_fr_green;
+        Live.StructuralN = n_init;
         //Green.P = p_init;
 
         int i = Util.IncreaseSizeOfBiomassRemoved(BiomassRemoved);
@@ -788,17 +795,17 @@ public class Leaf1 : Organ1, AboveGround
         InitialiseAreas();
     }
 
-    public void OnEndCrop(BiomassRemovedType BiomassRemoved)
+    public override void OnEndCrop(BiomassRemovedType BiomassRemoved)
     {
         int i = Util.IncreaseSizeOfBiomassRemoved(BiomassRemoved);
         BiomassRemoved.dm_type[i] = Name;
         BiomassRemoved.fraction_to_residue[i] = 1.0F;
-        BiomassRemoved.dlt_crop_dm[i] = (float)((Green.Wt + Senesced.Wt) * Conversions.gm2kg / Conversions.sm2ha);
-        BiomassRemoved.dlt_dm_n[i] = (float)((Green.N + Senesced.N) * Conversions.gm2kg / Conversions.sm2ha);
+        BiomassRemoved.dlt_crop_dm[i] = (float)((Live.Wt + Dead.Wt) * Conversions.gm2kg / Conversions.sm2ha);
+        BiomassRemoved.dlt_dm_n[i] = (float)((Live.N + Dead.N) * Conversions.gm2kg / Conversions.sm2ha);
         //BiomassRemoved.dlt_dm_p[i] = (float)((Green.P + Senesced.P) * Conversions.gm2kg / Conversions.sm2ha);
 
-        Senesced.Clear();
-        Green.Clear();
+        Dead.Clear();
+        Live.Clear();
     }
 
     [EventHandler]
@@ -806,8 +813,8 @@ public class Leaf1 : Organ1, AboveGround
     {
         if (PhenologyChange.NewPhaseName == "EmergenceToEndOfJuvenile")
         {
-            Green.StructuralWt = InitialWt * Population.Density;
-            Green.StructuralN = InitialNConcentration * Green.StructuralWt;
+            Live.StructuralWt = InitialWt * Population.Density;
+            Live.StructuralN = InitialNConcentration * Live.StructuralWt;
 
             InitialiseAreas();
         }
@@ -841,8 +848,8 @@ public class Leaf1 : Organ1, AboveGround
         _LAI = InitialTPLA * Conversions.smm2sm * Population.Density;
         _SLAI = 0.0;
 
-        Util.Debug("Leaf.InitGreen.StructuralWt=%f", Green.StructuralWt);
-        Util.Debug("Leaf.InitGreen.StructuralN=%f", Green.StructuralN);
+        Util.Debug("Leaf.InitGreen.StructuralWt=%f", Live.StructuralWt);
+        Util.Debug("Leaf.InitGreen.StructuralN=%f", Live.StructuralN);
         Util.Debug("Leaf.InitLeafNo=%f", MathUtility.Sum(LeafNo));
         Util.Debug("Leaf.InitLeafArea=%f", MathUtility.Sum(LeafArea));
         Util.Debug("Leaf.InitLAI=%f", LAI);
@@ -860,7 +867,7 @@ public class Leaf1 : Organ1, AboveGround
 
             double nfac = 1.0;
             double MaintenanceCoefficient = 0.0;
-            return Green.Wt * MaintenanceCoefficient * fTempEf * nfac;
+            return Live.Wt * MaintenanceCoefficient * fTempEf * nfac;
         }
     }
     private static double CalculateCover(double LAI, double ExtinctionCoefficient, double CanopyFactor)

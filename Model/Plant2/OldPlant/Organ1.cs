@@ -8,8 +8,8 @@ using ModelFramework;
 interface Organ1
 {
     string Name { get; }
-    Biomass Green { get; }
-    Biomass Senesced { get; }
+    Biomass Live { get; }
+    Biomass Dead { get; }
     Biomass Senescing { get; }
     Biomass Retranslocation { get; }
     Biomass Growth { get; }

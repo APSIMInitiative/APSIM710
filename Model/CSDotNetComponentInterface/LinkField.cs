@@ -30,7 +30,7 @@ using System.Xml;
 /// <summary>
 class LinkField
 {
-    private FieldInfo Field;
+    private ReflectedType Field;
     private Link LinkAttr;
     private Instance In;
     ApsimComponent Comp;
@@ -48,7 +48,15 @@ class LinkField
     public LinkField(Instance _In, FieldInfo _Field, Link _LinkAttr)
     {
         In = _In;
-        Field = _Field;
+        Field = new ReflectedField(_Field, In.Model);
+        LinkAttr = _LinkAttr;
+        Comp = In.ParentComponent();
+    }
+
+    public LinkField(Instance _In, PropertyInfo _Field, Link _LinkAttr)
+    {
+        In = _In;
+        Field = new ReflectedProperty(_Field, In.Model);
         LinkAttr = _LinkAttr;
         Comp = In.ParentComponent();
     }
@@ -57,7 +65,7 @@ class LinkField
     /// </summary>
     public void Resolve()
     {
-        if (Field.GetValue(In.Model) == null)
+        if (Field.Get == null)
         {
             Object ReferencedObject = null;
 
@@ -65,7 +73,7 @@ class LinkField
             //ProbeInfo = Assembly.LoadFile(Path.Combine(Configuration.ApsimDirectory(), "Model", "CSDotNetProxies.dll"));
             ProbeInfo = Assembly.LoadFile(Path.Combine(Configuration.ApsimDirectory(), "Model", "DotNetProxies.dll"));
 
-            String TypeToFind = Field.FieldType.Name;
+            String TypeToFind = Field.Typ.Name;
             String NameToFind;
             if (LinkAttr.NamePath == null)
                 NameToFind = Field.Name;
@@ -93,7 +101,7 @@ class LinkField
                     if (ChildNameWithoutArray == NameToFind)
                         ReferencedObjects.Add(Child.Model);
                 }
-                Array A = Array.CreateInstance(Field.FieldType.GetElementType(), ReferencedObjects.Count) as Array;
+                Array A = Array.CreateInstance(Field.Typ.GetElementType(), ReferencedObjects.Count) as Array;
                 for (int i = 0; i < ReferencedObjects.Count; i++)
                     A.SetValue(ReferencedObjects[i], i);
                 ReferencedObject = A;
@@ -111,9 +119,9 @@ class LinkField
                     throw new Exception("Cannot find [Link] for type: " + TypeToFind + " " + NameToFind + " in object: " + In.Name);
             }
             else if (ReferencedObject is Instance)
-                Field.SetValue(In.Model, ((Instance)ReferencedObject).Model);
+                Field.SetObject(((Instance)ReferencedObject).Model);
             else
-                Field.SetValue(In.Model, ReferencedObject);
+                Field.SetObject(ReferencedObject);
         }
 
     }

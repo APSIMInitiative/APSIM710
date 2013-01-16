@@ -183,6 +183,15 @@ public class Biomass
         _NonStructuralN += a.NonStructuralN;
         _MetabolicN += a.MetabolicN;
     }
+    public void SetTo(Biomass a)
+    {
+        _StructuralWt = a.StructuralWt;
+        _NonStructuralWt = a.NonStructuralWt;
+        _MetabolicWt = a.MetabolicWt;
+        _StructuralN = a.StructuralN;
+        _NonStructuralN = a.NonStructuralN;
+        _MetabolicN = a.MetabolicN;
+    }
     public static Biomass operator +(Biomass a, Biomass b)
     {
         return new Biomass

@@ -23,12 +23,15 @@ class GenericArbitratorXY
     [Link]
     Leaf1 Leaf = null;
 
+    [Output("GrowthRate")]
+    public double DMSupply;
+
     public virtual double RatioRootPlant { get { return 0.0; } }
 
     internal void PartitionDM(List<Organ1> Organs)
     {
         // Get all DM supply terms.
-        double DMSupply = 0;
+        DMSupply = 0;
         foreach (Organ1 Organ in Organs)
             DMSupply += Organ.DMSupply;
 
@@ -260,7 +263,7 @@ class GenericArbitratorXY
         foreach (Organ1 Organ in Organs)
             Organ.ZeroDltNSenescedTrans();
 
-        double dlt_n_in_senescing_leaf = Leaf.Senescing.Wt * Leaf.Green.NConc;
+        double dlt_n_in_senescing_leaf = Leaf.Senescing.Wt * Leaf.Live.NConc;
 
         double n_demand_tot = 0;
         foreach (Organ1 Organ in Organs)

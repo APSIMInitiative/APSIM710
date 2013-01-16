@@ -82,7 +82,7 @@ public class Plant15
     Function NFixRate = null;
 
     [Link]
-    CompositeBiomass AboveGroundGreen = null;
+    CompositeBiomass AboveGroundLive = null;
 
     [Link]
     CompositeBiomass AboveGround = null;
@@ -173,6 +173,9 @@ public class Plant15
         }
     }
 
+    [Output]
+    [Units("kg/ha")]
+    public double Biomass { get { return AboveGround.Wt * 10; } } // convert to kg/ha
 
     internal List<Organ1> Organ1s = new List<Organ1>();
     internal List<Organ1> Tops = new List<Organ1>();
@@ -193,13 +196,13 @@ public class Plant15
             return SWDemand;
         }
     }
-    private double TopsGreenWt
+    private double TopsLiveWt
     {
         get
         {
             double SWDemand = 0.0;
             foreach (Organ1 Organ in Tops)
-                SWDemand += Organ.Green.Wt;
+                SWDemand += Organ.Live.Wt;
             return SWDemand;
         }
     }
@@ -340,11 +343,11 @@ public class Plant15
                 double StoverN = 0;
                 foreach (Organ1 Organ in Tops)
                 {
-                    biomass += Organ.Green.Wt + Organ.Senesced.Wt;
+                    biomass += Organ.Live.Wt + Organ.Dead.Wt;
                     if (!(Organ is Reproductive))
                     {
-                        StoverWt += Organ.Green.Wt + Organ.Senesced.Wt;
-                        StoverN += Organ.Green.N + Organ.Senesced.N;
+                        StoverWt += Organ.Live.Wt + Organ.Dead.Wt;
+                        StoverN += Organ.Live.N + Organ.Dead.N;
                     }
                 }
                 double StoverNConc = MathUtility.Divide(StoverN, StoverWt, 0) * Conversions.fract2pcnt;
@@ -494,7 +497,7 @@ public class Plant15
             ext_n_demand += Organ.NDemand;
 
         //nh  use zero growth value here so that estimated n fix is always <= actual;
-        double n_fix_pot = NFixRate.Value * AboveGroundGreen.Wt * SWStress.Fixation;
+        double n_fix_pot = NFixRate.Value * AboveGroundLive.Wt * SWStress.Fixation;
 
         if (NSupplyPreference == "active")
         {
@@ -645,17 +648,17 @@ public class Plant15
         double yield_wet;                    // grain yield including moisture (kg/ha)
 
         // crop harvested. Report status
-        yield = (Grain.Green.Wt + Grain.Senesced.Wt) * Conversions.gm2kg / Conversions.sm2ha;
+        yield = (Grain.Live.Wt + Grain.Dead.Wt) * Conversions.gm2kg / Conversions.sm2ha;
         yield_wet = yield * Grain.WaterContentFraction * Conversions.gm2kg / Conversions.sm2ha;
-        grain_wt = MathUtility.Divide(Grain.Green.Wt + Grain.Senesced.Wt, Grain.GrainNo, 0);
+        grain_wt = MathUtility.Divide(Grain.Live.Wt + Grain.Dead.Wt, Grain.GrainNo, 0);
         plant_grain_no = MathUtility.Divide(Grain.GrainNo, Population.Density, 0.0);
-        n_grain = (Grain.Green.N + Grain.Senesced.N) * Conversions.gm2kg/Conversions.sm2ha;
+        n_grain = (Grain.Live.N + Grain.Dead.N) * Conversions.gm2kg/Conversions.sm2ha;
 
 
-        double dmRoot = (Root.Green.Wt + Root.Senesced.Wt) * Conversions.gm2kg / Conversions.sm2ha;
-        double nRoot = (Root.Green.N + Root.Senesced.N) * Conversions.gm2kg / Conversions.sm2ha;
+        double dmRoot = (Root.Live.Wt + Root.Dead.Wt) * Conversions.gm2kg / Conversions.sm2ha;
+        double nRoot = (Root.Live.N + Root.Dead.N) * Conversions.gm2kg / Conversions.sm2ha;
 
-        n_grain_conc_percent = (Grain.Green.NConc + Grain.Senesced.NConc) * Conversions.fract2pcnt;
+        n_grain_conc_percent = (Grain.Live.NConc + Grain.Dead.NConc) * Conversions.fract2pcnt;
 
         double stoverTot = 0;
         double TopsTotalWt = 0;
@@ -664,17 +667,17 @@ public class Plant15
         double TopsSenescedN = 0;
         foreach (Organ1 Organ in Tops)
         {
-            TopsTotalWt += Organ.Green.Wt + Organ.Senesced.Wt;
-            TopsGreenWt += Organ.Green.Wt;
-            TopsSenescedWt += Organ.Senesced.Wt;
-            TopsSenescedN += Organ.Senesced.N;
+            TopsTotalWt += Organ.Live.Wt + Organ.Dead.Wt;
+            TopsGreenWt += Organ.Live.Wt;
+            TopsSenescedWt += Organ.Dead.Wt;
+            TopsSenescedN += Organ.Dead.N;
             if (Organ is Reproductive)
             { }
             else
             {
-                stoverTot += Organ.Green.Wt + Organ.Senesced.Wt;
-                n_stover += (Organ.Green.N + Organ.Senesced.N) * Conversions.gm2kg / Conversions.sm2ha;
-                n_green += Organ.Green.N * Conversions.gm2kg / Conversions.sm2ha;
+                stoverTot += Organ.Live.Wt + Organ.Dead.Wt;
+                n_stover += (Organ.Live.N + Organ.Dead.N) * Conversions.gm2kg / Conversions.sm2ha;
+                n_green += Organ.Live.N * Conversions.gm2kg / Conversions.sm2ha;
             }
         }
         n_total = n_grain + n_stover;

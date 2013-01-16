@@ -19,6 +19,15 @@ public class NStress
     [Param]
     double N_fact_grain = 0;
 
+    [Output("NStressPhoto")]
+    public double PhotoStress { get { return 1 - photo; } }
+    [Output("NStressPheno")]
+    public double PhenoStress { get { return 1 - pheno; } }
+    [Output("NStressExpansion")]
+    public double ExpansionStress { get { return 1 - expansion; } }
+    [Output("NStressGrain")]
+    public double GrainStress { get { return 1 - grain; } }
+
     private double expansion;
     private double pheno;
     private double photo;
@@ -76,12 +85,12 @@ public class NStress
     */
     {
 
-        double dm = Leaf.Green.Wt;
-        double N = Leaf.Green.N;
+        double dm = Leaf.Live.Wt;
+        double N = Leaf.Live.N;
         if (Stem != null)
         {
-            dm += Stem.Green.Wt;
-            N += Stem.Green.N;
+            dm += Stem.Live.Wt;
+            N += Stem.Live.N;
         }
 
         if (dm > 0.0)

@@ -136,7 +136,7 @@ public class Model : Attribute
 {
 }
 
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
 public class Link : Attribute
 {
     private String _Path = null;

@@ -107,6 +107,7 @@ public class Phenology
         }
     }
 
+    [Output("DaysAfterSowing")]
     public int DaysAfterSowing
     {
         get

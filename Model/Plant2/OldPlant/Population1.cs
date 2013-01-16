@@ -11,6 +11,7 @@ public class Population1
 
     double _Plants;
 
+    [Output("Population")]
     public double Density
     {
         get
@@ -119,7 +120,7 @@ public class Population1
 
             double biomass = 0;
             foreach (Organ1 Organ in Plant.Tops)
-                biomass += (Organ.Green.Wt + Organ.Senesced.Wt) * Conversions.gm2kg / Conversions.sm2ha;
+                biomass += (Organ.Live.Wt + Organ.Dead.Wt) * Conversions.gm2kg / Conversions.sm2ha;
 
             // report
             string msg = "Plant death. standing above-ground dm = " + biomass.ToString("f2") + " (kg/ha)";
