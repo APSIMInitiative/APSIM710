@@ -510,8 +510,8 @@
         <manager name="Sowing rule">
           <ui>
             <category type="category" description="Sowing criteria" />
-            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">1-may</date1>
-            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">15-may</date2>
+            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">1-May</date1>
+            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">3-May</date2>
             <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
             <raincrit type="text" description="Amount of rainfall : ">25</raincrit>
             <rainnumdays type="text" description="Number of days of rainfall : ">7</rainnumdays>
@@ -585,11 +585,15 @@
         </manager>
         <manager2 name="Irrigation Rule">
           <ui>
-            <Dummy06 type="category" description="Irrigation parameters" />
+            <Dummy06 type="category" description="Irrigation Availability" />
             <Irrigation_Yes_No type="yesno" description="Is Irrigation available?">yes</Irrigation_Yes_No>
-            <Refull_Frac type="text" description="What is the maximum we want to refill the soil to (Relative to DUL, 0 - 1)?">.9</Refull_Frac>
-            <Trigger_Frac type="text" description="What is the deficit at which irrigation will be triggered (Relative to DUL, 0-1)?">.8</Trigger_Frac>
-            <Return_days type="text" description="How frequently can this paddock be irrigated (days)?">1</Return_days>
+            <Season_Start type="text" description="What is the earliest date in the year when irrigation would start">1-sep</Season_Start>
+            <Season_End type="text" description="What is the latest date in the year when irrigation would finish">30-may</Season_End>
+            <Season_Allocation type="text" description="What is the maximum amount of water (mm) available to apply to this paddock each season">1000</Season_Allocation>
+            <Dummy07 type="category" description="Application rule parameters" />
+            <Refull_Frac type="text" description="What is the maximum we want to refill the soil to (Relative to DUL, 0 - 1)?">.8</Refull_Frac>
+            <Trigger_Frac type="text" description="What is the deficit at which irrigation will be triggered (Relative to DUL, 0-1)?">.5</Trigger_Frac>
+            <Return_days type="text" description="How frequently can this paddock be irrigated (days)?">5</Return_days>
             <Maximum_Irrigation_Amount type="text" description="What is the maximum amount the irrigator can apply (mm)?">30</Maximum_Irrigation_Amount>
             <Top_Depth type="text" description="Depth to which deficit for calculating irrigation requirement is calculated. (mm)">600</Top_Depth>
           </ui>
@@ -601,10 +605,13 @@ public class Script
 {
    //Communication to other modules
    [Link] public Paddock MyPaddock;
-   [Link] public Irrigation IrrigMod;
+   [Link] public Irrigation Irrigation;
    
    //User inputs from properties tab
    [Param()][Output]  public string Irrigation_Yes_No;
+   [Param()][Output]  public string Season_Start;
+   [Param()][Output]  public string Season_End;
+   [Param()][Output]  public double Season_Allocation;
    [Param()][Output]  public double Refull_Frac;
    [Param()][Output]  public double Trigger_Frac;
    [Param()][Output]  public double Return_days;
@@ -612,13 +619,16 @@ public class Script
    [Param()][Output]  public double Top_Depth;
    
    //Variables from soil water module
+   [Input] public DateTime Today;
    [Input] public double[] dul_dep = null;
    [Input] public double[] ll15_dep = null;
    [Input] public double[] sw_dep = null;
    [Input] public double[] dlayer = null;
+   [Input] public double root_depth = 0;
    
    //Class members
    private bool IrrigationAvailable = false;
+   private bool SeasonOpen = false;
    private bool CropActive = false;
    [Output] public double Top_DUL = 0;
    [Output] public double Top_Refull = 0;
@@ -628,14 +638,12 @@ public class Script
    [Output] public double Accumulated_depth = 0;   
    [Output] public double Days_since_irrigation = 0;
    [Output] public double Amount_to_apply = 0;
+   [Output] public double Season_Application = 0;
    
    //Calculate static soil variables
    [EventHandler]
    public void OnInit2()
    {   
-      if (Irrigation_Yes_No == "yes")
-         IrrigationAvailable = true;
-      
       //Calculated soil water variables
        Accumulated_depth = 0;
        for (int layer = 0; Accumulated_depth &lt; Top_Depth; layer++)
@@ -645,7 +653,6 @@ public class Script
           Accumulated_depth += dlayer[layer];
        }
        Top_Refull = Top_LL + (Top_DUL - Top_LL) * Refull_Frac;
-       Top_Trigger = Top_LL + (Top_DUL - Top_LL) * Trigger_Frac;
    }
    
   
@@ -653,33 +660,55 @@ public class Script
    [EventHandler]
    public void OnPrepare()
    {
-       //How much irrigation would be needed
-       Accumulated_depth = 0;
-       Top_SW = 0;
-       for (int layer = 0; Accumulated_depth &lt; Top_Depth; layer++)
-       {
-          Top_SW += sw_dep[layer];
-          Accumulated_depth += dlayer[layer];
-       }
-       
-       Amount_to_apply = Math.Min(Top_Refull - Top_SW,Maximum_Irrigation_Amount);
-       Amount_to_apply = Math.Max(Amount_to_apply, 0.0);
-       
-       //Is there a crop in the ground in a state that would require irrigation.
-       CropActive = false;
-       foreach (CropType Crop in MyPaddock.Crops)
-       {
-         if ((Crop.stage &gt;= 3.0) &amp;&amp; (Crop.stage &lt; 8.0))
-         CropActive = true;
-       }
+      if (DateUtility.DatesEqual(Season_Start, Today))
+         Season_Application = 0;
       
-       //Decide to irrigate and if so do so
-       Days_since_irrigation += 1;
-       if((IrrigationAvailable == true) &amp;&amp; (CropActive == true) &amp;&amp; (Days_since_irrigation &gt;= Return_days) &amp;&amp; (Top_SW &lt;= Top_Trigger)) //The conditions are right for irrigation
-       {
-          IrrigMod.Apply((float)Amount_to_apply, 0, 0.0f, 0.0f, "", null, 0.0f, 0.0f, 0.0f, 0.0f);
-          Days_since_irrigation = 0;
-       }
+      //Calculate trigger soil water content which increases as the crops root system gets deper
+      double RelativeRootDepth = Math.Min(1.0, root_depth / Top_Depth);
+      Top_Trigger = Math.Min(Top_Refull, Top_DUL - (Top_DUL - Top_LL) * RelativeRootDepth * Trigger_Frac); 
+      
+      //Can we irrigate?
+      IrrigationAvailable = false; 
+      if (Irrigation_Yes_No == "yes")
+         IrrigationAvailable = true; 
+
+      //Are we within the irrigation season
+      SeasonOpen = true;
+      if(DateUtility.WithinDates(Season_End, Today, Season_Start))
+         SeasonOpen = false;
+      if(Season_Application &gt;= Season_Allocation)
+         SeasonOpen = false;
+         
+      //Is there a crop in the ground in a state that would require irrigation?
+      CropActive = false;
+      foreach (Component Crop in MyPaddock.Crops)
+      {
+         double CropStage = Crop.Variable("stage").ToDouble();
+         if ((CropStage &gt;= 3.0) &amp;&amp; (CropStage &lt; 8.0))
+            CropActive = true;
+      }      
+      
+      //How much irrigation would be needed if we did irrigate?
+      Accumulated_depth = 0;
+      Top_SW = 0;
+      for (int layer = 0; Accumulated_depth &lt; Top_Depth; layer++)
+      {
+         Top_SW += sw_dep[layer];
+         Accumulated_depth += dlayer[layer];
+      }
+      
+      Amount_to_apply = Math.Min(Top_Refull - Top_SW,Maximum_Irrigation_Amount);
+      Amount_to_apply = Math.Min(Amount_to_apply, Season_Allocation - Season_Application); 
+      Amount_to_apply = Math.Max(Amount_to_apply, 0.0);
+      
+      //Decide to irrigate and if so do so
+      Days_since_irrigation += 1;
+      if((IrrigationAvailable == true) &amp;&amp; (SeasonOpen == true) &amp;&amp; (CropActive == true) &amp;&amp; (Days_since_irrigation &gt;= Return_days) &amp;&amp; (Top_SW &lt;= Top_Trigger)) //The conditions are right for irrigation
+      {
+         Irrigation.Apply((float)Amount_to_apply, 0, 0.0f, 0.0f, "", null, 0.0f, 0.0f, 0.0f, 0.0f);
+         Days_since_irrigation = 0;
+         Season_Application += Amount_to_apply;
+      }
    }
 }</text>
         </manager2>
