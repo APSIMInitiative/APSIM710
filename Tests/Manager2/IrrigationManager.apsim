@@ -624,12 +624,13 @@ public class Script
    [Input] public double[] ll15_dep = null;
    [Input] public double[] sw_dep = null;
    [Input] public double[] dlayer = null;
-   [Input] public double root_depth = 0;
    
    //Class members
-   private bool IrrigationAvailable = false;
-   private bool SeasonOpen = false;
-   private bool CropActive = false;
+   private bool IrrigationIsAvailable = false;
+   private bool SeasonIsOpen = false;
+   private bool CropIsActive = false;
+   private bool IrrigatorIsAvailable = false;
+   private bool SoilIsDry = false;
    [Output] public double Top_DUL = 0;
    [Output] public double Top_Refull = 0;
    [Output] public double Top_Trigger = 0;
@@ -645,14 +646,14 @@ public class Script
    public void OnInit2()
    {   
       //Calculated soil water variables
-       Accumulated_depth = 0;
-       for (int layer = 0; Accumulated_depth &lt; Top_Depth; layer++)
-       {
-          Top_LL += ll15_dep[layer];
-          Top_DUL += dul_dep[layer];
-          Accumulated_depth += dlayer[layer];
-       }
-       Top_Refull = Top_LL + (Top_DUL - Top_LL) * Refull_Frac;
+      Accumulated_depth = 0;
+      for (int layer = 0; Accumulated_depth &lt; Top_Depth; layer++)
+      {
+         Top_LL += ll15_dep[layer];
+         Top_DUL += dul_dep[layer];
+         Accumulated_depth += dlayer[layer];
+      }
+      Top_Refull = Top_LL + (Top_DUL - Top_LL) * Refull_Frac;
    }
    
   
@@ -660,35 +661,47 @@ public class Script
    [EventHandler]
    public void OnPrepare()
    {
+      //Can we irrigate?
+      IrrigationIsAvailable = false; 
+      if (Irrigation_Yes_No == "yes")
+         IrrigationIsAvailable = true; 
+
+      //Are we Allowed to Irrigate
+      SeasonIsOpen = true;
       if (DateUtility.DatesEqual(Season_Start, Today))
          Season_Application = 0;
-      
-      //Calculate trigger soil water content which increases as the crops root system gets deper
-      double RelativeRootDepth = Math.Min(1.0, root_depth / Top_Depth);
-      Top_Trigger = Math.Min(Top_Refull, Top_DUL - (Top_DUL - Top_LL) * RelativeRootDepth * Trigger_Frac); 
-      
-      //Can we irrigate?
-      IrrigationAvailable = false; 
-      if (Irrigation_Yes_No == "yes")
-         IrrigationAvailable = true; 
-
-      //Are we within the irrigation season
-      SeasonOpen = true;
       if(DateUtility.WithinDates(Season_End, Today, Season_Start))
-         SeasonOpen = false;
+         SeasonIsOpen = false;
       if(Season_Application &gt;= Season_Allocation)
-         SeasonOpen = false;
-         
-      //Is there a crop in the ground in a state that would require irrigation?
-      CropActive = false;
+         SeasonIsOpen = false;
+      
+      //Is there a crop in the ground that needs irrigation?
+      CropIsActive = false;
       foreach (Component Crop in MyPaddock.Crops)
       {
          double CropStage = Crop.Variable("stage").ToDouble();
          if ((CropStage &gt;= 3.0) &amp;&amp; (CropStage &lt; 8.0))
-            CropActive = true;
+            CropIsActive = true;
       }      
       
-      //How much irrigation would be needed if we did irrigate?
+      //Is the irrigator available?
+      IrrigatorIsAvailable = false;
+      Days_since_irrigation += 1;
+      if (Days_since_irrigation &gt;= Return_days)
+         IrrigatorIsAvailable = true;
+      
+      
+      //Is the soil dry enough to require irrigation?
+      SoilIsDry = false;
+      double CurrentRootDepth = 0;
+      foreach (Component Crop in MyPaddock.Crops)
+      {
+         double RootDepth = Crop.Variable("root_depth").ToDouble();
+         CurrentRootDepth = Math.Max(RootDepth, CurrentRootDepth);
+      }
+      double RelativeRootDepth = Math.Min(1.0, CurrentRootDepth / Top_Depth);
+      Top_Trigger = Math.Min(Top_Refull, Top_DUL - (Top_DUL - Top_LL) * RelativeRootDepth * Trigger_Frac); 
+      
       Accumulated_depth = 0;
       Top_SW = 0;
       for (int layer = 0; Accumulated_depth &lt; Top_Depth; layer++)
@@ -696,16 +709,16 @@ public class Script
          Top_SW += sw_dep[layer];
          Accumulated_depth += dlayer[layer];
       }
-      
-      Amount_to_apply = Math.Min(Top_Refull - Top_SW,Maximum_Irrigation_Amount);
-      Amount_to_apply = Math.Min(Amount_to_apply, Season_Allocation - Season_Application); 
-      Amount_to_apply = Math.Max(Amount_to_apply, 0.0);
-      
-      //Decide to irrigate and if so do so
-      Days_since_irrigation += 1;
-      if((IrrigationAvailable == true) &amp;&amp; (SeasonOpen == true) &amp;&amp; (CropActive == true) &amp;&amp; (Days_since_irrigation &gt;= Return_days) &amp;&amp; (Top_SW &lt;= Top_Trigger)) //The conditions are right for irrigation
+      if (Top_SW &lt;= Top_Trigger)
+         SoilIsDry = true;
+            
+      //Lets bloody well irrigate then!!!!
+      if((IrrigationIsAvailable) &amp;&amp; (SeasonIsOpen) &amp;&amp; (CropIsActive) &amp;&amp; (IrrigatorIsAvailable) &amp;&amp; (SoilIsDry)) //The conditions are rife for irrigation
       {
-         Irrigation.Apply((float)Amount_to_apply, 0, 0.0f, 0.0f, "", null, 0.0f, 0.0f, 0.0f, 0.0f);
+         Amount_to_apply = Math.Min(Top_Refull - Top_SW, Maximum_Irrigation_Amount);
+         Amount_to_apply = Math.Min(Amount_to_apply, Season_Allocation - Season_Application); 
+         Amount_to_apply = Math.Max(Amount_to_apply, 0.0);
+         Irrigation.Apply((float) Amount_to_apply, 0, 0.0f, 0.0f, "", null, 0.0f, 0.0f, 0.0f, 0.0f);
          Days_since_irrigation = 0;
          Season_Application += Amount_to_apply;
       }
