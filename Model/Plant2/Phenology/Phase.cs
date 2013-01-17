@@ -67,6 +67,7 @@ abstract public class Phase
         _TTinPhase += ThermalTime.Value * PropOfDayToUse;
         return 0;
     }
+    virtual public void Add(double dlt_tt) { _TTinPhase += dlt_tt; }
     abstract public double FractionComplete { get; }
 
     [EventHandler]

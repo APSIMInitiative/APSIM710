@@ -845,9 +845,92 @@ public class Plant15
 
         Console.WriteLine("");
     }
+    #endregion
 
+    #region Grazing
+
+    [Output]
+    public AvailableToAnimalType AvailableToAnimal
+    {
+        get
+        {
+            List<AvailableToAnimalCohortsType> All = new List<AvailableToAnimalCohortsType>();
+            foreach (Organ1 Organ in Organ1s)
+            {
+                AvailableToAnimalCohortsType[] Available = Organ.AvailableToAnimal;
+                if (Available != null)
+                    All.AddRange(Available);
+            }
+            AvailableToAnimalType AvailableToAnimal = new AvailableToAnimalType();
+            AvailableToAnimal.Cohorts = All.ToArray();
+            return AvailableToAnimal;
+        }
+    }
+
+
+    [Output]
+    public RemovedByAnimalType RemovedByAnimal
+    {
+        get
+        {
+            return new RemovedByAnimalType();
+        }
+        set
+        {
+            if (value == null || value.Cohorts == null)
+                return;
+
+            double dmRemovedGreenTops = 0.0;
+            foreach (Organ1 Organ in Organ1s)
+            {
+                Organ.RemovedByAnimal = value;
+
+                // BUG? The old plant model always had dmRemovedGreenTops = 0.0;
+                //dmRemovedGreenTops += Organ.GreenRemoved.Wt;  
+            }
+
+            // Update biomass and N pools. Different types of plant pools are affected in different ways.
+            // Calculate Root Die Back
+            double chop_fr_green_leaf = MathUtility.Divide(Leaf.GreenRemoved.Wt, Leaf.Live.Wt, 0.0);
+
+            Root.RemoveBiomassFraction(chop_fr_green_leaf);
+            double biomassGreenTops = AboveGroundLive.Wt;
+
+            foreach (Organ1 Organ in Organ1s)
+                Organ.RemoveBiomass();
+
+            Stem.AdjustMorphologyAfterARemoveBiomass(); // the values calculated here are overwritten in plantPart::morphology(void)
+
+            // now update new canopy covers
+            PlantSpatial.Density = Population.Density;
+            PlantSpatial.CanopyWidth = 0.0; //Leaf.Width;
+
+            foreach (Organ1 Organ in Organ1s)
+                Organ.DoCover();
+
+            UpdateCanopy();
+
+            double remove_biom_pheno = MathUtility.Divide(dmRemovedGreenTops, biomassGreenTops, 0.0);
+            Phenology.OnRemoveBiomass(remove_biom_pheno);
+
+            foreach (Organ1 Organ in Organ1s)
+                Organ.DoNConccentrationLimits();
+
+            //protocol::ExternalMassFlowType EMF;
+            //EMF.PoolClass = "crop";
+            //EMF.FlowType = "loss";
+            //EMF.DM = (Tops().GreenRemoved.DM() + Tops().SenescedRemoved.DM()) * gm2kg / sm2ha;
+            //EMF.N = (Tops().GreenRemoved.N() + Tops().SenescedRemoved.N()) * gm2kg / sm2ha;
+            //EMF.P = (Tops().GreenRemoved.P() + Tops().SenescedRemoved.P()) * gm2kg / sm2ha;
+            //EMF.C = 0.0; // ?????
+            //EMF.SW = 0.0;
+            //scienceAPI.publish("ExternalMassFlow", EMF);
+
+        }
+    }
 
     #endregion
+
 
 }
    

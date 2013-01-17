@@ -26,6 +26,9 @@ class GenericArbitratorXY
     [Output("GrowthRate")]
     public double DMSupply;
 
+    [Output("dlt_dm")]
+    public double dlt_dm { get { return DMSupply; } } // needed by GRAZ
+
     public virtual double RatioRootPlant { get { return 0.0; } }
 
     internal void PartitionDM(List<Organ1> Organs)

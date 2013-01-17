@@ -45,6 +45,8 @@ abstract public class BaseOrgan1 : Organ1
     public abstract Biomass Retranslocation { get; protected set; }
     public abstract Biomass Growth { get; protected set; }
     public abstract Biomass Detaching { get; protected set; }
+    public abstract Biomass GreenRemoved { get; protected set; }
+    public abstract Biomass SenescedRemoved { get; protected set; }
 
     // Soil water
     public abstract double SWSupply { get; }
@@ -65,6 +67,7 @@ abstract public class BaseOrgan1 : Organ1
     public abstract void GiveDmGreen(double Delta);
     public abstract void DoSenescence();
     public abstract void DoDetachment();
+    public abstract void RemoveBiomass();
 
     // nitrogen
     public abstract double NSupply { get; }
@@ -102,4 +105,9 @@ abstract public class BaseOrgan1 : Organ1
     public abstract void OnPrepare();
     public abstract void OnHarvest(HarvestType Harvest, BiomassRemovedType BiomassRemoved);
     public abstract void OnEndCrop(BiomassRemovedType BiomassRemoved);
+
+    // grazing
+    public abstract AvailableToAnimalCohortsType[] AvailableToAnimal { get; }
+    public abstract RemovedByAnimalType RemovedByAnimal { set; }
+
 }

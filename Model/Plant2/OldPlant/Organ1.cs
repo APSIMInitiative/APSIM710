@@ -14,6 +14,8 @@ interface Organ1
     Biomass Retranslocation { get; }
     Biomass Growth { get; }
     Biomass Detaching { get; }
+    Biomass GreenRemoved { get; }
+    Biomass SenescedRemoved { get; }
 
     // Soil water
     double SWSupply { get; }
@@ -34,6 +36,7 @@ interface Organ1
     void GiveDmGreen(double Delta);
     void DoSenescence();
     void DoDetachment();
+    void RemoveBiomass();
 
     // nitrogen
     double NSupply { get; }
@@ -72,8 +75,7 @@ interface Organ1
     void OnHarvest(HarvestType Harvest, BiomassRemovedType BiomassRemoved);
     void OnEndCrop(BiomassRemovedType BiomassRemoved);
 
-
-
-
-
+    // grazing
+    AvailableToAnimalCohortsType[] AvailableToAnimal { get; }
+    RemovedByAnimalType RemovedByAnimal { set; }
 }

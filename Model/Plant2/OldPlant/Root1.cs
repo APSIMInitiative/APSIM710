@@ -205,6 +205,8 @@ public class Root1 : BaseOrgan1, BelowGround
     public override Biomass Retranslocation { get; protected set; }
     public override Biomass Growth { get; protected set; }
     public override Biomass Detaching { get; protected set; }
+    public override Biomass GreenRemoved { get; protected set; }
+    public override Biomass SenescedRemoved { get; protected set; }
 
     // Soil water
     public override double SWSupply { get { return MathUtility.Sum(sw_supply); } }
@@ -291,6 +293,11 @@ public class Root1 : BaseOrgan1, BelowGround
         Detaching = Dead * SenescenceDetachmentFraction;
         Util.Debug("Root.Detaching.Wt=%f", Detaching.Wt);
         Util.Debug("Root.Detaching.N=%f", Detaching.N);
+    }
+    public override void RemoveBiomass()
+    {
+        Live = Live - GreenRemoved;
+        Dead = Dead - SenescedRemoved;
     }
 
     // nitrogen
@@ -754,6 +761,27 @@ public class Root1 : BaseOrgan1, BelowGround
                                         Conversions.fract2pcnt * MathUtility.Divide(esw_tot, dep_tot, 0.0)));
     }
 
+    /// <summary>
+    /// Remove biomass from the root system due to senescence or plant death
+    /// </summary>
+    internal void RemoveBiomassFraction(double Fraction)
+    {
+        Biomass Dead;
+        Dead = Live * DieBackFraction * Fraction;
+        // however dead roots have a given N concentration
+        Dead.StructuralN = Dead.Wt * NSenescenceConcentration;
+
+        Live = Live - Dead;
+        Dead = Dead + Dead;
+
+        // do root_length
+        double[] dltRootLengthDie = new double[dlayer.Length];
+        double Die_length = Dead.Wt / Conversions.sm2smm * SpecificRootLength;
+        RootDist(Die_length, dltRootLengthDie);
+        for (int layer = 0; layer < dlayer.Length; layer++)
+            RootLength[layer] -= dltRootLengthDie[layer];
+   }
+
     #endregion
 
     #region Event handlers
@@ -768,6 +796,9 @@ public class Root1 : BaseOrgan1, BelowGround
         Retranslocation = new Biomass();
         Growth = new Biomass();
         Detaching = new Biomass();
+        GreenRemoved = new Biomass();
+        SenescedRemoved = new Biomass();
+
         dlt_sw_dep = new double[dlayer.Length];
         sw_avail = new double[dlayer.Length];
         sw_avail_pot = new double[dlayer.Length];
@@ -1115,5 +1146,10 @@ public class Root1 : BaseOrgan1, BelowGround
 
     #endregion
 
+
+    #region Grazing
+    public override AvailableToAnimalCohortsType[] AvailableToAnimal { get { return null; } }
+    public override RemovedByAnimalType RemovedByAnimal { set { } }
+    #endregion
 }
 

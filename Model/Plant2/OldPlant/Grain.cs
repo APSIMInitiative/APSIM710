@@ -106,8 +106,6 @@ public class Grain : BaseOrgan1, AboveGround, Reproductive
     public double dlt_n_senesced_trans;
     public double dlt_height;                       // growth upwards (mm)
     public double dlt_width;                        // growth outwards (mm)
-    private Biomass GreenRemoved = new Biomass();
-    private Biomass SenescedRemoved = new Biomass();
     private double _DMGreenDemand;
     private double _NDemand;
     private double _SoilNDemand;
@@ -125,6 +123,8 @@ public class Grain : BaseOrgan1, AboveGround, Reproductive
     public override Biomass Retranslocation { get; protected set; }
     public override Biomass Growth { get; protected set; }
     public override Biomass Detaching { get; protected set; }
+    public override Biomass GreenRemoved { get; protected set; }
+    public override Biomass SenescedRemoved { get; protected set; }
 
     // Soil water
     public override double SWSupply { get { return 0; } }
@@ -173,6 +173,11 @@ public class Grain : BaseOrgan1, AboveGround, Reproductive
         Detaching = Dead * SenescenceDetachmentFraction;
         Util.Debug("meal.Detaching.Wt=%f", Detaching.Wt);
         Util.Debug("meal.Detaching.N=%f", Detaching.N);
+    }
+    public override void RemoveBiomass()
+    {
+        Live = Live - GreenRemoved;
+        Dead = Dead - SenescedRemoved;
     }
 
     // nitrogen
@@ -434,8 +439,6 @@ public class Grain : BaseOrgan1, AboveGround, Reproductive
         Console.WriteLine(string.Format("   potential_grain_growth_rate    = {0,10:F4} (g/grain/day)", PotentialGrainGrowthRate));
         Console.WriteLine(string.Format("   max_grain_size                 = {0,10:F4} (g)", MaxGrainSize));
     }
-
-
     #endregion
 
     #region Event handlers
@@ -446,6 +449,8 @@ public class Grain : BaseOrgan1, AboveGround, Reproductive
         Retranslocation = new Biomass();
         Growth = new Biomass();
         Detaching = new Biomass();
+        GreenRemoved = new Biomass();
+        SenescedRemoved = new Biomass();
     }
 
     public  override void OnPrepare()
@@ -506,5 +511,25 @@ public class Grain : BaseOrgan1, AboveGround, Reproductive
 
     #endregion
 
+    #region Grazing
+    public override AvailableToAnimalCohortsType[] AvailableToAnimal 
+    { get { return Util.AvailableToAnimal(Plant.Name, My.Name, 0.0, Live, Dead); } }
+    public override RemovedByAnimalType RemovedByAnimal
+    {
+        set
+        {
+            foreach (RemovedByAnimalCohortsType Cohort in value.Cohorts)
+            {
+                if (Cohort.Organ.Equals(My.Name, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    if (Cohort.AgeID.Equals("live", StringComparison.CurrentCultureIgnoreCase))
+                        GreenRemoved = Util.RemoveDM(Cohort.WeightRemoved * Conversions.kg2gm / Conversions.ha2sm, Live, My.Name);
+                    else if (Cohort.AgeID.Equals("dead", StringComparison.CurrentCultureIgnoreCase))
+                        SenescedRemoved = Util.RemoveDM(Cohort.WeightRemoved * Conversions.kg2gm / Conversions.ha2sm, Dead, My.Name);
+                }
+            }
+        }
+    }
+    #endregion
 }
 

@@ -18,6 +18,10 @@ public class Phenology
     VernalisationSIRIUS VernalisationSIRIUS = null;
     [Link(IsOptional = true)]
     FacultativeVernalisationPhase FacultativeVernalisationPhase = null;
+    [Link(IsOptional = true)]
+    Function RewindDueToBiomassRemoved = null;
+    [Link(IsOptional = true)]
+    Function AboveGroundPeriod = null;
 
     [NonSerialized]
     private List<Phase> Phases = new List<Phase>();
@@ -32,6 +36,9 @@ public class Phenology
     }
     private string CurrentlyOnFirstDayOfPhase = "";
     private bool JustInitialised = true;
+
+    [Output]
+    public double FractionBiomassRemoved = 0;
 
     /// <summary>
     /// A one based stage number.
@@ -343,6 +350,93 @@ public class Phenology
         Console.WriteLine("   Phases:");
         foreach (Phase P in Phases)
             P.WriteSummary();
+    }
+
+    /// <summary>
+    /// Respond to a remove biomass event.
+    /// </summary>
+    internal void OnRemoveBiomass(double removeBiomPheno)
+    {
+        string existingStage = CurrentStageName;
+        if (RewindDueToBiomassRemoved != null)
+        {
+            FractionBiomassRemoved = removeBiomPheno; // The RewindDueToBiomassRemoved function will use this.
+
+            double ttCritical = TTInAboveGroundPhase;
+            double removeFractPheno = RewindDueToBiomassRemoved.Value;
+            double removeTTPheno = ttCritical * removeFractPheno;
+
+            string msg;
+            msg = "Phenology change:-\r\n";
+            msg += "    Fraction DM removed  = " + removeBiomPheno.ToString() + "\r\n";
+            msg += "    Fraction TT removed  = " + removeFractPheno.ToString()  + "\r\n";
+            msg += "    Critical TT          = " + ttCritical.ToString()  + "\r\n";
+            msg += "    Remove TT            = " + removeTTPheno.ToString()  + "\r\n";
+
+            double ttRemaining = removeTTPheno;
+            for (int i = Phases.Count-1; i >= 0; i--)
+            {
+                Phase Phase = Phases[i];
+                if (Phase.TTinPhase > 0)
+                {
+                    double ttCurrentPhase = Phase.TTinPhase;
+                    if (ttRemaining > ttCurrentPhase)
+                    {
+                        Phase.ResetPhase();
+                        ttRemaining -= ttCurrentPhase;
+                        CurrentPhaseIndex -= 1;
+                        if (CurrentPhaseIndex < 4)  //FIXME - hack to stop onEmergence being fired which initialises biomass parts
+                        {
+                            CurrentPhaseIndex = 4;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        Phase.Add(-ttRemaining);
+                        // Return fraction of thermal time we are through the current
+                        // phenological phase (0-1)
+                        //double frac = Phase.FractionComplete;
+                        //if (frac > 0.0 && frac < 1.0)  // Don't skip out of this stage - some have very low targets, eg 1.0 in "maturity"
+                        //    currentStage = frac + floor(currentStage);
+
+                        break;
+                    }
+                }
+                else
+                { // phase is empty - not interested in it
+                }
+            }
+            Stage = (CurrentPhaseIndex + 1) + CurrentPhase.FractionComplete;
+
+            if (existingStage != CurrentStageName)
+            {
+                PhaseChangedType PhaseChangedData = new PhaseChangedType();
+                PhaseChangedData.OldPhaseName = existingStage;
+                PhaseChangedData.NewPhaseName = CurrentPhase.Name;
+                PhaseChanged.Invoke(PhaseChangedData);
+                MyPaddock.Publish(CurrentPhase.Start);
+            }
+        }
+    }
+
+    private double TTInAboveGroundPhase
+    {
+        get
+        {
+            if (AboveGroundPeriod == null)
+                throw new Exception("Cannot find Phenology.AboveGroundPeriod function in xml file");
+
+            int SavedCurrentPhaseIndex = CurrentPhaseIndex;
+            double TTInPhase = 0.0;
+            for (CurrentPhaseIndex = 0; CurrentPhaseIndex < Phases.Count; CurrentPhaseIndex++)
+            {
+                if (AboveGroundPeriod.Value == 1)
+                    TTInPhase += Phases[CurrentPhaseIndex].TTinPhase;
+            }
+            CurrentPhaseIndex = SavedCurrentPhaseIndex;
+            return TTInPhase;
+        }
     }
 }
 

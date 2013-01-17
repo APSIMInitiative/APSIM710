@@ -288,5 +288,56 @@ using ModelFramework;
                 NDemand = NMax = 0.0;
         }
 
+        public static AvailableToAnimalCohortsType[] AvailableToAnimal(string PlantName, string OrganName, double PlantHeight,
+                                                                       Biomass Live, Biomass Dead)
+        {
+            AvailableToAnimalCohortsType[] Available = new AvailableToAnimalCohortsType[2];
+            Available[0] = new AvailableToAnimalCohortsType();
+            Available[0].CohortID = PlantName;
+            Available[0].Organ = OrganName;
+            Available[0].AgeID = "live";
+            Available[0].Bottom = 0.0;
+            Available[0].Top = PlantHeight;
+            Available[0].Chem = "digestible";
+            Available[0].Weight = Live.Wt * Conversions.gm2kg / Conversions.sm2ha;
+            Available[0].N = Live.N * Conversions.gm2kg / Conversions.sm2ha;
+            Available[0].P = 0.0; //Live.P * Conversions.gm2kg / Conversions.sm2ha;
+            Available[0].S = 0.0;
+            Available[0].AshAlk = 0.0;
 
+            Available[1] = new AvailableToAnimalCohortsType();
+            Available[1].CohortID = PlantName;
+            Available[1].Organ = OrganName;
+            Available[1].AgeID = "dead";
+            Available[1].Bottom = 0.0;
+            Available[1].Top = PlantHeight;
+            Available[1].Chem = "digestible";
+            Available[1].Weight = Dead.Wt * Conversions.gm2kg / Conversions.sm2ha;
+            Available[1].N = Dead.N * Conversions.gm2kg / Conversions.sm2ha;
+            Available[1].P = 0.0; //Dead.P * Conversions.gm2kg / Conversions.sm2ha;
+            Available[1].S = 0.0;
+            Available[1].AshAlk = 0.0;
+            return Available;
+        }
+
+        /// <summary>
+        /// Remove some dm. The fraction removed is calculation and put into the RemovedPool so that
+        /// later one it can be removed from the actual Pool in the update routine.
+        /// Routine was called giveDMGreenRemoved and giveDMSenescedRemoved in old Plant.
+        /// </summary>
+        internal static Biomass RemoveDM(double delta, Biomass Pool, string OrganName)
+        {
+            double fraction = MathUtility.Divide(delta, Pool.Wt, 0.0);
+            Biomass RemovedPool = Pool * fraction;
+
+            double error_margin = 1.0e-6f;
+            if (delta > Pool.Wt + error_margin)
+            {
+                string msg;
+                msg = "Attempting to remove more green " + OrganName + " biomass than available:-\r\n";
+                msg += "Removing -" + delta.ToString() + " (g/m2) from " + Pool.Wt.ToString() + " (g/m2) available.";
+                throw new Exception(msg);
+            }
+            return RemovedPool;
+        }
     }

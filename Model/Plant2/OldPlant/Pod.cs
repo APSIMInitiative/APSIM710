@@ -15,6 +15,9 @@ public class Pod : BaseOrgan1, AboveGround
     Environment Environment = null;
 
     [Link]
+    Stem1 Stem = null;
+
+    [Link]
     Function TE = null;
 
     [Link]
@@ -68,8 +71,6 @@ public class Pod : BaseOrgan1, AboveGround
     private double dlt_dm_pot_rue;
     private double dlt_n_senesced_retrans;           // plant N retranslocated to/from (+/-) senesced part to/from <<somewhere else??>> (g/m^2)
     private double dlt_n_senesced_trans;
-    private Biomass GreenRemoved = new Biomass();
-    private Biomass SenescedRemoved = new Biomass();
     private double _DMGreenDemand;
     private double _NDemand;
     private double _SoilNDemand;
@@ -88,6 +89,8 @@ public class Pod : BaseOrgan1, AboveGround
     public override Biomass Retranslocation { get; protected set; }
     public override Biomass Growth { get; protected set; }
     public override Biomass Detaching { get; protected set; }
+    public override Biomass GreenRemoved { get; protected set; }
+    public override Biomass SenescedRemoved { get; protected set; }
 
     // Soil water
     public override double SWSupply { get { return 0; } }
@@ -183,7 +186,11 @@ public class Pod : BaseOrgan1, AboveGround
         Util.Debug("Pod.Detaching.Wt=%f", Detaching.Wt);
         Util.Debug("Pod.Detaching.N=%f", Detaching.N);
     }
-
+    public override void RemoveBiomass()
+    {
+        Live = Live - GreenRemoved;
+        Dead = Dead - SenescedRemoved;
+    }
     // nitrogen
     public override double NDemand { get { return _NDemand; } }
     public override double NSupply { get { return 0; } }
@@ -363,6 +370,8 @@ public class Pod : BaseOrgan1, AboveGround
         Senescing = new Biomass();
         Detaching = new Biomass();
         Retranslocation = new Biomass();
+        GreenRemoved = new Biomass();
+        SenescedRemoved = new Biomass();
     }
     public override void OnPrepare()
     {
@@ -434,6 +443,26 @@ public class Pod : BaseOrgan1, AboveGround
     }
     #endregion
 
+    #region Grazing
+    public override AvailableToAnimalCohortsType[] AvailableToAnimal
+    { get { return Util.AvailableToAnimal(Plant.Name, My.Name, 0.0, Live, Dead); } }
+    public override RemovedByAnimalType RemovedByAnimal
+    {
+        set
+        {
+            foreach (RemovedByAnimalCohortsType Cohort in value.Cohorts)
+            {
+                if (Cohort.Organ.Equals(My.Name, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    if (Cohort.AgeID.Equals("live", StringComparison.CurrentCultureIgnoreCase))
+                        GreenRemoved = Util.RemoveDM(Cohort.WeightRemoved * Conversions.kg2gm / Conversions.ha2sm, Live, My.Name);
+                    else if (Cohort.AgeID.Equals("dead", StringComparison.CurrentCultureIgnoreCase))
+                        SenescedRemoved = Util.RemoveDM(Cohort.WeightRemoved * Conversions.kg2gm / Conversions.ha2sm, Dead, My.Name);
+                }
+            }
+        }
+    }
+    #endregion
 }
 
 

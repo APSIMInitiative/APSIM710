@@ -66,8 +66,6 @@ public class Stem1 : BaseOrgan1, AboveGround
     public double dlt_height;                       // growth upwards (mm)
     public double dlt_width;                        // growth outwards (mm)
 
-    private Biomass GreenRemoved = new Biomass();
-    private Biomass SenescedRemoved = new Biomass();
     private double _DMGreenDemand;
     private double _NDemand;
     private double _SoilNDemand;
@@ -86,6 +84,8 @@ public class Stem1 : BaseOrgan1, AboveGround
     public override Biomass Retranslocation { get; protected set; }
     public override Biomass Growth { get; protected set; }
     public override Biomass Detaching { get; protected set; }
+    public override Biomass GreenRemoved { get; protected set; }
+    public override Biomass SenescedRemoved { get; protected set; }
 
     // Soil water
     public override double SWSupply { get { return 0; } }
@@ -130,7 +130,18 @@ public class Stem1 : BaseOrgan1, AboveGround
         Util.Debug("Stem.Detaching.Wt=%f", Detaching.Wt);
         Util.Debug("Stem.Detaching.N=%f", Detaching.N);
     }
-    
+    public override void RemoveBiomass()
+    {
+        Live = Live - GreenRemoved;
+        Dead = Dead - SenescedRemoved;
+    }
+    internal void AdjustMorphologyAfterARemoveBiomass()
+    {
+        double dm_plant = MathUtility.Divide(Live.Wt, Population.Density, 0.0);
+
+        if (HeightFunction != null)
+            Height = HeightFunction.Value;
+    }
     // nitrogen
     public override double NDemand { get { return _NDemand; } }
     public override double NSupply { get { return 0; } }
@@ -318,6 +329,8 @@ public class Stem1 : BaseOrgan1, AboveGround
         Retranslocation = new Biomass();
         Growth = new Biomass();
         Detaching = new Biomass();
+        GreenRemoved = new Biomass();
+        SenescedRemoved = new Biomass();
     }
 
     public override void OnPrepare()
@@ -396,5 +409,25 @@ public class Stem1 : BaseOrgan1, AboveGround
 
     #endregion
 
+    #region Grazing
+    public override AvailableToAnimalCohortsType[] AvailableToAnimal
+    { get { return Util.AvailableToAnimal(Plant.Name, My.Name, Height, Live, Dead); } }
+    public override RemovedByAnimalType RemovedByAnimal
+    {
+        set
+        {
+            foreach (RemovedByAnimalCohortsType Cohort in value.Cohorts)
+            {
+                if (Cohort.Organ.Equals(My.Name, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    if (Cohort.AgeID.Equals("live", StringComparison.CurrentCultureIgnoreCase))
+                        GreenRemoved = Util.RemoveDM(Cohort.WeightRemoved * Conversions.kg2gm / Conversions.ha2sm, Live, My.Name);
+                    else if (Cohort.AgeID.Equals("dead", StringComparison.CurrentCultureIgnoreCase))
+                        SenescedRemoved = Util.RemoveDM(Cohort.WeightRemoved * Conversions.kg2gm / Conversions.ha2sm, Dead, My.Name);
+                }
+            }
+        }
+    }
+    #endregion
 }
 

@@ -15,6 +15,9 @@ public class Leaf1 : BaseOrgan1, AboveGround
     public Component My;
 
     [Link]
+    public Stem1 Stem;
+
+    [Link]
     Environment Environment = null;
 
     [Link]
@@ -156,8 +159,6 @@ public class Leaf1 : BaseOrgan1, AboveGround
     public double dlt_n_senesced_trans;
     public double dlt_height;                       // growth upwards (mm)
     public double dlt_width;                        // growth outwards (mm)
-    private Biomass GreenRemoved = new Biomass();
-    private Biomass SenescedRemoved = new Biomass();
     public double width = 0;
     private double _NDemand = 0;
     private double _SoilNDemand = 0;
@@ -204,6 +205,8 @@ public class Leaf1 : BaseOrgan1, AboveGround
     public override Biomass Retranslocation { get; protected set; }
     public override Biomass Growth { get; protected set; }
     public override Biomass Detaching { get; protected set; }
+    public override Biomass GreenRemoved { get; protected set; }
+    public override Biomass SenescedRemoved { get; protected set; }
 
     // Soil water
     public override double SWSupply { get { return 0; } }
@@ -322,6 +325,41 @@ public class Leaf1 : BaseOrgan1, AboveGround
         Util.DebugArray("leaf.LeafArea=%f0", LeafArea, 10);
         Util.Debug("Leaf.Detaching.Wt=%f", Detaching.Wt);
         Util.Debug("Leaf.Detaching.N=%f", Detaching.N);
+    }
+    public override void RemoveBiomass()
+    {
+        double chop_fr_green = MathUtility.Divide(GreenRemoved.Wt, Live.Wt, 0.0);
+        double chop_fr_sen   = MathUtility.Divide(SenescedRemoved.Wt, Dead.Wt, 0.0);
+
+        double dlt_lai = LAI * chop_fr_green;
+        double dlt_slai = SLAI * chop_fr_sen;
+
+        // keep leaf area above a minimum
+        double lai_init = InitialTPLA * Conversions.smm2sm * Population.Density;
+        double dlt_lai_max = LAI - lai_init;
+        dlt_lai = MathUtility.Constrain(dlt_lai, double.MinValue, dlt_lai_max);
+
+        _LAI -= dlt_lai;
+        _SLAI -= dlt_slai;
+        RemoveDetachment(dlt_slai, dlt_lai);
+
+        Live = Live - GreenRemoved;
+        Dead = Dead - SenescedRemoved;
+
+        // keep dm above a minimum
+        double dm_init = InitialWt * Population.Density;
+        double n_init = dm_init * InitialNConcentration;
+        if (Live.Wt < dm_init)
+           {
+       	    // keep dm above a minimum
+           Live.StructuralWt = Live.StructuralWt * dm_init / Live.Wt;
+           Live.NonStructuralWt = Live.NonStructuralWt * dm_init / Live.Wt;
+           }
+        if (Live.N < n_init)
+           {
+       	    // keep N above a minimum
+           Live.StructuralN = n_init;
+           }
     }
 
     // nitrogen
@@ -721,6 +759,8 @@ public class Leaf1 : BaseOrgan1, AboveGround
         Retranslocation = new Biomass();
         Growth = new Biomass();
         Detaching = new Biomass();
+        GreenRemoved = new Biomass();
+        SenescedRemoved = new Biomass();
         LeafNo = new double[max_node];
         LeafNoSen = new double[max_node];
         LeafArea = new double[max_node];
@@ -985,6 +1025,85 @@ public class Leaf1 : BaseOrgan1, AboveGround
         return MathUtility.Constrain(dlt_slai_low_temp, 0.0, max_sen);
     }
 
+    
+    /// <summary>
+    /// Remove detachment from leaf area record
+    /// </summary>
+    void RemoveDetachment(double dlt_slai_detached, double dlt_lai_removed)
+    {
+        // Remove detachment from leaf area record from bottom upwards
+        double area_detached = dlt_slai_detached * Conversions.sm2smm;  // (mm2/plant)
+
+        for (int node = 0; node < max_node; node++)
+        {
+            if (area_detached > LeafArea[node])
+            {
+                area_detached = area_detached - LeafArea[node];
+                LeafArea[node] = 0.0;
+            }
+            else
+            {
+                LeafArea[node] = LeafArea[node] - area_detached;
+                break;
+            }
+        }
+
+        // Remove detachment from leaf area record from top downwards
+        double area_removed = dlt_lai_removed * Conversions.sm2smm;  // (mm2/plant)
+
+        for (int node = (int)NodeNo; node >= 0; node--)
+        {
+            if (area_removed > LeafArea[node])
+            {
+                area_removed = area_removed - LeafArea[node];
+                LeafArea[node] = 0.0;
+            }
+            else
+            {
+                LeafArea[node] = LeafArea[node] - area_removed;
+                break;
+            }
+        }
+
+        // calc new node number
+        for (int node = max_node - 1; node >= 0; node--)
+        {
+            if (!MathUtility.FloatsAreEqual(LeafArea[node], 0.0, 1.0E-4f))    // Slop?
+            {
+                NodeNo = (double)node;  //FIXME - need adjustment for leafs remaining in for this node
+                break;
+            }
+        }
+
+        // calc new leaf number
+        int newNodeNo = (int)(1.0 + NodeNo);
+        for (int node = newNodeNo - 1; node < max_node; node++)
+        {
+            LeafNo[node] = 0.0;
+            LeafNoSen[node] = 0.0;
+        }
+    }
+    #endregion
+
+    #region Grazing
+    public override AvailableToAnimalCohortsType[] AvailableToAnimal
+    { get { return Util.AvailableToAnimal(Plant.Name, My.Name, 0.0, Live, Dead); } }
+    public override RemovedByAnimalType RemovedByAnimal
+    {
+        set
+        {
+            foreach (RemovedByAnimalCohortsType Cohort in value.Cohorts)
+            {
+                if (Cohort.Organ.Equals(My.Name, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    if (Cohort.AgeID.Equals("live", StringComparison.CurrentCultureIgnoreCase))
+                        GreenRemoved = Util.RemoveDM(Cohort.WeightRemoved * Conversions.kg2gm / Conversions.ha2sm, Live, My.Name);
+                    else if (Cohort.AgeID.Equals("dead", StringComparison.CurrentCultureIgnoreCase))
+                        SenescedRemoved = Util.RemoveDM(Cohort.WeightRemoved * Conversions.kg2gm / Conversions.ha2sm, Dead, My.Name);
+                }
+            }
+        }
+    }
     #endregion
 }
 
