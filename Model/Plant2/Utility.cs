@@ -60,8 +60,10 @@ using ModelFramework;
             string[] Bits = StringManip.SplitStringHonouringBrackets(NamePath, '.', '[', ']');
             for (int i = 0; i < Bits.Length; i++)
             {
+                string ArraySpecifier = "";
                 bool ArrayFound = Bits[i].Contains("[");
-                string ArraySpecifier = StringManip.SplitOffBracketedValue(ref Bits[i], '[', ']');
+                if (ArrayFound)
+                    ArraySpecifier = StringManip.SplitOffBracketedValue(ref Bits[i], '[', ']');
 
                 object MatchingChild;
                 if (RelativeTo is Component)

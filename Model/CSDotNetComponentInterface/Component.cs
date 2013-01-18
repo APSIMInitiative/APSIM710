@@ -838,7 +838,7 @@ namespace ModelFramework
                     if (RelativeTo.Children[j] is Instance)
                     {
                         Instance Child = (Instance)RelativeTo.Children[j];
-                        if (Child.Name.ToLower() == Bits[i].ToLower())
+                        if (String.Compare(Child.Name, Bits[i], System.StringComparison.OrdinalIgnoreCase) == 0)
                         {
                             MatchingChild = Child;
                             break;

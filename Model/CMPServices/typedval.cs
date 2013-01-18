@@ -810,7 +810,7 @@ namespace CMPServices
         public Boolean setValue(Double[] values)
         {
             Boolean result = false;
-            if (isArray() && (FBaseType != TBaseType.ITYPE_DEF) && (values != null))
+            if (FIsArray && (FBaseType != TBaseType.ITYPE_DEF) && (values != null))
             {
                 result = true;
                 setElementCount((uint)values.Length);
@@ -830,7 +830,7 @@ namespace CMPServices
         public Boolean setValue(int[] values)
         {
             Boolean result = false;
-            if (isArray() && (FBaseType != TBaseType.ITYPE_DEF) && (values != null))
+            if (FIsArray && (FBaseType != TBaseType.ITYPE_DEF) && (values != null))
             {
                 result = true;
                 setElementCount((uint)values.Length);
@@ -850,7 +850,7 @@ namespace CMPServices
         public Boolean setValue(Single[] values)
         {
             Boolean result = false;
-            if (isArray() && (FBaseType != TBaseType.ITYPE_DEF) && (values != null))
+            if (FIsArray && (FBaseType != TBaseType.ITYPE_DEF) && (values != null))
             {
                 result = true;
                 setElementCount((uint)values.Length);
@@ -870,7 +870,7 @@ namespace CMPServices
         public Boolean setValue(Boolean[] values)
         {
             Boolean result = false;
-            if (isArray() && (FBaseType != TBaseType.ITYPE_DEF) && (values != null))
+            if (FIsArray && (FBaseType != TBaseType.ITYPE_DEF) && (values != null))
             {
                 result = true;
                 setElementCount((uint)values.Length);
@@ -890,7 +890,7 @@ namespace CMPServices
         public Boolean setValue(String[] values)
         {
             Boolean result = false;
-            if (isArray() && (FBaseType == TBaseType.ITYPE_STR) && (values != null))
+            if (FIsArray && (FBaseType == TBaseType.ITYPE_STR) && (values != null))
             {
                 result = true;
                 setElementCount((uint)values.Length);
@@ -1187,7 +1187,7 @@ namespace CMPServices
 
             if (srcValue != null)
             {
-                bCompatible = ((isScalar() == srcValue.isScalar()) && (isArray() == srcValue.isArray()));
+                bCompatible = ((FIsScalar == srcValue.isScalar()) && (FIsArray == srcValue.isArray()));
                 if (baseType() == TBaseType.ITYPE_DEF)
                 {
                     bCompatible = (bCompatible && (srcValue.baseType() == TBaseType.ITYPE_DEF));
@@ -1197,7 +1197,7 @@ namespace CMPServices
                     String error = String.Format("Incompatible assignment from {0} to {1}\nCannot convert {2} to {3}", Name, srcValue.Name, srcValue.baseType(),ToString(), baseType().ToString());
                     throw (new TypeMisMatchException(error));
                 }
-                if (isScalar())
+                if (FIsScalar)
                 {
                     try
                     {
@@ -1242,7 +1242,7 @@ namespace CMPServices
                 }
                 else
                 {
-                    if (isArray())
+                    if (FIsArray)
                     {
                         setElementCount(srcValue.count());
                     }
@@ -1476,7 +1476,7 @@ namespace CMPServices
         {
             uint iCount = count();
             int[] data = new int[0];
-            if (isArray() && (iCount > 0) )
+            if (FIsArray && (iCount > 0) )
             {
                 data = new int[iCount];
                 if (item(1).isScalar())
@@ -1526,7 +1526,7 @@ namespace CMPServices
             String errorMsg = "";
             int value = 0;
 
-            if (isScalar() && (FData != null))
+            if (FIsScalar && (FData != null))
             {
                 switch (FBaseType)
                 {
@@ -1567,7 +1567,7 @@ namespace CMPServices
         {
             uint iCount = count();
             float[] data = new float[0];
-            if (isArray() && (iCount > 0))
+            if (FIsArray && (iCount > 0))
             {
                 data = new float[iCount];
                 if (item(1).isScalar())
@@ -1592,7 +1592,7 @@ namespace CMPServices
             String errorMsg = "";
             float value = 0.0f;
 
-            if (isScalar() && (FData != null))
+            if (FIsScalar && (FData != null))
             {
                 switch (FBaseType)
                 {
@@ -1638,7 +1638,7 @@ namespace CMPServices
         {
             uint iCount = count();
             double[] data = new double[0];
-            if (isArray() && (iCount > 0))
+            if (FIsArray && (iCount > 0))
             {
                 data = new double[iCount];
                 if (item(1).isScalar())
@@ -1663,7 +1663,7 @@ namespace CMPServices
             String errorMsg = "";
             double value = 0.0;
 
-            if (isScalar() && (FData != null))
+            if (FIsScalar && (FData != null))
             {
                 switch (FBaseType)
                 {
@@ -1708,7 +1708,7 @@ namespace CMPServices
         {
             uint iCount = count();
             Boolean[] data = new Boolean[0];
-            if (isArray() && (iCount > 0))
+            if (FIsArray && (iCount > 0))
             {
                 data = new Boolean[iCount];
                 if (item(1).isScalar())
@@ -1758,7 +1758,7 @@ namespace CMPServices
             String errorMsg;
             Boolean value = false;
 
-            if (isScalar() && (FData != null))
+            if (FIsScalar && (FData != null))
             {
                 switch (FBaseType)
                 {
@@ -1798,7 +1798,7 @@ namespace CMPServices
             String errorMsg = "";
             Char value = '\0';
 
-            if (isScalar() && (FData != null))
+            if (FIsScalar && (FData != null))
             {
                 switch (FBaseType)
                 {
@@ -1832,7 +1832,7 @@ namespace CMPServices
         {
             uint iCount = count();
             String[] data = new String[0];
-            if (isArray() && (iCount > 0))
+            if (FIsArray && (iCount > 0))
             {
                 data = new String[iCount];
                 if (item(1).isScalar())
@@ -1866,7 +1866,7 @@ namespace CMPServices
             uint varSize;    //number of characters (not bytes)
             String buf = "";
 
-            if (isScalar() && (FData != null))
+            if (FIsScalar && (FData != null))
             {      //char strings (str) are scalars
                 if (FBaseType == TBaseType.ITYPE_STR)
                 {
@@ -1915,7 +1915,7 @@ namespace CMPServices
         //============================================================================
         public String asText()
         {
-            if (isScalar())
+            if (FIsScalar)
             {
                 return asStr();
             }
@@ -2040,7 +2040,7 @@ namespace CMPServices
 
             if (srcValue.isScalar())
             {
-                if (!isScalar())
+                if (!FIsScalar)
                     result = ctBAD;
                 else if (srcValue.baseType() == baseType())
                     result = ctSAME;
@@ -2071,7 +2071,7 @@ namespace CMPServices
             }
             else if (srcValue.isArray())
             {   //an array
-                if (!isArray())
+                if (!FIsArray)
                     result = ctBAD;
                 else
                 {

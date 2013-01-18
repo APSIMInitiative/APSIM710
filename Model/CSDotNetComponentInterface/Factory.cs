@@ -404,7 +404,7 @@ class Factory
         String FQN = CalcParentName(Child).ToLower();
         foreach (FactoryProperty Property in RegisteredProperties)
         {
-            if (Property.FQN.ToLower() == FQN)
+            if (String.Compare(Property.FQN, FQN, System.StringComparison.OrdinalIgnoreCase) == 0)
                 return Property;
         }
 
@@ -412,7 +412,7 @@ class Factory
         FQN = FQN + "s";
         foreach (FactoryProperty Property in RegisteredProperties)
         {
-            if (Property.FQN.ToLower() == FQN)
+            if (String.Compare(Property.FQN, FQN, System.StringComparison.OrdinalIgnoreCase) == 0)
                 return Property;
         }
         return null;

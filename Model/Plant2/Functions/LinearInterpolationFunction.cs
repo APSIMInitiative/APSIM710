@@ -21,7 +21,10 @@ public class LinearInterpolationFunction : Function
         get
         {
             string PropertyName = XProperty;
-            string ArraySpec = StringManip.SplitOffBracketedValue(ref PropertyName, '[', ']');
+            string ArraySpec;
+            bool ArrayFound = PropertyName.Contains("[");
+            if (ArrayFound)
+                ArraySpec = StringManip.SplitOffBracketedValue(ref PropertyName, '[', ']');
             double XValue = 0;
             try
             {
