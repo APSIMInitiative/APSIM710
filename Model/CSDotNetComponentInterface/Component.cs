@@ -27,6 +27,7 @@ namespace ModelFramework
         protected Dictionary<String, Object> ApsimObjectsByType = null;  //cache a list of objects searched for in LinkByType()
         protected string NamePrefix = "";
 
+        public uint eventSenderId { get { return HostComponent.lastEventPublisher; } }
         private String TypeName
         {
             get { return FTypeName; }

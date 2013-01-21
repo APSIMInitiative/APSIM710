@@ -70,7 +70,7 @@ public class TAPSIMHost : TBaseComp
             addEvent("tick", tickID, TypeSpec.KIND_SUBSCRIBEDEVENT, TTimeStep.typeTIMESTEP, "", "", 0);  //subscribe "tick" event
             DefineSimpleTranistions(tickID);
 
-            Comp.handleEvent(ApsimComponent.INIT2INDEX, null);
+            Comp.handleEvent(ApsimComponent.INIT2INDEX, null, uint.MaxValue);
         }   
     }
     //=========================================================================
@@ -291,7 +291,7 @@ public class TAPSIMHost : TBaseComp
         else {
             byte[] data = new byte[aParams.sizeBytes()];
             aParams.getData(ref data);
-            Comp.handleEvent(eventID, data);
+            Comp.handleEvent(eventID, data, publisherID);
         }
         ////return base.processEventState(eventID, iState, publisherID, aParams);
         return iCondition;

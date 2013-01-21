@@ -279,6 +279,8 @@ namespace ModelFramework
         {
             Host.sendError(Line, false);
         }
+
+        public uint lastEventPublisher;
         // --------------------------------------------------------------------------
         /// <summary>
         /// Executes an event in the Apsim component. Handles some events here
@@ -289,11 +291,12 @@ namespace ModelFramework
         /// <param name="messageData">The message data that was passed with the event.</param>
         /// <returns>0 when it succeeds</returns>
         // --------------------------------------------------------------------------
-        public int handleEvent(int RegistrationIndex, byte[] messageData)
+        public int handleEvent(int RegistrationIndex, byte[] messageData, uint publisherID)
         {
             int result = 0;
             try
             {
+                lastEventPublisher = publisherID;
                 if (RegistrationIndex == INIT2INDEX)
                 {
                     querySiblingComponents(Name);
@@ -366,6 +369,7 @@ namespace ModelFramework
                     SendFatalError(err.Message + " for event in handleEvent()");
                 result = 1;
             }
+            lastEventPublisher = 0;
             return result;
         }
         // ----------------------------------------------
