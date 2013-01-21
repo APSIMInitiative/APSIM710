@@ -1188,20 +1188,20 @@ namespace CMPServices
             if (srcValue != null)
             {
                 bCompatible = ((FIsScalar == srcValue.isScalar()) && (FIsArray == srcValue.isArray()));
-                if (baseType() == TBaseType.ITYPE_DEF)
+                if (FBaseType == TBaseType.ITYPE_DEF)
                 {
                     bCompatible = (bCompatible && (srcValue.baseType() == TBaseType.ITYPE_DEF));
                 }      
                 if (!bCompatible)
                 {
-                    String error = String.Format("Incompatible assignment from {0} to {1}\nCannot convert {2} to {3}", Name, srcValue.Name, srcValue.baseType(),ToString(), baseType().ToString());
+                    String error = String.Format("Incompatible assignment from {0} to {1}\nCannot convert {2} to {3}", Name, srcValue.Name, srcValue.baseType().ToString(), FBaseType.ToString());
                     throw (new TypeMisMatchException(error));
                 }
                 if (FIsScalar)
                 {
                     try
                     {
-                        switch (baseType())
+                        switch (FBaseType)
                         {
                             case TBaseType.ITYPE_INT1:
                             case TBaseType.ITYPE_INT2:
@@ -1237,7 +1237,7 @@ namespace CMPServices
                     }
                     catch
                     {
-                        throw (new Exception("setValue() cannot convert " + srcValue.asStr() + " to " + baseType().ToString())); 
+                        throw (new Exception("setValue() cannot convert " + srcValue.asStr() + " to " + FBaseType.ToString())); 
                     }
                 }
                 else
@@ -2042,30 +2042,30 @@ namespace CMPServices
             {
                 if (!FIsScalar)
                     result = ctBAD;
-                else if (srcValue.baseType() == baseType())
+                else if (srcValue.baseType() == FBaseType)
                     result = ctSAME;
                 else if ((srcValue.baseType() <= TBaseType.ITYPE_INT8) && (srcValue.baseType() >= TBaseType.ITYPE_INT1) &&
-                         (baseType() <= TBaseType.ITYPE_INT8) && (baseType() >= TBaseType.ITYPE_INT1))
+                         (FBaseType <= TBaseType.ITYPE_INT8) && (FBaseType >= TBaseType.ITYPE_INT1))
                     result = ctCOMP;  //both integers
-                else if ((baseType() >= TBaseType.ITYPE_SINGLE) && (baseType() <= TBaseType.ITYPE_DOUBLE) &&           //These conditions are not transitive                        
+                else if ((FBaseType >= TBaseType.ITYPE_SINGLE) && (FBaseType <= TBaseType.ITYPE_DOUBLE) &&           //These conditions are not transitive                        
                          (srcValue.baseType() >= TBaseType.ITYPE_INT1) && (srcValue.baseType() <= TBaseType.ITYPE_DOUBLE))
                     result = ctCOMP;  //can match an int/single source to single/double destination
                 else if ((srcValue.baseType() == TBaseType.ITYPE_CHAR) &&
-                    ((baseType() == TBaseType.ITYPE_WCHAR) ||
-                    (baseType() == TBaseType.ITYPE_STR) ||
-                    (baseType() == TBaseType.ITYPE_WSTR)))
+                    ((FBaseType == TBaseType.ITYPE_WCHAR) ||
+                    (FBaseType == TBaseType.ITYPE_STR) ||
+                    (FBaseType == TBaseType.ITYPE_WSTR)))
                     result = ctCOMP;
-                else if ((srcValue.baseType() == TBaseType.ITYPE_WCHAR) && (baseType() == TBaseType.ITYPE_WSTR))
+                else if ((srcValue.baseType() == TBaseType.ITYPE_WCHAR) && (FBaseType == TBaseType.ITYPE_WSTR))
                     result = ctCOMP;
-                else if ((srcValue.baseType() == TBaseType.ITYPE_STR) && (baseType() == TBaseType.ITYPE_WSTR))
+                else if ((srcValue.baseType() == TBaseType.ITYPE_STR) && (FBaseType == TBaseType.ITYPE_WSTR))
                     result = ctCOMP;
                 // A sop to the old APSIM manager, which sends out all request-set values as strings
-                else if ((srcValue.baseType() == TBaseType.ITYPE_STR) || (baseType() == TBaseType.ITYPE_WSTR))
+                else if ((srcValue.baseType() == TBaseType.ITYPE_STR) || (FBaseType == TBaseType.ITYPE_WSTR))
                     result = ctDODGY;
                 else
                     result = ctBAD;
 
-                if ((baseType() >= TBaseType.ITYPE_INT1) && (baseType() <= TBaseType.ITYPE_DOUBLE) &&
+                if ((FBaseType >= TBaseType.ITYPE_INT1) && (FBaseType <= TBaseType.ITYPE_DOUBLE) &&
                       (!unitsMatch(units(), srcValue.units())))
                     result = ctBAD;
             }

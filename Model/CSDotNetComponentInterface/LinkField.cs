@@ -51,6 +51,7 @@ class LinkField
         Field = new ReflectedField(_Field, In.Model);
         LinkAttr = _LinkAttr;
         Comp = In.ParentComponent();
+        ProbeInfo = null;
     }
 
     public LinkField(Instance _In, PropertyInfo _Field, Link _LinkAttr)
@@ -59,6 +60,7 @@ class LinkField
         Field = new ReflectedProperty(_Field, In.Model);
         LinkAttr = _LinkAttr;
         Comp = In.ParentComponent();
+        ProbeInfo = null;
     }
     /// <summary>
     /// Creates any classes that are of type [Link] in the model
@@ -71,7 +73,8 @@ class LinkField
 
             // Load in the probe info assembly.
             //ProbeInfo = Assembly.LoadFile(Path.Combine(Configuration.ApsimDirectory(), "Model", "CSDotNetProxies.dll"));
-            ProbeInfo = Assembly.LoadFile(Path.Combine(Configuration.ApsimDirectory(), "Model", "DotNetProxies.dll"));
+            if (ProbeInfo == null)
+                ProbeInfo = Assembly.LoadFile(Path.Combine(Configuration.ApsimDirectory(), "Model", "DotNetProxies.dll"));
 
             String TypeToFind = Field.Typ.Name;
             String NameToFind;

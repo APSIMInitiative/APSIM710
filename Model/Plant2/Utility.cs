@@ -50,7 +50,7 @@ using ModelFramework;
             if (RelativeTo is Component)
                 My = RelativeTo as Component;
 
-            if (!NamePath.Contains("[") && My != null)
+            if ((My != null) && !NamePath.Contains("["))
             {
                 object v;
                 My.Get(NamePath, out v);
