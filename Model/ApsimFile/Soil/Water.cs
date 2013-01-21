@@ -78,29 +78,38 @@ namespace ApsimFile
                 {
                     SoilCrop Crop = FindCrop(value[i]);
                     if (Crop == null)
-                        Crops.Add(new SoilCrop() { Name = value[i] });
+                    {
+                        Crop = new SoilCrop { Name = value[i] };
+                        Crop.Thickness = new double[Thickness.Length];
+                        Array.Copy(Thickness, Crop.Thickness, Thickness.Length);
+                        Crops.Add(Crop);
+                    }
 
                 }
 
                 // Remove unwanted crops if necessary.
-                for (int i = 0; i < Crops.Count; i++)
+                for (int i = Crops.Count - 1; i >= 0; i--)
                 {
                     int Pos = StringManip.IndexOfCaseInsensitive(value, Crops[i].Name);
-                    if (Pos != -1)
+                    if (Pos != -1 && value[Pos] != "")
                         Crops[i].Name = value[Pos];  // ensure case transfer.
                     else
                         Crops.Remove(Crops[i]);      // remove unwanted crop.
                 }
 
                 // Now reorder.
-                for (int i = 0; i < value.Length; i++)
+                for (int i = 0, insert = 0; i < value.Length; i++)
                 {
                     int ExistingCropIndex = FindCropIndex(value[i]);
-                    if (i != ExistingCropIndex)
+                    if (ExistingCropIndex != -1)
                     {
-                        SoilCrop C = Crops[ExistingCropIndex];  // grab the crop
-                        Crops.RemoveAt(ExistingCropIndex);      // remove it from the list.
-                        Crops.Insert(i, C);                     // add it at the correct index.
+                        if (insert != ExistingCropIndex)
+                        {
+                            SoilCrop C = Crops[ExistingCropIndex];  // grab the crop
+                            Crops.RemoveAt(ExistingCropIndex);      // remove it from the list.
+                            Crops.Insert(insert, C);                     // add it at the correct index.
+                        }
+                        insert++;
                     }
                 }
 

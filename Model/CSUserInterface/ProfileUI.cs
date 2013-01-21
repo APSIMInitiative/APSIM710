@@ -302,12 +302,13 @@ namespace CSUserInterface
             Color[] CropColors = { Color.FromArgb(173, 221, 142), Color.FromArgb(247, 252, 185) };
             Color[] PredictedCropColors = { Color.FromArgb(233, 191, 255), Color.FromArgb(244, 226, 255) };
 
-            DataGridViewColumn SAT = Grid.Columns["SAT\r\n(mm/mm)"];
-            SAT.Frozen = true;
+//            DataGridViewColumn SAT = Grid.Columns["SAT\r\n(mm/mm)"];
+//            SAT.Frozen = true;
+            Grid.Columns[Grid.ColumnCount - 1].Frozen = true;
 
             int CropIndex = 0;
             int PredictedCropIndex = 0;
-            foreach (string CropName in Soil.CropNames.Union(Soil.PredictedCropNames))
+            foreach (string CropName in Soil.CropNames.Union(Soil.PredictedCropNames, StringComparer.OrdinalIgnoreCase))
             {
                 SoilCrop Crop = Soil.Crop(CropName);
 
