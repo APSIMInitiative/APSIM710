@@ -42,9 +42,9 @@
             // 
             // afTreeViewColumns1
             // 
-            this.afTreeViewColumns1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.afTreeViewColumns1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.afTreeViewColumns1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(165)))), ((int)(((byte)(172)))), ((int)(((byte)(178)))));
             this.afTreeViewColumns1.Location = new System.Drawing.Point(3, 19);
             this.afTreeViewColumns1.Name = "afTreeViewColumns1";
@@ -73,6 +73,7 @@
             this.Controls.Add(this.richTextBox1);
             this.Name = "TreeGridUI";
             this.Size = new System.Drawing.Size(655, 282);
+            this.Load += new System.EventHandler(this.TreeGridUI_Load);
             this.Controls.SetChildIndex(this.MyHelpLabel, 0);
             this.Controls.SetChildIndex(this.richTextBox1, 0);
             this.Controls.SetChildIndex(this.button1, 0);

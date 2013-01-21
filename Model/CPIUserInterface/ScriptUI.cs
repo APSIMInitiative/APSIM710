@@ -63,8 +63,7 @@ namespace CPIUserInterface
         }
         //=====================================================================
         /// <summary>
-        /// Load the init section into the list of SDMLValues and fill the
-        /// form's controls.
+        /// Load on creation and find the dll (manager)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -187,6 +186,11 @@ namespace CPIUserInterface
                 }
             }
         }
+        //=======================================================================
+        /// <summary>
+        /// Refill the interface with the values for this instance.
+        /// </summary>
+        //=======================================================================
         public override void OnRefresh()
         {
             base.OnRefresh();

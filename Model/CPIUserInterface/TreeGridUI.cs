@@ -35,7 +35,7 @@ namespace CPIUserInterface
         {
             InitializeComponent();
             typedvals = new List<TTypedValue>();
-            base.HelpText = "Initialisation values"; //triggers TreeGridUI_Load()
+            base.HelpText = " Initial property values"; //triggers TreeGridUI_Load()
 
             this.afTreeViewColumns1.reloadTreeEvent += new AFTreeViewColumns.reloadTree(afTreeViewColumns1_reloadTreeEvent);
             this.afTreeViewColumns1.saveChangesEvent += new AFTreeViewColumns.onDataChange(afTreeViewColumns1_saveChangesEvent);
@@ -147,23 +147,49 @@ namespace CPIUserInterface
             //in this case the tree of init values is stored from within the control
             //code is only required here for additional controls or validation
         }
+        //=====================================================================
+        /// <summary>
+        /// Refill the interface with the values for this instance.
+        /// </summary>
+        //=====================================================================
         public override void OnRefresh()
         {
             base.OnRefresh();
+
+            //Fill the property fields
+            XmlNode initSection = XmlHelper.Find(Data, "initsection");
+
+            if (initSection != null)
+            {
+                InitFromInitSection(initSection.OuterXml);
+            }
         }
         //=====================================================================
         /// <summary>
-        /// When the UI is created and loaded
+        /// When component is loaded. This class instance can be used for more
+        /// than one component in the simulation.
         /// </summary>
         //=====================================================================
         protected override void OnLoad()
         {
-            //fill the propertyList with init properties
-            if (InitFromComponentDescription())
-            {
-                ReadInitSection();  //reads all the init values and sets the property values
+            base.OnLoad();
 
-            }
+            //find the full path to the dll for the component (normally use InitFromComponentDescription() )
+            String ComponentType = Controller.ApsimData.Find(NodePath).Type;
+            List<String> DllFileNames = Types.Instance.Dlls(ComponentType);
+            FDllFileName = DllFileNames[0];
+            FDllFileName = Configuration.RemoveMacros(FDllFileName);
+
+            InitFromComponentDescription();
+        }
+        /// <summary>
+        /// When the UI is created and loaded
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TreeGridUI_Load(object sender, EventArgs e)
+        {
+
         }
         //=======================================================================
         /// <summary>
@@ -258,6 +284,7 @@ namespace CPIUserInterface
         private void populateTreeModel()
         {
             afTreeViewColumns1.SuspendLayout();
+            afTreeViewColumns1.TreeView.BeginUpdate();
             afTreeViewColumns1.TreeView.Nodes.Clear();
 
             foreach (TTypedValue prop in typedvals)
@@ -269,6 +296,7 @@ namespace CPIUserInterface
                     addTreeModelNode(trNode2, prop.Name, prop);
                 }
             }
+            afTreeViewColumns1.TreeView.EndUpdate();
             afTreeViewColumns1.ResumeLayout();
         }
         //=======================================================================
@@ -279,10 +307,13 @@ namespace CPIUserInterface
         private void populateTreeModel(List<TCompProperty> compProperties)
         {
             afTreeViewColumns1.SuspendLayout();
+            afTreeViewColumns1.TreeView.BeginUpdate();
             afTreeViewColumns1.TreeView.Nodes.Clear();
 
-            foreach (TCompProperty prop in compProperties)
+            TCompProperty prop;
+            for (int i = 0; i <= compProperties.Count - 1; i++)
             {
+                prop = compProperties[i];
                 if (prop.bInit == true)
                 {
                     if (makePropertyVisible(prop.Name) == true)
@@ -293,6 +324,7 @@ namespace CPIUserInterface
                     }
                 }
             }
+            afTreeViewColumns1.TreeView.EndUpdate();
             afTreeViewColumns1.ResumeLayout();
         }
         //=======================================================================
@@ -390,6 +422,7 @@ namespace CPIUserInterface
                     MessageBox.Show("Cannot find help file " + helpFileName);
             }
         }
+
 	} 
 }
 
