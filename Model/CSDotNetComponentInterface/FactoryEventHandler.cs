@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Xml;
 using System.Text;
+using CMPServices;
 
 public abstract class EvntHandler : ApsimType
 {
@@ -36,6 +37,7 @@ public abstract class EvntHandler : ApsimType
         throw new Exception("Cannot call pack on an event handler");
     }
     public abstract void unpack(byte[] messageData);
+    public abstract void unpack(TTypedValue src);
     public abstract uint memorySize();
     public abstract String DDML();
     public String GetDescription()
@@ -106,6 +108,11 @@ public class FactoryEventHandler : EvntHandler
             Parameters[0] = Parameter;
             Method.Invoke(Obj, Parameters);
         }
+    }
+    public override void unpack(TTypedValue src)
+    {
+        Data.unpack(src);
+        Invoke(Data);
     }
     public override void unpack(byte[] messageData)
     {

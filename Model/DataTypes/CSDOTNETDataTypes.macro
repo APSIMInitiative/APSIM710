@@ -13,6 +13,7 @@ using CMPServices;
     {
         void pack(out byte[] messageData);
         void unpack(byte[] messageData);
+        void unpack(TTypedValue src);
         uint memorySize();
         String DDML();
     }
@@ -40,10 +41,7 @@ using CMPServices;
         public virtual String DDML() { return "<type/>"; }
         public virtual void setValue(TTypedValue typedValue)
         {
-            DDMLValue.setValue(typedValue);
-            byte[] data = new byte[DDMLValue.sizeBytes()];
-            DDMLValue.getData(ref data);
-            unpack(data);
+            unpack(typedValue);
         }
         public virtual void pack(out byte[] messageData)
         {
@@ -63,6 +61,10 @@ using CMPServices;
             {
                 items[i - 1].pack(typedValue.item(i));
             }
+        }
+        public virtual void unpack(TTypedValue src)
+        {
+            DDMLValue.setValue(src);
         }
         public virtual void unpack(byte[] messageData)
         {
@@ -85,6 +87,9 @@ using CMPServices;
         public void pack(out byte[] MessageData)
         {
             MessageData = null;
+        }
+        public void unpack(TTypedValue src)
+        {
         }
         public void unpack(byte[] MessageData)
         {
@@ -116,10 +121,14 @@ using CMPServices;
          messageData = new byte[DDMLValue.sizeBytes()];
          DDMLValue.getData(ref messageData);
       }
+      public override void unpack(TTypedValue src)
+      {
+         Value = src.as[builtin.cstypename]();
+      }
       public override void unpack(byte[] messageData)
       {
          DDMLValue.setData(messageData, messageData.Length, 0);
-         Value = DDMLValue.as[builtin.cstypename]();
+         unpack(DDMLValue);
       }
       public override String DDML()
       {
@@ -157,35 +166,39 @@ using CMPServices;
             messageData = new byte[DDMLValue.sizeBytes()];
             DDMLValue.getData(ref messageData);
          }
-         public override void unpack(byte[] messageData)
+         public override void unpack(TTypedValue src)
          {
-            DDMLValue.setData(messageData, messageData.Length, 0);
             [if [type.array] = T]
             [foreach type.field]
-            [field.name] = new [field.cstypebase][DDMLValue.count()];
+            [field.name] = new [field.cstypebase][src.count()];
             for (uint i = 1; i <= [field.name].Length; i++ )
             {
                 [field.name][i-1] = new [field.cstypebase]();
-                [field.name][i-1].unpackStructure(DDMLValue.item(i));
+                [field.name][i-1].unpackStructure(src.item(i));
             }
             [endfor]
             [else]
             [foreach type.field]
             [if [field.arrayofstructures] = T]
-            [field.name] = new [field.cstypebase][DDMLValue.member("[field.name]").count()];
+            [field.name] = new [field.cstypebase][src.member("[field.name]").count()];
             for (uint i = 1; i <= [field.name].Length; i++ )
             {
                 [field.name][i-1] = new [field.cstypebase]();
-                [field.name][i-1].unpackStructure(DDMLValue.member("[field.name]").item(i));
+                [field.name][i-1].unpackStructure(src.member("[field.name]").item(i));
             }
             [elseif [field.structure] = T]
             [field.name] = new [field.cstypebase]();
-            [field.name].unpackStructure(DDMLValue.member("[field.name]"));
+            [field.name].unpackStructure(src.member("[field.name]"));
             [else]
-            [field.name] = DDMLValue.member("[field.name]").as[field.cstypename]();
+            [field.name] = src.member("[field.name]").as[field.cstypename]();
             [endif]
             [endfor]
             [endif]
+         }
+         public override void unpack(byte[] messageData)
+         {
+            DDMLValue.setData(messageData, messageData.Length, 0);
+            unpack(DDMLValue);
          }
          public override String DDML()
          {

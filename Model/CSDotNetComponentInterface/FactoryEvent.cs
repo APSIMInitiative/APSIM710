@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Xml;
 using System.Text;
+using CMPServices;
 
 
 public delegate void NullTypeDelegate();
@@ -45,6 +46,10 @@ public class FactoryEvent : ApsimType
     public virtual void pack(out byte[] messageData)
     {
         Data.pack(out messageData);
+    }
+    public virtual void unpack(TTypedValue src)
+    {
+        throw new Exception("Cannot call unpack on an event.");
     }
     public virtual void unpack(byte[] messageData)
     {

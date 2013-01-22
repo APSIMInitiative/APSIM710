@@ -1,5 +1,6 @@
 ﻿using System;
 using CSGeneral;
+using CMPServices;
 
 public class RuntimeEventHandler : EvntHandler
 {
@@ -25,6 +26,10 @@ public class RuntimeEventHandler : EvntHandler
     public override void Invoke(Object Parameter)
     {
         F.Invoke();
+    }
+    public override void unpack(TTypedValue src)
+    {
+        Invoke(null);
     }
     public override void unpack(byte[] messageData)
     {

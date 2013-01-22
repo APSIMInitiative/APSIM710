@@ -366,7 +366,10 @@ internal class FactoryProperty : Instance, ApsimType
         //copy the src value into a destination compatible type
         dest.setValue(DDMLValue);
     }
-
+    public virtual void unpack(TTypedValue src)
+    {
+        Data.unpack(src);
+    }
     /// <summary>
     /// useable when types are identical
     /// </summary>
@@ -403,10 +406,7 @@ internal class FactoryProperty : Instance, ApsimType
     {
         if (DDMLValue != null)
         {
-            DDMLValue.setValue(src);                                 //assign the compatible value
-            byte[] data = new byte[DDMLValue.sizeBytes()];
-            DDMLValue.getData(ref data);
-            Data.unpack(data);
+            Data.unpack(src); //assign the compatible value
         }
     }
     public virtual uint memorySize()
@@ -642,6 +642,12 @@ internal class FactoryProperty : Instance, ApsimType
             T Data = thisProperty.Value;
             Property.SetObject(Data);
         }
+        public override void unpack(TTypedValue src)
+        {
+            thisProperty.unpack(src);
+            T Data = thisProperty.Value;
+            Property.SetObject(Data);
+        }
         public override uint memorySize()
         {
             T Data = (T)Property.Get;
@@ -718,6 +724,12 @@ internal class FactoryProperty : Instance, ApsimType
             ApsimType Data = (ApsimType)Property.Get;
             Data.pack(out messageData);
         }
+        public void unpack(TTypedValue src)
+        {
+            ApsimType Data = (ApsimType)Property.Get;
+            Data.unpack(src);
+            Property.SetObject(Data);
+        }
         public void unpack(byte[] messageData)
         {
             ApsimType Data = (ApsimType)Property.Get;
@@ -771,10 +783,21 @@ public class WrapBuiltInVariable<T> : TypeInterpreter, ApsimType
         messageData = new byte[DDMLValue.sizeBytes()];
         DDMLValue.getData(ref messageData);
     }
+    public override void unpack(TTypedValue src)
+    {
+        DDMLValue.setValue(src);
+        setPropertyValue();
+    }
     public override void unpack(byte[] messageData)
     {
-        //::unpackWithConverter(messageData, Value);
         DDMLValue.setData(messageData, messageData.Length, 0);
+        setPropertyValue();
+    }
+    /// <summary>
+    /// Set the internal Value from the DDMLValue that was set in the unpack()
+    /// </summary>
+    private void setPropertyValue()
+    {
         if (tType == typeof(Boolean))
         {
             Value = (T)(Convert.ChangeType(DDMLValue.asBool(), typeof(T)));

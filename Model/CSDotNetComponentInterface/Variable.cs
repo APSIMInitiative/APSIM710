@@ -186,10 +186,22 @@ namespace ModelFramework
             messageData = new byte[DDMLValue.sizeBytes()];
             DDMLValue.getData(ref messageData);
         }
+        public override void unpack(TTypedValue src)
+        {
+            DDMLValue.setValue(src);
+            setVariableValue();
+        }
         public override void unpack(byte[] messageData)
         {
             //::unpackWithConverter(messageData, Value);
             DDMLValue.setData(messageData, messageData.Length, 0);
+            setVariableValue();
+        }
+        /// <summary>
+        /// Set the internal Value from the DDMLValue that was set in the unpack()
+        /// </summary>
+        private void setVariableValue()
+        {
             if (tType == typeof(Boolean))
             {
                 Value = (T)(Convert.ChangeType(DDMLValue.asBool(), typeof(T)));
