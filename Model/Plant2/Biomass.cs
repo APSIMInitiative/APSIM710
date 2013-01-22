@@ -6,13 +6,13 @@ using CSGeneral;
 
 public class Biomass
 {
-    private double _StructuralWt = 0;
-    private double _NonStructuralWt = 0;
-    private double _StructuralN = 0;
-    private double _NonStructuralN = 0;
-    private double _PotentialDMAllocation = 0;
-    private double _MetabolicWt = 0;
-    private double _MetabolicN = 0;
+    protected double _StructuralWt = 0;
+    protected double _NonStructuralWt = 0;
+    protected double _StructuralN = 0;
+    protected double _NonStructuralN = 0;
+    protected double _PotentialDMAllocation = 0;
+    protected double _MetabolicWt = 0;
+    protected double _MetabolicN = 0;
 
     [Output]
     [Units("g/m^2")]
@@ -87,7 +87,7 @@ public class Biomass
     }
     [Output]
     [Units("g/m^2")]
-    public double Wt
+    virtual public double Wt
     {
         get
         {
@@ -96,7 +96,7 @@ public class Biomass
     }
     [Output]
     [Units("g/m^2")]
-    public double N
+    virtual public double N
     {
         get
         {
@@ -176,12 +176,12 @@ public class Biomass
     }
     public void Add(Biomass a)
     {
-        _StructuralWt += a.StructuralWt;
-        _NonStructuralWt += a.NonStructuralWt;
-        _MetabolicWt += a.MetabolicWt;
-        _StructuralN += a.StructuralN;
-        _NonStructuralN += a.NonStructuralN;
-        _MetabolicN += a.MetabolicN;
+        _StructuralWt += a._StructuralWt;
+        _NonStructuralWt += a._NonStructuralWt;
+        _MetabolicWt += a._MetabolicWt;
+        _StructuralN += a._StructuralN;
+        _NonStructuralN += a._NonStructuralN;
+        _MetabolicN += a._MetabolicN;
     }
     public void SetTo(Biomass a)
     {

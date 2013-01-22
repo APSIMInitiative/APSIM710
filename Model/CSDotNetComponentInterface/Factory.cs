@@ -150,7 +150,8 @@ class Factory
     // --------------------------------------------------------------------
     private void GetAllProperties(Instance Obj, XmlNode Parent)
     {
-        foreach (FieldInfo Property in Obj.Model.GetType().GetFields(BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+        FieldInfo[] fields = Obj.Model.GetType().GetFields(BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+        foreach (FieldInfo Property in fields)
         {
             bool AddProperty = false;
             bool IsOutput = false;
@@ -180,7 +181,8 @@ class Factory
                 RegisteredProperties.Add(NewProperty);
             }
         }
-        foreach (PropertyInfo Property in Obj.Model.GetType().GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+        PropertyInfo[] properties = Obj.Model.GetType().GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        foreach (PropertyInfo Property in properties)
         {
             bool AddProperty = false;
             bool IsOutput = false;
@@ -202,7 +204,7 @@ class Factory
             }
             if (AddProperty)
             {
-                if (Property.PropertyType.Name == "String" || 
+                if ((String.Compare(Property.PropertyType.Name, "String") == 0) || 
                     Property.PropertyType.IsValueType ||
                     Property.PropertyType.IsArray ||
                     Property.PropertyType.GetInterface("ApsimType") != null)

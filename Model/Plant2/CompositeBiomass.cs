@@ -95,7 +95,27 @@ public class CompositeBiomass : Biomass
         // This is called in OnCut - for now do nothing.
     }
 
+    [Output]
+    [Units("g/m^2")]
+    override public double Wt
+    {
+        get
+        {
+            Update();
+            return _StructuralWt + _NonStructuralWt + _MetabolicWt;
+        }
+    }
 
+    [Output]
+    [Units("g/m^2")]
+    override public double N
+    {
+        get
+        {
+            Update();
+            return _StructuralN + _NonStructuralN + _MetabolicN;
+        }
+    }
 
 }
  
