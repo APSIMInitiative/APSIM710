@@ -291,7 +291,7 @@ namespace ModelFramework
         /// <param name="messageData">The message data that was passed with the event.</param>
         /// <returns>0 when it succeeds</returns>
         // --------------------------------------------------------------------------
-        public int handleEvent(int RegistrationIndex, byte[] messageData, uint publisherID)
+        public int handleEvent(int RegistrationIndex, TTypedValue messageData, uint publisherID)
         {
             int result = 0;
             try
@@ -778,7 +778,7 @@ namespace ModelFramework
         /// </summary>
         /// <param name="messageData"></param>
         // ----------------------------------------------
-        public void OnSow(byte[] messageData)
+        public void OnSow(TTypedValue messageData)
         {
             SowPlant2Type Sow = new SowPlant2Type();
             Sow.unpack(messageData);
@@ -873,7 +873,7 @@ namespace ModelFramework
         /// </summary>
         /// <param name="messageData"></param>
         // ----------------------------------------------
-        public void OnEndCrop(byte[] messageData)
+        public void OnEndCrop(TTypedValue messageData)
         {
             EndCropToday = true;
             CallEventHandlers("EndCrop", null);  //call multiple EndCrop events
@@ -884,7 +884,7 @@ namespace ModelFramework
         /// </summary>
         /// <param name="messageData"></param>
         // ----------------------------------------------
-        public void OnPost(byte[] messageData)
+        public void OnPost(TTypedValue messageData)
         {
             if (EndCropToday)
             {
@@ -928,7 +928,7 @@ namespace ModelFramework
         /// </summary>
         /// <param name="messageData"></param>
         // ----------------------------------------------
-        public void OnPrepare(byte[] messageData)
+        public void OnPrepare(TTypedValue messageData)
         {
             if (ModelInstance != null)
             {

@@ -185,6 +185,12 @@ namespace CSGeneral
             List<string> ReturnStrings = new List<string>();
             if (Text.Trim() == "")
                 return ReturnStrings.ToArray();
+            //if no delimiters in the string then return the original
+            if (!Text.Contains("."))
+            {
+                ReturnStrings.Add(Text.Trim());
+                return ReturnStrings.ToArray();
+            }
 
             bool InsideBracket = false;
             int Start = IndexNotOfAny(Text, Delimiter.ToString().ToCharArray());
@@ -247,11 +253,14 @@ namespace CSGeneral
             string ReturnString = "";
 
             int PosOpenBracket = St.LastIndexOf(OpenBracket);
-            int PosCloseBracket = St.LastIndexOf(CloseBracket);
-            if (PosOpenBracket != -1 && PosCloseBracket != -1 && PosOpenBracket < PosCloseBracket)
+            if (PosOpenBracket != -1)
             {
-                ReturnString = St.Substring(PosOpenBracket + 1, PosCloseBracket - PosOpenBracket - 1).Trim();
-                St = St.Remove(PosOpenBracket, PosCloseBracket - PosOpenBracket + 1).Trim();
+                int PosCloseBracket = St.LastIndexOf(CloseBracket);
+                if (PosCloseBracket != -1 && PosOpenBracket < PosCloseBracket)
+                {
+                    ReturnString = St.Substring(PosOpenBracket + 1, PosCloseBracket - PosOpenBracket - 1).Trim();
+                    St = St.Remove(PosOpenBracket, PosCloseBracket - PosOpenBracket + 1).Trim();
+                }
             }
             return ReturnString;
         }

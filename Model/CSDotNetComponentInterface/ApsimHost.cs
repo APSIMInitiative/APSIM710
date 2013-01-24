@@ -289,9 +289,7 @@ public class TAPSIMHost : TBaseComp
             //execute tick event
         }
         else {
-            byte[] data = new byte[aParams.sizeBytes()];
-            aParams.getData(ref data);
-            Comp.handleEvent(eventID, data, publisherID);
+            Comp.handleEvent(eventID, aParams, publisherID);
         }
         ////return base.processEventState(eventID, iState, publisherID, aParams);
         return iCondition;

@@ -347,9 +347,9 @@ namespace CSGeneral
 
         public static object GetValueOfFieldOrProperty(string Name, object Obj)
         {
-            if (Name.Contains("."))
+            int Pos = Name.IndexOf('.');
+            if (Pos > -1)
             {
-                int Pos = Name.IndexOf('.');
                 string FieldName = Name.Substring(0, Pos);
                 Obj = GetValueOfFieldOrProperty(FieldName, Obj);
                 if (Obj == null)
