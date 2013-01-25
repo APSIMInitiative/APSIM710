@@ -299,7 +299,7 @@ class Factory
         bool HavePassedXMLToObj = false;
         foreach (FactoryProperty Property in RegisteredProperties)
         {
-            if ((Property.TypeName == "XmlNode") && (Property.OutputName.Contains(Node.Name)))
+            if (( String.Compare(Property.TypeName, "XmlNode", StringComparison.Ordinal) == 0) && (Property.OutputName.Contains(Node.Name)))
             {
                 Property.SetObject(Node);
                 HavePassedXMLToObj = true;

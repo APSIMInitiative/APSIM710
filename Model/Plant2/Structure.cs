@@ -64,7 +64,7 @@ public class Structure
         {
             double n = 0;
             foreach (LeafCohort L in Leaf.Leaves)
-                n = Math.Max(n, L.Population);
+                n = Math.Max(n, L._Population);
             return n;
         }
     }
@@ -86,7 +86,7 @@ public class Structure
             double n = 0;
             foreach (LeafCohort L in Leaf.Leaves)
                 if (L.IsAppeared)
-                    n += L.Population;
+                    n += L._Population;
             return n / Population.Density;
         }
     }

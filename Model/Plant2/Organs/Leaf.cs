@@ -224,7 +224,7 @@ public class Leaf : BaseOrgan, AboveGround
             double n = 0;
             foreach (LeafCohort L in Leaves)
                 if ((L.IsAppeared) && (!L.Finished))
-                    n += L.Population;
+                    n += L._Population;
             return n / Population.Density;
         }
     } 
@@ -578,7 +578,7 @@ public class Leaf : BaseOrgan, AboveGround
             if (Leaves.Count > 0)
             {
                 int j = (int)AppearedCohortNo - 1;
-                BranchNumber = Leaves[j].Population; //Retrive the branch number of the previous cohort so this can be appended with additional branching
+                BranchNumber = Leaves[j]._Population; //Retrive the branch number of the previous cohort so this can be appended with additional branching
             }
             BranchNumber += Structure.BranchingRate * Population.Density * Structure.PrimaryBudNo;
 

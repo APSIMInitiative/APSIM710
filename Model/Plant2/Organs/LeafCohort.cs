@@ -653,7 +653,7 @@ public class LeafCohort
     {
         double BranchNo = Structure.TotalStemPopn - Structure.MainStemPopn;
         double leafSizeDelta = SizeFunction(Age + TT) - SizeFunction(Age); //mm2 of leaf expanded in one day at this cohort (Today's minus yesterday's Area/cohort)
-        double growth = Population * leafSizeDelta; // Daily increase in leaf area for that cohort position in a per m2 basis (mm2/m2/day)
+        double growth = _Population * leafSizeDelta; // Daily increase in leaf area for that cohort position in a per m2 basis (mm2/m2/day)
         return growth;                              // FIXME-EIT Unit conversion to m2/m2 could happen here and population could be considered at higher level only (?)
     }
     /// <summary>
@@ -745,10 +745,10 @@ public class LeafCohort
             else
                 //Fixme.  This function is not returning the correct values.  Use commented out line
                 //return MaxArea / Population;
-                return MaxLiveArea / Population;
+                return MaxLiveArea / _Population;
         }
     }
-    public double Population
+    public double LivePopulation
     {
         get
         {
@@ -760,7 +760,7 @@ public class LeafCohort
         get
         {
             if (IsAppeared)
-                return LiveArea / Population;
+                return LiveArea / _Population;
             else
                 return 0;
         }

@@ -12,6 +12,7 @@ using ModelFramework;
     class Util
     {
         public static StreamWriter Dbg = null;
+        protected static Dictionary<String, List<String>> VarParts;
         
         [Conditional("DEBUG")]
         public static void Debug(string format, object value)
@@ -48,16 +49,30 @@ using ModelFramework;
         {
             Component My = null;
             if (RelativeTo is Component)
-                My = RelativeTo as Component;
-
-            if ((My != null) && !NamePath.Contains("["))
             {
-                object v;
-                My.Get(NamePath, out v);
-                return v;
+                My = RelativeTo as Component;
+                if ((My != null) && !NamePath.Contains("["))
+                {
+                    object v;
+                    My.Get(NamePath, out v);
+                    return v;
+                }
             }
 
-            string[] Bits = StringManip.SplitStringHonouringBrackets(NamePath, '.', '[', ']');
+            if (VarParts == null)
+                VarParts = new Dictionary<string, List<string>>();
+
+            string[] Bits;
+            //cache the list of names that are parsed here
+            List<String> Parts;
+            if (VarParts.TryGetValue(NamePath, out Parts))
+                Bits = Parts.ToArray();
+            else
+            {
+                Bits = StringManip.SplitStringHonouringBrackets(NamePath, '.', '[', ']');
+                VarParts.Add(NamePath, Bits.ToList());
+            }
+
             for (int i = 0; i < Bits.Length; i++)
             {
                 string ArraySpecifier = "";
