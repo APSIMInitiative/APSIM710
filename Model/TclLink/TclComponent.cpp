@@ -109,7 +109,7 @@ Tcl_Interp *NewInterp (ClientData cd, const std::string &interpName)
 // Delete an interpreter
 void StopTcl(Tcl_Interp *interp)
 {
-	if (!Tcl_InterpDeleted(interp) && interp != MainInterpreter)
+	if (interp != NULL && interp == MainInterpreter)
 		Tcl_DeleteInterp(interp);
 }
 
