@@ -16,7 +16,6 @@ typedef std::map<std::string, std::string >   Name2RuleMap;
 class TclComponent {
    public:
       TclComponent(ScienceAPI2& scienceapi);
-      ~TclComponent(void);
       virtual void onError(void);
       virtual void onInit2(void);
 

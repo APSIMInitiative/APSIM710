@@ -106,13 +106,6 @@ Tcl_Interp *NewInterp (ClientData cd, const std::string &interpName)
    return interp;
    }
 
-// Delete an interpreter
-void StopTcl(Tcl_Interp *interp)
-{
-	if (interp != NULL && interp == MainInterpreter)
-		Tcl_DeleteInterp(interp);
-}
-
 #ifndef __WIN32__
 // find tcl shared library (Linux only)
 static const char *tclSharedLibraryPathname()
@@ -161,8 +154,7 @@ extern "C" EXPORT TclComponent  * STDCALL createComponent(ScienceAPI2& scienceAP
 
 extern "C" void EXPORT STDCALL deleteComponent(TclComponent* component)
    {
-   if (component)
-     delete component;
+   //if (component) delete component;
    }
 
 // ------------------------------------------------------------------
@@ -175,15 +167,6 @@ TclComponent::TclComponent(ScienceAPI2 & api) : apsimAPI(api)
 
    apsimAPI.subscribe("error", nullFunction(&TclComponent::onError));
    apsimAPI.subscribe("init2", nullFunction(&TclComponent::onInit2));
-   }
-
-TclComponent::~TclComponent(void)
-   {
-   if (Interp != NULL) 
-      {
-      StopTcl(Interp);
-      Interp = NULL;
-      }
    }
 
 // ------------------------------------------------------------------
