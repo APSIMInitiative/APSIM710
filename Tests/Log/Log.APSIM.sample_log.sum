@@ -42,8 +42,8 @@ Title                  = Log Sample Simulation
      Output variables:
         clock.day
         clock.year
-        canola.lai
-        canola.biomass
+        canola.LAI
+        canola.Biomass
 
      Output file = log.out
      Format = normal
@@ -60,7 +60,7 @@ Title                  = Log Sample Simulation
         fertiliser apply amount = 100 (kg/ha), depth = 50 (mm), type = no3_n
         canola sow cultivar = hyola42, plants = 40 (/m2), sowing_depth = 20 (mm), row_spacing = 300 (mm)
      endif
-     if canola.stagename = 'harvest_ripe' or canola.plant_status = 'dead' then
+     if canola.stagename = 'harvest_ripe' or canola.plantstatus = 'dead' then
         canola harvest
         canola end_crop
      endif
@@ -219,76 +219,13 @@ Fertiliser:
      Manager sending message :- canola sow  cultivar = hyola42, plants = 40 (/m2), sowing_depth = 20 (mm), row_spacing = 300 (mm)
 9 May 1988(Day of year=130), canola: 
      Crop Sow
-        ------------------------------------------------
-        cultivar                   = hyola42
-        Phases:
-           out
-           sowing
-           germination
-              shoot_lag                  =      15 (dd)
-              shoot_rate                 =       5 (dd/mm)
-           emergence
-              cumvd_emergence            =       0      25 (vd)
-              tt_emergence               =     300       1 (dd)
-           end_of_juvenile
-              x_pp_end_of_juvenile       =    10.8    16.3 (h)
-              y_tt_end_of_juvenile       =     500       1 (dd)
-           floral_initiation
-              x_pp_floral_initiation     =       1      24 (h)
-              y_tt_floral_initiation     =     250     250 (dd)
-           flowering
-              x_pp_flowering             =       1      24 (h)
-              y_tt_flowering             =     200     200 (dd)
-           start_grain_fill
-              x_pp_start_grain_fill      =       1      24 (h)
-              y_tt_start_grain_fill      =     700     700 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =       1 (dd)
-           maturity
-              tt_maturity                =       1 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =       1 (dd)
-           end_crop
-     
-        x_pp_hi_incr               =       1.00      24.00
-        y_hi_incr                  =     0.0100     0.0100
-        x_hi_max_pot_stress        =       0.00       1.00
-        y_hi_max_pot               =       0.30       0.30
-        ------------------------------------------------
+9 May 1988(Day of year=130): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     plant density ('Population') not specified
+     Component name: canola
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         150.0     0.080          0.230       1.000
-         150.0     0.080          0.240       1.000
-         300.0     0.080          0.240       1.000
-         300.0     0.080          0.250       1.000
-         300.0     0.050          0.260       1.000
-         300.0     0.030          0.270       1.000
-         300.0     0.010          0.280       1.000
-         -----------------------------------------------
-         Extractable SW:   315mm in  1800mm total depth ( 17%).
-         Crop factor for bounding water use is set to 100.0 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            130   20.0   40.0  300.0   0.0   0.0 hyola42
-         ------------------------------------------------
-     
-10 May 1988(Day of year=131), canola: 
-      stage 2.0 germination
-17 May 1988(Day of year=138), canola: 
-      stage 3.0 emergence
-                     biomass =           1.20 (g/m^2)   lai          =   0.004 (m^2/m^2)
-                     stover N conc =     6.50 (%)    extractable sw =   19.44 (mm)
-20 May 1988(Day of year=141), Clock: 
-     Simulation is terminating due to end criteria being met.
 

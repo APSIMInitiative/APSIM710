@@ -13,21 +13,21 @@ outputfile =referenc.out
 ! [temperature.tt_tot]
 ! [photoperiod.tt_tot]
 
-! [temperature.lai]
-! [radiation.lai]
-! [soil_moisture.lai]
-! [soil_nitrogen.lai]
+! [temperature.LAI]
+! [radiation.LAI]
+! [soil_moisture.LAI]
+! [soil_nitrogen.LAI]
 
-! [temperature.biomass]
-! [radiation.biomass]
-! [soil_moisture.biomass]
-! [soil_nitrogen.biomass]
+! [temperature.Biomass]
+! [radiation.Biomass]
+! [soil_moisture.Biomass]
+! [soil_nitrogen.Biomass]
 
-! [soil_moisture.swdef_photo]
+! [soil_moisture.WaterStressPhoto]
 
-! [soil_nitrogen.nfact_photo]
+! [soil_nitrogen.NStressPhoto]
 
-! [smc.root_depth]
+! [smc.RootDepth]
 
 ! [smc.water_log_fact]
 
@@ -58,11 +58,11 @@ variable = clock.dd/mm/yyyy as date
 variable = SoilN.no3
 variable = SoilWat.sw_dep
 variable = sugar.TTAfterSowing
-variable = sugar.lai
-variable = sugar.biomass
-variable = tracker.avg@swdef_photo
-variable = tracker.avg@nfact_photo
-variable = sugar.root_depth
+variable = sugar.LAI
+variable = sugar.Biomass
+variable = tracker.avg@WaterStressPhoto
+variable = tracker.avg@NStressPhoto
+variable = sugar.RootDepth
 variable = tracker.avg@oxdef_photo
 variable = sugar.crop_status
 variable = sugar.dm_dead
@@ -151,7 +151,7 @@ rlv =         0.005   0.001   0.000
       ! First Crop - plant crop, high irrigation, low N, early sow.
       ! -----------------------------------------------------------------------
       ! [sow_msg.sow] - crop should initiate when sown
-      sugar sow plants = 10, sowing_depth = 150, cultivar = q138, ratoon = 0 ()
+      sugar sow population = 10, sowing_depth = 150, cultivar = q138, ratoon = 0 ()
 
    elseif day = 60 and year = 1985 then
       ! [lodge_msg] - crop growth habit should change
@@ -217,7 +217,7 @@ rlv =         0.005   0.001   0.000
       ! -----------------------------------------------------------------------
 
       ! [sow_msg.sow] - crop should initiate when sown
-      sugar sow plants = 10, sowing_depth = 150, cultivar = q138, ratoon = 1 ()
+      sugar sow population = 10, sowing_depth = 150, cultivar = q138, ratoon = 1 ()
 
       ! increase irrigation supply
       irrigation set crit_fr_asw = 0.8
@@ -248,7 +248,7 @@ rlv =         0.005   0.001   0.000
 
    elseif day < 10 and year = 1988 then
 
-      ! [graze_msg.graze] - graze fraction of crop biomass
+      ! [graze_msg.graze] - graze fraction of crop Biomass
       sugar graze fraction = 0.05, c_eff = 0.5, n_eff = 0.5, report = yes
 
       ! report  the effects of grazing
@@ -263,6 +263,6 @@ rlv =         0.005   0.001   0.000
 [reference.SummaryFile.parameters]
 summaryfile = referenc.sum
 [reference.tracker.parameters]
-variable = average of sugar.swdef_photo on process from reported to now as avg@swdef_photo
-variable = average of sugar.nfact_photo on process from reported to now as avg@nfact_photo
+variable = average of sugar.WaterStressPhoto on process from reported to now as avg@WaterStressPhoto
+variable = average of sugar.NStressPhoto on process from reported to now as avg@NStressPhoto
 variable = average of sugar.oxdef_photo on process from reported to now as avg@oxdef_photo

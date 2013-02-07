@@ -53,9 +53,9 @@ Paddock:
         SowYear
         SowDay
         DaysAfterSowing as Das
-        Stage
+        PhenologyStage
         TillerNoFertile as ftn
-        LeafNo
+        LeafNumber
         Biomass
         Yield
         LAI
@@ -73,8 +73,8 @@ Paddock:
         GrainGreenN
         biomass_wt
         GrainGreenWt
-        LeafGreenWt
-        StemGreenWt
+        LeafLiveWt
+        StemLiveWt
         WaterSD
 
      Output file = Sorghum_Dalby 2007_Buster output.out
@@ -89,17 +89,17 @@ Paddock:
         dul_dep()
         WaterSD
         Biomass
-        yield
-        lai
+        Yield
+        LAI
         GrainNo
-        stage
+        PhenologyStage
         biomass_wt
         GrainGreenWt
         RachisGreenWt
-        StemGreenWt
+        StemLiveWt
         GrainSize
-        LeafSenescedWt
-        LeafGreenWt
+        LeafDeadWt
+        LeafLiveWt
         TillerNoFertile
 
      Output file = Sorghum_Dalby 2007_Buster.out
@@ -120,7 +120,7 @@ Paddock:
          endif
          sowday = day
           sowyear = year
-         sorghum sow plants =5.2, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = solid, tiller_no_fertile = 1.5
+         sorghum sow population =5.2, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = solid, tiller_no_fertile = 1.5
      endif
      END of rules
      
@@ -129,7 +129,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if sorghum.stagename = 'harvest_ripe' or sorghum.plant_status = 'dead' then
+                if sorghum.stagename = 'harvest_ripe' or sorghum.plantstatus = 'dead' then
        sorghum  harvest
        sorghum  end_crop
                 endif
@@ -295,7 +295,7 @@ Paddock:
      Manager creating a new local real variable : season = 2007.00000
      Manager creating a new local real variable : sowday = 264.00000
      Manager creating a new local real variable : sowyear = 2007.00000
-     Manager sending message :- sorghum sow  plants = 5.2, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = solid, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 5.2, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = solid, tiller_no_fertile = 1.5
 21 September 2007(Day of year=264), Sorghum: 
      Sowing initiate
      

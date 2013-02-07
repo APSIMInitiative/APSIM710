@@ -50,17 +50,17 @@ Paddock:
      Output variables:
         dd/mm/yyyy as Date
         butterflypea.DaysAfterSowing
-        butterflypea.lai
-        butterflypea.biomass
-        butterflypea.LeafGreenN
+        butterflypea.LAI
+        butterflypea.Biomass
+        butterflypea.LeafLiveN
         butterflypea.n_fixed_tops
-        butterflypea.RootGreenN
-        butterflypea.sw_stress_photo
+        butterflypea.RootLiveN
+        butterflypea.WaterStressPhoto
         rain
         radn
-        butterflypea.sw_stress_pheno
-        butterflypea.sw_stress_fixation
-        butterflypea.sw_stress_expan
+        butterflypea.WaterStressPheno
+        butterflypea.WaterStressFixation
+        butterflypea.WaterStressExpansion
         butterflypea.StageName
 
      Output file = Butterfly Pea.out
@@ -77,7 +77,7 @@ Paddock:
               if (date_within('31-jan, 31-jan') = 1) then
      if (rain[3] >= 30 and esw >= 200) or
          ('yes' = 'yes' and today = date('31-jan'))) then
-        butterflypea sow plants =20, sowing_depth = 30, cultivar = milgarra, row_spacing = 300
+        butterflypea sow population =20, sowing_depth = 30, cultivar = milgarra, row_spacing = 300
      endif
      if today = date('31-jan') then
         choosenextcrop = 'yes'
@@ -225,7 +225,7 @@ Paddock:
         - Reading Constants
 ------- Start of simulation  --------------------------------------------------
 31 January 1988(Day of year=31), Sowing rule: 
-     Manager sending message :- butterflypea sow  plants = 20, sowing_depth = 30, cultivar = milgarra, row_spacing = 300
+     Manager sending message :- butterflypea sow  population = 20, sowing_depth = 30, cultivar = milgarra, row_spacing = 300
 31 January 1988(Day of year=31), butterflypea: 
      Crop Sow
         ------------------------------------------------

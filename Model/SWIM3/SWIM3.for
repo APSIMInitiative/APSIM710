@@ -4182,7 +4182,7 @@ c      eqr0  = 0.d0
 
          call get_real_var (
      :           id,
-     :           'cover_tot',
+     :           'covertotal',
      :           '()',
      :           g%cover_tot(vegnum),
      :           numvals,
@@ -5331,7 +5331,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
          bare = 1.d0
 1000     continue
             crop = crop + 1
-            call get_double_vars (crop, 'cover_green', '()'
+            call get_double_vars (crop, 'coverlive', '()'
      :                              , cover, numvals
      :                              , 0.d0, 1.d0)
 

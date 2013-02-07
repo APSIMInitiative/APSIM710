@@ -11,11 +11,11 @@ outputfile =oryza-swim.out
 variable = clock.year
 variable = clock.day
 
-variable = oryza.plant_status    ! out, alive, or dead
+variable = oryza.PlantStatus    ! out, alive, or dead
 variable = oryza.crop_type       ! usually rice
-variable = oryza.cropsta         ! Crop stage   (0-4)
+variable = oryza.cropsta         ! Crop PhenologyStage   (0-4)
 variable = oryza.dae             ! Days after emergence  (days)
-variable = oryza.dvs             ! Development stage of crop   (0-2)
+variable = oryza.dvs             ! Development PhenologyStage of crop   (0-2)
 variable = oryza.dvr             ! Development rate of crop   (°Cd-1) 
 variable = oryza.hu              ! Daily heat units effective for phenological development  !°Cd d-1 
 
@@ -72,7 +72,7 @@ if (day = 288) then
 endif
 
 [sample.manager.end_of_day]
-if (oryza.plant_status = 'dead') then
+if (oryza.PlantStatus = 'dead') then
   oryza end_crop
 endif
 

@@ -65,7 +65,7 @@ void YPComponent::doInit1(const protocol::Init1Data& initData)
    nID = addRegistration(::respondToGet, 0, "NToday", doubleType);
    satID = addRegistration(::respondToGet, 0, "SATToday", doubleType);
 
-   rootDepthID = addRegistration(::get, 0, "root_depth", doubleType);
+   rootDepthID = addRegistration(::get, 0, "RootDepth", doubleType);
    lldepID = addRegistration(::get, 0, "ll_dep", doubleArrayType);
    duldepID = addRegistration(::get, 0, "dul_dep", doubleArrayType);
    satdepID = addRegistration(::get, 0, "sat_dep", doubleArrayType);
@@ -123,7 +123,7 @@ double YPComponent::interpFromArray(std::vector<double>& values, const std::stri
    bool ok = getVariable (rootDepthID, rootDepth, -DBL_MAX, DBL_MAX, true);
 
    if (!ok)
-      throw runtime_error("Cannot find a root_depth variable belonging to any module");
+      throw runtime_error("Cannot find a RootDepth variable belonging to any module");
 
    if (rootDepth == 0.0)
       return 0.0;

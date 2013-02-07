@@ -52,31 +52,31 @@ Paddock:
         post
      Output variables:
         dd/mmm/yyyy
-        biomass
-        leafgreenwt
-        leafgreenn
-        leafsenescedwt
-        stemgreenwt
-        stemgreenn
-        TuberGreenWt
+        Biomass
+        LeafLiveWt
+        LeafLiveN
+        LeafDeadWt
+        StemLiveWt
+        StemLiveN
+        TuberLiveWt
         TuberGreenN
-        nfact_expan
-        nfact_photo
-        lai
-        leaf_no
+        NStressExpansion
+        NStressPhoto
+        LAI
+        LeafNumber
         stagename
         tt
-        node_no
-        height
+        NodeNumber
+        Height
         node_no_fx
         node_no_sen
         ttafteremergence
-        ttaftersowing
+        TTAfterSowing
         dlt_lai_carbon
         dlt_lai_pot
         no3()
-        swdef_photo
-        root_depth
+        WaterStressPhoto
+        RootDepth
         no3_demand
 
      Output file = Parilla_23Nov_highN.out
@@ -295,7 +295,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if potato.stagename = 'maturity' or potato.plant_status = 'dead' then
+                if potato.stagename = 'maturity' or potato.plantstatus = 'dead' then
        potato  harvest
        potato  end_crop
                 endif
@@ -460,475 +460,13 @@ Paddock:
      Manager creating a new local real variable : density = 20.00000
 23 November 2007(Day of year=327), potato: 
      Crop Sow
-        ------------------------------------------------
-        cultivar                   = russet
-        Phases:
-           out
-           sowing
-           emerging
-              shoot_lag                  =      72 (dd)
-              shoot_rate                 =       1 (dd/mm)
-           emergence
-              x_pp_emergence             =      12      18 (h)
-              y_tt_emergence             =     280     280 (dd)
-           vegetative
-              tt_vegetative              =      20 (dd)
-           earlytuber
-              tt_earlytuber              =     550 (dd)
-           senescing
-              tt_senescing               =     850 (dd)
-           senesced
-              tt_senesced                =       5 (dd)
-           maturity
-              tt_maturity                =       5 (dd)
-     
-        ------------------------------------------------
+23 November 2007(Day of year=327): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     plant density ('Population') not specified
+     Component name: potato
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         100.0     0.100          0.060       1.000
-         200.0     0.100          0.060       1.000
-         300.0     0.070          0.120       1.000
-         300.0     0.050          0.120       1.000
-         300.0     0.050          0.120       1.000
-         300.0     0.050          0.120       1.000
-         -----------------------------------------------
-         Extractable SW:    18mm in  1500mm total depth (  1%).
-         Crop factor for bounding water use is set to 100.0 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            327   30.0   20.0  650.0   0.0   0.0 russet
-         ------------------------------------------------
-     
-24 November 2007(Day of year=328), operations: 
-      Sending apply message to irrigation
-24 November 2007(Day of year=328), potato: 
-      stage 2.0 emerging
-25 November 2007(Day of year=329), operations: 
-      Sending apply message to irrigation
-26 November 2007(Day of year=330), operations: 
-      Sending apply message to irrigation
-27 November 2007(Day of year=331), operations: 
-      Sending apply message to irrigation
-28 November 2007(Day of year=332), operations: 
-      Sending apply message to irrigation
-29 November 2007(Day of year=333), operations: 
-      Sending apply message to irrigation
-1 December 2007(Day of year=335), operations: 
-      Sending apply message to irrigation
-2 December 2007(Day of year=336), operations: 
-      Sending apply message to irrigation
-3 December 2007(Day of year=337), operations: 
-      Sending apply message to irrigation
-4 December 2007(Day of year=338), operations: 
-      Sending apply message to irrigation
-4 December 2007(Day of year=338), potato: 
-      stage 3.0 emergence
-                     biomass =           0.60 (g/m^2)   lai          =   0.088 (m^2/m^2)
-                     stover N conc =     6.50 (%)    extractable sw =   15.06 (mm)
-5 December 2007(Day of year=339), operations: 
-      Sending apply message to irrigation
-6 December 2007(Day of year=340), operations: 
-      Sending apply message to irrigation
-7 December 2007(Day of year=341), operations: 
-      Sending apply message to irrigation
-8 December 2007(Day of year=342), operations: 
-      Sending apply message to irrigation
-9 December 2007(Day of year=343), operations: 
-      Sending apply message to irrigation
-10 December 2007(Day of year=344), operations: 
-      Sending apply message to irrigation
-11 December 2007(Day of year=345), operations: 
-      Sending apply message to irrigation
-12 December 2007(Day of year=346), operations: 
-      Sending apply message to irrigation
-13 December 2007(Day of year=347), operations: 
-      Sending apply message to irrigation
-14 December 2007(Day of year=348), operations: 
-      Sending apply message to irrigation
-16 December 2007(Day of year=350), operations: 
-      Sending apply message to irrigation
-17 December 2007(Day of year=351), operations: 
-      Sending apply message to irrigation
-18 December 2007(Day of year=352), operations: 
-      Sending apply message to irrigation
-19 December 2007(Day of year=353), operations: 
-      Sending apply message to irrigation
-20 December 2007(Day of year=354), operations: 
-      Sending apply message to fertiliser
-20 December 2007(Day of year=354), fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        75.00 of N as urea (urea_n)
-                                         added at depth   10.00 (layer   1)
-      Sending apply message to irrigation
-21 December 2007(Day of year=355), operations: 
-      Sending apply message to irrigation
-22 December 2007(Day of year=356), operations: 
-      Sending apply message to irrigation
-23 December 2007(Day of year=357), operations: 
-      Sending apply message to irrigation
-24 December 2007(Day of year=358), operations: 
-      Sending apply message to irrigation
-25 December 2007(Day of year=359), operations: 
-      Sending apply message to irrigation
-26 December 2007(Day of year=360), operations: 
-      Sending apply message to irrigation
-27 December 2007(Day of year=361), operations: 
-      Sending apply message to irrigation
-28 December 2007(Day of year=362), operations: 
-      Sending apply message to irrigation
-28 December 2007(Day of year=362), potato: 
-      stage 4.0 vegetative
-                     biomass =          59.00 (g/m^2)   lai          =   0.829 (m^2/m^2)
-                     stover N conc =     5.35 (%)    extractable sw =   16.15 (mm)
-29 December 2007(Day of year=363), operations: 
-      Sending apply message to irrigation
-30 December 2007(Day of year=364), operations: 
-      Sending apply message to irrigation
-30 December 2007(Day of year=364), potato: 
-      stage 5.0 earlytuber
-                     biomass =          61.58 (g/m^2)   lai          =   0.743 (m^2/m^2)
-                     stover N conc =     5.46 (%)    extractable sw =   15.36 (mm)
-31 December 2007(Day of year=365), operations: 
-      Sending apply message to irrigation
-1 January 2008(Day of year=1), operations: 
-      Sending apply message to irrigation
-2 January 2008(Day of year=2), operations: 
-      Sending apply message to irrigation
-3 January 2008(Day of year=3), operations: 
-      Sending apply message to irrigation
-4 January 2008(Day of year=4), operations: 
-      Sending apply message to irrigation
-5 January 2008(Day of year=5), operations: 
-      Sending apply message to irrigation
-6 January 2008(Day of year=6), operations: 
-      Sending apply message to irrigation
-7 January 2008(Day of year=7), operations: 
-      Sending apply message to irrigation
-8 January 2008(Day of year=8), operations: 
-      Sending apply message to irrigation
-9 January 2008(Day of year=9), operations: 
-      Sending apply message to irrigation
-10 January 2008(Day of year=10), operations: 
-      Sending apply message to fertiliser
-10 January 2008(Day of year=10), fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        48.00 of N as urea (urea_n)
-                                         added at depth   10.00 (layer   1)
-      Sending apply message to irrigation
-11 January 2008(Day of year=11), operations: 
-      Sending apply message to irrigation
-12 January 2008(Day of year=12), operations: 
-      Sending apply message to irrigation
-13 January 2008(Day of year=13), operations: 
-      Sending apply message to irrigation
-14 January 2008(Day of year=14), operations: 
-      Sending apply message to fertiliser
-14 January 2008(Day of year=14), fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        75.00 of N as urea (urea_n)
-                                         added at depth   10.00 (layer   1)
-      Sending apply message to irrigation
-15 January 2008(Day of year=15), operations: 
-      Sending apply message to irrigation
-16 January 2008(Day of year=16), operations: 
-      Sending apply message to irrigation
-17 January 2008(Day of year=17), operations: 
-      Sending apply message to irrigation
-18 January 2008(Day of year=18), operations: 
-      Sending apply message to irrigation
-20 January 2008(Day of year=20), operations: 
-      Sending apply message to irrigation
-21 January 2008(Day of year=21), operations: 
-      Sending apply message to irrigation
-22 January 2008(Day of year=22), operations: 
-      Sending apply message to irrigation
-23 January 2008(Day of year=23), operations: 
-      Sending apply message to irrigation
-24 January 2008(Day of year=24), operations: 
-      Sending apply message to irrigation
-25 January 2008(Day of year=25), operations: 
-      Sending apply message to irrigation
-26 January 2008(Day of year=26), operations: 
-      Sending apply message to irrigation
-27 January 2008(Day of year=27), operations: 
-      Sending apply message to irrigation
-28 January 2008(Day of year=28), operations: 
-      Sending apply message to irrigation
-29 January 2008(Day of year=29), operations: 
-      Sending apply message to fertiliser
-29 January 2008(Day of year=29), fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        40.00 of N as urea (urea_n)
-                                         added at depth   10.00 (layer   1)
-      Sending apply message to irrigation
-30 January 2008(Day of year=30), operations: 
-      Sending apply message to irrigation
-31 January 2008(Day of year=31), operations: 
-      Sending apply message to irrigation
-1 February 2008(Day of year=32), operations: 
-      Sending apply message to fertiliser
-1 February 2008(Day of year=32), fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        40.00 of N as urea (urea_n)
-                                         added at depth   10.00 (layer   1)
-      Sending apply message to irrigation
-2 February 2008(Day of year=33), operations: 
-      Sending apply message to irrigation
-3 February 2008(Day of year=34), operations: 
-      Sending apply message to irrigation
-4 February 2008(Day of year=35), operations: 
-      Sending apply message to irrigation
-5 February 2008(Day of year=36), operations: 
-      Sending apply message to irrigation
-6 February 2008(Day of year=37), operations: 
-      Sending apply message to irrigation
-7 February 2008(Day of year=38), operations: 
-      Sending apply message to irrigation
-8 February 2008(Day of year=39), operations: 
-      Sending apply message to irrigation
-9 February 2008(Day of year=40), operations: 
-      Sending apply message to irrigation
-10 February 2008(Day of year=41), operations: 
-      Sending apply message to irrigation
-11 February 2008(Day of year=42), operations: 
-      Sending apply message to irrigation
-12 February 2008(Day of year=43), operations: 
-      Sending apply message to fertiliser
-12 February 2008(Day of year=43), fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        40.00 of N as urea (urea_n)
-                                         added at depth   10.00 (layer   1)
-      Sending apply message to irrigation
-13 February 2008(Day of year=44), operations: 
-      Sending apply message to irrigation
-14 February 2008(Day of year=45), operations: 
-      Sending apply message to irrigation
-15 February 2008(Day of year=46), operations: 
-      Sending apply message to irrigation
-16 February 2008(Day of year=47), operations: 
-      Sending apply message to irrigation
-17 February 2008(Day of year=48), operations: 
-      Sending apply message to irrigation
-18 February 2008(Day of year=49), operations: 
-      Sending apply message to irrigation
-19 February 2008(Day of year=50), operations: 
-      Sending apply message to irrigation
-19 February 2008(Day of year=50), potato: 
-      stage 6.0 senescing
-                     biomass =         140.15 (g/m^2)   lai          =   0.631 (m^2/m^2)
-                     stover N conc =     6.50 (%)    extractable sw =   17.29 (mm)
-20 February 2008(Day of year=51), operations: 
-      Sending apply message to irrigation
-21 February 2008(Day of year=52), operations: 
-      Sending apply message to irrigation
-22 February 2008(Day of year=53), operations: 
-      Sending apply message to irrigation
-23 February 2008(Day of year=54), operations: 
-      Sending apply message to irrigation
-24 February 2008(Day of year=55), operations: 
-      Sending apply message to irrigation
-25 February 2008(Day of year=56), operations: 
-      Sending apply message to irrigation
-26 February 2008(Day of year=57), operations: 
-      Sending apply message to irrigation
-27 February 2008(Day of year=58), operations: 
-      Sending apply message to irrigation
-28 February 2008(Day of year=59), operations: 
-      Sending apply message to fertiliser
-28 February 2008(Day of year=59), fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        40.00 of N as urea (urea_n)
-                                         added at depth   10.00 (layer   1)
-      Sending apply message to irrigation
-29 February 2008(Day of year=60), operations: 
-      Sending apply message to fertiliser
-29 February 2008(Day of year=60), fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        20.00 of N as urea (urea_n)
-                                         added at depth   10.00 (layer   1)
-      Sending apply message to irrigation
-1 March 2008(Day of year=61), operations: 
-      Sending apply message to irrigation
-2 March 2008(Day of year=62), operations: 
-      Sending apply message to irrigation
-3 March 2008(Day of year=63), operations: 
-      Sending apply message to irrigation
-4 March 2008(Day of year=64), operations: 
-      Sending apply message to irrigation
-5 March 2008(Day of year=65), operations: 
-      Sending apply message to irrigation
-6 March 2008(Day of year=66), operations: 
-      Sending apply message to fertiliser
-6 March 2008(Day of year=66), fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        40.00 of N as urea (urea_n)
-                                         added at depth   10.00 (layer   1)
-      Sending apply message to irrigation
-7 March 2008(Day of year=67), operations: 
-      Sending apply message to irrigation
-8 March 2008(Day of year=68), operations: 
-      Sending apply message to irrigation
-9 March 2008(Day of year=69), operations: 
-      Sending apply message to irrigation
-10 March 2008(Day of year=70), operations: 
-      Sending apply message to irrigation
-11 March 2008(Day of year=71), operations: 
-      Sending apply message to irrigation
-12 March 2008(Day of year=72), operations: 
-      Sending apply message to irrigation
-13 March 2008(Day of year=73), operations: 
-      Sending apply message to irrigation
-14 March 2008(Day of year=74), operations: 
-      Sending apply message to irrigation
-15 March 2008(Day of year=75), operations: 
-      Sending apply message to irrigation
-16 March 2008(Day of year=76), operations: 
-      Sending apply message to fertiliser
-16 March 2008(Day of year=76), fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        40.00 of N as urea (urea_n)
-                                         added at depth   10.00 (layer   1)
-      Sending apply message to irrigation
-17 March 2008(Day of year=77), operations: 
-      Sending apply message to irrigation
-18 March 2008(Day of year=78), operations: 
-      Sending apply message to irrigation
-19 March 2008(Day of year=79), operations: 
-      Sending apply message to irrigation
-20 March 2008(Day of year=80), operations: 
-      Sending apply message to irrigation
-22 March 2008(Day of year=82), operations: 
-      Sending apply message to irrigation
-23 March 2008(Day of year=83), operations: 
-      Sending apply message to irrigation
-25 March 2008(Day of year=85), operations: 
-      Sending apply message to irrigation
-26 March 2008(Day of year=86), operations: 
-      Sending apply message to irrigation
-28 March 2008(Day of year=88), operations: 
-      Sending apply message to irrigation
-29 March 2008(Day of year=89), operations: 
-      Sending apply message to irrigation
-31 March 2008(Day of year=91), operations: 
-      Sending apply message to irrigation
-1 April 2008(Day of year=92), operations: 
-      Sending apply message to irrigation
-3 April 2008(Day of year=94), operations: 
-      Sending apply message to irrigation
-4 April 2008(Day of year=95), operations: 
-      Sending apply message to irrigation
-6 April 2008(Day of year=97), operations: 
-      Sending apply message to irrigation
-7 April 2008(Day of year=98), operations: 
-      Sending apply message to irrigation
-9 April 2008(Day of year=100), operations: 
-      Sending apply message to irrigation
-10 April 2008(Day of year=101), operations: 
-      Sending apply message to irrigation
-12 April 2008(Day of year=103), operations: 
-      Sending apply message to irrigation
-13 April 2008(Day of year=104), operations: 
-      Sending apply message to irrigation
-15 April 2008(Day of year=106), operations: 
-      Sending apply message to irrigation
-16 April 2008(Day of year=107), operations: 
-      Sending apply message to irrigation
-18 April 2008(Day of year=109), operations: 
-      Sending apply message to irrigation
-19 April 2008(Day of year=110), operations: 
-      Sending apply message to irrigation
-21 April 2008(Day of year=112), operations: 
-      Sending apply message to irrigation
-22 April 2008(Day of year=113), operations: 
-      Sending apply message to irrigation
-24 April 2008(Day of year=115), operations: 
-      Sending apply message to irrigation
-25 April 2008(Day of year=116), operations: 
-      Sending apply message to irrigation
-27 April 2008(Day of year=118), operations: 
-      Sending apply message to irrigation
-28 April 2008(Day of year=119), operations: 
-      Sending apply message to irrigation
-30 April 2008(Day of year=121), operations: 
-      Sending apply message to irrigation
-1 May 2008(Day of year=122), operations: 
-      Sending apply message to irrigation
-3 May 2008(Day of year=124), operations: 
-      Sending apply message to irrigation
-4 May 2008(Day of year=125), operations: 
-      Sending apply message to irrigation
-5 May 2008(Day of year=126), potato: 
-      stage 7.0 senesced
-                     biomass =         147.21 (g/m^2)   lai          =   0.017 (m^2/m^2)
-                     stover N conc =     8.55 (%)    extractable sw =   17.42 (mm)
-6 May 2008(Day of year=127), operations: 
-      Sending apply message to irrigation
-6 May 2008(Day of year=127), potato: 
-      stage 8.0 maturity
-                     biomass =         147.41 (g/m^2)   lai          =   0.015 (m^2/m^2)
-                     stover N conc =     8.51 (%)    extractable sw =   18.97 (mm)
-6 May 2008(Day of year=127), Harvesting rule: 
-     Manager sending message :- potato harvest
-     
-      flowering day          =    0                           stover (kg/ha)         =     1474.1
-      maturity day           =  127                           grain yield (kg/ha)    =        0.0
-      grain % water content  =    0.0                         grain yield wet (kg/ha)=        0.0
-      grain wt (g)           =    0.000                       grains/m^2             =        0.0
-      grains/plant           =    0.0                         maximum lai            =      0.977
-      total above ground biomass (kg/ha)    =     1474.1
-      live above ground biomass (kg/ha)     =     1474.1
-      green above ground biomass (kg/ha)    =      431.6
-      senesced above ground biomass (kg/ha) =     1042.5
-      number of leaves       =     45.8
-      DM Root:Shoot ratio    =     0.17                       Harvest Index          =       0.00
-      Stover C:N ratio       =    11.26                       Root C:N ratio         =      29.94
-      grain N percent        =     0.00                       total N content (kg/ha)=      52.38
-      grain N uptake (kg/ha) =     0.00                       senesced N content (kg/ha)=   15.64
-      green N content (kg/ha)=    36.75
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         vegetative           to earlytuber              0.723        0.823        0.000        0.000
-         earlytuber           to senescing               0.560        0.658        0.000        0.000
-     
-     
-     Crop harvested.
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                1469.7                     0.0
-                          N  (kg/ha) =                  52.23                    0.00
-     
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                4257.1                     0.0
-                          N  (kg/ha) =                  73.16                    0.00
-     
-     Manager sending message :- potato end_crop
-     Crop ended. Yield (dw) =     0.0  (kg/ha)
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                   4.3                   246.2
-                          N  (kg/ha) =                   0.15                    3.29
-     
-7 May 2008(Day of year=128), operations: 
-      Sending apply message to irrigation
-1 June 2008(Day of year=153), clock: 
-     Simulation is terminating due to end criteria being met.
 

@@ -80,17 +80,17 @@ Paddock:
         sow_year
         DaysAfterSowing
         simulation_end_date format dd/mm/yyyy
-        biomass
+        Biomass
         wetyield
         Grain_protein
-        grain_n
-        grain_no
+        GrainN
+        GrainNumber
         oil_conc
-        leaf_no
-        sw_stress_expan
-        sw_stress_photo
-        n_stress_expan
-        n_stress_photo
+        LeafNumber
+        WaterStressExpansion
+        WaterStressPhoto
+        NStressExpansion
+        NStressPhoto
         Hay
         Z
         Zadok11Das
@@ -110,7 +110,7 @@ Paddock:
         Zadok75Das
         flowering_das
         maturity_das
-        root_depth
+        RootDepth
         Bank
         TwoTimesCost 
         CurrentFallow
@@ -191,6 +191,7 @@ Paddock:
         GrainGrossMargin 
         RainToMaturity
         HayBiomass
+        Wheat
 
      Output file = ESP Yearly.out
      Format = normal
@@ -233,7 +234,7 @@ Paddock:
               twotimescost = twotimescost + 2 * cost
            endif
         endif
-        if stagename = 'harvest_ripe' or plant_status = 'dead' then
+        if stagename = 'harvest_ripe' or plantstatus = 'dead' then
            if (grain_protein > 10.5) then
               fullprice = 140 + (grain_protein - 10.5) * 2 * 2
            else
@@ -318,7 +319,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+                if wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' then
        wheat  harvest
        wheat  end_crop
        harvesttoday = 1
@@ -516,19 +517,19 @@ Paddock:
      SECTION:- post
         if (cropsown = 'sorghum') then
            if (daysaftersowing < 3) then
-              sw_stress_expan = 0
-              sw_stress_photo = 0
+              waterstressexpansion = 0
+              waterstressphoto = 0
               n_stress_expan = 0
-              n_stress_photo = 0
+              nstressphoto = 0
            else
-              sw_stress_expan = 1 - swdef_expan
-              sw_stress_photo = 1 - swdef_photo
-              n_stress_expan = 1 - nfact_expan
-              n_stress_photo = 1 - nfact_photo
+              waterstressexpansion = 1 - waterstressexpansion
+              waterstressphoto = 1 - waterstressphoto
+              n_stress_expan = 1 - nstressexpansion
+              nstressphoto = 1 - nstressphoto
            endif
-           leaf_no = leafno
-           grain_no = grainno
-           grain_n = graingreenn
+           leafnumber = leafno
+           grainnumber = grainno
+           grainn = graingreenn
            flowering_das = floweringdas
            maturity_das = maturitydas
         endif
@@ -573,7 +574,7 @@ Paddock:
            act_mods threemonthstime
         endif
         if (zadok_stage < 30) then
-           z = node_no + 9
+           z = nodenumber + 9
            if (z > 16) then
               z = 16
            endif
@@ -648,7 +649,7 @@ Paddock:
         availablewater = sw_dep() - ll_dep()
         pawc = dul_dep() - ll_dep()
         nuptakekgha = no3_uptake() * -1
-        ninplant = (biomass_n * 10) + (rootgreenn * 10)
+        ninplant = (biomass_n * 10) + (rootliven * 10)
         ningrain = graintotaln * 10
         if (daysaftersowing = 1) then
            zadok11das = 0
@@ -711,7 +712,7 @@ Paddock:
         availablewater = sw_dep() - ll_dep()
         pawc = dul_dep() - ll_dep()
         nuptakekgha = no3_uptake() * -1
-        ninplant = (biomass_n * 10) + (rootgreenn * 10)
+        ninplant = (biomass_n * 10) + (rootliven * 10)
         ningrain = graintotaln * 10
         if (daysaftersowing = 1) then
            zadok11das = 0
@@ -774,7 +775,7 @@ Paddock:
         availablewater = sw_dep() - ll_dep()
         pawc = dul_dep() - ll_dep()
         nuptakekgha = no3_uptake() * -1
-        ninplant = (biomass_n * 10) + (rootgreenn * 10)
+        ninplant = (biomass_n * 10) + (rootliven * 10)
         ningrain = graintotaln * 10
         if (daysaftersowing = 1) then
            zadok11das = 0
@@ -837,7 +838,7 @@ Paddock:
         availablewater = sw_dep() - ll_dep()
         pawc = dul_dep() - ll_dep()
         nuptakekgha = no3_uptake() * -1
-        ninplant = (biomass_n * 10) + (rootgreenn * 10)
+        ninplant = (biomass_n * 10) + (rootliven * 10)
         ningrain = graintotaln * 10
         if (daysaftersowing = 1) then
            zadok11das = 0
@@ -973,7 +974,7 @@ Paddock:
          stagename = 'maturity' or
          stagename = 'harvest_ripe') then
            cum_temp = cum_temp + (maxt + mint) / 2
-           cum_swdef = cum_swdef + swdef_photo
+           cum_swdef = cum_swdef + waterstressphoto
            cum_days = cum_days + 1
         endif
         if (cum_days > 0) then
@@ -1363,167 +1364,13 @@ Paddock:
      Manager sending message :- wheat sow  plants = 150, sowing_depth = 30, cultivar = mitre, row_spacing = 250, crop_class = plant, tiller_no_fertile = 1, skip = solid
 27 June 2008(Day of year=179), Wheat: 
      Crop Sow
-        ------------------------------------------------
-        cultivar                   = mitre
-        Phases:
-           out
-           sowing
-           germination
-           emergence
-           end_of_juvenile
-           floral_initiation
-           flowering
-              tt_flowering               =     120 (dd)
-           start_grain_fill
-              tt_start_grain_fill        =     545 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =      35 (dd)
-           maturity
-              tt_maturity                =       1 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =    1000 (dd)
-           end_crop
-              tt_end_crop                =    1000 (dd)
-     
-        grains_per_gram_stem           =       25.0 (/g)
-        potential_grain_filling_rate   =     0.0020 (g/grain/day)
-        potential_grain_growth_rate    =     0.0010 (g/grain/day)
-        max_grain_size                 =     0.0410 (g)
-        ------------------------------------------------
+27 June 2008(Day of year=179): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     plant density ('Population') not specified
+     Component name: Wheat
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         100.0     0.060          0.120       1.000
-         100.0     0.060          0.100       1.000
-         200.0     0.040          0.120       1.000
-         200.0     0.040          0.170       1.000
-         300.0     0.030          0.180       1.000
-         300.0     0.020          0.220       1.000
-         300.0     0.020          0.290       1.000
-         -----------------------------------------------
-         Extractable SW:   181mm in  1500mm total depth ( 12%).
-         Crop factor for bounding water use is set to   1.5 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            179   30.0  150.0  250.0   0.0   0.0 mitre
-         ------------------------------------------------
-     
-27 June 2008(Day of year=179), Fertilise: 
-     Manager sending message :- fertiliser apply  amount = 8 (kg/ha), depth = 20 (mm), type = no3_n
-27 June 2008(Day of year=179), Fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-         8.00 of N as nitrate (no3_n)
-                                         added at depth   20.00 (layer   1)
-27 June 2008(Day of year=179), Sowing tillage: 
-     Manager sending message :- surfaceom tillage  type = planter, f_incorp = 0.1, tillage_depth = 50
-27 June 2008(Day of year=179), SurfaceOM: 
-     Residue removed using planter
-                                             Fraction Incorporated =     0.10
-                                             Incorporated Depth    =    50.00
-27 June 2008(Day of year=179), GrossMargin: 
-     Manager creating a new local real variable : cost = 24.60000
-28 June 2008(Day of year=180), Wheat: 
-      stage 2.0 germination
-7 July 2008(Day of year=189), Wheat: 
-      stage 3.0 emergence
-                     biomass =           0.69 (g/m^2)   lai          =   0.030 (m^2/m^2)
-                     stover N conc =     5.85 (%)    extractable sw =   30.17 (mm)
-8 July 2008(Day of year=190), Wheat: 
-      stage 4.0 end_of_juvenile
-                     biomass =           0.76 (g/m^2)   lai          =   0.031 (m^2/m^2)
-                     stover N conc =     5.84 (%)    extractable sw =   36.64 (mm)
-9 September 2008(Day of year=253), Fertilise1: 
-     Manager sending message :- fertiliser apply  amount = 32 (kg/ha), depth = 20 (mm), type = no3_n
-9 September 2008(Day of year=253), Fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        32.00 of N as nitrate (no3_n)
-                                         added at depth   20.00 (layer   1)
-26 September 2008(Day of year=270), Wheat: 
-      stage 5.0 floral_initiation
-                     biomass =         166.83 (g/m^2)   lai          =   2.248 (m^2/m^2)
-                     stover N conc =     1.98 (%)    extractable sw =   61.28 (mm)
-7 November 2008(Day of year=312), Wheat: 
-      stage 6.0 flowering
-                     biomass =         434.55 (g/m^2)   lai          =   0.926 (m^2/m^2)
-                     stover N conc =     0.83 (%)    extractable sw =   25.75 (mm)
-14 November 2008(Day of year=319), Wheat: 
-      stage 7.0 start_grain_fill
-                     biomass =         462.31 (g/m^2)   lai          =   0.621 (m^2/m^2)
-                     stover N conc =     0.56 (%)    extractable sw =   15.88 (mm)
-15 November 2008(Day of year=320), CanolaOilConc: 
-     Manager creating a new local real variable : avg_temp = 12.25000
-     Manager creating a new local real variable : avg_swdef = 0.56114
-22 December 2008(Day of year=357), Wheat: 
-      stage 8.0 end_grain_fill
-                     biomass =         493.98 (g/m^2)   lai          =   0.372 (m^2/m^2)
-                     stover N conc =     0.32 (%)    extractable sw =   38.64 (mm)
-23 December 2008(Day of year=358), Wheat: 
-      stage 9.0 maturity
-                     biomass =         493.98 (g/m^2)   lai          =   0.347 (m^2/m^2)
-                     stover N conc =     0.32 (%)    extractable sw =   37.02 (mm)
-24 December 2008(Day of year=359), Wheat: 
-      stage 10.0 harvest_ripe
-                     biomass =         493.98 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     0.31 (%)    extractable sw =   35.54 (mm)
-24 December 2008(Day of year=359), GrossMargin: 
-     Manager creating a new local real variable : fullprice = 140.00000
-24 December 2008(Day of year=359), Harvest: 
-     Manager sending message :- wheat harvest
-     
-      flowering day          =  312                           stover (kg/ha)         =     3540.3
-      maturity day           =  358                           grain yield (kg/ha)    =     1399.5
-      grain % water content  =   12.5                         grain yield wet (kg/ha)=     1599.4
-      grain wt (g)           =    0.023                       grains/m^2             =     6196.1
-      grains/plant           =   41.3                         maximum lai            =      2.628
-      total above ground biomass (kg/ha)    =     4939.8
-      live above ground biomass (kg/ha)     =     4939.8
-      green above ground biomass (kg/ha)    =     3779.9
-      senesced above ground biomass (kg/ha) =     1159.9
-      number of leaves       =     31.6
-      DM Root:Shoot ratio    =     0.18                       Harvest Index          =       0.28
-      Stover C:N ratio       =   108.30                       Root C:N ratio         =      38.93
-      grain N percent        =     1.63                       total N content (kg/ha)=      35.92
-      grain N uptake (kg/ha) =    22.85                       senesced N content (kg/ha)=    5.80
-      green N content (kg/ha)=     7.28
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
-         end_of_juvenile      to floral_initiation       0.000        0.000        0.252        0.252
-         floral_initiation    to flowering               0.244        0.297        0.369        0.369
-         flowering            to start_grain_fill        0.550        0.636        0.000        0.000
-         start_grain_fill     to end_grain_fill          0.039        0.050        0.831        0.831
-     
-     
-     Crop harvested.
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                3540.3                     0.0
-                          N  (kg/ha) =                  13.08                    0.00
-     
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                1399.5                     0.0
-                          N  (kg/ha) =                  22.85                    0.00
-     
-      stage 4.0 end_of_juvenile
-                     biomass =           0.00 (g/m^2)   lai          =   0.030 (m^2/m^2)
-                     stover N conc =     6.30 (%)    extractable sw =   35.54 (mm)
-     Manager sending message :- wheat end_crop
-     Crop ended. Yield (dw) =     0.0  (kg/ha)
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                   0.0                   887.0
-                          N  (kg/ha) =                   0.00                    9.11
-     
-1 March 2009(Day of year=60), Clock: 
-     Simulation is terminating due to end criteria being met.
 

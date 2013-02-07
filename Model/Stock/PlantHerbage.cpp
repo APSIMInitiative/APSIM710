@@ -137,7 +137,7 @@ void PlantHerbage::doRunTimeReg(void)
 
    tramplingID = system->addRegistration(::get, 0, "trampling", singleTypeDDML);
    heightID = system->addRegistration(::get, cHerbageModuleID, "height", singleTypeDDML);
-   stageID = system->addRegistration(::get, cHerbageModuleID, "stage", singleTypeDDML);
+   stageID = system->addRegistration(::get, cHerbageModuleID, "PhenologyStage", singleTypeDDML);
    stageNameID = system->addRegistration(::get, cHerbageModuleID,"stagename", stringTypeDDML);
 
     removeCropBiomassID = system->addRegistration(::event, cHerbageModuleID,"remove_crop_biomass", DDML(protocol::RemoveCropBiomassType()));

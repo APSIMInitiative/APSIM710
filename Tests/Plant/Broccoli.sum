@@ -49,8 +49,8 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        biomass
-        yield
+        Biomass
+        Yield
         grain_protein
         grain_size
         esw
@@ -65,9 +65,9 @@ Paddock:
         leaftotaln
         podtotaln
         graintotaln
-        lai
-        swdef_photo
-        nfact_photo
+        LAI
+        WaterStressPhoto
+        NStressPhoto
 
      Output file = Broccoli.out
      Format = normal
@@ -89,8 +89,8 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-           if (broccoli.plant_status <> 'out') then
-             if (broccoli.phenologycurrentstagename = 'maturity') then
+           if (broccoli.plantstatus <> 'out') then
+             if (broccoli.phenologycurrentstagename = '[phenologystage]') then
              broccoli harvest
              broccoli end_crop
              endif

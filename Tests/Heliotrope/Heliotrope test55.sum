@@ -67,22 +67,22 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        leaf_no
-        node_no
-        root_depth
-        green_biomass_wt
+        LeafNumber
+        NodeNumber
+        RootDepth
+        AboveGroundLiveWt
         tt
-        lai
-        stage
+        LAI
+        PhenologyStage
         ttcum
-        root_depth
-        height
-        stemgreenwt
+        RootDepth
+        Height
+        StemLiveWt
         sw_supply
         sw_demand
-        sw_stress_photo
-        sw_stress_pheno
-        sw_stress_expan
+        WaterStressPhoto
+        WaterStressPheno
+        WaterStressExpansion
 
      Output file = Heliotrope test55 plant.out
      Format = normal
@@ -267,104 +267,13 @@ Paddock:
      Manager sending message :- heliotrope sow  plants = 55, sowing_depth = 10, cultivar = green_diamond, row_spacing = 100, crop_class = plant
 23 November 2009(Day of year=327), Heliotrope: 
      Crop Sow
-        ------------------------------------------------
-        cultivar                   = green_diamond
-        Phases:
-           out
-           sowing
-           germination
-              shoot_lag                  =      15 (dd)
-              shoot_rate                 =       1 (dd/mm)
-           emergence
-              cumvd_emergence            =       0     100 (vd)
-              tt_emergence               =     550     550 (dd)
-           end_of_juvenile
-              x_pp_end_of_juvenile       =    12.5      17 (h)
-              y_tt_end_of_juvenile       =       1       5 (dd)
-           floral_initiation
-              x_pp_floral_initiation     =       1      24 (h)
-              y_tt_floral_initiation     =      25      25 (dd)
-           flowering
-              x_pp_flowering             =       1      24 (h)
-              y_tt_flowering             =     206     206 (dd)
-           start_grain_fill
-              x_pp_start_grain_fill      =       1      24 (h)
-              y_tt_start_grain_fill      =     364     364 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =      30 (dd)
-           maturity
-              tt_maturity                =       5 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =       1 (dd)
-           end_crop
-     
-        x_pp_hi_incr               =       1.00      24.00
-        y_hi_incr                  =     0.0170     0.0170
-        x_hi_max_pot_stress        =       0.00       1.00
-        y_hi_max_pot               =       0.40       0.40
-        ------------------------------------------------
+23 November 2009(Day of year=327): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     plant density ('Population') not specified
+     Component name: Heliotrope
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         100.0     0.060          0.140       1.000
-         100.0     0.060          0.140       1.000
-         200.0     0.060          0.170       1.000
-         300.0     0.060          0.220       1.000
-         300.0     0.060          0.220       1.000
-         -----------------------------------------------
-         Extractable SW:   156mm in  1000mm total depth ( 16%).
-         Crop factor for bounding water use is set to 100.0 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            327   10.0   55.0  100.0   0.0   0.0 green_diamond
-         ------------------------------------------------
-     
-24 November 2009(Day of year=328), Heliotrope: 
-      stage 2.0 germination
-25 November 2009(Day of year=329), Heliotrope: 
-      stage 3.0 emergence
-                     biomass =           5.50 (g/m^2)   lai          =   0.011 (m^2/m^2)
-                     stover N conc =     6.00 (%)    extractable sw =   11.42 (mm)
-7 January 2010(Day of year=7), Heliotrope: 
-      stage 4.0 end_of_juvenile
-                     biomass =         169.75 (g/m^2)   lai          =   2.396 (m^2/m^2)
-                     stover N conc =     3.38 (%)    extractable sw =   33.72 (mm)
-8 January 2010(Day of year=8), Heliotrope: 
-      stage 5.0 floral_initiation
-                     biomass =         172.58 (g/m^2)   lai          =   2.344 (m^2/m^2)
-                     stover N conc =     3.47 (%)    extractable sw =   31.65 (mm)
-9 January 2010(Day of year=9), Heliotrope: 
-      stage 6.0 flowering
-                     biomass =         174.53 (g/m^2)   lai          =   2.238 (m^2/m^2)
-                     stover N conc =     3.52 (%)    extractable sw =   29.71 (mm)
-26 January 2010(Day of year=26), Heliotrope: 
-      stage 7.0 start_grain_fill
-                     biomass =         216.89 (g/m^2)   lai          =   1.375 (m^2/m^2)
-                     stover N conc =     3.38 (%)    extractable sw =    9.99 (mm)
-19 February 2010(Day of year=50), Heliotrope: 
-      stage 8.0 end_grain_fill
-                     biomass =         236.89 (g/m^2)   lai          =   0.468 (m^2/m^2)
-                     stover N conc =     2.52 (%)    extractable sw =    2.16 (mm)
-21 February 2010(Day of year=52), Heliotrope: 
-      stage 9.0 maturity
-                     biomass =         237.20 (g/m^2)   lai          =   0.424 (m^2/m^2)
-                     stover N conc =     2.53 (%)    extractable sw =    1.87 (mm)
-22 February 2010(Day of year=53), Heliotrope: 
-      stage 10.0 harvest_ripe
-                     biomass =         237.37 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     2.74 (%)    extractable sw =    1.74 (mm)
-23 February 2010(Day of year=54), Heliotrope: 
-      stage 11.0 end_crop
-30 April 2010(Day of year=120), clock: 
-     Simulation is terminating due to end criteria being met.
 

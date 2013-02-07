@@ -56,29 +56,29 @@ Paddock:
         day
         DaysAfterSowing
         flowering_das
-        flowering_date
+        FloweringDate
         StageName
-        yield
-        biomass_wt
+        Yield
+        AboveGroundWt
         LeafTotalWt
         StemTotalWt
         podTotalWt
-        LeafSenescedWt
+        LeafDeadWt
         biom as green_biomass
-        LeafGreenWt
-        StemGreenWt
-        leaf_no
-        leaf_no_sen
+        LeafLiveWt
+        StemLiveWt
+        LeafNumber
+        LeafNumberDead
         leaf_area()
-        node_no
-        lai
+        NodeNumber
+        LAI
         stover_wt
         ep
         esw_layr()
-        root_depth
+        RootDepth
         no3()
         manager.total_minN
-        height
+        Height
         sw
         no3
 
@@ -111,7 +111,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if centro.stagename = 'harvest_ripe' or centro.plant_status = 'dead' then
+                if centro.stagename = 'harvest_ripe' or centro.plantstatus = 'dead' then
        centro  harvest
        centro  end_crop
                 endif
@@ -135,7 +135,7 @@ Paddock:
      biom = 0
      
      SECTION:- start_of_day
-       biom = leafgreenwt + stemgreenwt
+       biom = leaflivewt + stemlivewt
      
      SECTION:- end_of_day
        total_minn = total_minn + dlt_n_min_tot()
@@ -366,156 +366,12 @@ Paddock:
      Manager sending message :- centro sow  plants = 10, sowing_depth = 50, cultivar = cavalcade_timor, row_spacing = 200, crop_class = plant
 28 March 2007(Day of year=87), centro: 
      Crop Sow
-        ------------------------------------------------
-        cultivar                   = cavalcade_timor
-        Phases:
-           out
-           sowing
-           germination
-              shoot_lag                  =      40 (dd)
-              shoot_rate                 =       4 (dd/mm)
-           emergence
-              cumvd_emergence            =       0      40 (vd)
-              tt_emergence               =     320     360 (dd)
-           end_of_juvenile
-              x_pp_end_of_juvenile       =      10    13.1    13.2 (h)
-              y_tt_end_of_juvenile       =     600     305     300 (dd)
-           floral_initiation
-              x_pp_floral_initiation     =       1      24 (h)
-              y_tt_floral_initiation     =      73      73 (dd)
-           flowering
-              x_pp_flowering             =       1      24 (h)
-              y_tt_flowering             =     740     740 (dd)
-           start_grain_fill
-              x_pp_start_grain_fill      =       1      24 (h)
-              y_tt_start_grain_fill      =     650     650 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =     400 (dd)
-           maturity
-              tt_maturity                =     400 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =       1 (dd)
-           end_crop
-     
-        x_pp_hi_incr               =       1.00      24.00
-        y_hi_incr                  =     0.0100     0.0100
-        x_hi_max_pot_stress        =       0.00       1.00
-        y_hi_max_pot               =       0.10       0.20
-        ------------------------------------------------
-     
-     
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         150.0     0.080          0.220       1.000
-         150.0     0.080          0.227       1.000
-         300.0     0.080          0.245       1.000
-         300.0     0.080          0.245       1.000
-         300.0     0.070          0.277       1.000
-         300.0     0.070          0.270       1.000
-         -----------------------------------------------
-         Extractable SW:   149mm in  1500mm total depth ( 10%).
-         Crop factor for bounding water use is set to 100.0 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-             87   50.0   10.0  200.0   0.0   0.0 cavalcade_timor
-         ------------------------------------------------
-     
-28 March 2007(Day of year=87), Sowing fertiliser: 
-     Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = urea_n
-29 March 2007(Day of year=88), centro: 
-      stage 2.0 germination
-14 April 2007(Day of year=104), centro: 
-      stage 3.0 emergence
-                     biomass =           7.00 (g/m^2)   lai          =   0.001 (m^2/m^2)
-                     stover N conc =     6.00 (%)    extractable sw =   17.53 (mm)
-9 May 2007(Day of year=129), centro: 
-      stage 4.0 end_of_juvenile
-                     biomass =           9.84 (g/m^2)   lai          =   0.055 (m^2/m^2)
-                     stover N conc =     5.80 (%)    extractable sw =   82.97 (mm)
-4 June 2007(Day of year=155), centro: 
-      stage 5.0 floral_initiation
-                     biomass =          90.44 (g/m^2)   lai          =   1.296 (m^2/m^2)
-                     stover N conc =     3.65 (%)    extractable sw =  198.15 (mm)
-9 June 2007(Day of year=160), centro: 
-      stage 6.0 flowering
-                     biomass =         110.03 (g/m^2)   lai          =   1.563 (m^2/m^2)
-                     stover N conc =     3.22 (%)    extractable sw =  213.20 (mm)
-26 July 2007(Day of year=207), centro: 
-      stage 7.0 start_grain_fill
-                     biomass =         482.26 (g/m^2)   lai          =   3.148 (m^2/m^2)
-                     stover N conc =     2.53 (%)    extractable sw =  148.95 (mm)
-9 September 2007(Day of year=252), centro: 
-      stage 8.0 end_grain_fill
-                     biomass =        1012.92 (g/m^2)   lai          =   1.123 (m^2/m^2)
-                     stover N conc =     2.33 (%)    extractable sw =   35.07 (mm)
-9 October 2007(Day of year=282), centro: 
-      stage 9.0 maturity
-                     biomass =        1079.09 (g/m^2)   lai          =   0.067 (m^2/m^2)
-                     stover N conc =     2.95 (%)    extractable sw =    2.82 (mm)
-10 November 2007(Day of year=314), centro: 
-      stage 10.0 harvest_ripe
-                     biomass =        1081.53 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     4.89 (%)    extractable sw =    0.25 (mm)
-10 November 2007(Day of year=314), Harvesting rule: 
-     Manager sending message :- centro harvest
-     
-      flowering day          =  160                           stover (kg/ha)         =     8658.0
-      maturity day           =  282                           grain yield (kg/ha)    =     2157.3
-      grain % water content  =   12.0                         grain yield wet (kg/ha)=     2451.5
-      grain wt (g)           =    0.000                       grains/m^2             =        0.0
-      grains/plant           =    0.0                         maximum lai            =      3.180
-      total above ground biomass (kg/ha)    =    10815.3
-      live above ground biomass (kg/ha)     =    10815.3
-      green above ground biomass (kg/ha)    =     5206.3
-      senesced above ground biomass (kg/ha) =     5609.0
-      number of leaves       =    669.5
-      DM Root:Shoot ratio    =     0.22                       Harvest Index          =       0.20
-      Stover C:N ratio       =    21.49                       Root C:N ratio         =      13.51
-      grain N percent        =     1.70                       total N content (kg/ha)=     197.84
-      grain N uptake (kg/ha) =    36.67                       senesced N content (kg/ha)=   12.20
-      green N content (kg/ha)=   148.96
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence            to end_of_juvenile         0.000        0.000        0.000        0.006
-         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.072
-         floral_initiation    to flowering               0.000        0.000        0.000        0.082
-         flowering            to start_grain_fill        0.000        0.000        0.000        0.036
-         start_grain_fill     to end_grain_fill          0.077        0.107        0.000        0.008
-     
-     
-     Crop harvested.
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                7537.3                     0.0
-                          N  (kg/ha) =                 132.72                    0.00
-     
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                2157.3                     0.0
-                          N  (kg/ha) =                  36.67                    0.00
-     
-      stage 3.0 emergence
-                     biomass =          70.36 (g/m^2)   lai          =   0.001 (m^2/m^2)
-                     stover N conc =     6.00 (%)    extractable sw =    0.25 (mm)
-     Manager sending message :- centro end_crop
-     Crop ended. Yield (dw) =     0.0  (kg/ha)
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                 703.6                   264.3
-                          N  (kg/ha) =                   4.20                    2.33
-     
-18 July 2008(Day of year=200): 
+28 March 2007(Day of year=87): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM  Fatal  Error
                       -------------------
-     Cannot find data in INPUT file for date 2008-Jul-18
-     Component name: met
+     plant density ('Population') not specified
+     Component name: centro
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      

@@ -33,8 +33,8 @@ void Water::doRegistrations(void)
    scienceAPI.expose("transpiration",     "mm", "Daily water uptake from all rooted soil layers",  false, dltUptake);
    scienceAPI.expose("transpiration_tot", "mm", "Accumulative water uptake from the whole profile",false, totalUptake);
    scienceAPI.expose("cep",               "mm", "Accumulative water uptake from the whole profile",false, totalUptake);
-   scienceAPI.expose("swdef_photo",       "",   "Water stress factor for photosynthesis",          false, photoStress);
-   scienceAPI.expose("swdef_pheno",       "",   "Water stress factor for phenology",               false, phenoStress);
+   scienceAPI.expose("swdef_Photo",       "",   "Water stress factor for photosynthesis",          false, photoStress);
+   scienceAPI.expose("swdef_Pheno",       "",   "Water stress factor for phenology",               false, phenoStress);
    scienceAPI.expose("swdef_expan",       "",   "Water stress factor for leaf expansion growth",   false, expansionStress);
    scienceAPI.expose("esw_profile",       "",   "Plant extractable water over the whole profile",  false, eswTot);
    scienceAPI.expose("ep",                "",   "Water uptake from the whole profile",             false, ep);

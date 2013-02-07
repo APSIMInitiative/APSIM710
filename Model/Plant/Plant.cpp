@@ -119,7 +119,7 @@ void Plant::onInit1(void)
 
    // Send My Variable
 
-   setupGetFunction(parent, "plant_status", protocol::DTstring, false,
+   setupGetFunction(parent, "PlantStatus", protocol::DTstring, false,
                      &Plant::get_plant_status, "", "Plant Status");
 
    scienceAPI.expose("crop_type", "", "Crop Type", c.crop_type);
@@ -133,7 +133,7 @@ void Plant::onInit1(void)
    setupGetFunction(parent, "width", protocol::DTsingle, false,
                      &Plant::get_width, "mm", "canopy row width");
 
-   setupGetFunction(parent, "cover_tot", protocol::DTsingle, false,
+   setupGetFunction(parent, "CoverTotal", protocol::DTsingle, false,
                      &Plant::get_cover_tot, "", "Total cover");
 
 
@@ -143,7 +143,7 @@ void Plant::onInit1(void)
                     &Plant::get_respiration, "g/m2", "Whole Plant Respiration");
 
    setupGetFunction(parent, "biomass", protocol::DTsingle, false,
-                    &Plant::get_biomass, "kg/ha", "Biomass");
+                    &Plant::get_biomass, "kg/ha", "Biomass");				
 
    setupGetFunction(parent, "biomass_wt", protocol::DTsingle, false,
                     &Plant::get_biomass_wt, "g/m^2", "Biomass weight");
@@ -151,7 +151,7 @@ void Plant::onInit1(void)
    setupGetFunction(parent, "green_biomass", protocol::DTsingle, false,
                     &Plant::get_green_biomass, "kg/ha", "Green Biomass weight");
 
-   setupGetFunction(parent, "green_biomass_wt", protocol::DTsingle, false,
+   setupGetFunction(parent, "AboveGroundLiveWt", protocol::DTsingle, false,
                     &Plant::get_green_biomass_wt, "g/m^2", "Green Biomass weight");
 
    setupGetFunction(parent, "stover_wt", protocol::DTsingle, false,
@@ -166,10 +166,10 @@ void Plant::onInit1(void)
    setupGetFunction(parent, "biomass_n", protocol::DTsingle, false,
                     &Plant::get_biomass_n,  "g/m^2", "N in total biomass");
 
-   setupGetFunction(parent, "n_uptake", protocol::DTsingle, false,
+   setupGetFunction(parent, "AboveGroundN", protocol::DTsingle, false,
                     &Plant::get_n_uptake, "g/m^2", "N uptake");
 
-   setupGetFunction(parent, "green_biomass_n", protocol::DTsingle, false,
+   setupGetFunction(parent, "AboveGroundLiveN", protocol::DTsingle, false,
                     &Plant::get_green_biomass_n, "g/m^2", "N in green biomass");
 
    setupGetFunction(parent, "transp_eff", protocol::DTsingle, false,
@@ -230,6 +230,10 @@ void Plant::onInit1(void)
    setupGetFunction(parent, "biomass_p", protocol::DTsingle, false,
                     &Plant::get_biomass_p,
                     "g/m^2","P in biomass");
+					
+   setupGetFunction(parent, "AboveGroundP", protocol::DTsingle, false,
+                    &Plant::get_biomass_p,
+                    "g/m^2","P in biomass");	
 
    setupGetFunction(parent, "p_uptake", protocol::DTsingle, false,
                     &Plant::get_biomass_p,
@@ -579,7 +583,7 @@ void Plant::onDetachCropBiomass(float detachRate)
    protocol::RemoveCropBiomassType dmRemoved;
    protocol::RemoveCropBiomassdmType dm;
 
-   dm.pool = "green";
+   dm.pool = "Live";
 
    vector<float>  dmParts;
    Tops().get_name(dm.part);
@@ -594,7 +598,7 @@ void Plant::onDetachCropBiomass(float detachRate)
    dm.part.erase(dm.part.begin(), dm.part.end());
    dmParts.clear();
 
-   dm.pool = "senesced";
+   dm.pool = "Dead";
 
    Tops().get_name(dm.part);
    Tops().get_dm_senesced(dmParts);
@@ -783,8 +787,8 @@ void Plant::plant_cleanup (void)
 
     plant_update();
 
-    bound_check_real_var(scienceAPI, plant.coverGreen(), 0.0, 1.0, "cover_green");
-    bound_check_real_var(scienceAPI, plant.coverSen(), 0.0, 1.0, "cover_sen");
+    bound_check_real_var(scienceAPI, plant.coverGreen(), 0.0, 1.0, "CoverLive");
+    bound_check_real_var(scienceAPI, plant.coverSen(), 0.0, 1.0, "CoverDead");
 
     plant.checkBounds();
 
@@ -1206,11 +1210,11 @@ void Plant::plant_start_crop(protocol::SowType& Sow)
 
            // get other sowing criteria
 //           float temp;
-           if (Sow.plants == 0)
+		   if (Sow.Population == 0)
                {
-               throw std::invalid_argument("plant density ('plants') not specified");
+               throw std::invalid_argument("plant density ('Population') not specified");
                }
-           population().SetPlants((float)Sow.plants);
+		   population().SetPlants((float)Sow.Population);
 
            parent->writeString ("   ------------------------------------------------");
            sprintf (msg, "   %s%s",  "cultivar                   = ", g.cultivar.c_str());

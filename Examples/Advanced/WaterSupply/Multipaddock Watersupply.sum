@@ -60,10 +60,10 @@ Paddock:
      Output variables:
         dd/mm/yyyy as Date
         reportKey
-        .masterpm.paddock1.wheat.biomass as p1bio
-        .masterpm.paddock1.wheat.yield as p1yld
-        .masterpm.paddock2.wheat.biomass as p2bio
-        .masterpm.paddock2.wheat.yield as p2yld
+        .masterpm.paddock1.wheat.Biomass as p1bio
+        .masterpm.paddock1.wheat.Yield as p1yld
+        .masterpm.paddock2.wheat.Biomass as p2bio
+        .masterpm.paddock2.wheat.Yield as p2yld
         .masterpm.paddock1.Soil Water.sw_dep() as p1esw
         .masterpm.paddock2.Soil Water.esw as p2esw
 
@@ -92,7 +92,7 @@ Paddock:
      if ('.masterpm.paddock1.soil water.esw' >= 200) or
          ('no' = 'yes' and today = date('10-apr'))) then
        p1incrop = 'yes'
-        '.masterpm.paddock1.wheat' sow plants =100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, skip = solid
+        '.masterpm.paddock1.wheat' sow population =100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, skip = solid
      endif
      if today = date('10-apr') then
         choosenextcrop = 'yes'
@@ -114,7 +114,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if .masterpm.paddock1.wheat.stagename = 'harvest_ripe' or .masterpm.paddock1.wheat.plant_status = 'dead' then
+                if .masterpm.paddock1.wheat.stagename = 'harvest_ripe' or .masterpm.paddock1.wheat.plantstatus = 'dead' then
        reportkey = 'p1'
        .masterpm.outputfile do_output
        .masterpm.paddock1.wheat  harvest
@@ -141,7 +141,7 @@ Paddock:
      if ('.masterpm.paddock2.soil water.esw' >= 200) or
          ('no' = 'yes' and today = date('10-may'))) then
        p2incrop = 'yes'
-        '.masterpm.paddock2.wheat' sow plants =100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, skip = solid
+        '.masterpm.paddock2.wheat' sow population =100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, skip = solid
      endif
      if today = date('10-may') then
         choosenextcrop = 'yes'
@@ -161,7 +161,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if .masterpm.paddock2.wheat.stagename = 'harvest_ripe' or .masterpm.paddock2.wheat.plant_status = 'dead' then
+                if .masterpm.paddock2.wheat.stagename = 'harvest_ripe' or .masterpm.paddock2.wheat.plantstatus = 'dead' then
         reportkey = 'p2'
        .masterpm.outputfile do_output
        .masterpm.paddock2.wheat  harvest
@@ -596,7 +596,7 @@ if {[apsimGet ${paddockName}InCrop] == "yes" } {
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 15 March 1940(Day of year=75), P1 Wheat Sowing rule: 
-     Manager sending message :- .masterpm.paddock1.wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, skip = solid
+     Manager sending message :- .masterpm.paddock1.wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, skip = solid
 15 March 1940(Day of year=75), Wheat: 
      Crop Sow
         ------------------------------------------------
@@ -676,7 +676,7 @@ if {[apsimGet ${paddockName}InCrop] == "yes" } {
                      biomass =           0.70 (g/m^2)   lai          =   0.024 (m^2/m^2)
                      stover N conc =     5.82 (%)    extractable sw =   36.79 (mm)
 15 April 1940(Day of year=106), P2 Wheat Sowing rule: 
-     Manager sending message :- .masterpm.paddock2.wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, skip = solid
+     Manager sending message :- .masterpm.paddock2.wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, skip = solid
 15 April 1940(Day of year=106), Wheat: 
      Crop Sow
         ------------------------------------------------
@@ -1667,7 +1667,7 @@ if {[apsimGet ${paddockName}InCrop] == "yes" } {
                           N  (kg/ha) =                   0.00                   32.13
      
 15 March 1941(Day of year=74), P1 Wheat Sowing rule: 
-     Manager sending message :- .masterpm.paddock1.wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, skip = solid
+     Manager sending message :- .masterpm.paddock1.wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, skip = solid
 15 March 1941(Day of year=74), Wheat: 
      Crop Sow
         ------------------------------------------------
@@ -1747,7 +1747,7 @@ if {[apsimGet ${paddockName}InCrop] == "yes" } {
                      biomass =           0.61 (g/m^2)   lai          =   0.022 (m^2/m^2)
                      stover N conc =     5.83 (%)    extractable sw =   37.03 (mm)
 15 April 1941(Day of year=105), P2 Wheat Sowing rule: 
-     Manager sending message :- .masterpm.paddock2.wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, skip = solid
+     Manager sending message :- .masterpm.paddock2.wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, skip = solid
 15 April 1941(Day of year=105), Wheat: 
      Crop Sow
         ------------------------------------------------
@@ -2678,7 +2678,7 @@ if {[apsimGet ${paddockName}InCrop] == "yes" } {
                           N  (kg/ha) =                   0.00                   26.65
      
 15 March 1942(Day of year=74), P1 Wheat Sowing rule: 
-     Manager sending message :- .masterpm.paddock1.wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, skip = solid
+     Manager sending message :- .masterpm.paddock1.wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, skip = solid
 15 March 1942(Day of year=74), Wheat: 
      Crop Sow
         ------------------------------------------------
@@ -2758,7 +2758,7 @@ if {[apsimGet ${paddockName}InCrop] == "yes" } {
                      biomass =           0.73 (g/m^2)   lai          =   0.024 (m^2/m^2)
                      stover N conc =     5.82 (%)    extractable sw =   24.57 (mm)
 15 April 1942(Day of year=105), P2 Wheat Sowing rule: 
-     Manager sending message :- .masterpm.paddock2.wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, skip = solid
+     Manager sending message :- .masterpm.paddock2.wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, skip = solid
 15 April 1942(Day of year=105), Wheat: 
      Crop Sow
         ------------------------------------------------

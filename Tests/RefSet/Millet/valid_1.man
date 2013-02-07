@@ -157,24 +157,24 @@ end_date=30/10/1996
                                                               
 variable = clock.year
 variable = clock.day
-variable = millet.yield as y0
-variable = millet1.yield as y1
-variable = millet2.yield as y2
-variable = millet3.yield as y3
-variable = millet4.yield as y4
-variable = millet5.yield as y5
-variable = millet.biomass as bio0
-variable = millet1.biomass as bio1
-variable = millet2.biomass as bio2
-variable = millet3.biomass as bio3
-variable = millet4.biomass as bio4
-variable = millet5.biomass as bio5
-variable = millet.lai as lai0
-variable = millet1.lai as lai1
-variable = millet2.lai as lai2
-variable = millet3.lai as lai3
-variable = millet4.lai as lai4
-variable = millet5.lai as lai5
+variable = millet.Yield as y0
+variable = millet1.Yield as y1
+variable = millet2.Yield as y2
+variable = millet3.Yield as y3
+variable = millet4.Yield as y4
+variable = millet5.Yield as y5
+variable = millet.Biomass as bio0
+variable = millet1.Biomass as bio1
+variable = millet2.Biomass as bio2
+variable = millet3.Biomass as bio3
+variable = millet4.Biomass as bio4
+variable = millet5.Biomass as bio5
+variable = millet.LAI as lai0
+variable = millet1.LAI as lai1
+variable = millet2.LAI as lai2
+variable = millet3.LAI as lai3
+variable = millet4.LAI as lai4
+variable = millet5.LAI as lai5
 [pat77_rf.Operations.parameters]    
 285  1977  Fertiliser apply amount = 25.6 (kg/ha), depth=10(mm), type=no3_n  !160 kg @ 16N:45P
 286  1977  millet sow plants =  26.7, sowing_depth = 30, cultivar = bj104  !for BK560
@@ -691,9 +691,9 @@ if (millet5.StageName = 'initiate' or millet5.StageName = 'emergence') then
     tiller5_finished = 1
 endif
 
-     if (millet.StageName = 'harvest_ripe' and millet.plant_status = 'alive') or
-        (millet.StageName = 'end_crop' and millet.plant_status = 'dead') or
-        (tiller0_finished = 1 and millet.plant_status = 'out')   then
+     if (millet.StageName = 'harvest_ripe' and millet.PlantStatus = 'alive') or
+        (millet.StageName = 'end_crop' and millet.PlantStatus = 'dead') or
+        (tiller0_finished = 1 and millet.PlantStatus = 'out')   then
 
      millet harvest 
      millet kill_crop 
@@ -702,9 +702,9 @@ endif
      tiller0_finished = 2
      endif
 
-     if (millet1.StageName = 'harvest_ripe' and millet1.plant_status = 'alive') or
-        (millet1.StageName = 'end_crop' and millet1.plant_status = 'dead') or
-        (tiller1_finished = 1 and millet1.plant_status = 'out')  then
+     if (millet1.StageName = 'harvest_ripe' and millet1.PlantStatus = 'alive') or
+        (millet1.StageName = 'end_crop' and millet1.PlantStatus = 'dead') or
+        (tiller1_finished = 1 and millet1.PlantStatus = 'out')  then
 
      millet1 harvest 
      millet1 kill_crop 
@@ -713,9 +713,9 @@ endif
      tiller1_finished = 2
      endif
 
-     if (millet2.StageName = 'harvest_ripe' and millet2.plant_status = 'alive') or
-        (millet2.StageName = 'end_crop' and millet2.plant_status = 'dead') or
-        (tiller2_finished = 1 and millet2.plant_status = 'out')  then
+     if (millet2.StageName = 'harvest_ripe' and millet2.PlantStatus = 'alive') or
+        (millet2.StageName = 'end_crop' and millet2.PlantStatus = 'dead') or
+        (tiller2_finished = 1 and millet2.PlantStatus = 'out')  then
 
      millet2 harvest 
      millet2 kill_crop 
@@ -724,9 +724,9 @@ endif
      tiller2_finished = 2
      endif
 
-     if (millet3.StageName = 'harvest_ripe' and millet3.plant_status = 'alive') or
-        (millet3.StageName = 'end_crop' and millet3.plant_status = 'dead') or
-        (tiller3_finished = 1 and millet3.plant_status = 'out')  then
+     if (millet3.StageName = 'harvest_ripe' and millet3.PlantStatus = 'alive') or
+        (millet3.StageName = 'end_crop' and millet3.PlantStatus = 'dead') or
+        (tiller3_finished = 1 and millet3.PlantStatus = 'out')  then
 
      millet3 harvest 
      millet3 kill_crop 
@@ -735,9 +735,9 @@ endif
      tiller3_finished = 2
      endif
 
-     if (millet4.StageName = 'harvest_ripe' and millet4.plant_status = 'alive') or
-        (millet4.StageName = 'end_crop' and millet4.plant_status = 'dead') or
-        (tiller4_finished = 1 and millet4.plant_status = 'out')  then
+     if (millet4.StageName = 'harvest_ripe' and millet4.PlantStatus = 'alive') or
+        (millet4.StageName = 'end_crop' and millet4.PlantStatus = 'dead') or
+        (tiller4_finished = 1 and millet4.PlantStatus = 'out')  then
 
      millet4 harvest 
      millet4 kill_crop 
@@ -746,9 +746,9 @@ endif
      tiller4_finished = 2
      endif
 
-     if (millet5.StageName = 'harvest_ripe' and millet5.plant_status = 'alive') or
-        (millet5.StageName = 'end_crop' and millet5.plant_status = 'dead') or
-        (tiller5_finished = 1 and millet5.plant_status = 'out')  then
+     if (millet5.StageName = 'harvest_ripe' and millet5.PlantStatus = 'alive') or
+        (millet5.StageName = 'end_crop' and millet5.PlantStatus = 'dead') or
+        (tiller5_finished = 1 and millet5.PlantStatus = 'out')  then
 
      millet5 harvest 
      millet5 kill_crop 

@@ -100,7 +100,7 @@ if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or Nex
     if (date_within('[date1], [date2]') = 1) then
 
     if (sw(1)&gt;=(sw1 + ll15(1))  OR  ('[must_sow]' = 'yes' AND today = date('[date2]'))  then
-       [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+       [crop] sow Population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
        endif
     endif
 
@@ -116,7 +116,7 @@ endif
       <script>
         <text>
         if (today = date('[date]') then
-              [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+              [crop] sow Population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
                </text>
         <event>start_of_day</event>
@@ -141,7 +141,7 @@ endif
             if (rain[[rainnumdays]] >= [raincrit] AND esw >= [esw_amount]) OR
                 ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
                ChooseNextCrop = 'yes'   ! for rotations
-               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+               [crop] sow Population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
             endif
             if today = date('[date2]') then
                ChooseNextCrop = 'yes'
@@ -227,7 +227,7 @@ endif
             if (rain[[rainnumdays]] &gt;= [raincrit] AND esw &gt;= [esw_amount]) OR
                 ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
                ChooseNextCrop = 'yes'   ! for rotations
-               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [skiprow]
+               [crop] sow Population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [skiprow]
             endif
             if today = date('[date2]') then
                ChooseNextCrop = 'yes'
@@ -266,7 +266,7 @@ endif
                if (rain[[rainnumdays]] &gt;= [raincrit] AND esw &gt;= [esw_amount]) OR
                    ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
                   ChooseNextCrop = 'yes'   ! for rotations
-                  [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [skiprow], tiller_no_fertile = [ftn]
+                  [crop] sow Population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [skiprow], tiller_no_fertile = [ftn]
                endif
                if today = date('[date2]') then
                   ChooseNextCrop = 'yes'
@@ -322,7 +322,7 @@ endif
                sugar end_crop
 
             elseif (sugar.crop_status = 'out') and (today = date('[planting_day]') then
-               sugar sow plants = 10 (), cultivar = [variety], sowing_depth = [sowing_depth]
+               sugar sow Population = 10 (), cultivar = [variety], sowing_depth = [sowing_depth]
                sugar.plants = [plant_stalks]
                dah = 0
 
@@ -367,7 +367,7 @@ endif
       <script>
         <text>
        if (today = date('[date]') then
-              [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+              [crop] sow Population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
               [crop]LeyYears = [leyyears]
        endif
 
@@ -398,7 +398,7 @@ endif
             if (rain[[rainnumdays]] >= [raincrit] AND esw >= [esw_amount]) OR
                 ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
                ChooseNextCrop = 'yes'   ! for rotations
-               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+               [crop] sow Population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
                [crop]LeyYears = [leyyears]! for the length of the lucerne ley
             endif
             if today = date('[date2]') then
@@ -1774,7 +1774,7 @@ public class Script
         <text>if (date_within('[date1], [date2]') = 1 AND cohort = [thisCohort] - 1 AND timeFrom1st - lastCohort &gt;= [daysLastCohort]) THEN
    if (rain[[rainnumdays]] &gt;= [raincrit]) THEN
       ChooseNextCrop = 'yes'   ! for rotations
-      [weed] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+      [weed] sow Population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
       cohort = cohort + 1
       
       if ([thisCohort] = 1) THEN
@@ -2254,7 +2254,7 @@ fallowin = 0</text>
 
                      if ((wht_sow_opp_num >= [sow_opp]) OR ('[must_sow]' = 'yes' AND today = date('[date2]')) then
                         if ('[crop]' = 'sorghum') then
-                           [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar1], row_spacing = [row_spacing], tiller_no_fertile = [ftn] (), skip = [skiprow]
+                           [crop] sow Population =[density], sowing_depth = [depth], cultivar = [cultivar1], row_spacing = [row_spacing], tiller_no_fertile = [ftn] (), skip = [skiprow]
                         else
                           [crop] sow cultivar = [cultivar1], plants = [density] (plants/m2), sowing_depth = [depth], row_spacing = [row_spacing]
                         endif
@@ -3930,7 +3930,7 @@ fallowin = 0</text>
 proc sow_[crop] {} {
   #global myName
   #puts "[apsimGet dd/mm/yyyy]: $myName\n Manager sending message:\n[crop] sow plants=[density], sowing_depth=[depth], cultivar=[cultivar], row_spacing=[row_spacing], crop_class=[class]"
-  apsimSendMessage [crop] sow {plants [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]} {crop_class  [class]}
+  apsimSendMessage [crop] sow {Population [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]} {crop_class  [class]}
 }
 
 # Return whether any crop in our paddock is not "out"
@@ -4049,7 +4049,7 @@ if {[paddockIsFallow] && $FallowIn != "yes" && ($NextCrop == "" || $NextCrop == 
 proc sow_[crop] {} {
   #global myName
   #puts "[apsimGet dd/mm/yyyy]: $myName\n Manager sending message:\n[crop] sow plants=[density], sowing_depth=[depth], cultivar=[cultivar], row_spacing=[row_spacing], crop_class=[class]"
-  apsimSendMessage [crop] sow {plants [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]} {crop_class  [class]}
+  apsimSendMessage [crop] sow {Population [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]} {crop_class  [class]}
 }
 
 # Return whether any crop in our paddock is not "out"
@@ -4170,7 +4170,7 @@ if {[paddockIsFallow] && $FallowIn != "yes" && ($NextCrop == "" || $NextCrop == 
 proc sow_[crop] {} {
   #global myName
   #puts "[apsimGet dd/mm/yyyy]: $myName\n Manager sending message:\n[crop] sow plants=[density], sowing_depth=[depth], cultivar=[cultivar], row_spacing=[row_spacing], crop_class=[class]"
-  apsimSendMessage [crop] sow {plants [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]} {crop_class  [class]}
+  apsimSendMessage [crop] sow {Population [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]} {crop_class  [class]}
 }
 
 
@@ -4416,7 +4416,7 @@ if {[paddockIsFallow] && $FallowIn != "yes" && ($NextCrop == "" || $NextCrop == 
 proc sow_[crop] {} {
   #global myName
   #puts "[apsimGet dd/mm/yyyy]: $myName\n Manager sending message:\n[crop] sow plants=[density], sowing_depth=[depth], cultivar=[cultivar], row_spacing=[row_spacing], crop_class=[class]"
-  apsimSendMessage [crop] sow {plants [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]} {skiprow  [skiprow]}
+  apsimSendMessage [crop] sow {Population [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]} {skiprow  [skiprow]}
 }
 
 # Return whether any crop in our paddock is not "out"
@@ -4538,7 +4538,7 @@ if {[paddockIsFallow] && $FallowIn != "yes" && ($NextCrop == "" || $NextCrop == 
 proc sow_[crop] {} {
   #global myName
   #puts "[apsimGet dd/mm/yyyy]: $myName\n Manager sending message:\n[crop] sow plants=[density], sowing_depth=[depth], cultivar=[cultivar], row_spacing=[row_spacing]"
-  apsimSendMessage [crop] sow {plants [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]}
+  apsimSendMessage [crop] sow {Population [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]}
 }
 
 
@@ -4677,7 +4677,7 @@ if {![info exists myPaddockName]} {
 proc sow_[crop] {} {
   #global myName
   #puts "[apsimGet dd/mm/yyyy]: $myName\n Manager sending message:\n[crop] sow plants=[density], sowing_depth=[depth], cultivar=[cultivar], row_spacing=[row_spacing]"
-  apsimSendMessage [crop] sow {plants [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]}
+  apsimSendMessage [crop] sow {Population [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]}
 }
 
 
@@ -5286,11 +5286,11 @@ if {$SummerFallowIn == "yes" && [dateIs 1+[SummerFallowEndDate]]} {
      # Plant a crop now
      proc sow_[crop] {} {
      if {"[module]" == "plant"} {
-     apsimSendMessage [crop] sow {plants [plants]} {sowing_depth [sowing_depth]} \
+     apsimSendMessage [crop] sow {Population [plants]} {sowing_depth [sowing_depth]} \
      {cultivar [cultivar]} {row_spacing [row_spacing]} \
      {skipplant [skipplant]} {skiprow [skiprow]} {crop_class [class]}
      } elseif {"[module]" == "cropmod"} {
-     apsimSendMessage [crop] sow {plants [density]} {sowing_depth [depth]} \
+     apsimSendMessage [crop] sow {Population [density]} {sowing_depth [depth]} \
      {cultivar [cultivar]} {row_spacing [row_spacing]} {skiprow [skiprow]}
      } elseif {"[module]" == "growth"} {
      apsimSendMessage [crop] ???
@@ -5300,11 +5300,11 @@ if {$SummerFallowIn == "yes" && [dateIs 1+[SummerFallowEndDate]]} {
      } elseif {"[module]" == "oryza"} {
      apsimSendMessage [crop] sow {cultivar [cultivar]}
      } elseif {"[module]" == "sorghum"} {
-     apsimSendMessage [crop] sow {plants [plants]} {sowing_depth [sowing_depth]} \
+     apsimSendMessage [crop] sow {Population [plants]} {sowing_depth [sowing_depth]} \
      {cultivar [cultivar]} {row_spacing [row_spacing]} {skiprow [skiprow]} \
      {tiller_no_fertile [tiller_no_fertile]}
      } elseif {"[module]" == "sugar"} {
-     apsimSendMessage [crop] sow {plants [plants]} {cultivar [cultivar]} {sowing_depth [sowing_depth]}
+     apsimSendMessage [crop] sow {Population [plants]} {cultivar [cultivar]} {sowing_depth [sowing_depth]}
      } else {
      error "Unknown crop module \"[module]\"."
      }
@@ -6621,7 +6621,7 @@ endif
 
             elseif (sugar.crop_status = 'out') and (today = date('[planting_day]') then
                cropcycle = cropcycle + 1
-               sugar sow plants = 10 (), cultivar = [variety], sowing_depth = [sowing_depth]
+               sugar sow Population = 10 (), cultivar = [variety], sowing_depth = [sowing_depth]
                sugar.plants = [plant_stalks]
                dah = 0
 
@@ -6660,7 +6660,7 @@ endif
     <operations>
       <operation condition="start_of_day">
         <date>1/12/2000</date>
-        <action>sugar sow plants = 11, sowing_depth = 150, row_spacing = 0.0155, cultivar = Q124, tiller_no_fertile = 0 ! originally 335</action>
+        <action>sugar sow Population = 11, sowing_depth = 150, row_spacing = 0.0155, cultivar = Q124, tiller_no_fertile = 0 ! originally 335</action>
       </operation>
       <operation condition="start_of_day">
         <date>14/1/2001</date>
@@ -6752,7 +6752,7 @@ endif
             if (rain[[rainnumdays]] >= [raincrit] AND [crop].esw >= [esw_amount]) OR
                 ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
                ChooseNextCrop = 'yes'   ! for rotations
-               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+               [crop] sow Population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
             endif
             if today = date('[date2]') then
                ChooseNextCrop = 'yes'
@@ -6886,7 +6886,7 @@ if (paddock_is_fallow() = 1 and FallowIn <> 'yes' and (NextCrop = 0 or NextCrop 
 
             elseif (sugar.crop_status = 'out') and (today = date('[planting_day]') then
                               cropcycle = cropcycle + 1
-                              sugar sow plants = 10 (), cultivar = [variety], sowing_depth = [sowing_depth]
+                              sugar sow Population = 10 (), cultivar = [variety], sowing_depth = [sowing_depth]
                               sugar.plants = [plant_stalks]
                               dah = 0
 

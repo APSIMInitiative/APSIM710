@@ -146,10 +146,10 @@ void Plant::onSowCrop(Variant &sowLine)
    else
       cultivar = temp;
 
-   if (sowLine.get("plants", plantDensity) == false)
+   if (sowLine.get("Population", plantDensity) == false)
       throw std::runtime_error("plant density ('plants') not specified");
 
-   checkRange(scienceAPI, plantDensity, 0.0, 1000.0, "plants");
+   checkRange(scienceAPI, plantDensity, 0.0, 1000.0, "Population");
 
    if (sowLine.get("sowing_depth", sowingDepth) == false)
       throw std::runtime_error("sowing depth not specified");

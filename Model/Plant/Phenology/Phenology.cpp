@@ -51,7 +51,7 @@ void Phenology::onInit1(protocol::Component *)
    // This will remove all existing phases and recreate them. It
    // will also register our variables.
    // --------------------------------------------------------------------------
-   scienceAPI.expose("Stage", "", "Plant stage", currentStage);
+   scienceAPI.expose("PhenologyStage", "", "Plant stage", currentStage);
    scienceAPI.exposeWritable("Phase", "", "Plant stage", FloatSetter(&Phenology::onSetStage));
    scienceAPI.expose("DeltaStage", "", "Change in plant stage", dltStage);
    scienceAPI.exposeFunction("StageName", "", "Plant stage name", StringGetter(&Phenology::stageName));
@@ -330,7 +330,7 @@ void Phenology::onSetStage(float resetPhase)
    // --------------------------------------------------------------------------
    // Another module wants to set our stage number.
    // --------------------------------------------------------------------------
-   bound_check_real_var(scienceAPI, resetPhase, 1.0, 11.0, "stage");
+   bound_check_real_var(scienceAPI, resetPhase, 1.0, 11.0, "PhenologyStage");
    if (!inPhase("out"))
       {
       ostringstream msg;

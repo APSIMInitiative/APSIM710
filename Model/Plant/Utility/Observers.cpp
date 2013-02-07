@@ -22,7 +22,7 @@ void eventObserver::onInit1(protocol::Component *s)
    s->addGettableVar(varName1.c_str(), myDas,
                      "days", desc1.c_str());
 
-   varName2 = myEvent + "_date";
+   varName2 = myEvent + "Date";
    desc2 = "Day number of " + myEvent;
    s->addGettableVar(varName2.c_str(), myDate,
                      "doy", desc2.c_str());

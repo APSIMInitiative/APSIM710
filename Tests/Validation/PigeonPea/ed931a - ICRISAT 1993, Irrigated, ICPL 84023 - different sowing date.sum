@@ -50,32 +50,32 @@ Paddock:
         year
         day
         pigeonpea.stagename
-        pigeonpea.plant_status
-        pigeonpea.daysaftersowing
-        pigeonpea.ttaftersowing
-        pigeonpea.yield
-        pigeonpea.biomass
-        pigeonpea.plants
-        pigeonpea.dlt_dm
-        pigeonpea.rootgreenwt
-        pigeonpea.leafgreenwt
-        pigeonpea.stemgreenwt
-        pigeonpea.podgreenwt
-        pigeonpea.grain_wt
-        pigeonpea.stage
-        pigeonpea.height
-        pigeonpea.lai
-        pigeonpea.tlai
-        pigeonpea.slai
-        pigeonpea.node_no as node_no
-        pigeonpea.leaf_no as leaf_no
+        pigeonpea.PlantStatus
+        pigeonpea.DaysAfterSowing
+        pigeonpea.TTAfterSowing
+        pigeonpea.Yield
+        pigeonpea.Biomass
+        pigeonpea.Population
+        pigeonpea.GrowthRate
+        pigeonpea.RootLiveWt
+        pigeonpea.LeafLiveWt
+        pigeonpea.StemLiveWt
+        pigeonpea.PodLiveWt
+        pigeonpea.GrainWt
+        pigeonpea.PhenologyStage
+        pigeonpea.Height
+        pigeonpea.LAI
+        pigeonpea.LAITotal
+        pigeonpea.SLAI
+        pigeonpea.NodeNumber as node_no
+        pigeonpea.LeafNumber as LeafNumber
         pigeonpea.leaf_no_dead
-        pigeonpea.root_depth
+        pigeonpea.RootDepth
         pigeonpea.oxdef_photo
-        pigeonpea.swdef_photo
-        pigeonpea.swdef_expan
-        pigeonpea.nfact_photo
-        pigeonpea.n_uptake
+        pigeonpea.WaterStressPhoto
+        pigeonpea.WaterStressExpansion
+        pigeonpea.NStressPhoto
+        pigeonpea.AboveGroundN
         pigeonpea.ep
         es
         sw_dep() as tot_sw
@@ -123,23 +123,23 @@ Paddock:
           mat_date = 0
      
      SECTION:- end_of_day
-          if pigeonpea.stage = 3 and dateset = 0 then
+          if pigeonpea.phenologystage = 3 and dateset = 0 then
              emer_date = daysaftersowing
              dateset = 1
           endif
-          if pigeonpea.stage = 4 and dateset = 1 then
+          if pigeonpea.phenologystage = 4 and dateset = 1 then
              endjuv_date = daysaftersowing
              dateset = 2
           endif
-          if pigeonpea.stage = 6 and dateset = 2 then
+          if pigeonpea.phenologystage = 6 and dateset = 2 then
              anth_date = daysaftersowing
              dateset = 3
           endif
-          if pigeonpea.stage = 9 and dateset = 3 then
+          if pigeonpea.phenologystage = 9 and dateset = 3 then
              mat_date = daysaftersowing
              dateset = 4
           endif
-     if (pigeonpea.stagename = 'maturity' or pigeonpea.plant_status = 'dead') then
+     if (pigeonpea.stagename = 'maturity' or pigeonpea.plantstatus = 'dead') then
         outputfile do_output
         pigeonpea harvest
         pigeonpea kill_crop
@@ -310,72 +310,14 @@ Paddock:
       Sending sow message to pigeonpea
 14 June 1993(Day of year=165), pigeonpea: 
      Crop Sow
-        ------------------------------------------------
-        cultivar                   = extrashort_duration
-        Phases:
-           out
-           sowing
-           germination
-              shoot_lag                  =      18 (dd)
-              shoot_rate                 =       1 (dd/mm)
-           emergence
-              cumvd_emergence            =       0     100 (vd)
-              tt_emergence               =     800     800 (dd)
-           end_of_juvenile
-              x_pp_end_of_juvenile       =    12.8    13.5    13.6 (h)
-              y_tt_end_of_juvenile       =       1       7   10000 (dd)
-           floral_initiation
-              x_pp_floral_initiation     =       1      24 (h)
-              y_tt_floral_initiation     =      10      10 (dd)
-           flowering
-              x_pp_flowering             =       1      24 (h)
-              y_tt_flowering             =      50      50 (dd)
-           start_grain_fill
-              x_pp_start_grain_fill      =       1      24 (h)
-              y_tt_start_grain_fill      =   567.5   567.5 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =      33 (dd)
-           maturity
-              tt_maturity                =      36 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =       1 (dd)
-           end_crop
+14 June 1993(Day of year=165): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     plant density ('Population') not specified
+     Component name: pigeonpea
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
-        x_pp_hi_incr               =       1.00      24.00
-        y_hi_incr                  =     0.0085     0.0085
-        x_hi_max_pot_stress        =       0.00       1.00
-        y_hi_max_pot               =       0.40       0.40
-        ------------------------------------------------
-     
-     
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         150.0     0.116          0.146       1.000
-         150.0     0.083          0.207       1.000
-         150.0     0.049          0.220       1.000
-         150.0     0.049          0.230       1.000
-         150.0     0.049          0.230       1.000
-         150.0     0.049          0.230       1.000
-         150.0     0.049          0.270       1.000
-         150.0     0.049          0.300       1.000
-         150.0     0.044          0.324       1.000
-         150.0     0.040          0.324       1.000
-         -----------------------------------------------
-         Extractable SW:   123mm in  1500mm total depth (  8%).
-         Crop factor for bounding water use is set to 100.0 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            165   30.0   33.0  300.0   0.0   0.0 extrashort_duration
-         ------------------------------------------------
      
       Sending apply message to fertiliser
 14 June 1993(Day of year=165), fertiliser: 
@@ -383,83 +325,4 @@ Paddock:
    - Reading Fertiliser Type Parameters
        100.00 of ammonium nitrate (nh4no3)
                                          added at depth   50.00 (layer   1)
-15 June 1993(Day of year=166), pigeonpea: 
-      stage 2.0 germination
-18 June 1993(Day of year=169), pigeonpea: 
-      stage 3.0 emergence
-                     biomass =           2.14 (g/m^2)   lai          =   0.043 (m^2/m^2)
-                     stover N conc =     4.77 (%)    extractable sw =   16.05 (mm)
-4 August 1993(Day of year=216), pigeonpea: 
-      stage 4.0 end_of_juvenile
-                     biomass =         244.20 (g/m^2)   lai          =   3.606 (m^2/m^2)
-                     stover N conc =     3.78 (%)    extractable sw =  107.61 (mm)
-13 August 1993(Day of year=225), pigeonpea: 
-      stage 5.0 floral_initiation
-                     biomass =         378.95 (g/m^2)   lai          =   5.924 (m^2/m^2)
-                     stover N conc =     3.67 (%)    extractable sw =   71.72 (mm)
-14 August 1993(Day of year=226), pigeonpea: 
-      stage 6.0 flowering
-                     biomass =         397.80 (g/m^2)   lai          =   6.000 (m^2/m^2)
-                     stover N conc =     3.49 (%)    extractable sw =   91.91 (mm)
-16 August 1993(Day of year=228), pigeonpea: 
-      stage 7.0 start_grain_fill
-                     biomass =         419.41 (g/m^2)   lai          =   6.002 (m^2/m^2)
-                     stover N conc =     3.36 (%)    extractable sw =   97.70 (mm)
-21 September 1993(Day of year=264), pigeonpea: 
-      stage 8.0 end_grain_fill
-                     biomass =         947.23 (g/m^2)   lai          =   3.901 (m^2/m^2)
-                     stover N conc =     0.71 (%)    extractable sw =  110.90 (mm)
-23 September 1993(Day of year=266), pigeonpea: 
-      stage 9.0 maturity
-                     biomass =         952.35 (g/m^2)   lai          =   3.718 (m^2/m^2)
-                     stover N conc =     0.68 (%)    extractable sw =  122.86 (mm)
-23 September 1993(Day of year=266), manager: 
-     Manager sending message :- pigeonpea harvest
-     
-      flowering day          =  226                           stover (kg/ha)         =     6449.9
-      maturity day           =  266                           grain yield (kg/ha)    =     3073.7
-      grain % water content  =   12.0                         grain yield wet (kg/ha)=     3492.8
-      grain wt (g)           =    0.000                       grains/m^2             =        0.0
-      grains/plant           =    0.0                         maximum lai            =      6.048
-      total above ground biomass (kg/ha)    =     9523.5
-      live above ground biomass (kg/ha)     =     9523.5
-      green above ground biomass (kg/ha)    =     8693.4
-      senesced above ground biomass (kg/ha) =      830.1
-      number of leaves       =    169.7
-      DM Root:Shoot ratio    =     0.31                       Harvest Index          =       0.32
-      Stover C:N ratio       =    48.07                       Root C:N ratio         =      20.98
-      grain N percent        =     3.98                       total N content (kg/ha)=     176.05
-      grain N uptake (kg/ha) =   122.38                       senesced N content (kg/ha)=   15.71
-      green N content (kg/ha)=    37.96
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence            to end_of_juvenile         0.027        0.035        0.000        0.000
-         end_of_juvenile      to floral_initiation       0.009        0.041        0.000        0.000
-         floral_initiation    to flowering               0.000        0.000        0.000        0.000
-         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
-         start_grain_fill     to end_grain_fill          0.029        0.049        0.037        0.056
-     
-     
-     Crop harvested.
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                6436.7                     0.0
-                          N  (kg/ha) =                  52.88                    0.00
-     
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                3073.7                     0.0
-                          N  (kg/ha) =                 122.38                    0.00
-     
-      stage 4.0 end_of_juvenile
-                     biomass =           1.32 (g/m^2)   lai          =   0.043 (m^2/m^2)
-                     stover N conc =     6.00 (%)    extractable sw =  122.86 (mm)
-     Manager sending message :- pigeonpea kill_crop
-     Plant kill. 100.00% crop killed because of external action.
-     Manager sending message :- pigeonpea end_crop
-     Crop ended. Yield (dw) =     0.0  (kg/ha)
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                  13.2                  2968.8
-                          N  (kg/ha) =                   0.79                   56.61
-     
-27 October 1993(Day of year=300), clock: 
-     Simulation is terminating due to end criteria being met.
 

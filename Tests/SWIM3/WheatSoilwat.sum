@@ -56,14 +56,14 @@ Paddock:
         no3()
         dul_dep()
         ll15_dep()
-        lai
-        biomass
-        yield
+        LAI
+        Biomass
+        Yield
         surfaceom_wt
         es
         runoff
-        nfact_photo
-        swdef_photo
+        NStressPhoto
+        WaterStressPhoto
         nit_tot()
         nh4()
         urea()
@@ -92,7 +92,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('15-jun') then
-       wheat sow plants =100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+       wheat sow population =100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
               endif
      END of rules
      
@@ -105,7 +105,7 @@ Paddock:
        if (wheat.ozcot_status > 0) then
            wheat harvest
        endif
-                elseif (wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead') then
+                elseif (wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead') then
        wheat  harvest
        wheat  end_crop
                 endif
@@ -298,7 +298,7 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 15 June 1940(Day of year=167), Sow on a fixed date: 
-     Manager sending message :- wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+     Manager sending message :- wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
 15 June 1940(Day of year=167), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -451,7 +451,7 @@ Paddock:
                           N  (kg/ha) =                   0.00                   34.39
      
 15 June 1941(Day of year=166), Sow on a fixed date: 
-     Manager sending message :- wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+     Manager sending message :- wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
 15 June 1941(Day of year=166), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -603,7 +603,7 @@ Paddock:
                           N  (kg/ha) =                   0.00                   29.83
      
 15 June 1942(Day of year=166), Sow on a fixed date: 
-     Manager sending message :- wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+     Manager sending message :- wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
 15 June 1942(Day of year=166), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -755,7 +755,7 @@ Paddock:
                           N  (kg/ha) =                   0.00                   28.36
      
 15 June 1943(Day of year=166), Sow on a fixed date: 
-     Manager sending message :- wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+     Manager sending message :- wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
 15 June 1943(Day of year=166), wheat: 
      Crop Sow
         ------------------------------------------------

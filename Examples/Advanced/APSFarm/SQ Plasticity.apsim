@@ -1,4 +1,4 @@
-<folder version="32" name="Simulations">
+<folder version="34" name="Simulations">
   <folder name="Shared">
     <area name="p">
       <wheat />
@@ -1089,7 +1089,7 @@ set config(economics,harvesting,generic) "[generic]"
         <ui>
           <category description="No editable parameters" />
         </ui>
-        <script name="init">
+        <script>
           <text>
 
 # apsim 'strings' are returned as arrays of strings and may need this
@@ -1111,17 +1111,17 @@ apsimWriteToSummaryFile "title = $simName"
           <swthresh type="text" description="Surface soil water fraction for weed death (0-1)">0.5</swthresh>
           <rrrate type="text" description="Roundup application rate (lts/ha)">5</rrrate>
         </ui>
-        <script name="init">
-          <text><![CDATA[# Newer version of weed germination - spray 2 weeks after a {germination event & swCrit & temp}.
+        <script>
+          <text># Newer version of weed germination - spray 2 weeks after a {germination event &amp; swCrit &amp; temp}.
 proc checkWeeds {} {
    global daysSinceLastHarvest weeds paddocks config
 
    foreach paddock $paddocks {
-      if {$paddock != "toplevel" &&
-          ([currentState $paddock] == "Fallow" ) && 
-          $daysSinceLastHarvest($paddock) > 30} {
+      if {$paddock != "toplevel" &amp;&amp;
+          ([currentState $paddock] == "Fallow" ) &amp;&amp; 
+          $daysSinceLastHarvest($paddock) &gt; 30} {
 
-         if {$weeds($paddock,GermDay) == {} && [sumLastRain 4] >= [rainthresh]} {
+         if {$weeds($paddock,GermDay) == {} &amp;&amp; [sumLastRain 4] &gt;= [rainthresh]} {
             set weeds($paddock,GermDay) [apsimGet day]
             set weeds($paddock,tt) 0.0
             apsimWriteToSummaryFile "Weeds germinating in $paddock"
@@ -1135,12 +1135,12 @@ proc checkWeeds {} {
             set sw [lindex [apsimGet $config($paddock,watBal).sw] 0]
             set dul [lindex [apsimGet $config($paddock,watBal).dul] 0]
             set swf [expr (($sw-$ll)/($dul-$ll))]
-            if {$swf < [swthresh]} {
+            if {$swf &lt; [swthresh]} {
                # kill off weeds
                set weeds($paddock,GermDay) {}
                apsimWriteToSummaryFile "Weeds die in $paddock"
          
-            } elseif {$weeds($paddock,tt) > 250.0} {
+            } elseif {$weeds($paddock,tt) &gt; 250.0} {
                # Weeds are mature - spray them
                incr weeds($paddock,Events)
                eval apsimSendMessage economics operate [mash [concat [gatherArgs spray herbicide] \
@@ -1159,16 +1159,16 @@ proc checkWeeds {} {
       }   
    }
 }
-]]></text>
+</text>
           <event>init</event>
         </script>
-        <script name="process">
+        <script>
           <text>
 checkWeeds
 </text>
           <event>process</event>
         </script>
-        <script name="start_simulation">
+        <script>
           <text>
 foreach paddock $paddocks {
   set weeds($paddock,Events)  0                 ;# number of weed germination events
@@ -1182,7 +1182,7 @@ foreach paddock $paddocks {
         <ui>
           <category description="No editable parameters" />
         </ui>
-        <script name="init">
+        <script>
           <text>
 
 proc do_end_financial_year {} {
@@ -1284,8 +1284,8 @@ proc close_ef_stuff {} {
         <ui>
           <category description="No editable parameters" />
         </ui>
-        <script name="init">
-          <text><![CDATA[
+        <script>
+          <text>
 # Initial conditions
 set myName  "FarmManager"
 source $apsuite/UserInterface/APSFarm/FarmManager.tcl
@@ -1347,7 +1347,7 @@ foreach p $paddocks {
    set defaults(Sf_earlyWheat,sow,cultivar)      Sunbri
    set defaults(Lf_earlyWheat,sow,cultivar)      Sunbri
    set defaults(lateWheat,sow,cultivar)          Sunstate
-   set defaults(wheat,sow,plants)                100       ;# plants per sq mt established
+   set defaults(wheat,sow,Population)                100       ;# plants per sq mt established
    set defaults(wheat,fertiliser,amount)         140       ;# kg urea/ha
    set defaults(Lf_earlyWheat,fertiliser,amount) 180       ;# kg urea/ha
    set defaults(Lf_Wheat,fertiliser,amount)      180       ;# kg urea/ha
@@ -1369,9 +1369,9 @@ foreach p $paddocks {
    set defaults(sorghum,sow,skip)                  "single"
    set defaults(sorghum,sow,region)                "SQ"
    set defaults(sorghum,sow,row_spacing)            1.0
-   set defaults(sorghum,sow,plants)                 4.0
-   set defaults(Sf_earlySorghum,sow,plants)         4.5
-   set defaults(Lf_earlySorghum,sow,plants)         4.5
+   set defaults(sorghum,sow,Population)                 4.0
+   set defaults(Sf_earlySorghum,sow,Population)         4.5
+   set defaults(Lf_earlySorghum,sow,Population)         4.5
    
    set defaults(Sf_Sorghum,fertiliser,amount)       140
    set defaults(Sf_earlySorghum,fertiliser,amount)  140
@@ -1386,7 +1386,7 @@ foreach p $paddocks {
    set defaults(CoverCrop,fertiliser,amount)   0
    
    set defaults(chickpea,sow,cultivar)         amethyst
-   set defaults(chickpea,sow,plants)           30
+   set defaults(chickpea,sow,Population)           30
    set defaults(chickpea,fertiliser,amount)    0
    set defaults(chickpea,sowingCosts)          {{category seedcost    name Chickpea         rate 45   comment "Chickpea Seed"}              
                                                 {category herbicide   name Roundup          rate 1.3  comment "Pre plant roundup"}
@@ -1399,7 +1399,7 @@ foreach p $paddocks {
                                                 {category fuelcosts   name fuelcosts      rate 9.0    comment  "Chickpea contract harvest fuel"}}
 
    set defaults(weed,sow,cultivar)             late
-   set defaults(weed,sow,plants)               15
+   set defaults(weed,sow,Population)               15
    set defaults(weed,sow,crop_class)           summer_grass
    set defaults(weed,fertiliser,amount)        0
 
@@ -1469,7 +1469,7 @@ set daysSinceLastHarvest(toplevel) 0
 #  - no more than 3 in a row.
 proc sorghumHistory {paddock} {
    global history 
-   if {"[lindex $history($paddock) end]" == "sorghum" &&
+   if {"[lindex $history($paddock) end]" == "sorghum" &amp;&amp;
        "[lindex $history($paddock) end-1]" == "sorghum"} {
       return 0 ;# 2 in a row - no more.
    }
@@ -1487,7 +1487,7 @@ proc covercropHistory {paddock} {
 # Return our "reluctance" to plant wheat
 proc wheatHistory {paddock} {
    global history
-   if {"[lindex $history($paddock) end]" == "wheat" &&
+   if {"[lindex $history($paddock) end]" == "wheat" &amp;&amp;
        "[lindex $history($paddock) end-1]" == "wheat"} {
        return 0   ;# 2 in a row - no more.
    }
@@ -1554,10 +1554,10 @@ proc machineryAvailable {what} {
    return [apsimGet available_$what]
 }
 
-]]></text>
+</text>
           <event>init</event>
         </script>
-        <script name="prepare">
+        <script>
           <text>
 
    if {[dayIs 181]} {
@@ -1574,7 +1574,7 @@ proc machineryAvailable {what} {
           </text>
           <event>prepare</event>
         </script>
-        <script name="process">
+        <script>
           <text>
 # Housekeeping
 if {[catch {doProcess} msg]} {
@@ -1584,7 +1584,7 @@ if {[catch {doProcess} msg]} {
 </text>
           <event>process</event>
         </script>
-        <script name="post">
+        <script>
           <text>
    set accRain [expr $accRain + [apsimGet rain]]
    
@@ -1606,7 +1606,7 @@ if {[catch {doProcess} msg]} {
           </text>
           <event>post</event>
         </script>
-        <script name="start_simulation">
+        <script>
           <text>
  
       set accRain 0.0
@@ -1625,7 +1625,7 @@ setupReport
 </text>
           <event>start_simulation</event>
         </script>
-        <script name="end_simulation">
+        <script>
           <text>
 close_ef_stuff
 
@@ -1637,14 +1637,14 @@ close_ef_stuff
         <ui>
           <category description="No editable parameters" />
         </ui>
-        <script name="init">
-          <text><![CDATA[# Rug plotting facility
+        <script>
+          <text># Rug plotting facility
 
 # 2 areas of interest:
 # - logState - called when a graph is changing state, called just after the "actions" have been evaluated
 
 # a logfile is used to generate the rugplots of farm activities. There are 2 parts:
-# an xml of paddocks, states & times,
+# an xml of paddocks, states &amp; times,
 # a binary of decision rules on each evaluation cycle
 proc log {msg} {
    #puts $msg
@@ -1661,7 +1661,7 @@ proc setupLogging {} {
    set config(graphs) {}
    foreach paddock $config(paddocks) {
      foreach graph $config($paddock,graphNames) {
-        if {[lsearch $config(graphs) $graph] < 0} {
+        if {[lsearch $config(graphs) $graph] &lt; 0} {
            lappend config(graphs) $graph
         }
      }
@@ -1684,7 +1684,7 @@ proc logRules {paddock graph rules values } {
    global config
 
    set data {}
-   for {set i 0} {$i < [llength $rules]} {incr i} {
+   for {set i 0} {$i &lt; [llength $rules]} {incr i} {
       lappend data [lindex $rules $i] [lindex $values $i]
    }
 
@@ -1692,7 +1692,7 @@ proc logRules {paddock graph rules values } {
 
    lappend config(history,$paddock,$graph,$today) $data
 
-   if {[lsearch $config(historyDays) $today] < 0} {
+   if {[lsearch $config(historyDays) $today] &lt; 0} {
        lappend config(historyDays) $today
        set config($today,ddmmyyyy) [apsimGet clock.dd/mm/yyyy]
    }
@@ -1703,7 +1703,7 @@ proc logState {graph paddock state} {
    global config
    set today [apsimGet today]
    lappend config(history,$paddock,$graph) $today $state
-   if {[lsearch $config(states) $state] < 0} {lappend config(states) $state}
+   if {[lsearch $config(states) $state] &lt; 0} {lappend config(states) $state}
 }
 
 # Write the files. 
@@ -1761,7 +1761,7 @@ apsimWriteToSummaryFile "creating $simName.$graph.nc"
       }
 
       #Positions
-      for {set i 0} {$i < [llength $config(historyDays)]} {incr i} {
+      for {set i 0} {$i &lt; [llength $config(historyDays)]} {incr i} {
          set day [lindex $config(historyDays) $i]
          set f 0
          foreach paddock $config(paddocks) {
@@ -1776,35 +1776,35 @@ apsimWriteToSummaryFile "creating $simName.$graph.nc"
          }   
       }
       
-      for {set j 0} {$j < [llength $config(historyDays)]} {incr j} {
+      for {set j 0} {$j &lt; [llength $config(historyDays)]} {incr j} {
          ncdfvar $ncfp put daynum $j [lindex $config(historyDays) $j]
       }   
 
       ncdf close $ncfp
 
       set fp [open $simName.$graph.xml w]
-      puts $fp "<?xml version=\"1.0\" encoding=\"UTF-8\"?><simulation>"
+      puts $fp "&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;&lt;simulation&gt;"
       set id 0
       foreach paddock $config(paddocks) {
-         puts $fp "<history id=\"$id\" name=\"$paddock\">"
+         puts $fp "&lt;history id=\"$id\" name=\"$paddock\"&gt;"
          foreach {day state} $config(history,$paddock,$graph) {
             if {[info exists pos($paddock,$day)]} {
-               puts $fp "<transition day=\"$day\" to=\"$state\" position=\"$pos($paddock,$day)\" />"
+               puts $fp "&lt;transition day=\"$day\" to=\"$state\" position=\"$pos($paddock,$day)\" /&gt;"
             } 
          }
-         puts $fp "</history>"
+         puts $fp "&lt;/history&gt;"
          incr id
       }
 
       foreach paddock $config(paddocks) {
-         puts $fp "<paddock id=\"$pid($paddock)\" name=\"$paddock\" />"
+         puts $fp "&lt;paddock id=\"$pid($paddock)\" name=\"$paddock\" /&gt;"
       }   
       set id 0
       foreach rule $config(rules) {
-         set rule [string map {\< "&lt;"  \> "&gt;"     
-                               \& "&amp;" \" "&quot;"  
-                               \[ "&#91;" \] "&#93;"    } $rule]
-         puts $fp "<rule id=\"$id\" name=\"$rule\" />"
+         set rule [string map {\&lt; "&amp;lt;"  \&gt; "&amp;gt;"     
+                               \&amp; "&amp;amp;" \" "&amp;quot;"  
+                               \[ "&amp;#91;" \] "&amp;#93;"    } $rule]
+         puts $fp "&lt;rule id=\"$id\" name=\"$rule\" /&gt;"
          incr id
       }
 
@@ -1812,15 +1812,15 @@ apsimWriteToSummaryFile "creating $simName.$graph.nc"
       foreach node [$config(docroot) selectNodes //node] {
           set state [getValue $node "name"]
           set colour [getValue $node "fill"]
-          puts $fp "<state name=\"$state\" colour=\"$colour\" />"
+          puts $fp "&lt;state name=\"$state\" colour=\"$colour\" /&gt;"
       }
 
       set day [lindex $config(historyDays) 0]
-      puts $fp "<startdate ddmmyyyy=\"$config($day,ddmmyyyy)\" day=\"$day\" />"
+      puts $fp "&lt;startdate ddmmyyyy=\"$config($day,ddmmyyyy)\" day=\"$day\" /&gt;"
       set day [lindex $config(historyDays) end]
-      puts $fp "<enddate ddmmyyyy=\"$config($day,ddmmyyyy)\" day=\"$day\" />"
+      puts $fp "&lt;enddate ddmmyyyy=\"$config($day,ddmmyyyy)\" day=\"$day\" /&gt;"
 
-      puts $fp "</simulation>"
+      puts $fp "&lt;/simulation&gt;"
       close $fp
    }  
    # $config(xmldoc) delete
@@ -1842,9 +1842,9 @@ proc checkRules {thisPaddock} {
            lappend rules [enCodeRule $target $rule]
         }
         logRules $thisPaddock $graph $rules $values
-        if {[llength $values] > 0} {
+        if {[llength $values] &gt; 0} {
            set score [expr [join $values "*"]]
-           if {$score > $bestScore} {
+           if {$score &gt; $bestScore} {
               set bestScore  $score
               set bestTarget $target
               set bestArc    $arc
@@ -1860,7 +1860,7 @@ proc enCodeRule {target ruleText} {
   global config
   regsub -all "\," $ruleText "\-" ruleText
 
-  for {set i 0} {$i < [llength $config(rules)]} {incr i} {
+  for {set i 0} {$i &lt; [llength $config(rules)]} {incr i} {
      set rule [lindex $config(rules) $i]
      if {[string equal $rule "$target,$ruleText"]} {
         return $i
@@ -1881,10 +1881,10 @@ proc getValue {id thing} {
    return ""
 }
 
-]]></text>
+</text>
           <event>init</event>
         </script>
-        <script name="start_simulation">
+        <script>
           <text>
 setupLogging
 foreach paddock $paddocks {
@@ -1893,7 +1893,7 @@ foreach paddock $paddocks {
 </text>
           <event>start_simulation</event>
         </script>
-        <script name="end_simulation">
+        <script>
           <text>
 closeLogging
 </text>
@@ -1901,210 +1901,193 @@ closeLogging
         </script>
       </rule>
     </tclmanager>
-    <soil name="low">
+    <Soil name="low">
       <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
-      <Langitude description="Longitude (WGS84)" />
-      <ASC_Order description="Australian Soil Classification Order" />
-      <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
       <SoilType description="Soil description">Grey Vertosol</SoilType>
-      <LocalName />
       <Site>Billa Billa</Site>
       <NearestTown description="Nearest town">Billa Billa, Q 4390</NearestTown>
       <Region>Borders and Western Downs</Region>
       <State>Queensland</State>
-      <Country />
       <NaturalVegetation description="Natural vegetation">Brigalow, Belah, Wilga</NaturalVegetation>
-      <ApsoilNumber description="Apsoil number" />
-      <Latitude description="Latitude (WGS84)" />
-      <Longitude />
-      <LocationAccuracy description="Location accuracy" />
       <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-      <Comments />
       <Sample name="Initial Nitrogen">
         <Date type="date" description="Sample date:" />
-        <Layer>
-          <Thickness units="mm">1200</Thickness>
-          <NO3 units="kg/ha">25</NO3>
-          <NH4 units="ppm">0</NH4>
-          <SW units="mm/mm" />
-        </Layer>
+        <Thickness>
+          <double>1200</double>
+        </Thickness>
+        <NO3>
+          <double>25</double>
+        </NO3>
+        <NO3Units>kgha</NO3Units>
+        <NH4>
+          <double>0</double>
+        </NH4>
       </Sample>
       <Water>
-        <Layer>
-          <Thickness units="mm">150</Thickness>
-          <KS units="mm/day" />
-          <BD units="g/cc">1.28</BD>
-          <AirDry units="mm/mm">0.11</AirDry>
-          <LL15 units="mm/mm">0.21</LL15>
-          <DUL units="mm/mm">0.44</DUL>
-          <SAT units="mm/mm">0.49</SAT>
-        </Layer>
-        <Layer>
-          <Thickness>150</Thickness>
-          <KS units="mm/day" />
-          <BD>1.26</BD>
-          <AirDry>0.17</AirDry>
-          <LL15>0.21</LL15>
-          <DUL>0.45</DUL>
-          <SAT>0.5</SAT>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <KS units="mm/day" />
-          <BD>1.32</BD>
-          <AirDry>0.21</AirDry>
-          <LL15>0.21</LL15>
-          <DUL>0.42</DUL>
-          <SAT>0.47</SAT>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <KS units="mm/day" />
-          <BD>1.34</BD>
-          <AirDry>0.21</AirDry>
-          <LL15>0.21</LL15>
-          <DUL>0.3</DUL>
-          <SAT>0.46</SAT>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <KS units="mm/day" />
-          <BD>1.36</BD>
-          <AirDry>0.21</AirDry>
-          <LL15>0.21</LL15>
-          <DUL>0.33</DUL>
-          <SAT>0.46</SAT>
-        </Layer>
         <SoilCrop name="wheat">
-          <Layer>
-            <Thickness units="mm">150</Thickness>
-            <LL units="mm/mm">0.21</LL>
-            <KL units="/day">0.06</KL>
-            <XF units="0-1">1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>150</Thickness>
-            <LL>0.21</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.23</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.26</LL>
-            <KL>0.04</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.33</LL>
-            <KL>0.04</KL>
-            <XF>1</XF>
-          </Layer>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <LL>
+            <double>0.21</double>
+            <double>0.21</double>
+            <double>0.23</double>
+            <double>0.26</double>
+            <double>0.33</double>
+          </LL>
+          <KL>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.04</double>
+            <double>0.04</double>
+          </KL>
+          <XF>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </XF>
         </SoilCrop>
         <SoilCrop name="sorghum">
-          <Layer>
-            <Thickness units="mm">150</Thickness>
-            <LL units="mm/mm">0.21</LL>
-            <KL units="/day">0.07</KL>
-            <XF units="0-1">1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>150</Thickness>
-            <LL>0.21</LL>
-            <KL>0.07</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.23</LL>
-            <KL>0.07</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.26</LL>
-            <KL>0.05</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.33</LL>
-            <KL>0.05</KL>
-            <XF>1</XF>
-          </Layer>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <LL>
+            <double>0.21</double>
+            <double>0.21</double>
+            <double>0.23</double>
+            <double>0.26</double>
+            <double>0.33</double>
+          </LL>
+          <KL>
+            <double>0.07</double>
+            <double>0.07</double>
+            <double>0.07</double>
+            <double>0.05</double>
+            <double>0.05</double>
+          </KL>
+          <XF>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </XF>
         </SoilCrop>
         <SoilCrop name="chickpea">
-          <Layer>
-            <Thickness units="mm">150</Thickness>
-            <LL units="mm/mm">0.21</LL>
-            <KL units="/day">0.06</KL>
-            <XF units="0-1">1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>150</Thickness>
-            <LL>0.21</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.23</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.26</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.33</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <LL>
+            <double>0.21</double>
+            <double>0.21</double>
+            <double>0.23</double>
+            <double>0.26</double>
+            <double>0.33</double>
+          </LL>
+          <KL>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.06</double>
+          </KL>
+          <XF>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </XF>
         </SoilCrop>
         <SoilCrop name="weed">
-          <Layer>
-            <Thickness units="mm">150</Thickness>
-            <LL units="mm/mm">0.21</LL>
-            <KL units="/day">0.06</KL>
-            <XF units="0-1">1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>150</Thickness>
-            <LL>0.21</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.23</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.26</LL>
-            <KL>0.04</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.33</LL>
-            <KL>0.04</KL>
-            <XF>1</XF>
-          </Layer>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <LL>
+            <double>0.21</double>
+            <double>0.21</double>
+            <double>0.23</double>
+            <double>0.26</double>
+            <double>0.33</double>
+          </LL>
+          <KL>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.04</double>
+            <double>0.04</double>
+          </KL>
+          <XF>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </XF>
         </SoilCrop>
+        <Thickness>
+          <double>150</double>
+          <double>150</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+        </Thickness>
+        <BD>
+          <double>1.28</double>
+          <double>1.26</double>
+          <double>1.32</double>
+          <double>1.34</double>
+          <double>1.36</double>
+        </BD>
+        <AirDry>
+          <double>0.11</double>
+          <double>0.17</double>
+          <double>0.21</double>
+          <double>0.21</double>
+          <double>0.21</double>
+        </AirDry>
+        <LL15>
+          <double>0.21</double>
+          <double>0.21</double>
+          <double>0.21</double>
+          <double>0.21</double>
+          <double>0.21</double>
+        </LL15>
+        <DUL>
+          <double>0.44</double>
+          <double>0.45</double>
+          <double>0.42</double>
+          <double>0.3</double>
+          <double>0.33</double>
+        </DUL>
+        <SAT>
+          <double>0.49</double>
+          <double>0.5</double>
+          <double>0.47</double>
+          <double>0.46</double>
+          <double>0.46</double>
+        </SAT>
       </Water>
-      <SoilWat>
+      <SoilWater>
         <SummerCona>3.5</SummerCona>
         <SummerU>6</SummerU>
         <SummerDate>1-nov</SummerDate>
@@ -2117,400 +2100,264 @@ closeLogging
         <CN2Bare>73</CN2Bare>
         <CNRed>20</CNRed>
         <CNCov>0.8</CNCov>
-        <Slope>
-        </Slope>
-        <DischargeWidth>
-        </DischargeWidth>
-        <CatchmentArea>
-        </CatchmentArea>
-        <MaxPond>
-        </MaxPond>
-        <Layer>
-          <Thickness units="mm">150</Thickness>
-          <SWCON units="0-1">0.3</SWCON>
-          <MWCON units="0-1" />
-          <KLAT units="mm/d" />
-        </Layer>
-        <Layer>
-          <Thickness>150</Thickness>
-          <SWCON>0.3</SWCON>
-          <MWCON units="0-1" />
-          <KLAT units="mm/d" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-          <MWCON units="0-1" />
-          <KLAT units="mm/d" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-          <MWCON units="0-1" />
-          <KLAT units="mm/d" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-          <MWCON units="0-1" />
-          <KLAT units="mm/d" />
-        </Layer>
-      </SoilWat>
+        <Thickness>
+          <double>150</double>
+          <double>150</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+        </Thickness>
+        <SWCON>
+          <double>0.3</double>
+          <double>0.3</double>
+          <double>0.3</double>
+          <double>0.3</double>
+          <double>0.3</double>
+        </SWCON>
+      </SoilWater>
       <SoilOrganicMatter>
         <RootCN>40</RootCN>
-        <RootWT>1000</RootWT>
+        <RootWt>1000</RootWt>
         <SoilCN>12</SoilCN>
         <EnrACoeff>7.4</EnrACoeff>
         <EnrBCoeff>0.2</EnrBCoeff>
-        <Layer>
-          <Thickness units="mm">150</Thickness>
-          <OC units="Total %">1.24</OC>
-          <FBiom units="0-1">0.04</FBiom>
-          <FInert units="0-1">0.4</FInert>
-        </Layer>
-        <Layer>
-          <Thickness>150</Thickness>
-          <OC>1.24</OC>
-          <FBiom>0.02</FBiom>
-          <FInert>0.6</FInert>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <OC>1.25</OC>
-          <FBiom>0.02</FBiom>
-          <FInert>0.8</FInert>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <OC>1.1</OC>
-          <FBiom>0.02</FBiom>
-          <FInert>1</FInert>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <OC>0.71</OC>
-          <FBiom>0.01</FBiom>
-          <FInert>1</FInert>
-        </Layer>
+        <Thickness>
+          <double>150</double>
+          <double>150</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+        </Thickness>
+        <OC>
+          <double>1.24</double>
+          <double>1.24</double>
+          <double>1.25</double>
+          <double>1.1</double>
+          <double>0.71</double>
+        </OC>
+        <FBiom>
+          <double>0.04</double>
+          <double>0.02</double>
+          <double>0.02</double>
+          <double>0.02</double>
+          <double>0.01</double>
+        </FBiom>
+        <FInert>
+          <double>0.4</double>
+          <double>0.6</double>
+          <double>0.8</double>
+          <double>1</double>
+          <double>1</double>
+        </FInert>
       </SoilOrganicMatter>
       <Analysis>
-        <Layer>
-          <Thickness units="mm">150</Thickness>
-          <Rocks units="%" />
-          <Texture />
-          <MunsellColour />
-          <EC units="1:5 dS/m" />
-          <PH units="1:5 water">7</PH>
-          <CL units="mg/kg" />
-          <Boron units="Hot water mg/kg" />
-          <CEC units="cmol+/kg" />
-          <Ca units="cmol+/kg" />
-          <Mg units="cmol+/kg" />
-          <Na units="cmol+/kg" />
-          <K units="cmol+/kg" />
-          <ESP units="%" />
-          <Mn units="mg/kg" />
-          <Al units="cmol+/kg" />
-          <ParticleSizeSand units="%" />
-          <ParticleSizeSilt units="%" />
-          <ParticleSizeClay units="%" />
-        </Layer>
-        <Layer>
-          <Thickness>150</Thickness>
-          <Rocks units="%" />
-          <Texture />
-          <MunsellColour />
-          <EC units="1:5 dS/m" />
-          <PH>7</PH>
-          <CL units="mg/kg" />
-          <Boron units="Hot water mg/kg" />
-          <CEC units="cmol+/kg" />
-          <Ca units="cmol+/kg" />
-          <Mg units="cmol+/kg" />
-          <Na units="cmol+/kg" />
-          <K units="cmol+/kg" />
-          <ESP units="%" />
-          <Mn units="mg/kg" />
-          <Al units="cmol+/kg" />
-          <ParticleSizeSand units="%" />
-          <ParticleSizeSilt units="%" />
-          <ParticleSizeClay units="%" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <Rocks units="%" />
-          <Texture />
-          <MunsellColour />
-          <EC units="1:5 dS/m" />
-          <PH>7</PH>
-          <CL units="mg/kg" />
-          <Boron units="Hot water mg/kg" />
-          <CEC units="cmol+/kg" />
-          <Ca units="cmol+/kg" />
-          <Mg units="cmol+/kg" />
-          <Na units="cmol+/kg" />
-          <K units="cmol+/kg" />
-          <ESP units="%" />
-          <Mn units="mg/kg" />
-          <Al units="cmol+/kg" />
-          <ParticleSizeSand units="%" />
-          <ParticleSizeSilt units="%" />
-          <ParticleSizeClay units="%" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <Rocks units="%" />
-          <Texture />
-          <MunsellColour />
-          <EC units="1:5 dS/m" />
-          <PH>7</PH>
-          <CL units="mg/kg" />
-          <Boron units="Hot water mg/kg" />
-          <CEC units="cmol+/kg" />
-          <Ca units="cmol+/kg" />
-          <Mg units="cmol+/kg" />
-          <Na units="cmol+/kg" />
-          <K units="cmol+/kg" />
-          <ESP units="%" />
-          <Mn units="mg/kg" />
-          <Al units="cmol+/kg" />
-          <ParticleSizeSand units="%" />
-          <ParticleSizeSilt units="%" />
-          <ParticleSizeClay units="%" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <Rocks units="%" />
-          <Texture />
-          <MunsellColour />
-          <EC units="1:5 dS/m" />
-          <PH>7</PH>
-          <CL units="mg/kg" />
-          <Boron units="Hot water mg/kg" />
-          <CEC units="cmol+/kg" />
-          <Ca units="cmol+/kg" />
-          <Mg units="cmol+/kg" />
-          <Na units="cmol+/kg" />
-          <K units="cmol+/kg" />
-          <ESP units="%" />
-          <Mn units="mg/kg" />
-          <Al units="cmol+/kg" />
-          <ParticleSizeSand units="%" />
-          <ParticleSizeSilt units="%" />
-          <ParticleSizeClay units="%" />
-        </Layer>
+        <Thickness>
+          <double>150</double>
+          <double>150</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+        </Thickness>
+        <PH>
+          <double>7</double>
+          <double>7</double>
+          <double>7</double>
+          <double>7</double>
+          <double>7</double>
+        </PH>
       </Analysis>
-      <InitWater name="Initial water">
-        <percentmethod>
-          <percent>0.80</percent>
-          <distributed>Filled from top</distributed>
-        </percentmethod>
-      </InitWater>
-    </soil>
-    <soil name="medium">
+      <InitialWater name="Initial water">
+        <FractionFull>0.80</FractionFull>
+        <PercentMethod>FilledFromTop</PercentMethod>
+      </InitialWater>
+    </Soil>
+    <Soil name="medium">
       <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
-      <Langitude description="Longitude (WGS84)" />
-      <ASC_Order description="Australian Soil Classification Order" />
-      <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
       <SoilType description="Soil description">Grey Vertosol</SoilType>
-      <LocalName />
       <Site>Billa Billa</Site>
       <NearestTown description="Nearest town">Billa Billa, Q 4390</NearestTown>
       <Region>Borders and Western Downs</Region>
       <State>Queensland</State>
-      <Country />
       <NaturalVegetation description="Natural vegetation">Brigalow, Belah, Wilga</NaturalVegetation>
-      <ApsoilNumber description="Apsoil number" />
-      <Latitude description="Latitude (WGS84)" />
-      <Longitude />
-      <LocationAccuracy description="Location accuracy" />
       <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-      <Comments />
       <Sample name="Initial Nitrogen">
         <Date type="date" description="Sample date:" />
-        <Layer>
-          <Thickness units="mm">1200</Thickness>
-          <NO3 units="kg/ha">25</NO3>
-          <NH4 units="ppm">0</NH4>
-          <SW units="mm/mm" />
-        </Layer>
+        <Thickness>
+          <double>1200</double>
+        </Thickness>
+        <NO3>
+          <double>25</double>
+        </NO3>
+        <NO3Units>kgha</NO3Units>
+        <NH4>
+          <double>0</double>
+        </NH4>
       </Sample>
       <Water>
-        <Layer>
-          <Thickness units="mm">150</Thickness>
-          <KS units="mm/day" />
-          <BD units="g/cc">1.28</BD>
-          <AirDry units="mm/mm">0.11</AirDry>
-          <LL15 units="mm/mm">0.21</LL15>
-          <DUL units="mm/mm">0.44</DUL>
-          <SAT units="mm/mm">0.49</SAT>
-        </Layer>
-        <Layer>
-          <Thickness>150</Thickness>
-          <KS units="mm/day" />
-          <BD>1.26</BD>
-          <AirDry>0.17</AirDry>
-          <LL15>0.21</LL15>
-          <DUL>0.45</DUL>
-          <SAT>0.5</SAT>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <KS units="mm/day" />
-          <BD>1.32</BD>
-          <AirDry>0.21</AirDry>
-          <LL15>0.21</LL15>
-          <DUL>0.42</DUL>
-          <SAT>0.47</SAT>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <KS units="mm/day" />
-          <BD>1.34</BD>
-          <AirDry>0.21</AirDry>
-          <LL15>0.21</LL15>
-          <DUL>0.37</DUL>
-          <SAT>0.46</SAT>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <KS units="mm/day" />
-          <BD>1.36</BD>
-          <AirDry>0.21</AirDry>
-          <LL15>0.21</LL15>
-          <DUL>0.33</DUL>
-          <SAT>0.46</SAT>
-        </Layer>
         <SoilCrop name="wheat">
-          <Layer>
-            <Thickness units="mm">150</Thickness>
-            <LL units="mm/mm">0.21</LL>
-            <KL units="/day">0.06</KL>
-            <XF units="0-1">1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>150</Thickness>
-            <LL>0.21</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.23</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.26</LL>
-            <KL>0.04</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.33</LL>
-            <KL>0.04</KL>
-            <XF>1</XF>
-          </Layer>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <LL>
+            <double>0.21</double>
+            <double>0.21</double>
+            <double>0.23</double>
+            <double>0.26</double>
+            <double>0.33</double>
+          </LL>
+          <KL>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.04</double>
+            <double>0.04</double>
+          </KL>
+          <XF>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </XF>
         </SoilCrop>
         <SoilCrop name="sorghum">
-          <Layer>
-            <Thickness units="mm">150</Thickness>
-            <LL units="mm/mm">0.21</LL>
-            <KL units="/day">0.07</KL>
-            <XF units="0-1">1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>150</Thickness>
-            <LL>0.21</LL>
-            <KL>0.07</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.23</LL>
-            <KL>0.07</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.26</LL>
-            <KL>0.05</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.33</LL>
-            <KL>0.05</KL>
-            <XF>1</XF>
-          </Layer>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <LL>
+            <double>0.21</double>
+            <double>0.21</double>
+            <double>0.23</double>
+            <double>0.26</double>
+            <double>0.33</double>
+          </LL>
+          <KL>
+            <double>0.07</double>
+            <double>0.07</double>
+            <double>0.07</double>
+            <double>0.05</double>
+            <double>0.05</double>
+          </KL>
+          <XF>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </XF>
         </SoilCrop>
         <SoilCrop name="chickpea">
-          <Layer>
-            <Thickness units="mm">150</Thickness>
-            <LL units="mm/mm">0.21</LL>
-            <KL units="/day">0.06</KL>
-            <XF units="0-1">1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>150</Thickness>
-            <LL>0.21</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.23</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.26</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.33</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <LL>
+            <double>0.21</double>
+            <double>0.21</double>
+            <double>0.23</double>
+            <double>0.26</double>
+            <double>0.33</double>
+          </LL>
+          <KL>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.06</double>
+          </KL>
+          <XF>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </XF>
         </SoilCrop>
         <SoilCrop name="weed">
-          <Layer>
-            <Thickness units="mm">150</Thickness>
-            <LL units="mm/mm">0.21</LL>
-            <KL units="/day">0.06</KL>
-            <XF units="0-1">1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>150</Thickness>
-            <LL>0.21</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.23</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.26</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.33</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <LL>
+            <double>0.21</double>
+            <double>0.21</double>
+            <double>0.23</double>
+            <double>0.26</double>
+            <double>0.33</double>
+          </LL>
+          <KL>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.06</double>
+          </KL>
+          <XF>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </XF>
         </SoilCrop>
+        <Thickness>
+          <double>150</double>
+          <double>150</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+        </Thickness>
+        <BD>
+          <double>1.28</double>
+          <double>1.26</double>
+          <double>1.32</double>
+          <double>1.34</double>
+          <double>1.36</double>
+        </BD>
+        <AirDry>
+          <double>0.11</double>
+          <double>0.17</double>
+          <double>0.21</double>
+          <double>0.21</double>
+          <double>0.21</double>
+        </AirDry>
+        <LL15>
+          <double>0.21</double>
+          <double>0.21</double>
+          <double>0.21</double>
+          <double>0.21</double>
+          <double>0.21</double>
+        </LL15>
+        <DUL>
+          <double>0.44</double>
+          <double>0.45</double>
+          <double>0.42</double>
+          <double>0.37</double>
+          <double>0.33</double>
+        </DUL>
+        <SAT>
+          <double>0.49</double>
+          <double>0.5</double>
+          <double>0.47</double>
+          <double>0.46</double>
+          <double>0.46</double>
+        </SAT>
       </Water>
-      <SoilWat>
+      <SoilWater>
         <SummerCona>3.5</SummerCona>
         <SummerU>6</SummerU>
         <SummerDate>1-nov</SummerDate>
@@ -2523,433 +2370,286 @@ closeLogging
         <CN2Bare>73</CN2Bare>
         <CNRed>20</CNRed>
         <CNCov>0.8</CNCov>
-        <Slope>
-        </Slope>
-        <DischargeWidth>
-        </DischargeWidth>
-        <CatchmentArea>
-        </CatchmentArea>
-        <MaxPond>
-        </MaxPond>
-        <Layer>
-          <Thickness units="mm">150</Thickness>
-          <SWCON units="0-1">0.3</SWCON>
-          <MWCON units="0-1" />
-          <KLAT units="mm/d" />
-        </Layer>
-        <Layer>
-          <Thickness>150</Thickness>
-          <SWCON>0.3</SWCON>
-          <MWCON units="0-1" />
-          <KLAT units="mm/d" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-          <MWCON units="0-1" />
-          <KLAT units="mm/d" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-          <MWCON units="0-1" />
-          <KLAT units="mm/d" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-          <MWCON units="0-1" />
-          <KLAT units="mm/d" />
-        </Layer>
-      </SoilWat>
+        <Thickness>
+          <double>150</double>
+          <double>150</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+        </Thickness>
+        <SWCON>
+          <double>0.3</double>
+          <double>0.3</double>
+          <double>0.3</double>
+          <double>0.3</double>
+          <double>0.3</double>
+        </SWCON>
+      </SoilWater>
       <SoilOrganicMatter>
         <RootCN>40</RootCN>
-        <RootWT>1000</RootWT>
+        <RootWt>1000</RootWt>
         <SoilCN>12</SoilCN>
         <EnrACoeff>7.4</EnrACoeff>
         <EnrBCoeff>0.2</EnrBCoeff>
-        <Layer>
-          <Thickness units="mm">150</Thickness>
-          <OC units="Total %">1.24</OC>
-          <FBiom units="0-1">0.04</FBiom>
-          <FInert units="0-1">0.4</FInert>
-        </Layer>
-        <Layer>
-          <Thickness>150</Thickness>
-          <OC>1.24</OC>
-          <FBiom>0.02</FBiom>
-          <FInert>0.6</FInert>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <OC>1.25</OC>
-          <FBiom>0.02</FBiom>
-          <FInert>0.8</FInert>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <OC>1.1</OC>
-          <FBiom>0.02</FBiom>
-          <FInert>1</FInert>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <OC>0.71</OC>
-          <FBiom>0.01</FBiom>
-          <FInert>1</FInert>
-        </Layer>
+        <Thickness>
+          <double>150</double>
+          <double>150</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+        </Thickness>
+        <OC>
+          <double>1.24</double>
+          <double>1.24</double>
+          <double>1.25</double>
+          <double>1.1</double>
+          <double>0.71</double>
+        </OC>
+        <FBiom>
+          <double>0.04</double>
+          <double>0.02</double>
+          <double>0.02</double>
+          <double>0.02</double>
+          <double>0.01</double>
+        </FBiom>
+        <FInert>
+          <double>0.4</double>
+          <double>0.6</double>
+          <double>0.8</double>
+          <double>1</double>
+          <double>1</double>
+        </FInert>
       </SoilOrganicMatter>
       <Analysis>
-        <Layer>
-          <Thickness units="mm">150</Thickness>
-          <Rocks units="%" />
-          <Texture />
-          <MunsellColour />
-          <EC units="1:5 dS/m" />
-          <PH units="1:5 water">7</PH>
-          <CL units="mg/kg" />
-          <Boron units="Hot water mg/kg" />
-          <CEC units="cmol+/kg" />
-          <Ca units="cmol+/kg" />
-          <Mg units="cmol+/kg" />
-          <Na units="cmol+/kg" />
-          <K units="cmol+/kg" />
-          <ESP units="%" />
-          <Mn units="mg/kg" />
-          <Al units="cmol+/kg" />
-          <ParticleSizeSand units="%" />
-          <ParticleSizeSilt units="%" />
-          <ParticleSizeClay units="%" />
-        </Layer>
-        <Layer>
-          <Thickness>150</Thickness>
-          <Rocks units="%" />
-          <Texture />
-          <MunsellColour />
-          <EC units="1:5 dS/m" />
-          <PH>7</PH>
-          <CL units="mg/kg" />
-          <Boron units="Hot water mg/kg" />
-          <CEC units="cmol+/kg" />
-          <Ca units="cmol+/kg" />
-          <Mg units="cmol+/kg" />
-          <Na units="cmol+/kg" />
-          <K units="cmol+/kg" />
-          <ESP units="%" />
-          <Mn units="mg/kg" />
-          <Al units="cmol+/kg" />
-          <ParticleSizeSand units="%" />
-          <ParticleSizeSilt units="%" />
-          <ParticleSizeClay units="%" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <Rocks units="%" />
-          <Texture />
-          <MunsellColour />
-          <EC units="1:5 dS/m" />
-          <PH>7</PH>
-          <CL units="mg/kg" />
-          <Boron units="Hot water mg/kg" />
-          <CEC units="cmol+/kg" />
-          <Ca units="cmol+/kg" />
-          <Mg units="cmol+/kg" />
-          <Na units="cmol+/kg" />
-          <K units="cmol+/kg" />
-          <ESP units="%" />
-          <Mn units="mg/kg" />
-          <Al units="cmol+/kg" />
-          <ParticleSizeSand units="%" />
-          <ParticleSizeSilt units="%" />
-          <ParticleSizeClay units="%" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <Rocks units="%" />
-          <Texture />
-          <MunsellColour />
-          <EC units="1:5 dS/m" />
-          <PH>7</PH>
-          <CL units="mg/kg" />
-          <Boron units="Hot water mg/kg" />
-          <CEC units="cmol+/kg" />
-          <Ca units="cmol+/kg" />
-          <Mg units="cmol+/kg" />
-          <Na units="cmol+/kg" />
-          <K units="cmol+/kg" />
-          <ESP units="%" />
-          <Mn units="mg/kg" />
-          <Al units="cmol+/kg" />
-          <ParticleSizeSand units="%" />
-          <ParticleSizeSilt units="%" />
-          <ParticleSizeClay units="%" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <Rocks units="%" />
-          <Texture />
-          <MunsellColour />
-          <EC units="1:5 dS/m" />
-          <PH>7</PH>
-          <CL units="mg/kg" />
-          <Boron units="Hot water mg/kg" />
-          <CEC units="cmol+/kg" />
-          <Ca units="cmol+/kg" />
-          <Mg units="cmol+/kg" />
-          <Na units="cmol+/kg" />
-          <K units="cmol+/kg" />
-          <ESP units="%" />
-          <Mn units="mg/kg" />
-          <Al units="cmol+/kg" />
-          <ParticleSizeSand units="%" />
-          <ParticleSizeSilt units="%" />
-          <ParticleSizeClay units="%" />
-        </Layer>
+        <Thickness>
+          <double>150</double>
+          <double>150</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+        </Thickness>
+        <PH>
+          <double>7</double>
+          <double>7</double>
+          <double>7</double>
+          <double>7</double>
+          <double>7</double>
+        </PH>
       </Analysis>
-      <InitWater name="Initial water">
-        <percentmethod>
-          <percent>0.80</percent>
-          <distributed>Filled from top</distributed>
-        </percentmethod>
-      </InitWater>
-    </soil>
-    <soil name="high">
+      <InitialWater name="Initial water">
+        <FractionFull>0.80</FractionFull>
+        <PercentMethod>FilledFromTop</PercentMethod>
+      </InitialWater>
+    </Soil>
+    <Soil name="high">
       <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
-      <Langitude description="Longitude (WGS84)" />
-      <ASC_Order description="Australian Soil Classification Order" />
-      <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
       <SoilType description="Soil description">Grey Vertosol</SoilType>
-      <LocalName />
       <Site>Billa Billa</Site>
       <NearestTown description="Nearest town">Billa Billa, Q 4390</NearestTown>
       <Region>Borders and Western Downs</Region>
       <State>Queensland</State>
-      <Country />
       <NaturalVegetation description="Natural vegetation">Brigalow, Belah, Wilga</NaturalVegetation>
-      <ApsoilNumber description="Apsoil number" />
-      <Latitude description="Latitude (WGS84)" />
-      <Longitude />
-      <LocationAccuracy description="Location accuracy" />
       <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-      <Comments />
       <Sample name="Initial Nitrogen">
         <Date type="date" description="Sample date:" />
-        <Layer>
-          <Thickness units="mm">1200</Thickness>
-          <NO3 units="kg/ha">25</NO3>
-          <NH4 units="ppm">0</NH4>
-          <SW units="mm/mm" />
-        </Layer>
+        <Thickness>
+          <double>1200</double>
+        </Thickness>
+        <NO3>
+          <double>25</double>
+        </NO3>
+        <NO3Units>kgha</NO3Units>
+        <NH4>
+          <double>0</double>
+        </NH4>
       </Sample>
       <Water>
-        <Layer>
-          <Thickness units="mm">150</Thickness>
-          <KS units="mm/day" />
-          <BD units="g/cc">1.28</BD>
-          <AirDry units="mm/mm">0.11</AirDry>
-          <LL15 units="mm/mm">0.21</LL15>
-          <DUL units="mm/mm">0.44</DUL>
-          <SAT units="mm/mm">0.49</SAT>
-        </Layer>
-        <Layer>
-          <Thickness>150</Thickness>
-          <KS units="mm/day" />
-          <BD>1.26</BD>
-          <AirDry>0.17</AirDry>
-          <LL15>0.21</LL15>
-          <DUL>0.45</DUL>
-          <SAT>0.5</SAT>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <KS units="mm/day" />
-          <BD>1.32</BD>
-          <AirDry>0.21</AirDry>
-          <LL15>0.21</LL15>
-          <DUL>0.42</DUL>
-          <SAT>0.47</SAT>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <KS units="mm/day" />
-          <BD>1.34</BD>
-          <AirDry>0.21</AirDry>
-          <LL15>0.21</LL15>
-          <DUL>0.41</DUL>
-          <SAT>0.46</SAT>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <KS units="mm/day" />
-          <BD>1.36</BD>
-          <AirDry>0.21</AirDry>
-          <LL15>0.21</LL15>
-          <DUL>0.35</DUL>
-          <SAT>0.46</SAT>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <KS units="mm/day" />
-          <BD>1.35</BD>
-          <AirDry>0.21</AirDry>
-          <LL15>0.21</LL15>
-          <DUL>0.35</DUL>
-          <SAT>0.46</SAT>
-        </Layer>
         <SoilCrop name="wheat">
-          <Layer>
-            <Thickness units="mm">150</Thickness>
-            <LL units="mm/mm">0.21</LL>
-            <KL units="/day">0.06</KL>
-            <XF units="0-1">1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>150</Thickness>
-            <LL>0.21</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.23</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.26</LL>
-            <KL>0.04</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.33</LL>
-            <KL>0.04</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.34</LL>
-            <KL>0.02</KL>
-            <XF>1</XF>
-          </Layer>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <LL>
+            <double>0.21</double>
+            <double>0.21</double>
+            <double>0.23</double>
+            <double>0.26</double>
+            <double>0.33</double>
+            <double>0.34</double>
+          </LL>
+          <KL>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.04</double>
+            <double>0.04</double>
+            <double>0.02</double>
+          </KL>
+          <XF>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </XF>
         </SoilCrop>
         <SoilCrop name="sorghum">
-          <Layer>
-            <Thickness units="mm">150</Thickness>
-            <LL units="mm/mm">0.21</LL>
-            <KL units="/day">0.07</KL>
-            <XF units="0-1">1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>150</Thickness>
-            <LL>0.21</LL>
-            <KL>0.07</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.23</LL>
-            <KL>0.07</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.26</LL>
-            <KL>0.05</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.33</LL>
-            <KL>0.05</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.34</LL>
-            <KL>0.04</KL>
-            <XF>1</XF>
-          </Layer>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <LL>
+            <double>0.21</double>
+            <double>0.21</double>
+            <double>0.23</double>
+            <double>0.26</double>
+            <double>0.33</double>
+            <double>0.34</double>
+          </LL>
+          <KL>
+            <double>0.07</double>
+            <double>0.07</double>
+            <double>0.07</double>
+            <double>0.05</double>
+            <double>0.05</double>
+            <double>0.04</double>
+          </KL>
+          <XF>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </XF>
         </SoilCrop>
         <SoilCrop name="chickpea">
-          <Layer>
-            <Thickness units="mm">150</Thickness>
-            <LL units="mm/mm">0.21</LL>
-            <KL units="/day">0.06</KL>
-            <XF units="0-1">1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>150</Thickness>
-            <LL>0.21</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.23</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.26</LL>
-            <KL>0.04</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.33</LL>
-            <KL>0.04</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.34</LL>
-            <KL>0.02</KL>
-            <XF>1</XF>
-          </Layer>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <LL>
+            <double>0.21</double>
+            <double>0.21</double>
+            <double>0.23</double>
+            <double>0.26</double>
+            <double>0.33</double>
+            <double>0.34</double>
+          </LL>
+          <KL>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.04</double>
+            <double>0.04</double>
+            <double>0.02</double>
+          </KL>
+          <XF>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </XF>
         </SoilCrop>
         <SoilCrop name="weed">
-          <Layer>
-            <Thickness units="mm">150</Thickness>
-            <LL units="mm/mm">0.21</LL>
-            <KL units="/day">0.06</KL>
-            <XF units="0-1">1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>150</Thickness>
-            <LL>0.21</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.23</LL>
-            <KL>0.06</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.26</LL>
-            <KL>0.04</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.33</LL>
-            <KL>0.04</KL>
-            <XF>1</XF>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <LL>0.34</LL>
-            <KL>0.02</KL>
-            <XF>1</XF>
-          </Layer>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <LL>
+            <double>0.21</double>
+            <double>0.21</double>
+            <double>0.23</double>
+            <double>0.26</double>
+            <double>0.33</double>
+            <double>0.34</double>
+          </LL>
+          <KL>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.04</double>
+            <double>0.04</double>
+            <double>0.02</double>
+          </KL>
+          <XF>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </XF>
         </SoilCrop>
+        <Thickness>
+          <double>150</double>
+          <double>150</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+        </Thickness>
+        <BD>
+          <double>1.28</double>
+          <double>1.26</double>
+          <double>1.32</double>
+          <double>1.34</double>
+          <double>1.36</double>
+          <double>1.35</double>
+        </BD>
+        <AirDry>
+          <double>0.11</double>
+          <double>0.17</double>
+          <double>0.21</double>
+          <double>0.21</double>
+          <double>0.21</double>
+          <double>0.21</double>
+        </AirDry>
+        <LL15>
+          <double>0.21</double>
+          <double>0.21</double>
+          <double>0.21</double>
+          <double>0.21</double>
+          <double>0.21</double>
+          <double>0.21</double>
+        </LL15>
+        <DUL>
+          <double>0.44</double>
+          <double>0.45</double>
+          <double>0.42</double>
+          <double>0.41</double>
+          <double>0.35</double>
+          <double>0.35</double>
+        </DUL>
+        <SAT>
+          <double>0.49</double>
+          <double>0.5</double>
+          <double>0.47</double>
+          <double>0.46</double>
+          <double>0.46</double>
+          <double>0.46</double>
+        </SAT>
       </Water>
-      <SoilWat>
+      <SoilWater>
         <SummerCona>3.5</SummerCona>
         <SummerU>6</SummerU>
         <SummerDate>1-nov</SummerDate>
@@ -2962,229 +2662,85 @@ closeLogging
         <CN2Bare>73</CN2Bare>
         <CNRed>20</CNRed>
         <CNCov>0.8</CNCov>
-        <Slope>
-        </Slope>
-        <DischargeWidth>
-        </DischargeWidth>
-        <CatchmentArea>
-        </CatchmentArea>
-        <MaxPond>
-        </MaxPond>
-        <Layer>
-          <Thickness units="mm">150</Thickness>
-          <SWCON units="0-1">0.3</SWCON>
-          <MWCON units="0-1" />
-          <KLAT units="mm/d" />
-        </Layer>
-        <Layer>
-          <Thickness>150</Thickness>
-          <SWCON>0.3</SWCON>
-          <MWCON units="0-1" />
-          <KLAT units="mm/d" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-          <MWCON units="0-1" />
-          <KLAT units="mm/d" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-          <MWCON units="0-1" />
-          <KLAT units="mm/d" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-          <MWCON units="0-1" />
-          <KLAT units="mm/d" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-          <MWCON units="0-1" />
-          <KLAT units="mm/d" />
-        </Layer>
-      </SoilWat>
+        <Thickness>
+          <double>150</double>
+          <double>150</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+        </Thickness>
+        <SWCON>
+          <double>0.3</double>
+          <double>0.3</double>
+          <double>0.3</double>
+          <double>0.3</double>
+          <double>0.3</double>
+          <double>0.3</double>
+        </SWCON>
+      </SoilWater>
       <SoilOrganicMatter>
         <RootCN>40</RootCN>
-        <RootWT>1000</RootWT>
+        <RootWt>1000</RootWt>
         <SoilCN>12</SoilCN>
         <EnrACoeff>7.4</EnrACoeff>
         <EnrBCoeff>0.2</EnrBCoeff>
-        <Layer>
-          <Thickness units="mm">150</Thickness>
-          <OC units="Total %">1.24</OC>
-          <FBiom units="0-1">0.04</FBiom>
-          <FInert units="0-1">0.4</FInert>
-        </Layer>
-        <Layer>
-          <Thickness>150</Thickness>
-          <OC>1.24</OC>
-          <FBiom>0.02</FBiom>
-          <FInert>0.6</FInert>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <OC>1.25</OC>
-          <FBiom>0.02</FBiom>
-          <FInert>0.8</FInert>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <OC>1.1</OC>
-          <FBiom>0.02</FBiom>
-          <FInert>1</FInert>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <OC>0.71</OC>
-          <FBiom>0.01</FBiom>
-          <FInert>1</FInert>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <OC>0.34</OC>
-          <FBiom>0.01</FBiom>
-          <FInert>1</FInert>
-        </Layer>
+        <Thickness>
+          <double>150</double>
+          <double>150</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+        </Thickness>
+        <OC>
+          <double>1.24</double>
+          <double>1.24</double>
+          <double>1.25</double>
+          <double>1.1</double>
+          <double>0.71</double>
+          <double>0.34</double>
+        </OC>
+        <FBiom>
+          <double>0.04</double>
+          <double>0.02</double>
+          <double>0.02</double>
+          <double>0.02</double>
+          <double>0.01</double>
+          <double>0.01</double>
+        </FBiom>
+        <FInert>
+          <double>0.4</double>
+          <double>0.6</double>
+          <double>0.8</double>
+          <double>1</double>
+          <double>1</double>
+          <double>1</double>
+        </FInert>
       </SoilOrganicMatter>
       <Analysis>
-        <Layer>
-          <Thickness units="mm">150</Thickness>
-          <Rocks units="%" />
-          <Texture />
-          <MunsellColour />
-          <EC units="1:5 dS/m" />
-          <PH units="1:5 water">7</PH>
-          <CL units="mg/kg" />
-          <Boron units="Hot water mg/kg" />
-          <CEC units="cmol+/kg" />
-          <Ca units="cmol+/kg" />
-          <Mg units="cmol+/kg" />
-          <Na units="cmol+/kg" />
-          <K units="cmol+/kg" />
-          <ESP units="%" />
-          <Mn units="mg/kg" />
-          <Al units="cmol+/kg" />
-          <ParticleSizeSand units="%" />
-          <ParticleSizeSilt units="%" />
-          <ParticleSizeClay units="%" />
-        </Layer>
-        <Layer>
-          <Thickness>150</Thickness>
-          <Rocks units="%" />
-          <Texture />
-          <MunsellColour />
-          <EC units="1:5 dS/m" />
-          <PH>7</PH>
-          <CL units="mg/kg" />
-          <Boron units="Hot water mg/kg" />
-          <CEC units="cmol+/kg" />
-          <Ca units="cmol+/kg" />
-          <Mg units="cmol+/kg" />
-          <Na units="cmol+/kg" />
-          <K units="cmol+/kg" />
-          <ESP units="%" />
-          <Mn units="mg/kg" />
-          <Al units="cmol+/kg" />
-          <ParticleSizeSand units="%" />
-          <ParticleSizeSilt units="%" />
-          <ParticleSizeClay units="%" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <Rocks units="%" />
-          <Texture />
-          <MunsellColour />
-          <EC units="1:5 dS/m" />
-          <PH>7</PH>
-          <CL units="mg/kg" />
-          <Boron units="Hot water mg/kg" />
-          <CEC units="cmol+/kg" />
-          <Ca units="cmol+/kg" />
-          <Mg units="cmol+/kg" />
-          <Na units="cmol+/kg" />
-          <K units="cmol+/kg" />
-          <ESP units="%" />
-          <Mn units="mg/kg" />
-          <Al units="cmol+/kg" />
-          <ParticleSizeSand units="%" />
-          <ParticleSizeSilt units="%" />
-          <ParticleSizeClay units="%" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <Rocks units="%" />
-          <Texture />
-          <MunsellColour />
-          <EC units="1:5 dS/m" />
-          <PH>7</PH>
-          <CL units="mg/kg" />
-          <Boron units="Hot water mg/kg" />
-          <CEC units="cmol+/kg" />
-          <Ca units="cmol+/kg" />
-          <Mg units="cmol+/kg" />
-          <Na units="cmol+/kg" />
-          <K units="cmol+/kg" />
-          <ESP units="%" />
-          <Mn units="mg/kg" />
-          <Al units="cmol+/kg" />
-          <ParticleSizeSand units="%" />
-          <ParticleSizeSilt units="%" />
-          <ParticleSizeClay units="%" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <Rocks units="%" />
-          <Texture />
-          <MunsellColour />
-          <EC units="1:5 dS/m" />
-          <PH>7</PH>
-          <CL units="mg/kg" />
-          <Boron units="Hot water mg/kg" />
-          <CEC units="cmol+/kg" />
-          <Ca units="cmol+/kg" />
-          <Mg units="cmol+/kg" />
-          <Na units="cmol+/kg" />
-          <K units="cmol+/kg" />
-          <ESP units="%" />
-          <Mn units="mg/kg" />
-          <Al units="cmol+/kg" />
-          <ParticleSizeSand units="%" />
-          <ParticleSizeSilt units="%" />
-          <ParticleSizeClay units="%" />
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <Rocks units="%" />
-          <Texture />
-          <MunsellColour />
-          <EC units="1:5 dS/m" />
-          <PH>7</PH>
-          <CL units="mg/kg" />
-          <Boron units="Hot water mg/kg" />
-          <CEC units="cmol+/kg" />
-          <Ca units="cmol+/kg" />
-          <Mg units="cmol+/kg" />
-          <Na units="cmol+/kg" />
-          <K units="cmol+/kg" />
-          <ESP units="%" />
-          <Mn units="mg/kg" />
-          <Al units="cmol+/kg" />
-          <ParticleSizeSand units="%" />
-          <ParticleSizeSilt units="%" />
-          <ParticleSizeClay units="%" />
-        </Layer>
+        <Thickness>
+          <double>150</double>
+          <double>150</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+        </Thickness>
+        <PH>
+          <double>7</double>
+          <double>7</double>
+          <double>7</double>
+          <double>7</double>
+          <double>7</double>
+          <double>7</double>
+        </PH>
       </Analysis>
-      <InitWater name="Initial water">
-        <percentmethod>
-          <percent>0.80</percent>
-          <distributed>Filled from top</distributed>
-        </percentmethod>
-      </InitWater>
-    </soil>
+      <InitialWater name="Initial water">
+        <FractionFull>0.80</FractionFull>
+        <PercentMethod>FilledFromTop</PercentMethod>
+      </InitialWater>
+    </Soil>
     <clock>
       <start_date type="date" description="Select the start date of the simulation">1/01/1970</start_date>
       <end_date type="date" description="Select the end date of the simulation">2/07/1972</end_date>
@@ -3619,7 +3175,7 @@ closeLogging
           <x>151</x>
           <y>250</y>
           <actions>harvestAndEndCrop $paddock weed</actions>
-          <rules>{[apsimGet $paddock.weed.das] == 60 ||  "[apsimGet $paddock.weed.plant_status]" == "dead"}</rules>
+          <rules>{[apsimGet $paddock.weed.das] == 60 ||  "[apsimGet $paddock.weed.PlantStatus]" == "dead"}</rules>
         </arc>
         <rule name="stateGraph Init rule" invisible="yes" condition="init"><![CDATA[package require struct
 ::struct::graph stateGraph
@@ -3807,7 +3363,7 @@ stateGraph arc lappend "arc10" rules {[getEsw $paddock]}
 stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
 stateGraph arc insert "CoverCrop" "Fallow" "arc9"
 stateGraph arc lappend "arc9" actions {harvestAndEndCrop $paddock weed}
-stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[apsimGet $paddock.weed.plant_status]" == "dead"}}
+stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[apsimGet $paddock.weed.PlantStatus]" == "dead"}}
 ]]></rule>
         <RugPlotUI name="Rug Plot Graph" />
       </RotPlot>
@@ -3820,35 +3376,19 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/low">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/low">
         <Water shortcut="/Simulations/Shared/low/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/low/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/low/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/low/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/low/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/low/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/low/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/low/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/low/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/low/Initial Nitrogen" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/low/Initial water" />
-      </soil>
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/low/Initial water" />
+      </Soil>
     </area>
     <area name="p2" shortcut="/Simulations/Shared/p">
       <wheat shortcut="/Simulations/Shared/p/wheat" />
@@ -3858,35 +3398,19 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/low">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/low">
         <Water shortcut="/Simulations/Shared/low/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/low/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/low/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/low/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/low/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/low/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/low/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/low/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/low/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/low/Initial Nitrogen" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/low/Initial water" />
-      </soil>
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/low/Initial water" />
+      </Soil>
     </area>
     <area name="p3" shortcut="/Simulations/Shared/p">
       <wheat shortcut="/Simulations/Shared/p/wheat" />
@@ -3896,35 +3420,19 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/medium">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/medium">
         <Water shortcut="/Simulations/Shared/medium/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/medium/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/medium/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/medium/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/medium/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/medium/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/low/Initial Nitrogen" />
-      </soil>
+      </Soil>
     </area>
     <area name="p4" shortcut="/Simulations/Shared/p">
       <wheat shortcut="/Simulations/Shared/p/wheat" />
@@ -3934,35 +3442,19 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/medium">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/medium">
         <Water shortcut="/Simulations/Shared/medium/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/medium/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/medium/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/medium/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/medium/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/medium/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
-      </soil>
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
+      </Soil>
     </area>
     <area name="p5" shortcut="/Simulations/Shared/p">
       <wheat shortcut="/Simulations/Shared/p/wheat" />
@@ -3972,35 +3464,19 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/medium">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/medium">
         <Water shortcut="/Simulations/Shared/medium/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/medium/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/medium/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/medium/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/medium/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/medium/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
-      </soil>
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
+      </Soil>
     </area>
     <area name="p6" shortcut="/Simulations/Shared/p">
       <wheat shortcut="/Simulations/Shared/p/wheat" />
@@ -4010,35 +3486,19 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/medium">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/medium">
         <Water shortcut="/Simulations/Shared/medium/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/medium/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/medium/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/medium/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/medium/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/medium/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
-      </soil>
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
+      </Soil>
     </area>
     <area name="p7" shortcut="/Simulations/Shared/p">
       <wheat shortcut="/Simulations/Shared/p/wheat" />
@@ -4048,35 +3508,19 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/medium">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/medium">
         <Water shortcut="/Simulations/Shared/medium/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/medium/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/medium/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/medium/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/medium/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/medium/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
-      </soil>
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
+      </Soil>
     </area>
     <area name="p8" shortcut="/Simulations/Shared/p">
       <wheat shortcut="/Simulations/Shared/p/wheat" />
@@ -4086,35 +3530,19 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/medium">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/medium">
         <Water shortcut="/Simulations/Shared/medium/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/medium/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/medium/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/medium/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/medium/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/medium/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
-      </soil>
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
+      </Soil>
     </area>
     <area name="p9" shortcut="/Simulations/Shared/p">
       <wheat shortcut="/Simulations/Shared/p/wheat" />
@@ -4124,35 +3552,19 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/high">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/high">
         <Water shortcut="/Simulations/Shared/high/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/high/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/high/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/high/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/high/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/high/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/high/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/high/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/high/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/high/Initial Nitrogen" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/high/Initial water" />
-      </soil>
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/high/Initial water" />
+      </Soil>
     </area>
     <area name="p10" shortcut="/Simulations/Shared/p">
       <wheat shortcut="/Simulations/Shared/p/wheat" />
@@ -4162,35 +3574,19 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/high">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/high">
         <Water shortcut="/Simulations/Shared/high/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/high/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/high/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/high/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/high/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/high/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/high/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/high/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/high/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/high/Initial Nitrogen" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/high/Initial water" />
-      </soil>
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/high/Initial water" />
+      </Soil>
     </area>
   </simulation>
   <simulation name="MCA rigid">
@@ -4584,7 +3980,7 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
           <x>151</x>
           <y>250</y>
           <actions>harvestAndEndCrop $paddock weed</actions>
-          <rules>{[apsimGet $paddock.weed.das] == 60 ||  "[apsimGet $paddock.weed.plant_status]" == "dead"}</rules>
+          <rules>{[apsimGet $paddock.weed.das] == 60 ||  "[apsimGet $paddock.weed.PlantStatus]" == "dead"}</rules>
         </arc>
         <arc>
           <name>arc10</name>
@@ -4780,7 +4176,7 @@ stateGraph arc lappend "arc8" rules {[getEsw $paddock]}
 stateGraph arc lappend "arc8" rules {$daysSinceLastHarvest($paddock) <14}
 stateGraph arc insert "CoverCrop" "Fallow" "arc9"
 stateGraph arc lappend "arc9" actions {harvestAndEndCrop $paddock weed}
-stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[apsimGet $paddock.weed.plant_status]" == "dead"}}
+stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[apsimGet $paddock.weed.PlantStatus]" == "dead"}}
 stateGraph arc insert "Fallow" "Sf_earlyWheat" "arc10"
 stateGraph arc lappend "arc10" actions {sowCrop $paddock Sf_earlyWheat; lappend history($paddock) wheat}
 stateGraph arc lappend "arc10" rules {[dayWithin 116 128]}
@@ -4824,35 +4220,19 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/low">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/low">
         <Water shortcut="/Simulations/Shared/low/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/low/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/low/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/low/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/low/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/low/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/low/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/low/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/low/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/low/Initial Nitrogen" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/low/Initial water" />
-      </soil>
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/low/Initial water" />
+      </Soil>
     </area>
     <area name="p2" shortcut="/Simulations/Shared/p">
       <wheat shortcut="/Simulations/Shared/p/wheat" />
@@ -4862,35 +4242,19 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/low">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/low">
         <Water shortcut="/Simulations/Shared/low/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/low/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/low/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/low/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/low/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/low/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/low/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/low/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/low/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/low/Initial Nitrogen" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/low/Initial water" />
-      </soil>
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/low/Initial water" />
+      </Soil>
     </area>
     <area name="p3" shortcut="/Simulations/Shared/p">
       <wheat shortcut="/Simulations/Shared/p/wheat" />
@@ -4900,35 +4264,19 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/medium">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/medium">
         <Water shortcut="/Simulations/Shared/medium/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/medium/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/medium/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/medium/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/medium/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/medium/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
-      </soil>
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
+      </Soil>
     </area>
     <area name="p4" shortcut="/Simulations/Shared/p">
       <wheat shortcut="/Simulations/Shared/p/wheat" />
@@ -4938,35 +4286,19 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/medium">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/medium">
         <Water shortcut="/Simulations/Shared/medium/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/medium/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/medium/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/medium/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/medium/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/medium/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
-      </soil>
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
+      </Soil>
     </area>
     <area name="p5" shortcut="/Simulations/Shared/p">
       <wheat shortcut="/Simulations/Shared/p/wheat" />
@@ -4976,35 +4308,19 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/medium">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/medium">
         <Water shortcut="/Simulations/Shared/medium/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/medium/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/medium/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/medium/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/medium/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/medium/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
-      </soil>
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
+      </Soil>
     </area>
     <area name="p6" shortcut="/Simulations/Shared/p">
       <wheat shortcut="/Simulations/Shared/p/wheat" />
@@ -5014,35 +4330,19 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/medium">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/medium">
         <Water shortcut="/Simulations/Shared/medium/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/medium/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/medium/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/medium/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/medium/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/medium/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
-      </soil>
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
+      </Soil>
     </area>
     <area name="p7" shortcut="/Simulations/Shared/p">
       <wheat shortcut="/Simulations/Shared/p/wheat" />
@@ -5052,35 +4352,19 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/medium">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/medium">
         <Water shortcut="/Simulations/Shared/medium/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/medium/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/medium/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/medium/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/medium/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/medium/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
-      </soil>
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
+      </Soil>
     </area>
     <area name="p8" shortcut="/Simulations/Shared/p">
       <wheat shortcut="/Simulations/Shared/p/wheat" />
@@ -5090,35 +4374,19 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/medium">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/medium">
         <Water shortcut="/Simulations/Shared/medium/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/medium/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/medium/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/medium/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/medium/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/medium/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
-      </soil>
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
+      </Soil>
     </area>
     <area name="p9" shortcut="/Simulations/Shared/p">
       <wheat shortcut="/Simulations/Shared/p/wheat" />
@@ -5128,35 +4396,19 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/high">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/high">
         <Water shortcut="/Simulations/Shared/high/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/high/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/high/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/high/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/high/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/high/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/high/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/high/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/high/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/high/Initial Nitrogen" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/high/Initial water" />
-      </soil>
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/high/Initial water" />
+      </Soil>
     </area>
     <area name="p10" shortcut="/Simulations/Shared/p">
       <wheat shortcut="/Simulations/Shared/p/wheat" />
@@ -5166,35 +4418,19 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
       <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
       <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
       <erosion shortcut="/Simulations/Shared/p/Erosion" />
-      <soil name="Soil" shortcut="/Simulations/Shared/high">
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-        <SoilType description="Soil description" />
-        <LocalName />
-        <Site />
-        <NearestTown />
-        <Region />
-        <State />
-        <Country />
-        <NaturalVegetation />
-        <ApsoilNumber />
-        <Latitude />
-        <Longitude />
-        <LocationAccuracy />
-        <DataSource />
-        <Comments />
+      <Soil shortcut="/Simulations/Shared/high">
         <Water shortcut="/Simulations/Shared/high/Water">
           <SoilCrop name="wheat" shortcut="/Simulations/Shared/high/Water/wheat" />
           <SoilCrop name="sorghum" shortcut="/Simulations/Shared/high/Water/sorghum" />
           <SoilCrop name="chickpea" shortcut="/Simulations/Shared/high/Water/chickpea" />
           <SoilCrop name="weed" shortcut="/Simulations/Shared/high/Water/weed" />
         </Water>
-        <SoilWat shortcut="/Simulations/Shared/high/SoilWat" />
+        <SoilWater shortcut="/Simulations/Shared/high/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/high/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Shared/high/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/high/Initial Nitrogen" />
-        <InitWater name="Initial Water" shortcut="/Simulations/Shared/high/Initial water" />
-      </soil>
+        <InitialWater name="Initial Water" shortcut="/Simulations/Shared/high/Initial water" />
+      </Soil>
     </area>
   </simulation>
 </folder>

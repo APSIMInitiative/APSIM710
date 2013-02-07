@@ -144,7 +144,7 @@ Paddock:
      
      SECTION:- start_of_day
        if today = date('18/06/2001') then
-          wheat sow plants = 200 (plants/m2), sowing_depth = 30 (mm), cultivar =hartog, row_spacing = 250 (mm) , crop_class = plant
+          wheat sow population = 200 (population/m2), sowing_depth = 30 (mm), cultivar =hartog, row_spacing = 250 (mm) , crop_class = plant
           wheatsowdate = today
        endif
         if today = wheatsowdate then
@@ -154,7 +154,7 @@ Paddock:
         if today = wheatsowdate + 50 then
             fertiliser apply amount = nlevel2 (kg/ha), depth = 50 (mm), type = urea_n
         endif
-          if wheat.plant_status = 'alive' then
+          if wheat.plantstatus = 'alive' then
               zcroptype ='wheat'
           endif
        if (today = wheatsowdate) then
@@ -165,14 +165,14 @@ Paddock:
           zlaimax  = 0
        endif
         zdas        = wheat.daysaftersowing
-        zstage      = wheat.stage
+        zstage      = wheat.phenologystage
         zlai        = wheat.lai
         zbiomass    = wheat.biomass
         zbiomass_n  = wheat.biomass_n *10
         zbiomass_p  = wheat.biomass_p *10
         zgrainyield = wheat.yield
-        zgrain_n    = wheat.grain_n *10
-        zgrain_p    = wheat.grain_p *10
+        zgrain_n    = wheat.grainn *10
+        zgrain_p    = wheat.grainp *10
         ztransp     =  ztransp + wheat.ep
         zevap       =  zevap + es
         zpet        = zpet + eo
@@ -183,7 +183,7 @@ Paddock:
         zlp20  = labile_p(2)/(bd(2)*dlayer(2))*10^2
         zlp30  = labile_p(3)/(bd(2)*dlayer(2))*10^2
         zlpsum = zlp10 + zlp20 + zlp30
-       if (wheat.stage  = 6) then
+       if (wheat.phenologystage  = 6) then
          zanthdate    =  dd_mmm_yyyy
          zanthdas     = zdas
          zlai_f       = zlai
@@ -195,7 +195,7 @@ Paddock:
          zpet_f       = zpet
        endif
        zstagename = wheat.stagename
-        if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+        if wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' then
               wheat  harvest
               wheat end_crop
               wheatharvestdate = today
@@ -422,7 +422,7 @@ Paddock:
      Manager creating a new local real variable : zlp30 = 3.61382
      Manager creating a new local real variable : zlpsum = 19.61382
 18 June 2001(Day of year=169), Crop Manager: 
-     Manager sending message :- wheat sow  plants = 200 (plants/m2), sowing_depth = 30 (mm), cultivar = hartog, row_spacing = 250 (mm), crop_class = plant
+     Manager sending message :- wheat sow  population = 200 (population/m2), sowing_depth = 30 (mm), cultivar = hartog, row_spacing = 250 (mm), crop_class = plant
 18 June 2001(Day of year=169), wheat: 
      Crop Sow
         ------------------------------------------------

@@ -13,11 +13,11 @@ variable = SoilWat.esw
 variable = SoilN.no3()
 variable = surfaceom.surfaceom_wt
 variable = irrigation.irrigation
-variable = sugar.lai
-variable = sugar.biomass
+variable = sugar.LAI
+variable = sugar.Biomass
 variable = sugar.green_biomass
-variable = sugar.swdef_photo
-variable = sugar.nfact_photo
+variable = sugar.WaterStressPhoto
+variable = sugar.NStressPhoto
 variable = sugar.sw_demand
 variable = sugar.sw_demand_te
 variable = SoilWat.eo
@@ -153,7 +153,7 @@ elseif (sugar.crop_status = 'dead') then
    endif
 
 elseif (sugar.crop_status = 'out') and (day = planting_day) then
-   sugar sow plants = 10 (), cultivar = q117, sowing_depth = 150
+   sugar sow population = 10 (), cultivar = q117, sowing_depth = 150
    sugar.plants = plant_stalks
    if (irrigate_flag = 1) then
       irrigation.automatic_irrigation = 'on'
@@ -185,11 +185,11 @@ variable = SoilN.no3()
 variable = surfaceom.surfaceom_wt
 variable = surfaceom.surfaceom_n
 variable = irrigation.irrigation
-variable = sugar.lai
-variable = sugar.biomass
+variable = sugar.LAI
+variable = sugar.Biomass
 variable = sugar.green_biomass
-variable = sugar.swdef_photo
-variable = sugar.nfact_photo
+variable = sugar.WaterStressPhoto
+variable = sugar.NStressPhoto
 variable = sugar.SenescedWt
 variable = sugar.SenescedN
 variable = sugar.dm_dead
@@ -331,7 +331,7 @@ elseif (sugar.crop_status = 'dead') then
    endif
 
 elseif (sugar.crop_status = 'out') and (day = planting_day) then
-   sugar sow plants = 10 (), cultivar = q117, sowing_depth = 150
+   sugar sow population = 10 (), cultivar = q117, sowing_depth = 150
    sugar.plants = plant_stalks
    if (irrigate_flag = 1) then
       irrigation.automatic_irrigation = 'on'

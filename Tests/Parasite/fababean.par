@@ -9,14 +9,14 @@ outputfile  =orobanche2.out
 variable = clock.day
 variable = clock.year
 
-variable = fababean.stage   as faba_stage
-variable = fababean.lai     as faba_lai
-variable = fababean.biomass as faba_biomass
-variable = fababean.yield   as faba_yield
+variable = fababean.PhenologyStage   as faba_stage
+variable = fababean.LAI     as faba_lai
+variable = fababean.Biomass as faba_biomass
+variable = fababean.Yield   as faba_yield
 
 variable = orobanche.daa 
-variable = orobanche.stage      as orob_stage
-variable = orobanche.biomass    as orob_biomass
+variable = orobanche.PhenologyStage      as orob_stage
+variable = orobanche.Biomass    as orob_biomass
 variable = orobanche.population
 variable = orobanche.population_dead
 variable = orobanche.population_alive
@@ -31,7 +31,7 @@ end_date=26/12/1988
 if day = 130 and year  = 1988 then
    fababean sow cultivar = ILB1814, plants = 25 (/m2), sowing_depth = 40 (mm)
 endif
-if fababean.StageName = 'harvest_ripe' or fababean.plant_status = 'dead' then
+if fababean.StageName = 'harvest_ripe' or fababean.PlantStatus = 'dead' then
    fababean harvest
    fababean end_crop
 endif
@@ -39,11 +39,11 @@ endif
 [orobanche.manager.init]
 oro_in = 0
 [orobanche.manager.start_of_day]
-if (fababean.stage >= 1.0 AND oro_in = 0) then
+if (fababean.PhenologyStage >= 1.0 AND oro_in = 0) then
    orobanche start cultivar = crenata, density = 600.0 (parasites/kg soil), depth = 100.0 (mm), host = fababean ()
    oro_in = 1
 endif
-if (oro_in = 1 AND fababean.plant_status = 'out') then
+if (oro_in = 1 AND fababean.PlantStatus = 'out') then
    orobanche harvest
    orobanche finish
    oro_in = 0

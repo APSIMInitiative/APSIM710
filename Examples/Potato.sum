@@ -50,16 +50,16 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        biomass
-        lai
-        LeafGreenWt
-        StemGreenWt
-        TuberGreenWt
+        Biomass
+        LAI
+        LeafLiveWt
+        StemLiveWt
+        TuberLiveWt
         st(1)
-        plants
-        node_no
+        population
+        NodeNumber
         node_no_fx
-        LeafGreenN
+        LeafLiveN
 
      Output file = Potato.out
      Format = normal
@@ -91,7 +91,7 @@ Paddock:
            swf = 1
         endif
         density = 5
-        potato sow plants = density, sowing_depth = 30, cultivar = russet, row_spacing = 250, crop_class = plant
+        potato sow population = density, sowing_depth = 30, cultivar = russet, row_spacing = 250, crop_class = plant
      endif
               endif
            endif
@@ -110,7 +110,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if potato.stagename = 'maturity' or potato.plant_status = 'dead' then
+                if potato.stagename = 'maturity' or potato.plantstatus = 'dead' then
        potato  harvest
        potato  end_crop
                 endif

@@ -53,11 +53,11 @@ Paddock:
      Output variables:
         dd/mm/yyyy as Date
         esw
-        lai
+        LAI
         adm_green
         fw
         fn
-        plants
+        Population
         no3()
         nh4()
         cl()
@@ -88,8 +88,8 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-              if (date('15-mar') = today) and egrandis.plant_status = 'out' then
-        egrandis  establish plants =1111, init_section = seedling
+              if (date('15-mar') = today) and egrandis.plantstatus = 'out' then
+        egrandis  establish population =1111, init_section = seedling
               endif
      END of rules
      
@@ -272,7 +272,7 @@ Paddock:
         - Reading Constants
 ------- Start of simulation  --------------------------------------------------
 15 March 1980(Day of year=75), Planting rule: 
-     Manager sending message :- egrandis establish  plants = 1111, init_section = seedling
+     Manager sending message :- egrandis establish  population = 1111, init_section = seedling
 15 March 1980(Day of year=75), egrandis: 
      Establishing
 15 March 1980(Day of year=75), Establishment fertiliser: 
@@ -282,6 +282,14 @@ Paddock:
    - Reading Fertiliser Type Parameters
        150.00 of N as urea (urea_n)
                                          added at depth   50.00 (layer   1)
-31 December 1989(Day of year=365), clock: 
-     Simulation is terminating due to end criteria being met.
+15 March 1980(Day of year=75): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     Cannot collect variable from postbox.  Variable doesn't exist.
+     Variable: plants
+     Component name: egrandis
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 

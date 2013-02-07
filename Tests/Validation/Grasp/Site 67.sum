@@ -52,8 +52,8 @@ Paddock:
         End_year
      Output variables:
         year as Year
-        grasp.n_uptake
-        tracker.dlt_dm as total_growth
+        grasp.AboveGroundN
+        tracker.GrowthRate as total_growth
 
      Output file = Site 67 Annual.out
      Format = normal
@@ -104,8 +104,8 @@ Paddock:
      swdep = sw_dep() - sw_dep(4)
      no3avail = no3() - no3(4)
      swdep1_2 = sw_dep(1) + sw_dep(2)
-     cover_green_pcnt = cover_green * 100.0
-     grasp_dlt_dm = grasp.dlt_dm * 10.0
+     cover_green_pcnt = coverlive * 100.0
+     grasp_dlt_dm = grasp.growthrate * 10.0
      END of rules
      
 
@@ -259,7 +259,7 @@ Grasp:
 
 ------- tracker Initialisation ------------------------------------------------
      Tracker variables:
-        sum of Scratch.grasp_dlt_dm on end_of_day from Annual.reported to now as dlt_dm
+        sum of Scratch.grasp_dlt_dm on end_of_day from Annual.reported to now as GrowthRate
 ------- Start of simulation  --------------------------------------------------
      Manager creating a new local real variable : swdep = 135.16092
      Manager creating a new local real variable : no3avail = 0.31676

@@ -53,26 +53,26 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        biomass
-        lai
-        LeafGreenWt
-        StemGreenWt
-        TuberGreenWt
+        Biomass
+        LAI
+        LeafLiveWt
+        StemLiveWt
+        TuberLiveWt
         st(1)
         plants
-        node_no
+        NodeNumber
         node_no_sen
         stf
-        stage
-        nfact_pheno
-        nfact_photo
-        swdef_pheno
-        swdef_photo
-        StemGreenP
+        PhenologyStage
+        NStressPheno
+        NStressPhoto
+        WaterStressPheno
+        WaterStressPhoto
+        StemLiveP
         density
         applied_irr_tot
-        n_uptake
-        stage
+        AboveGroundN
+        PhenologyStage
 
      Output file = 12-Thrilstane_05.out
      Format = normal
@@ -136,7 +136,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if potato.stagename = 'maturity' or potato.plant_status = 'dead' then
+                if potato.stagename = 'maturity' or potato.plantstatus = 'dead' then
        potato  harvest
        potato  end_crop
                 endif
@@ -173,7 +173,7 @@ Paddock:
      
      SECTION:- start_of_day
      irriginterval = irriginterval + 1
-      if potato.plant_status = 'alive'  and (potato.stage > 3) and (potato.stage < 6) and (irriginterval > 10) then
+      if potato.plantstatus = 'alive'  and (potato.phenologystage > 3) and (potato.phenologystage < 6) and (irriginterval > 10) then
      'chilvers_10 water' set dlt_sw_dep = 25.0 0.0 0.0 0.0
                 irriginterval = 0
                 applied_irr_tot = applied_irr_tot + 25
@@ -354,164 +354,13 @@ Paddock:
      Manager creating a new local real variable : density = 15.47213
 18 October 2004(Day of year=292), potato: 
      Crop Sow
-        ------------------------------------------------
-        cultivar                   = russet
-        Phases:
-           out
-           sowing
-           emerging
-              shoot_lag                  =      72 (dd)
-              shoot_rate                 =       1 (dd/mm)
-           emergence
-              x_pp_emergence             =      12      18 (h)
-              y_tt_emergence             =     280     280 (dd)
-           vegetative
-              tt_vegetative              =      20 (dd)
-           earlytuber
-              tt_earlytuber              =     550 (dd)
-           senescing
-              tt_senescing               =     850 (dd)
-           senesced
-              tt_senesced                =       5 (dd)
-           maturity
-              tt_maturity                =       5 (dd)
-     
-        ------------------------------------------------
-     
-     
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         250.0     0.060          0.260       1.000
-         200.0     0.060          0.240       1.000
-         350.0     0.060          0.110       1.000
-         300.0     0.060          0.150       1.000
-         -----------------------------------------------
-         Extractable SW:   206mm in  1100mm total depth ( 19%).
-         Crop factor for bounding water use is set to 100.0 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            292   20.0   15.5  815.0   0.0   0.0 russet
-         ------------------------------------------------
-     
-18 October 2004(Day of year=292), Sowing fertiliser: 
-     Manager sending message :- fertiliser apply  amount = 210 (kg/ha), depth = 50 (mm), type = no3_n
-18 October 2004(Day of year=292), fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-       210.00 of N as nitrate (no3_n)
-                                         added at depth   50.00 (layer   1)
-19 October 2004(Day of year=293), potato: 
-      stage 2.0 emerging
-27 October 2004(Day of year=301), potato: 
-      stage 3.0 emergence
-                     biomass =           0.46 (g/m^2)   lai          =   0.068 (m^2/m^2)
-                     stover N conc =     6.50 (%)    extractable sw =   66.77 (mm)
-29 October 2004(Day of year=303): 
+18 October 2004(Day of year=292): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
+                      APSIM  Fatal  Error
                       -------------------
-      soil water of     0.612654      in layer   1
-              is above saturation of     0.560000
-     Component name: Chilvers_10 Water
+     plant density ('Population') not specified
+     Component name: potato
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-9 November 2004(Day of year=314): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.621489      in layer   1
-              is above saturation of     0.560000
-     Component name: Chilvers_10 Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-20 November 2004(Day of year=325): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.572371      in layer   1
-              is above saturation of     0.560000
-     Component name: Chilvers_10 Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-22 November 2004(Day of year=327), potato: 
-      stage 4.0 vegetative
-                     biomass =         134.66 (g/m^2)   lai          =   1.850 (m^2/m^2)
-                     stover N conc =     4.26 (%)    extractable sw =  107.49 (mm)
-24 November 2004(Day of year=329), potato: 
-      stage 5.0 earlytuber
-                     biomass =         158.34 (g/m^2)   lai          =   1.972 (m^2/m^2)
-                     stover N conc =     3.88 (%)    extractable sw =  101.53 (mm)
-1 December 2004(Day of year=336), Fertilise on fixed date: 
-     Manager creating a new local real variable : n_topsoil = 51.76805
-     Manager sending message :- fertiliser apply  amount = 99 (kg/ha), depth = 50 (mm), type = urea_n
-1 December 2004(Day of year=336), fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        99.00 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   1)
-4 January 2005(Day of year=4), potato: 
-      stage 6.0 senescing
-                     biomass =         432.64 (g/m^2)   lai          =   3.874 (m^2/m^2)
-                     stover N conc =     3.41 (%)    extractable sw =  109.24 (mm)
-7 March 2005(Day of year=66), potato: 
-      stage 7.0 senesced
-                     biomass =         460.13 (g/m^2)   lai          =   0.041 (m^2/m^2)
-                     stover N conc =     5.02 (%)    extractable sw =   34.63 (mm)
-8 March 2005(Day of year=67), potato: 
-      stage 8.0 maturity
-                     biomass =         460.78 (g/m^2)   lai          =   0.038 (m^2/m^2)
-                     stover N conc =     5.01 (%)    extractable sw =   33.89 (mm)
-8 March 2005(Day of year=67), Harvesting rule: 
-     Manager sending message :- potato harvest
-     
-      flowering day          =    0                           stover (kg/ha)         =     4607.8
-      maturity day           =   67                           grain yield (kg/ha)    =        0.0
-      grain % water content  =    0.0                         grain yield wet (kg/ha)=        0.0
-      grain wt (g)           =    0.000                       grains/m^2             =        0.0
-      grains/plant           =    0.0                         maximum lai            =      4.178
-      total above ground biomass (kg/ha)    =     4607.8
-      live above ground biomass (kg/ha)     =     4607.8
-      green above ground biomass (kg/ha)    =     1716.1
-      senesced above ground biomass (kg/ha) =     2891.7
-      number of leaves       =     45.9
-      DM Root:Shoot ratio    =     0.18                       Harvest Index          =       0.00
-      Stover C:N ratio       =    14.25                       Root C:N ratio         =      37.16
-      grain N percent        =     0.00                       total N content (kg/ha)=     129.30
-      grain N uptake (kg/ha) =     0.00                       senesced N content (kg/ha)=   43.38
-      green N content (kg/ha)=    85.93
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         vegetative           to earlytuber              0.000        0.000        0.000        0.000
-         earlytuber           to senescing               0.011        0.021        0.000        0.000
-     
-     
-     Crop harvested.
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                4603.1                     0.0
-                          N  (kg/ha) =                 129.01                    0.00
-     
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =               16511.3                     0.0
-                          N  (kg/ha) =                 197.48                    0.00
-     
-     Manager sending message :- potato end_crop
-     Crop ended. Yield (dw) =     0.0  (kg/ha)
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                   4.6                   845.2
-                          N  (kg/ha) =                   0.29                    9.10
-     
-31 July 2005(Day of year=212), clock: 
-     Simulation is terminating due to end criteria being met.
 

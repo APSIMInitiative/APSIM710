@@ -43,11 +43,11 @@ Title                  = APSwim Sample Simulation
         clock.dd/mm/yyyy as date
         manager.WTdepth
         SWIM2.flow(20) as drain230
-        sugar.lai
+        sugar.LAI
         sugar.ep
-        sugar.root_depth
-        sugar.nfact_photo
-        sugar.swdef_photo
+        sugar.RootDepth
+        sugar.NStressPhoto
+        sugar.WaterStressPhoto
         SWIM2.sw(9) as sw50
         SWIM2.sw(13) as sw100
         SWIM2.sw(15) as sw140
@@ -168,7 +168,7 @@ Title                  = APSwim Sample Simulation
            surfaceom tillage type = burn
         endif
      elseif (sugar.crop_status = 'out') and (day = planting_day) then
-        sugar sow plants = 10 (), cultivar = q117, sowing_depth = 150
+        sugar sow population = 10 (), cultivar = q117, sowing_depth = 150
         sugar.plants = plant_stalks
         if (irrigate_flag = 1) then
            irrigation.automatic_irrigation = 'on'
@@ -422,7 +422,7 @@ Title                  = APSwim Sample Simulation
 ------- Start of simulation  --------------------------------------------------
      Manager creating a new local real variable : wtdepth = 130.00000
 1 May 2000(Day of year=122), Manager: 
-     Manager sending message :- sugar sow  plants = 10, cultivar = q117, sowing_depth = 150
+     Manager sending message :- sugar sow  population = 10, cultivar = q117, sowing_depth = 150
 1 May 2000(Day of year=122), Sugar: 
      Sowing initiate
      

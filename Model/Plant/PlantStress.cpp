@@ -41,23 +41,19 @@ void PStress::init(void)
                pFact.grain,
                "", "P factor in grain");
 
-   setupGetFunction(parent, "p_stress_photo", protocol::DTsingle, false,
+   setupGetFunction(parent, "PStressPhoto", protocol::DTsingle, false,
                     &PStress::get_pstress_photo,
                     "", "P stress in photosynthesis");
 
-   setupGetFunction(parent, "p_stress_pheno", protocol::DTsingle, false,
+   setupGetFunction(parent, "PStressPheno", protocol::DTsingle, false,
                     &PStress::get_pstress_pheno,
                     "", "P stress in phenology");
 
-   setupGetFunction(parent, "p_stress_expansion", protocol::DTsingle, false,
+   setupGetFunction(parent, "PStressExpansion", protocol::DTsingle, false,
                     &PStress::get_pstress_expansion,
                     "", "P stress in leaf expansion");
 
-   setupGetFunction(parent, "p_stress_expan", protocol::DTsingle, false,
-                    &PStress::get_pstress_expansion,
-                    "", "P stress in leaf expansion");
-
-   setupGetFunction(parent, "p_stress_grain", protocol::DTsingle, false,
+   setupGetFunction(parent, "PStressGrain", protocol::DTsingle, false,
                     &PStress::get_pstress_grain,
                     "", "P stress in grain");
 
@@ -261,19 +257,19 @@ void NStress::init(void)
    parent->addGettableVar("nfact_grain",
                nFact.grain, "", "N factor for ??");
 
-   setupGetFunction(parent, "n_stress_photo", protocol::DTsingle, false,
+   setupGetFunction(parent, "nstressphoto", protocol::DTsingle, false,
                     &NStress::get_nstress_photo,
                     "","N stress for photosyntesis");
 
-   setupGetFunction(parent, "n_stress_pheno", protocol::DTsingle, false,
+   setupGetFunction(parent, "nstresspheno", protocol::DTsingle, false,
                     &NStress::get_nstress_pheno,
                     "","N stress for phenology");
 
-   setupGetFunction(parent, "n_stress_expan", protocol::DTsingle, false,
+   setupGetFunction(parent, "nstressexpansion", protocol::DTsingle, false,
                     &NStress::get_nstress_expan,
                     "","N stress for leaf expansion");
 
-   setupGetFunction(parent, "n_stress_grain", protocol::DTsingle, false,
+   setupGetFunction(parent, "nstressgrain", protocol::DTsingle, false,
                     &NStress::get_nstress_grain,
                     "","N stress for grain filling");
 
@@ -500,34 +496,34 @@ void SWStress::init(RootBase *root)
    swDef = 1.0;
 
 
-   parent->addGettableVar("swdef_pheno",
+   parent->addGettableVar("waterstresspheno",
                swDef.pheno, "", "Soil water deficit in phenological development");
 
-   parent->addGettableVar("swdef_photo",
+   parent->addGettableVar("waterstressphoto",
                swDef.photo, "", "Soil water deficit in photosynthesis");
 
-   parent->addGettableVar("swdef_expan",
+   parent->addGettableVar("waterstressexpansion",
                swDef.expansion, "", "Soil water deficit in leaf expansion");
 
-   parent->addGettableVar("swdef_fixation",
+   parent->addGettableVar("waterstressfixation",
                swDef.fixation, "", "Soil water deficit in N fixation");
 
    parent->addGettableVar("oxdef_photo",
                swDef.oxdef_photo, "", "Oxygen deficit in photosynthesis");
 
-   setupGetFunction(parent, "sw_stress_pheno", protocol::DTsingle, false,
+   setupGetFunction(parent, "waterstresspheno", protocol::DTsingle, false,
                     &SWStress::get_swstress_pheno,
                           "","Soil water stress for phenological development");
 
-   setupGetFunction(parent, "sw_stress_photo", protocol::DTsingle, false,
+   setupGetFunction(parent, "waterstressphoto", protocol::DTsingle, false,
                     &SWStress::get_swstress_photo,
                     "","Soil water stress for photosynthesis");
 
-   setupGetFunction(parent, "sw_stress_expan", protocol::DTsingle, false,
+   setupGetFunction(parent, "waterstressexpansion", protocol::DTsingle, false,
                     &SWStress::get_swstress_expan,
                     "","Soil water stress for leaf expansion");
 
-   setupGetFunction(parent, "sw_stress_fixation", protocol::DTsingle, false,
+   setupGetFunction(parent, "waterstressfixation", protocol::DTsingle, false,
                     &SWStress::get_swstress_fixation,
                     "","Soil water stress for N fixation");
 

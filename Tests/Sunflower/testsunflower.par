@@ -3,7 +3,7 @@ summaryfile=test1 sunflower.sum
 [test1.report.parameters]
 outputfile  =test1 sunflower.out
 [test1.manager.start_of_day]
-if sunflower.StageName = 'harvest_ripe' or sunflower.plant_status = 'dead' then
+if sunflower.StageName = 'harvest_ripe' or sunflower.PlantStatus = 'dead' then
    sunflower harvest
    sunflower sow cultivar = Sunfola68-2, plants = 5, sowing_depth = 50 (mm)
 endif
@@ -13,7 +13,7 @@ summaryfile=test2 sunflower.sum
 [test2.report.parameters]
 outputfile  =test2 sunflower.out
 [test2.manager.start_of_day]
-if sunflower.StageName = 'harvest_ripe' or sunflower.plant_status = 'dead' then
+if sunflower.StageName = 'harvest_ripe' or sunflower.PlantStatus = 'dead' then
    sunflower harvest
    sunflower end_crop
    sunflower sow cultivar = Sunfola68-2, plants = 5, sowing_depth = 50 (mm)
@@ -29,7 +29,7 @@ if harvest = 1 then
    harvest = 2
 endif
 
-if sunflower.StageName = 'harvest_ripe' or sunflower.plant_status = 'dead' then
+if sunflower.StageName = 'harvest_ripe' or sunflower.PlantStatus = 'dead' then
    sunflower harvest
    sunflower end_crop
    harvest = 1
@@ -39,8 +39,8 @@ endif
 [all.report.parameters]
 variable = clock.day
 variable = clock.year
-variable = sunflower.lai
-variable = sunflower.biomass
+variable = sunflower.LAI
+variable = sunflower.Biomass
 variable = sunflower.green_biomass
 
 [all.clock.parameters]

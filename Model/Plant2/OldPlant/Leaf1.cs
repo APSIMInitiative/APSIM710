@@ -490,7 +490,7 @@ public class Leaf1 : BaseOrgan1, AboveGround
     public override void DoNUptake(double PotNFix) { }
 
     // cover
-    [Output("cover_green")]
+    [Output("CoverLive")]
     public override double CoverGreen { get; protected set; } // Required by soilwat for E0 calculation.
     public override double CoverSen { get; protected set; }
     public override void DoPotentialRUE()
@@ -597,7 +597,7 @@ public class Leaf1 : BaseOrgan1, AboveGround
     public double NCrit { get { return n_conc_crit * Live.Wt; } }
     public double NMin { get { return n_conc_min * Live.Wt; } }
     public double NSenescedTrans { get { return dlt_n_senesced_trans; } }
-    [Output("cover_tot")]
+    [Output("covertotal")]
     public double CoverTotal
     {
         get

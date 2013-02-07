@@ -105,7 +105,7 @@ name = wheat
 !!!!!!!!!!!!!!!!!!!!!!!!!!
 
   if ((day >= 300  or  day <= 30)         and
-     sorghum.plant_status = 'out'              and
+     sorghum.PlantStatus = 'out'              and
      crop_flag = 0                          and
      rain[5] >= 25  )                       then
      crop_flag = 1
@@ -120,7 +120,7 @@ name = wheat
      report do_output
    endif
 
-   if (sorghum.stage = 11 or sorghum.plant_status = 'dead' or sorghum.DaysAfterSowing > 150) then
+   if (sorghum.PhenologyStage = 11 or sorghum.PlantStatus = 'dead' or sorghum.DaysAfterSowing > 150) then
      event = 2
      report do_output
      sorghum harvest
@@ -134,8 +134,8 @@ name = wheat
 !!!!!!!!!!!!!!!!!!!!!!!!!!
 
    if ((day >= 135  and  day <= 210)        and
-     wheat.plant_status = 'out'                      and
-     sorghum.plant_status = 'out'              and
+     wheat.PlantStatus = 'out'                      and
+     sorghum.PlantStatus = 'out'              and
      rain[10] >= 25  )                       then
      crop_flag = 2
      event = 3
@@ -153,8 +153,8 @@ name = wheat
 !! plant at end of window if criteria not met
 
    if day = 211 and
-     sorghum.plant_status = 'out'              and
-     wheat.plant_status = 'out'                      then
+     sorghum.PlantStatus = 'out'              and
+     wheat.PlantStatus = 'out'                      then
      crop_flag = 2
      event = 3
      sow_date = day
@@ -168,7 +168,7 @@ name = wheat
      report do_output
    endif
 
-   if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' and
+   if wheat.StageName = 'harvest_ripe' or wheat.PlantStatus = 'dead' and
      crop_flag = 2         then
      event = 4
      report do_output
@@ -494,7 +494,7 @@ name = wheat
 !!!!!!!!!!!!!!!!!!!!!!!!!!
 
    if ((day >= 135  and  day <= 210)         and
-     wheat.plant_status = 'out'                      and
+     wheat.PlantStatus = 'out'                      and
      rain[10] >= 25  )                       then
      crop_flag = 1
      event = 3
@@ -510,7 +510,7 @@ name = wheat
    endif
 
    if day = 211 and
-     wheat.plant_status = 'out'                      then
+     wheat.PlantStatus = 'out'                      then
      crop_flag = 1
      event = 3
      sow_date = day
@@ -524,7 +524,7 @@ name = wheat
      report do_output
    endif
 
-   if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' and
+   if wheat.StageName = 'harvest_ripe' or wheat.PlantStatus = 'dead' and
      crop_flag = 1         then
      event = 4
      report do_output
@@ -705,7 +705,7 @@ name = wheat
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
    if ((day >= 260  or  day <= 30)         and
-     sorghum.plant_status = 'out'              and
+     sorghum.PlantStatus = 'out'              and
      crop_flag = 0                          and
      rain[5] >= 25                          and
      event = 6  )                           then
@@ -721,7 +721,7 @@ name = wheat
      report do_output
    endif
 
-   if (sorghum.stage = 11 or sorghum.plant_status = 'dead' or sorghum.DaysAfterSowing > 150) then
+   if (sorghum.PhenologyStage = 11 or sorghum.PlantStatus = 'dead' or sorghum.DaysAfterSowing > 150) then
      event = 2
      report do_output
      sorghum harvest
@@ -741,8 +741,8 @@ name = wheat
 !!!!!!!!!!!!!!!!!!!!!!!!!!
 
    if ((day >= 135  and  day <= 210)         and
-     wheat.plant_status = 'out'                      and
-     sorghum.plant_status = 'out'              and
+     wheat.PlantStatus = 'out'                      and
+     sorghum.PlantStatus = 'out'              and
      crop_flag = 1                          and
      rain[10] >= 25  )                       then
      crop_flag = 2
@@ -762,8 +762,8 @@ name = wheat
 
    if day = 211                             and
      crop_flag = 1                          and
-     sorghum.plant_status = 'out'              and
-     wheat.plant_status = 'out'                      then
+     sorghum.PlantStatus = 'out'              and
+     wheat.PlantStatus = 'out'                      then
      crop_flag = 2
      event = 3
      sow_date = day
@@ -777,7 +777,7 @@ name = wheat
      report do_output
    endif
 
-   if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' and
+   if wheat.StageName = 'harvest_ripe' or wheat.PlantStatus = 'dead' and
      crop_flag = 2         then
      event = 4
      report do_output
@@ -794,7 +794,7 @@ name = wheat
 ! note no planting rain for pasture
 
    if ((day >= 135  and  day <= 210)         and
-     wheat.plant_status = 'out'                      and
+     wheat.PlantStatus = 'out'                      and
      crop_flag = 0   )                       then
      crop_flag = 3
      event = 5
@@ -824,7 +824,7 @@ name = wheat
 ! if pasture has failed reset crop_flag to allow sorghum to sow
 
    if (day = 250)          and
-     wheat.plant_status = 'out'     and
+     wheat.PlantStatus = 'out'     and
      crop_flag = 3         then
      crop_flag = 0
    endif
@@ -1316,7 +1316,7 @@ name = wheat
 !!!!!!!!!!!!!!!!!!!!!!!!!!
 
    if ((day >= 135  and  day <= 210)         and
-     wheat.plant_status = 'out'                      and
+     wheat.PlantStatus = 'out'                      and
      crop_flag = 0                          and
      rain[10] >= 25  )                       then
      crop_flag = 1
@@ -1334,7 +1334,7 @@ name = wheat
 
    if day = 211 and
      crop_flag = 0                          and
-     wheat.plant_status = 'out'                      then
+     wheat.PlantStatus = 'out'                      then
      crop_flag = 1
      event = 3
      sow_date = day
@@ -1348,7 +1348,7 @@ name = wheat
      report do_output
    endif
 
-   if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' and
+   if wheat.StageName = 'harvest_ripe' or wheat.PlantStatus = 'dead' and
      crop_flag = 1         then
      event = 4
      report do_output
@@ -1365,7 +1365,7 @@ name = wheat
 ! note no planting rain for pasture
 
    if ((day >= 135  and  day <= 210)         and
-     wheat.plant_status = 'out'                      and
+     wheat.PlantStatus = 'out'                      and
      crop_flag = 3   )                       then ! and
  !    rain[5] >= 10  )                       then
      crop_flag = 2

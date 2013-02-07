@@ -799,8 +799,8 @@
             </ui>
             <script>
               <text>
-        if [crop].plant_status &lt;&gt; 'out' then
-           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+        if [crop].PlantStatus &lt;&gt; 'out' then
+           if [crop].StageName = 'harvest_ripe' or [crop].PlantStatus = 'dead' then
               [crop]  harvest
               [crop]  end_crop
            endif
@@ -816,62 +816,61 @@
           <title>Wheat</title>
           <variables name="Variables">
             <variable>dd/mm/yyyy as Date</variable>
-            <variable>lai</variable>
-            <variable>stage</variable>
-            <variable>yield</variable>
-            <variable>height</variable>
-            <variable>leafgreenwt</variable>
-            <variable>stemgreenwt</variable>
-            <variable>grain_wt</variable>
-            <variable>leaf_no</variable>
-            <variable>cover_green</variable>
-            <variable>root_depth</variable>
-            <variable>daysaftersowing</variable>
-            <variable>podgreenwt</variable>
+            <variable>LAI</variable>
+            <variable>PhenologyStage</variable>
+            <variable>Yield</variable>
+            <variable>Height</variable>
+            <variable>LeafLiveWt</variable>
+            <variable>StemLiveWt</variable>
+            <variable>GrainWt</variable>
+            <variable>LeafNumber</variable>
+            <variable>CoverLive</variable>
+            <variable>RootDepth</variable>
+            <variable>DaysAfterSowing</variable>
+            <variable>PodLiveWt</variable>
             <variable>TTAfterSowing</variable>
-            <variable>n_uptake</variable>
-            <variable>tlai</variable>
+            <variable>AboveGroundN</variable>
+            <variable>LAITotal</variable>
             <variable>plants</variable>
-            <variable>node_no</variable>
-            <variable>biomass</variable>
-            <variable>green_biomass_n</variable>
-            <variable>plant_status</variable>
-            <variable>grain_n</variable>
-            <variable>leafgreenn</variable>
-            <variable>stemgreenn</variable>
-            <variable>flowering_date</variable>
-            <variable>green_biomass_wt</variable>
-            <variable>leafgreennconc</variable>
-            <variable>maturity_date</variable>
-            <variable>pai</variable>
-            <variable>podgreenn</variable>
-            <variable>stemgreennconc</variable>
-            <variable>cover_tot</variable>
+            <variable>NodeNumber</variable>
+            <variable>Biomass</variable>
+            <variable>AboveGroundLiveN</variable>
+            <variable>PlantStatus</variable>
+            <variable>GrainN</variable>
+            <variable>LeafLiveN</variable>
+            <variable>StemLiveN</variable>
+            <variable>FloweringDate</variable>
+            <variable>AboveGroundLiveWt</variable>
+            <variable>LeafLiveNConc</variable>
+            <variable>MaturityDate</variable>
+            <variable>PAI</variable>
+            <variable>PodLiveN</variable>
+            <variable>StemLiveNConc</variable>
+            <variable>CoverTotal</variable>
             <variable>TotalN</variable>
             <variable>TotalWt</variable>
-            <variable>n_stress_photo</variable>
+            <variable>NStressPhoto</variable>
             <variable>swstress_photo</variable>
-            <variable>slai</variable>
-            <variable>swdef_expan</variable>
-            <variable>grain_no</variable>
-            <variable>swdef_pheno</variable>
-            <variable>dlt_dm</variable>
-            <variable>leaf_no_sen</variable>
-            <variable>RootGreenWt</variable>
-            <variable>n_demand</variable>
-            <variable>n_supply_soil</variable>
+            <variable>SLAI</variable>
+            <variable>WaterStressExpansion</variable>
+            <variable>GrainNumber</variable>
+            <variable>WaterStressPheno</variable>
+            <variable>GrowthRate</variable>
+            <variable>LeafNumberDead</variable>
+            <variable>RootLiveWt</variable>
+            <variable>NDemand</variable>
+            <variable>RootNSupply</variable>
             <variable>green</variable>
             <variable>senesced</variable>
-            <variable>grain_p</variable>
-            <variable>n_stress_pheno</variable>
-            <variable>n_stress_expan</variable>
-            <variable>n_stress_grain</variable>
-            <variable>p_stress_pheno</variable>
-            <variable>p_stress_expan</variable>
-            <variable>p_stress_grain</variable>
-            <variable>p_stress_photo</variable>
-            <variable>swstress_expan</variable>
-            <variable>swstress_fixation</variable>
+            <variable>GrainP</variable>
+            <variable>NStressPheno</variable>
+            <variable>NStressExpansion</variable>
+            <variable>NStressGrain</variable>
+            <variable>PStressPheno</variable>
+            <variable>PStressExpansion</variable>
+            <variable>PStressGrain</variable>
+            <variable>PStressPhoto</variable>
+            <variable>WaterStressFixation</variable>
           </variables>
           <events name="Reporting Frequency">
             <event>daily</event>
@@ -937,8 +936,8 @@
             </ui>
             <script>
               <text>
-        if [crop].plant_status &lt;&gt; 'out' then
-           if [crop].PhenologyCurrentPhaseName = 'ReadyForHarvesting' or  [crop].plant_status = 'dead' then
+        if [crop].PlantStatus &lt;&gt; 'out' then
+           if [crop].PhenologyCurrentPhaseName = 'ReadyForHarvesting' or  [crop].PlantStatus = 'dead' then
               [crop]  harvest
               [crop]  endcrop
            endif
@@ -1022,8 +1021,6 @@
     </simulation>
     <Graph name="LAI">
       <Legend>
-        <CheckedTitles> Wheat</CheckedTitles>
-        <CheckedTitles> Wheat2</CheckedTitles>
       </Legend>
       <Plot>
         <SeriesType>Solid line</SeriesType>
@@ -1957,9 +1954,9 @@ annual_lwg = annual_lwg + graz.lwg</text>
             <variable>alw</variable>
             <variable>stocking_rate</variable>
             <variable>acc_eaten</variable>
-            <variable>yield</variable>
-            <variable>biomass</variable>
-            <variable>lai</variable>
+            <variable>Yield</variable>
+            <variable>Biomass</variable>
+            <variable>LAI</variable>
           </variables>
           <events name="Reporting Frequency" shortcut="/simulations/Base/Wheat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
@@ -2067,9 +2064,9 @@ annual_lwg = annual_lwg + graz.lwg</text>
             <variable>alw</variable>
             <variable>stocking_rate</variable>
             <variable>acc_eaten</variable>
-            <variable>yield</variable>
-            <variable>biomass</variable>
-            <variable>lai</variable>
+            <variable>Yield</variable>
+            <variable>Biomass</variable>
+            <variable>LAI</variable>
             <variable>PHenologyStage</variable>
           </variables>
           <events name="Reporting Frequency" shortcut="/simulations/Base/Wheat2/paddock/outputfile/Reporting Frequency" />

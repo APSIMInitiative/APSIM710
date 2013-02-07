@@ -43,27 +43,27 @@ Title                  = mer00_duplex
         clock.year
         clock.day
         lupin.DaysAfterSowing
-        lupin.Stage
+        lupin.PhenologyStage
         lupin.flowering_das
         lupin.TTAfterSowing
-        lupin.root_depth
-        lupin.flowering_date
-        lupin.yield
+        lupin.RootDepth
+        lupin.FloweringDate
+        lupin.Yield
         met.radn
         met.maxt
         met.mint
         met.rain
         manager.avgt
         lupin.green_biomass
-        lupin.biomass
-        lupin.biomass_wt
-        lupin.LeafGreenWt
-        lupin.StemGreenWt
-        lupin.grain_wt
-        lupin.PodGreenWt
-        lupin.RootGreenWt
-        lupin.FruitGreenWt
-        lupin.lai
+        lupin.Biomass
+        lupin.AboveGroundWt
+        lupin.LeafLiveWt
+        lupin.StemLiveWt
+        lupin.GrainWt
+        lupin.PodLiveWt
+        lupin.RootLiveWt
+        lupin.FruitLiveWt
+        lupin.LAI
         manager.apoc_rain
 
      Output file = mer00_duplex report.out
@@ -123,10 +123,10 @@ Title                  = mer00_duplex
      eta = ep + es
      eta_cum = eta_cum + eta
      etp_cum =etp_cum + eo
-     if (lupin.stage>=3 and lupin.stage <= 8) then
+     if (lupin.phenologystage>=3 and lupin.phenologystage <= 8) then
         hi = yield / biomass
-        hi_green = grain_wt / green_biomass_wt
-        sla_tot = lai/leafgreenwt
+        hi_green = grainwt / abovegroundlivewt
+        sla_tot = lai/leaflivewt
         yield_in_t = yield/1000
      else
         hi = 0
@@ -134,7 +134,7 @@ Title                  = mer00_duplex
         sla_tot = 0
         yield_in_t = 0
      endif
-     if (lupin.stagename = 'harvest_ripe' or lupin.plant_status = 'dead') then
+     if (lupin.stagename = 'harvest_ripe' or lupin.plantstatus = 'dead') then
         lupin harvest
         lupin kill_crop
         lupin end_crop
@@ -361,161 +361,13 @@ Title                  = mer00_duplex
       Sending sow message to lupin
 13 June 2000(Day of year=165), lupin: 
      Crop Sow
-        ------------------------------------------------
-        cultivar                   = merrit
-        Phases:
-           out
-           sowing
-           germination
-              shoot_lag                  =      20 (dd)
-              shoot_rate                 =       2 (dd/mm)
-           emergence
-              cumvd_emergence            =       0      25 (vd)
-              tt_emergence               =     360     360 (dd)
-           end_of_juvenile
-              x_pp_end_of_juvenile       =    10.8      16 (h)
-              y_tt_end_of_juvenile       =     665       1 (dd)
-           floral_initiation
-              x_pp_floral_initiation     =       1      24 (h)
-              y_tt_floral_initiation     =     135     135 (dd)
-           flowering
-              x_pp_flowering             =       1      24 (h)
-              y_tt_flowering             =     500     500 (dd)
-           start_grain_fill
-              x_pp_start_grain_fill      =       1      24 (h)
-              y_tt_start_grain_fill      =     450     450 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =      50 (dd)
-           maturity
-              tt_maturity                =       1 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =       1 (dd)
-           end_crop
-     
-        x_pp_hi_incr               =       1.00      24.00
-        y_hi_incr                  =     0.0080     0.0080
-        x_hi_max_pot_stress        =       0.00       1.00
-        y_hi_max_pot               =       0.25       0.25
-        ------------------------------------------------
+13 June 2000(Day of year=165): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     plant density ('Population') not specified
+     Component name: lupin
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-          50.0     0.060          0.080       0.300
-          50.0     0.060          0.080       0.300
-         100.0     0.060          0.080       0.300
-         100.0     0.060          0.080       0.300
-         100.0     0.060          0.160       0.300
-         100.0     0.060          0.160       0.300
-         100.0     0.060          0.190       0.300
-         100.0     0.060          0.210       0.300
-         200.0     0.060          0.220       0.200
-         200.0     0.060          0.230       0.200
-         200.0     0.060          0.240       0.200
-         200.0     0.060          0.250       0.200
-         200.0     0.060          0.260       0.200
-         200.0     0.060          0.260       0.200
-         200.0     0.060          0.260       0.200
-         200.0     0.060          0.260       0.200
-         200.0     0.060          0.260       0.200
-         -----------------------------------------------
-         Extractable SW:   157mm in  2500mm total depth (  6%).
-         Crop factor for bounding water use is set to 100.0 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            165   40.0   60.0  200.0   0.0   0.0 merrit
-         ------------------------------------------------
-     
-15 June 2000(Day of year=167), lupin: 
-      stage 2.0 germination
-23 June 2000(Day of year=175), lupin: 
-      stage 3.0 emergence
-                     biomass =          12.00 (g/m^2)   lai          =   0.003 (m^2/m^2)
-                     stover N conc =     6.50 (%)    extractable sw =    0.86 (mm)
-19 July 2000(Day of year=201), Operations: 
-      Sending set message to soilwat
-25 July 2000(Day of year=207), lupin: 
-      stage 4.0 end_of_juvenile
-                     biomass =          15.85 (g/m^2)   lai          =   0.059 (m^2/m^2)
-                     stover N conc =     5.63 (%)    extractable sw =   31.22 (mm)
-6 September 2000(Day of year=250), lupin: 
-      stage 5.0 floral_initiation
-                     biomass =         193.18 (g/m^2)   lai          =   2.033 (m^2/m^2)
-                     stover N conc =     3.92 (%)    extractable sw =   52.57 (mm)
-16 September 2000(Day of year=260), lupin: 
-      stage 6.0 flowering
-                     biomass =         302.95 (g/m^2)   lai          =   2.770 (m^2/m^2)
-                     stover N conc =     3.42 (%)    extractable sw =   39.48 (mm)
-24 October 2000(Day of year=298), lupin: 
-      stage 7.0 start_grain_fill
-                     biomass =         445.48 (g/m^2)   lai          =   1.067 (m^2/m^2)
-                     stover N conc =     3.76 (%)    extractable sw =   13.84 (mm)
-30 November 2000(Day of year=335), lupin: 
-      stage 8.0 end_grain_fill
-                     biomass =         499.73 (g/m^2)   lai          =   0.106 (m^2/m^2)
-                     stover N conc =     3.40 (%)    extractable sw =    7.94 (mm)
-5 December 2000(Day of year=340), lupin: 
-      stage 9.0 maturity
-                     biomass =         503.25 (g/m^2)   lai          =   0.046 (m^2/m^2)
-                     stover N conc =     3.37 (%)    extractable sw =    6.65 (mm)
-6 December 2000(Day of year=341), lupin: 
-      stage 10.0 harvest_ripe
-                     biomass =         503.25 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     3.40 (%)    extractable sw =    6.41 (mm)
-6 December 2000(Day of year=341), Manager: 
-     Manager sending message :- lupin harvest
-     
-      flowering day          =  260                           stover (kg/ha)         =     4419.5
-      maturity day           =  340                           grain yield (kg/ha)    =      613.0
-      grain % water content  =   12.0                         grain yield wet (kg/ha)=      696.6
-      grain wt (g)           =    0.000                       grains/m^2             =        0.0
-      grains/plant           =    0.0                         maximum lai            =      2.770
-      total above ground biomass (kg/ha)    =     5032.5
-      live above ground biomass (kg/ha)     =     5032.5
-      green above ground biomass (kg/ha)    =     3022.6
-      senesced above ground biomass (kg/ha) =     2009.9
-      number of leaves       =    318.5
-      DM Root:Shoot ratio    =     0.43                       Harvest Index          =       0.12
-      Stover C:N ratio       =    19.24                       Root C:N ratio         =      17.43
-      grain N percent        =     5.15                       total N content (kg/ha)=     123.45
-      grain N uptake (kg/ha) =    31.57                       senesced N content (kg/ha)=   10.05
-      green N content (kg/ha)=    81.83
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence            to end_of_juvenile         0.000        0.000        0.000        0.005
-         end_of_juvenile      to floral_initiation       0.005        0.007        0.000        0.025
-         floral_initiation    to flowering               0.184        0.245        0.000        0.001
-         flowering            to start_grain_fill        0.733        0.833        0.000        0.000
-         start_grain_fill     to end_grain_fill          0.737        0.837        0.000        0.000
-     
-     
-     Crop harvested.
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                4419.5                     0.0
-                          N  (kg/ha) =                  91.88                    0.00
-     
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                 613.0                     0.0
-                          N  (kg/ha) =                  31.57                    0.00
-     
-      stage 11.0 end_crop
-     Manager sending message :- lupin kill_crop
-     Plant kill. 100.00% crop killed because of external action.
-     Manager sending message :- lupin end_crop
-     Crop ended. Yield (dw) =     0.0  (kg/ha)
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                   0.0                  2179.8
-                          N  (kg/ha) =                   0.00                   50.02
-     
-30 December 2000(Day of year=365), Clock: 
-     Simulation is terminating due to end criteria being met.
 

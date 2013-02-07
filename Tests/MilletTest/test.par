@@ -3,7 +3,7 @@ summaryfile=test1.sum
 [test1.report.parameters]
 outputfile  =test1.out
 [test1.manager.start_of_day]
-if millet.StageName = 'harvest_ripe' or millet.plant_status = 'dead' then
+if millet.StageName = 'harvest_ripe' or millet.PlantStatus = 'dead' then
    millet harvest
    millet1 harvest
    millet2 harvest
@@ -18,7 +18,7 @@ summaryfile=test2.sum
 [test2.report.parameters]
 outputfile  =test2.out
 [test2.manager.start_of_day]
-if millet.StageName = 'harvest_ripe' or millet.plant_status = 'dead' then
+if millet.StageName = 'harvest_ripe' or millet.PlantStatus = 'dead' then
    millet harvest
    millet1 harvest
    millet2 harvest
@@ -44,7 +44,7 @@ if harvest = 1 then
    harvest = 2
 endif
 
-if millet.StageName = 'harvest_ripe' or millet.plant_status = 'dead' then
+if millet.StageName = 'harvest_ripe' or millet.PlantStatus = 'dead' then
    millet harvest
    millet1 harvest
    millet2 harvest
@@ -64,8 +64,8 @@ endif
 [all.report.parameters]
 variable = clock.day
 variable = clock.year
-variable = millet.lai
-variable = millet.biomass
+variable = millet.LAI
+variable = millet.Biomass
 variable = millet.green_biomass
 
 [all.canopy.parameters]

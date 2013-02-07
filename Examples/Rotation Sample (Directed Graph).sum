@@ -49,8 +49,8 @@ Paddock:
         harvesting
      Output variables:
         dd/mm/yyyy as Date
-        yield
-        biomass
+        Yield
+        Biomass
 
      Output file = Rotation Sample (Directed Graph).out
      Format = normal
@@ -239,7 +239,7 @@ stateGraph arc lappend "arc6" rules {[canPlant_cotton]}
 stateGraph arc insert "Wheat" "SummerFallow2" "arc3"
 stateGraph arc lappend "arc3" actions {apsimSendMessage wheat harvest}
 stateGraph arc lappend "arc3" actions {apsimSendMessage wheat end_crop}
-stateGraph arc lappend "arc3" rules {{[apsimGet wheat.stageName] == "harvest_ripe" || [apsimGet wheat.plant_status] == "dead"}}
+stateGraph arc lappend "arc3" rules {{[apsimGet wheat.stageName] == "harvest_ripe" || [apsimGet wheat.PlantStatus] == "dead"}}
 stateGraph arc insert "F1" "SummerFallow1" "arc7"
 stateGraph arc lappend "arc7" actions {}
 stateGraph arc lappend "arc7" rules {[apsimGet day]  == 192}
@@ -249,7 +249,7 @@ stateGraph arc lappend "arc0" rules {[canPlant_chickpea]}
 stateGraph arc insert "Chickpea" "SummerFallow1" "arc8"
 stateGraph arc lappend "arc8" actions {apsimSendMessage chickpea harvest}
 stateGraph arc lappend "arc8" actions {apsimSendMessage chickpea end_crop}
-stateGraph arc lappend "arc8" rules {{[apsimGet chickpea.stageName] == "harvest_ripe" || [apsimGet chickpea.plant_status] == "dead"}}
+stateGraph arc lappend "arc8" rules {{[apsimGet chickpea.stageName] == "harvest_ripe" || [apsimGet chickpea.PlantStatus] == "dead"}}
 stateGraph arc insert "SummerFallow1" "Wheat" "arc1"
 stateGraph arc lappend "arc1" actions {sow_wheat}
 stateGraph arc lappend "arc1" rules {[canPlant_wheat]}
@@ -291,11 +291,11 @@ proc canPlant_cotton {} {
 # Plant a crop now
 proc sow_cotton {} {
   if {"ozcot" == "plant"} {
-     apsimSendMessage cotton sow {plants 100} {sowing_depth 30} \
+     apsimSendMessage cotton sow {Population 100} {sowing_depth 30} \
              {cultivar Siok} {row_spacing 1000} \
              {skipplant 0} {skiprow 0} {crop_class plant}
   } elseif {"ozcot" == "cropmod"} {
-     apsimSendMessage cotton sow {plants [density]} {sowing_depth [depth]} \
+     apsimSendMessage cotton sow {Population [density]} {sowing_depth [depth]} \
              {cultivar Siok} {row_spacing 1000} {skiprow 0}
   } elseif {"ozcot" == "growth"} {
      apsimSendMessage cotton ???
@@ -305,11 +305,11 @@ proc sow_cotton {} {
   } elseif {"ozcot" == "oryza"} {
      apsimSendMessage cotton sow {cultivar Siok}
   } elseif {"ozcot" == "sorghum"} {
-     apsimSendMessage cotton sow {plants 100} {sowing_depth 30} \
+     apsimSendMessage cotton sow {Population 100} {sowing_depth 30} \
              {cultivar Siok} {row_spacing 1000} {skiprow 0} \
              {tiller_no_fertile [tiller_no_fertile]}
   } elseif {"ozcot" == "sugar"} {
-     apsimSendMessage cotton sow {plants 100} {cultivar Siok} {sowing_depth 30}
+     apsimSendMessage cotton sow {Population 100} {cultivar Siok} {sowing_depth 30}
   } else {
     error "Unknown crop module \"ozcot\"."
   }
@@ -347,11 +347,11 @@ proc canPlant_chickpea {} {
 # Plant a crop now
 proc sow_chickpea {} {
   if {"plant" == "plant"} {
-     apsimSendMessage chickpea sow {plants 25} {sowing_depth 30} \
+     apsimSendMessage chickpea sow {Population 25} {sowing_depth 30} \
              {cultivar amethyst} {row_spacing 500} \
              {skipplant 0} {skiprow 0} {crop_class plant}
   } elseif {"plant" == "cropmod"} {
-     apsimSendMessage chickpea sow {plants [density]} {sowing_depth [depth]} \
+     apsimSendMessage chickpea sow {Population [density]} {sowing_depth [depth]} \
              {cultivar amethyst} {row_spacing 500} {skiprow 0}
   } elseif {"plant" == "growth"} {
      apsimSendMessage chickpea ???
@@ -361,11 +361,11 @@ proc sow_chickpea {} {
   } elseif {"plant" == "oryza"} {
      apsimSendMessage chickpea sow {cultivar amethyst}
   } elseif {"plant" == "sorghum"} {
-     apsimSendMessage chickpea sow {plants 25} {sowing_depth 30} \
+     apsimSendMessage chickpea sow {Population 25} {sowing_depth 30} \
              {cultivar amethyst} {row_spacing 500} {skiprow 0} \
              {tiller_no_fertile [tiller_no_fertile]}
   } elseif {"plant" == "sugar"} {
-     apsimSendMessage chickpea sow {plants 25} {cultivar amethyst} {sowing_depth 30}
+     apsimSendMessage chickpea sow {Population 25} {cultivar amethyst} {sowing_depth 30}
   } else {
     error "Unknown crop module \"plant\"."
   }
@@ -403,11 +403,11 @@ proc canPlant_wheat {} {
 # Plant a crop now
 proc sow_wheat {} {
   if {"plant" == "plant"} {
-     apsimSendMessage wheat sow {plants 100} {sowing_depth 30} \
+     apsimSendMessage wheat sow {Population 100} {sowing_depth 30} \
              {cultivar hartog} {row_spacing 250} \
              {skipplant 0} {skiprow 0} {crop_class plant}
   } elseif {"plant" == "cropmod"} {
-     apsimSendMessage wheat sow {plants [density]} {sowing_depth [depth]} \
+     apsimSendMessage wheat sow {Population [density]} {sowing_depth [depth]} \
              {cultivar hartog} {row_spacing 250} {skiprow 0}
   } elseif {"plant" == "growth"} {
      apsimSendMessage wheat ???
@@ -417,11 +417,11 @@ proc sow_wheat {} {
   } elseif {"plant" == "oryza"} {
      apsimSendMessage wheat sow {cultivar hartog}
   } elseif {"plant" == "sorghum"} {
-     apsimSendMessage wheat sow {plants 100} {sowing_depth 30} \
+     apsimSendMessage wheat sow {Population 100} {sowing_depth 30} \
              {cultivar hartog} {row_spacing 250} {skiprow 0} \
              {tiller_no_fertile [tiller_no_fertile]}
   } elseif {"plant" == "sugar"} {
-     apsimSendMessage wheat sow {plants 100} {cultivar hartog} {sowing_depth 30}
+     apsimSendMessage wheat sow {Population 100} {cultivar hartog} {sowing_depth 30}
   } else {
     error "Unknown crop module \"plant\"."
   }

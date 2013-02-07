@@ -151,7 +151,7 @@ void grazComponent::onPrepare(void)
       if (green_leaf < 0 || green_stem < 0 || dead_leaf < 0 || dead_stem < 0 )
          throw std::runtime_error("Missing parts in AvailableToAnimalType??");
 
-      scienceAPI.get(prefix + "dlt_dm",         "g/m2", false, grass_growth, (float)0.0, (float)10000.0);
+      scienceAPI.get(prefix + "GrowthRate",         "g/m2", false, grass_growth, (float)0.0, (float)10000.0);
       grass_growth *= gm2kg / sm2ha;
    }
    // Set deltas

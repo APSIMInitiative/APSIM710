@@ -5,12 +5,12 @@ outputfile  =mungbean.out
 
 variable = clock.day
 variable = clock.year
-variable = mungbean.lai
-variable = mungbean.biomass
+variable = mungbean.LAI
+variable = mungbean.Biomass
 variable = mungbean.green_biomass
-variable = mungbean.GreenWt
-variable = mungbean.GreenP
-variable = mungbean.SenescedP
+variable = mungbean.LiveWt
+variable = mungbean.LiveP
+variable = mungbean.DeadP
 variable = mungbean.p_demand
 variable = mungbean.pfact_photo
 variable = mungbean.pfact_pheno
@@ -18,19 +18,19 @@ variable = mungbean.pfact_expansion
 variable = mungbean.pfact_grain
 variable = mungbean.biomass_p
 variable = mungbean.green_biomass_p
-variable = mungbean.grain_p
-variable = mungbean.LeafGreenP
-variable = mungbean.StemGreenP
-variable = mungbean.RootGreenP
-variable = mungbean.PodGreenP
+variable = mungbean.GrainP
+variable = mungbean.LeafLiveP
+variable = mungbean.StemLiveP
+variable = mungbean.RootLiveP
+variable = mungbean.PodLiveP
 variable = mungbean.FruitTotalP
 variable = mungbean.GrowthP
 variable = mungbean.RetranslocationP
 variable = mungbean.DetachingP
 variable = mungbean.p_conc_stover
-variable = mungbean.LeafGreenPConc
-variable = mungbean.StemGreenPConc
-variable = mungbean.GrainGreenPConc
+variable = mungbean.LeafLivePConc
+variable = mungbean.StemLivePConc
+variable = mungbean.GrainLivePConc
 variable = mungbean.p_uptake_stover
 variable = mungbean.grain_p_demand
 variable = surfaceom.surfaceom_p
@@ -73,7 +73,7 @@ if day = 330 and year  = 1988 then
    mungbean sow cultivar = berken, plants = 25 (/m2), sowing_depth = 40 (mm)
 endif
 
-if mungbean.StageName = 'harvest_ripe' or mungbean.plant_status = 'dead' then
+if mungbean.StageName = 'harvest_ripe' or mungbean.PlantStatus = 'dead' then
    mungbean harvest
    mungbean end_crop
 

@@ -1,4 +1,4 @@
-<folder version="33" name="simulations">
+<folder version="34" name="simulations">
   <simulation name="ChicorySim">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%\Tests\Validation\Chicory\Ruakura.met</filename>
@@ -484,7 +484,7 @@ endif
 accumDays = [days]
 
 !Calculate creteria for dormancy        
-if ([crop].plant_status = 'alive' and dormant = 0 and day &gt; 120 and day &lt; 240 and mint &lt; critT) then
+if ([crop].PlantStatus = 'alive' and dormant = 0 and day &gt; 120 and day &lt; 240 and mint &lt; critT) then
    dayCount1 = dayCount1 + 1
    if (dayCount1 &lt; accumDays) then
        dormAccumT = dormAccumT + mint
@@ -494,7 +494,7 @@ if ([crop].plant_status = 'alive' and dormant = 0 and day &gt; 120 and day &lt; 
 endif
 
 ! Calculate creteria for ending dormancy
-if ([crop].plant_status = 'alive' and dormant = 1 and day &gt; 180 and mint &gt;=critT ) then
+if ([crop].PlantStatus = 'alive' and dormant = 1 and day &gt; 180 and mint &gt;=critT ) then
    dayCount2 = dayCount2 + 1
    if (dayCount2 &lt; accumDays) then
        regrowAccumT = regrowAccumT + mint
@@ -612,18 +612,18 @@ public class Script
    [Input()] private double maxt;
    [Input()] private double meant;
    
-   [Input()] private double stage;
+   [Input()] private double PhenologyStage;
    [Input()] private double height;
    [Input()] private double biomass;
-   [Input()] private double plants;
-   [Input()] private double leafgreennconc;
-   [Input()] private double stemgreennconc;
+   [Input()] private double population;
+   [Input()] private double leaflivenconc;
+   [Input()] private double stemlivenconc;
    
    
-   private double GreenLeaf = 0.0;
-   private double GreenStem = 0.0;
-   private double dlt_GreenLeaf = 0.0;
-   private double dlt_GreenStem = 0.0;
+   private double LiveLeaf = 0.0;
+   private double LiveStem = 0.0;
+   private double dlt_LiveLeaf = 0.0;
+   private double dlt_LiveStem = 0.0;
    private double Grazed = 0.0;
    private int dayCount = 0;
    
@@ -696,7 +696,7 @@ public class Script
       }
         
       //reset TT during winter dormancy
-      if (Today.DayOfYear == 152 &amp;&amp; stage &gt;= 4.0)
+      if (Today.DayOfYear == 152 &amp;&amp; PhenologyStage &gt;= 4.0)
       {         
          HarvestType hSet = new HarvestType();
          hSet.Remove = 0;   
@@ -724,35 +724,35 @@ public class Script
    
    public void doHarvest()
    {
-      MyPaddock.Get(Crop2Defoliate + ".leafgreenwt", out GreenLeaf);
-      MyPaddock.Get(Crop2Defoliate + ".stemgreenwt", out GreenStem);
+      MyPaddock.Get(Crop2Defoliate + ".leaflivewt", out LiveLeaf);
+      MyPaddock.Get(Crop2Defoliate + ".stemlivewt", out LiveStem);
       
 
-      dlt_GreenLeaf = Math.Max(0, GreenLeaf * (1.0 - ResidualLeaf));
-      dlt_GreenStem = Math.Max(0, GreenStem * (1.0 - ResidualStem));
+      dlt_LiveLeaf = Math.Max(0, LiveLeaf * (1.0 - ResidualLeaf));
+      dlt_LiveStem = Math.Max(0, LiveStem * (1.0 - ResidualStem));
     
-      RemoveCropBiomassdmType GreenRemoveCropDmDm = new RemoveCropBiomassdmType();
+      RemoveCropBiomassdmType LiveRemoveCropDmDm = new RemoveCropBiomassdmType();
             
-      GreenRemoveCropDmDm.pool = "green";
-      GreenRemoveCropDmDm.part = new string[]
+      LiveRemoveCropDmDm.pool = "live";
+      LiveRemoveCropDmDm.part = new string[]
          {"leaf","stem"};
-      GreenRemoveCropDmDm.dlt = new double[] 
-         {dlt_GreenLeaf, dlt_GreenStem};
+      LiveRemoveCropDmDm.dlt = new double[] 
+         {dlt_LiveLeaf, dlt_LiveStem};
             
       RemoveCropBiomassType MyRemoveCropDM = new RemoveCropBiomassType();
            
-      MyRemoveCropDM.dm = new RemoveCropBiomassdmType[] { GreenRemoveCropDmDm };            
+      MyRemoveCropDM.dm = new RemoveCropBiomassdmType[] { LiveRemoveCropDmDm };            
        
       MyPaddock.Publish(Crop2Defoliate + ".remove_crop_biomass", MyRemoveCropDM);
             
       Console.WriteLine(Today.ToShortDateString() + " - " + "Plant1 Defoliation Rule Invoked");
       Console.WriteLine("          - " + Crop2Defoliate + " has been defoliated");
-      Console.WriteLine("          - Removed " + dlt_GreenLeaf + " g/m2 of Leaf");
-      Console.WriteLine("          - Removed " + dlt_GreenStem + " g/m2 of Stem");
+      Console.WriteLine("          - Removed " + dlt_LiveLeaf + " g/m2 of Leaf");
+      Console.WriteLine("          - Removed " + dlt_LiveStem + " g/m2 of Stem");
       Console.WriteLine(" "); 
      
-      DMharvestLeaf = dlt_GreenLeaf * 10;     //in kgDM/ha
-      DMharvestStem = dlt_GreenStem * 10; 
+      DMharvestLeaf = dlt_LiveLeaf * 10;     //in kgDM/ha
+      DMharvestStem = dlt_LiveStem * 10; 
       DMharvest = DMharvestLeaf + DMharvestStem;  
       
       //Reducing population 
@@ -766,19 +766,19 @@ public class Script
    
    public void  resetPhenoByRemoval()
    {
-      MyPaddock.Get(Crop2Defoliate + ".leafgreenwt", out GreenLeaf);
-      MyPaddock.Get(Crop2Defoliate + ".stemgreenwt", out GreenStem);
+      MyPaddock.Get(Crop2Defoliate + ".leaflivewt", out LiveLeaf);
+      MyPaddock.Get(Crop2Defoliate + ".stemlivewt", out LiveStem);
       
-      dlt_GreenLeaf = Math.Max(0, GreenLeaf * 0.95);  //large removal for windback phenology
-      dlt_GreenStem = Math.Max(0, GreenStem * 0.95);
-      RemoveCropBiomassdmType GreenRemoveCropDmDm = new RemoveCropBiomassdmType();
+      dlt_LiveLeaf = Math.Max(0, LiveLeaf * 0.95);  //large removal for windback phenology
+      dlt_LiveStem = Math.Max(0, LiveStem * 0.95);
+      RemoveCropBiomassdmType LiveRemoveCropDmDm = new RemoveCropBiomassdmType();
             
-      GreenRemoveCropDmDm.pool = "green";
-      GreenRemoveCropDmDm.part = new string[] {"leaf","stem"};
-      GreenRemoveCropDmDm.dlt = new double[]  {dlt_GreenLeaf, dlt_GreenStem};            
+      LiveRemoveCropDmDm.pool = "live";
+      LiveRemoveCropDmDm.part = new string[] {"leaf","stem"};
+      LiveRemoveCropDmDm.dlt = new double[]  {dlt_LiveLeaf, dlt_LiveStem};            
    
       RemoveCropBiomassType MyRemoveCropDM = new RemoveCropBiomassType();
-      MyRemoveCropDM.dm = new RemoveCropBiomassdmType[] { GreenRemoveCropDmDm };            
+      MyRemoveCropDM.dm = new RemoveCropBiomassdmType[] { LiveRemoveCropDmDm };            
       MyPaddock.Publish(Crop2Defoliate + ".remove_crop_biomass", MyRemoveCropDM);            
       Console.WriteLine(Today.ToShortDateString() + " - " + "To reset Pheno");
    }
@@ -819,7 +819,7 @@ public class Script
         </ui>
         <script>
           <text>
-         if ([modulename].plant_status = 'alive') then
+         if ([modulename].PlantStatus = 'alive') then
             NO3_available = no3(1) + no3(2) + no3(3)
             if (NO3_available &lt;= [fert_critical]) then
                N_deficit = [fert_criteria] - NO3_available
@@ -836,13 +836,13 @@ public class Script
         <variables name="My Variables">
           <variable>dd/mmm/yyyy as Date</variable>
           <variable>year</variable>
-          <variable>biomass</variable>
-          <variable>stage</variable>
+          <variable>Biomass</variable>
+          <variable>PhenologyStage</variable>
           <variable>DMharvest</variable>
           <variable>irrigation</variable>
           <variable>fertiliser</variable>
-          <variable>node_no</variable>
-          <variable>leaf_no</variable>
+          <variable>NodeNumber</variable>
+          <variable>LeafNumber</variable>
           <variable>plants</variable>
         </variables>
         <events name="My Variables Events">

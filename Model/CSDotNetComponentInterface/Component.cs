@@ -23,7 +23,6 @@ namespace ModelFramework
         protected String FQN;                       //Name of the actual component
         internal Instance In;
         protected Dictionary<uint, TComp> ChildComponents = null;
-        protected Dictionary<String, Object> ApsimIntObjectsByName = null;  //cache a list of internal objects searched for in LinkByName()
         protected Dictionary<String, Object> ApsimObjectsByName = null;  //cache a list of objects searched for in LinkByName()
         protected Dictionary<String, Object> ApsimObjectsByType = null;  //cache a list of objects searched for in LinkByType()
         protected string NamePrefix = "";
@@ -80,7 +79,6 @@ namespace ModelFramework
             if (FQN.LastIndexOf('.') > -1)
                 ParentCompName = FQN.Substring(0, FQN.LastIndexOf('.')); //e.g. Paddock
 
-            ApsimIntObjectsByName = new Dictionary<string, object>();
             ApsimObjectsByName = new Dictionary<string, object>();
             ApsimObjectsByType = new Dictionary<string, object>();
         }
@@ -99,7 +97,6 @@ namespace ModelFramework
             //get the name of the host component for the calling object
             HostComponent = In.ParentComponent();   //e.g. Plant2
             FTypeName = HostComponent.CompClass;     //type of Plant2
-            ApsimIntObjectsByName = new Dictionary<string, object>();
             ApsimObjectsByName = new Dictionary<string, object>();
             ApsimObjectsByType = new Dictionary<string, object>();
         }
@@ -142,7 +139,6 @@ namespace ModelFramework
                 FTypeName = comps[0].CompClass;
             else
                 FTypeName = this.GetType().Name;
-            ApsimIntObjectsByName = new Dictionary<string, object>();
             ApsimObjectsByName = new Dictionary<string, object>();
             ApsimObjectsByType = new Dictionary<string, object>();
         }
@@ -325,19 +321,9 @@ namespace ModelFramework
         //=========================================================================
         public object LinkByName(String NameToFind)
         {
-            object E = null;
-            if (ApsimIntObjectsByName.ContainsKey(NameToFind))
-            {
-                E = ApsimIntObjectsByName[NameToFind];         //if already found
-            }
-            else
-            {
-                E = FindInternalEntity(NameToFind);
-                if (E != null)
-                    ApsimIntObjectsByName.Add(NameToFind, E);  //keep this object for later searches
-            }
+            object E = FindInternalEntity(NameToFind);
             if (E != null)
-            {   //internal entity
+            {
                 if (E is Entity)
                 {
                     object Value = (E as Entity).Get();
@@ -352,14 +338,14 @@ namespace ModelFramework
                 return null;
             }
             else
-            {   //external component
-                if (ApsimObjectsByName.ContainsKey(NameToFind))
+            {
+                if (ApsimObjectsByName.ContainsKey(NameToFind))   
                 {
                     return ApsimObjectsByName[NameToFind];            //if already found
                 }
                 else
                 {
-                    Object foundObject = LinkField.FindApsimObject(null,
+                    Object foundObject =  LinkField.FindApsimObject(null,
                                                      AddMasterPM(NameToFind),
                                                      StringManip.ParentName(HostComponent.InstanceName),
                                                      HostComponent);
@@ -844,7 +830,7 @@ namespace ModelFramework
         /// </summary>
         private static object FindChildEntity(string NamePath, Instance RelativeTo)
         {
-            String[] Bits = NamePath.Split(".".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            string[] Bits = NamePath.Split(".".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < Bits.Length; i++)
             {
                 Instance MatchingChild = null;

@@ -52,17 +52,17 @@ Paddock:
         dul_dep()
         WaterSD
         Biomass
-        yield
-        lai
+        Yield
+        LAI
         GrainNo
-        stage
+        PhenologyStage
         biomass_wt
         GrainGreenWt
         RachisGreenWt
-        StemGreenWt
+        StemLiveWt
         GrainSize
-        LeafSenescedWt
-        LeafGreenWt
+        LeafDeadWt
+        LeafLiveWt
         TillerNoFertile
 
      Output file = Bilo05Skip2DSLD.out
@@ -90,7 +90,7 @@ Paddock:
        sowday = day
         sowyear = year
      ftn = 0
-       sorghum sow plants =2.5, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip =  double, tiller_no_fertile = 0.7 ()
+       sorghum sow population =2.5, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip =  double, tiller_no_fertile = 0.7 ()
      endif
      if (paddock_is_fallow() = 0) then
         outputfile do_output
@@ -102,7 +102,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if sorghum.stagename = 'harvest_ripe' or sorghum.plant_status = 'dead' then
+                if sorghum.stagename = 'harvest_ripe' or sorghum.plantstatus = 'dead' then
        sorghum  harvest
        sorghum  end_crop
                 endif
@@ -258,7 +258,7 @@ Paddock:
      Manager creating a new local real variable : sowday = 27.00000
      Manager creating a new local real variable : sowyear = 2006.00000
      Manager creating a new local real variable : ftn = 0.00000
-     Manager sending message :- sorghum sow  plants = 2.5, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = double, tiller_no_fertile = 0.7
+     Manager sending message :- sorghum sow  population = 2.5, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = double, tiller_no_fertile = 0.7
 27 January 2006(Day of year=27), Sorghum: 
      Sowing initiate
      

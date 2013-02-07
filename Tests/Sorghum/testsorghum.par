@@ -3,7 +3,7 @@ summaryfile=test1 sorghum.sum
 [test1.report.parameters]
 outputfile  =test1 sorghum.out
 [test1.manager.start_of_day]
-if sorghum.StageName = 'harvest_ripe' or sorghum.plant_status = 'dead' then
+if sorghum.StageName = 'harvest_ripe' or sorghum.PlantStatus = 'dead' then
    sorghum harvest
    sorghum sow cultivar = early, plants = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0 (), row_spacing = 1.0 (m)
 endif
@@ -13,7 +13,7 @@ summaryfile=test2 sorghum.sum
 [test2.report.parameters]
 outputfile  =test2 sorghum.out
 [test2.manager.start_of_day]
-if sorghum.StageName = 'harvest_ripe' or sorghum.plant_status = 'dead' then
+if sorghum.StageName = 'harvest_ripe' or sorghum.PlantStatus = 'dead' then
    sorghum harvest
    sorghum end_crop
    sorghum sow cultivar = early, plants = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0 (), row_spacing = 1.0 (m)
@@ -29,7 +29,7 @@ if harvest = 1 then
    harvest = 2
 endif
 
-if sorghum.StageName = 'harvest_ripe' or sorghum.plant_status = 'dead' then
+if sorghum.StageName = 'harvest_ripe' or sorghum.PlantStatus = 'dead' then
    sorghum harvest
    sorghum end_crop
    harvest = 1
@@ -39,8 +39,8 @@ endif
 [all.report.parameters]
 variable = clock.day
 variable = clock.year
-variable = sorghum.lai
-variable = sorghum.biomass
+variable = sorghum.LAI
+variable = sorghum.Biomass
 variable = sorghum.green_biomass
 
 [all.clock.parameters]

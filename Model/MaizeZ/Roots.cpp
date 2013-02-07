@@ -30,13 +30,12 @@ void Roots::doRegistrations(void)
    scienceAPI.expose("RootLength"    ,"mm/mm2","Root length",                 false, rootLength);
    scienceAPI.expose("RLV"           ,"mm/mm3","Root length volume in layers",false, rlvFactor);
    scienceAPI.expose("RootDepth"     ,"mm"    ,"Depth of roots",              false, rootDepth);
-   scienceAPI.expose("root_depth"    ,"mm"    ,"Depth of roots",              false, rootDepth);
    scienceAPI.expose("RootFront"     ,"mm"    ,"Depth of root front",         false, rootFront);
-   scienceAPI.expose("RootGreenWt"   ,"g/m^2" ,"Green root dry weight",       false, dmGreen);
-   scienceAPI.expose("RootSenescedWt","g/m^2" ,"Senesced root dry weight",    false, dmSenesced);
-   scienceAPI.expose("RootGreenN"    ,"g/m^2" ,"N in live root",              false, nGreen);
-   scienceAPI.expose("RootGreenNConc","%"     ,"Live root N concentration",   false, nConc);
-   scienceAPI.expose("RootSenescedN" ,"g/m^2" ,"Senesced root dry weight",    false, nSenesced);
+   scienceAPI.expose("RootLiveWt"   ,"g/m^2" ,"Green root dry weight",       false, dmGreen);
+   scienceAPI.expose("RootDeadWt","g/m^2" ,"Senesced root dry weight",    false, dmSenesced);
+   scienceAPI.expose("RootLiveN"    ,"g/m^2" ,"N in live root",              false, nGreen);
+   scienceAPI.expose("RootLiveNConc","%"     ,"Live root N concentration",   false, nConc);
+   scienceAPI.expose("RootDeadN" ,"g/m^2" ,"Senesced root dry weight",    false, nSenesced);
    scienceAPI.expose("RootNDemand"   ,"g/m^2" ,"Today's N demand from roots", false, nDemand);
    scienceAPI.exposeFunction("RootProportion", "0-1", "Root proportion in layers",
       FloatArrayFunction(&Roots::getRP));

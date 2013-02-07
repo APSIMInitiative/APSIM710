@@ -61,9 +61,9 @@ Paddock:
         esw
         day
         year
-        yield
+        Yield
         stover
-        biomass
+        Biomass
         SurfaceOrganicMatter.surfaceom_wt
 
      Output file = Maize Legume and Weeds Rotation.out
@@ -311,7 +311,7 @@ Paddock:
         endif
         if ((crop_in = 0 or 'no' = 'yes') and (ready_to_till_pre_sow = 1)) then
          if (crop_current = 'weed' or crop_current1 = 'weed' or crop_current2 = 'weed') then
-           if (weed.plant_status <> 'out') then
+           if (weed.plantstatus <> 'out') then
                  weed harvest, remove=0
                  weed kill_crop
                  weed end_crop
@@ -350,7 +350,7 @@ Paddock:
      else
      endif
               if (crop_in = 0 or ('intercrop' = 'intercrop'
-      and maize.plant_status = 'out')) then
+      and maize.plantstatus = 'out')) then
         if (date_within('1-nov, 30-dec') = 1) then
            crop_sow = 'waiting'
            surface_moist = (sw(1) - ll15(1)) / (dul(1)- ll15(1))
@@ -363,9 +363,9 @@ Paddock:
               endif
               if ((wht_sow_opp_num >= 1) or ('no' = 'yes' and today = date('30-dec')) then
                  if ('maize' = 'sorghum') then
-                    maize sow plants =2.2, sowing_depth = 100, cultivar = sc401, row_spacing = 0.9, tiller_no_fertile = 1 (), skip = solid
+                    maize sow population =2.2, sowing_depth = 100, cultivar = sc401, row_spacing = 0.9, tiller_no_fertile = 1 (), skip = solid
                  else
-                   maize sow cultivar = sc401, plants = 2.2 (plants/m2), sowing_depth = 100, row_spacing = 0.9
+                   maize sow cultivar = sc401, population = 2.2 (population/m2), sowing_depth = 100, row_spacing = 0.9
                  endif
                  crop_in = crop_in + 1
                  if ('no' = 'no') then
@@ -380,7 +380,7 @@ Paddock:
                     fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = urea_n ()
                  endif
                  if (crop_current = 'weed' or crop_current1 = 'weed' or crop_current2 = 'weed') then
-                    if (weed.plant_status <> 'out' and 1 > 0) then
+                    if (weed.plantstatus <> 'out' and 1 > 0) then
                        weed kill_crop plants_kill_fraction = 1
                        if (1 = 1.0) then
                           weed end_crop
@@ -508,7 +508,7 @@ Paddock:
         endif
         if ((crop_in = 0 or 'no' = 'yes') and (ready_to_till_pre_sow = 1)) then
          if (crop_current = 'weed' or crop_current1 = 'weed' or crop_current2 = 'weed') then
-           if (weed.plant_status <> 'out') then
+           if (weed.plantstatus <> 'out') then
                  weed harvest, remove=0
                  weed kill_crop
                  weed end_crop
@@ -547,7 +547,7 @@ Paddock:
      else
      endif
               if (crop_in = 0 or ('intercrop' = 'intercrop'
-      and peanut.plant_status = 'out')) then
+      and peanut.plantstatus = 'out')) then
         if (date_within('1-nov, 30-dec') = 1) then
            crop_sow = 'waiting'
            surface_moist = (sw(1) - ll15(1)) / (dul(1)- ll15(1))
@@ -560,9 +560,9 @@ Paddock:
               endif
               if ((wht_sow_opp_num >= 1) or ('no' = 'yes' and today = date('30-dec')) then
                  if ('peanut' = 'sorghum') then
-                    peanut sow plants =11.1, sowing_depth = 100, cultivar = early_bunch, row_spacing = 450, tiller_no_fertile = 1 (), skip = solid
+                    peanut sow population =11.1, sowing_depth = 100, cultivar = early_bunch, row_spacing = 450, tiller_no_fertile = 1 (), skip = solid
                  else
-                   peanut sow cultivar = early_bunch, plants = 11.1 (plants/m2), sowing_depth = 100, row_spacing = 450
+                   peanut sow cultivar = early_bunch, population = 11.1 (population/m2), sowing_depth = 100, row_spacing = 450
                  endif
                  crop_in = crop_in + 1
                  if ('no' = 'no') then
@@ -577,7 +577,7 @@ Paddock:
                     fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = urea_n ()
                  endif
                  if (crop_current = 'weed' or crop_current1 = 'weed' or crop_current2 = 'weed') then
-                    if (weed.plant_status <> 'out' and 1 > 0) then
+                    if (weed.plantstatus <> 'out' and 1 > 0) then
                        weed kill_crop plants_kill_fraction = 1
                        if (1 = 1.0) then
                           weed end_crop
@@ -654,7 +654,7 @@ Paddock:
            else
            endif
            if (crop_in = 0 or ('intercrop' = 'intercrop'
-               and weed.plant_status = 'out')
+               and weed.plantstatus = 'out')
                and days_after_weed_kill > 0) then
                  if (date_within('01-oct, 30-apr') = 1) then
                     crop_sow = 'waiting'
@@ -668,9 +668,9 @@ Paddock:
                        endif
                        if ((wd_sow_opp_num >= 1) or ('no' = 'yes' and today = date('30-apr')) then
                           if (date_within('01-oct, 1-jul') = 1) then
-                             weed sow crop_class =  summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar =  early, row_spacing = 350
+                             weed sow crop_class =  summer_grass, population = 5 (population/m2), sowing_depth = 15, cultivar =  early, row_spacing = 350
                           else
-                             weed sow crop_class =  summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = late, row_spacing = 350
+                             weed sow crop_class =  summer_grass, population = 5 (population/m2), sowing_depth = 15, cultivar = late, row_spacing = 350
                           endif
                           crop_in = crop_in + 1
                           if ('yes' = 'no') then
@@ -700,7 +700,7 @@ Paddock:
                  ready_to_till_pre_sow = 1
               endif
               if ((crop_in = 0 or 'no' = 'yes') and (ready_to_till_pre_sow = 1)) then
-                 if (weed.plant_status <> 'out') then
+                 if (weed.plantstatus <> 'out') then
                     weed harvest, remove=0
                     weed kill_crop
                     weed end_crop
@@ -773,7 +773,7 @@ Paddock:
         crop_current2 = blank
      endif
               endif
-              if (maize.stagename = 'harvest_ripe' or maize.plant_status = 'dead') then
+              if (maize.stagename = 'harvest_ripe' or maize.plantstatus = 'dead') then
      maize_to_harvest = 1
               endif
      END of rules
@@ -806,7 +806,7 @@ Paddock:
         crop_current2 = blank
      endif
               endif
-              if (peanut.stagename = 'harvest_ripe' or peanut.plant_status = 'dead') then
+              if (peanut.stagename = 'harvest_ripe' or peanut.plantstatus = 'dead') then
      peanut_to_harvest = 1
               endif
      END of rules
@@ -821,8 +821,8 @@ Paddock:
      
      SECTION:- end_of_day
               if ((crop_in >= 1)
-     and (weed.plant_status <> 'out')) then
-     if (weed.stage >= 3.0) then
+     and (weed.plantstatus <> 'out')) then
+     if (weed.phenologystage >= 3.0) then
         daemerge = daemerge + 1
      endif
      if (weed.biomass > 5000 or daemerge >= 35) then
@@ -863,7 +863,7 @@ Paddock:
      daemerge = 0
               endif
               if (((crop_in = 1)
-     and (weed.plant_status <> 'out'))
+     and (weed.plantstatus <> 'out'))
      or (crop_in = 0)) then
      weed_count_in = 0
               else
@@ -1076,7 +1076,7 @@ Paddock:
 1 October 1980(Day of year=275), Sow WEEDS using a variable rule with intercropping: 
      Manager creating a new local real variable : surface_moist = -0.04158
 19 October 1980(Day of year=293), Sow WEEDS using a variable rule with intercropping: 
-     Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
+     Manager sending message :- weed sow  crop_class = summer_grass, population = 5 (population/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
 19 October 1980(Day of year=293), weed: 
      Crop Sow
         ------------------------------------------------
@@ -1169,7 +1169,7 @@ Paddock:
 25 November 1980(Day of year=330), Weeding at threshold weed biomass or maximum days: 
      Manager creating a new local real variable : weed_count_out = 0.00000
 7 December 1980(Day of year=342), Sow using a variable rule with intercropping: 
-     Manager sending message :- maize sow  cultivar = sc401, plants = 2.2 (plants/m2), sowing_depth = 100, row_spacing = 0.9
+     Manager sending message :- maize sow  cultivar = sc401, population = 2.2 (population/m2), sowing_depth = 100, row_spacing = 0.9
 7 December 1980(Day of year=342), maize: 
      Sowing initiate
      
@@ -1249,7 +1249,7 @@ Paddock:
                                              CN reduction =     0.00
                                              Acc rain     =     0.00
 8 December 1980(Day of year=343), Sow WEEDS using a variable rule with intercropping: 
-     Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
+     Manager sending message :- weed sow  crop_class = summer_grass, population = 5 (population/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
 8 December 1980(Day of year=343), weed: 
      Crop Sow
         ------------------------------------------------
@@ -1367,7 +1367,7 @@ Paddock:
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    25.00
 6 February 1981(Day of year=37), Sow WEEDS using a variable rule with intercropping: 
-     Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
+     Manager sending message :- weed sow  crop_class = summer_grass, population = 5 (population/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
 6 February 1981(Day of year=37), weed: 
      Crop Sow
         ------------------------------------------------
@@ -1505,7 +1505,7 @@ Paddock:
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    25.00
 3 April 1981(Day of year=93), Sow WEEDS using a variable rule with intercropping: 
-     Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
+     Manager sending message :- weed sow  crop_class = summer_grass, population = 5 (population/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
 3 April 1981(Day of year=93), weed: 
      Crop Sow
         ------------------------------------------------
@@ -1595,7 +1595,7 @@ Paddock:
      Crop failure because of total leaf senescence.
      Plant death. standing above-ground dm = 181.60 (kg/ha)
 4 November 1981(Day of year=308), Sow using a variable rule with intercropping{2}: 
-     Manager sending message :- peanut sow  cultivar = early_bunch, plants = 11.1 (plants/m2), sowing_depth = 100, row_spacing = 450
+     Manager sending message :- peanut sow  cultivar = early_bunch, population = 11.1 (population/m2), sowing_depth = 100, row_spacing = 450
 4 November 1981(Day of year=308), peanut: 
      Crop Sow
         ------------------------------------------------
@@ -1693,7 +1693,7 @@ Paddock:
 5 November 1981(Day of year=309), peanut: 
       stage 2.0 germination
 6 November 1981(Day of year=310), Sow WEEDS using a variable rule with intercropping: 
-     Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
+     Manager sending message :- weed sow  crop_class = summer_grass, population = 5 (population/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
 6 November 1981(Day of year=310), weed: 
      Crop Sow
         ------------------------------------------------
@@ -1866,7 +1866,7 @@ Paddock:
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =     0.00
 11 October 1982(Day of year=284), Sow WEEDS using a variable rule with intercropping: 
-     Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
+     Manager sending message :- weed sow  crop_class = summer_grass, population = 5 (population/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
 11 October 1982(Day of year=284), weed: 
      Crop Sow
         ------------------------------------------------
@@ -1947,7 +1947,7 @@ Paddock:
                      biomass =          31.14 (g/m^2)   lai          =   0.224 (m^2/m^2)
                      stover N conc =     3.04 (%)    extractable sw =   58.91 (mm)
 3 December 1982(Day of year=337), Sow using a variable rule with intercropping: 
-     Manager sending message :- maize sow  cultivar = sc401, plants = 2.2 (plants/m2), sowing_depth = 100, row_spacing = 0.9
+     Manager sending message :- maize sow  cultivar = sc401, population = 2.2 (population/m2), sowing_depth = 100, row_spacing = 0.9
 3 December 1982(Day of year=337), maize: 
      Sowing initiate
      
@@ -2027,7 +2027,7 @@ Paddock:
                                              CN reduction =     0.00
                                              Acc rain     =     0.00
 4 December 1982(Day of year=338), Sow WEEDS using a variable rule with intercropping: 
-     Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
+     Manager sending message :- weed sow  crop_class = summer_grass, population = 5 (population/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
 4 December 1982(Day of year=338), weed: 
      Crop Sow
         ------------------------------------------------
@@ -2145,7 +2145,7 @@ Paddock:
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    25.00
 27 January 1983(Day of year=27), Sow WEEDS using a variable rule with intercropping: 
-     Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
+     Manager sending message :- weed sow  crop_class = summer_grass, population = 5 (population/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
 27 January 1983(Day of year=27), weed: 
      Crop Sow
         ------------------------------------------------
@@ -2281,7 +2281,7 @@ Paddock:
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    25.00
 20 March 1983(Day of year=79), Sow WEEDS using a variable rule with intercropping: 
-     Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
+     Manager sending message :- weed sow  crop_class = summer_grass, population = 5 (population/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
 20 March 1983(Day of year=79), weed: 
      Crop Sow
         ------------------------------------------------
@@ -2371,7 +2371,7 @@ Paddock:
      Crop failure because of total leaf senescence.
      Plant death. standing above-ground dm = 627.02 (kg/ha)
 22 November 1983(Day of year=326), Sow using a variable rule with intercropping{2}: 
-     Manager sending message :- peanut sow  cultivar = early_bunch, plants = 11.1 (plants/m2), sowing_depth = 100, row_spacing = 450
+     Manager sending message :- peanut sow  cultivar = early_bunch, population = 11.1 (population/m2), sowing_depth = 100, row_spacing = 450
 22 November 1983(Day of year=326), peanut: 
      Crop Sow
         ------------------------------------------------
@@ -2469,7 +2469,7 @@ Paddock:
 23 November 1983(Day of year=327), peanut: 
       stage 2.0 germination
 24 November 1983(Day of year=328), Sow WEEDS using a variable rule with intercropping: 
-     Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
+     Manager sending message :- weed sow  crop_class = summer_grass, population = 5 (population/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
 24 November 1983(Day of year=328), weed: 
      Crop Sow
         ------------------------------------------------
@@ -2636,7 +2636,7 @@ Paddock:
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    25.00
 23 April 1984(Day of year=114), Sow WEEDS using a variable rule with intercropping: 
-     Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
+     Manager sending message :- weed sow  crop_class = summer_grass, population = 5 (population/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
 23 April 1984(Day of year=114), weed: 
      Crop Sow
         ------------------------------------------------
@@ -2722,7 +2722,7 @@ Paddock:
      Crop failure because of total leaf senescence.
      Plant death. standing above-ground dm = 51.67 (kg/ha)
 1 November 1984(Day of year=306), Sow using a variable rule with intercropping: 
-     Manager sending message :- maize sow  cultivar = sc401, plants = 2.2 (plants/m2), sowing_depth = 100, row_spacing = 0.9
+     Manager sending message :- maize sow  cultivar = sc401, population = 2.2 (population/m2), sowing_depth = 100, row_spacing = 0.9
 1 November 1984(Day of year=306), maize: 
      Sowing initiate
      
@@ -2810,7 +2810,7 @@ Paddock:
 2 November 1984(Day of year=307), maize: 
       stage    2.0 germination
 3 November 1984(Day of year=308), Sow WEEDS using a variable rule with intercropping: 
-     Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
+     Manager sending message :- weed sow  crop_class = summer_grass, population = 5 (population/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
 3 November 1984(Day of year=308), weed: 
      Crop Sow
         ------------------------------------------------
@@ -2991,7 +2991,7 @@ Paddock:
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    25.00
 23 April 1985(Day of year=113), Sow WEEDS using a variable rule with intercropping: 
-     Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
+     Manager sending message :- weed sow  crop_class = summer_grass, population = 5 (population/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
 23 April 1985(Day of year=113), weed: 
      Crop Sow
         ------------------------------------------------

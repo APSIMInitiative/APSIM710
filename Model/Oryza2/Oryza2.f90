@@ -712,14 +712,14 @@
       call SubscribeNullType('end_crop', Oryza2OnEndCrop)
 
       ! Register some non-oryza variables so other apsim modules are happy
-      call Expose('plant_status', '', 'Status - in, alive, dead', .false., g%plant_status) 
+      call Expose('PlantStatus', '', 'Status - in, alive, dead', .false., g%plant_status) 
       call Expose('dae', 'd', 'Days after emergence', .false., g%dae) 
       call Expose('dat', 'd', 'Days after transplanting', .false., g%dat) 
       call Expose('canopy_height', 'mm', 'Canopy Height', .false., g%height)
       call Expose('height', 'mm', 'Canopy Height', .false., g%height)
       call Expose('max_lai', 'm2/m2', 'Rice LAI', .false., g%max_rlai) 
-      call Expose('cover_green', '', 'Green cover', .false., g%cover_green) 
-      call Expose('cover_tot', '', 'Total (green and dead) cover', .false., g%cover_tot) 
+      call Expose('coverlive', '', 'Green cover', .false., g%cover_green) 
+      call Expose('CoverTotal', '', 'Total (green and dead) cover', .false., g%cover_tot) 
       call Expose('cropsta', '', 'Crop status', .false., g%cropsta) 
 
       call Expose('tnsoil', '', 'Soil-N available for crop uptake', .false., g%tnsoil) 

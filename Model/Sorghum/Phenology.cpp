@@ -120,7 +120,7 @@ void Phenology::setStage(double stageNow)
 void Phenology::doRegistrations(void)
    {
 
-   scienceAPI.expose("Stage",        "()",    "Phenological stage number", false, stage);
+   scienceAPI.expose("PhenologyStage",        "()",    "Phenological stage number", false, stage);
    scienceAPI.expose("StageName",    "()",    "Phenological stage ",       false, stageName);
    scienceAPI.expose("stage_name",   "()",    "Phenological stage ",       false, stageName);
    scienceAPI.expose("DeltaTT",      "oCd", "Daily thermal time",          false, dltTT);

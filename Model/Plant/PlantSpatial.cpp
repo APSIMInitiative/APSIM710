@@ -57,12 +57,12 @@ void PlantSpatial::startCrop(protocol::SowType& Sow)
    //===========================================================================
    {
            // get other sowing criteria
-   plants = (float)Sow.plants;
-   if (Sow.plants == 0)
+   plants = (float)Sow.Population;
+   if (Sow.Population == 0)
       {
-      throw std::invalid_argument("plant density ('plants') not specified");
+      throw std::invalid_argument("plant density ('Population') not specified");
       }
-   bound_check_real_var(scienceAPI, plants, 0.0, 1000.0, "plants");
+   bound_check_real_var(scienceAPI, plants, 0.0, 1000.0, "Population");
 
    sowing_depth = (float)Sow.sowing_depth;
    if (sowing_depth == 0)

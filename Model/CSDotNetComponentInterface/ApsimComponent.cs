@@ -206,7 +206,7 @@ namespace ModelFramework
                         POSTINDEX = SOWINDEX + 2;
                         registerEvent(null, "Post", "<type/>", POSTINDEX, TypeSpec.KIND_SUBSCRIBEDEVENT, 0, 0);
                         //need a 'static' property here so other components know something of plant
-                        int propertyID = RegisterProperty("plant_status", "<type kind=\"string\"/>", true, false, false, "Plant status", "out, alive, dead", null);
+                        int propertyID = RegisterProperty("PlantStatus", "<type kind=\"string\"/>", true, false, false, "Plant status", "out, alive, dead", null);
                         TExtendedPropertyInfo staticProperty;
                         if (RegistrationsPropStatic.TryGetValue(propertyID, out staticProperty))
                         {
@@ -291,7 +291,7 @@ namespace ModelFramework
         /// <param name="messageData">The message data that was passed with the event.</param>
         /// <returns>0 when it succeeds</returns>
         // --------------------------------------------------------------------------
-        public int handleEvent(int RegistrationIndex, TTypedValue messageData, uint publisherID)
+        public int handleEvent(int RegistrationIndex, byte[] messageData, uint publisherID)
         {
             int result = 0;
             try
@@ -409,7 +409,7 @@ namespace ModelFramework
             {
                 FactoryProperty Property = Fact.Properties[i];
                 doReg = true;
-                if (IsPlant && (String.Compare(Property.Name, "plant_status", true) == 0))  //don't (re)register plant_status for Plant2
+                if (IsPlant && (String.Compare(Property.Name, "PlantStatus", true) == 0))  //don't (re)register plant_status for Plant2
                     doReg = false;
                 if (Property.IsOutput && doReg)
                 {
@@ -778,7 +778,7 @@ namespace ModelFramework
         /// </summary>
         /// <param name="messageData"></param>
         // ----------------------------------------------
-        public void OnSow(TTypedValue messageData)
+        public void OnSow(byte[] messageData)
         {
             SowPlant2Type Sow = new SowPlant2Type();
             Sow.unpack(messageData);
@@ -873,7 +873,7 @@ namespace ModelFramework
         /// </summary>
         /// <param name="messageData"></param>
         // ----------------------------------------------
-        public void OnEndCrop(TTypedValue messageData)
+        public void OnEndCrop(byte[] messageData)
         {
             EndCropToday = true;
             CallEventHandlers("EndCrop", null);  //call multiple EndCrop events
@@ -884,7 +884,7 @@ namespace ModelFramework
         /// </summary>
         /// <param name="messageData"></param>
         // ----------------------------------------------
-        public void OnPost(TTypedValue messageData)
+        public void OnPost(byte[] messageData)
         {
             if (EndCropToday)
             {
@@ -928,7 +928,7 @@ namespace ModelFramework
         /// </summary>
         /// <param name="messageData"></param>
         // ----------------------------------------------
-        public void OnPrepare(TTypedValue messageData)
+        public void OnPrepare(byte[] messageData)
         {
             if (ModelInstance != null)
             {
@@ -966,7 +966,7 @@ namespace ModelFramework
                     if (staticProperty.pDelegate != null)
                       result = staticProperty.pDelegate.Invoke(propertyID, ref aValue, false);
                     else
-                      result = ReadStaticProperty("plant_status", staticProperty, aValue);
+                      result = ReadStaticProperty("PlantStatus", staticProperty, aValue);
                 }
             }
             return result;

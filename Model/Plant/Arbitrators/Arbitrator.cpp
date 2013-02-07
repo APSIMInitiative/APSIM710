@@ -13,7 +13,7 @@ Arbitrator::Arbitrator(ScienceAPI& scienceAPI, plantInterface& p)
    scienceAPI.read("n_retrans_option", n_retrans_option, 1, 2);
    scienceAPI.read("partitionparts", PartitionParts);
    scienceAPI.read("partitionrules", PartitionRules);
-   scienceAPI.expose("dlt_dm", "g/m^2",  "Actual above_ground dry matter production", _DMSupply);
+   scienceAPI.expose("GrowthRate", "g/m^2",  "Actual above_ground dry matter production", _DMSupply);
    zeroAllGlobals();
    }
 void Arbitrator::zeroAllGlobals()

@@ -1,4 +1,4 @@
-<folder version="33" name="simulations">
+<folder version="34" name="simulations">
   <simulation name="IrrigationExample">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%\Examples\MetFiles\lincoln.met</filename>
@@ -574,7 +574,7 @@
           <script>
             <text>
 
-           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+           if [crop].StageName = 'harvest_ripe' or [crop].PlantStatus = 'dead' then
               [crop]  harvest
               [crop]  end_crop
            endif
@@ -679,7 +679,7 @@ public class Script
       CropIsActive = false;
       foreach (Component Crop in MyPaddock.Crops)
       {
-         double CropStage = Crop.Variable("stage").ToDouble();
+         double CropStage = Crop.Variable("PhenologyStage").ToDouble();
          if ((CropStage &gt;= 3.0) &amp;&amp; (CropStage &lt; 8.0))
             CropIsActive = true;
       }      
@@ -696,7 +696,7 @@ public class Script
       double CurrentRootDepth = 0;
       foreach (Component Crop in MyPaddock.Crops)
       {
-         double RootDepth = Crop.Variable("root_depth").ToDouble();
+         double RootDepth = Crop.Variable("RootDepth").ToDouble();
          CurrentRootDepth = Math.Max(RootDepth, CurrentRootDepth);
       }
       double RelativeRootDepth = Math.Min(1.0, CurrentRootDepth / Top_Depth);
@@ -731,8 +731,8 @@ public class Script
         <title>IrrigationExample</title>
         <variables name="Variables">
           <variable>dd/mm/yyyy as Date</variable>
-          <variable>biomass</variable>
-          <variable>yield</variable>
+          <variable>Biomass</variable>
+          <variable>Yield</variable>
           <variable>grain_protein</variable>
           <variable>grain_size</variable>
           <variable>esw</variable>
@@ -756,7 +756,7 @@ public class Script
             <variable>Days_since_irrigation</variable>
             <variable>Amount_to_apply</variable>
             <variable>irrigation</variable>
-            <variable>cover_green</variable>
+            <variable>CoverLive</variable>
           </variables>
           <events name="Reporting Frequency">
             <event>daily</event>

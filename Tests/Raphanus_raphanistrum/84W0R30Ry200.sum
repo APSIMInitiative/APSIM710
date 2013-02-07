@@ -57,25 +57,25 @@ Paddock:
         day
         year
         dd/mm/yyyy as date
-        lolium_rigidum.height as Ry_height
-        lolium_rigidum.lai as Ry_lai
-        lolium_rigidum.leaf_no as Ry_leaf_no
-        lolium_rigidum.leaf_no_sen as Ry_leaf_no_sen
-        lolium_rigidum.biomass as Ry_biomass
-        lolium_rigidum.leafgreenwt as Ry_leafgreenwt
-        lolium_rigidum.stemgreenwt as Ry_stemgreenwt
-        lolium_rigidum.grain_wt as Ry_grain_wt
-        lolium_rigidum.yield as Ry_yield
+        lolium_rigidum.Height as Ry_height
+        lolium_rigidum.LAI as Ry_lai
+        lolium_rigidum.LeafNumber as Ry_LeafNumber
+        lolium_rigidum.LeafNumberDead as Ry_LeafNumberDead
+        lolium_rigidum.Biomass as Ry_biomass
+        lolium_rigidum.LeafLiveWt as Ry_LeafLiveWt
+        lolium_rigidum.StemLiveWt as Ry_StemLiveWt
+        lolium_rigidum.GrainWt as Ry_GrainWt
+        lolium_rigidum.Yield as Ry_yield
         lolium_rigidum.green_biomass as Ry_green_biomass
-        raphanus_raphanistrum.height as R_height
-        raphanus_raphanistrum.lai as R_lai
-        raphanus_raphanistrum.leaf_no as R_leaf_no
-        raphanus_raphanistrum.leaf_no_sen as R_leaf_no_sen
-        raphanus_raphanistrum.biomass as R_biomass
-        raphanus_raphanistrum.leafgreenwt as R_leafgreenwt
-        raphanus_raphanistrum.stemgreenwt as R_stemgreenwt
-        raphanus_raphanistrum.grain_wt as R_grain_wt
-        raphanus_raphanistrum.yield as R_yield
+        raphanus_raphanistrum.Height as R_height
+        raphanus_raphanistrum.LAI as R_lai
+        raphanus_raphanistrum.LeafNumber as R_LeafNumber
+        raphanus_raphanistrum.LeafNumberDead as R_LeafNumberDead
+        raphanus_raphanistrum.Biomass as R_biomass
+        raphanus_raphanistrum.LeafLiveWt as R_LeafLiveWt
+        raphanus_raphanistrum.StemLiveWt as R_StemLiveWt
+        raphanus_raphanistrum.GrainWt as R_GrainWt
+        raphanus_raphanistrum.Yield as R_yield
         raphanus_raphanistrum.green_biomass as R_green_biomass
 
      Output file = 84W0R30Ry200.out
@@ -88,14 +88,14 @@ Paddock:
         day
         year
         dd/mm/yyyy as date
-        n_stress_expan
-        n_stress_grain
-        n_stress_pheno
-        n_stress_photo
-        sw_stress_expan
-        sw_stress_fixation
-        sw_stress_pheno
-        sw_stress_photo
+        NStressExpansion
+        NStressGrain
+        NStressPheno
+        NStressPhoto
+        WaterStressExpansion
+        WaterStressFixation
+        WaterStressPheno
+        WaterStressPhoto
         sw
         esw
 
@@ -122,7 +122,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if lolium_rigidum.stagename = 'harvest_ripe' or lolium_rigidum.plant_status = 'dead' then
+                if lolium_rigidum.stagename = 'harvest_ripe' or lolium_rigidum.plantstatus = 'dead' then
        lolium_rigidum  harvest
        lolium_rigidum  end_crop
                 endif
@@ -133,7 +133,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if raphanus_raphanistrum.stagename = 'harvest_ripe' or raphanus_raphanistrum.plant_status = 'dead' then
+                if raphanus_raphanistrum.stagename = 'harvest_ripe' or raphanus_raphanistrum.plantstatus = 'dead' then
        raphanus_raphanistrum  harvest
        raphanus_raphanistrum  end_crop
                 endif
@@ -370,67 +370,18 @@ Paddock:
       Sending sow message to lolium_rigidum
 17 June 2004(Day of year=169), Lolium_rigidum: 
      Crop Sow
-        ------------------------------------------------
-        cultivar                   = guard
-        Phases:
-           out
-           sowing
-           germination
-           emergence
-           end_of_juvenile
-           floral_initiation
-           flowering
-              tt_flowering               =     120 (dd)
-           start_grain_fill
-              tt_start_grain_fill        =     400 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =      35 (dd)
-           maturity
-              tt_maturity                =       1 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =    1000 (dd)
-           end_crop
-              tt_end_crop                =    1000 (dd)
+17 June 2004(Day of year=169): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     plant density ('Population') not specified
+     Component name: Lolium_rigidum
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
-        grains_per_gram_stem           =       25.0 (/g)
-        potential_grain_filling_rate   =     0.0005 (g/grain/day)
-        potential_grain_growth_rate    =     0.0003 (g/grain/day)
-        max_grain_size                 =     0.0200 (g)
-        ------------------------------------------------
-     
-     
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         200.0     0.060          0.104       1.000
-         200.0     0.060          0.104       1.000
-         200.0     0.060          0.120       1.000
-         200.0     0.060          0.160       1.000
-         200.0     0.400          0.190       1.000
-         200.0     0.400          0.250       1.000
-         200.0     0.200          0.358       1.000
-         200.0     0.200          0.387       1.000
-         200.0     0.200          0.400       1.000
-         -----------------------------------------------
-         Extractable SW:   182mm in  1800mm total depth ( 10%).
-         Crop factor for bounding water use is set to   1.5 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            169   10.0  200.0  250.0   0.0   0.0 guard
-         ------------------------------------------------
      
       Sending sow message to raphanus_raphanistrum
 17 June 2004(Day of year=169), raphanus_raphanistrum: 
      Crop Sow
-17 June 2004(Day of year=169): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -481,220 +432,12 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-        ------------------------------------------------
-        cultivar                   = radish_sa
-        Phases:
-           out
-           sowing
-           germination
-              shoot_lag                  =      15 (dd)
-              shoot_rate                 =       9 (dd/mm)
-           emergence
-              cumvd_emergence            =       0      25 (vd)
-              tt_emergence               =     235       1 (dd)
-           end_of_juvenile
-              x_pp_end_of_juvenile       =    10.8    16.3 (h)
-              y_tt_end_of_juvenile       =     395       1 (dd)
-           floral_initiation
-              x_pp_floral_initiation     =       1      24 (h)
-              y_tt_floral_initiation     =     290     290 (dd)
-           flowering
-              x_pp_flowering             =       1      24 (h)
-              y_tt_flowering             =     200     200 (dd)
-           start_grain_fill
-              x_pp_start_grain_fill      =       1      24 (h)
-              y_tt_start_grain_fill      =     970     970 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =      50 (dd)
-           maturity
-              tt_maturity                =       1 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =       1 (dd)
-           end_crop
-     
-        x_pp_hi_incr               =       1.00      24.00
-        y_hi_incr                  =     0.0030     0.0030
-        x_hi_max_pot_stress        =       0.00       1.00
-        y_hi_max_pot               =       0.05       0.05
-        ------------------------------------------------
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     plant density ('Population') not specified
+     Component name: raphanus_raphanistrum
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         200.0     0.060          0.104       1.000
-         200.0     0.060          0.104       1.000
-         200.0     0.060          0.120       1.000
-         200.0     0.060          0.160       1.000
-         200.0     0.400          0.190       1.000
-         200.0     0.400          0.250       1.000
-         200.0     0.200          0.358       1.000
-         200.0     0.200          0.387       1.000
-         200.0     0.200          0.400       1.000
-         -----------------------------------------------
-         Extractable SW:   182mm in  1800mm total depth ( 10%).
-         Crop factor for bounding water use is set to 100.0 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            169   10.0   15.0  170.0   0.0   0.0 radish_sa
-         ------------------------------------------------
-     
-18 June 2004(Day of year=170), Lolium_rigidum: 
-      stage 2.0 germination
-18 June 2004(Day of year=170), raphanus_raphanistrum: 
-      stage 2.0 germination
-26 June 2004(Day of year=178), raphanus_raphanistrum: 
-      stage 3.0 emergence
-                     biomass =           0.45 (g/m^2)   lai          =   0.012 (m^2/m^2)
-                     stover N conc =     6.50 (%)    extractable sw =   44.39 (mm)
-27 June 2004(Day of year=179), Lolium_rigidum: 
-      stage 3.0 emergence
-                     biomass =           0.92 (g/m^2)   lai          =   0.040 (m^2/m^2)
-                     stover N conc =     5.85 (%)    extractable sw =   42.14 (mm)
-28 June 2004(Day of year=180), Lolium_rigidum: 
-      stage 4.0 end_of_juvenile
-                     biomass =           1.16 (g/m^2)   lai          =   0.042 (m^2/m^2)
-                     stover N conc =     5.83 (%)    extractable sw =   40.29 (mm)
-11 July 2004(Day of year=193), raphanus_raphanistrum: 
-      stage 4.0 end_of_juvenile
-                     biomass =           2.93 (g/m^2)   lai          =   0.042 (m^2/m^2)
-                     stover N conc =     5.62 (%)    extractable sw =  112.52 (mm)
-13 August 2004(Day of year=226), raphanus_raphanistrum: 
-      stage 5.0 floral_initiation
-                     biomass =          46.88 (g/m^2)   lai          =   0.462 (m^2/m^2)
-                     stover N conc =     5.00 (%)    extractable sw =  176.22 (mm)
-8 September 2004(Day of year=252), raphanus_raphanistrum: 
-      stage 6.0 flowering
-                     biomass =         250.06 (g/m^2)   lai          =   2.044 (m^2/m^2)
-                     stover N conc =     3.89 (%)    extractable sw =  149.60 (mm)
-25 September 2004(Day of year=269), Lolium_rigidum: 
-      stage 5.0 floral_initiation
-                     biomass =         123.90 (g/m^2)   lai          =   1.516 (m^2/m^2)
-                     stover N conc =     3.55 (%)    extractable sw =  104.94 (mm)
-26 September 2004(Day of year=270), raphanus_raphanistrum: 
-      stage 7.0 start_grain_fill
-                     biomass =         576.59 (g/m^2)   lai          =   3.875 (m^2/m^2)
-                     stover N conc =     2.16 (%)    extractable sw =  104.28 (mm)
-30 October 2004(Day of year=304), Lolium_rigidum: 
-      stage 6.0 flowering
-                     biomass =         148.40 (g/m^2)   lai          =   0.754 (m^2/m^2)
-                     stover N conc =     3.14 (%)    extractable sw =    9.51 (mm)
-7 November 2004(Day of year=312), Lolium_rigidum: 
-      stage 7.0 start_grain_fill
-                     biomass =         151.24 (g/m^2)   lai          =   0.557 (m^2/m^2)
-                     stover N conc =     3.09 (%)    extractable sw =   12.67 (mm)
-27 November 2004(Day of year=332), Lolium_rigidum: 
-     Crop failure because of total leaf senescence.
-     Plant death. standing above-ground dm = 1427.28 (kg/ha)
-27 November 2004(Day of year=332), Harvest rye: 
-     Manager sending message :- lolium_rigidum harvest
-     
-      flowering day          =  304                           stover (kg/ha)         =     1348.3
-      maturity day           =    0                           grain yield (kg/ha)    =       69.1
-      grain % water content  =   12.5                         grain yield wet (kg/ha)=       78.9
-      grain wt (g)           =    0.000                       grains/m^2             =        0.0
-      grains/plant           =    0.0                         maximum lai            =      1.551
-      total above ground biomass (kg/ha)    =     1417.4
-      live above ground biomass (kg/ha)     =     1417.4
-      green above ground biomass (kg/ha)    =        0.0
-      senesced above ground biomass (kg/ha) =     1417.4
-      number of leaves       =     20.4
-      DM Root:Shoot ratio    =     0.37                       Harvest Index          =       0.05
-      Stover C:N ratio       =    14.33                       Root C:N ratio         =      17.89
-      grain N percent        =     1.50                       total N content (kg/ha)=      38.67
-      grain N uptake (kg/ha) =     1.04                       senesced N content (kg/ha)=   37.63
-      green N content (kg/ha)=     0.00
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
-         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
-         floral_initiation    to flowering               0.000        0.001        0.000        0.000
-         flowering            to start_grain_fill        0.108        0.158        0.000        0.000
-     
-     
-     Crop harvested.
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                1348.3                     0.0
-                          N  (kg/ha) =                  37.63                    0.00
-     
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                  69.1                     0.0
-                          N  (kg/ha) =                   1.04                    0.00
-     
-      stage 4.0 end_of_juvenile
-                     biomass =           0.00 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     0.00 (%)    extractable sw =    0.47 (mm)
-     Manager sending message :- lolium_rigidum end_crop
-     Crop ended. Yield (dw) =     0.0  (kg/ha)
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                   0.0                   525.9
-                          N  (kg/ha) =                   0.00                   11.76
-     
-10 December 2004(Day of year=345), raphanus_raphanistrum: 
-      stage 8.0 end_grain_fill
-                     biomass =         950.73 (g/m^2)   lai          =   0.014 (m^2/m^2)
-                     stover N conc =     1.61 (%)    extractable sw =   13.11 (mm)
-13 December 2004(Day of year=348), raphanus_raphanistrum: 
-      stage 9.0 maturity
-                     biomass =         958.57 (g/m^2)   lai          =   0.012 (m^2/m^2)
-                     stover N conc =     1.61 (%)    extractable sw =    9.46 (mm)
-14 December 2004(Day of year=349), raphanus_raphanistrum: 
-      stage 10.0 harvest_ripe
-                     biomass =         959.86 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     1.62 (%)    extractable sw =    9.92 (mm)
-14 December 2004(Day of year=349), Harvest radish: 
-     Manager sending message :- raphanus_raphanistrum harvest
-     
-      flowering day          =  252                           stover (kg/ha)         =     9120.5
-      maturity day           =  348                           grain yield (kg/ha)    =      478.1
-      grain % water content  =    8.5                         grain yield wet (kg/ha)=      522.5
-      grain wt (g)           =    0.000                       grains/m^2             =        0.0
-      grains/plant           =    0.0                         maximum lai            =      3.898
-      total above ground biomass (kg/ha)    =     9598.6
-      live above ground biomass (kg/ha)     =     9598.6
-      green above ground biomass (kg/ha)    =     7776.9
-      senesced above ground biomass (kg/ha) =     1821.6
-      number of leaves       =     40.9
-      DM Root:Shoot ratio    =     0.24                       Harvest Index          =       0.05
-      Stover C:N ratio       =    25.11                       Root C:N ratio         =      36.12
-      grain N percent        =     4.50                       total N content (kg/ha)=     166.82
-      grain N uptake (kg/ha) =    21.51                       senesced N content (kg/ha)=   27.32
-      green N content (kg/ha)=   117.98
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence            to end_of_juvenile         0.000        0.000        0.000        0.338
-         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.287
-         floral_initiation    to flowering               0.000        0.000        0.000        0.140
-         flowering            to start_grain_fill        0.000        0.000        0.000        0.005
-         start_grain_fill     to end_grain_fill          0.710        0.779        0.000        0.000
-     
-     
-     Crop harvested.
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                9120.5                     0.0
-                          N  (kg/ha) =                 145.30                    0.00
-     
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                 478.1                     0.0
-                          N  (kg/ha) =                  21.51                    0.00
-     
-      stage 4.0 end_of_juvenile
-                     biomass =           0.00 (g/m^2)   lai          =   0.012 (m^2/m^2)
-                     stover N conc =     3.63 (%)    extractable sw =    9.92 (mm)
-     Manager sending message :- raphanus_raphanistrum end_crop
-     Crop ended. Yield (dw) =     0.0  (kg/ha)
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                   0.0                  2298.0
-                          N  (kg/ha) =                   0.00                   25.45
-     
-31 December 2004(Day of year=366), clock: 
-     Simulation is terminating due to end criteria being met.
 

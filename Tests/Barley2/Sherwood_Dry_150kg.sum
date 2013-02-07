@@ -133,8 +133,8 @@ Paddock:
         LeafTranspiration
         LeafWaterDemand
         RootDepth
-        Cover_green
-        Cover_tot
+        CoverLive
+        CoverTotal
         Cover_dead
         LeafLAI
         LeafLAIDead
@@ -230,7 +230,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-     if barley2.plant_status <> 'out' then
+     if barley2.plantstatus <> 'out' then
      if   (barley2.stagecodevalue >= 8) then
             head_drying_flag = 1
      else   head_drying_flag = 0
@@ -391,7 +391,7 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     if barley2.plant_status <> 'out' then
+     if barley2.plantstatus <> 'out' then
        accumplantn =  accumplantn - barley2.rootnuptake
      endif
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
@@ -403,7 +403,7 @@ Paddock:
      deltasurfaceomn = surfaceom_n - initialsurfaceomn
      deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
      accumeo = accumeo - eo
-     if barley2.plant_status <> 'out' then
+     if barley2.plantstatus <> 'out' then
        accumep = accumep - barley2.leaftranspiration
      endif
      accumes = accumes - es
@@ -413,7 +413,7 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
-     if barley2.plant_status <> 'out' then
+     if barley2.plantstatus <> 'out' then
        if barley2.stagecodevalue >= 3 then
          accumttemerg = accumttemerg + barley2.phenologythermaltimevalue
        endif

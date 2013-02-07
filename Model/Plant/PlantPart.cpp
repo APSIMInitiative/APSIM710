@@ -12,8 +12,8 @@ plantPart::plantPart(ScienceAPI& api, plantInterface *p, const string &name)
        SenescedRemoved (api,"SenescedRemoved",name),
 
        // pools
-       Green(*new Pool(*p, api, "Green", name)),
-       Senesced(*new Pool(*p, api, "Senesced", name)),
+       Green(*new Pool(*p, api, "Live", name)),
+       Senesced(*new Pool(*p, api, "Dead", name)),
        Growth(*new Delta(api, "Growth", name)),
        Senescing(*new Delta(api, "Senescing", name)),
        Detaching(*new Delta(api, "Detaching", name)),
@@ -117,7 +117,7 @@ void plantPart::onInit1(protocol::Component*)
 
    scienceAPI.exposeFunction(addPartToVar("dlt_n_senesced_trans"), "g/m^2", addPartToDesc("N translocated to/from senesced "), FloatGetter(&plantPart::dltNSenescedTrans));
    scienceAPI.exposeFunction(addPartToVar("dlt_n_senesced_retrans"), "g/m^2", addPartToDesc("N retranslocated to/from senesced "), FloatGetter(&plantPart::dltNSenescedRetrans));
-   scienceAPI.exposeFunction(addPartToVar("n_demand"), "g/m^2", addPartToDesc("N demand of "), FloatGetter(&plantPart::nDemand));
+   scienceAPI.exposeFunction(addPartToVar("NDemand"), "g/m^2", addPartToDesc("N demand of "), FloatGetter(&plantPart::nDemand));
 
    if (tempFlagToShortCircuitInit1) return;
 

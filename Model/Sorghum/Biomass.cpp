@@ -27,10 +27,10 @@ void Biomass::doRegistrations(void)
    scienceAPI.expose("DeltaGreenWt", "g/m^2", "Daily biomass production",  false, dltDM);
    scienceAPI.expose("Biomass",      "kg/ha", "Total above-ground biomass",false, aboveGroundBiomass);
    scienceAPI.expose("HI",           "()",    "Harvest index",             false, hi);
-   scienceAPI.expose("GreenWt",      "g/m^2", "Live plant dry weight",     false, greenBiomass);
+   scienceAPI.expose("livewt",      "g/m^2", "Live plant dry weight",     false, greenBiomass);
 
 
-   scienceAPI.exposeFunction("SenescedWt", "g/m^2", "Senesced plant dry weight",
+   scienceAPI.exposeFunction("DeadWt", "g/m^2", "Senesced plant dry weight",
                     FloatFunction(&Biomass::getDMSenesced));
    scienceAPI.exposeFunction("dlt_dm_green", "g/m^2", "Plant biomass growth in each part",
                     FloatFunction(&Biomass::getDltDMGreen));

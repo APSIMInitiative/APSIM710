@@ -70,7 +70,7 @@ endif
 [all.manager.end_of_day]
 
 
-if (chickpea.stage >= 3 and chickpea.stage <11) then
+if (chickpea.PhenologyStage >= 3 and chickpea.PhenologyStage <11) then
    tt_since_emerg = tt_since_emerg + chickpea.TT
 else
    tt_since_emerg = 0
@@ -82,14 +82,14 @@ n_from_soil = biomass_n - n_fixed_tops
 wat_mm_1_4  = sw_dep(1) + sw_dep(2) + sw_dep(3) + sw_dep(4)
 
 
-if chickpea.StageName = 'harvest_ripe' or chickpea.plant_status = 'dead' then
-!if chickpea.plant_status = 'dead' then
+if chickpea.StageName = 'harvest_ripe' or chickpea.PlantStatus = 'dead' then
+!if chickpea.PlantStatus = 'dead' then
    chickpea harvest
    chickpea end_crop
 endif
 
 
-!if (chickpea.stage >= 0 and chickpea.stage < 11 ) then  !simulation stops at harvest 11=end crop
+!if (chickpea.PhenologyStage >= 0 and chickpea.PhenologyStage < 11 ) then  !simulation stops at harvest 11=end crop
    report do_output
 !endif
 

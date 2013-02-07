@@ -5,13 +5,13 @@ outputfile  =navybean.out
 
 variable = clock.day
 variable = clock.year
-variable = navybean.lai
-variable = navybean.biomass
+variable = navybean.LAI
+variable = navybean.Biomass
 variable = navybean.green_biomass
-variable = navybean.GreenWt
-variable = navybean.GreenWt
-variable = navybean.GreenP
-variable = navybean.GreenP
+variable = navybean.LiveWt
+variable = navybean.LiveWt
+variable = navybean.LiveP
+variable = navybean.LiveP
 variable = navybean.p_sen()
 variable = navybean.p_sen
 variable = navybean.p_demand
@@ -21,21 +21,21 @@ variable = navybean.pfact_expansion
 variable = navybean.pfact_grain
 variable = navybean.biomass_p
 variable = navybean.green_biomass_p
-variable = navybean.grain_p
-variable = navybean.LeafGreenP
-variable = navybean.StemGreenP
-variable = navybean.RootGreenP
-variable = navybean.PodGreenP
+variable = navybean.GrainP
+variable = navybean.LeafLiveP
+variable = navybean.StemLiveP
+variable = navybean.RootLiveP
+variable = navybean.PodLiveP
 variable = navybean.FruitTotalP
-variable = navybean.SenescedP
+variable = navybean.DeadP
 variable = navybean.p_dead()
 variable = navybean.GrowthP
 variable = navybean.RetranslocationP
 variable = navybean.DetachingP
 variable = navybean.p_conc_stover
-variable = navybean.LeafGreenPConc
-variable = navybean.StemGreenPConc
-variable = navybean.GrainGreenPConc
+variable = navybean.LeafLivePConc
+variable = navybean.StemLivePConc
+variable = navybean.GrainLivePConc
 variable = navybean.p_uptake_stover
 variable = navybean.grain_p_demand
 variable = surfaceom.surfaceom_p
@@ -78,7 +78,7 @@ if day = 330 and year  = 1988 then
    navybean sow cultivar = rainbird, plants = 25 (/m2), sowing_depth = 40 (mm)
 endif
 
-if navybean.StageName = 'harvest_ripe' or navybean.plant_status = 'dead' then
+if navybean.StageName = 'harvest_ripe' or navybean.PlantStatus = 'dead' then
    navybean harvest
    navybean end_crop
 

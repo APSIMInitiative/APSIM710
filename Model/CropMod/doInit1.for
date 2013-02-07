@@ -53,7 +53,7 @@
      :                                   'DaysAfterSowing',
      :                                    intTypeDDML, 'days')
       dummy = add_registration_with_units(respondToGetReg
-     :                         , 'plant_status', stringTypeDDML, '')
+     :                         , 'PlantStatus', stringTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg, 'StageName',
      :                                    StringTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg, 'stage_code',
@@ -79,9 +79,9 @@
       dummy = add_registration_with_units(respondToGetReg, 'tt_tot_fm',
      :                                    floatarrayTypeDDML, 'oC')
       dummy = add_registration_with_units(respondToGetReg,
-     :                  'flowering_date',  intTypeDDML, 'doy')
+     :                  'FloweringDate',  intTypeDDML, 'doy')
       dummy = add_registration_with_units(respondToGetReg,
-     :                  'maturity_date', intTypeDDML, 'doy')
+     :                  'MaturityDate', intTypeDDML, 'doy')
       dummy = add_registration_with_units(respondToGetReg,
      :                  'flowering_das', intTypeDDML, 'days')
       dummy = add_registration_with_units(respondToGetReg,
@@ -91,7 +91,7 @@
       dummy = add_registration_with_units(respondToGetReg,
      :                        'leaf_no_final', floatTypeDDML, 'lvs')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'leaf_no', floatTypeDDML, '')
+     :                        'LeafNumber', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
      :                        'dlt_leaf_no', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
@@ -99,19 +99,19 @@
       dummy = add_registration_with_units(respondToGetReg,
      :                        'leaf_area', floatarrayTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'cover_green', floatTypeDDML, '')
+     :                        'CoverLive', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'cover_tot', floatTypeDDML, '')
+     :                        'CoverTotal', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'lai', floatTypeDDML, 'm^2/m^2')
+     :                        'LAI', floatTypeDDML, 'm^2/m^2')
       dummy = add_registration_with_units(respondToGetReg,
      :                        'lai_max', floatTypeDDML, 'm^2/m^2')
       dummy = add_registration_with_units(respondToGetReg,
      :                        'lai_sum', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'tlai', floatTypeDDML, '')
+     :                        'LAITotal', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'slai', floatTypeDDML, '')
+     :                        'SLAI', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
      :                        'tlai_dead', floatTypeDDML, 'm^2/m^2')
       dummy = add_registration_with_units(respondToGetReg,
@@ -135,7 +135,7 @@
       dummy = add_registration_with_units(respondToGetReg,
      :                 'dlt_slai_nitrogen', floatTypeDDML, 'm^2/m^2')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'plants', floatTypeDDML, '')
+     :                        'Population', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
      :                        'height', floatTypeDDML, 'mm')
       dummy = add_registration_with_units(respondToGetReg,
@@ -143,11 +143,11 @@
       dummy = add_registration_with_units(respondToGetReg,
      :                        'tiller_no_fertile', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'grain_no', floatTypeDDML, '')
+     :                        'GrainNumber', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
      :                        'grain_size', floatTypeDDML, 'g')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'root_depth', floatTypeDDML, 'mm')
+     :                        'rootdepth', floatTypeDDML, 'mm')
       dummy = add_registration_with_units(respondToGetReg,
      :                 'root_length', floatarrayTypeDDML, 'mm/mm^2')
       dummy = add_registration_with_units(respondToGetReg,
@@ -161,17 +161,17 @@
       dummy = add_registration_with_units(respondToGetReg,
      :                        'root_part', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'LeafGreenWt', floatTypeDDML, 'g/m^2')
+     :                        'LeafLiveWt', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'StemGreenWt', floatTypeDDML, 'g/m^2')
+     :                        'StemLiveWt', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
      :                        'flower_wt', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
      :                     'stemandflower_wt', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'grain_wt', floatTypeDDML, 'g/m^2')
+     :                        'grainwt', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'RootGreenWt', floatTypeDDML, 'g/m^2')
+     :                        'RootLiveWt', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
      :                        'droot_wt', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
@@ -179,19 +179,19 @@
       dummy = add_registration_with_units(respondToGetReg,
      :                        'biomass_wt', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
-     :                  'green_biomass_wt', floatTypeDDML, 'g/m^2')
+     :                  'AboveGroundLiveWt', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
      :                        'stover_wt', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'GreenWt', floatTypeDDML, 'g/m^2')
+     :                        'LiveWt', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
-     :                     'SenescedWt', floatTypeDDML, 'g/m^2')
+     :                     'DeadWt', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
      :                        'dm_dead', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'yield', floatTypeDDML, 'kg/ha')
+     :                        'Yield', floatTypeDDML, 'kg/ha')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'biomass', floatTypeDDML, 'kg/ha')
+     :                        'Biomass', floatTypeDDML, 'kg/ha')
       dummy = add_registration_with_units(respondToGetReg,
      :                        'stover', floatTypeDDML, 'kg/ha')
       dummy = add_registration_with_units(respondToGetReg,
@@ -203,7 +203,7 @@
       dummy = add_registration_with_units(respondToGetReg,
      :                        'dlt_dm_light', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'dlt_dm', floatTypeDDML, 'g/m^2')
+     :                        'GrowthRate', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
      :                'dlt_dm_green', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
@@ -215,13 +215,13 @@
       dummy = add_registration_with_units(respondToGetReg,
      :         'dlt_dm_dead_detached', floatarrayTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'swdef_pheno', floatTypeDDML, '')
+     :                        'waterstresspheno', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'swdef_photo', floatTypeDDML, '')
+     :                        'waterstressphoto', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'swdef_expan', floatTypeDDML, '')
+     :                        'waterstressexpansion', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'swdef_tiller', floatTypeDDML, '')
+     :                        'waterstresstiller', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
      :                        'sw_stress_photo', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
@@ -277,11 +277,11 @@
       dummy = add_registration_with_units(respondToGetReg,
      :              'root_nd', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
-     :              'n_demand', floatTypeDDML, 'g/m^2')
+     :              'RootNDemand', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
      :              'no3_demand', floatTypeDDML, 'kg/ha')
       dummy = add_registration_with_units(respondToGetReg,
-     :              'n_supply_soil', floatTypeDDML, 'g/m^2')
+     :              'RootNSupply', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
      :              'n_massflow_uptake', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
@@ -313,11 +313,11 @@
       dummy = add_registration_with_units(respondToGetReg,
      :              'biomass_n', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
-     :              'green_biomass_n', floatTypeDDML, 'g/m^2')
+     :              'AboveGroundLiveN', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
      :              'stover_n', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
-     :              'grain_n', floatTypeDDML, 'g/m^2')
+     :              'GrainN', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
      :              'gleaf_n', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
@@ -395,15 +395,15 @@
       dummy = add_registration_with_units(respondToGetReg,
      :              'grain_protein', floatTypeDDML, '%')
       dummy = add_registration_with_units(respondToGetReg,
-     :              'nfact_photo', floatTypeDDML, '')
+     :              'NStressPhoto', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
-     :              'nfact_pheno', floatTypeDDML, '')
+     :              'NStressPheno', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
-     :              'nfact_expan', floatTypeDDML, '')
+     :              'NStressExpansion', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
      :              'nfact_tiller', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
-     :              'nfact_grain', floatTypeDDML, '')
+     :              'NStressGrain', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
      :              'nfact_grain_tot', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
@@ -423,7 +423,7 @@
       dummy = add_registration_with_units(respondToGetReg,
      :              'p_demand', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
-     :              'pfact_photo', floatTypeDDML, '')
+     :              'PStressPhoto', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
      :              'pfact_expansion', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,

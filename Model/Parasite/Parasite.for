@@ -395,7 +395,7 @@
       endif
 
          ! Get variables for this host crop
-      call get_real_var (my_crop_module, 'stage', '()'
+      call get_real_var (my_crop_module, 'phenologystage', '()'
      :                ,g%host_stage, numvals
      :                ,0.0, 20.0)
 
@@ -403,7 +403,7 @@
      :                ,g%host_lai, numvals
      :                ,0.0, 100.0)
 
-      call get_real_var (my_crop_module, 'root_depth', '()'
+      call get_real_var (my_crop_module, 'rootdepth', '()'
      :                ,g%root_depth, numvals
      :                ,0.0, 10000.0)
 
@@ -528,7 +528,7 @@
       num_layers = count_of_real_vals (g%dlayer, max_layer)
 
 
-      if (variable_name .eq. 'stage') then
+      if (variable_name .eq. 'phenologystage') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%current_stage)

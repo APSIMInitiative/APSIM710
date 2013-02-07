@@ -40,7 +40,7 @@ void Biomass::doRegistrations(void)
    scienceAPI.exposeFunction("dlt_dm_green_retrans", "g/m^2", "Plant biomass retranslocated from each part",
       FloatArrayFunction(&Biomass::getDltDMGreenRetrans));
 
-   scienceAPI.exposeFunction("biomass_wt", "g/m2", "Total above-ground biomass",
+   scienceAPI.exposeFunction("abovegroundwt", "g/m2", "Total above-ground biomass",
       FloatFunction(&Biomass::getBiomass));
 
    }

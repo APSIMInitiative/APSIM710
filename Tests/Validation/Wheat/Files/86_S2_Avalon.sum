@@ -53,23 +53,23 @@ Paddock:
      Output variables:
         dd/mmm/yyyy
         zadok_stage
-        biomass
-        yield
-        grain_wt
+        Biomass
+        Yield
+        GrainWt
         rain
         sw_uptake()
         sw_demand
         sw_supply
         fertilizer
-        leafgreenwt
-        leafgreenn
-        leafsenescedwt
-        stemgreenwt
-        stemgreenn
+        LeafLiveWt
+        LeafLiveN
+        LeafDeadWt
+        StemLiveWt
+        StemLiveN
         wheat.HeadTotalWt
-        headgreenn
-        nfact_expan
-        nfact_photo
+        headliven
+        NStressExpansion
+        NStressPhoto
         biomass_n
 
      Output file = 86_S2_Avalon.out
@@ -110,7 +110,7 @@ Paddock:
      if (rain[3] >= 30 and esw >= 200) or
          ('yes' = 'yes' and today = date('13-jun'))) then
         choosenextcrop = 'yes'
-        wheat sow plants =300, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+        wheat sow population =300, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
      endif
      if today = date('13-jun') then
         choosenextcrop = 'yes'
@@ -130,7 +130,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+                if wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' then
        wheat  harvest
        wheat  end_crop
                 endif
@@ -297,7 +297,7 @@ Paddock:
                                          added at depth   10.00 (layer   1)
 13 June 1986(Day of year=164), Sowing rule: 
      Manager creating a new local string variable : choosenextcrop = yes
-     Manager sending message :- wheat sow  plants = 300, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  population = 300, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 13 June 1986(Day of year=164), wheat: 
      Crop Sow
         ------------------------------------------------

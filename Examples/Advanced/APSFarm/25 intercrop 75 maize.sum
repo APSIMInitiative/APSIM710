@@ -104,7 +104,7 @@ proc sow_LR_maize {paddock} {
   }
 
   # The apsim crop module
-  apsimSendMessage $paddock.maize sow {plants 4.4} {sowing_depth 30} {cultivar  makueni} {row_spacing 750} {crop_class  plant}
+  apsimSendMessage $paddock.maize sow {Population 4.4} {sowing_depth 30} {cultivar  makueni} {row_spacing 750} {crop_class  plant}
 
   if {0 > 0} {
      apsimSendMessage $paddock.fertiliser apply {type no3_n} {amount 0}
@@ -142,7 +142,7 @@ proc canSow_LR_maize {paddock} {
 proc paddockIsFallow {paddock} {
    global config
    foreach crop $config(crops) {
-      set status [apsimGet $paddock.$crop.plant_status]
+      set status [apsimGet $paddock.$crop.PlantStatus]
       if {$status != "out"} {
          return 0
       }
@@ -201,7 +201,7 @@ proc sow_SR_maize {paddock} {
   }
 
   # The apsim crop module
-  apsimSendMessage $paddock.maize sow {plants 4.4} {sowing_depth 30} {cultivar  makueni} {row_spacing 750} {crop_class  plant}
+  apsimSendMessage $paddock.maize sow {Population 4.4} {sowing_depth 30} {cultivar  makueni} {row_spacing 750} {crop_class  plant}
 
   if {0 > 0} {
      apsimSendMessage $paddock.fertiliser apply {type no3_n} {amount 0}
@@ -241,7 +241,7 @@ proc canSow_SR_maize {paddock} {
 proc paddockIsFallow {paddock} {
    global config
    foreach crop $config(crops) {
-      set status [apsimGet $paddock.$crop.plant_status]
+      set status [apsimGet $paddock.$crop.PlantStatus]
       if {$status != "out"} {
          return 0
       }
@@ -300,9 +300,9 @@ proc sow_maizebean {paddock} {
      doPresowTillage $paddock
   }
 
-  apsimSendMessage $paddock.maize sow {plants 4.4} {sowing_depth 30} {cultivar  katumani} {row_spacing 750} {crop_class  plant}
+  apsimSendMessage $paddock.maize sow {Population 4.4} {sowing_depth 30} {cultivar  katumani} {row_spacing 750} {crop_class  plant}
 
-  apsimSendMessage $paddock.bean sow {plants 8.8} {sowing_depth 30} {cultivar  fiord} {row_spacing 750} {crop_class  plant}
+  apsimSendMessage $paddock.bean sow {Population 8.8} {sowing_depth 30} {cultivar  fiord} {row_spacing 750} {crop_class  plant}
 
   if {0 > 0} {
      apsimSendMessage $paddock.fertiliser apply {type no3_n} {amount 0}
@@ -340,7 +340,7 @@ proc canSow_maizebean {paddock} {
 proc paddockIsFallow {paddock} {
    global config
    foreach crop $config(crops) {
-      set status [apsimGet $paddock.$crop.plant_status]
+      set status [apsimGet $paddock.$crop.PlantStatus]
       if {$status != "out"} {
          return 0
       }
@@ -393,7 +393,7 @@ proc date2day {date year} {
 
 proc canHarvest_maize {paddock} {
   return [expr [string equal [apsimGet $paddock.maize.StageName] "harvest_ripe"] || \
-               [string equal [apsimGet $paddock.maize.plant_status] "dead"]]
+               [string equal [apsimGet $paddock.maize.PlantStatus] "dead"]]
 }
 
 proc harvest_maize {paddock} {
@@ -442,7 +442,7 @@ proc harvest_maize {paddock} {
 
 proc canHarvest_bean {paddock} {
   return [expr [string equal [apsimGet $paddock.bean.StageName] "harvest_ripe"] || \
-               [string equal [apsimGet $paddock.bean.plant_status] "dead"]]
+               [string equal [apsimGet $paddock.bean.PlantStatus] "dead"]]
 }
 
 proc harvest_bean {paddock} {
@@ -492,7 +492,7 @@ proc canHarvest_maizebean {paddock} {
 proc harvest_maizebean {paddock} {
 
    # Make sure the intercrop is removed
-   if {! [string equal [apsimGet $paddock.bean.plant_status] "out" ] } {
+   if {! [string equal [apsimGet $paddock.bean.PlantStatus] "out" ] } {
       harvest_bean $paddock
    }
    harvest_maize $paddock

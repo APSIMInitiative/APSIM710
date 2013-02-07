@@ -47,7 +47,7 @@ namespace CSUserInterface
 
             //Establishment
             UpdateCultivarsList();
-            txtDensity.Text = ReadUIVariable("plants");
+            txtDensity.Text = ReadUIVariable("Population");
             txtDepth.Text = ReadUIVariable("sowing_depth");
             txtRows.Text = ReadUIVariable("row_spacing");
             txtSowingcost.Text = ReadUIVariable("sowing_costs");
@@ -109,7 +109,7 @@ namespace CSUserInterface
 
             //Establishment
             UpdateUIVariable("cultivar", cboCultivar.Text);
-            UpdateUIVariable("plants", txtDensity.Text);
+            UpdateUIVariable("Population", txtDensity.Text);
             UpdateUIVariable("sowing_depth", txtDepth.Text);
             UpdateUIVariable("row_spacing", txtRows.Text);
             UpdateUIVariable("sowing_costs", txtSowingcost.Text);

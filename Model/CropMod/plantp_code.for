@@ -204,7 +204,7 @@ c     :     ,1000.)          ! Upper Limit for bound checking
      :              ,'()'              ! variable units
      :              ,g%PlantPfact_grain) ! variable
 
-      elseif (variable_name .eq. 'p_stress_photo') then
+      elseif (variable_name .eq. 'PStressPhoto') then
          if (g%plantPfact_photo .gt. 0.0) then
             stress = 1.0 - g%plantPfact_photo
          else

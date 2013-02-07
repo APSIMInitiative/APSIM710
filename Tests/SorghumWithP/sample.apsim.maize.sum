@@ -44,15 +44,15 @@ Title                  =
      Output variables:
         clock.dd/mm/yyyy as date
         sorghum.DaysAfterSowing
-        sorghum.stage
+        sorghum.PhenologyStage
         sorghum.dc_stage as zadok
-        sorghum.lai
-        sorghum.biomass_wt as biomass
-        sorghum.grain_wt as grain
+        sorghum.LAI
+        sorghum.biomass_wt as Biomass
+        sorghum.GrainWt as grain
         sorghum.biomass_n
-        sorghum.grain_n
+        sorghum.GrainN
         sorghum.tiller_no_fertile as tillers
-        sorghum.root_depth as rootdepth
+        sorghum.RootDepth as rootdepth
         sorghum.swdef_pheno as ws_pheno
         sorghum.swdef_photo as ws_photo
         sorghum.swdef_expan as ws_expan
@@ -62,8 +62,8 @@ Title                  =
         sorghum.nfact_expan as Ns_expan
         sorghum.nfact_tiller as Ns_tiller
         sorghum.RootGreenNConc
-        sorghum.LeafGreenNConc
-        sorghum.StemGreenNConc
+        sorghum.LeafLiveNConc
+        sorghum.StemLiveNConc
         sorghum.n_conc_grain
         sorghum.GreenWt
         sorghum.SenescedWt
@@ -77,9 +77,9 @@ Title                  =
         sorghum.pfact_grain
         sorghum.biomass_p
         sorghum.green_biomass_p
-        sorghum.grain_p
-        sorghum.LeafGreenP
-        sorghum.StemGreenP
+        sorghum.GrainP
+        sorghum.LeafLiveP
+        sorghum.StemLiveP
         sorghum.RootGreenP
         sorghum.flower_p
         sorghum.head_p
@@ -192,9 +192,9 @@ Title                  =
      
      SECTION:- start_of_day
         if day = 305 and year = 1992 then
-           sorghum sow cultivar = early, plants = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0 (), row_spacing = 1.0 (m)
+           sorghum sow cultivar = early, population = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0 (), row_spacing = 1.0 (m)
         endif
-        if (sorghum.stage = 11) then
+        if (sorghum.phenologystage = 11) then
            sorghum harvest
            sorghum end_crop
         endif
@@ -222,7 +222,7 @@ Title                  =
      below_gnd_diff = p_below_ground - p_below_ground_yest
      residue_p_yest =  surfaceom.surfaceom_p
      p_below_ground_yest = p_below_ground
-       if (sorghum.stage >=1 and sorghum.stage <= 11) then
+       if (sorghum.phenologystage >=1 and sorghum.phenologystage <= 11) then
            report do_output
        endif
      systemp_yday = systemp
@@ -415,8 +415,140 @@ Title                  =
            Dissolution rate of rock P :    0.00061   (/yr)
            Root C:P :                    200.0
 ------- Start of simulation  --------------------------------------------------
+27 October 1992(Day of year=301): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+28 October 1992(Day of year=302): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+29 October 1992(Day of year=303): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+30 October 1992(Day of year=304): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 31 October 1992(Day of year=305), Manager: 
-     Manager sending message :- sorghum sow  cultivar = early, plants = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0, row_spacing = 1.0 (m)
+     Manager sending message :- sorghum sow  cultivar = early, population = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0, row_spacing = 1.0 (m)
 31 October 1992(Day of year=305), Sorghum: 
      Sowing initiate
      
@@ -457,62 +589,2006 @@ Title                  =
              300.0     0.040          0.279       1.000
          ---------------------------------------------------
      
+31 October 1992(Day of year=305): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 1 November 1992(Day of year=306), Sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
+1 November 1992(Day of year=306): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+2 November 1992(Day of year=307): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3 November 1992(Day of year=308): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 4 November 1992(Day of year=309), Sorghum: 
      Stage 3 Emergence  DAS = 4
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   8.87
+4 November 1992(Day of year=309): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+4 November 1992(Day of year=309), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.445973
+     **** P balance - unaccounted loss (kg/ha) =     -0.215880
+     **** C balance - unaccounted loss (kg/ha) =    -12.001043
+      ****        equivalent DM as FOM  (kg/ha) =   -30.0026073
+5 November 1992(Day of year=310): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+5 November 1992(Day of year=310), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.126559
+6 November 1992(Day of year=311): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+6 November 1992(Day of year=311), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.120638
+     **** C balance - unaccounted loss (kg/ha) =     -0.423014
+      ****        equivalent DM as FOM  (kg/ha) =   -1.05753505
+7 November 1992(Day of year=312): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+7 November 1992(Day of year=312), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.079912
+     **** P balance - unaccounted loss (kg/ha) =     -0.028736
+     **** C balance - unaccounted loss (kg/ha) =     -0.621055
+      ****        equivalent DM as FOM  (kg/ha) =   -1.55263650
+8 November 1992(Day of year=313): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 November 1992(Day of year=313), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.055877
+     **** C balance - unaccounted loss (kg/ha) =     -0.948212
+      ****        equivalent DM as FOM  (kg/ha) =   -2.37053037
+9 November 1992(Day of year=314): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+9 November 1992(Day of year=314), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.051702
+     **** C balance - unaccounted loss (kg/ha) =     -1.057913
+      ****        equivalent DM as FOM  (kg/ha) =   -2.64478326
+10 November 1992(Day of year=315): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 November 1992(Day of year=315), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.049749
+     **** C balance - unaccounted loss (kg/ha) =     -1.742875
+      ****        equivalent DM as FOM  (kg/ha) =   -4.35718679
+11 November 1992(Day of year=316): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+11 November 1992(Day of year=316), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.041937
+     **** P balance - unaccounted loss (kg/ha) =     -0.022577
+     **** C balance - unaccounted loss (kg/ha) =     -1.754111
+      ****        equivalent DM as FOM  (kg/ha) =   -4.38527775
+12 November 1992(Day of year=317): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+12 November 1992(Day of year=317), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.041937
+     **** C balance - unaccounted loss (kg/ha) =     -2.153414
+      ****        equivalent DM as FOM  (kg/ha) =   -5.38353634
+13 November 1992(Day of year=318): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+13 November 1992(Day of year=318), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.041937
+     **** P balance - unaccounted loss (kg/ha) =     -0.051141
+     **** C balance - unaccounted loss (kg/ha) =     -2.540286
+      ****        equivalent DM as FOM  (kg/ha) =   -6.35071564
+14 November 1992(Day of year=319): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+14 November 1992(Day of year=319), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.065374
+     **** C balance - unaccounted loss (kg/ha) =     -2.713123
+      ****        equivalent DM as FOM  (kg/ha) =   -6.78280640
 15 November 1992(Day of year=320), Sorghum: 
      Stage 4 EndOfJuvenile  DAS = 15
      		Biomass       =   3.75 		 LAI            =   0.03
      		Stover N Conc =   0.09 		 Extractable SW =  49.92
+15 November 1992(Day of year=320): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+15 November 1992(Day of year=320), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.090765
+     **** C balance - unaccounted loss (kg/ha) =     -2.362014
+      ****        equivalent DM as FOM  (kg/ha) =   -5.90503454
+16 November 1992(Day of year=321): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+16 November 1992(Day of year=321), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.120062
+     **** C balance - unaccounted loss (kg/ha) =     -3.325449
+      ****        equivalent DM as FOM  (kg/ha) =   -8.31362152
+17 November 1992(Day of year=322): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+17 November 1992(Day of year=322), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.159124
+     **** P balance - unaccounted loss (kg/ha) =     -0.108514
+     **** C balance - unaccounted loss (kg/ha) =     -4.086884
+      ****        equivalent DM as FOM  (kg/ha) =   -10.2172089
+18 November 1992(Day of year=323): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+18 November 1992(Day of year=323), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.208901
+     **** C balance - unaccounted loss (kg/ha) =     -5.081915
+      ****        equivalent DM as FOM  (kg/ha) =   -12.7047873
+19 November 1992(Day of year=324): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+19 November 1992(Day of year=324), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.256748
+     **** C balance - unaccounted loss (kg/ha) =     -7.689444
+      ****        equivalent DM as FOM  (kg/ha) =   -19.2236099
+20 November 1992(Day of year=325): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+20 November 1992(Day of year=325), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.327676
+     **** C balance - unaccounted loss (kg/ha) =     -7.932253
+      ****        equivalent DM as FOM  (kg/ha) =   -19.8306332
+21 November 1992(Day of year=326): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+21 November 1992(Day of year=326), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.434323
+     **** P balance - unaccounted loss (kg/ha) =     -0.125990
+     **** C balance - unaccounted loss (kg/ha) =    -10.444130
+      ****        equivalent DM as FOM  (kg/ha) =   -26.1103249
+22 November 1992(Day of year=327): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+22 November 1992(Day of year=327), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.549099
+     **** P balance - unaccounted loss (kg/ha) =     -0.036844
+     **** C balance - unaccounted loss (kg/ha) =    -17.646751
+      ****        equivalent DM as FOM  (kg/ha) =   -44.1168785
+23 November 1992(Day of year=328): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+23 November 1992(Day of year=328), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.654125
+     **** P balance - unaccounted loss (kg/ha) =     -0.158323
+     **** C balance - unaccounted loss (kg/ha) =    -22.820498
+      ****        equivalent DM as FOM  (kg/ha) =   -57.0512428
+24 November 1992(Day of year=329): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+24 November 1992(Day of year=329), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.655619
+     **** P balance - unaccounted loss (kg/ha) =     -0.100200
+     **** C balance - unaccounted loss (kg/ha) =    -25.609976
+      ****        equivalent DM as FOM  (kg/ha) =   -64.0249405
+25 November 1992(Day of year=330): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+25 November 1992(Day of year=330), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.655748
+     **** P balance - unaccounted loss (kg/ha) =     -0.135708
+     **** C balance - unaccounted loss (kg/ha) =    -28.516642
+      ****        equivalent DM as FOM  (kg/ha) =   -71.2916031
 26 November 1992(Day of year=331), Sorghum: 
      Stage 5 FloralInitiation  DAS = 26
      		Biomass       =  20.69 		 LAI            =   0.37
      		Stover N Conc =   0.49 		 Extractable SW = 117.60
+26 November 1992(Day of year=331): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 26 November 1992(Day of year=331), SysBal: 
-     **** N balance - unaccounted gain (kg/ha) =      0.041750
+     **** N balance - unaccounted loss (kg/ha) =     -0.765234
+     **** P balance - unaccounted loss (kg/ha) =     -0.173769
+     **** C balance - unaccounted loss (kg/ha) =    -39.451366
+      ****        equivalent DM as FOM  (kg/ha) =   -98.6284180
+27 November 1992(Day of year=332): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 27 November 1992(Day of year=332), SysBal: 
-     **** N balance - unaccounted gain (kg/ha) =      0.070311
+     **** N balance - unaccounted loss (kg/ha) =     -0.666170
+     **** P balance - unaccounted loss (kg/ha) =     -0.159766
+     **** C balance - unaccounted loss (kg/ha) =    -30.420498
+      ****        equivalent DM as FOM  (kg/ha) =   -76.0512466
+28 November 1992(Day of year=333): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 28 November 1992(Day of year=333), SysBal: 
-     **** N balance - unaccounted gain (kg/ha) =      0.105087
+     **** N balance - unaccounted loss (kg/ha) =     -0.632917
+     **** P balance - unaccounted loss (kg/ha) =     -0.147696
+     **** C balance - unaccounted loss (kg/ha) =    -32.942406
+      ****        equivalent DM as FOM  (kg/ha) =   -82.3560104
+29 November 1992(Day of year=334): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 29 November 1992(Day of year=334), SysBal: 
-     **** N balance - unaccounted gain (kg/ha) =      0.147571
+     **** N balance - unaccounted loss (kg/ha) =     -0.631012
+     **** P balance - unaccounted loss (kg/ha) =     -0.137070
+     **** C balance - unaccounted loss (kg/ha) =    -29.792664
+      ****        equivalent DM as FOM  (kg/ha) =   -74.4816589
+30 November 1992(Day of year=335): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 30 November 1992(Day of year=335), SysBal: 
-     **** N balance - unaccounted gain (kg/ha) =      0.198412
+     **** N balance - unaccounted loss (kg/ha) =     -0.590648
+     **** P balance - unaccounted loss (kg/ha) =     -0.131009
+     **** C balance - unaccounted loss (kg/ha) =    -36.603374
+      ****        equivalent DM as FOM  (kg/ha) =   -91.5084381
+1 December 1992(Day of year=336): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 1 December 1992(Day of year=336), SysBal: 
-     **** N balance - unaccounted gain (kg/ha) =      0.237073
+     **** N balance - unaccounted loss (kg/ha) =     -0.549632
+     **** P balance - unaccounted loss (kg/ha) =     -0.124173
+     **** C balance - unaccounted loss (kg/ha) =    -43.472572
+      ****        equivalent DM as FOM  (kg/ha) =   -108.681427
+2 December 1992(Day of year=337): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 2 December 1992(Day of year=337), SysBal: 
-     **** N balance - unaccounted gain (kg/ha) =      0.258990
+     **** N balance - unaccounted loss (kg/ha) =     -0.537914
+     **** P balance - unaccounted loss (kg/ha) =     -0.118069
+     **** C balance - unaccounted loss (kg/ha) =    -44.195114
+      ****        equivalent DM as FOM  (kg/ha) =   -110.487785
+3 December 1992(Day of year=338): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 3 December 1992(Day of year=338), SysBal: 
-     **** N balance - unaccounted gain (kg/ha) =      0.303550
+     **** N balance - unaccounted loss (kg/ha) =     -0.701976
+     **** P balance - unaccounted loss (kg/ha) =     -0.112698
+     **** C balance - unaccounted loss (kg/ha) =    -41.355274
+      ****        equivalent DM as FOM  (kg/ha) =   -103.388184
+4 December 1992(Day of year=339): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 4 December 1992(Day of year=339), SysBal: 
-     **** N balance - unaccounted gain (kg/ha) =      0.203058
+     **** N balance - unaccounted loss (kg/ha) =     -0.684398
+     **** P balance - unaccounted loss (kg/ha) =     -0.107083
+     **** C balance - unaccounted loss (kg/ha) =    -21.042892
+      ****        equivalent DM as FOM  (kg/ha) =   -52.6072311
+5 December 1992(Day of year=340): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 5 December 1992(Day of year=340), SysBal: 
-     **** N balance - unaccounted gain (kg/ha) =      0.346031
+     **** N balance - unaccounted loss (kg/ha) =     -0.756664
+     **** P balance - unaccounted loss (kg/ha) =     -0.105130
+     **** C balance - unaccounted loss (kg/ha) =    -37.185276
+      ****        equivalent DM as FOM  (kg/ha) =   -92.9631882
+6 December 1992(Day of year=341): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 6 December 1992(Day of year=341), SysBal: 
-     **** N balance - unaccounted gain (kg/ha) =      0.308239
+     **** N balance - unaccounted loss (kg/ha) =     -0.766709
+     **** P balance - unaccounted loss (kg/ha) =     -0.138508
+     **** C balance - unaccounted loss (kg/ha) =    -52.912533
+      ****        equivalent DM as FOM  (kg/ha) =   -132.281326
+7 December 1992(Day of year=342): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 7 December 1992(Day of year=342), SysBal: 
-     **** N balance - unaccounted gain (kg/ha) =      0.293365
+     **** N balance - unaccounted loss (kg/ha) =     -0.707475
+     **** P balance - unaccounted loss (kg/ha) =     -0.115569
+     **** C balance - unaccounted loss (kg/ha) =    -50.944168
+      ****        equivalent DM as FOM  (kg/ha) =   -127.360420
+8 December 1992(Day of year=343): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 8 December 1992(Day of year=343), SysBal: 
-     **** N balance - unaccounted gain (kg/ha) =      0.256947
+     **** N balance - unaccounted loss (kg/ha) =     -0.838098
+     **** P balance - unaccounted loss (kg/ha) =     -0.106651
+     **** C balance - unaccounted loss (kg/ha) =    -44.064228
+      ****        equivalent DM as FOM  (kg/ha) =   -110.160568
+9 December 1992(Day of year=344): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 9 December 1992(Day of year=344), SysBal: 
-     **** N balance - unaccounted gain (kg/ha) =      0.118929
+     **** N balance - unaccounted loss (kg/ha) =     -0.741752
+     **** P balance - unaccounted loss (kg/ha) =     -0.150870
+     **** C balance - unaccounted loss (kg/ha) =    -39.458481
+      ****        equivalent DM as FOM  (kg/ha) =   -98.6462021
+10 December 1992(Day of year=345): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 10 December 1992(Day of year=345), SysBal: 
-     **** N balance - unaccounted gain (kg/ha) =      0.141550
+     **** N balance - unaccounted loss (kg/ha) =     -0.678213
+     **** P balance - unaccounted loss (kg/ha) =     -0.134850
+     **** C balance - unaccounted loss (kg/ha) =    -63.684849
+      ****        equivalent DM as FOM  (kg/ha) =   -159.212112
+11 December 1992(Day of year=346): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 11 December 1992(Day of year=346), SysBal: 
-     **** N balance - unaccounted gain (kg/ha) =      0.131458
+     **** N balance - unaccounted loss (kg/ha) =     -0.712696
+     **** P balance - unaccounted loss (kg/ha) =     -0.115258
+     **** C balance - unaccounted loss (kg/ha) =    -64.893921
+      ****        equivalent DM as FOM  (kg/ha) =   -162.234802
+12 December 1992(Day of year=347): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 12 December 1992(Day of year=347), SysBal: 
-     **** N balance - unaccounted gain (kg/ha) =      0.108632
+     **** N balance - unaccounted loss (kg/ha) =     -0.774043
+     **** P balance - unaccounted loss (kg/ha) =     -0.104722
+     **** C balance - unaccounted loss (kg/ha) =    -66.149582
+      ****        equivalent DM as FOM  (kg/ha) =   -165.373947
+13 December 1992(Day of year=348): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 13 December 1992(Day of year=348), SysBal: 
-     **** N balance - unaccounted gain (kg/ha) =      0.023411
+     **** N balance - unaccounted loss (kg/ha) =     -0.556619
+     **** P balance - unaccounted loss (kg/ha) =     -0.097541
+     **** C balance - unaccounted loss (kg/ha) =    -26.594374
+      ****        equivalent DM as FOM  (kg/ha) =   -66.4859314
+14 December 1992(Day of year=349): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+14 December 1992(Day of year=349), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.714484
+     **** P balance - unaccounted loss (kg/ha) =     -0.087022
+     **** C balance - unaccounted loss (kg/ha) =    -54.579212
+      ****        equivalent DM as FOM  (kg/ha) =   -136.448029
+15 December 1992(Day of year=350): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+15 December 1992(Day of year=350), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.726833
+     **** P balance - unaccounted loss (kg/ha) =     -0.107730
+     **** C balance - unaccounted loss (kg/ha) =    -59.200874
+      ****        equivalent DM as FOM  (kg/ha) =   -148.002182
+16 December 1992(Day of year=351): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+16 December 1992(Day of year=351), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.704220
+     **** P balance - unaccounted loss (kg/ha) =     -0.096012
+     **** C balance - unaccounted loss (kg/ha) =    -47.564747
+      ****        equivalent DM as FOM  (kg/ha) =   -118.911865
+17 December 1992(Day of year=352): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+17 December 1992(Day of year=352), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.600375
+     **** P balance - unaccounted loss (kg/ha) =     -0.091902
+     **** C balance - unaccounted loss (kg/ha) =    -32.410168
+      ****        equivalent DM as FOM  (kg/ha) =   -81.0254211
 18 December 1992(Day of year=353), Sorghum: 
      Stage 6 FlagLeaf  DAS = 48
      		Biomass       = 198.46 		 LAI            =   1.59
      		Stover N Conc =   2.26 		 Extractable SW = 180.68
+18 December 1992(Day of year=353): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+18 December 1992(Day of year=353), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.580338
+     **** P balance - unaccounted loss (kg/ha) =     -0.095294
+     **** C balance - unaccounted loss (kg/ha) =    -49.347946
+      ****        equivalent DM as FOM  (kg/ha) =   -123.369865
+19 December 1992(Day of year=354): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+19 December 1992(Day of year=354), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.555772
+     **** P balance - unaccounted loss (kg/ha) =     -0.095519
+     **** C balance - unaccounted loss (kg/ha) =    -30.327902
+      ****        equivalent DM as FOM  (kg/ha) =   -75.8197556
+20 December 1992(Day of year=355): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+20 December 1992(Day of year=355), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.636007
+     **** P balance - unaccounted loss (kg/ha) =     -0.086439
+     **** C balance - unaccounted loss (kg/ha) =    -55.146523
+      ****        equivalent DM as FOM  (kg/ha) =   -137.866302
+21 December 1992(Day of year=356): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+21 December 1992(Day of year=356), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.592232
+     **** P balance - unaccounted loss (kg/ha) =     -0.074531
+     **** C balance - unaccounted loss (kg/ha) =    -71.688927
+      ****        equivalent DM as FOM  (kg/ha) =   -179.222321
+22 December 1992(Day of year=357): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+22 December 1992(Day of year=357), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.545849
+     **** P balance - unaccounted loss (kg/ha) =     -0.069434
+     **** C balance - unaccounted loss (kg/ha) =    -76.211594
+      ****        equivalent DM as FOM  (kg/ha) =   -190.528976
 23 December 1992(Day of year=358): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -525,6 +2601,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+23 December 1992(Day of year=358), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.534265
+     **** P balance - unaccounted loss (kg/ha) =     -0.064183
+     **** C balance - unaccounted loss (kg/ha) =    -77.209976
+      ****        equivalent DM as FOM  (kg/ha) =   -193.024933
 24 December 1992(Day of year=359): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -537,6 +2650,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+24 December 1992(Day of year=359), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.600669
+     **** P balance - unaccounted loss (kg/ha) =     -0.060081
+     **** C balance - unaccounted loss (kg/ha) =    -75.548279
+      ****        equivalent DM as FOM  (kg/ha) =   -188.870697
 25 December 1992(Day of year=360): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -549,6 +2699,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+25 December 1992(Day of year=360), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.565717
+     **** P balance - unaccounted loss (kg/ha) =     -0.055793
+     **** C balance - unaccounted loss (kg/ha) =    -72.262917
+      ****        equivalent DM as FOM  (kg/ha) =   -180.657288
 26 December 1992(Day of year=361): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -561,6 +2748,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+26 December 1992(Day of year=361), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.546786
+     **** P balance - unaccounted loss (kg/ha) =     -0.051880
+     **** C balance - unaccounted loss (kg/ha) =    -59.391350
+      ****        equivalent DM as FOM  (kg/ha) =   -148.478378
 27 December 1992(Day of year=362): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -573,6 +2797,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+27 December 1992(Day of year=362), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.662609
+     **** P balance - unaccounted loss (kg/ha) =     -0.065170
+     **** C balance - unaccounted loss (kg/ha) =    -64.596268
+      ****        equivalent DM as FOM  (kg/ha) =   -161.490662
 28 December 1992(Day of year=363): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -585,6 +2846,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+28 December 1992(Day of year=363), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.591598
+     **** P balance - unaccounted loss (kg/ha) =     -0.049143
+     **** C balance - unaccounted loss (kg/ha) =    -72.471878
+      ****        equivalent DM as FOM  (kg/ha) =   -181.179688
 29 December 1992(Day of year=364): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -597,6 +2895,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+29 December 1992(Day of year=364), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.488353
+     **** P balance - unaccounted loss (kg/ha) =     -0.045428
+     **** C balance - unaccounted loss (kg/ha) =    -72.596405
+      ****        equivalent DM as FOM  (kg/ha) =   -181.491013
 30 December 1992(Day of year=365): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -609,6 +2944,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+30 December 1992(Day of year=365), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.668879
+     **** P balance - unaccounted loss (kg/ha) =     -0.041664
+     **** C balance - unaccounted loss (kg/ha) =    -62.329578
+      ****        equivalent DM as FOM  (kg/ha) =   -155.823944
 31 December 1992(Day of year=366): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -621,6 +2993,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+31 December 1992(Day of year=366), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.531871
+     **** P balance - unaccounted loss (kg/ha) =     -0.039172
+     **** C balance - unaccounted loss (kg/ha) =    -67.657242
+      ****        equivalent DM as FOM  (kg/ha) =   -169.143097
 1 January 1993(Day of year=1): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -637,6 +3046,43 @@ Title                  =
      Stage 7 Flowering  DAS = 62
      		Biomass       = 368.91 		 LAI            =   1.55
      		Stover N Conc =   3.00 		 Extractable SW = 162.29
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+1 January 1993(Day of year=1), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.485642
+     **** P balance - unaccounted loss (kg/ha) =     -0.036770
+     **** C balance - unaccounted loss (kg/ha) =    -72.949554
+      ****        equivalent DM as FOM  (kg/ha) =   -182.373886
 2 January 1993(Day of year=2): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -649,6 +3095,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+2 January 1993(Day of year=2), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.475711
+     **** P balance - unaccounted loss (kg/ha) =     -0.034296
+     **** C balance - unaccounted loss (kg/ha) =    -59.686710
+      ****        equivalent DM as FOM  (kg/ha) =   -149.216766
 3 January 1993(Day of year=3): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -661,6 +3144,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3 January 1993(Day of year=3), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.445575
+     **** P balance - unaccounted loss (kg/ha) =     -0.032043
+     **** C balance - unaccounted loss (kg/ha) =    -59.746414
+      ****        equivalent DM as FOM  (kg/ha) =   -149.366028
 4 January 1993(Day of year=4): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -673,6 +3193,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+4 January 1993(Day of year=4), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.499009
+     **** P balance - unaccounted loss (kg/ha) =     -0.029135
+     **** C balance - unaccounted loss (kg/ha) =    -53.389904
+      ****        equivalent DM as FOM  (kg/ha) =   -133.474762
 5 January 1993(Day of year=5): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -685,6 +3242,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+5 January 1993(Day of year=5), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.580875
+     **** P balance - unaccounted loss (kg/ha) =     -0.033477
+     **** C balance - unaccounted loss (kg/ha) =    -42.741749
+      ****        equivalent DM as FOM  (kg/ha) =   -106.854370
 6 January 1993(Day of year=6): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -701,6 +3295,43 @@ Title                  =
      Stage 8 StartGrainFill  DAS = 67
      		Biomass       = 432.20 		 LAI            =   1.55
      		Stover N Conc =   3.23 		 Extractable SW = 181.42
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+6 January 1993(Day of year=6), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.950197
+     **** P balance - unaccounted loss (kg/ha) =     -0.123243
+     **** C balance - unaccounted loss (kg/ha) =    -42.776817
+      ****        equivalent DM as FOM  (kg/ha) =   -106.942039
 7 January 1993(Day of year=7): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -713,6 +3344,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+7 January 1993(Day of year=7), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -1.059564
+     **** P balance - unaccounted loss (kg/ha) =     -0.157163
+     **** C balance - unaccounted loss (kg/ha) =    -47.347469
+      ****        equivalent DM as FOM  (kg/ha) =   -118.368675
 8 January 1993(Day of year=8): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -725,6 +3393,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 January 1993(Day of year=8), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -1.155754
+     **** P balance - unaccounted loss (kg/ha) =     -0.154305
+     **** C balance - unaccounted loss (kg/ha) =    -47.463284
+      ****        equivalent DM as FOM  (kg/ha) =   -118.658211
 9 January 1993(Day of year=9): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -737,6 +3442,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+9 January 1993(Day of year=9), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.987085
+     **** P balance - unaccounted loss (kg/ha) =     -0.142700
+     **** C balance - unaccounted loss (kg/ha) =    -53.542400
+      ****        equivalent DM as FOM  (kg/ha) =   -133.856003
 10 January 1993(Day of year=10): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -749,6 +3491,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 January 1993(Day of year=10), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.950872
+     **** P balance - unaccounted loss (kg/ha) =     -0.125033
+     **** C balance - unaccounted loss (kg/ha) =    -29.825544
+      ****        equivalent DM as FOM  (kg/ha) =   -74.5638580
 11 January 1993(Day of year=11): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -761,6 +3540,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+11 January 1993(Day of year=11), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.768820
+     **** P balance - unaccounted loss (kg/ha) =     -0.114437
+     **** C balance - unaccounted loss (kg/ha) =    -21.773060
+      ****        equivalent DM as FOM  (kg/ha) =   -54.4326477
 12 January 1993(Day of year=12): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -773,6 +3589,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+12 January 1993(Day of year=12), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.990211
+     **** P balance - unaccounted loss (kg/ha) =     -0.144551
+     **** C balance - unaccounted loss (kg/ha) =    -40.194664
+      ****        equivalent DM as FOM  (kg/ha) =   -100.486656
 13 January 1993(Day of year=13): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -785,6 +3638,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+13 January 1993(Day of year=13), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.972821
+     **** P balance - unaccounted loss (kg/ha) =     -0.122465
+     **** C balance - unaccounted loss (kg/ha) =    -41.302822
+      ****        equivalent DM as FOM  (kg/ha) =   -103.257057
 14 January 1993(Day of year=14): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -797,6 +3687,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+14 January 1993(Day of year=14), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.884986
+     **** P balance - unaccounted loss (kg/ha) =     -0.107642
+     **** C balance - unaccounted loss (kg/ha) =    -35.439411
+      ****        equivalent DM as FOM  (kg/ha) =   -88.5985260
 15 January 1993(Day of year=15): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -809,6 +3736,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+15 January 1993(Day of year=15), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.760166
+     **** P balance - unaccounted loss (kg/ha) =     -0.096519
+     **** C balance - unaccounted loss (kg/ha) =    -31.775501
+      ****        equivalent DM as FOM  (kg/ha) =   -79.4387512
 16 January 1993(Day of year=16): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -821,6 +3785,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+16 January 1993(Day of year=16), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.754785
+     **** P balance - unaccounted loss (kg/ha) =     -0.085256
+     **** C balance - unaccounted loss (kg/ha) =    -28.792467
+      ****        equivalent DM as FOM  (kg/ha) =   -71.9811630
 17 January 1993(Day of year=17): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -833,6 +3834,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+17 January 1993(Day of year=17), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.685471
+     **** P balance - unaccounted loss (kg/ha) =     -0.080528
+     **** C balance - unaccounted loss (kg/ha) =    -24.913536
+      ****        equivalent DM as FOM  (kg/ha) =   -62.2838402
 18 January 1993(Day of year=18): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -845,6 +3883,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+18 January 1993(Day of year=18), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.663333
+     **** P balance - unaccounted loss (kg/ha) =     -0.075660
+     **** C balance - unaccounted loss (kg/ha) =    -27.715216
+      ****        equivalent DM as FOM  (kg/ha) =   -69.2880402
 19 January 1993(Day of year=19): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -857,6 +3932,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+19 January 1993(Day of year=19), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.745256
+     **** P balance - unaccounted loss (kg/ha) =     -0.072455
+     **** C balance - unaccounted loss (kg/ha) =    -22.708666
+      ****        equivalent DM as FOM  (kg/ha) =   -56.7716637
 20 January 1993(Day of year=20): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -869,6 +3981,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+20 January 1993(Day of year=20), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.704637
+     **** P balance - unaccounted loss (kg/ha) =     -0.068944
+     **** C balance - unaccounted loss (kg/ha) =    -22.316021
+      ****        equivalent DM as FOM  (kg/ha) =   -55.7900505
 21 January 1993(Day of year=21): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -881,6 +4030,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+21 January 1993(Day of year=21), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.669481
+     **** P balance - unaccounted loss (kg/ha) =     -0.066747
+     **** C balance - unaccounted loss (kg/ha) =    -21.215927
+      ****        equivalent DM as FOM  (kg/ha) =   -53.0398178
 22 January 1993(Day of year=22): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -893,6 +4079,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+22 January 1993(Day of year=22), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.669481
+     **** P balance - unaccounted loss (kg/ha) =     -0.063573
+     **** C balance - unaccounted loss (kg/ha) =    -18.332527
+      ****        equivalent DM as FOM  (kg/ha) =   -45.8313179
 23 January 1993(Day of year=23): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -905,6 +4128,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+23 January 1993(Day of year=23), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.663622
+     **** P balance - unaccounted loss (kg/ha) =     -0.062108
+     **** C balance - unaccounted loss (kg/ha) =    -17.125580
+      ****        equivalent DM as FOM  (kg/ha) =   -42.8139496
 24 January 1993(Day of year=24): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -917,6 +4177,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+24 January 1993(Day of year=24), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.702684
+     **** P balance - unaccounted loss (kg/ha) =     -0.059178
+     **** C balance - unaccounted loss (kg/ha) =    -14.248494
+      ****        equivalent DM as FOM  (kg/ha) =   -35.6212349
 25 January 1993(Day of year=25): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -929,6 +4226,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+25 January 1993(Day of year=25), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.778856
+     **** P balance - unaccounted loss (kg/ha) =     -0.057713
+     **** C balance - unaccounted loss (kg/ha) =    -12.240839
+      ****        equivalent DM as FOM  (kg/ha) =   -30.6020966
 26 January 1993(Day of year=26): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -941,6 +4275,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+26 January 1993(Day of year=26), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.731981
+     **** P balance - unaccounted loss (kg/ha) =     -0.058934
+     **** C balance - unaccounted loss (kg/ha) =    -10.461634
+      ****        equivalent DM as FOM  (kg/ha) =   -26.1540833
 27 January 1993(Day of year=27): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -953,6 +4324,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+27 January 1993(Day of year=27), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.649950
+     **** P balance - unaccounted loss (kg/ha) =     -0.057225
+     **** C balance - unaccounted loss (kg/ha) =    -12.595427
+      ****        equivalent DM as FOM  (kg/ha) =   -31.4885654
 28 January 1993(Day of year=28): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -965,6 +4373,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+28 January 1993(Day of year=28), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.610887
+     **** P balance - unaccounted loss (kg/ha) =     -0.055028
+     **** C balance - unaccounted loss (kg/ha) =    -13.703810
+      ****        equivalent DM as FOM  (kg/ha) =   -34.2595253
 29 January 1993(Day of year=29): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -977,6 +4422,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+29 January 1993(Day of year=29), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.698778
+     **** P balance - unaccounted loss (kg/ha) =     -0.053319
+     **** C balance - unaccounted loss (kg/ha) =    -11.611213
+      ****        equivalent DM as FOM  (kg/ha) =   -29.0280323
 30 January 1993(Day of year=30): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -989,6 +4471,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+30 January 1993(Day of year=30), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.640184
+     **** P balance - unaccounted loss (kg/ha) =     -0.051366
+     **** C balance - unaccounted loss (kg/ha) =    -10.943627
+      ****        equivalent DM as FOM  (kg/ha) =   -27.3590679
 31 January 1993(Day of year=31): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1001,6 +4520,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+31 January 1993(Day of year=31), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.683153
+     **** P balance - unaccounted loss (kg/ha) =     -0.050389
+     **** C balance - unaccounted loss (kg/ha) =     -8.579128
+      ****        equivalent DM as FOM  (kg/ha) =   -21.4478207
 1 February 1993(Day of year=32): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1013,6 +4569,43 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+1 February 1993(Day of year=32), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -0.679247
+     **** P balance - unaccounted loss (kg/ha) =     -0.049168
+     **** C balance - unaccounted loss (kg/ha) =     -9.407269
+      ****        equivalent DM as FOM  (kg/ha) =   -23.5181732
 2 February 1993(Day of year=33): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1025,6 +4618,42 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+2 February 1993(Day of year=33), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.048192
+     **** C balance - unaccounted loss (kg/ha) =    -10.258547
+      ****        equivalent DM as FOM  (kg/ha) =   -25.6463661
 3 February 1993(Day of year=34): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1037,6 +4666,42 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3 February 1993(Day of year=34), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.046727
+     **** C balance - unaccounted loss (kg/ha) =     -9.641487
+      ****        equivalent DM as FOM  (kg/ha) =   -24.1037178
 4 February 1993(Day of year=35): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1049,6 +4714,42 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+4 February 1993(Day of year=35), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.045018
+     **** C balance - unaccounted loss (kg/ha) =     -8.828226
+      ****        equivalent DM as FOM  (kg/ha) =   -22.0705643
 5 February 1993(Day of year=36): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1061,6 +4762,42 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+5 February 1993(Day of year=36), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.044286
+     **** C balance - unaccounted loss (kg/ha) =     -8.735794
+      ****        equivalent DM as FOM  (kg/ha) =   -21.8394852
 6 February 1993(Day of year=37): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1073,6 +4810,42 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+6 February 1993(Day of year=37), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.042577
+     **** C balance - unaccounted loss (kg/ha) =     -4.501318
+      ****        equivalent DM as FOM  (kg/ha) =   -11.2532949
 7 February 1993(Day of year=38): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1085,6 +4858,42 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+7 February 1993(Day of year=38), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.108487
+     **** C balance - unaccounted loss (kg/ha) =     -3.554525
+      ****        equivalent DM as FOM  (kg/ha) =   -8.88631153
 8 February 1993(Day of year=39): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1097,6 +4906,42 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 February 1993(Day of year=39), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.095188
+     **** C balance - unaccounted loss (kg/ha) =     -5.682853
+      ****        equivalent DM as FOM  (kg/ha) =   -14.2071314
 9 February 1993(Day of year=40): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1109,6 +4954,42 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+9 February 1993(Day of year=40), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.086274
+     **** C balance - unaccounted loss (kg/ha) =     -4.690002
+      ****        equivalent DM as FOM  (kg/ha) =   -11.7250051
 10 February 1993(Day of year=41): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1121,6 +5002,42 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 February 1993(Day of year=41), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.074350
+     **** C balance - unaccounted loss (kg/ha) =     -5.521404
+      ****        equivalent DM as FOM  (kg/ha) =   -13.8035097
 11 February 1993(Day of year=42): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1137,6 +5054,42 @@ Title                  =
      Stage 9 EndGrainFill  DAS = 103
      		Biomass       = 616.29 		 LAI            =   0.50
      		Stover N Conc =   1.96 		 Extractable SW = 165.86
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+11 February 1993(Day of year=42), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.068762
+     **** C balance - unaccounted loss (kg/ha) =     -4.458752
+      ****        equivalent DM as FOM  (kg/ha) =   -11.1468792
 12 February 1993(Day of year=43): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1149,6 +5102,42 @@ Title                  =
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+12 February 1993(Day of year=43), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.064690
+     **** C balance - unaccounted loss (kg/ha) =     -3.511608
+      ****        equivalent DM as FOM  (kg/ha) =   -8.77901936
 13 February 1993(Day of year=44): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1165,6 +5154,42 @@ Title                  =
      Stage 10 Maturity  DAS = 105
      		Biomass       = 618.28 		 LAI            =   0.48
      		Stover N Conc =   1.94 		 Extractable SW = 163.47
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+13 February 1993(Day of year=44), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.061433
+     **** C balance - unaccounted loss (kg/ha) =     -2.945106
+      ****        equivalent DM as FOM  (kg/ha) =   -7.36276579
 14 February 1993(Day of year=45): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1181,6 +5206,42 @@ Title                  =
      Stage 11 HarvestRipe  DAS = 106
      		Biomass       = 619.01 		 LAI            =   0.48
      		Stover N Conc =   1.93 		 Extractable SW = 162.51
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+14 February 1993(Day of year=45), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.058108
+     **** C balance - unaccounted loss (kg/ha) =     -2.364258
+      ****        equivalent DM as FOM  (kg/ha) =   -5.91064405
 15 February 1993(Day of year=46), Manager: 
      Manager sending message :- sorghum harvest
 15 February 1993(Day of year=46), Sorghum: 
@@ -1221,6 +5282,176 @@ Title                  =
                          DM (kg/ha) =               3423.63		 1476.00
                          N  (kg/ha) =                 19.25		    2.78
                          P  (kg/ha) =                  1.16		    1.15
+15 February 1993(Day of year=46): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+15 February 1993(Day of year=46), SysBal: 
+     **** N balance - unaccounted gain (kg/ha) =     55.369564
+     **** P balance - unaccounted gain (kg/ha) =      7.905451
+     **** C balance - unaccounted gain (kg/ha) =   3068.799561
+     ****        equivalent DM as FOM  (kg/ha) =   7671.999023
+16 February 1993(Day of year=47): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+17 February 1993(Day of year=48): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+18 February 1993(Day of year=49): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+19 February 1993(Day of year=50): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.greenp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "sorghum.senescedp" could not be retrieved.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 19 February 1993(Day of year=50), Clock: 
      Simulation is terminating due to end criteria being met.
 

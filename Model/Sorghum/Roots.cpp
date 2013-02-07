@@ -32,7 +32,7 @@ void Roots::doRegistrations(void)
    scienceAPI.expose("RootDepth"     ,"mm"    ,"Depth of roots",              false, rootDepth);
    scienceAPI.expose("root_depth"    ,"mm"    ,"Depth of roots",              false, rootDepth);
    scienceAPI.expose("RootFront"     ,"mm"    ,"Depth of root front",         false, rootFront);
-   scienceAPI.expose("RootGreenWt"   ,"g/m^2" ,"Green root dry weight",       false, dmGreen);
+   scienceAPI.expose("RootLiveWt"   ,"g/m^2" ,"Green root dry weight",       false, dmGreen);
    scienceAPI.expose("RootSenescedWt","g/m^2" ,"Senesced root dry weight",    false, dmSenesced);
    scienceAPI.expose("RootGreenN"    ,"g/m^2" ,"N in live root",              false, nGreen);
    scienceAPI.expose("RootGreenNConc","%"     ,"Live root N concentration",   false, nConc);

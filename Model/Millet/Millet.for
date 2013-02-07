@@ -48,9 +48,9 @@
 
              ! initialise root, stem and leaf.
 
-         dm_green(root) = c%dm_root_init * g%plants
-         dm_green(stem) = c%dm_stem_init * g%plants
-         dm_green(leaf) = c%dm_leaf_init * g%plants
+         dm_green(root) = c%dm_root_init * g%Population
+         dm_green(stem) = c%dm_stem_init * g%Population
+         dm_green(leaf) = c%dm_leaf_init * g%Population
          dm_green(tiller) = 0.0
          dm_green(grain) = 0.0
          dm_green(flower) = 0.0
@@ -72,7 +72,7 @@
              ! we are at first day of flowering
              ! set the minimum weight of stem; used for retranslocation to grain
 
-         dm_plant_stem = divide (dm_green(stem), g%plants, 0.0)
+         dm_plant_stem = divide (dm_green(stem), g%Population, 0.0)
          dm_plant_min(stem) = dm_plant_stem * (1.0 - c%stem_trans_frac)
 
       elseif (on_day_of (start_grain_fill
@@ -81,7 +81,7 @@
              ! we are at first day of grainfill.
              ! set the minimum weight of leaf; used for translocation to grain
 
-         dm_plant_leaf = divide (dm_green(leaf), g%plants, 0.0)
+         dm_plant_leaf = divide (dm_green(leaf), g%Population, 0.0)
          dm_plant_min(leaf) = dm_plant_leaf * (1.0 - c%leaf_trans_frac)
 
       else   ! no changes
@@ -158,11 +158,13 @@
                ! get available carbohydrate in stem and leaf for transfer
 
             dm_stem_pot = g%dm_green(stem) + g%dlt_dm_green(stem)
-            dm_stem_avail = dm_stem_pot - g%dm_plant_min(stem)*g%plants
+            dm_stem_avail = dm_stem_pot - g%dm_plant_min(stem)
+     :                            * g%Population
             dm_stem_avail = l_bound (dm_stem_avail, 0.0)
 
             dm_leaf_pot = g%dm_green(leaf) + g%dlt_dm_green(leaf)
-            dm_leaf_avail = dm_leaf_pot - g%dm_plant_min(leaf)*g%plants
+            dm_leaf_avail = dm_leaf_pot - g%dm_plant_min(leaf)*
+     :                            * g%Population			
             dm_leaf_avail = l_bound (dm_leaf_avail, 0.0)
 
                ! now find out how much to translocate.
@@ -1186,7 +1188,7 @@ cccc
       call subtract_real_array (g%dlt_N_detached, g%N_senesced
      :                        , max_part)
 
-      dying_fract = divide (-g%dlt_plants, g%plants, 0.0)
+      dying_fract = divide (-g%dlt_plants, g%Population, 0.0)
       dying_fract = bound (dying_fract, 0.0, 1.0)
 
       do 1000 part = 1, max_part
@@ -1201,7 +1203,7 @@ cccc
 
          ! Transfer plant dry matter
 
-      dlt_dm_plant = divide (g%dlt_dm, g%plants, 0.0)
+      dlt_dm_plant = divide (g%dlt_dm, g%Population, 0.0)
 
       call accumulate (dlt_dm_plant, g%dm_plant_top_tot
      :               , g%previous_stage, g%dlt_stage)
@@ -1340,7 +1342,7 @@ cjh
          ! plant leaf development
          ! need to account for truncation of partially developed leaf (add 1)
       leaf_no = 1.0 + sum_between (emerg, now, g%leaf_no)
-      dlt_leaf_area = divide (g%dlt_lai, g%plants, 0.0) * sm2smm
+      dlt_leaf_area = divide (g%dlt_lai, g%Population, 0.0) * sm2smm
       call accumulate (dlt_leaf_area, g%leaf_area
      :               , leaf_no, g%dlt_leaf_no)
 
@@ -1373,7 +1375,7 @@ cjh
          ! other plant states
 
       g%canopy_height = g%canopy_height + g%dlt_canopy_height
-      g%plants = g%plants + g%dlt_plants
+      g%Population = g%Population + g%dlt_plants
       g%root_depth = g%root_depth + g%dlt_root_depth
 
       ! Phosphorus
@@ -1458,8 +1460,8 @@ cjh
       call bound_check_real_var
      :           (g%grain_no
      :          , 0.0
-     :          , p%head_grain_no_max * g%plants
-     :          , 'grain_no')
+     :          , p%head_grain_no_max * g%Population
+     :          , 'GrainNumber')
 
       call bound_check_real_var
      :           (g%current_stage
@@ -1486,7 +1488,7 @@ cjh
      :          , 'tt_tot')
 
       call bound_check_real_var
-     :           (g%plants
+     :           (g%Population
      :          , 0.0
      :          , 10000.0
      :          , 'plants')
@@ -1507,7 +1509,7 @@ cjh
      :           (g%slai
      :          , 0.0
      :          , 30.0 - g%lai - g%tlai_dead
-     :          , 'slai')
+     :          , 'SLAI')
 
       call bound_check_real_var
      :           (g%tlai_dead
@@ -1519,7 +1521,7 @@ cjh
      :           (g%cover_green
      :          , 0.0
      :          , 1.0
-     :          , 'cover_green')
+     :          , 'coverlive')
 
       call bound_check_real_var
      :           (g%cover_sen
@@ -2072,7 +2074,7 @@ c is increased in a one-step process
 cejvo made leaf appearance function of plant density
       g%y_tiller_tt_adj(2) = c%y_tiller_tt(2)
      :                       + c%tiller_appearance_slope
-     :                       * g%plants
+     :                       * g%Population
 
 cgol added tiller initiation adjustment for daylength
 
@@ -2187,7 +2189,7 @@ cgol bounds added to tiller number determination
          tiller_no_now = sum_between (emerg, now, g%tiller_no)
          tiller_no_remaining = real (c%tiller_no_pot) - tiller_no_now
          dlt_tiller_no = divide (g%dm_green(tiller)
-     :                         , c%dm_tiller_crit*g%plants, 0.0)
+     :                         , c%dm_tiller_crit*g%Population, 0.0)
 
          dlt_tiller_no = bound (dlt_tiller_no, 0.0, tiller_no_remaining)
 
@@ -2245,7 +2247,7 @@ cgol bounds added to tiller number determination
 
          tiller_independence = 1
          if (c%tiller_appearance.eq.'dm') then
-            dm_tiller_independence = c%dm_tiller_crit * g%plants
+            dm_tiller_independence = c%dm_tiller_crit * g%Population
             dm_tiller_fract = divide (dm_tiller_independence
      :                              , g%dm_green(tiller), 0.0)
             N_tiller_independence = g%N_green(tiller) * dm_tiller_fract
@@ -2327,15 +2329,15 @@ cgol bounds added to tiller number determination
          if (len_trim(tiller_module).le.8) then
 
             dm_tiller_plant = divide (dm_tiller_independence
-     :                              , g%plants, 0.0)
+     :                              , g%Population, 0.0)
             N_tiller_plant = divide (N_tiller_independence
-     :                             , g%plants, 0.0)
+     :                             , g%Population, 0.0)
 
 !cjh      print *, dm_tiller_plant, N_tiller_independence
 !cjh      print *, N_tiller_plant, N_tiller_independence
 
 !cjh            write(*, '(4(a, g16.7e3, a), 2a)' )
-!cjh     :           'plants = '       , g%plants        , '(plants/m2)'
+!cjh     :           'plants = '       , g%Population        , '(plants/m2)'
 !cjh     :         , ',tiller_wt = '   , dm_tiller_plant , '(g/plant)'
 !cjh     :         , ',tiller_N = '    , N_tiller_plant  , '(g/plant)'
 !cjh     :         , ', row_spacing = ', g%row_spacing   , '(m)'
@@ -2349,7 +2351,7 @@ cgol bounds added to tiller number determination
 
             call post_real_var ('plants'
      :                         ,'(plants/m2)'
-     :                         ,g%plants)
+     :                         ,g%Population)
 
             call post_real_var ('tiller_wt'
      :                        ,'(g/plant)'

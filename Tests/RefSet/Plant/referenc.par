@@ -11,19 +11,19 @@ outputfile =referenc.out
 ! [temperature.tt_tot]
 ! [photoperiod.tt_tot]
 
-! [temperature.lai]
-! [radiation.lai]
-! [soil_moisture.lai]
-! [soil_nitrogen.lai]
+! [temperature.LAI]
+! [radiation.LAI]
+! [soil_moisture.LAI]
+! [soil_nitrogen.LAI]
 
-! [temperature.biomass]
-! [radiation.biomass]
-! [soil_moisture.biomass]
-! [soil_nitrogen.biomass]
+! [temperature.Biomass]
+! [radiation.Biomass]
+! [soil_moisture.Biomass]
+! [soil_nitrogen.Biomass]
 
-! [soil_moisture.swdef_photo]
+! [soil_moisture.WaterStressPhoto]
 
-! [soil_nitrogen.nfact_photo]
+! [soil_nitrogen.NStressPhoto]
 
 ! [sow_msg.crop_status]
 ! [kill_crop_msg.crop_status]
@@ -31,7 +31,7 @@ outputfile =referenc.out
 
 ! [kill_crop_msg.crop_status]
 
-! [harvest_msg.yield]
+! [harvest_msg.Yield]
 
 ! [add_residue_msg.residue_wt]
 ! [add_residue_msg.residue_n]
@@ -48,34 +48,34 @@ variable = clock.day
 variable = SoilN.no3
 variable = SoilWat.sw_dep
 variable = mungbean.TTAfterSowing
-variable = mungbean.lai
-variable = mungbean.biomass
+variable = mungbean.LAI
+variable = mungbean.Biomass
 variable = tracker1.avg@mungbean_swdef_photo
 variable = tracker1.avg@mungbean_nfact_photo
-variable = mungbean.plant_status
+variable = mungbean.PlantStatus
 variable = mungbean.dm_dead()
-variable = mungbean.yield
+variable = mungbean.Yield
 variable = surfaceom.surfaceom_wt
 variable = surfaceom.surfaceom_n
 variable = SoilN.fom_c()
 variable = SoilN.fom_n()
-variable = mungbean.node_no
-variable = mungbean.leaf_no
+variable = mungbean.NodeNumber
+variable = mungbean.LeafNumber
 variable = mungbean.dlt_leaf_no
 variable = mungbean.dlt_node_no
 variable = mungbean.rlv
 variable = mungbean.root_length()
-variable = mungbean.RootGreenWt
-variable = mungbean.height
+variable = mungbean.RootLiveWt
+variable = mungbean.Height
 variable = tracker1.sum@mungbean_dlt_n_fixed_pot
 variable = tracker1.sum@mungbean_dlt_n_fixed
 variable = tracker1.sum@mungbean_n_supply_soil
 variable = mungbean.n_conc_crit
-variable = mungbean.n_demand
+variable = mungbean.NDemand
 variable = mungbean.n_conc_crit
-variable = mungbean.RootGreenWt
-variable = mungbean.RootGreenN
-variable = mungbean.root_depth
+variable = mungbean.RootLiveWt
+variable = mungbean.RootLiveN
+variable = mungbean.RootDepth
 [reference.clock.parameters]
 !start_day = 1
 !start_year = 1986
@@ -206,13 +206,13 @@ profile_reduction =      on
 !        mungbean.crop_class = 'supermung'
 !     endif
 
-     if (mungbean.plant_status = 'dead') then
+     if (mungbean.PlantStatus = 'dead') then
         ! [end_crop_msg.end_crop] - end crop should remove crop altogether
         ! [add_residue_msg.add_reside] - should place residues on soil surface
         ! [incorp_fom_msg.incorp_fom] - should incorporate dead roots
         mungbean    end_crop
         report do_output
-     elseif (mungbean.stage = 10) then
+     elseif (mungbean.PhenologyStage = 10) then
         ! harvest and kill the crop
         ! do not end it until we have the chance to report
         ! the effects of these two messages
@@ -230,8 +230,8 @@ profile_reduction =      on
 [reference.SummaryFile.parameters]
 summaryfile = referenc.sum
 [reference.tracker1.parameters]
-variable = average of mungbean.swdef_photo on process from report.reported to now as avg@mungbean_swdef_photo
-variable = average of mungbean.nfact_photo on process from report.reported to now as avg@mungbean_nfact_photo
+variable = average of mungbean.WaterStressPhoto on process from report.reported to now as avg@mungbean_swdef_photo
+variable = average of mungbean.NStressPhoto on process from report.reported to now as avg@mungbean_nfact_photo
 variable = sum of mungbean.dlt_n_fixed_pot on process from report.reported to now as sum@mungbean_dlt_n_fixed_pot
 variable = sum of mungbean.dlt_n_fixed on process from report.reported to now as sum@mungbean_dlt_n_fixed
-variable = sum of mungbean.n_supply_soil on process from report.reported to now as sum@mungbean_n_supply_soil
+variable = sum of mungbean.RootNSupply on process from report.reported to now as sum@mungbean_n_supply_soil

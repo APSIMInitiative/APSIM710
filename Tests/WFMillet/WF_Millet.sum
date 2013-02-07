@@ -56,18 +56,18 @@ Paddock:
      Output variables:
         dd/mm/yyyy
         DaysAfterSowing
-        stage
-        green_biomass_wt
-        biomass
-        yield
-        Stage
+        PhenologyStage
+        AboveGroundLiveWt
+        Biomass
+        Yield
+        PhenologyStage
         esw
         dlt_lai_pot
         dlt_lai_carbon
-        lai
-        leafgreenwt
-        stemgreenwt
-        leaf_no
+        LAI
+        LeafLiveWt
+        StemLiveWt
+        LeafNumber
 
      Output file = WF_Millet daily.out
      Format = normal
@@ -77,8 +77,8 @@ Paddock:
         harvesting
      Output variables:
         dd/mm/yyyy as Date
-        biomass
-        yield
+        Biomass
+        Yield
         esw
 
      Output file = WF_Millet harvest.out
@@ -103,7 +103,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('23/9/2004') then
-       wf_millet sow plants =22, sowing_depth = 20, cultivar = wf_millet, row_spacing = 330, crop_class = plant
+       wf_millet sow population =22, sowing_depth = 20, cultivar = wf_millet, row_spacing = 330, crop_class = plant
               endif
      END of rules
      
@@ -112,7 +112,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if wf_millet.stagename = 'harvest_ripe' or wf_millet.plant_status = 'dead' then
+                if wf_millet.stagename = 'harvest_ripe' or wf_millet.plantstatus = 'dead' then
        wf_millet  harvest
        wf_millet  end_crop
                 endif
@@ -329,7 +329,7 @@ Paddock:
         - Reading Constants
 ------- Start of simulation  --------------------------------------------------
 23 September 2004(Day of year=267), Sow on a fixed date: 
-     Manager sending message :- wf_millet sow  plants = 22, sowing_depth = 20, cultivar = wf_millet, row_spacing = 330, crop_class = plant
+     Manager sending message :- wf_millet sow  population = 22, sowing_depth = 20, cultivar = wf_millet, row_spacing = 330, crop_class = plant
 23 September 2004(Day of year=267), WF_Millet: 
      Crop Sow
         ------------------------------------------------

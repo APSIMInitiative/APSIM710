@@ -258,7 +258,7 @@ public class Leaf : BaseOrgan, AboveGround
             return value;
         }
     }
-    [Output("Cover_green")]
+    [Output("CoverLive")]
     [Units("0-1")]
     public double CoverGreen
     {
@@ -273,7 +273,7 @@ public class Leaf : BaseOrgan, AboveGround
     {
         get { return 1.0 - Math.Exp(-KDead * LAIDead); }
     }
-    [Output("Cover_tot")]
+    [Output("CoverTotal")]
     [Units("0-1")]
     public double CoverTot
     {

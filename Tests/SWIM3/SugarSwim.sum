@@ -54,14 +54,14 @@ Paddock:
         no3()
         dul_dep()
         ll15_dep()
-        lai
-        biomass
-        yield
+        LAI
+        Biomass
+        Yield
         surfaceom_wt
         es
         runoff
-        nfact_photo
-        swdef_photo
+        NStressPhoto
+        WaterStressPhoto
         nit_tot()
         nh4()
         urea()
@@ -105,7 +105,7 @@ Paddock:
               sugar kill_crop
               sugar end_crop
            else
-              sugar.plants = 10
+              sugar.population = 10
            endif
         else
         endif
@@ -113,8 +113,8 @@ Paddock:
         sugar harvest
         sugar end_crop
      elseif (sugar.crop_status = 'out') and (today = date('1-apr') then
-        sugar sow plants = 10 (), cultivar = q117, sowing_depth = 150
-        sugar.plants = 10
+        sugar sow population = 10 (), cultivar = q117, sowing_depth = 150
+        sugar.population = 10
         dah = 0
      else
         dah = dah + 1
@@ -328,7 +328,7 @@ Paddock:
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:           9.000 to:           4.500
 1 April 1993(Day of year=91), SUGAR management: 
-     Manager sending message :- sugar sow  plants = 10, cultivar = q117, sowing_depth = 150
+     Manager sending message :- sugar sow  population = 10, cultivar = q117, sowing_depth = 150
 1 April 1993(Day of year=91), sugar: 
      Sowing initiate
      
@@ -371,6 +371,16 @@ Paddock:
      
        Crop factor for bounding water use is set to 100.0 times Eo
      
+     
+     
+1 April 1993(Day of year=91): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Cannot set value of the specified variable.
+     Variable name: population
+     Component name: SUGAR management
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
 2 April 1993(Day of year=92), sugar: 
@@ -446,355 +456,23 @@ Paddock:
          - Reading constants from ratoon_crop
      
          - Reading constants from q117_ratoon
-8 July 1994(Day of year=189), sugar: 
-      stage    3.0 emergence
-                          biomass =           3.530000       lai =    0.1000000E-01
-                          stover N conc =    2.529745       extractable sw =    457.1707
-1 September 1994(Day of year=244), Fertilise on fixed date: 
-     Manager sending message :- fertiliser apply  amount = 200 (kg/ha), depth = 50 (mm), type = urea_n
-1 September 1994(Day of year=244), Fertiliser: 
+25 June 1994(Day of year=176): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     No module allows a set of the variable population
+     Component name: paddock
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+25 June 1994(Day of year=176): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Cannot set value of the specified variable.
+     Variable name: population
+     Component name: SUGAR management
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
-   - Reading Fertiliser Type Parameters
-       200.00 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   3)
-18 December 1994(Day of year=352), sugar: 
-      stage    4.0 begin_cane
-                          biomass =           1435.366       lai =     4.836209
-                          stover N conc =   0.4003513       extractable sw =    439.5529
-20 July 1995(Day of year=201), SUGAR management: 
-     Manager sending message :- sugar harvest
-20 July 1995(Day of year=201), sugar: 
      
-     
-     
-      flowering day  =    0
-      maximum lai = 4.953
-      total above ground biomass (kg/ha) =   34067.7
-      live above ground biomass (kg/ha) =   34067.7
-      green above ground biomass (kg/ha) =   31595.5
-      senesced above ground biomass (kg/ha) =    2472.2
-      dead above ground biomass (kg/ha) =       0.0
-      number of leaves =  43.8
-      total N content (kg/ha) =     52.54    senesced N content (kg/ha) =      9.06
-      green N content (kg/ha) =     43.48    dead N content (kg/ha) =      0.00
-     
-     
-     
-      stress indices for emergence
-      water stress 1 =    0.000000       nitrogen stress 1 =   0.2051794
-      water stress 2 =    0.000000
-     
-     
-     
-      stress indices for begin_cane
-      water stress 1 =    0.000000       nitrogen stress 1 =   0.4600305
-      water stress 2 =    0.000000
-     
-     
-     
-      stress indices for flowering
-      water stress 1 =    0.000000       nitrogen stress 1 =    0.000000
-      water stress 2 =    0.000000
-                                               straw residue = 6582.5 kg/ha
-                                               straw N =   26.5 kg/ha
-                                               root residue = 1538.5 kg/ha
-                                               root N =   10.6 kg/ha
-28 July 1995(Day of year=209), sugar: 
-      stage    3.0 emergence
-                          biomass =           3.530000       lai =    0.1000000E-01
-                          stover N conc =    2.529745       extractable sw =    464.2478
-1 September 1995(Day of year=244), Fertilise on fixed date: 
-     Manager sending message :- fertiliser apply  amount = 200 (kg/ha), depth = 50 (mm), type = urea_n
-1 September 1995(Day of year=244), Fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-       200.00 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   3)
-20 December 1995(Day of year=354), sugar: 
-      stage    4.0 begin_cane
-                          biomass =           2207.084       lai =     5.952532
-                          stover N conc =   0.4524027       extractable sw =    433.7217
-13 August 1996(Day of year=226), SUGAR management: 
-     Manager sending message :- sugar harvest
-13 August 1996(Day of year=226), sugar: 
-     
-     
-     
-      flowering day  =    0
-      maximum lai = 5.957
-      total above ground biomass (kg/ha) =   53621.0
-      live above ground biomass (kg/ha) =   53621.0
-      green above ground biomass (kg/ha) =   50631.4
-      senesced above ground biomass (kg/ha) =    2989.6
-      dead above ground biomass (kg/ha) =       0.0
-      number of leaves =  44.5
-      total N content (kg/ha) =     91.52    senesced N content (kg/ha) =     10.95
-      green N content (kg/ha) =     80.57    dead N content (kg/ha) =      0.00
-     
-     
-     
-      stress indices for emergence
-      water stress 1 =    0.000000       nitrogen stress 1 =   0.1017107
-      water stress 2 =    0.000000
-     
-     
-     
-      stress indices for begin_cane
-      water stress 1 =    0.000000       nitrogen stress 1 =   0.2332320
-      water stress 2 =    0.000000
-     
-     
-     
-      stress indices for flowering
-      water stress 1 =    0.000000       nitrogen stress 1 =    0.000000
-      water stress 2 =    0.000000
-                                               straw residue = 9094.8 kg/ha
-                                               straw N =   39.7 kg/ha
-                                               root residue = 1806.4 kg/ha
-                                               root N =    9.8 kg/ha
-23 August 1996(Day of year=236), sugar: 
-      stage    3.0 emergence
-                          biomass =           3.530000       lai =    0.1000000E-01
-                          stover N conc =    2.529745       extractable sw =    459.1877
-1 September 1996(Day of year=245), Fertilise on fixed date: 
-     Manager sending message :- fertiliser apply  amount = 200 (kg/ha), depth = 50 (mm), type = urea_n
-1 September 1996(Day of year=245), Fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-       200.00 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   3)
-8 January 1997(Day of year=8), sugar: 
-      stage    4.0 begin_cane
-                          biomass =           1520.460       lai =     4.817703
-                          stover N conc =   0.4174777       extractable sw =    446.8759
-1 September 1997(Day of year=244), Fertilise on fixed date: 
-     Manager sending message :- fertiliser apply  amount = 200 (kg/ha), depth = 50 (mm), type = urea_n
-1 September 1997(Day of year=244), Fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-       200.00 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   3)
-7 September 1997(Day of year=250), SUGAR management: 
-     Manager sending message :- sugar harvest
-7 September 1997(Day of year=250), sugar: 
-     
-     
-     
-      flowering day  =    0
-      maximum lai = 4.825
-      total above ground biomass (kg/ha) =   37506.0
-      live above ground biomass (kg/ha) =   37506.0
-      green above ground biomass (kg/ha) =   35381.1
-      senesced above ground biomass (kg/ha) =    2124.9
-      dead above ground biomass (kg/ha) =       0.0
-      number of leaves =  44.4
-      total N content (kg/ha) =    112.80    senesced N content (kg/ha) =      7.78
-      green N content (kg/ha) =    105.02    dead N content (kg/ha) =      0.00
-     
-     
-     
-      stress indices for emergence
-      water stress 1 =    0.000000       nitrogen stress 1 =   0.1251024
-      water stress 2 =    0.000000
-     
-     
-     
-      stress indices for begin_cane
-      water stress 1 =    0.000000       nitrogen stress 1 =   0.3925005
-      water stress 2 =    0.000000
-     
-     
-     
-      stress indices for flowering
-      water stress 1 =    0.000000       nitrogen stress 1 =    0.000000
-      water stress 2 =    0.000000
-                                               straw residue = 6932.0 kg/ha
-                                               straw N =   33.8 kg/ha
-                                               root residue = 1551.9 kg/ha
-                                               root N =   12.6 kg/ha
-14 September 1997(Day of year=257), sugar: 
-      stage    3.0 emergence
-                          biomass =           3.530000       lai =    0.1000000E-01
-                          stover N conc =    2.529745       extractable sw =    459.1189
-29 January 1998(Day of year=29), sugar: 
-      stage    4.0 begin_cane
-                          biomass =           1211.329       lai =     4.206180
-                          stover N conc =   0.4019243       extractable sw =    475.2639
-1 September 1998(Day of year=244), Fertilise on fixed date: 
-     Manager sending message :- fertiliser apply  amount = 200 (kg/ha), depth = 50 (mm), type = urea_n
-1 September 1998(Day of year=244), Fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-       200.00 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   3)
-2 October 1998(Day of year=275), SUGAR management: 
-     Manager sending message :- sugar harvest
-2 October 1998(Day of year=275), sugar: 
-     
-     
-     
-      flowering day  =    0
-      maximum lai = 4.281
-      total above ground biomass (kg/ha) =   33717.0
-      live above ground biomass (kg/ha) =   33717.0
-      green above ground biomass (kg/ha) =   31920.9
-      senesced above ground biomass (kg/ha) =    1796.1
-      dead above ground biomass (kg/ha) =       0.0
-      number of leaves =  44.8
-      total N content (kg/ha) =    170.56    senesced N content (kg/ha) =      6.58
-      green N content (kg/ha) =    163.98    dead N content (kg/ha) =      0.00
-     
-     
-     
-      stress indices for emergence
-      water stress 1 =    0.000000       nitrogen stress 1 =   0.1921656
-      water stress 2 =    0.000000
-     
-     
-     
-      stress indices for begin_cane
-      water stress 1 =    0.000000       nitrogen stress 1 =   0.3773067
-      water stress 2 =    0.000000
-     
-     
-     
-      stress indices for flowering
-      water stress 1 =    0.000000       nitrogen stress 1 =    0.000000
-      water stress 2 =    0.000000
-                                               straw residue = 6777.7 kg/ha
-                                               straw N =   43.6 kg/ha
-                                               root residue = 1379.3 kg/ha
-                                               root N =   13.8 kg/ha
-     Manager sending message :- sugar kill_crop
-         crop_kill. Standing above-ground dm =     0.0 (kg/ha)
-     Manager sending message :- sugar end_crop
-                                               straw residue =    0.0 kg/ha
-                                               straw N =    0.0 kg/ha
-                                               root residue = 6656.4 kg/ha
-                                               root N =   66.8 kg/ha
-1 April 1999(Day of year=91), SUGAR management: 
-     Manager sending message :- sugar sow  plants = 10, cultivar = q117, sowing_depth = 150
-1 April 1999(Day of year=91), sugar: 
-     Sowing initiate
-     
-     
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Cultivar
-         Day no   mm     m^2    Name
-         ------------------------------------------------
-             91  150.0   10.0 q117
-         ------------------------------------------------
-     
-         - Reading constants from plant_crop
-     
-         - Reading constants from q117
-     
-        - Reading root profile parameters
-     
-     
-     
-     Sugar module is using water uptake provided from Swim3
-     
-     
-     
-                         Root Profile
-       --------------------------------------------------
-         Layer depth  Kl factor   Lower limit Root Factor
-              (mm)         ()        (mm/mm)     (0-1)
-       --------------------------------------------------
-            10.000       0.100       0.100       1.000
-            30.000       0.100       0.100       1.000
-            60.000       0.100       0.100       1.000
-           100.000       0.100       0.100       1.000
-           100.000       0.100       0.100       1.000
-           200.000       0.100       0.100       1.000
-           300.000       0.100       0.100       1.000
-        -------------------------------------------------
-     
-     
-       Crop factor for bounding water use is set to 100.0 times Eo
-     
-     
-     
-2 April 1999(Day of year=92), sugar: 
-      stage    2.0 sprouting
-6 May 1999(Day of year=126), sugar: 
-      stage    3.0 emergence
-                          biomass =           3.530000       lai =    0.1000000E-01
-                          stover N conc =    2.529745       extractable sw =    52.80002
-1 September 1999(Day of year=244), Fertilise on fixed date: 
-     Manager sending message :- fertiliser apply  amount = 200 (kg/ha), depth = 50 (mm), type = urea_n
-1 September 1999(Day of year=244), Fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-       200.00 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   3)
-21 October 1999(Day of year=294), sugar: 
-      stage    4.0 begin_cane
-                          biomass =           1908.006       lai =     5.268143
-                          stover N conc =   0.8819013       extractable sw =    385.8088
-16 February 2000(Day of year=47), SWIM: 
-     Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           8.601 to:           4.300
-24 June 2000(Day of year=176), SUGAR management: 
-     Manager sending message :- sugar harvest
-24 June 2000(Day of year=176), sugar: 
-     
-     
-     
-      flowering day  =    0
-      maximum lai = 6.907
-      total above ground biomass (kg/ha) =   83085.7
-      live above ground biomass (kg/ha) =   83085.7
-      green above ground biomass (kg/ha) =   78848.2
-      senesced above ground biomass (kg/ha) =    4237.5
-      dead above ground biomass (kg/ha) =       0.0
-      number of leaves =  47.7
-      total N content (kg/ha) =    247.10    senesced N content (kg/ha) =     15.52
-      green N content (kg/ha) =    231.58    dead N content (kg/ha) =      0.00
-     
-     
-     
-      stress indices for emergence
-      water stress 1 =    0.000000       nitrogen stress 1 =   0.1124349
-      water stress 2 =    0.000000
-     
-     
-     
-      stress indices for begin_cane
-      water stress 1 =    0.000000       nitrogen stress 1 =    0.000000
-      water stress 2 =    0.000000
-     
-     
-     
-      stress indices for flowering
-      water stress 1 =    0.000000       nitrogen stress 1 =    0.000000
-      water stress 2 =    0.000000
-                                               straw residue =14266.0 kg/ha
-                                               straw N =   76.5 kg/ha
-                                               root residue = 1913.2 kg/ha
-                                               root N =    9.6 kg/ha
-     
-         - Reading constants from ratoon_crop
-     
-         - Reading constants from q117_ratoon
-8 July 2000(Day of year=190), sugar: 
-      stage    3.0 emergence
-                          biomass =           3.530000       lai =    0.1000000E-01
-                          stover N conc =    2.529745       extractable sw =    446.0508
-1 September 2000(Day of year=245), Fertilise on fixed date: 
-     Manager sending message :- fertiliser apply  amount = 200 (kg/ha), depth = 50 (mm), type = urea_n
-1 September 2000(Day of year=245), Fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-       200.00 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   3)
-13 December 2000(Day of year=348), sugar: 
-      stage    4.0 begin_cane
-                          biomass =           1684.616       lai =     5.279154
-                          stover N conc =   0.5060337       extractable sw =    448.9951
-31 December 2000(Day of year=366), clock: 
-     Simulation is terminating due to end criteria being met.
 

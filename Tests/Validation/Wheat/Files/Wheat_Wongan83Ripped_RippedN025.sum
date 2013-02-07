@@ -57,35 +57,35 @@ Paddock:
         year
         wheat.zadok_stage
         wheat.StageName
-        wheat.biomass
-        wheat.yield
+        wheat.Biomass
+        wheat.Yield
         wheat.grain_size
         wheat.biomass_wt
         wheat.biomass_n
-        wheat.lai
+        wheat.LAI
         wheat.HeadTotalWt
-        wheat.grain_wt
-        wheat.LeafGreenWt
+        wheat.GrainWt
+        wheat.LeafLiveWt
         wheat.HeadTotalN
-        wheat.grain_n
-        wheat.LeafGreenN
-        wheat.StemGreenN
-        wheat.StemGreenWt
-        wheat.grain_no
+        wheat.GrainN
+        wheat.LeafLiveN
+        wheat.StemLiveN
+        wheat.StemLiveWt
+        wheat.GrainNumber
         sw_dep()
         wheat.n_conc_grain
         wheat.grain_protein
-        wheat.swdef_photo
-        wheat.swdef_expan
-        wheat.nfact_photo
-        wheat.nfact_expan
-        wheat.root_depth
+        wheat.WaterStressPhoto
+        wheat.WaterStressExpansion
+        wheat.NStressPhoto
+        wheat.NStressExpansion
+        wheat.RootDepth
         wheat.ep
         eo
         water_table
-        node_no
+        NodeNumber
         et
-        plants
+        Population
 
      Output file = Wheat_Wongan83Ripped_RippedN025.out
      Format = normal
@@ -110,7 +110,7 @@ Paddock:
      
      SECTION:- start_of_day
         if (paddock_is_fallow() = 1 and today = date('14/06/1983')) then
-          wheat sow plants =159, sowing_depth = 80, cultivar = gamenya, row_spacing = 250
+          wheat sow population =159, sowing_depth = 80, cultivar = gamenya, row_spacing = 250
         endif
      END of rules
      
@@ -119,7 +119,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-       if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+       if wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' then
           wheat  harvest
           wheat  end_crop
        endif
@@ -325,7 +325,7 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 14 June 1983(Day of year=165), Sow on a fixed date: 
-     Manager sending message :- wheat sow  plants = 159, sowing_depth = 80, cultivar = gamenya, row_spacing = 250
+     Manager sending message :- wheat sow  population = 159, sowing_depth = 80, cultivar = gamenya, row_spacing = 250
 14 June 1983(Day of year=165), wheat: 
      Crop Sow
         ------------------------------------------------

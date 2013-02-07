@@ -55,12 +55,12 @@ Paddock:
         dd/mm/yyyy as date
         height as W_height
         lai as W_lai
-        leaf_no as W_leaf_no
-        leaf_no_sen as W_leaf_no_sen
+        LeafNumber as W_LeafNumber
+        LeafNumberDead as W_LeafNumberDead
         biomass as W_biomass
-        leafgreenwt as W_leafgreenwt
-        stemgreenwt as W_stemgreenwt
-        grain_wt as W_grain_wt
+        LeafLiveWt as W_LeafLiveWt
+        StemLiveWt as W_StemLiveWt
+        GrainWt as W_GrainWt
         yield as W_yield
         green_biomass as W_green_biomass
 
@@ -74,14 +74,14 @@ Paddock:
         day
         year
         dd/mm/yyyy as date
-        n_stress_expan
-        n_stress_grain
-        n_stress_pheno
-        n_stress_photo
-        sw_stress_expan
-        sw_stress_fixation
-        sw_stress_pheno
-        sw_stress_photo
+        NStressExpansion
+        NStressGrain
+        NStressPheno
+        NStressPhoto
+        WaterStressExpansion
+        WaterStressFixation
+        WaterStressPheno
+        WaterStressPhoto
         sw
         esw
 
@@ -102,7 +102,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+                if wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' then
        wheat  harvest
        wheat  end_crop
                 endif
@@ -271,63 +271,14 @@ Paddock:
       Sending sow message to wheat
 17 June 2004(Day of year=169), wheat: 
      Crop Sow
-        ------------------------------------------------
-        cultivar                   = hartog
-        Phases:
-           out
-           sowing
-           germination
-           emergence
-           end_of_juvenile
-           floral_initiation
-           flowering
-              tt_flowering               =     120 (dd)
-           start_grain_fill
-              tt_start_grain_fill        =     545 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =      35 (dd)
-           maturity
-              tt_maturity                =       1 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =    1000 (dd)
-           end_crop
-              tt_end_crop                =    1000 (dd)
+17 June 2004(Day of year=169): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     plant density ('Population') not specified
+     Component name: wheat
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
-        grains_per_gram_stem           =       25.0 (/g)
-        potential_grain_filling_rate   =     0.0020 (g/grain/day)
-        potential_grain_growth_rate    =     0.0010 (g/grain/day)
-        max_grain_size                 =     0.0410 (g)
-        ------------------------------------------------
-     
-     
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         200.0     0.060          0.104       1.000
-         200.0     0.060          0.104       1.000
-         200.0     0.060          0.120       1.000
-         200.0     0.060          0.160       1.000
-         200.0     0.125          0.190       1.000
-         200.0     0.040          0.250       1.000
-         200.0     0.200          0.358       1.000
-         200.0     0.200          0.387       1.000
-         200.0     0.200          0.400       1.000
-         -----------------------------------------------
-         **** KL's have been modified using either CL, EC or ESP values.
-         Extractable SW:   182mm in  1800mm total depth ( 10%).
-         Crop factor for bounding water use is set to   1.5 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            169   10.0  400.0  250.0   0.0   0.0 hartog
-         ------------------------------------------------
      
       Sending apply message to fertiliser
 17 June 2004(Day of year=169), fertiliser: 
@@ -340,85 +291,4 @@ Paddock:
    - Reading Fertiliser Type Parameters
         12.00 of N as nitrate (no3_n)
                                          added at depth   50.00 (layer   1)
-18 June 2004(Day of year=170), wheat: 
-      stage 2.0 germination
-22 June 2004(Day of year=174), wheat: 
-      stage 3.0 emergence
-                     biomass =           1.84 (g/m^2)   lai          =   0.080 (m^2/m^2)
-                     stover N conc =     5.85 (%)    extractable sw =   44.34 (mm)
-23 June 2004(Day of year=175), wheat: 
-      stage 4.0 end_of_juvenile
-                     biomass =           2.33 (g/m^2)   lai          =   0.088 (m^2/m^2)
-                     stover N conc =     5.83 (%)    extractable sw =   42.16 (mm)
-28 August 2004(Day of year=241), wheat: 
-      stage 5.0 floral_initiation
-                     biomass =         417.25 (g/m^2)   lai          =   5.496 (m^2/m^2)
-                     stover N conc =     3.25 (%)    extractable sw =  121.87 (mm)
-10 October 2004(Day of year=284), wheat: 
-      stage 6.0 flowering
-                     biomass =        1123.79 (g/m^2)   lai          =   3.467 (m^2/m^2)
-                     stover N conc =     1.65 (%)    extractable sw =   33.37 (mm)
-17 October 2004(Day of year=291), wheat: 
-      stage 7.0 start_grain_fill
-                     biomass =        1173.08 (g/m^2)   lai          =   2.233 (m^2/m^2)
-                     stover N conc =     1.53 (%)    extractable sw =   21.23 (mm)
-20 November 2004(Day of year=325), wheat: 
-      stage 8.0 end_grain_fill
-                     biomass =        1297.75 (g/m^2)   lai          =   0.326 (m^2/m^2)
-                     stover N conc =     0.94 (%)    extractable sw =    4.17 (mm)
-22 November 2004(Day of year=327), wheat: 
-      stage 9.0 maturity
-                     biomass =        1298.01 (g/m^2)   lai          =   0.290 (m^2/m^2)
-                     stover N conc =     0.95 (%)    extractable sw =    3.87 (mm)
-23 November 2004(Day of year=328), wheat: 
-      stage 10.0 harvest_ripe
-                     biomass =        1298.01 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     0.95 (%)    extractable sw =    3.73 (mm)
-23 November 2004(Day of year=328), Harvesting rule: 
-     Manager sending message :- wheat harvest
-     
-      flowering day          =  284                           stover (kg/ha)         =     9062.3
-      maturity day           =  327                           grain yield (kg/ha)    =     3917.7
-      grain % water content  =   12.5                         grain yield wet (kg/ha)=     4477.4
-      grain wt (g)           =    0.024                       grains/m^2             =    16028.5
-      grains/plant           =   40.1                         maximum lai            =      6.068
-      total above ground biomass (kg/ha)    =    12980.1
-      live above ground biomass (kg/ha)     =    12980.1
-      green above ground biomass (kg/ha)    =    10083.1
-      senesced above ground biomass (kg/ha) =     2897.0
-      number of leaves       =     32.4
-      DM Root:Shoot ratio    =     0.18                       Harvest Index          =       0.30
-      Stover C:N ratio       =    49.45                       Root C:N ratio         =      16.84
-      grain N percent        =     2.91                       total N content (kg/ha)=     187.42
-      grain N uptake (kg/ha) =   114.10                       senesced N content (kg/ha)=   14.49
-      green N content (kg/ha)=    58.83
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
-         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
-         floral_initiation    to flowering               0.101        0.131        0.000        0.000
-         flowering            to start_grain_fill        0.608        0.708        0.000        0.000
-         start_grain_fill     to end_grain_fill          0.547        0.642        0.000        0.000
-     
-     
-     Crop harvested.
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                9062.3                     0.0
-                          N  (kg/ha) =                  73.31                    0.00
-     
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                3917.7                     0.0
-                          N  (kg/ha) =                 114.10                    0.00
-     
-      stage 4.0 end_of_juvenile
-                     biomass =           0.00 (g/m^2)   lai          =   0.080 (m^2/m^2)
-                     stover N conc =     6.30 (%)    extractable sw =    3.73 (mm)
-     Manager sending message :- wheat end_crop
-     Crop ended. Yield (dw) =     0.0  (kg/ha)
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                   0.0                  2334.9
-                          N  (kg/ha) =                   0.00                   55.45
-     
-31 December 2004(Day of year=366), clock: 
-     Simulation is terminating due to end criteria being met.
 

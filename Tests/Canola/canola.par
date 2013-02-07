@@ -5,11 +5,11 @@ outputfile  =canola.out
 
 variable = clock.day
 variable = clock.year
-variable = canola.lai
-variable = canola.biomass format 1
+variable = canola.LAI
+variable = canola.Biomass format 1
 variable = canola.green_biomass format 1
-variable = canola.pai
-variable = canola.OilGreenWt
+variable = canola.PAI
+variable = canola.OilLiveWt
 [sample.clock.parameters]
 ! Start and end date of run (day number of year and year)
 start_date=9/5/1988
@@ -22,7 +22,7 @@ if day = 130 and year  = 1988 then
    canola sow cultivar = Hyola42, plants = 40 (/m2), sowing_depth = 20 (mm), row_spacing = 300 (mm)
 endif
 
-if canola.StageName = 'harvest_ripe' or canola.plant_status = 'dead' then
+if canola.StageName = 'harvest_ripe' or canola.PlantStatus = 'dead' then
    canola harvest
    canola end_crop
 endif

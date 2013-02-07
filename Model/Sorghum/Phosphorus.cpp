@@ -38,9 +38,9 @@ void Phosphorus::doRegistrations(void)
 
    scienceAPI.expose("biomass_p",        "g/m2", "Phosphorus in Biomass",                      false, pBiomass);
 
-   scienceAPI.exposeFunction("GreenP", "g/m2", "P content of live plant parts",
+   scienceAPI.exposeFunction("LiveP", "g/m2", "P content of live plant parts",
                      FloatFunction(&Phosphorus::getPGreen));
-   scienceAPI.exposeFunction("SenescedP","g/m2", "P content of senesced plant parts",
+   scienceAPI.exposeFunction("DeadP","g/m2", "P content of senesced plant parts",
                      FloatFunction(&Phosphorus::getPSenesced));
    scienceAPI.exposeFunction("p_demand", "kg/ha", "P demand of plant parts",
                      FloatFunction(&Phosphorus::getPDemand));

@@ -3395,7 +3395,7 @@ cpdev  bound required?..
          variable_value = p%kl2rlv
       else if (variable_name .eq. 'basal_area') then
          variable_value = g%basal_area
-      else if (variable_name .eq. 'root_depth') then
+      else if (variable_name .eq. 'rootdepth') then
          variable_value = g%root_depth
       else
 !         call fatal_error(err_user, 'Unknown get variable '
@@ -3632,7 +3632,7 @@ cpdev  bound required?..
       elseif (variable_name .eq. 'basal_area') then
          g%basal_area = variable_value
 
-      elseif (variable_name .eq. 'root_depth') then
+      elseif (variable_name .eq. 'rootdepth') then
          g%root_depth = variable_value
 
       elseif (variable_name .eq. 'height_1000kg') then
@@ -3709,7 +3709,7 @@ c     real       N_demand              ! sum N demand for plant parts (g/plant)
      :            g%canopy_height)
       call Expose('green_cover', '0-1', 'Green cover', .false.,
      :            g%out_radn_cover)
-      call Expose('cover_green', '0-1', 'Green cover', .false.,
+      call Expose('coverlive', '0-1', 'Green cover', .false.,
      :             g%out_radn_cover)
       call Expose('radn_cover', '0-1', 'Green cover', .false.,
      :            g%out_radn_cover)
@@ -3765,7 +3765,7 @@ c     real       N_demand              ! sum N demand for plant parts (g/plant)
      :             g%out_death_pheno(stem))
       call Expose('sw_demand', 'mm', 'Soil water demand',
      :             .false., g%out_sw_demand)
-      call Expose('n_uptake', 'kg/ha', 'Cumulative N uptake',
+      call Expose('AboveGroundN', 'kg/ha', 'Cumulative N uptake',
      :             .false., g%N_uptake)
       call Expose('dlt_n_uptake', 'kg/ha', 'Daily N uptake',
      :             .false., g%dlt_N_uptake)
@@ -3777,13 +3777,13 @@ c     real       N_demand              ! sum N demand for plant parts (g/plant)
      :             .false., g%swi_total)
       call Expose('temp_index', '', 'Temperature index in growth',
      :             .false.,g%out_tfact )
-      call Expose('plant_status', ' ', 'Status of crop',
+      call Expose('PlantStatus', ' ', 'Status of crop',
      :            .false., g%out_plant_status)
       call Expose('stage_code', ' ', 'Stage code of development',
      :            .false., g%out_stage_code)
       call Expose('stage_name', ' ', 'Stage name of development',
      :            .false., g%out_stage_name)
-      call Expose('cover_tot', '0-1', 'Total green and dead cover',
+      call Expose('CoverTotal', '0-1', 'Total green and dead cover',
      :            .false., g%out_total_cover)
 
       call Expose('swi', '0-1', 'Soil water index', .false.,
@@ -3804,7 +3804,7 @@ c     real       N_demand              ! sum N demand for plant parts (g/plant)
      :            .false., g%out_death_water_tot)
       call Expose('death_frost', 'kg/ha', 'Death by frost',
      :            .false., g%out_death_frost_tot)
-      call Expose('dlt_dm', 'g/m2', 'Growth',
+      call Expose('growthrate', 'g/m2', 'Growth',
      :            .false., g%out_dlt_dm)
       call Expose('sw_uptake', 'mm', 'Soil water uptake', .false.,
      :            g%out_sw_uptake,g%out_numlayers,max_layer)
@@ -3900,7 +3900,7 @@ c     real       N_demand              ! sum N demand for plant parts (g/plant)
      :                        'Change in weight of dead stem',
      :                        grasp_get_real_variable,
      :                        grasp_set_real_variable)
-      call ExposeRealFunction('root_depth', 'mm',
+      call ExposeRealFunction('rootdepth', 'mm',
      :                        'Depth of roots',
      :                        grasp_get_real_variable,
      :                        grasp_set_real_variable)

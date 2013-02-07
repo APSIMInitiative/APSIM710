@@ -13,8 +13,8 @@ using namespace std;
 //  initialise data members.
 CompositePart::CompositePart(XMLNode parameters, ScienceAPI& scienceAPI, plantInterface *p, const string &name, bool doCreateParts)
    : plantPart(scienceAPI, p, name,
-               *new CompositePool(*p, scienceAPI, "Green", name),
-               *new CompositePool(*p, scienceAPI, "Senesced", name),
+               *new CompositePool(*p, scienceAPI, "Live", name),
+               *new CompositePool(*p, scienceAPI, "Dead", name),
                *new CompositeDelta (scienceAPI, "Growth", name),
                *new CompositeDelta (scienceAPI, "Senescing", name),
                *new CompositeDelta (scienceAPI, "Detaching", name),
@@ -86,7 +86,7 @@ void CompositePart::onInit1(protocol::Component *system)
       scienceAPI.exposeFunction("sw_demand", "mm",  "Demand for soil water", FloatGetter(&CompositePart::SWDemand));
       scienceAPI.exposeFunction("sw_demand_te", "mm",  "TE Demand for soil water", FloatGetter(&CompositePart::SWDemandTE));
       scienceAPI.exposeFunction("dlt_dm_pot_rue", "g/m^2",  "Potential above_ground dry matter production via photosynthesis", FloatGetter(&CompositePart::dltDmPotRue));
-      scienceAPI.exposeFunction("cover_green", "",  "Green cover", FloatGetter(&CompositePart::coverGreen));
+      scienceAPI.exposeFunction("CoverLive", "",  "Green cover", FloatGetter(&CompositePart::coverGreen));
       }
 
    for (unsigned i = 0; i != things.size(); i++)

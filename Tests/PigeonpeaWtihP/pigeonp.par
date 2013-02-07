@@ -5,12 +5,12 @@ outputfile  =PigeonPea.out
 
 variable = clock.day
 variable = clock.year
-variable = PigeonPea.lai
-variable = PigeonPea.biomass
+variable = PigeonPea.LAI
+variable = PigeonPea.Biomass
 variable = PigeonPea.green_biomass
-variable = PigeonPea.GreenWt
-variable = PigeonPea.GreenP
-variable = PigeonPea.SenescedP
+variable = PigeonPea.LiveWt
+variable = PigeonPea.LiveP
+variable = PigeonPea.DeadP
 variable = PigeonPea.p_demand
 variable = PigeonPea.pfact_photo
 variable = PigeonPea.pfact_pheno
@@ -18,19 +18,19 @@ variable = PigeonPea.pfact_expansion
 variable = PigeonPea.pfact_grain
 variable = PigeonPea.biomass_p
 variable = PigeonPea.green_biomass_p
-variable = PigeonPea.grain_p
-variable = PigeonPea.LeafGreenP
-variable = PigeonPea.StemGreenP
-variable = PigeonPea.RootGreenP
-variable = PigeonPea.PodGreenP
+variable = PigeonPea.GrainP
+variable = PigeonPea.LeafLiveP
+variable = PigeonPea.StemLiveP
+variable = PigeonPea.RootLiveP
+variable = PigeonPea.PodLiveP
 variable = PigeonPea.FruitTotalP
 variable = PigeonPea.GrowthP
 variable = PigeonPea.RetranslocationP
 variable = PigeonPea.DetachingP
 variable = PigeonPea.p_conc_stover
-variable = PigeonPea.LeafGreenPConc
-variable = PigeonPea.StemGreenPConc
-variable = PigeonPea.GrainGreenPConc
+variable = PigeonPea.LeafLivePConc
+variable = PigeonPea.StemLivePConc
+variable = PigeonPea.GrainLivePConc
 variable = PigeonPea.p_uptake_stover
 variable = PigeonPea.grain_p_demand
 variable = surfaceom.surfaceom_p
@@ -73,7 +73,7 @@ if day = 290 and year  = 1988 then
    PigeonPea sow cultivar = short_duration, plants = 10 (/m2), sowing_depth = 40 (mm)
 endif
 
-if PigeonPea.StageName = 'harvest_ripe' or PigeonPea.plant_status = 'dead' then
+if PigeonPea.StageName = 'harvest_ripe' or PigeonPea.PlantStatus = 'dead' then
    PigeonPea harvest
    PigeonPea end_crop
 

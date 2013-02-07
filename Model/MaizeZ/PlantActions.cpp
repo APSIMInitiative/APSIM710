@@ -31,14 +31,14 @@ void Plant::doRegistrations(void)
    scienceAPI.expose("temp_stress", "",          "",                         false, tempStress);
    scienceAPI.expose("vpd",         "",          "Vapour pressure deficit",  false, vpd);
    scienceAPI.expose("transp_eff",  "g/m2",      "Transpiration efficiency", false, transpEff);
-   scienceAPI.expose("plants",      "plants/m2", "Plant density",            false, plantDensity);
+   scienceAPI.expose("Population",      "plants/m2", "Plant density",            false, plantDensity);
    scienceAPI.expose("TillerNo",       "tillers/plant", "No of tillers on main stem",       false, ftn);
    scienceAPI.expose("TillerNoFertile","tillers/plant", "No of tillers that produce a head",false, ftn);
 
-   scienceAPI.exposeFunction("plant_status", "",   "Status of crop", StringFunction(&Plant::getPlantStatus));
+   scienceAPI.exposeFunction("PlantStatus", "",   "Status of crop", StringFunction(&Plant::getPlantStatus));
    scienceAPI.exposeFunction("height",       "mm", "Height of crop", FloatFunction(&Plant::get_height));
-   scienceAPI.exposeFunction("cover_green",  "",   "Green cover",    FloatFunction(&Plant::get_cover_green));
-   scienceAPI.exposeFunction("cover_tot",    "",   "Total cover",    FloatFunction(&Plant::get_cover_tot));
+   scienceAPI.exposeFunction("CoverLive",  "",   "Live cover",    FloatFunction(&Plant::get_cover_green));
+   scienceAPI.exposeFunction("CoverTotal",    "",   "Total cover",    FloatFunction(&Plant::get_cover_tot));
 
    }
 //------------------------------------------------------------------------------------------------

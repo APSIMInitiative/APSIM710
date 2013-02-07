@@ -119,9 +119,9 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
            if (fasw10 >= 0.0) and (fasw10 <= 0.99) and (fasw70 >= 0.75)
                 then
               if (srg_seeding = 1 ) then
-                  sorghum sow plants = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+                  sorghum sow population = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
               else
-                  sorghum sow plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+                  sorghum sow population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
               endif
               rz_no3 = no3(1) + no3(2) + no3(3)
               if rz_no3 < srg_fert_target then
@@ -142,20 +142,20 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
         else
         endif
      else
-        if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+        if wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' then
            w_mat_day = day
            wheat harvest
            wheat kill_crop
            wheat end_crop
            crop_in = 0
         endif
-        if (chickpea.stage = 11) or (chickpea.plant_status = 'dead') then
+        if (chickpea.phenologystage = 11) or (chickpea.plantstatus = 'dead') then
            c_mat_day = day
            chickpea harvest
            chickpea end_crop
            crop_in = 0
         endif
-        if (sorghum.stage = 11) or (sorghum.plant_status = 'dead') or ((sorghum.plant_status = 'alive') and (day = 166)) then
+        if (sorghum.phenologystage = 11) or (sorghum.plantstatus = 'dead') or ((sorghum.plantstatus = 'alive') and (day = 166)) then
            s_mat_day = day
            sorghum harvest
            sorghum kill_crop
@@ -434,15 +434,15 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
 
 ------- Tracker Initialisation ------------------------------------------------
      Tracker variables:
-        maximum of wheat.yield on end_of_day from reported to now as wht_yield
+        maximum of wheat.Yield on end_of_day from reported to now as wht_yield
         sum of wheat.ep on end_of_day from reported to now as wht_ep
-        maximum of wheat.lai on end_of_day from reported to now as wht_laimax
-        maximum of chickpea.yield on end_of_day from reported to now as chk_yield
+        maximum of wheat.LAI on end_of_day from reported to now as wht_laimax
+        maximum of chickpea.Yield on end_of_day from reported to now as chk_yield
         sum of chickpea.ep on end_of_day from reported to now as chk_ep
-        maximum of chickpea.lai on end_of_day from reported to now as chk_laimax
-        maximum of sorghum.yield on end_of_day from reported to now as sor_yield
+        maximum of chickpea.LAI on end_of_day from reported to now as chk_laimax
+        maximum of sorghum.Yield on end_of_day from reported to now as sor_yield
         sum of sorghum.ep on end_of_day from reported to now as sor_ep
-        maximum of sorghum.lai on end_of_day from reported to now as sor_laimax
+        maximum of sorghum.LAI on end_of_day from reported to now as sor_laimax
         average of surfaceom.surfaceom_wt on end_of_day from reported to now as avg_residue
         maximum of surfaceom.surfaceom_wt on end_of_day from reported to now as max_residue
         minimum of surfaceom.surfaceom_wt on end_of_day from reported to now as min_residue
@@ -482,7 +482,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
      Manager creating a new local real variable : fasw170 = 1.00000
      Manager creating a new local real variable : fasw190 = 1.00000
 3 January 1970(Day of year=3), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 3 January 1970(Day of year=3), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -632,7 +632,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 27.07		    3.62
                          P  (kg/ha) =                  0.00		    0.00
 9 November 1970(Day of year=313), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 9 November 1970(Day of year=313), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -780,7 +780,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 24.16		    3.12
                          P  (kg/ha) =                  0.00		    0.00
 5 November 1971(Day of year=309), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 5 November 1971(Day of year=309), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -928,7 +928,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 25.89		    3.34
                          P  (kg/ha) =                  0.00		    0.00
 14 November 1972(Day of year=319), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 14 November 1972(Day of year=319), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1076,7 +1076,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 26.00		    3.29
                          P  (kg/ha) =                  0.00		    0.00
 27 October 1973(Day of year=300), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 27 October 1973(Day of year=300), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1224,7 +1224,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 23.94		    3.47
                          P  (kg/ha) =                  0.00		    0.00
 28 October 1974(Day of year=301), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 28 October 1974(Day of year=301), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1372,7 +1372,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 23.89		    4.05
                          P  (kg/ha) =                  0.00		    0.00
 3 November 1976(Day of year=308), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 3 November 1976(Day of year=308), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1514,7 +1514,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 28.19		    3.99
                          P  (kg/ha) =                  0.00		    0.00
 4 November 1978(Day of year=308), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 4 November 1978(Day of year=308), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1656,7 +1656,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 31.59		    4.78
                          P  (kg/ha) =                  0.00		    0.00
 6 December 1980(Day of year=341), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 6 December 1980(Day of year=341), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1804,7 +1804,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 23.67		    3.32
                          P  (kg/ha) =                  0.00		    0.00
 27 October 1981(Day of year=300), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 27 October 1981(Day of year=300), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1952,7 +1952,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 23.15		    3.33
                          P  (kg/ha) =                  0.00		    0.00
 6 January 1983(Day of year=6), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 6 January 1983(Day of year=6), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2100,7 +2100,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                  8.72		    0.96
                          P  (kg/ha) =                  0.00		    0.00
 28 October 1983(Day of year=301), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 28 October 1983(Day of year=301), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2242,7 +2242,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 28.78		    3.47
                          P  (kg/ha) =                  0.00		    0.00
 29 October 1984(Day of year=303), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 29 October 1984(Day of year=303), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2390,7 +2390,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 24.09		    2.60
                          P  (kg/ha) =                  0.00		    0.00
 18 November 1985(Day of year=322), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 18 November 1985(Day of year=322), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2538,7 +2538,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 18.27		    2.81
                          P  (kg/ha) =                  0.00		    0.00
 14 December 1988(Day of year=349), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 14 December 1988(Day of year=349), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2680,7 +2680,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 26.33		    3.13
                          P  (kg/ha) =                  0.00		    0.00
 3 November 1991(Day of year=307), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 3 November 1991(Day of year=307), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2822,7 +2822,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 32.35		    4.79
                          P  (kg/ha) =                  0.00		    0.00
 20 December 1992(Day of year=355), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 20 December 1992(Day of year=355), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2970,7 +2970,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 22.30		    2.43
                          P  (kg/ha) =                  0.00		    0.00
 27 October 1993(Day of year=300), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 27 October 1993(Day of year=300), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -3118,7 +3118,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 21.79		    2.16
                          P  (kg/ha) =                  0.00		    0.00
 9 January 1995(Day of year=9), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 9 January 1995(Day of year=9), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -3266,7 +3266,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 23.31		    2.38
                          P  (kg/ha) =                  0.00		    0.00
 3 December 1995(Day of year=337), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 3 December 1995(Day of year=337), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -3414,7 +3414,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 22.18		    2.78
                          P  (kg/ha) =                  0.00		    0.00
 20 December 1996(Day of year=355), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 20 December 1996(Day of year=355), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -3562,7 +3562,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 22.82		    2.70
                          P  (kg/ha) =                  0.00		    0.00
 17 December 1997(Day of year=351), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 17 December 1997(Day of year=351), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -3710,7 +3710,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 18.52		    2.50
                          P  (kg/ha) =                  0.00		    0.00
 28 October 1998(Day of year=301), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 28 October 1998(Day of year=301), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -3858,7 +3858,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 22.71		    2.88
                          P  (kg/ha) =                  0.00		    0.00
 2 November 1999(Day of year=306), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 2 November 1999(Day of year=306), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -4006,7 +4006,7 @@ Title                  = site=coonamble; soil=lg1; treatment=s1; Nrate=50; RootD
                          N  (kg/ha) =                 26.67		    3.27
                          P  (kg/ha) =                  0.00		    0.00
 27 October 2000(Day of year=301), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 27 October 2000(Day of year=301), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

@@ -1765,7 +1765,7 @@ public class AgPasture
         get { return thisCropName; }
     }
 
-    [Output]
+    [Output("PlantStatus")]
     [Units("")]
     public String plant_status
     {
@@ -2048,7 +2048,7 @@ public class AgPasture
         get { return (float)p_totalLAI; }
     }
 
-    [Output]
+    [Output("coverlive")]
     [Units("%")]
     public float Cover_green
     {
@@ -2071,7 +2071,7 @@ public class AgPasture
         }
     }
 
-    [Output]
+    [Output("covertotal")]
     [Units("%")]
     public float Cover_tot
     {

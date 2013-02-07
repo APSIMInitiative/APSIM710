@@ -5,13 +5,13 @@ outputfile  =soybean.out
 
 variable = clock.day
 variable = clock.year
-variable = soybean.lai
-variable = soybean.biomass
+variable = soybean.LAI
+variable = soybean.Biomass
 variable = soybean.green_biomass
 
-variable = soybean.GreenWt
-variable = soybean.GreenP
-variable = soybean.SenescedP
+variable = soybean.LiveWt
+variable = soybean.LiveP
+variable = soybean.DeadP
 variable = soybean.p_demand
 variable = soybean.pfact_photo
 variable = soybean.pfact_pheno
@@ -19,19 +19,19 @@ variable = soybean.pfact_expansion
 variable = soybean.pfact_grain
 variable = soybean.biomass_p
 variable = soybean.green_biomass_p
-variable = soybean.grain_p
-variable = soybean.LeafGreenP
-variable = soybean.StemGreenP
-variable = soybean.RootGreenP
-variable = soybean.PodGreenP
+variable = soybean.GrainP
+variable = soybean.LeafLiveP
+variable = soybean.StemLiveP
+variable = soybean.RootLiveP
+variable = soybean.PodLiveP
 variable = soybean.FruitTotalP
 variable = soybean.GrowthP
 variable = soybean.RetranslocationP
 variable = soybean.DetachingP
 variable = soybean.p_conc_stover
-variable = soybean.LeafGreenPConc
-variable = soybean.StemGreenPConc
-variable = soybean.GrainGreenPConc
+variable = soybean.LeafLivePConc
+variable = soybean.StemLivePConc
+variable = soybean.GrainLivePConc
 variable = soybean.p_uptake_stover
 variable = soybean.grain_p_demand
 
@@ -73,7 +73,7 @@ if day = 330 and year  = 1988 then
    soybean sow cultivar = davis, plants = 25 (/m2), sowing_depth = 40 (mm)
 endif
 
-if soybean.StageName = 'harvest_ripe' or soybean.plant_status = 'dead' then
+if soybean.StageName = 'harvest_ripe' or soybean.PlantStatus = 'dead' then
    soybean harvest
    soybean end_crop
 

@@ -13,7 +13,7 @@ namespace ApsimFile
     // ------------------------------------------
     public class APSIMChangeTool
     {
-        public static int CurrentVersion = 33;
+        public static int CurrentVersion = 34;
         private delegate void UpgraderDelegate(XmlNode Data);
 
         public static void Upgrade(XmlNode Data)
@@ -66,7 +66,8 @@ namespace ApsimFile
                                           new UpgraderDelegate(ToVersion30),
                                           new UpgraderDelegate(ToVersion31),
                                           new UpgraderDelegate(ToVersion32),
-                                          new UpgraderDelegate(ToVersion33)
+                                          new UpgraderDelegate(ToVersion33),
+                                          new UpgraderDelegate(ToVersion34)
                                        };
             if (Data != null)
             {
@@ -726,7 +727,7 @@ namespace ApsimFile
                         string NewName = Bits[4];
                         foreach (XmlNode Variable in XmlHelper.ChildNodes(Variables, "Variable"))
                         {
-                            string VariableLine = XmlHelper.Name(Variable);
+                            string VariableLine = Variable.InnerText;
 
                             // Do replacement where a module name was specified.
                             int Pos = VariableLine.ToLower().IndexOf("." + OldName);
@@ -741,13 +742,15 @@ namespace ApsimFile
                                                   + VariableLine.Substring(Pos + OldName.Length + 1);
                                 }
                             }
-                            else if (VariableLine.Length >= OldName.Length && VariableLine.ToLower().Substring(0, OldName.Length) == OldName.ToLower())
+                            // changing this as it had the effect of changing names with the same substring. e.g grain_n and grain_no evaluated as equal.
+                            //else if (VariableLine.Length >= OldName.Length && VariableLine.ToLower().Substring(0, OldName.Length) == OldName.ToLower())
+                            else if (VariableLine.ToLower().Equals(OldName))
                             {
                                 VariableLine = NewName;
                                 if (NewName.Length < VariableLine.Length)
                                     VariableLine += VariableLine.Substring(NewName.Length);
                             }
-                            XmlHelper.SetName(Variable, VariableLine);
+                            Variable.InnerText = VariableLine;
                         }
                     }
                     else if (Bits.Length == 3 && Bits[0] == "Removed")
@@ -2178,6 +2181,15 @@ namespace ApsimFile
                     XmlHelper.ChangeType(Cl, "Solute");
                 }
             }
+        }
+
+        /// <summary>
+        /// Convert variable names.
+        /// </summary>
+        /// <param name="Node"></param>
+        private static void ToVersion34(XmlNode Node)
+        {
+            ApplyConversionsFile(Node, Configuration.Instance.ConversionsNode("7.5(2)"));
         }
 
         private static void UnlinkNode(XmlNode Node)

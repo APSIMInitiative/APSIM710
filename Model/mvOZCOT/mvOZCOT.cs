@@ -1330,7 +1330,7 @@ namespace ManagedComponent.MvOZCOT
 
             //====================================================================
             //Output 'readable only' properties
-            addProperty("plant_status", PROP_plant_status, true, false, false, "-", false, "string", "Plant status", "Plant status");
+            addProperty("PlantStatus", PROP_plant_status, true, false, false, "-", false, "string", "Plant status", "Plant status");
             addProperty("ozcot_status", PROP_ozcot_status, true, false, false, "-", false, "integer4", "model status", "model status - termination reason");
             addProperty("ozcot_sumDD", PROP_ozcot_sumDD, true, false, false, "-", false, "double", "accumulated DayDegrees", "accumulated DayDegrees");
             addProperty("lai", PROP_lai, true, false, false, "m2/m2", false, "double", "crop LAI", "crop LAI");
@@ -1373,7 +1373,7 @@ namespace ManagedComponent.MvOZCOT
             addProperty("yield", PROP_yield, true, false, false, "kg/ha", false, "double", "lint yield kg/ha", "lint yield kg/ha");
             addProperty("lint_yield", PROP_lint_yield, true, false, false, "kg/ha", false, "double", "lint yield kg/ha", "lint yield kg/ha");
             addProperty("cover_green", PROP_cover_green, true, false, false, "-", false, "double", "crop coverage", "crop coverage of the ground on an area basis");
-            addProperty("cover_tot", PROP_cover_tot, true, false, false, "-", false, "double", "crop coverage of ground", "");
+            addProperty("covertotal", PROP_cover_tot, true, false, false, "-", false, "double", "crop coverage of ground", "");
             addProperty("availn", PROP_availn, true, false, false, "kg/ha", false, "double", "N available in soil", "N available in soil for uptake");
             addProperty("uptakn", PROP_uptakn, true, false, false, "kg/ha", false, "double", "N taken up by crop", "N taken up by crop");
             addProperty("tsno3", PROP_tsno3, true, false, false, "kg/ha", false, "double", "soil nitrate", "total soil nitrate");

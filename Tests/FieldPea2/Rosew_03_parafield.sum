@@ -129,8 +129,8 @@ Paddock:
         LeafTranspiration
         LeafWaterDemand
         RootDepth
-        Cover_green
-        Cover_tot
+        CoverLive
+        CoverTotal
         Cover_dead
         LeafLAI
         LeafLAIDead
@@ -247,7 +247,7 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     if fieldpea2.plant_status <> 'out' then
+     if fieldpea2.plantstatus <> 'out' then
        accumplantn =  accumplantn - fieldpea2.rootnuptake
      endif
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
@@ -259,7 +259,7 @@ Paddock:
      deltasurfaceomn = surfaceom_n - initialsurfaceomn
      deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
      accumeo = accumeo - eo
-     if fieldpea2.plant_status <> 'out' then
+     if fieldpea2.plantstatus <> 'out' then
        accumep = accumep - fieldpea2.leaftranspiration
      endif
      accumes = accumes - es
@@ -269,7 +269,7 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
-     if fieldpea2.plant_status <> 'out' then
+     if fieldpea2.plantstatus <> 'out' then
        if fieldpea2.stagecodevalue >= 3 then
          accumttemerg = accumttemerg + fieldpea2.phenologythermaltimevalue
        endif

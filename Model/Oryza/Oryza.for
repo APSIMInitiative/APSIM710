@@ -1339,7 +1339,7 @@
 *- Implementation Section ----------------------------------
       call push_routine (myname)
 
-      if (variable_name .eq. 'plant_status') then
+      if (variable_name .eq. 'plantstatus') then
          call respond2get_char_var (variable_name
      :                             , '()'
      :                             , g%plant_status)
@@ -1615,7 +1615,7 @@
      :              ,'()'            ! variable units
      :              ,g%dae)            ! variable
 
-      elseif (variable_name .eq. 'cover_green') then
+      elseif (variable_name .eq. 'coverlive') then
 
          cover_green = 1 - exp(-0.5 * g%rlai)
          call respond2get_real_var (
@@ -1623,7 +1623,7 @@
      :              ,'()'            ! variable units
      :              ,cover_green)            ! variable
 
-      elseif (variable_name .eq. 'cover_tot') then
+      elseif (variable_name .eq. 'covertotal') then
 
          cover_tot = 1 - exp(-0.5 * g%max_rlai)
          call respond2get_real_var (

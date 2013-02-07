@@ -119,9 +119,9 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
            if (fasw10 >= 0.0) and (fasw10 <= 0.99) and (fasw70 >= 0.75)
                 then
               if (srg_seeding = 1 ) then
-                  sorghum sow plants = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+                  sorghum sow population = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
               else
-                  sorghum sow plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+                  sorghum sow population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
               endif
               rz_no3 = no3(1) + no3(2) + no3(3)
               if rz_no3 < srg_fert_target then
@@ -142,20 +142,20 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
         else
         endif
      else
-        if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+        if wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' then
            w_mat_day = day
            wheat harvest
            wheat kill_crop
            wheat end_crop
            crop_in = 0
         endif
-        if (chickpea.stage = 11) or (chickpea.plant_status = 'dead') then
+        if (chickpea.phenologystage = 11) or (chickpea.plantstatus = 'dead') then
            c_mat_day = day
            chickpea harvest
            chickpea end_crop
            crop_in = 0
         endif
-        if (sorghum.stage = 11) or (sorghum.plant_status = 'dead') or ((sorghum.plant_status = 'alive') and (day = 166)) then
+        if (sorghum.phenologystage = 11) or (sorghum.plantstatus = 'dead') or ((sorghum.plantstatus = 'alive') and (day = 166)) then
            s_mat_day = day
            sorghum harvest
            sorghum kill_crop
@@ -434,15 +434,15 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
 
 ------- Tracker Initialisation ------------------------------------------------
      Tracker variables:
-        maximum of wheat.yield on end_of_day from reported to now as wht_yield
+        maximum of wheat.Yield on end_of_day from reported to now as wht_yield
         sum of wheat.ep on end_of_day from reported to now as wht_ep
-        maximum of wheat.lai on end_of_day from reported to now as wht_laimax
-        maximum of chickpea.yield on end_of_day from reported to now as chk_yield
+        maximum of wheat.LAI on end_of_day from reported to now as wht_laimax
+        maximum of chickpea.Yield on end_of_day from reported to now as chk_yield
         sum of chickpea.ep on end_of_day from reported to now as chk_ep
-        maximum of chickpea.lai on end_of_day from reported to now as chk_laimax
-        maximum of sorghum.yield on end_of_day from reported to now as sor_yield
+        maximum of chickpea.LAI on end_of_day from reported to now as chk_laimax
+        maximum of sorghum.Yield on end_of_day from reported to now as sor_yield
         sum of sorghum.ep on end_of_day from reported to now as sor_ep
-        maximum of sorghum.lai on end_of_day from reported to now as sor_laimax
+        maximum of sorghum.LAI on end_of_day from reported to now as sor_laimax
         average of surfaceom.surfaceom_wt on end_of_day from reported to now as avg_residue
         maximum of surfaceom.surfaceom_wt on end_of_day from reported to now as max_residue
         minimum of surfaceom.surfaceom_wt on end_of_day from reported to now as min_residue
@@ -482,7 +482,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
      Manager creating a new local real variable : fasw170 = 1.00000
      Manager creating a new local real variable : fasw190 = 1.00000
 3 January 1970(Day of year=3), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 3 January 1970(Day of year=3), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -632,7 +632,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 23.76		    3.07
                          P  (kg/ha) =                  0.00		    0.00
 8 November 1970(Day of year=312), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 8 November 1970(Day of year=312), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -780,7 +780,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 26.66		    3.27
                          P  (kg/ha) =                  0.00		    0.00
 29 November 1971(Day of year=333), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 29 November 1971(Day of year=333), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -928,7 +928,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 23.59		    2.82
                          P  (kg/ha) =                  0.00		    0.00
 16 November 1972(Day of year=321), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 16 November 1972(Day of year=321), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1076,7 +1076,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 17.37		    2.57
                          P  (kg/ha) =                  0.00		    0.00
 13 November 1973(Day of year=317), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 13 November 1973(Day of year=317), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1224,7 +1224,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 24.48		    3.13
                          P  (kg/ha) =                  0.00		    0.00
 22 November 1974(Day of year=326), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 22 November 1974(Day of year=326), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1372,7 +1372,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 18.88		    2.06
                          P  (kg/ha) =                  0.00		    0.00
 28 October 1975(Day of year=301), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 28 October 1975(Day of year=301), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1520,7 +1520,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 23.36		    2.84
                          P  (kg/ha) =                  0.00		    0.00
 27 October 1976(Day of year=301), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 27 October 1976(Day of year=301), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1668,7 +1668,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 21.60		    2.85
                          P  (kg/ha) =                  0.00		    0.00
 27 October 1977(Day of year=300), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 27 October 1977(Day of year=300), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1816,7 +1816,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 22.12		    2.55
                          P  (kg/ha) =                  0.00		    0.00
 28 October 1978(Day of year=301), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 28 October 1978(Day of year=301), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1964,7 +1964,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 25.98		    3.31
                          P  (kg/ha) =                  0.00		    0.00
 28 October 1979(Day of year=301), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 28 October 1979(Day of year=301), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2112,7 +2112,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 18.30		    2.01
                          P  (kg/ha) =                  0.00		    0.00
 4 November 1981(Day of year=308), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 4 November 1981(Day of year=308), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2254,7 +2254,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 27.32		    3.14
                          P  (kg/ha) =                  0.00		    0.00
 4 December 1982(Day of year=338), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 4 December 1982(Day of year=338), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2402,7 +2402,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 22.24		    2.98
                          P  (kg/ha) =                  0.00		    0.00
 28 October 1983(Day of year=301), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 28 October 1983(Day of year=301), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2550,7 +2550,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 27.24		    3.66
                          P  (kg/ha) =                  0.00		    0.00
 1 November 1984(Day of year=306), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 1 November 1984(Day of year=306), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2698,7 +2698,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 19.58		    2.89
                          P  (kg/ha) =                  0.00		    0.00
 2 November 1985(Day of year=306), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 2 November 1985(Day of year=306), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2846,7 +2846,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 24.75		    2.81
                          P  (kg/ha) =                  0.00		    0.00
 15 November 1986(Day of year=319), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 15 November 1986(Day of year=319), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2994,7 +2994,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 13.93		    1.82
                          P  (kg/ha) =                  0.00		    0.00
 4 December 1987(Day of year=338), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 4 December 1987(Day of year=338), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -3142,7 +3142,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 18.03		    2.11
                          P  (kg/ha) =                  0.00		    0.00
 18 November 1988(Day of year=323), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 18 November 1988(Day of year=323), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -3290,7 +3290,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 17.86		    2.34
                          P  (kg/ha) =                  0.00		    0.00
 18 November 1989(Day of year=322), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 18 November 1989(Day of year=322), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -3438,7 +3438,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 25.51		    3.21
                          P  (kg/ha) =                  0.00		    0.00
 28 October 1990(Day of year=301), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 28 October 1990(Day of year=301), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -3586,7 +3586,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 20.41		    2.46
                          P  (kg/ha) =                  0.00		    0.00
 15 December 1991(Day of year=349), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 15 December 1991(Day of year=349), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -3734,7 +3734,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 19.71		    3.02
                          P  (kg/ha) =                  0.00		    0.00
 22 November 1994(Day of year=326), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 22 November 1994(Day of year=326), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -3876,7 +3876,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 27.49		    2.84
                          P  (kg/ha) =                  0.00		    0.00
 25 November 1995(Day of year=329), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 25 November 1995(Day of year=329), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -4024,7 +4024,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 24.73		    3.21
                          P  (kg/ha) =                  0.00		    0.00
 10 December 1996(Day of year=345), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 10 December 1996(Day of year=345), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -4172,7 +4172,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 20.60		    3.09
                          P  (kg/ha) =                  0.00		    0.00
 7 November 1997(Day of year=311), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 7 November 1997(Day of year=311), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -4320,7 +4320,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 15.67		    2.13
                          P  (kg/ha) =                  0.00		    0.00
 29 October 1998(Day of year=302), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 29 October 1998(Day of year=302), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -4468,7 +4468,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 18.48		    1.87
                          P  (kg/ha) =                  0.00		    0.00
 28 October 1999(Day of year=301), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 28 October 1999(Day of year=301), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -4616,7 +4616,7 @@ Title                  = site=goondiwindi; soil=cd2; treatment=s1; Nrate=50; Roo
                          N  (kg/ha) =                 26.59		    3.92
                          P  (kg/ha) =                  0.00		    0.00
 23 November 2000(Day of year=328), Manager: 
-     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 23 November 2000(Day of year=328), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

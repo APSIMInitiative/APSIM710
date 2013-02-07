@@ -44,26 +44,26 @@ Title                  =
      Output variables:
         clock.dd/mm/yyyy as date
         maize.DaysAfterSowing
-        maize.stage
+        maize.PhenologyStage
         maize.dc_stage as zadok
-        maize.lai
-        maize.biomass_wt as biomass
-        maize.grain_wt as grain
+        maize.LAI
+        maize.biomass_wt as Biomass
+        maize.GrainWt as grain
         maize.biomass_n
-        maize.grain_n
+        maize.GrainN
         maize.tiller_no_fertile as tillers
-        maize.root_depth as rootdepth
-        maize.swdef_pheno as ws_pheno
-        maize.swdef_photo as ws_photo
-        maize.swdef_expan as ws_expan
+        maize.RootDepth as rootdepth
+        maize.WaterStressPheno as ws_pheno
+        maize.WaterStressPhoto as ws_photo
+        maize.WaterStressExpansion as ws_expan
         maize.swdef_tiller as ws_tiller
-        maize.nfact_pheno as Ns_pheno
-        maize.nfact_photo as Ns_photo
-        maize.nfact_expan as Ns_expan
+        maize.NStressPheno as Ns_pheno
+        maize.NStressPhoto as Ns_photo
+        maize.NStressExpansion as Ns_expan
         maize.nfact_tiller as Ns_tiller
         maize.RootGreenNConc
-        maize.LeafGreenNConc
-        maize.StemGreenNConc
+        maize.LeafLiveNConc
+        maize.StemLiveNConc
         maize.n_conc_grain
         maize.GreenWt
         maize.GreenWt
@@ -80,7 +80,7 @@ Title                  =
         maize.pfact_grain
         maize.biomass_p
         maize.green_biomass_p
-        maize.grain_p
+        maize.GrainP
         maize.LeafGreenP
         maize.StemGreenP
         maize.RootGreenP
@@ -181,7 +181,7 @@ Title                  =
         if day = 305 and year = 1992 then
            maize sow cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
         endif
-        if (maize.stage = 11) then
+        if (maize.phenologystage = 11) then
            maize harvest
            maize end_crop
         endif
@@ -403,7 +403,7 @@ Title                  =
          Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
          Day no    mm      m^2    m      code     name       no
          -------------------------------------------------------
-            305   30.0   10.0    1.0    0.0   dekalb_xl8    0.00
+            305   30.0    0.0    1.0    0.0   dekalb_xl8    0.00
          -------------------------------------------------------
      
         - Reading root profile parameters
@@ -449,90 +449,13 @@ Title                  =
      
      
      
+         kill. Standing above-ground dm =     0.0 (kg/ha)
 1 November 1992(Day of year=306), Maize: 
       stage    2.0 germination
 3 November 1992(Day of year=308), Maize: 
       stage    3.0 emergence
-                          biomass =          0.2000000       lai =    0.3800000E-02
-                          stover N conc =    4.400000       extractable sw =    23.83536
-18 November 1992(Day of year=323), Maize: 
-      stage    4.0 end_of_juvenile
-                          biomass =           3.049744       lai =    0.3892657E-01
-                          stover N conc =    3.597824       extractable sw =    57.48120
-23 November 1992(Day of year=328), Maize: 
-      stage    5.0 floral_initiation
-                          biomass =           7.727930       lai =    0.9712359E-01
-                          stover N conc =    3.216136       extractable sw =    114.4104
-4 January 1993(Day of year=4), Maize: 
-      stage    6.0 flag_leaf
-                          biomass =           726.1813       lai =     4.464487
-                          stover N conc =    1.731983       extractable sw =    160.9415
-10 January 1993(Day of year=10), Maize: 
-      stage    7.0 flowering
-                          biomass =           867.3586       lai =     4.321976
-                          stover N conc =    1.524521       extractable sw =    183.9795
-20 January 1993(Day of year=20), Maize: 
-      stage    8.0 start_grain_fill
-                          biomass =           1090.926       lai =     3.976502
-                          stover N conc =    1.267974       extractable sw =    139.2540
-7 March 1993(Day of year=66), Maize: 
-      stage    9.0 end_grain_fill
-                          biomass =           1426.998       lai =     1.665884
-                          stover N conc =    1.050153       extractable sw =    47.56718
-8 March 1993(Day of year=67), Maize: 
-      stage   10.0 maturity
-                          biomass =           1428.089       lai =     1.610173
-                          stover N conc =    1.050194       extractable sw =    47.28943
-9 March 1993(Day of year=68), Maize: 
-      stage   11.0 harvest_ripe
-                          biomass =           1428.089       lai =    0.3800154E-02
-                          stover N conc =    1.074572       extractable sw =    46.98492
-10 March 1993(Day of year=69), Manager: 
-     Manager sending message :- maize harvest
-10 March 1993(Day of year=69), Maize: 
-     
-     
-     
-     flowering (DAS) =   72                                maturity (DAS)  =     129
-      flowering day  =   10                                 stover (kg/ha) =    9217.2
-      maturity day        =   67                            grain yield (kg/ha) =    5063.7
-      grain % water content   =   15.5                      grain yield wet (kg/ha) =    5992.5
-      grain wt (g) =     0.207                              grains/m^2   =  2446.793
-      grains/head = 244.7                                   maximum lai = 4.500
-      total above ground biomass (kg/ha) =   14280.9
-      live above ground biomass (kg/ha) =   14280.9
-      green above ground biomass (kg/ha) =   12612.2
-      senesced above ground biomass (kg/ha) =    1668.7
-      dead above ground biomass (kg/ha) =       0.0
-      number of leaves =  19.5
-      grain N percent =      1.13                           total N content (kg/ha) =    143.87
-      grain N uptake (kg/ha) =     57.26                    senesced N content (kg/ha) =      8.34
-      green N content (kg/ha) =     78.27                   dead N content (kg/ha) =      0.00
-      grain P percent            =      0.16                total P content (kg/ha)    =     10.41
-      grain P uptake (kg/ha)     =      8.00                senesced P content (kg/ha) =      0.83
-      green P content (kg/ha)    =      1.58                dead P content (kg/ha)     =      0.00
-     
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence           to end_of_juvenile         0.000        0.000        0.000        0.092
-         end_of_juvenile     to floral_initiation       0.000        0.000        0.000        0.089
-         floral_initiation   to flag_leaf               0.000        0.000        0.006        0.107
-         flag_leaf           to flowering               0.000        0.000        0.174        0.339
-         flowering           to start_grain_fill        0.000        0.000        0.242        0.393
-         start_grain_fill    to end_grain_fill          0.000        0.000        0.173        0.294
-     
-     Crop harvested.
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =               5063.68                    0.00
-                          N  (kg/ha) =                 57.26                    0.00
-     
-     Manager sending message :- maize end_crop
-         Crop ended. Yield (dw) =     0.0
-         Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
-                          DM (kg/ha) =               9217.22                 2630.79
-                          N  (kg/ha) =                 86.61                   18.71
-                          P  (kg/ha) =                 24.13                   21.42
-     
+                          biomass =           0.000000       lai =     0.000000
+                          stover N conc =    0.000000       extractable sw =    23.83536
 1 May 1993(Day of year=121), Manager: 
      Manager sending message :- surfaceom tillage  type = chisel
 1 May 1993(Day of year=121), SurfaceOM: 

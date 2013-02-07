@@ -22,18 +22,18 @@ public class CropType
             return Comp.Variable("biomass").ToSingle();
         }
     }
-    public Single cover_green
+    public Single CoverLive
     {
         get
         {
-            return Comp.Variable("cover_green").ToSingle();
+            return Comp.Variable("CoverLive").ToSingle();
         }
     }
-    public Single cover_tot
+    public Single CoverTotal
     {
         get
         {
-            return Comp.Variable("cover_tot").ToSingle();
+            return Comp.Variable("CoverTotal").ToSingle();
         }
     }
     public Int32 daysaftersowing
@@ -51,11 +51,11 @@ public class CropType
         }
     }
 
-    public Single grain_no
+    public Single GrainNumber
     {
         get
         {
-            return Comp.Variable("grain_no").ToSingle();
+            return Comp.Variable("GrainNumber").ToSingle();
         }
     }
     public Single grain_protein
@@ -72,18 +72,18 @@ public class CropType
             return Comp.Variable("grain_size").ToSingle();
         }
     }
-    public Single grain_wt
+    public Single GrainWt
     {
         get
         {
-            return Comp.Variable("grain_wt").ToSingle();
+            return Comp.Variable("GrainWt").ToSingle();
         }
     }
-    public Single grainn
+    public Single GrainN
     {
         get
         {
-            return Comp.Variable("grainn").ToSingle();
+            return Comp.Variable("GrainN").ToSingle();
         }
     }
     public Single grainwt
@@ -121,11 +121,11 @@ public class CropType
             return Comp.Variable("leaf_area").ToSingleArray();
         }
     }
-    public Single leaf_no
+    public Single LeafNumber
     {
         get
         {
-            return Comp.Variable("leaf_no").ToSingle();
+            return Comp.Variable("LeafNumber").ToSingle();
         }
     }
     public Single[] ll
@@ -149,25 +149,25 @@ public class CropType
             return Comp.Variable("name").ToString();
         }
     }
-    public Single plants
+    public Single Population
     {
         get
         {
-            return Comp.Variable("plants").ToSingle();
+            return Comp.Variable("Population").ToSingle();
         }
     }
-    public Single root_depth
+    public Single RootDepth
     {
         get
         {
-            return Comp.Variable("root_depth").ToSingle();
+            return Comp.Variable("RootDepth").ToSingle();
         }
     }
-    public Single stage
+    public Single PhenologyStage
     {
         get
         {
-            return Comp.Variable("stage").ToSingle();
+            return Comp.Variable("PhenologyStage").ToSingle();
         }
     }
     public String stagename

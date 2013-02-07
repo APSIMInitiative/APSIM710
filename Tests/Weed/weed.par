@@ -7,8 +7,8 @@ logfile=weed.log
 
 variable = clock.day
 variable = clock.year
-variable = weed.lai as weed_lai
-variable = weed.biomass as weed_biomass
+variable = weed.LAI as weed_lai
+variable = weed.Biomass as weed_biomass
 variable = weed.green_biomass as weed_grn_biomass
 [sample_weed.report.parameters]
 outputfile  =winterfallow.out
@@ -17,18 +17,18 @@ outputfile  =winterfallow.out
 outputfile  =wheatgrass.out
 
 
-variable = wheat.lai
-variable = wheat.biomass
+variable = wheat.LAI
+variable = wheat.Biomass
 variable = wheat.green_biomass
 [sorghum_weed.report.parameters]
 outputfile  =Sorgrass.out
 
 
 
-variable = sorghum.lai
-variable = sorghum.biomass
+variable = sorghum.LAI
+variable = sorghum.Biomass
 variable = sorghum.green_biomass
-variable = sorghum.yield
+variable = sorghum.Yield
 [all.clock.parameters]
 ! Start and end date of run (day number of year and year)
 start_date=9/4/1988
@@ -47,7 +47,7 @@ if day = 120 and year = 1988 then
    weed_in = 1
 endif
 
-if weed.stage = 10 or weed.plant_status = 'dead' then
+if weed.PhenologyStage = 10 or weed.PlantStatus = 'dead' then
    weed kill_crop
    weed end_crop
 endif
@@ -60,7 +60,7 @@ if day = 169 and year = 1988 then
    weed_in = 1
 endif
 
-if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' then
+if wheat.StageName = 'harvest_ripe' or wheat.PlantStatus = 'dead' then
   wheat harvest
   wheat kill_crop
   wheat end_crop
@@ -74,14 +74,14 @@ if day = 305 and year = 1988 then
       weed_in = 1
 endif
 
-if (sorghum.stage = 11) then
+if (sorghum.PhenologyStage = 11) then
       sorghum harvest
       sorghum kill_crop
       sorghum end_crop
 endif
 
 ! if crop killed due to stress, end simulation
-if (sorghum.plant_status = 'dead')  then
+if (sorghum.PlantStatus = 'dead')  then
       sorghum harvest
       sorghum kill_crop
       sorghum end_crop
@@ -92,14 +92,14 @@ endif
 ! weeding by removing the crop of weeds with a kill_crop command
 ! if the weed is alive and it is within the bounds
 ! of the weeding period and within the bounds of the
-! rain amount or above the biomass limit
+! rain amount or above the Biomass limit
 
 if weed_in = 1 AND
    weed.DaysAfterSowing >= 20 AND
    weed.DaysAfterSowing <= 120 AND
    rain[5] >= 5 AND
    rain[5] <= 30 OR
-   weed.biomass > 500 THEN
+   weed.Biomass > 500 THEN
       weed kill_crop
       weed end_crop
       weed_in = 0

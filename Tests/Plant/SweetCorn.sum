@@ -49,8 +49,8 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        biomass
-        yield
+        Biomass
+        Yield
         grain_protein
         grain_size
         esw
@@ -65,9 +65,9 @@ Paddock:
         leaftotaln
         podtotaln
         graintotaln
-        lai
-        swdef_photo
-        nfact_photo
+        LAI
+        WaterStressPhoto
+        NStressPhoto
 
      Output file = SweetCorn.out
      Format = normal
@@ -89,7 +89,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if sweetcorn.stagename = 'harvest_ripe' or sweetcorn.plant_status = 'dead' then
+                if sweetcorn.stagename = 'harvest_ripe' or sweetcorn.plantstatus = 'dead' then
        sweetcorn  harvest
        sweetcorn  end_crop
                 endif
@@ -257,237 +257,13 @@ Paddock:
      Manager sending message :- sweetcorn sow  plants = 10, sowing_depth = 50, cultivar = h5, row_spacing = 500, crop_class = plant
 1 December 1988(Day of year=336), SweetCorn: 
      Crop Sow
-        ------------------------------------------------
-        cultivar                   = h5
-        Phases:
-           out
-           sowing
-           germination
-              shoot_lag                  =      15 (dd)
-              shoot_rate                 =       1 (dd/mm)
-           emergence
-              tt_emergence               =     221 (dd)
-           endjuv_to_fi
-              x_pp_endjuv_to_fi          =    13.9    14.7 (h)
-              y_tt_endjuv_to_fi          =      75      75 (dd)
-           fi_to_flag
-              Stage duration determined by leaf appearance rates
-           flag_to_flower
-              tt_flag_to_flower          =     101 (dd)
-           flowering
-              tt_flowering               =     170 (dd)
-           start_grain_fill
-              tt_start_grain_fill        =     800 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =       5 (dd)
-           maturity
-              tt_maturity                =       1 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =       1 (dd)
-           end_crop
-     
-        grains_per_gram_stem           =        3.3 (/g)
-        potential_grain_filling_rate   =     0.0100 (g/grain/day)
-        potential_grain_growth_rate    =     0.0000 (g/grain/day)
-        max_grain_size                 =     0.5000 (g)
-        ------------------------------------------------
+1 December 1988(Day of year=336): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     plant density ('Population') not specified
+     Component name: SweetCorn
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         150.0     0.060          0.290       1.000
-         150.0     0.060          0.290       1.000
-         300.0     0.060          0.290       1.000
-         300.0     0.060          0.290       1.000
-         300.0     0.060          0.300       1.000
-         300.0     0.060          0.310       1.000
-         300.0     0.060          0.320       1.000
-         300.0     0.060          0.330       1.000
-         300.0     0.060          0.340       1.000
-         300.0     0.060          0.350       1.000
-         300.0     0.060          0.360       1.000
-         -----------------------------------------------
-         Extractable SW:   542mm in  3000mm total depth ( 18%).
-         Crop factor for bounding water use is set to   1.0 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            336   50.0   10.0  500.0   0.0   0.0 h5
-         ------------------------------------------------
-     
-2 December 1988(Day of year=337), SweetCorn: 
-      stage 2.0 germination
-4 December 1988(Day of year=339), SweetCorn: 
-      stage 3.0 emergence
-                     biomass =           0.20 (g/m^2)   lai          =   0.010 (m^2/m^2)
-                     stover N conc =     5.00 (%)    extractable sw =   28.64 (mm)
-16 December 1988(Day of year=351), SweetCorn: 
-      stage 4.0 endjuv_to_fi
-                     biomass =          10.25 (g/m^2)   lai          =   0.114 (m^2/m^2)
-                     stover N conc =     3.35 (%)    extractable sw =   25.57 (mm)
-20 December 1988(Day of year=355), SweetCorn: 
-      stage 5.0 fi_to_flag
-                     biomass =          19.50 (g/m^2)   lai          =   0.235 (m^2/m^2)
-                     stover N conc =     3.24 (%)    extractable sw =   60.42 (mm)
-17 January 1989(Day of year=17), SweetCorn: 
-      stage 6.0 flag_to_flower
-                     biomass =         404.53 (g/m^2)   lai          =   3.493 (m^2/m^2)
-                     stover N conc =     1.28 (%)    extractable sw =  181.64 (mm)
-23 January 1989(Day of year=23), SweetCorn: 
-      stage 7.0 flowering
-                     biomass =         490.72 (g/m^2)   lai          =   3.851 (m^2/m^2)
-                     stover N conc =     1.13 (%)    extractable sw =  210.98 (mm)
-2 February 1989(Day of year=33), SweetCorn: 
-      stage 8.0 start_grain_fill
-                     biomass =         639.30 (g/m^2)   lai          =   3.694 (m^2/m^2)
-                     stover N conc =     0.96 (%)    extractable sw =  238.23 (mm)
-19 March 1989(Day of year=78), SweetCorn: 
-      stage 9.0 end_grain_fill
-                     biomass =        1004.04 (g/m^2)   lai          =   0.030 (m^2/m^2)
-                     stover N conc =     0.85 (%)    extractable sw =  200.75 (mm)
-20 March 1989(Day of year=79), SweetCorn: 
-      stage 10.0 maturity
-                     biomass =        1004.27 (g/m^2)   lai          =   0.007 (m^2/m^2)
-                     stover N conc =     0.85 (%)    extractable sw =  199.12 (mm)
-21 March 1989(Day of year=80), SweetCorn: 
-      stage 11.0 harvest_ripe
-                     biomass =        1004.27 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     0.85 (%)    extractable sw =  197.49 (mm)
-21 March 1989(Day of year=80), Harvesting rule: 
-     Manager sending message :- sweetcorn harvest
-     
-      flowering day          =   23                           stover (kg/ha)         =     6733.1
-      maturity day           =   79                           grain yield (kg/ha)    =     3309.6
-      grain % water content  =   12.5                         grain yield wet (kg/ha)=     3782.4
-      grain wt (g)           =    0.380                       grains/m^2             =      871.5
-      grains/plant           =   87.2                         maximum lai            =      3.851
-      total above ground biomass (kg/ha)    =    10042.7
-      live above ground biomass (kg/ha)     =    10042.7
-      green above ground biomass (kg/ha)    =     8324.2
-      senesced above ground biomass (kg/ha) =     1718.5
-      number of leaves       =     21.3
-      DM Root:Shoot ratio    =     0.14                       Harvest Index          =       0.33
-      Stover C:N ratio       =    52.38                       Root C:N ratio         =      54.96
-      grain N percent        =     0.42                       total N content (kg/ha)=      65.18
-      grain N uptake (kg/ha) =    13.76                       senesced N content (kg/ha)=    8.59
-      green N content (kg/ha)=    42.83
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence            to endjuv_to_fi            0.000        0.000        0.035        0.208
-         endjuv_to_fi         to fi_to_flag              0.000        0.000        0.000        0.123
-         fi_to_flag           to flag_to_flower          0.000        0.000        0.272        0.403
-         flag_to_flower       to flowering               0.000        0.000        0.542        0.633
-         flowering            to start_grain_fill        0.000        0.000        0.496        0.597
-         start_grain_fill     to end_grain_fill          0.000        0.000        0.515        0.612
-     
-     
-     Crop harvested.
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                6733.1                     0.0
-                          N  (kg/ha) =                  51.42                    0.00
-     
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                3309.6                     0.0
-                          N  (kg/ha) =                  13.76                    0.00
-     
-     Manager sending message :- sweetcorn end_crop
-     Crop ended. Yield (dw) =     0.0  (kg/ha)
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                   0.0                  1396.6
-                          N  (kg/ha) =                   0.00                   10.16
-     
-1 December 1989(Day of year=335), Sow on a fixed date: 
-     Manager sending message :- sweetcorn sow  plants = 10, sowing_depth = 50, cultivar = h5, row_spacing = 500, crop_class = plant
-1 December 1989(Day of year=335), SweetCorn: 
-     Crop Sow
-        ------------------------------------------------
-        cultivar                   = h5
-        Phases:
-           out
-           sowing
-           germination
-              shoot_lag                  =      15 (dd)
-              shoot_rate                 =       1 (dd/mm)
-           emergence
-              tt_emergence               =     221 (dd)
-           endjuv_to_fi
-              x_pp_endjuv_to_fi          =    13.9    14.7 (h)
-              y_tt_endjuv_to_fi          =      75      75 (dd)
-           fi_to_flag
-              Stage duration determined by leaf appearance rates
-           flag_to_flower
-              tt_flag_to_flower          =     101 (dd)
-           flowering
-              tt_flowering               =     170 (dd)
-           start_grain_fill
-              tt_start_grain_fill        =     800 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =       5 (dd)
-           maturity
-              tt_maturity                =       1 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =       1 (dd)
-           end_crop
-     
-        grains_per_gram_stem           =        3.3 (/g)
-        potential_grain_filling_rate   =     0.0100 (g/grain/day)
-        potential_grain_growth_rate    =     0.0000 (g/grain/day)
-        max_grain_size                 =     0.5000 (g)
-        ------------------------------------------------
-     
-     
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         150.0     0.060          0.290       1.000
-         150.0     0.060          0.290       1.000
-         300.0     0.060          0.290       1.000
-         300.0     0.060          0.290       1.000
-         300.0     0.060          0.300       1.000
-         300.0     0.060          0.310       1.000
-         300.0     0.060          0.320       1.000
-         300.0     0.060          0.330       1.000
-         300.0     0.060          0.340       1.000
-         300.0     0.060          0.350       1.000
-         300.0     0.060          0.360       1.000
-         -----------------------------------------------
-         Extractable SW:   542mm in  3000mm total depth ( 18%).
-         Crop factor for bounding water use is set to   1.0 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            335   50.0   10.0  500.0   0.0   0.0 h5
-         ------------------------------------------------
-     
-2 December 1989(Day of year=336), SweetCorn: 
-      stage 2.0 germination
-4 December 1989(Day of year=338), SweetCorn: 
-      stage 3.0 emergence
-                     biomass =           0.20 (g/m^2)   lai          =   0.010 (m^2/m^2)
-                     stover N conc =     5.00 (%)    extractable sw =   27.91 (mm)
-17 December 1989(Day of year=351), SweetCorn: 
-      stage 4.0 endjuv_to_fi
-                     biomass =           9.35 (g/m^2)   lai          =   0.097 (m^2/m^2)
-                     stover N conc =     2.47 (%)    extractable sw =   24.77 (mm)
-21 December 1989(Day of year=355), SweetCorn: 
-      stage 5.0 fi_to_flag
-                     biomass =          16.07 (g/m^2)   lai          =   0.175 (m^2/m^2)
-                     stover N conc =     2.18 (%)    extractable sw =   54.98 (mm)
-31 December 1989(Day of year=365), clock: 
-     Simulation is terminating due to end criteria being met.
 

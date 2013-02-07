@@ -133,8 +133,8 @@ Paddock:
         LeafTranspiration
         LeafWaterDemand
         RootDepth
-        Cover_green
-        Cover_tot
+        CoverLive
+        CoverTotal
         Cover_dead
         LeafLAI
         LeafLAIDead
@@ -264,8 +264,8 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-             if barley2.plant_status <> 'out' then
-                if barley2.phenologycurrentphasename = 'maturity' or barley2.plant_status = 'dead' then
+             if barley2.plantstatus <> 'out' then
+                if barley2.phenologycurrentphasename = 'maturity' or barley2.plantstatus = 'dead' then
        barley2  harvest
        barley2  endcrop
                 endif

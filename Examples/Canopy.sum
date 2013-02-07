@@ -49,11 +49,11 @@ Paddock:
      Output variables:
         dd/mm/yyyy as Date
         sw_dep()
-        cowpea.lai as lai_cowpea
-        maize.lai as lai_maize
+        cowpea.LAI as lai_cowpea
+        maize.LAI as lai_maize
         canopy.cover_tot_sum
-        cowpea.biomass as biom_cowpea
-        maize.biomass as biom_maize
+        cowpea.Biomass as biom_cowpea
+        maize.Biomass as biom_maize
 
      Output file = Canopy.out
      Format = normal
@@ -73,16 +73,16 @@ Paddock:
      
      SECTION:- start_of_day
      if day = 10 and year = 1988 then
-           maize sow cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+           maize sow cultivar = dekalb_xl82, population = 10, sowing_depth = 30 (mm)
      endif
-     if (maize.stage = 11) then
+     if (maize.phenologystage = 11) then
            maize harvest
            maize end_crop
      endif
      if day = 10 and year  = 1988 then
-        cowpea sow cultivar = banjo, plants = 25 (/m2), sowing_depth = 40 (mm)
+        cowpea sow cultivar = banjo, population = 25 (/m2), sowing_depth = 40 (mm)
      endif
-     if cowpea.stagename = 'harvest_ripe' or cowpea.plant_status = 'dead' then
+     if cowpea.stagename = 'harvest_ripe' or cowpea.plantstatus = 'dead' then
         cowpea harvest
         cowpea end_crop
      endif
@@ -237,7 +237,7 @@ Paddock:
          - Reading constants
 ------- Start of simulation  --------------------------------------------------
 10 January 1988(Day of year=10), Logic: 
-     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, population = 10, sowing_depth = 30 (mm)
 10 January 1988(Day of year=10), maize: 
      Sowing initiate
      
@@ -298,7 +298,7 @@ Paddock:
      
      
      
-     Manager sending message :- cowpea sow  cultivar = banjo, plants = 25 (/m2), sowing_depth = 40 (mm)
+     Manager sending message :- cowpea sow  cultivar = banjo, population = 25 (/m2), sowing_depth = 40 (mm)
 10 January 1988(Day of year=10), cowpea: 
      Crop Sow
         ------------------------------------------------

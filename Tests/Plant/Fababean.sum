@@ -49,8 +49,8 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        biomass
-        yield
+        Biomass
+        Yield
         grain_protein
         grain_size
         esw
@@ -65,9 +65,9 @@ Paddock:
         leaftotaln
         podtotaln
         graintotaln
-        lai
-        swdef_photo
-        nfact_photo
+        LAI
+        WaterStressPhoto
+        NStressPhoto
 
      Output file = Fababean.out
      Format = normal
@@ -89,7 +89,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if fababean.stagename = 'harvest_ripe' or fababean.plant_status = 'dead' then
+                if fababean.stagename = 'harvest_ripe' or fababean.plantstatus = 'dead' then
        fababean  harvest
        fababean  end_crop
                 endif
@@ -257,300 +257,13 @@ Paddock:
      Manager sending message :- fababean sow  plants = 10, sowing_depth = 50, cultivar = fiord, row_spacing = 500, crop_class = plant
 1 June 1988(Day of year=153), fababean: 
      Crop Sow
-        ------------------------------------------------
-        cultivar                   = fiord
-        Phases:
-           out
-           sowing
-           germination
-              shoot_lag                  =      15 (dd)
-              shoot_rate                 =       4 (dd/mm)
-           emergence
-              cumvd_emergence            =       0     100 (vd)
-              tt_emergence               =     438     438 (dd)
-           end_of_juvenile
-              x_pp_end_of_juvenile       =     9.6    14.3 (h)
-              y_tt_end_of_juvenile       =     381       1 (dd)
-           floral_initiation
-              x_pp_floral_initiation     =     9.6    14.3 (h)
-              y_tt_floral_initiation     =      16      16 (dd)
-           flowering
-              x_pp_flowering             =    12.5      14 (h)
-              y_tt_flowering             =     500     100 (dd)
-           start_grain_fill
-              x_pp_start_grain_fill      =    12.5      14 (h)
-              y_tt_start_grain_fill      =    1300     100 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =      60 (dd)
-           maturity
-              tt_maturity                =       1 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =       1 (dd)
-           end_crop
-     
-        x_pp_hi_incr               =       1.00      24.00
-        y_hi_incr                  =     0.0100     0.0100
-        x_hi_max_pot_stress        =       0.50       1.00
-        y_hi_max_pot               =       0.47       0.47
-        ------------------------------------------------
+1 June 1988(Day of year=153): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     plant density ('Population') not specified
+     Component name: fababean
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         150.0     0.060          0.290       1.000
-         150.0     0.060          0.290       1.000
-         300.0     0.060          0.290       1.000
-         300.0     0.060          0.290       1.000
-         300.0     0.060          0.300       1.000
-         300.0     0.060          0.310       1.000
-         300.0     0.060          0.320       1.000
-         300.0     0.060          0.330       1.000
-         300.0     0.060          0.340       1.000
-         300.0     0.060          0.350       1.000
-         300.0     0.060          0.360       1.000
-         -----------------------------------------------
-         Extractable SW:   542mm in  3000mm total depth ( 18%).
-         Crop factor for bounding water use is set to 100.0 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            153   50.0   10.0  500.0   0.0   0.0 fiord
-         ------------------------------------------------
-     
-2 June 1988(Day of year=154), fababean: 
-      stage 2.0 germination
-18 June 1988(Day of year=170), fababean: 
-      stage 3.0 emergence
-                     biomass =           0.40 (g/m^2)   lai          =   0.010 (m^2/m^2)
-                     stover N conc =     7.00 (%)    extractable sw =   64.32 (mm)
-20 July 1988(Day of year=202), fababean: 
-      stage 4.0 end_of_juvenile
-                     biomass =          23.00 (g/m^2)   lai          =   0.349 (m^2/m^2)
-                     stover N conc =     4.32 (%)    extractable sw =  210.41 (mm)
-5 August 1988(Day of year=218), fababean: 
-      stage 5.0 floral_initiation
-                     biomass =         121.43 (g/m^2)   lai          =   1.825 (m^2/m^2)
-                     stover N conc =     3.87 (%)    extractable sw =  189.80 (mm)
-6 August 1988(Day of year=219), fababean: 
-      stage 6.0 flowering
-                     biomass =         126.05 (g/m^2)   lai          =   1.858 (m^2/m^2)
-                     stover N conc =     3.85 (%)    extractable sw =  189.82 (mm)
-8 September 1988(Day of year=252), fababean: 
-      stage 7.0 start_grain_fill
-                     biomass =         559.54 (g/m^2)   lai          =   4.895 (m^2/m^2)
-                     stover N conc =     2.40 (%)    extractable sw =  303.75 (mm)
-10 October 1988(Day of year=284), fababean: 
-      stage 8.0 end_grain_fill
-                     biomass =        1110.47 (g/m^2)   lai          =   3.154 (m^2/m^2)
-                     stover N conc =     1.85 (%)    extractable sw =  183.61 (mm)
-14 October 1988(Day of year=288), fababean: 
-      stage 9.0 maturity
-                     biomass =        1179.04 (g/m^2)   lai          =   2.939 (m^2/m^2)
-                     stover N conc =     1.59 (%)    extractable sw =  153.93 (mm)
-15 October 1988(Day of year=289), fababean: 
-      stage 10.0 harvest_ripe
-                     biomass =        1188.15 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     1.66 (%)    extractable sw =  146.58 (mm)
-15 October 1988(Day of year=289), Harvesting rule: 
-     Manager sending message :- fababean harvest
-     
-      flowering day          =  219                           stover (kg/ha)         =     7542.3
-      maturity day           =  288                           grain yield (kg/ha)    =     4339.2
-      grain % water content  =   12.5                         grain yield wet (kg/ha)=     4959.1
-      grain wt (g)           =    0.000                       grains/m^2             =        0.0
-      grains/plant           =    0.0                         maximum lai            =      4.932
-      total above ground biomass (kg/ha)    =    11881.5
-      live above ground biomass (kg/ha)     =    11881.5
-      green above ground biomass (kg/ha)    =    10707.7
-      senesced above ground biomass (kg/ha) =     1173.8
-      number of leaves       =    440.7
-      DM Root:Shoot ratio    =     0.29                       Harvest Index          =       0.37
-      Stover C:N ratio       =    25.69                       Root C:N ratio         =      15.95
-      grain N percent        =     4.50                       total N content (kg/ha)=     312.70
-      grain N uptake (kg/ha) =   195.26                       senesced N content (kg/ha)=   11.74
-      green N content (kg/ha)=   105.70
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence            to end_of_juvenile         0.000        0.000        0.002        0.054
-         end_of_juvenile      to floral_initiation       0.000        0.012        0.000        0.001
-         floral_initiation    to flowering               0.000        0.000        0.000        0.006
-         flowering            to start_grain_fill        0.000        0.112        0.000        0.000
-         start_grain_fill     to end_grain_fill          0.000        0.335        0.000        0.000
-     
-     
-     Crop harvested.
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                7542.3                     0.0
-                          N  (kg/ha) =                 117.44                    0.00
-     
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                4339.2                     0.0
-                          N  (kg/ha) =                 195.26                    0.00
-     
-      stage 11.0 end_crop
-     Manager sending message :- fababean end_crop
-     Crop ended. Yield (dw) =     0.0  (kg/ha)
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                   0.0                  3486.2
-                          N  (kg/ha) =                   0.00                   87.42
-     
-1 June 1989(Day of year=152), Sow on a fixed date: 
-     Manager sending message :- fababean sow  plants = 10, sowing_depth = 50, cultivar = fiord, row_spacing = 500, crop_class = plant
-1 June 1989(Day of year=152), fababean: 
-     Crop Sow
-        ------------------------------------------------
-        cultivar                   = fiord
-        Phases:
-           out
-           sowing
-           germination
-              shoot_lag                  =      15 (dd)
-              shoot_rate                 =       4 (dd/mm)
-           emergence
-              cumvd_emergence            =       0     100 (vd)
-              tt_emergence               =     438     438 (dd)
-           end_of_juvenile
-              x_pp_end_of_juvenile       =     9.6    14.3 (h)
-              y_tt_end_of_juvenile       =     381       1 (dd)
-           floral_initiation
-              x_pp_floral_initiation     =     9.6    14.3 (h)
-              y_tt_floral_initiation     =      16      16 (dd)
-           flowering
-              x_pp_flowering             =    12.5      14 (h)
-              y_tt_flowering             =     500     100 (dd)
-           start_grain_fill
-              x_pp_start_grain_fill      =    12.5      14 (h)
-              y_tt_start_grain_fill      =    1300     100 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =      60 (dd)
-           maturity
-              tt_maturity                =       1 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =       1 (dd)
-           end_crop
-     
-        x_pp_hi_incr               =       1.00      24.00
-        y_hi_incr                  =     0.0100     0.0100
-        x_hi_max_pot_stress        =       0.50       1.00
-        y_hi_max_pot               =       0.47       0.47
-        ------------------------------------------------
-     
-     
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         150.0     0.060          0.290       1.000
-         150.0     0.060          0.290       1.000
-         300.0     0.060          0.290       1.000
-         300.0     0.060          0.290       1.000
-         300.0     0.060          0.300       1.000
-         300.0     0.060          0.310       1.000
-         300.0     0.060          0.320       1.000
-         300.0     0.060          0.330       1.000
-         300.0     0.060          0.340       1.000
-         300.0     0.060          0.350       1.000
-         300.0     0.060          0.360       1.000
-         -----------------------------------------------
-         Extractable SW:   542mm in  3000mm total depth ( 18%).
-         Crop factor for bounding water use is set to 100.0 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            152   50.0   10.0  500.0   0.0   0.0 fiord
-         ------------------------------------------------
-     
-2 June 1989(Day of year=153), fababean: 
-      stage 2.0 germination
-17 June 1989(Day of year=168), fababean: 
-      stage 3.0 emergence
-                     biomass =           0.40 (g/m^2)   lai          =   0.010 (m^2/m^2)
-                     stover N conc =     7.00 (%)    extractable sw =   63.62 (mm)
-27 July 1989(Day of year=208), fababean: 
-      stage 4.0 end_of_juvenile
-                     biomass =          28.60 (g/m^2)   lai          =   0.433 (m^2/m^2)
-                     stover N conc =     4.31 (%)    extractable sw =  188.94 (mm)
-14 August 1989(Day of year=226), fababean: 
-      stage 5.0 floral_initiation
-                     biomass =         135.54 (g/m^2)   lai          =   2.037 (m^2/m^2)
-                     stover N conc =     3.88 (%)    extractable sw =  178.42 (mm)
-15 August 1989(Day of year=227), fababean: 
-      stage 6.0 flowering
-                     biomass =         148.62 (g/m^2)   lai          =   2.141 (m^2/m^2)
-                     stover N conc =     3.81 (%)    extractable sw =  176.11 (mm)
-16 September 1989(Day of year=259), fababean: 
-      stage 7.0 start_grain_fill
-                     biomass =         720.04 (g/m^2)   lai          =   5.177 (m^2/m^2)
-                     stover N conc =     2.36 (%)    extractable sw =  159.81 (mm)
-14 October 1989(Day of year=287), fababean: 
-      stage 8.0 end_grain_fill
-                     biomass =        1078.68 (g/m^2)   lai          =   3.098 (m^2/m^2)
-                     stover N conc =     1.99 (%)    extractable sw =   49.85 (mm)
-19 October 1989(Day of year=292), fababean: 
-      stage 9.0 maturity
-                     biomass =        1082.68 (g/m^2)   lai          =   2.687 (m^2/m^2)
-                     stover N conc =     1.84 (%)    extractable sw =   46.69 (mm)
-20 October 1989(Day of year=293), fababean: 
-      stage 10.0 harvest_ripe
-                     biomass =        1092.13 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     1.95 (%)    extractable sw =   44.47 (mm)
-20 October 1989(Day of year=293), Harvesting rule: 
-     Manager sending message :- fababean harvest
-     
-      flowering day          =  227                           stover (kg/ha)         =     7187.9
-      maturity day           =  292                           grain yield (kg/ha)    =     3733.4
-      grain % water content  =   12.5                         grain yield wet (kg/ha)=     4266.7
-      grain wt (g)           =    0.000                       grains/m^2             =        0.0
-      grains/plant           =    0.0                         maximum lai            =      5.228
-      total above ground biomass (kg/ha)    =    10921.3
-      live above ground biomass (kg/ha)     =    10921.3
-      green above ground biomass (kg/ha)    =     9550.9
-      senesced above ground biomass (kg/ha) =     1370.4
-      number of leaves       =    399.8
-      DM Root:Shoot ratio    =     0.32                       Harvest Index          =       0.34
-      Stover C:N ratio       =    22.58                       Root C:N ratio         =      15.65
-      grain N percent        =     4.50                       total N content (kg/ha)=     295.34
-      grain N uptake (kg/ha) =   168.00                       senesced N content (kg/ha)=   13.70
-      green N content (kg/ha)=   113.63
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence            to end_of_juvenile         0.000        0.000        0.002        0.042
-         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
-         floral_initiation    to flowering               0.000        0.149        0.000        0.000
-         flowering            to start_grain_fill        0.000        0.445        0.000        0.000
-         start_grain_fill     to end_grain_fill          0.323        0.907        0.000        0.000
-     
-     
-     Crop harvested.
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                7187.9                     0.0
-                          N  (kg/ha) =                 127.34                    0.00
-     
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                3733.4                     0.0
-                          N  (kg/ha) =                 168.00                    0.00
-     
-      stage 11.0 end_crop
-     Manager sending message :- fababean end_crop
-     Crop ended. Yield (dw) =     0.0  (kg/ha)
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                   0.0                  3454.5
-                          N  (kg/ha) =                   0.00                   88.28
-     
-31 December 1989(Day of year=365), clock: 
-     Simulation is terminating due to end criteria being met.
 

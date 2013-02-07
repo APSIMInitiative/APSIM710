@@ -537,7 +537,7 @@ C     Last change:  DSG  19 Jun 2000   12:25 pm
      :                c%leaf_no_correction
      :              , g%dlt_leaf_no
      :              , g%leaf_no
-     :              , g%plants
+     :              , g%Population
      :              , c%leaf_size
      :              , c%leaf_size_no
      :              , c%num_leaf_size
@@ -595,7 +595,7 @@ c     :                    * g%swdef_expansion
      :                c%initial_tpla
      :              , g%current_stage
      :              , g%days_tot
-     :              , g%plants
+     :              , g%Population
      :              , g%lai
      :              , g%leaf_area
      :               )
@@ -2157,7 +2157,7 @@ c      leaf_no = 1.0 + sum_between (emerg, now, g_leaf_no)
      :                c%days_germ_limit
      :              , g%current_stage
      :              , g%days_tot
-     :              , g%plants
+     :              , g%Population
      :              , g%dlt_plants_failure_germ
      :               )
 
@@ -2165,7 +2165,7 @@ c      leaf_no = 1.0 + sum_between (emerg, now, g_leaf_no)
      :               (
      :                c%tt_emerg_limit
      :              , g%current_stage
-     :              , g%plants
+     :              , g%Population
      :              , g%tt_tot
      :              , g%dlt_plants_failure_emergence
      :               )
@@ -2174,7 +2174,7 @@ c      leaf_no = 1.0 + sum_between (emerg, now, g_leaf_no)
      :               (
      :                g%current_stage
      :              , g%lai
-     :              , g%plants
+     :              , g%Population
      :              , g%dlt_plants_failure_leaf_sen
      :               )
 
@@ -2185,7 +2185,7 @@ c      leaf_no = 1.0 + sum_between (emerg, now, g_leaf_no)
      :              , c%swdf_photo_rate
      :              , g%cswd_photo
      :              , g%leaf_no
-     :              , g%plants
+     :              , g%Population
      :              , g%swdef_photo
      :              , g%dlt_plants_death_drought
      :               )
@@ -2198,7 +2198,7 @@ c      leaf_no = 1.0 + sum_between (emerg, now, g_leaf_no)
      :              , c%stress_lodge
      :              , c%death_fr_lodge
      :              , c%num_stress_lodge
-     :              , g%plants
+     :              , g%Population
      :              , g%dlt_plants_death_lodging
      :               )
 
@@ -2212,7 +2212,7 @@ c         call sugar_death_external_action (g%dlt_plants_death_external)
      :              , g%dlt_plants_death_lodging
      :              , g%dlt_plants
      :               )
-         if (reals_are_equal (g%dlt_plants + g%plants, 0.0)) then
+         if (reals_are_equal (g%dlt_plants + g%Population, 0.0)) then
             call sugar_kill_crop
      :               (
      :                g%crop_status
@@ -2919,7 +2919,7 @@ c         call sugar_death_external_action (g%dlt_plants_death_external)
 !      node_no_dead = sugar_leaf_no_from_lai
 !     :               (
 !     :                g%leaf_area
-!     :              , g%plants
+!     :              , g%Population
 !     :              , g%slai
 !     :               )
 !      start_leaf = int(node_no_dead + 1.)
@@ -3043,7 +3043,7 @@ c         call sugar_death_external_action (g%dlt_plants_death_external)
      :              , g%dlt_root_depth
      :              , g%root_depth
      :              , g%root_length
-     :              , g%plants
+     :              , g%Population
      :              , p%xf
      :              , c%num_sw_ratio
      :              , c%x_sw_ratio
@@ -3859,7 +3859,7 @@ cnh      call sugar_radn_int (radn_int)
      :              , c%y_height
      :              , c%num_stem_wt
      :              , g%dm_green
-     :              , g%plants
+     :              , g%Population
      :              , sstem
      :              , g%dlt_canopy_height
      :               )
@@ -3914,7 +3914,7 @@ cnh      call sugar_radn_int (radn_int)
      :              , g%current_stage
      :              , g%days_tot
      :              , g%dlayer
-     :              , g%plants
+     :              , g%Population
      :              , g%root_length
      :              , g%dm_green, g%dm_plant_min
      :              , g%leaf_dm
@@ -4736,7 +4736,7 @@ c     :                   + sum_between (emerg, now, g_leaf_no_dead))
      :              , g%dm_senesced
      :              , g%lai
      :              , g%leaf_dm
-     :              , g%plants
+     :              , g%Population
      :              , g%slai
      :              , g%leaf_area
      :              , g%dlt_dm_senesced
@@ -5469,7 +5469,7 @@ c     :                   + sum_between (emerg, now, g_leaf_no_dead))
      :              , g%n_dead
      :              , g%n_green
      :              , g%n_senesced
-     :              , g%plants
+     :              , g%Population
      :              , g%plant_wc
      :              , g%previous_stage
      :              , g%root_length
@@ -7031,7 +7031,7 @@ cnh for rlv at initialisation.
      :              , g%lai
      :              , g%leaf_area
      :              , g%node_no_dead
-     :              , g%plants
+     :              , g%Population
      :              , g%slai
      :              , g%node_no_detached
      :              , c%leaf_no_at_emerg
@@ -7039,20 +7039,20 @@ cnh for rlv at initialisation.
      :               )
 
          call crop_leaf_area_sen_water1(c%sen_rate_water,
-     :           g%lai, g%swdef_photo, g%plants, 0.0, g%dlt_slai_water)
-
+     :           g%lai, g%swdef_photo, g%Population, 0.0,
+     :               				g%dlt_slai_water)
 
          call crop_leaf_area_sen_light1 (
      .          c%lai_sen_light,
      .          c%sen_light_slope,
      .          g%lai,
-     .          g%plants,
+     .          g%Population,
      .          0.0,
      .          g%dlt_slai_light)
 
          call crop_leaf_area_sen_frost1(c%frost_temp,
      :                c%frost_fraction, c%num_frost_temp, g%lai,
-     :                g%mint, g%plants, 0.0, g%dlt_slai_frost)
+     :                g%mint, g%Population, 0.0, g%dlt_slai_frost)
 
 
          ! now take largest of deltas

@@ -929,8 +929,8 @@ c      write (*,*) 'pesw_cap = ', pesw_capacity
      :                               , 0.0, 100.0)
          g%basal_area = g%basal_area + temp
 
-      elseif (variable_name .eq. 'root_depth') then
-         call collect_real_var ('root_depth', '(mm)'
+      elseif (variable_name .eq. 'rootdepth') then
+         call collect_real_var ('rootdepth', '(mm)'
      :                               , temp, numvals
      :                               , 0.0, 100.0)
          g%root_depth = temp
@@ -998,9 +998,9 @@ c      write (*,*) 'pesw_cap = ', pesw_capacity
      :        'height',
      :        '(mm)', g%canopy_height)
 
-      elseif (variable_name .eq. 'cover_tot') then
+      elseif (variable_name .eq. 'covertotal') then
          call respond2get_real_var (
-     :        'cover_tot',
+     :        'covertotal',
      :        '()', g%cover_tot)
 
 cpdev. One of these next two is right. I don't know which...
@@ -1009,14 +1009,14 @@ cpdev. One of these next two is right. I don't know which...
      :        'green_cover',
      :        '()', g%cover_green)
 
-      elseif (variable_name .eq. 'cover_green') then
+      elseif (variable_name .eq. 'coverlive') then
          call respond2get_real_var (
-     :        'cover_green',
+     :        'coverlive',
      :        '()', g%cover_green)
 
-      elseif (variable_name .eq. 'root_depth') then
+      elseif (variable_name .eq. 'rootdepth') then
          call respond2get_real_var (
-     :        'root_depth',
+     :        'rootdepth',
      :        '(mm)', g%root_depth)
 
       elseif (variable_name .eq. 'basal_area') then
@@ -1247,7 +1247,7 @@ cpdev. One of these next two is right. I don't know which...
 
                                 ! Initial values
       call read_real_var (section_name
-     :                    , 'root_depth_init', '(mm)'
+     :                    , 'rootdepth_init', '(mm)'
      :                    , p%root_depth_init, numvals
      :                    , 0.0, 20000.0)
 
@@ -1282,12 +1282,12 @@ c      not have the same meaning.....
 100   continue
 
       call read_real_var (section_name
-     :                   , 'cover_tot', '()'
+     :                   , 'CoverTotal', '()'
      :                   , g%cover_tot, numvals
      :                   , 0.0, 1.0)
 
       call read_real_var (section_name
-     :                   , 'cover_green', '()'
+     :                   , 'coverlive', '()'
      :                   , g%cover_green, numvals
      :                   , 0.0, 1.0)
 

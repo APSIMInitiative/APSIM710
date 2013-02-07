@@ -7,15 +7,15 @@ variable = met.rain as rain
 variable = SweetCorn.DaysAfterSowing
 variable = SweetCorn.zadok_stage
 variable = met.day_length
-variable = SweetCorn.stage
-variable = SweetCorn.lai
-variable = SweetCorn.biomass
-variable = SweetCorn.yield
-variable = SweetCorn.root_depth
+variable = SweetCorn.PhenologyStage
+variable = SweetCorn.LAI
+variable = SweetCorn.Biomass
+variable = SweetCorn.Yield
+variable = SweetCorn.RootDepth
 variable = SweetCorn.ep
-variable = SweetCorn.swdef_photo
-variable = SweetCorn.swdef_expan
-variable = SweetCorn.nfact_photo
+variable = SweetCorn.WaterStressPhoto
+variable = SweetCorn.WaterStressExpansion
+variable = SweetCorn.NStressPhoto
 variable = SweetCorn.temp_stress_photo
 variable = SweetCorn.tt_tot
 variable = met.maxt
@@ -23,8 +23,8 @@ variable = met.mint
 variable = met.radn
 variable = SweetCorn.TTAfterSowing
 variable = SweetCorn.TT
-variable = SweetCorn.LeafGreenWt
-variable = SweetCorn.StemGreenWt
+variable = SweetCorn.LeafLiveWt
+variable = SweetCorn.StemLiveWt
 
 [sample.clock.parameters]
 start_date=1/09/1998     ! dd/mm/yyyy
@@ -38,7 +38,7 @@ if today = date('9/12/98') then
 endif
 
 [sample.manager.end_of_day]
-if SweetCorn.StageName = 'harvest_ripe' or SweetCorn.plant_status = 'dead' then
+if SweetCorn.StageName = 'harvest_ripe' or SweetCorn.PlantStatus = 'dead' then
    SweetCorn harvest
    SweetCorn end_crop
 endif

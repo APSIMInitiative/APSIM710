@@ -34,7 +34,7 @@ void fruitGrainPart::onInit1(protocol::Component *system)
 
    system->addGettableVar("dlt_dm_grain_demand",gDlt_dm_grain_demand, "g/m^2", "??");
    system->addGettableVar("dlt_dm_fruit", gDlt_dm, "g/m^2", "Change in dry matter");
-   setupGetFunction(system, "grain_wt", protocol::DTsingle, false, &fruitGrainPart::get_grain_wt, "g/m^2", "Weight of grain");
+   setupGetFunction(system, "GrainWt", protocol::DTsingle, false, &fruitGrainPart::get_grain_wt, "g/m^2", "Weight of grain");
    setupGetFunction(system, "yield", protocol::DTsingle, false,&fruitGrainPart::get_yield,  "kg/ha", "Yield");
    setupGetFunction(system, "yieldwet", protocol::DTsingle, false,&fruitGrainPart::get_yield_wet,  "kg/ha", "Yield");
    system->addGettableVar("grain_n_demand", gN_grain_demand, "g/m^2", "N demand of grain");
@@ -43,9 +43,9 @@ void fruitGrainPart::onInit1(protocol::Component *system)
    setupGetFunction(system, "n_conc_grain", protocol::DTsingle, false, &fruitGrainPart::get_n_conc_grain, "%", "N concentration in grain");
    setupGetFunction(system, "grain_protein", protocol::DTsingle, false, &fruitGrainPart::get_grain_protein, "%", "grain protein content");
    setupGetFunction(system, "n_conc_meal", protocol::DTsingle, false, &fruitGrainPart::get_n_conc_meal, "%", "meal N content");
-   setupGetFunction(system, "grain_n", protocol::DTsingle, false, &fruitGrainPart::get_grain_n, "g/m^2", "N in grain");
+   setupGetFunction(system, "GrainN", protocol::DTsingle, false, &fruitGrainPart::get_grain_n, "g/m^2", "N in grain");
 
-   setupGetFunction(system, "grain_p", protocol::DTsingle, false, &fruitGrainPart::get_grain_p, "g/m^2","P in grain");
+   setupGetFunction(system, "GrainP", protocol::DTsingle, false, &fruitGrainPart::get_grain_p, "g/m^2","P in grain");
 
    system->addGettableVar("grain_p_demand",  gP_grain_demand, "g/m^2","P demand of grain");
 }

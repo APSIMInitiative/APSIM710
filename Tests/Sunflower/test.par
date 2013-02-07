@@ -3,7 +3,7 @@ summaryfile=test1.sum
 [test1.report.parameters]
 outputfile  =test1.out
 [test1.manager.start_of_day]
-if maize.StageName = 'harvest_ripe' or maize.plant_status = 'dead' then
+if maize.StageName = 'harvest_ripe' or maize.PlantStatus = 'dead' then
    maize harvest
    maize sow cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
 endif
@@ -13,7 +13,7 @@ summaryfile=test2.sum
 [test2.report.parameters]
 outputfile  =test2.out
 [test2.manager.start_of_day]
-if maize.StageName = 'harvest_ripe' or maize.plant_status = 'dead' then
+if maize.StageName = 'harvest_ripe' or maize.PlantStatus = 'dead' then
    maize harvest
    maize end_crop
    maize sow cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
@@ -29,7 +29,7 @@ if harvest = 1 then
    harvest = 2
 endif
 
-if maize.StageName = 'harvest_ripe' or maize.plant_status = 'dead' then
+if maize.StageName = 'harvest_ripe' or maize.PlantStatus = 'dead' then
    maize harvest
    maize end_crop
    harvest = 1
@@ -39,8 +39,8 @@ endif
 [all.report.parameters]
 variable = clock.day
 variable = clock.year
-variable = maize.lai
-variable = maize.biomass
+variable = maize.LAI
+variable = maize.Biomass
 variable = maize.green_biomass
 
 [all.clock.parameters]

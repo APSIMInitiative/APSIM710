@@ -20,8 +20,8 @@ variable = sum of SoilWat.es on end_of_day from report.reported to now as sum@so
 variable = sum of SoilWat.runoff on end_of_day from report.reported to now as sum@soilwat2_runoff
 variable = sum of SoilWat.drain on end_of_day from report.reported to now as sum@soilwat2_drain
 variable = sum of SoilN.dnit() on end_of_day from report.reported to now as sum@soiln2_dnit[]
-variable = average of wheat.nfact_photo on end_of_day from report.reported to now as avg@wheat_nfact_photo
-variable = average of wheat.swdef_photo on end_of_day from report.reported to now as avg@wheat_swdef_photo
+variable = average of wheat.NStressPhoto on end_of_day from report.reported to now as avg@wheat_nfact_photo
+variable = average of wheat.WaterStressPhoto on end_of_day from report.reported to now as avg@wheat_swdef_photo
 variable = sum of wheat.ep on end_of_day from report.reported to now as sum@wheat_ep
 variable = sum of SoilWat.eo on end_of_day from report.reported to now as sum@soilwat2_eo
 
@@ -206,7 +206,7 @@ if (is_end_month = 1) then
    report do_end_day_output
 endif
 
-if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' then
+if wheat.StageName = 'harvest_ripe' or wheat.PlantStatus = 'dead' then
    event = 2
    flag = 2
    report do_output 
@@ -244,7 +244,7 @@ if (is_end_month = 1) then
    report do_end_day_output
 endif
 
-if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' then
+if wheat.StageName = 'harvest_ripe' or wheat.PlantStatus = 'dead' then
    event = 2
    flag = 2
    report do_output 
@@ -284,7 +284,7 @@ if (is_end_month = 1) then
    report do_end_day_output
 endif
 
-if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' then
+if wheat.StageName = 'harvest_ripe' or wheat.PlantStatus = 'dead' then
    event = 2
    report do_output 
    wheat harvest

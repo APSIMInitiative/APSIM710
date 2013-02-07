@@ -32,11 +32,11 @@ Nitrogen::~Nitrogen()
 void Nitrogen::doRegistrations(void)
    {
 
-   scienceAPI.expose("nfact_pheno",          "()",    "Nitrogen stress factor for phenology",            false, phenoStress);
-   scienceAPI.expose("nfact_expan",          "()",    "Nitrogen stress factor for leaf expansion",       false, expansionStress);
-   scienceAPI.expose("nfact_photo",          "()",    "Nitrogen stress factor for photosynthesis",       false, photoStress);
+   scienceAPI.expose("nstresspheno",          "()",    "Nitrogen stress factor for phenology",            false, phenoStress);
+   scienceAPI.expose("nstressexpansion",          "()",    "Nitrogen stress factor for leaf expansion",       false, expansionStress);
+   scienceAPI.expose("nstressphoto",          "()",    "Nitrogen stress factor for photosynthesis",       false, photoStress);
    scienceAPI.expose("n_sd_ratio",           "()",    "Nitrogen supply/demand ratio",                    false, supplyDemandRatio);
-   scienceAPI.expose("n_supply_soil",        "g/m^2", "Today's total N supply from soil profile",        false, nSupply);
+   scienceAPI.expose("rootnsupply",        "g/m^2", "Today's total N supply from soil profile",        false, nSupply);
    scienceAPI.expose("n_massflow_uptake",    "g/m^2", "Today's N uptake by massflow from soil profile",  false, actualMassFlow);
    scienceAPI.expose("n_diffusion_uptake",   "g/m^2", "Today's N uptake by diffusion from soil profile", false, actualDiffusion);
    scienceAPI.expose("n_total_uptake",       "g/m^2", "Today's N uptake by mass flow and diffusion",     false, actualTotal);
@@ -44,18 +44,18 @@ void Nitrogen::doRegistrations(void)
    scienceAPI.expose("diffusion_supply_tot", "g/m^2", "Accumulative total of crop N supply by diffusion",false, sumDiffSupply);
    scienceAPI.expose("biomass_n",            "g/m^2", "N above ground biomass including grain",          false, nBiomass);
    scienceAPI.expose("stover_n",             "g/m^2", "N above ground biomass excluding grain",          false, nStover);
-   scienceAPI.expose("green_biomass_n",      "g/m^2", "N in live above ground biomass including grain",  false, nGreenBiomass);
+   scienceAPI.expose("abovegroundliven",      "g/m^2", "N in live above ground biomass including grain",  false, nGreenBiomass);
    scienceAPI.expose("n_cum_uptake",         "g/m^2", "Cumulative N Uptake",                             false, nUptakeTotal);
    scienceAPI.expose("n_Plant",              "g/m^2", "Total Nitrogen in the plant including roots",     false, nPlant);
 
 
-   scienceAPI.exposeFunction("GreenN", "g/m^2", "N content of live plant parts",
+   scienceAPI.exposeFunction("LiveN", "g/m^2", "N content of live plant parts",
                     FloatFunction(&Nitrogen::getNGreen));
-   scienceAPI.exposeFunction("DeltaGreenN", "g/m^2", "Daily N increase in live plant parts",
+   scienceAPI.exposeFunction("DeltaLiveN", "g/m^2", "Daily N increase in live plant parts",
                     FloatArrayFunction(&Nitrogen::getDltNGreen));
    scienceAPI.exposeFunction("dlt_n_retrans", "g/m^2", "N retranslocated from plant parts to grain",
                     FloatArrayFunction(&Nitrogen::getDltNRetrans));
-   scienceAPI.exposeFunction("SenescedN", "g/m^2", "N content of senesced plant parts",
+   scienceAPI.exposeFunction("DeadN", "g/m^2", "N content of senesced plant parts",
                     FloatFunction(&Nitrogen::getNSenesced));
 
    }

@@ -52,9 +52,9 @@ Paddock:
      Output variables:
         day
         year
-        wheat.biomass as wht_biomass
-        sorghum.biomass as sor_biomass
-        canola.biomass as can_biomass
+        wheat.Biomass as wht_biomass
+        sorghum.Biomass as sor_biomass
+        canola.Biomass as can_biomass
         surfaceom.surfaceom_wt
         surfaceom.surfaceom_wt_old_wheat
         surfaceom.surfaceom_wt_wheat
@@ -89,38 +89,38 @@ Paddock:
      
      SECTION:- start_of_day
      if day = 169 and year = 1986 then
-        wheat sow cultivar = hartog, plants = 120, sowing_depth = 30 (mm)
+        wheat sow cultivar = hartog, population = 120, sowing_depth = 30 (mm)
      endif
-     if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+     if wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' then
         wheat harvest
         wheat end_crop
      endif
         if day = 305 and year = 1986 then
-           sorghum sow cultivar = early, plants = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0 (), row_spacing = 1.0 (m)
+           sorghum sow cultivar = early, population = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0 (), row_spacing = 1.0 (m)
         irrigation apply amount = 150 (mm)
         fertiliser apply amount = 100 (kg/ha), depth = 50 (mm), type = no3_n
         endif
-        if (sorghum.stage = 11) then
+        if (sorghum.phenologystage = 11) then
            sorghum harvest
            sorghum end_crop
         endif
-     if (sorghum.plant_status = 'dead')  then
+     if (sorghum.plantstatus = 'dead')  then
            sorghum harvest
            sorghum kill_crop
            sorghum end_crop
      endif
      if day = 130 and year  = 1989 then
         fertiliser apply amount = 100 (kg/ha), depth = 50 (mm), type = no3_n
-        canola sow cultivar = hyola42, plants = 40 (/m2), sowing_depth = 20 (mm), row_spacing = 300 (mm)
+        canola sow cultivar = hyola42, population = 40 (/m2), sowing_depth = 20 (mm), row_spacing = 300 (mm)
      endif
-     if canola.stagename = 'harvest_ripe' or canola.plant_status = 'dead' then
+     if canola.stagename = 'harvest_ripe' or canola.plantstatus = 'dead' then
         canola harvest
         canola end_crop
      endif
      if day = 169 and year = 1990 then
-        wheat sow cultivar = hartog, plants = 120, sowing_depth = 30 (mm)
+        wheat sow cultivar = hartog, population = 120, sowing_depth = 30 (mm)
      endif
-     if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+     if wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' then
         wheat harvest
         wheat end_crop
      endif
@@ -271,7 +271,7 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 18 June 1986(Day of year=169), manager: 
-     Manager sending message :- wheat sow  cultivar = hartog, plants = 120, sowing_depth = 30 (mm)
+     Manager sending message :- wheat sow  cultivar = hartog, population = 120, sowing_depth = 30 (mm)
 18 June 1986(Day of year=169), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -410,7 +410,7 @@ Paddock:
                           N  (kg/ha) =                   0.00                   37.77
      
 1 November 1986(Day of year=305), manager: 
-     Manager sending message :- sorghum sow  cultivar = early, plants = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0, row_spacing = 1.0 (m)
+     Manager sending message :- sorghum sow  cultivar = early, population = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0, row_spacing = 1.0 (m)
 1 November 1986(Day of year=305), sorghum: 
      Sowing initiate
      
@@ -542,7 +542,7 @@ Paddock:
    - Reading Fertiliser Type Parameters
        100.00 of N as nitrate (no3_n)
                                          added at depth   50.00 (layer   1)
-     Manager sending message :- canola sow  cultivar = hyola42, plants = 40 (/m2), sowing_depth = 20 (mm), row_spacing = 300 (mm)
+     Manager sending message :- canola sow  cultivar = hyola42, population = 40 (/m2), sowing_depth = 20 (mm), row_spacing = 300 (mm)
 10 May 1989(Day of year=130), canola: 
      Crop Sow
         ------------------------------------------------
@@ -690,7 +690,7 @@ Paddock:
                           N  (kg/ha) =                   0.00                   30.48
      
 18 June 1990(Day of year=169), manager: 
-     Manager sending message :- wheat sow  cultivar = hartog, plants = 120, sowing_depth = 30 (mm)
+     Manager sending message :- wheat sow  cultivar = hartog, population = 120, sowing_depth = 30 (mm)
 18 June 1990(Day of year=169), wheat: 
      Crop Sow
         ------------------------------------------------
