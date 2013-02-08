@@ -1280,28 +1280,39 @@ public class SoilWater
         //*     Get crop Variables
 
         #if (APSIMX == false)
-        Double covgreen;
-        Double covtot;
+        Double coverLive;
+        Double coverTotal;
         Double height;
+
+        bool foundCL;
+        bool foundCT;
+        bool foundH;
 
         int i = 0;
         foreach (Component Comp in MyPaddock.Crops)
         {
-            MyPaddock.Get(Comp.FullName + ".cover_green", out covgreen);
-            MyPaddock.Get(Comp.FullName + ".cover_tot", out covtot);
-            MyPaddock.Get(Comp.FullName + ".height", out height);
+            foundCL = MyPaddock.Get(Comp.FullName + ".CoverLive", out coverLive);
+            foundCT = MyPaddock.Get(Comp.FullName + ".CoverTotal", out coverTotal);
+            foundH = MyPaddock.Get(Comp.FullName + ".Height", out height);
 
             ////must have at least these three variables to be considered a "crop" component.
-            //if (covgreen == null) && covtot && height.Exists() && !Comp.IsOfType("outputfile"))
-            //   {
-            num_crops = i + 1;
-            Array.Resize(ref cover_green, num_crops);
-            Array.Resize(ref cover_tot, num_crops);
-            Array.Resize(ref canopy_height, num_crops);
-            cover_green[i] = covgreen;
-            cover_tot[i] = covtot;
-            canopy_height[i] = height;
-            i++;
+            if (foundCL && foundCT && foundH)
+                {
+                num_crops = i + 1;
+                Array.Resize(ref cover_green, num_crops);
+                Array.Resize(ref cover_tot, num_crops);
+                Array.Resize(ref canopy_height, num_crops);
+                cover_green[i] = coverLive;
+                cover_tot[i] = coverTotal;
+                canopy_height[i] = height;
+                i++;
+                }
+            else
+                {
+                throw new Exception("Crop Module: " +  Comp.FullName  + 
+                        " is missing one/or more of the following 3 output variables (CoverLive, CoverTotal, Height) " + Environment.NewLine +
+                        "These 3 output variables are needed by the SoilWater module (for evaporation, runoff etc.");
+                }
         }
         #endif
 
