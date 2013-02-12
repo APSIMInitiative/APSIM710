@@ -82,7 +82,7 @@ Paddock:
               if (date_within('31-jan, 31-jan') = 1) then
      if (rain[3] >= 30 and esw >= 200) or
          ('yes' = 'yes' and today = date('31-jan'))) then
-        butterflypea sow plants =20, sowing_depth = 30, cultivar = milgarra, row_spacing = 300
+        butterflypea sow population =20, sowing_depth = 30, cultivar = milgarra, row_spacing = 300
      endif
      if today = date('31-jan') then
         choosenextcrop = 'yes'
@@ -250,17 +250,107 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 31 January 1988(Day of year=31), Sowing rule: 
-     Manager sending message :- butterflypea sow  plants = 20, sowing_depth = 30, cultivar = milgarra, row_spacing = 300
+     Manager sending message :- butterflypea sow  population = 20, sowing_depth = 30, cultivar = milgarra, row_spacing = 300
 31 January 1988(Day of year=31), butterflypea: 
      Crop Sow
-31 January 1988(Day of year=31): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: butterflypea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = milgarra
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      30 (dd)
+              shoot_rate                 =       4 (dd/mm)
+           emergence
+              cumvd_emergence            =       0      50 (vd)
+              tt_emergence               =     160     240 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =      10    13.1    13.2 (h)
+              y_tt_end_of_juvenile       =     430     200     200 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =     250     250 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     170     170 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     560     560 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =    1000 (dd)
+           maturity
+              tt_maturity                =     300 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
      
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.1600     0.1600
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.55       0.55
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.290       1.000
+         150.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.300       1.000
+         300.0     0.060          0.310       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.060          0.330       1.000
+         300.0     0.060          0.340       1.000
+         300.0     0.060          0.350       1.000
+         300.0     0.060          0.360       1.000
+         -----------------------------------------------
+         Extractable SW:   542mm in  3000mm total depth ( 18%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+             31   30.0   20.0  300.0   0.0   0.0 milgarra
+         ------------------------------------------------
      
      Manager creating a new local string variable : choosenextcrop = yes
+1 February 1988(Day of year=32), butterflypea: 
+      stage 2.0 germination
+12 February 1988(Day of year=43), butterflypea: 
+      stage 3.0 emergence
+                     biomass =          14.00 (g/m^2)   lai          =   0.010 (m^2/m^2)
+                     stover N conc =     5.50 (%)    extractable sw =   66.40 (mm)
+27 February 1988(Day of year=58), butterflypea: 
+      stage 4.0 end_of_juvenile
+                     biomass =          29.70 (g/m^2)   lai          =   0.345 (m^2/m^2)
+                     stover N conc =     5.23 (%)    extractable sw =  159.15 (mm)
+14 March 1988(Day of year=74), butterflypea: 
+      stage 5.0 floral_initiation
+                     biomass =         130.52 (g/m^2)   lai          =   2.272 (m^2/m^2)
+                     stover N conc =     2.65 (%)    extractable sw =  194.08 (mm)
+2 April 1988(Day of year=93), butterflypea: 
+      stage 6.0 flowering
+                     biomass =         269.81 (g/m^2)   lai          =   4.170 (m^2/m^2)
+                     stover N conc =     2.74 (%)    extractable sw =  277.03 (mm)
+15 April 1988(Day of year=106), butterflypea: 
+      stage 7.0 start_grain_fill
+                     biomass =         388.21 (g/m^2)   lai          =   3.767 (m^2/m^2)
+                     stover N conc =     3.80 (%)    extractable sw =  379.39 (mm)
+20 June 1988(Day of year=172), butterflypea: 
+      stage 8.0 end_grain_fill
+                     biomass =         681.71 (g/m^2)   lai          =   0.172 (m^2/m^2)
+                     stover N conc =     3.44 (%)    extractable sw =  380.55 (mm)
+30 July 1988(Day of year=212), butterflypea: 
+     Crop failure because of total leaf senescence.
+     Plant death. standing above-ground dm = 5835.68 (kg/ha)
+31 December 1989(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.
 

@@ -94,7 +94,7 @@ Paddock:
 ------- Operations Schedule Initialisation ------------------------------------
      Operations Schedule
      ===================
-      17/06/2004  Prepare      Raphanus_raphanistrum sow plants =30, sowing_depth = 10, cultivar = radish_SA, row_spacing = 120, crop_class = plant
+      17/06/2004  Prepare      Raphanus_raphanistrum sow population =30, sowing_depth = 10, cultivar = radish_SA, row_spacing = 120, crop_class = plant
       17/06/2004  Prepare      fertiliser apply amount = 57 (kg/ha), depth = 50 (mm), type = NO3_N
       17/06/2004  Prepare      fertiliser apply amount = 12 (kg/ha), depth = 50 (mm), type = NO3_N
 
@@ -271,14 +271,71 @@ Paddock:
       Sending sow message to raphanus_raphanistrum
 17 June 2004(Day of year=169), raphanus_raphanistrum: 
      Crop Sow
-17 June 2004(Day of year=169): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: raphanus_raphanistrum
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = radish_sa
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       9 (dd/mm)
+           emergence
+              cumvd_emergence            =       0      25 (vd)
+              tt_emergence               =     235       1 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    10.8    16.3 (h)
+              y_tt_end_of_juvenile       =     395       1 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =     290     290 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     200     200 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     970     970 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      50 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
      
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0030     0.0030
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.05       0.05
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         200.0     0.060          0.104       1.000
+         200.0     0.060          0.104       1.000
+         200.0     0.060          0.120       1.000
+         200.0     0.060          0.146       1.000
+         200.0     0.060          0.178       1.000
+         200.0     0.060          0.202       1.000
+         200.0     0.040          0.258       1.000
+         200.0     0.040          0.357       1.000
+         200.0     0.040          0.400       1.000
+         -----------------------------------------------
+         Extractable SW:   222mm in  1800mm total depth ( 12%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            169   10.0   30.0  120.0   0.0   0.0 radish_sa
+         ------------------------------------------------
      
       Sending apply message to fertiliser
 17 June 2004(Day of year=169), fertiliser: 
@@ -291,4 +348,85 @@ Paddock:
    - Reading Fertiliser Type Parameters
         12.00 of N as nitrate (no3_n)
                                          added at depth   50.00 (layer   1)
+18 June 2004(Day of year=170), raphanus_raphanistrum: 
+      stage 2.0 germination
+26 June 2004(Day of year=178), raphanus_raphanistrum: 
+      stage 3.0 emergence
+                     biomass =           0.90 (g/m^2)   lai          =   0.024 (m^2/m^2)
+                     stover N conc =     6.50 (%)    extractable sw =   43.60 (mm)
+11 July 2004(Day of year=193), raphanus_raphanistrum: 
+      stage 4.0 end_of_juvenile
+                     biomass =           5.89 (g/m^2)   lai          =   0.088 (m^2/m^2)
+                     stover N conc =     5.66 (%)    extractable sw =  112.20 (mm)
+13 August 2004(Day of year=226), raphanus_raphanistrum: 
+      stage 5.0 floral_initiation
+                     biomass =          90.88 (g/m^2)   lai          =   0.977 (m^2/m^2)
+                     stover N conc =     5.06 (%)    extractable sw =  206.15 (mm)
+8 September 2004(Day of year=252), raphanus_raphanistrum: 
+      stage 6.0 flowering
+                     biomass =         410.24 (g/m^2)   lai          =   4.032 (m^2/m^2)
+                     stover N conc =     3.94 (%)    extractable sw =  142.30 (mm)
+26 September 2004(Day of year=270), raphanus_raphanistrum: 
+      stage 7.0 start_grain_fill
+                     biomass =         713.77 (g/m^2)   lai          =   4.470 (m^2/m^2)
+                     stover N conc =     2.81 (%)    extractable sw =   76.93 (mm)
+10 December 2004(Day of year=345), raphanus_raphanistrum: 
+      stage 8.0 end_grain_fill
+                     biomass =         952.36 (g/m^2)   lai          =   0.013 (m^2/m^2)
+                     stover N conc =     2.35 (%)    extractable sw =   16.14 (mm)
+13 December 2004(Day of year=348), raphanus_raphanistrum: 
+      stage 9.0 maturity
+                     biomass =         962.15 (g/m^2)   lai          =   0.012 (m^2/m^2)
+                     stover N conc =     2.33 (%)    extractable sw =   12.43 (mm)
+14 December 2004(Day of year=349), raphanus_raphanistrum: 
+      stage 10.0 harvest_ripe
+                     biomass =         963.67 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     2.33 (%)    extractable sw =   12.87 (mm)
+14 December 2004(Day of year=349), Harvesting rule: 
+     Manager sending message :- raphanus_raphanistrum harvest
+     
+      flowering day          =  252                           stover (kg/ha)         =     9157.1
+      maturity day           =  348                           grain yield (kg/ha)    =      479.6
+      grain % water content  =    8.5                         grain yield wet (kg/ha)=      524.2
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      5.285
+      total above ground biomass (kg/ha)    =     9636.7
+      live above ground biomass (kg/ha)     =     9636.7
+      green above ground biomass (kg/ha)    =     6896.3
+      senesced above ground biomass (kg/ha) =     2740.5
+      number of leaves       =     40.9
+      DM Root:Shoot ratio    =     0.32                       Harvest Index          =       0.05
+      Stover C:N ratio       =    19.22                       Root C:N ratio         =      31.65
+      grain N percent        =     4.50                       total N content (kg/ha)=     212.15
+      grain N uptake (kg/ha) =    21.58                       senesced N content (kg/ha)=   41.11
+      green N content (kg/ha)=   149.46
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.308
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.244
+         floral_initiation    to flowering               0.000        0.000        0.000        0.088
+         flowering            to start_grain_fill        0.136        0.164        0.000        0.003
+         start_grain_fill     to end_grain_fill          0.742        0.826        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                9157.1                     0.0
+                          N  (kg/ha) =                 190.56                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                 479.6                     0.0
+                          N  (kg/ha) =                  21.58                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.024 (m^2/m^2)
+                     stover N conc =     5.50 (%)    extractable sw =   12.87 (mm)
+     Manager sending message :- raphanus_raphanistrum end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  3070.1
+                          N  (kg/ha) =                   0.00                   38.80
+     
+31 December 2004(Day of year=366), clock: 
+     Simulation is terminating due to end criteria being met.
 

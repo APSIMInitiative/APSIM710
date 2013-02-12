@@ -301,7 +301,7 @@ Title                  = south plots
      ===================
        31/3/1993  Prepare      surfaceom tillage type = burn_95 ()
        15/4/1993  Prepare      surfaceom tillage type = chisel ()
-        6/6/1993  Prepare      wheat sow plants = 210, sowing_depth = 40, cultivar = janz
+        6/6/1993  Prepare      wheat sow population = 210, sowing_depth = 40, cultivar = janz
         6/6/1993  Prepare      Fertiliser apply amount = 17 (kg/ha), type = nh4_n, depth = 60 (mm)
       15/12/1993  Prepare      wheat harvest
       15/12/1993  Prepare      wheat end_crop
@@ -324,11 +324,11 @@ Title                  = south plots
        23/2/1998  Prepare      lucerne harvest
        23/2/1998  Prepare      lucerne end_crop
        25/2/1998  Prepare      surfaceom tillage type = graze ()
-        4/5/1998  Prepare          canola sow plants = 35, crop_class = triazine, row_spacing = 180, sowing_depth = 20, cultivar = Karoo
+        4/5/1998  Prepare          canola sow population = 35, crop_class = triazine, row_spacing = 180, sowing_depth = 20, cultivar = Karoo
         4/5/1998  Prepare          Fertiliser apply amount = 27.3 (kg/ha), type = nh4_n, depth = 40 (mm)
       13/11/1998  Prepare      canola harvest
       13/11/1998  Prepare      canola end_crop
-       21/5/1999  Prepare      wheat sow plants = 194, depth = 40, cultivar = janz
+       21/5/1999  Prepare      wheat sow population = 194, depth = 40, cultivar = janz
        21/5/1999  Prepare      Fertiliser apply amount = 25 (kg/ha), type = nh4_n, depth = 60 (mm)
        8/12/1999  Prepare      wheat harvest
        30/3/2000  Prepare      surfaceom tillage type = burn_95
@@ -590,7 +590,7 @@ Title                  = south plots
      
      SECTION:- start_of_day
      if ((day = 361) and (year = 1992)) then
-        weed sow plants = 40, sowing_depth = 40,crop_class = winter_grass, cultivar = early
+        weed sow population = 40, sowing_depth = 40,crop_class = winter_grass, cultivar = early
         cult = 2
         crop_in = 1
      endif
@@ -598,7 +598,7 @@ Title                  = south plots
         if (date_within('1-dec, 30-apr') = 1) then
            if ((date_within('1-dec,28-feb') and (rain[2] >= 25)) or
                (date_within('1-mar,30-apr') and (rain[2] >= 20))) then
-              weed sow plants = 40, sowing_depth = 40, crop_class = winter_grass, cultivar = early
+              weed sow population = 40, sowing_depth = 40, crop_class = winter_grass, cultivar = early
               cult = 2
               crop_in = 1
            endif
@@ -934,15 +934,1575 @@ Title                  = south plots
 ------- Start of simulation  --------------------------------------------------
      Manager sending message :- soiln incorpfom  amount = 500 2500 1500 1000 500 300 200 150 50 10 0 0 0 0 0 0 0 0 0 0 (kg/ha), cnr = 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50
 26 December 1992(Day of year=361), Manager: 
-     Manager sending message :- weed sow  plants = 40, sowing_depth = 40, crop_class = winter_grass, cultivar = early
+     Manager sending message :- weed sow  population = 40, sowing_depth = 40, crop_class = winter_grass, cultivar = early
 26 December 1992(Day of year=361), weed: 
      Crop Sow
-26 December 1992(Day of year=361): 
+        ------------------------------------------------
+        cultivar                   = early
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     400     400 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =       1      24 (h)
+              y_tt_end_of_juvenile       =     500     500 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      50      50 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     120     120 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     380     380 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      55 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.15       0.15
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+          25.0     0.070          0.112       1.000
+          50.0     0.070          0.112       1.000
+          75.0     0.070          0.163       1.000
+         100.0     0.070          0.163       0.900
+         100.0     0.050          0.163       0.700
+         100.0     0.050          0.166       0.400
+         150.0     0.040          0.182       0.100
+         200.0     0.000          0.214       0.000
+         200.0     0.000          0.261       0.000
+         200.0     0.000          0.267       0.000
+         200.0     0.000          0.261       0.000
+         200.0     0.000          0.284       0.000
+         200.0     0.000          0.284       0.000
+         200.0     0.000          0.267       0.000
+         200.0     0.000          0.284       0.000
+         200.0     0.000          0.267       0.000
+         200.0     0.000          0.276       0.000
+         200.0     0.000          0.284       0.000
+         150.0     0.000          0.284       0.000
+          50.0     0.000          0.284       0.000
+         -----------------------------------------------
+         Extractable SW:   204mm in  3000mm total depth (  7%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            361   40.0   40.0  350.0   0.0   0.0 early
+         ------------------------------------------------
+     
+7 January 1993(Day of year=7), weed: 
+      stage 2.0 germination
+13 January 1993(Day of year=13), weed: 
+      stage 3.0 emergence
+                     biomass =           2.40 (g/m^2)   lai          =   0.010 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =    6.09 (mm)
+13 January 1993(Day of year=13), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -19.212227
+      ****        equivalent DM as FOM  (kg/ha) =   -48.0305672
+14 January 1993(Day of year=14), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.391147
+      ****        equivalent DM as FOM  (kg/ha) =  -0.977867246
+15 January 1993(Day of year=15), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.306412
+      ****        equivalent DM as FOM  (kg/ha) =  -0.766030252
+16 January 1993(Day of year=16), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.504992
+      ****        equivalent DM as FOM  (kg/ha) =   -1.26247942
+17 January 1993(Day of year=17), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.706625
+      ****        equivalent DM as FOM  (kg/ha) =   -1.76656365
+18 January 1993(Day of year=18), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.332171
+      ****        equivalent DM as FOM  (kg/ha) =  -0.830426872
+20 January 1993(Day of year=20), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.613481
+      ****        equivalent DM as FOM  (kg/ha) =   -1.53370333
+21 January 1993(Day of year=21), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.478657
+      ****        equivalent DM as FOM  (kg/ha) =   -1.19664252
+22 January 1993(Day of year=22), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.194342
+      ****        equivalent DM as FOM  (kg/ha) =  -0.485853761
+23 January 1993(Day of year=23), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.304775
+      ****        equivalent DM as FOM  (kg/ha) =  -0.761937320
+25 January 1993(Day of year=25), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.102270
+      ****        equivalent DM as FOM  (kg/ha) =  -0.255675077
+26 January 1993(Day of year=26), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.532708
+      ****        equivalent DM as FOM  (kg/ha) =   -1.33177090
+27 January 1993(Day of year=27), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.195904
+      ****        equivalent DM as FOM  (kg/ha) =  -0.489759326
+28 January 1993(Day of year=28), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.133903
+      ****        equivalent DM as FOM  (kg/ha) =  -0.334757447
+6 February 1993(Day of year=37), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.719525
+      ****        equivalent DM as FOM  (kg/ha) =   -4.29881334
+7 February 1993(Day of year=38), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.265201
+      ****        equivalent DM as FOM  (kg/ha) =   -3.16300368
+8 February 1993(Day of year=39), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.850572
+      ****        equivalent DM as FOM  (kg/ha) =   -4.62642908
+9 February 1993(Day of year=40), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.789890
+      ****        equivalent DM as FOM  (kg/ha) =   -4.47472477
+10 February 1993(Day of year=41), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.170991
+      ****        equivalent DM as FOM  (kg/ha) =   -2.92747736
+11 February 1993(Day of year=42), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.105706
+      ****        equivalent DM as FOM  (kg/ha) =   -2.76426411
+12 February 1993(Day of year=43), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.849830
+      ****        equivalent DM as FOM  (kg/ha) =   -2.12457609
+13 February 1993(Day of year=44), weed: 
+      stage 4.0 end_of_juvenile
+                     biomass =           5.26 (g/m^2)   lai          =   0.055 (m^2/m^2)
+                     stover N conc =     4.21 (%)    extractable sw =   12.63 (mm)
+13 February 1993(Day of year=44), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.620589
+      ****        equivalent DM as FOM  (kg/ha) =   -1.55147147
+14 February 1993(Day of year=45), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.502008
+      ****        equivalent DM as FOM  (kg/ha) =   -1.25501883
+15 February 1993(Day of year=46), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.302605
+      ****        equivalent DM as FOM  (kg/ha) =  -0.756513536
+16 February 1993(Day of year=47), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.276525
+      ****        equivalent DM as FOM  (kg/ha) =  -0.691313148
+17 February 1993(Day of year=48), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.316941
+      ****        equivalent DM as FOM  (kg/ha) =  -0.792352796
+18 February 1993(Day of year=49), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.904017
+      ****        equivalent DM as FOM  (kg/ha) =   -9.76004314
+19 February 1993(Day of year=50), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.844644
+      ****        equivalent DM as FOM  (kg/ha) =   -17.1116104
+20 February 1993(Day of year=51), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.013581
+      ****        equivalent DM as FOM  (kg/ha) =   -22.5339527
+21 February 1993(Day of year=52), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.205124
+      ****        equivalent DM as FOM  (kg/ha) =   -15.5128107
+22 February 1993(Day of year=53), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.594120
+      ****        equivalent DM as FOM  (kg/ha) =   -23.9853001
+23 February 1993(Day of year=54), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -17.902456
+      ****        equivalent DM as FOM  (kg/ha) =   -44.7561417
+24 February 1993(Day of year=55), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -17.889153
+      ****        equivalent DM as FOM  (kg/ha) =   -44.7228813
+25 February 1993(Day of year=56), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -12.204233
+      ****        equivalent DM as FOM  (kg/ha) =   -30.5105820
+26 February 1993(Day of year=57), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -11.355265
+      ****        equivalent DM as FOM  (kg/ha) =   -28.3881607
+27 February 1993(Day of year=58), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -11.955294
+      ****        equivalent DM as FOM  (kg/ha) =   -29.8882332
+28 February 1993(Day of year=59), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -8.124187
+      ****        equivalent DM as FOM  (kg/ha) =   -20.3104687
+1 March 1993(Day of year=60), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -13.567968
+      ****        equivalent DM as FOM  (kg/ha) =   -33.9199219
+2 March 1993(Day of year=61), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -11.456206
+      ****        equivalent DM as FOM  (kg/ha) =   -28.6405163
+3 March 1993(Day of year=62), Operations: 
+      Sending do_end_day_output message to report3
+3 March 1993(Day of year=62), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -10.207323
+      ****        equivalent DM as FOM  (kg/ha) =   -25.5183067
+4 March 1993(Day of year=63), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -7.781798
+      ****        equivalent DM as FOM  (kg/ha) =   -19.4544964
+5 March 1993(Day of year=64), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -7.428753
+      ****        equivalent DM as FOM  (kg/ha) =   -18.5718822
+6 March 1993(Day of year=65), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.441319
+      ****        equivalent DM as FOM  (kg/ha) =   -16.1032963
+7 March 1993(Day of year=66), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.641855
+      ****        equivalent DM as FOM  (kg/ha) =   -16.6046371
+8 March 1993(Day of year=67), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -7.103641
+      ****        equivalent DM as FOM  (kg/ha) =   -17.7591019
+9 March 1993(Day of year=68), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -7.114203
+      ****        equivalent DM as FOM  (kg/ha) =   -17.7855091
+10 March 1993(Day of year=69), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -7.052640
+      ****        equivalent DM as FOM  (kg/ha) =   -17.6316013
+11 March 1993(Day of year=70), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.661864
+      ****        equivalent DM as FOM  (kg/ha) =   -14.1546602
+12 March 1993(Day of year=71), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.504696
+      ****        equivalent DM as FOM  (kg/ha) =   -16.2617397
+13 March 1993(Day of year=72), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.084750
+      ****        equivalent DM as FOM  (kg/ha) =   -15.2118740
+14 March 1993(Day of year=73), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.297406
+      ****        equivalent DM as FOM  (kg/ha) =   -15.7435150
+15 March 1993(Day of year=74), weed: 
+      stage 5.0 floral_initiation
+                     biomass =          49.89 (g/m^2)   lai          =   0.671 (m^2/m^2)
+                     stover N conc =     1.16 (%)    extractable sw =   42.16 (mm)
+15 March 1993(Day of year=74), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.929227
+      ****        equivalent DM as FOM  (kg/ha) =   -14.8230686
+16 March 1993(Day of year=75), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -11.184506
+      ****        equivalent DM as FOM  (kg/ha) =   -27.9612656
+17 March 1993(Day of year=76), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -17.053295
+      ****        equivalent DM as FOM  (kg/ha) =   -42.6332359
+18 March 1993(Day of year=77), weed: 
+      stage 6.0 flowering
+                     biomass =          57.96 (g/m^2)   lai          =   0.724 (m^2/m^2)
+                     stover N conc =     1.21 (%)    extractable sw =   38.27 (mm)
+18 March 1993(Day of year=77), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -13.684776
+      ****        equivalent DM as FOM  (kg/ha) =   -34.2119408
+19 March 1993(Day of year=78), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -10.748125
+      ****        equivalent DM as FOM  (kg/ha) =   -26.8703117
+20 March 1993(Day of year=79), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -8.951801
+      ****        equivalent DM as FOM  (kg/ha) =   -22.3795033
+21 March 1993(Day of year=80), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.831997
+      ****        equivalent DM as FOM  (kg/ha) =   -17.0799923
+22 March 1993(Day of year=81), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.668953
+      ****        equivalent DM as FOM  (kg/ha) =   -16.6723824
+23 March 1993(Day of year=82), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.021761
+      ****        equivalent DM as FOM  (kg/ha) =   -12.5544024
+24 March 1993(Day of year=83), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -4.985170
+      ****        equivalent DM as FOM  (kg/ha) =   -12.4629259
+25 March 1993(Day of year=84), weed: 
+      stage 7.0 start_grain_fill
+                     biomass =          67.60 (g/m^2)   lai          =   0.604 (m^2/m^2)
+                     stover N conc =     1.25 (%)    extractable sw =   33.65 (mm)
+25 March 1993(Day of year=84), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.193152
+      ****        equivalent DM as FOM  (kg/ha) =   -12.9828796
+26 March 1993(Day of year=85), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -4.455617
+      ****        equivalent DM as FOM  (kg/ha) =   -11.1390419
+27 March 1993(Day of year=86), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -10.729488
+      ****        equivalent DM as FOM  (kg/ha) =   -26.8237209
+28 March 1993(Day of year=87), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -22.582077
+      ****        equivalent DM as FOM  (kg/ha) =   -56.4551926
+29 March 1993(Day of year=88), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -22.784924
+      ****        equivalent DM as FOM  (kg/ha) =   -56.9623070
+30 March 1993(Day of year=89), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -22.823050
+      ****        equivalent DM as FOM  (kg/ha) =   -57.0576248
+31 March 1993(Day of year=90), Operations: 
+      Sending tillage message to surfaceom
+31 March 1993(Day of year=90), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using burn_95
+                                             Fraction Incorporated =     0.95
+                                             Incorporated Depth    =     0.00
+31 March 1993(Day of year=90), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -20.742043
+      ****        equivalent DM as FOM  (kg/ha) =   -51.8551064
+1 April 1993(Day of year=91), Operations: 
+      Sending do_end_day_output message to report3
+1 April 1993(Day of year=91), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -13.681568
+      ****        equivalent DM as FOM  (kg/ha) =   -34.2039185
+2 April 1993(Day of year=92), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -18.047834
+      ****        equivalent DM as FOM  (kg/ha) =   -45.1195869
+3 April 1993(Day of year=93), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -15.166526
+      ****        equivalent DM as FOM  (kg/ha) =   -37.9163132
+4 April 1993(Day of year=94), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -11.296222
+      ****        equivalent DM as FOM  (kg/ha) =   -28.2405548
+5 April 1993(Day of year=95), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.221800
+      ****        equivalent DM as FOM  (kg/ha) =   -15.5544996
+6 April 1993(Day of year=96), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.842431
+      ****        equivalent DM as FOM  (kg/ha) =   -9.60607719
+7 April 1993(Day of year=97), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.145244
+      ****        equivalent DM as FOM  (kg/ha) =   -7.86310911
+8 April 1993(Day of year=98), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.293647
+      ****        equivalent DM as FOM  (kg/ha) =   -8.23411751
+9 April 1993(Day of year=99), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.061520
+      ****        equivalent DM as FOM  (kg/ha) =   -7.65379953
+10 April 1993(Day of year=100), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.918327
+      ****        equivalent DM as FOM  (kg/ha) =   -7.29581690
+11 April 1993(Day of year=101), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.283223
+      ****        equivalent DM as FOM  (kg/ha) =   -8.20805645
+12 April 1993(Day of year=102), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.727581
+      ****        equivalent DM as FOM  (kg/ha) =   -6.81895304
+13 April 1993(Day of year=103), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.364166
+      ****        equivalent DM as FOM  (kg/ha) =   -5.91041374
+14 April 1993(Day of year=104), weed: 
+      stage 8.0 end_grain_fill
+                     biomass =         106.49 (g/m^2)   lai          =   0.113 (m^2/m^2)
+                     stover N conc =     0.92 (%)    extractable sw =   29.91 (mm)
+14 April 1993(Day of year=104), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.631952
+      ****        equivalent DM as FOM  (kg/ha) =   -4.07988071
+15 April 1993(Day of year=105), Operations: 
+      Sending tillage message to surfaceom
+15 April 1993(Day of year=105), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using chisel
+                                             Fraction Incorporated =     0.50
+                                             Incorporated Depth    =   100.00
+15 April 1993(Day of year=105), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.524803
+      ****        equivalent DM as FOM  (kg/ha) =   -3.81200790
+16 April 1993(Day of year=106), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.401538
+      ****        equivalent DM as FOM  (kg/ha) =   -3.50384593
+17 April 1993(Day of year=107), weed: 
+      stage 9.0 maturity
+                     biomass =         108.02 (g/m^2)   lai          =   0.036 (m^2/m^2)
+                     stover N conc =     0.97 (%)    extractable sw =   29.34 (mm)
+17 April 1993(Day of year=107), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.336117
+      ****        equivalent DM as FOM  (kg/ha) =   -3.34029293
+18 April 1993(Day of year=108), weed: 
+      stage 10.0 harvest_ripe
+                     biomass =         108.47 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.99 (%)    extractable sw =   29.19 (mm)
+18 April 1993(Day of year=108), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.172612
+      ****        equivalent DM as FOM  (kg/ha) =   -2.93152952
+19 April 1993(Day of year=109), Manager: 
+     Manager sending message :- weed harvest
+19 April 1993(Day of year=109), weed: 
+     
+      flowering day          =   77                           stover (kg/ha)         =      923.4
+      maturity day           =  107                           grain yield (kg/ha)    =      161.3
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=      183.3
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      0.724
+      total above ground biomass (kg/ha)    =     1084.7
+      live above ground biomass (kg/ha)     =     1084.7
+      green above ground biomass (kg/ha)    =      688.9
+      senesced above ground biomass (kg/ha) =      395.7
+      number of leaves       =     45.3
+      DM Root:Shoot ratio    =     0.28                       Harvest Index          =       0.15
+      Stover C:N ratio       =    51.23                       Root C:N ratio         =     100.03
+      grain N percent        =     1.44                       total N content (kg/ha)=       9.53
+      grain N uptake (kg/ha) =     2.33                       senesced N content (kg/ha)=    1.98
+      green N content (kg/ha)=     5.23
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.349        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.114        0.000        0.501        0.587
+         floral_initiation    to flowering               0.119        0.054        0.681        0.787
+         flowering            to start_grain_fill        0.698        0.324        0.482        0.655
+         start_grain_fill     to end_grain_fill          0.288        0.011        0.541        0.694
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                 822.4                     0.0
+                          N  (kg/ha) =                   6.18                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                 161.3                     0.0
+                          N  (kg/ha) =                   2.33                    0.00
+     
+      stage 11.0 end_crop
+     Manager sending message :- weed end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                 101.0                   307.3
+                          N  (kg/ha) =                   1.03                    1.23
+     
+19 April 1993(Day of year=109), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =    556.802063
+     ****        equivalent DM as FOM  (kg/ha) =   1392.005127
+20 April 1993(Day of year=110), Operations: 
+      Sending do_end_day_output message to report3
+6 May 1993(Day of year=126), Operations: 
+      Sending do_end_day_output message to report3
+20 May 1993(Day of year=140), Operations: 
+      Sending do_end_day_output message to report3
+6 June 1993(Day of year=157), Operations: 
+      Sending sow message to wheat
+6 June 1993(Day of year=157), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = janz
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+          25.0     0.070          0.112       1.000
+          50.0     0.070          0.112       1.000
+          75.0     0.070          0.163       1.000
+         100.0     0.070          0.163       0.900
+         100.0     0.050          0.163       0.750
+         100.0     0.050          0.166       0.500
+         150.0     0.040          0.182       0.350
+         200.0     0.040          0.214       0.150
+         200.0     0.040          0.261       0.050
+         200.0     0.040          0.267       0.010
+         200.0     0.000          0.261       0.000
+         200.0     0.000          0.284       0.000
+         200.0     0.000          0.284       0.000
+         200.0     0.000          0.267       0.000
+         200.0     0.000          0.284       0.000
+         200.0     0.000          0.267       0.000
+         200.0     0.000          0.276       0.000
+         200.0     0.000          0.284       0.000
+         150.0     0.000          0.284       0.000
+          50.0     0.000          0.284       0.000
+         -----------------------------------------------
+         Extractable SW:   204mm in  3000mm total depth (  7%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            157   40.0  210.0  250.0   0.0   0.0 janz
+         ------------------------------------------------
+     
+      Sending apply message to fertiliser
+6 June 1993(Day of year=157), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        17.00 of N as ammonium (nh4_n)
+                                         added at depth   60.00 (layer   2)
+7 June 1993(Day of year=158), Operations: 
+      Sending do_end_day_output message to report3
+7 June 1993(Day of year=158), wheat: 
+      stage 2.0 germination
+15 June 1993(Day of year=166), wheat: 
+      stage 3.0 emergence
+                     biomass =           0.97 (g/m^2)   lai          =   0.042 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =    9.16 (mm)
+15 June 1993(Day of year=166), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -12.249412
+      ****        equivalent DM as FOM  (kg/ha) =   -30.6235294
+16 June 1993(Day of year=167), Operations: 
+      Sending do_end_day_output message to report3
+16 June 1993(Day of year=167), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           1.17 (g/m^2)   lai          =   0.045 (m^2/m^2)
+                     stover N conc =     5.06 (%)    extractable sw =    8.91 (mm)
+16 June 1993(Day of year=167), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.607227
+      ****        equivalent DM as FOM  (kg/ha) =   -4.01806831
+17 June 1993(Day of year=168), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.590032
+      ****        equivalent DM as FOM  (kg/ha) =   -6.47508001
+18 June 1993(Day of year=169), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.206447
+      ****        equivalent DM as FOM  (kg/ha) =   -8.01611805
+19 June 1993(Day of year=170), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.092215
+      ****        equivalent DM as FOM  (kg/ha) =   -7.73053741
+20 June 1993(Day of year=171), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.862094
+      ****        equivalent DM as FOM  (kg/ha) =   -9.65523434
+21 June 1993(Day of year=172), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -4.315816
+      ****        equivalent DM as FOM  (kg/ha) =   -10.7895412
+22 June 1993(Day of year=173), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -4.907137
+      ****        equivalent DM as FOM  (kg/ha) =   -12.2678432
+23 June 1993(Day of year=174), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.649674
+      ****        equivalent DM as FOM  (kg/ha) =   -14.1241856
+24 June 1993(Day of year=175), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.442040
+      ****        equivalent DM as FOM  (kg/ha) =   -16.1051006
+25 June 1993(Day of year=176), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.549242
+      ****        equivalent DM as FOM  (kg/ha) =   -16.3731041
+26 June 1993(Day of year=177), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.432169
+      ****        equivalent DM as FOM  (kg/ha) =   -16.0804234
+27 June 1993(Day of year=178), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -8.996346
+      ****        equivalent DM as FOM  (kg/ha) =   -22.4908638
+28 June 1993(Day of year=179), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.355464
+      ****        equivalent DM as FOM  (kg/ha) =   -23.3886604
+29 June 1993(Day of year=180), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -10.444172
+      ****        equivalent DM as FOM  (kg/ha) =   -26.1104298
+30 June 1993(Day of year=181), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -7.934201
+      ****        equivalent DM as FOM  (kg/ha) =   -19.8355026
+1 July 1993(Day of year=182), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -11.428003
+      ****        equivalent DM as FOM  (kg/ha) =   -28.5700073
+2 July 1993(Day of year=183), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -13.793962
+      ****        equivalent DM as FOM  (kg/ha) =   -34.4849014
+3 July 1993(Day of year=184), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.796131
+      ****        equivalent DM as FOM  (kg/ha) =   -24.4903278
+4 July 1993(Day of year=185), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.207909
+      ****        equivalent DM as FOM  (kg/ha) =   -23.0197716
+5 July 1993(Day of year=186), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.231377
+      ****        equivalent DM as FOM  (kg/ha) =   -15.5784426
+6 July 1993(Day of year=187), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -11.161344
+      ****        equivalent DM as FOM  (kg/ha) =   -27.9033585
+7 July 1993(Day of year=188), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -10.198046
+      ****        equivalent DM as FOM  (kg/ha) =   -25.4951134
+8 July 1993(Day of year=189), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -4.289421
+      ****        equivalent DM as FOM  (kg/ha) =   -10.7235518
+9 July 1993(Day of year=190), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.448430
+      ****        equivalent DM as FOM  (kg/ha) =   -8.62107563
+10 July 1993(Day of year=191), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -4.537892
+      ****        equivalent DM as FOM  (kg/ha) =   -11.3447294
+11 July 1993(Day of year=192), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -7.578970
+      ****        equivalent DM as FOM  (kg/ha) =   -18.9474239
+12 July 1993(Day of year=193), Operations: 
+      Sending do_end_day_output message to report3
+12 July 1993(Day of year=193), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -16.000839
+      ****        equivalent DM as FOM  (kg/ha) =   -40.0020981
+13 July 1993(Day of year=194), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -20.637094
+      ****        equivalent DM as FOM  (kg/ha) =   -51.5927353
+14 July 1993(Day of year=195), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -18.489792
+      ****        equivalent DM as FOM  (kg/ha) =   -46.2244797
+15 July 1993(Day of year=196), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -23.665525
+      ****        equivalent DM as FOM  (kg/ha) =   -59.1638145
+16 July 1993(Day of year=197), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -26.671217
+      ****        equivalent DM as FOM  (kg/ha) =   -66.6780396
+17 July 1993(Day of year=198), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -25.648222
+      ****        equivalent DM as FOM  (kg/ha) =   -64.1205521
+18 July 1993(Day of year=199), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -22.462194
+      ****        equivalent DM as FOM  (kg/ha) =   -56.1554871
+19 July 1993(Day of year=200), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -15.589755
+      ****        equivalent DM as FOM  (kg/ha) =   -38.9743881
+20 July 1993(Day of year=201), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.254299
+      ****        equivalent DM as FOM  (kg/ha) =   -23.1357479
+21 July 1993(Day of year=202), Operations: 
+      Sending do_end_day_output message to report6
+21 July 1993(Day of year=202), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -8.788915
+      ****        equivalent DM as FOM  (kg/ha) =   -21.9722862
+22 July 1993(Day of year=203), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -14.028981
+      ****        equivalent DM as FOM  (kg/ha) =   -35.0724525
+23 July 1993(Day of year=204), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -13.764728
+      ****        equivalent DM as FOM  (kg/ha) =   -34.4118195
+24 July 1993(Day of year=205), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -12.511299
+      ****        equivalent DM as FOM  (kg/ha) =   -31.2782478
+25 July 1993(Day of year=206), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -8.907242
+      ****        equivalent DM as FOM  (kg/ha) =   -22.2681046
+26 July 1993(Day of year=207), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -8.583116
+      ****        equivalent DM as FOM  (kg/ha) =   -21.4577885
+27 July 1993(Day of year=208), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -12.520563
+      ****        equivalent DM as FOM  (kg/ha) =   -31.3014069
+28 July 1993(Day of year=209), Operations: 
+      Sending do_end_day_output message to report3
+28 July 1993(Day of year=209), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -10.136517
+      ****        equivalent DM as FOM  (kg/ha) =   -25.3412914
+29 July 1993(Day of year=210), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.693033
+      ****        equivalent DM as FOM  (kg/ha) =   -24.2325821
+30 July 1993(Day of year=211), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -10.867657
+      ****        equivalent DM as FOM  (kg/ha) =   -27.1691418
+31 July 1993(Day of year=212), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.136852
+      ****        equivalent DM as FOM  (kg/ha) =   -22.8421307
+1 August 1993(Day of year=213), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.806135
+      ****        equivalent DM as FOM  (kg/ha) =   -24.5153370
+2 August 1993(Day of year=214), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -7.641294
+      ****        equivalent DM as FOM  (kg/ha) =   -19.1032352
+3 August 1993(Day of year=215), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -8.655840
+      ****        equivalent DM as FOM  (kg/ha) =   -21.6395988
+4 August 1993(Day of year=216), Operations: 
+      Sending do_end_day_output message to report3
+4 August 1993(Day of year=216), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -10.769865
+      ****        equivalent DM as FOM  (kg/ha) =   -26.9246616
+5 August 1993(Day of year=217), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -10.407216
+      ****        equivalent DM as FOM  (kg/ha) =   -26.0180397
+6 August 1993(Day of year=218), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -10.992985
+      ****        equivalent DM as FOM  (kg/ha) =   -27.4824619
+7 August 1993(Day of year=219), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -10.160936
+      ****        equivalent DM as FOM  (kg/ha) =   -25.4023399
+8 August 1993(Day of year=220), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -7.324332
+      ****        equivalent DM as FOM  (kg/ha) =   -18.3108311
+9 August 1993(Day of year=221), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -11.946942
+      ****        equivalent DM as FOM  (kg/ha) =   -29.8673553
+10 August 1993(Day of year=222), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -12.132949
+      ****        equivalent DM as FOM  (kg/ha) =   -30.3323727
+11 August 1993(Day of year=223), Operations: 
+      Sending do_end_day_output message to report3
+11 August 1993(Day of year=223), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -12.615516
+      ****        equivalent DM as FOM  (kg/ha) =   -31.5387897
+12 August 1993(Day of year=224), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -18.469757
+      ****        equivalent DM as FOM  (kg/ha) =   -46.1743927
+13 August 1993(Day of year=225), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -20.638342
+      ****        equivalent DM as FOM  (kg/ha) =   -51.5958557
+14 August 1993(Day of year=226), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -22.740473
+      ****        equivalent DM as FOM  (kg/ha) =   -56.8511810
+15 August 1993(Day of year=227), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -21.779757
+      ****        equivalent DM as FOM  (kg/ha) =   -54.4493904
+16 August 1993(Day of year=228), wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         119.95 (g/m^2)   lai          =   0.976 (m^2/m^2)
+                     stover N conc =     1.57 (%)    extractable sw =   62.91 (mm)
+16 August 1993(Day of year=228), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -20.791969
+      ****        equivalent DM as FOM  (kg/ha) =   -51.9799232
+17 August 1993(Day of year=229), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -22.719898
+      ****        equivalent DM as FOM  (kg/ha) =   -56.7997437
+18 August 1993(Day of year=230), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -22.494680
+      ****        equivalent DM as FOM  (kg/ha) =   -56.2367020
+19 August 1993(Day of year=231), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -21.780958
+      ****        equivalent DM as FOM  (kg/ha) =   -54.4523964
+20 August 1993(Day of year=232), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -21.318222
+      ****        equivalent DM as FOM  (kg/ha) =   -53.2955551
+21 August 1993(Day of year=233), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -20.934786
+      ****        equivalent DM as FOM  (kg/ha) =   -52.3369637
+22 August 1993(Day of year=234), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -20.608212
+      ****        equivalent DM as FOM  (kg/ha) =   -51.5205269
+23 August 1993(Day of year=235), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -20.266062
+      ****        equivalent DM as FOM  (kg/ha) =   -50.6651535
+24 August 1993(Day of year=236), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -17.817448
+      ****        equivalent DM as FOM  (kg/ha) =   -44.5436172
+25 August 1993(Day of year=237), Operations: 
+      Sending do_end_day_output message to report3
+25 August 1993(Day of year=237), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -16.774792
+      ****        equivalent DM as FOM  (kg/ha) =   -41.9369774
+26 August 1993(Day of year=238), Operations: 
+      Sending do_end_day_output message to report6
+26 August 1993(Day of year=238), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -19.293243
+      ****        equivalent DM as FOM  (kg/ha) =   -48.2331085
+27 August 1993(Day of year=239), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -16.066692
+      ****        equivalent DM as FOM  (kg/ha) =   -40.1667290
+28 August 1993(Day of year=240), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.928048
+      ****        equivalent DM as FOM  (kg/ha) =   -17.3201180
+29 August 1993(Day of year=241), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.046255
+      ****        equivalent DM as FOM  (kg/ha) =   -15.1156378
+30 August 1993(Day of year=242), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -16.760986
+      ****        equivalent DM as FOM  (kg/ha) =   -41.9024658
+31 August 1993(Day of year=243), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -17.261196
+      ****        equivalent DM as FOM  (kg/ha) =   -43.1529884
+1 September 1993(Day of year=244), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -18.880917
+      ****        equivalent DM as FOM  (kg/ha) =   -47.2022896
+2 September 1993(Day of year=245), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -12.362643
+      ****        equivalent DM as FOM  (kg/ha) =   -30.9066086
+3 September 1993(Day of year=246), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -27.807749
+      ****        equivalent DM as FOM  (kg/ha) =   -69.5193710
+4 September 1993(Day of year=247), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -24.610348
+      ****        equivalent DM as FOM  (kg/ha) =   -61.5258675
+5 September 1993(Day of year=248), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -24.304781
+      ****        equivalent DM as FOM  (kg/ha) =   -60.7619514
+6 September 1993(Day of year=249), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -10.638878
+      ****        equivalent DM as FOM  (kg/ha) =   -26.5971947
+7 September 1993(Day of year=250), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -21.528992
+      ****        equivalent DM as FOM  (kg/ha) =   -53.8224792
+8 September 1993(Day of year=251), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -25.555546
+      ****        equivalent DM as FOM  (kg/ha) =   -63.8888626
+9 September 1993(Day of year=252), Operations: 
+      Sending do_end_day_output message to report3
+9 September 1993(Day of year=252), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -13.212693
+      ****        equivalent DM as FOM  (kg/ha) =   -33.0317307
+10 September 1993(Day of year=253), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -26.602058
+      ****        equivalent DM as FOM  (kg/ha) =   -66.5051422
+11 September 1993(Day of year=254), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -26.025885
+      ****        equivalent DM as FOM  (kg/ha) =   -65.0647125
+12 September 1993(Day of year=255), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -25.365473
+      ****        equivalent DM as FOM  (kg/ha) =   -63.4136810
+13 September 1993(Day of year=256), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -10.943128
+      ****        equivalent DM as FOM  (kg/ha) =   -27.3578186
+14 September 1993(Day of year=257), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.566468
+      ****        equivalent DM as FOM  (kg/ha) =   -23.9161701
+15 September 1993(Day of year=258), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -22.895081
+      ****        equivalent DM as FOM  (kg/ha) =   -57.2377014
+16 September 1993(Day of year=259), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -24.541744
+      ****        equivalent DM as FOM  (kg/ha) =   -61.3543587
+17 September 1993(Day of year=260), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -17.871374
+      ****        equivalent DM as FOM  (kg/ha) =   -44.6784363
+18 September 1993(Day of year=261), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -23.837952
+      ****        equivalent DM as FOM  (kg/ha) =   -59.5948792
+19 September 1993(Day of year=262), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -22.617207
+      ****        equivalent DM as FOM  (kg/ha) =   -56.5430145
+20 September 1993(Day of year=263), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -19.277227
+      ****        equivalent DM as FOM  (kg/ha) =   -48.1930695
+21 September 1993(Day of year=264), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -19.357513
+      ****        equivalent DM as FOM  (kg/ha) =   -48.3937836
+22 September 1993(Day of year=265), Operations: 
+      Sending do_end_day_output message to report3
+22 September 1993(Day of year=265), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -4.559720
+      ****        equivalent DM as FOM  (kg/ha) =   -11.3992987
+23 September 1993(Day of year=266), wheat: 
+      stage 6.0 flowering
+                     biomass =         276.94 (g/m^2)   lai          =   0.337 (m^2/m^2)
+                     stover N conc =     0.76 (%)    extractable sw =   58.87 (mm)
+23 September 1993(Day of year=266), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -15.569503
+      ****        equivalent DM as FOM  (kg/ha) =   -38.9237556
+24 September 1993(Day of year=267), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -18.022207
+      ****        equivalent DM as FOM  (kg/ha) =   -45.0555191
+25 September 1993(Day of year=268), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -17.220268
+      ****        equivalent DM as FOM  (kg/ha) =   -43.0506706
+26 September 1993(Day of year=269), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -16.321766
+      ****        equivalent DM as FOM  (kg/ha) =   -40.8044128
+27 September 1993(Day of year=270), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -13.805727
+      ****        equivalent DM as FOM  (kg/ha) =   -34.5143166
+28 September 1993(Day of year=271), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -13.023849
+      ****        equivalent DM as FOM  (kg/ha) =   -32.5596199
+29 September 1993(Day of year=272), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -10.408957
+      ****        equivalent DM as FOM  (kg/ha) =   -26.0223942
+30 September 1993(Day of year=273), wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         302.99 (g/m^2)   lai          =   0.235 (m^2/m^2)
+                     stover N conc =     0.49 (%)    extractable sw =   50.86 (mm)
+30 September 1993(Day of year=273), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -8.131533
+      ****        equivalent DM as FOM  (kg/ha) =   -20.3288307
+1 October 1993(Day of year=274), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -7.081085
+      ****        equivalent DM as FOM  (kg/ha) =   -17.7027111
+2 October 1993(Day of year=275), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.409045
+      ****        equivalent DM as FOM  (kg/ha) =   -6.02261353
+3 October 1993(Day of year=276), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.725316
+      ****        equivalent DM as FOM  (kg/ha) =   -6.81328869
+4 October 1993(Day of year=277), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.572730
+      ****        equivalent DM as FOM  (kg/ha) =   -1.43182516
+5 October 1993(Day of year=278), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.888672
+      ****        equivalent DM as FOM  (kg/ha) =   -2.22168016
+6 October 1993(Day of year=279), Operations: 
+      Sending do_end_day_output message to report6
+6 October 1993(Day of year=279), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.252284
+      ****        equivalent DM as FOM  (kg/ha) =   -5.63070965
+7 October 1993(Day of year=280), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.971849
+      ****        equivalent DM as FOM  (kg/ha) =   -4.92962313
+8 October 1993(Day of year=281), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.762548
+      ****        equivalent DM as FOM  (kg/ha) =   -4.40636969
+9 October 1993(Day of year=282), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.318841
+      ****        equivalent DM as FOM  (kg/ha) =   -3.29710174
+10 October 1993(Day of year=283), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.855305
+      ****        equivalent DM as FOM  (kg/ha) =   -2.13826299
+11 October 1993(Day of year=284), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.435819
+      ****        equivalent DM as FOM  (kg/ha) =   -1.08954847
+12 October 1993(Day of year=285), Operations: 
+      Sending do_end_day_output message to report3
+12 October 1993(Day of year=285), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.388680
+      ****        equivalent DM as FOM  (kg/ha) =  -0.971699655
+13 October 1993(Day of year=286), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.225519
+      ****        equivalent DM as FOM  (kg/ha) =  -0.563797355
+14 October 1993(Day of year=287), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      0.591722
+     ****        equivalent DM as FOM  (kg/ha) =      1.479304
+16 October 1993(Day of year=289), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      0.174657
+     ****        equivalent DM as FOM  (kg/ha) =      0.436642
+17 October 1993(Day of year=290), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.821577
+      ****        equivalent DM as FOM  (kg/ha) =   -2.05394173
+18 October 1993(Day of year=291), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.071761
+      ****        equivalent DM as FOM  (kg/ha) =   -2.67940283
+19 October 1993(Day of year=292), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.056871
+      ****        equivalent DM as FOM  (kg/ha) =   -5.14217806
+21 October 1993(Day of year=294), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.605609
+      ****        equivalent DM as FOM  (kg/ha) =   -4.01402187
+22 October 1993(Day of year=295), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.360969
+      ****        equivalent DM as FOM  (kg/ha) =   -3.40242171
+23 October 1993(Day of year=296), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.116554
+      ****        equivalent DM as FOM  (kg/ha) =   -2.79138374
+24 October 1993(Day of year=297), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.423081
+      ****        equivalent DM as FOM  (kg/ha) =   -3.55770278
+25 October 1993(Day of year=298), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.447748
+      ****        equivalent DM as FOM  (kg/ha) =   -3.61937094
+26 October 1993(Day of year=299), Operations: 
+      Sending do_end_day_output message to report3
+26 October 1993(Day of year=299), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.031352
+      ****        equivalent DM as FOM  (kg/ha) =   -5.07838058
+27 October 1993(Day of year=300), wheat: 
+      stage 8.0 end_grain_fill
+27 October 1993(Day of year=300): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Crop dlt_n_green mass balance is off: dlt_n_green_sum =0.019156 vs n_uptake_sum =0.019158
+     Component name: wheat
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+                     biomass =         321.81 (g/m^2)   lai          =   0.097 (m^2/m^2)
+                     stover N conc =     0.37 (%)    extractable sw =   53.90 (mm)
+27 October 1993(Day of year=300), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.783461
+      ****        equivalent DM as FOM  (kg/ha) =   -4.45865297
+28 October 1993(Day of year=301): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Crop dlt_n_green mass balance is off: dlt_n_green_sum =0.018996 vs n_uptake_sum =0.019004
+     Component name: wheat
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+28 October 1993(Day of year=301), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      0.666155
+     ****        equivalent DM as FOM  (kg/ha) =      1.665388
+29 October 1993(Day of year=302), wheat: 
+      stage 9.0 maturity
+29 October 1993(Day of year=302): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Crop dlt_n_green mass balance is off: dlt_n_green_sum =0.019472 vs n_uptake_sum =0.019526
+     Component name: wheat
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+                     biomass =         321.97 (g/m^2)   lai          =   0.075 (m^2/m^2)
+                     stover N conc =     0.39 (%)    extractable sw =   52.86 (mm)
+29 October 1993(Day of year=302), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.321691
+     ****        equivalent DM as FOM  (kg/ha) =      3.304228
+30 October 1993(Day of year=303), wheat: 
+      stage 10.0 harvest_ripe
+30 October 1993(Day of year=303): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Crop dlt_n_green mass balance is off: dlt_n_green_sum =0.020409 vs n_uptake_sum =0.020431
+     Component name: wheat
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+                     biomass =         321.97 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.40 (%)    extractable sw =   52.62 (mm)
+30 October 1993(Day of year=303), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.322872
+     ****        equivalent DM as FOM  (kg/ha) =      3.307180
+31 October 1993(Day of year=304), wheat: 
+     Crop failure because of total leaf senescence.
+     Plant death. standing above-ground dm = 3219.72 (kg/ha)
+31 October 1993(Day of year=304), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.290999
+     ****        equivalent DM as FOM  (kg/ha) =      3.227498
+1 November 1993(Day of year=305), SysBal: 
+     **** N balance - unaccounted loss (kg/ha) =     -4.950624
+8 November 1993(Day of year=312), Operations: 
+      Sending do_end_day_output message to report3
+      Sending do_end_day_output message to report6
+25 November 1993(Day of year=329), Operations: 
+      Sending do_end_day_output message to report3
+8 December 1993(Day of year=342), Operations: 
+      Sending do_end_day_output message to report6
+9 December 1993(Day of year=343), Manager: 
+     Manager sending message :- weed sow  population = 40, sowing_depth = 40, crop_class = winter_grass, cultivar = early
+9 December 1993(Day of year=343), weed: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = early
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     400     400 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =       1      24 (h)
+              y_tt_end_of_juvenile       =     500     500 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      50      50 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     120     120 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     380     380 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      55 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.15       0.15
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+          25.0     0.070          0.112       1.000
+          50.0     0.070          0.112       1.000
+          75.0     0.070          0.163       1.000
+         100.0     0.070          0.163       0.900
+         100.0     0.050          0.163       0.700
+         100.0     0.050          0.166       0.400
+         150.0     0.040          0.182       0.100
+         200.0     0.000          0.214       0.000
+         200.0     0.000          0.261       0.000
+         200.0     0.000          0.267       0.000
+         200.0     0.000          0.261       0.000
+         200.0     0.000          0.284       0.000
+         200.0     0.000          0.284       0.000
+         200.0     0.000          0.267       0.000
+         200.0     0.000          0.284       0.000
+         200.0     0.000          0.267       0.000
+         200.0     0.000          0.276       0.000
+         200.0     0.000          0.284       0.000
+         150.0     0.000          0.284       0.000
+          50.0     0.000          0.284       0.000
+         -----------------------------------------------
+         Extractable SW:   204mm in  3000mm total depth (  7%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            343   40.0   40.0  350.0   0.0   0.0 early
+         ------------------------------------------------
+     
+10 December 1993(Day of year=344), weed: 
+      stage 2.0 germination
+15 December 1993(Day of year=349), Operations: 
+      Sending harvest message to wheat
+15 December 1993(Day of year=349), wheat: 
+     
+      flowering day          =  266                           stover (kg/ha)         =     2187.0
+      maturity day           =  302                           grain yield (kg/ha)    =     1032.7
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     1180.3
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      1.050
+      total above ground biomass (kg/ha)    =     3219.7
+      live above ground biomass (kg/ha)     =     3219.7
+      green above ground biomass (kg/ha)    =        0.0
+      senesced above ground biomass (kg/ha) =     3219.7
+      number of leaves       =     26.4
+      DM Root:Shoot ratio    =     0.00                       Harvest Index          =       0.32
+      Stover C:N ratio       =    90.86                       Root C:N ratio         =       0.00
+      grain N percent        =     1.68                       total N content (kg/ha)=      26.99
+      grain N uptake (kg/ha) =    17.36                       senesced N content (kg/ha)=    9.63
+      green N content (kg/ha)=     0.00
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.379        0.379
+         floral_initiation    to flowering               0.000        0.000        0.321        0.321
+         flowering            to start_grain_fill        0.000        0.000        0.039        0.039
+         start_grain_fill     to end_grain_fill          0.000        0.000        0.685        0.685
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                2187.0                     0.0
+                          N  (kg/ha) =                   9.63                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                1032.7                     0.0
+                          N  (kg/ha) =                  17.36                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.00 (%)    extractable sw =   81.17 (mm)
+      Sending end_crop message to wheat
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                     0.0
+                          N  (kg/ha) =                   0.00                    0.00
+     
+15 December 1993(Day of year=349), weed: 
+      stage 3.0 emergence
+                     biomass =           2.40 (g/m^2)   lai          =   0.010 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =    9.88 (mm)
+15 December 1993(Day of year=349), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =   1268.685425
+     ****        equivalent DM as FOM  (kg/ha) =   3171.713623
+16 December 1993(Day of year=350), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.979523
+      ****        equivalent DM as FOM  (kg/ha) =   -2.44880843
+17 December 1993(Day of year=351), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.746540
+      ****        equivalent DM as FOM  (kg/ha) =   -4.36635017
+18 December 1993(Day of year=352), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.276214
+      ****        equivalent DM as FOM  (kg/ha) =   -5.69053411
+19 December 1993(Day of year=353), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.648368
+      ****        equivalent DM as FOM  (kg/ha) =   -9.12092018
+20 December 1993(Day of year=354), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.723815
+      ****        equivalent DM as FOM  (kg/ha) =   -9.30953693
+21 December 1993(Day of year=355), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.707703
+      ****        equivalent DM as FOM  (kg/ha) =   -9.26925659
+22 December 1993(Day of year=356), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -4.283488
+      ****        equivalent DM as FOM  (kg/ha) =   -10.7087202
+23 December 1993(Day of year=357), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -7.750013
+      ****        equivalent DM as FOM  (kg/ha) =   -19.3750324
+24 December 1993(Day of year=358), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -14.298495
+      ****        equivalent DM as FOM  (kg/ha) =   -35.7462387
+25 December 1993(Day of year=359), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -15.714075
+      ****        equivalent DM as FOM  (kg/ha) =   -39.2851868
+26 December 1993(Day of year=360), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -11.861078
+      ****        equivalent DM as FOM  (kg/ha) =   -29.6526947
+27 December 1993(Day of year=361), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -20.019125
+      ****        equivalent DM as FOM  (kg/ha) =   -50.0478134
+28 December 1993(Day of year=362), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -17.766518
+      ****        equivalent DM as FOM  (kg/ha) =   -44.4162941
+29 December 1993(Day of year=363), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.941680
+      ****        equivalent DM as FOM  (kg/ha) =   -24.8542004
+30 December 1993(Day of year=364), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -7.544028
+      ****        equivalent DM as FOM  (kg/ha) =   -18.8600712
+31 December 1993(Day of year=365), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.168207
+      ****        equivalent DM as FOM  (kg/ha) =   -15.4205179
+1 January 1994(Day of year=1), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.076610
+      ****        equivalent DM as FOM  (kg/ha) =   -12.6915236
+2 January 1994(Day of year=2), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -4.579794
+      ****        equivalent DM as FOM  (kg/ha) =   -11.4494858
+3 January 1994(Day of year=3), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      0.279417
+     ****        equivalent DM as FOM  (kg/ha) =      0.698543
+4 January 1994(Day of year=4), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.949634
+      ****        equivalent DM as FOM  (kg/ha) =   -14.8740854
+5 January 1994(Day of year=5), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -4.126852
+      ****        equivalent DM as FOM  (kg/ha) =   -10.3171291
+6 January 1994(Day of year=6), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.941049
+      ****        equivalent DM as FOM  (kg/ha) =   -2.35262156
+7 January 1994(Day of year=7), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      0.286236
+     ****        equivalent DM as FOM  (kg/ha) =      0.715590
+8 January 1994(Day of year=8), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      0.285046
+     ****        equivalent DM as FOM  (kg/ha) =      0.712614
+9 January 1994(Day of year=9), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.392188
+      ****        equivalent DM as FOM  (kg/ha) =   -13.4804688
+10 January 1994(Day of year=10), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.296313
+      ****        equivalent DM as FOM  (kg/ha) =   -8.24078274
+11 January 1994(Day of year=11), weed: 
+      stage 4.0 end_of_juvenile
+                     biomass =          30.48 (g/m^2)   lai          =   0.257 (m^2/m^2)
+                     stover N conc =     3.69 (%)    extractable sw =   27.43 (mm)
+11 January 1994(Day of year=11), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.111099
+      ****        equivalent DM as FOM  (kg/ha) =   -7.77774763
+12 January 1994(Day of year=12), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.149573
+      ****        equivalent DM as FOM  (kg/ha) =   -7.87393188
+13 January 1994(Day of year=13), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.100089
+      ****        equivalent DM as FOM  (kg/ha) =   -7.75022268
+14 January 1994(Day of year=14), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.369355
+      ****        equivalent DM as FOM  (kg/ha) =   -8.42338848
+15 January 1994(Day of year=15), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -4.459579
+      ****        equivalent DM as FOM  (kg/ha) =   -11.1489458
+16 January 1994(Day of year=16), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.035920
+      ****        equivalent DM as FOM  (kg/ha) =   -7.58979893
+17 January 1994(Day of year=17), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.491151
+      ****        equivalent DM as FOM  (kg/ha) =   -6.22787666
+18 January 1994(Day of year=18): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Crop dlt_n_green mass balance is off: dlt_n_green_sum =0.000000 vs n_uptake_sum =0.000282
+     Component name: weed
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+18 January 1994(Day of year=18), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.241848
+      ****        equivalent DM as FOM  (kg/ha) =   -5.60461950
+19 January 1994(Day of year=19), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.576946
+      ****        equivalent DM as FOM  (kg/ha) =   -6.44236422
+20 January 1994(Day of year=20), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -12.634656
+      ****        equivalent DM as FOM  (kg/ha) =   -31.5866394
+21 January 1994(Day of year=21), Operations: 
+      Sending do_end_day_output message to report3
+21 January 1994(Day of year=21), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.832270
+      ****        equivalent DM as FOM  (kg/ha) =   -24.5806732
+22 January 1994(Day of year=22), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.357330
+      ****        equivalent DM as FOM  (kg/ha) =   -13.3933249
+23 January 1994(Day of year=23), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -4.533725
+      ****        equivalent DM as FOM  (kg/ha) =   -11.3343134
+24 January 1994(Day of year=24), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.574801
+      ****        equivalent DM as FOM  (kg/ha) =   -8.93700218
+25 January 1994(Day of year=25), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.727601
+      ****        equivalent DM as FOM  (kg/ha) =   -6.81900215
+26 January 1994(Day of year=26), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.519063
+      ****        equivalent DM as FOM  (kg/ha) =   -6.29765701
+27 January 1994(Day of year=27), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.278831
+      ****        equivalent DM as FOM  (kg/ha) =   -5.69707680
+28 January 1994(Day of year=28), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.918858
+      ****        equivalent DM as FOM  (kg/ha) =   -7.29714584
+29 January 1994(Day of year=29), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.067886
+      ****        equivalent DM as FOM  (kg/ha) =   -5.16971540
+30 January 1994(Day of year=30), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.062429
+      ****        equivalent DM as FOM  (kg/ha) =   -5.15607166
+31 January 1994(Day of year=31), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.602189
+      ****        equivalent DM as FOM  (kg/ha) =   -6.50547218
+1 February 1994(Day of year=32), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -8.472506
+      ****        equivalent DM as FOM  (kg/ha) =   -21.1812630
+2 February 1994(Day of year=33), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -8.096680
+      ****        equivalent DM as FOM  (kg/ha) =   -20.2416992
+3 February 1994(Day of year=34), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -16.305174
+      ****        equivalent DM as FOM  (kg/ha) =   -40.7629356
+4 February 1994(Day of year=35), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -34.218338
+      ****        equivalent DM as FOM  (kg/ha) =   -85.5458450
+5 February 1994(Day of year=36), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -39.639828
+      ****        equivalent DM as FOM  (kg/ha) =   -99.0995712
+6 February 1994(Day of year=37), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -24.759680
+      ****        equivalent DM as FOM  (kg/ha) =   -61.8992004
+7 February 1994(Day of year=38), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -13.066734
+      ****        equivalent DM as FOM  (kg/ha) =   -32.6668358
+8 February 1994(Day of year=39), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -40.098846
+      ****        equivalent DM as FOM  (kg/ha) =   -100.247116
+9 February 1994(Day of year=40), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -38.769638
+      ****        equivalent DM as FOM  (kg/ha) =   -96.9240952
+10 February 1994(Day of year=41), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -38.681332
+      ****        equivalent DM as FOM  (kg/ha) =   -96.7033310
+11 February 1994(Day of year=42), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -23.314510
+      ****        equivalent DM as FOM  (kg/ha) =   -58.2862740
+12 February 1994(Day of year=43), weed: 
+      stage 5.0 floral_initiation
+                     biomass =         108.60 (g/m^2)   lai          =   1.065 (m^2/m^2)
+                     stover N conc =     2.61 (%)    extractable sw =   45.84 (mm)
+12 February 1994(Day of year=43), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -39.720142
+      ****        equivalent DM as FOM  (kg/ha) =   -99.3003540
+13 February 1994(Day of year=44), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -53.329750
+      ****        equivalent DM as FOM  (kg/ha) =   -133.324371
+14 February 1994(Day of year=45), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -59.188133
+      ****        equivalent DM as FOM  (kg/ha) =   -147.970337
+15 February 1994(Day of year=46), weed: 
+      stage 6.0 flowering
+                     biomass =         142.47 (g/m^2)   lai          =   1.344 (m^2/m^2)
+                     stover N conc =     2.05 (%)    extractable sw =   66.87 (mm)
+15 February 1994(Day of year=46), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -65.196655
+      ****        equivalent DM as FOM  (kg/ha) =   -162.991638
+16 February 1994(Day of year=47), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -58.012360
+      ****        equivalent DM as FOM  (kg/ha) =   -145.030899
+17 February 1994(Day of year=48), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -37.703735
+      ****        equivalent DM as FOM  (kg/ha) =   -94.2593384
+18 February 1994(Day of year=49), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -33.493332
+      ****        equivalent DM as FOM  (kg/ha) =   -83.7333298
+19 February 1994(Day of year=50), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -45.143379
+      ****        equivalent DM as FOM  (kg/ha) =   -112.858444
+20 February 1994(Day of year=51), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -75.761017
+      ****        equivalent DM as FOM  (kg/ha) =   -189.402542
+21 February 1994(Day of year=52), weed: 
+      stage 7.0 start_grain_fill
+                     biomass =         207.19 (g/m^2)   lai          =   1.585 (m^2/m^2)
+                     stover N conc =     1.43 (%)    extractable sw =   73.60 (mm)
+21 February 1994(Day of year=52), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -87.574806
+      ****        equivalent DM as FOM  (kg/ha) =   -218.937012
+22 February 1994(Day of year=53), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -52.206356
+      ****        equivalent DM as FOM  (kg/ha) =   -130.515884
+23 February 1994(Day of year=54), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -77.289024
+      ****        equivalent DM as FOM  (kg/ha) =   -193.222565
+24 February 1994(Day of year=55), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -56.588535
+      ****        equivalent DM as FOM  (kg/ha) =   -141.471329
+25 February 1994(Day of year=56), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -43.724361
+      ****        equivalent DM as FOM  (kg/ha) =   -109.310905
+26 February 1994(Day of year=57), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -39.103100
+      ****        equivalent DM as FOM  (kg/ha) =   -97.7577515
+27 February 1994(Day of year=58), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -24.634724
+      ****        equivalent DM as FOM  (kg/ha) =   -61.5868073
+28 February 1994(Day of year=59), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -21.586189
+      ****        equivalent DM as FOM  (kg/ha) =   -53.9654732
+1 March 1994(Day of year=60), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -23.116524
+      ****        equivalent DM as FOM  (kg/ha) =   -57.7913094
+2 March 1994(Day of year=61), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -29.138805
+      ****        equivalent DM as FOM  (kg/ha) =   -72.8470154
+3 March 1994(Day of year=62), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -26.002192
+      ****        equivalent DM as FOM  (kg/ha) =   -65.0054779
+4 March 1994(Day of year=63), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -29.361280
+      ****        equivalent DM as FOM  (kg/ha) =   -73.4031982
+5 March 1994(Day of year=64), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -40.398170
+      ****        equivalent DM as FOM  (kg/ha) =   -100.995422
+6 March 1994(Day of year=65), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -34.226620
+      ****        equivalent DM as FOM  (kg/ha) =   -85.5665512
+7 March 1994(Day of year=66), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -23.301807
+      ****        equivalent DM as FOM  (kg/ha) =   -58.2545166
+8 March 1994(Day of year=67), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -13.656155
+      ****        equivalent DM as FOM  (kg/ha) =   -34.1403847
+9 March 1994(Day of year=68), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -11.518299
+      ****        equivalent DM as FOM  (kg/ha) =   -28.7957478
+10 March 1994(Day of year=69), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -26.852718
+      ****        equivalent DM as FOM  (kg/ha) =   -67.1317978
+11 March 1994(Day of year=70), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -32.974892
+      ****        equivalent DM as FOM  (kg/ha) =   -82.4372253
+12 March 1994(Day of year=71), weed: 
+      stage 8.0 end_grain_fill
+                     biomass =         332.69 (g/m^2)   lai          =   0.543 (m^2/m^2)
+                     stover N conc =     0.94 (%)    extractable sw =   73.66 (mm)
+12 March 1994(Day of year=71), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -21.248455
+      ****        equivalent DM as FOM  (kg/ha) =   -53.1211357
+13 March 1994(Day of year=72), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -18.412458
+      ****        equivalent DM as FOM  (kg/ha) =   -46.0311470
+14 March 1994(Day of year=73), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -15.709428
+      ****        equivalent DM as FOM  (kg/ha) =   -39.2735672
+15 March 1994(Day of year=74), weed: 
+      stage 9.0 maturity
+                     biomass =         345.90 (g/m^2)   lai          =   0.177 (m^2/m^2)
+                     stover N conc =     0.94 (%)    extractable sw =   62.57 (mm)
+15 March 1994(Day of year=74), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -12.771029
+      ****        equivalent DM as FOM  (kg/ha) =   -31.9275703
+16 March 1994(Day of year=75), weed: 
+      stage 10.0 harvest_ripe
+                     biomass =         348.83 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.96 (%)    extractable sw =   59.29 (mm)
+16 March 1994(Day of year=75), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.797971
+      ****        equivalent DM as FOM  (kg/ha) =   -24.4949265
+17 March 1994(Day of year=76), Manager: 
+     Manager sending message :- weed harvest
+17 March 1994(Day of year=76), weed: 
+     
+      flowering day          =   46                           stover (kg/ha)         =     2975.0
+      maturity day           =   74                           grain yield (kg/ha)    =      513.3
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=      583.3
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      1.585
+      total above ground biomass (kg/ha)    =     3488.3
+      live above ground biomass (kg/ha)     =     3488.3
+      green above ground biomass (kg/ha)    =     2525.3
+      senesced above ground biomass (kg/ha) =      963.0
+      number of leaves       =     45.2
+      DM Root:Shoot ratio    =     0.28                       Harvest Index          =       0.15
+      Stover C:N ratio       =    49.49                       Root C:N ratio         =      96.63
+      grain N percent        =     1.46                       total N content (kg/ha)=      31.55
+      grain N uptake (kg/ha) =     7.51                       senesced N content (kg/ha)=    4.82
+      green N content (kg/ha)=    19.23
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.215        0.141        0.000        0.078
+         end_of_juvenile      to floral_initiation       0.502        0.347        0.000        0.012
+         floral_initiation    to flowering               0.000        0.291        0.000        0.207
+         flowering            to start_grain_fill        0.043        0.245        0.055        0.366
+         start_grain_fill     to end_grain_fill          0.058        0.152        0.445        0.630
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                2592.0                     0.0
+                          N  (kg/ha) =                  20.26                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                 513.3                     0.0
+                          N  (kg/ha) =                   7.51                    0.00
+     
+      stage 11.0 end_crop
+     Manager sending message :- weed end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                 383.0                   971.5
+                          N  (kg/ha) =                   3.78                    4.02
+     
+17 March 1994(Day of year=76), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =   1783.925537
+     ****        equivalent DM as FOM  (kg/ha) =   4459.813965
+13 April 1994(Day of year=103), Operations: 
+      Sending tillage message to surfaceom
+13 April 1994(Day of year=103), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using burn_95
+                                             Fraction Incorporated =     0.95
+                                             Incorporated Depth    =     0.00
+28 April 1994(Day of year=118), Operations: 
+      Sending tillage message to surfaceom
+28 April 1994(Day of year=118), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using chisel
+                                             Fraction Incorporated =     0.50
+                                             Incorporated Depth    =   100.00
+3 May 1994(Day of year=123), Operations: 
+      Sending do_end_day_output message to report6
+25 May 1994(Day of year=145), Operations: 
+      Sending do_end_day_output message to report3
+10 June 1994(Day of year=161), Operations: 
+      Sending sow message to lucerne
+10 June 1994(Day of year=161), lucerne: 
+     Crop Sow
+10 June 1994(Day of year=161): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM  Fatal  Error
                       -------------------
      plant density ('Population') not specified
-     Component name: weed
+     Component name: lucerne
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      

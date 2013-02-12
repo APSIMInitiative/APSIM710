@@ -63,7 +63,7 @@ Paddock:
      
      SECTION:- start_of_day
            if (today = date('16-jul-2004') then
-             lettuce sow plants =6, sowing_depth = 50, cultivar = raider, row_spacing = 600
+             lettuce sow population =6, sowing_depth = 50, cultivar = raider, row_spacing = 600
              endif
      END of rules
      
@@ -204,16 +204,93 @@ Paddock:
            Totals   82981.1  6915.1   633.4    79.2   400.0    10.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager sending message :- lettuce sow  plants = 6, sowing_depth = 50, cultivar = raider, row_spacing = 600
+     Manager sending message :- lettuce sow  population = 6, sowing_depth = 50, cultivar = raider, row_spacing = 600
 16 July 2004(Day of year=198), lettuce: 
      Crop Sow
-16 July 2004(Day of year=198): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: lettuce
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = raider
+        Phases:
+           out
+           transplanting
+              x_pp_transplanting         =      11    11.4 (h)
+              y_tt_transplanting         =     890     890 (dd)
+           maturity
+              tt_maturity                =      10 (dd)
+     
+        ------------------------------------------------
      
      
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.250       1.000
+         150.0     0.060          0.250       1.000
+         300.0     0.060          0.250       1.000
+         300.0     0.060          0.250       1.000
+         300.0     0.060          0.250       1.000
+         300.0     0.060          0.250       1.000
+         300.0     0.060          0.250       1.000
+         -----------------------------------------------
+         Extractable SW:   366mm in  1800mm total depth ( 20%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 transplanting
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            198   50.0    6.0  600.0   0.0   0.0 raider
+         ------------------------------------------------
+     
+                     biomass =           0.18 (g/m^2)   lai          =   0.498 (m^2/m^2)
+                     stover N conc =     6.50 (%)    extractable sw =   37.55 (mm)
+18 September 2004(Day of year=262), lettuce: 
+      stage 2.0 maturity
+                     biomass =          13.41 (g/m^2)   lai          =   0.456 (m^2/m^2)
+                     stover N conc =     5.09 (%)    extractable sw =  346.13 (mm)
+19 September 2004(Day of year=263), Harvest on a Growth Stage: 
+     Manager sending message :- lettuce harvest
+19 September 2004(Day of year=263), lettuce: 
+     
+      flowering day          =    0                           stover (kg/ha)         =      134.1
+      maturity day           =  262                           grain yield (kg/ha)    =        0.0
+      grain % water content  =    0.0                         grain yield wet (kg/ha)=        0.0
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      0.542
+      total above ground biomass (kg/ha)    =      134.1
+      live above ground biomass (kg/ha)     =      134.1
+      green above ground biomass (kg/ha)    =      129.3
+      senesced above ground biomass (kg/ha) =        4.9
+      number of leaves       =      1.3
+      DM Root:Shoot ratio    =     0.91                       Harvest Index          =       0.00
+      Stover C:N ratio       =     8.06                       Root C:N ratio         =      48.55
+      grain N percent        =     0.00                       total N content (kg/ha)=       6.65
+      grain N uptake (kg/ha) =     0.00                       senesced N content (kg/ha)=    0.07
+      green N content (kg/ha)=     6.58
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         out                  to transplanting           0.000        0.000        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                 132.3                     0.0
+                          N  (kg/ha) =                   6.54                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                   0.0                     0.0
+                          N  (kg/ha) =                   0.00                    0.00
+     
+     Manager sending message :- lettuce end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   1.8                   122.0
+                          N  (kg/ha) =                   0.12                    1.00
+     
+15 October 2007(Day of year=288), clock: 
+     Simulation is terminating due to end criteria being met.
 

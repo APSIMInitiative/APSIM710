@@ -80,7 +80,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('1-dec') then
-       soybean sow plants =10, sowing_depth = 50, cultivar = buchanan, row_spacing = 500, crop_class = plant
+       soybean sow population =10, sowing_depth = 50, cultivar = buchanan, row_spacing = 500, crop_class = plant
               endif
      END of rules
      
@@ -254,16 +254,226 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 1 December 1988(Day of year=336), Sow on a fixed date: 
-     Manager sending message :- soybean sow  plants = 10, sowing_depth = 50, cultivar = buchanan, row_spacing = 500, crop_class = plant
+     Manager sending message :- soybean sow  population = 10, sowing_depth = 50, cultivar = buchanan, row_spacing = 500, crop_class = plant
 1 December 1988(Day of year=336), soybean: 
      Crop Sow
-1 December 1988(Day of year=336): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: soybean
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = buchanan
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      10 (dd)
+              shoot_rate                 =       1 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     150     150 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =      12      18 (h)
+              y_tt_end_of_juvenile       =     350     850 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      24      24 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     276     276 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     674     674 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      50 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.50       0.50
+        ------------------------------------------------
      
      
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.290       1.000
+         150.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.300       1.000
+         300.0     0.060          0.310       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.060          0.330       1.000
+         300.0     0.060          0.340       1.000
+         300.0     0.060          0.350       1.000
+         300.0     0.060          0.360       1.000
+         -----------------------------------------------
+         Extractable SW:   542mm in  3000mm total depth ( 18%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            336   50.0   10.0  500.0   0.0   0.0 buchanan
+         ------------------------------------------------
+     
+2 December 1988(Day of year=337), soybean: 
+      stage 2.0 germination
+6 December 1988(Day of year=341), soybean: 
+      stage 3.0 emergence
+                     biomass =           0.30 (g/m^2)   lai          =   0.003 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   28.22 (mm)
+16 December 1988(Day of year=351), soybean: 
+      stage 4.0 end_of_juvenile
+                     biomass =           1.48 (g/m^2)   lai          =   0.028 (m^2/m^2)
+                     stover N conc =     4.45 (%)    extractable sw =  131.77 (mm)
+24 January 1989(Day of year=24), soybean: 
+      stage 5.0 floral_initiation
+                     biomass =         346.96 (g/m^2)   lai          =   4.500 (m^2/m^2)
+                     stover N conc =     3.78 (%)    extractable sw =  240.11 (mm)
+26 January 1989(Day of year=26), soybean: 
+      stage 6.0 flowering
+                     biomass =         389.56 (g/m^2)   lai          =   4.872 (m^2/m^2)
+                     stover N conc =     3.57 (%)    extractable sw =  220.83 (mm)
+15 February 1989(Day of year=46), soybean: 
+      stage 7.0 start_grain_fill
+                     biomass =         727.16 (g/m^2)   lai          =   5.980 (m^2/m^2)
+                     stover N conc =     3.11 (%)    extractable sw =  156.69 (mm)
+20 March 1989(Day of year=79), soybean: 
+     Crop failure because of total leaf senescence.
+     Plant death. standing above-ground dm = 9024.68 (kg/ha)
+20 March 1989(Day of year=79), Harvesting rule: 
+     Manager sending message :- soybean harvest
+     
+      flowering day          =   26                           stover (kg/ha)         =     6349.3
+      maturity day           =    0                           grain yield (kg/ha)    =     2675.3
+      grain % water content  =    8.5                         grain yield wet (kg/ha)=     2923.9
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      6.169
+      total above ground biomass (kg/ha)    =     9024.6
+      live above ground biomass (kg/ha)     =     9024.6
+      green above ground biomass (kg/ha)    =        0.0
+      senesced above ground biomass (kg/ha) =     9024.6
+      number of leaves       =     51.3
+      DM Root:Shoot ratio    =     0.40                       Harvest Index          =       0.30
+      Stover C:N ratio       =    30.21                       Root C:N ratio         =      20.36
+      grain N percent        =     5.55                       total N content (kg/ha)=     232.54
+      grain N uptake (kg/ha) =   148.46                       senesced N content (kg/ha)=   84.08
+      green N content (kg/ha)=     0.00
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.003
+         end_of_juvenile      to floral_initiation       0.000        0.003        0.000        0.000
+         floral_initiation    to flowering               0.000        0.000        0.000        0.000
+         flowering            to start_grain_fill        0.059        0.102        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                6349.3                     0.0
+                          N  (kg/ha) =                  84.08                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2675.3                     0.0
+                          N  (kg/ha) =                 148.46                    0.00
+     
+      stage 11.0 end_crop
+     Manager sending message :- soybean end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  3624.4
+                          N  (kg/ha) =                   0.00                   71.20
+     
+1 December 1989(Day of year=335), Sow on a fixed date: 
+     Manager sending message :- soybean sow  population = 10, sowing_depth = 50, cultivar = buchanan, row_spacing = 500, crop_class = plant
+1 December 1989(Day of year=335), soybean: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = buchanan
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      10 (dd)
+              shoot_rate                 =       1 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     150     150 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =      12      18 (h)
+              y_tt_end_of_juvenile       =     350     850 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      24      24 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     276     276 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     674     674 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      50 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.50       0.50
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.290       1.000
+         150.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.300       1.000
+         300.0     0.060          0.310       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.060          0.330       1.000
+         300.0     0.060          0.340       1.000
+         300.0     0.060          0.350       1.000
+         300.0     0.060          0.360       1.000
+         -----------------------------------------------
+         Extractable SW:   542mm in  3000mm total depth ( 18%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            335   50.0   10.0  500.0   0.0   0.0 buchanan
+         ------------------------------------------------
+     
+2 December 1989(Day of year=336), soybean: 
+      stage 2.0 germination
+6 December 1989(Day of year=340), soybean: 
+      stage 3.0 emergence
+                     biomass =           0.30 (g/m^2)   lai          =   0.003 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   27.59 (mm)
+17 December 1989(Day of year=351), soybean: 
+      stage 4.0 end_of_juvenile
+                     biomass =           2.20 (g/m^2)   lai          =   0.044 (m^2/m^2)
+                     stover N conc =     4.33 (%)    extractable sw =  123.90 (mm)
+31 December 1989(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.
 

@@ -103,7 +103,7 @@ Title                  =
           crop_flag = 2
           event = 3
           sow_date = day
-          wheat sow plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
+          wheat sow population = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
             if rz_no3 < wheat_fert then
               amountno3 = (wheat_fert - rz_no3)
               fertiliser apply amount = amountno3 , depth = 0, type = no3_n
@@ -116,7 +116,7 @@ Title                  =
           crop_flag = 2
           event = 3
           sow_date = day
-          wheat sow plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
+          wheat sow population = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
             if rz_no3 < wheat_fert then
               amountno3 = (wheat_fert - rz_no3)
               fertiliser apply amount = amountno3 , depth = 0, type = no3_n
@@ -319,18 +319,1254 @@ Title                  =
      Manager creating a new local real variable : esw_rooting_zone = 90.00000
      Manager creating a new local real variable : rz_no3 = 41.16000
 27 May 1958(Day of year=147), Manager: 
-     Manager sending message :- wheat sow  plants = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
+     Manager sending message :- wheat sow  population = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
 27 May 1958(Day of year=147), wheat: 
      Crop Sow
-27 May 1958(Day of year=147): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
      
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.080          0.030       1.000
+         150.0     0.080          0.030       1.000
+         200.0     0.080          0.030       1.000
+         200.0     0.080          0.030       1.000
+         300.0     0.060          0.030       1.000
+         200.0     0.040          0.030       1.000
+         300.0     0.030          0.030       1.000
+         -----------------------------------------------
+         Extractable SW:    90mm in  1500mm total depth (  6%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            147   40.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
      
      Manager creating a new local real variable : amountno3 = 49.71230
      Manager sending message :- fertiliser apply  amount = 49.71230, depth = 0, type = no3_n
+27 May 1958(Day of year=147), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        49.71 of N as nitrate (no3_n)
+                                         added at depth    0.00 (layer   1)
+28 May 1958(Day of year=148), wheat: 
+      stage 2.0 germination
+3 June 1958(Day of year=154), wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =    2.17 (mm)
+3 June 1958(Day of year=154), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.843219
+      ****        equivalent DM as FOM  (kg/ha) =   -14.6080465
+4 June 1958(Day of year=155), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.55 (g/m^2)   lai          =   0.021 (m^2/m^2)
+                     stover N conc =     5.84 (%)    extractable sw =   11.98 (mm)
+4 June 1958(Day of year=155), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.669166
+      ****        equivalent DM as FOM  (kg/ha) =   -1.67291570
+5 June 1958(Day of year=156), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.023884
+      ****        equivalent DM as FOM  (kg/ha) =   -2.55971074
+6 June 1958(Day of year=157), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.344981
+      ****        equivalent DM as FOM  (kg/ha) =   -3.36245346
+7 June 1958(Day of year=158), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.489146
+      ****        equivalent DM as FOM  (kg/ha) =   -3.72286558
+8 June 1958(Day of year=159), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.236610
+      ****        equivalent DM as FOM  (kg/ha) =   -3.09152484
+9 June 1958(Day of year=160), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.797726
+      ****        equivalent DM as FOM  (kg/ha) =   -4.49431610
+10 June 1958(Day of year=161), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.991981
+      ****        equivalent DM as FOM  (kg/ha) =   -4.97995281
+11 June 1958(Day of year=162), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.461335
+      ****        equivalent DM as FOM  (kg/ha) =   -3.65333676
+12 June 1958(Day of year=163), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.357275
+      ****        equivalent DM as FOM  (kg/ha) =   -3.39318657
+13 June 1958(Day of year=164), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.663719
+      ****        equivalent DM as FOM  (kg/ha) =   -4.15929651
+14 June 1958(Day of year=165), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.005466
+      ****        equivalent DM as FOM  (kg/ha) =   -5.01366568
+15 June 1958(Day of year=166), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.917729
+      ****        equivalent DM as FOM  (kg/ha) =   -4.79432297
+16 June 1958(Day of year=167), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.056383
+      ****        equivalent DM as FOM  (kg/ha) =   -5.14095831
+17 June 1958(Day of year=168), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.635093
+      ****        equivalent DM as FOM  (kg/ha) =   -4.08773327
+18 June 1958(Day of year=169), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.121369
+      ****        equivalent DM as FOM  (kg/ha) =   -2.80342317
+19 June 1958(Day of year=170), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.072220
+      ****        equivalent DM as FOM  (kg/ha) =   -5.18054914
+20 June 1958(Day of year=171), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.819483
+      ****        equivalent DM as FOM  (kg/ha) =   -9.54870605
+21 June 1958(Day of year=172), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.883333
+      ****        equivalent DM as FOM  (kg/ha) =   -9.70833302
+22 June 1958(Day of year=173), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.741750
+      ****        equivalent DM as FOM  (kg/ha) =   -4.35437489
+23 June 1958(Day of year=174), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.372562
+      ****        equivalent DM as FOM  (kg/ha) =   -5.93140554
+24 June 1958(Day of year=175), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -4.656755
+      ****        equivalent DM as FOM  (kg/ha) =   -11.6418886
+25 June 1958(Day of year=176), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.582028
+      ****        equivalent DM as FOM  (kg/ha) =   -13.9550705
+26 June 1958(Day of year=177), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -4.077763
+      ****        equivalent DM as FOM  (kg/ha) =   -10.1944065
+27 June 1958(Day of year=178), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.110830
+      ****        equivalent DM as FOM  (kg/ha) =   -5.27707434
+28 June 1958(Day of year=179), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.640926
+      ****        equivalent DM as FOM  (kg/ha) =   -14.1023159
+29 June 1958(Day of year=180), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.739982
+      ****        equivalent DM as FOM  (kg/ha) =   -16.8499546
+30 June 1958(Day of year=181), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.984017
+      ****        equivalent DM as FOM  (kg/ha) =   -14.9600420
+1 July 1958(Day of year=182), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -4.958402
+      ****        equivalent DM as FOM  (kg/ha) =   -12.3960056
+2 July 1958(Day of year=183), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.065253
+      ****        equivalent DM as FOM  (kg/ha) =   -22.6631336
+3 July 1958(Day of year=184), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.183869
+      ****        equivalent DM as FOM  (kg/ha) =   -7.95967340
+4 July 1958(Day of year=185), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -7.418641
+      ****        equivalent DM as FOM  (kg/ha) =   -18.5466003
+5 July 1958(Day of year=186), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -10.018766
+      ****        equivalent DM as FOM  (kg/ha) =   -25.0469151
+6 July 1958(Day of year=187), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -8.860961
+      ****        equivalent DM as FOM  (kg/ha) =   -22.1524029
+7 July 1958(Day of year=188), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -8.402319
+      ****        equivalent DM as FOM  (kg/ha) =   -21.0057964
+8 July 1958(Day of year=189), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -12.328768
+      ****        equivalent DM as FOM  (kg/ha) =   -30.8219185
+9 July 1958(Day of year=190), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.635116
+      ****        equivalent DM as FOM  (kg/ha) =   -24.0877895
+10 July 1958(Day of year=191), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -12.820105
+      ****        equivalent DM as FOM  (kg/ha) =   -32.0502625
+11 July 1958(Day of year=192), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -15.316072
+      ****        equivalent DM as FOM  (kg/ha) =   -38.2901764
+12 July 1958(Day of year=193), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -17.887001
+      ****        equivalent DM as FOM  (kg/ha) =   -44.7175026
+13 July 1958(Day of year=194), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -17.745684
+      ****        equivalent DM as FOM  (kg/ha) =   -44.3642082
+14 July 1958(Day of year=195), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -12.356580
+      ****        equivalent DM as FOM  (kg/ha) =   -30.8914490
+15 July 1958(Day of year=196), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -11.824495
+      ****        equivalent DM as FOM  (kg/ha) =   -29.5612373
+16 July 1958(Day of year=197), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -12.315996
+      ****        equivalent DM as FOM  (kg/ha) =   -30.7899895
+17 July 1958(Day of year=198), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -23.072519
+      ****        equivalent DM as FOM  (kg/ha) =   -57.6812973
+18 July 1958(Day of year=199), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.493168
+      ****        equivalent DM as FOM  (kg/ha) =   -23.7329197
+19 July 1958(Day of year=200), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -21.590006
+      ****        equivalent DM as FOM  (kg/ha) =   -53.9750137
+20 July 1958(Day of year=201), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -15.821246
+      ****        equivalent DM as FOM  (kg/ha) =   -39.5531158
+21 July 1958(Day of year=202), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -28.536413
+      ****        equivalent DM as FOM  (kg/ha) =   -71.3410339
+22 July 1958(Day of year=203), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -14.866169
+      ****        equivalent DM as FOM  (kg/ha) =   -37.1654205
+23 July 1958(Day of year=204), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -31.142479
+      ****        equivalent DM as FOM  (kg/ha) =   -77.8561935
+24 July 1958(Day of year=205), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -35.831238
+      ****        equivalent DM as FOM  (kg/ha) =   -89.5780945
+25 July 1958(Day of year=206), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -20.156448
+      ****        equivalent DM as FOM  (kg/ha) =   -50.3911209
+26 July 1958(Day of year=207), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -39.037033
+      ****        equivalent DM as FOM  (kg/ha) =   -97.5925827
+27 July 1958(Day of year=208), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -37.949997
+      ****        equivalent DM as FOM  (kg/ha) =   -94.8749924
+28 July 1958(Day of year=209), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -26.215002
+      ****        equivalent DM as FOM  (kg/ha) =   -65.5375061
+29 July 1958(Day of year=210), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -44.276749
+      ****        equivalent DM as FOM  (kg/ha) =   -110.691872
+30 July 1958(Day of year=211), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -46.265446
+      ****        equivalent DM as FOM  (kg/ha) =   -115.663612
+31 July 1958(Day of year=212), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -25.479185
+      ****        equivalent DM as FOM  (kg/ha) =   -63.6979637
+1 August 1958(Day of year=213), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -41.248821
+      ****        equivalent DM as FOM  (kg/ha) =   -103.122055
+2 August 1958(Day of year=214), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -58.255291
+      ****        equivalent DM as FOM  (kg/ha) =   -145.638229
+3 August 1958(Day of year=215), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -51.994289
+      ****        equivalent DM as FOM  (kg/ha) =   -129.985718
+4 August 1958(Day of year=216), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -23.829006
+      ****        equivalent DM as FOM  (kg/ha) =   -59.5725136
+5 August 1958(Day of year=217), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -38.142723
+      ****        equivalent DM as FOM  (kg/ha) =   -95.3568039
+6 August 1958(Day of year=218), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -29.867506
+      ****        equivalent DM as FOM  (kg/ha) =   -74.6687622
+7 August 1958(Day of year=219), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -53.189213
+      ****        equivalent DM as FOM  (kg/ha) =   -132.973022
+8 August 1958(Day of year=220), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -47.175838
+      ****        equivalent DM as FOM  (kg/ha) =   -117.939598
+9 August 1958(Day of year=221), wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         188.33 (g/m^2)   lai          =   2.654 (m^2/m^2)
+                     stover N conc =     2.20 (%)    extractable sw =   78.17 (mm)
+9 August 1958(Day of year=221), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -20.548462
+      ****        equivalent DM as FOM  (kg/ha) =   -51.3711548
+10 August 1958(Day of year=222), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -24.093531
+      ****        equivalent DM as FOM  (kg/ha) =   -60.2338257
+11 August 1958(Day of year=223), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -40.790527
+      ****        equivalent DM as FOM  (kg/ha) =   -101.976318
+12 August 1958(Day of year=224), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -24.164299
+      ****        equivalent DM as FOM  (kg/ha) =   -60.4107475
+13 August 1958(Day of year=225), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -24.474014
+      ****        equivalent DM as FOM  (kg/ha) =   -61.1850357
+14 August 1958(Day of year=226), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -50.827805
+      ****        equivalent DM as FOM  (kg/ha) =   -127.069511
+15 August 1958(Day of year=227), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -48.940479
+      ****        equivalent DM as FOM  (kg/ha) =   -122.351196
+16 August 1958(Day of year=228), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -50.765713
+      ****        equivalent DM as FOM  (kg/ha) =   -126.914284
+17 August 1958(Day of year=229), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -28.558887
+      ****        equivalent DM as FOM  (kg/ha) =   -71.3972168
+18 August 1958(Day of year=230), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -41.192284
+      ****        equivalent DM as FOM  (kg/ha) =   -102.980705
+19 August 1958(Day of year=231), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -50.114109
+      ****        equivalent DM as FOM  (kg/ha) =   -125.285271
+20 August 1958(Day of year=232), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -46.304008
+      ****        equivalent DM as FOM  (kg/ha) =   -115.760017
+21 August 1958(Day of year=233), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -43.612625
+      ****        equivalent DM as FOM  (kg/ha) =   -109.031563
+22 August 1958(Day of year=234), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -16.408360
+      ****        equivalent DM as FOM  (kg/ha) =   -41.0208969
+23 August 1958(Day of year=235), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -35.987038
+      ****        equivalent DM as FOM  (kg/ha) =   -89.9675903
+24 August 1958(Day of year=236), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -43.015099
+      ****        equivalent DM as FOM  (kg/ha) =   -107.537743
+25 August 1958(Day of year=237), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -46.909428
+      ****        equivalent DM as FOM  (kg/ha) =   -117.273567
+26 August 1958(Day of year=238), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -54.204544
+      ****        equivalent DM as FOM  (kg/ha) =   -135.511353
+27 August 1958(Day of year=239), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -51.352123
+      ****        equivalent DM as FOM  (kg/ha) =   -128.380310
+28 August 1958(Day of year=240), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -55.318977
+      ****        equivalent DM as FOM  (kg/ha) =   -138.297440
+29 August 1958(Day of year=241), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -52.485710
+      ****        equivalent DM as FOM  (kg/ha) =   -131.214279
+30 August 1958(Day of year=242), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -42.711792
+      ****        equivalent DM as FOM  (kg/ha) =   -106.779480
+31 August 1958(Day of year=243), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -29.644476
+      ****        equivalent DM as FOM  (kg/ha) =   -74.1111908
+1 September 1958(Day of year=244), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -34.256737
+      ****        equivalent DM as FOM  (kg/ha) =   -85.6418381
+2 September 1958(Day of year=245), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -42.121094
+      ****        equivalent DM as FOM  (kg/ha) =   -105.302734
+3 September 1958(Day of year=246), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -57.479969
+      ****        equivalent DM as FOM  (kg/ha) =   -143.699921
+4 September 1958(Day of year=247), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -69.003593
+      ****        equivalent DM as FOM  (kg/ha) =   -172.508987
+5 September 1958(Day of year=248), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -71.756462
+      ****        equivalent DM as FOM  (kg/ha) =   -179.391159
+6 September 1958(Day of year=249), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -67.387871
+      ****        equivalent DM as FOM  (kg/ha) =   -168.469681
+7 September 1958(Day of year=250), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -60.200226
+      ****        equivalent DM as FOM  (kg/ha) =   -150.500565
+8 September 1958(Day of year=251), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -64.175140
+      ****        equivalent DM as FOM  (kg/ha) =   -160.437851
+9 September 1958(Day of year=252), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -34.218422
+      ****        equivalent DM as FOM  (kg/ha) =   -85.5460510
+10 September 1958(Day of year=253), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -53.124969
+      ****        equivalent DM as FOM  (kg/ha) =   -132.812424
+11 September 1958(Day of year=254), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -56.745541
+      ****        equivalent DM as FOM  (kg/ha) =   -141.863846
+12 September 1958(Day of year=255), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -41.960556
+      ****        equivalent DM as FOM  (kg/ha) =   -104.901390
+13 September 1958(Day of year=256), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -56.987896
+      ****        equivalent DM as FOM  (kg/ha) =   -142.469742
+14 September 1958(Day of year=257), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -68.558601
+      ****        equivalent DM as FOM  (kg/ha) =   -171.396500
+15 September 1958(Day of year=258), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -75.946373
+      ****        equivalent DM as FOM  (kg/ha) =   -189.865936
+16 September 1958(Day of year=259), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -56.845535
+      ****        equivalent DM as FOM  (kg/ha) =   -142.113831
+17 September 1958(Day of year=260), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -49.458645
+      ****        equivalent DM as FOM  (kg/ha) =   -123.646614
+18 September 1958(Day of year=261), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -79.657227
+      ****        equivalent DM as FOM  (kg/ha) =   -199.143066
+19 September 1958(Day of year=262), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -52.741341
+      ****        equivalent DM as FOM  (kg/ha) =   -131.853348
+20 September 1958(Day of year=263), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -56.721958
+      ****        equivalent DM as FOM  (kg/ha) =   -141.804886
+21 September 1958(Day of year=264), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -53.473179
+      ****        equivalent DM as FOM  (kg/ha) =   -133.682938
+22 September 1958(Day of year=265), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -53.713345
+      ****        equivalent DM as FOM  (kg/ha) =   -134.283356
+23 September 1958(Day of year=266), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -58.340027
+      ****        equivalent DM as FOM  (kg/ha) =   -145.850067
+24 September 1958(Day of year=267), wheat: 
+      stage 6.0 flowering
+                     biomass =         676.03 (g/m^2)   lai          =   2.449 (m^2/m^2)
+                     stover N conc =     0.75 (%)    extractable sw =   95.86 (mm)
+24 September 1958(Day of year=267), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -50.384201
+      ****        equivalent DM as FOM  (kg/ha) =   -125.960503
+25 September 1958(Day of year=268), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -52.839668
+      ****        equivalent DM as FOM  (kg/ha) =   -132.099167
+26 September 1958(Day of year=269), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -50.374546
+      ****        equivalent DM as FOM  (kg/ha) =   -125.936363
+27 September 1958(Day of year=270), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -61.471287
+      ****        equivalent DM as FOM  (kg/ha) =   -153.678207
+28 September 1958(Day of year=271), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -22.570923
+      ****        equivalent DM as FOM  (kg/ha) =   -56.4273071
+29 September 1958(Day of year=272), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -21.826094
+      ****        equivalent DM as FOM  (kg/ha) =   -54.5652351
+30 September 1958(Day of year=273), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -24.040106
+      ****        equivalent DM as FOM  (kg/ha) =   -60.1002655
+1 October 1958(Day of year=274), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -20.115980
+      ****        equivalent DM as FOM  (kg/ha) =   -50.2899513
+2 October 1958(Day of year=275), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -19.232788
+      ****        equivalent DM as FOM  (kg/ha) =   -48.0819702
+3 October 1958(Day of year=276), wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         757.44 (g/m^2)   lai          =   2.124 (m^2/m^2)
+                     stover N conc =     0.52 (%)    extractable sw =  103.75 (mm)
+3 October 1958(Day of year=276), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -39.610126
+      ****        equivalent DM as FOM  (kg/ha) =   -99.0253143
+4 October 1958(Day of year=277), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -36.635197
+      ****        equivalent DM as FOM  (kg/ha) =   -91.5879898
+5 October 1958(Day of year=278), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -35.489948
+      ****        equivalent DM as FOM  (kg/ha) =   -88.7248688
+6 October 1958(Day of year=279), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -21.818232
+      ****        equivalent DM as FOM  (kg/ha) =   -54.5455780
+7 October 1958(Day of year=280), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -31.496010
+      ****        equivalent DM as FOM  (kg/ha) =   -78.7400208
+8 October 1958(Day of year=281), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -10.381547
+      ****        equivalent DM as FOM  (kg/ha) =   -25.9538670
+9 October 1958(Day of year=282), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -21.903284
+      ****        equivalent DM as FOM  (kg/ha) =   -54.7582092
+10 October 1958(Day of year=283), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -22.848316
+      ****        equivalent DM as FOM  (kg/ha) =   -57.1207886
+11 October 1958(Day of year=284), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -19.628735
+      ****        equivalent DM as FOM  (kg/ha) =   -49.0718346
+12 October 1958(Day of year=285), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -17.200102
+      ****        equivalent DM as FOM  (kg/ha) =   -43.0002556
+13 October 1958(Day of year=286), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.034087
+      ****        equivalent DM as FOM  (kg/ha) =   -7.58521795
+14 October 1958(Day of year=287), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -7.271170
+      ****        equivalent DM as FOM  (kg/ha) =   -18.1779251
+15 October 1958(Day of year=288), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.782043
+      ****        equivalent DM as FOM  (kg/ha) =   -16.9551067
+16 October 1958(Day of year=289), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.214700
+      ****        equivalent DM as FOM  (kg/ha) =   -23.0367489
+17 October 1958(Day of year=290), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -4.386633
+      ****        equivalent DM as FOM  (kg/ha) =   -10.9665823
+18 October 1958(Day of year=291), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.452513
+      ****        equivalent DM as FOM  (kg/ha) =   -13.6312819
+19 October 1958(Day of year=292), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.483723
+      ****        equivalent DM as FOM  (kg/ha) =   -13.7093077
+20 October 1958(Day of year=293), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.215281
+      ****        equivalent DM as FOM  (kg/ha) =   -13.0382032
+21 October 1958(Day of year=294), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.111448
+      ****        equivalent DM as FOM  (kg/ha) =   -7.77862024
+22 October 1958(Day of year=295), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.282429
+      ****        equivalent DM as FOM  (kg/ha) =   -8.20607281
+23 October 1958(Day of year=296), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.410636
+      ****        equivalent DM as FOM  (kg/ha) =   -1.02658927
+24 October 1958(Day of year=297), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.153751
+      ****        equivalent DM as FOM  (kg/ha) =   -2.88437819
+25 October 1958(Day of year=298), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      0.824535
+     ****        equivalent DM as FOM  (kg/ha) =      2.061338
+26 October 1958(Day of year=299), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.238493
+      ****        equivalent DM as FOM  (kg/ha) =  -0.596231639
+27 October 1958(Day of year=300), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.130060
+      ****        equivalent DM as FOM  (kg/ha) =  -0.325148851
+28 October 1958(Day of year=301), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      0.186021
+     ****        equivalent DM as FOM  (kg/ha) =      0.465051
+29 October 1958(Day of year=302), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.394534
+     ****        equivalent DM as FOM  (kg/ha) =      3.486336
+30 October 1958(Day of year=303), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      0.875285
+     ****        equivalent DM as FOM  (kg/ha) =      2.188213
+31 October 1958(Day of year=304), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      0.580596
+     ****        equivalent DM as FOM  (kg/ha) =      1.451490
+1 November 1958(Day of year=305), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      0.672689
+     ****        equivalent DM as FOM  (kg/ha) =      1.681723
+2 November 1958(Day of year=306), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.622786
+     ****        equivalent DM as FOM  (kg/ha) =      4.056964
+3 November 1958(Day of year=307), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.597884
+     ****        equivalent DM as FOM  (kg/ha) =      3.994709
+4 November 1958(Day of year=308), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.234631
+     ****        equivalent DM as FOM  (kg/ha) =      3.086576
+5 November 1958(Day of year=309), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.097431
+     ****        equivalent DM as FOM  (kg/ha) =      2.743578
+6 November 1958(Day of year=310), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.070864
+     ****        equivalent DM as FOM  (kg/ha) =      2.677161
+7 November 1958(Day of year=311), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.416130
+     ****        equivalent DM as FOM  (kg/ha) =      3.540324
+8 November 1958(Day of year=312), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.552120
+     ****        equivalent DM as FOM  (kg/ha) =      3.880301
+9 November 1958(Day of year=313), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.535192
+     ****        equivalent DM as FOM  (kg/ha) =      3.837981
+10 November 1958(Day of year=314), wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =         846.63 (g/m^2)   lai          =   0.393 (m^2/m^2)
+                     stover N conc =     0.30 (%)    extractable sw =   80.95 (mm)
+10 November 1958(Day of year=314), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.587911
+     ****        equivalent DM as FOM  (kg/ha) =      3.969777
+11 November 1958(Day of year=315), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      2.139548
+     ****        equivalent DM as FOM  (kg/ha) =      5.348869
+12 November 1958(Day of year=316), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.939077
+     ****        equivalent DM as FOM  (kg/ha) =      4.847692
+13 November 1958(Day of year=317), wheat: 
+      stage 9.0 maturity
+                     biomass =         846.81 (g/m^2)   lai          =   0.330 (m^2/m^2)
+                     stover N conc =     0.30 (%)    extractable sw =   79.59 (mm)
+13 November 1958(Day of year=317), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      2.395418
+     ****        equivalent DM as FOM  (kg/ha) =      5.988546
+14 November 1958(Day of year=318), wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =         846.81 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.30 (%)    extractable sw =   79.01 (mm)
+14 November 1958(Day of year=318), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      2.383222
+     ****        equivalent DM as FOM  (kg/ha) =      5.958055
+15 November 1958(Day of year=319), Manager: 
+     Manager sending message :- wheat harvest
+15 November 1958(Day of year=319), wheat: 
+     
+      flowering day          =  267                           stover (kg/ha)         =     6088.0
+      maturity day           =  317                           grain yield (kg/ha)    =     2380.1
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     2720.1
+      grain wt (g)           =    0.024                       grains/m^2             =     9916.0
+      grains/plant           =   99.2                         maximum lai            =      3.073
+      total above ground biomass (kg/ha)    =     8468.1
+      live above ground biomass (kg/ha)     =     8468.1
+      green above ground biomass (kg/ha)    =     7141.6
+      senesced above ground biomass (kg/ha) =     1326.5
+      number of leaves       =     43.2
+      DM Root:Shoot ratio    =     0.14                       Harvest Index          =       0.28
+      Stover C:N ratio       =   116.86                       Root C:N ratio         =      41.37
+      grain N percent        =     1.45                       total N content (kg/ha)=      55.30
+      grain N uptake (kg/ha) =    34.46                       senesced N content (kg/ha)=    6.63
+      green N content (kg/ha)=    14.21
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.023        0.023
+         floral_initiation    to flowering               0.000        0.000        0.239        0.239
+         flowering            to start_grain_fill        0.000        0.000        0.107        0.107
+         start_grain_fill     to end_grain_fill          0.000        0.000        0.828        0.828
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                6088.0                     0.0
+                          N  (kg/ha) =                  20.84                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2380.1                     0.0
+                          N  (kg/ha) =                  34.46                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =   79.01 (mm)
+     Manager sending message :- wheat end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1184.5
+                          N  (kg/ha) =                   0.00                   11.45
+     
+15 November 1958(Day of year=319), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =   3861.065186
+     ****        equivalent DM as FOM  (kg/ha) =   9652.663086
+3 June 1959(Day of year=154), Manager: 
+     Manager sending message :- wheat sow  population = 100 (/m2), sowing_depth = 40 (mm), cultivar = hartog
+3 June 1959(Day of year=154), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.080          0.030       1.000
+         150.0     0.080          0.030       1.000
+         200.0     0.080          0.030       1.000
+         200.0     0.080          0.030       1.000
+         300.0     0.060          0.030       1.000
+         200.0     0.040          0.030       1.000
+         300.0     0.030          0.030       1.000
+         -----------------------------------------------
+         Extractable SW:    90mm in  1500mm total depth (  6%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            154   40.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+     Manager sending message :- fertiliser apply  amount = 88.59579, depth = 0, type = no3_n
+3 June 1959(Day of year=154), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        88.60 of N as nitrate (no3_n)
+                                         added at depth    0.00 (layer   1)
+4 June 1959(Day of year=155), wheat: 
+      stage 2.0 germination
+11 June 1959(Day of year=162), wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =    7.57 (mm)
+11 June 1959(Day of year=162), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.840455
+      ****        equivalent DM as FOM  (kg/ha) =   -14.6011372
+12 June 1959(Day of year=163), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.57 (g/m^2)   lai          =   0.022 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =    7.15 (mm)
+12 June 1959(Day of year=163), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.869633
+      ****        equivalent DM as FOM  (kg/ha) =   -2.17408276
+13 June 1959(Day of year=164), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.038711
+      ****        equivalent DM as FOM  (kg/ha) =   -2.59677768
+14 June 1959(Day of year=165), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.550325
+      ****        equivalent DM as FOM  (kg/ha) =   -1.37581217
+15 June 1959(Day of year=166), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.294762
+      ****        equivalent DM as FOM  (kg/ha) =   -3.23690438
+16 June 1959(Day of year=167), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.424180
+      ****        equivalent DM as FOM  (kg/ha) =   -3.56044984
+17 June 1959(Day of year=168), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.845706
+      ****        equivalent DM as FOM  (kg/ha) =   -2.11426592
+18 June 1959(Day of year=169), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.339123
+      ****        equivalent DM as FOM  (kg/ha) =   -3.34780717
+19 June 1959(Day of year=170), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.781157
+      ****        equivalent DM as FOM  (kg/ha) =   -1.95289326
+20 June 1959(Day of year=171), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.647937
+      ****        equivalent DM as FOM  (kg/ha) =   -1.61984134
+21 June 1959(Day of year=172), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.544470
+      ****        equivalent DM as FOM  (kg/ha) =   -3.86117601
+22 June 1959(Day of year=173), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.257307
+      ****        equivalent DM as FOM  (kg/ha) =   -5.64326620
+23 June 1959(Day of year=174), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.504771
+      ****        equivalent DM as FOM  (kg/ha) =   -6.26192665
+24 June 1959(Day of year=175), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.536655
+      ****        equivalent DM as FOM  (kg/ha) =   -6.34163713
+25 June 1959(Day of year=176), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.794656
+      ****        equivalent DM as FOM  (kg/ha) =   -6.98663950
+26 June 1959(Day of year=177), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.351351
+      ****        equivalent DM as FOM  (kg/ha) =   -8.37837696
+27 June 1959(Day of year=178), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.719019
+      ****        equivalent DM as FOM  (kg/ha) =   -9.29754829
+28 June 1959(Day of year=179), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.760486
+      ****        equivalent DM as FOM  (kg/ha) =   -9.40121555
+29 June 1959(Day of year=180), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -4.136669
+      ****        equivalent DM as FOM  (kg/ha) =   -10.3416729
+30 June 1959(Day of year=181), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -4.954015
+      ****        equivalent DM as FOM  (kg/ha) =   -12.3850365
+1 July 1959(Day of year=182), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.489018
+      ****        equivalent DM as FOM  (kg/ha) =   -13.7225447
+2 July 1959(Day of year=183), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.994398
+      ****        equivalent DM as FOM  (kg/ha) =   -9.98599529
+3 July 1959(Day of year=184), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.370852
+      ****        equivalent DM as FOM  (kg/ha) =   -13.4271288
+4 July 1959(Day of year=185), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -7.022842
+      ****        equivalent DM as FOM  (kg/ha) =   -17.5571060
+5 July 1959(Day of year=186), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -8.383230
+      ****        equivalent DM as FOM  (kg/ha) =   -20.9580746
+6 July 1959(Day of year=187), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -7.843851
+      ****        equivalent DM as FOM  (kg/ha) =   -19.6096268
+7 July 1959(Day of year=188), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.335796
+      ****        equivalent DM as FOM  (kg/ha) =   -23.3394909
+8 July 1959(Day of year=189), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.732622
+      ****        equivalent DM as FOM  (kg/ha) =   -16.8315544
+9 July 1959(Day of year=190), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.877581
+      ****        equivalent DM as FOM  (kg/ha) =   -24.6939507
+10 July 1959(Day of year=191), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -7.706083
+      ****        equivalent DM as FOM  (kg/ha) =   -19.2652073
+11 July 1959(Day of year=192), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -9.207150
+      ****        equivalent DM as FOM  (kg/ha) =   -23.0178738
+12 July 1959(Day of year=193), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -13.185672
+      ****        equivalent DM as FOM  (kg/ha) =   -32.9641800
+13 July 1959(Day of year=194), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -14.364109
+      ****        equivalent DM as FOM  (kg/ha) =   -35.9102707
+14 July 1959(Day of year=195), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -16.974960
+      ****        equivalent DM as FOM  (kg/ha) =   -42.4374008
+15 July 1959(Day of year=196), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -18.589779
+      ****        equivalent DM as FOM  (kg/ha) =   -46.4744453
+16 July 1959(Day of year=197), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -20.297993
+      ****        equivalent DM as FOM  (kg/ha) =   -50.7449799
+17 July 1959(Day of year=198), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -20.342983
+      ****        equivalent DM as FOM  (kg/ha) =   -50.8574562
+18 July 1959(Day of year=199), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -16.334476
+      ****        equivalent DM as FOM  (kg/ha) =   -40.8361893
+19 July 1959(Day of year=200), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -17.251118
+      ****        equivalent DM as FOM  (kg/ha) =   -43.1277924
+20 July 1959(Day of year=201), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -26.412746
+      ****        equivalent DM as FOM  (kg/ha) =   -66.0318680
+21 July 1959(Day of year=202), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -21.792141
+      ****        equivalent DM as FOM  (kg/ha) =   -54.4803505
+22 July 1959(Day of year=203), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -21.286070
+      ****        equivalent DM as FOM  (kg/ha) =   -53.2151756
+23 July 1959(Day of year=204), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -27.717463
+      ****        equivalent DM as FOM  (kg/ha) =   -69.2936554
+24 July 1959(Day of year=205), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -12.544687
+      ****        equivalent DM as FOM  (kg/ha) =   -31.3617172
+25 July 1959(Day of year=206), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -12.777146
+      ****        equivalent DM as FOM  (kg/ha) =   -31.9428654
+26 July 1959(Day of year=207), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -32.201138
+      ****        equivalent DM as FOM  (kg/ha) =   -80.5028458
+27 July 1959(Day of year=208), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -31.188488
+      ****        equivalent DM as FOM  (kg/ha) =   -77.9712219
+28 July 1959(Day of year=209), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -41.815392
+      ****        equivalent DM as FOM  (kg/ha) =   -104.538475
+29 July 1959(Day of year=210), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -44.364624
+      ****        equivalent DM as FOM  (kg/ha) =   -110.911560
+30 July 1959(Day of year=211), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -50.154568
+      ****        equivalent DM as FOM  (kg/ha) =   -125.386421
+31 July 1959(Day of year=212), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -46.534462
+      ****        equivalent DM as FOM  (kg/ha) =   -116.336151
+1 August 1959(Day of year=213), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -43.187641
+      ****        equivalent DM as FOM  (kg/ha) =   -107.969101
+2 August 1959(Day of year=214), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -34.413528
+      ****        equivalent DM as FOM  (kg/ha) =   -86.0338211
+3 August 1959(Day of year=215), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -38.788322
+      ****        equivalent DM as FOM  (kg/ha) =   -96.9708023
+4 August 1959(Day of year=216), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -39.868313
+      ****        equivalent DM as FOM  (kg/ha) =   -99.6707840
+5 August 1959(Day of year=217), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -27.746439
+      ****        equivalent DM as FOM  (kg/ha) =   -69.3660965
+6 August 1959(Day of year=218), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -32.862022
+      ****        equivalent DM as FOM  (kg/ha) =   -82.1550522
+7 August 1959(Day of year=219), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -35.142456
+      ****        equivalent DM as FOM  (kg/ha) =   -87.8561401
+8 August 1959(Day of year=220), wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         165.85 (g/m^2)   lai          =   2.353 (m^2/m^2)
+                     stover N conc =     2.10 (%)    extractable sw =   73.28 (mm)
+8 August 1959(Day of year=220), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -33.210327
+      ****        equivalent DM as FOM  (kg/ha) =   -83.0258179
+9 August 1959(Day of year=221), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -14.569709
+      ****        equivalent DM as FOM  (kg/ha) =   -36.4242706
+10 August 1959(Day of year=222), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -13.008324
+      ****        equivalent DM as FOM  (kg/ha) =   -32.5208092
+11 August 1959(Day of year=223), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -16.800892
+      ****        equivalent DM as FOM  (kg/ha) =   -42.0022278
+12 August 1959(Day of year=224), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -36.205769
+      ****        equivalent DM as FOM  (kg/ha) =   -90.5144196
+13 August 1959(Day of year=225), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -48.653736
+      ****        equivalent DM as FOM  (kg/ha) =   -121.634338
+14 August 1959(Day of year=226), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -47.521103
+      ****        equivalent DM as FOM  (kg/ha) =   -118.802757
+15 August 1959(Day of year=227), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -49.669888
+      ****        equivalent DM as FOM  (kg/ha) =   -124.174721
+16 August 1959(Day of year=228), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -48.904133
+      ****        equivalent DM as FOM  (kg/ha) =   -122.260330
+17 August 1959(Day of year=229), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -48.484509
+      ****        equivalent DM as FOM  (kg/ha) =   -121.211273
+18 August 1959(Day of year=230), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -42.458660
+      ****        equivalent DM as FOM  (kg/ha) =   -106.146652
+19 August 1959(Day of year=231), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -40.007328
+      ****        equivalent DM as FOM  (kg/ha) =   -100.018318
+20 August 1959(Day of year=232), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -31.943829
+      ****        equivalent DM as FOM  (kg/ha) =   -79.8595734
+21 August 1959(Day of year=233), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -42.478748
+      ****        equivalent DM as FOM  (kg/ha) =   -106.196869
+22 August 1959(Day of year=234), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -52.653458
+      ****        equivalent DM as FOM  (kg/ha) =   -131.633636
+23 August 1959(Day of year=235), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -49.613663
+      ****        equivalent DM as FOM  (kg/ha) =   -124.034157
+24 August 1959(Day of year=236), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -56.851955
+      ****        equivalent DM as FOM  (kg/ha) =   -142.129883
+25 August 1959(Day of year=237), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -57.407051
+      ****        equivalent DM as FOM  (kg/ha) =   -143.517624
+26 August 1959(Day of year=238), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -57.596035
+      ****        equivalent DM as FOM  (kg/ha) =   -143.990082
+27 August 1959(Day of year=239), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -61.160427
+      ****        equivalent DM as FOM  (kg/ha) =   -152.901062
+28 August 1959(Day of year=240), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -57.893047
+      ****        equivalent DM as FOM  (kg/ha) =   -144.732620
+29 August 1959(Day of year=241), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -61.567272
+      ****        equivalent DM as FOM  (kg/ha) =   -153.918182
+30 August 1959(Day of year=242), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -28.157751
+      ****        equivalent DM as FOM  (kg/ha) =   -70.3943787
+31 August 1959(Day of year=243), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -63.429340
+      ****        equivalent DM as FOM  (kg/ha) =   -158.573349
+1 September 1959(Day of year=244), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -66.700569
+      ****        equivalent DM as FOM  (kg/ha) =   -166.751419
+2 September 1959(Day of year=245), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -66.304527
+      ****        equivalent DM as FOM  (kg/ha) =   -165.761322
+3 September 1959(Day of year=246), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -56.992046
+      ****        equivalent DM as FOM  (kg/ha) =   -142.480118
+4 September 1959(Day of year=247), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -60.213184
+      ****        equivalent DM as FOM  (kg/ha) =   -150.532959
+5 September 1959(Day of year=248), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -60.322453
+      ****        equivalent DM as FOM  (kg/ha) =   -150.806122
+6 September 1959(Day of year=249), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -42.817932
+      ****        equivalent DM as FOM  (kg/ha) =   -107.044830
+7 September 1959(Day of year=250), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -39.718018
+      ****        equivalent DM as FOM  (kg/ha) =   -99.2950439
+8 September 1959(Day of year=251), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -53.935780
+      ****        equivalent DM as FOM  (kg/ha) =   -134.839447
+9 September 1959(Day of year=252), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -54.397038
+      ****        equivalent DM as FOM  (kg/ha) =   -135.992584
+10 September 1959(Day of year=253), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -65.394508
+      ****        equivalent DM as FOM  (kg/ha) =   -163.486267
+11 September 1959(Day of year=254), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -22.594736
+      ****        equivalent DM as FOM  (kg/ha) =   -56.4868393
+12 September 1959(Day of year=255), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -19.511150
+      ****        equivalent DM as FOM  (kg/ha) =   -48.7778740
+13 September 1959(Day of year=256), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -27.019104
+      ****        equivalent DM as FOM  (kg/ha) =   -67.5477600
+14 September 1959(Day of year=257), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -44.916294
+      ****        equivalent DM as FOM  (kg/ha) =   -112.290733
+15 September 1959(Day of year=258), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -62.405411
+      ****        equivalent DM as FOM  (kg/ha) =   -156.013519
+16 September 1959(Day of year=259), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -47.333942
+      ****        equivalent DM as FOM  (kg/ha) =   -118.334854
+17 September 1959(Day of year=260), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -39.682720
+      ****        equivalent DM as FOM  (kg/ha) =   -99.2068024
+18 September 1959(Day of year=261), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -58.591068
+      ****        equivalent DM as FOM  (kg/ha) =   -146.477661
+19 September 1959(Day of year=262), wheat: 
+      stage 6.0 flowering
+                     biomass =         588.41 (g/m^2)   lai          =   2.065 (m^2/m^2)
+                     stover N conc =     0.77 (%)    extractable sw =  113.74 (mm)
+19 September 1959(Day of year=262), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -56.275768
+      ****        equivalent DM as FOM  (kg/ha) =   -140.689423
+20 September 1959(Day of year=263), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -28.020002
+      ****        equivalent DM as FOM  (kg/ha) =   -70.0500031
+21 September 1959(Day of year=264), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -64.616547
+      ****        equivalent DM as FOM  (kg/ha) =   -161.541367
+22 September 1959(Day of year=265), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -59.908585
+      ****        equivalent DM as FOM  (kg/ha) =   -149.771454
+23 September 1959(Day of year=266), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -47.659454
+      ****        equivalent DM as FOM  (kg/ha) =   -119.148636
+24 September 1959(Day of year=267), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -56.923306
+      ****        equivalent DM as FOM  (kg/ha) =   -142.308258
+25 September 1959(Day of year=268), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -61.431999
+      ****        equivalent DM as FOM  (kg/ha) =   -153.580002
+26 September 1959(Day of year=269), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -33.521828
+      ****        equivalent DM as FOM  (kg/ha) =   -83.8045654
+27 September 1959(Day of year=270), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -41.594543
+      ****        equivalent DM as FOM  (kg/ha) =   -103.986359
+28 September 1959(Day of year=271), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -50.351730
+      ****        equivalent DM as FOM  (kg/ha) =   -125.879326
+29 September 1959(Day of year=272), wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         710.94 (g/m^2)   lai          =   1.694 (m^2/m^2)
+                     stover N conc =     0.50 (%)    extractable sw =   95.53 (mm)
+29 September 1959(Day of year=272), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -35.597260
+      ****        equivalent DM as FOM  (kg/ha) =   -88.9931488
+30 September 1959(Day of year=273), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -14.077659
+      ****        equivalent DM as FOM  (kg/ha) =   -35.1941452
+1 October 1959(Day of year=274), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -23.662024
+      ****        equivalent DM as FOM  (kg/ha) =   -59.1550598
+2 October 1959(Day of year=275), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -23.854893
+      ****        equivalent DM as FOM  (kg/ha) =   -59.6372299
+3 October 1959(Day of year=276), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -23.602732
+      ****        equivalent DM as FOM  (kg/ha) =   -59.0068283
+4 October 1959(Day of year=277), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -13.805630
+      ****        equivalent DM as FOM  (kg/ha) =   -34.5140724
+5 October 1959(Day of year=278), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -18.707541
+      ****        equivalent DM as FOM  (kg/ha) =   -46.7688522
+6 October 1959(Day of year=279), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -10.277623
+      ****        equivalent DM as FOM  (kg/ha) =   -25.6940575
+7 October 1959(Day of year=280), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -11.638350
+      ****        equivalent DM as FOM  (kg/ha) =   -29.0958767
+8 October 1959(Day of year=281), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =    -10.644281
+      ****        equivalent DM as FOM  (kg/ha) =   -26.6107025
+9 October 1959(Day of year=282), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -8.910828
+      ****        equivalent DM as FOM  (kg/ha) =   -22.2770691
+10 October 1959(Day of year=283), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.905537
+      ****        equivalent DM as FOM  (kg/ha) =   -14.7638426
+11 October 1959(Day of year=284), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -6.687943
+      ****        equivalent DM as FOM  (kg/ha) =   -16.7198582
+12 October 1959(Day of year=285), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -5.936924
+      ****        equivalent DM as FOM  (kg/ha) =   -14.8423100
+13 October 1959(Day of year=286), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -4.141032
+      ****        equivalent DM as FOM  (kg/ha) =   -10.3525801
+14 October 1959(Day of year=287), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -3.770281
+      ****        equivalent DM as FOM  (kg/ha) =   -9.42570114
+15 October 1959(Day of year=288), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -2.529003
+      ****        equivalent DM as FOM  (kg/ha) =   -6.32250834
+16 October 1959(Day of year=289), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -1.939240
+      ****        equivalent DM as FOM  (kg/ha) =   -4.84809971
+17 October 1959(Day of year=290), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.179493
+      ****        equivalent DM as FOM  (kg/ha) =  -0.448731780
+18 October 1959(Day of year=291), SysBal: 
+     **** C balance - unaccounted loss (kg/ha) =     -0.154395
+      ****        equivalent DM as FOM  (kg/ha) =  -0.385986567
+20 October 1959(Day of year=293), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      0.778866
+     ****        equivalent DM as FOM  (kg/ha) =      1.947165
+21 October 1959(Day of year=294), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      0.547097
+     ****        equivalent DM as FOM  (kg/ha) =      1.367743
+22 October 1959(Day of year=295), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.432739
+     ****        equivalent DM as FOM  (kg/ha) =      3.581847
+23 October 1959(Day of year=296), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.105267
+     ****        equivalent DM as FOM  (kg/ha) =      2.763166
+24 October 1959(Day of year=297), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.179719
+     ****        equivalent DM as FOM  (kg/ha) =      2.949298
+25 October 1959(Day of year=298), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      0.976313
+     ****        equivalent DM as FOM  (kg/ha) =      2.440782
+26 October 1959(Day of year=299), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.739845
+     ****        equivalent DM as FOM  (kg/ha) =      4.349613
+27 October 1959(Day of year=300), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.251093
+     ****        equivalent DM as FOM  (kg/ha) =      3.127733
+28 October 1959(Day of year=301), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.257335
+     ****        equivalent DM as FOM  (kg/ha) =      3.143338
+29 October 1959(Day of year=302), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.456012
+     ****        equivalent DM as FOM  (kg/ha) =      3.640031
+30 October 1959(Day of year=303), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.575998
+     ****        equivalent DM as FOM  (kg/ha) =      3.939994
+31 October 1959(Day of year=304), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.507880
+     ****        equivalent DM as FOM  (kg/ha) =      3.769701
+1 November 1959(Day of year=305), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.728302
+     ****        equivalent DM as FOM  (kg/ha) =      4.320756
+2 November 1959(Day of year=306), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.860542
+     ****        equivalent DM as FOM  (kg/ha) =      4.651354
+3 November 1959(Day of year=307), wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =         774.69 (g/m^2)   lai          =   0.334 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =   88.74 (mm)
+3 November 1959(Day of year=307), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.802093
+     ****        equivalent DM as FOM  (kg/ha) =      4.505231
+4 November 1959(Day of year=308), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      1.960184
+     ****        equivalent DM as FOM  (kg/ha) =      4.900459
+5 November 1959(Day of year=309), wheat: 
+      stage 9.0 maturity
+                     biomass =         774.75 (g/m^2)   lai          =   0.274 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =   85.26 (mm)
+5 November 1959(Day of year=309), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      2.196931
+     ****        equivalent DM as FOM  (kg/ha) =      5.492327
+6 November 1959(Day of year=310), wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =         774.75 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.30 (%)    extractable sw =   84.43 (mm)
+6 November 1959(Day of year=310), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =      2.180530
+     ****        equivalent DM as FOM  (kg/ha) =      5.451324
+7 November 1959(Day of year=311), Manager: 
+     Manager sending message :- wheat harvest
+7 November 1959(Day of year=311), wheat: 
+     
+      flowering day          =  262                           stover (kg/ha)         =     5706.1
+      maturity day           =  309                           grain yield (kg/ha)    =     2041.4
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     2333.0
+      grain wt (g)           =    0.024                       grains/m^2             =     8573.8
+      grains/plant           =   85.7                         maximum lai            =      2.676
+      total above ground biomass (kg/ha)    =     7747.5
+      live above ground biomass (kg/ha)     =     7747.5
+      green above ground biomass (kg/ha)    =     6591.2
+      senesced above ground biomass (kg/ha) =     1156.3
+      number of leaves       =     43.0
+      DM Root:Shoot ratio    =     0.14                       Harvest Index          =       0.26
+      Stover C:N ratio       =   116.76                       Root C:N ratio         =      40.54
+      grain N percent        =     1.41                       total N content (kg/ha)=      48.35
+      grain N uptake (kg/ha) =    28.80                       senesced N content (kg/ha)=    5.78
+      green N content (kg/ha)=    13.77
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.046        0.046
+         floral_initiation    to flowering               0.002        0.004        0.215        0.215
+         flowering            to start_grain_fill        0.000        0.000        0.099        0.099
+         start_grain_fill     to end_grain_fill          0.000        0.000        0.837        0.837
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                5706.1                     0.0
+                          N  (kg/ha) =                  19.55                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2041.4                     0.0
+                          N  (kg/ha) =                  28.80                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =   84.43 (mm)
+     Manager sending message :- wheat end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1088.0
+                          N  (kg/ha) =                   0.00                   10.73
+     
+7 November 1959(Day of year=311), SysBal: 
+     **** C balance - unaccounted gain (kg/ha) =   3534.196045
+     ****        equivalent DM as FOM  (kg/ha) =   8835.490234
+24 November 1959(Day of year=328), Manager: 
+     Manager sending message :- sorghum sow  cultivar = early, plants = 5 (/m2), sowing_depth = 30 (mm), tiller_no_fertile = 0
+24 November 1959(Day of year=328), Sorghum: 
+     Sowing initiate
+24 November 1959(Day of year=328): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     plant density ('plants') not specified
+     Component name: Sorghum
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 26.17906, depth = 0, type = no3_n
 

@@ -100,7 +100,7 @@ Paddock:
      if (rain[3] >= 30 and esw >= 200) or
          ('yes' = 'yes' and today = date('23-jan-2007'))) then
         choosenextcrop = 'yes'
-        centro sow plants =15, sowing_depth = 30, cultivar = cavalcade_timor, row_spacing = 200, crop_class = plant
+        centro sow population =15, sowing_depth = 30, cultivar = cavalcade_timor, row_spacing = 200, crop_class = plant
      endif
      if today = date('23-jan-2007') then
         choosenextcrop = 'yes'
@@ -332,16 +332,97 @@ Paddock:
      Manager creating a new local real variable : stem_wt = 0.00000
 23 January 2007(Day of year=23), Sowing rule: 
      Manager creating a new local string variable : choosenextcrop = yes
-     Manager sending message :- centro sow  plants = 15, sowing_depth = 30, cultivar = cavalcade_timor, row_spacing = 200, crop_class = plant
+     Manager sending message :- centro sow  population = 15, sowing_depth = 30, cultivar = cavalcade_timor, row_spacing = 200, crop_class = plant
 23 January 2007(Day of year=23), centro: 
      Crop Sow
-23 January 2007(Day of year=23): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: centro
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = cavalcade_timor
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      40 (dd)
+              shoot_rate                 =       4 (dd/mm)
+           emergence
+              cumvd_emergence            =       0      40 (vd)
+              tt_emergence               =     320     360 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =      10    13.1    13.2 (h)
+              y_tt_end_of_juvenile       =     600     305     300 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      73      73 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     740     740 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     650     650 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =     400 (dd)
+           maturity
+              tt_maturity                =     400 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.10       0.20
+        ------------------------------------------------
      
      
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.080          0.197       1.000
+         150.0     0.080          0.194       1.000
+         300.0     0.080          0.212       1.000
+         300.0     0.080          0.231       1.000
+         300.0     0.070          0.268       1.000
+         300.0     0.070          0.264       1.000
+         300.0     0.070          0.323       1.000
+         -----------------------------------------------
+         Extractable SW:   210mm in  1800mm total depth ( 12%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+             23   30.0   15.0  200.0   0.0   0.0 cavalcade_timor
+         ------------------------------------------------
+     
+23 January 2007(Day of year=23), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = urea_n
+24 January 2007(Day of year=24), centro: 
+      stage 2.0 germination
+5 February 2007(Day of year=36), centro: 
+      stage 3.0 emergence
+                     biomass =          10.50 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   25.76 (mm)
+3 March 2007(Day of year=62), centro: 
+      stage 4.0 end_of_juvenile
+                     biomass =          18.27 (g/m^2)   lai          =   0.147 (m^2/m^2)
+                     stover N conc =     5.81 (%)    extractable sw =  185.92 (mm)
+29 March 2007(Day of year=88), centro: 
+      stage 5.0 floral_initiation
+                     biomass =         164.50 (g/m^2)   lai          =   2.091 (m^2/m^2)
+                     stover N conc =     3.74 (%)    extractable sw =  135.15 (mm)
+4 April 2007(Day of year=94), centro: 
+      stage 6.0 flowering
+                     biomass =         230.42 (g/m^2)   lai          =   2.709 (m^2/m^2)
+                     stover N conc =     2.98 (%)    extractable sw =  103.94 (mm)
+28 May 2007(Day of year=148), centro: 
+      stage 7.0 start_grain_fill
+                     biomass =         662.54 (g/m^2)   lai          =   1.770 (m^2/m^2)
+                     stover N conc =     2.71 (%)    extractable sw =    8.45 (mm)
+10 July 2007(Day of year=191), clock: 
+     Simulation is terminating due to end criteria being met.
 

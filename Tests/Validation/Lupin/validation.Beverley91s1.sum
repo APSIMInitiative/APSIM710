@@ -78,7 +78,7 @@ Title                  = Beverley91s1
      Operations Schedule
      ===================
        10/5/1991  Prepare         surfaceom tillage type = burn_90
-       31/5/1991  Prepare         lupin sow plants = 40, row_spacing = 200, sowing_depth = 40, cultivar = gungurru
+       31/5/1991  Prepare         lupin sow population = 40, row_spacing = 200, sowing_depth = 40, cultivar = gungurru
         1/5/1991  Prepare      SoilWat set sw = .030 .030 .080 .100 .210 .180 .210 .220 .220 .210 .190 .190  .190 .190 .190 .190 .190
 
 ------- Irrigation Initialisation ---------------------------------------------
@@ -408,13 +408,159 @@ Title                  = Beverley91s1
       Sending sow message to lupin
 31 May 1991(Day of year=151), lupin: 
      Crop Sow
-31 May 1991(Day of year=151): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: lupin
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = gungurru
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      20 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0      25 (vd)
+              tt_emergence               =     400     400 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    10.8    13.3 (h)
+              y_tt_end_of_juvenile       =     650     152 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =     214     214 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     300     300 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     500     500 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      50 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0080     0.0080
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.25       0.25
+        ------------------------------------------------
      
      
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+          50.0     0.080          0.040       0.100
+          50.0     0.080          0.020       0.100
+         100.0     0.080          0.020       0.100
+         100.0     0.080          0.020       0.200
+         100.0     0.080          0.020       0.200
+         100.0     0.060          0.095       0.200
+         100.0     0.040          0.156       0.200
+         100.0     0.040          0.178       0.200
+         200.0     0.020          0.196       0.200
+         200.0     0.010          0.207       0.100
+         200.0     0.010          0.207       0.010
+         200.0     0.010          0.196       0.010
+         200.0     0.010          0.189       0.010
+         200.0     0.010          0.170       0.010
+         200.0     0.010          0.170       0.010
+         200.0     0.010          0.170       0.010
+         200.0     0.010          0.170       0.010
+         -----------------------------------------------
+         Extractable SW:   140mm in  2500mm total depth (  6%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            151   40.0   40.0  200.0   0.0   0.0 gungurru
+         ------------------------------------------------
+     
+1 June 1991(Day of year=152), lupin: 
+      stage 2.0 germination
+8 June 1991(Day of year=159), lupin: 
+      stage 3.0 emergence
+                     biomass =           8.00 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     6.50 (%)    extractable sw =   10.24 (mm)
+11 July 1991(Day of year=192), lupin: 
+      stage 4.0 end_of_juvenile
+                     biomass =           9.89 (g/m^2)   lai          =   0.030 (m^2/m^2)
+                     stover N conc =     5.89 (%)    extractable sw =   33.55 (mm)
+17 August 1991(Day of year=229), lupin: 
+      stage 5.0 floral_initiation
+                     biomass =          73.51 (g/m^2)   lai          =   0.849 (m^2/m^2)
+                     stover N conc =     3.85 (%)    extractable sw =   65.64 (mm)
+4 September 1991(Day of year=247), lupin: 
+      stage 6.0 flowering
+                     biomass =         214.37 (g/m^2)   lai          =   2.228 (m^2/m^2)
+                     stover N conc =     3.29 (%)    extractable sw =   57.72 (mm)
+28 September 1991(Day of year=271), lupin: 
+      stage 7.0 start_grain_fill
+                     biomass =         495.83 (g/m^2)   lai          =   3.428 (m^2/m^2)
+                     stover N conc =     2.16 (%)    extractable sw =   26.78 (mm)
+7 November 1991(Day of year=311), lupin: 
+      stage 8.0 end_grain_fill
+                     biomass =         633.16 (g/m^2)   lai          =   0.793 (m^2/m^2)
+                     stover N conc =     1.65 (%)    extractable sw =   16.62 (mm)
+11 November 1991(Day of year=315), lupin: 
+      stage 9.0 maturity
+                     biomass =         641.38 (g/m^2)   lai          =   0.601 (m^2/m^2)
+                     stover N conc =     1.66 (%)    extractable sw =   12.48 (mm)
+12 November 1991(Day of year=316), lupin: 
+      stage 10.0 harvest_ripe
+                     biomass =         641.38 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.77 (%)    extractable sw =   14.08 (mm)
+12 November 1991(Day of year=316), Manager: 
+     Manager sending message :- lupin harvest
+     
+      flowering day          =  247                           stover (kg/ha)         =     5054.0
+      maturity day           =  315                           grain yield (kg/ha)    =     1359.8
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     1545.2
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      3.667
+      total above ground biomass (kg/ha)    =     6413.8
+      live above ground biomass (kg/ha)     =     6413.8
+      green above ground biomass (kg/ha)    =     4398.1
+      senesced above ground biomass (kg/ha) =     2015.7
+      number of leaves       =    267.5
+      DM Root:Shoot ratio    =     0.33                       Harvest Index          =       0.21
+      Stover C:N ratio       =    31.61                       Root C:N ratio         =      18.11
+      grain N percent        =     5.20                       total N content (kg/ha)=     134.70
+      grain N uptake (kg/ha) =    70.75                       senesced N content (kg/ha)=   10.08
+      green N content (kg/ha)=    53.87
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.005
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.040
+         floral_initiation    to flowering               0.000        0.000        0.000        0.014
+         flowering            to start_grain_fill        0.116        0.148        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.717        0.812        0.000        0.001
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                5054.0                     0.0
+                          N  (kg/ha) =                  63.95                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                1359.8                     0.0
+                          N  (kg/ha) =                  70.75                    0.00
+     
+      stage 11.0 end_crop
+     Manager sending message :- lupin kill_crop
+     Plant kill. 100.00% crop killed because of external action.
+     Manager sending message :- lupin end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  2138.0
+                          N  (kg/ha) =                   0.00                   47.21
+     
+31 December 1991(Day of year=365), Clock: 
+     Simulation is terminating due to end criteria being met.
 

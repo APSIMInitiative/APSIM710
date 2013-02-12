@@ -121,7 +121,7 @@ Paddock:
      if (rain[3] >= 30 and esw >= 200) or
          ('yes' = 'yes' and today = date('24-jan-2000'))) then
         choosenextcrop = 'yes'
-        lablab sow plants =10, sowing_depth = 30, cultivar = highworth, row_spacing = 500, crop_class = plant
+        lablab sow population =10, sowing_depth = 30, cultivar = highworth, row_spacing = 500, crop_class = plant
      endif
      if today = date('24-jan-2000') then
         choosenextcrop = 'yes'
@@ -353,16 +353,125 @@ Paddock:
      Manager creating a new local real variable : nextcrop = 0.00000
 24 January 2000(Day of year=24), Sowing rule: 
      Manager creating a new local string variable : choosenextcrop = yes
-     Manager sending message :- lablab sow  plants = 10, sowing_depth = 30, cultivar = highworth, row_spacing = 500, crop_class = plant
+     Manager sending message :- lablab sow  population = 10, sowing_depth = 30, cultivar = highworth, row_spacing = 500, crop_class = plant
 24 January 2000(Day of year=24), lablab: 
      Crop Sow
-24 January 2000(Day of year=24): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: lablab
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = highworth
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      30 (dd)
+              shoot_rate                 =       3 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     500     500 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    13.3      18 (h)
+              y_tt_end_of_juvenile       =     600     600 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      20      20 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     100     100 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     900     900 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =     400 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0300     0.0300
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.20       0.20
+        ------------------------------------------------
      
      
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.190       1.000
+         150.0     0.060          0.195       1.000
+         300.0     0.060          0.200       1.000
+         300.0     0.060          0.220       1.000
+         300.0     0.040          0.230       1.000
+         300.0     0.040          0.250       1.000
+         300.0     0.020          0.260       1.000
+         -----------------------------------------------
+         Extractable SW:   275mm in  1800mm total depth ( 15%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+             24   30.0   10.0  500.0   0.0   0.0 highworth
+         ------------------------------------------------
+     
+25 January 2000(Day of year=25), lablab: 
+      stage 2.0 germination
+2 February 2000(Day of year=33), lablab: 
+      stage 3.0 emergence
+                     biomass =           7.00 (g/m^2)   lai          =   0.035 (m^2/m^2)
+                     stover N conc =     5.64 (%)    extractable sw =   59.56 (mm)
+10 March 2000(Day of year=70), lablab: 
+      stage 4.0 end_of_juvenile
+                     biomass =         321.38 (g/m^2)   lai          =   6.369 (m^2/m^2)
+                     stover N conc =     4.95 (%)    extractable sw =  186.03 (mm)
+19 March 2000(Day of year=79), Harvesting rule: 
+     Manager sending message :- lablab harvest
+19 March 2000(Day of year=79), lablab: 
+     
+      flowering day          =    0                           stover (kg/ha)         =     4924.2
+      maturity day           =    0                           grain yield (kg/ha)    =        0.0
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=        0.0
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      7.104
+      total above ground biomass (kg/ha)    =     4924.2
+      live above ground biomass (kg/ha)     =     4924.2
+      green above ground biomass (kg/ha)    =     3294.7
+      senesced above ground biomass (kg/ha) =     1629.5
+      number of leaves       =     66.5
+      DM Root:Shoot ratio    =     0.92                       Harvest Index          =       0.00
+      Stover C:N ratio       =     9.62                       Root C:N ratio         =      29.99
+      grain N percent        =     0.00                       total N content (kg/ha)=     204.67
+      grain N uptake (kg/ha) =     0.00                       senesced N content (kg/ha)=   16.30
+      green N content (kg/ha)=   188.38
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.002        0.005        0.205        0.326
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                4894.2                     0.0
+                          N  (kg/ha) =                 202.72                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                   0.0                     0.0
+                          N  (kg/ha) =                   0.00                    0.00
+     
+      stage 3.0 emergence
+                     biomass =           7.00 (g/m^2)   lai          =   0.035 (m^2/m^2)
+                     stover N conc =     5.36 (%)    extractable sw =  152.53 (mm)
+     Manager sending message :- lablab end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                  70.0                   492.1
+                          N  (kg/ha) =                   3.75                    2.80
+     
+1 June 2000(Day of year=153), clock: 
+     Simulation is terminating due to end criteria being met.
 

@@ -113,10 +113,10 @@ Paddock:
 ------- Operations Schedule Initialisation ------------------------------------
      Operations Schedule
      ===================
-      17/06/2004  Prepare      wheat sow plants =100, sowing_depth = 10, cultivar = hartog, row_spacing = 250, crop_class = plant
+      17/06/2004  Prepare      wheat sow population =100, sowing_depth = 10, cultivar = hartog, row_spacing = 250, crop_class = plant
       17/06/2004  Prepare      fertiliser apply amount = 57 (kg/ha), depth = 50 (mm), type = NO3_N
       17/06/2004  Prepare      fertiliser apply amount = 12 (kg/ha), depth = 50 (mm), type = NO3_N
-      17/06/2004  Prepare      lolium_rigidum sow plants =200, sowing_depth = 10, cultivar = guard, row_spacing = 250, crop_class = plant
+      17/06/2004  Prepare      lolium_rigidum sow population =200, sowing_depth = 10, cultivar = guard, row_spacing = 250, crop_class = plant
 
 ------- Harvest wheat Initialisation ------------------------------------------
      Manager rules:
@@ -309,14 +309,63 @@ Paddock:
       Sending sow message to wheat
 17 June 2004(Day of year=169), wheat: 
      Crop Sow
-17 June 2004(Day of year=169): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
      
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         200.0     0.060          0.104       1.000
+         200.0     0.060          0.104       1.000
+         200.0     0.060          0.120       1.000
+         200.0     0.060          0.160       1.000
+         200.0     0.125          0.190       1.000
+         200.0     0.040          0.250       1.000
+         200.0     0.200          0.358       1.000
+         200.0     0.200          0.387       1.000
+         200.0     0.200          0.400       1.000
+         -----------------------------------------------
+         **** KL's have been modified using either CL, EC or ESP values.
+         Extractable SW:   182mm in  1800mm total depth ( 10%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            169   10.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
      
       Sending apply message to fertiliser
 17 June 2004(Day of year=169), fertiliser: 
@@ -332,12 +381,214 @@ Paddock:
       Sending sow message to lolium_rigidum
 17 June 2004(Day of year=169), Lolium_rigidum: 
      Crop Sow
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: Lolium_rigidum
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = guard
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     400 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0005 (g/grain/day)
+        potential_grain_growth_rate    =     0.0003 (g/grain/day)
+        max_grain_size                 =     0.0200 (g)
+        ------------------------------------------------
      
      
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         200.0     0.060          0.104       1.000
+         200.0     0.060          0.104       1.000
+         200.0     0.060          0.120       1.000
+         200.0     0.060          0.160       1.000
+         200.0     0.400          0.190       1.000
+         200.0     0.400          0.250       1.000
+         200.0     0.200          0.358       1.000
+         200.0     0.200          0.387       1.000
+         200.0     0.200          0.400       1.000
+         -----------------------------------------------
+         Extractable SW:   182mm in  1800mm total depth ( 10%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            169   10.0  200.0  250.0   0.0   0.0 guard
+         ------------------------------------------------
+     
+18 June 2004(Day of year=170), wheat: 
+      stage 2.0 germination
+18 June 2004(Day of year=170), Lolium_rigidum: 
+      stage 2.0 germination
+22 June 2004(Day of year=174), wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   45.99 (mm)
+23 June 2004(Day of year=175), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.58 (g/m^2)   lai          =   0.022 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   43.44 (mm)
+27 June 2004(Day of year=179), Lolium_rigidum: 
+      stage 3.0 emergence
+                     biomass =           0.92 (g/m^2)   lai          =   0.040 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   42.19 (mm)
+28 June 2004(Day of year=180), Lolium_rigidum: 
+      stage 4.0 end_of_juvenile
+                     biomass =           1.17 (g/m^2)   lai          =   0.042 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   40.30 (mm)
+28 August 2004(Day of year=241), wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         161.20 (g/m^2)   lai          =   2.301 (m^2/m^2)
+                     stover N conc =     3.26 (%)    extractable sw =  135.08 (mm)
+25 September 2004(Day of year=269), Lolium_rigidum: 
+      stage 5.0 floral_initiation
+                     biomass =         239.45 (g/m^2)   lai          =   3.175 (m^2/m^2)
+                     stover N conc =     3.35 (%)    extractable sw =   96.94 (mm)
+10 October 2004(Day of year=284), wheat: 
+      stage 6.0 flowering
+                     biomass =         753.90 (g/m^2)   lai          =   2.226 (m^2/m^2)
+                     stover N conc =     1.35 (%)    extractable sw =   42.03 (mm)
+17 October 2004(Day of year=291), wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         814.24 (g/m^2)   lai          =   1.639 (m^2/m^2)
+                     stover N conc =     1.23 (%)    extractable sw =   17.07 (mm)
+30 October 2004(Day of year=304), Lolium_rigidum: 
+      stage 6.0 flowering
+                     biomass =         325.97 (g/m^2)   lai          =   1.089 (m^2/m^2)
+                     stover N conc =     2.62 (%)    extractable sw =    4.79 (mm)
+7 November 2004(Day of year=312), Lolium_rigidum: 
+      stage 7.0 start_grain_fill
+                     biomass =         320.23 (g/m^2)   lai          =   0.698 (m^2/m^2)
+                     stover N conc =     2.64 (%)    extractable sw =    9.53 (mm)
+20 November 2004(Day of year=325), wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =         871.06 (g/m^2)   lai          =   0.115 (m^2/m^2)
+                     stover N conc =     0.63 (%)    extractable sw =    0.48 (mm)
+22 November 2004(Day of year=327), wheat: 
+      stage 9.0 maturity
+                     biomass =         871.10 (g/m^2)   lai          =   0.094 (m^2/m^2)
+                     stover N conc =     0.63 (%)    extractable sw =    0.42 (mm)
+23 November 2004(Day of year=328), wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =         871.10 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.63 (%)    extractable sw =    0.49 (mm)
+23 November 2004(Day of year=328), Harvest wheat: 
+     Manager sending message :- wheat harvest
+     
+      flowering day          =  284                           stover (kg/ha)         =     6039.0
+      maturity day           =  327                           grain yield (kg/ha)    =     2671.9
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     3053.6
+      grain wt (g)           =    0.023                       grains/m^2             =    11416.9
+      grains/plant           =  114.2                         maximum lai            =      2.841
+      total above ground biomass (kg/ha)    =     8711.0
+      live above ground biomass (kg/ha)     =     8711.0
+      green above ground biomass (kg/ha)    =     7491.7
+      senesced above ground biomass (kg/ha) =     1219.2
+      number of leaves       =     40.4
+      DM Root:Shoot ratio    =     0.16                       Harvest Index          =       0.31
+      Stover C:N ratio       =    65.90                       Root C:N ratio         =      17.02
+      grain N percent        =     2.90                       total N content (kg/ha)=     114.21
+      grain N uptake (kg/ha) =    77.55                       senesced N content (kg/ha)=    6.10
+      green N content (kg/ha)=    30.56
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.019        0.026        0.000        0.000
+         flowering            to start_grain_fill        0.425        0.525        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.750        0.845        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                6039.0                     0.0
+                          N  (kg/ha) =                  36.66                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2671.9                     0.0
+                          N  (kg/ha) =                  77.55                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =    0.49 (mm)
+     Manager sending message :- wheat end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1398.9
+                          N  (kg/ha) =                   0.00                   32.88
+     
+30 November 2004(Day of year=335), Lolium_rigidum: 
+      stage 8.0 end_grain_fill
+     Crop failure because of total leaf senescence.
+     Plant death. standing above-ground dm = 2901.73 (kg/ha)
+                     biomass =         288.56 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.00 (%)    extractable sw =    0.45 (mm)
+30 November 2004(Day of year=335), Harvest rye: 
+     Manager sending message :- lolium_rigidum harvest
+     
+      flowering day          =  304                           stover (kg/ha)         =     2704.0
+      maturity day           =    0                           grain yield (kg/ha)    =      181.6
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=      207.6
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      3.175
+      total above ground biomass (kg/ha)    =     2885.6
+      live above ground biomass (kg/ha)     =     2885.6
+      green above ground biomass (kg/ha)    =        0.0
+      senesced above ground biomass (kg/ha) =     2885.6
+      number of leaves       =     34.8
+      DM Root:Shoot ratio    =     0.37                       Harvest Index          =       0.06
+      Stover C:N ratio       =    16.56                       Root C:N ratio         =      17.36
+      grain N percent        =     1.50                       total N content (kg/ha)=      68.03
+      grain N uptake (kg/ha) =     2.72                       senesced N content (kg/ha)=   65.30
+      green N content (kg/ha)=     0.00
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.221        0.267        0.000        0.000
+         flowering            to start_grain_fill        0.536        0.632        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                2704.0                     0.0
+                          N  (kg/ha) =                  65.30                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                 181.6                     0.0
+                          N  (kg/ha) =                   2.72                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.00 (%)    extractable sw =    0.45 (mm)
+     Manager sending message :- lolium_rigidum end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1069.7
+                          N  (kg/ha) =                   0.00                   24.65
+     
+31 December 2004(Day of year=366), clock: 
+     Simulation is terminating due to end criteria being met.
 

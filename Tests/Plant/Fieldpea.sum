@@ -80,7 +80,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('1-jun') then
-       fieldpea sow plants =10, sowing_depth = 50, cultivar = excel, row_spacing = 500, crop_class = plant
+       fieldpea sow population =10, sowing_depth = 50, cultivar = excel, row_spacing = 500, crop_class = plant
               endif
      END of rules
      
@@ -254,16 +254,303 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 1 June 1988(Day of year=153), Sow on a fixed date: 
-     Manager sending message :- fieldpea sow  plants = 10, sowing_depth = 50, cultivar = excel, row_spacing = 500, crop_class = plant
+     Manager sending message :- fieldpea sow  population = 10, sowing_depth = 50, cultivar = excel, row_spacing = 500, crop_class = plant
 1 June 1988(Day of year=153), fieldpea: 
      Crop Sow
-1 June 1988(Day of year=153): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: fieldpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = excel
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       4 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     250     250 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    10.7      17 (h)
+              y_tt_end_of_juvenile       =     480       1 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      33      33 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     200     200 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     500     500 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      60 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0250     0.0250
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.50       0.50
+        ------------------------------------------------
      
      
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.290       1.000
+         150.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.300       1.000
+         300.0     0.060          0.310       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.060          0.330       1.000
+         300.0     0.060          0.340       1.000
+         300.0     0.060          0.350       1.000
+         300.0     0.060          0.360       1.000
+         -----------------------------------------------
+         Extractable SW:   542mm in  3000mm total depth ( 18%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            153   50.0   10.0  500.0   0.0   0.0 excel
+         ------------------------------------------------
+     
+2 June 1988(Day of year=154), fieldpea: 
+      stage 2.0 germination
+23 June 1988(Day of year=175), fieldpea: 
+      stage 3.0 emergence
+                     biomass =           2.00 (g/m^2)   lai          =   0.010 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   29.13 (mm)
+17 July 1988(Day of year=199), fieldpea: 
+      stage 4.0 end_of_juvenile
+                     biomass =           5.32 (g/m^2)   lai          =   0.050 (m^2/m^2)
+                     stover N conc =     4.39 (%)    extractable sw =  138.40 (mm)
+21 August 1988(Day of year=234), fieldpea: 
+      stage 5.0 floral_initiation
+                     biomass =          58.56 (g/m^2)   lai          =   0.627 (m^2/m^2)
+                     stover N conc =     3.72 (%)    extractable sw =  196.68 (mm)
+23 August 1988(Day of year=236), fieldpea: 
+      stage 6.0 flowering
+                     biomass =          63.28 (g/m^2)   lai          =   0.682 (m^2/m^2)
+                     stover N conc =     3.56 (%)    extractable sw =  216.71 (mm)
+8 September 1988(Day of year=252), fieldpea: 
+      stage 7.0 start_grain_fill
+                     biomass =         151.99 (g/m^2)   lai          =   1.191 (m^2/m^2)
+                     stover N conc =     1.85 (%)    extractable sw =  286.37 (mm)
+10 October 1988(Day of year=284), fieldpea: 
+      stage 8.0 end_grain_fill
+                     biomass =         510.77 (g/m^2)   lai          =   1.832 (m^2/m^2)
+                     stover N conc =     1.75 (%)    extractable sw =  289.14 (mm)
+14 October 1988(Day of year=288), fieldpea: 
+      stage 9.0 maturity
+                     biomass =         577.76 (g/m^2)   lai          =   1.817 (m^2/m^2)
+                     stover N conc =     1.71 (%)    extractable sw =  257.34 (mm)
+15 October 1988(Day of year=289), fieldpea: 
+      stage 10.0 harvest_ripe
+                     biomass =         593.76 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.77 (%)    extractable sw =  247.24 (mm)
+15 October 1988(Day of year=289), Harvesting rule: 
+     Manager sending message :- fieldpea harvest
+     
+      flowering day          =  236                           stover (kg/ha)         =     3132.6
+      maturity day           =  288                           grain yield (kg/ha)    =     2805.0
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     3187.5
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      1.834
+      total above ground biomass (kg/ha)    =     5937.6
+      live above ground biomass (kg/ha)     =     5937.6
+      green above ground biomass (kg/ha)    =     5255.2
+      senesced above ground biomass (kg/ha) =      682.4
+      number of leaves       =     56.5
+      DM Root:Shoot ratio    =     0.16                       Harvest Index          =       0.47
+      Stover C:N ratio       =    23.43                       Root C:N ratio         =      26.29
+      grain N percent        =     3.60                       total N content (kg/ha)=     154.47
+      grain N uptake (kg/ha) =   100.98                       senesced N content (kg/ha)=   10.24
+      green N content (kg/ha)=    43.25
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.019
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.027
+         floral_initiation    to flowering               0.000        0.000        0.000        0.006
+         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.000        0.000        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                3132.6                     0.0
+                          N  (kg/ha) =                  53.49                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2805.0                     0.0
+                          N  (kg/ha) =                 100.98                    0.00
+     
+      stage 11.0 end_crop
+     Manager sending message :- fieldpea end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                   923.3
+                          N  (kg/ha) =                   0.00                   14.05
+     
+1 June 1989(Day of year=152), Sow on a fixed date: 
+     Manager sending message :- fieldpea sow  population = 10, sowing_depth = 50, cultivar = excel, row_spacing = 500, crop_class = plant
+1 June 1989(Day of year=152), fieldpea: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = excel
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       4 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     250     250 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    10.7      17 (h)
+              y_tt_end_of_juvenile       =     480       1 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      33      33 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     200     200 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     500     500 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      60 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0250     0.0250
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.50       0.50
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.290       1.000
+         150.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.300       1.000
+         300.0     0.060          0.310       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.060          0.330       1.000
+         300.0     0.060          0.340       1.000
+         300.0     0.060          0.350       1.000
+         300.0     0.060          0.360       1.000
+         -----------------------------------------------
+         Extractable SW:   542mm in  3000mm total depth ( 18%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            152   50.0   10.0  500.0   0.0   0.0 excel
+         ------------------------------------------------
+     
+2 June 1989(Day of year=153), fieldpea: 
+      stage 2.0 germination
+22 June 1989(Day of year=173), fieldpea: 
+      stage 3.0 emergence
+                     biomass =           2.00 (g/m^2)   lai          =   0.010 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   27.82 (mm)
+25 July 1989(Day of year=206), fieldpea: 
+      stage 4.0 end_of_juvenile
+                     biomass =           5.54 (g/m^2)   lai          =   0.052 (m^2/m^2)
+                     stover N conc =     4.50 (%)    extractable sw =  129.24 (mm)
+2 September 1989(Day of year=245), fieldpea: 
+      stage 5.0 floral_initiation
+                     biomass =          72.72 (g/m^2)   lai          =   0.643 (m^2/m^2)
+                     stover N conc =     3.75 (%)    extractable sw =  177.34 (mm)
+5 September 1989(Day of year=248), fieldpea: 
+      stage 6.0 flowering
+                     biomass =          89.61 (g/m^2)   lai          =   0.725 (m^2/m^2)
+                     stover N conc =     3.27 (%)    extractable sw =  173.15 (mm)
+21 September 1989(Day of year=264), fieldpea: 
+      stage 7.0 start_grain_fill
+                     biomass =         225.52 (g/m^2)   lai          =   1.257 (m^2/m^2)
+                     stover N conc =     1.80 (%)    extractable sw =  193.57 (mm)
+22 October 1989(Day of year=295), fieldpea: 
+      stage 8.0 end_grain_fill
+                     biomass =         629.46 (g/m^2)   lai          =   1.776 (m^2/m^2)
+                     stover N conc =     1.75 (%)    extractable sw =  145.16 (mm)
+25 October 1989(Day of year=298), fieldpea: 
+      stage 9.0 maturity
+                     biomass =         662.32 (g/m^2)   lai          =   1.776 (m^2/m^2)
+                     stover N conc =     1.71 (%)    extractable sw =  141.08 (mm)
+26 October 1989(Day of year=299), fieldpea: 
+      stage 10.0 harvest_ripe
+                     biomass =         674.62 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.75 (%)    extractable sw =  136.56 (mm)
+26 October 1989(Day of year=299), Harvesting rule: 
+     Manager sending message :- fieldpea harvest
+     
+      flowering day          =  248                           stover (kg/ha)         =     3496.1
+      maturity day           =  298                           grain yield (kg/ha)    =     3250.1
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     3693.3
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      1.789
+      total above ground biomass (kg/ha)    =     6746.2
+      live above ground biomass (kg/ha)     =     6746.2
+      green above ground biomass (kg/ha)    =     6113.2
+      senesced above ground biomass (kg/ha) =      633.0
+      number of leaves       =     55.7
+      DM Root:Shoot ratio    =     0.19                       Harvest Index          =       0.48
+      Stover C:N ratio       =    23.43                       Root C:N ratio         =      26.35
+      grain N percent        =     3.60                       total N content (kg/ha)=     176.69
+      grain N uptake (kg/ha) =   117.00                       senesced N content (kg/ha)=    9.50
+      green N content (kg/ha)=    50.19
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.016
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.023
+         floral_initiation    to flowering               0.000        0.000        0.000        0.000
+         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.014        0.032        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                3496.1                     0.0
+                          N  (kg/ha) =                  59.68                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                3250.1                     0.0
+                          N  (kg/ha) =                 117.00                    0.00
+     
+      stage 11.0 end_crop
+     Manager sending message :- fieldpea end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1267.3
+                          N  (kg/ha) =                   0.00                   19.23
+     
+31 December 1989(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.
 

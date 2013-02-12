@@ -79,7 +79,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('1-jun') then
-       lettuce sow plants =6, sowing_depth = 50, cultivar = titanic, row_spacing = 600, crop_class = plant
+       lettuce sow population =6, sowing_depth = 50, cultivar = titanic, row_spacing = 600, crop_class = plant
               endif
      END of rules
      
@@ -234,14 +234,63 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 1 June 1988(Day of year=153), Sow on a fixed date: 
-     Manager sending message :- lettuce sow  plants = 6, sowing_depth = 50, cultivar = titanic, row_spacing = 600, crop_class = plant
+     Manager sending message :- lettuce sow  population = 6, sowing_depth = 50, cultivar = titanic, row_spacing = 600, crop_class = plant
 1 June 1988(Day of year=153), lettuce: 
      Crop Sow
-1 June 1988(Day of year=153): 
+        ------------------------------------------------
+        cultivar                   = titanic
+        Phases:
+           out
+           transplanting
+              x_pp_transplanting         =      11    11.4 (h)
+              y_tt_transplanting         =     980     980 (dd)
+           maturity
+              tt_maturity                =      10 (dd)
+     
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.290       1.000
+         150.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.300       1.000
+         300.0     0.060          0.310       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.060          0.330       1.000
+         300.0     0.060          0.340       1.000
+         300.0     0.060          0.350       1.000
+         300.0     0.060          0.360       1.000
+         -----------------------------------------------
+         Extractable SW:   542mm in  3000mm total depth ( 18%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 transplanting
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            153   50.0    6.0  600.0   0.0   0.0 titanic
+         ------------------------------------------------
+     
+                     biomass =           0.18 (g/m^2)   lai          =   0.498 (m^2/m^2)
+                     stover N conc =     6.50 (%)    extractable sw =   28.18 (mm)
+19 August 1988(Day of year=232), lettuce: 
+      stage 2.0 maturity
+                     biomass =         111.03 (g/m^2)   lai          =   1.018 (m^2/m^2)
+                     stover N conc =     5.09 (%)    extractable sw =  502.26 (mm)
+20 August 1988(Day of year=233): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM  Fatal  Error
                       -------------------
-     plant density ('Population') not specified
+     The phenology class in lettuce has tried to move to phase number 4 but there aren't that many phases in the model.
      Component name: lettuce
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      

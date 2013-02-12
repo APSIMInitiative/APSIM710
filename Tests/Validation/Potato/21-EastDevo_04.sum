@@ -122,7 +122,7 @@ Paddock:
            swf = 1
         endif
         density = 6 * stem_per_seed * stf * swf
-        potato sow plants = density, sowing_depth = 20, cultivar = russet, row_spacing = 815, crop_class = plant
+        potato sow population = density, sowing_depth = 20, cultivar = russet, row_spacing = 815, crop_class = plant
      endif
      if today = date('31-oct') then
         choosenextcrop = 'yes'
@@ -358,13 +358,155 @@ Paddock:
      Manager creating a new local real variable : density = 15.62236
 30 October 2003(Day of year=303), potato: 
      Crop Sow
-30 October 2003(Day of year=303): 
+        ------------------------------------------------
+        cultivar                   = russet
+        Phases:
+           out
+           sowing
+           emerging
+              shoot_lag                  =      72 (dd)
+              shoot_rate                 =       1 (dd/mm)
+           emergence
+              x_pp_emergence             =      12      18 (h)
+              y_tt_emergence             =     280     280 (dd)
+           vegetative
+              tt_vegetative              =      20 (dd)
+           earlytuber
+              tt_earlytuber              =     550 (dd)
+           senescing
+              tt_senescing               =     850 (dd)
+           senesced
+              tt_senesced                =       5 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+     
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         220.0     0.160          0.220       1.000
+         290.0     0.160          0.380       0.300
+         260.0     0.160          0.360       0.200
+         210.0     0.100          0.370       0.100
+         620.0     0.050          0.370       0.100
+         -----------------------------------------------
+         Extractable SW:   255mm in  1600mm total depth ( 16%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            303   20.0   15.6  815.0   0.0   0.0 russet
+         ------------------------------------------------
+     
+30 October 2003(Day of year=303), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 140 (kg/ha), depth = 50 (mm), type = no3_n
+30 October 2003(Day of year=303), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       140.00 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+31 October 2003(Day of year=304), potato: 
+      stage 2.0 emerging
+10 November 2003(Day of year=314), potato: 
+      stage 3.0 emergence
+                     biomass =           0.47 (g/m^2)   lai          =   0.068 (m^2/m^2)
+                     stover N conc =     6.50 (%)    extractable sw =   39.32 (mm)
+12 November 2003(Day of year=316): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
+                      APSIM Warning Error
                       -------------------
-     plant density ('Population') not specified
-     Component name: potato
+      soil water of     0.533146      in layer   1
+              is above saturation of     0.520000
+     Component name: Cox_6 Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+24 November 2003(Day of year=328): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.575690      in layer   1
+              is above saturation of     0.520000
+     Component name: Cox_6 Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3 December 2003(Day of year=337), potato: 
+      stage 4.0 vegetative
+                     biomass =         129.13 (g/m^2)   lai          =   1.904 (m^2/m^2)
+                     stover N conc =     4.38 (%)    extractable sw =   87.64 (mm)
+4 December 2003(Day of year=338), potato: 
+      stage 5.0 earlytuber
+                     biomass =         139.45 (g/m^2)   lai          =   1.994 (m^2/m^2)
+                     stover N conc =     4.37 (%)    extractable sw =   85.80 (mm)
+15 December 2003(Day of year=349), Fertilise on fixed date: 
+     Manager creating a new local real variable : n_topsoil = 36.62083
+     Manager sending message :- fertiliser apply  amount = 82 (kg/ha), depth = 50 (mm), type = urea_n
+15 December 2003(Day of year=349), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        82.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+14 January 2004(Day of year=14), potato: 
+      stage 6.0 senescing
+                     biomass =         419.77 (g/m^2)   lai          =   3.843 (m^2/m^2)
+                     stover N conc =     3.34 (%)    extractable sw =   56.61 (mm)
+18 March 2004(Day of year=78), potato: 
+      stage 7.0 senesced
+                     biomass =         444.73 (g/m^2)   lai          =   0.034 (m^2/m^2)
+                     stover N conc =     4.77 (%)    extractable sw =   79.14 (mm)
+19 March 2004(Day of year=79), potato: 
+      stage 8.0 maturity
+                     biomass =         445.27 (g/m^2)   lai          =   0.031 (m^2/m^2)
+                     stover N conc =     4.75 (%)    extractable sw =   78.63 (mm)
+19 March 2004(Day of year=79), Harvesting rule: 
+     Manager sending message :- potato harvest
+     
+      flowering day          =    0                           stover (kg/ha)         =     4452.7
+      maturity day           =   79                           grain yield (kg/ha)    =        0.0
+      grain % water content  =    0.0                         grain yield wet (kg/ha)=        0.0
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      4.140
+      total above ground biomass (kg/ha)    =     4452.7
+      live above ground biomass (kg/ha)     =     4452.7
+      green above ground biomass (kg/ha)    =     1551.0
+      senesced above ground biomass (kg/ha) =     2901.7
+      number of leaves       =     45.9
+      DM Root:Shoot ratio    =     0.18                       Harvest Index          =       0.00
+      Stover C:N ratio       =    15.19                       Root C:N ratio         =      39.38
+      grain N percent        =     0.00                       total N content (kg/ha)=     117.25
+      grain N uptake (kg/ha) =     0.00                       senesced N content (kg/ha)=   43.53
+      green N content (kg/ha)=    73.73
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         vegetative           to earlytuber              0.000        0.000        0.000        0.000
+         earlytuber           to senescing               0.000        0.002        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                4448.0                     0.0
+                          N  (kg/ha) =                 117.00                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =               15523.0                     0.0
+                          N  (kg/ha) =                 120.27                    0.00
+     
+     Manager sending message :- potato end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   4.7                   816.5
+                          N  (kg/ha) =                   0.25                    8.29
+     
+30 June 2004(Day of year=182), clock: 
+     Simulation is terminating due to end criteria being met.
 

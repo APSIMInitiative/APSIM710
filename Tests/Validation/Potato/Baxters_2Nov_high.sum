@@ -136,7 +136,7 @@ Paddock:
            swf = 1
         endif
         density = 4.3*4
-        potato sow plants = density, sowing_depth = 30, cultivar = russet, row_spacing = 650, crop_class = plant
+        potato sow population = density, sowing_depth = 30, cultivar = russet, row_spacing = 650, crop_class = plant
      endif
               endif
            endif
@@ -295,13 +295,143 @@ Paddock:
      Manager creating a new local real variable : density = 17.20000
 2 November 1998(Day of year=306), potato: 
      Crop Sow
-2 November 1998(Day of year=306): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: potato
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = russet
+        Phases:
+           out
+           sowing
+           emerging
+              shoot_lag                  =      72 (dd)
+              shoot_rate                 =       1 (dd/mm)
+           emergence
+              x_pp_emergence             =      12      18 (h)
+              y_tt_emergence             =     280     280 (dd)
+           vegetative
+              tt_vegetative              =      20 (dd)
+           earlytuber
+              tt_earlytuber              =     550 (dd)
+           senescing
+              tt_senescing               =     850 (dd)
+           senesced
+              tt_senesced                =       5 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+     
+        ------------------------------------------------
      
      
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.100          0.130       1.000
+         200.0     0.100          0.130       1.000
+         300.0     0.070          0.270       0.100
+         300.0     0.050          0.270       0.000
+         300.0     0.050          0.300       0.000
+         300.0     0.050          0.300       0.000
+         -----------------------------------------------
+         Extractable SW:    72mm in  1500mm total depth (  5%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            306   30.0   17.2  650.0   0.0   0.0 russet
+         ------------------------------------------------
+     
+3 November 1998(Day of year=307), potato: 
+      stage 2.0 emerging
+13 November 1998(Day of year=317), potato: 
+      stage 3.0 emergence
+                     biomass =           0.52 (g/m^2)   lai          =   0.075 (m^2/m^2)
+                     stover N conc =     6.50 (%)    extractable sw =   15.04 (mm)
+9 December 1998(Day of year=343), potato: 
+      stage 4.0 vegetative
+                     biomass =         119.56 (g/m^2)   lai          =   1.620 (m^2/m^2)
+                     stover N conc =     4.91 (%)    extractable sw =   29.43 (mm)
+11 December 1998(Day of year=345), potato: 
+      stage 5.0 earlytuber
+                     biomass =         137.17 (g/m^2)   lai          =   1.643 (m^2/m^2)
+                     stover N conc =     4.50 (%)    extractable sw =   23.77 (mm)
+15 December 1998(Day of year=349), operations: 
+      Sending apply message to irrigation
+29 December 1998(Day of year=363), operations: 
+      Sending apply message to irrigation
+      Sending apply message to fertiliser
+29 December 1998(Day of year=363), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+30 December 1998(Day of year=364), operations: 
+      Sending apply message to irrigation
+7 January 1999(Day of year=7), operations: 
+      Sending apply message to irrigation
+21 January 1999(Day of year=21), operations: 
+      Sending apply message to irrigation
+22 January 1999(Day of year=22), potato: 
+      stage 6.0 senescing
+                     biomass =         360.81 (g/m^2)   lai          =   2.967 (m^2/m^2)
+                     stover N conc =     3.73 (%)    extractable sw =   66.00 (mm)
+10 February 1999(Day of year=41), operations: 
+      Sending apply message to irrigation
+19 February 1999(Day of year=50), operations: 
+      Sending apply message to irrigation
+9 March 1999(Day of year=68), operations: 
+      Sending apply message to irrigation
+27 March 1999(Day of year=86), potato: 
+      stage 7.0 senesced
+                     biomass =         381.48 (g/m^2)   lai          =   0.040 (m^2/m^2)
+                     stover N conc =     5.57 (%)    extractable sw =   71.97 (mm)
+28 March 1999(Day of year=87), potato: 
+      stage 8.0 maturity
+                     biomass =         382.23 (g/m^2)   lai          =   0.036 (m^2/m^2)
+                     stover N conc =     5.55 (%)    extractable sw =   70.26 (mm)
+28 March 1999(Day of year=87), Harvesting rule: 
+     Manager sending message :- potato harvest
+     
+      flowering day          =    0                           stover (kg/ha)         =     3822.3
+      maturity day           =   87                           grain yield (kg/ha)    =        0.0
+      grain % water content  =    0.0                         grain yield wet (kg/ha)=        0.0
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      3.545
+      total above ground biomass (kg/ha)    =     3822.3
+      live above ground biomass (kg/ha)     =     3822.3
+      green above ground biomass (kg/ha)    =     1447.9
+      senesced above ground biomass (kg/ha) =     2374.5
+      number of leaves       =     45.8
+      DM Root:Shoot ratio    =     0.18                       Harvest Index          =       0.00
+      Stover C:N ratio       =    13.19                       Root C:N ratio         =      35.49
+      grain N percent        =     0.00                       total N content (kg/ha)=     115.93
+      grain N uptake (kg/ha) =     0.00                       senesced N content (kg/ha)=   35.62
+      green N content (kg/ha)=    80.31
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         vegetative           to earlytuber              0.247        0.347        0.000        0.000
+         earlytuber           to senescing               0.159        0.211        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                3817.2                     0.0
+                          N  (kg/ha) =                 115.60                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =               12163.8                     0.0
+                          N  (kg/ha) =                 182.47                    0.00
+     
+     Manager sending message :- potato end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   5.2                   695.2
+                          N  (kg/ha) =                   0.34                    7.83
+     
+1 June 1999(Day of year=152), clock: 
+     Simulation is terminating due to end criteria being met.
 

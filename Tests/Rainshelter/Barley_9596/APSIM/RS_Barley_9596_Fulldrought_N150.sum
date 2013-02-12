@@ -126,7 +126,7 @@ Paddock:
      
      SECTION:- start_of_day
      if today = date('20/10/1995') then
-        barley sow plants =280, sowing_depth = 20, cultivar = dash, row_spacing = 150, crop_class = plant
+        barley sow population =280, sowing_depth = 20, cultivar = dash, row_spacing = 150, crop_class = plant
      endif
      END of rules
      
@@ -317,16 +317,126 @@ Paddock:
      Manager creating a new local real variable : plants = 0.00000
      Manager creating a new local real variable : co2 = 350.00000
 20 October 1995(Day of year=293), Sow on a fixed date: 
-     Manager sending message :- barley sow  plants = 280, sowing_depth = 20, cultivar = dash, row_spacing = 150, crop_class = plant
+     Manager sending message :- barley sow  population = 280, sowing_depth = 20, cultivar = dash, row_spacing = 150, crop_class = plant
 20 October 1995(Day of year=293), barley: 
      Crop Sow
-20 October 1995(Day of year=293): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: barley
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = dash
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+     
+        grains_per_gram_stem           =       35.0 (/g)
+        potential_grain_filling_rate   =     0.0040 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.1000 (g)
+        ------------------------------------------------
      
      
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         200.0     0.255          0.158       1.000
+         200.0     0.255          0.201       0.755
+         200.0     0.047          0.201       0.301
+         200.0     0.041          0.187       0.546
+         200.0     0.029          0.165       1.000
+         200.0     0.005          0.173       1.000
+         200.0     0.005          0.185       1.000
+         200.0     0.005          0.199       1.000
+         -----------------------------------------------
+         Extractable SW:   170mm in  1600mm total depth ( 11%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            293   20.0  280.0  150.0   0.0   0.0 dash
+         ------------------------------------------------
+     
+21 October 1995(Day of year=294), barley: 
+      stage 2.0 germination
+27 October 1995(Day of year=300), barley: 
+      stage 3.0 emergence
+                     biomass =           1.29 (g/m^2)   lai          =   0.056 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   11.48 (mm)
+28 October 1995(Day of year=301), operations: 
+      Sending apply message to fertiliser
+28 October 1995(Day of year=301), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth    2.00 (layer   1)
+28 October 1995(Day of year=301), barley: 
+      stage 4.0 end_of_juvenile
+                     biomass =           1.71 (g/m^2)   lai          =   0.064 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   11.53 (mm)
+28 November 1995(Day of year=332), operations: 
+      Sending apply message to irrigation
+2 December 1995(Day of year=336), barley: 
+      stage 5.0 floral_initiation
+                     biomass =         283.83 (g/m^2)   lai          =   3.660 (m^2/m^2)
+                     stover N conc =     2.36 (%)    extractable sw =    9.98 (mm)
+5 December 1995(Day of year=339), operations: 
+      Sending apply message to fertiliser
+5 December 1995(Day of year=339), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth    5.00 (layer   1)
+16 December 1995(Day of year=350), barley: 
+      stage 6.0 flowering
+                     biomass =         358.08 (g/m^2)   lai          =   1.527 (m^2/m^2)
+                     stover N conc =     2.05 (%)    extractable sw =    1.37 (mm)
+18 December 1995(Day of year=352), operations: 
+      Sending apply message to fertiliser
+18 December 1995(Day of year=352), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth    5.00 (layer   1)
+19 December 1995(Day of year=353), operations: 
+      Sending apply message to irrigation
+24 December 1995(Day of year=358), barley: 
+      stage 7.0 start_grain_fill
+                     biomass =         373.03 (g/m^2)   lai          =   0.762 (m^2/m^2)
+                     stover N conc =     2.19 (%)    extractable sw =    0.37 (mm)
+24 January 1996(Day of year=24), barley: 
+      stage 8.0 end_grain_fill
+                     biomass =         374.50 (g/m^2)   lai          =   0.030 (m^2/m^2)
+                     stover N conc =     2.62 (%)    extractable sw =    0.00 (mm)
+26 January 1996(Day of year=26), barley: 
+      stage 9.0 maturity
+                     biomass =         374.50 (g/m^2)   lai          =   0.024 (m^2/m^2)
+                     stover N conc =     2.50 (%)    extractable sw =    0.00 (mm)
+27 January 1996(Day of year=27), barley: 
+      stage 10.0 harvest_ripe
+                     biomass =         374.50 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     2.51 (%)    extractable sw =    0.00 (mm)
+28 January 1996(Day of year=28), barley: 
+     Crop failure because of total leaf senescence.
+     Plant death. standing above-ground dm = 3744.99 (kg/ha)
+1 March 1996(Day of year=61), clock: 
+     Simulation is terminating due to end criteria being met.
 

@@ -104,7 +104,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('29/06/1993') then
-       barley sow plants =100, sowing_depth = 50, cultivar = grimmett, row_spacing = 250
+       barley sow population =100, sowing_depth = 50, cultivar = grimmett, row_spacing = 250
               endif
      END of rules
      
@@ -308,15 +308,148 @@ Paddock:
            Totals  108769.7  8701.6   895.3   111.9    80.0     2.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager sending message :- barley sow  plants = 100, sowing_depth = 50, cultivar = grimmett, row_spacing = 250
+     Manager sending message :- barley sow  population = 100, sowing_depth = 50, cultivar = grimmett, row_spacing = 250
 29 June 1993(Day of year=180), barley: 
      Crop Sow
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: barley
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = grimmett
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0650 (g)
+        ------------------------------------------------
      
      
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.900          0.220       1.000
+         150.0     0.900          0.340       1.000
+         300.0     0.900          0.380       1.000
+         300.0     0.800          0.360       1.000
+         300.0     0.700          0.400       1.000
+         300.0     0.600          0.360       1.000
+         300.0     0.500          0.380       1.000
+         -----------------------------------------------
+         Extractable SW:   274mm in  1800mm total depth ( 15%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            180   50.0  100.0  250.0   0.0   0.0 grimmett
+         ------------------------------------------------
+     
+     Manager sending message :- fertiliser apply  amount = 130 (kg/ha), depth = 50 (mm), type = urea_n
+fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       130.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+30 June 1993(Day of year=181), barley: 
+      stage 2.0 germination
+8 July 1993(Day of year=189), barley: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   39.33 (mm)
+9 July 1993(Day of year=190), barley: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.52 (g/m^2)   lai          =   0.021 (m^2/m^2)
+                     stover N conc =     5.84 (%)    extractable sw =   39.15 (mm)
+7 September 1993(Day of year=250), barley: 
+      stage 5.0 floral_initiation
+                     biomass =         386.98 (g/m^2)   lai          =   5.716 (m^2/m^2)
+                     stover N conc =     3.26 (%)    extractable sw =  180.30 (mm)
+24 September 1993(Day of year=267), barley: 
+      stage 6.0 flowering
+                     biomass =         723.36 (g/m^2)   lai          =   5.333 (m^2/m^2)
+                     stover N conc =     2.00 (%)    extractable sw =  215.62 (mm)
+1 October 1993(Day of year=274), barley: 
+      stage 7.0 start_grain_fill
+                     biomass =         893.52 (g/m^2)   lai          =   4.768 (m^2/m^2)
+                     stover N conc =     1.62 (%)    extractable sw =  224.42 (mm)
+31 October 1993(Day of year=304), barley: 
+      stage 8.0 end_grain_fill
+                     biomass =        1497.61 (g/m^2)   lai          =   2.093 (m^2/m^2)
+                     stover N conc =     0.46 (%)    extractable sw =  276.28 (mm)
+2 November 1993(Day of year=306), barley: 
+      stage 9.0 maturity
+                     biomass =        1502.31 (g/m^2)   lai          =   1.990 (m^2/m^2)
+                     stover N conc =     0.44 (%)    extractable sw =  270.41 (mm)
+3 November 1993(Day of year=307), barley: 
+      stage 10.0 harvest_ripe
+                     biomass =        1502.31 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.44 (%)    extractable sw =  268.66 (mm)
+3 November 1993(Day of year=307), Harvesting rule: 
+     Manager sending message :- barley harvest
+     
+      flowering day          =  267                           stover (kg/ha)         =    10639.1
+      maturity day           =  306                           grain yield (kg/ha)    =     4383.9
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     5010.2
+      grain wt (g)           =    0.047                       grains/m^2             =     9363.5
+      grains/plant           =   93.6                         maximum lai            =      5.993
+      total above ground biomass (kg/ha)    =    15023.1
+      live above ground biomass (kg/ha)     =    15023.1
+      green above ground biomass (kg/ha)    =    12640.4
+      senesced above ground biomass (kg/ha) =     2382.7
+      number of leaves       =     57.9
+      DM Root:Shoot ratio    =     0.12                       Harvest Index          =       0.29
+      Stover C:N ratio       =    88.37                       Root C:N ratio         =      17.49
+      grain N percent        =     2.99                       total N content (kg/ha)=     179.03
+      grain N uptake (kg/ha) =   130.88                       senesced N content (kg/ha)=   11.91
+      green N content (kg/ha)=    36.24
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.003
+         floral_initiation    to flowering               0.000        0.000        0.000        0.000
+         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.000        0.000        0.000        0.006
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =               10639.1                     0.0
+                          N  (kg/ha) =                  48.16                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                4383.9                     0.0
+                          N  (kg/ha) =                 130.88                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =  268.66 (mm)
+     Manager sending message :- barley end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1788.6
+                          N  (kg/ha) =                   0.00                   40.91
+     
+21 December 1993(Day of year=355), clock: 
+     Simulation is terminating due to end criteria being met.
 

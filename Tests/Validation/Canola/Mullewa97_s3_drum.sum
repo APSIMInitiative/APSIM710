@@ -131,7 +131,7 @@ Paddock:
 ------- Operations Initialisation ---------------------------------------------
      Operations Schedule
      ===================
-      03/06/1997  Prepare      canola sow plants = 70, row_spacing = 200, sowing_depth = 20, crop_class = triazine, cultivar = drum
+      03/06/1997  Prepare      canola sow population = 70, row_spacing = 200, sowing_depth = 20, crop_class = triazine, cultivar = drum
       03/06/1997  Prepare      fertiliser apply amount = 60, depth = 10, type = nh4so4_n
 
 ------- irrigation Initialisation ---------------------------------------------
@@ -412,14 +412,79 @@ Paddock:
       Sending sow message to canola
 3 June 1997(Day of year=154), canola: 
      Crop Sow
-3 June 1997(Day of year=154): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: canola
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = drum
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       5 (dd/mm)
+           emergence
+              cumvd_emergence            =       0      25 (vd)
+              tt_emergence               =     348       1 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    10.8    16.3 (h)
+              y_tt_end_of_juvenile       =     607       1 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =     250     250 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     200     200 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     800     800 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =       1 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
      
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.30       0.30
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+          50.0     0.060          0.080       0.300
+          50.0     0.060          0.080       0.300
+         100.0     0.060          0.100       0.300
+         100.0     0.060          0.130       0.300
+         100.0     0.060          0.170       0.300
+         100.0     0.060          0.180       0.300
+         100.0     0.060          0.190       0.300
+         100.0     0.060          0.210       0.300
+         200.0     0.060          0.220       0.200
+         200.0     0.060          0.230       0.200
+         200.0     0.060          0.240       0.200
+         200.0     0.060          0.250       0.200
+         200.0     0.060          0.260       0.200
+         200.0     0.060          0.260       0.200
+         200.0     0.060          0.260       0.200
+         200.0     0.060          0.260       0.200
+         200.0     0.060          0.260       0.200
+         -----------------------------------------------
+         Extractable SW:   147mm in  2500mm total depth (  6%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            154   20.0   70.0  200.0   0.0   0.0 drum
+         ------------------------------------------------
      
       Sending apply message to fertiliser
 3 June 1997(Day of year=154), fertiliser: 
@@ -427,4 +492,91 @@ Paddock:
    - Reading Fertiliser Type Parameters
         60.00 of ammonium sulphate (nh4so4_n)
                                          added at depth   10.00 (layer   1)
+4 June 1997(Day of year=155), canola: 
+      stage 2.0 germination
+12 June 1997(Day of year=163), canola: 
+      stage 3.0 emergence
+                     biomass =           2.10 (g/m^2)   lai          =   0.003 (m^2/m^2)
+                     stover N conc =     6.50 (%)    extractable sw =   17.26 (mm)
+5 July 1997(Day of year=186), canola: 
+      stage 4.0 end_of_juvenile
+                     biomass =          10.62 (g/m^2)   lai          =   0.149 (m^2/m^2)
+                     stover N conc =     6.54 (%)    extractable sw =   45.13 (mm)
+13 August 1997(Day of year=225), canola: 
+      stage 5.0 floral_initiation
+                     biomass =         176.35 (g/m^2)   lai          =   2.400 (m^2/m^2)
+                     stover N conc =     5.24 (%)    extractable sw =   64.78 (mm)
+2 September 1997(Day of year=245), canola: 
+      stage 6.0 flowering
+                     biomass =         357.66 (g/m^2)   lai          =   2.611 (m^2/m^2)
+                     stover N conc =     5.01 (%)    extractable sw =   25.93 (mm)
+16 September 1997(Day of year=259), canola: 
+      stage 7.0 start_grain_fill
+                     biomass =         436.40 (g/m^2)   lai          =   1.097 (m^2/m^2)
+                     stover N conc =     5.19 (%)    extractable sw =   17.72 (mm)
+17 September 1997(Day of year=260), manager: 
+     Manager creating a new local real variable : avg_temp = 18.50000
+     Manager creating a new local real variable : avg_swdef = 0.16544
+12 November 1997(Day of year=316), canola: 
+      stage 8.0 end_grain_fill
+                     biomass =         447.16 (g/m^2)   lai          =   0.004 (m^2/m^2)
+                     stover N conc =     5.99 (%)    extractable sw =    0.93 (mm)
+13 November 1997(Day of year=317), canola: 
+      stage 9.0 maturity
+                     biomass =         447.36 (g/m^2)   lai          =   0.004 (m^2/m^2)
+                     stover N conc =     5.98 (%)    extractable sw =    0.90 (mm)
+14 November 1997(Day of year=318), canola: 
+      stage 10.0 harvest_ripe
+                     biomass =         447.52 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     5.98 (%)    extractable sw =    2.27 (mm)
+15 November 1997(Day of year=319), manager: 
+     Manager sending message :- canola harvest
+15 November 1997(Day of year=319), canola: 
+     
+      flowering day          =  245                           stover (kg/ha)         =     3730.7
+      maturity day           =  317                           grain yield (kg/ha)    =      744.5
+      grain % water content  =    8.5                         grain yield wet (kg/ha)=      813.7
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      3.224
+      total above ground biomass (kg/ha)    =     4475.2
+      live above ground biomass (kg/ha)     =     4475.2
+      green above ground biomass (kg/ha)    =     2610.0
+      senesced above ground biomass (kg/ha) =     1865.3
+      number of leaves       =     40.4
+      DM Root:Shoot ratio    =     0.55                       Harvest Index          =       0.17
+      Stover C:N ratio       =    10.70                       Root C:N ratio         =      31.89
+      grain N percent        =     4.50                       total N content (kg/ha)=     172.99
+      grain N uptake (kg/ha) =    33.50                       senesced N content (kg/ha)=   27.98
+      green N content (kg/ha)=   111.51
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.011        0.022        0.000        0.065
+         floral_initiation    to flowering               0.372        0.461        0.000        0.012
+         flowering            to start_grain_fill        0.599        0.699        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.937        0.987        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                3730.7                     0.0
+                          N  (kg/ha) =                 139.49                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                 744.5                     0.0
+                          N  (kg/ha) =                  33.50                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.003 (m^2/m^2)
+                     stover N conc =     5.50 (%)    extractable sw =    2.27 (mm)
+     Manager sending message :- canola kill_crop
+     Plant kill. 100.00% crop killed because of external action.
+     Manager sending message :- canola end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  2472.2
+                          N  (kg/ha) =                   0.00                   31.01
+     
+31 December 1997(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.
 

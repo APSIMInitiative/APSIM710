@@ -142,7 +142,7 @@ Paddock:
      if (rain[3] >= 30 and esw >= 200) or
          ('yes' = 'yes' and today = date('22-feb'))) then
         choosenextcrop = 'yes'
-        butterflypea sow plants =15, sowing_depth = 20, cultivar = milgarra, row_spacing = 200, crop_class = plant
+        butterflypea sow population =15, sowing_depth = 20, cultivar = milgarra, row_spacing = 200, crop_class = plant
      endif
      if today = date('22-feb') then
         choosenextcrop = 'yes'
@@ -415,7 +415,7 @@ Paddock:
      if (rain[3] >= 30 and esw >= 200) or
          ('yes' = 'yes' and today = date('22-feb'))) then
         choosenextcrop = 'yes'
-        butterflypea sow plants =15, sowing_depth = 30, cultivar = milgarra, row_spacing = 200, crop_class = plant
+        butterflypea sow population =15, sowing_depth = 30, cultivar = milgarra, row_spacing = 200, crop_class = plant
      endif
      if today = date('22-feb') then
         choosenextcrop = 'yes'
@@ -658,16 +658,300 @@ Paddock:
      Manager creating a new local real variable : nextcrop = 0.00000
 22 February 2008(Day of year=53), Sowing rule: 
      Manager creating a new local string variable : choosenextcrop = yes
-     Manager sending message :- butterflypea sow  plants = 15, sowing_depth = 20, cultivar = milgarra, row_spacing = 200, crop_class = plant
+     Manager sending message :- butterflypea sow  population = 15, sowing_depth = 20, cultivar = milgarra, row_spacing = 200, crop_class = plant
 22 February 2008(Day of year=53), butterflypea: 
      Crop Sow
-22 February 2008(Day of year=53): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: butterflypea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = milgarra
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      30 (dd)
+              shoot_rate                 =       4 (dd/mm)
+           emergence
+              cumvd_emergence            =       0      50 (vd)
+              tt_emergence               =     160     240 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =      10    13.1    13.2 (h)
+              y_tt_end_of_juvenile       =     430     200     200 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =     250     250 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     170     170 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     560     560 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =    1000 (dd)
+           maturity
+              tt_maturity                =     300 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.1600     0.1600
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.55       0.55
+        ------------------------------------------------
      
      
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.040          0.270       1.000
+         100.0     0.040          0.300       1.000
+         100.0     0.030          0.320       1.000
+         300.0     0.040          0.350       1.000
+         300.0     0.020          0.360       1.000
+         200.0     0.010          0.350       1.000
+         -----------------------------------------------
+         Extractable SW:   162mm in  1100mm total depth ( 15%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+             53   20.0   15.0  200.0   0.0   0.0 milgarra
+         ------------------------------------------------
+     
+22 February 2008(Day of year=53), Sowing rule: 
+     Manager creating a new local string variable : choosenextcrop = yes
+     Manager sending message :- butterflypea sow  population = 15, sowing_depth = 30, cultivar = milgarra, row_spacing = 200, crop_class = plant
+22 February 2008(Day of year=53), butterflypea: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = milgarra
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      30 (dd)
+              shoot_rate                 =       4 (dd/mm)
+           emergence
+              cumvd_emergence            =       0      50 (vd)
+              tt_emergence               =     160     240 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =      10    13.1    13.2 (h)
+              y_tt_end_of_juvenile       =     430     200     200 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =     250     250 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     170     170 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     560     560 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =    1000 (dd)
+           maturity
+              tt_maturity                =     300 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.1600     0.1600
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.55       0.55
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.060          0.270       1.000
+         100.0     0.060          0.300       1.000
+         100.0     0.040          0.320       1.000
+         300.0     0.040          0.350       1.000
+         300.0     0.020          0.360       1.000
+         200.0     0.010          0.350       1.000
+         -----------------------------------------------
+         Extractable SW:   162mm in  1100mm total depth ( 15%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+             53   30.0   15.0  200.0   0.0   0.0 milgarra
+         ------------------------------------------------
+     
+22 February 2008(Day of year=53), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = urea_n
+22 February 2008(Day of year=53), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = urea_n
+23 February 2008(Day of year=54), butterflypea: 
+      stage 2.0 germination
+23 February 2008(Day of year=54), butterflypea: 
+      stage 2.0 germination
+1 March 2008(Day of year=61), butterflypea: 
+      stage 3.0 emergence
+                     biomass =          10.50 (g/m^2)   lai          =   0.007 (m^2/m^2)
+                     stover N conc =     5.50 (%)    extractable sw =   36.12 (mm)
+5 March 2008(Day of year=65), butterflypea: 
+      stage 3.0 emergence
+                     biomass =          10.50 (g/m^2)   lai          =   0.007 (m^2/m^2)
+                     stover N conc =     5.50 (%)    extractable sw =   50.78 (mm)
+17 March 2008(Day of year=77), butterflypea: 
+      stage 4.0 end_of_juvenile
+                     biomass =          31.65 (g/m^2)   lai          =   0.378 (m^2/m^2)
+                     stover N conc =     3.76 (%)    extractable sw =   80.89 (mm)
+20 March 2008(Day of year=80), Manager: 
+     Manager sending message :- irrigation apply  amount = 50
+20 March 2008(Day of year=80), butterflypea: 
+      stage 4.0 end_of_juvenile
+                     biomass =          27.10 (g/m^2)   lai          =   0.324 (m^2/m^2)
+                     stover N conc =     4.56 (%)    extractable sw =  116.85 (mm)
+5 April 2008(Day of year=96), butterflypea: 
+      stage 5.0 floral_initiation
+                     biomass =         121.00 (g/m^2)   lai          =   2.032 (m^2/m^2)
+                     stover N conc =     2.63 (%)    extractable sw =   95.71 (mm)
+9 April 2008(Day of year=100), butterflypea: 
+      stage 5.0 floral_initiation
+                     biomass =         132.78 (g/m^2)   lai          =   2.267 (m^2/m^2)
+                     stover N conc =     2.54 (%)    extractable sw =  110.47 (mm)
+25 April 2008(Day of year=116), butterflypea: 
+      stage 6.0 flowering
+                     biomass =         220.17 (g/m^2)   lai          =   2.632 (m^2/m^2)
+                     stover N conc =     3.17 (%)    extractable sw =   72.13 (mm)
+30 April 2008(Day of year=121), butterflypea: 
+      stage 6.0 flowering
+                     biomass =         275.68 (g/m^2)   lai          =   3.743 (m^2/m^2)
+                     stover N conc =     2.91 (%)    extractable sw =   76.64 (mm)
+11 May 2008(Day of year=132), butterflypea: 
+      stage 7.0 start_grain_fill
+                     biomass =         266.12 (g/m^2)   lai          =   2.090 (m^2/m^2)
+                     stover N conc =     4.43 (%)    extractable sw =   50.22 (mm)
+12 May 2008(Day of year=133), Manager: 
+     Manager sending message :- irrigation apply  amount = 50
+16 May 2008(Day of year=137), butterflypea: 
+      stage 7.0 start_grain_fill
+                     biomass =         365.99 (g/m^2)   lai          =   3.426 (m^2/m^2)
+                     stover N conc =     3.92 (%)    extractable sw =   78.26 (mm)
+8 July 2008(Day of year=190), butterflypea: 
+      stage 8.0 end_grain_fill
+                     biomass =         411.06 (g/m^2)   lai          =   0.772 (m^2/m^2)
+                     stover N conc =     2.66 (%)    extractable sw =   26.33 (mm)
+15 July 2008(Day of year=197), butterflypea: 
+      stage 8.0 end_grain_fill
+                     biomass =         628.57 (g/m^2)   lai          =   0.296 (m^2/m^2)
+                     stover N conc =     3.38 (%)    extractable sw =   24.79 (mm)
+15 August 2008(Day of year=228), butterflypea: 
+     Crop failure because of total leaf senescence.
+     Plant death. standing above-ground dm = 3588.54 (kg/ha)
+15 August 2008(Day of year=228), Harvesting rule: 
+     Manager sending message :- butterflypea harvest
+     
+      flowering day          =  116                           stover (kg/ha)         =     1907.7
+      maturity day           =    0                           grain yield (kg/ha)    =     1658.3
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     1884.4
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      2.686
+      total above ground biomass (kg/ha)    =     3566.0
+      live above ground biomass (kg/ha)     =     3566.0
+      green above ground biomass (kg/ha)    =        0.0
+      senesced above ground biomass (kg/ha) =     3566.0
+      number of leaves       =    645.7
+      DM Root:Shoot ratio    =     0.55                       Harvest Index          =       0.47
+      Stover C:N ratio       =    16.31                       Root C:N ratio         =      23.80
+      grain N percent        =     7.50                       total N content (kg/ha)=     171.16
+      grain N uptake (kg/ha) =   124.37                       senesced N content (kg/ha)=   46.79
+      green N content (kg/ha)=     0.00
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.032        0.114
+         end_of_juvenile      to floral_initiation       0.039        0.074        0.414        0.531
+         floral_initiation    to flowering               0.378        0.477        0.455        0.564
+         flowering            to start_grain_fill        0.690        0.790        0.052        0.142
+         start_grain_fill     to end_grain_fill          0.328        0.393        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                1907.7                     0.0
+                          N  (kg/ha) =                  46.79                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                1658.3                     0.0
+                          N  (kg/ha) =                 124.37                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.00 (%)    extractable sw =   65.02 (mm)
+     Manager sending message :- butterflypea end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1962.0
+                          N  (kg/ha) =                   0.00                   32.98
+     
+23 August 2008(Day of year=236), butterflypea: 
+     Crop failure because of total leaf senescence.
+     Plant death. standing above-ground dm = 5514.34 (kg/ha)
+23 August 2008(Day of year=236), Harvesting rule: 
+     Manager sending message :- butterflypea harvest
+     
+      flowering day          =  121                           stover (kg/ha)         =     2791.5
+      maturity day           =    0                           grain yield (kg/ha)    =     2693.7
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     3061.0
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      3.748
+      total above ground biomass (kg/ha)    =     5485.2
+      live above ground biomass (kg/ha)     =     5485.2
+      green above ground biomass (kg/ha)    =        0.0
+      senesced above ground biomass (kg/ha) =     5485.2
+      number of leaves       =    646.0
+      DM Root:Shoot ratio    =     0.50                       Harvest Index          =       0.49
+      Stover C:N ratio       =    15.58                       Root C:N ratio         =      23.46
+      grain N percent        =     7.50                       total N content (kg/ha)=     273.70
+      grain N uptake (kg/ha) =   202.03                       senesced N content (kg/ha)=   71.67
+      green N content (kg/ha)=     0.00
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.064
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.354        0.483
+         floral_initiation    to flowering               0.133        0.197        0.519        0.615
+         flowering            to start_grain_fill        0.517        0.617        0.086        0.185
+         start_grain_fill     to end_grain_fill          0.200        0.252        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                2791.5                     0.0
+                          N  (kg/ha) =                  71.67                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2693.7                     0.0
+                          N  (kg/ha) =                 202.03                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.00 (%)    extractable sw =   72.71 (mm)
+     Manager sending message :- butterflypea end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  2721.6
+                          N  (kg/ha) =                   0.00                   46.41
+     
+23 December 2008(Day of year=358), Manager: 
+     Manager sending message :- irrigation apply  amount = 10
+27 December 2008(Day of year=362), Manager: 
+     Manager sending message :- irrigation apply  amount = 38
+31 December 2008(Day of year=366), clock: 
+     Simulation is terminating due to end criteria being met.
 

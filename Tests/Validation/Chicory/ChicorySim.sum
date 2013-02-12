@@ -84,7 +84,7 @@ Paddock:
      
      SECTION:- start_of_day
      if (today = date('23/10/2008') then
-          chicory sow plants =200, sowing_depth = 10, cultivar = choice, row_spacing = 150
+          chicory sow population =200, sowing_depth = 10, cultivar = choice, row_spacing = 150
      endif
      
      SECTION:- init
@@ -290,16 +290,402 @@ Paddock:
      Manager creating a new local real variable : critt = 2.00000
      Manager creating a new local real variable : accumdays = 10.00000
 23 October 2008(Day of year=297), Sow on a fixed date: 
-     Manager sending message :- chicory sow  plants = 200, sowing_depth = 10, cultivar = choice, row_spacing = 150
+     Manager sending message :- chicory sow  population = 200, sowing_depth = 10, cultivar = choice, row_spacing = 150
 23 October 2008(Day of year=297), Chicory: 
      Crop Sow
-23 October 2008(Day of year=297): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: Chicory
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = choice
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      10 (dd)
+              shoot_rate                 =      12 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =    9000     400 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    10.8      17 (h)
+              y_tt_end_of_juvenile       =     450     450 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =     180     180 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     200     200 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     100     100 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =     450 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0001     0.0001
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.50       0.50
+        ------------------------------------------------
      
      
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.060          0.260       1.000
+          90.0     0.060          0.260       1.000
+          60.0     0.060          0.200       1.000
+         110.0     0.040          0.160       1.000
+         240.0     0.020          0.170       1.000
+         110.0     0.010          0.160       1.000
+         290.0     0.000          0.170       0.000
+         200.0     0.000          0.170       0.000
+         300.0     0.000          0.170       0.000
+         -----------------------------------------------
+         Extractable SW:   250mm in  1500mm total depth ( 17%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            297   10.0  200.0  150.0   0.0   0.0 choice
+         ------------------------------------------------
+     
+23 October 2008(Day of year=297), Fertilise incrop on critical NO3 level- top up: 
+     Manager creating a new local real variable : no3_available = 46.24994
+     Manager creating a new local real variable : n_deficit = 153.75006
+     Manager sending message :- fertiliser apply  amount = 153.75006 (kg/ha), depth = 50 (mm), type = urea_n
+23 October 2008(Day of year=297), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       153.75 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+24 October 2008(Day of year=298), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 148.76775 (kg/ha), depth = 50 (mm), type = urea_n
+24 October 2008(Day of year=298), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       148.77 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+24 October 2008(Day of year=298), Chicory: 
+      stage 2.0 germination
+25 October 2008(Day of year=299), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 145.05795 (kg/ha), depth = 50 (mm), type = urea_n
+25 October 2008(Day of year=299), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       145.06 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+26 October 2008(Day of year=300), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 129.98595 (kg/ha), depth = 50 (mm), type = urea_n
+26 October 2008(Day of year=300), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       129.99 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+27 October 2008(Day of year=301), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 113.43956 (kg/ha), depth = 50 (mm), type = urea_n
+27 October 2008(Day of year=301), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       113.44 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+9 November 2008(Day of year=314), Chicory: 
+      stage 3.0 emergence
+                     biomass =           6.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   22.56 (mm)
+19/01/2009 - Plant1 Defoliation Rule Invoked
+          - chicory has been defoliated
+          - Removed 578.051690673828 g/m2 of Leaf
+          - Removed 6.16998291015625 g/m2 of Stem
+ 
+27 January 2009(Day of year=27), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 101.39870 (kg/ha), depth = 50 (mm), type = urea_n
+27 January 2009(Day of year=27), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       101.40 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+21 February 2009(Day of year=52), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 123.59433 (kg/ha), depth = 50 (mm), type = urea_n
+21 February 2009(Day of year=52), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       123.59 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+22 February 2009(Day of year=53), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 114.58768 (kg/ha), depth = 50 (mm), type = urea_n
+22 February 2009(Day of year=53), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       114.59 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+23 February 2009(Day of year=54), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 101.09291 (kg/ha), depth = 50 (mm), type = urea_n
+23 February 2009(Day of year=54), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       101.09 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+23/02/2009 - Plant1 Defoliation Rule Invoked
+          - chicory has been defoliated
+          - Removed 428.544773864746 g/m2 of Leaf
+          - Removed 6.92721891403198 g/m2 of Stem
+ 
+23 February 2009(Day of year=54), Chicory: 
+     Plant kill. 20.00% crop killed because of external action.
+1/04/2009 - Plant1 Defoliation Rule Invoked
+          - chicory has been defoliated
+          - Removed 401.05101776123 g/m2 of Leaf
+          - Removed 6.7147068977356 g/m2 of Stem
+ 
+1 April 2009(Day of year=91), Chicory: 
+     Plant kill. 20.00% crop killed because of external action.
+8/05/2009 - Plant1 Defoliation Rule Invoked
+          - chicory has been defoliated
+          - Removed 199.505841827393 g/m2 of Leaf
+          - Removed 4.65596055984497 g/m2 of Stem
+ 
+8 May 2009(Day of year=128), Chicory: 
+     Plant kill. 20.00% crop killed because of external action.
+9 May 2009(Day of year=129), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 107.64333 (kg/ha), depth = 50 (mm), type = urea_n
+9 May 2009(Day of year=129), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       107.64 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+10 May 2009(Day of year=130), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 113.84908 (kg/ha), depth = 50 (mm), type = urea_n
+10 May 2009(Day of year=130), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       113.85 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+11 May 2009(Day of year=131), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 121.49381 (kg/ha), depth = 50 (mm), type = urea_n
+11 May 2009(Day of year=131), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       121.49 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+12 May 2009(Day of year=132), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 118.17795 (kg/ha), depth = 50 (mm), type = urea_n
+12 May 2009(Day of year=132), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       118.18 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+13 May 2009(Day of year=133), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 113.06461 (kg/ha), depth = 50 (mm), type = urea_n
+13 May 2009(Day of year=133), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       113.06 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+14 May 2009(Day of year=134), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 108.27076 (kg/ha), depth = 50 (mm), type = urea_n
+14 May 2009(Day of year=134), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       108.27 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+15 May 2009(Day of year=135), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 101.44500 (kg/ha), depth = 50 (mm), type = urea_n
+15 May 2009(Day of year=135), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       101.44 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+2 June 2009(Day of year=153), Chicory Dormancy: 
+     Manager sending message :- chicory dormancy
+18 July 2009(Day of year=199), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 108.06132 (kg/ha), depth = 50 (mm), type = urea_n
+18 July 2009(Day of year=199), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       108.06 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+18 July 2009(Day of year=199), Chicory Dormancy: 
+     Manager sending message :- chicory spring
+19 July 2009(Day of year=200), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 105.99702 (kg/ha), depth = 50 (mm), type = urea_n
+19 July 2009(Day of year=200), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       106.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+20 July 2009(Day of year=201), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 102.02976 (kg/ha), depth = 50 (mm), type = urea_n
+20 July 2009(Day of year=201), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       102.03 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+26 August 2009(Day of year=238), Chicory: 
+      stage 4.0 end_of_juvenile
+                     biomass =         122.17 (g/m^2)   lai          =   3.582 (m^2/m^2)
+                     stover N conc =     3.04 (%)    extractable sw =  131.36 (mm)
+14/09/2009 - Plant1 Defoliation Rule Invoked
+          - chicory has been defoliated
+          - Removed 204.044448852539 g/m2 of Leaf
+          - Removed 3.96833276748657 g/m2 of Stem
+ 
+14 September 2009(Day of year=257), Chicory: 
+     Plant kill. 20.00% crop killed because of external action.
+22/10/2009 - Plant1 Defoliation Rule Invoked
+          - chicory has been defoliated
+          - Removed 147.678337860107 g/m2 of Leaf
+          - Removed 6.64134120941162 g/m2 of Stem
+ 
+22 October 2009(Day of year=295), Chicory: 
+     Plant kill. 20.00% crop killed because of external action.
+25/11/2009 - Plant1 Defoliation Rule Invoked
+          - chicory has been defoliated
+          - Removed 162.938263702393 g/m2 of Leaf
+          - Removed 11.4856452941895 g/m2 of Stem
+ 
+25 November 2009(Day of year=329), Chicory: 
+     Plant kill. 20.00% crop killed because of external action.
+21/12/2009 - Plant1 Defoliation Rule Invoked
+          - chicory has been defoliated
+          - Removed 141.602069091797 g/m2 of Leaf
+          - Removed 20.4522533416748 g/m2 of Stem
+ 
+21 December 2009(Day of year=355), Chicory: 
+     Plant kill. 20.00% crop killed because of external action.
+14 January 2010(Day of year=14), Chicory: 
+      stage 5.0 floral_initiation
+                     biomass =         229.21 (g/m^2)   lai          =   2.066 (m^2/m^2)
+                     stover N conc =     2.87 (%)    extractable sw =  118.54 (mm)
+15 January 2010(Day of year=15), Chicory: 
+      stage 4.0 end_of_juvenile
+                     biomass =          46.04 (g/m^2)   lai          =   0.103 (m^2/m^2)
+                     stover N conc =     1.99 (%)    extractable sw =  114.39 (mm)
+15/01/2010 - Plant1 Defoliation Rule Invoked
+          - chicory has been defoliated
+          - Removed 148.535520935059 g/m2 of Leaf
+          - Removed 34.6369323730469 g/m2 of Stem
+ 
+     Plant kill. 20.00% crop killed because of external action.
+22 January 2010(Day of year=22), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 113.85299 (kg/ha), depth = 50 (mm), type = urea_n
+22 January 2010(Day of year=22), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       113.85 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+23 January 2010(Day of year=23), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 103.95614 (kg/ha), depth = 50 (mm), type = urea_n
+23 January 2010(Day of year=23), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       103.96 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+30 January 2010(Day of year=30), Chicory: 
+      stage 5.0 floral_initiation
+                     biomass =         140.25 (g/m^2)   lai          =   1.424 (m^2/m^2)
+                     stover N conc =     3.01 (%)    extractable sw =  114.34 (mm)
+11 February 2010(Day of year=42), Chicory: 
+      stage 6.0 flowering
+                     biomass =         272.28 (g/m^2)   lai          =   2.578 (m^2/m^2)
+                     stover N conc =     3.08 (%)    extractable sw =  118.18 (mm)
+12 February 2010(Day of year=43), Chicory: 
+      stage 4.0 end_of_juvenile
+                     biomass =          48.88 (g/m^2)   lai          =   0.129 (m^2/m^2)
+                     stover N conc =     2.11 (%)    extractable sw =  115.46 (mm)
+12/02/2010 - Plant1 Defoliation Rule Invoked
+          - chicory has been defoliated
+          - Removed 188.696475219727 g/m2 of Leaf
+          - Removed 34.7070999145508 g/m2 of Stem
+ 
+     Plant kill. 20.00% crop killed because of external action.
+15 February 2010(Day of year=46), Chicory: 
+      stage 5.0 floral_initiation
+                     biomass =          63.66 (g/m^2)   lai          =   0.417 (m^2/m^2)
+                     stover N conc =     2.58 (%)    extractable sw =  112.19 (mm)
+28 February 2010(Day of year=59), Chicory: 
+      stage 6.0 flowering
+                     biomass =         135.53 (g/m^2)   lai          =   1.370 (m^2/m^2)
+                     stover N conc =     3.41 (%)    extractable sw =  121.12 (mm)
+16 March 2010(Day of year=75), Chicory: 
+      stage 7.0 start_grain_fill
+                     biomass =         282.91 (g/m^2)   lai          =   2.361 (m^2/m^2)
+                     stover N conc =     2.75 (%)    extractable sw =  119.41 (mm)
+22 March 2010(Day of year=81), Chicory: 
+      stage 5.0 floral_initiation
+                     biomass =          71.35 (g/m^2)   lai          =   0.132 (m^2/m^2)
+                     stover N conc =     2.42 (%)    extractable sw =  120.70 (mm)
+22/03/2010 - Plant1 Defoliation Rule Invoked
+          - chicory has been defoliated
+          - Removed 200.9305519104 g/m2 of Leaf
+          - Removed 49.8340148925781 g/m2 of Stem
+ 
+     Plant kill. 20.00% crop killed because of external action.
+23 March 2010(Day of year=82), Chicory: 
+      stage 6.0 flowering
+                     biomass =          78.50 (g/m^2)   lai          =   0.180 (m^2/m^2)
+                     stover N conc =     2.50 (%)    extractable sw =  118.11 (mm)
+13 April 2010(Day of year=103), Chicory: 
+      stage 7.0 start_grain_fill
+                     biomass =         115.92 (g/m^2)   lai          =   0.952 (m^2/m^2)
+                     stover N conc =     2.70 (%)    extractable sw =  115.00 (mm)
+24 April 2010(Day of year=114), Chicory: 
+      stage 8.0 end_grain_fill
+                     biomass =         148.14 (g/m^2)   lai          =   1.333 (m^2/m^2)
+                     stover N conc =     2.23 (%)    extractable sw =  122.02 (mm)
+5 May 2010(Day of year=125), Chicory Dormancy: 
+     Manager sending message :- chicory dormancy
+9 May 2010(Day of year=129), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 100.56470 (kg/ha), depth = 50 (mm), type = urea_n
+9 May 2010(Day of year=129), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.56 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+10 May 2010(Day of year=130), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 107.06509 (kg/ha), depth = 50 (mm), type = urea_n
+10 May 2010(Day of year=130), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       107.07 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+11 May 2010(Day of year=131), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 116.14691 (kg/ha), depth = 50 (mm), type = urea_n
+11 May 2010(Day of year=131), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       116.15 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+12 May 2010(Day of year=132), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 113.45386 (kg/ha), depth = 50 (mm), type = urea_n
+12 May 2010(Day of year=132), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       113.45 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+13 May 2010(Day of year=133), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 108.68468 (kg/ha), depth = 50 (mm), type = urea_n
+13 May 2010(Day of year=133), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       108.68 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+14 May 2010(Day of year=134), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 104.59822 (kg/ha), depth = 50 (mm), type = urea_n
+14 May 2010(Day of year=134), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       104.60 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+30 May 2010(Day of year=150), clock: 
+     Simulation is terminating due to end criteria being met.
 

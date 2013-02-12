@@ -80,7 +80,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('1-jun') then
-        potato sow plants = 5, sowing_depth = 30, cultivar = russet, row_spacing = 250, crop_class = plant
+        potato sow population = 5, sowing_depth = 30, cultivar = russet, row_spacing = 250, crop_class = plant
               endif
      END of rules
      
@@ -255,13 +255,248 @@ Paddock:
 ------- Start of simulation  --------------------------------------------------
 1 June 1988(Day of year=153), potato: 
      Crop Sow
-1 June 1988(Day of year=153): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: potato
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = russet
+        Phases:
+           out
+           sowing
+           emerging
+              shoot_lag                  =      72 (dd)
+              shoot_rate                 =       1 (dd/mm)
+           emergence
+              x_pp_emergence             =      12      18 (h)
+              y_tt_emergence             =     280     280 (dd)
+           vegetative
+              tt_vegetative              =      20 (dd)
+           earlytuber
+              tt_earlytuber              =     550 (dd)
+           senescing
+              tt_senescing               =     850 (dd)
+           senesced
+              tt_senesced                =       5 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+     
+        ------------------------------------------------
      
      
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.290       1.000
+         150.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.300       1.000
+         300.0     0.060          0.310       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.060          0.330       1.000
+         300.0     0.060          0.340       1.000
+         300.0     0.060          0.350       1.000
+         300.0     0.060          0.360       1.000
+         -----------------------------------------------
+         Extractable SW:   542mm in  3000mm total depth ( 18%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            153   30.0    5.0  250.0   0.0   0.0 russet
+         ------------------------------------------------
+     
+2 June 1988(Day of year=154), potato: 
+      stage 2.0 emerging
+11 June 1988(Day of year=163), potato: 
+      stage 3.0 emergence
+                     biomass =           0.15 (g/m^2)   lai          =   0.022 (m^2/m^2)
+                     stover N conc =     6.50 (%)    extractable sw =   32.00 (mm)
+7 July 1988(Day of year=189), potato: 
+      stage 4.0 vegetative
+                     biomass =          27.16 (g/m^2)   lai          =   0.556 (m^2/m^2)
+                     stover N conc =     4.73 (%)    extractable sw =  163.49 (mm)
+9 July 1988(Day of year=191), potato: 
+      stage 5.0 earlytuber
+                     biomass =          32.20 (g/m^2)   lai          =   0.606 (m^2/m^2)
+                     stover N conc =     4.32 (%)    extractable sw =  155.65 (mm)
+27 August 1988(Day of year=240), potato: 
+      stage 6.0 senescing
+                     biomass =         129.91 (g/m^2)   lai          =   0.577 (m^2/m^2)
+                     stover N conc =     1.55 (%)    extractable sw =  170.84 (mm)
+8 November 1988(Day of year=313), potato: 
+      stage 7.0 senesced
+                     biomass =         137.45 (g/m^2)   lai          =   0.007 (m^2/m^2)
+                     stover N conc =     1.49 (%)    extractable sw =  309.82 (mm)
+9 November 1988(Day of year=314), potato: 
+      stage 8.0 maturity
+                     biomass =         137.66 (g/m^2)   lai          =   0.007 (m^2/m^2)
+                     stover N conc =     1.48 (%)    extractable sw =  309.40 (mm)
+9 November 1988(Day of year=314), Harvesting rule: 
+     Manager sending message :- potato harvest
+     
+      flowering day          =    0                           stover (kg/ha)         =     1376.6
+      maturity day           =  314                           grain yield (kg/ha)    =        0.0
+      grain % water content  =    0.0                         grain yield wet (kg/ha)=        0.0
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      0.878
+      total above ground biomass (kg/ha)    =     1376.6
+      live above ground biomass (kg/ha)     =     1376.6
+      green above ground biomass (kg/ha)    =      662.2
+      senesced above ground biomass (kg/ha) =      714.4
+      number of leaves       =     45.9
+      DM Root:Shoot ratio    =     0.18                       Harvest Index          =       0.00
+      Stover C:N ratio       =    26.90                       Root C:N ratio         =      57.01
+      grain N percent        =     0.00                       total N content (kg/ha)=      20.47
+      grain N uptake (kg/ha) =     0.00                       senesced N content (kg/ha)=   10.67
+      green N content (kg/ha)=     9.81
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         vegetative           to earlytuber              0.000        0.000        0.000        0.000
+         earlytuber           to senescing               0.000        0.000        0.020        0.340
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                1375.1                     0.0
+                          N  (kg/ha) =                  20.44                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                4896.8                     0.0
+                          N  (kg/ha) =                  32.76                    0.00
+     
+     Manager sending message :- potato end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   1.5                   250.4
+                          N  (kg/ha) =                   0.04                    1.76
+     
+1 June 1989(Day of year=152), potato: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = russet
+        Phases:
+           out
+           sowing
+           emerging
+              shoot_lag                  =      72 (dd)
+              shoot_rate                 =       1 (dd/mm)
+           emergence
+              x_pp_emergence             =      12      18 (h)
+              y_tt_emergence             =     280     280 (dd)
+           vegetative
+              tt_vegetative              =      20 (dd)
+           earlytuber
+              tt_earlytuber              =     550 (dd)
+           senescing
+              tt_senescing               =     850 (dd)
+           senesced
+              tt_senesced                =       5 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+     
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.290       1.000
+         150.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.300       1.000
+         300.0     0.060          0.310       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.060          0.330       1.000
+         300.0     0.060          0.340       1.000
+         300.0     0.060          0.350       1.000
+         300.0     0.060          0.360       1.000
+         -----------------------------------------------
+         Extractable SW:   542mm in  3000mm total depth ( 18%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            152   30.0    5.0  250.0   0.0   0.0 russet
+         ------------------------------------------------
+     
+2 June 1989(Day of year=153), potato: 
+      stage 2.0 emerging
+11 June 1989(Day of year=162), potato: 
+      stage 3.0 emergence
+                     biomass =           0.15 (g/m^2)   lai          =   0.022 (m^2/m^2)
+                     stover N conc =     6.50 (%)    extractable sw =   31.41 (mm)
+7 July 1989(Day of year=188), potato: 
+      stage 4.0 vegetative
+                     biomass =          31.34 (g/m^2)   lai          =   0.585 (m^2/m^2)
+                     stover N conc =     4.66 (%)    extractable sw =  125.97 (mm)
+9 July 1989(Day of year=190), potato: 
+      stage 5.0 earlytuber
+                     biomass =          37.30 (g/m^2)   lai          =   0.625 (m^2/m^2)
+                     stover N conc =     4.26 (%)    extractable sw =  124.72 (mm)
+8 September 1989(Day of year=251), potato: 
+      stage 6.0 senescing
+                     biomass =         162.39 (g/m^2)   lai          =   0.753 (m^2/m^2)
+                     stover N conc =     1.55 (%)    extractable sw =  110.87 (mm)
+16 November 1989(Day of year=320), potato: 
+      stage 7.0 senesced
+                     biomass =         173.60 (g/m^2)   lai          =   0.004 (m^2/m^2)
+                     stover N conc =     1.45 (%)    extractable sw =  243.76 (mm)
+17 November 1989(Day of year=321), potato: 
+      stage 8.0 maturity
+                     biomass =         173.67 (g/m^2)   lai          =   0.004 (m^2/m^2)
+                     stover N conc =     1.44 (%)    extractable sw =  248.25 (mm)
+17 November 1989(Day of year=321), Harvesting rule: 
+     Manager sending message :- potato harvest
+     
+      flowering day          =    0                           stover (kg/ha)         =     1736.7
+      maturity day           =  321                           grain yield (kg/ha)    =        0.0
+      grain % water content  =    0.0                         grain yield wet (kg/ha)=        0.0
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      1.114
+      total above ground biomass (kg/ha)    =     1736.7
+      live above ground biomass (kg/ha)     =     1736.7
+      green above ground biomass (kg/ha)    =      850.1
+      senesced above ground biomass (kg/ha) =      886.6
+      number of leaves       =     45.8
+      DM Root:Shoot ratio    =     0.18                       Harvest Index          =       0.00
+      Stover C:N ratio       =    27.78                       Root C:N ratio         =      76.65
+      grain N percent        =     0.00                       total N content (kg/ha)=      25.01
+      grain N uptake (kg/ha) =     0.00                       senesced N content (kg/ha)=   12.73
+      green N content (kg/ha)=    12.28
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         vegetative           to earlytuber              0.000        0.000        0.000        0.000
+         earlytuber           to senescing               0.000        0.000        0.000        0.189
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                1735.2                     0.0
+                          N  (kg/ha) =                  24.99                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                6944.6                     0.0
+                          N  (kg/ha) =                  17.16                    0.00
+     
+     Manager sending message :- potato end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   1.5                   308.0
+                          N  (kg/ha) =                   0.02                    1.61
+     
+31 December 1989(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.
 
