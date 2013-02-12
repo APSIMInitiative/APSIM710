@@ -41,16 +41,22 @@ public class Apsim
             Dictionary<string, string> Macros = Utility.ParseCommandLine(args);
 
 			// Count the number of files in the argument list
-			string FileName = "";
-			int numFiles = 0;
+			string[] FileNames = null;
 			for (int i = 0; i < args.Length; i++)
 			{
-				string x = realNameOfFile(args[i]);
-				if (File.Exists(x))
-			    {
-				   FileName = x;
-				   numFiles++; 
-			    }
+				string[] x = realNamesOfFiles(args[i]);
+                for (int j = 0; j < x.Length; ++j)
+                {
+                    // Assume each argument is a filename, unless it contains "="
+                    if (x[j].Contains("="))
+                        continue;
+                    if (File.Exists(x[j]))
+                    {
+                        int l = FileNames == null ? 0 : FileNames.Length;
+                        Array.Resize(ref FileNames, l + 1);
+                        FileNames[l] = x[j];
+                    }
+                }
 			}
 
             Apsim.maxLines = -1;  // No limit by default
@@ -66,21 +72,21 @@ public class Apsim
 			// If they've specified a simulation name on the command line, then run just
 			// that simulation.
             PlugIns.LoadAll();
-            if (numFiles == 1 && Macros.ContainsKey("Simulation"))
+            if (FileNames.Length == 1 && Macros.ContainsKey("Simulation"))
 			{
                 Apsim.NumJobsBeingRun = 1;
-				if (Path.GetExtension(FileName).ToLower() == ".apsim") 
-                    Apsim.StartAPSIM(new ApsimFile.ApsimFile(FileName), 
+				if (Path.GetExtension(FileNames[0]).ToLower() == ".apsim") 
+                    Apsim.StartAPSIM(new ApsimFile.ApsimFile(FileNames[0]), 
 				                     Macros["Simulation"]);
-				else if (Path.GetExtension(FileName).ToLower() == ".con") 
-				    Apsim.StartCON(FileName, Macros["Simulation"]);
+				else if (Path.GetExtension(FileNames[0]).ToLower() == ".con") 
+				    Apsim.StartCON(FileNames[0], Macros["Simulation"]);
 				
 				Apsim.WaitForAPSIMToFinish();
 			}
-			else if (numFiles == 1 && Path.GetExtension(FileName) == ".sim")
+			else if (FileNames.Length == 1 && Path.GetExtension(FileNames[0]) == ".sim")
 			{
                 Apsim.NumJobsBeingRun = 1;
-				Apsim.StartSIM(FileName);
+				Apsim.StartSIM(FileNames[0]);
                 Apsim.WaitForAPSIMToFinish();
 			}
             else 
@@ -98,12 +104,9 @@ public class Apsim
   		        T.Name = "Apsim.exe";
                 Apsim.NumJobsBeingRun = 0;
 
-				for (int iarg = 0; iarg < args.Length; iarg++)
+				for (int i = 0; i < FileNames.Length; i++)
 	            {
-    	            // Assume each argument is a filename, unless it contains "="
-        	        string thisFileName = realNameOfFile(args[iarg]);
-                    if (thisFileName.Contains("="))
-                        continue;
+                    string thisFileName = FileNames[i];
 					if (File.Exists(thisFileName)) 
 					{
                     	if (Path.GetExtension(thisFileName).ToLower() == ".con")
@@ -134,17 +137,21 @@ public class Apsim
     /// Helper to return the real name of the file on disk (readlink() equivalent) - preserves
     /// upper/lower case
     /// </summary>
-    public static string realNameOfFile (string filename) 
+    public static string[] realNamesOfFiles (string filename) 
 	{
-	    string fullname = Path.GetFullPath(filename);
-		string dirName = Path.GetDirectoryName(fullname);
+        string[] Files = null;
+		string dirName = Path.GetDirectoryName(filename);
+        if (String.IsNullOrEmpty(dirName))
+            dirName = Directory.GetCurrentDirectory();
 		if (Directory.Exists(dirName))
 		{
-        	string[] Files = Directory.GetFiles(dirName, Path.GetFileName(fullname));
-        	if (Files.Length == 1)
-		  		return (Path.GetFullPath(Files[0].Replace("\"", "")));
+        	Files = Directory.GetFiles(dirName, Path.GetFileName(filename));
+            for (int i = 0; i < Files.Length; ++i)
+            {
+                Files[i] = Path.GetFullPath(Files[i].Replace("\"", ""));
+            }
 		}
-		return filename ; // probably undefined 
+		return Files ; // probably undefined 
 	}
 
     public void StartMultipleFromPaths(ApsimFile.ApsimFile F, List<String> SimulationPaths)
