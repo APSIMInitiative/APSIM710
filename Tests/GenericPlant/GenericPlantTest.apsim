@@ -1,0 +1,406 @@
+<folder version="34" name="Simulations">
+  <simulation name="GenericPlantTest">
+    <metfile name="met">
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\lincoln.met</filename>
+    </metfile>
+    <clock>
+      <start_date type="date" description="Enter the start date of the simulation">20/10/2003</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">23/05/2004</end_date>
+    </clock>
+    <summaryfile />
+    <area name="paddock">
+      <fertiliser />
+      <surfaceom name="surface organic matter">
+        <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">wheat</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">2000</mass>
+        <cnr type="text" description="C:N ratio of initial residue">80</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <folder name="Manager folder">
+        <manager name="Harvesting rule">
+          <ui>
+            <category type="category" description="Harvesting criteria" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">barley2</crop>
+          </ui>
+          <script>
+            <text>
+        if [crop].PlantStatus &lt;&gt; 'out' then
+           if [crop].PhenologyCurrentPhaseName = 'maturity' or [crop].PlantStatus = 'dead' then
+              [crop]  harvest
+              [crop]  endcrop
+           endif
+        endif
+
+            </text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <operations>
+          <operation condition="start_of_day">
+            <date>20/10/2003</date>
+            <action>fertiliser apply amount= 500 (kg/ha), type= urea_N (), depth= 10 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>25/11/2003</date>
+            <action>fertiliser apply amount= 69 (kg/ha), type= urea_N (), depth= 10 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>26/11/2003</date>
+            <action>irrigation apply amount= 15 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>4/12/2003</date>
+            <action>irrigation apply amount= 50 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>16/12/2003</date>
+            <action>irrigation apply amount= 15 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>22/12/2003</date>
+            <action>irrigation apply amount= 50 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>30/12/2003</date>
+            <action>irrigation apply amount= 50 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>8/1/2004</date>
+            <action>irrigation apply amount= 50 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>21/1/2004</date>
+            <action>irrigation apply amount= 50 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>31/1/2004</date>
+            <action>irrigation apply amount= 50 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>27/2/2004</date>
+            <action>irrigation apply amount= 25 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>25/12/2003</date>
+            <action>fertiliser apply amount= 0 (kg/ha), type= urea_N (), depth= 10 (mm)</action>
+          </operation>
+        </operations>
+        <irrigation name="Irrigation">
+          <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+          <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+          <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+          <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+          <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+          <allocation type="text" description="Allocation in ML">0</allocation>
+          <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+          <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+          <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+          <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+          <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+          <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+        </irrigation>
+        <manager name="Sowing Rule">
+          <ui>
+            <sowingdate type="date" description="Sowing date">20/10/2003</sowingdate>
+            <emergence_date type="text" description="Emergence date">12/11/2003</emergence_date>
+            <row_width type="text" description="Row width (mm)">150</row_width>
+            <population type="text" description="Emerged population (/m2)">300</population>
+            <stem_number type="text" description="Stem number per plant">1</stem_number>
+            <cultivar type="cultivars" description="Cultivar">Dash</cultivar>
+            <sowing_depth type="text" description="Sowing depth (mm)">30</sowing_depth>
+            <Harvest_date type="date" description="Harvest date">03/06/2000</Harvest_date>
+          </ui>
+          <script>
+            <text>if today = date('[SowingDate]') then
+   GenericPlant sow population = [population], depth = [sowing_depth], cultivar = [cultivar], maxcover = 1.0, budnumber = [stem_number], row_spacing = [row_width], crop_class = plant  
+ endif
+           
+      
+ 
+</text>
+            <event>start_of_day</event>
+          </script>
+          <script>
+            <text>Plant_population = 0
+</text>
+            <event>Init</event>
+          </script>
+        </manager>
+      </folder>
+      <Soil name="Templeton">
+        <Latitude>0</Latitude>
+        <Longitude>0</Longitude>
+        <Analysis>
+          <Thickness>
+            <double>100</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <PH>
+            <double>6.6</double>
+            <double>6.2</double>
+            <double>5.7</double>
+            <double>5.5</double>
+            <double>5.5</double>
+            <double>5.5</double>
+          </PH>
+          <ParticleSizeClay>
+            <double>30</double>
+            <double>30</double>
+            <double>30</double>
+            <double>30</double>
+            <double>30</double>
+            <double>30</double>
+          </ParticleSizeClay>
+        </Analysis>
+        <InitialWater name="Initial water">
+          <FractionFull>1.00</FractionFull>
+          <PercentMethod>EvenlyDistributed</PercentMethod>
+        </InitialWater>
+        <Water>
+          <Thickness>
+            <double>100</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <BD>
+            <double>1.2</double>
+            <double>1.2</double>
+            <double>1.2</double>
+            <double>1.2</double>
+            <double>1.2</double>
+            <double>1.2</double>
+          </BD>
+          <AirDry>
+            <double>0.08</double>
+            <double>0.16</double>
+            <double>0.15</double>
+            <double>0.13</double>
+            <double>0.15</double>
+            <double>0.15</double>
+          </AirDry>
+          <LL15>
+            <double>0.16</double>
+            <double>0.16</double>
+            <double>0.15</double>
+            <double>0.13</double>
+            <double>0.15</double>
+            <double>0.15</double>
+          </LL15>
+          <DUL>
+            <double>0.33</double>
+            <double>0.33</double>
+            <double>0.31</double>
+            <double>0.27</double>
+            <double>0.3</double>
+            <double>0.3</double>
+          </DUL>
+          <SAT>
+            <double>0.5</double>
+            <double>0.5</double>
+            <double>0.44</double>
+            <double>0.46</double>
+            <double>0.44</double>
+            <double>0.44</double>
+          </SAT>
+          <SoilCrop name="GenericPlant">
+            <Thickness>
+              <double>100</double>
+              <double>200</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.13</double>
+              <double>0.13</double>
+              <double>0.1</double>
+              <double>0.08</double>
+              <double>0.11</double>
+              <double>0.11</double>
+            </LL>
+            <KL>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+          </SoilCrop>
+        </Water>
+        <SoilWater>
+          <SummerCona>4.4</SummerCona>
+          <SummerU>9</SummerU>
+          <SummerDate>1-Nov</SummerDate>
+          <WinterCona>4.4</WinterCona>
+          <WinterU>9</WinterU>
+          <WinterDate>1-Apr</WinterDate>
+          <DiffusConst>88</DiffusConst>
+          <DiffusSlope>35.4</DiffusSlope>
+          <Salb>0.18</Salb>
+          <CN2Bare>68</CN2Bare>
+          <CNRed>20</CNRed>
+          <CNCov>0.8</CNCov>
+          <Slope>0</Slope>
+          <DischargeWidth>0</DischargeWidth>
+          <CatchmentArea>0</CatchmentArea>
+          <MaxPond>0</MaxPond>
+          <Thickness>
+            <double>100</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <SWCON>
+            <double>0.55</double>
+            <double>0.55</double>
+            <double>0.55</double>
+            <double>0.55</double>
+            <double>0.55</double>
+            <double>0.55</double>
+          </SWCON>
+        </SoilWater>
+        <SoilOrganicMatter>
+          <RootCN>30</RootCN>
+          <RootWt>3000</RootWt>
+          <SoilCN>11.5</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+          <Thickness>
+            <double>100</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <OC>
+            <double>3.5</double>
+            <double>2.5</double>
+            <double>1.2</double>
+            <double>1.03</double>
+            <double>0.47</double>
+            <double>0.47</double>
+          </OC>
+          <FBiom>
+            <double>0.025</double>
+            <double>0.025</double>
+            <double>0.015</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+          </FBiom>
+          <FInert>
+            <double>0.3</double>
+            <double>0.4</double>
+            <double>0.75</double>
+            <double>0.9</double>
+            <double>0.96</double>
+            <double>0.96</double>
+          </FInert>
+        </SoilOrganicMatter>
+        <Sample name="Initial nitrogen">
+          <Date type="date" description="Sample date:" />
+          <Thickness>
+            <double>100</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <NO3>
+            <double>140</double>
+            <double>30</double>
+            <double>14</double>
+            <double>14</double>
+            <double>1.38888888888889</double>
+            <double>1.38888888888889</double>
+          </NO3>
+          <NO3Units>kgha</NO3Units>
+          <NH4>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+          </NH4>
+          <NH4Units>kgha</NH4Units>
+        </Sample>
+      </Soil>
+      <micromet name="Micromet">
+        <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
+        <a_interception type="text" description="a_interception">0</a_interception>
+        <b_interception type="text" description="b_interception">0</b_interception>
+        <c_interception type="text" description="c_interception">0</c_interception>
+        <d_interception type="text" description="d_interception">0</d_interception>
+        <ini>
+          <filename>%apsim%\Model\MicroMet_NZ_adjustment.xml</filename>
+        </ini>
+      </micromet>
+      <SoilTemp2 name="Soil Temperature (dotNET)">
+        <maxt_time_default type="text" description="hours">14</maxt_time_default>
+        <bound_layer_cond_source type="text" description="boundary layer conductance source (calc/constant)">calc</bound_layer_cond_source>
+        <bound_layer_cond type="text" description="boundary layer conductance">20</bound_layer_cond>
+        <boundary_layer_conductance_iterations type="text" description="Number of iterations to calc boundary layer conductance (0-10)">1</boundary_layer_conductance_iterations>
+        <net_radn_source type="text" description="net radiation source (calc/eos)">calc</net_radn_source>
+        <default_wind_speed type="text" description="m/s">3</default_wind_speed>
+        <default_altitude type="text" description="default altitude (m) 275m (700 ft) is approx 980 hPa">18</default_altitude>
+        <default_instrum_height type="text" description="default instrument height for wind and temperature (m)">1.2</default_instrum_height>
+        <bare_soil_height type="text" description="height of bare soil (mm)">57</bare_soil_height>
+      </SoilTemp2>
+      <GenericPlant />
+      <folder>
+        <outputfile name="Outputfile">
+          <filename output="yes">GenericPlantTest.out</filename>
+          <title>GenericPlantTest</title>
+          <variables name="Variables">
+            <variable>dd/mm/yyyy as date</variable>
+            <variable>TotalWt</variable>
+            <variable>RootLiveWt</variable>
+            <variable>LeafLiveWt</variable>
+            <variable>ProductLiveWt</variable>
+            <variable>PhenologyAccumulatedThermalTimeValue</variable>
+          </variables>
+          <events name="Reporting Frequency">
+            <event>daily</event>
+          </events>
+        </outputfile>
+        <Graph name="XY">
+          <Legend>
+            <CheckedTitles> GenericPlantTest</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>Circle</PointType>
+            <colour>
+            </colour>
+            <Y>TotalWt</Y>
+            <X>PhenologyAccumulatedThermalTimeValue</X>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+      </folder>
+    </area>
+  </simulation>
+</folder>

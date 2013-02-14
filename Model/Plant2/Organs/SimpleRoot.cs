@@ -12,14 +12,31 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
     [Link]
     Paddock MyPaddock = null;
 
+    [Link(IsOptional = true)]
+    public Function DMDemandFunction = null;
+
     private double Uptake = 0;
     private string CurrentPaddockName;
     private string OurName;
     private bool TalkDirectlyToRoot;
 
-    public override double DMDemand { get { return 0; } }
+    public override double DMDemand 
+    { 
+       get 
+        {
+            if (DMDemandFunction != null)
+                  return DMDemandFunction.Value;
+            else  return 0;
+        } 
+    }
     public override DMSupplyType DMSupply { get { return new DMSupplyType { Photosynthesis = 0, Retranslocation = 0 }; } }
-    public override DMAllocationType DMAllocation { set { } }
+    public override DMAllocationType DMAllocation
+    {
+        set
+        {
+            Live.StructuralWt += value.Allocation;
+        }
+    }
 
     public override double NDemand { get { return 0; } }
     public override NSupplyType NSupply { get { return new NSupplyType(); } }

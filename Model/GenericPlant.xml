@@ -1,0 +1,213 @@
+<Type version="34" name="GenericPlant">
+  <MetaData>
+    <UItype type="text" description="UItype">CSUserInterface.EmptyUI</UItype>
+    <IsCrop type="text" description="IsCrop">Yes</IsCrop>
+    <ShowInMainTree type="text" description="ShowInMainTree">Yes</ShowInMainTree>
+    <Image type="text" description="Image">%apsim%\UserInterface\Images\GenericPlant.jpg</Image>
+    <Description type="text" description="Description">Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process. NOTE THIS MODULE IS A PROTOTYPE ONLY.</Description>
+    <Documentation type="text" description="Documentation">%apsim%\Documentation\4 Module Reference\Potato.htm</Documentation>
+    <Documentation type="text" description="Generic plant documentation">%apsim%\Documentation\4 Module Reference\Plant.htm</Documentation>
+    <LargeIcon type="text" description="LargeIcon">%apsim%\UserInterface\Images\Seedling32.png</LargeIcon>
+    <SmallIcon type="text" description="SmallIcon">%apsim%\UserInterface\Images\Seedling16.png</SmallIcon>
+    <dll type="text" description="dll">%apsim%\Model\Plant2.dll</dll>
+    <drops>
+      <drop>toolbox</drop>
+      <drop>area</drop>
+      <drop>simulation</drop>
+      <drop>folder</drop>
+    </drops>
+    <ApsimToSim>
+      <component name="[InstanceName]" executable="[dll]" class="Plant2.GenericPlant">
+        <executable name="[dll]" version="1.0" />
+        <initdata>
+               [Model]
+               <ll>[soil.[InstanceName] ll]</ll><kl>[soil.[InstanceName] kl]</kl><xf>[soil.[InstanceName] xf]</xf></initdata>
+      </component>
+    </ApsimToSim>
+  </MetaData>
+  <Model>
+    <Cultivar name="Dash">
+      <Construct>Plant</Construct>
+    </Cultivar>
+    <Plant>
+      <CropType type="text" description="CropType">Barley</CropType>
+      <SimpleRoot name="Root">
+        <Biomass name="Live" />
+        <Biomass name="Dead" />
+        <PartitionFractionDemandFunction name="DMDemandFunction">
+          <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
+		This function returns the specified proportion of totol DM supply.  The organ may not get this proportion if the sum of demands from other organs exceeds DM supply
+		</Memo>
+          <Constant name="PartitionFraction">
+            <Value type="text" description="Value">.1</Value>
+          </Constant>
+        </PartitionFractionDemandFunction>
+      </SimpleRoot>
+      <SimpleLeaf name="Leaf">
+        <Frgr>1</Frgr>
+        <Height>800</Height>
+        <LAI>6</LAI>
+        <LAIDead>0</LAIDead>
+        <K>0.5</K>
+        <KDead>0.5</KDead>
+        <XYPairs name="FT">
+          <XY>5 1</XY>
+          <XY>20 1</XY>
+          <XY>25 1</XY>
+          <XY>40 1</XY>
+        </XYPairs>
+        <XYPairs name="FVPD">
+          <XY>0 1</XY>
+          <XY>10 1</XY>
+          <XY>50 1</XY>
+        </XYPairs>
+        <Biomass name="Live" />
+        <Biomass name="Dead" />
+        <SigmoidFunction name="PotentialBiomass">
+          <Xmax type="text" description="Xmax">8000</Xmax>
+          <Xo type="text" description="Xo">700</Xo>
+          <b type="text" description="b">90</b>
+          <Memo>Takes the value of the child as the x value and returns the y value from a sigmoid of the form y = Xmax * 1/1+exp(-(x-Xo)/b)</Memo>
+          <AccumulateFunction name="AccumulatedThermalTime" shortcut="/GenericPlant/Model/Plant/Phenology/AccumulatedThermalTime">
+            <Memo shortcut="/GenericPlant/Model/Plant/Phenology/AccumulatedThermalTime/Memo" />
+            <VariableReference shortcut="/GenericPlant/Model/Plant/Phenology/AccumulatedThermalTime/VariableReference">
+              <Memo shortcut="/GenericPlant/Model/Plant/Phenology/AccumulatedThermalTime/VariableReference/Memo" />
+            </VariableReference>
+          </AccumulateFunction>
+        </SigmoidFunction>
+        <PartitionFractionDemandFunction name="DMDemandFunction">
+          <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
+		This function returns the specified proportion of totol DM supply.  The organ may not get this proportion if the sum of demands from other organs exceeds DM supply
+		</Memo>
+          <Constant name="PartitionFraction">
+            <Value type="text" description="Value">.45</Value>
+          </Constant>
+        </PartitionFractionDemandFunction>
+      </SimpleLeaf>
+      <CompositeBiomass name="Total">
+        <Property>Organs[].Live</Property>
+        <Property>Organs[].Dead</Property>
+      </CompositeBiomass>
+      <GenericAboveGroundOrgan name="Product">
+        <Memo>This is an example generic organ with all of the necessary child functions.  Parameter values need to be changed and functions can be replaced with different functions (and renamed with the same name) to make the desired functionality.  There may be bits missing from this still</Memo>
+        <Biomass name="Live" />
+        <Biomass name="Dead" />
+        <Constant name="WaterContent">
+          <Value type="text" description="Value">0</Value>
+          <Memo>Sets the proportion of the organ that is water used to calculate fresh wt of the organ</Memo>
+        </Constant>
+        <Constant name="MaximumNConc">
+          <Value type="text" description="Value">0</Value>
+          <Memo>Sets the proportion of the organ that is water used to calculate fresh wt of the organ</Memo>
+        </Constant>
+        <Constant name="MinimumNConc">
+          <Value type="text" description="Value">0</Value>
+          <Memo>Sets the proportion of the organ that is water used to calculate fresh wt of the organ</Memo>
+        </Constant>
+        <PartitionFractionDemandFunction name="DMDemandFunction">
+          <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
+		This function returns the specified proportion of totol DM supply.  The organ may not get this proportion if the sum of demands from other organs exceeds DM supply
+		</Memo>
+          <Constant name="PartitionFraction">
+            <Value type="text" description="Value">.45</Value>
+          </Constant>
+        </PartitionFractionDemandFunction>
+      </GenericAboveGroundOrgan>
+      <Arbitrator>
+        <ArbitrationOption type="text" description="ArbitrationOption">PriorityAllocation</ArbitrationOption>
+        <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
+	  Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
+	  Wt_Step 2. In this step freshly fixed Wt is partitioned to organs based on their relative Structural and Metabolic demands such that if there is not enough freshly fixed Wt to meet these demands the organs with the highest demands get the greatest share of the photosynthesis.
+	  Wt_Step 3. In the second step any freshly fixed DM that was surplus to Structural and Metabolic demands is partitioned to sink organs.  An organ will be a sink if it is parameterised to have a Non-structural (mobile) component and the capacity of each organ to receive excess DM depends on its structural fraction (which determines the Non-structural Fraction and subsequent sink capacity).  If there is still fresh DM unallocated after the second pass this remains unallocated with the assumption that in this case the plant would down regulate photosynthesis due to lack of sink capacity.
+	  Wt_Step 4. In this step, Non-structural DM is reallocated from Non-Structural pools if there was insufficient DM to meet the structural and metabolic DM demands of organs.
+	  The arbitrator then sends a potential DM allocation to each organ that they use to calculate their N demands and then steps through N partitioning routines.  The final pass in biomass partitioning comes after N partitioning
+	  
+	  N_Step 1. Set up N supplies and demands.  Each organ may (or may not) supply N in a number of ways.  Each organ has (potentially) a structural, metabolic and Non-structural N Demand.  The structural N demand is that required to grow immobile biomass components, Metabolic N is that required to produce working biomass such as the photosynthetic mechanism in the leaves.  The Non-structural N demand is considered to be the luxury uptake and storage of highly mobile N compounds such as nitrate.
+      Each of the following 4 steps have a number of processes in common; Firstly the arbitrator determines each organs current N demand (that outstanding after previous N partitioning steps), then it allocates N to each demanding organ (There are three ways that N can be allocated, see below), then it sets for each supplying organ the amount of N that was taken up.
+	  N_Step 2. NReallocation.  This is the supply of N within the plant by the reallocation of sensing and/or Non-structural N which is the lowest energy form of N available to the plant so is partitioned first.
+	  N_Step 3. NUptake.  This is the supply of mineral N from the environment (typically by roots from the soil). In this step the arbitrator partitions the potential N uptake supply to satisfy all organs N demands (Structural, Metabolic and Non-structural).  If supply is sufficient this will replenish all Non-structural N that was reallocated in the previous step.  If not the N conc of organs with a Non-structural N component will begin to fall.  If total N demand is less than the uptake supply the crop will leave the surplus mineral N in the soil.
+	  N_Step 4. NFixation.  This is the supply of symbiotically fixed N and is redundant for Non-fixers!  The arbitrator will asks all N fixing organs (typically nodules) for their potential N fixation supply and then partition this to meet the Structural and Metabolic N demands of organs.  The arbitrator will not fix N to meet Non-structural N demands to minimise the biomass cost of fixation which is metabolically expensive.  Fixation follows uptake to enable the arbitrator to capture the "Lazy" N fixing behaviour of some legumes.  Once fixation is calculated the arbitrator determines the DM cost of this fixation.
+	  N_Step 5. NRetranslocation.  This is only invoked under sever N shortage when NReallocation and Uptake (and fixation if appropriate) cannot meet structural and metabolic N demands.  It this step the arbitrator will remove Metabolic N from older leaf cohorts to meet the N demand of new leaves and reproductive organs.
+
+	
+      In all of these N partitioning steps there are three options the developer may chose for determining the allocation of N between demanding organs.
+	  1. RelativeAllocation.  If this option is used all N is partitioned to organs relative to their demand so that the organs with the larger N demand get a larger share of a limited N supply.
+	  2. PriorityAllocation.  If this option is used the arbitrator steps through all organs in order of priority (set by the order they appear in the IDE) allocating N to meet all of the first organs structural and metabolic N demands before partitioning any to the next organ in the hierarchy.  Once it has stepped through all organs and allocated their minimum (structural and metabolic) N demands it will then step through them again and allocate their luxury (Non-structural) N demands in the same way.
+	  3. PrioritythenRelativeAllocation.  If this option is used the arbitrator steps through all organs in order of priority allocating N to meet minimum N demands.  However on the second pass it allocated N relative to the organs outstanding demands such that the organ with the greatest luxury N demand will get the greatest share of the N allocation.
+	  
+	  Wt_Step 5. Once N is allocated the arbitrator then reduces the Wt allocation of each organ to account for the metabolic cost of N fixation.  The Wt reduction is spread around all organs and an organ will only have its Wt allocation limited until it reaches maximum N conc.
+	  Wt_Step 6. Then the arbitrator determines if the N allocated to each organ is sufficient for that organ to reach its minimum N concentration.  If not the arbitrator will constrain the biomass growth of that organ and discards the surplus biomass.  This assume that under sever N stress photosynthesis would be down regulated due to N inadequacy limiting sink strength.  
+      
+	  Once these steps are complete the Arbitrator finally communicates to each organ its state changes as a result of arbitration.
+		   
+        </Memo>
+        <Constant name="RetransWtNRatio">
+          <Value type="text" description="Value">0</Value>
+        </Constant>
+      </Arbitrator>
+      <Phenology>
+        <AirTemperatureFunction name="ThermalTime">
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>30 30</XY>
+            <XY>40 0</XY>
+          </XYPairs>
+          <Memo>This function uses max and min air temperature, three hourly temperature interpolation and the temperature threshold specified to return a daily thermal time value</Memo>
+        </AirTemperatureFunction>
+        <GerminatingPhase name="Germinating">
+          <Start>Sowing</Start>
+          <End>Germination</End>
+        </GerminatingPhase>
+        <EmergingPhase name="Emerging">
+          <Start type="text" description="Start">Germination</Start>
+          <End type="text" description="End">Emergence</End>
+          <ShootLag type="text" description="Time lag before linear coleoptile growth starts">40.0</ShootLag>
+          <ShootRate type="text" description="Growing deg day increase with depth for coleoptile">4</ShootRate>
+          <AirTemperatureFunction name="ThermalTime" shortcut="/GenericPlant/Model/Plant/Phenology/ThermalTime">
+            <XYPairs shortcut="/GenericPlant/Model/Plant/Phenology/ThermalTime/XYPairs" />
+            <Memo shortcut="/GenericPlant/Model/Plant/Phenology/ThermalTime/Memo" />
+          </AirTemperatureFunction>
+        </EmergingPhase>
+        <GenericPhase name="CanopyExpanding">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">BeginSenescence</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">1000</Value>
+          </Constant>
+          <AirTemperatureFunction name="ThermalTime" shortcut="/GenericPlant/Model/Plant/Phenology/ThermalTime">
+            <XYPairs shortcut="/GenericPlant/Model/Plant/Phenology/ThermalTime/XYPairs" />
+            <Memo shortcut="/GenericPlant/Model/Plant/Phenology/ThermalTime/Memo" />
+          </AirTemperatureFunction>
+        </GenericPhase>
+        <GenericPhase name="YieldIncreasing">
+          <Start type="text" description="Start">BeginSenescence</Start>
+          <End type="text" description="End">MaximumYieldAttained</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">600</Value>
+          </Constant>
+          <AirTemperatureFunction name="ThermalTime" shortcut="/GenericPlant/Model/Plant/Phenology/ThermalTime">
+            <XYPairs shortcut="/GenericPlant/Model/Plant/Phenology/ThermalTime/XYPairs" />
+            <Memo shortcut="/GenericPlant/Model/Plant/Phenology/ThermalTime/Memo" />
+          </AirTemperatureFunction>
+        </GenericPhase>
+        <EndPhase name="ReadyForHarvesting">
+          <Start type="text" description="Start">MaximumYieldAttained</Start>
+          <End type="text" description="End">Unused</End>
+          <AirTemperatureFunction name="ThermalTime" shortcut="/GenericPlant/Model/Plant/Phenology/ThermalTime">
+            <XYPairs shortcut="/GenericPlant/Model/Plant/Phenology/ThermalTime/XYPairs" />
+            <Memo shortcut="/GenericPlant/Model/Plant/Phenology/ThermalTime/Memo" />
+          </AirTemperatureFunction>
+        </EndPhase>
+        <AccumulateFunction name="AccumulatedThermalTime">
+          <StartStageName type="text" description="StartStageName">Emergence</StartStageName>
+          <EndStageName type="text" description="StartStageName">MaximumYieldAttained</EndStageName>
+          <Memo>This function accumlates the daily values of all childern functions between the start and end phases.</Memo>
+          <VariableReference>
+            <VariableName type="text" description="Variable Name">Phenology.ThermalTime.Value</VariableName>
+            <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+          </VariableReference>
+        </AccumulateFunction>
+      </Phenology>
+    </Plant>
+  </Model>
+</Type>

@@ -32,18 +32,28 @@ class SimpleLeaf : BaseOrgan
     private XYPairs FT = null;     // Temperature effect on Growth Interpolation Set
     [Link]
     private XYPairs FVPD = null;   // VPD effect on Growth Interpolation Set
+    [Link(IsOptional = true)]
+    public Function PotentialBiomass = null;
+    [Link(IsOptional = true)]
+    public Function DMDemandFunction = null;
     [Param]
     private double K = 0;                      // Extinction Coefficient (Green)
     [Param]
     private double KDead = 0;                  // Extinction Coefficient (Dead)
-
+    public double DeltaBiomass = 1;
+    public double BiomassYesterday = 0;
     public override double DMDemand
     {
-        get { return 1; }
+        get {
+            if (DMDemandFunction != null)
+                return DMDemandFunction.Value;
+            else
+                return 1; 
+             }
     }
     public override DMSupplyType DMSupply
     {
-        get { return new DMSupplyType { Photosynthesis = 1, Retranslocation = 0 } ; }
+          get { return new DMSupplyType { Photosynthesis = DeltaBiomass, Retranslocation = 0 } ; }
     }
     public override DMAllocationType DMAllocation
     {
@@ -172,6 +182,12 @@ class SimpleLeaf : BaseOrgan
     [EventHandler]
     public void OnPrepare()
     {
+        if (PotentialBiomass != null)
+        {
+            DeltaBiomass = PotentialBiomass.Value - BiomassYesterday; //Over the defalt DM supply of 1 if there is a photosynthesis function present
+            BiomassYesterday = PotentialBiomass.Value;
+        }
+
         EP = 0;
         PublishNewPotentialGrowth();
     }
