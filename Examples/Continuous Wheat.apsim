@@ -688,7 +688,7 @@
             <class type="classes" description="Enter crop growth class : ">plant</class>
             <row_spacing type="text" description="Enter row spacing (mm) : ">250</row_spacing>
           </ui>
-          <script>
+          <script name="start_of_day">
             <text>
       if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
          if (date_within('[date1], [date2]') = 1) then
@@ -705,7 +705,7 @@
             </text>
             <event>start_of_day</event>
           </script>
-          <script>
+          <script name="init">
             <text>
             nextcrop = 0
             fallowin = 0
@@ -753,8 +753,8 @@
         <title>Continuous Wheat</title>
         <variables name="Variables">
           <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
-          <variable array="?" description="Biomass">biomass</variable>
-          <variable array="?" description="Yield">yield</variable>
+          <variable array="?" description="Biomass">Biomass</variable>
+          <variable array="?" description="Yield">Yield</variable>
           <variable array="?" description="grain protein content">grain_protein</variable>
           <variable array="?" description="Size of each grain">grain_size</variable>
           <variable array="?" description="Extractable Soil Water (mm)">esw</variable>
