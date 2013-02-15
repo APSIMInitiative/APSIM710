@@ -153,13 +153,14 @@ using CMPServices;
             [if [type.array] = T]
             packArrayOfStructures([foreach type.field][field.name][endfor], DDMLValue);
             [else]
+            uint i = 0;
             [foreach type.field]
             [if [field.arrayofstructures] = T]
-            packArrayOfStructures([field.name], DDMLValue.member("[field.name]"));
+            packArrayOfStructures([field.name], DDMLValue.item(++i));
             [elseif [field.structure] = T]
-            [field.name].pack(DDMLValue.member("[field.name]"));
+            [field.name].pack(DDMLValue.item(++i));
             [else]
-            DDMLValue.member("[field.name]").setValue([field.name]);
+            DDMLValue.item(++i).setValue([field.name]);
             [endif]
             [endfor]
             [endif]
@@ -178,19 +179,21 @@ using CMPServices;
             }
             [endfor]
             [else]
+            uint idx = 0;
             [foreach type.field]
             [if [field.arrayofstructures] = T]
-            [field.name] = new [field.cstypebase][src.member("[field.name]").count()];
+            TTypedValue [field.name]_member = src.item(++idx);
+            [field.name] = new [field.cstypebase][[field.name]_member.count()];
             for (uint i = 1; i <= [field.name].Length; i++ )
             {
                 [field.name][i-1] = new [field.cstypebase]();
-                [field.name][i-1].unpackStructure(src.member("[field.name]").item(i));
+                [field.name][i-1].unpackStructure([field.name]_member.item(i));
             }
             [elseif [field.structure] = T]
             [field.name] = new [field.cstypebase]();
-            [field.name].unpackStructure(src.member("[field.name]"));
+            [field.name].unpackStructure(src.item(++idx));
             [else]
-            [field.name] = src.member("[field.name]").as[field.cstypename]();
+            [field.name] = src.item(++idx).as[field.cstypename]();
             [endif]
             [endfor]
             [endif]
