@@ -44,17 +44,20 @@ public class Apsim
 			string[] FileNames = null;
 			for (int i = 0; i < args.Length; i++)
 			{
-				string[] x = realNamesOfFiles(args[i]);
-                for (int j = 0; j < x.Length; ++j)
+                // Assume each argument is a filename, unless it contains "="
+                if (args[i].Contains("="))
+                    continue;
+                string[] x = realNamesOfFiles(args[i]);
+                if (x != null)
                 {
-                    // Assume each argument is a filename, unless it contains "="
-                    if (x[j].Contains("="))
-                        continue;
-                    if (File.Exists(x[j]))
+                    for (int j = 0; j < x.Length; ++j)
                     {
-                        int l = FileNames == null ? 0 : FileNames.Length;
-                        Array.Resize(ref FileNames, l + 1);
-                        FileNames[l] = x[j];
+                        if (File.Exists(x[j]))
+                        {
+                            int l = FileNames == null ? 0 : FileNames.Length;
+                            Array.Resize(ref FileNames, l + 1);
+                            FileNames[l] = x[j];
+                        }
                     }
                 }
 			}
@@ -72,7 +75,7 @@ public class Apsim
 			// If they've specified a simulation name on the command line, then run just
 			// that simulation.
             PlugIns.LoadAll();
-            if (FileNames.Length == 1 && Macros.ContainsKey("Simulation"))
+            if ((FileNames != null) && (FileNames.Length == 1) && Macros.ContainsKey("Simulation"))
 			{
                 Apsim.NumJobsBeingRun = 1;
 				if (Path.GetExtension(FileNames[0]).ToLower() == ".apsim") 
@@ -83,13 +86,13 @@ public class Apsim
 				
 				Apsim.WaitForAPSIMToFinish();
 			}
-			else if (FileNames.Length == 1 && Path.GetExtension(FileNames[0]) == ".sim")
+			else if ((FileNames != null) && (FileNames.Length == 1) && (Path.GetExtension(FileNames[0]) == ".sim"))
 			{
                 Apsim.NumJobsBeingRun = 1;
 				Apsim.StartSIM(FileNames[0]);
                 Apsim.WaitForAPSIMToFinish();
 			}
-            else 
+            else if (FileNames != null)
 			{
   				Apsim.JobScheduler = new JobScheduler();
 				// NB. The key/value macro in the jobscheduler is private - send over any keys we dont know about
