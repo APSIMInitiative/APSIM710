@@ -217,7 +217,7 @@
       <C type="text" description="C">1.0</C>
       <Memo>Takes the value of the child as the x value and returns the y value from a exponential of the form y = A * B * exp(x * C)</Memo>
     </ExponentialFunction>
-	<ExpressionFunction>
+    <ExpressionFunction>
       <Expression type="text" description="Math Expression">1.0*Leaf.LAI</Expression>
       <Memo>Evaluate a mathematical expression using the EvaluateExpression dll. 
 Obs: Expression can contain variable names from Plant2
@@ -1068,6 +1068,32 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
     <Summary />
   </Folder>
   <Folder name="Phenology">
+    <CerealVegetativePhase>
+      <Start type="text" description="Start stage name">Emergence</Start>
+      <End type="text" description="End stage name">TerminalSpikelet</End>
+      <Constant name="Target">
+        <Value type="text" description="Value">401</Value>
+      </Constant>
+      <MinimumFunction name="Stress">
+        <Variable>
+          <VariableName type="text" description="Variable Name">Phenology.Vernalisation.VernEff</VariableName>
+          <Memo>Returns the value of a nominated internal Plant2 numerical variable
+</Memo>
+        </Variable>
+        <Variable name="Variable1">
+          <VariableName type="text" description="Variable Name"> Phenology.Vernalisation.PhotopEff</VariableName>
+          <Memo>Returns the value of a nominated internal Plant2 numerical variable
+</Memo>
+        </Variable>
+      </MinimumFunction>
+      <LinearInterpolationFunction name="Thermal Time">
+        <XProperty type="text" description="XProperty">Phenology.Vernalisation.CumulativeVD</XProperty>
+        <XYPairs>
+          <XY>0 515</XY>
+          <XY>100 515</XY>
+        </XYPairs>
+      </LinearInterpolationFunction>
+    </CerealVegetativePhase>
     <EmergingPhase>
       <Start type="text" description="Start stage name">Germination</Start>
       <End type="text" description="End stage name">Emergence</End>
@@ -1152,6 +1178,29 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
       </End>
       <TemperatureFunction />
     </LeafDeathPhase>
+    <MolecularPhenology>
+      <VernalisationType type="text" description="VernalisationType">0</VernalisationType>
+      <PhaseLookup name="Vernalisation">
+        <PhaseLookupValue name="SoilTemperature">
+          <Start type="text" description="Start">Sowing</Start>
+          <End type="text" description="End">FloralInitiation</End>
+          <SoilTemperatureFunction name="ThermalTime">
+            <XYPairs>
+              <XY>0 0.012</XY>
+              <XY>11 0.0187</XY>
+              <XY>15 0</XY>
+            </XYPairs>
+          </SoilTemperatureFunction>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="AirTemperature">
+          <Start type="text" description="Start">FloralInitiation</Start>
+          <End type="text" description="End">HarvestRipe</End>
+          <AirTemperatureFunction name="ThermalTime">
+            <XYPairs />
+          </AirTemperatureFunction>
+        </PhaseLookupValue>
+      </PhaseLookup>
+    </MolecularPhenology>
     <PhaseJumpFunction>
       <Start type="text" description="Start stage name:">Germination</Start>
       <End type="text" description="End stage name:">Emergence</End>
