@@ -3235,7 +3235,7 @@ class soilCNPatch
         // + Purpose
         //     Calculate a temperature factor, based on the soil temperature of the layer, for nitrification and mineralisation
 
-        double t = Math.Min(st[layer], opt_temp[layer]);
+        double t = Math.Min(st[layer], opt_temp[index - 1]);
         return 47.9 / (1.0 + Math.Exp(106.0 / (t + 18.3)));
     }
 
