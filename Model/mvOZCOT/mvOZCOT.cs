@@ -18,17 +18,17 @@ namespace ManagedComponent.MvOZCOT
         private static String _STYPE = "mvOZCOT model";  //CompClass
         private static String _SVERSION = "2.00";
         private static String _SAUTHOR = "CSIRO Plant Industry - Cotton Research";
-      //  protected static String _PROXY_COMP = "mvCotton.dll";                    //obsolete 
+      //  protected static String _PROXY_COMP = "mvCotton.dll";                     //obsolete 
 
         //subscribed events
-        private const int EVENT_SOW = 1;           //sow using 5 input parameters
-        private const int EVENT_PROCESS = 2;
-        private const int EVENT_HARVEST = 3;
-        private const int EVENT_RESET = 4;
-        private const int EVENT_TICK = 5;
-        private const int EVENT_DO_GROWTH = 6;
-        private const int EVENT_DO_SOW = 7;        //sow with no parameters
-        private const int EVENT_DO_HARVEST = 8;
+        private const int EVENT_SOW = 1;           //sow using 5 input parameters  (APSIM oriented)
+        private const int EVENT_PROCESS = 2;       //APSIM oriented  - pre, process, post  events
+        private const int EVENT_HARVEST = 3;       //APSIM oriented
+        private const int EVENT_RESET = 4;         //APSIM oriented
+        private const int EVENT_TICK = 5;          //standard CMP compliant event for time step
+        private const int EVENT_DO_GROWTH = 6;     //CPI (AusFarm) oriented event for daily plant growth
+        private const int EVENT_DO_SOW = 7;        //sow with no parameters (CPI oriented). All values initialised.
+        private const int EVENT_DO_HARVEST = 8;    //CPI (AusFarm) oriented
 
         //TODO: DBJ should these events be re-instated?  
         //private const int EVENT_End_Crop = ?;
@@ -87,7 +87,6 @@ namespace ManagedComponent.MvOZCOT
         private const int DRV_NH4 = 16;
         private const int DRV_UREA = 17;
 
-       //  private const int DRV_TIME = 18;
 
 
 
@@ -191,17 +190,19 @@ namespace ManagedComponent.MvOZCOT
         private const int PROP_bltme = PROP_START_INDEX + 93;
         private const int PROP_wt = PROP_START_INDEX + 94;
         private const int PROP_ozcot_status = PROP_START_INDEX + 95;
-        private const int PROP_ozcot_sumDD = PROP_START_INDEX + 96;
-        private const int PROP_lai = PROP_START_INDEX + 97;
-        private const int PROP_dw_total = PROP_START_INDEX + 98;
-        private const int PROP_dw_boll = PROP_START_INDEX + 99;
-        private const int PROP_dn_plant = PROP_START_INDEX + 100;
-        private const int PROP_assimilate = PROP_START_INDEX + 101;
-        private const int PROP_GrowthWt = PROP_START_INDEX + 102;
-        private const int PROP_ep = PROP_START_INDEX + 103;
-       // private const int PROP_dm_green = PROP_START_INDEX + 104;  //moved to end
-       // private const int PROP_n_green = PROP_START_INDEX + 105;   //moved to end
-        private const int PROP_crop_in = PROP_START_INDEX + 106;
+        private const int PROP_status = PROP_START_INDEX + 96;
+        private const int PROP_ozcot_sumDD = PROP_START_INDEX + 97;
+        private const int PROP_lai = PROP_START_INDEX + 98;
+        private const int PROP_dw_total = PROP_START_INDEX + 99;
+        private const int PROP_dw_boll = PROP_START_INDEX + 100;
+        private const int PROP_dn_plant = PROP_START_INDEX + 101;
+        private const int PROP_assimilate = PROP_START_INDEX + 102;
+        private const int PROP_growthWt = PROP_START_INDEX + 103;
+        private const int PROP_ep = PROP_START_INDEX + 104;
+        private const int PROP_crop_in = PROP_START_INDEX + 105;
+        // PROP_??  = PROP_START_INDEX + 106   vacant
+        // private const int PROP_dm_green = PROP_START_INDEX + ??;  //moved to end
+        // private const int PROP_n_green = PROP_START_INDEX + ??;   //moved to end
 
         private const int PROP_das = PROP_START_INDEX + 107;
         private const int PROP_sites = PROP_START_INDEX + 108;
@@ -273,7 +274,7 @@ namespace ManagedComponent.MvOZCOT
 
         private const int PROP_dm_green = PROP_START_INDEX + 171;
         private const int PROP_dm_senesced = PROP_START_INDEX + 172;
-        private const int PROP_dlt_dm_green = PROP_START_INDEX + 173;
+        private const int PROP_dlt_dm_live = PROP_START_INDEX + 173;
         private const int PROP_n_green = PROP_START_INDEX + 174;
         private const int PROP_n_senesced = PROP_START_INDEX + 175;
 
@@ -620,9 +621,9 @@ namespace ManagedComponent.MvOZCOT
         private double wind;
         private double tempav;
         private double hunits;
-       // private double asoil;
+        // private double asoil;
         //jh v2001         real    eos
-        private double qa;  // upper boundary for solrad
+        // private double qa;  // upper boundary for solrad
         private double solrto;
         private double q;
 
@@ -733,7 +734,8 @@ namespace ManagedComponent.MvOZCOT
         private double sqzx;
 
         private double s_bed_mi;
-        private double delay;
+        private double delayDD;
+        private double accumRateTo1stSqr;   // rate of development to 1st square (used in ozcot_istsq() )
         private double[] bpsum = new double[max_cohort + 1];
         private double bollgr;
         private double dlai_pot;
@@ -986,10 +988,10 @@ namespace ManagedComponent.MvOZCOT
             setPropertyRange(PROP_baset, 12.0, 0.0, 30.0);
 
             addProperty("ul1", PROP_ul1, true, false, true, "-", false, "double", "limit of es stage1", "limit of es stage1");   //limit of es stage1
-            setPropertyRange(PROP_ul1, 1.4, 0.0, 10.0);
+            setPropertyRange(PROP_ul1, 1.4, 0.0, 10.0);  // not used in ozcot - part of soilwat
 
             addProperty("cona", PROP_cona, true, false, true, "-", false, "double", "rate in stage2 es", "rate in stage2 es");  //rate in stage2 es
-            setPropertyRange(PROP_cona, 0.35, 0.0, 1.0);
+            setPropertyRange(PROP_cona, 0.35, 0.0, 1.0);  // not used in ozcot - part of soilwat
 
             addProperty("open_def", PROP_open_def, true, false, true, "%", false, "double", "defoliation open percentage", "defoliation open percentage");  //defoliation open percentage
             setPropertyRange(PROP_open_def, 60.0, 0.0, 100.0);
@@ -1055,13 +1057,13 @@ namespace ManagedComponent.MvOZCOT
             setPropertyRange(PROP_frost_kill_immediate, 2.0, -5.0, 5.0);
 
             addProperty("rtdep_max", PROP_rtdep_max, true, false, true, "cm", false, "double", "maximum depth of rooting", "maximum depth of rooting - unused");
-            setPropertyRange(PROP_rtdep_max, 130.0, 0.0, 1000.0);
+            setPropertyRange(PROP_rtdep_max, 130.0, 0.0, 1000.0);  //currently not used in ozcot
 
             addProperty("harvest_n_frac", PROP_harvest_n_frac, true, false, true, "-", false, "double", "fraction of uptake N for potential N harvested", "fraction of uptake N for potential N harvested");
             setPropertyRange(PROP_harvest_n_frac, 0.85, 0.0, 1.0);
 
             addProperty("cutout_smi_crit", PROP_cutout_smi_crit, true, false, true, "-", false, "double", "smi critical level for cutout", "smi critical level for cutout");
-            setPropertyRange(PROP_cutout_smi_crit, 0.75, 0.0, 1.0);
+            setPropertyRange(PROP_cutout_smi_crit, 0.75, 0.0, 1.0);  //currently not used in ozcot
 
             addProperty("cutout_smi_days", PROP_cutout_smi_days, true, false, true, "days", false, "integer4", "delay before smi induces cutout", "delay before smi induces cutout");
             setPropertyRange(PROP_cutout_smi_days, 5, 0, 10);
@@ -1124,13 +1126,13 @@ namespace ManagedComponent.MvOZCOT
             setPropertyRange(PROP_vsnstr_a, 1.0, 0.0, 10.0);
 
             addProperty("flfsmi_low", PROP_flfsmi_low, true, false, true, "-", false, "double", "water stress on pre-squaring LAI - lower limit", "water stress on pre-squaring LAI - lower limit");
-            setPropertyRange(PROP_flfsmi_low, 0.0, 0.0, 10.0);
+            setPropertyRange(PROP_flfsmi_low, 0.0, 0.0, 10.0);   //currently not used
 
             addProperty("flfsmi_high", PROP_flfsmi_high, true, false, true, "-", false, "double", "water stress on pre-squaring LAI - upper limit", "water stress on pre-squaring LAI - upper limit");
-            setPropertyRange(PROP_flfsmi_high, 0.5, 0.0, 10.0);
+            setPropertyRange(PROP_flfsmi_high, 0.5, 0.0, 10.0);  //currently not used
 
             addProperty("flfsmi_a", PROP_flfsmi_a, true, false, true, "-", false, "double", "water stress on pre-squaring LAI - amplitude", "water stress on pre-squaring LAI - amplitude");
-            setPropertyRange(PROP_flfsmi_a, 1.0, 0.0, 10.0);
+            setPropertyRange(PROP_flfsmi_a, 1.0, 0.0, 10.0);     //currently not used
 
             addProperty("vlnstr_low", PROP_vlnstr_low, true, false, true, "-", false, "double", "N stress on LAI - lower limit", "N stress on LAI - lower limit");
             setPropertyRange(PROP_vlnstr_low, 0.0, 0.0, 10.0);
@@ -1193,8 +1195,8 @@ namespace ManagedComponent.MvOZCOT
 
             // read the sowing details
             newProperty = addProperty("cultivar_default", PROP_cultivar_default, true, false, true, "-", false, "string", "default cultivar", "default cultivar if none specified or details not found");
-            newProperty.setDefault("S189");
-            //"S189"
+            newProperty.setDefault("S71BR");
+            //"S189" is a conventional variety alternative
 
             addProperty("sowing_depth_default", PROP_sowing_depth_default, true, false, true, "mm", false, "double", "default sowing depth", "default sowing depth mm");
             setPropertyRange(PROP_sowing_depth_default, 50.0, 0.0, 100.0);
@@ -1297,9 +1299,9 @@ namespace ManagedComponent.MvOZCOT
             propertyList[PROP_wt].item(8).setValue(0.5785);
 
 
-
+            
             //Greenhouse gas studies
-            addProperty("co2", PROP_co2, true, false, true, "mm", false, "double", "co2 concentration", "co2 concentration");
+            addProperty("co2", PROP_co2, true, false, true, "ppm", false, "double", "co2 concentration", "co2 concentration");
             setPropertyRange(PROP_co2, 350.0, 0.0, 1000.0);
 
             //eg <x_co2_fert>?.</x_co2_fert>
@@ -1332,24 +1334,15 @@ namespace ManagedComponent.MvOZCOT
             //Output 'readable only' properties
             addProperty("PlantStatus", PROP_plant_status, true, false, false, "-", false, "string", "Plant status", "Plant status");
             addProperty("ozcot_status", PROP_ozcot_status, true, false, false, "-", false, "integer4", "model status", "model status - termination reason");
-            addProperty("ozcot_sumDD", PROP_ozcot_sumDD, true, false, false, "-", false, "double", "accumulated DayDegrees", "accumulated DayDegrees");
-            addProperty("lai", PROP_lai, true, false, false, "m2/m2", false, "double", "crop LAI", "crop LAI");
-            addProperty("dw_total", PROP_dw_total, true, false, false, "kg/ha", false, "double", "total crop dry wt", "dry wt of the complete crop");  //TODO: check units???
-            addProperty("dw_boll", PROP_dw_boll, true, false, false, "kg/ha", false, "double", "dry wt bolls", "dry wt bolls");
-            addProperty("dn_plant", PROP_dn_plant, true, false, false, "kg/ha", false, "double", "daily increment of plant n to system", "daily increment of plant n to system");
-            addProperty("assimilate", PROP_assimilate, true, false, false, "kg/ha", false, "double", "new dry matter passed daily from s/r assimilation", "new dry matter passed daily from s/r assimilation");
-            addProperty("GrowthWt", PROP_GrowthWt, true, false, false, "kg/ha", false, "double", "same as assimilate", "same as assimilate");
-            addProperty("dm", PROP_dm, true, false, false, "kg/ha", false, "double", "total dry wt of crop", "Total dry wt of growing crop");
-            addProperty("dm_green", PROP_dm_green, true, false, false, "kg/ha", true, "double", "dry wt of growing crop", "dry wt of growing crop");
-            addProperty("dm_senesced", PROP_dm_senesced, true, false, false, "kg/ha", true, "double", "dry wt of senesced crop", "dry wt of senesced crop");
-            addProperty("dlt_dm_green", PROP_dlt_dm_green, true, false, false, "kg/ha", true, "double", "daily change in crop dry matter wt", "daily change in crop dry matter wt");
-            addProperty("n_green", PROP_n_green, true, false, false, "kg/ha", true, "double", "N content of green crop", "N content of green crop");
-            addProperty("n_senesced", PROP_n_senesced, true, false, false, "kg/ha", true, "double", "N content of senesced crop", "N content of senesced crop");
-            addProperty("ep", PROP_ep, true, false, false, "-", false, "double", "plant evapotranspiration", "plant evapotranspiration");
+            addProperty("status", PROP_status, true, false, false, "-", false, "integer4", "model status", "model status - apsim terminology");
             addProperty("crop_in", PROP_crop_in, true, false, false, "-", false, "integer4", "status flag - crop planted", "status flag - crop is in the ground");
-
             addProperty("das", PROP_das, true, false, false, "days", false, "integer4", "Days After Sowing", "Days After Sowing");
             addProperty("DaysAfterSowing", PROP_daysAfterSowing, true, false, false, "days", false, "integer4", "Days After Sowing", "Days After Sowing");
+            addProperty("ozcot_sumDD", PROP_ozcot_sumDD, true, false, false, "-", false, "double", "accumulated DayDegrees", "accumulated DayDegrees");
+
+            addProperty("ep", PROP_ep, true, false, false, "mm", false, "double", "plant evapotranspiration", "plant evapotranspiration");
+            addProperty("LAI", PROP_lai, true, false, false, "m2/m2", false, "double", "crop LAI", "crop LAI");
+
             addProperty("sites", PROP_sites, true, false, false, "1/m2", false, "double", "sites", "number of sites");
             addProperty("squarz", PROP_squarz, true, false, false, "1/m2", false, "double", "squares", "number of squares");
             addProperty("fru_no_cat", PROP_fru_no_cat, true, false, false, "-", true, "double", "fruit numbers by category", "fruit numbers by fruit category");
@@ -1361,19 +1354,31 @@ namespace ManagedComponent.MvOZCOT
             addProperty("frudw_tot", PROP_frudw_tot, true, false, false, "kg/ha", false, "double", "dry wt of all fruit", "dry wt of squares + green bolls + open bolls");
             addProperty("frudw_shed", PROP_frudw_shed, true, false, false, "kg/ha", false, "double", "dry wt of shed fruit", "dry wt of shed fruit");
             addProperty("frun", PROP_frun, true, false, false, "-", false, "double", "N in fruit kg/ha", "N in fruit kg/ha");
-            addProperty("bload", PROP_bload, true, false, false, "", false, "double", "boll load", "boll load");
+            addProperty("bload", PROP_bload, true, false, false, "-", false, "double", "boll load", "boll load");
             addProperty("carcap_c", PROP_carcap_c, true, false, false, "-", false, "double", "carrying capacity - assimilate", "carrying capacity as limited by assimilate");
             addProperty("carcap_n", PROP_carcap_n, true, false, false, "-", false, "double", "carrying capacity - N", "carrying capacity as limited by Nitrogen");
             addProperty("vnstrs", PROP_vnstrs, true, false, false, "-", false, "double", "vegetative nitrogen stress", "stress indicator based on vegetative demand for Nitrogen");
             addProperty("fnstrs", PROP_fnstrs, true, false, false, "-", false, "double", "fruit nitrogen stress", "stress indicator based on fruit demand for Nitrogen");
+            
+            addProperty("dw_total", PROP_dw_total, true, false, false, "kg/ha", false, "double", "total crop dry wt", "dry wt of the complete crop");  //TODO: check units???
+            addProperty("dw_boll", PROP_dw_boll, true, false, false, "kg/ha", false, "double", "dry wt bolls", "dry wt bolls");
+            addProperty("dn_plant", PROP_dn_plant, true, false, false, "kg/ha", false, "double", "daily increment of plant n to system", "daily increment of plant n to system");
+            addProperty("assimilate", PROP_assimilate, true, false, false, "g/m2", false, "double", "new dry matter passed daily from s/r assimilation", "new dry matter passed daily from s/r assimilation");
+            addProperty("growthWt", PROP_growthWt, true, false, false, "g/m2", false, "double", "same as assimilate", "same as assimilate");
+            addProperty("dm", PROP_dm, true, false, false, "kg/ha", false, "double", "total dry wt of crop", "Total dry wt of growing crop");
+            addProperty("dm_green", PROP_dm_green, true, false, false, "g/m2", true, "double", "dry wt of growing crop (including reserve pool)", "dry wt of growing crop (including reserve pool)");
+            addProperty("dm_senesced", PROP_dm_senesced, true, false, false, "g/m2", true, "double", "dry wt of senesced crop", "dry wt of senesced crop");
+            addProperty("dlt_dm_live", PROP_dlt_dm_live, true, false, false, "g/m2", true, "double", "daily change in crop dry matter live (green) wt", "daily change in crop dry matter live (green) wt");
+            addProperty("n_green", PROP_n_green, true, false, false, "g/m2", true, "double", "N content of green crop", "N content of green crop");
+            addProperty("n_senesced", PROP_n_senesced, true, false, false, "g/m2", true, "double", "N content of senesced crop", "N content of senesced crop");
             addProperty("dw_root", PROP_dw_root, true, false, false, "kg/ha", false, "double", "dry wt roots", "dry wt roots");
             addProperty("dw_leaf", PROP_dw_leaf, true, false, false, "kg/ha", false, "double", "dry wt leaf", "dry wt leaf");
             addProperty("dw_stem", PROP_dw_stem, true, false, false, "kg/ha", false, "double", "dry wt stem", "dry wt stem");
             addProperty("totnup", PROP_totnup, true, false, false, "kg/ha", false, "double", "total Nitrogen uptake", "total Nitrogen uptake");
             addProperty("yield", PROP_yield, true, false, false, "kg/ha", false, "double", "lint yield kg/ha", "lint yield kg/ha");
             addProperty("lint_yield", PROP_lint_yield, true, false, false, "kg/ha", false, "double", "lint yield kg/ha", "lint yield kg/ha");
-            addProperty("cover_green", PROP_cover_green, true, false, false, "-", false, "double", "crop coverage", "crop coverage of the ground on an area basis");
-            addProperty("covertotal", PROP_cover_tot, true, false, false, "-", false, "double", "crop coverage of ground", "");
+            addProperty("CoverLive", PROP_cover_green, true, false, false, "-", false, "double", "crop coverage", "crop coverage of the ground on an area basis");
+            addProperty("CoverTotal", PROP_cover_tot, true, false, false, "-", false, "double", "crop coverage of ground", "");
             addProperty("availn", PROP_availn, true, false, false, "kg/ha", false, "double", "N available in soil", "N available in soil for uptake");
             addProperty("uptakn", PROP_uptakn, true, false, false, "kg/ha", false, "double", "N taken up by crop", "N taken up by crop");
             addProperty("tsno3", PROP_tsno3, true, false, false, "kg/ha", false, "double", "soil nitrate", "total soil nitrate");
@@ -1381,10 +1386,10 @@ namespace ManagedComponent.MvOZCOT
             addProperty("tsnh4", PROP_tsnh4, true, false, false, "kg/ha", false, "double", "soil ammonium", "total soil ammonium");
             addProperty("ysnh4", PROP_ysnh4, true, false, false, "kg/ha", false, "double", "prior day's soil ammonium", "total soil ammonium yesterday");
             addProperty("d_nup", PROP_d_nup, true, false, false, "kg/ha", false, "double", "daily N uptake", "daily N uptake kg/ha");
-            addProperty("n_uptake", PROP_n_uptake, true, false, false, "kg/ha", false, "double", "N uptake", "N uptake kg/ha");
-            addProperty("rtdep", PROP_rtdep, true, false, false, "cm", false, "double", "rooting depth", "rooting depth");
+            addProperty("NUptake", PROP_n_uptake, true, false, false, "kg/ha", false, "double", "N uptake", "N uptake kg/ha");
+            addProperty("RootDepth", PROP_rtdep, true, false, false, "cm", false, "double", "rooting depth", "rooting depth");
             addProperty("s_bed_mi", PROP_s_bed_mi, true, false, false, "-", false, "double", "seed bed moisture index", "seed bed moisture index");
-            addProperty("smi", PROP_smi, true, false, false, "", false, "double", "SMI", "soil moisture index");
+            addProperty("smi", PROP_smi, true, false, false, "-", false, "double", "SMI", "soil moisture index");
             addProperty("wli", PROP_wli, true, false, false, "-", false, "double", "WLI", "waterlogging index");
             addProperty("ep_cm", PROP_ep_cm, true, false, false, "cm", false, "double", "evap in cm", "Plant evap in cm");
             addProperty("evap_plant", PROP_evap_plant, true, false, false, "mm", false, "double", "Plant evap mm", "Plant evap in mm");
@@ -2711,6 +2716,9 @@ namespace ManagedComponent.MvOZCOT
                 case PROP_ozcot_status: aValue.setValue(iend);
                     break;
 
+                case PROP_status: aValue.setValue(iend);
+                    break;
+
                 case PROP_ozcot_sumDD: aValue.setValue(sumdd);
                     break;
 
@@ -2726,19 +2734,20 @@ namespace ManagedComponent.MvOZCOT
                 case PROP_dn_plant: aValue.setValue(dn_plant * 10.0);  // g/m2  --> kg/ha
                     break;
 
-                case PROP_assimilate: aValue.setValue(assimilate * 10.0);  // g/m2  --> kg/ha
+                case PROP_assimilate: aValue.setValue(assimilate);  // g/m2  
                     break;
 
-                case PROP_GrowthWt: aValue.setValue(assimilate * 10.0);  // g/m2  --> kg/ha
+               // case PROP_growthWt: aValue.setValue(assimilate);  // g/m2    // assimilate production 
+                case PROP_growthWt: aValue.setValue(ddw_root + ddw_leaf + ddw_stem + ddw_boll);  // g/m2  // growth rate of organs (assimilate +- reserve adjustment)
                     break;
 
-                case PROP_n_green:  // (kg/ha)
+                case PROP_n_green:  // (g/m2)
                     Array.Clear(dm_N, 0, dm_N.Length);   // 1 based array  
-                    dm_N[root] = root_n * 10.0;  // g/m2  --> kg/ha
+                    dm_N[root] = root_n;  // g/m2
                     dm_N[meal] = 0.0;      // meal is included in pod
-                    dm_N[stem] = stem_n * 10.0;
-                    dm_N[leaf] = leaf_n * 10.0;
-                    dm_N[pod] = boll_n * 10.0;
+                    dm_N[stem] = stem_n;
+                    dm_N[leaf] = leaf_n;
+                    dm_N[pod] = boll_n;
 
                     aValue.setElementCount((uint)dm_N.Length - 1);
                     for (i = 1; i < dm_N.Length; i++)
@@ -2747,12 +2756,12 @@ namespace ManagedComponent.MvOZCOT
                     }
                     break;
 
-                case PROP_n_senesced:  // (kg/ha)
+                case PROP_n_senesced:  // (g/m2)
                     Array.Clear(dm_N, 0, dm_N.Length);   // 1 based array  
                     dm_N[root] = 0.0;
                     dm_N[meal] = 0.0;      // meal is included in pod
                     dm_N[stem] = 0.0;
-                    dm_N[leaf] = leaf_res_n * 10.0;   // g/m2  --> kg/ha
+                    dm_N[leaf] = leaf_res_n;   // g/m2
                     dm_N[pod] = 0.0;      // frudw_shed
 
                     aValue.setElementCount((uint)dm_N.Length-1);
@@ -2762,15 +2771,15 @@ namespace ManagedComponent.MvOZCOT
                     }
                     break;
 
-                case PROP_dlt_dm_green:  // (kg/ha)
+                case PROP_dlt_dm_live:  // (g/m2)
                     Array.Clear(dm_crop, 0, dm_crop.Length);   // 1 based array  
-                    dm_crop[root] = ddw_root * 10.0;  // g/m2  --> kg/ha
+                    dm_crop[root] = ddw_root;  // g/m2
                     dm_crop[meal] = 0.0;      // meal is included in pod
-                    dm_crop[stem] = ddw_stem * 10.0;
-                    dm_crop[leaf] = ddw_leaf * 10.0;
-                    dm_crop[pod] = ddw_boll * 10.0;
+                    dm_crop[stem] = ddw_stem;
+                    dm_crop[leaf] = ddw_leaf;
+                    dm_crop[pod] = ddw_boll;
 
-                    aValue.setElementCount((uint)dm_crop.Length-1);
+                    aValue.setElementCount((uint)dm_crop.Length - 1);
                     for (i = 1; i < dm_crop.Length; i++)
                     {
                         aValue.item(i).setValue(dm_crop[i]);
@@ -2780,13 +2789,13 @@ namespace ManagedComponent.MvOZCOT
                 case PROP_dm: aValue.setValue(dw_total * 10.0);  // g/m2  --> kg/ha
                     break;
 
-                case PROP_dm_green:  // (kg/ha)
+                case PROP_dm_green:  // (g/m2)
                     Array.Clear(dm_crop, 0, dm_crop.Length);   // 1 based array  
-                    dm_crop[root] = dw_root * 10.0;  // g/m2  --> kg/ha
-                    dm_crop[meal] = openwt * 10.0;
-                    dm_crop[stem] = dw_stem * 10.0;
-                    dm_crop[leaf] = dw_leaf * 10.0;
-                    dm_crop[pod] = (Math.Max( (dw_boll - openwt), 0.0)) * 10.0;
+                    dm_crop[root] = dw_root;  // g/m2
+                    dm_crop[meal] = openwt;
+                    dm_crop[stem] = dw_stem;   // + reserve;                      //fix for APSIM sysbal  //TODO: dbj check validitiy of adding reserve amount 
+                    dm_crop[leaf] = dw_leaf;
+                    dm_crop[pod] = (Math.Max( (dw_boll - openwt), 0.0));
 
                     aValue.setElementCount((uint)dm_crop.Length-1);
                     for (i = 1; i < dm_crop.Length; i++)
@@ -2795,12 +2804,12 @@ namespace ManagedComponent.MvOZCOT
                     }
                     break;
 
-                case PROP_dm_senesced:  // (kg/ha)
+                case PROP_dm_senesced:  // (g/m2)
                     Array.Clear(dm_crop, 0, dm_crop.Length);   // 1 based array  
                     dm_crop[root] = 0.0;
                     dm_crop[meal] = 0.0;      
                     dm_crop[stem] = 0.0;
-                    dm_crop[leaf] = leaf_res * 10.0;  // g/m2  --> kg/ha
+                    dm_crop[leaf] = leaf_res;  // g/m2
                     dm_crop[pod] = 0.0;   // frudw_shed
 
                     aValue.setElementCount((uint)dm_crop.Length-1);
@@ -2810,7 +2819,7 @@ namespace ManagedComponent.MvOZCOT
                     }
                     break;
 
-                case PROP_ep: aValue.setValue(ep);
+                case PROP_ep: aValue.setValue(ep * 10.0);   //cm to mm
                     break;
 
                 case PROP_crop_in: 
@@ -3102,7 +3111,7 @@ namespace ManagedComponent.MvOZCOT
 
                         if ((iend != 0 & DAS > 400))
                         {
-                            fatal_error("Crop remains unharvested at 400 das. Check that manager harvest criteria contains a test for ozcot_status > 0");
+                            fatal_error("Crop remains unharvested at 400 das. Check that manager harvest criteria contains a test for status > 0 OR ozcot_status > 0");
                         }
                         else
                         {
@@ -3242,7 +3251,7 @@ namespace ManagedComponent.MvOZCOT
             //jh      hucut=40.0 ! abh changed from 30 to 40 - 11/11/83  //SDML
             //jh      baset=12.0                                         //SDML
             vpd = 0.0;
-            qa = 0.0;
+            //qa = 0.0;  not used
             solrto = 0.0;
             q = 0.0;
             eo = 0.0;
@@ -3333,7 +3342,8 @@ namespace ManagedComponent.MvOZCOT
             // nskip = 0.0; //in SDML
 
             n_cutout = 0;  //count days of cutout
-            delay = 0.0;
+            delayDD = 0.0;
+            accumRateTo1stSqr = 0.0;
             delay_emerg = 0.0;
             dd_emerg = 0.0;
             nday_co = 0;
@@ -3911,7 +3921,7 @@ namespace ManagedComponent.MvOZCOT
 			//jh      real    sw_dep(max_layers) ! soil water uptake in layer mm
 
             TSetterProperty setter;
-            IntPtr msg;
+        //    IntPtr msg;
 
 			//- implementation section ----------------------------------
 
@@ -4094,60 +4104,42 @@ namespace ManagedComponent.MvOZCOT
 
             // Retrieve the cultivar specific parameters 
             //  and assign them to the working values
-            CultivarParams sowCultivar = ozcotCultivars.getCultivar(cultivar);
+            
+            CultivarParams sowCultivar = new CultivarParams();
 
-            if (cultivar.ToUpper() == sowCultivar.name.ToUpper())   // Cultivar found
+            if (ozcotCultivars.cultivarExists(cultivar))
             {
-                cultivar = sowCultivar.name;
-
-                // varietal parameters
-                percent_l = sowCultivar.pclint;
-                scboll = sowCultivar.scboll;
-                respcon = sowCultivar.respcon;
-                sqcon = sowCultivar.sqcon;
-                fcutout = sowCultivar.fcutout;
-                flai = sowCultivar.flai;
-                ddisq = sowCultivar.ddisq;
-                dlds_max = sowCultivar.dlds_max;
-                popcon = sowCultivar.popcon;
-                acotyl = sowCultivar.acotyl;
-                rlai = sowCultivar.rlai;
-                frudd = sowCultivar.FRUDD;
-                bltme = sowCultivar.BLTME;
-                wt = sowCultivar.WT;
-                fburr = sowCultivar.fburr;
-                rate_emergence = sowCultivar.rate_emergence;
-                background_retention = sowCultivar.bckGndRetn;
-                //tipout = sowCultivar.tipout;  //not assigned / not used
+                sowCultivar = ozcotCultivars.getCultivar(cultivar);
             }
-            else   // Cultivar not found
+            else   // Cultivar not found  -  Report error and use Defaults
             {
-                //   Report error and use Defaults
                 Console.WriteLine("Sowing Cultivar '{0}' not found. Using default cultivar '{1}' parameters.", cultivar, cultivar_default);
 
                 sowCultivar = ozcotCultivars.getCultivar(cultivar_default);
-                cultivar = sowCultivar.name;
-
-                // varietal parameters
-                percent_l = sowCultivar.pclint;
-                scboll = sowCultivar.scboll;
-                respcon = sowCultivar.respcon;
-                sqcon = sowCultivar.sqcon;
-                fcutout = sowCultivar.fcutout;
-                flai = sowCultivar.flai;
-                ddisq = sowCultivar.ddisq;
-                dlds_max = sowCultivar.dlds_max;
-                popcon = sowCultivar.popcon;
-                acotyl = sowCultivar.acotyl;
-                rlai = sowCultivar.rlai;
-                frudd = sowCultivar.FRUDD;
-                bltme = sowCultivar.BLTME;
-                wt = sowCultivar.WT;
-                fburr = sowCultivar.fburr;
-                rate_emergence = sowCultivar.rate_emergence;
-                background_retention = sowCultivar.bckGndRetn;
-                //tipout = sowCultivar.tipout;  //not assigned / not used
             }
+
+            cultivar = sowCultivar.name;
+
+            // varietal parameters
+            percent_l = sowCultivar.pclint;
+            scboll = sowCultivar.scboll;
+            respcon = sowCultivar.respcon;
+            sqcon = sowCultivar.sqcon;
+            fcutout = sowCultivar.fcutout;
+            flai = sowCultivar.flai;
+            ddisq = sowCultivar.ddisq;
+            dlds_max = sowCultivar.dlds_max;
+            popcon = sowCultivar.popcon;
+            acotyl = sowCultivar.acotyl;
+            rlai = sowCultivar.rlai;
+            frudd = sowCultivar.FRUDD;
+            bltme = sowCultivar.BLTME;
+            wt = sowCultivar.WT;
+            fburr = sowCultivar.fburr;
+            rate_emergence = sowCultivar.rate_emergence;
+            background_retention = sowCultivar.bckGndRetn;
+            //tipout = sowCultivar.tipout;  //not assigned / not used
+            
 
             //report the cultivar parameters being used
             ozcot_report_cultivar_params();
@@ -4370,8 +4362,7 @@ namespace ManagedComponent.MvOZCOT
             //     ===========================================================
 
             //+  purpose
-            //       report the current status of specific
-            //       variables.
+            //     report the current status of specific variables.
 
             //+  changes
             //     051101 jngh specified and programmed
@@ -4379,22 +4370,20 @@ namespace ManagedComponent.MvOZCOT
             //+  constant values
 
             //+  local variables
-            // string lstring;            // local message
-            // double yield;              // grain yield dry wt (kg/ha) as double
-            double dm;
-            double totnup;             // n uptake kg/ha as double
-            double bollsc;
+
+            // double yield;              // lint yield dry wt (kg/ha) 
+            double dm;                 // dryMatter kg/ha
+            double totnup;             // n uptake kg/ha
+            double bollsc;             // seed cotton per boll (g/boll)
 
             //- implementation section ----------------------------------
 
-            //call push_routine (my_name)
 
-            //         ! crop harvested. report status
-            //DBJ to raise event for harvest
+            //  Crop harvested. Report status to summary file.
 
             dm = dw_total * 10.0;
             totnup = total_n * 10.0;
-            if ((openz > 0.0))
+            if (openz > 0.0)
             {
                 bollsc = openwt / openz;         // g sc/boll
             }
@@ -4403,26 +4392,15 @@ namespace ManagedComponent.MvOZCOT
                 bollsc = 0.0;
             }
 
+
             Console.WriteLine("\n      Harvest");
 
             Console.WriteLine("\n\n      Days after sowing      =   {0}", DAS.ToString("##0"));
-            //write #1,")                  " days after sowing      = ", DAS
-
             Console.WriteLine("      bolls/m2               =   {0}        Lint (kg/ha)            =   {1}", openz.ToString("##0.0"),alint.ToString("#####0.0"));
-            //write #1,")" bolls/m2               = ",openz                , " lint (kg/ha)           = ",alint
-
             Console.WriteLine("      N uptake (kg/ha)       =    {0}        bolls sc (g/boll)       =      {1}", totnup.ToString("##0.0"), bollsc.ToString("####0.0"));
-            //write #1,")" n uptake (kg/ha)       = ", totnup                , " bolls sc (g/boll)      = ", bollsc
-
             Console.WriteLine("      max squares das (days) =   {0}          max lai das (days)      =    {1}", isqzx.ToString("##0"), ilaiz.ToString("####0"));
-            //write #1,")" max squares DAS (days) = ", isqzx                , " max lai DAS (days)     = ", ilaiz
-
             Console.WriteLine("      maximum squares/m2     =   {0}        maximum lai (m2/m2)     =      {1}", sqzx.ToString("##0.0"), alaiz.ToString("#0.00"));
-            //write #1,")" maximum squares/m2     = ", sqzx                , " maximum lai (m2/m2)    = ", alaiz
-
             Console.WriteLine("      Total above ground biomass (kg/ha) =  {0}", dm.ToString("#####0.0"));
-            //'write #1,")                  " total above ground biomass (kg/ha) = ", dm
-
             Console.WriteLine("\n");
 
 
@@ -4451,8 +4429,11 @@ namespace ManagedComponent.MvOZCOT
 			double[] fraction_to_residue = new double[max_part + 1];    // fraction sent to residue (0-1) as double
 			double[] dlt_dm_crop = new double[max_part + 1];            // change in dry matter of crop (kg/ha) as double
 			double[] dlt_dm_n = new double[max_part + 1];               // change in n content of dry matter (kg/ha) as double
-            double[] root_length = new double[max_layers + 1];          // lenght of roots in given layer
+            double[] root_length_array = new double[max_layers];        // lenght of roots in given layer
+            double[] dlt_dm_incorp = new double[max_layers];            // change in n content of dry matter (kg/ha) to be incorporated
+            double[] dlt_N_incorp = new double[max_layers];             // change in n content of N (kg/ha) to be incorporated
 
+            int deepest_layer;
 
 			//- implementation section ----------------------------------
 
@@ -4469,10 +4450,8 @@ namespace ManagedComponent.MvOZCOT
             Array.Clear(dlt_dm_crop, 0, dlt_dm_crop.Length);
             Array.Clear(dlt_dm_n, 0, dlt_dm_n.Length);
 
-			//     ! update biomass and n pools.  different types of plant pools are
-			//     ! ===============================================================
-			//     ! affected differently.
-			//     ! =====================
+            //     ! update biomass and n pools.  different types of plant pools are affected differently.
+			//     ! =====================================================================================
 
 			dlt_dm_crop[root] = dw_root * gm2kg / sm2ha;
             dlt_dm_n[root] = root_n * gm2kg / sm2ha;
@@ -4502,12 +4481,12 @@ namespace ManagedComponent.MvOZCOT
             {
                 // need to set up the arrays of values for this event
                 TTypedValue thisEvent = eventList[evtBiomassRemoved];
-                thisEvent.member("crop_type").setValue(crop_type);
-                thisEvent.member("dm_type").setValue(part_name);
-                thisEvent.member("dlt_crop_dm").setValue(dlt_dm_crop);
-                thisEvent.member("dlt_dm_n").setValue(dlt_dm_n);
+                thisEvent.member("crop_type").setValue(crop_type);           //single string value
+                thisEvent.member("dm_type").setValue(part_name);             //array of strings
+                thisEvent.member("dlt_crop_dm").setValue(dlt_dm_crop);       //array of single
+                thisEvent.member("dlt_dm_n").setValue(dlt_dm_n);             //array of single
                 // thisEvent.member("dlt_dm_p").setValue(part_name);    //phospherous not modelled in OZCOT
-                thisEvent.member("fraction_to_residue").setValue(fraction_to_residue);
+                thisEvent.member("fraction_to_residue").setValue(fraction_to_residue);     //array of single
                 eventList[evtBiomassRemoved] = thisEvent;
 
                 sendPublishEvent(evtBiomassRemoved, false);
@@ -4519,62 +4498,69 @@ namespace ManagedComponent.MvOZCOT
             }
 
 
-            ozcot_root_distrib (ref root_length , (dlt_dm_crop[root] * kg2gm/ha2sm) );
-
-            //
-            //TODO: DBJ find what this is and implement it!!
-            // APSIM-OZCOT  original code
-                     //       crop_root_incorp (
-                     //.          dlt_dm_crop(root) * kg2gm/ha2sm
-                     //:         ,dlt_dm_N(root) * kg2gm/ha2sm
-                     //:         ,g%dlayr
-                     //:         ,root_length
-                     //:         ,g%rtdep
-                     //:         ,c%crop_type
-                     //:         ,max_layers
-                     //:         ,id%IncorpFOM)
-
-            //DDML for new IncorpFOM event
-//                public const string typeIncorpFOM = @"<type name=""IncorpFom"">
-//                                                <field name=""Type""   kind=""string"" /> 
-//                                                <field name=""Layer""  array=""T"">
-//                                                    <element>
-//                                                        <field name=""FOM"" kind=""defined"">
-//                                                            <field name=""amount""  kind=""single"" unit=""kg/ha"" /> 
-//                                                            <field name=""C""       kind=""single"" unit=""kg/ha"" /> 
-//                                                            <field name=""N""       kind=""single"" unit=""kg/ha"" /> 
-//                                                            <field name=""P""       kind=""single"" unit=""kg/ha"" /> 
-//                                                            <field name=""AshAlk""  kind=""single"" unit=""kg/ha"" /> 
-//                                                        </field>
-//                                                        <field name=""CNR""     kind=""single"" /> 
-//                                                        <field name=""LabileP"" kind=""single"" /> 
-//                                                    </element>
-//                                                </field>
-//                                            </type>";
-            
-
-
+            //    
             // Publish a 'IncorpFom' event  
-            // need to set up the arrays of values for this event
-            TTypedValue IncorpFOMEvent = eventList[evtIncorpFOM];
-            IncorpFOMEvent.member("Type").setValue(crop_type);     //Cotton  - APSIM Soil probably treats this as 'Default'
-            IncorpFOMEvent.member("Layer").setElementCount((uint) nlayr);
+            //============================
 
-            //TODO: DBJ  need the APSIM logic for 'crop_root_incorp (...)' to calculate layer values for "amount" and "N"
-            //                                     from dlt_dm_crop[root] and dlt_dm_n[root] OR  from total values?
-            //for (uint i = 1; i <= nlayr; i++)
-            //{
-            //    IncorpFOMEvent.member("Layer").item(i).member("FOM").member("amount").setValue(dlt_dm_crop[root]);  //this is a total value reported for EACH layer
-            //    IncorpFOMEvent.member("Layer").item(i).member("FOM").member("N").setValue(dlt_dm_n[root]);          //this is a total value reported for EACH layer
-                
-            //    //IncorpFOMEvent.member("Layer").item(i).member("CNR").setValue(??);
-            //}
-            
-            eventList[evtIncorpFOM] = IncorpFOMEvent;
+            ozcot_crop_root_length_distrib(ref root_length_array, dlt_dm_crop[root]);   // Note:  passed as kg/ha
 
-            sendPublishEvent(evtIncorpFOM, false);
-	  
+            if (dlt_dm_crop[root] > 0.0)   //only do this if there are roots to incorporate
+            {
+                ozcot_crop_root_incorp(dlt_dm_crop[root] ,    //kg/ha
+                                        dlt_dm_n[root] ,      //kg/ha
+                                        dlayr,
+                                        root_length_array,
+                                        rtdep,
+                                        ref dlt_dm_incorp,    //kg/ha
+                                        ref dlt_N_incorp);    //kg/ha
 
+               
+                //DDML for new IncorpFOM event
+                //    public const string typeIncorpFOM = @"<type name=""FOMLayer"">
+                //                                <field name=""Type""   kind=""string"" /> 
+                //                                <field name=""Layer""  array=""T"">
+                //                                    <element>
+                //                                        <field name=""FOM"" kind=""defined"">
+                //                                            <field name=""amount""  kind=""single"" unit=""kg/ha"" /> 
+                //                                            <field name=""C""       kind=""single"" unit=""kg/ha"" /> 
+                //                                            <field name=""N""       kind=""single"" unit=""kg/ha"" /> 
+                //                                            <field name=""P""       kind=""single"" unit=""kg/ha"" /> 
+                //                                            <field name=""AshAlk""  kind=""single"" unit=""kg/ha"" /> 
+                //                                        </field>
+                //                                        <field name=""CNR""     kind=""single"" /> 
+                //                                        <field name=""LabileP"" kind=""single"" /> 
+                //                                    </element>
+                //                                </field>
+                //                            </type>";
+
+
+
+                // need to set up the arrays of values for this event
+                TTypedValue IncorpFOMEvent = eventList[evtIncorpFOM];
+                IncorpFOMEvent.member("Type").setValue(crop_type);     //Cotton  - APSIM Soil probably treats this as 'Default'
+                IncorpFOMEvent.member("Layer").setElementCount((uint)nlayr);
+
+                deepest_layer = mvDataFunctions.find_layer_no(rtdep, dlayr, max_layers);
+                for (uint i = 1; i <= deepest_layer; i++)
+                {
+                    IncorpFOMEvent.member("Layer").item(i).member("FOM").member("amount").setValue(dlt_dm_incorp[i]);
+                    IncorpFOMEvent.member("Layer").item(i).member("FOM").member("N").setValue(dlt_N_incorp[i]);
+                    //Zero the other values
+                    IncorpFOMEvent.member("Layer").item(i).member("FOM").member("C").setValue(0.0);
+                    IncorpFOMEvent.member("Layer").item(i).member("FOM").member("P").setValue(0.0);
+                    IncorpFOMEvent.member("Layer").item(i).member("FOM").member("AshAlk").setValue(0.0);
+
+                    IncorpFOMEvent.member("Layer").item(i).member("CNR").setValue(0.0);
+                    IncorpFOMEvent.member("Layer").item(i).member("LabileP").setValue(0.0);
+                }
+
+                eventList[evtIncorpFOM] = IncorpFOMEvent;
+
+                sendPublishEvent(evtIncorpFOM, false);
+            }   //end if  roots to incorporate
+
+
+            //============
             
             // Set these only on an END_CROP event handler
             //   (in harvest only zero variables that are removed in harvest)
@@ -4609,39 +4595,217 @@ namespace ManagedComponent.MvOZCOT
 		}
 
 
+        //     ===============================================================================
+        public void ozcot_crop_root_length_distrib(ref double[] root_array, double root_sum)
+        {
+            //     ===========================================================================
+
+            //*+  Sub-Program Arguments
+            //      real       root_array(*)         ! (OUTPUT) root length array to contain distributed material
+            //      real       root_sum              ! (INPUT) Material to be distributed
+
+            //*+  Purpose
+            //*       Distribute root material over profile
+
+            //*+  Changes
+            //*       290994 jngh specified and programmed (APSRU)
+
+            //*+  Constant Values
+            //        c_root_extinction = 3.0
+            //      
+
+            //*+  Local Variables
+
+            double cum_depth;                               // cumulative depth (mm)
+            int layer;                                      // layer number ()
+            int deepest_layer;                              // deepest layer in which the roots are growing
+
+            double[] root_distrb = new double[max_layers];  // root distribution ()
+            double root_distrb_sum;                         // sum of root distribution array
+
+            const double c_root_extinction = 3.0;
+
+
+            //*- Implementation Section ----------------------------------
+
+            Array.Clear(root_array, 0, max_layers);
+            Array.Clear(root_distrb, 0, max_layers);
+
+            deepest_layer = mvDataFunctions.find_layer_no(rtdep, dlayr, max_layers);
+            cum_depth = 0.0;
+            for (layer = 1; layer <= deepest_layer; layer++)
+            {
+                cum_depth = cum_depth + dlayr[layer];
+                cum_depth = Math.Min(cum_depth, rtdep);  
+                root_distrb[layer] = Math.Exp(-c_root_extinction * mvDataFunctions.divide(cum_depth, rtdep, 0.0));
+            }
+
+            root_distrb_sum = mvDataFunctions.SumArray(root_distrb, deepest_layer);
+
+            for (layer = 1; layer <= deepest_layer; layer++)
+            {
+                root_array[layer] = root_sum * mvDataFunctions.divide(root_distrb[layer], root_distrb_sum, 0.0);
+            }
+
+
+            return; // ozcot_crop_root_length_distrib
+        }
+
+
+
+        //     ===========================================================
+        public void ozcot_crop_root_incorp(double dlt_dm_root,
+                                           double dlt_N_root,
+                                           double[] dlayer, 
+                                           double[] root_length, 
+                                           double root_depth,
+                                           ref double[] dlt_dm_incorp,
+                                           ref double[] dlt_N_incorp)
+		{
+		//     ===========================================================
+        //!+  Sub-Program Arguments
+        //      real       dlt_dm_root           ! (INPUT) new root residue dm (kg/ha)
+        //      real       dlt_N_root            ! (INPUT) new root residue N (kg/ha)
+        //      real       dlayer(*)             ! (INPUT) layer thicknesses (mm)
+        //      real       root_length(*)        ! (INPUT) layered root length (mm)
+        //      real       root_depth            ! (INPUT) root depth (mm)
+        //      real       dlt_dm_incorp         ! (OUT) new root residue dm to be incorporated (kg/ha)
+        //      real       dlt_N_incorp          ! (OUT) new root residue N to be incorporated (kg/ha)
+        //
+        //!+  Purpose
+        //!     Pass root material to the soil modules (based on root length distribution)
+
+        //!+  Mission Statement
+
+        //!+  Changes
+        //!     <insert here>
+        //!      280800 jngh changed literal incorp_fom to ACTION_incorp_fom
+
+        //!+  Constant Values
+        //
+
+        //!+  Local Variables
+
+
+        //!- Implementation Section ----------------------------------
+
+                if (dlt_dm_root > 0.0) 
+                {   // send out root residue
+                    ozcot_crop_root_content_dist(root_length, root_depth, dlt_dm_root, ref dlt_dm_incorp);
+
+                        //call bound_check_real_array          &      //check(value, lowerlimit, upperlimit, 'name of var', array_size)
+                        //    (          &
+                        //        dlt_dm_incorp          &
+                        //    ,0.0          &
+                        //    ,dlt_dm_root * gm2kg/sm2ha          &
+                        //    ,'dlt_dm_incorp'          &
+                        //    ,max_layer          &
+                        //    )
+
+                    ozcot_crop_root_content_dist(root_length, root_depth, dlt_N_root, ref dlt_N_incorp);
+
+                        //call bound_check_real_array          &     //check(value, lowerlimit, upperlimit, 'name of var', array_size)
+                        //    (          &
+                        //    dlt_n_incorp          &
+                        //    ,0.0          &
+                        //    ,dlt_n_root * gm2kg/sm2ha          &
+                        //    ,'dlt_n_incorp'          &
+                        //    ,max_layer          &
+                        //    )
+
+                }
+                else
+                {
+                    // no roots to incorporate
+                }
+
+			   
+            return; // ozcot_crop_root_incorp
+		}
+
+
+        //     ===========================================================
+        public void ozcot_crop_root_content_dist (double [] root_length, double root_depth, double root_sum, ref double [] root_array)
+		{
+		//     ===========================================================
+
+        //  Sub-Program Arguments
+        //      REAL       root_length(*)        ! (INPUT)
+        //      REAL       root_depth            ! (INPUT)  depth of roots (mm)
+        //      real       root_sum              ! (INPUT) Material to be distributed
+        //      real       root_array(*)         ! (OUTPUT) array to contain distributed material
+
+        //  Purpose
+        //       Distribute root material over profile based upon root
+        //       length distribution.
+
+        //  Mission Statement
+        //   Distribute %5 over the profile according to root distribution
+
+        //  Changes
+        //*    apsim specified and programmed
+        //     <insert here>
+
+        //  Constant Values
+        //      
+
+        //  Local Variables
+            int     layer;             // layer number
+            int     deepest_layer;     // deepest layer in which the roots are growing
+            double  root_length_sum;   // sum of root distribution array
+
+        //- Implementation Section ----------------------------------
+
+        // Distribute roots over profile to root_depth
+
+            Array.Clear(root_array, 0, max_layers);
+
+            deepest_layer = mvDataFunctions.find_layer_no(rtdep, dlayr, max_layers);
+
+            root_length_sum = mvDataFunctions.SumArray(root_length, deepest_layer);
+
+            for (layer = 1 ; layer <= deepest_layer; layer++)
+            {
+                root_array[layer] = root_sum * mvDataFunctions.divide(root_length[layer], root_length_sum, 0.0);
+            }
+
+
+            return; // ozcot_crop_root_content_dist
+		}
+
 
         //     ===========================================================
         public void ozcot_update()
-		{
-		//     ===========================================================
-        //
-        //  Purpose
-        //       Report the current status of specific
-        //       variables.
-        //
-        //  Changes
-        //     051101 jngh specified and programmed
-		//
-        //     ===========================================================
-        //
-        //  Constant Values
-        //
-        //  Local Variables
-        //      real    res_dm                  ! Residue dry weight (kg/ha)
-        //      real    res_N                   ! Amount of N in residue (kg/ha)
-        //      real    fraction_to_Residue(max_part)   ! fraction sent to residue (0-1)
-        //      real    dlt_dm_crop(max_part)           ! change in dry matter of crop (kg/ha)
-        //      real    dlt_dm_N(max_part)              ! change in N content of dry matter (kg/ha)
-		//
-        //     ===========================================================
+        {
+            //     ===========================================================
+            //
+            //  Purpose
+            //       Report the current status of specific
+            //       variables.
+            //
+            //  Changes
+            //     051101 jngh specified and programmed
+            //
+            //     ===========================================================
+            //
+            //  Constant Values
+            //
+            //  Local Variables
+            //      real    res_dm                  ! Residue dry weight (kg/ha)
+            //      real    res_N                   ! Amount of N in residue (kg/ha)
+            //      real    fraction_to_Residue(max_part)   ! fraction sent to residue (0-1)
+            //      real    dlt_dm_crop(max_part)           ! change in dry matter of crop (kg/ha)
+            //      real    dlt_dm_N(max_part)              ! change in N content of dry matter (kg/ha)
+            //
+            //     ===========================================================
 
 
-        // Implementation Section ----------------------------------
+            // Implementation Section ----------------------------------
 
 
-			double[] fraction_to_residue = new double[max_part + 1];    // fraction sent to residue (0-1) as double
-			double[] dlt_dm_crop = new double[max_part + 1];            // change in dry matter of crop (kg/ha) as double
-			double[] dlt_dm_n = new double[max_part + 1];               // change in n content of dry matter (kg/ha) as double
+            double[] fraction_to_residue = new double[max_part + 1];    // fraction sent to residue (0-1) as double
+            double[] dlt_dm_crop = new double[max_part + 1];            // change in dry matter of crop (kg/ha) as double
+            double[] dlt_dm_n = new double[max_part + 1];               // change in n content of dry matter (kg/ha) as double
 
             // Update biomass and N pools.  Different types of plant pools are affected differently.
             // =====================================================================================
@@ -4658,8 +4822,8 @@ namespace ManagedComponent.MvOZCOT
             //      dlt_dm_N(stem) = dlt_dm_crop(stem) * 0.4 / 100.0
             //      fraction_to_Residue(stem) = 1.0
 
-            dlt_dm_crop[leaf] = leaf_res * gm2kg/sm2ha;
-            dlt_dm_n[leaf] = leaf_res_n * gm2kg/sm2ha;
+            dlt_dm_crop[leaf] = leaf_res * gm2kg / sm2ha;
+            dlt_dm_n[leaf] = leaf_res_n * gm2kg / sm2ha;
             fraction_to_residue[leaf] = 1.0;
 
             //      dlt_dm_crop(pod) = (g%dw_boll - g%openwt) * gm2kg/sm2ha
@@ -4669,24 +4833,28 @@ namespace ManagedComponent.MvOZCOT
             //     call crop_top_residue (c%crop_type, dm_residue, N_residue)
 
 
-            //TODO: DBJ  implement Crop_Chopped event   
-
+            // Publish a 'BiomassRemoved' event  
             if (dlt_dm_crop.Sum() > 0.0)
             {
-                //    call Send_Crop_Chopped_Event
-                //:             (c%crop_type
-                //:            , part_name
-                //:            , dlt_dm_crop
-                //:            , dlt_dm_N
-                //:            , fraction_to_Residue
-                //:            , max_part)
+                // need to set up the arrays of values for this event
+                TTypedValue thisEvent = eventList[evtBiomassRemoved];
+                thisEvent.member("crop_type").setValue(crop_type);
+                thisEvent.member("dm_type").setValue(part_name);
+                thisEvent.member("dlt_crop_dm").setValue(dlt_dm_crop);
+                thisEvent.member("dlt_dm_n").setValue(dlt_dm_n);
+                // thisEvent.member("dlt_dm_p").setValue(part_name);    //phospherous not modelled in OZCOT
+                thisEvent.member("fraction_to_residue").setValue(fraction_to_residue);
+                eventList[evtBiomassRemoved] = thisEvent;
+
+                sendPublishEvent(evtBiomassRemoved, false);
+
             }
-          else
+            else
             {
-               // no surface residue
+                // no surface residue
             }
 
-         
+
 
             ddw_boll = 0.0;
             ddw_leaf = 0.0;
@@ -4694,80 +4862,8 @@ namespace ManagedComponent.MvOZCOT
             ddw_stem = 0.0;
 
 
-			return; // ozcot_update
-		}
-
-
-
-        //     ===========================================================
-        public void ozcot_root_distrib(ref double [] root_array, double root_sum)
-		{
-		//     ===========================================================
-
-        //*+  Sub-Program Arguments
-        //      real       root_array(*)         ! (OUTPUT) array to contain distributed material
-        //      real       root_sum              ! (INPUT) Material to be distributed
-
-        //*+  Purpose
-        //*       Distribute root material over profile
-
-        //*+  Mission statement
-        //*       Distribute root material over profile
-
-        //*+  Changes
-        //*       290994 jngh specified and programmed
-
-        //*+  Constant Values
-        //      
-        //      
-
-        //*+  Local Variables
-        //      real       cum_depth             ! cumulative depth (mm)
-        //      integer    layer                 ! layer number ()
-        //      integer    deepest_layer         ! deepest layer in which the roots are
-        //                                       ! growing
-        //      real       root_distrb(max_layers) ! root distribution ()
-        //      real       root_distrb_sum       ! sum of root distribution array
-
-        //      real       c_root_extinction
-        //      parameter (c_root_extinction = 3.0)
-
-            double  cum_depth;
-            int     layer;
-            int     deepest_layer;
-
-            double [] root_distrb = new double[max_layers + 1];
-            double root_distrb_sum;
-
-            const double c_root_extinction = 3.0;
-
-
-            //*- Implementation Section ----------------------------------
-
-            Array.Clear(root_array, 0, max_layers);
-            Array.Clear(root_distrb, 0, max_layers);
-
-            deepest_layer = mvDataFunctions.find_layer_no(rtdep, dlayr, max_layers);
-            cum_depth = 0.0;
-            for (layer = 1 ; layer <= deepest_layer; layer++)
-            {
-                 cum_depth = cum_depth + dlayr[layer];
-                 cum_depth = Math.Min(cum_depth, rtdep);  //u_bound?
-                 root_distrb[layer] = Math.Exp(-c_root_extinction *  mvDataFunctions.divide (cum_depth, rtdep, 0.0));
-            }
-
-
-            root_distrb_sum = mvDataFunctions.SumArray(root_distrb, deepest_layer);
-            for (layer = 1 ; layer <= deepest_layer; layer++)
-            {
-                root_array[layer] = root_sum * mvDataFunctions.divide(root_distrb[layer], root_distrb_sum, 0.0);
-            }
-
-
-			return; // ozcot_root_distrib
-		}
-
-
+            return; // ozcot_update
+        }
 
 
 
@@ -4962,7 +5058,7 @@ namespace ManagedComponent.MvOZCOT
 				// terminate crop growth
 				//    'open report.txt for append as #1
 				//    write#1,            ' mature bolls will be forced open.
-				//format(' *** season > 300 days; terminate cro')
+				//format(' *** season > 300 days; terminate crop')
 				//    call write_string #1,
 				//   call pop_routine(myname)
 				//    close #1
@@ -5016,20 +5112,27 @@ namespace ManagedComponent.MvOZCOT
 
 
 			//---- check if frost terminates crop -----------------------------------------
-
-			if (tempmn <= frost_kill_immediate & iemrg > 0.0)
+            //
+            // TODO: DBJ Review frost rules
+            //       Frost is killing and terminating a mature crop --> NO YIELD, which is in error ??
+            //       (early frost might kill a crop if severe enough, otherwise it should mature bolls and 
+            //        reduce functioning leaves  ???  but leave the crop to be harvested)
+            //        iend is used in ozcot_harvest() and also reported as ozcot-status and status
+            //        thus terminating the crop when manager script is looking for status > 0.
+            //
+            if (tempmn <= frost_kill_immediate & iemrg > 0.0)   // frost after emergence?
 			{
-				// frost after emergence?
-				if ((bollz == 0))           // pre-fruiting?
+                if ((bollz == 0))           // pre-fruiting?   green bolls yet?
 				{
-					iend = 2;				// flag for frost -
-				}
-				//write#1,//format(' *** crop killed by frost before fruitin')
-                else if ((openz == 0.0)) {	// green bolls yet?
+					iend = 2;				// flag for frost killing crop 
+                    //write#1,//format(' *** crop killed by frost before fruiting')
+                }
+                else if ((openz == 0.0))    // open bolls yet?   None
+                {	
 					iend = 2;				// flag for frost - force open bolls > 80. mature
-				}
-				//write#1,//format(' *** crop killed by frost during fruitin')
-				else                       // open bolls yet?
+                    //write#1,//format(' *** crop killed by frost during fruiting')
+                }
+				else                       
                 {
 					iend = 2;              // flag for frost - force open bolls > 80. mature
 					//write#1,//format(' *** crop terminated by frost.')
@@ -5550,7 +5653,7 @@ namespace ManagedComponent.MvOZCOT
 			establish = ppm * 100.0 / ppm_target;			// percentage established
 
             // report emergence
-            Console.WriteLine("{0}/{1}/{2} (Day of year={3}), cotton:", Today.Day, Today.Month, Today.Year, DOY);
+            Console.WriteLine("{0} {1} {2} (Day of year={3}), cotton:", Today.Day, Today.ToString("MMMM"), Today.Year, DOY);
             Console.WriteLine("    *** Crop emerged with {0} plants per m sq, {1}% of target population of {2}", ppm.ToString("#0.0"), establish, ppm_target.ToString("#0.0"));
             Console.WriteLine("");
 
@@ -5559,7 +5662,7 @@ namespace ManagedComponent.MvOZCOT
 				iend = 5;				// flag to terminate season
 
                 // report failed establishment
-                Console.WriteLine("{0}/{1}/{2} (Day of year={3}), cotton:", Today.Day, Today.Month, Today.Year, DOY);
+                Console.WriteLine("{0} {1} {2} (Day of year={3}), cotton:", Today.Day, Today.ToString("MMMM"), Today.Year, DOY);
                 Console.WriteLine("    *** crop failed to establish;  stand was less than 25% of target population of {0} plants per m sq", ppm_target);
             }
 			return; 
@@ -6471,42 +6574,74 @@ namespace ManagedComponent.MvOZCOT
 			//     currently sets isq=i, should be isq=iday for consistency between seasons
 			//     when convenient, change and check all refs to isq
 
-
-			//      real ddisq
+            //******************************************************************************
+            //_____________________________________________________________________________
+            //
+            //        Modification LOG
+            //_____________________________________________________________________________
+            //
+            //Who     Date      Description
+            //------------------------------------------------------------------------------
+            //DavidJ  14/12/12  Recoded to use RateOfDevelopmentToFirstSquare (Bange & Milroy 2003)
+            //                   as  accumRateTo1stSqr
+            //******************************************************************************
 
 			//- implementation section ----------------------------------
-
-			//jh      if(idate.ne.0) go to 40
-
-			//     no counts - simulate first square
+            double rateToday;
+            double adjRate;
 
 			//      if(iszn.ne.nszn) then                ! is this a new season?
 			//          iszn = nszn                      ! reset flag
 			//          delay = 0.0                      ! delay in day degrees
 			//      end if
 
-			//psc    add delay to common block
+            //     no counts - simulate first square
 
-			if (smi < smi_delay_crit)           // water stress delays squaring
-			{
-				delay = delay + (1.0 - (smi / smi_delay_crit)) * hunits;
-			}
+            //-- replaced code -------------------------------------------------------
+            //if (smi < smi_delay_crit)           // water stress delays squaring
+            //{
+            //    delayDD = delayDD + (1.0 - (smi / smi_delay_crit)) * hunits;
+            //}
 
-			// cold shock constable (pers. comm)
-            if (tempmn < cold_shock_delay_crit)
-            {
-                delay = delay + cold_shock_delay;
-            }
+            //// cold shock constable (pers. comm)
+            //if (tempmn < cold_shock_delay_crit)
+            //{
+            //    delayDD = delayDD + cold_shock_delay;
+            //}
 			
-			//      if(hail) delay = delay + tipout + hail_lag    ! tipping out delay
-			if (sumdd < ddisq + delay)
-			{
-				return; 
-			}
-			else
-			{
-			}
+            ////      if(hail) delay = delay + tipout + hail_lag    ! tipping out delay
+            //if (sumdd < ddisq + delayDD)
+            //{
+            //    return; 
+            //}
+            //else
+            //{
+            //}
+            //-- replaced code -------------------------------------------------------
+            //-- new code ------------------------------------------------------------
 
+            rateToday = 0.0;
+            adjRate = 0.0;
+
+            rateToday = 0.03 * (1 - Math.Exp(-0.20 * (tempav - 15.03)));   // Rate of Development to First Square : Bange & Milroy 2003
+
+            if (smi < smi_delay_crit)           // water stress delays squaring
+            {
+                adjRate = (1.0 - (smi / smi_delay_crit)) * rateToday;
+                rateToday = rateToday - adjRate;
+            }
+
+            if (rateToday > 0.0)              // some development today
+            {
+                accumRateTo1stSqr = accumRateTo1stSqr + rateToday;
+            }
+
+            if (accumRateTo1stSqr < 1.0)     // still not reached 1st square
+            {
+                return;
+            }
+
+            //-- end new code ------------------------------------------------------------
 
 			//      fruno(i-isow)=1.0*ppm  ! average plant has 1 square
 			//      fruno(i-isow)=0.5      ! as in 1983/84 version
@@ -6677,19 +6812,19 @@ namespace ManagedComponent.MvOZCOT
             // ddleaf = ozcot_senlf(bload, alai, carcap_c, smi);
             ddleaf = ozcot_senlf();
             if (n_def == 1 & (iday - i_def) > 7) ddleaf = ddleaf * 0.33;      // 1st defol"n
-            if (n_def == 2 & (iday - i_def) > 7) ddleaf = ddleaf * 0.0;       // 2nd defol"n
+            if (n_def == 2 & (iday - i_def) > 7) ddleaf = ddleaf * 0.0;       // 2nd defol"n , kill all leaf
 
             shedlf = 0.0;       // initialise for this day
             leaf_res = 0.0;
 
             if (lastlf > 0)           // called after measured lai finished
             {
-                for (l = lastlf; l <= DAS; l++)        // loop thro unshed leaves
+                for (l = lastlf; l <= DAS; l++)        // loop thro unshed leaves : oldest to youngest
                 {
                     if ((fyzage[l] < ddleaf)) break;   // are this days leaves shed today?
                     alai = alai - dlai[l];                // reduce lai
                     shedlf = shedlf + dlai[l];            // sum area of shed leaves
-                    dlai[l] = 0.0;                        // day,s area now zero
+                    dlai[l] = 0.0;                        // day's area now zero
                     dw_leaf = dw_leaf - ddw_l[l];         // reduce leaf dry matter
                     leaf_res = leaf_res + ddw_l[l];       // sum this day's residues
                     ddw_l[l] = 0.0;                       // this day"s leaf wt now zero
@@ -7897,10 +8032,6 @@ namespace ManagedComponent.MvOZCOT
             double uptakn_max;
 
 
-            //data conc_l /0.04/
-            //data conc_s /0.02/
-            //data conc_r /0.02/
-            //data conc_b /0.015/
 
             //- implementation section ----------------------------------
 
@@ -8043,7 +8174,7 @@ namespace ManagedComponent.MvOZCOT
             //     growth provide feedback to reduce increase in root depth in s/r pltgrw.
 
             //     local variables:
-            //       assimilate new dry matter passed daily from s/r assimilation
+            //       assimilate new dry matter passed daily from s/r assimilation  (g/m2)
             //       ddw_boll   day's increase in boll dry weight
             //       ddw_leaf   day's increase in leaf dry weight
             //       ddw_stem   day's increase in stem dry weight

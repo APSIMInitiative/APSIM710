@@ -1,19 +1,24 @@
 <Type name="Cotton2">
   <MetaData>
+<!--
+    <UItype>CSUserInterface.EmptyUI</UItype>
     <UItype>CPIUserInterface.mvCottonUI</UItype>
+	<UItype>CPIUserInterface.TreeGridUI</UItype>
+-->
+	<UItype>CPIUserInterface.mvCottonUI</UItype>
+
     <IsCrop>Yes</IsCrop>
     <ShowInMainTree>Yes</ShowInMainTree>
     <Image>%apsim%\UserInterface\Images\cotton.jpg</Image>
     <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
-    <Documentation>%apsim%\Documentation\4 Module Reference\Ozcot.htm</Documentation>
+    <Documentation>%apsim%\Documentation\4 Module Reference\Cotton2.htm</Documentation>
     <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
     <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
 	
 	<!--  SELECT the dll to run  -->
 	
-    <!-- <dll>%apsim%\model\mvOZCOT.%dllext%</dll>   -->
-	<dll>%apsim%\Model\mvOZCOT.dll</dll>
-    <!-- <dll>C:\Projects\mvCotton_Test_bed\Sims\mvCottonApsim74\mvOZCOT.%dllext%</dll>  -->
+    <dll>%apsim%\model\mvOZCOT.%dllext%</dll> 
+	<!-- <dll>%apsim%\Model\mvOZCOT.dll</dll>   -->
 
 
 	<drops>
@@ -34,12 +39,13 @@
     </ApsimToSim>
   </MetaData>
   <Model>
-    <CS50 cultivar="yes">
-      <!--   CS50  -->
-      <percent_l description="percent lint">43.0     </percent_l>
-      <scboll description="g seed cotton/boll">3.8        </scboll>
+    <_Default_S71BR cultivar="yes">
+      <!--   Sicot 71BR   (Bollgard II  Roundup Ready)
+         -->
+      <percent_l description="percent lint">40.0     </percent_l>
+      <scboll description="g seed cotton/boll">5.0        </scboll>
       <respcon description="respiration const">0.01593      </respcon>
-      <sqcon description="governs pot rate of squaring in thermal time">0.0181         </sqcon>
+      <sqcon description="governs pot rate of squaring in thermal time">0.0217         </sqcon>
       <fcutout description="relates timing of cutut to boll load">0.5411       </fcutout>
       <flai description="modifying ratio of leaf area per site for this cultivar">0.52          </flai>
       <DDISQ description="Constable (pers. comm. 1983), 10=Empire">402.0         </DDISQ>
@@ -48,7 +54,7 @@
          flowering                     open bolls
          1       2    3     4     5     6     7     8     9   ! related to likelihood to demage by heliothi
          -->
-      <FRUDD description="dd to change of category (fruit dd)">50.   169.   329.   356.   499.   642.   857.  1099.    </FRUDD>
+      <FRUDD description="dd to change of category (fruit dd)">50.   161.   307.   338.   484.   630.   848.  1071.    </FRUDD>
       <BLTME description="0-1   boll time (fraction of period from">0.00   0.00   0.00   0.07   0.21   0.33   0.55   1.00    </BLTME>
       <WT description="0-1   weighting of number of bolls">0.0104 0.0272 0.1441 0.0988 0.5042 0.9617 1.0000 0.5785       </WT>
       <dlds_max description="not used">0.12</dlds_max>
@@ -57,6 +63,116 @@
       <fburr description="factor sc/boll to sc+burr/boll">1.23              </fburr>
       <ACOTYL units="mm2" description="area of cotyledons">525.0</ACOTYL>
       <RLAI>0.010</RLAI>
+      <BckGndRetn description="background retention of fruit">0.90              </BckGndRetn>
+    </_Default_S71BR>
+    
+    <S71 cultivar="yes">
+      <!--   Sicot 71
+         -->
+      <percent_l description="percent lint">42.0     </percent_l>
+      <scboll description="g seed cotton/boll">5.2        </scboll>
+      <respcon description="respiration const">0.01593      </respcon>
+      <sqcon description="governs pot rate of squaring in thermal time">0.0217         </sqcon>
+      <fcutout description="relates timing of cutut to boll load">0.5411       </fcutout>
+      <flai description="modifying ratio of leaf area per site for this cultivar">0.52          </flai>
+      <DDISQ description="Constable (pers. comm. 1983), 10=Empire">402.0         </DDISQ>
+      <TIPOUT>52.</TIPOUT>
+      <!--  development of individual boll
+         flowering                     open bolls
+         1       2    3     4     5     6     7     8     9   ! related to likelihood to demage by heliothi
+         -->
+      <FRUDD description="dd to change of category (fruit dd)">50.   161.   307.   338.   484.   630.   848.  1071.    </FRUDD>
+      <BLTME description="0-1   boll time (fraction of period from">0.00   0.00   0.00   0.07   0.21   0.33   0.55   1.00    </BLTME>
+      <WT description="0-1   weighting of number of bolls">0.0104 0.0272 0.1441 0.0988 0.5042 0.9617 1.0000 0.5785       </WT>
+      <dlds_max description="not used">0.12</dlds_max>
+      <rate_emergence units="mm/dd" description="Rate of emergence">1.00</rate_emergence>
+      <popcon>0.03633</popcon>
+      <fburr description="factor sc/boll to sc+burr/boll">1.23              </fburr>
+      <ACOTYL units="mm2" description="area of cotyledons">525.0</ACOTYL>
+      <RLAI>0.010</RLAI>
+      <BckGndRetn description="background retention of fruit">0.80              </BckGndRetn>
+    </S71>
+
+    <S71BR cultivar="yes">
+      <!--   Sicot 71BR   (Bollgard II  Roundup Ready)
+         -->
+      <percent_l description="percent lint">40.0     </percent_l>
+      <scboll description="g seed cotton/boll">5.0        </scboll>
+      <respcon description="respiration const">0.01593      </respcon>
+      <sqcon description="governs pot rate of squaring in thermal time">0.0217         </sqcon>
+      <fcutout description="relates timing of cutut to boll load">0.5411       </fcutout>
+      <flai description="modifying ratio of leaf area per site for this cultivar">0.52          </flai>
+      <DDISQ description="Constable (pers. comm. 1983), 10=Empire">402.0         </DDISQ>
+      <TIPOUT>52.</TIPOUT>
+      <!--  development of individual boll
+         flowering                     open bolls
+         1       2    3     4     5     6     7     8     9   ! related to likelihood to demage by heliothi
+         -->
+      <FRUDD description="dd to change of category (fruit dd)">50.   161.   307.   338.   484.   630.   848.  1071.    </FRUDD>
+      <BLTME description="0-1   boll time (fraction of period from">0.00   0.00   0.00   0.07   0.21   0.33   0.55   1.00    </BLTME>
+      <WT description="0-1   weighting of number of bolls">0.0104 0.0272 0.1441 0.0988 0.5042 0.9617 1.0000 0.5785       </WT>
+      <dlds_max description="not used">0.12</dlds_max>
+      <rate_emergence units="mm/dd" description="Rate of emergence">1.00</rate_emergence>
+      <popcon>0.03633</popcon>
+      <fburr description="factor sc/boll to sc+burr/boll">1.23              </fburr>
+      <ACOTYL units="mm2" description="area of cotyledons">525.0</ACOTYL>
+      <RLAI>0.010</RLAI>
+      <BckGndRetn description="background retention of fruit">0.90              </BckGndRetn>
+    </S71BR>
+
+    <Siok cultivar="yes">
+      <!--   Generic
+         -->
+      <percent_l description="percent lint">42.0     </percent_l>
+      <scboll description="g seed cotton/boll">4.5        </scboll>
+      <respcon description="respiration const">0.01593      </respcon>
+      <sqcon description="governs pot rate of squaring in thermal time">0.0228         </sqcon>
+      <fcutout description="relates timing of cutut to boll load">0.5411       </fcutout>
+      <flai description="modifying ratio of leaf area per site for this cultivar">0.52          </flai>
+      <DDISQ description="Constable (pers. comm. 1983), 10=Empire">420.0         </DDISQ>
+      <TIPOUT>52.</TIPOUT>
+      <!--  development of individual boll
+         flowering                     open bolls
+         1       2    3     4     5     6     7     8     9   ! related to likelihood to demage by heliothi
+         -->
+      <FRUDD description="dd to change of category (fruit dd)">50.   180.   350.   380.   520.   660.   870.  1100.    </FRUDD>
+      <BLTME description="0-1   boll time (fraction of period from">0.00   0.00   0.00   0.07   0.21   0.33   0.55   1.00    </BLTME>
+      <WT description="0-1   weighting of number of bolls">0.0104 0.0272 0.1441 0.0988 0.5042 0.9617 1.0000 0.5785       </WT>
+      <dlds_max description="not used">0.12</dlds_max>
+      <rate_emergence units="mm/dd" description="Rate of emergence">1.00</rate_emergence>
+      <popcon>0.03633</popcon>
+      <fburr description="factor sc/boll to sc+burr/boll">1.23              </fburr>
+      <ACOTYL units="mm2" description="area of cotyledons">525.0</ACOTYL>
+      <RLAI>0.010</RLAI>
+    </Siok>
+  
+    <Sica cultivar="yes">
+      <!--   Generic
+         -->
+      <percent_l description="percent lint">40.0     </percent_l>
+      <scboll description="g seed cotton/boll">5.5        </scboll>
+      <respcon description="respiration const">0.02306      </respcon>
+      <sqcon description="governs pot rate of squaring in thermal time">0.0206         </sqcon>
+      <fcutout description="relates timing of cutut to boll load">0.4789       </fcutout>
+      <flai description="modifying ratio of leaf area per site for this cultivar">0.87          </flai>
+      <DDISQ description="Constable (pers. comm. 1983), 10=Empire">420.0         </DDISQ>
+      <TIPOUT>52.</TIPOUT>
+      <!--  development of individual boll
+         flowering                     open bolls
+         1       2    3     4     5     6     7     8     9   ! related to likelihood to demage by heliothi
+         -->
+      <FRUDD description="dd to change of category (fruit dd)">50.   180.   350.   380.   520.   660.   870.  1100.    </FRUDD>
+      <BLTME description="0-1   boll time (fraction of period from">0.00   0.00   0.00   0.07   0.21   0.33   0.55   1.00    </BLTME>
+      <WT description="0-1   weighting of number of bolls">0.0104 0.0272 0.1441 0.0988 0.5042 0.9617 1.0000 0.5785       </WT>
+      <dlds_max description="not used">0.12</dlds_max>
+      <rate_emergence units="mm/dd" description="Rate of emergence">1.00</rate_emergence>
+      <popcon>0.03633</popcon>
+      <fburr description="factor sc/boll to sc+burr/boll">1.23              </fburr>
+      <ACOTYL units="mm2" description="area of cotyledons">525.0</ACOTYL>
+      <RLAI>0.010</RLAI>
+    </Sica>
+ 
+    <CS50 cultivar="yes">
     </CS50>
     <CS6S cultivar="yes">
     </CS6S>
@@ -82,8 +198,6 @@
     </S324>
     <Sc34 cultivar="yes">
     </Sc34>
-    <Sica cultivar="yes">
-    </Sica>
     <ScV1 cultivar="yes">
     </ScV1>
     <ScV2 cultivar="yes">
@@ -92,14 +206,14 @@
     </S189>
     <Si14 cultivar="yes">
     </Si14>
-    <Siok cultivar="yes">
-    </Siok>
     <V15 cultivar="yes">
     </V15>
+ <!--
     <S71 cultivar="yes">
     </S71>
     <S71BR cultivar="yes">
     </S71BR>
+  -->
     <S289BR cultivar="yes">
     </S289BR>
   </Model>

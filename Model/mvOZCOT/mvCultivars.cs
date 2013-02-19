@@ -26,9 +26,9 @@ namespace ManagedComponent.MvOZCOT
         public Double flai;
         public Double ddisq;
         public Double tipout;
-        public Double[] FRUDD = new Double[10];
-        public Double[] BLTME = new Double[10];
-        public Double[] WT = new Double[10];
+        public Double[] FRUDD = new Double[9];
+        public Double[] BLTME = new Double[9];
+        public Double[] WT = new Double[9];
         public Double dlds_max;
         public Double rate_emergence;
         public Double popcon;
@@ -50,7 +50,8 @@ namespace ManagedComponent.MvOZCOT
         // XML string of the default variety list.
         // This string is used as the data store for the cultivar details
         //
-        private static XDocument XDocCultivars;
+       // private static XDocument XDocCultivars;
+        private  XDocument XDocCultivars;
         private static string cultivarsXML = @"
 <Cultivars>
 	
@@ -1411,7 +1412,7 @@ namespace ManagedComponent.MvOZCOT
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine("Update of Cultivar details failed. Error: " + e.Message);
+                        Console.WriteLine("Update of cotton Cultivar details failed. Error: " + e.Message);
                     }
                 }
                 else // new cultivar
@@ -1422,7 +1423,7 @@ namespace ManagedComponent.MvOZCOT
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine("Addition of new Cultivar failed. Error: " + e.Message);
+                        Console.WriteLine("Addition of new cotton Cultivar failed. Error: " + e.Message);
                     }
                 }
             }
@@ -1441,19 +1442,19 @@ namespace ManagedComponent.MvOZCOT
             // Create FRUDD, BLTME and WT nodes first
             // Note: element [0] is not used, array values start at 1
             XElement fruddNode = new XElement("FRUDD");
-            for (uint i = 1; i <= newCultivarParams.FRUDD.Count(); i++)
+            for (uint i = 1; i < newCultivarParams.FRUDD.Count(); i++)
             {
                 fruddNode.Add(new XElement("val", newCultivarParams.FRUDD[i]));
             }
 
             XElement bltmeNode = new XElement("BLTME");
-            for (uint i = 1; i <= newCultivarParams.BLTME.Count(); i++)
+            for (uint i = 1; i < newCultivarParams.BLTME.Count(); i++)
             {
                 bltmeNode.Add(new XElement("val", newCultivarParams.BLTME[i]));
             }
 
             XElement wtNode = new XElement("WT");
-            for (uint i = 1; i <= newCultivarParams.WT.Count(); i++)
+            for (uint i = 1; i < newCultivarParams.WT.Count(); i++)
             {
                 wtNode.Add(new XElement("val", newCultivarParams.WT[i]));
             }
@@ -1480,7 +1481,7 @@ namespace ManagedComponent.MvOZCOT
                                                 new XElement("BckGndRetn", newCultivarParams.bckGndRetn)
                                                 );
 
-            XDocCultivars.Add(newCultivar);
+            XDocCultivars.Root.AddFirst(newCultivar);
 
             //Note: no need to 'save' results as this has directly updated the STATIC XDocument XDocCultivars
             //       so all reads of this XDocument will reflect the changes.
