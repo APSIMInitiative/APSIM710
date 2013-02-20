@@ -190,9 +190,13 @@ class DLLProber
                         string Description = XmlHelper.Attribute(TypeNode, "description");
                         if (Description == "")
                         {
-                            XmlNode descriptionNode = XmlHelper.Find(Node, "Description");
-                            if (descriptionNode != null)
-                                Description = descriptionNode.InnerText;
+                            Description = XmlHelper.Attribute(Node, "descr");
+                            if (Description == "")
+                            {
+                                XmlNode descriptionNode = XmlHelper.Find(Node, "Description");
+                                if (descriptionNode != null)
+                                    Description = descriptionNode.InnerText;
+                            }
                         }
                         if (Description != "")
                             Description = "   [Description(\"" + Description + "\")]";
