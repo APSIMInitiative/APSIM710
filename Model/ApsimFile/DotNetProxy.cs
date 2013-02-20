@@ -188,6 +188,12 @@ class DLLProber
                     {
                         string PropertyTypeName = GetDotNetType(TypeNode);
                         string Description = XmlHelper.Attribute(TypeNode, "description");
+                        if (Description == "")
+                        {
+                            XmlNode descriptionNode = XmlHelper.Find(Node, "Description");
+                            if (descriptionNode != null)
+                                Description = descriptionNode.InnerText;
+                        }
                         if (Description != "")
                             Description = "   [Description(\"" + Description + "\")]";
                         string Units = XmlHelper.Attribute(TypeNode, "unit");
