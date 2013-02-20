@@ -42,7 +42,9 @@ public class Apsim
 
 			// Count the number of files in the argument list
 			string[] FileNames = null;
-			for (int i = 0; i < args.Length; i++)
+            if (args.Length == 0)
+                throw new Exception("No filename has been specified on the command line.");
+            for (int i = 0; i < args.Length; i++)
 			{
                 // Assume each argument is a filename, unless it contains "="
                 if (args[i].Contains("="))
@@ -62,6 +64,9 @@ public class Apsim
                 }
 			}
 
+            if (FileNames == null)
+                throw new Exception("Could not find a file specified on the command line.");
+
             Apsim.maxLines = -1;  // No limit by default
             if (Macros.ContainsKey("MaxOutputLines"))
                 Int32.TryParse(Macros["MaxOutputLines"], out Apsim.maxLines);
@@ -75,7 +80,7 @@ public class Apsim
 			// If they've specified a simulation name on the command line, then run just
 			// that simulation.
             PlugIns.LoadAll();
-            if ((FileNames != null) && (FileNames.Length == 1) && Macros.ContainsKey("Simulation"))
+            if ((FileNames.Length == 1) && Macros.ContainsKey("Simulation"))
 			{
                 Apsim.NumJobsBeingRun = 1;
 				if (Path.GetExtension(FileNames[0]).ToLower() == ".apsim") 
@@ -86,13 +91,13 @@ public class Apsim
 				
 				Apsim.WaitForAPSIMToFinish();
 			}
-			else if ((FileNames != null) && (FileNames.Length == 1) && (Path.GetExtension(FileNames[0]) == ".sim"))
+			else if ((FileNames.Length == 1) && (Path.GetExtension(FileNames[0]) == ".sim"))
 			{
                 Apsim.NumJobsBeingRun = 1;
 				Apsim.StartSIM(FileNames[0]);
                 Apsim.WaitForAPSIMToFinish();
 			}
-            else if (FileNames != null)
+            else
 			{
   				Apsim.JobScheduler = new JobScheduler();
 				// NB. The key/value macro in the jobscheduler is private - send over any keys we dont know about
@@ -140,22 +145,27 @@ public class Apsim
     /// Helper to return the real name of the file on disk (readlink() equivalent) - preserves
     /// upper/lower case
     /// </summary>
-    public static string[] realNamesOfFiles (string filename) 
-	{
+    public static string[] realNamesOfFiles(string filename)
+    {
         string[] Files = null;
-		string dirName = Path.GetDirectoryName(filename);
-        if (String.IsNullOrEmpty(dirName))
-            dirName = Directory.GetCurrentDirectory();
-		if (Directory.Exists(dirName))
-		{
-        	Files = Directory.GetFiles(dirName, Path.GetFileName(filename));
-            for (int i = 0; i < Files.Length; ++i)
-            {
-                Files[i] = Path.GetFullPath(Files[i].Replace("\"", ""));
-            }
-		}
-		return Files ; // probably undefined 
-	}
+        if (Directory.Exists(filename))  // we've been given a directory name, not a file name; find everything in it.
+        {
+            List<string> fileList = new List<string>();
+            Utility.FindFiles(filename, "*", ref fileList, true);
+            Files = fileList.ToArray();
+        }
+        else
+        {
+            string dirName = Path.GetDirectoryName(filename);
+            if (String.IsNullOrEmpty(dirName))
+                dirName = Directory.GetCurrentDirectory();
+            if (Directory.Exists(dirName))
+                Files = Directory.GetFiles(dirName, Path.GetFileName(filename));
+        }
+        for (int i = 0; i < Files.Length; ++i)
+            Files[i] = Path.GetFullPath(Files[i].Replace("\"", ""));
+        return Files; // probably undefined 
+    }
 
     public void StartMultipleFromPaths(ApsimFile.ApsimFile F, List<String> SimulationPaths)
     {
