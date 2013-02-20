@@ -150,29 +150,34 @@ namespace ModelFramework
                 {
                     Component ChildComponent = new Component(pair.Value.name, pair.Value.CompClass, HostComponent);
                     // How can we determine what is a "crop"?
-                    // Currently, all "crops" have cover_green as an output
-                    // However, the AusFarm "Paddock" component also has this as an output. Might this be a problem?
+                    // Once upon a time, all "crops" had cover_green as an output
+                    // That has now been changed to CoverLive in APSIM, but not (yet) in AusFarm. Ugh.
+                    // Should we look for both???
+                    // The AusFarm "Paddock" component also has cover_green as an output. Might this be a problem?
                     // It shouldn't be, if we're looking only at children, and not descendants further down the tree
-                    String sSearchName = AddMasterPM(ChildComponent.FullName) + ".cover_green";
-                    if (ChildCrops.ContainsKey(sSearchName))
+                    for (int pass = 0; pass <= 1; ++pass)
                     {
-                        if (ChildCrops[sSearchName])
+                        String sSearchName = AddMasterPM(ChildComponent.FullName) + (pass == 0 ? ".CoverLive" : ".cover_green");
+                        if (ChildCrops.ContainsKey(sSearchName))
                         {
-                            Children.Add(ChildComponent); //is crop
-                        }
-                    }
-                    else
-                    {
-                        HostComponent.Host.queryEntityInfo(sSearchName, TypeSpec.KIND_OWNED, ref entityList);
-                        if (entityList.Count > 0)
-                        {
-                            Children.Add(ChildComponent);
-                            entityList.Clear();
-                            ChildCrops.Add(sSearchName, true);
+                            if (ChildCrops[sSearchName])
+                            {
+                                Children.Add(ChildComponent); //is crop
+                            }
                         }
                         else
                         {
-                            ChildCrops.Add(sSearchName, false);
+                            HostComponent.Host.queryEntityInfo(sSearchName, TypeSpec.KIND_OWNED, ref entityList);
+                            if (entityList.Count > 0)
+                            {
+                                Children.Add(ChildComponent);
+                                entityList.Clear();
+                                ChildCrops.Add(sSearchName, true);
+                            }
+                            else
+                            {
+                                ChildCrops.Add(sSearchName, false);
+                            }
                         }
                     }
                 }
