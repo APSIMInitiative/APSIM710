@@ -1,0 +1,186 @@
+<folder version="34" name="GenericFunctions">
+  <Variable>
+    <VariableName type="text" description="Variable Name">Leaf.LAI</VariableName>
+    <Memo>Returns the value of a nominated internal Plant.NET numerical variable
+</Memo>
+  </Variable>
+  <AccumulateFunction>
+    <StartStageName type="text" description="StartStageName">TuberInitiation</StartStageName>
+    <EndStageName type="text" description="StartStageName">Maturity</EndStageName>
+    <Memo>This function accumlates the daily values of all childern functions between the start and end phases.</Memo>
+  </AccumulateFunction>
+  <AddFunction>
+    <Memo>Sum the values of the children of this node.  Drop on childern nodes as appropriate</Memo>
+  </AddFunction>
+  <AgeCalculatorFunction>
+    <Memo>This function returns the age (in years) of the plant since initialisation</Memo>
+  </AgeCalculatorFunction>
+  <AirTemperatureFunction>
+    <XYPairs>
+      <XY>0 0</XY>
+      <XY>30 30</XY>
+      <XY>40 0</XY>
+    </XYPairs>
+    <Memo>This function uses max and min air temperature, three hourly temperature interpolation and the temperature threshold specified to return a daily thermal time value</Memo>
+  </AirTemperatureFunction>
+  <BellCurveFunction>
+    <LinearInterpolationFunction name="LargestLeaf">
+      <XProperty type="text" description="XProperty">
+      </XProperty>
+      <XYPairs />
+      <Memo> Position of the largest leaf up the main-stem</Memo>
+    </LinearInterpolationFunction>
+    <LinearInterpolationFunction name="AreaMax">
+      <XProperty type="text" description="XProperty">
+      </XProperty>
+      <XYPairs />
+      <Memo> Area of the largest leaf of a plant (mm2)</Memo>
+    </LinearInterpolationFunction>
+    <LinearInterpolationFunction name="Breadth">
+      <XProperty type="text" description="XProperty">
+      </XProperty>
+      <XYPairs />
+    </LinearInterpolationFunction>
+    <LinearInterpolationFunction name="Skewness">
+      <XProperty type="text" description="XProperty">
+      </XProperty>
+      <XYPairs />
+    </LinearInterpolationFunction>
+    <Memo> Calculates the maximum leaf size (mm2/leaf) given its node position (Elings, 2000 - Agronomy Journal 92, 436-444)</Memo>
+  </BellCurveFunction>
+  <Constant>
+    <Value type="text" description="Value">401</Value>
+  </Constant>
+  <DivideFunction>
+    <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values.  Drop on node as appropriate </Memo>
+  </DivideFunction>
+  <ExponentialFunction>
+    <A type="text" description="A">1.0</A>
+    <B type="text" description="B">1.0</B>
+    <C type="text" description="C">1.0</C>
+    <Memo>Takes the value of the child as the x value and returns the y value from a exponential of the form y = A * B * exp(x * C)</Memo>
+  </ExponentialFunction>
+  <ExpressionFunction>
+    <Expression type="text" description="Math Expression">1.0*Leaf.LAI</Expression>
+    <Memo>Evaluate a mathematical expression using the EvaluateExpression dll. 
+Obs: Expression can contain variable names from Plant2
+</Memo>
+  </ExpressionFunction>
+  <ExternalVariable>
+    <VariableName type="text" description="Variable Name">lucerne2.LeafLAI</VariableName>
+    <Memo>Returns the value of a nominated external APSIM numerical variable.
+
+The naming convention to refer to variables external to Plant2
+differs from the one used in other Plant2 functions.
+
+It is the same as the one used for outputfile variables and 
+APSIM manager module scripts.
+
+General Format:
+
+[component_name.]variable_name
+
+</Memo>
+  </ExternalVariable>
+  <LinearInterpolationFunction>
+    <XProperty type="text" description="XProperty">Phenology.Vernalisation.CrownTemperature</XProperty>
+    <XYPairs>
+      <XY>0 0</XY>
+      <XY>26 26</XY>
+      <XY>34 0</XY>
+    </XYPairs>
+    <Memo>Takes the current value of the XProperty and returns the corresponding y value from the XY maxtix specified</Memo>
+  </LinearInterpolationFunction>
+  <MaximumFunction>
+    <Memo>Returns the maximum value of all children functions.  Drop on nodes as appropriate</Memo>
+  </MaximumFunction>
+  <MinimumFunction>
+    <Memo>Returns the minimum value of all children functions.  Drop on nodes as appropriate</Memo>
+  </MinimumFunction>
+  <MultiplyFunction>
+    <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+  </MultiplyFunction>
+  <OnEventFunction>
+    <Event type="text" description="Event">EndJuvenile</Event>
+    <LinearInterpolationFunction name="TemporaryTarget">
+      <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+      <XYPairs>
+        <XY>10 700</XY>
+        <XY>13 379</XY>
+        <XY>14.5 295</XY>
+        <XY>16.5 243</XY>
+        <XY>24 243</XY>
+      </XYPairs>
+    </LinearInterpolationFunction>
+    <Memo>Returns a value of 0 until the specified event is reached.  Then it is reset to the value returend by its child function and returns that value for the remainder of the simulation</Memo>
+  </OnEventFunction>
+  <PhaseBasedSwitch>
+    <Start>
+    </Start>
+    <End>
+    </End>
+    <Memo>Returns a value of 1 if crop is between start and finish stages and zero if not.  
+		Applied in model code but can not be nested with other functions.
+        </Memo>
+  </PhaseBasedSwitch>
+  <PhaseLookup>
+    <PhaseLookupValue>
+      <Start>
+      </Start>
+      <End>
+      </End>
+      <Constant name="Function">
+        <Value type="text">
+        </Value>
+      </Constant>
+    </PhaseLookupValue>
+    <Memo>Returns the value of the "PhaseLookupValue" functions child if phenology is between the specified start and end value.  Multiple "PhaseLookupValue" functions can be added to this function returning different values durring different phases.  Function returns 0 if none of the "PhaseLookupValue" are in phase </Memo>
+  </PhaseLookup>
+  <PhotoperiodDeltaFunction>
+    <Twilight type="text" description="Twilight">-6</Twilight>
+    <Memo>Returns the change of photoperiod each day. Twilight is the sun angle below the horizon for beginning and ending photoperiods </Memo>
+  </PhotoperiodDeltaFunction>
+  <PhotoperiodFunction>
+    <Twilight type="text" description="Twilight">-6</Twilight>
+    <Memo>Returns the value of photoperiod.  Twilight is the sun angle below the horizon for beginning and ending photoperiods</Memo>
+  </PhotoperiodFunction>
+  <PowerFunction>
+    <Exponent type="text" description="Exponent">1.0</Exponent>
+    <Memo>Raises the value of the child to the power of the especified exponent parameter</Memo>
+  </PowerFunction>
+  <SigmoidFunction>
+    <Xmax type="text" description="Xmax">1.0</Xmax>
+    <Xo type="text" description="Xo">1.0</Xo>
+    <b type="text" description="b">1.0</b>
+    <Memo>Takes the value of the child as the x value and returns the y value from a sigmoid of the form y = Xmax * 1/1+exp(-(x-Xo)/b)</Memo>
+  </SigmoidFunction>
+  <SoilTemperatureDepthFunction>
+    <Depth type="text" description="Soil depth(mm)">10</Depth>
+    <Memo>Return soil temperature (oC) from a specified soil profile layer.</Memo>
+  </SoilTemperatureDepthFunction>
+  <SoilTemperatureFunction>
+    <Depth type="text" description="Soil depth(mm)">10</Depth>
+    <Memo>This function uses max and min soil surface temperature, three hourly temperature interpolation and the temperature threshold specified to return a daily thermal time value</Memo>
+  </SoilTemperatureFunction>
+  <StageBasedInterpolation>
+    <Stages>Germination Emergence 50%Anthesis StartGrainFill Maturity </Stages>
+    <Values>  0.93         0.93      0.93    0.93            0.90</Values>
+    <Memo>Returns value interpolated between the specified values depending on the progress between phases </Memo>
+  </StageBasedInterpolation>
+  <SubtractFunction>
+    <Memo>From the first child value of this node subtract the values of the subsequent children</Memo>
+  </SubtractFunction>
+  <WeightedTemperatureFunction>
+    <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
+    <XYPairs>
+      <XY>5 0</XY>
+      <XY>30 30</XY>
+      <XY>40 0</XY>
+    </XYPairs>
+    <Memo>This Function calculates a mean dail temperature from Max and Min weighted toward Max according to the specified MaximumTemperatureWeighting factor.  This is then passed into the XY matrix as the x property and the function returns the y value</Memo>
+  </WeightedTemperatureFunction>
+  <VariableReference>
+    <VariableName type="text" description="Variable Name">lucerne2.LeafLAI</VariableName>
+    <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+  </VariableReference>
+</folder>
