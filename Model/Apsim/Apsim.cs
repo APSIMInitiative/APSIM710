@@ -31,24 +31,22 @@ public class Apsim
 	/// 
 	/// The last starts a job scheduler that runs the jobs in parallel.
 	/// 
-	/// Arguments that are not files or "key=value" pairs are silently ignored
+	/// Arguments that are not files or "key=value" pairs are ignored
     /// </summary>
     static int Main(string[] args)
     {
         try
         {
             Apsim Apsim = new Apsim();
-            Dictionary<string, string> Macros = Utility.ParseCommandLine(args);
+			Dictionary<string, string> Macros = new Dictionary<string, string>(); 
 
 			// Count the number of files in the argument list
 			string[] FileNames = null;
             if (args.Length == 0)
                 throw new Exception("No filename has been specified on the command line.");
+
             for (int i = 0; i < args.Length; i++)
 			{
-                // Assume each argument is a filename, unless it contains "="
-                if (args[i].Contains("="))
-                    continue;
                 string[] x = realNamesOfFiles(args[i]);
                 if (x != null)
                 {
@@ -61,7 +59,19 @@ public class Apsim
                             FileNames[l] = x[j];
                         }
                     }
-                }
+                } else {
+  				    int pos = args[i].IndexOf('=');
+                    if (pos > 0)
+				    {
+					    string name = args[i].Substring(0,pos).Replace("\"", "");
+					    string value = args[i].Substring(pos+1).Replace("\"", "");
+                        Macros.Add(name, value);
+ 					}
+					else 
+					{
+						Console.WriteLine("Dont know what to make of \"" + args[i] + "\"");
+					}
+				}
 			}
 
             if (FileNames == null)
@@ -162,8 +172,9 @@ public class Apsim
             if (Directory.Exists(dirName))
                 Files = Directory.GetFiles(dirName, Path.GetFileName(filename));
         }
-        for (int i = 0; i < Files.Length; ++i)
-            Files[i] = Path.GetFullPath(Files[i].Replace("\"", ""));
+		if (Files != null)
+           for (int i = 0; i < Files.Length; ++i)
+               Files[i] = Path.GetFullPath(Files[i].Replace("\"", ""));
         return Files; // probably undefined 
     }
 
