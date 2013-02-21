@@ -11,335 +11,149 @@
       <PhotopSens>3.5</PhotopSens>
     </Override>
   </Cultivar>
-  <Folder name="Functions">
-    <Variable>
-      <VariableName type="text" description="Variable Name">Leaf.LAI</VariableName>
-      <Memo>Returns the value of a nominated internal Plant.NET numerical variable
-</Memo>
-    </Variable>
-    <Folder name="DMDemand Functions">
-      <AllometricDemandFunction>
-        <Power type="text" description="Power term in allometric power function">1.52</Power>
-        <XProperty type="text" description="Value from which demand is calculated">Leaf.LAI</XProperty>
-        <YProperty type="text" description="DM pool for which demand is calculated">Stem.Live.Wt</YProperty>
-        <Const type="text" description="Constant term in allometric power function">30.57</Const>
-        <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
+  <Folder name="DMDemand Functions">
+    <AllometricDemandFunction>
+      <Power type="text" description="Power term in allometric power function">1.52</Power>
+      <XProperty type="text" description="Value from which demand is calculated">Leaf.LAI</XProperty>
+      <YProperty type="text" description="DM pool for which demand is calculated">Stem.Live.Wt</YProperty>
+      <Const type="text" description="Constant term in allometric power function">30.57</Const>
+      <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
 		  Plant allometry is often described using a simple power function (y=kX^p).  
       	This function returns the demand for DM that would be required to return the size of a pool to that calculated using a good old fashioned allometric relationship using the standard power function (y=kx^p)
         </Memo>
-      </AllometricDemandFunction>
-      <InternodeDemandFunction>
-        <Constant name="InterNodeWt">
-          <Value type="text" description="Value">.2</Value>
-        </Constant>
-        <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
+    </AllometricDemandFunction>
+    <InternodeDemandFunction>
+      <Constant name="InterNodeWt">
+        <Value type="text" description="Value">.2</Value>
+      </Constant>
+      <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
 		  This function returns the product of stem population (/m2), Delta leaf number (assuming internodes are expanding at the same rate that leaves are appearing) and the weight internode weight parameter specified
         </Memo>
-      </InternodeDemandFunction>
-      <PartitionFractionDemandFunction>
-        <StageBasedInterpolation name="PartitionFraction">
-          <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
-          <Values>    0.0       0.40      0.40             0.6       0.6         0.0         0.0           0.0     0.0 </Values>
-        </StageBasedInterpolation>
-        <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
+    </InternodeDemandFunction>
+    <PartitionFractionDemandFunction>
+      <StageBasedInterpolation name="PartitionFraction">
+        <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
+        <Values>    0.0       0.40      0.40             0.6       0.6         0.0         0.0           0.0     0.0 </Values>
+      </StageBasedInterpolation>
+      <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
 		This function returns the specified proportion of totol DM supply.  The organ may not get this proportion if the sum of demands from other organs exceeds DM supply
 		</Memo>
-      </PartitionFractionDemandFunction>
-      <PopulationBasedDemandFunction>
-        <StartStage type="text" description="StartStage">5</StartStage>
-        <GrowthDuration type="text" description="GrowthDuration">300</GrowthDuration>
-        <MaximumOrganWt type="text" description="MaximumOrganWt">.11</MaximumOrganWt>
-        <TemperatureFunction name="ThermalTime">
-          <SoilTemperaturePhases> Germinating Emerging Inductive </SoilTemperaturePhases>
-          <XYPairs>
-            <XY>0 0</XY>
-            <XY>30 30</XY>
-            <XY>40 0</XY>
-          </XYPairs>
-        </TemperatureFunction>
-        <Constant name="ExpansionStress">
-          <Value>1</Value>
-        </Constant>
-        <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
+    </PartitionFractionDemandFunction>
+    <PopulationBasedDemandFunction>
+      <StartStage type="text" description="StartStage">5</StartStage>
+      <GrowthDuration type="text" description="GrowthDuration">300</GrowthDuration>
+      <MaximumOrganWt type="text" description="MaximumOrganWt">.11</MaximumOrganWt>
+      <TemperatureFunction name="ThermalTime">
+        <SoilTemperaturePhases> Germinating Emerging Inductive </SoilTemperaturePhases>
+        <XYPairs>
+          <XY>0 0</XY>
+          <XY>30 30</XY>
+          <XY>40 0</XY>
+        </XYPairs>
+      </TemperatureFunction>
+      <Constant name="ExpansionStress">
+        <Value>1</Value>
+      </Constant>
+      <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
 		This function calculates DM demand from the start stage over the growth duration as the product of potential growth rate (MaximumOrganWt/GrowthDuration) and daily thermal time.
 		It returns the product of this potential rate and any childern so if other stress multipliers are required they can be constructed with generic functions.  Stress factors are optional
 		</Memo>
-      </PopulationBasedDemandFunction>
-      <PotentialSizeDemandFunction>
-        <StartStageName type="text" description="StartStageName">TuberInitiation</StartStageName>
-        <EndStageName type="text" description="StartStageName">Maturity</EndStageName>
-        <Constant name="PotentialGrowthIncrement">
-          <Value type="text" description="Value">0.06</Value>
-        </Constant>
-        <Constant name="OrganNumber">
-          <Value type="text" description="Value">5</Value>
-        </Constant>
-        <TemperatureFunction name="ThermalTime" />
-        <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
+    </PopulationBasedDemandFunction>
+    <PotentialSizeDemandFunction>
+      <StartStageName type="text" description="StartStageName">TuberInitiation</StartStageName>
+      <EndStageName type="text" description="StartStageName">Maturity</EndStageName>
+      <Constant name="PotentialGrowthIncrement">
+        <Value type="text" description="Value">0.06</Value>
+      </Constant>
+      <Constant name="OrganNumber">
+        <Value type="text" description="Value">5</Value>
+      </Constant>
+      <TemperatureFunction name="ThermalTime" />
+      <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
 		This function calculates DM demand between the start and end stages as the product of potential growth rate (g/oCd/organ), daily thermal time and the specified organ number.
 		It returns the product of this potential rate and any childern so if other stress multipliers are required they can be constructed with generic functions.  Stress factors are optional
 		</Memo>
-      </PotentialSizeDemandFunction>
-      <RelativeGrowthRateDemandFunction>
-        <InitialWt>500.0</InitialWt>
-        <InitialStageName>TuberInitiation</InitialStageName>
-        <LinearInterpolationFunction name="RelativeGrowthRate">
-          <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
-          <XYPairs>
-            <XY>3 0</XY>
-            <XY>4 0</XY>
-            <XY>4.1 0.075</XY>
-            <XY>4.7 0.075</XY>
-            <XY>5.4 0.003</XY>
-            <XY>6 0</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
-        <Constant name="OrganNumber">
-          <Value type="text" description="Value">5</Value>
-        </Constant>
-        <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
-		This function calculates DM demand beyond the start stage as the product of current organ wt (g), relative growth rate and the specified organ number.
-		</Memo>
-      </RelativeGrowthRateDemandFunction>
-    </Folder>
-    <Folder name="Structure functions">
-      <HeightFunction>
-        <Memo> 
-			This Function takes potential height increment for the day from the PotentialHeight function then multiplies it by the smallest of any other childern (stress) functions and returns this number
-		</Memo>
-      </HeightFunction>
-      <CerealFinalNodeNumber>
-        <PhotoperiodSensitivity type="text" description="Number of additional leaves added per hour reduction in photoperiod">.4</PhotoperiodSensitivity>
-        <SaturationPhotoperiod type="text" description="Photoperiod that minimises leaf number">16</SaturationPhotoperiod>
-        <MaximumMainStemNodeNumber type="text" description="Number of additional leaves added per hour reduction in photoperiod">26</MaximumMainStemNodeNumber>
-        <MinimumMainStemNodeNumber type="text" description="Photoperiod that minimises leaf number">7</MinimumMainStemNodeNumber>
-        <PhotoperiodFunction name="Photoperiod">
-          <Twilight type="text" description="Twilight">-6</Twilight>
-        </PhotoperiodFunction>
-        <Memo> 
-			This Function calculates the final mainstem leaf number using the approaches outlined by Jamieson and Brooking and implemented in the SIRIUS wheat model.
-			Note:  This function is dependent on the FacultativeVernalisationPhase
-			It works something like this:  
-			- The crop will not comitt to a final leaf number until the crop complets its juvinle phase.  Juvinalisy ends in 3 ways.
-			   1. Spring crop types are "borne" vernalised and end their juvinle phase at leaf number 3.
-			   2. Winter crop types will end their juvinle phase when their vernalisation requirement is fully saturated.
-			   3. Winter crop types may also end their juvenile phase when the number of primordia accumulated exceeds the attainable leaf number which starts at a maximum and decreases as the crop progresses toward saturation of its vernalisation requirement.  Thus a crop will eventually end its juvinele phase even if it is not vernalised and partial vernalisation will shorten this phase.
-		    - Once the Juvenile phase is complete the final leaf number responds to photo period with shorter photoperiods increasing leaf number.  
-			- Final leaf number will change daily in response to photoperiod until primordia number equals the final leaf number + 4.  At this point final leaf number is fixed and will not change.
-			</Memo>
-      </CerealFinalNodeNumber>
-      <PhaseLengthFinalNodeNumber>
-        <MaximumMainStemNodeNumber type="text" description="Maximum number of mainstem leaves that the plant can produce">26</MaximumMainStemNodeNumber>
-        <Memo> 
-			This Function allows final node number to increase as primordia are initiated and it is fixed at the value or primordia that are initiated when initiation finishes.  
-			</Memo>
-      </PhaseLengthFinalNodeNumber>
-      <CerealFinalNodeNumber name="CerealFinalNodeNumber1">
-        <PhotoperiodSensitivity type="text" description="Number of additional leaves added per hour reduction in photoperiod">.4</PhotoperiodSensitivity>
-        <SaturationPhotoperiod type="text" description="Photoperiod that minimises leaf number">16</SaturationPhotoperiod>
-        <MaximumMainStemNodeNumber type="text" description="Number of additional leaves added per hour reduction in photoperiod">26</MaximumMainStemNodeNumber>
-        <MinimumMainStemNodeNumber type="text" description="Photoperiod that minimises leaf number">7</MinimumMainStemNodeNumber>
-        <PhotoperiodFunction name="Photoperiod">
-          <Twilight type="text" description="Twilight">-6</Twilight>
-        </PhotoperiodFunction>
-        <Memo> 
-			This Function calculates the final mainstem leaf number using the approaches outlined by Jamieson and Brooking and implemented in the SIRIUS wheat model.
-			Note:  This function is dependent on the FacultativeVernalisationPhase
-			It works something like this:  
-			- The crop will not comitt to a final leaf number until the crop complets its juvinle phase.  Juvinalisy ends in 3 ways.
-			   1. Spring crop types are "borne" vernalised and end their juvinle phase at leaf number 3.
-			   2. Winter crop types will end their juvinle phase when their vernalisation requirement is fully saturated.
-			   3. Winter crop types may also end their juvenile phase when the number of primordia accumulated exceeds the attainable leaf number which starts at a maximum and decreases as the crop progresses toward saturation of its vernalisation requirement.  Thus a crop will eventually end its juvinele phase even if it is not vernalised and partial vernalisation will shorten this phase.
-		    - Once the Juvenile phase is complete the final leaf number responds to photo period with shorter photoperiods increasing leaf number.  
-			- Final leaf number will change daily in response to photoperiod until primordia number equals the final leaf number + 4.  At this point final leaf number is fixed and will not change.
-			</Memo>
-      </CerealFinalNodeNumber>
-      <PhaseLengthFinalNodeNumber name="PhaseLengthFinalNodeNumber1">
-        <MaximumMainStemNodeNumber type="text" description="Maximum number of mainstem leaves that the plant can produce">26</MaximumMainStemNodeNumber>
-        <Memo> 
-			This Function allows final node number to increase as primordia are initiated and it is fixed at the value or primordia that are initiated when initiation finishes.  
-			</Memo>
-      </PhaseLengthFinalNodeNumber>
-    </Folder>
-    <AccumulateFunction>
-      <StartStageName type="text" description="StartStageName">TuberInitiation</StartStageName>
-      <EndStageName type="text" description="StartStageName">Maturity</EndStageName>
-      <Memo>This function accumlates the daily values of all childern functions between the start and end phases.</Memo>
-    </AccumulateFunction>
-    <AddFunction>
-      <Memo>Sum the values of the children of this node.  Drop on childern nodes as appropriate</Memo>
-    </AddFunction>
-    <AgeCalculatorFunction>
-      <Memo>This function returns the age (in years) of the plant since initialisation</Memo>
-    </AgeCalculatorFunction>
-    <AirTemperatureFunction>
-      <XYPairs>
-        <XY>0 0</XY>
-        <XY>30 30</XY>
-        <XY>40 0</XY>
-      </XYPairs>
-      <Memo>This function uses max and min air temperature, three hourly temperature interpolation and the temperature threshold specified to return a daily thermal time value</Memo>
-    </AirTemperatureFunction>
-    <BellCurveFunction>
-      <LinearInterpolationFunction name="LargestLeaf">
-        <XProperty type="text" description="XProperty">
-        </XProperty>
-        <XYPairs />
-        <Memo> Position of the largest leaf up the main-stem</Memo>
-      </LinearInterpolationFunction>
-      <LinearInterpolationFunction name="AreaMax">
-        <XProperty type="text" description="XProperty">
-        </XProperty>
-        <XYPairs />
-        <Memo> Area of the largest leaf of a plant (mm2)</Memo>
-      </LinearInterpolationFunction>
-      <LinearInterpolationFunction name="Breadth">
-        <XProperty type="text" description="XProperty">
-        </XProperty>
-        <XYPairs />
-      </LinearInterpolationFunction>
-      <LinearInterpolationFunction name="Skewness">
-        <XProperty type="text" description="XProperty">
-        </XProperty>
-        <XYPairs />
-      </LinearInterpolationFunction>
-      <Memo> Calculates the maximum leaf size (mm2/leaf) given its node position (Elings, 2000 - Agronomy Journal 92, 436-444)</Memo>
-    </BellCurveFunction>
-    <Constant>
-      <Value type="text" description="Value">401</Value>
-    </Constant>
-    <DivideFunction>
-      <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values.  Drop on node as appropriate </Memo>
-    </DivideFunction>
-    <ExponentialFunction>
-      <A type="text" description="A">1.0</A>
-      <B type="text" description="B">1.0</B>
-      <C type="text" description="C">1.0</C>
-      <Memo>Takes the value of the child as the x value and returns the y value from a exponential of the form y = A * B * exp(x * C)</Memo>
-    </ExponentialFunction>
-    <ExpressionFunction>
-      <Expression type="text" description="Math Expression">1.0*Leaf.LAI</Expression>
-      <Memo>Evaluate a mathematical expression using the EvaluateExpression dll. 
-Obs: Expression can contain variable names from Plant2
-</Memo>
-    </ExpressionFunction>
-    <ExternalVariable>
-      <VariableName type="text" description="Variable Name">lucerne2.LeafLAI</VariableName>
-      <Memo>Returns the value of a nominated external APSIM numerical variable.
-
-The naming convention to refer to variables external to Plant2
-differs from the one used in other Plant2 functions.
-
-It is the same as the one used for outputfile variables and 
-APSIM manager module scripts.
-
-General Format:
-
-[component_name.]variable_name
-
-</Memo>
-    </ExternalVariable>
-    <LinearInterpolationFunction>
-      <XProperty type="text" description="XProperty">Phenology.Vernalisation.CrownTemperature</XProperty>
-      <XYPairs>
-        <XY>0 0</XY>
-        <XY>26 26</XY>
-        <XY>34 0</XY>
-      </XYPairs>
-      <Memo>Takes the current value of the XProperty and returns the corresponding y value from the XY maxtix specified</Memo>
-    </LinearInterpolationFunction>
-    <MaximumFunction>
-      <Memo>Returns the maximum value of all children functions.  Drop on nodes as appropriate</Memo>
-    </MaximumFunction>
-    <MinimumFunction>
-      <Memo>Returns the minimum value of all children functions.  Drop on nodes as appropriate</Memo>
-    </MinimumFunction>
-    <MultiplyFunction>
-      <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
-    </MultiplyFunction>
-    <OnEventFunction>
-      <Event type="text" description="Event">EndJuvenile</Event>
-      <LinearInterpolationFunction name="TemporaryTarget">
-        <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+    </PotentialSizeDemandFunction>
+    <RelativeGrowthRateDemandFunction>
+      <InitialWt>500.0</InitialWt>
+      <InitialStageName>TuberInitiation</InitialStageName>
+      <LinearInterpolationFunction name="RelativeGrowthRate">
+        <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
         <XYPairs>
-          <XY>10 700</XY>
-          <XY>13 379</XY>
-          <XY>14.5 295</XY>
-          <XY>16.5 243</XY>
-          <XY>24 243</XY>
+          <XY>3 0</XY>
+          <XY>4 0</XY>
+          <XY>4.1 0.075</XY>
+          <XY>4.7 0.075</XY>
+          <XY>5.4 0.003</XY>
+          <XY>6 0</XY>
         </XYPairs>
       </LinearInterpolationFunction>
-      <Memo>Returns a value of 0 until the specified event is reached.  Then it is reset to the value returend by its child function and returns that value for the remainder of the simulation</Memo>
-    </OnEventFunction>
-    <PhaseBasedSwitch>
-      <Start>
-      </Start>
-      <End>
-      </End>
-      <Memo>Returns a value of 1 if crop is between start and finish stages and zero if not.  
-		Applied in model code but can not be nested with other functions.
-        </Memo>
-    </PhaseBasedSwitch>
-    <PhaseLookup>
-      <PhaseLookupValue>
-        <Start>
-        </Start>
-        <End>
-        </End>
-        <Constant name="Function">
-          <Value type="text">
-          </Value>
-        </Constant>
-      </PhaseLookupValue>
-      <Memo>Returns the value of the "PhaseLookupValue" functions child if phenology is between the specified start and end value.  Multiple "PhaseLookupValue" functions can be added to this function returning different values durring different phases.  Function returns 0 if none of the "PhaseLookupValue" are in phase </Memo>
-    </PhaseLookup>
-    <PhotoperiodDeltaFunction>
-      <Twilight type="text" description="Twilight">-6</Twilight>
-      <Memo>Returns the change of photoperiod each day. Twilight is the sun angle below the horizon for beginning and ending photoperiods </Memo>
-    </PhotoperiodDeltaFunction>
-    <PhotoperiodFunction>
-      <Twilight type="text" description="Twilight">-6</Twilight>
-      <Memo>Returns the value of photoperiod.  Twilight is the sun angle below the horizon for beginning and ending photoperiods</Memo>
-    </PhotoperiodFunction>
-    <PowerFunction>
-      <Exponent type="text" description="Exponent">1.0</Exponent>
-      <Memo>Raises the value of the child to the power of the especified exponent parameter</Memo>
-    </PowerFunction>
-    <SigmoidFunction>
-      <Xmax type="text" description="Xmax">1.0</Xmax>
-      <Xo type="text" description="Xo">1.0</Xo>
-      <b type="text" description="b">1.0</b>
-      <Memo>Takes the value of the child as the x value and returns the y value from a sigmoid of the form y = Xmax * 1/1+exp(-(x-Xo)/b)</Memo>
-    </SigmoidFunction>
-    <SoilTemperatureDepthFunction>
-      <Depth type="text" description="Soil depth(mm)">10</Depth>
-      <Memo>Return soil temperature (oC) from a specified soil profile layer.</Memo>
-    </SoilTemperatureDepthFunction>
-    <SoilTemperatureFunction>
-      <Depth type="text" description="Soil depth(mm)">10</Depth>
-      <Memo>This function uses max and min soil surface temperature, three hourly temperature interpolation and the temperature threshold specified to return a daily thermal time value</Memo>
-    </SoilTemperatureFunction>
-    <StageBasedInterpolation>
-      <Stages>Germination Emergence 50%Anthesis StartGrainFill Maturity </Stages>
-      <Values>  0.93         0.93      0.93    0.93            0.90</Values>
-      <Memo>Returns value interpolated between the specified values depending on the progress between phases </Memo>
-    </StageBasedInterpolation>
-    <SubtractFunction>
-      <Memo>From the first child value of this node subtract the values of the subsequent children</Memo>
-    </SubtractFunction>
-    <WeightedTemperatureFunction>
-      <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
-      <XYPairs>
-        <XY>5 0</XY>
-        <XY>30 30</XY>
-        <XY>40 0</XY>
-      </XYPairs>
-      <Memo>This Function calculates a mean dail temperature from Max and Min weighted toward Max according to the specified MaximumTemperatureWeighting factor.  This is then passed into the XY matrix as the x property and the function returns the y value</Memo>
-    </WeightedTemperatureFunction>
-    <VariableReference>
-      <VariableName type="text" description="Variable Name">lucerne2.LeafLAI</VariableName>
-      <Memo>Returns the value of a nominated Plant2 variable.</Memo>
-    </VariableReference>
+      <Constant name="OrganNumber">
+        <Value type="text" description="Value">5</Value>
+      </Constant>
+      <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
+		This function calculates DM demand beyond the start stage as the product of current organ wt (g), relative growth rate and the specified organ number.
+		</Memo>
+    </RelativeGrowthRateDemandFunction>
+  </Folder>
+  <Folder name="Structure functions">
+    <HeightFunction>
+      <Memo> 
+			This Function takes potential height increment for the day from the PotentialHeight function then multiplies it by the smallest of any other childern (stress) functions and returns this number
+		</Memo>
+    </HeightFunction>
+    <CerealFinalNodeNumber>
+      <PhotoperiodSensitivity type="text" description="Number of additional leaves added per hour reduction in photoperiod">.4</PhotoperiodSensitivity>
+      <SaturationPhotoperiod type="text" description="Photoperiod that minimises leaf number">16</SaturationPhotoperiod>
+      <MaximumMainStemNodeNumber type="text" description="Number of additional leaves added per hour reduction in photoperiod">26</MaximumMainStemNodeNumber>
+      <MinimumMainStemNodeNumber type="text" description="Photoperiod that minimises leaf number">7</MinimumMainStemNodeNumber>
+      <PhotoperiodFunction name="Photoperiod">
+        <Twilight type="text" description="Twilight">-6</Twilight>
+      </PhotoperiodFunction>
+      <Memo> 
+			This Function calculates the final mainstem leaf number using the approaches outlined by Jamieson and Brooking and implemented in the SIRIUS wheat model.
+			Note:  This function is dependent on the FacultativeVernalisationPhase
+			It works something like this:  
+			- The crop will not comitt to a final leaf number until the crop complets its juvinle phase.  Juvinalisy ends in 3 ways.
+			   1. Spring crop types are "borne" vernalised and end their juvinle phase at leaf number 3.
+			   2. Winter crop types will end their juvinle phase when their vernalisation requirement is fully saturated.
+			   3. Winter crop types may also end their juvenile phase when the number of primordia accumulated exceeds the attainable leaf number which starts at a maximum and decreases as the crop progresses toward saturation of its vernalisation requirement.  Thus a crop will eventually end its juvinele phase even if it is not vernalised and partial vernalisation will shorten this phase.
+		    - Once the Juvenile phase is complete the final leaf number responds to photo period with shorter photoperiods increasing leaf number.  
+			- Final leaf number will change daily in response to photoperiod until primordia number equals the final leaf number + 4.  At this point final leaf number is fixed and will not change.
+			</Memo>
+    </CerealFinalNodeNumber>
+    <PhaseLengthFinalNodeNumber>
+      <MaximumMainStemNodeNumber type="text" description="Maximum number of mainstem leaves that the plant can produce">26</MaximumMainStemNodeNumber>
+      <Memo> 
+			This Function allows final node number to increase as primordia are initiated and it is fixed at the value or primordia that are initiated when initiation finishes.  
+			</Memo>
+    </PhaseLengthFinalNodeNumber>
+    <CerealFinalNodeNumber name="CerealFinalNodeNumber1">
+      <PhotoperiodSensitivity type="text" description="Number of additional leaves added per hour reduction in photoperiod">.4</PhotoperiodSensitivity>
+      <SaturationPhotoperiod type="text" description="Photoperiod that minimises leaf number">16</SaturationPhotoperiod>
+      <MaximumMainStemNodeNumber type="text" description="Number of additional leaves added per hour reduction in photoperiod">26</MaximumMainStemNodeNumber>
+      <MinimumMainStemNodeNumber type="text" description="Photoperiod that minimises leaf number">7</MinimumMainStemNodeNumber>
+      <PhotoperiodFunction name="Photoperiod">
+        <Twilight type="text" description="Twilight">-6</Twilight>
+      </PhotoperiodFunction>
+      <Memo> 
+			This Function calculates the final mainstem leaf number using the approaches outlined by Jamieson and Brooking and implemented in the SIRIUS wheat model.
+			Note:  This function is dependent on the FacultativeVernalisationPhase
+			It works something like this:  
+			- The crop will not comitt to a final leaf number until the crop complets its juvinle phase.  Juvinalisy ends in 3 ways.
+			   1. Spring crop types are "borne" vernalised and end their juvinle phase at leaf number 3.
+			   2. Winter crop types will end their juvinle phase when their vernalisation requirement is fully saturated.
+			   3. Winter crop types may also end their juvenile phase when the number of primordia accumulated exceeds the attainable leaf number which starts at a maximum and decreases as the crop progresses toward saturation of its vernalisation requirement.  Thus a crop will eventually end its juvinele phase even if it is not vernalised and partial vernalisation will shorten this phase.
+		    - Once the Juvenile phase is complete the final leaf number responds to photo period with shorter photoperiods increasing leaf number.  
+			- Final leaf number will change daily in response to photoperiod until primordia number equals the final leaf number + 4.  At this point final leaf number is fixed and will not change.
+			</Memo>
+    </CerealFinalNodeNumber>
+    <PhaseLengthFinalNodeNumber name="PhaseLengthFinalNodeNumber1">
+      <MaximumMainStemNodeNumber type="text" description="Maximum number of mainstem leaves that the plant can produce">26</MaximumMainStemNodeNumber>
+      <Memo> 
+			This Function allows final node number to increase as primordia are initiated and it is fixed at the value or primordia that are initiated when initiation finishes.  
+			</Memo>
+    </PhaseLengthFinalNodeNumber>
   </Folder>
   <Folder name="Organs">
     <SimpleArbitrator>
@@ -375,9 +189,6 @@ General Format:
       </Constant>
     </SimpleArbitrator>
     <GenericAboveGroundOrgan>
-      <Memo>This is an example generic organ with all of the necessary child functions.  Parameter values need to be changed and functions can be replaced with different functions (and renamed with the same name) to make the desired functionality.  There may be bits missing from this still</Memo>
-      <Biomass name="Live" />
-      <Biomass name="Dead" />
       <Constant name="SenescenceRateFunction">
         <Value type="text" description="Value">0</Value>
         <Memo>Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.  </Memo>
@@ -403,13 +214,6 @@ General Format:
         <Value type="text" description="Value">1</Value>
         <Memo>The DMDemand Function sets demand for structural DM in Generic Organ.  The organ may also assimilate Non-structural DM up to a maximum non-structural fraction (StructuralFraction - 1).  Non-structural DM will only be assimilated if DM is left over after satisfying the Structural and Metabolic DM demands of organs</Memo>
       </Constant>
-      <AllometricDemandFunction name="DMDemandFunction">
-        <Power type="text" description="Power term in allometric power function">1.52</Power>
-        <XProperty type="text" description="Value from which demand is calculated">Leaf.LAI</XProperty>
-        <YProperty type="text" description="DM pool for which demand is calculated">Stem.Live.Wt</YProperty>
-        <Const type="text" description="Constant term in allometric power function">30.57</Const>
-        <Memo> DMDemandFunction sets demand for structural DM.  This is passed to the arbitrator which determines the eventual allocation</Memo>
-      </AllometricDemandFunction>
       <Constant name="InitialWtFunction">
         <Value type="text" description="Value">0</Value>
         <Memo>Sets the Wt of the organ on the day of initialisation</Memo>
@@ -432,11 +236,18 @@ General Format:
         <Values type="text" description="Values">   0.005             0.005          0.005              0.005                0.005       .005</Values>
         <Memo>The MinimumNconc determins the organs essential N demand.  Essential N Demand is N is set by Live.Wt * MinimumNConc and is N the organ must take up to achieve its potential growth.  If the organ is not supplied with sufficient N to maintain MinimunNConc its growth will be constrained by the arbitrator.  All N taken up to MinimunNConc is placed in the StructuralPool and is not mobile</Memo>
       </StageBasedInterpolation>
+      <Memo>This is an example generic organ with all of the necessary child functions.  Parameter values need to be changed and functions can be replaced with different functions (and renamed with the same name) to make the desired functionality.  There may be bits missing from this still</Memo>
+      <Biomass name="Live" />
+      <Biomass name="Dead" />
+      <AllometricDemandFunction name="DMDemandFunction">
+        <Power type="text" description="Power term in allometric power function">1.52</Power>
+        <XProperty type="text" description="Value from which demand is calculated">Leaf.LAI</XProperty>
+        <YProperty type="text" description="DM pool for which demand is calculated">Stem.Live.Wt</YProperty>
+        <Const type="text" description="Constant term in allometric power function">30.57</Const>
+        <Memo> DMDemandFunction sets demand for structural DM.  This is passed to the arbitrator which determines the eventual allocation</Memo>
+      </AllometricDemandFunction>
     </GenericAboveGroundOrgan>
     <GenericBelowGroundOrgan>
-      <Memo>This is an example generic organ with all of the necessary child functions.  Parameter values need to be changed and functions can be replaced with different functions (and renamed with the same name) to make the desired functionality.  There may be bits missing from this still</Memo>
-      <Biomass name="Live" />
-      <Biomass name="Dead" />
       <Constant name="SenescenceRateFunction">
         <Value type="text" description="Value">0</Value>
         <Memo>Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.  </Memo>
@@ -462,13 +273,6 @@ General Format:
         <Value type="text" description="Value">1</Value>
         <Memo>The DMDemand Function sets demand for structural DM in Generic Organ.  The organ may also assimilate Non-structural DM up to a maximum non-structural fraction (StructuralFraction - 1).  Non-structural DM will only be assimilated if DM is left over after satisfying the Structural and Metabolic DM demands of organs</Memo>
       </Constant>
-      <AllometricDemandFunction name="DMDemandFunction">
-        <Power type="text" description="Power term in allometric power function">1.52</Power>
-        <XProperty type="text" description="Value from which demand is calculated">Leaf.LAI</XProperty>
-        <YProperty type="text" description="DM pool for which demand is calculated">Stem.Live.Wt</YProperty>
-        <Const type="text" description="Constant term in allometric power function">30.57</Const>
-        <Memo> DMDemandFunction sets demand for structural DM.  This is passed to the arbitrator which determines the eventual allocation</Memo>
-      </AllometricDemandFunction>
       <Constant name="InitialWtFunction">
         <Value type="text" description="Value">0</Value>
         <Memo>Sets the Wt of the organ on the day of initialisation</Memo>
@@ -491,12 +295,25 @@ General Format:
         <Values type="text" description="Values">   0.005             0.005          0.005              0.005                0.005       .005</Values>
         <Memo>The MinimumNconc determins the organs essential N demand.  Essential N Demand is N is set by Live.Wt * MinimumNConc and is N the organ must take up to achieve its potential growth.  If the organ is not supplied with sufficient N to maintain MinimunNConc its growth will be constrained by the arbitrator.  All N taken up to MinimunNConc is placed in the StructuralPool and is not mobile</Memo>
       </StageBasedInterpolation>
+      <Memo>This is an example generic organ with all of the necessary child functions.  Parameter values need to be changed and functions can be replaced with different functions (and renamed with the same name) to make the desired functionality.  There may be bits missing from this still</Memo>
+      <Biomass name="Live" />
+      <Biomass name="Dead" />
+      <AllometricDemandFunction name="DMDemandFunction">
+        <Power type="text" description="Power term in allometric power function">1.52</Power>
+        <XProperty type="text" description="Value from which demand is calculated">Leaf.LAI</XProperty>
+        <YProperty type="text" description="DM pool for which demand is calculated">Stem.Live.Wt</YProperty>
+        <Const type="text" description="Constant term in allometric power function">30.57</Const>
+        <Memo> DMDemandFunction sets demand for structural DM.  This is passed to the arbitrator which determines the eventual allocation</Memo>
+      </AllometricDemandFunction>
     </GenericBelowGroundOrgan>
     <Population>
       <Value>4</Value>
     </Population>
     <Arbitrator>
       <ArbitrationOption type="text" description="ArbitrationOption">PriorityAllocation</ArbitrationOption>
+      <Constant name="RetransWtNRatio">
+        <Value type="text" description="Value">0</Value>
+      </Constant>
       <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
 	  Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
 	  Wt_Step 2. In this step freshly fixed Wt is partitioned to organs based on their relative Structural and Metabolic demands such that if there is not enough freshly fixed Wt to meet these demands the organs with the highest demands get the greatest share of the photosynthesis.
@@ -523,9 +340,6 @@ General Format:
 	  Once these steps are complete the Arbitrator finally communicates to each organ its state changes as a result of arbitration.
 		   
         </Memo>
-      <Constant name="RetransWtNRatio">
-        <Value type="text" description="Value">0</Value>
-      </Constant>
     </Arbitrator>
     <HIReproductiveOrgan>
       <Biomass name="Live" />
@@ -545,37 +359,6 @@ General Format:
         </Constant>
         <Memo>FinalNodeNumber is an essential element of leaf as it determines how many mainstem leaves may appear.  TerminateFinalNodeNumber or PhotoperiodFactor functions are included FinalleafNumber may become less then MaximumNodeNo</Memo>
       </FinalNodeNumber>
-      <LeafCohort name="Leaves[1]">
-        <Rank>1</Rank>
-        <Area>900</Area>
-      </LeafCohort>
-      <LeafCohort name="Leaves[2]">
-        <Rank>2</Rank>
-        <Area>600</Area>
-      </LeafCohort>
-      <LeafCohort name="Leaves[3]">
-        <Rank>3</Rank>
-        <Area>300</Area>
-      </LeafCohort>
-      <Memo>The Leaf organ has 3 biomass pools, Structural, Metabolic and Non-Structural.</Memo>
-      <CompositeBiomass name="Live">
-        <Property>Leaf.Leaves[].Live</Property>
-      </CompositeBiomass>
-      <CompositeBiomass name="Dead">
-        <Property>Leaf.Leaves[].Dead</Property>
-      </CompositeBiomass>
-      <CompositeBiomass name="Total">
-        <Property>Leaf.Live</Property>
-        <Property>Leaf.Dead</Property>
-      </CompositeBiomass>
-      <ArrayBiomass name="CohortLive">
-        <ArraySize>Leaf.MaxNodeNo</ArraySize>
-        <Property>Leaf.Leaves[].Live</Property>
-      </ArrayBiomass>
-      <ArrayBiomass name="CohortDead">
-        <ArraySize>Leaf.MaxNodeNo</ArraySize>
-        <Property>Leaf.Leaves[].Dead</Property>
-      </ArrayBiomass>
       <AirTemperatureFunction name="ThermalTime">
         <XYPairs>
           <XY>0 0</XY>
@@ -663,49 +446,6 @@ For Potato the potential branching rate is the branching pattern that would be o
         <Value type="text" description="Value">0.8</Value>
         <Memo>Quantifies the relationship between Leaf area index and radiation interception.</Memo>
       </Constant>
-      <RUEModel name="Photosynthesis">
-        <Memo>Potential photosynthesis is set by the radiation use efficiency (RUE in gDM/MJ).  Stress and CO2 adjustments are applied as:
-Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
-        <Constant name="RUE">
-          <Value type="text" description="Value">1.2</Value>
-        </Constant>
-        <WeightedTemperatureFunction name="FT">
-          <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
-          <XYPairs>
-            <XY>2 0</XY>
-            <XY>12 1</XY>
-            <XY>24 1</XY>
-            <XY>34 0</XY>
-          </XYPairs>
-        </WeightedTemperatureFunction>
-        <LinearInterpolationFunction name="FVPD">
-          <XProperty type="text" description="XProperty">Leaf.Photosynthesis.VPD</XProperty>
-          <XYPairs>
-            <XY>0 1</XY>
-            <XY>10 1</XY>
-            <XY>50 1</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
-        <LinearInterpolationFunction name="FN">
-          <XProperty type="text" description="XProperty">Leaf.Fn</XProperty>
-          <XYPairs>
-            <XY>0 1</XY>
-            <XY>1 1</XY>
-            <XY>1.5 1</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
-        <LinearInterpolationFunction name="FW">
-          <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
-          <XYPairs>
-            <XY>0 0</XY>
-            <XY>0.4 1</XY>
-            <XY>1.5 1</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
-        <RUECO2Function name="Fco2">
-          <PhotosyntheticPathway>C3</PhotosyntheticPathway>
-        </RUECO2Function>
-      </RUEModel>
       <LinearInterpolationFunction name="SpecificLeafAreaMax">
         <XProperty type="text" description="XProperty">Leaf.RelativeLeafApperance</XProperty>
         <XYPairs>
@@ -852,11 +592,82 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
       <Constant name="InitialNConc">
         <Value type="text" description="Value">0</Value>
       </Constant>
+      <LeafCohort name="Leaves[1]">
+        <Rank>1</Rank>
+        <Area>900</Area>
+      </LeafCohort>
+      <LeafCohort name="Leaves[2]">
+        <Rank>2</Rank>
+        <Area>600</Area>
+      </LeafCohort>
+      <LeafCohort name="Leaves[3]">
+        <Rank>3</Rank>
+        <Area>300</Area>
+      </LeafCohort>
+      <Memo>The Leaf organ has 3 biomass pools, Structural, Metabolic and Non-Structural.</Memo>
+      <CompositeBiomass name="Live">
+        <Property>Leaf.Leaves[].Live</Property>
+      </CompositeBiomass>
+      <CompositeBiomass name="Dead">
+        <Property>Leaf.Leaves[].Dead</Property>
+      </CompositeBiomass>
+      <CompositeBiomass name="Total">
+        <Property>Leaf.Live</Property>
+        <Property>Leaf.Dead</Property>
+      </CompositeBiomass>
+      <ArrayBiomass name="CohortLive">
+        <ArraySize>Leaf.MaxNodeNo</ArraySize>
+        <Property>Leaf.Leaves[].Live</Property>
+      </ArrayBiomass>
+      <ArrayBiomass name="CohortDead">
+        <ArraySize>Leaf.MaxNodeNo</ArraySize>
+        <Property>Leaf.Leaves[].Dead</Property>
+      </ArrayBiomass>
+      <RUEModel name="Photosynthesis">
+        <Constant name="RUE">
+          <Value type="text" description="Value">1.2</Value>
+        </Constant>
+        <WeightedTemperatureFunction name="FT">
+          <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
+          <XYPairs>
+            <XY>2 0</XY>
+            <XY>12 1</XY>
+            <XY>24 1</XY>
+            <XY>34 0</XY>
+          </XYPairs>
+        </WeightedTemperatureFunction>
+        <LinearInterpolationFunction name="FVPD">
+          <XProperty type="text" description="XProperty">Leaf.Photosynthesis.VPD</XProperty>
+          <XYPairs>
+            <XY>0 1</XY>
+            <XY>10 1</XY>
+            <XY>50 1</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="FN">
+          <XProperty type="text" description="XProperty">Leaf.Fn</XProperty>
+          <XYPairs>
+            <XY>0 1</XY>
+            <XY>1 1</XY>
+            <XY>1.5 1</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="FW">
+          <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>0.4 1</XY>
+            <XY>1.5 1</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
+        <Memo>Potential photosynthesis is set by the radiation use efficiency (RUE in gDM/MJ).  Stress and CO2 adjustments are applied as:
+Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
+        <RUECO2Function name="Fco2">
+          <PhotosyntheticPathway>C3</PhotosyntheticPathway>
+        </RUECO2Function>
+      </RUEModel>
     </Leaf>
     <Nodule>
-      <Biomass name="Live" />
-      <Biomass name="Dead" />
-      <Memo>This organ give the arbitrator an N fixation potential depending on the SpecificNitrogenaseActivity of nodule and a number of stress multipliers.  It also deliveres teh metabolic cost of fixation to the arbitrator.</Memo>
       <Constant name="SpecificNitrogenaseActivity">
         <Value type="text" description="Value">45</Value>
         <Memo>Maximum potential N fixation defined as g of N fixed per g of root node in the absence of stresses and under high fixation demand.  Value taken from CropGro soybean model</Memo>
@@ -934,6 +745,9 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         <Value>0.0</Value>
         <Memo>is the proportion of LiveWt that is passed to Dead.Wt each day due to senesence</Memo>
       </Constant>
+      <Biomass name="Live" />
+      <Biomass name="Dead" />
+      <Memo>This organ give the arbitrator an N fixation potential depending on the SpecificNitrogenaseActivity of nodule and a number of stress multipliers.  It also deliveres teh metabolic cost of fixation to the arbitrator.</Memo>
     </Nodule>
     <ReproductiveOrgan>
       <MaximumSize />
@@ -955,11 +769,6 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
       <SpecificRootLength>40000</SpecificRootLength>
       <KNO3>0.02</KNO3>
       <KNH4>0.0</KNH4>
-      <Memo>Optional paramaters
-
-1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
-2.  NitrogenDemandSwitch.  Default value is 1 which means the organ always has a N demand if its N content is below maximum N conc.  If N demand needs to be switched off place a function on the organ named NitrogenDemandSwitch which returns a value of 1 when no demand is expressed.
-</Memo>
       <LinearInterpolationFunction name="KLModifier">
         <XProperty>Leaf.LAI</XProperty>
         <XYPairs>
@@ -1038,6 +847,11 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         <Memo>Stops the roots from demanding Nitrogen after final leaf stage
         </Memo>
       </PhaseBasedSwitch>
+      <Memo>Optional paramaters
+
+1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
+2.  NitrogenDemandSwitch.  Default value is 1 which means the organ always has a N demand if its N content is below maximum N conc.  If N demand needs to be switched off place a function on the organ named NitrogenDemandSwitch which returns a value of 1 when no demand is expressed.
+</Memo>
     </Root>
     <RootSWIM />
     <SimpleLeaf>
