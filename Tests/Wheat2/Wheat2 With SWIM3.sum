@@ -37,7 +37,7 @@ Paddock:
         do_stock
         post
         end_step
-     Simulation start date =  1/04/1940
+     Simulation start date =  1/06/1940
      Simulation end date   = 31/12/1941
      Time step =           = 1440 (mins)
 
@@ -52,6 +52,7 @@ Paddock:
         dd/mm/yyyy as Date
         LAI
         PhenologyStage
+        PhenologyCurrentStageName
         Yield
         Height
         LeafLiveWt
@@ -104,6 +105,11 @@ Paddock:
         PStressGrain
         PStressPhoto
         WaterStressExpansion
+        GrainProtein
+        GrainSize
+        RootWaterUptake
+        ZadokStage
+        GrainNConc
 
      Output file = Wheat2 With SWIM3.out
      Format = normal
@@ -303,7 +309,6 @@ Paddock:
            Totals  154797.3 12383.8   474.4    59.3    80.0     2.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-1 June 1940(Day of year=153), Sow on a fixed date: 
      Manager sending message :- wheat2 sow  population = 150, depth = 50, cultivar = hartog, maxcover = 1.0, budnumber = 1, rowspacing = 500, crop_class =
 Using SWIM3 for Soil Water Uptake.
 Crop Sow
@@ -374,23 +379,23 @@ Crop Sow
 11 June 1940(Day of year = 163), wheat2:
       Emergence
            biomass =           0.69 (g/m^2)   lai          =    0.03 (m^2/m^2)
-           stover N conc =     5.85 (%)     extractable sw =   25.87 (mm)
+           stover N conc =     5.85 (%)     extractable sw =   34.60 (mm)
 12 June 1940(Day of year = 164), wheat2:
       EndOfJuvenile
            biomass =           0.95 (g/m^2)   lai          =    0.03 (m^2/m^2)
-           stover N conc =     5.83 (%)     extractable sw =   25.68 (mm)
+           stover N conc =     5.83 (%)     extractable sw =   34.05 (mm)
 6 August 1940(Day of year = 219), wheat2:
       FloralInitiation
-           biomass =         110.30 (g/m^2)   lai          =    1.40 (m^2/m^2)
-           stover N conc =     1.69 (%)     extractable sw =  146.41 (mm)
+           biomass =          90.03 (g/m^2)   lai          =    1.13 (m^2/m^2)
+           stover N conc =     1.68 (%)     extractable sw =  164.38 (mm)
 11 September 1940(Day of year = 255), wheat2:
       Flowering
-           biomass =         337.09 (g/m^2)   lai          =    0.83 (m^2/m^2)
-           stover N conc =     0.72 (%)     extractable sw =  175.66 (mm)
+           biomass =         286.83 (g/m^2)   lai          =    0.71 (m^2/m^2)
+           stover N conc =     0.73 (%)     extractable sw =  202.58 (mm)
 17 September 1940(Day of year = 261), wheat2:
       StartGrainFill
-           biomass =         381.39 (g/m^2)   lai          =    0.65 (m^2/m^2)
-           stover N conc =     0.53 (%)     extractable sw =  163.38 (mm)
+           biomass =         326.96 (g/m^2)   lai          =    0.57 (m^2/m^2)
+           stover N conc =     0.54 (%)     extractable sw =  191.19 (mm)
 22 September 1940(Day of year=266), SWIM: 
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:           8.000 to:           4.000
@@ -399,66 +404,66 @@ Crop Sow
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:           7.250 to:           3.625
      Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           1.812 to:           0.906
+     ApsimSwim|apswim_swim - Changing dt value from:           1.813 to:           0.906
 23 September 1940(Day of year=267), SWIM: 
      Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           8.596 to:           4.298
+     ApsimSwim|apswim_swim - Changing dt value from:           8.636 to:           4.318
 15 October 1940(Day of year = 289), wheat2:
       EndGrainFill
-           biomass =         422.14 (g/m^2)   lai          =    0.18 (m^2/m^2)
-           stover N conc =     0.37 (%)     extractable sw =  151.39 (mm)
+           biomass =         367.10 (g/m^2)   lai          =    0.16 (m^2/m^2)
+           stover N conc =     0.37 (%)     extractable sw =  179.32 (mm)
 16 October 1940(Day of year = 290), wheat2:
       Maturity
-           biomass =         422.14 (g/m^2)   lai          =    0.16 (m^2/m^2)
-           stover N conc =     0.37 (%)     extractable sw =  150.99 (mm)
+           biomass =         367.10 (g/m^2)   lai          =    0.14 (m^2/m^2)
+           stover N conc =     0.37 (%)     extractable sw =  178.89 (mm)
 17 October 1940(Day of year = 291), wheat2:
       HarvestRipe
-           biomass =         422.14 (g/m^2)   lai          =    0.00 (m^2/m^2)
-           stover N conc =     0.37 (%)     extractable sw =  150.82 (mm)
+           biomass =         367.10 (g/m^2)   lai          =    0.00 (m^2/m^2)
+           stover N conc =     0.37 (%)     extractable sw =  178.71 (mm)
 17 October 1940(Day of year=291), Harvesting rule: 
      Manager sending message :- wheat2 harvest
 
- flowering day          =  255                           stover (kg/ha)         =     2796.1
- maturity day           =  290                           grain yield (kg/ha)    =     1425.3
- grain % water content  =   12.5                         grain yield wet (kg/ha)=     1781.7
- grain wt (g)           =    0.029                       grains/m^2             =     4884.6
- grains/plant           =   32.6                         maximum lai            =      1.458
- total above ground biomass (kg/ha)    =     4221.4
- live above ground biomass (kg/ha)     =     4221.4
- green above ground biomass (kg/ha)    =     3493.7
- senesced above ground biomass (kg/ha) =      727.8
- number of leaves       =     35.9
- DM Root:Shoot ratio    =     0.18                       Harvest Index          =       0.34
- Stover C:N ratio       =   109.56                       Root C:N ratio         =      42.95
- grain N percent        =     1.53                       total N content (kg/ha)=      32.00
- grain N uptake (kg/ha) =    21.79                       senesced N content (kg/ha)=    3.64
- green N content (kg/ha)=     6.57
+ flowering day          =  255                           stover (kg/ha)         =     2389.8
+ maturity day           =  290                           grain yield (kg/ha)    =     1281.1
+ grain % water content  =   12.5                         grain yield wet (kg/ha)=     1601.4
+ grain wt (g)           =    0.031                       grains/m^2             =     4175.7
+ grains/plant           =   27.8                         maximum lai            =      1.182
+ total above ground biomass (kg/ha)    =     3671.0
+ live above ground biomass (kg/ha)     =     3671.0
+ green above ground biomass (kg/ha)    =     3071.7
+ senesced above ground biomass (kg/ha) =      599.2
+ number of leaves       =     33.1
+ DM Root:Shoot ratio    =     0.17                       Harvest Index          =       0.35
+ Stover C:N ratio       =   109.42                       Root C:N ratio         =      42.72
+ grain N percent        =     1.55                       total N content (kg/ha)=      28.66
+ grain N uptake (kg/ha) =    19.92                       senesced N content (kg/ha)=    3.00
+ green N content (kg/ha)=     5.74
 
  Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
                          SowingToGermination        0.000        0.000        0.000        0.000
                       GerminationToEmergence        0.000        0.000        0.000        0.000
                     EmergenceToEndOfJuvenile        0.000        0.000        0.000        0.000
-             EndOfJuvenileToFloralInitiation        0.000        0.000        0.350        0.350
-                 FloralInitiationToFlowering        0.000        0.000        0.403        0.403
-                   FloweringToStartGrainFill        0.000        0.000        0.039        0.039
-                StartGrainFillToEndGrainFill        0.000        0.000        0.704        0.704
-                      EndGrainFillToMaturity        0.000        0.000        0.826        0.826
-                       MaturityToHarvestRipe        0.000        0.000        0.818        0.818
+             EndOfJuvenileToFloralInitiation        0.000        0.000        0.391        0.391
+                 FloralInitiationToFlowering        0.000        0.000        0.402        0.402
+                   FloweringToStartGrainFill        0.000        0.000        0.025        0.025
+                StartGrainFillToEndGrainFill        0.000        0.000        0.674        0.674
+                      EndGrainFillToMaturity        0.000        0.000        0.799        0.799
+                       MaturityToHarvestRipe        0.000        0.000        0.789        0.789
 
 
 Crop harvested.
     Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                      DM (kg/ha) =                2796.1                     0.0
-                      N  (kg/ha) =                  10.21                    0.00
+                      DM (kg/ha) =                2389.8                     0.0
+                      N  (kg/ha) =                   8.74                    0.00
 
     Organic matter removed from system:-      From Tops               From Roots
-                      DM (kg/ha) =                1425.3                     0.0
-                      N  (kg/ha) =                  21.79                    0.00
+                      DM (kg/ha) =                1281.1                     0.0
+                      N  (kg/ha) =                  19.92                    0.00
 
      Manager sending message :- wheat2 endcrop
     Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                      DM (kg/ha) =                   0.0                    74.6
-                      N  (kg/ha) =                   0.00                    0.69
+                      DM (kg/ha) =                   0.0                    63.2
+                      N  (kg/ha) =                   0.00                    0.59
 30 November 1940(Day of year=335), SWIM: 
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:           3.750 to:           1.875
@@ -475,25 +480,9 @@ Crop harvested.
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:           0.253 to:           0.126
      Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           4.181 to:           2.091
+     ApsimSwim|apswim_swim - Changing dt value from:           4.232 to:           2.116
      Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           1.045 to:           0.523
-     Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           3.733 to:           1.867
-     Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           0.933 to:           0.467
-     Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           3.736 to:           1.868
-     Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           0.934 to:           0.467
-     Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           3.726 to:           1.863
-     Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           0.932 to:           0.466
-     Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           4.143 to:           2.072
-     Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           3.699 to:           1.850
+     ApsimSwim|apswim_swim - Changing dt value from:           1.058 to:           0.529
 1 June 1941(Day of year=152), Sow on a fixed date: 
      Manager sending message :- wheat2 sow  population = 150, depth = 50, cultivar = hartog, maxcover = 1.0, budnumber = 1, rowspacing = 500, crop_class =
 Using SWIM3 for Soil Water Uptake.
@@ -565,79 +554,79 @@ Crop Sow
 10 June 1941(Day of year = 161), wheat2:
       Emergence
            biomass =           0.69 (g/m^2)   lai          =    0.03 (m^2/m^2)
-           stover N conc =     5.85 (%)     extractable sw =   44.26 (mm)
+           stover N conc =     5.85 (%)     extractable sw =   44.27 (mm)
 11 June 1941(Day of year = 162), wheat2:
       EndOfJuvenile
            biomass =           0.86 (g/m^2)   lai          =    0.03 (m^2/m^2)
-           stover N conc =     5.83 (%)     extractable sw =   42.60 (mm)
+           stover N conc =     5.83 (%)     extractable sw =   42.52 (mm)
 11 August 1941(Day of year = 223), wheat2:
       FloralInitiation
-           biomass =          76.08 (g/m^2)   lai          =    0.73 (m^2/m^2)
-           stover N conc =     1.44 (%)     extractable sw =  151.20 (mm)
+           biomass =          85.06 (g/m^2)   lai          =    0.84 (m^2/m^2)
+           stover N conc =     1.46 (%)     extractable sw =  153.92 (mm)
 16 September 1941(Day of year = 259), wheat2:
       Flowering
-           biomass =         189.52 (g/m^2)   lai          =    0.37 (m^2/m^2)
-           stover N conc =     0.70 (%)     extractable sw =  188.47 (mm)
+           biomass =         214.32 (g/m^2)   lai          =    0.44 (m^2/m^2)
+           stover N conc =     0.69 (%)     extractable sw =  194.00 (mm)
 23 September 1941(Day of year = 266), wheat2:
       StartGrainFill
-           biomass =         214.02 (g/m^2)   lai          =    0.27 (m^2/m^2)
-           stover N conc =     0.47 (%)     extractable sw =  180.04 (mm)
+           biomass =         242.22 (g/m^2)   lai          =    0.31 (m^2/m^2)
+           stover N conc =     0.47 (%)     extractable sw =  184.32 (mm)
 20 October 1941(Day of year = 293), wheat2:
       EndGrainFill
-           biomass =         230.94 (g/m^2)   lai          =    0.08 (m^2/m^2)
-           stover N conc =     0.37 (%)     extractable sw =  172.39 (mm)
+           biomass =         260.52 (g/m^2)   lai          =    0.09 (m^2/m^2)
+           stover N conc =     0.37 (%)     extractable sw =  176.07 (mm)
 21 October 1941(Day of year = 294), wheat2:
       Maturity
-           biomass =         230.94 (g/m^2)   lai          =    0.07 (m^2/m^2)
-           stover N conc =     0.37 (%)     extractable sw =  172.13 (mm)
+           biomass =         260.52 (g/m^2)   lai          =    0.08 (m^2/m^2)
+           stover N conc =     0.37 (%)     extractable sw =  175.80 (mm)
 22 October 1941(Day of year = 295), wheat2:
       HarvestRipe
-           biomass =         230.94 (g/m^2)   lai          =    0.00 (m^2/m^2)
-           stover N conc =     0.37 (%)     extractable sw =  172.07 (mm)
+           biomass =         260.52 (g/m^2)   lai          =    0.00 (m^2/m^2)
+           stover N conc =     0.37 (%)     extractable sw =  175.73 (mm)
 22 October 1941(Day of year=295), Harvesting rule: 
      Manager sending message :- wheat2 harvest
 
- flowering day          =  259                           stover (kg/ha)         =     1550.8
- maturity day           =  294                           grain yield (kg/ha)    =      758.6
- grain % water content  =   12.5                         grain yield wet (kg/ha)=      948.2
- grain wt (g)           =    0.026                       grains/m^2             =     2890.3
- grains/plant           =   19.3                         maximum lai            =      0.766
- total above ground biomass (kg/ha)    =     2309.4
- live above ground biomass (kg/ha)     =     2309.4
- green above ground biomass (kg/ha)    =     1911.5
- senesced above ground biomass (kg/ha) =      398.0
- number of leaves       =     32.0
+ flowering day          =  259                           stover (kg/ha)         =     1757.4
+ maturity day           =  294                           grain yield (kg/ha)    =      847.8
+ grain % water content  =   12.5                         grain yield wet (kg/ha)=     1059.7
+ grain wt (g)           =    0.026                       grains/m^2             =     3250.2
+ grains/plant           =   21.7                         maximum lai            =      0.869
+ total above ground biomass (kg/ha)    =     2605.2
+ live above ground biomass (kg/ha)     =     2605.2
+ green above ground biomass (kg/ha)    =     2152.3
+ senesced above ground biomass (kg/ha) =      452.9
+ number of leaves       =     32.7
  DM Root:Shoot ratio    =     0.19                       Harvest Index          =       0.33
- Stover C:N ratio       =   107.44                       Root C:N ratio         =      44.39
- grain N percent        =     1.54                       total N content (kg/ha)=      17.46
- grain N uptake (kg/ha) =    11.69                       senesced N content (kg/ha)=    1.99
- green N content (kg/ha)=     3.78
+ Stover C:N ratio       =   107.67                       Root C:N ratio         =      44.87
+ grain N percent        =     1.50                       total N content (kg/ha)=      19.29
+ grain N uptake (kg/ha) =    12.76                       senesced N content (kg/ha)=    2.26
+ green N content (kg/ha)=     4.26
 
  Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
                          SowingToGermination        0.000        0.000        0.000        0.000
                       GerminationToEmergence        0.000        0.000        0.000        0.000
                     EmergenceToEndOfJuvenile        0.000        0.000        0.000        0.000
-             EndOfJuvenileToFloralInitiation        0.000        0.000        0.414        0.414
-                 FloralInitiationToFlowering        0.000        0.000        0.441        0.441
-                   FloweringToStartGrainFill        0.000        0.000        0.134        0.134
-                StartGrainFillToEndGrainFill        0.000        0.000        0.722        0.722
-                      EndGrainFillToMaturity        0.000        0.000        0.730        0.730
-                       MaturityToHarvestRipe        0.000        0.000        0.718        0.718
+             EndOfJuvenileToFloralInitiation        0.000        0.000        0.395        0.395
+                 FloralInitiationToFlowering        0.000        0.000        0.446        0.446
+                   FloweringToStartGrainFill        0.000        0.000        0.152        0.152
+                StartGrainFillToEndGrainFill        0.000        0.000        0.737        0.737
+                      EndGrainFillToMaturity        0.000        0.000        0.741        0.741
+                       MaturityToHarvestRipe        0.000        0.000        0.730        0.730
 
 
 Crop harvested.
     Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                      DM (kg/ha) =                1550.8                     0.0
-                      N  (kg/ha) =                   5.77                    0.00
+                      DM (kg/ha) =                1757.4                     0.0
+                      N  (kg/ha) =                   6.53                    0.00
 
     Organic matter removed from system:-      From Tops               From Roots
-                      DM (kg/ha) =                 758.6                     0.0
-                      N  (kg/ha) =                  11.69                    0.00
+                      DM (kg/ha) =                 847.8                     0.0
+                      N  (kg/ha) =                  12.76                    0.00
 
      Manager sending message :- wheat2 endcrop
     Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                      DM (kg/ha) =                   0.0                    44.5
-                      N  (kg/ha) =                   0.00                    0.40
+                      DM (kg/ha) =                   0.0                    49.8
+                      N  (kg/ha) =                   0.00                    0.44
 26 October 1941(Day of year=299), SWIM: 
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:           7.362 to:           3.681
@@ -645,9 +634,9 @@ Crop harvested.
      ApsimSwim|apswim_swim - Changing dt value from:           7.362 to:           3.681
 28 October 1941(Day of year=301), SWIM: 
      Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           9.388 to:           4.694
+     ApsimSwim|apswim_swim - Changing dt value from:           9.409 to:           4.705
      Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           9.653 to:           4.826
+     ApsimSwim|apswim_swim - Changing dt value from:           9.648 to:           4.824
 16 November 1941(Day of year=320), SWIM: 
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:           7.500 to:           3.750

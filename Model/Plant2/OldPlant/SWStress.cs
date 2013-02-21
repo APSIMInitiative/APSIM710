@@ -39,13 +39,13 @@ public class SWStress
     [Link]
     Function PhenoGrainFillingFactor = null;
 
-    [Output("swdef_Photo")]
+    [Output("WaterStressPhoto")]
     public double PhotoStress { get { return 1 - Photo; } }
-    [Output("swdef_Pheno")]
+    [Output("WaterStressPheno")]
     public double PhenoStress { get { return 1 - Pheno; } }
-    [Output("swdef_expan")]
+    [Output("WaterStressExpansion")]
     public double ExpansionStress { get { return 1 - Expansion; } }
-    [Output("swdef_Fixation")]
+    [Output("WaterStressFixation")]
     public double FixationStress { get { return 1 - Fixation; } }
 
     public double Photo { get { return _Photo; } }

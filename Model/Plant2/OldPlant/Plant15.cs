@@ -174,6 +174,16 @@ public class Plant15
     }
 
     [Output]
+    [Units("mm")]
+    public double EP
+    {
+        get
+        {
+            return WaterDemand;
+        }
+    }
+
+    [Output]
     [Units("kg/ha")]
     public double Biomass { get { return AboveGround.Wt * 10; } } // convert to kg/ha
 

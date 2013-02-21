@@ -88,6 +88,14 @@ public class Phenology
         }
     }
 
+    public double FractionInCurrentPhase
+    {
+        get
+        {
+            return Stage - (int) Stage;
+        }
+    }
+
     /// <summary>
     /// Constructor
     /// </summary>

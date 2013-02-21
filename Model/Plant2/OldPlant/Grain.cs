@@ -312,10 +312,44 @@ public class Grain : BaseOrgan1, AboveGround, Reproductive
     public double GrainNo { get; private set; }
 
     [Output]
+    [Units("%")]
+    public double Protein
+    {
+        get
+        {
+            return NConc * 5.71;
+        }
+    }
+
+    [Output]
+    [Units("%")]
+    private double NConc
+    {
+        get
+        {
+            return MathUtility.Divide(Live.N + Dead.N,
+                                      Live.Wt + Dead.Wt,
+                                      0.0) * Conversions.fract2pcnt;
+        }
+    }
+
+    [Output]
     public double Wt { get { return Live.Wt; } }
 
     [Output]
     public double N { get { return Live.N; } }
+
+    [Output]
+    [Units("kg/ha")]
+    public double Size
+    {
+        get
+        {
+            return MathUtility.Divide(Live.Wt + Dead.Wt,
+                                      GrainNo,
+                                      0.0);
+        }
+    }
 
     internal double NDemand2 { get { return MathUtility.Constrain(NDemand - dlt_n_senesced_retrans - Growth.N, 0.0, double.MaxValue); } }
     internal void doProcessBioDemand()

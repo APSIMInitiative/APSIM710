@@ -572,7 +572,22 @@ public class Root1 : BaseOrgan1, BelowGround
 
     #region Public interface specific to Root
     [Output("RootDepth")]
+    [Units("mm")]
     public double RootDepth = 0;
+
+    [Output("RootWaterUptake")]
+    [Units("mm")]
+    public double[] RootSWUptake
+    {
+        get
+        {
+            double[] Uptake = dlt_sw_dep;
+            for (int i = 0; i < Uptake.Length; i++)
+                Uptake[i] = Math.Abs(Uptake[i]);
+            return Uptake;
+        }
+    }
+
     public double SWAvailRatio
     {
         get
