@@ -58,6 +58,14 @@ class VersionStamper
             Out.WriteLine("BUILD_NUMBER=" + RevisionNumber.ToString());
             Out.Close();
 
+            // Write the VersionInfo.bat
+            Out = new StreamWriter("VersionInfo.bat");
+            Out.WriteLine("@echo off");
+            Out.WriteLine("set MAJOR_VERSION=" + Major.ToString());
+            Out.WriteLine("set MINOR_VERSION=" + Minor.ToString());
+            Out.WriteLine("set BUILD_NUMBER=" + RevisionNumber.ToString());
+            Out.Close();
+
             // Write the VersionInfo.cs
             Out = new StreamWriter("VersionInfo.cs");
             Out.WriteLine("using System.Reflection;");

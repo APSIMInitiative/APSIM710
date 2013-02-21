@@ -822,7 +822,14 @@
       </Job>
       <Job name="Create SFX Binaries">
     		<WorkingDirectory>%APSIM%/Release</WorkingDirectory>
+		    <CommandLine>%APSIM%/Release/Release.bat %PatchFileName%</CommandLine>
 		    <CommandLineUnix>%APSIM%/Release/Release.sh %PatchFileName%</CommandLineUnix>
+      </Job>
+      <Job name="Upload SFX Binaries">
+        <DependsOn>Create SFX Binaries</DependsOn>
+   		<WorkingDirectory>%APSIM%/Release</WorkingDirectory>
+		<CommandLine>cmd.exe /c copy %PatchFileNameShort%.binaries.Win32.exe C:\inetpub\wwwroot\Files</CommandLine>
+		<CommandLineUnix>curl -T %PatchFileNameShort%.binaries.Linux.exe -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.binaries.Linux.exe</CommandLineUnix>
       </Job>
    </Target>
 
