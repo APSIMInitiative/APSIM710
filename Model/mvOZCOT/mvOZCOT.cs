@@ -1365,7 +1365,7 @@ namespace ManagedComponent.MvOZCOT
             addProperty("dn_plant", PROP_dn_plant, true, false, false, "kg/ha", false, "double", "daily increment of plant n to system", "daily increment of plant n to system");
             addProperty("assimilate", PROP_assimilate, true, false, false, "g/m2", false, "double", "new dry matter passed daily from s/r assimilation", "new dry matter passed daily from s/r assimilation");
             addProperty("growthWt", PROP_growthWt, true, false, false, "g/m2", false, "double", "same as assimilate", "same as assimilate");
-            addProperty("dm", PROP_dm, true, false, false, "kg/ha", false, "double", "total dry wt of crop", "Total dry wt of growing crop");
+            addProperty("dm", PROP_dm, true, false, false, "g/m2", false, "double", "total dry wt of crop", "Total dry wt of growing crop");
             addProperty("dm_green", PROP_dm_green, true, false, false, "g/m2", true, "double", "dry wt of growing crop (including reserve pool)", "dry wt of growing crop (including reserve pool)");
             addProperty("dm_senesced", PROP_dm_senesced, true, false, false, "g/m2", true, "double", "dry wt of senesced crop", "dry wt of senesced crop");
             addProperty("dlt_dm_live", PROP_dlt_dm_live, true, false, false, "g/m2", true, "double", "daily change in crop dry matter live (green) wt", "daily change in crop dry matter live (green) wt");
@@ -2410,7 +2410,10 @@ namespace ManagedComponent.MvOZCOT
 
             switch (iPropertyID)
             {
-               case PROP_crop_type: aValue.setValue(crop_type);
+                case PROP_crop_type: aValue.setValue(crop_type);
+                   break;
+
+                case PROP_plant_status: aValue.setValue(plant_status);
                    break;
 
                 case PROP_leaf_res_n_conc: aValue.setValue(leaf_res_n_conc);
@@ -2786,7 +2789,8 @@ namespace ManagedComponent.MvOZCOT
                     }
                     break;
 
-                case PROP_dm: aValue.setValue(dw_total * 10.0);  // g/m2  --> kg/ha
+                //case PROP_dm: aValue.setValue(dw_total * 10.0);  // g/m2  --> kg/ha
+                case PROP_dm: aValue.setValue(dw_total);  // g/m2  
                     break;
 
                 case PROP_dm_green:  // (g/m2)
@@ -3896,6 +3900,209 @@ namespace ManagedComponent.MvOZCOT
             return; // ozcot_get_drivers_daily
         }
 
+        // ====================================================================
+        public void ozcot_ResetVarsFlags()
+        {
+            // ====================================================================
+            //ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+            //      resets variables and flags for a new crop                   c
+            //ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+
+            crop_in = false;
+            zero_variables = false;
+            plant_status = status_out;
+
+            iend = 0;
+            iday = 0;
+            idayx = 0;
+            last_iday = 0;
+ 
+            jdate = 0;
+
+            i_def2 = 0;
+            j_def = 0;
+            DAS = 0;
+            nsince = 0;
+
+            tsno3 = 0.0;
+            tsnh4 = 0.0;
+            yest_tsno3 = 0.0;
+            yest_tsn = 0.0;
+            yest_tsnh4 = 0.0;
+
+            days_since_fert = 0;
+
+            //------------------------------------------------------------------------------
+            //      'bplnt' plant parameters
+            //------------------------------------------------------------------------------
+            istress = 0;
+            ireliefco = 0;
+            iemrg = 0;
+            isow = 0;
+            isq = 0;
+            lastlf = 0;
+            ppm = 0.0;
+            ppm_target = 0.0;
+            ppm_sown = 0.0;
+            ppm_emerge = 0.0;
+            ppm_establish = 0.0;
+
+
+            n_cutout = 0;  //count days of cutout
+            delayDD = 0.0;
+            accumRateTo1stSqr = 0.0;
+            delay_emerg = 0.0;
+            dd_emerg = 0.0;
+            nday_co = 0;
+            nwet_co = 0;
+            sum_tmx = 0.0;
+            ave_tx = 0.0;
+            fail_emrg = 0.0;
+            f_die = 0.0;
+
+            ddw_boll = 0.0;
+            ddw_leaf = 0.0;
+            ddw_root = 0.0;
+            ddw_root_max = 0.0;
+            ddw_stem = 0.0;
+            leaf_res = 0.0;
+            stem_res = 0.0;
+            root_res = 0.0;
+            leaf_res_n = 0.0;
+            stem_res_n = 0.0;
+            root_res_n = 0.0;
+            total_n = 0.0;
+            dn_plant = 0.0;
+            alint = 0.0;
+
+
+            //------------------------------------------------------------------------------
+            //      'bnitr' soil nitrogen transformation parameters
+            //------------------------------------------------------------------------------
+            uptakn = 0.0;
+           // availn = 0.0;
+
+            snaplc = 0.0;
+            applied_n = 0.0;
+            total_applied = 0.0;
+
+            //------------------------------------------------------------------------------
+            //      'fruits' parameters are numbers,weights,abscission counts
+            //      for bolls and squares.
+            //------------------------------------------------------------------------------
+            bgrvar = 0.0;
+            dd = 0.0;
+            ddmerg = 0.0;
+            sumdd = 0.0;
+
+            Array.Clear(frucat, 0, frucat.Length);
+            Array.Clear(lfru, 0, lfru.Length);
+            Array.Clear(dlai, 0, dlai.Length);
+            Array.Clear(ddw_l, 0, ddw_l.Length);
+            Array.Clear(bpsum, 0, bpsum.Length);
+            Array.Clear(fyzage, 0, fyzage.Length);
+            Array.Clear(fruno, 0, fruno.Length);
+            Array.Clear(fruwt, 0, fruwt.Length);
+            Array.Clear(frmark, 0, frmark.Length);
+            Array.Clear(fmkcat, 0, fmkcat.Length);
+            Array.Clear(sfmcat, 0, sfmcat.Length);
+
+            //daysqz = 0.0;
+            //daysfl = 0.0;
+            //daysop = 0.0;
+
+
+            //------------------------------------------------------------------------------
+            //      'totals' counts of squares, bolls, and sites at any given time
+            //------------------------------------------------------------------------------
+
+            size = 0.0;
+            bload = 0.0;
+            bollz = 0.0;
+            openz = 0.0;
+            openwt = 0.0;
+            sites = 0.0;
+            frudw_shed = 0.0;
+
+            sites1 = 0.0;
+            squarz = 0.0;
+            firstFlowerDOY = 0;
+            firstFlowerDAS = 0;
+            firstOpenBollDOY = 0;
+            firstOpenBollDAS = 0;
+
+            //------------------------------------------------------------------------------
+            //      'index' stress and survival indices.
+            //------------------------------------------------------------------------------
+            //carcap_c = 0.0;
+            //carcap_n = 0.0;
+            cutout = 0.0;
+            vnstrs = 1.0;
+            fnstrs = 1.0;
+            //rad = 0.0;
+            //pclint = 0.0;
+            //pcLint_frac = 0.0;
+            //carcap_c = 0.0;
+            //carcap_n = 0.0;
+
+            idayco = 0;
+            last_day = 0;
+
+            //------------------------------------------------------------------------------
+            //      'bpnitr' are for plant nitrogen.
+            //------------------------------------------------------------------------------
+            uptakn = 0.0;
+            plantn = 0.0;
+            frun = 0.0;
+            seed_nc = 0.0;
+
+            //------------------------------------------------------------------------------
+            //     /yield/ for output with yield
+            //------------------------------------------------------------------------------
+            alaiz = 0.0;
+            ilaiz = 0;
+            plntnz = 0.0;
+            iplntn = 0;
+            sqzx = 0.0;
+            isqzx = 0;
+
+            //------------------------------------------------------------------------------
+            //     /pick/ variables to simulated defoliation and picking
+            //------------------------------------------------------------------------------
+            j_pick = 0;
+            n_pick = 0;
+            n_def = 0;
+            i_def = 0;
+
+            dw_boll = 0.0;
+            dw_leaf = 0.0;
+            dw_root = 0.0;
+            dw_stem = 0.0;
+            dw_total = 0.0;
+            boll_n = 0.0;
+            leaf_n = 0.0;
+            stem_n = 0.0;
+            root_n = 0.0;
+            total_n = 0.0;
+            reserve = 0.0;
+            res_cap = 0.0;
+            root_feedback = 0.0;
+
+            height = 0.0;
+            //num_height = 0;
+
+            co2 = 0.0;
+            //num_co2_fert = 0;
+
+
+            //TODO: DBJ  Raise event to report component initialised?
+            //           and write Console line to report
+            //Console.WriteLine("OZCOT ResetVarsFlags() ");   
+
+            return;  //ozcot_ResetVarsFlags()
+        }
+
         
         // ====================================================================
         public void ozcot_set_other_module_vars()
@@ -4345,10 +4552,13 @@ namespace ManagedComponent.MvOZCOT
                 //         ! crop harvested. report status
 
                 // publish event "harvesting"
-                sendPublishEvent(evtHarvesting, false);
+               // sendPublishEvent(evtHarvesting, false);
 
                 ozcot_harvest_report();
                 ozcot_harvest_update();
+
+                // Re-Initialize the component completely for a new crop
+                ozcot_ResetVarsFlags();
             }
             else
             {
@@ -4381,7 +4591,7 @@ namespace ManagedComponent.MvOZCOT
 
             //  Crop harvested. Report status to summary file.
 
-            dm = dw_total * 10.0;
+            dm = dw_total * 10.0;  //dw_total seems to be in g/m2  while dm is being converted to kg/ha
             totnup = total_n * 10.0;
             if (openz > 0.0)
             {
@@ -4452,8 +4662,11 @@ namespace ManagedComponent.MvOZCOT
 
             //     ! update biomass and n pools.  different types of plant pools are affected differently.
 			//     ! =====================================================================================
+            //     
+            //     NOTE:  'dm' is traditionally g/m2  and  'wt' is kg/ha
+            //
 
-			dlt_dm_crop[root] = dw_root * gm2kg / sm2ha;
+			dlt_dm_crop[root] = dw_root * gm2kg / sm2ha;   //converting g/m2 to kg/ha
             dlt_dm_n[root] = root_n * gm2kg / sm2ha;
 			fraction_to_residue[root] = 0.0;
 

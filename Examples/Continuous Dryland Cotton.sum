@@ -1,0 +1,1377 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.5
+Title                  = Continuous Dryland Cotton
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
+   Component           "Cotton sowing rule" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component "Fertilise on days after sowing - top up" = %apsim%\Model\Manager.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                      "tracker" = %apsim%\Model\Tracker.dll
+   Component                       "Cotton" = %apsim%\model\mvOZCOT.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/06/2000
+     Simulation end date   = 31/08/2012
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\WeeWaa1889_2012.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        harvesting
+     Output variables:
+        dd/mm/yyyy as Date
+        dw_total
+        NUptake
+        yield
+        bolls_sc
+        lai_max
+        esw
+        InCropRain
+
+     Output file = Continuous Dryland Cotton.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Sowing fertiliser Initialisation --------------------------------------
+     Manager rules:
+     
+     SECTION:- cotton.sowing
+             fertiliser apply amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+     END of rules
+     
+
+------- Cotton sowing rule Initialisation -------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+           if (paddock_is_fallow() = 1 and fallowin <> 'yes' and (nextcrop = 0 or nextcrop = 'cotton')) then
+              if (date_within('1-oct, 10-nov') = 1) then
+     if (rain[3] >= 30 and esw >= 0) or
+         ('yes' = 'yes' and today = date('10-nov'))) then
+        choosenextcrop = 'yes'
+        cotton sow plants_pm =10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow =  1
+     endif
+     if today = date('10-nov') then
+        choosenextcrop = 'yes'
+     endif
+              endif
+           endif
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if ('cotton' = 'cotton') then
+       if (cotton.ozcot_status > 0) then
+           cotton harvest
+       endif
+                elseif (cotton.stagename = 'harvest_ripe' or cotton.plantstatus = 'dead') then
+       cotton  harvest
+       cotton  end_crop
+                endif
+     END of rules
+     
+
+------- Fertilise on days after sowing - top up Initialisation ----------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (cotton.daysaftersowing = 60) then
+     n_deficit = 250 - (no3(1) + nh4(1) + no3(2) + nh4(2) + no3(3) + nh4(3))
+     'fertiliser' apply amount = n_deficit (kg/ha), depth = 50 (mm), type = urea_n ()
+              endif
+     END of rules
+     
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.150  0.290  0.540  0.590  0.540  1.020  0.762  0.300
+          150.-  300.  0.260  0.290  0.530  0.580  0.530  1.030  0.190  0.300
+          300.-  600.  0.290  0.290  0.540  0.590  0.406  1.020  0.048  0.300
+          600.-  900.  0.290  0.290  0.540  0.580  0.290  1.020  0.000  0.300
+          900.- 1200.  0.300  0.300  0.520  0.570  0.300  1.060  0.000  0.300
+         1200.- 1500.  0.310  0.310  0.500  0.550  0.310  1.110  0.000  0.300
+         1500.- 1800.  0.320  0.320  0.500  0.550  0.320  1.120  0.000  0.300
+         1800.- 2100.  0.330  0.330  0.480  0.530  0.330  1.150  0.000  0.300
+         2100.- 2400.  0.340  0.340  0.470  0.520  0.340  1.180  0.000  0.300
+         2400.- 2700.  0.350  0.350  0.460  0.510  0.350  1.200  0.000  0.300
+         2700.- 3000.  0.360  0.360  0.440  0.490  0.360  1.250  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      43.50      37.50      37.50       7.50
+          150.-  300.      43.50      36.00      36.00       7.50
+          300.-  600.      87.00      34.80      75.00      15.00
+          600.-  900.      87.00       0.00      75.00      12.00
+          900.- 1200.      90.00       0.00      66.00      15.00
+         1200.- 1500.      93.00       0.00      57.00      15.00
+         1500.- 1800.      96.00       0.00      54.00      15.00
+         1800.- 2100.      99.00       0.00      45.00      15.00
+         2100.- 2400.     102.00       0.00      39.00      15.00
+         2400.- 2700.     105.00       0.00      33.00      15.00
+         2700.- 3000.     108.00       0.00      24.00      15.00
+          ---------------------------------------------------------
+               Totals     954.00     108.30     541.50     147.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          cotton    cotton        1000.0   400.0     5.0     0.0   0.181     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.2
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.40  1.04    9.95    0.92    0.00
+             2     8.80  0.89    3.25    0.15    0.00
+             3     9.00  0.89    6.43    0.31    0.00
+             4     9.20  0.89    5.21    0.31    0.00
+             5     9.20  0.77    5.41    0.32    0.00
+             6     9.10  0.45    5.66    0.33    0.00
+             7     9.00  0.27    5.72    0.34    0.00
+             8     9.00  0.22    5.87    0.35    0.00
+             9     8.90  0.16    6.02    0.35    0.00
+            10     8.90  0.13    6.12    0.36    0.00
+            11     8.90  0.12    6.38    0.38    0.00
+          ------------------------------------------------
+           Totals               66.01    4.10    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      15679.1  1254.3   232.9    29.1    19.3     0.5
+             2      13642.7  1091.4   107.8    13.5    16.6     0.4
+             3      27153.5  2172.3    80.5    10.1    12.3     0.3
+             4      27207.0  2176.6    27.0     3.4     9.1     0.2
+             5      24473.9  1957.9    12.1     1.5     6.7     0.2
+             6      14977.6  1198.2     7.4     0.9     5.0     0.1
+             7       9067.5   725.4     4.5     0.6     3.7     0.1
+             8       7586.2   606.9     3.8     0.5     2.7     0.1
+             9       5661.2   452.9     2.8     0.4     2.0     0.1
+            10       4677.7   374.2     2.3     0.3     1.5     0.0
+            11       4497.8   359.8     2.2     0.3     1.1     0.0
+          ---------------------------------------------------------
+           Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
+          ---------------------------------------------------------
+
+------- tracker Initialisation ------------------------------------------------
+     Tracker variables:
+        sum of rain on end_day from sowing to now as InCropRain
+
+
+------- OZCOT Initialisation ----------------------------------
+
+------- Start of simulation  --------------------------------------------------
+1 June 2000(Day of year=153): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "fallowin".
+     Variables should have a value before they are used in an expression.
+     Component name: Cotton sowing rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : fallowin = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "nextcrop".
+     Variables should have a value before they are used in an expression.
+     Component name: Cotton sowing rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : nextcrop = 0.00000
+15 October 2000(Day of year=289), Cotton sowing rule: 
+     Manager creating a new local string variable : choosenextcrop = yes
+     Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
+
+15 October 2000 (Day of year=289), cotton:  
+      Sowing
+
+
+        - Reading Cultivar Parameters
+         ---------------------------------------
+         Cultivar   =  S71BR
+         percent_L  =  40.00
+         scboll     =  5.0
+         respcon    =  0.016
+         sqcon      =  0.022
+         fcutout    =  0.5411
+         flai       =  0.5
+         ddisq      =  402.0
+         dlds_max   =  0.12
+         popcon     =  0.03633
+         acotyl     =  525.0
+         rlai       =  0.010
+         frudd      =  50  161  307  338  484  630  848  1071  
+         bltme      =  0.00  0.00  0.00  0.07  0.21  0.33  0.55  1.00  
+         wt         =  0.0104  0.0272  0.1441  0.0988  0.5042  0.9617  1.0000  0.5785  
+         fburr      =  1.23
+         rate_emergence       =  1.0
+         background_retention =  0.90
+
+15 October 2000(Day of year=289), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+15 October 2000(Day of year=289), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+
+
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth  Plants   Spacing    Cultivar   Skip 
+         Day no    mm     /m        mm        Name     Row  
+         ---------------------------------------------------
+           289    50.0    10.0    1000.0      S71BR      1
+         ---------------------------------------------------
+
+
+
+               Root Profile
+        -----------------------------
+            Layer          Lower 
+            Depth          Limit 
+             (cm)         (mm/mm) 
+        -----------------------------
+             15.0          0.290 
+             15.0          0.290 
+             30.0          0.290 
+             30.0          0.290 
+             30.0          0.300 
+             30.0          0.310 
+             30.0          0.320 
+             30.0          0.330 
+             30.0          0.340 
+             30.0          0.350 
+             30.0          0.360 
+        -----------------------------
+
+
+25 October 2000 (Day of year=299), cotton:
+    *** Crop emerged with 10.0 plants per m sq, 100% of target population of 10.0
+
+15 December 2000(Day of year=350), Fertilise on days after sowing - top up: 
+     Manager creating a new local real variable : n_deficit = 95.52058
+     Manager sending message :- fertiliser apply  amount = 95.52058 (kg/ha), depth = 50 (mm), type = urea_n
+15 December 2000(Day of year=350), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        95.52 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+21 February 2001 (Day of year=52), cotton: 
+         Defoliant spray   1
+3 March 2001 (Day of year=62), cotton: 
+         Defoliant spray   2
+13 March 2001 (Day of year=72), cotton: 
+         Crop to be picked and terminated.
+13 March 2001(Day of year=72), Harvesting rule: 
+     Manager sending message :- cotton harvest
+
+      Harvest
+
+
+      Days after sowing      =   149
+      bolls/m2               =   33.5        Lint (kg/ha)            =   356.0
+      N uptake (kg/ha)       =    101.9        bolls sc (g/boll)       =      2.7
+      max squares das (days) =   79          max lai das (days)      =    129
+      maximum squares/m2     =   95.6        maximum lai (m2/m2)     =      0.52
+      Total above ground biomass (kg/ha) =  4352.0
+
+
+15 October 2001(Day of year=288), Cotton sowing rule: 
+     Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
+
+15 October 2001 (Day of year=288), cotton:  
+      Sowing
+
+
+        - Reading Cultivar Parameters
+         ---------------------------------------
+         Cultivar   =  S71BR
+         percent_L  =  40.00
+         scboll     =  5.0
+         respcon    =  0.016
+         sqcon      =  0.022
+         fcutout    =  0.5411
+         flai       =  0.5
+         ddisq      =  402.0
+         dlds_max   =  0.12
+         popcon     =  0.03633
+         acotyl     =  525.0
+         rlai       =  0.010
+         frudd      =  50  161  307  338  484  630  848  1071  
+         bltme      =  0.00  0.00  0.00  0.07  0.21  0.33  0.55  1.00  
+         wt         =  0.0104  0.0272  0.1441  0.0988  0.5042  0.9617  1.0000  0.5785  
+         fburr      =  1.23
+         rate_emergence       =  1.0
+         background_retention =  0.90
+
+15 October 2001(Day of year=288), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+15 October 2001(Day of year=288), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+
+
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth  Plants   Spacing    Cultivar   Skip 
+         Day no    mm     /m        mm        Name     Row  
+         ---------------------------------------------------
+           288    50.0    10.0    1000.0      S71BR      1
+         ---------------------------------------------------
+
+
+
+               Root Profile
+        -----------------------------
+            Layer          Lower 
+            Depth          Limit 
+             (cm)         (mm/mm) 
+        -----------------------------
+             15.0          0.290 
+             15.0          0.290 
+             30.0          0.290 
+             30.0          0.290 
+             30.0          0.300 
+             30.0          0.310 
+             30.0          0.320 
+             30.0          0.330 
+             30.0          0.340 
+             30.0          0.350 
+             30.0          0.360 
+        -----------------------------
+
+
+26 October 2001 (Day of year=299), cotton:
+    *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
+
+15 December 2001(Day of year=349), Fertilise on days after sowing - top up: 
+     Manager sending message :- fertiliser apply  amount = -96.48598 (kg/ha), depth = 50 (mm), type = urea_n
+30 April 2002(Day of year=120), Harvesting rule: 
+     Manager sending message :- cotton harvest
+
+      Harvest
+
+
+      Days after sowing      =   197
+      bolls/m2               =   46.6        Lint (kg/ha)            =   768.9
+      N uptake (kg/ha)       =    93.9        bolls sc (g/boll)       =      4.1
+      max squares das (days) =   91          max lai das (days)      =    99
+      maximum squares/m2     =   78.5        maximum lai (m2/m2)     =      0.45
+      Total above ground biomass (kg/ha) =  4422.3
+
+
+10 November 2002(Day of year=314), Cotton sowing rule: 
+     Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
+
+10 November 2002 (Day of year=314), cotton:  
+      Sowing
+
+
+        - Reading Cultivar Parameters
+         ---------------------------------------
+         Cultivar   =  S71BR
+         percent_L  =  40.00
+         scboll     =  5.0
+         respcon    =  0.016
+         sqcon      =  0.022
+         fcutout    =  0.5411
+         flai       =  0.5
+         ddisq      =  402.0
+         dlds_max   =  0.12
+         popcon     =  0.03633
+         acotyl     =  525.0
+         rlai       =  0.010
+         frudd      =  50  161  307  338  484  630  848  1071  
+         bltme      =  0.00  0.00  0.00  0.07  0.21  0.33  0.55  1.00  
+         wt         =  0.0104  0.0272  0.1441  0.0988  0.5042  0.9617  1.0000  0.5785  
+         fburr      =  1.23
+         rate_emergence       =  1.0
+         background_retention =  0.90
+
+10 November 2002(Day of year=314), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+10 November 2002(Day of year=314), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+
+
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth  Plants   Spacing    Cultivar   Skip 
+         Day no    mm     /m        mm        Name     Row  
+         ---------------------------------------------------
+           314    50.0    10.0    1000.0      S71BR      1
+         ---------------------------------------------------
+
+
+
+               Root Profile
+        -----------------------------
+            Layer          Lower 
+            Depth          Limit 
+             (cm)         (mm/mm) 
+        -----------------------------
+             15.0          0.290 
+             15.0          0.290 
+             30.0          0.290 
+             30.0          0.290 
+             30.0          0.300 
+             30.0          0.310 
+             30.0          0.320 
+             30.0          0.330 
+             30.0          0.340 
+             30.0          0.350 
+             30.0          0.360 
+        -----------------------------
+
+
+17 November 2002 (Day of year=321), cotton:
+    *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
+
+10 January 2003(Day of year=10), Fertilise on days after sowing - top up: 
+     Manager sending message :- fertiliser apply  amount = -299.44977 (kg/ha), depth = 50 (mm), type = urea_n
+17 March 2003(Day of year=76), Harvesting rule: 
+     Manager sending message :- cotton harvest
+
+      Harvest
+
+
+      Days after sowing      =   127
+      bolls/m2               =   12.7        Lint (kg/ha)            =   124.6
+      N uptake (kg/ha)       =    42.6        bolls sc (g/boll)       =      2.5
+      max squares das (days) =   73          max lai das (days)      =    127
+      maximum squares/m2     =   66.7        maximum lai (m2/m2)     =      0.26
+      Total above ground biomass (kg/ha) =  2013.8
+
+
+10 November 2003(Day of year=314), Cotton sowing rule: 
+     Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
+
+10 November 2003 (Day of year=314), cotton:  
+      Sowing
+
+
+        - Reading Cultivar Parameters
+         ---------------------------------------
+         Cultivar   =  S71BR
+         percent_L  =  40.00
+         scboll     =  5.0
+         respcon    =  0.016
+         sqcon      =  0.022
+         fcutout    =  0.5411
+         flai       =  0.5
+         ddisq      =  402.0
+         dlds_max   =  0.12
+         popcon     =  0.03633
+         acotyl     =  525.0
+         rlai       =  0.010
+         frudd      =  50  161  307  338  484  630  848  1071  
+         bltme      =  0.00  0.00  0.00  0.07  0.21  0.33  0.55  1.00  
+         wt         =  0.0104  0.0272  0.1441  0.0988  0.5042  0.9617  1.0000  0.5785  
+         fburr      =  1.23
+         rate_emergence       =  1.0
+         background_retention =  0.90
+
+10 November 2003(Day of year=314), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+10 November 2003(Day of year=314), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+
+
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth  Plants   Spacing    Cultivar   Skip 
+         Day no    mm     /m        mm        Name     Row  
+         ---------------------------------------------------
+           314    50.0    10.0    1000.0      S71BR      1
+         ---------------------------------------------------
+
+
+
+               Root Profile
+        -----------------------------
+            Layer          Lower 
+            Depth          Limit 
+             (cm)         (mm/mm) 
+        -----------------------------
+             15.0          0.290 
+             15.0          0.290 
+             30.0          0.290 
+             30.0          0.290 
+             30.0          0.300 
+             30.0          0.310 
+             30.0          0.320 
+             30.0          0.330 
+             30.0          0.340 
+             30.0          0.350 
+             30.0          0.360 
+        -----------------------------
+
+
+18 November 2003 (Day of year=322), cotton:
+    *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
+
+10 January 2004(Day of year=10), Fertilise on days after sowing - top up: 
+     Manager sending message :- fertiliser apply  amount = -434.27795 (kg/ha), depth = 50 (mm), type = urea_n
+2 May 2004 (Day of year=123), cotton: 
+         Defoliant spray   1
+12 May 2004 (Day of year=133), cotton: 
+         Defoliant spray   2
+22 May 2004 (Day of year=143), cotton: 
+         Crop to be picked and terminated.
+22 May 2004(Day of year=143), Harvesting rule: 
+     Manager sending message :- cotton harvest
+
+      Harvest
+
+
+      Days after sowing      =   194
+      bolls/m2               =   83.7        Lint (kg/ha)            =   1395.9
+      N uptake (kg/ha)       =    145.8        bolls sc (g/boll)       =      4.2
+      max squares das (days) =   145          max lai das (days)      =    146
+      maximum squares/m2     =   69.5        maximum lai (m2/m2)     =      1.02
+      Total above ground biomass (kg/ha) =  6924.0
+
+
+20 October 2004(Day of year=294), Cotton sowing rule: 
+     Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
+
+20 October 2004 (Day of year=294), cotton:  
+      Sowing
+
+
+        - Reading Cultivar Parameters
+         ---------------------------------------
+         Cultivar   =  S71BR
+         percent_L  =  40.00
+         scboll     =  5.0
+         respcon    =  0.016
+         sqcon      =  0.022
+         fcutout    =  0.5411
+         flai       =  0.5
+         ddisq      =  402.0
+         dlds_max   =  0.12
+         popcon     =  0.03633
+         acotyl     =  525.0
+         rlai       =  0.010
+         frudd      =  50  161  307  338  484  630  848  1071  
+         bltme      =  0.00  0.00  0.00  0.07  0.21  0.33  0.55  1.00  
+         wt         =  0.0104  0.0272  0.1441  0.0988  0.5042  0.9617  1.0000  0.5785  
+         fburr      =  1.23
+         rate_emergence       =  1.0
+         background_retention =  0.90
+
+20 October 2004(Day of year=294), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+20 October 2004(Day of year=294), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+
+
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth  Plants   Spacing    Cultivar   Skip 
+         Day no    mm     /m        mm        Name     Row  
+         ---------------------------------------------------
+           294    50.0    10.0    1000.0      S71BR      1
+         ---------------------------------------------------
+
+
+
+               Root Profile
+        -----------------------------
+            Layer          Lower 
+            Depth          Limit 
+             (cm)         (mm/mm) 
+        -----------------------------
+             15.0          0.290 
+             15.0          0.290 
+             30.0          0.290 
+             30.0          0.290 
+             30.0          0.300 
+             30.0          0.310 
+             30.0          0.320 
+             30.0          0.330 
+             30.0          0.340 
+             30.0          0.350 
+             30.0          0.360 
+        -----------------------------
+
+
+29 October 2004 (Day of year=303), cotton:
+    *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
+
+20 December 2004(Day of year=355), Fertilise on days after sowing - top up: 
+     Manager sending message :- fertiliser apply  amount = -174.80930 (kg/ha), depth = 50 (mm), type = urea_n
+12 March 2005 (Day of year=71), cotton: 
+         Defoliant spray   1
+22 March 2005 (Day of year=81), cotton: 
+         Crop to be picked and terminated.
+22 March 2005(Day of year=81), Harvesting rule: 
+     Manager sending message :- cotton harvest
+
+      Harvest
+
+
+      Days after sowing      =   153
+      bolls/m2               =   96.2        Lint (kg/ha)            =   1877.8
+      N uptake (kg/ha)       =    147.7        bolls sc (g/boll)       =      4.9
+      max squares das (days) =   92          max lai das (days)      =    109
+      maximum squares/m2     =   93.6        maximum lai (m2/m2)     =      1.11
+      Total above ground biomass (kg/ha) =  7059.3
+
+
+10 November 2005(Day of year=314), Cotton sowing rule: 
+     Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
+
+10 November 2005 (Day of year=314), cotton:  
+      Sowing
+
+
+        - Reading Cultivar Parameters
+         ---------------------------------------
+         Cultivar   =  S71BR
+         percent_L  =  40.00
+         scboll     =  5.0
+         respcon    =  0.016
+         sqcon      =  0.022
+         fcutout    =  0.5411
+         flai       =  0.5
+         ddisq      =  402.0
+         dlds_max   =  0.12
+         popcon     =  0.03633
+         acotyl     =  525.0
+         rlai       =  0.010
+         frudd      =  50  161  307  338  484  630  848  1071  
+         bltme      =  0.00  0.00  0.00  0.07  0.21  0.33  0.55  1.00  
+         wt         =  0.0104  0.0272  0.1441  0.0988  0.5042  0.9617  1.0000  0.5785  
+         fburr      =  1.23
+         rate_emergence       =  1.0
+         background_retention =  0.90
+
+10 November 2005(Day of year=314), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+10 November 2005(Day of year=314), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+
+
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth  Plants   Spacing    Cultivar   Skip 
+         Day no    mm     /m        mm        Name     Row  
+         ---------------------------------------------------
+           314    50.0    10.0    1000.0      S71BR      1
+         ---------------------------------------------------
+
+
+
+               Root Profile
+        -----------------------------
+            Layer          Lower 
+            Depth          Limit 
+             (cm)         (mm/mm) 
+        -----------------------------
+             15.0          0.290 
+             15.0          0.290 
+             30.0          0.290 
+             30.0          0.290 
+             30.0          0.300 
+             30.0          0.310 
+             30.0          0.320 
+             30.0          0.330 
+             30.0          0.340 
+             30.0          0.350 
+             30.0          0.360 
+        -----------------------------
+
+
+19 November 2005 (Day of year=323), cotton:
+    *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
+
+10 January 2006(Day of year=10), Fertilise on days after sowing - top up: 
+     Manager sending message :- fertiliser apply  amount = -320.54279 (kg/ha), depth = 50 (mm), type = urea_n
+15 April 2006(Day of year=105), Harvesting rule: 
+     Manager sending message :- cotton harvest
+
+      Harvest
+
+
+      Days after sowing      =   156
+      bolls/m2               =   54.1        Lint (kg/ha)            =   948.0
+      N uptake (kg/ha)       =    66.2        bolls sc (g/boll)       =      4.4
+      max squares das (days) =   70          max lai das (days)      =    84
+      maximum squares/m2     =   62.6        maximum lai (m2/m2)     =      0.33
+      Total above ground biomass (kg/ha) =  3342.2
+
+
+10 November 2006(Day of year=314), Cotton sowing rule: 
+     Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
+
+10 November 2006 (Day of year=314), cotton:  
+      Sowing
+
+
+        - Reading Cultivar Parameters
+         ---------------------------------------
+         Cultivar   =  S71BR
+         percent_L  =  40.00
+         scboll     =  5.0
+         respcon    =  0.016
+         sqcon      =  0.022
+         fcutout    =  0.5411
+         flai       =  0.5
+         ddisq      =  402.0
+         dlds_max   =  0.12
+         popcon     =  0.03633
+         acotyl     =  525.0
+         rlai       =  0.010
+         frudd      =  50  161  307  338  484  630  848  1071  
+         bltme      =  0.00  0.00  0.00  0.07  0.21  0.33  0.55  1.00  
+         wt         =  0.0104  0.0272  0.1441  0.0988  0.5042  0.9617  1.0000  0.5785  
+         fburr      =  1.23
+         rate_emergence       =  1.0
+         background_retention =  0.90
+
+10 November 2006(Day of year=314), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+10 November 2006(Day of year=314), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+
+
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth  Plants   Spacing    Cultivar   Skip 
+         Day no    mm     /m        mm        Name     Row  
+         ---------------------------------------------------
+           314    50.0    10.0    1000.0      S71BR      1
+         ---------------------------------------------------
+
+
+
+               Root Profile
+        -----------------------------
+            Layer          Lower 
+            Depth          Limit 
+             (cm)         (mm/mm) 
+        -----------------------------
+             15.0          0.290 
+             15.0          0.290 
+             30.0          0.290 
+             30.0          0.290 
+             30.0          0.300 
+             30.0          0.310 
+             30.0          0.320 
+             30.0          0.330 
+             30.0          0.340 
+             30.0          0.350 
+             30.0          0.360 
+        -----------------------------
+
+
+19 November 2006 (Day of year=323), cotton:
+    *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
+
+10 January 2007(Day of year=10), Fertilise on days after sowing - top up: 
+     Manager sending message :- fertiliser apply  amount = -507.18973 (kg/ha), depth = 50 (mm), type = urea_n
+6 March 2007(Day of year=65), Harvesting rule: 
+     Manager sending message :- cotton harvest
+
+      Harvest
+
+
+      Days after sowing      =   116
+      bolls/m2               =   18.5        Lint (kg/ha)            =   287.1
+      N uptake (kg/ha)       =    32.4        bolls sc (g/boll)       =      3.9
+      max squares das (days) =   65          max lai das (days)      =    72
+      maximum squares/m2     =   53.3        maximum lai (m2/m2)     =      0.17
+      Total above ground biomass (kg/ha) =  1606.4
+
+
+27 October 2007(Day of year=300), Cotton sowing rule: 
+     Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
+
+27 October 2007 (Day of year=300), cotton:  
+      Sowing
+
+
+        - Reading Cultivar Parameters
+         ---------------------------------------
+         Cultivar   =  S71BR
+         percent_L  =  40.00
+         scboll     =  5.0
+         respcon    =  0.016
+         sqcon      =  0.022
+         fcutout    =  0.5411
+         flai       =  0.5
+         ddisq      =  402.0
+         dlds_max   =  0.12
+         popcon     =  0.03633
+         acotyl     =  525.0
+         rlai       =  0.010
+         frudd      =  50  161  307  338  484  630  848  1071  
+         bltme      =  0.00  0.00  0.00  0.07  0.21  0.33  0.55  1.00  
+         wt         =  0.0104  0.0272  0.1441  0.0988  0.5042  0.9617  1.0000  0.5785  
+         fburr      =  1.23
+         rate_emergence       =  1.0
+         background_retention =  0.90
+
+27 October 2007(Day of year=300), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+27 October 2007(Day of year=300), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+
+
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth  Plants   Spacing    Cultivar   Skip 
+         Day no    mm     /m        mm        Name     Row  
+         ---------------------------------------------------
+           300    50.0    10.0    1000.0      S71BR      1
+         ---------------------------------------------------
+
+
+
+               Root Profile
+        -----------------------------
+            Layer          Lower 
+            Depth          Limit 
+             (cm)         (mm/mm) 
+        -----------------------------
+             15.0          0.290 
+             15.0          0.290 
+             30.0          0.290 
+             30.0          0.290 
+             30.0          0.300 
+             30.0          0.310 
+             30.0          0.320 
+             30.0          0.330 
+             30.0          0.340 
+             30.0          0.350 
+             30.0          0.360 
+        -----------------------------
+
+
+3 November 2007 (Day of year=307), cotton:
+    *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
+
+27 December 2007(Day of year=361), Fertilise on days after sowing - top up: 
+     Manager sending message :- fertiliser apply  amount = -660.22681 (kg/ha), depth = 50 (mm), type = urea_n
+29 April 2008 (Day of year=120), cotton: 
+         Defoliant spray   1
+29 April 2008(Day of year=120), Harvesting rule: 
+     Manager sending message :- cotton harvest
+
+      Harvest
+
+
+      Days after sowing      =   185
+      bolls/m2               =   68.6        Lint (kg/ha)            =   1384.3
+      N uptake (kg/ha)       =    161.2        bolls sc (g/boll)       =      5.0
+      max squares das (days) =   79          max lai das (days)      =    138
+      maximum squares/m2     =   72.7        maximum lai (m2/m2)     =      0.91
+      Total above ground biomass (kg/ha) =  7841.6
+
+
+7 October 2008(Day of year=281), Cotton sowing rule: 
+     Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
+
+7 October 2008 (Day of year=281), cotton:  
+      Sowing
+
+
+        - Reading Cultivar Parameters
+         ---------------------------------------
+         Cultivar   =  S71BR
+         percent_L  =  40.00
+         scboll     =  5.0
+         respcon    =  0.016
+         sqcon      =  0.022
+         fcutout    =  0.5411
+         flai       =  0.5
+         ddisq      =  402.0
+         dlds_max   =  0.12
+         popcon     =  0.03633
+         acotyl     =  525.0
+         rlai       =  0.010
+         frudd      =  50  161  307  338  484  630  848  1071  
+         bltme      =  0.00  0.00  0.00  0.07  0.21  0.33  0.55  1.00  
+         wt         =  0.0104  0.0272  0.1441  0.0988  0.5042  0.9617  1.0000  0.5785  
+         fburr      =  1.23
+         rate_emergence       =  1.0
+         background_retention =  0.90
+
+7 October 2008(Day of year=281), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+7 October 2008(Day of year=281), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+
+
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth  Plants   Spacing    Cultivar   Skip 
+         Day no    mm     /m        mm        Name     Row  
+         ---------------------------------------------------
+           281    50.0    10.0    1000.0      S71BR      1
+         ---------------------------------------------------
+
+
+
+               Root Profile
+        -----------------------------
+            Layer          Lower 
+            Depth          Limit 
+             (cm)         (mm/mm) 
+        -----------------------------
+             15.0          0.290 
+             15.0          0.290 
+             30.0          0.290 
+             30.0          0.290 
+             30.0          0.300 
+             30.0          0.310 
+             30.0          0.320 
+             30.0          0.330 
+             30.0          0.340 
+             30.0          0.350 
+             30.0          0.360 
+        -----------------------------
+
+
+18 October 2008 (Day of year=292), cotton:
+    *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
+
+7 December 2008(Day of year=342), Fertilise on days after sowing - top up: 
+     Manager sending message :- fertiliser apply  amount = -527.04236 (kg/ha), depth = 50 (mm), type = urea_n
+12 April 2009(Day of year=102), Harvesting rule: 
+     Manager sending message :- cotton harvest
+
+      Harvest
+
+
+      Days after sowing      =   187
+      bolls/m2               =   85.6        Lint (kg/ha)            =   1425.9
+      N uptake (kg/ha)       =    138.0        bolls sc (g/boll)       =      4.2
+      max squares das (days) =   96          max lai das (days)      =    10
+      maximum squares/m2     =   81.1        maximum lai (m2/m2)     =      1.07
+      Total above ground biomass (kg/ha) =  6341.9
+
+
+29 October 2009(Day of year=302), Cotton sowing rule: 
+     Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
+
+29 October 2009 (Day of year=302), cotton:  
+      Sowing
+
+
+        - Reading Cultivar Parameters
+         ---------------------------------------
+         Cultivar   =  S71BR
+         percent_L  =  40.00
+         scboll     =  5.0
+         respcon    =  0.016
+         sqcon      =  0.022
+         fcutout    =  0.5411
+         flai       =  0.5
+         ddisq      =  402.0
+         dlds_max   =  0.12
+         popcon     =  0.03633
+         acotyl     =  525.0
+         rlai       =  0.010
+         frudd      =  50  161  307  338  484  630  848  1071  
+         bltme      =  0.00  0.00  0.00  0.07  0.21  0.33  0.55  1.00  
+         wt         =  0.0104  0.0272  0.1441  0.0988  0.5042  0.9617  1.0000  0.5785  
+         fburr      =  1.23
+         rate_emergence       =  1.0
+         background_retention =  0.90
+
+29 October 2009(Day of year=302), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+29 October 2009(Day of year=302), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+
+
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth  Plants   Spacing    Cultivar   Skip 
+         Day no    mm     /m        mm        Name     Row  
+         ---------------------------------------------------
+           302    50.0    10.0    1000.0      S71BR      1
+         ---------------------------------------------------
+
+
+
+               Root Profile
+        -----------------------------
+            Layer          Lower 
+            Depth          Limit 
+             (cm)         (mm/mm) 
+        -----------------------------
+             15.0          0.290 
+             15.0          0.290 
+             30.0          0.290 
+             30.0          0.290 
+             30.0          0.300 
+             30.0          0.310 
+             30.0          0.320 
+             30.0          0.330 
+             30.0          0.340 
+             30.0          0.350 
+             30.0          0.360 
+        -----------------------------
+
+
+6 November 2009 (Day of year=310), cotton:
+    *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
+
+29 December 2009(Day of year=363), Fertilise on days after sowing - top up: 
+     Manager sending message :- fertiliser apply  amount = -629.44354 (kg/ha), depth = 50 (mm), type = urea_n
+22 March 2010 (Day of year=81), cotton: 
+         Defoliant spray   1
+1 April 2010 (Day of year=91), cotton: 
+         Crop to be picked and terminated.
+1 April 2010(Day of year=91), Harvesting rule: 
+     Manager sending message :- cotton harvest
+
+      Harvest
+
+
+      Days after sowing      =   154
+      bolls/m2               =   80.5        Lint (kg/ha)            =   1640.8
+      N uptake (kg/ha)       =    137.4        bolls sc (g/boll)       =      5.1
+      max squares das (days) =   89          max lai das (days)      =    121
+      maximum squares/m2     =   79.6        maximum lai (m2/m2)     =      0.80
+      Total above ground biomass (kg/ha) =  6560.6
+
+
+9 November 2010(Day of year=313), Cotton sowing rule: 
+     Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
+
+9 November 2010 (Day of year=313), cotton:  
+      Sowing
+
+
+        - Reading Cultivar Parameters
+         ---------------------------------------
+         Cultivar   =  S71BR
+         percent_L  =  40.00
+         scboll     =  5.0
+         respcon    =  0.016
+         sqcon      =  0.022
+         fcutout    =  0.5411
+         flai       =  0.5
+         ddisq      =  402.0
+         dlds_max   =  0.12
+         popcon     =  0.03633
+         acotyl     =  525.0
+         rlai       =  0.010
+         frudd      =  50  161  307  338  484  630  848  1071  
+         bltme      =  0.00  0.00  0.00  0.07  0.21  0.33  0.55  1.00  
+         wt         =  0.0104  0.0272  0.1441  0.0988  0.5042  0.9617  1.0000  0.5785  
+         fburr      =  1.23
+         rate_emergence       =  1.0
+         background_retention =  0.90
+
+9 November 2010(Day of year=313), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+9 November 2010(Day of year=313), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+
+
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth  Plants   Spacing    Cultivar   Skip 
+         Day no    mm     /m        mm        Name     Row  
+         ---------------------------------------------------
+           313    50.0    10.0    1000.0      S71BR      1
+         ---------------------------------------------------
+
+
+
+               Root Profile
+        -----------------------------
+            Layer          Lower 
+            Depth          Limit 
+             (cm)         (mm/mm) 
+        -----------------------------
+             15.0          0.290 
+             15.0          0.290 
+             30.0          0.290 
+             30.0          0.290 
+             30.0          0.300 
+             30.0          0.310 
+             30.0          0.320 
+             30.0          0.330 
+             30.0          0.340 
+             30.0          0.350 
+             30.0          0.360 
+        -----------------------------
+
+
+16 November 2010 (Day of year=320), cotton:
+    *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
+
+9 January 2011(Day of year=9), Fertilise on days after sowing - top up: 
+     Manager sending message :- fertiliser apply  amount = -239.70726 (kg/ha), depth = 50 (mm), type = urea_n
+6 May 2011 (Day of year=126), cotton: 
+         Defoliant spray   1
+11 May 2011(Day of year=131), Harvesting rule: 
+     Manager sending message :- cotton harvest
+
+      Harvest
+
+
+      Days after sowing      =   183
+      bolls/m2               =   87.6        Lint (kg/ha)            =   1577.6
+      N uptake (kg/ha)       =    126.6        bolls sc (g/boll)       =      4.5
+      max squares das (days) =   87          max lai das (days)      =    95
+      maximum squares/m2     =   96.1        maximum lai (m2/m2)     =      0.72
+      Total above ground biomass (kg/ha) =  5945.7
+
+
+1 October 2011(Day of year=274), Cotton sowing rule: 
+     Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
+
+1 October 2011 (Day of year=274), cotton:  
+      Sowing
+
+
+        - Reading Cultivar Parameters
+         ---------------------------------------
+         Cultivar   =  S71BR
+         percent_L  =  40.00
+         scboll     =  5.0
+         respcon    =  0.016
+         sqcon      =  0.022
+         fcutout    =  0.5411
+         flai       =  0.5
+         ddisq      =  402.0
+         dlds_max   =  0.12
+         popcon     =  0.03633
+         acotyl     =  525.0
+         rlai       =  0.010
+         frudd      =  50  161  307  338  484  630  848  1071  
+         bltme      =  0.00  0.00  0.00  0.07  0.21  0.33  0.55  1.00  
+         wt         =  0.0104  0.0272  0.1441  0.0988  0.5042  0.9617  1.0000  0.5785  
+         fburr      =  1.23
+         rate_emergence       =  1.0
+         background_retention =  0.90
+
+1 October 2011(Day of year=274), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+1 October 2011(Day of year=274), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+
+
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth  Plants   Spacing    Cultivar   Skip 
+         Day no    mm     /m        mm        Name     Row  
+         ---------------------------------------------------
+           274    50.0    10.0    1000.0      S71BR      1
+         ---------------------------------------------------
+
+
+
+               Root Profile
+        -----------------------------
+            Layer          Lower 
+            Depth          Limit 
+             (cm)         (mm/mm) 
+        -----------------------------
+             15.0          0.290 
+             15.0          0.290 
+             30.0          0.290 
+             30.0          0.290 
+             30.0          0.300 
+             30.0          0.310 
+             30.0          0.320 
+             30.0          0.330 
+             30.0          0.340 
+             30.0          0.350 
+             30.0          0.360 
+        -----------------------------
+
+
+15 October 2011 (Day of year=288), cotton:
+    *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
+
+1 December 2011(Day of year=335), Fertilise on days after sowing - top up: 
+     Manager sending message :- fertiliser apply  amount = -389.15167 (kg/ha), depth = 50 (mm), type = urea_n
+16 April 2012 (Day of year=107), cotton: 
+         Defoliant spray   1
+26 April 2012 (Day of year=117), cotton: 
+         Crop to be picked and terminated.
+26 April 2012(Day of year=117), Harvesting rule: 
+     Manager sending message :- cotton harvest
+
+      Harvest
+
+
+      Days after sowing      =   208
+      bolls/m2               =   64.8        Lint (kg/ha)            =   1416.3
+      N uptake (kg/ha)       =    183.4        bolls sc (g/boll)       =      5.5
+      max squares das (days) =   106          max lai das (days)      =    161
+      maximum squares/m2     =   91.0        maximum lai (m2/m2)     =      1.53
+      Total above ground biomass (kg/ha) =  7688.8
+
+
+31 August 2012(Day of year=244), clock: 
+     Simulation is terminating due to end criteria being met.
+
