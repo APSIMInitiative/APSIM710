@@ -340,7 +340,7 @@ public class Grain : BaseOrgan1, AboveGround, Reproductive
     public double N { get { return Live.N; } }
 
     [Output]
-    [Units("kg/ha")]
+    [Units("g")]
     public double Size
     {
         get
