@@ -36,6 +36,10 @@ public abstract class EvntHandler : ApsimType
     {
         throw new Exception("Cannot call pack on an event handler");
     }
+    public virtual void pack(TTypedValue dest)
+    {
+        throw new Exception("Cannot call pack on an event handler");
+    }
     public abstract void unpack(byte[] messageData);
     public abstract void unpack(TTypedValue src);
     public abstract uint memorySize();

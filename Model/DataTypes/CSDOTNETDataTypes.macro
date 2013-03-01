@@ -12,6 +12,7 @@ using CMPServices;
     public interface ApsimType
     {
         void pack(out byte[] messageData);
+        void pack(TTypedValue dest);
         void unpack(byte[] messageData);
         void unpack(TTypedValue src);
         uint memorySize();
@@ -87,6 +88,10 @@ using CMPServices;
         public void pack(out byte[] MessageData)
         {
             MessageData = null;
+        }
+        public void pack(TTypedValue dest)
+        {
+            dest = null; 
         }
         public void unpack(TTypedValue src)
         {

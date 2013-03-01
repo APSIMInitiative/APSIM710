@@ -492,6 +492,7 @@ namespace CMPServices
                 {
                     if (bRegisterEventsNow)
                         sendDeregistration(((TEventInfo)eventList[eventID]).iKind, eventID);
+                    sendError("Event " + eventList[eventID].Name + " ID:" + eventID.ToString() + " is being replaced by " + sName, true);
                 }
                 eventList[eventID] = newEvent;
 
@@ -518,6 +519,7 @@ namespace CMPServices
         //============================================================================
         protected virtual void doComplete(uint msgFrom, uint origMsgID)
         {
+            Boolean complete = false;
             try
             {
                 eventsManager.completeRequest(origMsgID);
@@ -527,43 +529,50 @@ namespace CMPServices
                     if (query.iSentMsgID == origMsgID)
                     {
                         queryList.Remove(query);
+                        complete = true;
                         break;
                     }
                 }
-                foreach (TDriverInfo driver in driverList)
-                    {                                                            
-                    //  If this "complete" is for a driving
-                    //  property request, then check for
-                    //  the correct number of answers
-                    if ((driver != null) && driver.bRequestActive && (driver.iRequestMsg == origMsgID))
+                if (!complete)
+                {
+                    foreach (TDriverInfo driver in driverList)
                     {
-                        CheckDriverCount(driver);                                 //index of the driver=driver ID
-                        driver.bRequestActive = false;
-
-                        //determine if this is a Complete for state variables in a queryValue(state) process (when a system)
-                        if (msgDirector.isABranch(Msgs.MSG_QUERYVALUE, FParentID, origMsgID))
+                        //  If this "complete" is for a driving
+                        //  property request, then check for
+                        //  the correct number of answers
+                        if ((driver != null) && driver.bRequestActive && (driver.iRequestMsg == origMsgID))
                         {
-                            TTrunkMsg srcMsg = new TTrunkMsg();
-                            if (msgDirector.getBranch(Msgs.MSG_QUERYVALUE, FParentID, origMsgID, ref srcMsg))
+                            CheckDriverCount(driver);                                 //index of the driver=driver ID
+                            driver.bRequestActive = false;
+
+                            //determine if this is a Complete for state variables in a queryValue(state) process (when a system)
+                            if (msgDirector.isABranch(Msgs.MSG_QUERYVALUE, FParentID, origMsgID))
                             {
-                                if (msgDirector.pruneBranch(Msgs.MSG_QUERYVALUE, FParentID, origMsgID) == 0)   //if this is the last 'state' value from the children then
+                                TTrunkMsg srcMsg = new TTrunkMsg();
+                                if (msgDirector.getBranch(Msgs.MSG_QUERYVALUE, FParentID, origMsgID, ref srcMsg))
                                 {
-                                    replySystemStateValue(srcMsg.returnToCompID, srcMsg.inMsgID);
+                                    if (msgDirector.pruneBranch(Msgs.MSG_QUERYVALUE, FParentID, origMsgID) == 0)   //if this is the last 'state' value from the children then
+                                    {
+                                        replySystemStateValue(srcMsg.returnToCompID, srcMsg.inMsgID);
+                                    }
                                 }
                             }
+                            complete = true;
+                            break;
                         }
-                        break;
                     }
                 }
+                if (!complete)
+                {
+                    if (bFatalErrorSent && (origMsgID == iFatalErrorID))      // Once a fatal ERROR event has been
+                        sendEndSimulation();                               //   acknowledged, send "terminate"
 
-                if (bFatalErrorSent && (origMsgID == iFatalErrorID))      // Once a fatal ERROR event has been
-                    sendEndSimulation();                               //   acknowledged, send "terminate"
-
-                //Processing checkpointing for this component doing the checkpointing.
-                if (checkPointTracer.isCheckPointMsg(origMsgID))
-                    processCheckPointing(origMsgID);
-                else if (checkPointTracer.isCheckPointRestoreMsg(origMsgID))
-                    processCheckPointRestore(origMsgID);
+                    //Processing checkpointing for this component doing the checkpointing.
+                    if (checkPointTracer.isCheckPointMsg(origMsgID))
+                        processCheckPointing(origMsgID);
+                    else if (checkPointTracer.isCheckPointRestoreMsg(origMsgID))
+                        processCheckPointRestore(origMsgID);
+                }
             }
             catch (Exception e)
             {
@@ -1648,6 +1657,7 @@ namespace CMPServices
                 {
                     if (bRegisterNow)
                         sendDeregistration(TypeSpec.KIND_REQUESTSET, iPropertyID);
+                    sendError("Setter property " + setPropertyList[iPropertyID].Name + " ID:" + iPropertyID.ToString() + " is being replaced by " + sName, true);
                     setPropertyList[iPropertyID] = null;
                 }
 

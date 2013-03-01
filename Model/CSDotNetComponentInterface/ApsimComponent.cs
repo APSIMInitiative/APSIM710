@@ -366,7 +366,7 @@ namespace ModelFramework
                 if (err.InnerException != null)
                     SendFatalError(err.InnerException.Message);
                 else
-                    SendFatalError(err.Message + " for event in handleEvent()");
+                    SendFatalError(err.Message + " for event " + messageData.Name + " in handleEvent()");
                 result = 1;
             }
             lastEventPublisher = 0;

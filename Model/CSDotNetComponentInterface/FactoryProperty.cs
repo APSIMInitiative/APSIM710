@@ -359,12 +359,7 @@ internal class FactoryProperty : Instance, ApsimType
     //-------------------------------------------------------------------------
     public virtual void pack(TTypedValue dest)
     {
-        //fill a src object with the property value
-        byte[] dataBuf;
-        Data.pack(out dataBuf);
-        DDMLValue.setData(dataBuf, dataBuf.Length);
-        //copy the src value into a destination compatible type
-        dest.setValue(DDMLValue);
+        Data.pack(dest);
     }
     public virtual void unpack(TTypedValue src)
     {
@@ -385,7 +380,7 @@ internal class FactoryProperty : Instance, ApsimType
     /// <param name="messageData"></param>
     /// <param name="srcDDML">The DDML type of the source variable.</param>
     //-------------------------------------------------------------------------
-    public void unpack(byte[] messageData, String srcDDML)
+ /*   public void unpack(byte[] messageData, String srcDDML)
     {
         //create two types that would be compatible and use setValue()
         TDDMLValue src = new TDDMLValue(srcDDML, "");
@@ -395,7 +390,7 @@ internal class FactoryProperty : Instance, ApsimType
         byte[] data = new byte[dest.sizeBytes()];
         dest.getData(ref data);
         Data.unpack(data);
-    }
+    } */
     // --------------------------------------------------------------------
     /// <summary>
     /// Set this property from a compatible TTypedValue.
@@ -446,14 +441,16 @@ internal class FactoryProperty : Instance, ApsimType
 
         FQN = CalcParentName(Parent) + this.Name;
         this.OutputName = FQN;
+
         Data = GetFieldWrapper(Property.Typ);
+        //use a local ddmlvalue so that the property ddml can be 
         if (Data != null)
             sDDML = Data.DDML();
         else
             sDDML = "";
-        regIndex = -1;
         if (sDDML.Length > 0)
             DDMLValue = new TDDMLValue(sDDML, "");
+        regIndex = -1;
 
         foreach (Object Attr in Property.MetaData)
         {
@@ -519,33 +516,34 @@ internal class FactoryProperty : Instance, ApsimType
         // ----------------------------------------------
         // Creates a field wrapper for the given property.
         // ----------------------------------------------
-
-        if (type.Name == "Single")
+        
+        if (type == typeof(Single))
             return new WrapBuiltIn<Single>(this);
-        else if (type.Name == "Double")
+        else if (type == typeof(Double)) 
             return new WrapBuiltIn<Double>(this);
-        else if (type.Name == "Int32")
+        else if (type == typeof(Int32)) 
             return new WrapBuiltIn<Int32>(this);
-        else if (type.Name == "String")
+        else if (type == typeof(String))
             return new WrapBuiltIn<String>(this);
-        else if (type.Name == "Single[]")
+        else if (type == typeof(Single[])) 
             return new WrapBuiltIn<Single[]>(this);
-        else if (type.Name == "Double[]")
+        else if (type == typeof(Double[])) 
             return new WrapBuiltIn<Double[]>(this);
-        else if (type.Name == "Int32[]")
+        else if (type == typeof(Int32[])) 
             return new WrapBuiltIn<Int32[]>(this);
-        else if (type.Name == "String[]")
+        else if (type == typeof(String[])) 
             return new WrapBuiltIn<String[]>(this);
-        else if (type.Name == "DateTime")
+        else if (type == typeof(DateTime)) 
             return new WrapBuiltIn<DateTime>(this);
-        else if (type.Name == "Boolean")
+        else if (type == typeof(Boolean)) 
             return new WrapBuiltIn<Boolean>(this);
-        else if (type.Name == "Boolean[]")
+        else if (type == typeof(Boolean[])) 
             return new WrapBuiltIn<Boolean[]>(this);
         else if (type.GetInterface("ApsimType") != null)
             return new WrapApsimType(this);
         else
             return null;
+        
     }
 
     public String CalcParentName(XmlNode Node)
@@ -614,102 +612,213 @@ internal class FactoryProperty : Instance, ApsimType
         }
         return Desc;
     }
-
-    //template <class T>
+    //=========================================================================
+    /// <summary>
+    /// This class wraps a FactoryProperty and a built in type (e.g. Single, 
+    /// Double etc). It then makes it look like an ApsimType with pack,
+    /// unpack methods etc.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class WrapBuiltIn<T> : TypeInterpreter, ApsimType
     {
-        // --------------------------------------------------------------------
-        // This class wraps a FactoryProperty and a built in type (e.g. Single, 
-        // Double etc). It then makes it look like an ApsimType with pack,
-        // unpack methods etc.
-        // --------------------------------------------------------------------
+        protected Type tType;
+        public T Value;
         private FactoryProperty Property;
-        private WrapBuiltInVariable<T> thisProperty;
         public WrapBuiltIn(FactoryProperty Property)
         {
-            thisProperty = new WrapBuiltInVariable<T>();    //NH- would be better using an ApsimType or TDDMLValue
+            tType = typeof(T);
             this.Property = Property;
         }
         public override void pack(out byte[] messageData)
         {
             T Data = (T)Property.Get;
-            thisProperty.Value = Data;
-            thisProperty.pack(out messageData);
+            setValue(Data); //ensure the DDMLValue is updated
+            base.pack(out messageData);
         }
         public override void unpack(byte[] messageData)
         {
-            thisProperty.unpack(messageData);
-            T Data = thisProperty.Value;
+            DDMLValue.setData(messageData, messageData.Length, 0);
+            setPropertyValue(); //store the Value property
+            T Data = Value;
             Property.SetObject(Data);
         }
         public override void unpack(TTypedValue src)
         {
-            thisProperty.unpack(src);
-            T Data = thisProperty.Value;
+            DDMLValue.setValue(src);
+            setPropertyValue(); //store the Value property
+            T Data = Value;
             Property.SetObject(Data);
         }
         public override uint memorySize()
         {
             T Data = (T)Property.Get;
-            thisProperty.Value = Data;  //update the stored value
-            return thisProperty.memorySize();
+            setValue(Data);    //ensure the DDMLValue is updated
+            return DDMLValue.sizeBytes();
         }
+        /// <summary>
+        /// Returns the DDML type xml for the type T. 
+        /// </summary>
+        /// <returns></returns>
         public override String DDML()
         {
             String result = "<type/>";
-            if (typeof(T) == typeof(Boolean))
+            tType = typeof(T);
+            if (tType == typeof(Boolean))
             {
                 result = "<type kind=\"boolean\"/>";
             }
-            else if (typeof(T) == typeof(int))
+            else if (tType == typeof(int))
             {
                 result = "<type kind=\"integer4\"/>";
             }
-            else if (typeof(T) == typeof(Single))
+            else if (tType == typeof(Single))
             {
                 result = "<type kind=\"single\"/>";
             }
-            else if (typeof(T) == typeof(double))
+            else if (tType == typeof(double))
             {
                 result = "<type kind=\"double\"/>";
             }
-            else if (typeof(T) == typeof(String))
+            else if (tType == typeof(String))
             {
                 result = "<type kind=\"string\"/>";
             }
-            else if (typeof(T) == typeof(Boolean[]))
+            else if (tType == typeof(Boolean[]))
             {
                 result = "<type kind=\"boolean\" array=\"T\"/>";
             }
-            else if (typeof(T) == typeof(int[]))
+            else if (tType == typeof(int[]))
             {
                 result = "<type kind=\"integer\" array=\"T\"/>";
             }
-            else if (typeof(T) == typeof(Single[]))
+            else if (tType == typeof(Single[]))
             {
                 result = "<type kind=\"single\" array=\"T\"/>";
             }
-            else if (typeof(T) == typeof(double[]))
+            else if (tType == typeof(double[]))
             {
                 result = "<type kind=\"double\" array=\"T\"/>";
             }
-            else if (typeof(T) == typeof(String[]))
+            else if (tType == typeof(String[]))
             {
                 result = "<type kind=\"string\" array=\"T\"/>";
             }
-            else if (typeof(T) == typeof(DateTime))
+            else if (tType == typeof(DateTime))
             {
                 result = "<type kind=\"double\"/>";
             }
             return result;
         }
+        /// <summary>
+        /// Set the internal Value from the DDMLValue that was set in the unpack()
+        /// </summary>
+        private void setPropertyValue()
+        {
+            tType = typeof(T);
+            if (tType == typeof(Boolean))
+            {
+                Value = (T)(Convert.ChangeType(DDMLValue.asBool(), tType));
+            }
+            else if (tType == typeof(Int32))
+            {
+                Value = (T)(Convert.ChangeType(DDMLValue.asInt(), tType));
+            }
+            else if (tType == typeof(Single))
+            {
+                Value = (T)(Convert.ChangeType(DDMLValue.asSingle(), tType));
+            }
+            else if (tType == typeof(double))
+            {
+                Value = (T)(Convert.ChangeType(DDMLValue.asDouble(), tType));
+            }
+            else if (tType == typeof(String))
+            {
+                Value = (T)(Convert.ChangeType(DDMLValue.asStr(), tType));
+            }
+            else if (tType == typeof(Boolean[]))
+            {
+                Value = (T)(Convert.ChangeType(DDMLValue.asBooleanArray(), tType));
+            }
+            else if (tType == typeof(Int32[]))
+            {
+                Value = (T)(Convert.ChangeType(DDMLValue.asIntArray(), tType));
+            }
+            else if (tType == typeof(Single[]))
+            {
+                Value = (T)(Convert.ChangeType(DDMLValue.asSingleArray(), tType));
+            }
+            else if (tType == typeof(double[]))
+            {
+                Value = (T)(Convert.ChangeType(DDMLValue.asDoubleArray(), tType));
+            }
+            else if (tType == typeof(String[]))
+            {
+                Value = (T)(Convert.ChangeType(DDMLValue.asStringArray(), tType));
+            }
+            else if (tType == typeof(DateTime))
+            {
+                double JulianDate = DDMLValue.asDouble();               //stored as a double
+                DateTime jDate = DateUtility.JulianDayNumberToDateTime((int)Math.Truncate(JulianDate));
+                Value = (T)(Convert.ChangeType(jDate, typeof(T)));
+            }
+        }
+
+        private void setValue(object value)
+        {
+            tType = typeof(T);
+            Value = (T)Convert.ChangeType(value, tType);
+
+            if (tType == typeof(Boolean))
+            {
+                DDMLValue.setValue(Convert.ToBoolean(value));
+            }
+            else if (tType == typeof(Int32))
+            {
+                DDMLValue.setValue(Convert.ToInt32(value));
+            }
+            else if (tType == typeof(Single))
+            {
+                DDMLValue.setValue(Convert.ToSingle(value));
+            }
+            else if (tType == typeof(double))
+            {
+                DDMLValue.setValue(Convert.ToDouble(value));
+            }
+            else if (tType == typeof(String))
+            {
+                DDMLValue.setValue(Convert.ToString(value));
+            }
+            else if (tType == typeof(Boolean[]))
+            {
+                DDMLValue.setValue((Boolean[])Convert.ChangeType(value, tType));
+            }
+            else if (tType == typeof(Int32[]))
+            {
+                DDMLValue.setValue((Int32[])Convert.ChangeType(value, tType));
+            }
+            else if (tType == typeof(Single[]))
+            {
+                DDMLValue.setValue((Single[])Convert.ChangeType(value, tType));
+            }
+            else if (tType == typeof(Double[]))
+            {
+                DDMLValue.setValue((Double[])Convert.ChangeType(value, tType));
+            }
+            else if (tType == typeof(String[]))
+            {
+                DDMLValue.setValue((String[])Convert.ChangeType(value, tType));
+            }
+            else if (tType == typeof(DateTime))
+            {
+                double JulianDate = DateUtility.DateTimeToJulianDayNumber((DateTime)Convert.ChangeType(value, tType));
+                DDMLValue.setValue(JulianDate);
+            }
+        }
 
     }
     // --------------------------------------------------------------------
     /// <summary>
-    /// This class wraps a FactoryProperty and a built in type (e.g. Single, 
-    /// Double etc). It then makes it look like an ApsimType with pack,
-    /// unpack methods etc.
+    /// This class wraps a FactoryProperty.
     /// </summary>
     // --------------------------------------------------------------------
     public class WrapApsimType : ApsimType
@@ -723,6 +832,11 @@ internal class FactoryProperty : Instance, ApsimType
         {
             ApsimType Data = (ApsimType)Property.Get;
             Data.pack(out messageData);
+        }
+        public void pack(TTypedValue dest)
+        {
+            ApsimType Data = (ApsimType)Property.Get;
+            Data.pack(dest);
         }
         public void unpack(TTypedValue src)
         {
@@ -749,6 +863,7 @@ internal class FactoryProperty : Instance, ApsimType
                 Data = Activator.CreateInstance(Property.Type) as ApsimType;
                 Property.SetObject(Data);
             }
+
             if (Data == null)
                 return "";
             return Data.DDML();
@@ -758,200 +873,4 @@ internal class FactoryProperty : Instance, ApsimType
 }
 
 
-// --------------------------------------------------------------------
-// This class wraps a FactoryProperty and a built in type (e.g. Single, 
-// Double etc). It then makes it look like an ApsimType with pack,
-// unpack methods etc.
-// --------------------------------------------------------------------
-public class WrapBuiltInVariable<T> : TypeInterpreter, ApsimType
-{
-    /*This class is a quick way to wrap the TTypedValue into a generic class
-        * that handles scalars and arrays of scalars - NH
-        I think this class should be superceded by TypeInterpreter or TDDMLValue
-        */
-    protected Type tType;
-    public T Value;
-    //protected override TDDMLValue DDMLValue; */
-    public WrapBuiltInVariable()
-    {
-        tType = typeof(T);
-        // DDMLValue = new TDDMLValue(DDML(), "");
-    }
-    public override void pack(out byte[] messageData)
-    {
-        setValue(Value);
-        messageData = new byte[DDMLValue.sizeBytes()];
-        DDMLValue.getData(ref messageData);
-    }
-    public override void unpack(TTypedValue src)
-    {
-        DDMLValue.setValue(src);
-        setPropertyValue();
-    }
-    public override void unpack(byte[] messageData)
-    {
-        DDMLValue.setData(messageData, messageData.Length, 0);
-        setPropertyValue();
-    }
-    /// <summary>
-    /// Set the internal Value from the DDMLValue that was set in the unpack()
-    /// </summary>
-    private void setPropertyValue()
-    {
-        if (tType == typeof(Boolean))
-        {
-            Value = (T)(Convert.ChangeType(DDMLValue.asBool(), typeof(T)));
-        }
-        else if (tType == typeof(Int32))
-        {
-            Value = (T)(Convert.ChangeType(DDMLValue.asInt(), typeof(T)));
-        }
-        else if (tType == typeof(Single))
-        {
-            Value = (T)(Convert.ChangeType(DDMLValue.asSingle(), typeof(T)));
-        }
-        else if (tType == typeof(double))
-        {
-            Value = (T)(Convert.ChangeType(DDMLValue.asDouble(), typeof(T)));
-        }
-        else if (tType == typeof(String))
-        {
-            Value = (T)(Convert.ChangeType(DDMLValue.asStr(), typeof(T)));
-        }
-        else if (tType == typeof(Boolean[]))
-        {
-            Value = (T)(Convert.ChangeType(DDMLValue.asBooleanArray(), typeof(T)));
-        }
-        else if (tType == typeof(Int32[]))
-        {
-            Value = (T)(Convert.ChangeType(DDMLValue.asIntArray(), typeof(T)));
-        }
-        else if (tType == typeof(Single[]))
-        {
-            Value = (T)(Convert.ChangeType(DDMLValue.asSingleArray(), typeof(T)));
-        }
-        else if (tType == typeof(double[]))
-        {
-            Value = (T)(Convert.ChangeType(DDMLValue.asDoubleArray(), typeof(T)));
-        }
-        else if (tType == typeof(String[]))
-        {
-            Value = (T)(Convert.ChangeType(DDMLValue.asStringArray(), typeof(T)));
-        }
-        else if (tType == typeof(DateTime))
-        {
-            double JulianDate = DDMLValue.asDouble();               //stored as a double
-            DateTime jDate = DateUtility.JulianDayNumberToDateTime((int)Math.Truncate(JulianDate));
-            Value = (T)(Convert.ChangeType(jDate, typeof(T)));
-        }
-    }
-    public override uint memorySize()
-    {
-        setValue(Value);    //ensure the DDMLValue is updated
-        return DDMLValue.sizeBytes();
-    }
-    public override String DDML()
-    {
-        return DDML(Value);
-    }
 
-    public String DDML(T Value)
-    {
-        String result = "<type/>";
-        if (typeof(T) == typeof(Boolean))
-        {
-            result = "<type kind=\"boolean\"/>";
-        }
-        else if (typeof(T) == typeof(Int32))
-        {
-            result = "<type kind=\"integer4\"/>";
-        }
-        else if (typeof(T) == typeof(Single))
-        {
-            result = "<type kind=\"single\"/>";
-        }
-        else if (typeof(T) == typeof(double))
-        {
-            result = "<type kind=\"double\"/>";
-        }
-        else if (typeof(T) == typeof(String))
-        {
-            result = "<type kind=\"string\"/>";
-        }
-        else if (typeof(T) == typeof(Boolean[]))
-        {
-            result = "<type kind=\"boolean\" array=\"T\"/>";
-        }
-        else if (typeof(T) == typeof(Int32[]))
-        {
-            result = "<type kind=\"integer\" array=\"T\"/>";
-        }
-        else if (typeof(T) == typeof(Single[]))
-        {
-            result = "<type kind=\"single\" array=\"T\"/>";
-        }
-        else if (typeof(T) == typeof(double[]))
-        {
-            result = "<type kind=\"double\" array=\"T\"/>";
-        }
-        else if (typeof(T) == typeof(String[]))
-        {
-            result = "<type kind=\"string\" array=\"T\"/>";
-        }
-        else if (typeof(T) == typeof(DateTime))
-        {
-            result = "<type kind=\"double\"/>";
-        }
-        return result;
-    }
-    public void setValue(object value)
-    {
-        Value = (T)Convert.ChangeType(value, tType);
-
-        if (tType == typeof(Boolean))
-        {
-            DDMLValue.setValue(Convert.ToBoolean(value));
-        }
-        else if (tType == typeof(Int32))
-        {
-            DDMLValue.setValue(Convert.ToInt32(value));
-        }
-        else if (tType == typeof(Single))
-        {
-            DDMLValue.setValue(Convert.ToSingle(value));
-        }
-        else if (tType == typeof(double))
-        {
-            DDMLValue.setValue(Convert.ToDouble(value));
-        }
-        else if (tType == typeof(String))
-        {
-            DDMLValue.setValue(Convert.ToString(value));
-        }
-        else if (tType == typeof(Boolean[]))
-        {
-            DDMLValue.setValue((Boolean[])Convert.ChangeType(value, typeof(Boolean[])));
-        }
-        else if (tType == typeof(Int32[]))
-        {
-            DDMLValue.setValue((Int32[])Convert.ChangeType(value, typeof(Int32[])));
-        }
-        else if (tType == typeof(Single[]))
-        {
-            DDMLValue.setValue((Single[])Convert.ChangeType(value, typeof(Single[])));
-        }
-        else if (tType == typeof(Double[]))
-        {
-            DDMLValue.setValue((Double[])Convert.ChangeType(value, typeof(Double[])));
-        }
-        else if (tType == typeof(String[]))
-        {
-            DDMLValue.setValue((String[])Convert.ChangeType(value, typeof(String[])));
-        }
-        else if (tType == typeof(DateTime))
-        {
-            double JulianDate = DateUtility.DateTimeToJulianDayNumber((DateTime)Convert.ChangeType(value, typeof(DateTime)));
-            DDMLValue.setValue(JulianDate);
-        }
-    }
-}

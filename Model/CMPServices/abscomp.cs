@@ -736,6 +736,7 @@ namespace CMPServices
                 {
                     if (bRegisterNow)
                         sendDeregistration(TypeSpec.KIND_OWNED, propertyID);
+                    sendError("Property " + propertyList[propertyID].Name + " ID:" + propertyID.ToString() + " is being replaced by " + sName, true);
                     propertyList[propertyID] = null;
                 }
 
@@ -794,7 +795,7 @@ namespace CMPServices
         {
             try
             {
-                if ((int)propertyID == propertyNameToID("state"))
+                if ((int)propertyID == PROP_STATE) 
                 {
                     //systems will not send a replyValue immediately so I don't want to go into readFromPropertyList()
                     getStateProperty(requestedByID, queryMsgID, replyTo);
@@ -997,7 +998,7 @@ namespace CMPServices
             while ((foundAt < 0) && (i < propertyList.Count))
             {
                 info = propertyList[i];
-                if ((info != null) && (info.Name.ToLower() == sName.ToLower()))
+                if ( (info != null) && (String.Compare(info.Name, sName, System.StringComparison.OrdinalIgnoreCase) == 0) )
                     foundAt = i;
                 else
                     i++;
@@ -1038,6 +1039,7 @@ namespace CMPServices
                 {
                     if (bRegisterNow)
                         sendDeregistration(TypeSpec.KIND_DRIVER, driverID);
+                    sendError("Driver " + driverList[driverID].Name + " ID:" + driverID.ToString() + " is being replaced by " + sName, true);
                     driverList[driverID] = null;
                 }
                 driverList[driverID] = newDriver;

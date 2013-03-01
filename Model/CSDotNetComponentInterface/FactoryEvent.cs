@@ -47,6 +47,10 @@ public class FactoryEvent : ApsimType
     {
         Data.pack(out messageData);
     }
+    public virtual void pack(TTypedValue dest)
+    {
+        Data.pack(dest);
+    }
     public virtual void unpack(TTypedValue src)
     {
         throw new Exception("Cannot call unpack on an event.");
