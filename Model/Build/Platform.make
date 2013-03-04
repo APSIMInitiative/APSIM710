@@ -3,21 +3,12 @@
 ###########################################
 
 ifdef windir
- ifdef VS100COMNTOOLS
    PLATFORM=WIN32VS
    DLL=dll
    ECHO=echo
    RM=del /f
    MV=move /y
    CP=xcopy /i /y
- else
-   PLATFORM=WIN32
-   DLL=dll
-   ECHO=echo
-   RM=del /f
-   MV=move /y
-   CP=xcopy /i /y
- endif
 else
    PLATFORM=Linux
    DLL=so

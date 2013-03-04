@@ -14,6 +14,7 @@ LIBS := $(foreach library,$(LIBS),../$(library).lib)
 STATICLIBS := $(foreach library,$(STATICLIBS),../$(library).a)
 
 F90FLAGS= -cpp -D'ml_external=!' -D'STDCALL(x)=GCC$$ ATTRIBUTES STDCALL :: x' -static -static-libgfortran -fno-underscoring -ffree-line-length-none -finit-integer=0 -finit-real=zero -finit-logical=false -O3 -frounding-math -g -march=pentiumpro -mtune=pentiumpro $(EXTRACOMPILEFLAGS)
+CFLAGS= -cpp -D'ml_external=!' -D'STDCALL(x)=GCC$$ ATTRIBUTES STDCALL :: x' -static -static-libgfortran -march=pentiumpro -mtune=pentiumpro $(EXTRACOMPILEFLAGS)
 F90INCLUDES = -I$(APSIM)/Model/FortranInfrastructure
 
 F90MODS= -I$(APSIM)/Model/CropTemplate -I$(APSIM)/Model/CropMod
@@ -33,12 +34,16 @@ F90MODS= -I$(APSIM)/Model/CropTemplate -I$(APSIM)/Model/CropMod
 
 %.o:	%.cpp
 	$(CC) $(CFLAGS) -I$(APSIM)/Model $(WARNINGS) -c $<
+   
+%.o:	%.c
+	$(CC) $(CFLAGS) -I$(APSIM)/Model $(WARNINGS) -c $<
 
 OBJS:=	$(SRC:.for=.o)
 OBJS:=	$(OBJS:.f90=.o)
 OBJS:=	$(OBJS:.F90=.o)
 OBJS:=	$(OBJS:.FOR=.o)
 OBJS:=	$(OBJS:.cpp=.o)
+OBJS:=	$(OBJS:.c=.o)
 
 # remove all paths on OBJ files.
 OBJSNODIR := $(foreach o,$(OBJS),$(notdir $(o)))
