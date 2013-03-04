@@ -5500,7 +5500,7 @@ public class SoilWater
         tillage_type = Tillage.type;       //sv - the event always gives us at least this.
 
         //sv- if the Tillage information did not come with the event.
-        if ((Tillage.cn_red < 0) || (Tillage.cn_rain < 0))
+        if ((Tillage.cn_red <= 0) || (Tillage.cn_rain <= 0))
         {
             Console.WriteLine();
             Console.WriteLine("    - Reading tillage CN info");
@@ -5521,10 +5521,10 @@ public class SoilWater
             {
                 //sv- Get the values from the sim file.
                 tillage_type = "tillage specified in ini file.";
-                if (Tillage.cn_red < 0)
+                if (Tillage.cn_red >= 0)
                     tillage_cn_red = data.cn_red;
 
-                if (Tillage.cn_rain < 0)
+                if (Tillage.cn_rain >= 0)
                     tillage_cn_rain = data.cn_rain;
             }
         }
@@ -5678,6 +5678,6 @@ public class SoilWatTillageType
 
     public TillageType GetTillageData(string name)
     {
-        return tillage_types.ContainsKey(name) ? new TillageType() { type = name, f_incorp = tillage_types[name][0], tillage_depth = tillage_types[name][1] } : null;
+        return tillage_types.ContainsKey(name) ? new TillageType() { type = name, cn_red = tillage_types[name][0], cn_rain = tillage_types[name][1] } : null;
     }
 }
