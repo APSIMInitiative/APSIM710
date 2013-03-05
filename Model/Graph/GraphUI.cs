@@ -889,6 +889,7 @@ namespace Graph
             this.Chart.Axes.Left.Title.Font.Size = 11;
             this.Chart.Axes.Left.Title.Lines = new string[] { "Mild" };
             this.Chart.Axes.Left.Title.Shadow.Visible = false;
+            this.Chart.Axes.Left.MaximumOffset = 10;
             this.Chart.Axes.Right.Automatic = true;
             this.Chart.Axes.Right.AxisPen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
             this.Chart.Axes.Right.AxisPen.Width = 1;
@@ -909,6 +910,7 @@ namespace Graph
             this.Chart.Axes.Right.Title.Font.Size = 11;
             this.Chart.Axes.Right.Title.Shadow.Visible = false;
             this.Chart.Axes.Right.Visible = false;
+            this.Chart.Axes.Right.MaximumOffset = 10;
             this.Chart.Axes.Top.Automatic = true;
             this.Chart.Axes.Top.AxisPen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
             this.Chart.Axes.Top.AxisPen.Width = 1;

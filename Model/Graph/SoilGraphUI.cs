@@ -71,10 +71,10 @@ namespace Graph
                 DataTableUtility.AddColumn(DataSource, "DepthMidPoints (mm)", DepthMidPoints);
             }
 
-            // Add in LL series.
+            // Add in LL series and SW if it is present.
             foreach (DataColumn Column in DataSource.Columns)
             {
-                if (Column.ColumnName.Contains(" LL"))
+                if (Column.ColumnName.Contains(" LL") || Column.ColumnName.Contains("SW"))
                 {
                     Line Line = new Line();
                     Line.LinePen.Width = 2;
@@ -123,7 +123,7 @@ namespace Graph
         /// <summary>
         /// Refresh the chart from data in the specified soil.
         /// </summary>
-        public void Populate(Soil Soil, string ChartType)
+        public void Populate(Soil Soil, string ChartType, bool ShowSW = false)
         {
             DataTable Table = new DataTable();
 
@@ -134,9 +134,14 @@ namespace Graph
                 DataTableUtility.AddColumn(Table, "LL15 (mm/mm)", Soil.Water.LL15);
                 DataTableUtility.AddColumn(Table, "DUL (mm/mm)", Soil.Water.DUL);
                 DataTableUtility.AddColumn(Table, "SAT (mm/mm)", Soil.Water.SAT);
+
+                if (ShowSW)
+                    DataTableUtility.AddColumn(Table, "SW (mm/mm)", Soil.SW);
+
                 foreach (string CropName in Soil.CropNames)
                 {
-                    string LegendTitle = CropName + " LL (PAWC: " + MathUtility.Sum(Soil.PAWmm(CropName)).ToString("f0") + "mm)";
+                    double[] PAWCmm = MathUtility.Multiply(Soil.PAWCCrop(CropName), Soil.Thickness);
+                    string LegendTitle = CropName + " LL (PAWC: " + MathUtility.Sum(PAWCmm).ToString("f0") + "mm)";
                     DataTableUtility.AddColumn(Table, LegendTitle, Soil.Crop(CropName).LL);
                    
                 }

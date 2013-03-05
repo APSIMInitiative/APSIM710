@@ -131,7 +131,10 @@ namespace CSUserInterface
             Grid.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
             foreach (DataGridViewColumn Col in Grid.Columns)
                 Col.Width += 10;
-            Graph.Populate(Grid.ToTable(), OurComponent.Type, Soil);
+            if (OurComponent.Type == "Water" || OurComponent.Type == "SoilOrganicMatter")
+                Graph.Populate(Soil, OurComponent.Type);
+            else
+                Graph.Populate(Grid.ToTable(), OurComponent.Type, Soil);
             Label.Visible = Label.Text != "";
         }
 
@@ -428,7 +431,10 @@ namespace CSUserInterface
                 Soil.Crop(CropName).XF = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
                 UpdatePAWCColumn(Grid.Columns[e.ColumnIndex - 2]);
             }
-            Graph.Populate(Grid.ToTable(), OurComponent.Type, Soil);
+            if (OurComponent.Type == "Water" || OurComponent.Type == "SoilOrganicMatter")
+                Graph.Populate(Soil, OurComponent.Type);
+            else
+                Graph.Populate(Grid.ToTable(), OurComponent.Type, Soil);
         }
 
         /// <summary>
@@ -483,7 +489,7 @@ namespace CSUserInterface
             }
             else
                 BaseText = Col.HeaderText;
-            Col.HeaderText = BaseText + "\r\nTotal: " + Total.ToString("f1");
+            Col.HeaderText = BaseText + "\r\n" + Total.ToString("f0") + "mm";
 
         }
 
