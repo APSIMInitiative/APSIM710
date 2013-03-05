@@ -2781,7 +2781,7 @@ public class SoilWater
 
             //The reduction in the runoff as a result of doing a tillage (tillage_cn_red) ceases after a set amount of rainfall (tillage_cn_rain).
             //this function works out the accumulated rainfall since last tillage event, and turns off the reduction if it is over the amount of rain specified.
-            soilwat2_tillage_addrain(rain, runon, TotalInterception); //! Update rain since tillage accumulator. ! NB. this needs to be done _after_ cn calculation.
+            soilwat2_tillage_addrain(Rain, Runon, TotalInterception); //! Update rain since tillage accumulator. ! NB. this needs to be done _after_ cn calculation.
         }
     }
 
