@@ -336,19 +336,18 @@ namespace ApsimFile
                     }
                     else if (ColumnTypes[w] == typeof(float))
                     {
-                        double d = Convert.ToDouble(Words[w] /*, new CultureInfo("en-US")*/);
-                        Values[w] = d;
+                        double Value;
+                        if (double.TryParse(Words[w], out Value))
+                            Values[w] = Value;
+                        else
+                            Values[w] = DBNull.Value;
                     }
                     else
                         Values[w] = Words[w];
                 }
                 catch (Exception)
                 {
-                    string err = "";
-                    for (int i = 0; i < Words.Count; i++)
-                        err += Words[i] + " ";
-
-                    throw new Exception("Error in column " + (w + 1).ToString() + " on line:\r\n" + err);
+                    Values[w] = DBNull.Value;
                 }
             }
             return Values;
