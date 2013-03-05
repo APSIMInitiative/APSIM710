@@ -31,10 +31,10 @@ void SimplePart::Initialise()
    {
      zeroAllGlobals();
      c.dm_init = 0;
-     c.n_init_conc = 0; 
+     c.n_init_conc = 0;
      c.p_init_conc = 0;
      c.n_sen_conc = 0;
-     
+
      c.trans_frac_option = 0;
      c.n_retrans_fraction = 1.0;
      c.sen_detach_frac = 0;
@@ -392,7 +392,7 @@ void SimplePart::morphology(void)
       {
       float new_height = c.height.value(dm_plant);       // new plant height (mm)
       dlt.height = l_bound(new_height - Height, 0.0);
-      Debug("Stem.DeltaHeight=%f", dlt.height); 
+      Debug("Stem.DeltaHeight=%f", dlt.height);
       }
    else
       {
@@ -465,10 +465,10 @@ void SimplePart::removeBiomass(void)
    Green = Green - GreenRemoved;
    Senesced = Senesced - SenescedRemoved;
    }
-void  SimplePart::get_AvailableToAnimal(protocol::AvailableToAnimalType &avail) 
+void  SimplePart::get_AvailableToAnimal(protocol::AvailableToAnimalType &avail)
 {
    protocol::AvailableToAnimalCohortsType cohort;
-   
+
    cohort.CohortID = plant->Name();
    cohort.Organ = myName;
    cohort.AgeID = "live";
@@ -478,8 +478,8 @@ void  SimplePart::get_AvailableToAnimal(protocol::AvailableToAnimalType &avail)
    cohort.Weight = Green.DM() * gm2kg / sm2ha;
    cohort.N =      Green.N()* gm2kg / sm2ha;
    cohort.P =      Green.P()* gm2kg / sm2ha;
-//   cohort.S =      0.0
-//   cohort.AshAlk = 0.0
+   cohort.S =      0.0;
+   cohort.AshAlk = 0.0;
    avail.Cohorts.push_back(cohort);
    cohort.AgeID = "dead";
    cohort.Weight = Senesced.DM()* gm2kg / sm2ha;
@@ -487,7 +487,7 @@ void  SimplePart::get_AvailableToAnimal(protocol::AvailableToAnimalType &avail)
    cohort.P =      Senesced.P()* gm2kg / sm2ha;
    avail.Cohorts.push_back(cohort);
    }
-void  SimplePart::set_RemovedByAnimal(const protocol::RemovedByAnimalType &dm) 
+void  SimplePart::set_RemovedByAnimal(const protocol::RemovedByAnimalType &dm)
 {
    for (vector<protocol::RemovedByAnimalCohortsType>::const_iterator cohort = dm.Cohorts.begin(); cohort != dm.Cohorts.end(); cohort++)
    {
