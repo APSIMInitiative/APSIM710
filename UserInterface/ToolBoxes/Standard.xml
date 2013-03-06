@@ -1,621 +1,621 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <folder version="23" name="Standard Toolbox" image="%apsim%\UserInterface\Images\package24.png">
-  <soilwatkludge name="soilwatkludge">
-    <mwcon>1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0</mwcon>
-    <max_pond>100</max_pond>
-  </soilwatkludge>
-  <folder name="Structural">
-    <memo />
-    <SysBal2 />
-    <folder />
-    <area name="paddock" />
-    <ini>
-      <filename></filename>
-    </ini>
-    <PlugIns />
-  </folder>
-  <folder name="Animals">
-    <stock>
-      <fraction_faeces_added type="text" description="fraction_faeces_added">0.5</fraction_faeces_added>
-      <fraction_urine_added type="text" description="fraction_urine_added">0.5</fraction_urine_added>
-      <herbage1 type="text" description="First plant herbage source">lucerne</herbage1>
-      <herbage1class type="list" listvalues="plant,plant2,grasp,growth" description="First plant module class">plant</herbage1class>
-      <herbage2 type="text" description="Second plant herbage source"></herbage2>
-      <herbage2class type="list" listvalues="plant,plant2,grasp,growth" description="Second plant module class">plant</herbage2class>
-    </stock>
-    <supplement>
-      <spoilage_time type="text" description="spoilage_time">0</spoilage_time>
-    </supplement>
-    <graz name="Simple grazing model">
-      <intake_util_intercept type="text" description="Intercept in intake and utilization eqn (p142)">1</intake_util_intercept>
-      <intake_util_slope type="text" description="Slope in intake and utilization eqn (p143)">-0.3</intake_util_slope>
-      <yld_eat_restr type="text" description="Yield at which intake restriction no longer applies (p144)">300</yld_eat_restr>
-      <summer_lwg type="text" description="Expected summer lwg @ low SR (p145)">70</summer_lwg>
-      <autumn_lwg type="text" description="Expected autumn lwg @ low SR (p146)">35</autumn_lwg>
-      <winter_lwg type="text" description="Expected winter lwg @ low SR (p147)">10</winter_lwg>
-      <spring_lwg type="text" description="Expected spring lwg @ low SR (p148)">35</spring_lwg>
-      <leaf_diet type="text" description="Proportion of leaf in diet (p132/100)">0.85</leaf_diet>
-      <std_alw type="text" description="std_alw">200</std_alw>
-      <min_alw type="text" description="Minimum alw">100</min_alw>
-      <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
-      <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
-      <prop_can_eat type="text" description="prop_can_eat">1</prop_can_eat>
-      <allow_supplements type="text" description="allow_supplements">1</allow_supplements>
-    </graz>
-  </folder>
-  <folder name="Crops">
-    <AusfarmPasture>
-      <debug type="list" listvalues="on,off" description="debug">off</debug>
-      <sand type="text" description="sand">0.1 0.1 0.1 0.1 0.1</sand>
-      <svp_fract type="text" description="svp_fract">0.75</svp_fract>
-      <co2_ppm type="text" description="co2 (ppm)">400</co2_ppm>
-      <species type="list" description="Name of the pasture species" listvalues="Perennial Ryegrass,Phalaris,Cocksfoot,Annual Ryegrass,Annual Grass - Early,Sub Clover - Mt Barker,Sub Clover - Leura,Sub Clover - Seaton Park,Sub Clover - Dalkeith,Medic - Paraggio,White Clover (beta),Lucerne - Hunter River (beta),Lucerne - winter active (beta),Capeweed">Cocksfoot</species>
-    </AusfarmPasture>
-    <AusfarmPasture name="AusfarmEstablishedPasture">
-      <debug type="list" listvalues="on,off" description="debug">off</debug>
-      <sand type="text" description="sand">0.1 0.1 0.1 0.1 0.1</sand>
-      <svp_fract type="text" description="svp_fract">0.75</svp_fract>
-      <co2_ppm type="text" description="co2 (ppm)">400</co2_ppm>
-      <species type="list" description="Name of the pasture species" listvalues="Perennial Ryegrass,Phalaris,Cocksfoot,Annual Ryegrass,Annual Grass - Early,Sub Clover - Mt Barker,Sub Clover - Leura,Sub Clover - Seaton Park,Sub Clover - Dalkeith,Medic - Paraggio,White Clover (beta),Lucerne - Hunter River (beta),Lucerne - winter active (beta),Capeweed">Cocksfoot</species>
-      <nutrients type="list" listvalues="Null,N,NP,NS,NPS" description="Determines which of the plant nutrient submodels to activate">N</nutrients>
-      <fertility type="text" description="Fertility scalar. Only meaningful in simple mode">1</fertility>
-      <max_rtdep type="text" description="Maximum rooting depth (mm)">1300</max_rtdep>
-      <lagged_day_t type="text" description="Lagged daytime temperature (oC)">-999.9</lagged_day_t>
-      <phenology type="text" description="Value denoting the phenological stage of the species">1.005</phenology>
-      <flower_len type="text" description="Current maximum length of the flowering period (d)">0</flower_len>
-      <flower_time type="text" description="Time since the start of flowering (d)">0</flower_time>
-      <senc_index type="text" description="Number of preceding days of dry conditions (d)">0</senc_index>
-      <dorm_index type="text" description="Number of preceding days of cool, moist conditions (d)">0</dorm_index>
-      <dorm_t type="text" description="Lagged mean temperature used in summer-dormancy calculations (oc)">-999.9</dorm_t>
-      <seed_dorm_time type="text" description="Time since commencement of embryo dormancy (d)">0</seed_dorm_time>
-      <germ_index type="text" description="Germination index. Only meaningful if the species is modelled with seed pools (d)">0</germ_index>
-      <kl type="text" description="kl (-)"></kl>
-      <ll type="text" description="lower limit (mm/mm)"></ll>
-      <AusfarmPastureGreen name="Green">
-        <status type="list" listvalues="seedling,established,senescing" description="status">established</status>
-        <rt_dep type="text" description="Current rooting depth of the cohort (mm)">100</rt_dep>
-        <estab_index type="text" description="Establishment index.  Only meaningful if status = seedling">0</estab_index>
-        <stress_index type="text" description="Stress index.  Only meaningful if status = seedling:">0</stress_index>
-        <stem_reloc type="text" description="Maximum amount of stem tissue to be relocated to seed (kg/ha)">0</stem_reloc>
-        <frosts type="text" description="Number of frosts experienced by this herbage cohort during its lifetime">0</frosts>
-        <AusfarmPastureGreenHerbage name="Leaf">
-          <dmd type="text" description="dmd (kg/kg)">0.825</dmd>
-          <weight type="text" description="weight (kg/ha)">8000</weight>
-          <n_conc type="text" description="n_conc (kg/kg)"></n_conc>
-          <p_conc type="text" description="p_conc (kg/kg)"></p_conc>
-          <s_conc type="text" description="s_conc (kg/kg)"></s_conc>
-          <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
-          <root_wt type="text" description="root_wt (kg/ha)">3600</root_wt>
-        </AusfarmPastureGreenHerbage>
-        <AusfarmPastureGreenHerbage name="Stem">
-          <dmd type="text" description="dmd (kg/kg)">0.825</dmd>
-          <weight type="text" description="weight (kg/ha)">1000</weight>
-          <n_conc type="text" description="n_conc (kg/kg)"></n_conc>
-          <p_conc type="text" description="p_conc (kg/kg)"></p_conc>
-          <s_conc type="text" description="s_conc (kg/kg)"></s_conc>
-          <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
-          <root_wt type="text" description="root_wt (kg/ha)">0</root_wt>
-        </AusfarmPastureGreenHerbage>
-      </AusfarmPastureGreen>
-      <AusfarmPastureDry name="Dry">
-        <status type="list" listvalues="dead,litter" description="State of a cohort of dry herbage:">dead</status>
-        <AusfarmPastureDryHerbage name="Leaf">
-          <dmd type="text" description="dmd (kg/kg)">0.65</dmd>
-          <weight type="text" description="weight (kg/ha)">500</weight>
-          <n_conc type="text" description="n_conc (kg/kg)"></n_conc>
-          <p_conc type="text" description="p_conc (kg/kg)"></p_conc>
-          <s_conc type="text" description="s_conc (kg/kg)"></s_conc>
-          <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
-        </AusfarmPastureDryHerbage>
-        <AusfarmPastureDryHerbage name="Stem">
-          <dmd type="text" description="dmd (kg/kg)">0.425</dmd>
-          <weight type="text" description="weight (kg/ha)">100</weight>
-          <n_conc type="text" description="n_conc (kg/kg)"></n_conc>
-          <p_conc type="text" description="p_conc (kg/kg)"></p_conc>
-          <s_conc type="text" description="s_conc (kg/kg)"></s_conc>
-          <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
-        </AusfarmPastureDryHerbage>
-      </AusfarmPastureDry>
-      <AusfarmPastureDry name="Litter">
-        <status type="list" listvalues="dead,litter" description="State of a cohort of dry herbage:">litter</status>
-        <AusfarmPastureDryHerbage name="Leaf">
-          <dmd type="text" description="dmd (kg/kg)">0.651</dmd>
-          <weight type="text" description="weight (kg/ha)">233</weight>
-          <n_conc type="text" description="n_conc (kg/kg)"></n_conc>
-          <p_conc type="text" description="p_conc (kg/kg)"></p_conc>
-          <s_conc type="text" description="s_conc (kg/kg)"></s_conc>
-          <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
-        </AusfarmPastureDryHerbage>
-        <AusfarmPastureDryHerbage name="Stem">
-          <dmd type="text" description="dmd (kg/kg)">0</dmd>
-          <weight type="text" description="weight (kg/ha)">0</weight>
-          <n_conc type="text" description="n_conc (kg/kg)"></n_conc>
-          <p_conc type="text" description="p_conc (kg/kg)"></p_conc>
-          <s_conc type="text" description="s_conc (kg/kg)"></s_conc>
-          <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
-        </AusfarmPastureDryHerbage>
-      </AusfarmPastureDry>
-      <AusfarmPastureSeeds name="Seeds">
-        <soft_unripe type="text" description="Mass of soft, unripe seeds (kg/ha)"></soft_unripe>
-        <soft_ripe type="text" description="Mass of soft, ripe seeds (kg/ha)"></soft_ripe>
-        <hard_unripe type="text" description="Mass of hard, unripe seeds (kg/ha)"></hard_unripe>
-        <hard_ripe type="text" description="Mass of hard, ripe seeds (kg/ha)"></hard_ripe>
-      </AusfarmPastureSeeds>
-    </AusfarmPasture>
-    <AgPasture>
-      <Nspecies type="text" description="Number of species">2</Nspecies>
-      <thisCropName type="text" description="Crop name shown as on the simulation tree">AgPasture</thisCropName>
-      <cropName type="text" description="Species names">ryegrass whiteclover</cropName>
-      <dmtotal type="text" description="Initial shoot dry matter (kg/ha)">1500      350</dmtotal>
-      <dmlitter type="text" description="Initial litter dry matter (kg/ha)">250        50</dmlitter>
-      <dmgreenmin type="text" description="Minimum green dry matter (kg/ha)">500        50</dmgreenmin>
-      <rootDepth type="text" description="Root depth (mm)">900        400</rootDepth>
-      <rlvp type="text" description="Root distribution parameter ([0-1] relative to Root depth)">1.0 1.0</rlvp>
-      <WaterUptakeSource type="text" description="Water uptake done by AgPasture (calc) or by apsim?">calc</WaterUptakeSource>
-    </AgPasture>
-    <barley>
-      <ModifyKL type="yesno" description="Modify KL using CL, EC or ESP if found?">yes</ModifyKL>
-    </barley>
-    <bambatsi />
-    <butterflypea />
-    <canola />
-    <centro />
-    <chickpea />
-    <cotton />
-    <cowpea />
-    <egrandis />
-    <fababean />
-    <fieldpea />
-    <frenchbean />
-    <OilPalm />
-    <grasp name="Grasp">
-      <category name="Initial values at establishment" />
-      <root_depth_init description="Initial depth of roots (mm)">750</root_depth_init>
-      <dm_dead_leaf_init description="Initial Dead Leaf weight (kg/ha)">0</dm_dead_leaf_init>
-      <dm_dead_stem_init description="Initial Dead Stem weight (kg/ha)">0</dm_dead_stem_init>
-      <dm_dead_root_init description="Initial Dead Root weight (kg/ha)">0</dm_dead_root_init>
-      <dm_green_leaf_init description="Initial Green Leaf weight (p135, kg/ha)">0</dm_green_leaf_init>
-      <dm_green_stem_init description="Initial Green Stem weight (p136, kg/ha)">0</dm_green_stem_init>
-      <dm_green_root_init description="Initial Green Root weight (kg/ha)">0</dm_green_root_init>
-      <basal_area_init description="Initial Basal area of tussocks (p005, %)">0.5</basal_area_init>
-      <acc_trans_for_n_init description="Initial accumulated transpiration, used for N uptake (mm)">0</acc_trans_for_n_init>
-      <acc_growth_for_n_init description="Initial accumulated growth, used for N uptake (kg/ha)">0</acc_growth_for_n_init>
-      <category name="Soil Properties" />
-      <max_n_avail description="Limit to total N (p099, kg/year)">15</max_n_avail>
-      <max_n_avail_dist description="Distribution of N in profile">0.8 0.1 0.05  0.05  0.0 0.0  0.0</max_n_avail_dist>
-      <ll description="Lower limit (ll) of water extraction (mm/mm)">.230     .240    .240    .250 .260 .270 .280</ll>
-      <kl description="Rate of water extraction (kl)">0.5      0.5      0.5    0.5  0.0  0.0  0.0</kl>
-      <kl2rlv>1.0</kl2rlv>
-      <category name="Parameter values" />
-      <crop_type>grass</crop_type>
-      <uptake_source>calc</uptake_source>
-      <height_max description="Maximum canopy height (mm)">1200</height_max>
-      <hgt_vpd_screen description="Height at which surface effects on vpd are 0 (p095*10, mm)">200</hgt_vpd_screen>
-      <height_1000kg description="Sward Height per tonne (p096*10, mm)">100</height_1000kg>
-      <et_use_efficiency description="Evapotranspiration use efficiency used in BA calc (p288, kg/ha/mm) (p288)">0</et_use_efficiency>
-      <frac_leaf2total description="Fraction of total dm produced that goes into leaf pool (p123,0-1)">0.5</frac_leaf2total>
-      <yld_cover_slope description="Shape of exponential curve relating yield and cover">0.693147</yld_cover_slope>
-      <yld_fpc50 description="yld_fpc50 (p046)">1000</yld_fpc50>
-      <yld_cov50 description="Yield transpiring at 50% of pan evap (p045)">1000</yld_cov50>
-      <yld_tcov50 description="Tsdm yield at which cover for runoff is 50% (p271)">1000</yld_tcov50>
-      <swi_fullgreen description="Min soil water for 100% green (p009)">0.1</swi_fullgreen>
-      <swi_nogrow description="SWI when growth stops (swi_nogrow)">0.4</swi_nogrow>
-      <pot_regrow description="Max rate regrowth from tussocks (p006, kg/ha/unit grass ba)">3.0</pot_regrow>
-      <te_std description="Transpiration efficiency at vpd=20mb (p007)">10.0</te_std>
-      <rad_factor>8.97</rad_factor>
-      <residual_plant_N description="Always this much n in plant (p097, kg/ha)">5</residual_plant_N>
-      <litter_n description="N conc of detached stems and roots ((p110-p111)/2)">0.3</litter_n>
-      <n_uptk_per100 description="Nitrogen uptake per 100mm water (p098, kg/ha)">5</n_uptk_per100>
-      <frost_start description="Minimum screen temp at which green cover=100% (p125, oC)">2</frost_start>
-      <frost_kill description="Minimum screen temp at which frost kills all green (p011, oC)">0</frost_kill>
-      <death_slope description="Rate of green death per soil water (p051)">0.013</death_slope>
-      <death_intercept description="Background death rate (p010)">0.002</death_intercept>
-      <leaf_death_ratio description="Proportion of leaf death to total death (p133)">1</leaf_death_ratio>
-      <stem_death_ratio description="Proportion of stem death to total death (p134)">1</stem_death_ratio>
-      <n_conc_dm_crit description="Level of plant N at which no N stress occurs (p102)">2.5</n_conc_dm_crit>
-      <n_conc_dm_min description="Level of soil N at which no N stress occurs (p101)">0.4</n_conc_dm_min>
-      <n_conc_dm_max description="Level of soil N at which soil N to high for growth (p100)">0.5</n_conc_dm_max>
-      <stem_thresh description="stem_thresh (p124)">0</stem_thresh>
-      <detach_dryseason description="detach_dryseason: root, leaf, stem">0.0   0.002     0.002</detach_dryseason>
-      <detach_wetseason description="detach_wetseason: root, leaf, stem">0.0   0.002     0.002</detach_wetseason>
-      <category name="Date resets" />
-      <day_start_summer>335</day_start_summer>
-      <day_end_summer>59</day_end_summer>
-      <acc_et_reset>273</acc_et_reset>
-      <acc_growth_reset>273</acc_growth_reset>
-      <trans_for_n_reset>273</trans_for_n_reset>
-      <growth_for_n_reset>273</growth_for_n_reset>
-      <day_start_wet>274</day_start_wet>
-      <day_start_dry>91</day_start_dry>
-      <enr_a_coeff>7.4</enr_a_coeff>
-      <enr_b_coeff>0.2</enr_b_coeff>
-    </grasp>
-    <horsegram />
-    <lablab />
-    <lucerne />
-    <lupin />
-    <maize />
-    <millet />
-    <mucuna />
-    <mungbean />
-    <navybean />
-    <oats>
-      <ModifyKL type="yesno" description="Modify KL using CL, EC or ESP if found?">yes</ModifyKL>
-    </oats>
-    <peanut />
-    <pigeonpea />
-    <rice />
-    <root />
-    <seedling />
-    <slurp />
-    <sorghum />
-    <soybean />
-    <stylo />
-    <SugarCane />
-    <sunflower />
-    <SweetCorn />
-    <SweetSorghum />
-    <weed />
-    <wheat>
-      <ModifyKL type="yesno" description="Modify KL using CL, EC or ESP if found?">yes</ModifyKL>
-    </wheat>
-    <WF_Millet />
-    <canopy>
-      <intercrop type="text" description="Enter crop names to intercrop">maize wheat</intercrop>
-    </canopy>
-  </folder>
-  <folder name="Soil related">
-    <soil name="Soil">
-      <Country />
-      <Site></Site>
-      <Region></Region>
-      <LocalName></LocalName>
-      <SoilType description="Classification"></SoilType>
-      <NearestTown description="Nearest town"></NearestTown>
-      <NaturalVegetation description="Natural vegetation"></NaturalVegetation>
-      <State />
-      <ApsoilNumber description="Apsoil number" />
-      <Latitude description="Latitude (WGS84)" />
-      <Longitude description="Longitude (WGS84)" />
-      <LocationAccuracy description="Location accuracy" />
-      <DataSource type="multiedit" description="Data source" />
-      <Comments type="multiedit" description="Comments" />
-      <Water>
-        <Layer>
-          <Thickness units="mm" />
-          <KS units="mm/day" />
-          <BD units="g/cc" />
-          <Airdry units="mm/mm" />
-          <LL15 units="mm/mm" />
-          <DUL units="mm/mm" />
-          <SAT units="mm/mm" />
-        </Layer>
-        <SoilCrop name="Crop">
-          <Layer>
-            <Thickness units="mm" />
-            <LL units="mm/mm" />
-            <KL units="/day" />
-            <XF units="0-1" />
-          </Layer>
-        </SoilCrop>
-      </Water>
-      <SoilWat>
-        <SummerCona />
-        <SummerU />
-        <SummerDate />
-        <WinterCona />
-        <WinterU />
-        <WinterDate />
-        <DiffusConst />
-        <DiffusSlope />
-        <Salb />
-        <Cn2Bare />
-        <CnRed />
-        <CnCov />
-        <Slope />
-        <DischargeWidth />
-        <CatchmentArea />
-        <MaxPond />
-        <Layer>
-          <Thickness units="mm" />
-          <SWCON units="0-1" />
-          <MWCON units="0-1" />
-          <KLAT units="mm/d" />
-        </Layer>
-      </SoilWat>
-      <SoilOrganicMatter>
-        <RootCn></RootCn>
-        <RootWt></RootWt>
-        <SoilCn></SoilCn>
-        <EnrACoeff></EnrACoeff>
-        <EnrBCoeff></EnrBCoeff>
-        <Layer>
-          <Thickness units="mm" />
-          <OC units="Walkley Black %" />
-          <FBIOM units="0-1" />
-          <FINERT units="0-1" />
-        </Layer>
-      </SoilOrganicMatter>
-      <Analysis>
-        <Layer>
-          <Thickness units="mm" />
-          <Rocks units="%" />
-          <Texture />
-          <MunsellColour />
-          <EC units="1:5 dS/m" />
-          <PH units="1:5 water" />
-          <CL units="mg/kg" />
-          <Boron units="Hot water mg/kg" />
-          <CEC units="cmol+/kg" />
-          <Ca units="cmol+/kg" />
-          <Mg units="cmol+/kg" />
-          <Na units="cmol+/kg" />
-          <K units="cmol+/kg" />
-          <ESP units="%" />
-          <Mn units="mg/kg" />
-          <Al units="cmol+/kg" />
-          <ParticleSizeSand units="%" />
-          <ParticleSizeSilt units="%" />
-          <ParticleSizeClay units="%" />
-        </Layer>
-      </Analysis>
-      <InitWater>
-        <percentmethod>
-          <percent>1</percent>
-          <distributed>filled from top</distributed>
-        </percentmethod>
-      </InitWater>
-      <Sample name="Soil sample">
-        <Date type="date" description="Sample date (not used by APSIM):" />
-        <Layer>
-          <Thickness units="mm">100</Thickness>
-          <SW units="mm/mm">0</SW>
-          <NO3 units="ppm">0</NO3>
-          <NH4 units="ppm">0</NH4>
-        </Layer>
-      </Sample>
-      <Phosphorus>
-        <RootCP />
-        <RateDissolRock />
-        <RateLossAvail />
-        <Layer>
-          <LabileP units="mg/kg">5</LabileP>
-          <Sorption units="-">50</Sorption>
-          <BandedP units="kg/ha">0</BandedP>
-          <RockP units="kg/ha">0</RockP>
-        </Layer>
-      </Phosphorus>
-    </soil>
-    <folder name="SWIM3">
-      <soil name="SWIM Soil">
-        <Site></Site>
-        <Region></Region>
-        <LocalName></LocalName>
-        <SoilType description="Classification"></SoilType>
-        <NearestTown description="Nearest town"></NearestTown>
-        <NaturalVegetation description="Natural vegetation"></NaturalVegetation>
-        <State />
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Langitude description="Longitude (WGS84)" />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source" />
-        <Comment type="multiedit" description="Comments" />
-        <InitWater>
-          <percentmethod>
-            <percent>1</percent>
-            <distributed>filled from top</distributed>
-          </percentmethod>
-        </InitWater>
-        <Sample name="Initial nitrogen">
-          <Date type="date" description="Sample date:" />
-          <Layer>
-            <Thickness units="mm">100</Thickness>
-            <SW units="mm/mm">0</SW>
-            <NO3 units="ppm">0</NO3>
-            <NH4 units="ppm">0</NH4>
-          </Layer>
-        </Sample>
-        <Water>
-          <Layer>
-            <Thickness units="mm" />
-            <KS units="mm/day" />
-            <BD units="g/cc" />
-            <Airdry units="mm/mm" />
-            <LL15 units="mm/mm" />
-            <DUL units="mm/mm" />
-            <SAT units="mm/mm" />
-          </Layer>
-          <SoilCrop name="Crop">
+   <soilwatkludge name="soilwatkludge">
+      <mwcon>1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0</mwcon>
+      <max_pond>100</max_pond>
+   </soilwatkludge>
+   <folder name="Structural">
+      <memo />
+      <SysBal2 />
+      <folder />
+      <area name="paddock" />
+      <ini>
+         <filename/>
+      </ini>
+      <PlugIns />
+   </folder>
+   <folder name="Animals">
+      <stock>
+         <fraction_faeces_added type="text" description="fraction_faeces_added">0.5</fraction_faeces_added>
+         <fraction_urine_added type="text" description="fraction_urine_added">0.5</fraction_urine_added>
+         <herbage1 type="text" description="First plant herbage source">lucerne</herbage1>
+         <herbage1class type="list" listvalues="plant,plant2,grasp,growth" description="First plant module class">plant</herbage1class>
+         <herbage2 type="text" description="Second plant herbage source"/>
+         <herbage2class type="list" listvalues="plant,plant2,grasp,growth" description="Second plant module class">plant</herbage2class>
+      </stock>
+      <supplement>
+         <spoilage_time type="text" description="spoilage_time">0</spoilage_time>
+      </supplement>
+      <graz name="Simple grazing model">
+         <intake_util_intercept type="text" description="Intercept in intake and utilization eqn (p142)">1</intake_util_intercept>
+         <intake_util_slope type="text" description="Slope in intake and utilization eqn (p143)">-0.3</intake_util_slope>
+         <yld_eat_restr type="text" description="Yield at which intake restriction no longer applies (p144)">300</yld_eat_restr>
+         <summer_lwg type="text" description="Expected summer lwg @ low SR (p145)">70</summer_lwg>
+         <autumn_lwg type="text" description="Expected autumn lwg @ low SR (p146)">35</autumn_lwg>
+         <winter_lwg type="text" description="Expected winter lwg @ low SR (p147)">10</winter_lwg>
+         <spring_lwg type="text" description="Expected spring lwg @ low SR (p148)">35</spring_lwg>
+         <leaf_diet type="text" description="Proportion of leaf in diet (p132/100)">0.85</leaf_diet>
+         <std_alw type="text" description="std_alw">200</std_alw>
+         <min_alw type="text" description="Minimum alw">100</min_alw>
+         <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
+         <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
+         <prop_can_eat type="text" description="prop_can_eat">1</prop_can_eat>
+         <allow_supplements type="text" description="allow_supplements">1</allow_supplements>
+      </graz>
+   </folder>
+   <folder name="Crops">
+      <AusfarmPasture>
+         <debug type="list" listvalues="on,off" description="debug">off</debug>
+         <sand type="text" description="sand">0.1 0.1 0.1 0.1 0.1</sand>
+         <svp_fract type="text" description="svp_fract">0.75</svp_fract>
+         <co2_ppm type="text" description="co2 (ppm)">400</co2_ppm>
+         <species type="list" description="Name of the pasture species" listvalues="Perennial Ryegrass,Phalaris,Cocksfoot,Annual Ryegrass,Annual Grass - Early,Sub Clover - Mt Barker,Sub Clover - Leura,Sub Clover - Seaton Park,Sub Clover - Dalkeith,Medic - Paraggio,White Clover (beta),Lucerne - Hunter River (beta),Lucerne - winter active (beta),Capeweed">Cocksfoot</species>
+      </AusfarmPasture>
+      <AusfarmPasture name="AusfarmEstablishedPasture">
+         <debug type="list" listvalues="on,off" description="debug">off</debug>
+         <sand type="text" description="sand">0.1 0.1 0.1 0.1 0.1</sand>
+         <svp_fract type="text" description="svp_fract">0.75</svp_fract>
+         <co2_ppm type="text" description="co2 (ppm)">400</co2_ppm>
+         <species type="list" description="Name of the pasture species" listvalues="Perennial Ryegrass,Phalaris,Cocksfoot,Annual Ryegrass,Annual Grass - Early,Sub Clover - Mt Barker,Sub Clover - Leura,Sub Clover - Seaton Park,Sub Clover - Dalkeith,Medic - Paraggio,White Clover (beta),Lucerne - Hunter River (beta),Lucerne - winter active (beta),Capeweed">Cocksfoot</species>
+         <nutrients type="list" listvalues="Null,N,NP,NS,NPS" description="Determines which of the plant nutrient submodels to activate">N</nutrients>
+         <fertility type="text" description="Fertility scalar. Only meaningful in simple mode">1</fertility>
+         <max_rtdep type="text" description="Maximum rooting depth (mm)">1300</max_rtdep>
+         <lagged_day_t type="text" description="Lagged daytime temperature (oC)">-999.9</lagged_day_t>
+         <phenology type="text" description="Value denoting the phenological stage of the species">1.005</phenology>
+         <flower_len type="text" description="Current maximum length of the flowering period (d)">0</flower_len>
+         <flower_time type="text" description="Time since the start of flowering (d)">0</flower_time>
+         <senc_index type="text" description="Number of preceding days of dry conditions (d)">0</senc_index>
+         <dorm_index type="text" description="Number of preceding days of cool, moist conditions (d)">0</dorm_index>
+         <dorm_t type="text" description="Lagged mean temperature used in summer-dormancy calculations (oc)">-999.9</dorm_t>
+         <seed_dorm_time type="text" description="Time since commencement of embryo dormancy (d)">0</seed_dorm_time>
+         <germ_index type="text" description="Germination index. Only meaningful if the species is modelled with seed pools (d)">0</germ_index>
+         <kl type="text" description="kl (-)"/>
+         <ll type="text" description="lower limit (mm/mm)"/>
+         <AusfarmPastureGreen name="Green">
+            <status type="list" listvalues="seedling,established,senescing" description="status">established</status>
+            <rt_dep type="text" description="Current rooting depth of the cohort (mm)">100</rt_dep>
+            <estab_index type="text" description="Establishment index.  Only meaningful if status = seedling">0</estab_index>
+            <stress_index type="text" description="Stress index.  Only meaningful if status = seedling:">0</stress_index>
+            <stem_reloc type="text" description="Maximum amount of stem tissue to be relocated to seed (kg/ha)">0</stem_reloc>
+            <frosts type="text" description="Number of frosts experienced by this herbage cohort during its lifetime">0</frosts>
+            <AusfarmPastureGreenHerbage name="Leaf">
+               <dmd type="text" description="dmd (kg/kg)">0.825</dmd>
+               <weight type="text" description="weight (kg/ha)">8000</weight>
+               <n_conc type="text" description="n_conc (kg/kg)"/>
+               <p_conc type="text" description="p_conc (kg/kg)"/>
+               <s_conc type="text" description="s_conc (kg/kg)"/>
+               <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
+               <root_wt type="text" description="root_wt (kg/ha)">3600</root_wt>
+            </AusfarmPastureGreenHerbage>
+            <AusfarmPastureGreenHerbage name="Stem">
+               <dmd type="text" description="dmd (kg/kg)">0.825</dmd>
+               <weight type="text" description="weight (kg/ha)">1000</weight>
+               <n_conc type="text" description="n_conc (kg/kg)"/>
+               <p_conc type="text" description="p_conc (kg/kg)"/>
+               <s_conc type="text" description="s_conc (kg/kg)"/>
+               <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
+               <root_wt type="text" description="root_wt (kg/ha)">0</root_wt>
+            </AusfarmPastureGreenHerbage>
+         </AusfarmPastureGreen>
+         <AusfarmPastureDry name="Dry">
+            <status type="list" listvalues="dead,litter" description="State of a cohort of dry herbage:">dead</status>
+            <AusfarmPastureDryHerbage name="Leaf">
+               <dmd type="text" description="dmd (kg/kg)">0.65</dmd>
+               <weight type="text" description="weight (kg/ha)">500</weight>
+               <n_conc type="text" description="n_conc (kg/kg)"/>
+               <p_conc type="text" description="p_conc (kg/kg)"/>
+               <s_conc type="text" description="s_conc (kg/kg)"/>
+               <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
+            </AusfarmPastureDryHerbage>
+            <AusfarmPastureDryHerbage name="Stem">
+               <dmd type="text" description="dmd (kg/kg)">0.425</dmd>
+               <weight type="text" description="weight (kg/ha)">100</weight>
+               <n_conc type="text" description="n_conc (kg/kg)"/>
+               <p_conc type="text" description="p_conc (kg/kg)"/>
+               <s_conc type="text" description="s_conc (kg/kg)"/>
+               <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
+            </AusfarmPastureDryHerbage>
+         </AusfarmPastureDry>
+         <AusfarmPastureDry name="Litter">
+            <status type="list" listvalues="dead,litter" description="State of a cohort of dry herbage:">litter</status>
+            <AusfarmPastureDryHerbage name="Leaf">
+               <dmd type="text" description="dmd (kg/kg)">0.651</dmd>
+               <weight type="text" description="weight (kg/ha)">233</weight>
+               <n_conc type="text" description="n_conc (kg/kg)"/>
+               <p_conc type="text" description="p_conc (kg/kg)"/>
+               <s_conc type="text" description="s_conc (kg/kg)"/>
+               <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
+            </AusfarmPastureDryHerbage>
+            <AusfarmPastureDryHerbage name="Stem">
+               <dmd type="text" description="dmd (kg/kg)">0</dmd>
+               <weight type="text" description="weight (kg/ha)">0</weight>
+               <n_conc type="text" description="n_conc (kg/kg)"/>
+               <p_conc type="text" description="p_conc (kg/kg)"/>
+               <s_conc type="text" description="s_conc (kg/kg)"/>
+               <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
+            </AusfarmPastureDryHerbage>
+         </AusfarmPastureDry>
+         <AusfarmPastureSeeds name="Seeds">
+            <soft_unripe type="text" description="Mass of soft, unripe seeds (kg/ha)"/>
+            <soft_ripe type="text" description="Mass of soft, ripe seeds (kg/ha)"/>
+            <hard_unripe type="text" description="Mass of hard, unripe seeds (kg/ha)"/>
+            <hard_ripe type="text" description="Mass of hard, ripe seeds (kg/ha)"/>
+         </AusfarmPastureSeeds>
+      </AusfarmPasture>
+      <AgPasture>
+         <Nspecies type="text" description="Number of species">2</Nspecies>
+         <thisCropName type="text" description="Crop name shown as on the simulation tree">AgPasture</thisCropName>
+         <cropName type="text" description="Species names">ryegrass whiteclover</cropName>
+         <dmtotal type="text" description="Initial shoot dry matter (kg/ha)">1500      350</dmtotal>
+         <dmlitter type="text" description="Initial litter dry matter (kg/ha)">250        50</dmlitter>
+         <dmgreenmin type="text" description="Minimum green dry matter (kg/ha)">500        50</dmgreenmin>
+         <rootDepth type="text" description="Root depth (mm)">900        400</rootDepth>
+         <rlvp type="text" description="Root distribution parameter ([0-1] relative to Root depth)">1.0 1.0</rlvp>
+         <WaterUptakeSource type="text" description="Water uptake done by AgPasture (calc) or by apsim?">calc</WaterUptakeSource>
+      </AgPasture>
+      <barley>
+         <ModifyKL type="yesno" description="Modify KL using CL, EC or ESP if found?">yes</ModifyKL>
+      </barley>
+      <bambatsi />
+      <butterflypea />
+      <canola />
+      <centro />
+      <chickpea />
+      <cotton />
+      <cowpea />
+      <egrandis />
+      <fababean />
+      <fieldpea />
+      <frenchbean />
+      <OilPalm />
+      <grasp name="Grasp">
+         <category name="Initial values at establishment" />
+         <root_depth_init description="Initial depth of roots (mm)">750</root_depth_init>
+         <dm_dead_leaf_init description="Initial Dead Leaf weight (kg/ha)">0</dm_dead_leaf_init>
+         <dm_dead_stem_init description="Initial Dead Stem weight (kg/ha)">0</dm_dead_stem_init>
+         <dm_dead_root_init description="Initial Dead Root weight (kg/ha)">0</dm_dead_root_init>
+         <dm_green_leaf_init description="Initial Green Leaf weight (p135, kg/ha)">0</dm_green_leaf_init>
+         <dm_green_stem_init description="Initial Green Stem weight (p136, kg/ha)">0</dm_green_stem_init>
+         <dm_green_root_init description="Initial Green Root weight (kg/ha)">0</dm_green_root_init>
+         <basal_area_init description="Initial Basal area of tussocks (p005, %)">0.5</basal_area_init>
+         <acc_trans_for_n_init description="Initial accumulated transpiration, used for N uptake (mm)">0</acc_trans_for_n_init>
+         <acc_growth_for_n_init description="Initial accumulated growth, used for N uptake (kg/ha)">0</acc_growth_for_n_init>
+         <category name="Soil Properties" />
+         <max_n_avail description="Limit to total N (p099, kg/year)">15</max_n_avail>
+         <max_n_avail_dist description="Distribution of N in profile">0.8 0.1 0.05  0.05  0.0 0.0  0.0</max_n_avail_dist>
+         <ll description="Lower limit (ll) of water extraction (mm/mm)">.230     .240    .240    .250 .260 .270 .280</ll>
+         <kl description="Rate of water extraction (kl)">0.5      0.5      0.5    0.5  0.0  0.0  0.0</kl>
+         <kl2rlv>1.0</kl2rlv>
+         <category name="Parameter values" />
+         <crop_type>grass</crop_type>
+         <uptake_source>calc</uptake_source>
+         <height_max description="Maximum canopy height (mm)">1200</height_max>
+         <hgt_vpd_screen description="Height at which surface effects on vpd are 0 (p095*10, mm)">200</hgt_vpd_screen>
+         <height_1000kg description="Sward Height per tonne (p096*10, mm)">100</height_1000kg>
+         <et_use_efficiency description="Evapotranspiration use efficiency used in BA calc (p288, kg/ha/mm) (p288)">0</et_use_efficiency>
+         <frac_leaf2total description="Fraction of total dm produced that goes into leaf pool (p123,0-1)">0.5</frac_leaf2total>
+         <yld_cover_slope description="Shape of exponential curve relating yield and cover">0.693147</yld_cover_slope>
+         <yld_fpc50 description="yld_fpc50 (p046)">1000</yld_fpc50>
+         <yld_cov50 description="Yield transpiring at 50% of pan evap (p045)">1000</yld_cov50>
+         <yld_tcov50 description="Tsdm yield at which cover for runoff is 50% (p271)">1000</yld_tcov50>
+         <swi_fullgreen description="Min soil water for 100% green (p009)">0.1</swi_fullgreen>
+         <swi_nogrow description="SWI when growth stops (swi_nogrow)">0.4</swi_nogrow>
+         <pot_regrow description="Max rate regrowth from tussocks (p006, kg/ha/unit grass ba)">3.0</pot_regrow>
+         <te_std description="Transpiration efficiency at vpd=20mb (p007)">10.0</te_std>
+         <rad_factor>8.97</rad_factor>
+         <residual_plant_N description="Always this much n in plant (p097, kg/ha)">5</residual_plant_N>
+         <litter_n description="N conc of detached stems and roots ((p110-p111)/2)">0.3</litter_n>
+         <n_uptk_per100 description="Nitrogen uptake per 100mm water (p098, kg/ha)">5</n_uptk_per100>
+         <frost_start description="Minimum screen temp at which green cover=100% (p125, oC)">2</frost_start>
+         <frost_kill description="Minimum screen temp at which frost kills all green (p011, oC)">0</frost_kill>
+         <death_slope description="Rate of green death per soil water (p051)">0.013</death_slope>
+         <death_intercept description="Background death rate (p010)">0.002</death_intercept>
+         <leaf_death_ratio description="Proportion of leaf death to total death (p133)">1</leaf_death_ratio>
+         <stem_death_ratio description="Proportion of stem death to total death (p134)">1</stem_death_ratio>
+         <n_conc_dm_crit description="Level of plant N at which no N stress occurs (p102)">2.5</n_conc_dm_crit>
+         <n_conc_dm_min description="Level of soil N at which no N stress occurs (p101)">0.4</n_conc_dm_min>
+         <n_conc_dm_max description="Level of soil N at which soil N to high for growth (p100)">0.5</n_conc_dm_max>
+         <stem_thresh description="stem_thresh (p124)">0</stem_thresh>
+         <detach_dryseason description="detach_dryseason: root, leaf, stem">0.0   0.002     0.002</detach_dryseason>
+         <detach_wetseason description="detach_wetseason: root, leaf, stem">0.0   0.002     0.002</detach_wetseason>
+         <category name="Date resets" />
+         <day_start_summer>335</day_start_summer>
+         <day_end_summer>59</day_end_summer>
+         <acc_et_reset>273</acc_et_reset>
+         <acc_growth_reset>273</acc_growth_reset>
+         <trans_for_n_reset>273</trans_for_n_reset>
+         <growth_for_n_reset>273</growth_for_n_reset>
+         <day_start_wet>274</day_start_wet>
+         <day_start_dry>91</day_start_dry>
+         <enr_a_coeff>7.4</enr_a_coeff>
+         <enr_b_coeff>0.2</enr_b_coeff>
+      </grasp>
+      <horsegram />
+      <lablab />
+      <lucerne />
+      <lupin />
+      <maize />
+      <millet />
+      <mucuna />
+      <mungbean />
+      <navybean />
+      <oats>
+         <ModifyKL type="yesno" description="Modify KL using CL, EC or ESP if found?">yes</ModifyKL>
+      </oats>
+      <peanut />
+      <pigeonpea />
+      <rice />
+      <root />
+      <seedling />
+      <slurp />
+      <sorghum />
+      <soybean />
+      <stylo />
+      <SugarCane />
+      <sunflower />
+      <SweetCorn />
+      <SweetSorghum />
+      <weed />
+      <wheat>
+         <ModifyKL type="yesno" description="Modify KL using CL, EC or ESP if found?">yes</ModifyKL>
+      </wheat>
+      <WF_Millet />
+      <canopy>
+         <intercrop type="text" description="Enter crop names to intercrop">maize wheat</intercrop>
+      </canopy>
+   </folder>
+   <folder name="Soil related">
+      <soil name="Soil">
+         <Country />
+         <Site/>
+         <Region/>
+         <LocalName/>
+         <SoilType description="Classification"/>
+         <NearestTown description="Nearest town"/>
+         <NaturalVegetation description="Natural vegetation"/>
+         <State />
+         <ApsoilNumber description="Apsoil number" />
+         <Latitude description="Latitude (WGS84)" />
+         <Longitude description="Longitude (WGS84)" />
+         <LocationAccuracy description="Location accuracy" />
+         <DataSource type="multiedit" description="Data source" />
+         <Comments type="multiedit" description="Comments" />
+         <Water>
             <Layer>
-              <Thickness units="mm" />
-              <LL units="mm/mm" />
-              <KL units="/day" />
-              <XF units="0-1" />
+               <Thickness units="mm" />
+               <KS units="mm/day" />
+               <BD units="g/cc" />
+               <Airdry units="mm/mm" />
+               <LL15 units="mm/mm" />
+               <DUL units="mm/mm" />
+               <SAT units="mm/mm" />
             </Layer>
-          </SoilCrop>
-        </Water>
-        <Thickness>
-          <Values description="Enter soil profile thickness values for APSIM (mm)">10 20 30 40 100 200 300 300 300 300 300 100 </Values>
-        </Thickness>
-        <Swim>
-          <Salb type="text" description="Bare Soil Albedo">0.13</Salb>
-          <Cn2Bare type="text" description="Bare Soil Runoff Curve Number">75</Cn2Bare>
-          <CnRed type="text" description="Max. Reduction in Curve Number due to cover">20</CnRed>
-          <CnCov type="text" description="Cover for max Curve Number reduction">0.8</CnCov>
-          <Kdul type="text" description="Hydraulic Conductivity at DUL (mm/d)">.1</Kdul>
-          <psidul type="text" description="Matric Potential at DUL (cm)">-100</psidul>
-          <VC type="list" listvalues="on,off" description="Vapour Conductivity Calculations (on/off)">on</VC>
-          <dtmin type="text" description="Minimum Timestep (min)">0.0</dtmin>
-          <dtmax type="text" description="Maximum Timestep (min)">1440.</dtmax>
-          <MaxWaterIncrement type="text" description="Maximum Water Increment (mm)">10</MaxWaterIncrement>
-          <SpaceWeightingFactor type="text" description="Space Weighting Factor">0</SpaceWeightingFactor>
-          <SoluteSpaceWeightingFactor type="text" description="Solute Space Weighting Factor">0.0</SoluteSpaceWeightingFactor>
-          <diagnostics type="yesno" description="Diagnostic Information?">no</diagnostics>
-          <SwimSoluteParameters>
-            <dis type="text" description="Dispersivity - dis ((cm^2/h)/(cm/h)^p) ">15</dis>
-            <disp type="text" description="Dispersivity Power - disp">1</disp>
-            <a type="text" description="Tortuosity Constant - a">1.0</a>
-            <dthc type="text" description="Tortuoisty Offset - dthc">0.0</dthc>
-            <dthp type="text" description="Tortuoisty Power - dthp">1.0</dthp>
-            <WaterTableCl type="text" description="Water Table Cl Concentration (ppm)">0.0</WaterTableCl>
-            <WaterTableNO3 type="text" description="Water Table NO3 Concentration (ppm)">0.0</WaterTableNO3>
-            <WaterTableNH4 type="text" description="Water Table NH4 Concentration (ppm)">0.0</WaterTableNH4>
-            <WaterTableUrea type="text" description="Water Table Urea Concentration (ppm)">0.0</WaterTableUrea>
+            <SoilCrop name="Crop">
+               <Layer>
+                  <Thickness units="mm" />
+                  <LL units="mm/mm" />
+                  <KL units="/day" />
+                  <XF units="0-1" />
+               </Layer>
+            </SoilCrop>
+         </Water>
+         <SoilWat>
+            <SummerCona />
+            <SummerU />
+            <SummerDate />
+            <WinterCona />
+            <WinterU />
+            <WinterDate />
+            <DiffusConst />
+            <DiffusSlope />
+            <Salb />
+            <Cn2Bare />
+            <CnRed />
+            <CnCov />
+            <Slope />
+            <DischargeWidth />
+            <CatchmentArea />
+            <MaxPond />
             <Layer>
-              <Thickness units="mm">1000</Thickness>
-              <NO3Exco units="">0</NO3Exco>
-              <NO3FIP units="">1.0</NO3FIP>
-              <NH4Exco units="">100.0</NH4Exco>
-              <NH4FIP units="">1.0</NH4FIP>
-              <UreaExco units="">0.0</UreaExco>
-              <UreaFIP units="">1.0</UreaFIP>
-              <ClExco units="">0.0</ClExco>
-              <ClFIP units="">1.0</ClFIP>
+               <Thickness units="mm" />
+               <SWCON units="0-1" />
+               <MWCON units="0-1" />
+               <KLAT units="mm/d" />
             </Layer>
+         </SoilWat>
+         <SoilOrganicMatter>
+            <RootCn/>
+            <RootWt/>
+            <SoilCn/>
+            <EnrACoeff/>
+            <EnrBCoeff/>
             <Layer>
-              <Thickness units="mm">1000</Thickness>
-              <NO3Exco units="">0</NO3Exco>
-              <NO3FIP units="">1.0</NO3FIP>
-              <NH4Exco units="">100.0</NH4Exco>
-              <NH4FIP units="">1.0</NH4FIP>
-              <UreaExco units="">0.0</UreaExco>
-              <UreaFIP units="">1.0</UreaFIP>
-              <ClExco units="">0.0</ClExco>
-              <ClFIP units="">1.0</ClFIP>
+               <Thickness units="mm" />
+               <OC units="Walkley Black %" />
+               <FBIOM units="0-1" />
+               <FINERT units="0-1" />
             </Layer>
+         </SoilOrganicMatter>
+         <Analysis>
             <Layer>
-              <Thickness units="mm">1000</Thickness>
-              <NO3Exco units="">0.0</NO3Exco>
-              <NO3FIP units="">1.0</NO3FIP>
-              <NH4Exco units="">100.0</NH4Exco>
-              <NH4FIP units="">1.0</NH4FIP>
-              <UreaExco units="">0.0</UreaExco>
-              <UreaFIP units="">1.0</UreaFIP>
-              <ClExco units="">0.0</ClExco>
-              <ClFIP units="">1.0</ClFIP>
+               <Thickness units="mm" />
+               <Rocks units="%" />
+               <Texture />
+               <MunsellColour />
+               <EC units="1:5 dS/m" />
+               <PH units="1:5 water" />
+               <CL units="mg/kg" />
+               <Boron units="Hot water mg/kg" />
+               <CEC units="cmol+/kg" />
+               <Ca units="cmol+/kg" />
+               <Mg units="cmol+/kg" />
+               <Na units="cmol+/kg" />
+               <K units="cmol+/kg" />
+               <ESP units="%" />
+               <Mn units="mg/kg" />
+               <Al units="cmol+/kg" />
+               <ParticleSizeSand units="%" />
+               <ParticleSizeSilt units="%" />
+               <ParticleSizeClay units="%" />
             </Layer>
-          </SwimSoluteParameters>
-          <SwimWaterTable name="SwimWaterTable">
-            <WaterTableDepth type="text" description="Depth to Water Table (mm)">2000.0</WaterTableDepth>
-          </SwimWaterTable>
-          <SwimSubsurfaceDrain name="SwimSubsurfaceDrain">
-            <DrainDepth type="text" description="Depth of subsurface drain (mm)">600.0</DrainDepth>
-            <DrainSpacing type="text" description="Distance between subsurface drains (mm)">30000.0</DrainSpacing>
-            <DrainRadius type="text" description="Radius of each subsurface drain (mm)">50.0</DrainRadius>
-            <Klat type="text" description="Lateral saturated soil water conductivity (mm/d)">1000.0</Klat>
-            <ImpermDepth type="text" description="Depth to impermeable soil (mm)">3000.0</ImpermDepth>
-          </SwimSubsurfaceDrain>
-        </Swim>
-        <SoilOrganicMatter>
-          <RootCn></RootCn>
-          <RootWt></RootWt>
-          <SoilCn></SoilCn>
-          <EnrACoeff></EnrACoeff>
-          <EnrBCoeff></EnrBCoeff>
-          <Layer>
-            <Thickness units="mm" />
-            <OC units="Walkley Black %" />
-            <FBIOM units="0-1" />
-            <FINERT units="0-1" />
-          </Layer>
-        </SoilOrganicMatter>
-        <Analysis>
-          <Layer>
-            <Thickness units="mm" />
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH units="1:5 water" />
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
-        </Analysis>
-        <Sample name="Soil sample">
-          <Date type="date" description="Sample date:" />
-          <Layer>
-            <Thickness units="mm">100</Thickness>
-            <SW units="mm/mm">0</SW>
-            <NO3 units="ppm">0</NO3>
-            <NH4 units="ppm">0</NH4>
-          </Layer>
-        </Sample>
+         </Analysis>
+         <InitWater>
+            <percentmethod>
+               <percent>1</percent>
+               <distributed>filled from top</distributed>
+            </percentmethod>
+         </InitWater>
+         <Sample name="Soil sample">
+            <Date type="date" description="Sample date (not used by APSIM):" />
+            <Layer>
+               <Thickness units="mm">100</Thickness>
+               <SW units="mm/mm">0</SW>
+               <NO3 units="ppm">0</NO3>
+               <NH4 units="ppm">0</NH4>
+            </Layer>
+         </Sample>
+         <Phosphorus>
+            <RootCP />
+            <RateDissolRock />
+            <RateLossAvail />
+            <Layer>
+               <LabileP units="mg/kg">5</LabileP>
+               <Sorption units="-">50</Sorption>
+               <BandedP units="kg/ha">0</BandedP>
+               <RockP units="kg/ha">0</RockP>
+            </Layer>
+         </Phosphorus>
       </soil>
-    </folder>
-    <surfaceom name="SurfaceOrganicMatter">
-      <PoolName description="Organic Matter pool name">wheat_stubble</PoolName>
-      <type type="list" description="Organic Matter type" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,WF_Millet,wheat">wheat</type>
-      <mass description="Initial surface residue (kg/ha)">1000.</mass>
-      <cnr description="C:N ratio of initial residue">80.0</cnr>
-      <cpr description="C:P ratio of initial residue (optional)"></cpr>
-      <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
-    </surfaceom>
-    <fertiliser name="Fertiliser" />
-    <soiltemp name="Soil Temperature">
-      <bound_layer_cond description="boundary layer conductance">20.0</bound_layer_cond>
-      <clay description="proportion of clay">0.1  0.1  0.1  0.1  0.1  0.2  0.3</clay>
-      <soil_temp description="Initial soil temperature">15 15 15 15 15 15 15</soil_temp>
-    </soiltemp>
-    <SoilTemp2 name="Soil Temperature (dotNET)">
-      <maxt_time_default type="text" description="hours">14</maxt_time_default>
-      <bound_layer_cond_source type="text" description="boundary layer conductance source (calc/constant)">calc</bound_layer_cond_source>
-      <bound_layer_cond type="text" description="boundary layer conductance">20</bound_layer_cond>
-      <boundary_layer_conductance_iterations type="text" description="Number of iterations to calc boundary layer conductance (0-10)">1</boundary_layer_conductance_iterations>
-      <net_radn_source type="text" description="net radiation source (calc/eos)">calc</net_radn_source>
-      <default_wind_speed type="text" description="m/s">3</default_wind_speed>
-      <default_altitude type="text" description="default altitude (m) 275m (700 ft) is approx 980 hPa">18</default_altitude>
-      <default_instrum_height type="text" description="default instrument height for wind and temperature (m)">1.2</default_instrum_height>
-      <bare_soil_height type="text" description="height of bare soil (mm)">57</bare_soil_height>
-    </SoilTemp2>
-    <Solute name="Solute">
-      <d0 description="Solute diffusivity in water (mm2/d)">108</d0>
-      <layers description="Solute in each layer (kg/ha)">491 62 1490 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000</layers>
-    </Solute>
-    <erosion name="Erosion">
-      <model description="Model Name">freebairn</model>
-      <slope description="Slope of plot in percent (%)">6.5</slope>
-      <slope_length description="Length of plot (m)">60.0</slope_length>
-      <k_factor description="Soil erodibility factor (t/ha/EI 30 )">0.4</k_factor>
-      <p_factor description="Supporting practise factor (unitless)">1.0</p_factor>
-      <bed_depth description="Depth to bedrock (mm)">1900</bed_depth>
-      <profile_reduction type="list" listvalues="off,on" description="Profile Reduction">off</profile_reduction>
-      <profile_layer_merge description="Fraction of original size in which the lowest layer is merged into the layer above (0-1)">0.05</profile_layer_merge>
-      <minimum_depth description="If the profile erodes to this depth, the simulation is stopped (mm)">100.0</minimum_depth>
-    </erosion>
-    <Thickness>
-      <Values description="Enter soil profile thickness values for APSIM (mm)">100 100 100 300 300 300</Values>
-    </Thickness>
-  </folder>
-  <folder name="Meteorological">
-    <metfile name="met">
-      <filename name="filename">%apsim%\Examples\MetFiles\dalby.met</filename>
-    </metfile>
-    <manager name="ClimateControl">
-      <ui>
-        <category description="Climate Control Window" />
-        <date1 type="ddmmmdate" description="Enter window START date (dd-mmm) : ">1-jan</date1>
-        <date2 type="ddmmmdate" description="Enter window END date (dd-mmm) : ">31-dec</date2>
-        <category description="Climate Change Parameters" />
-        <MaxtChange type="text" description="Change in maximum temperature (oC):">1</MaxtChange>
-        <MintChange type="text" description="Change in minimum temperature (oC):">1</MintChange>
-        <RainChange type="text" description="Relative change in daily rainfall (%):">-10</RainChange>
-        <RadnChange type="text" description="Relative change in daily radiation (%):">0</RadnChange>
-        <CO2 type="text" description="Atmospheric CO2 Concentration (ppm)">350</CO2>
-      </ui>
-      <script name="prenewmet">
-        <text>
+      <folder name="SWIM3">
+         <soil name="SWIM Soil">
+            <Site/>
+            <Region/>
+            <LocalName/>
+            <SoilType description="Classification"/>
+            <NearestTown description="Nearest town"/>
+            <NaturalVegetation description="Natural vegetation"/>
+            <State />
+            <ApsoilNumber description="Apsoil number" />
+            <Latitude description="Latitude (WGS84)" />
+            <Langitude description="Longitude (WGS84)" />
+            <LocationAccuracy description="Location accuracy" />
+            <DataSource type="multiedit" description="Data source" />
+            <Comment type="multiedit" description="Comments" />
+            <InitWater>
+               <percentmethod>
+                  <percent>1</percent>
+                  <distributed>filled from top</distributed>
+               </percentmethod>
+            </InitWater>
+            <Sample name="Initial nitrogen">
+               <Date type="date" description="Sample date:" />
+               <Layer>
+                  <Thickness units="mm">100</Thickness>
+                  <SW units="mm/mm">0</SW>
+                  <NO3 units="ppm">0</NO3>
+                  <NH4 units="ppm">0</NH4>
+               </Layer>
+            </Sample>
+            <Water>
+               <Layer>
+                  <Thickness units="mm" />
+                  <KS units="mm/day" />
+                  <BD units="g/cc" />
+                  <Airdry units="mm/mm" />
+                  <LL15 units="mm/mm" />
+                  <DUL units="mm/mm" />
+                  <SAT units="mm/mm" />
+               </Layer>
+               <SoilCrop name="Crop">
+                  <Layer>
+                     <Thickness units="mm" />
+                     <LL units="mm/mm" />
+                     <KL units="/day" />
+                     <XF units="0-1" />
+                  </Layer>
+               </SoilCrop>
+            </Water>
+            <Thickness>
+               <Values description="Enter soil profile thickness values for APSIM (mm)">10 20 30 40 100 200 300 300 300 300 300 100 </Values>
+            </Thickness>
+            <Swim>
+               <Salb type="text" description="Bare Soil Albedo">0.13</Salb>
+               <Cn2Bare type="text" description="Bare Soil Runoff Curve Number">75</Cn2Bare>
+               <CnRed type="text" description="Max. Reduction in Curve Number due to cover">20</CnRed>
+               <CnCov type="text" description="Cover for max Curve Number reduction">0.8</CnCov>
+               <Kdul type="text" description="Hydraulic Conductivity at DUL (mm/d)">.1</Kdul>
+               <psidul type="text" description="Matric Potential at DUL (cm)">-100</psidul>
+               <VC type="list" listvalues="on,off" description="Vapour Conductivity Calculations (on/off)">on</VC>
+               <dtmin type="text" description="Minimum Timestep (min)">0.0</dtmin>
+               <dtmax type="text" description="Maximum Timestep (min)">1440.</dtmax>
+               <MaxWaterIncrement type="text" description="Maximum Water Increment (mm)">10</MaxWaterIncrement>
+               <SpaceWeightingFactor type="text" description="Space Weighting Factor">0</SpaceWeightingFactor>
+               <SoluteSpaceWeightingFactor type="text" description="Solute Space Weighting Factor">0.0</SoluteSpaceWeightingFactor>
+               <diagnostics type="yesno" description="Diagnostic Information?">no</diagnostics>
+               <SwimSoluteParameters>
+                  <dis type="text" description="Dispersivity - dis ((cm^2/h)/(cm/h)^p) ">15</dis>
+                  <disp type="text" description="Dispersivity Power - disp">1</disp>
+                  <a type="text" description="Tortuosity Constant - a">1.0</a>
+                  <dthc type="text" description="Tortuoisty Offset - dthc">0.0</dthc>
+                  <dthp type="text" description="Tortuoisty Power - dthp">1.0</dthp>
+                  <WaterTableCl type="text" description="Water Table Cl Concentration (ppm)">0.0</WaterTableCl>
+                  <WaterTableNO3 type="text" description="Water Table NO3 Concentration (ppm)">0.0</WaterTableNO3>
+                  <WaterTableNH4 type="text" description="Water Table NH4 Concentration (ppm)">0.0</WaterTableNH4>
+                  <WaterTableUrea type="text" description="Water Table Urea Concentration (ppm)">0.0</WaterTableUrea>
+                  <Layer>
+                     <Thickness units="mm">1000</Thickness>
+                     <NO3Exco units="">0</NO3Exco>
+                     <NO3FIP units="">1.0</NO3FIP>
+                     <NH4Exco units="">100.0</NH4Exco>
+                     <NH4FIP units="">1.0</NH4FIP>
+                     <UreaExco units="">0.0</UreaExco>
+                     <UreaFIP units="">1.0</UreaFIP>
+                     <ClExco units="">0.0</ClExco>
+                     <ClFIP units="">1.0</ClFIP>
+                  </Layer>
+                  <Layer>
+                     <Thickness units="mm">1000</Thickness>
+                     <NO3Exco units="">0</NO3Exco>
+                     <NO3FIP units="">1.0</NO3FIP>
+                     <NH4Exco units="">100.0</NH4Exco>
+                     <NH4FIP units="">1.0</NH4FIP>
+                     <UreaExco units="">0.0</UreaExco>
+                     <UreaFIP units="">1.0</UreaFIP>
+                     <ClExco units="">0.0</ClExco>
+                     <ClFIP units="">1.0</ClFIP>
+                  </Layer>
+                  <Layer>
+                     <Thickness units="mm">1000</Thickness>
+                     <NO3Exco units="">0.0</NO3Exco>
+                     <NO3FIP units="">1.0</NO3FIP>
+                     <NH4Exco units="">100.0</NH4Exco>
+                     <NH4FIP units="">1.0</NH4FIP>
+                     <UreaExco units="">0.0</UreaExco>
+                     <UreaFIP units="">1.0</UreaFIP>
+                     <ClExco units="">0.0</ClExco>
+                     <ClFIP units="">1.0</ClFIP>
+                  </Layer>
+               </SwimSoluteParameters>
+               <SwimWaterTable name="SwimWaterTable">
+                  <WaterTableDepth type="text" description="Depth to Water Table (mm)">2000.0</WaterTableDepth>
+               </SwimWaterTable>
+               <SwimSubsurfaceDrain name="SwimSubsurfaceDrain">
+                  <DrainDepth type="text" description="Depth of subsurface drain (mm)">600.0</DrainDepth>
+                  <DrainSpacing type="text" description="Distance between subsurface drains (mm)">30000.0</DrainSpacing>
+                  <DrainRadius type="text" description="Radius of each subsurface drain (mm)">50.0</DrainRadius>
+                  <Klat type="text" description="Lateral saturated soil water conductivity (mm/d)">1000.0</Klat>
+                  <ImpermDepth type="text" description="Depth to impermeable soil (mm)">3000.0</ImpermDepth>
+               </SwimSubsurfaceDrain>
+            </Swim>
+            <SoilOrganicMatter>
+               <RootCn/>
+               <RootWt/>
+               <SoilCn/>
+               <EnrACoeff/>
+               <EnrBCoeff/>
+               <Layer>
+                  <Thickness units="mm" />
+                  <OC units="Walkley Black %" />
+                  <FBIOM units="0-1" />
+                  <FINERT units="0-1" />
+               </Layer>
+            </SoilOrganicMatter>
+            <Analysis>
+               <Layer>
+                  <Thickness units="mm" />
+                  <Rocks units="%" />
+                  <Texture />
+                  <MunsellColour />
+                  <EC units="1:5 dS/m" />
+                  <PH units="1:5 water" />
+                  <CL units="mg/kg" />
+                  <Boron units="Hot water mg/kg" />
+                  <CEC units="cmol+/kg" />
+                  <Ca units="cmol+/kg" />
+                  <Mg units="cmol+/kg" />
+                  <Na units="cmol+/kg" />
+                  <K units="cmol+/kg" />
+                  <ESP units="%" />
+                  <Mn units="mg/kg" />
+                  <Al units="cmol+/kg" />
+                  <ParticleSizeSand units="%" />
+                  <ParticleSizeSilt units="%" />
+                  <ParticleSizeClay units="%" />
+               </Layer>
+            </Analysis>
+            <Sample name="Soil sample">
+               <Date type="date" description="Sample date:" />
+               <Layer>
+                  <Thickness units="mm">100</Thickness>
+                  <SW units="mm/mm">0</SW>
+                  <NO3 units="ppm">0</NO3>
+                  <NH4 units="ppm">0</NH4>
+               </Layer>
+            </Sample>
+         </soil>
+      </folder>
+      <surfaceom name="SurfaceOrganicMatter">
+         <PoolName description="Organic Matter pool name">wheat_stubble</PoolName>
+         <type type="list" description="Organic Matter type" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,WF_Millet,wheat">wheat</type>
+         <mass description="Initial surface residue (kg/ha)">1000.</mass>
+         <cnr description="C:N ratio of initial residue">80.0</cnr>
+         <cpr description="C:P ratio of initial residue (optional)"/>
+         <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <fertiliser name="Fertiliser" />
+      <soiltemp name="Soil Temperature">
+         <bound_layer_cond description="boundary layer conductance">20.0</bound_layer_cond>
+         <clay description="proportion of clay">0.1  0.1  0.1  0.1  0.1  0.2  0.3</clay>
+         <soil_temp description="Initial soil temperature">15 15 15 15 15 15 15</soil_temp>
+      </soiltemp>
+      <SoilTemp2 name="Soil Temperature (dotNET)">
+         <maxt_time_default type="text" description="hours">14</maxt_time_default>
+         <bound_layer_cond_source type="text" description="boundary layer conductance source (calc/constant)">calc</bound_layer_cond_source>
+         <bound_layer_cond type="text" description="boundary layer conductance">20</bound_layer_cond>
+         <boundary_layer_conductance_iterations type="text" description="Number of iterations to calc boundary layer conductance (0-10)">1</boundary_layer_conductance_iterations>
+         <net_radn_source type="text" description="net radiation source (calc/eos)">calc</net_radn_source>
+         <default_wind_speed type="text" description="m/s">3</default_wind_speed>
+         <default_altitude type="text" description="default altitude (m) 275m (700 ft) is approx 980 hPa">18</default_altitude>
+         <default_instrum_height type="text" description="default instrument height for wind and temperature (m)">1.2</default_instrum_height>
+         <bare_soil_height type="text" description="height of bare soil (mm)">57</bare_soil_height>
+      </SoilTemp2>
+      <Solute name="Solute">
+         <d0 description="Solute diffusivity in water (mm2/d)">108</d0>
+         <layers description="Solute in each layer (kg/ha)">491 62 1490 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000</layers>
+      </Solute>
+      <erosion name="Erosion">
+         <model description="Model Name">freebairn</model>
+         <slope description="Slope of plot in percent (%)">6.5</slope>
+         <slope_length description="Length of plot (m)">60.0</slope_length>
+         <k_factor description="Soil erodibility factor (t/ha/EI 30 )">0.4</k_factor>
+         <p_factor description="Supporting practise factor (unitless)">1.0</p_factor>
+         <bed_depth description="Depth to bedrock (mm)">1900</bed_depth>
+         <profile_reduction type="list" listvalues="off,on" description="Profile Reduction">off</profile_reduction>
+         <profile_layer_merge description="Fraction of original size in which the lowest layer is merged into the layer above (0-1)">0.05</profile_layer_merge>
+         <minimum_depth description="If the profile erodes to this depth, the simulation is stopped (mm)">100.0</minimum_depth>
+      </erosion>
+      <Thickness>
+         <Values description="Enter soil profile thickness values for APSIM (mm)">100 100 100 300 300 300</Values>
+      </Thickness>
+   </folder>
+   <folder name="Meteorological">
+      <metfile name="met">
+         <filename name="filename">%apsim%\Examples\MetFiles\dalby.met</filename>
+      </metfile>
+      <manager name="ClimateControl">
+         <ui>
+            <category description="Climate Control Window" />
+            <date1 type="ddmmmdate" description="Enter window START date (dd-mmm) : ">1-jan</date1>
+            <date2 type="ddmmmdate" description="Enter window END date (dd-mmm) : ">31-dec</date2>
+            <category description="Climate Change Parameters" />
+            <MaxtChange type="text" description="Change in maximum temperature (oC):">1</MaxtChange>
+            <MintChange type="text" description="Change in minimum temperature (oC):">1</MintChange>
+            <RainChange type="text" description="Relative change in daily rainfall (%):">-10</RainChange>
+            <RadnChange type="text" description="Relative change in daily radiation (%):">0</RadnChange>
+            <CO2 type="text" description="Atmospheric CO2 Concentration (ppm)">350</CO2>
+         </ui>
+         <script name="prenewmet">
+            <text>
 !  Adjust daily temperatures, rainfall and radiation up or down according to user-defined amounts
 ! To apply different levels of climate control to different times of year add multiple copies of this logic into your simulation and change the window.
 
@@ -626,174 +626,180 @@ if (date_within('[date1], [date2]') = 1) then
    radn = radn + radn * [RadnChange] / 100
    co2 = [CO2]
  endif
-</text>
-        <event>prenewmet</event>
-      </script>
-      <script name="Init">
-        <text>co2 = [CO2]</text>
-        <event>Init</event>
-      </script>
-    </manager>
-    <manager name="Climate Change Yearly Increase">
-      <ui>
-        <category description="Climate Control Year" />
-        <startyear type="text" description="Enter year to start climate change from : ">1990</startyear>
-        <category description="Yearly Increase in Climate Change Parameters" />
-        <MaxtChange type="text" description="Change in maximum temperature (oC):">0.01</MaxtChange>
-        <MintChange type="text" description="Change in minimum temperature (oC):">0.01</MintChange>
-        <RainChange type="text" description="Relative change in daily rainfall (%):">0</RainChange>
-        <RadnChange type="text" description="Relative change in daily radiation (%):">0</RadnChange>
-        <CO2 type="text" description="Atmospheric CO2 Concentration (ppm)">1</CO2>
-      </ui>
-      <script name="prenewmet">
-        <text><![CDATA[
+            </text>
+            <event>prenewmet</event>
+         </script>
+         <script name="Init">
+            <text>co2 = [CO2]
+tav = tav + ([MaxtChange] + [MintChange]) / 2
+            </text>
+            <event>Init</event>
+         </script>
+      </manager>
+      <manager name="Climate Change Yearly Increase">
+         <ui>
+            <category type="category" description="Climate Control Year" />
+            <startyear type="text" description="Enter year to start climate change from : ">1990</startyear>
+            <category type="category" description="Yearly Increase in Climate Change Parameters" />
+            <MaxtChange type="text" description="Change in maximum temperature (oC):">0.01</MaxtChange>
+            <MintChange type="text" description="Change in minimum temperature (oC):">0.01</MintChange>
+            <RainChange type="text" description="Relative change in daily rainfall (%):">0</RainChange>
+            <RadnChange type="text" description="Relative change in daily radiation (%):">0</RadnChange>
+            <CO2 type="text" description="Atmospheric CO2 Concentration (ppm)">380</CO2>
+         </ui>
+         <script>
+            <text>
 !  Yearly increase the daily temperatures, rainfall and radiation up or down according to user-defined amounts
 
-if (year > [startyear]) then
-
-  changemultiplier = year - startyear
+if (year &gt; [startyear]) then
+   changemultiplier = year - [startyear]
    maxt = maxt + ([MaxtChange] * changemultiplier)
    mint = mint + ([MintChange]  * changemultiplier)
+   tav = tavoriginal + ([MaxtChange] + [MintChange]) / 2 * changemultiplier
    rain = rain + rain * (([RainChange] / 100)  * changemultiplier)
    radn = radn + radn * (([RadnChange] / 100)  * changemultiplier)
    co2 = ([CO2]  * changemultiplier)
  endif
-]]></text>
-        <event>prenewmet</event>
-      </script>
-    </manager>
-    <patchinput>
-      <filename name="filename"></filename>
-    </patchinput>
-    <input>
-      <filename name="filename"></filename>
-    </input>
-    <siloinput>
-      <station_number></station_number>
-      <url>http://apsrunet.apsim.info/cgi-bin/getData.tcl</url>
-    </siloinput>
-    <micromet name="Micromet">
-      <soilalbedo name="soilalbedo">0.23</soilalbedo>
-      <a_interception name="a_interception">0.0</a_interception>
-      <b_interception name="b_interception">0.0</b_interception>
-      <c_interception name="c_interception">0.0</c_interception>
-      <d_interception name="d_interception">0.0</d_interception>
-    </micromet>
-    <eo>
-      <vpd_fac description="Tanner Sinclair VPD factor for net positive radiation">0.75</vpd_fac>
-      <albedo description="Soil albedo (0-1). Used for net radiation">0.13</albedo>
-      <max_albedo description="Albedo at 100% green crop cover (0-1). Used for net radiation">0.23</max_albedo>
-      <z0soil description="Soil z0 (used when lai=0) (mm). This is the minimum that z0 may be">3</z0soil>
-      <default_wind description="default wind speed (km/day) if not found in system (eg met or manager)">60.0</default_wind>
-      <default_pa description="Default atmospheric pressure (hPa) if not found in met or manager">1000</default_pa>
-      <default_instrum_height description="Default instrument height (mm) if not found in system">2000</default_instrum_height>
-      <disp_instrum description="Zero plane displacement at instrument site (mm)">37.0</disp_instrum>
-      <z0_instrum description="Roughness length at instrument site (mm)">4.0</z0_instrum>
-      <extinct_coef description="Extinction coefficient for adjustment of Eo_pm to obtain">0.8</extinct_coef>
-      <eo_plant_method type="list" listvalues="eo_transpiration,eo_pm,eo_penman,eo_penman_x_cover,eo_penman_d_x_cover,eo_pm_x_cover,eo_pm_x_kfunction,eo_radn_x_kfunction,eo_priestly_taylor,eo_ritchie" description="Method used to calculate plant transpiration (eo_plant)">eo_penman_d_x_cover</eo_plant_method>
-      <wind_day_fraction description="Optional fraction of wind in daylight hours (day:night is 2:1)">0.66</wind_day_fraction>
-      <adjustment_factor description="Calibration or crop factor">1.0</adjustment_factor>
-      <wind_multiplier description="Multiplier for wind to alter wind run for shelter effects (-)">1.0</wind_multiplier>
-    </eo>
-    <soi>
-      <filename>%apsim%\Examples\Climate\phases.soi</filename>
-    </soi>
-    <ocean_data name="Ocean data">
-      <filename name="filename">%apsim%\Examples\Climate\OceanData.dat</filename>
-    </ocean_data>
-    <gcm_data name="GCM data">
-      <filename name="filename">%apsim%\Examples\Climate\GCMData.dat</filename>
-    </gcm_data>
-  </folder>
-  <folder name="Water Components">
-    <irrigation name="Irrigation">
-      <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
-      <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
-      <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
-      <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
-      <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
-      <allocation type="text" description="Allocation in mm">0</allocation>
-      <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
-      <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
-      <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
-    </irrigation>
-    <irrigation name="Irrigation ML allocation">
-      <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
-      <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
-      <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
-      <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
-      <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
-      <allocation_ML type="text" description="Allocation in ML">0</allocation_ML>
-      <application_area type="text" description="Irrigated area (ha)">1</application_area>
-      <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
-      <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
-      <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
-    </irrigation>
-    <bore>
-      <max_available_water description="Capacity (ML)">100</max_available_water>
-      <init_available_water description="Supply volume available at start of simulation (ML)">50</init_available_water>
-      <max_pump description="Maximum pump delivery volume per day (ML/day)">10</max_pump>
-      <min_volume description="Minimum volume in storage below which pump cannot access">2</min_volume>
-      <annual_allocation description="Annual Allocation in ML">100</annual_allocation>
-      <allocation_renewal_day description="Day of year on which allocation is granted">180</allocation_renewal_day>
-      <init_salt_conc description="Initial chloride concentration (ppm)">704.0</init_salt_conc>
-    </bore>
-    <channel>
-      <max_available_water description="Capacity (ML)">100</max_available_water>
-      <init_available_water description="Supply volume available at start of simulation (ML)">50</init_available_water>
-      <max_pump description="Maximum pump delivery volume per day (ML/day)">10</max_pump>
-      <min_volume description="Minimum volume in storage that the pump cannot access">2</min_volume>
-      <annual_allocation description="Annual Allocation in ML">100</annual_allocation>
-      <allocation_renewal_day description="Day of year on which allocation is granted">180</allocation_renewal_day>
-      <init_salt_conc description="Initial chloride concentration (ppm)">704.0</init_salt_conc>
-    </channel>
-    <dam>
-      <source_type type="list" listvalues="dam_gully,dam_ring,dam_exc,sump" description="Source Type">dam_gully</source_type>
-      <max_available_water description="Capacity (ML)">100</max_available_water>
-      <max_area description="Storage water surface area at capacity (ha)">5</max_area>
-      <init_available_water description="Initial supply volume available(ML)">50</init_available_water>
-      <max_pump description="Maximum pump delivery volume per day (ML/day)">10</max_pump>
-      <min_volume description="Minimum volume in storage that the pump cannot access">2</min_volume>
-      <permeability description="Permeability of sealing layer (m/day)">0.00007</permeability>
-      <seal_thickness description="Thickness of low permeability seal (m)">0.5</seal_thickness>
-      <receive_catchment_runoff type="list" listvalues="no,yes" description="Dam collects runoff from larger catchment area">no</receive_catchment_runoff>
-      <receive_crop_runoff type="list" listvalues="no,yes" description="Dam collects runoff from simulated crop area">no</receive_crop_runoff>
-      <init_salt_conc description="Initial chloride concentration (ppm)">704.0</init_salt_conc>
-      <receive_catchment_runoff type="list" listvalues="no,yes" description="Dam collects runoff from larger catchment area">no</receive_catchment_runoff>
-      <catchment_area description="Catchment area (ha)">50.0</catchment_area>
-      <catchment_runoff_factor description="soilwat2.runoff multiplier">0.5</catchment_runoff_factor>
-      <receive_crop_runoff type="list" listvalues="yes,no" description="Dam collects runoff from simulated crop area">yes</receive_crop_runoff>
-      <runoff_salt_conc description="Runoff chloride concentration (ppm)">700.0</runoff_salt_conc>
-      <rainfall_salt_conc description="Rainfall chloride concentration (ppm)">20.0</rainfall_salt_conc>
-    </dam>
-    <pond>
-      <algae_present description="is there algae present in this pond (0 or 1)">0</algae_present>
-      <CEC description="surface soil cation exchange capacity">30.0</CEC>
-    </pond>
-  </folder>
-  <clock name="Clock">
-    <start_date name="start_date" description="Select the start date of the simulation" type="date">1/01/1988</start_date>
-    <end_date name="end_date" description="Select the end date of the simulation" type="date">31/12/1988</end_date>
-  </clock>
-  <clock name="Clock - all years in metfile" />
-  <outputfile name="Outputfile">
-    <variables name="Variables">
-      <variable description="Date (dd/mm/yyyy)" array="?">dd/mm/yyyy as Date</variable>
-    </variables>
-    <events name="Reporting Frequency">
-      <event description="End of daily simulation time step">Daily</event>
-    </events>
-  </outputfile>
-  <ReportNetCDF>
-    <variables name="Variables">
-      <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
-    </variables>
-    <events name="Reporting Frequency">
-      <event name="Daily" description="End of daily simulation time step" />
-    </events>
-  </ReportNetCDF>
-  <TextOutput name="TextOutput" />
-  <summaryfile name="Summaryfile">
-    <filename name="filename">sample.sum</filename>
-  </summaryfile>
+            </text>
+            <event>prenewmet</event>
+         </script>
+         <script>
+            <text>tavoriginal = tav</text>
+            <event>init</event>
+         </script>
+      </manager>
+      <patchinput>
+         <filename name="filename"/>
+      </patchinput>
+      <input>
+         <filename name="filename"/>
+      </input>
+      <siloinput>
+         <station_number/>
+         <url>http://apsrunet.apsim.info/cgi-bin/getData.tcl</url>
+      </siloinput>
+      <micromet name="Micromet">
+         <soilalbedo name="soilalbedo">0.23</soilalbedo>
+         <a_interception name="a_interception">0.0</a_interception>
+         <b_interception name="b_interception">0.0</b_interception>
+         <c_interception name="c_interception">0.0</c_interception>
+         <d_interception name="d_interception">0.0</d_interception>
+      </micromet>
+      <eo>
+         <vpd_fac description="Tanner Sinclair VPD factor for net positive radiation">0.75</vpd_fac>
+         <albedo description="Soil albedo (0-1). Used for net radiation">0.13</albedo>
+         <max_albedo description="Albedo at 100% green crop cover (0-1). Used for net radiation">0.23</max_albedo>
+         <z0soil description="Soil z0 (used when lai=0) (mm). This is the minimum that z0 may be">3</z0soil>
+         <default_wind description="default wind speed (km/day) if not found in system (eg met or manager)">60.0</default_wind>
+         <default_pa description="Default atmospheric pressure (hPa) if not found in met or manager">1000</default_pa>
+         <default_instrum_height description="Default instrument height (mm) if not found in system">2000</default_instrum_height>
+         <disp_instrum description="Zero plane displacement at instrument site (mm)">37.0</disp_instrum>
+         <z0_instrum description="Roughness length at instrument site (mm)">4.0</z0_instrum>
+         <extinct_coef description="Extinction coefficient for adjustment of Eo_pm to obtain">0.8</extinct_coef>
+         <eo_plant_method type="list" listvalues="eo_transpiration,eo_pm,eo_penman,eo_penman_x_cover,eo_penman_d_x_cover,eo_pm_x_cover,eo_pm_x_kfunction,eo_radn_x_kfunction,eo_priestly_taylor,eo_ritchie" description="Method used to calculate plant transpiration (eo_plant)">eo_penman_d_x_cover</eo_plant_method>
+         <wind_day_fraction description="Optional fraction of wind in daylight hours (day:night is 2:1)">0.66</wind_day_fraction>
+         <adjustment_factor description="Calibration or crop factor">1.0</adjustment_factor>
+         <wind_multiplier description="Multiplier for wind to alter wind run for shelter effects (-)">1.0</wind_multiplier>
+      </eo>
+      <soi>
+         <filename>%apsim%\Examples\Climate\phases.soi</filename>
+      </soi>
+      <ocean_data name="Ocean data">
+         <filename name="filename">%apsim%\Examples\Climate\OceanData.dat</filename>
+      </ocean_data>
+      <gcm_data name="GCM data">
+         <filename name="filename">%apsim%\Examples\Climate\GCMData.dat</filename>
+      </gcm_data>
+   </folder>
+   <folder name="Water Components">
+      <irrigation name="Irrigation">
+         <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+         <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+         <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+         <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+         <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+         <allocation type="text" description="Allocation in mm">0</allocation>
+         <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+         <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+      <irrigation name="Irrigation ML allocation">
+         <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+         <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+         <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+         <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+         <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+         <allocation_ML type="text" description="Allocation in ML">0</allocation_ML>
+         <application_area type="text" description="Irrigated area (ha)">1</application_area>
+         <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+         <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+      <bore>
+         <max_available_water description="Capacity (ML)">100</max_available_water>
+         <init_available_water description="Supply volume available at start of simulation (ML)">50</init_available_water>
+         <max_pump description="Maximum pump delivery volume per day (ML/day)">10</max_pump>
+         <min_volume description="Minimum volume in storage below which pump cannot access">2</min_volume>
+         <annual_allocation description="Annual Allocation in ML">100</annual_allocation>
+         <allocation_renewal_day description="Day of year on which allocation is granted">180</allocation_renewal_day>
+         <init_salt_conc description="Initial chloride concentration (ppm)">704.0</init_salt_conc>
+      </bore>
+      <channel>
+         <max_available_water description="Capacity (ML)">100</max_available_water>
+         <init_available_water description="Supply volume available at start of simulation (ML)">50</init_available_water>
+         <max_pump description="Maximum pump delivery volume per day (ML/day)">10</max_pump>
+         <min_volume description="Minimum volume in storage that the pump cannot access">2</min_volume>
+         <annual_allocation description="Annual Allocation in ML">100</annual_allocation>
+         <allocation_renewal_day description="Day of year on which allocation is granted">180</allocation_renewal_day>
+         <init_salt_conc description="Initial chloride concentration (ppm)">704.0</init_salt_conc>
+      </channel>
+      <dam>
+         <source_type type="list" listvalues="dam_gully,dam_ring,dam_exc,sump" description="Source Type">dam_gully</source_type>
+         <max_available_water description="Capacity (ML)">100</max_available_water>
+         <max_area description="Storage water surface area at capacity (ha)">5</max_area>
+         <init_available_water description="Initial supply volume available(ML)">50</init_available_water>
+         <max_pump description="Maximum pump delivery volume per day (ML/day)">10</max_pump>
+         <min_volume description="Minimum volume in storage that the pump cannot access">2</min_volume>
+         <permeability description="Permeability of sealing layer (m/day)">0.00007</permeability>
+         <seal_thickness description="Thickness of low permeability seal (m)">0.5</seal_thickness>
+         <receive_catchment_runoff type="list" listvalues="no,yes" description="Dam collects runoff from larger catchment area">no</receive_catchment_runoff>
+         <receive_crop_runoff type="list" listvalues="no,yes" description="Dam collects runoff from simulated crop area">no</receive_crop_runoff>
+         <init_salt_conc description="Initial chloride concentration (ppm)">704.0</init_salt_conc>
+         <receive_catchment_runoff type="list" listvalues="no,yes" description="Dam collects runoff from larger catchment area">no</receive_catchment_runoff>
+         <catchment_area description="Catchment area (ha)">50.0</catchment_area>
+         <catchment_runoff_factor description="soilwat2.runoff multiplier">0.5</catchment_runoff_factor>
+         <receive_crop_runoff type="list" listvalues="yes,no" description="Dam collects runoff from simulated crop area">yes</receive_crop_runoff>
+         <runoff_salt_conc description="Runoff chloride concentration (ppm)">700.0</runoff_salt_conc>
+         <rainfall_salt_conc description="Rainfall chloride concentration (ppm)">20.0</rainfall_salt_conc>
+      </dam>
+      <pond>
+         <algae_present description="is there algae present in this pond (0 or 1)">0</algae_present>
+         <CEC description="surface soil cation exchange capacity">30.0</CEC>
+      </pond>
+   </folder>
+   <clock name="Clock">
+      <start_date name="start_date" description="Select the start date of the simulation" type="date">1/01/1988</start_date>
+      <end_date name="end_date" description="Select the end date of the simulation" type="date">31/12/1988</end_date>
+   </clock>
+   <clock name="Clock - all years in metfile" />
+   <outputfile name="Outputfile">
+      <variables name="Variables">
+         <variable description="Date (dd/mm/yyyy)" array="?">dd/mm/yyyy as Date</variable>
+      </variables>
+      <events name="Reporting Frequency">
+         <event description="End of daily simulation time step">Daily</event>
+      </events>
+   </outputfile>
+   <ReportNetCDF>
+      <variables name="Variables">
+         <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
+      </variables>
+      <events name="Reporting Frequency">
+         <event name="Daily" description="End of daily simulation time step" />
+      </events>
+   </ReportNetCDF>
+   <TextOutput name="TextOutput" />
+   <summaryfile name="Summaryfile">
+      <filename name="filename">sample.sum</filename>
+   </summaryfile>
 </folder>
