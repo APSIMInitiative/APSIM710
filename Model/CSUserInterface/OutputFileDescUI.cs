@@ -168,13 +168,7 @@ namespace CSUserInterface
 			ListViewItem ListItem = new ListViewItem("sum of rain on start_of_day from sowing to now as RainSinceSowing");
             ListItem.Group = NewGroup;
             VariableListView.Items.Add(ListItem);
-			ListItem = new ListViewItem("sum of rainfall from sowing to now");
-            ListItem.Group = NewGroup;
-            VariableListView.Items.Add(ListItem);
             ListItem = new ListViewItem("sum of rain on last 3 start_of_day as RainLast3Days");
-            ListItem.Group = NewGroup;
-            VariableListView.Items.Add(ListItem);
-            ListItem = new ListViewItem("sum of rainfall over the last 3 days");
             ListItem.Group = NewGroup;
             VariableListView.Items.Add(ListItem);
             ListItem = new ListViewItem("value of yield on harvesting as HarvestedYield");
