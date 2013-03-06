@@ -679,7 +679,16 @@ namespace Graph
             if (GenerateBottomAxisTitle)
                 Chart.Axes.Bottom.Title.Text = "";
 
-            Chart.ShowEditor();
+            Steema.TeeChart.Editor editor = new Steema.TeeChart.Editor(Chart);
+            Steema.TeeChart.Editors.ChartEditorOptions[] options = new Steema.TeeChart.Editors.ChartEditorOptions[5];
+            options[0] = Steema.TeeChart.Editors.ChartEditorOptions.Add;
+            options[1] = Steema.TeeChart.Editors.ChartEditorOptions.Delete;
+            options[2] = Steema.TeeChart.Editors.ChartEditorOptions.Title;
+            options[3] = Steema.TeeChart.Editors.ChartEditorOptions.Clone;
+            options[4] = Steema.TeeChart.Editors.ChartEditorOptions.Change;
+            editor.Options = options;
+            editor.ShowModal();
+
             // Save native TeeChart format.
             MemoryStream St = new MemoryStream(3000);
             Chart.Export.Template.IncludeData = false;
