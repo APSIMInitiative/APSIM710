@@ -13,7 +13,7 @@ namespace ApsimFile
     // ------------------------------------------
     public class APSIMChangeTool
     {
-        public static int CurrentVersion = 34;
+        public static int CurrentVersion = 35;
         private delegate void UpgraderDelegate(XmlNode Data);
 
         public static void Upgrade(XmlNode Data)
@@ -67,7 +67,8 @@ namespace ApsimFile
                                           new UpgraderDelegate(ToVersion31),
                                           new UpgraderDelegate(ToVersion32),
                                           new UpgraderDelegate(ToVersion33),
-                                          new UpgraderDelegate(ToVersion34)
+                                          new UpgraderDelegate(ToVersion34),
+                                          new UpgraderDelegate(ToVersion35)
                                        };
             if (Data != null)
             {
@@ -75,6 +76,9 @@ namespace ApsimFile
                 int DataVersion = 1;
                 if (XmlHelper.Attribute(Data, "version") != "")
                     DataVersion = Convert.ToInt32(XmlHelper.Attribute(Data, "version"));
+
+                if (DataVersion > CurrentVersion)
+                    throw new Exception("The APSIM file has been opened with a newer version of APSIM. Cannot open in this version.");
 
                 while (DataVersion < ToVersion)
                 {
@@ -2355,6 +2359,27 @@ namespace ApsimFile
                 else
                     Metadata[i] = Codes[i];
             return Metadata;
+        }
+
+
+        /// <summary>
+        /// Make sure that soil Latitude / Longitude are doubles. AgMIP translator has them as "?" characters.
+        /// </summary>
+        private static void ToVersion35(XmlNode Node)
+        {
+            if (Node.Name.ToLower() == "soil")
+            {
+                string SoilName = XmlHelper.Name(Node);
+                string LongitudeSt = XmlHelper.Value(Node, "Longitude");
+                double Longitude;
+                if (!double.TryParse(LongitudeSt, out Longitude))
+                    XmlHelper.DeleteValue(Node, "Longitude");
+
+                string LatitudeSt = XmlHelper.Value(Node, "Latitude");
+                double Latitude;
+                if (!double.TryParse(LatitudeSt, out Latitude))
+                    XmlHelper.DeleteValue(Node, "Latitude");
+            }
         }
 
     }

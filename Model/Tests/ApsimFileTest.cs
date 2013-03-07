@@ -14,7 +14,7 @@ namespace APSIM.Tests
     {
         private ApsimFile Simulations;
         const string ApsimFileContents =
-            "<folder version=\"1000\">\r\n" +
+            "<folder version=\"$version$\">\r\n" +
             "  <simulation name=\"My Sim\">\r\n" +
             "    <clock>\r\n" +
             "      <start_date>1/01/1940</start_date>\r\n" +
@@ -53,7 +53,7 @@ namespace APSIM.Tests
 
             Simulations = new ApsimFile();
             XmlDocument Doc = new XmlDocument();
-            Doc.LoadXml(ApsimFileContents);
+            Doc.LoadXml(ApsimFileContents.Replace("$version$", APSIMChangeTool.CurrentVersion.ToString()));
             Simulations.Open(Doc.DocumentElement);
             Assert.IsTrue(Simulations.IsDirty);
             Assert.AreEqual(Simulations.FileName, "Untitled");

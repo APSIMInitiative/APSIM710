@@ -490,7 +490,14 @@ namespace APSIMUI
 
         private void OnRunButtonClick(System.Object sender, System.EventArgs e)
         {
-            SimulationController.InvokeAction(null, "Run");
+            try
+            {
+                SimulationController.InvokeAction(null, "Run");
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
 
