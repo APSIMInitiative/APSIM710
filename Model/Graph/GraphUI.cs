@@ -375,6 +375,14 @@ namespace Graph
                                     AddDataToSeries(DataSource, XFieldName, XDataPresent, CumulativeY, CumulativeX, YColumnName, XColumnName, View, NewSeries, ref CumulativeXSoFar, ref CumulativeYSoFar, Row, ErrorBarSeries);
                                 }
                             }
+
+                            // If the series didn't have any empty points then remove them
+                            if (NewSeries.Count == 0)
+                            {
+                                Chart.Series.Remove(NewSeries);
+                                SeriesNumber--;
+                            }
+
                         }
                     }
                 }
