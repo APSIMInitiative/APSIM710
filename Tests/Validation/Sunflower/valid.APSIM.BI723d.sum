@@ -43,9 +43,9 @@ Title                  = BILOELA 1972/3 SOW D DRY SUNFOLA
      Output variables:
         clock.year as year
         sunflower.das_int as DaysAfterSowing
-        sunflower.LAI as LAI
-        sunflower.biomass_wt as Biomass
-        sunflower.GrainWt as Yield
+        sunflower.lai as lai
+        sunflower.biomass_wt as biomass
+        sunflower.grain_wt as yield
         manager.cum_et as et
 
      Output file = new\BI723d.out
@@ -89,7 +89,7 @@ Title                  = BILOELA 1972/3 SOW D DRY SUNFOLA
            sunflower sow cultivar = sc150, plants = 5, sowing_depth = 50 (mm), tiller_no_fertile = 0 ()
         endif
      endif
-     if (sunflower.phenologystage = 11) then
+     if (sunflower.stage = 11) then
         sunflower harvest
         sunflower kill_crop
         sunflower end_crop
@@ -293,7 +293,7 @@ Title                  = BILOELA 1972/3 SOW D DRY SUNFOLA
          Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
          Day no    mm      m^2    m      code     name       no
          -------------------------------------------------------
-             38   50.0    0.0    0.0    0.0   sunfola68-    0.00
+             38   50.0    5.0    0.0    0.0   sunfola68-    0.00
          -------------------------------------------------------
      
         - Reading root profile parameters
@@ -358,7 +358,94 @@ Title                  = BILOELA 1972/3 SOW D DRY SUNFOLA
      Manager creating a new local real variable : cum_et = 1.00000
      Manager creating a new local real variable : supply_demand_ratio = 0.00000
      Manager creating a new local real variable : dw1000gr = 0.00000
-         kill. Standing above-ground dm =     0.0 (kg/ha)
+8 February 1973(Day of year=39), sunflower: 
+      stage    2.0 germination
+13 February 1973(Day of year=44), sunflower: 
+      stage    3.0 emergence
+                          biomass =           1.000000       lai =    0.2000000E-02
+                          stover N conc =    5.000000       extractable sw =    81.54942
+23 February 1973(Day of year=54), sunflower: 
+      stage    4.0 end_of_juvenile
+                          biomass =           7.823182       lai =    0.8924557E-01
+                          stover N conc =    4.468903       extractable sw =    136.4908
+15 March 1973(Day of year=74), sunflower: 
+      stage    5.0 floral_initiation
+                          biomass =           174.0678       lai =     1.034477
+                          stover N conc =    3.837941       extractable sw =    119.3970
+5 April 1973(Day of year=95), sunflower: 
+      stage    6.0 flag_leaf
+                          biomass =           458.7762       lai =     1.865076
+                          stover N conc =    2.745816       extractable sw =    78.29289
+6 April 1973(Day of year=96), sunflower: 
+      stage    7.0 flowering
+                          biomass =           472.0955       lai =     1.850368
+                          stover N conc =    2.704615       extractable sw =    72.00589
+9 April 1973(Day of year=99), sunflower: 
+      stage    8.0 start_grain_fill
+                          biomass =           503.6394       lai =     1.802396
+                          stover N conc =    2.611681       extractable sw =    55.88131
+5 May 1973(Day of year=125), sunflower: 
+      stage    9.0 end_grain_fill
+                          biomass =           578.2421       lai =    0.4470534
+                          stover N conc =    2.645138       extractable sw =    7.823563
+6 May 1973(Day of year=126), sunflower: 
+      stage   10.0 maturity
+                          biomass =           579.1075       lai =    0.3262863
+                          stover N conc =    2.680826       extractable sw =    7.372295
+7 May 1973(Day of year=127), sunflower: 
+      stage   11.0 harvest_ripe
+                          biomass =           579.1075       lai =     0.000000
+                          stover N conc =    2.799911       extractable sw =    6.950756
+8 May 1973(Day of year=128), Manager: 
+     Manager sending message :- sunflower harvest
+8 May 1973(Day of year=128), sunflower: 
+     
+     
+     
+     flowering (DAS) =   59                                maturity (DAS)  =      89
+      flowering day  =   96                                 stover (kg/ha) =    4489.4
+      maturity day        =  126                            grain yield (kg/ha) =    1301.7
+      grain % water content   =    9.0                      grain yield wet (kg/ha) =    1430.4
+      grain wt (g) =     0.000                              grains/m^2   =     0.000
+      grains/head =   0.0                                   maximum lai = 1.897
+      total above ground biomass (kg/ha) =    5791.1
+      live above ground biomass (kg/ha) =    5791.1
+      green above ground biomass (kg/ha) =    4201.6
+      senesced above ground biomass (kg/ha) =    1589.5
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  32.3
+      grain N percent =      1.07                           total N content (kg/ha) =    128.77
+      grain N uptake (kg/ha) =     13.87                    senesced N content (kg/ha) =     11.13
+      green N content (kg/ha) =    103.77                   dead N content (kg/ha) =      0.00
+     
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence           to end_of_juvenile         0.000        0.000        0.000        0.096
+         end_of_juvenile     to floral_initiation       0.013        0.220        0.000        0.049
+         floral_initiation   to flag_leaf               0.081        0.570        0.000        0.000
+         flag_leaf           to flowering               0.225        0.900        0.000        0.000
+         flowering           to start_grain_fill        0.268        0.889        0.000        0.000
+         start_grain_fill    to end_grain_fill          0.733        0.900        0.000        0.000
+     
+     Crop harvested.
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =               1301.67                    0.00
+                          N  (kg/ha) =                 13.87                    0.00
+     
+     Manager sending message :- sunflower kill_crop
+         kill. Standing above-ground dm =  4641.9 (kg/ha)
+     Manager sending message :- sunflower end_crop
+         Crop ended. Yield (dw) =     0.0
+8 May 1973(Day of year=128), SurfaceOM: 
+      Added surfom
+        SurfaceOM Type         = sunflower
+        Amount Added (kg/ha) =    4641.86914
+     
+         Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
+                          DM (kg/ha) =               4641.87                 2180.01
+                          N  (kg/ha) =                114.89                   41.99
+                          P  (kg/ha) =                  0.00                    0.00
+     
 30 June 1973(Day of year=181), Clock: 
      Simulation is terminating due to end criteria being met.
 

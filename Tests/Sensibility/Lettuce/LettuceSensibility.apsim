@@ -1,4 +1,4 @@
-<folder version="34" name="LettuceSensibility">
+<folder version="32" name="LettuceSensibility">
   <simulation name="PatagoniaBaseline">
     <clock>
       <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/1961" ubound="1/09/2007">1/01/1961</start_date>
@@ -14,7 +14,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -31,21 +31,21 @@
           </ui>
         </manager>
         <manager name="Harvest on a Growth Stage">
-          <ui>
-            <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
-            <category type="category" description="Harvesting parameters" />
-            <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
-          </ui>
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
                </text>
             <event>start_of_day</event>
           </script>
+          <ui>
+            <category type="category" description="Harvesting criteria" />
+            <stage type="text" description="Enter stage name : ">maturity</stage>
+            <category type="category" description="Harvesting parameters" />
+            <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
+          </ui>
         </manager>
       </folder>
       <lettuce />
@@ -55,7 +55,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -64,30 +64,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -99,7 +109,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -118,7 +128,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -127,7 +137,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -140,7 +150,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -149,30 +159,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -184,7 +204,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -203,7 +223,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -212,7 +232,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -225,7 +245,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -234,30 +254,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -269,7 +299,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -288,7 +318,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -297,7 +327,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -310,7 +340,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -319,30 +349,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -354,7 +394,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -373,7 +413,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -382,7 +422,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -395,7 +435,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -404,30 +444,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -449,7 +499,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -468,7 +518,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -477,7 +527,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -490,7 +540,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -499,30 +549,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -534,7 +594,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -553,7 +613,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -562,7 +622,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -575,7 +635,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -584,30 +644,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -619,7 +689,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -638,7 +708,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -647,7 +717,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -660,7 +730,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -669,30 +739,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -704,7 +784,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -723,7 +803,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -732,7 +812,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -745,7 +825,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -754,30 +834,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -789,7 +879,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -808,7 +898,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -817,7 +907,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -830,7 +920,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -839,30 +929,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -884,7 +984,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -903,7 +1003,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -912,7 +1012,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -925,7 +1025,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -934,30 +1034,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -969,7 +1079,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -988,7 +1098,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -997,7 +1107,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -1010,7 +1120,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -1019,30 +1129,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -1054,7 +1174,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -1073,7 +1193,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -1082,7 +1202,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -1095,7 +1215,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -1104,30 +1224,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -1139,7 +1269,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -1158,7 +1288,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -1167,7 +1297,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -1180,7 +1310,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -1189,30 +1319,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -1224,7 +1364,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -1243,7 +1383,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -1252,7 +1392,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -1265,7 +1405,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -1274,30 +1414,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -1305,118 +1455,146 @@
     </area>
   </simulation>
   <folder name="shared">
-    <Soil>
+    <soil name="Soil">
       <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
       <InitNitrogen name="Initial nitrogen">
         <PercentMethod>
           <Percent>0</Percent>
         </PercentMethod>
       </InitNitrogen>
+      <Langitude description="Longitude (WGS84)" />
+      <ASC_Order description="Australian Soil Classification Order" />
+      <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+      <SoilType description="Soil description" />
+      <LocalName />
       <Site>Brookstead</Site>
       <NearestTown description="Nearest town">Brookstead, Q 4352</NearestTown>
       <Region>Darling Downs</Region>
       <State>Queensland</State>
+      <Country />
       <NaturalVegetation description="Natural vegetation">Queensland bluegrass</NaturalVegetation>
+      <ApsoilNumber description="Apsoil number" />
+      <Latitude description="Latitude (WGS84)" />
+      <Longitude />
+      <LocationAccuracy description="Location accuracy" />
       <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-      <InitialWater name="Initial water">
-        <FractionFull>1</FractionFull>
-        <PercentMethod>FilledFromTop</PercentMethod>
-      </InitialWater>
+      <Comments />
+      <InitWater name="Initial water">
+        <percentmethod>
+          <percent>1</percent>
+          <distributed>filled from top</distributed>
+        </percentmethod>
+      </InitWater>
       <Water>
+        <Layer>
+          <Thickness units="mm">150</Thickness>
+          <KS units="mm/day" />
+          <BD units="g/cc">1.05</BD>
+          <AirDry units="mm/mm">0.13</AirDry>
+          <LL15 units="mm/mm">0.25</LL15>
+          <DUL units="mm/mm">0.52</DUL>
+          <SAT units="mm/mm">0.57</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <KS units="mm/day" />
+          <BD>1.16</BD>
+          <AirDry>0.2</AirDry>
+          <LL15>0.25</LL15>
+          <DUL>0.48</DUL>
+          <SAT>0.53</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <KS units="mm/day" />
+          <BD>1.19</BD>
+          <AirDry>0.25</AirDry>
+          <LL15>0.25</LL15>
+          <DUL>0.47</DUL>
+          <SAT>0.52</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <KS units="mm/day" />
+          <BD>1.18</BD>
+          <AirDry>0.25</AirDry>
+          <LL15>0.25</LL15>
+          <DUL>0.47</DUL>
+          <SAT>0.52</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <KS units="mm/day" />
+          <BD>1.24</BD>
+          <AirDry>0.25</AirDry>
+          <LL15>0.25</LL15>
+          <DUL>0.45</DUL>
+          <SAT>0.5</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <KS units="mm/day" />
+          <BD>1.31</BD>
+          <AirDry>0.25</AirDry>
+          <LL15>0.25</LL15>
+          <DUL>0.42</DUL>
+          <SAT>0.47</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <KS units="mm/day" />
+          <BD>1.35</BD>
+          <AirDry>0.25</AirDry>
+          <LL15>0.25</LL15>
+          <DUL>0.41</DUL>
+          <SAT>0.46</SAT>
+        </Layer>
         <SoilCrop name="lettuce">
-          <Thickness>
-            <double>150</double>
-            <double>150</double>
-            <double>300</double>
-            <double>300</double>
-            <double>300</double>
-            <double>300</double>
-            <double>300</double>
-          </Thickness>
-          <LL>
-            <double>0.25</double>
-            <double>0.25</double>
-            <double>0.25</double>
-            <double>0.25</double>
-            <double>0.25</double>
-            <double>0.25</double>
-            <double>0.25</double>
-          </LL>
-          <KL>
-            <double>0.06</double>
-            <double>0.06</double>
-            <double>0.06</double>
-            <double>0.06</double>
-            <double>0.06</double>
-            <double>0.06</double>
-            <double>0.06</double>
-          </KL>
-          <XF>
-            <double>1</double>
-            <double>1</double>
-            <double>1</double>
-            <double>1</double>
-            <double>1</double>
-            <double>1</double>
-            <double>1</double>
-          </XF>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <LL units="mm/mm">0.25</LL>
+            <KL units="/day">0.06</KL>
+            <XF units="0-1">1</XF>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL>0.25</LL>
+            <KL>0.06</KL>
+            <XF>1</XF>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL>0.25</LL>
+            <KL>0.06</KL>
+            <XF>1</XF>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL>0.25</LL>
+            <KL>0.06</KL>
+            <XF>1</XF>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL>0.25</LL>
+            <KL>0.06</KL>
+            <XF>1</XF>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL>0.25</LL>
+            <KL>0.06</KL>
+            <XF>1</XF>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL>0.25</LL>
+            <KL>0.06</KL>
+            <XF>1</XF>
+          </Layer>
         </SoilCrop>
-        <Thickness>
-          <double>150</double>
-          <double>150</double>
-          <double>300</double>
-          <double>300</double>
-          <double>300</double>
-          <double>300</double>
-          <double>300</double>
-        </Thickness>
-        <BD>
-          <double>1.05</double>
-          <double>1.16</double>
-          <double>1.19</double>
-          <double>1.18</double>
-          <double>1.24</double>
-          <double>1.31</double>
-          <double>1.35</double>
-        </BD>
-        <AirDry>
-          <double>0.13</double>
-          <double>0.2</double>
-          <double>0.25</double>
-          <double>0.25</double>
-          <double>0.25</double>
-          <double>0.25</double>
-          <double>0.25</double>
-        </AirDry>
-        <LL15>
-          <double>0.25</double>
-          <double>0.25</double>
-          <double>0.25</double>
-          <double>0.25</double>
-          <double>0.25</double>
-          <double>0.25</double>
-          <double>0.25</double>
-        </LL15>
-        <DUL>
-          <double>0.52</double>
-          <double>0.48</double>
-          <double>0.47</double>
-          <double>0.47</double>
-          <double>0.45</double>
-          <double>0.42</double>
-          <double>0.41</double>
-        </DUL>
-        <SAT>
-          <double>0.57</double>
-          <double>0.53</double>
-          <double>0.52</double>
-          <double>0.52</double>
-          <double>0.5</double>
-          <double>0.47</double>
-          <double>0.46</double>
-        </SAT>
       </Water>
-      <SoilWater>
+      <SoilWat>
         <SummerCona>3.5</SummerCona>
         <SummerU>6</SummerU>
         <SummerDate>1-nov</SummerDate>
@@ -1429,89 +1607,256 @@
         <CN2Bare>73</CN2Bare>
         <CNRed>20</CNRed>
         <CNCov>0.8</CNCov>
-        <Thickness>
-          <double>150</double>
-          <double>150</double>
-          <double>300</double>
-          <double>300</double>
-          <double>300</double>
-          <double>300</double>
-          <double>300</double>
-        </Thickness>
-        <SWCON>
-          <double>0.3</double>
-          <double>0.3</double>
-          <double>0.3</double>
-          <double>0.3</double>
-          <double>0.3</double>
-          <double>0.3</double>
-          <double>0.3</double>
-        </SWCON>
-      </SoilWater>
+        <Slope>
+        </Slope>
+        <DischargeWidth>
+        </DischargeWidth>
+        <CatchmentArea>
+        </CatchmentArea>
+        <MaxPond>
+        </MaxPond>
+        <Layer>
+          <Thickness units="mm">150</Thickness>
+          <SWCON units="0-1">0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <SWCON>0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+      </SoilWat>
       <SoilOrganicMatter>
         <RootCN>40</RootCN>
-        <RootWt>1000</RootWt>
+        <RootWT>1000</RootWT>
         <SoilCN>12</SoilCN>
         <EnrACoeff>7.4</EnrACoeff>
         <EnrBCoeff>0.2</EnrBCoeff>
-        <Thickness>
-          <double>150</double>
-          <double>150</double>
-          <double>300</double>
-          <double>300</double>
-          <double>300</double>
-          <double>300</double>
-          <double>300</double>
-        </Thickness>
-        <OC>
-          <double>1.19</double>
-          <double>1.01</double>
-          <double>0.45</double>
-          <double>0.3</double>
-          <double>0.2</double>
-          <double>0.16</double>
-          <double>0.17</double>
-        </OC>
-        <FBiom>
-          <double>0.04</double>
-          <double>0.02</double>
-          <double>0.02</double>
-          <double>0.02</double>
-          <double>0.01</double>
-          <double>0.01</double>
-          <double>0.01</double>
-        </FBiom>
-        <FInert>
-          <double>0.4</double>
-          <double>0.6</double>
-          <double>0.8</double>
-          <double>1</double>
-          <double>1</double>
-          <double>1</double>
-          <double>1</double>
-        </FInert>
+        <Layer>
+          <Thickness units="mm">150</Thickness>
+          <OC units="Total %">1.19</OC>
+          <FBiom units="0-1">0.04</FBiom>
+          <FInert units="0-1">0.4</FInert>
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <OC>1.01</OC>
+          <FBiom>0.02</FBiom>
+          <FInert>0.6</FInert>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <OC>0.45</OC>
+          <FBiom>0.02</FBiom>
+          <FInert>0.8</FInert>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <OC>0.3</OC>
+          <FBiom>0.02</FBiom>
+          <FInert>1</FInert>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <OC>0.2</OC>
+          <FBiom>0.01</FBiom>
+          <FInert>1</FInert>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <OC>0.16</OC>
+          <FBiom>0.01</FBiom>
+          <FInert>1</FInert>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <OC>0.17</OC>
+          <FBiom>0.01</FBiom>
+          <FInert>1</FInert>
+        </Layer>
       </SoilOrganicMatter>
       <Analysis>
-        <Thickness>
-          <double>150</double>
-          <double>150</double>
-          <double>300</double>
-          <double>300</double>
-          <double>300</double>
-          <double>300</double>
-          <double>300</double>
-        </Thickness>
-        <PH>
-          <double>8.2</double>
-          <double>8.5</double>
-          <double>8.6</double>
-          <double>8.6</double>
-          <double>7.4</double>
-          <double>5.3</double>
-          <double>5.3</double>
-        </PH>
+        <Layer>
+          <Thickness units="mm">150</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
+          <PH units="1:5 water">8.2</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
+          <PH>8.5</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
+          <PH>8.6</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
+          <PH>8.6</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
+          <PH>7.4</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
+          <PH>5.3</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
+          <PH>5.3</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
+        </Layer>
       </Analysis>
-    </Soil>
+    </soil>
   </folder>
   <simulation name="AnnieBaseline">
     <clock>
@@ -1528,7 +1873,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -1547,7 +1892,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -1556,7 +1901,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -1569,7 +1914,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -1578,30 +1923,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -1613,7 +1968,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -1632,7 +1987,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -1641,7 +1996,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -1654,7 +2009,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -1663,30 +2018,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -1698,7 +2063,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -1717,7 +2082,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -1726,7 +2091,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -1739,7 +2104,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -1748,30 +2113,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -1783,7 +2158,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -1802,7 +2177,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -1811,7 +2186,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -1824,7 +2199,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -1833,30 +2208,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -1868,7 +2253,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -1887,7 +2272,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -1896,7 +2281,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -1909,7 +2294,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -1918,30 +2303,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -1963,7 +2358,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -1982,7 +2377,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -1991,7 +2386,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -2004,7 +2399,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -2013,30 +2408,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -2048,7 +2453,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -2067,7 +2472,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -2076,7 +2481,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -2089,7 +2494,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -2098,30 +2503,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -2133,7 +2548,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -2152,7 +2567,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -2161,7 +2576,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -2174,7 +2589,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -2183,30 +2598,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -2218,7 +2643,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -2237,7 +2662,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -2246,7 +2671,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -2259,7 +2684,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -2268,30 +2693,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -2303,7 +2738,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -2322,7 +2757,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -2331,7 +2766,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -2344,7 +2779,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -2353,30 +2788,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -2398,7 +2843,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -2417,7 +2862,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -2426,7 +2871,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -2439,7 +2884,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -2448,30 +2893,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -2483,7 +2938,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -2502,7 +2957,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -2511,7 +2966,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -2524,7 +2979,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -2533,30 +2988,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -2568,7 +3033,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -2587,7 +3052,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -2596,7 +3061,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -2609,7 +3074,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -2618,30 +3083,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -2653,7 +3128,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -2672,7 +3147,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -2681,7 +3156,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -2694,7 +3169,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -2703,30 +3178,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -2738,7 +3223,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -2757,7 +3242,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -2766,7 +3251,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -2779,7 +3264,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -2788,30 +3273,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -2833,7 +3328,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -2852,7 +3347,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -2861,7 +3356,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -2874,7 +3369,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -2883,30 +3378,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -2918,7 +3423,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -2937,7 +3442,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -2946,7 +3451,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -2959,7 +3464,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -2968,30 +3473,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -3003,7 +3518,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -3022,7 +3537,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -3031,7 +3546,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -3044,7 +3559,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -3053,30 +3568,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -3088,7 +3613,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -3107,7 +3632,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -3116,7 +3641,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -3129,7 +3654,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -3138,30 +3663,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -3173,7 +3708,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -3192,7 +3727,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -3201,7 +3736,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -3214,7 +3749,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -3223,30 +3758,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -3268,7 +3813,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -3287,7 +3832,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -3296,7 +3841,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -3309,7 +3854,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -3318,30 +3863,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -3353,7 +3908,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -3372,7 +3927,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -3381,7 +3936,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -3394,7 +3949,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -3403,30 +3958,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -3438,7 +4003,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -3457,7 +4022,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -3466,7 +4031,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -3479,7 +4044,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -3488,30 +4053,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -3523,7 +4098,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -3542,7 +4117,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -3551,7 +4126,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -3564,7 +4139,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -3573,30 +4148,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>
@@ -3608,7 +4193,7 @@
           <script>
             <text>
       if (today = date('[date]') then
-                    [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
         endif
                </text>
             <event>start_of_day</event>
@@ -3627,7 +4212,7 @@
         <manager name="Harvest on a Growth Stage">
           <script>
             <text>
-        if ([crop].StageName = '[crop_stage]') then
+        if ([crop].StageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
@@ -3636,7 +4221,7 @@
           </script>
           <ui>
             <category type="category" description="Harvesting criteria" />
-            <crop_stage type="text" description="Enter stage name : ">maturity</crop_stage>
+            <stage type="text" description="Enter stage name : ">maturity</stage>
             <category type="category" description="Harvesting parameters" />
             <crop type="modulename" description="Enter name of crop to sow : ">lettuce</crop>
           </ui>
@@ -3649,7 +4234,7 @@
         <variables name="Variables">
           <variable array="No" description="Year">year</variable>
           <variable array="No" description="Day">day</variable>
-          <variable array="No" description="Day number of sowing">SowingDate</variable>
+          <variable array="No" description="Day number of sowing">sowing_date</variable>
           <variable array="No" description="Days from sowing to maturity">maturity_das</variable>
           <variable array="No" description="Average Maxt in crop">Avmax</variable>
           <variable array="No" description="Average Mint in crop">Avmin</variable>
@@ -3658,30 +4243,40 @@
           <event description="Day" array="No">harvesting</event>
         </events>
       </outputfile>
-      <Soil shortcut="/LettuceSensibility/shared/Soil">
+      <soil name="Soil" shortcut="/LettuceSensibility/shared/Soil">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Water shortcut="/LettuceSensibility/shared/Soil/Water">
           <SoilCrop name="lettuce" shortcut="/LettuceSensibility/shared/Soil/Water/lettuce" />
         </Water>
-        <SoilWater shortcut="/LettuceSensibility/shared/Soil/SoilWater" />
+        <SoilWat shortcut="/LettuceSensibility/shared/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/LettuceSensibility/shared/Soil/SoilOrganicMatter" />
         <Analysis shortcut="/LettuceSensibility/shared/Soil/Analysis" />
-        <InitialWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
+        <InitWater name="Initial Water" shortcut="/LettuceSensibility/shared/Soil/Initial water" />
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>3000</double>
-          </Thickness>
-          <NO3>
-            <double>0</double>
-          </NO3>
-          <NH4>
-            <double>0</double>
-          </NH4>
-          <SW>
-            <double>0</double>
-          </SW>
+          <Layer>
+            <Thickness units="mm">3000</Thickness>
+            <NO3 units="ppm">0</NO3>
+            <NH4 units="ppm">0</NH4>
+            <SW units="mm/mm">0</SW>
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <tracker>
         <variable array="No" description="Sum of rainfall from sowing to now">average of maxt on start_of_day from sowing to now as AvMax</variable>
         <variable array="No" description="Sum of rainfall from sowing to now">average of mint on start_of_day from sowing to now as AvMin</variable>

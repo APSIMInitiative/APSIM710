@@ -67,8 +67,8 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-              if (date('10-jan') = today) and bambatsi.plantstatus = 'out' then
-        bambatsi  establish population =1000000, init_section = seedling
+              if (date('10-jan') = today) and bambatsi.plant_status = 'out' then
+        bambatsi  establish plants =1000000, init_section = seedling
               endif
      END of rules
      
@@ -77,7 +77,7 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-              if (bambatsi.biomass > 2000 and bambatsi.plantstatus = 'alive' then
+              if (bambatsi.biomass > 2000 and bambatsi.plant_status = 'alive' then
         bambatsi  cut foliage_remove_fr = 0.9, adm_remove_fr = 0.9
               endif
      END of rules
@@ -239,17 +239,13 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 10 January 1988(Day of year=10), Planting rule: 
-     Manager sending message :- bambatsi establish  population = 1000000, init_section = seedling
+     Manager sending message :- bambatsi establish  plants = 1000000, init_section = seedling
 10 January 1988(Day of year=10), bambatsi: 
      Establishing
-10 January 1988(Day of year=10): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Cannot collect variable from postbox.  Variable doesn't exist.
-     Variable: plants
-     Component name: bambatsi
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
+11 January 1988(Day of year=11), Kill Bambatsi: 
+     Manager sending message :- bambatsi kill
+11 January 1988(Day of year=11), bambatsi: 
+     Killing
+30 January 1988(Day of year=30), clock: 
+     Simulation is terminating due to end criteria being met.
 

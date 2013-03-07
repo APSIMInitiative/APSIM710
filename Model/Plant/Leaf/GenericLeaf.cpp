@@ -88,12 +88,12 @@ void GenericLeaf::onInit1(protocol::Component *system)
    SimplePart::onInit1(system);
    Leaf::onInit1(system);
 
-   setupGetFunction(system, "LeafNumber", protocol::DTsingle, false,
+   setupGetFunction(system, "leaf_no", protocol::DTsingle, false,
                     &GenericLeaf::get_leaf_no, "leaves/plant", "Number of leaves per plant");
 
-   system->addGettableVar("NodeNumber", gNodeNo, "nodes/plant", "Number of mainstem nodes per plant");
+   system->addGettableVar("node_no", gNodeNo, "nodes/plant", "Number of mainstem nodes per plant");
 
-   setupGetFunction(system, "LeafNumberDead", protocol::DTsingle, false,
+   setupGetFunction(system, "leaf_no_sen", protocol::DTsingle, false,
                      &GenericLeaf::get_leaf_no_sen, "leaves/m2", "Number of senesced leaves per square meter");
 
    setupGetFunction(system, "leaf_area", protocol::DTsingle, true,
@@ -105,10 +105,10 @@ void GenericLeaf::onInit1(protocol::Component *system)
    setupGetFunction(system, "lai_sum", protocol::DTsingle, false,
                     &GenericLeaf::get_lai_sum, "m^2/m^2", "LAI of all leaf components");
 
-   setupGetFunction(system, "LAITotal", protocol::DTsingle, false,
+   setupGetFunction(system, "tlai", protocol::DTsingle, false,
                     &GenericLeaf::get_tlai, "m^2/m^2", "Total lai");
 
-   system->addGettableVar("SLAI", gSLAI, "m^2/m^2", "Senesced lai");
+   system->addGettableVar("slai", gSLAI, "m^2/m^2", "Senesced lai");
 
    system->addGettableVar("lai", gLAI, "m^2/m^2", "Leaf area index");
     system->addGettableVar("dlt_lai", dltLAI, "m^2/m^2", "Actual change in live plant lai"); 									// (PFR)

@@ -46,8 +46,8 @@ Title                  = Test sowing before out
      Output variables:
         clock.day
         clock.year
-        millet.LAI
-        millet.Biomass
+        millet.lai
+        millet.biomass
         millet.green_biomass
 
      Output file = test1.out
@@ -66,14 +66,14 @@ Title                  = Test sowing before out
      Manager rules:
      
      SECTION:- start_of_day
-     if millet.stagename = 'harvest_ripe' or millet.plantstatus = 'dead' then
+     if millet.stagename = 'harvest_ripe' or millet.plant_status = 'dead' then
         millet harvest
         millet1 harvest
         millet2 harvest
         millet3 harvest
         millet4 harvest
         millet5 harvest
-        millet sow population =  7.5, sowing_depth = 30, cultivar = wrajpop
+        millet sow plants =  7.5, sowing_depth = 30, cultivar = wrajpop
      endif
      
      SECTION:- init
@@ -81,7 +81,7 @@ Title                  = Test sowing before out
      
      SECTION:- start_of_day
      if day = 166 and year  = 1988 then
-        millet sow population =  7.5, sowing_depth = 30, cultivar = wrajpop
+        millet sow plants =  7.5, sowing_depth = 30, cultivar = wrajpop
      endif
      
      SECTION:- end_of_day
@@ -261,7 +261,7 @@ Title                  = Test sowing before out
          - Reading constants
 ------- Start of simulation  --------------------------------------------------
 14 June 1988(Day of year=166), Manager: 
-     Manager sending message :- millet sow  population = 7.5, sowing_depth = 30, cultivar = wrajpop
+     Manager sending message :- millet sow  plants = 7.5, sowing_depth = 30, cultivar = wrajpop
 14 June 1988(Day of year=166), Millet: 
      Sow
      
@@ -1131,7 +1131,7 @@ Title                  = Test sowing before out
       stress indices for start_grain_fill
       water stress 1 =       0.2960682   nitrogen stress 1 =       0.0000000
       water stress 2 =       0.3409306   nitrogen stress 2 =       0.0000000
-     Manager sending message :- millet sow  population = 7.5, sowing_depth = 30, cultivar = wrajpop
+     Manager sending message :- millet sow  plants = 7.5, sowing_depth = 30, cultivar = wrajpop
 12 November 1988(Day of year=317): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM  Fatal  Error

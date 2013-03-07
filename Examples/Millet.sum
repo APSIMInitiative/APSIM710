@@ -56,14 +56,14 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        PhenologyStage
-        PlantStatus
+        stage
+        plant_status
         millet_biomass
         millet_yield
         millet_lai
-        Biomass
-        Yield
-        LAI
+        biomass
+        yield
+        lai
 
      Output file = Millet.out
      Format = normal
@@ -81,7 +81,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('1-dec') then
-     millet sow population =7.5, sowing_depth = 30, cultivar = wrajpop
+     millet sow plants =7.5, sowing_depth = 30, cultivar = wrajpop
               endif
      END of rules
      
@@ -90,7 +90,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-     if millet.stagename = 'harvest_ripe' or millet.plantstatus = 'dead' then
+     if millet.stagename = 'harvest_ripe' or millet.plant_status = 'dead' then
         millet harvest
         millet1 harvest
         millet2 harvest
@@ -315,7 +315,7 @@ Paddock:
          - Reading constants
 ------- Start of simulation  --------------------------------------------------
 1 December 1940(Day of year=336), Sow on a fixed date: 
-     Manager sending message :- millet sow  population = 7.5, sowing_depth = 30, cultivar = wrajpop
+     Manager sending message :- millet sow  plants = 7.5, sowing_depth = 30, cultivar = wrajpop
 1 December 1940(Day of year=336), millet: 
      Sow
      
@@ -1277,7 +1277,7 @@ Paddock:
                                                root residue =   54.1 kg/ha
                                                root N =    0.4 kg/ha
 1 December 1941(Day of year=335), Sow on a fixed date: 
-     Manager sending message :- millet sow  population = 7.5, sowing_depth = 30, cultivar = wrajpop
+     Manager sending message :- millet sow  plants = 7.5, sowing_depth = 30, cultivar = wrajpop
 1 December 1941(Day of year=335), millet: 
      Sow
      

@@ -54,17 +54,17 @@ Paddock:
         dul_dep()
         WaterSD
         Biomass
-        Yield
-        LAI
+        yield
+        lai
         GrainNo
-        PhenologyStage
+        stage
         biomass_wt
         GrainGreenWt
         RachisGreenWt
-        StemLiveWt
+        StemGreenWt
         GrainSize
-        LeafDeadWt
-        LeafLiveWt
+        LeafSenescedWt
+        LeafGreenWt
         TillerNoFertile
 
      Output file = Springsure2007.out
@@ -85,7 +85,7 @@ Paddock:
          endif
          sowday = day
           sowyear = year
-         sorghum sow population =5.5, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = solid, tiller_no_fertile = 1.1
+         sorghum sow plants =5.5, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = solid, tiller_no_fertile = 1.1
      endif
      END of rules
      
@@ -94,7 +94,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if sorghum.stagename = 'harvest_ripe' or sorghum.plantstatus = 'dead' then
+                if sorghum.stagename = 'harvest_ripe' or sorghum.plant_status = 'dead' then
        sorghum  harvest
        sorghum  end_crop
                 endif
@@ -252,7 +252,7 @@ Paddock:
      Manager creating a new local real variable : season = 2007.00000
      Manager creating a new local real variable : sowday = 9.00000
      Manager creating a new local real variable : sowyear = 2008.00000
-     Manager sending message :- sorghum sow  population = 5.5, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = solid, tiller_no_fertile = 1.1
+     Manager sending message :- sorghum sow  plants = 5.5, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = solid, tiller_no_fertile = 1.1
 9 January 2008(Day of year=9), Sorghum: 
      Sowing initiate
      

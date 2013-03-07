@@ -40,8 +40,8 @@ Title                  = peanut Sample Simulation
      Output variables:
         clock.day
         clock.year
-        peanut.LAI
-        peanut.Biomass
+        peanut.lai
+        peanut.biomass
         peanut.green_biomass
 
      Output file = peanut.out
@@ -58,7 +58,7 @@ Title                  = peanut Sample Simulation
      if day = 330 and year  = 1988 then
         peanut sow cultivar = early_bunch, plants = 10 (/m2), sowing_depth = 40 (mm)
      endif
-     if peanut.stagename = 'harvest_ripe' or peanut.plantstatus = 'dead' then
+     if peanut.stagename = 'harvest_ripe' or peanut.plant_status = 'dead' then
         peanut harvest
         peanut end_crop
      endif
@@ -212,13 +212,100 @@ Title                  = peanut Sample Simulation
      Manager sending message :- peanut sow  cultivar = early_bunch, plants = 10 (/m2), sowing_depth = 40 (mm)
 25 November 1988(Day of year=330), peanut: 
      Crop Sow
-25 November 1988(Day of year=330): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: peanut
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = early_bunch
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =       5       5 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =      12      17 (h)
+              y_tt_end_of_juvenile       =       1       5 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =     380     380 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     300     300 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =  1020.5  1020.5 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      70 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0064     0.0064
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.45       0.45
+        ------------------------------------------------
      
      
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.080          0.230       1.000
+         150.0     0.080          0.240       1.000
+         300.0     0.080          0.240       1.000
+         300.0     0.080          0.250       1.000
+         300.0     0.050          0.260       1.000
+         300.0     0.030          0.270       1.000
+         300.0     0.010          0.280       1.000
+         -----------------------------------------------
+         Extractable SW:   315mm in  1800mm total depth ( 17%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            330   40.0   10.0  500.0   0.0   0.0 early_bunch
+         ------------------------------------------------
+     
+26 November 1988(Day of year=331), peanut: 
+      stage 2.0 germination
+2 December 1988(Day of year=337), peanut: 
+      stage 3.0 emergence
+                     biomass =           0.45 (g/m^2)   lai          =   0.006 (m^2/m^2)
+                     stover N conc =     4.60 (%)    extractable sw =   45.67 (mm)
+3 December 1988(Day of year=338), peanut: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.52 (g/m^2)   lai          =   0.007 (m^2/m^2)
+                     stover N conc =     4.25 (%)    extractable sw =   45.62 (mm)
+4 December 1988(Day of year=339), peanut: 
+      stage 5.0 floral_initiation
+                     biomass =           0.63 (g/m^2)   lai          =   0.010 (m^2/m^2)
+                     stover N conc =     3.94 (%)    extractable sw =   45.55 (mm)
+29 December 1988(Day of year=364), peanut: 
+      stage 6.0 flowering
+                     biomass =          58.97 (g/m^2)   lai          =   0.901 (m^2/m^2)
+                     stover N conc =     2.60 (%)    extractable sw =  214.94 (mm)
+19 January 1989(Day of year=19), peanut: 
+      stage 7.0 start_grain_fill
+                     biomass =         371.12 (g/m^2)   lai          =   2.975 (m^2/m^2)
+                     stover N conc =     2.36 (%)    extractable sw =  213.32 (mm)
+14 April 1989(Day of year=104), peanut: 
+      stage 8.0 end_grain_fill
+                     biomass =        1096.03 (g/m^2)   lai          =   3.874 (m^2/m^2)
+                     stover N conc =     2.07 (%)    extractable sw =   66.87 (mm)
+20 April 1989(Day of year=110), peanut: 
+      stage 9.0 maturity
+                     biomass =        1102.95 (g/m^2)   lai          =   3.710 (m^2/m^2)
+                     stover N conc =     2.04 (%)    extractable sw =   42.91 (mm)
+20 April 1989(Day of year=110), Clock: 
+     Simulation is terminating due to end criteria being met.
 

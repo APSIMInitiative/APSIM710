@@ -40,8 +40,8 @@ Title                  = Test sowing after out on same day
      Output variables:
         clock.day
         clock.year
-        sunflower.LAI
-        sunflower.Biomass
+        sunflower.lai
+        sunflower.biomass
         sunflower.green_biomass
 
      Output file = test2 sunflower.out
@@ -55,7 +55,7 @@ Title                  = Test sowing after out on same day
      Manager rules:
      
      SECTION:- start_of_day
-     if sunflower.stagename = 'harvest_ripe' or sunflower.plantstatus = 'dead' then
+     if sunflower.stagename = 'harvest_ripe' or sunflower.plant_status = 'dead' then
         sunflower harvest
         sunflower end_crop
         sunflower sow cultivar = sunfola68-2, plants = 5, sowing_depth = 50 (mm)
@@ -232,7 +232,7 @@ Title                  = Test sowing after out on same day
          Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
          Day no    mm      m^2    m      code     name       no
          -------------------------------------------------------
-            349   50.0    0.0    0.0    0.0   sunfola68-    0.00
+            349   50.0    5.0    0.0    0.0   sunfola68-    0.00
          -------------------------------------------------------
      
         - Reading root profile parameters
@@ -288,52 +288,89 @@ Title                  = Test sowing after out on same day
      
      
      
-         kill. Standing above-ground dm =     0.0 (kg/ha)
-15 December 1988(Day of year=350), Manager: 
-     Manager sending message :- sunflower harvest
 15 December 1988(Day of year=350), sunflower: 
+      stage    2.0 germination
+19 December 1988(Day of year=354), sunflower: 
+      stage    3.0 emergence
+                          biomass =           1.000000       lai =    0.2000000E-02
+                          stover N conc =    5.000000       extractable sw =    68.56064
+30 December 1988(Day of year=365), sunflower: 
+      stage    4.0 end_of_juvenile
+                          biomass =           8.152227       lai =    0.6043999E-01
+                          stover N conc =    4.021914       extractable sw =    179.2946
+20 January 1989(Day of year=20), sunflower: 
+      stage    5.0 floral_initiation
+                          biomass =           166.5835       lai =     1.281867
+                          stover N conc =    3.829830       extractable sw =    231.9830
+13 February 1989(Day of year=44), sunflower: 
+      stage    6.0 flag_leaf
+                          biomass =           572.6667       lai =     2.880506
+                          stover N conc =    1.873409       extractable sw =    123.0293
+14 February 1989(Day of year=45), sunflower: 
+      stage    7.0 flowering
+                          biomass =           590.7305       lai =     2.863064
+                          stover N conc =    1.822449       extractable sw =    112.0227
+17 February 1989(Day of year=48), sunflower: 
+      stage    8.0 start_grain_fill
+                          biomass =           636.0308       lai =     2.792624
+                          stover N conc =    1.709019       extractable sw =    83.29463
+14 March 1989(Day of year=73), sunflower: 
+      stage    9.0 end_grain_fill
+                          biomass =           897.9596       lai =    0.8166561
+                          stover N conc =    1.391072       extractable sw =    26.33051
+15 March 1989(Day of year=74), sunflower: 
+      stage   10.0 maturity
+                          biomass =           901.2694       lai =    0.6491483
+                          stover N conc =    1.397858       extractable sw =    23.95336
+16 March 1989(Day of year=75), sunflower: 
+      stage   11.0 harvest_ripe
+                          biomass =           901.2694       lai =     0.000000
+                          stover N conc =    1.450505       extractable sw =    34.57550
+17 March 1989(Day of year=76), Manager: 
+     Manager sending message :- sunflower harvest
+17 March 1989(Day of year=76), sunflower: 
      
      
      
-     flowering (DAS) =    0                                maturity (DAS)  =       0
-      flowering day  =    0                                 stover (kg/ha) =       0.0
-      maturity day        =    0                            grain yield (kg/ha) =       0.0
-      grain % water content   =    9.0                      grain yield wet (kg/ha) =       0.0
+     flowering (DAS) =   63                                maturity (DAS)  =      92
+      flowering day  =   45                                 stover (kg/ha) =    6881.1
+      maturity day        =   74                            grain yield (kg/ha) =    2131.6
+      grain % water content   =    9.0                      grain yield wet (kg/ha) =    2342.4
       grain wt (g) =     0.000                              grains/m^2   =     0.000
-      grains/head =   0.0                                   maximum lai = 0.000
-      total above ground biomass (kg/ha) =       0.0
-      live above ground biomass (kg/ha) =       0.0
-      green above ground biomass (kg/ha) =       0.0
-      senesced above ground biomass (kg/ha) =       0.0
+      grains/head =   0.0                                   maximum lai = 2.899
+      total above ground biomass (kg/ha) =    9012.7
+      live above ground biomass (kg/ha) =    9012.7
+      green above ground biomass (kg/ha) =    6596.8
+      senesced above ground biomass (kg/ha) =    2415.9
       dead above ground biomass (kg/ha) =       0.0
-      number of leaves =   0.0
-      grain N percent =      0.00                           total N content (kg/ha) =      0.00
-      grain N uptake (kg/ha) =      0.00                    senesced N content (kg/ha) =      0.00
-      green N content (kg/ha) =      0.00                   dead N content (kg/ha) =      0.00
+      number of leaves =  31.9
+      grain N percent =      1.79                           total N content (kg/ha) =    112.60
+      grain N uptake (kg/ha) =     38.09                    senesced N content (kg/ha) =     16.91
+      green N content (kg/ha) =     57.60                   dead N content (kg/ha) =      0.00
      
      
       Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence           to end_of_juvenile         0.000        0.000        0.000        0.000
-         end_of_juvenile     to floral_initiation       0.000        0.000        0.000        0.000
-         floral_initiation   to flag_leaf               0.000        0.000        0.000        0.000
-         flag_leaf           to flowering               0.000        0.000        0.000        0.000
-         flowering           to start_grain_fill        0.000        0.000        0.000        0.000
-         start_grain_fill    to end_grain_fill          0.000        0.000        0.000        0.000
+         emergence           to end_of_juvenile         0.000        0.000        0.016        0.180
+         end_of_juvenile     to floral_initiation       0.000        0.000        0.040        0.232
+         floral_initiation   to flag_leaf               0.006        0.187        0.094        0.246
+         flag_leaf           to flowering               0.112        0.883        0.135        0.308
+         flowering           to start_grain_fill        0.213        0.895        0.131        0.305
+         start_grain_fill    to end_grain_fill          0.237        0.604        0.078        0.254
      
      Crop harvested.
          Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                  0.00                    0.00
-                          N  (kg/ha) =                  0.00                    0.00
+                          DM (kg/ha) =               2131.59                    0.00
+                          N  (kg/ha) =                 38.09                    0.00
      
      Manager sending message :- sunflower end_crop
          Crop ended. Yield (dw) =     0.0
          Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
-                          DM (kg/ha) =                  0.00                    0.00
-                          N  (kg/ha) =                  0.00                    0.00
+                          DM (kg/ha) =               7313.92                 2511.97
+                          N  (kg/ha) =                 74.51                   20.74
                           P  (kg/ha) =                  0.00                    0.00
      
      Manager sending message :- sunflower sow  cultivar = sunfola68-2, plants = 5, sowing_depth = 50 (mm)
-15 December 1988(Day of year=350): 
+17 March 1989(Day of year=76): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM  Fatal  Error
                       -------------------

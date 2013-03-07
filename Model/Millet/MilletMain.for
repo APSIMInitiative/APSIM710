@@ -525,7 +525,7 @@
          real       phase_tt_other(max_stage) ! Cumulative growing degree days required for each stage (deg days)
          character  plant_status*5      ! status of crop
          logical    plant_status_out_today
-         real       Population          ! Plant density (plants/m^2)
+         real       plants              ! Plant density (plants/m^2)
          real       previous_stage      ! previous phenological stage
          real       radn                ! solar radiation (Mj/m^2/day)
          real       radn_int            ! radn intercepted by leaves (mj/m^2)
@@ -1019,7 +1019,7 @@ c+!!!!!!!!! check order dependency of deltas
       grain_wt = divide (g%dm_green(grain) + g%dm_dead(grain)
      :                 , g%grain_no, 0.0)
 !cpsc
-      head_grain_no = divide (g%grain_no, g%Population, 0.0)
+      head_grain_no = divide (g%grain_no, g%plants, 0.0)
 
       biomass_green = (sum_real_array (g%dm_green, max_part)
      :              - g%dm_green(root))
@@ -1525,7 +1525,7 @@ cejvo      leaf_no = sum_between (germ, harvest_ripe, g%leaf_no)
          g%phase_tt_other(:)         = 0.0
          g%plant_status              = ' '
          g%plant_status_out_today = .false.
-         g%Population                    = 0.0
+         g%plants                    = 0.0
          g%previous_stage            = 0.0
          g%radn                      = 0.0
          g%radn_int                  = 0.0
@@ -1663,7 +1663,7 @@ cjh special for erik - end
       g%days_tot = 0
       g%dlt_canopy_height = 0
       g%canopy_height = 0
-      g%Population = 0
+      g%plants = 0
       g%dlt_plants = 0
       g%dlt_plants_failure_germ        =0.0
       g%dlt_plants_failure_emergence   =0.0
@@ -1934,7 +1934,7 @@ cjh special for erik - end
 
          call Write_string ( 'Sow')
 
-         g%Population = Sow%Population
+         g%plants = Sow%plants
          g%row_spacing = Sow%row_spacing
 
          if (g%row_spacing .eq. 0.0) then
@@ -1967,7 +1967,7 @@ cjh special for erik - end
 !cpsc
          write (string, '(3x, i7, 3f7.1, 1x, a10)')
      :                   g%day_of_year, g%sowing_depth
-     :                 , g%Population, g%row_spacing, g%cultivar
+     :                 , g%plants, g%row_spacing, g%cultivar
          call write_string (string)
 
          string = '    ------------------------------------------------'
@@ -2050,7 +2050,7 @@ cjh      endif
 cjh      if (data_record.ne.blank) then
 
          call collect_real_var ('plants', '()'
-     :                        , g%Population, numvals, 0.0, 100.0)
+     :                        , g%plants, numvals, 0.0, 100.0)
 
          call collect_real_var (
      :                          'tiller_wt', '(g/plant)'
@@ -2093,7 +2093,7 @@ cjh      if (data_record.ne.blank) then
          call write_string (string)
          write (string, '(3x, i7, 4f7.1, 1x, a10)')
      :                   g%day_of_year
-     :                 , g%Population, c%dm_leaf_init, N_tiller_plant
+     :                 , g%plants, c%dm_leaf_init, N_tiller_plant
      :                 , g%row_spacing, g%cultivar
          call write_string (string)
 
@@ -3264,7 +3264,7 @@ cjh special for erik - end
             ! management
 
 cjh
-      if (variable_name .eq. 'plantstatus') then
+      if (variable_name .eq. 'plant_status') then
          call respond2get_char_var (variable_name
      :                             , '()'
      :                             , g%plant_status)
@@ -3274,7 +3274,7 @@ cjh
      :                             , '()'
      :                             , g%dlt_stage)
 
-      elseif (variable_name .eq. 'phenologystage') then
+      elseif (variable_name .eq. 'stage') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%current_stage)
@@ -3343,7 +3343,7 @@ cgd
 
 cgd
 
-      elseif (variable_name .eq. 'leafnumber') then
+      elseif (variable_name .eq. 'leaf_no') then
          call respond2get_real_array (variable_name
      :                              , '()'
      :                              , g%leaf_no
@@ -3413,17 +3413,17 @@ cejvo
      :                             , '(mm)'
      :                             , g%canopy_height)
 
-      elseif (variable_name .eq. 'rootdepth') then
+      elseif (variable_name .eq. 'root_depth') then
          call respond2get_real_var (variable_name
      :                             , '(mm)'
      :                             , g%root_depth)
 
-      elseif (variable_name .eq. 'population') then
+      elseif (variable_name .eq. 'plants') then
          call respond2get_real_var (variable_name
      :                             , '()'
-     :                             , g%Population)
+     :                             , g%plants)
 
-      elseif (variable_name .eq. 'grainnumber') then
+      elseif (variable_name .eq. 'grain_no') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%grain_no)
@@ -3436,12 +3436,12 @@ cejvo
      :                             , grain_size)
 
 
-      elseif (variable_name .eq. 'coverlive') then
+      elseif (variable_name .eq. 'cover_green') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%cover_green)
 
-      elseif (variable_name .eq. 'covertotal') then
+      elseif (variable_name .eq. 'cover_tot') then
          cover_tot = 1.0
      :             - (1.0 - g%cover_green)
      :             * (1.0 - g%cover_sen)
@@ -3457,7 +3457,7 @@ cejvo
      :                             , '()'
      :                             , lai_sum)
 
-      elseif (variable_name .eq. 'laitotal') then
+      elseif (variable_name .eq. 'tlai') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%lai + g%slai)
@@ -3512,7 +3512,7 @@ cejvo
      :                             , g%dm_green(stem)
      :                               +g%dm_green(flower))
 
-      elseif (variable_name .eq. 'grainwt') then
+      elseif (variable_name .eq. 'grain_wt') then
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , g%dm_green(grain))
@@ -3606,7 +3606,7 @@ cejvo
      :                             , '(g/m2)'
      :                             , biomass)
 
-      elseif (variable_name .eq. 'abovegroundlivewt') then
+      elseif (variable_name .eq. 'green_biomass_wt') then
          biomass = sum_real_array (g%dm_green, max_part)
      :           - g%dm_green(root)
 
@@ -3627,7 +3627,7 @@ cejvo
      :                             , '(g/m^2)'
      :                             , stover)
 
-      elseif (variable_name .eq. 'growthrate') then
+      elseif (variable_name .eq. 'dlt_dm') then
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , g%dlt_dm)
@@ -3663,7 +3663,7 @@ cejvo
 
       elseif ((variable_name .eq. 'biomass_n')
      :                       .or.
-     :       (variable_name .eq. 'abovegroundn')) then
+     :       (variable_name .eq. 'n_uptake')) then
          biomass_n = (sum_real_array (g%n_green, max_part)
      :             - g%n_green(root)
      :             + sum_real_array (g%n_senesced, max_part)
@@ -3675,7 +3675,7 @@ cejvo
      :                             , '(g/m2)'
      :                             , biomass_n)
 
-      elseif (variable_name .eq. 'abovegroundliven') then
+      elseif (variable_name .eq. 'green_biomass_n') then
          biomass_n = (sum_real_array (g%n_green, max_part)
      :                 - g%n_green(root))
 
@@ -3722,17 +3722,17 @@ cejvo
      :                             , g%dlt_N_dead_detached
      :                             , max_part)
 
-      elseif (variable_name .eq. 'waterstresspheno') then
+      elseif (variable_name .eq. 'swdef_pheno') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%swdef_pheno)
 
-      elseif (variable_name .eq. 'waterstressphoto') then
+      elseif (variable_name .eq. 'swdef_photo') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%swdef_photo)
 
-      elseif (variable_name .eq. 'waterstressexpansion') then
+      elseif (variable_name .eq. 'swdef_expan') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%swdef_expansion)
@@ -3818,7 +3818,7 @@ cejvo
      :                             , ag_N_up)
 
 
-      elseif (variable_name .eq. 'abovegroundn') then
+      elseif (variable_name .eq. 'n_uptake') then
          act_N_up = g%N_uptake_tot*gm2kg /sm2ha
          call respond2get_real_var (variable_name
      :                             , '(kg/ha)'
@@ -3839,7 +3839,7 @@ cejvo
      :                             , '(g/m^2)'
      :                             , NO3gsm_tot)
 
-      elseif (variable_name .eq. 'rootndemand') then
+      elseif (variable_name .eq. 'n_demand') then
          N_demand = sum_real_array (g%N_demand, max_part)
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
@@ -3854,7 +3854,7 @@ cejvo
      :                             , '(g/m^2)'
      :                             , N_supply)
 
-      elseif (variable_name .eq. 'rootnsupply') then
+      elseif (variable_name .eq. 'n_supply_soil') then
          deepest_layer = find_layer_no (g%root_depth,g%dlayer,max_layer)
          N_uptake_sum = - sum_real_array (g%dlt_NO3gsm, deepest_layer)
          call respond2get_real_var (variable_name
@@ -3865,17 +3865,17 @@ cejvo
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , g%N_fix_pot)
-      elseif (variable_name .eq. 'nstressphoto') then
+      elseif (variable_name .eq. 'nfact_photo') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%nfact_photo)
 
-      elseif (variable_name .eq. 'nitrogenstressexpan') then
+      elseif (variable_name .eq. 'nfact_expan') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%nfact_expansion)
 
-      elseif (variable_name .eq. 'nitrogenstressgrain') then
+      elseif (variable_name .eq. 'nfact_grain') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%nfact_grain_conc)

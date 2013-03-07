@@ -39,8 +39,8 @@ Title                  =
      Output variables:
         clock.day
         clock.year
-        sorghum.LAI
-        sorghum.Biomass
+        sorghum.lai
+        sorghum.biomass
         sorghum.green_biomass
 
      Output file = test1 sorghum.out
@@ -205,7 +205,7 @@ TclLink:
      --->Section: process
 
             if {[apsimGet day] == 305 && [apsimGet year] == 1989 } {
-               apsimSendMessage sorghum sow {cultivar early} {population 10} {sowing_depth 30} {tiller_no_fertile 0} {row_spacing 1.0}
+               apsimSendMessage sorghum sow {cultivar early} {plants 10} {sowing_depth 30} {tiller_no_fertile 0} {row_spacing 1.0}
             }
             if {[apsimGet sorghum.StageName] == "harvest_ripe" || [apsimGet sorghum.plant_status] == "dead" } {
                # Send a "kill crop" message (ie a non-variant argument)
@@ -221,11 +221,134 @@ TclLink:
             
      --->End
 ------- Start of simulation  --------------------------------------------------
-27 October 1989(Day of year=300): 
+1 November 1989(Day of year=305), Sorghum: 
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no     mm     m^2    mm     code     name       no
+         -------------------------------------------------------
+            305    30.0    10.0  1000    1.0     early    0.00
+         -------------------------------------------------------
+     
+      - reading constants for plant(sorghum) - early
+         -------------------------------------------------------
+         tpla_prod_coef           =    0.02
+         tpla_inflection_ratio    =    0.66
+         tt_emerg_to_endjuv       =  114.00
+         tt_flower_to_maturity    =  761.00
+         tt_flag_to_flower        =  170.00
+         tt_flower_to_start_grain =   80.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.070          0.230       1.000
+             150.0     0.070          0.240       1.000
+             300.0     0.070          0.240       1.000
+             300.0     0.070          0.250       1.000
+             300.0     0.050          0.260       1.000
+             300.0     0.050          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+1 November 1989(Day of year=305), TclLink: 
+     got event
+     args = sowing
+3 November 1989(Day of year=307), Sorghum: 
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   0.00
+7 November 1989(Day of year=311), Sorghum: 
+     Stage 3 Emergence  DAS = 5
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  25.13
+16 November 1989(Day of year=320), Sorghum: 
+     Stage 4 EndOfJuvenile  DAS = 14
+     		Biomass       =   3.31 		 LAI            =   0.04
+     		Stover N Conc =   0.09 		 Extractable SW =  72.63
+29 November 1989(Day of year=333), Sorghum: 
+     Stage 5 FloralInitiation  DAS = 27
+     		Biomass       =  23.80 		 LAI            =   0.39
+     		Stover N Conc =   0.59 		 Extractable SW = 142.72
+21 December 1989(Day of year=355), Sorghum: 
+     Stage 6 FlagLeaf  DAS = 49
+     		Biomass       = 298.16 		 LAI            =   2.43
+     		Stover N Conc =   5.14 		 Extractable SW = 215.66
+3 January 1990(Day of year=3), Sorghum: 
+     Stage 7 Flowering  DAS = 62
+     		Biomass       = 556.99 		 LAI            =   2.45
+     		Stover N Conc =   7.61 		 Extractable SW = 234.50
+8 January 1990(Day of year=8), Sorghum: 
+     Stage 8 StartGrainFill  DAS = 67
+     		Biomass       = 658.75 		 LAI            =   2.45
+     		Stover N Conc =   8.19 		 Extractable SW = 220.84
+13 February 1990(Day of year=44), Sorghum: 
+     Stage 9 EndGrainFill  DAS = 103
+     		Biomass       = 1148.76 		 LAI            =   0.95
+     		Stover N Conc =   2.92 		 Extractable SW = 221.35
+15 February 1990(Day of year=46), Sorghum: 
+     Stage 10 Maturity  DAS = 105
+     		Biomass       = 1152.83 		 LAI            =   0.90
+     		Stover N Conc =   2.85 		 Extractable SW = 230.45
+16 February 1990(Day of year=47), Sorghum: 
+     Stage 11 HarvestRipe  DAS = 106
+     		Biomass       = 1154.56 		 LAI            =   0.88
+     		Stover N Conc =   2.82 		 Extractable SW = 231.10
+     Kill Crop
+     Crop kill. Standing above-ground dm = 11559.2 kg/ha
+     
+     Harvest
+     Flowering (DAS)       = 62 		 Maturity (DAS)          = 105
+     Flowering day         = 3 		 Maturity day            = 46
+     Maximum LAI           = 2.4 		 Number of leaves        = 15.0
+     Total above ground biomass    (kg/ha) = 11559.2
+     Green above ground biomass    (kg/ha) = 10516.5
+     Senesced above ground biomass (kg/ha) = 1042.7
+     Stover (kg/ha)        = 5293.9 	 Grain yield (kg/ha)     = 6265.4
+     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 7201.6
+     Weight 1000 grains(g) = 25.3 		 Grains/m^2              = 24795.7
+     Grains/head           = 2479.6
+     Grain N percent    (%)     =      1.40 	 Grain N            (kg/ha) =    87.92
+     Total N content    (kg/ha) =    116.13 	 Senesced N content (kg/ha) =    14.43
+     Green N content    (kg/ha) =     18.13
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        0.9
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        1.0
+        Flag leaf           to Flowering                 1.0          1.0        1.0
+        Flowering           to Start grain fill          1.0          1.0        1.0
+        Start grain fill    to End grain fill            1.0          1.0        0.9
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =               6265.36		    0.00
+                         N  (kg/ha) =                 87.92		    0.00
+16 February 1990(Day of year=47), TclLink: 
+     got event
+     args = harvesting
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =               5293.86		 2177.19
+                         N  (kg/ha) =                 28.20		    4.35
+                         P  (kg/ha) =                  0.00		    0.00
+     got event
+     args = 
+16 February 1990(Day of year=47): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM  Fatal  Error
                       -------------------
-     No component responded to a 'get' for variable: sorghum.plant_status
+     can't read "incomingVariant": no such variable
      Component name: TclLink
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

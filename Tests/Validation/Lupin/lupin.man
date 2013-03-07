@@ -104,11 +104,11 @@ eta = ep + es    !eta=actual ET, ep=water uptake=actual transpiration
 eta_cum = eta_cum + eta  !cum actual ET
 etp_cum =etp_cum + eo     !cum potential ET  , eo=daily potential ET
 
-if (lupin.PhenologyStage>=3 and lupin.PhenologyStage <= 9) then
-   hi = Yield / Biomass
-   hi_green = GrainWt / AboveGroundLiveWt   !! HI_green= grain/green Biomass 
-   sla_tot = LAI/LeafLiveWt
-   yield_in_t = Yield/1000
+if (lupin.stage>=3 and lupin.stage <= 9) then
+   hi = yield / biomass
+   hi_green = grain_wt / green_biomass_wt   !! HI_green= grain/green biomass 
+   sla_tot = lai/LeafGreenWt
+   yield_in_t = yield/1000
    
 else
    hi = 0     
@@ -117,15 +117,15 @@ else
    yield_in_t = 0
 endif
 
-! LAITotal used as there is no detachment for canola, otherwise LAI would be used
+! tlai used as there is no detachment for canola, otherwise lai would be used
 If today = clock.simulation_start_day then
-   lai_yesterday = LAITotal
+   lai_yesterday = tlai
 !   report do_output
 else 
-   lai_today = LAITotal
+   lai_today = tlai
    dlt_lai = (lai_today - lai_yesterday)
    ! dlt_lai multiplied by 1000000 to get back to mm as in the INI file for SLA
-   ! GrowthWt(2) is the change in leaf Biomass, (leaf = 2)
+   ! GrowthWt(2) is the change in leaf biomass, (leaf = 2)
    if (dlt_lai <> 0) and (dlt_dm_green_leaf <> 0) then
       sla = ((dlt_lai )/dlt_dm_green_leaf)
    else
@@ -136,7 +136,7 @@ else
 endif
 day_cnt = day_cnt + 1
 
-if (lupin.StageName = 'harvest_ripe' or lupin.PlantStatus = 'dead') then
+if (lupin.StageName = 'harvest_ripe' or lupin.plant_status = 'dead') then
    lupin harvest 
    lupin kill_crop 
    lupin end_crop
@@ -232,21 +232,21 @@ no3ppm =   22.3  15.3  6.5  3.3  2.2  2.2  1.7  1.7  0  0  0  0  0  0  0  0  0
 [be93.Operations.parameters]
  120   1993    surfaceom tillage type = burn_90
  127   1993    surfaceom f_incorporated = 0.5, tillage_depth = 40  
- 140   1993    lupin sow population = 60, row_spacing = 200, sowing_depth = 40, cultivar = gungurru
-! 140   1993    lupin sow population = 60, row_spacing = 200, sowing_depth = 40, cultivar = merrit
+ 140   1993    lupin sow plants = 60, row_spacing = 200, sowing_depth = 40, cultivar = gungurru
+! 140   1993    lupin sow plants = 60, row_spacing = 200, sowing_depth = 40, cultivar = merrit
 
 [be90s1.Operations.parameters]
 145   1990    surfaceom f_incorporated =0.5, tillage_depth = 60
-145   1990    lupin sow population = 50, row_spacing = 200, sowing_depth = 40, cultivar = gungurru
-! 145   1990    lupin sow population = 50, row_spacing = 200, sowing_depth = 40, cultivar = merrit
+145   1990    lupin sow plants = 50, row_spacing = 200, sowing_depth = 40, cultivar = gungurru
+! 145   1990    lupin sow plants = 50, row_spacing = 200, sowing_depth = 40, cultivar = merrit
 !reset sw at obs swc for wheat, day 121?
 121 1990    SoilWat set sw=  0.120  .120 .150 .180 .200 .200 .210 .220 .220 .210 .190 .190  .190 .190 .190 .190 .190  
 
 
 [be91s1.Operations.parameters]
  130   1991    surfaceom tillage type = burn_90
- 151   1991    lupin sow population = 40, row_spacing = 200, sowing_depth = 40, cultivar = gungurru
-! 151   1991    lupin sow population = 40, row_spacing = 200, sowing_depth = 40, cultivar = merrit
+ 151   1991    lupin sow plants = 40, row_spacing = 200, sowing_depth = 40, cultivar = gungurru
+! 151   1991    lupin sow plants = 40, row_spacing = 200, sowing_depth = 40, cultivar = merrit
 
 !reset sw at obs swc for wheat, day 121?
 121  1991 SoilWat set sw = .030 .030 .080 .100 .210 .180 .210 .220 .220 .210 .190 .190  .190 .190 .190 .190 .190   
@@ -254,8 +254,8 @@ no3ppm =   22.3  15.3  6.5  3.3  2.2  2.2  1.7  1.7  0  0  0  0  0  0  0  0  0
 
 [be91s2.Operations.parameters]
  130   1991    surfaceom tillage type = burn_90
- 179   1991    lupin sow population = 40, row_spacing = 200, sowing_depth = 40, cultivar = gungurru
-! 179   1991    lupin sow population = 40, row_spacing = 200, sowing_depth = 40, cultivar = merrit
+ 179   1991    lupin sow plants = 40, row_spacing = 200, sowing_depth = 40, cultivar = gungurru
+! 179   1991    lupin sow plants = 40, row_spacing = 200, sowing_depth = 40, cultivar = merrit
 
 !reset sw at obs swc for wheat, day 121?
 121  1991 SoilWat set sw = .030 .030 .080 .100 .210 .180 .210 .220 .220 .210 .190 .190  .190 .190 .190 .190 .190   
@@ -263,8 +263,8 @@ no3ppm =   22.3  15.3  6.5  3.3  2.2  2.2  1.7  1.7  0  0  0  0  0  0  0  0  0
 
 [be92s1.Operations.parameters]
 114   1992    surfaceom tillage type = burn_90
-121   1992    lupin sow population = 50, row_spacing = 200, sowing_depth = 40, cultivar = gungurru
-!121   1992    lupin sow population = 50, row_spacing = 200, sowing_depth = 40, cultivar = merrit
+121   1992    lupin sow plants = 50, row_spacing = 200, sowing_depth = 40, cultivar = gungurru
+!121   1992    lupin sow plants = 50, row_spacing = 200, sowing_depth = 40, cultivar = merrit
 
 !reset sw at obs swc for wheat, DOY 125
 121  1991 SoilWat set sw = 0.12 0.12 0.08  0.09 0.20 0.20  0.21  0.21  0.22  0.22  0.21 0.21 0.21 0.21 0.21 0.21 0.21
@@ -272,18 +272,18 @@ no3ppm =   22.3  15.3  6.5  3.3  2.2  2.2  1.7  1.7  0  0  0  0  0  0  0  0  0
 
 [be92s2.Operations.parameters]
 114   1992    surfaceom tillage type = burn_90
-161   1992    lupin sow population = 70, row_spacing = 200, sowing_depth = 40, cultivar = gungurru
-!161   1992    lupin sow population = 70, row_spacing = 200, sowing_depth = 40, cultivar = merrit
+161   1992    lupin sow plants = 70, row_spacing = 200, sowing_depth = 40, cultivar = gungurru
+!161   1992    lupin sow plants = 70, row_spacing = 200, sowing_depth = 40, cultivar = merrit
 
 !reset sw at obs swc for wheat, DOY 125
 121  1991 SoilWat set sw = 0.12 0.12 0.08  0.09 0.20 0.20  0.21  0.21  0.22  0.22  0.21 0.21 0.21 0.21 0.21 0.21 0.21
 
 
 [dracup93be.Operations.parameters]
-131   1993    lupin sow population = 53, row_spacing = 200, sowing_depth = 40, cultivar = merrit
+131   1993    lupin sow plants = 53, row_spacing = 200, sowing_depth = 40, cultivar = merrit
 !131   1993    residue2 f_incorporated =0.5, tillage_depth = 60
 
- !131   1993    lupin sow population = 53, row_spacing = 200, sowing_depth = 30, cultivar = merrit
+ !131   1993    lupin sow plants = 53, row_spacing = 200, sowing_depth = 30, cultivar = merrit
 
 [sand.SoilN.parameters]
 soiltype = sand

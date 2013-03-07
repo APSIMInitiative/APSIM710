@@ -5,7 +5,7 @@ outputfile  =testA1.out
 [test1.manager.start_of_day]
 if sugar.DaysAfterSowing = 100 then
    sugar harvest
-   sugar sow population = 10 (), cultivar = q117, sowing_depth = 150
+   sugar sow plants = 10 (), cultivar = q117, sowing_depth = 150
 endif
 
 [test2.SummaryFile.parameters]
@@ -16,7 +16,7 @@ outputfile  =testA2.out
 if sugar.DaysAfterSowing = 100 then
    sugar harvest
    sugar end_crop
-   sugar sow population = 10 (), cultivar = q117, sowing_depth = 150
+   sugar sow plants = 10 (), cultivar = q117, sowing_depth = 150
 endif
 
 [test3.SummaryFile.parameters]
@@ -25,7 +25,7 @@ summaryfile=testA3.sum
 outputfile  =testA3.out
 [test3.manager.start_of_day]
 if harvest = 1 then
-   sugar sow population = 10 (), cultivar = q117, sowing_depth = 150
+   sugar sow plants = 10 (), cultivar = q117, sowing_depth = 150
    harvest = 2
 endif
 
@@ -39,8 +39,8 @@ endif
 [all.report.parameters]
 variable = clock.day
 variable = clock.year
-variable = sugar.LAI
-variable = sugar.Biomass
+variable = sugar.lai
+variable = sugar.biomass
 variable = sugar.green_biomass
 
 [all.clock.parameters]
@@ -54,7 +54,7 @@ harvest = 0
 [all.manager.start_of_day]
 
 if day = 120 and year  = 1988 then
-   sugar sow population = 10 (), cultivar = q117, sowing_depth = 150
+   sugar sow plants = 10 (), cultivar = q117, sowing_depth = 150
 endif
 
 [all.manager.end_of_day]

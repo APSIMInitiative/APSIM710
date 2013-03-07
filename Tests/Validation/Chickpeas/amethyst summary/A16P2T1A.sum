@@ -56,37 +56,37 @@ Paddock:
         Season
         Treatment
         dd/mm/yyyy as Date
-        chickpea.PhenologyStage
+        chickpea.Stage
         chickpea.DaysAfterSowing
         chickpea.TTAfterSowing
-        chickpea.Yield
-        chickpea.Biomass
+        chickpea.yield
+        chickpea.biomass
         chickpea.green_biomass
-        chickpea.GrowthRate
-        chickpea.RootLiveWt
-        chickpea.LeafLiveWt
-        chickpea.StemLiveWt
-        chickpea.PodLiveWt
-        chickpea.GrainWt
-        chickpea.PhenologyStage
-        chickpea.PhenologyStage
-        chickpea.LAI
-        chickpea.LAITotal
-        chickpea.SLAI
-        chickpea.LeafNumber as leaf_no
+        chickpea.dlt_dm
+        chickpea.RootGreenWt
+        chickpea.LeafGreenWt
+        chickpea.StemGreenWt
+        chickpea.PodGreenWt
+        chickpea.grain_wt
+        chickpea.stage
+        chickpea.Stage
+        chickpea.lai
+        chickpea.tlai
+        chickpea.slai
+        chickpea.leaf_no as leaf_no
         chickpea.leaf_no_dead()
-        chickpea.RootDepth
-        chickpea.GrainNumber
-        chickpea.WaterStressPheno
-        chickpea.WaterStressPhoto
-        chickpea.WaterStressExpansion
-        chickpea.NStressPhoto
-        chickpea.NStressGrain
-        chickpea.NDemand
-        chickpea.RootNSupply
+        chickpea.root_depth
+        chickpea.grain_no
+        chickpea.swdef_pheno
+        chickpea.swdef_photo
+        chickpea.swdef_expan
+        chickpea.nfact_photo
+        chickpea.nfact_grain
+        chickpea.n_demand
+        chickpea.n_supply_soil
         chickpea.n_supply
         chickpea.n_fix_pot
-        chickpea.AboveGroundN
+        chickpea.n_uptake
         chickpea.n_uptake_grain as grain_n
         chickpea.n_uptake_stover as stover_n
         chickpea.n_conc_stover
@@ -103,7 +103,7 @@ Paddock:
      Operations Schedule
      ===================
       25/05/1993  Prepare       'soil water' set sw = .413 .456 .408 .374 .327 .325 .371
-      21/07/1993  Prepare      chickpea sow population = 37, row_spacing = 700, sowing_depth = 50, cultivar = amethyst
+      21/07/1993  Prepare      chickpea sow plants = 37, row_spacing = 700, sowing_depth = 50, cultivar = amethyst
 
 ------- irrigation Initialisation ---------------------------------------------
       Initialising
@@ -136,7 +136,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if (chickpea.stagename = 'harvest_ripe' or chickpea.plantstatus = 'dead') then
+                if (chickpea.stagename = 'harvest_ripe' or chickpea.plant_status = 'dead') then
        chickpea  harvest
        chickpea  end_crop
                 endif

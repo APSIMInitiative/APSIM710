@@ -158,12 +158,12 @@ class SimpleLeaf : BaseOrgan
             PublishNewCanopyEvent();
         }
     }
-    [Output("coverlive")]
+    [Output("Cover_green")]
     public double CoverGreen
     {
         get { return 1.0 - Math.Exp(-K * LAI); }
     }
-    [Output("covertotal")]
+    [Output("Cover_tot")]
     public double CoverTot
     {
         get { return 1.0 - (1 - CoverGreen) * (1 - CoverDead); }

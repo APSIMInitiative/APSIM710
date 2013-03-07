@@ -74,7 +74,7 @@ module dataTypes
    character(len=*), parameter :: SowTypeDDML = &
       '<type name="Sow">' // &
       '   <field name="Cultivar" kind="string" />' // &
-      '   <field name="Population" kind="double" />' // &
+      '   <field name="Plants" kind="double" />' // &
       '   <field name="Sowing_depth" kind="integer4" />' // &
       '   </type>'
    type SowType

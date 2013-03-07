@@ -49,25 +49,25 @@ Paddock:
      Output variables:
         today format dd/mm/yyyy as Date
         DaysAfterSowing as Das
-        PhenologyStage
+        Stage
         Biomass
-        LiveWt
+        GreenWt
         Biomass units g/m^2 as BiomassWt
-        RootLiveWt
-        LeafLiveWt
-        StemLiveWt
+        RootGreenWt
+        LeafGreenWt
+        StemGreenWt
         RachisGreenWt
         GrainGreenWt
         BiomassN
         RootGreenN
-        LeafLiveN
-        StemLiveN
+        LeafGreenN
+        StemGreenN
         RachisGreenN
         GrainGreenN
         GrainGreenNConc
         GrainNo
         GrainSize
-        LeafNumber
+        LeafNo
         LAI
         SLAI
         ESW
@@ -114,7 +114,7 @@ Paddock:
      
      SECTION:- start_of_day
      if (paddock_is_fallow() = 1 and today = date('29/11/1995')) then
-       sorghum sow population =16, sowing_depth = 20, cultivar = m35-1, row_spacing = 0.5, skip = solid, tiller_no_fertile = 0.2 ()
+       sorghum sow plants =16, sowing_depth = 20, cultivar = m35-1, row_spacing = 0.5, skip = solid, tiller_no_fertile = 0.2 ()
      endif
      if (paddock_is_fallow() = 0) then
         outputfile do_output
@@ -126,7 +126,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if sorghum.stagename = 'harvest_ripe' or sorghum.plantstatus = 'dead' then
+                if sorghum.stagename = 'harvest_ripe' or sorghum.plant_status = 'dead' then
        sorghum  harvest
        sorghum  end_crop
                 endif
@@ -265,7 +265,7 @@ fertiliser:
 29 November 1995(Day of year=333), operations: 
       Sending apply message to irrigation
 29 November 1995(Day of year=333), Sow SkipRow on a fixed date: 
-     Manager sending message :- sorghum sow  population = 16, sowing_depth = 20, cultivar = m35-1, row_spacing = 0.5, skip = solid, tiller_no_fertile = 0.2
+     Manager sending message :- sorghum sow  plants = 16, sowing_depth = 20, cultivar = m35-1, row_spacing = 0.5, skip = solid, tiller_no_fertile = 0.2
 29 November 1995(Day of year=333), sorghum: 
      Sowing initiate
      

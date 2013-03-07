@@ -54,21 +54,21 @@ Title                  = fieldpea sample
         surfaceom.surfaceom_cover
         surfaceom.surfaceom_n
         fieldpea.DaysAfterSowing
-        fieldpea.PhenologyStage
-        fieldpea.LAI
-        fieldpea.Biomass
+        fieldpea.stage
+        fieldpea.lai
+        fieldpea.biomass
         fieldpea.green_biomass
-        fieldpea.Yield
+        fieldpea.yield
         fieldpea.ep
-        fieldpea.WaterStressPhoto
-        fieldpea.NStressPhoto
-        fieldpea.RootDepth
-        fieldpea.NodeNumber
-        fieldpea.LeafLiveWt
-        fieldpea.StemLiveWt
-        fieldpea.FloweringDate
-        fieldpea.MaturityDate
-        fieldpea.LeafNumber
+        fieldpea.swdef_photo
+        fieldpea.nfact_photo
+        fieldpea.root_depth
+        fieldpea.node_no
+        fieldpea.LeafGreenWt
+        fieldpea.StemGreenWt
+        fieldpea.flowering_date
+        fieldpea.maturity_date
+        fieldpea.leaf_no
         SoilWat.esw
 
      Output file = fieldpea.out
@@ -81,15 +81,15 @@ Title                  = fieldpea sample
 ------- Operations Initialisation ---------------------------------------------
      Operations Schedule
      ===================
-       17/5/2002  Prepare      fieldpea sow population = 50, sowing_depth = 30, cultivar = parafield
-       25/6/2003  Prepare      fieldpea sow population = 70, sowing_depth = 30, cultivar = mutka
+       17/5/2002  Prepare      fieldpea sow plants = 50, sowing_depth = 30, cultivar = parafield
+       25/6/2003  Prepare      fieldpea sow plants = 70, sowing_depth = 30, cultivar = mutka
 
 ------- Manager Initialisation ------------------------------------------------
      Manager rules:
      
      SECTION:- end_of_day
      report do_output
-     if fieldpea.stagename = 'harvest_ripe' or fieldpea.plantstatus = 'dead' then
+     if fieldpea.stagename = 'harvest_ripe' or fieldpea.plant_status = 'dead' then
         fieldpea harvest
         fieldpea kill_crop
         fieldpea end_crop

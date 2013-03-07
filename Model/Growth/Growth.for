@@ -831,7 +831,7 @@
      :              ,'()'              ! variable units
      :              ,c%crop_type)      ! variable
 
-      elseif (variable_name .eq. 'plantstatus') then
+      elseif (variable_name .eq. 'plant_status') then
 
          call respond2get_char_var (
      :               variable_name     ! variable name
@@ -1047,14 +1047,14 @@ cnh         cover = 1.0 - exp (-g%extinction_coef*g%lai)
      :              ,'(mm)'              ! variable units
      :              ,g%cum_water_uptake) ! variable
 
-      elseif (variable_name .eq. 'coverlive') then
+      elseif (variable_name .eq. 'cover_green') then
 
          call respond2get_real_var (
      :               variable_name       ! variable name
      :              ,'()'                ! variable units
      :              ,G%cover_green)      ! variable
 
-      elseif (variable_name .eq. 'covertotal') then
+      elseif (variable_name .eq. 'cover_tot') then
 
          call respond2get_real_var (
      :               variable_name       ! variable name
@@ -1121,7 +1121,7 @@ cnh         cover = 1.0 - exp (-g%extinction_coef*g%lai)
      :              ,g%root_length     ! variable
      :              ,num_layers)       ! array size
 
-      elseif (variable_name .eq. 'rootdepth') then
+      elseif (variable_name .eq. 'root_depth') then
 
          call respond2get_real_var (
      :               variable_name       ! variable name
@@ -1150,7 +1150,7 @@ cnh         cover = 1.0 - exp (-g%extinction_coef*g%lai)
      :              ,'()'                ! variable units
      :              ,g%root_n)        ! variable
 
-      elseif (variable_name .eq. 'growthrate') then
+      elseif (variable_name .eq. 'dlt_dm') then
 
          call respond2get_real_var (
      :               variable_name       ! variable name
@@ -1555,7 +1555,7 @@ cnh         cover = 1.0 - exp (-g%extinction_coef*g%lai)
      :              ,0.0)              ! variable
          endif
 
-      elseif (variable_name .eq. 'ndemand') then
+      elseif (variable_name .eq. 'n_demand') then
          call respond2get_real_var (
      :               variable_name     ! variable name
      :              ,'(kg/ha)'         ! variable units

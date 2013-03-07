@@ -43,27 +43,27 @@ Title                  = mer00_duplex
         clock.year
         clock.day
         lupin.DaysAfterSowing
-        lupin.PhenologyStage
+        lupin.Stage
         lupin.flowering_das
         lupin.TTAfterSowing
-        lupin.RootDepth
-        lupin.FloweringDate
-        lupin.Yield
+        lupin.root_depth
+        lupin.flowering_date
+        lupin.yield
         met.radn
         met.maxt
         met.mint
         met.rain
         manager.avgt
         lupin.green_biomass
-        lupin.Biomass
-        lupin.AboveGroundWt
-        lupin.LeafLiveWt
-        lupin.StemLiveWt
-        lupin.GrainWt
-        lupin.PodLiveWt
-        lupin.RootLiveWt
-        lupin.FruitLiveWt
-        lupin.LAI
+        lupin.biomass
+        lupin.biomass_wt
+        lupin.LeafGreenWt
+        lupin.StemGreenWt
+        lupin.grain_wt
+        lupin.PodGreenWt
+        lupin.RootGreenWt
+        lupin.FruitGreenWt
+        lupin.lai
         manager.apoc_rain
 
      Output file = mer00_duplex report.out
@@ -76,7 +76,7 @@ Title                  = mer00_duplex
 ------- Operations Initialisation ---------------------------------------------
      Operations Schedule
      ===================
-       13/6/2000  Prepare         lupin sow population = 60, row_spacing = 200, sowing_depth = 40, cultivar = merrit
+       13/6/2000  Prepare         lupin sow plants = 60, row_spacing = 200, sowing_depth = 40, cultivar = merrit
        19/7/2000  Prepare         SoilWat set sw= 0.15 0.15 0.18 0.18 0.25 0.25 0.29 0.29 0.29 0.3 0.3 0.3 0.32 0.33 0.33 0.33 0.33
 
 ------- Manager Initialisation ------------------------------------------------
@@ -123,10 +123,10 @@ Title                  = mer00_duplex
      eta = ep + es
      eta_cum = eta_cum + eta
      etp_cum =etp_cum + eo
-     if (lupin.phenologystage>=3 and lupin.phenologystage <= 8) then
+     if (lupin.stage>=3 and lupin.stage <= 8) then
         hi = yield / biomass
-        hi_green = grainwt / abovegroundlivewt
-        sla_tot = lai/leaflivewt
+        hi_green = grain_wt / green_biomass_wt
+        sla_tot = lai/leafgreenwt
         yield_in_t = yield/1000
      else
         hi = 0
@@ -134,7 +134,7 @@ Title                  = mer00_duplex
         sla_tot = 0
         yield_in_t = 0
      endif
-     if (lupin.stagename = 'harvest_ripe' or lupin.plantstatus = 'dead') then
+     if (lupin.stagename = 'harvest_ripe' or lupin.plant_status = 'dead') then
         lupin harvest
         lupin kill_crop
         lupin end_crop

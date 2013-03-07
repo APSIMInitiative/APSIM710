@@ -49,25 +49,25 @@ Paddock:
      Output variables:
         today format dd/mm/yyyy as Date
         DaysAfterSowing as Das
-        PhenologyStage
+        Stage
         Biomass
-        LiveWt
+        GreenWt
         Biomass units g/m^2 as BiomassWt
-        RootLiveWt
-        LeafLiveWt
-        StemLiveWt
+        RootGreenWt
+        LeafGreenWt
+        StemGreenWt
         RachisGreenWt
         GrainGreenWt
         BiomassN
         RootGreenN
-        LeafLiveN
-        StemLiveN
+        LeafGreenN
+        StemGreenN
         RachisGreenN
         GrainGreenN
         GrainGreenNConc
         GrainNo
         GrainSize
-        LeafNumber
+        LeafNo
         LAI
         SLAI
         ESW
@@ -112,7 +112,7 @@ Paddock:
      
      SECTION:- start_of_day
      if (paddock_is_fallow() = 1 and today = date('11/10/1996')) then
-       sorghum sow population =10, sowing_depth = 20, cultivar = ql41xql36, row_spacing = 0.5, skip = solid, tiller_no_fertile = 0.4 ()
+       sorghum sow plants =10, sowing_depth = 20, cultivar = ql41xql36, row_spacing = 0.5, skip = solid, tiller_no_fertile = 0.4 ()
      endif
      if (paddock_is_fallow() = 0) then
         outputfile do_output
@@ -124,7 +124,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if sorghum.stagename = 'harvest_ripe' or sorghum.plantstatus = 'dead' then
+                if sorghum.stagename = 'harvest_ripe' or sorghum.plant_status = 'dead' then
        sorghum  harvest
        sorghum  end_crop
                 endif
@@ -269,7 +269,7 @@ Paddock:
        105.00 of N as nitrate (no3_n)
                                          added at depth   50.00 (layer   1)
 11 October 1996(Day of year=285), Sow SkipRow on a fixed date: 
-     Manager sending message :- sorghum sow  population = 10, sowing_depth = 20, cultivar = ql41xql36, row_spacing = 0.5, skip = solid, tiller_no_fertile = 0.4
+     Manager sending message :- sorghum sow  plants = 10, sowing_depth = 20, cultivar = ql41xql36, row_spacing = 0.5, skip = solid, tiller_no_fertile = 0.4
 11 October 1996(Day of year=285), sorghum: 
      Sowing initiate
      

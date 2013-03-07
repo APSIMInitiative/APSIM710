@@ -40,7 +40,7 @@ end_date = 30/12/1993     ! dd/mm/yyyy
    endif
 
   ! if crop killed due to stress, end simulation
-   if (navybean.PlantStatus = 'dead')  then
+   if (navybean.plant_status = 'dead')  then
       navybean harvest
       navybean kill_crop
       navybean end_crop
@@ -86,7 +86,7 @@ P_pl_up_diff = P_plant - P_uptake_cum
 below_gnd_diff = P_below_ground - P_below_ground_yday
 residue_P_yday =  surfaceom.surfaceom_p
 
-!  if (navybean.PhenologyStage >=1 and navybean.PhenologyStage <= 11) then
+!  if (navybean.stage >=1 and navybean.stage <= 11) then
     report do_output
 !  endif
 

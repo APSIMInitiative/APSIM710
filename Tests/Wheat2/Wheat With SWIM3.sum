@@ -49,62 +49,62 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        LAI
-        PhenologyStage
-        StageName
-        Yield
-        Height
-        LeafLiveWt
-        StemLiveWt
-        GrainWt
-        LeafNumber
-        CoverLive
-        RootDepth
-        DaysAfterSowing
-        PodLiveWt
+        lai
+        stage
+        yield
+        height
+        leafgreenwt
+        stemgreenwt
+        grain_wt
+        leaf_no
+        cover_green
+        root_depth
+        daysaftersowing
+        podgreenwt
         TTAfterSowing
-        AboveGroundN
-        LAITotal
+        n_uptake
+        tlai
         plants
-        NodeNumber
-        Biomass
-        AboveGroundLiveN
-        PlantStatus
-        GrainN
-        LeafLiveN
-        StemLiveN
-        FloweringDate
-        AboveGroundLiveWt
-        LeafLiveNConc
-        MaturityDate
-        PAI
-        PodLiveN
-        StemLiveNConc
-        CoverTotal
+        node_no
+        biomass
+        green_biomass_n
+        plant_status
+        grain_n
+        leafgreenn
+        stemgreenn
+        flowering_date
+        green_biomass_wt
+        leafgreennconc
+        maturity_date
+        pai
+        podgreenn
+        stemgreennconc
+        cover_tot
         TotalN
         TotalWt
-        NStressPhoto
+        n_stress_photo
         swstress_photo
-        SLAI
-        WaterStressExpansion
-        GrainNumber
-        WaterStressPheno
-        GrowthRate
-        LeafNumberDead
-        RootLiveWt
-        NDemand
-        RootNSupply
+        slai
+        swdef_expan
+        grain_no
+        swdef_pheno
+        dlt_dm
+        leaf_no_sen
+        RootGreenWt
+        n_demand
+        n_supply_soil
         green
         senesced
-        GrainP
-        NStressPheno
-        NStressExpansion
-        NStressGrain
-        PStressPheno
-        PStressExpansion
-        PStressGrain
-        PStressPhoto
-        WaterStressFixation
+        grain_p
+        n_stress_pheno
+        n_stress_expan
+        n_stress_grain
+        p_stress_pheno
+        p_stress_expan
+        p_stress_grain
+        p_stress_photo
+        swstress_expan
+        swstress_fixation
         Grain_Protein
         grain_size
         sw_uptake
@@ -122,7 +122,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('1-jun') then
-       wheat sow population =150, sowing_depth = 50, cultivar = hartog, row_spacing = 500, crop_class = plant
+       wheat sow plants =150, sowing_depth = 50, cultivar = hartog, row_spacing = 500, crop_class = plant
               endif
      END of rules
      
@@ -131,8 +131,8 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-             if wheat.plantstatus <> 'out' then
-                if wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' then
+             if wheat.plant_status <> 'out' then
+                if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
        wheat  harvest
        wheat  end_crop
                 endif
@@ -306,7 +306,7 @@ Paddock:
      Using SWIM3 for Soil Water Uptake.
      
 ------- Start of simulation  --------------------------------------------------
-     Manager sending message :- wheat sow  population = 150, sowing_depth = 50, cultivar = hartog, row_spacing = 500, crop_class = plant
+     Manager sending message :- wheat sow  plants = 150, sowing_depth = 50, cultivar = hartog, row_spacing = 500, crop_class = plant
      Crop Sow
      Using SWIM3 for Soil Water Uptake.
      
@@ -491,7 +491,7 @@ Paddock:
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:           0.948 to:           0.474
 1 June 1941(Day of year=152), Sow on a fixed date: 
-     Manager sending message :- wheat sow  population = 150, sowing_depth = 50, cultivar = hartog, row_spacing = 500, crop_class = plant
+     Manager sending message :- wheat sow  plants = 150, sowing_depth = 50, cultivar = hartog, row_spacing = 500, crop_class = plant
 1 June 1941(Day of year=152), wheat: 
      Crop Sow
      Using SWIM3 for Soil Water Uptake.

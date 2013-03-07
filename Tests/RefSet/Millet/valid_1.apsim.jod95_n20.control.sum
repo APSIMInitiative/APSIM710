@@ -50,24 +50,24 @@ Title                  = jod95_n20
      Output variables:
         clock.year
         clock.day
-        millet.Yield as y0
-        millet1.Yield as y1
-        millet2.Yield as y2
-        millet3.Yield as y3
-        millet4.Yield as y4
-        millet5.Yield as y5
-        millet.Biomass as bio0
-        millet1.Biomass as bio1
-        millet2.Biomass as bio2
-        millet3.Biomass as bio3
-        millet4.Biomass as bio4
-        millet5.Biomass as bio5
-        millet.LAI as lai0
-        millet1.LAI as lai1
-        millet2.LAI as lai2
-        millet3.LAI as lai3
-        millet4.LAI as lai4
-        millet5.LAI as lai5
+        millet.yield as y0
+        millet1.yield as y1
+        millet2.yield as y2
+        millet3.yield as y3
+        millet4.yield as y4
+        millet5.yield as y5
+        millet.biomass as bio0
+        millet1.biomass as bio1
+        millet2.biomass as bio2
+        millet3.biomass as bio3
+        millet4.biomass as bio4
+        millet5.biomass as bio5
+        millet.lai as lai0
+        millet1.lai as lai1
+        millet2.lai as lai2
+        millet3.lai as lai3
+        millet4.lai as lai4
+        millet5.lai as lai5
 
      Output file = val_18.out
      Format = normal
@@ -85,7 +85,7 @@ Title                  = jod95_n20
      Operations Schedule
      ===================
        29/6/1995  Prepare       SoilWat set sw = 0.066   0.090   0.117   0.123   0.129   0.137   0.148
-       21/7/1995  Prepare       millet sow population =  9.0, sowing_depth = 40, cultivar = wrajpop
+       21/7/1995  Prepare       millet sow plants =  9.0, sowing_depth = 40, cultivar = wrajpop
        30/6/1995  Prepare       SoilN set nh4ppm=   4.95    3.65    2.31    2.31    3.62    3.22    2.54
        30/6/1995  Prepare       SoilN set no3ppm=   10.23   5.64    2.31    2.31    1.32    1.29    1.10
         6/7/1995  Prepare       Fertiliser apply amount = 20 (kg/ha), depth=70(mm), type=no3_n
@@ -165,54 +165,54 @@ Title                  = jod95_n20
      if (millet5.stagename = 'initiate' or millet5.stagename = 'emergence') then
          tiller5_finished = 1
      endif
-          if (millet.stagename = 'harvest_ripe' and millet.plantstatus = 'alive') or
-             (millet.stagename = 'end_crop' and millet.plantstatus = 'dead') or
-             (tiller0_finished = 1 and millet.plantstatus = 'out')   then
+          if (millet.stagename = 'harvest_ripe' and millet.plant_status = 'alive') or
+             (millet.stagename = 'end_crop' and millet.plant_status = 'dead') or
+             (tiller0_finished = 1 and millet.plant_status = 'out')   then
           millet harvest
           millet kill_crop
           millet end_crop
           surfaceom tillage type = burn
           tiller0_finished = 2
           endif
-          if (millet1.stagename = 'harvest_ripe' and millet1.plantstatus = 'alive') or
-             (millet1.stagename = 'end_crop' and millet1.plantstatus = 'dead') or
-             (tiller1_finished = 1 and millet1.plantstatus = 'out')  then
+          if (millet1.stagename = 'harvest_ripe' and millet1.plant_status = 'alive') or
+             (millet1.stagename = 'end_crop' and millet1.plant_status = 'dead') or
+             (tiller1_finished = 1 and millet1.plant_status = 'out')  then
           millet1 harvest
           millet1 kill_crop
           millet1 end_crop
           surfaceom tillage type = burn
           tiller1_finished = 2
           endif
-          if (millet2.stagename = 'harvest_ripe' and millet2.plantstatus = 'alive') or
-             (millet2.stagename = 'end_crop' and millet2.plantstatus = 'dead') or
-             (tiller2_finished = 1 and millet2.plantstatus = 'out')  then
+          if (millet2.stagename = 'harvest_ripe' and millet2.plant_status = 'alive') or
+             (millet2.stagename = 'end_crop' and millet2.plant_status = 'dead') or
+             (tiller2_finished = 1 and millet2.plant_status = 'out')  then
           millet2 harvest
           millet2 kill_crop
           millet2 end_crop
           surfaceom tillage type = burn
           tiller2_finished = 2
           endif
-          if (millet3.stagename = 'harvest_ripe' and millet3.plantstatus = 'alive') or
-             (millet3.stagename = 'end_crop' and millet3.plantstatus = 'dead') or
-             (tiller3_finished = 1 and millet3.plantstatus = 'out')  then
+          if (millet3.stagename = 'harvest_ripe' and millet3.plant_status = 'alive') or
+             (millet3.stagename = 'end_crop' and millet3.plant_status = 'dead') or
+             (tiller3_finished = 1 and millet3.plant_status = 'out')  then
           millet3 harvest
           millet3 kill_crop
           millet3 end_crop
           surfaceom tillage type = burn
           tiller3_finished = 2
           endif
-          if (millet4.stagename = 'harvest_ripe' and millet4.plantstatus = 'alive') or
-             (millet4.stagename = 'end_crop' and millet4.plantstatus = 'dead') or
-             (tiller4_finished = 1 and millet4.plantstatus = 'out')  then
+          if (millet4.stagename = 'harvest_ripe' and millet4.plant_status = 'alive') or
+             (millet4.stagename = 'end_crop' and millet4.plant_status = 'dead') or
+             (tiller4_finished = 1 and millet4.plant_status = 'out')  then
           millet4 harvest
           millet4 kill_crop
           millet4 end_crop
           surfaceom tillage type = burn
           tiller4_finished = 2
           endif
-          if (millet5.stagename = 'harvest_ripe' and millet5.plantstatus = 'alive') or
-             (millet5.stagename = 'end_crop' and millet5.plantstatus = 'dead') or
-             (tiller5_finished = 1 and millet5.plantstatus = 'out')  then
+          if (millet5.stagename = 'harvest_ripe' and millet5.plant_status = 'alive') or
+             (millet5.stagename = 'end_crop' and millet5.plant_status = 'dead') or
+             (tiller5_finished = 1 and millet5.plant_status = 'out')  then
           millet5 harvest
           millet5 kill_crop
           millet5 end_crop

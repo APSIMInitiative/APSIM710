@@ -53,13 +53,13 @@ Paddock:
         year
         day
         DaysAfterSowing
-        Biomass
+        biomass
         green_biomass
         stover_wt
-        Yield
-        LAI
+        yield
+        lai
         esw_layr()
-        RootDepth
+        root_depth
 
      Output file = Centro.out
      Format = normal
@@ -75,7 +75,7 @@ Paddock:
               if (date_within('23-sep, 23-sep') = 1) then
      if (rain[3] >= 30 and esw >= 200) or
          ('yes' = 'yes' and today = date('23-sep'))) then
-        centro sow population =20, sowing_depth = 30, cultivar = cavalcade, row_spacing = 250, crop_class = plant
+        centro sow plants =20, sowing_depth = 30, cultivar = cavalcade, row_spacing = 250, crop_class = plant
      endif
               endif
            endif
@@ -94,7 +94,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if centro.stagename = 'harvest_ripe' or centro.plantstatus = 'dead' then
+                if centro.stagename = 'harvest_ripe' or centro.plant_status = 'dead' then
        centro  harvest
        centro  end_crop
                 endif
@@ -243,7 +243,7 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 23 September 1988(Day of year=267), Sowing rule: 
-     Manager sending message :- centro sow  population = 20, sowing_depth = 30, cultivar = cavalcade, row_spacing = 250, crop_class = plant
+     Manager sending message :- centro sow  plants = 20, sowing_depth = 30, cultivar = cavalcade, row_spacing = 250, crop_class = plant
 23 September 1988(Day of year=267), centro: 
      Crop Sow
         ------------------------------------------------
@@ -392,7 +392,7 @@ Paddock:
                           N  (kg/ha) =                   8.40                    3.29
      
 23 September 1989(Day of year=266), Sowing rule: 
-     Manager sending message :- centro sow  population = 20, sowing_depth = 30, cultivar = cavalcade, row_spacing = 250, crop_class = plant
+     Manager sending message :- centro sow  plants = 20, sowing_depth = 30, cultivar = cavalcade, row_spacing = 250, crop_class = plant
 23 September 1989(Day of year=266), centro: 
      Crop Sow
         ------------------------------------------------

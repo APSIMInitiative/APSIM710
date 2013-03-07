@@ -3,14 +3,14 @@ summaryfile=test1.sum
 [test1.report.parameters]
 outputfile  =test1.out
 [test1.manager.start_of_day]
-if millet.StageName = 'harvest_ripe' or millet.PlantStatus = 'dead' then
+if millet.StageName = 'harvest_ripe' or millet.plant_status = 'dead' then
    millet harvest
    millet1 harvest
    millet2 harvest
    millet3 harvest
    millet4 harvest
    millet5 harvest
-   millet sow population =  7.5, sowing_depth = 30, cultivar = wrajpop
+   millet sow plants =  7.5, sowing_depth = 30, cultivar = wrajpop
 endif
 
 [test2.SummaryFile.parameters]
@@ -18,7 +18,7 @@ summaryfile=test2.sum
 [test2.report.parameters]
 outputfile  =test2.out
 [test2.manager.start_of_day]
-if millet.StageName = 'harvest_ripe' or millet.PlantStatus = 'dead' then
+if millet.StageName = 'harvest_ripe' or millet.plant_status = 'dead' then
    millet harvest
    millet1 harvest
    millet2 harvest
@@ -31,7 +31,7 @@ if millet.StageName = 'harvest_ripe' or millet.PlantStatus = 'dead' then
    millet3 end_crop
    millet4 end_crop
    millet5 end_crop
-   millet sow population =  7.5, sowing_depth = 30, cultivar = wrajpop
+   millet sow plants =  7.5, sowing_depth = 30, cultivar = wrajpop
 endif
 
 [test3.SummaryFile.parameters]
@@ -40,11 +40,11 @@ summaryfile=test3.sum
 outputfile  =test3.out
 [test3.manager.start_of_day]
 if harvest = 1 then
-   millet sow population =  7.5, sowing_depth = 30, cultivar = wrajpop
+   millet sow plants =  7.5, sowing_depth = 30, cultivar = wrajpop
    harvest = 2
 endif
 
-if millet.StageName = 'harvest_ripe' or millet.PlantStatus = 'dead' then
+if millet.StageName = 'harvest_ripe' or millet.plant_status = 'dead' then
    millet harvest
    millet1 harvest
    millet2 harvest
@@ -64,8 +64,8 @@ endif
 [all.report.parameters]
 variable = clock.day
 variable = clock.year
-variable = millet.LAI
-variable = millet.Biomass
+variable = millet.lai
+variable = millet.biomass
 variable = millet.green_biomass
 
 [all.canopy.parameters]
@@ -82,7 +82,7 @@ harvest = 0
 [all.manager.start_of_day]
 
 if day = 166 and year  = 1988 then
-   millet sow population =  7.5, sowing_depth = 30, cultivar = wrajpop
+   millet sow plants =  7.5, sowing_depth = 30, cultivar = wrajpop
 endif
 
 [all.manager.end_of_day]

@@ -46,8 +46,8 @@ Title                  = Test sowing next day after out
      Output variables:
         clock.day
         clock.year
-        millet.LAI
-        millet.Biomass
+        millet.lai
+        millet.biomass
         millet.green_biomass
 
      Output file = test3.out
@@ -67,10 +67,10 @@ Title                  = Test sowing next day after out
      
      SECTION:- start_of_day
      if harvest = 1 then
-        millet sow population =  7.5, sowing_depth = 30, cultivar = wrajpop
+        millet sow plants =  7.5, sowing_depth = 30, cultivar = wrajpop
         harvest = 2
      endif
-     if millet.stagename = 'harvest_ripe' or millet.plantstatus = 'dead' then
+     if millet.stagename = 'harvest_ripe' or millet.plant_status = 'dead' then
         millet harvest
         millet1 harvest
         millet2 harvest
@@ -91,7 +91,7 @@ Title                  = Test sowing next day after out
      
      SECTION:- start_of_day
      if day = 166 and year  = 1988 then
-        millet sow population =  7.5, sowing_depth = 30, cultivar = wrajpop
+        millet sow plants =  7.5, sowing_depth = 30, cultivar = wrajpop
      endif
      
      SECTION:- end_of_day
@@ -271,7 +271,7 @@ Title                  = Test sowing next day after out
          - Reading constants
 ------- Start of simulation  --------------------------------------------------
 14 June 1988(Day of year=166), Manager: 
-     Manager sending message :- millet sow  population = 7.5, sowing_depth = 30, cultivar = wrajpop
+     Manager sending message :- millet sow  plants = 7.5, sowing_depth = 30, cultivar = wrajpop
 14 June 1988(Day of year=166), Millet: 
      Sow
      
@@ -1178,7 +1178,7 @@ Title                  = Test sowing next day after out
                                                root residue =  203.7 kg/ha
                                                root N =    2.2 kg/ha
 13 November 1988(Day of year=318), Manager: 
-     Manager sending message :- millet sow  population = 7.5, sowing_depth = 30, cultivar = wrajpop
+     Manager sending message :- millet sow  plants = 7.5, sowing_depth = 30, cultivar = wrajpop
 13 November 1988(Day of year=318), Millet: 
      Sow
      

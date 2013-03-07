@@ -40,8 +40,8 @@ Title                  = Test sowing after out on same day
      Output variables:
         clock.day
         clock.year
-        maize.LAI
-        maize.Biomass
+        maize.lai
+        maize.biomass
         maize.green_biomass
 
      Output file = test2.out
@@ -55,7 +55,7 @@ Title                  = Test sowing after out on same day
      Manager rules:
      
      SECTION:- start_of_day
-     if maize.stagename = 'harvest_ripe' or maize.plantstatus = 'dead' then
+     if maize.stagename = 'harvest_ripe' or maize.plant_status = 'dead' then
         maize harvest
         maize end_crop
         maize sow cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
@@ -234,7 +234,7 @@ Title                  = Test sowing after out on same day
          Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
          Day no    mm      m^2    m      code     name       no
          -------------------------------------------------------
-            305   30.0    0.0    1.0    0.0   dekalb_xl8    0.00
+            305   30.0   10.0    1.0    0.0   dekalb_xl8    0.00
          -------------------------------------------------------
      
         - Reading root profile parameters
@@ -280,52 +280,89 @@ Title                  = Test sowing after out on same day
      
      
      
-         kill. Standing above-ground dm =     0.0 (kg/ha)
-2 November 1989(Day of year=306), Manager: 
-     Manager sending message :- maize harvest
 2 November 1989(Day of year=306), Maize: 
+      stage    2.0 germination
+4 November 1989(Day of year=308), Maize: 
+      stage    3.0 emergence
+                          biomass =          0.2000000       lai =    0.3800000E-02
+                          stover N conc =    4.400000       extractable sw =    32.42388
+19 November 1989(Day of year=323), Maize: 
+      stage    4.0 end_of_juvenile
+                          biomass =           2.897260       lai =    0.4339030E-01
+                          stover N conc =    3.474447       extractable sw =    72.21750
+25 November 1989(Day of year=329), Maize: 
+      stage    5.0 floral_initiation
+                          biomass =           8.121427       lai =    0.9799722E-01
+                          stover N conc =    3.177968       extractable sw =    128.5099
+5 January 1990(Day of year=5), Maize: 
+      stage    6.0 flag_leaf
+                          biomass =           658.6564       lai =     4.470813
+                          stover N conc =    1.468802       extractable sw =    222.4798
+10 January 1990(Day of year=10), Maize: 
+      stage    7.0 flowering
+                          biomass =           768.4710       lai =     4.349072
+                          stover N conc =    1.329700       extractable sw =    194.1977
+20 January 1990(Day of year=20), Maize: 
+      stage    8.0 start_grain_fill
+                          biomass =           950.3929       lai =     4.019034
+                          stover N conc =    1.162770       extractable sw =    195.2990
+8 March 1990(Day of year=67), Maize: 
+      stage    9.0 end_grain_fill
+                          biomass =           1481.184       lai =     1.371205
+                          stover N conc =   0.9280600       extractable sw =    150.6952
+9 March 1990(Day of year=68), Maize: 
+      stage   10.0 maturity
+                          biomass =           1489.383       lai =     1.337408
+                          stover N conc =   0.9256768       extractable sw =    148.9908
+10 March 1990(Day of year=69), Maize: 
+      stage   11.0 harvest_ripe
+                          biomass =           1489.383       lai =    0.6567955E-02
+                          stover N conc =   0.9399812       extractable sw =    146.6039
+11 March 1990(Day of year=70), Manager: 
+     Manager sending message :- maize harvest
+11 March 1990(Day of year=70), Maize: 
      
      
      
-     flowering (DAS) =    0                                maturity (DAS)  =       0
-      flowering day  =    0                                 stover (kg/ha) =       0.0
-      maturity day        =    0                            grain yield (kg/ha) =       0.0
-      grain % water content   =   15.5                      grain yield wet (kg/ha) =       0.0
-      grain wt (g) =     0.000                              grains/m^2   =     0.000
-      grains/head =   0.0                                   maximum lai = 0.000
-      total above ground biomass (kg/ha) =       0.0
-      live above ground biomass (kg/ha) =       0.0
-      green above ground biomass (kg/ha) =       0.0
-      senesced above ground biomass (kg/ha) =       0.0
+     flowering (DAS) =   70                                maturity (DAS)  =     129
+      flowering day  =   10                                 stover (kg/ha) =    8204.0
+      maturity day        =   68                            grain yield (kg/ha) =    6689.8
+      grain % water content   =   15.5                      grain yield wet (kg/ha) =    7916.9
+      grain wt (g) =     0.342                              grains/m^2   =  1957.290
+      grains/head = 195.7                                   maximum lai = 4.506
+      total above ground biomass (kg/ha) =   14893.8
+      live above ground biomass (kg/ha) =   14893.8
+      green above ground biomass (kg/ha) =   13290.2
+      senesced above ground biomass (kg/ha) =    1603.6
       dead above ground biomass (kg/ha) =       0.0
-      number of leaves =   0.0
-      grain N percent =      0.00                           total N content (kg/ha) =      0.00
-      grain N uptake (kg/ha) =      0.00                    senesced N content (kg/ha) =      0.00
-      green N content (kg/ha) =      0.00                   dead N content (kg/ha) =      0.00
+      number of leaves =  19.4
+      grain N percent =      1.24                           total N content (kg/ha) =    132.94
+      grain N uptake (kg/ha) =     83.29                    senesced N content (kg/ha) =      8.02
+      green N content (kg/ha) =     41.64                   dead N content (kg/ha) =      0.00
      
      
       Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence           to end_of_juvenile         0.000        0.000        0.000        0.000
-         end_of_juvenile     to floral_initiation       0.000        0.000        0.000        0.000
-         floral_initiation   to flag_leaf               0.000        0.000        0.000        0.000
-         flag_leaf           to flowering               0.000        0.000        0.000        0.000
-         flowering           to start_grain_fill        0.000        0.000        0.000        0.000
-         start_grain_fill    to end_grain_fill          0.000        0.000        0.000        0.000
+         emergence           to end_of_juvenile         0.000        0.000        0.000        0.121
+         end_of_juvenile     to floral_initiation       0.000        0.000        0.000        0.132
+         floral_initiation   to flag_leaf               0.000        0.000        0.057        0.185
+         flag_leaf           to flowering               0.000        0.000        0.341        0.473
+         flowering           to start_grain_fill        0.000        0.000        0.372        0.498
+         start_grain_fill    to end_grain_fill          0.000        0.000        0.409        0.527
      
      Crop harvested.
          Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                  0.00                    0.00
-                          N  (kg/ha) =                  0.00                    0.00
+                          DM (kg/ha) =               6689.81                    0.00
+                          N  (kg/ha) =                 83.29                    0.00
      
      Manager sending message :- maize end_crop
          Crop ended. Yield (dw) =     0.0
          Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
-                          DM (kg/ha) =                  0.00                    0.00
-                          N  (kg/ha) =                  0.00                    0.00
+                          DM (kg/ha) =               8204.02                 2309.04
+                          N  (kg/ha) =                 49.66                   17.97
                           P  (kg/ha) =                  0.00                    0.00
      
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
-2 November 1989(Day of year=306): 
+11 March 1990(Day of year=70): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM  Fatal  Error
                       -------------------

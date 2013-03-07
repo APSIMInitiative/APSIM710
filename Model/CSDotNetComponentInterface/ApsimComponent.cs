@@ -206,7 +206,7 @@ namespace ModelFramework
                         POSTINDEX = SOWINDEX + 2;
                         registerEvent(null, "Post", "<type/>", POSTINDEX, TypeSpec.KIND_SUBSCRIBEDEVENT, 0, 0);
                         //need a 'static' property here so other components know something of plant
-                        int propertyID = RegisterProperty("PlantStatus", "<type kind=\"string\"/>", true, false, false, "Plant status", "out, alive, dead", null);
+                        int propertyID = RegisterProperty("plant_status", "<type kind=\"string\"/>", true, false, false, "Plant status", "out, alive, dead", null);
                         TExtendedPropertyInfo staticProperty;
                         if (RegistrationsPropStatic.TryGetValue(propertyID, out staticProperty))
                         {
@@ -409,7 +409,7 @@ namespace ModelFramework
             {
                 FactoryProperty Property = Fact.Properties[i];
                 doReg = true;
-                if (IsPlant && (String.Compare(Property.Name, "PlantStatus", true) == 0))  //don't (re)register plant_status for Plant2
+                if (IsPlant && (String.Compare(Property.Name, "plant_status", true) == 0))  //don't (re)register plant_status for Plant2
                     doReg = false;
                 if (Property.IsOutput && doReg)
                 {
@@ -966,7 +966,7 @@ namespace ModelFramework
                     if (staticProperty.pDelegate != null)
                       result = staticProperty.pDelegate.Invoke(propertyID, ref aValue, false);
                     else
-                      result = ReadStaticProperty("PlantStatus", staticProperty, aValue);
+                      result = ReadStaticProperty("plant_status", staticProperty, aValue);
                 }
             }
             return result;

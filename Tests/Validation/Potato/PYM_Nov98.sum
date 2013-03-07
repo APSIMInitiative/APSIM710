@@ -52,31 +52,31 @@ Paddock:
         post
      Output variables:
         dd/mmm/yyyy
-        Biomass
-        LeafLiveWt
-        LeafLiveN
-        LeafDeadWt
-        StemLiveWt
-        StemLiveN
-        TuberLiveWt
+        biomass
+        leafgreenwt
+        leafgreenn
+        leafsenescedwt
+        stemgreenwt
+        stemgreenn
+        TuberGreenWt
         TuberGreenN
-        NStressExpansion
-        NStressPhoto
-        LAI
-        LeafNumber
+        nfact_expan
+        nfact_photo
+        lai
+        leaf_no
         stagename
         tt
-        NodeNumber
-        Height
+        node_no
+        height
         node_no_fx
         node_no_sen
         ttafteremergence
-        TTAfterSowing
+        ttaftersowing
         dlt_lai_carbon
         dlt_lai_pot
         no3()
-        WaterStressPhoto
-        RootDepth
+        swdef_photo
+        root_depth
         no3_demand
 
      Output file = PYM_Nov98.out
@@ -138,7 +138,7 @@ Paddock:
            swf = 1
         endif
         density = 5*4
-        potato sow population = density, sowing_depth = 30, cultivar = russet, row_spacing = 650, crop_class = plant
+        potato sow plants = density, sowing_depth = 30, cultivar = russet, row_spacing = 650, crop_class = plant
      endif
               endif
            endif
@@ -149,7 +149,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if potato.stagename = 'maturity' or potato.plantstatus = 'dead' then
+                if potato.stagename = 'maturity' or potato.plant_status = 'dead' then
        potato  harvest
        potato  end_crop
                 endif

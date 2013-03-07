@@ -294,7 +294,7 @@
       real       canopy_height       ! canopy height (mm)
       real       phase_devel         ! development of current phase ()
       integer    ratoon_no
-      real       Population          ! Plant density (plants/m^2)
+      real       plants              ! Plant density (plants/m^2)
       real       dlt_plants          ! change in Plant density (plants/m^2)
       real       initial_plant_density !sowing density (plants/m^2)
       real       dlt_root_depth      ! increase in root depth (mm)
@@ -1193,7 +1193,7 @@
          g%N_green (root)  = hold_n_root
          g%num_layers      = hold_num_layers
          g%root_depth      = hold_root_depth
-         g%Population          = g%initial_plant_density
+         g%plants          = g%initial_plant_density
 
          do 102 layer=1,max_layer
             g%root_length(layer) = hold_root_length(layer)
@@ -1286,7 +1286,7 @@
       g%canopy_height              = 0.0
       g%phase_devel                = 0.0
       g%ratoon_no                = 0
-      g%Population                     = 0.0
+      g%plants                     = 0.0
       g%dlt_plants                 = 0.0
       g%initial_plant_density      = 0.0
       g%dlt_root_depth             = 0.0
@@ -1844,8 +1844,8 @@ cnh     :                 ' Initialising')
             call write_string ( 'Sowing initiate')
             call Publish_null (id%sowing)
 
-            g%Population = Sow%Population
-            g%initial_plant_density = g%Population
+            g%plants = Sow%plants
+            g%initial_plant_density = g%plants
             g%ratoon_no = Sow%Ratoon
             g%sowing_depth = Sow%sowing_depth
             cultivar = Sow%Cultivar
@@ -1869,7 +1869,7 @@ cnh     :                 ' Initialising')
 
             write (string, '(3x, i7, 2f7.1, 1x, a10)')
      :                   g%day_of_year, g%sowing_depth
-     :                 , g%Population, cultivar
+     :                 , g%plants, cultivar
             call write_string (string)
 
             string = 
@@ -2776,7 +2776,7 @@ c      call sugar_update_other_variables ()
 
          call collect_real_var (variable_name
      :                         ,'(m-2)'
-     :                         ,g%Population
+     :                         ,g%plants
      :                         ,numvals
      :                         ,0.0
      :                         ,1000.)
@@ -2932,7 +2932,7 @@ cnh         endif
       elseif (variable_name .eq. 'plants') then
          call respond2get_real_var (variable_name
      :                             , '(/m2)'
-     :                             , g%Population)
+     :                             , g%plants)
 
       elseif (variable_name .eq. 'ratoon_no') then
          call respond2get_integer_var (variable_name
@@ -2982,12 +2982,12 @@ c I removed this NIH
      :                             , '(mm)'
      :                             , g%canopy_height)
 
-      elseif (variable_name .eq. 'rootdepth') then
+      elseif (variable_name .eq. 'root_depth') then
          call respond2get_real_var (variable_name
      :                             , '(mm)'
      :                             , g%root_depth)
 
-      elseif (variable_name .eq. 'coverlive') then
+      elseif (variable_name .eq. 'cover_green') then
          cover = 1.0 - exp (-c%extinction_coef * g%lai)
 
          call respond2get_real_var (variable_name
@@ -3001,7 +3001,7 @@ c I removed this NIH
      :                             , '(mj/m2)'
      :                             , radn_int)
 
-      elseif (variable_name .eq. 'covertotal') then
+      elseif (variable_name .eq. 'cover_tot') then
          lai_dead = g%slai + g%tlai_dead
          cover = 1.0
      :         - exp (-c%extinction_coef * g%lai
@@ -3017,7 +3017,7 @@ c I removed this NIH
      :                             , '()'
      :                             , lai_sum)
 
-      elseif (variable_name .eq. 'LAITotal') then
+      elseif (variable_name .eq. 'tlai') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%lai + g%slai)
@@ -3028,7 +3028,7 @@ c I removed this NIH
      :                             , '()'
      :                             , tla)
 
-      elseif (variable_name .eq. 'SLAI') then
+      elseif (variable_name .eq. 'slai') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%slai)
@@ -3135,12 +3135,12 @@ c I removed this NIH
      :                             , '(g/m^2)'
      :                             , biomass)
 
-      elseif (variable_name .eq. 'livewt') then
+      elseif (variable_name .eq. 'greenwt') then
          call respond2get_real_var (variable_name
      :                    , '(g/m^2)'
      :                    , sum_real_array (g%dm_green, max_part))
 
-      elseif (variable_name .eq. 'deadwt') then
+      elseif (variable_name .eq. 'senescedwt') then
          call respond2get_real_var (variable_name
      :                    , '(g/m^2)'
      :                    , sum_real_array (g%dm_senesced, max_part))
@@ -3150,7 +3150,7 @@ c I removed this NIH
      :                    , '(g/m^2)'
      :                    , sum_real_array (g%dm_dead, max_part))
 
-      elseif (variable_name .eq. 'growthrate') then
+      elseif (variable_name .eq. 'dlt_dm') then
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , g%dlt_dm)
@@ -3244,7 +3244,7 @@ cbak
      :                             , plant_n_tot)
 
 
-      elseif (variable_name .eq. 'abovegroundliven') then
+      elseif (variable_name .eq. 'green_biomass_n') then
          green_biomass_n =
      :        sum_Real_array(g%n_green,max_part)-g%n_green(root)
 cbak
@@ -3259,12 +3259,12 @@ cbak
      :                             , g%N_green
      :                             , max_part)
 
-      elseif (variable_name .eq. 'liven') then
+      elseif (variable_name .eq. 'greenn') then
          call respond2get_real_var (variable_name
      :                    , '(g/m^2)'
      :                    , sum_real_array (g%N_green, max_part))
 
-      elseif (variable_name .eq. 'deadn') then
+      elseif (variable_name .eq. 'senescedn') then
          call respond2get_real_var (variable_name
      :                    , '(g/m^2)'
      :                    , sum_real_array (g%N_senesced, max_part))
@@ -3274,20 +3274,20 @@ cbak   Delta N in plant tops
       elseif (variable_name .eq. 'dlt_n_green') then
          call respond2get_real_array (variable_name
      :                             , '(g/m^2)'
-     :                             , g%dlt_n_green
+     :                             , g%dlt_N_green
      :                             , max_part)
 
-      elseif (variable_name .eq. 'waterstresspheno') then
+      elseif (variable_name .eq. 'swdef_pheno') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%swdef_pheno)
 
-      elseif (variable_name .eq. 'waterstressphoto') then
+      elseif (variable_name .eq. 'swdef_photo') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%swdef_photo)
 
-      elseif (variable_name .eq. 'waterstressexpansion') then
+      elseif (variable_name .eq. 'swdef_expan') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%swdef_expansion)
@@ -3297,7 +3297,7 @@ cbak   Delta N in plant tops
      :                             , '()'
      :                             , g%swdef_stalk)
 
-      elseif (variable_name .eq. 'nstressphoto') then
+      elseif (variable_name .eq. 'nfact_photo') then
 cjhtemp
 c      call sugar_nit_stress_photo (1)
          call respond2get_real_var (variable_name
@@ -3320,7 +3320,7 @@ c      call sugar_nit_stress_photo (1)
      :                             , g%lodge_redn_green_leaf)
 
 cbak
-      elseif (variable_name .eq. 'nstressexpansion') then
+      elseif (variable_name .eq. 'nfact_expan') then
 cjhtemp
 c      call sugar_nit_stress_expansion (1)
          call respond2get_real_var (variable_name
@@ -3403,7 +3403,7 @@ c      call sugar_nit_stress_expansion (1)
 
             ! plant nitrogen
 
-      elseif (variable_name .eq. 'AboveGroundN') then
+      elseif (variable_name .eq. 'n_uptake') then
          act_N_up = g%N_uptake_tot*gm2kg /sm2ha
          call respond2get_real_var (variable_name
      :                             , '(kg/ha)'
@@ -3417,7 +3417,7 @@ c      call sugar_nit_stress_expansion (1)
      :                             , '(g/m^2)'
      :                             , NO3gsm_tot)
 
-      elseif (variable_name .eq. 'RootNDemand') then
+      elseif (variable_name .eq. 'n_demand') then
          N_demand = sum_real_array (g%N_demand, max_part)
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
@@ -3508,13 +3508,13 @@ c      call sugar_nit_stress_expansion (1)
      :                             , g%N_graze)
       elseif (variable_name .eq. 'lai2') then
          temp = sum_real_array(g%leaf_area,max_leaf)
-         temp = temp * g%Population / 1000000.
+         temp = temp * g%plants / 1000000.
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , temp)
       elseif (variable_name .eq. 'leaf_wt2') then
          temp = sum_real_array(g%leaf_dm,max_leaf)
-         temp = temp * g%Population
+         temp = temp * g%plants
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , temp)
@@ -3925,7 +3925,7 @@ c      call sugar_nit_stress_expansion (1)
       g%N_demand_tot = 0.0
       g%N_uptake_stover_tot = 0.0
       g%N_uptake_tot = 0.0
-      g%Population = 0.0
+      g%plants = 0.0
 cnh      g%initial_plant_density = 0.0
       g%root_depth = 0.0
       g%sowing_depth = 0.0

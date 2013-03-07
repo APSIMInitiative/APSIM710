@@ -452,10 +452,10 @@ Public Class PaddockWrapper
         For Each Crop As Component In ApSim_SubPaddock.Crops 'counting all crops, this could cause issues with grazing allocation
             Dim mass As BioMass = New BioMass()
             mass.Name = Crop.Name
-            Crop.Get("LeafLiveWt", mass.gLeaf)
-            Crop.Get("StemLiveWt", mass.gStem)
-            Crop.Get("LeafDeadWt", mass.dLeaf)
-            Crop.Get("LeafLiveWt", mass.dStem)
+            Crop.Get("leafgreenwt", mass.gLeaf)
+            Crop.Get("stemgreenwt", mass.gStem)
+            Crop.Get("leafsenescedwt", mass.dLeaf)
+            Crop.Get("stemsenescedwt", mass.dStem)
 
             mass.gLeaf = mass.gLeaf * 10 'convert from grams/m^2 to kg/ha
             mass.gStem = mass.gStem * 10

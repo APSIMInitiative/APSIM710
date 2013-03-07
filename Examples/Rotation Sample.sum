@@ -58,8 +58,8 @@ Paddock:
      Output variables:
         dd/mm/yyyy as Date
         cotton.dm as Cotton.Biomass
-        Biomass
-        LAI
+        biomass
+        lai
 
      Output file = Rotation Sample.out
      Format = normal
@@ -171,7 +171,7 @@ Paddock:
      if (rain[3] >= 10 and esw >= 100) or
          ('yes' = 'yes' and today = date('10-dec'))) then
         choosenextcrop = 'yes'
-        cotton sow population_pm =10, sowing_depth = 30, cultivar = siok, row_spacing = 1000, skiprow = 0
+        cotton sow plants_pm =10, sowing_depth = 30, cultivar = siok, row_spacing = 1000, skiprow = 0
      endif
      if today = date('10-dec') then
         choosenextcrop = 'yes'
@@ -190,7 +190,7 @@ Paddock:
      if (rain[3] >= 25 and esw >= 50) or
          ('no' = 'yes' and today = date('10-jul'))) then
         choosenextcrop = 'yes'
-        chickpea sow population =25, sowing_depth = 30, cultivar = amethyst, row_spacing = 500, crop_class = plant
+        chickpea sow plants =25, sowing_depth = 30, cultivar = amethyst, row_spacing = 500, crop_class = plant
      endif
      if today = date('10-jul') then
         choosenextcrop = 'yes'
@@ -209,7 +209,7 @@ Paddock:
      if (rain[3] >= 25 and esw >= 50) or
          ('no' = 'yes' and today = date('10-jul'))) then
         choosenextcrop = 'yes'
-        wheat sow population =100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+        wheat sow plants =100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
      endif
      if today = date('10-jul') then
         choosenextcrop = 'yes'
@@ -241,7 +241,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if chickpea.stagename = 'harvest_ripe' or chickpea.plantstatus = 'dead' then
+                if chickpea.stagename = 'harvest_ripe' or chickpea.plant_status = 'dead' then
        chickpea  harvest
        chickpea  end_crop
                 endif
@@ -252,7 +252,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' then
+                if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
        wheat  harvest
        wheat  end_crop
                 endif
@@ -428,7 +428,7 @@ Paddock:
      
 ------- Start of simulation  --------------------------------------------------
 1 December 1940(Day of year=336), CottonSowing: 
-     Manager sending message :- cotton sow  population_pm = 10, sowing_depth = 30, cultivar = siok, row_spacing = 1000, skiprow = 0
+     Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 30, cultivar = siok, row_spacing = 1000, skiprow = 0
 1 December 1940(Day of year=336), cotton: 
      Sow
      
@@ -464,245 +464,28 @@ Paddock:
          Sowing  Depth Plants Spacing Cultivar
          Day no   mm     m       mm     Name
          ------------------------------------------------
-            336   30.0   0.0   1000.0 siok
+            336   30.0  10.0   1000.0 siok
          ------------------------------------------------
 6 December 1940(Day of year=341), cotton: 
-      *** Crop emerged with  0.0 plants per m sq, NaN% of target population of   0.0
-23 February 1941(Day of year=54): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.5820766E-10)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-24 February 1941(Day of year=55): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(6)
-     Condition : 0.00 <= -5.82076609e-011 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(6)
-     Condition : 0.00 <= -5.82076609e-011 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-13 March 1941(Day of year=72): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.1164153E-09)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.3637979E-11)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-14 March 1941(Day of year=73): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(1)
-     Condition : 0.00 <= -1.16415322e-010 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(2)
-     Condition : 0.00 <= -3.63797881e-012 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(1)
-     Condition : 0.00 <= -1.16415322e-010 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(2)
-     Condition : 0.00 <= -3.63797881e-012 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound     0.000000    is > upper bound  -0.1164153E-09
-             Variable is not constrained
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound     0.000000    is > upper bound  -0.4167919E-11
-             Variable is not constrained
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.1158854E-09)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.4166777E-11)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.1143030E-14)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-10 June 1941(Day of year=161): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.1818989E-11)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-11 June 1941(Day of year=162): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(1)
-     Condition : 0.00 <= -1.8189894e-012 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(1)
-     Condition : 0.00 <= -1.8189894e-012 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.1818989E-11)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-11 June 1941(Day of year=162), cotton: 
-      *** Crop killed by frost before fruiting.
-11 June 1941(Day of year=162), CottonHarvesting: 
+      *** Crop emerged with 10.0 plants per m sq,100.% of target population of  10.0
+12 May 1941(Day of year=132), cotton: 
+         Defoliant spray    1
+22 May 1941(Day of year=142), cotton: 
+         First Pick  172 days from sowing. There are enough bolls for a 2nd pick.
+         Crop terminated: first pick.
+22 May 1941(Day of year=142), CottonHarvesting: 
      Manager sending message :- cotton harvest
      harvest
      
      
      
-      Days after sowing      =    192
-      bolls/m2               =    NaN        Lint (kg/ha)           =        NaN
-      N uptake (kg/ha)       =    NaN        bolls sc (g/boll)      =        0.0
-      max squares das (days) =     29        max lai das (days)     =     30
-      maximum squares/m2     =   0.50        maximum lai (m2/m2)    =  0.004
-      total above ground biomass (kg/ha) =        NaN
-12 June 1941(Day of year=163), cotton: 
+      Days after sowing      =    172
+      bolls/m2               =  86.77        Lint (kg/ha)           =     1394.2
+      N uptake (kg/ha)       = 152.11        bolls sc (g/boll)      =        3.8
+      max squares das (days) =     82        max lai das (days)     =    119
+      maximum squares/m2     = 176.38        maximum lai (m2/m2)    =  2.115
+      total above ground biomass (kg/ha) =     7891.7
+23 May 1941(Day of year=143), cotton: 
      Initialising
      
          - Reading constants
@@ -728,8 +511,153 @@ Paddock:
      
      
      
+28 May 1942(Day of year=148), WheatSowing: 
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+28 May 1942(Day of year=148), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.210       1.000
+         150.0     0.100          0.210       1.000
+         300.0     0.080          0.250       1.000
+         300.0     0.060          0.280       1.000
+         300.0     0.040          0.310       1.000
+         300.0     0.020          0.370       1.000
+         300.0     0.010          0.380       1.000
+         -----------------------------------------------
+         Extractable SW:   171mm in  1800mm total depth ( 10%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            148   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+28 May 1942(Day of year=148), Fertilise at sowing: 
+     Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+28 May 1942(Day of year=148), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+29 May 1942(Day of year=149), wheat: 
+      stage 2.0 germination
+5 June 1942(Day of year=156), wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   16.98 (mm)
+6 June 1942(Day of year=157), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.58 (g/m^2)   lai          =   0.022 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   18.63 (mm)
+23 July 1942(Day of year=204), wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         110.37 (g/m^2)   lai          =   1.530 (m^2/m^2)
+                     stover N conc =     3.19 (%)    extractable sw =   41.89 (mm)
+31 August 1942(Day of year=243), wheat: 
+      stage 6.0 flowering
+                     biomass =         307.47 (g/m^2)   lai          =   0.334 (m^2/m^2)
+                     stover N conc =     2.19 (%)    extractable sw =    2.23 (mm)
+9 September 1942(Day of year=252), wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         312.09 (g/m^2)   lai          =   0.166 (m^2/m^2)
+                     stover N conc =     2.14 (%)    extractable sw =    1.18 (mm)
+7 October 1942(Day of year=280), wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =         315.25 (g/m^2)   lai          =   0.015 (m^2/m^2)
+                     stover N conc =     2.05 (%)    extractable sw =    0.11 (mm)
+9 October 1942(Day of year=282), wheat: 
+      stage 9.0 maturity
+                     biomass =         315.25 (g/m^2)   lai          =   0.013 (m^2/m^2)
+                     stover N conc =     2.05 (%)    extractable sw =    0.08 (mm)
+10 October 1942(Day of year=283), wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =         315.25 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     2.05 (%)    extractable sw =    0.07 (mm)
+10 October 1942(Day of year=283), WheatHarvesting: 
+     Manager sending message :- wheat harvest
+     
+      flowering day          =  243                           stover (kg/ha)         =     2455.0
+      maturity day           =  282                           grain yield (kg/ha)    =      697.5
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=      797.2
+      grain wt (g)           =    0.016                       grains/m^2             =     4465.4
+      grains/plant           =   44.7                         maximum lai            =      2.088
+      total above ground biomass (kg/ha)    =     3152.5
+      live above ground biomass (kg/ha)     =     3152.5
+      green above ground biomass (kg/ha)    =     2266.7
+      senesced above ground biomass (kg/ha) =      885.8
+      number of leaves       =     34.8
+      DM Root:Shoot ratio    =     0.22                       Harvest Index          =       0.22
+      Stover C:N ratio       =    26.78                       Root C:N ratio         =      16.38
+      grain N percent        =     2.91                       total N content (kg/ha)=      56.97
+      grain N uptake (kg/ha) =    20.31                       senesced N content (kg/ha)=    4.43
+      green N content (kg/ha)=    32.24
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.457        0.524        0.000        0.000
+         flowering            to start_grain_fill        0.746        0.835        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.809        0.900        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                2455.0                     0.0
+                          N  (kg/ha) =                  36.66                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                 697.5                     0.0
+                          N  (kg/ha) =                  20.31                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =    0.07 (mm)
+     Manager sending message :- wheat end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                   682.4
+                          N  (kg/ha) =                   0.00                   16.66
+     
 19 October 1943(Day of year=292), CottonSowing: 
-     Manager sending message :- cotton sow  population_pm = 10, sowing_depth = 30, cultivar = siok, row_spacing = 1000, skiprow = 0
+     Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 30, cultivar = siok, row_spacing = 1000, skiprow = 0
 19 October 1943(Day of year=292), cotton: 
      Sow
      
@@ -765,289 +693,25 @@ Paddock:
          Sowing  Depth Plants Spacing Cultivar
          Day no   mm     m       mm     Name
          ------------------------------------------------
-            292   30.0   0.0   1000.0 siok
+            292   30.0  10.0   1000.0 siok
          ------------------------------------------------
 26 October 1943(Day of year=299), cotton: 
-      *** Crop emerged with  0.0 plants per m sq, NaN% of target population of   0.0
-13 December 1943(Day of year=347): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.2328306E-09)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-14 December 1943(Day of year=348): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(4)
-     Condition : 0.00 <= -2.32830644e-010 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(4)
-     Condition : 0.00 <= -2.32830644e-010 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.2328306E-09)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-15 December 1943(Day of year=349): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(4)
-     Condition : 0.00 <= -2.32830644e-010 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(4)
-     Condition : 0.00 <= -2.32830644e-010 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.2328306E-09)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-16 December 1943(Day of year=350): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(4)
-     Condition : 0.00 <= -2.32830644e-010 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(4)
-     Condition : 0.00 <= -2.32830644e-010 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.2328306E-09)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-19 December 1943(Day of year=353): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.1455192E-10)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.1776357E-14)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.3637979E-11)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-20 December 1943(Day of year=354): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(2)
-     Condition : 0.00 <= -1.45519152e-011 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(4)
-     Condition : 0.00 <= -1.77635684e-015 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(5)
-     Condition : 0.00 <= -3.63797881e-012 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(2)
-     Condition : 0.00 <= -1.45519152e-011 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(4)
-     Condition : 0.00 <= -1.77635684e-015 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(5)
-     Condition : 0.00 <= -3.63797881e-012 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.1455192E-10)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-31 May 1944(Day of year=152), cotton: 
-      *** Crop killed by frost before fruiting.
-31 May 1944(Day of year=152), CottonHarvesting: 
+      *** Crop emerged with 10.0 plants per m sq,100.% of target population of  10.0
+27 March 1944(Day of year=87), cotton: 
+      *** All bolls open; crop finished.
+27 March 1944(Day of year=87), CottonHarvesting: 
      Manager sending message :- cotton harvest
      harvest
      
      
      
-      Days after sowing      =    225
-      bolls/m2               =    NaN        Lint (kg/ha)           =        NaN
-      N uptake (kg/ha)       =    NaN        bolls sc (g/boll)      =        0.0
-      max squares das (days) =     42        max lai das (days)     =     43
-      maximum squares/m2     =   0.50        maximum lai (m2/m2)    =  0.004
-      total above ground biomass (kg/ha) =        NaN
-1 June 1944(Day of year=153), cotton: 
+      Days after sowing      =    160
+      bolls/m2               =  68.05        Lint (kg/ha)           =     1005.5
+      N uptake (kg/ha)       = 169.83        bolls sc (g/boll)      =        3.5
+      max squares das (days) =     93        max lai das (days)     =     94
+      maximum squares/m2     = 173.09        maximum lai (m2/m2)    =  1.392
+      total above ground biomass (kg/ha) =     7429.3
+28 March 1944(Day of year=88), cotton: 
      Initialising
      
          - Reading constants
@@ -1074,7 +738,7 @@ Paddock:
      
      
 2 June 1945(Day of year=153), WheatSowing: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
 2 June 1945(Day of year=153), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -1144,82 +808,82 @@ Paddock:
 8 June 1945(Day of year=159), wheat: 
       stage 3.0 emergence
                      biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
-                     stover N conc =     5.85 (%)    extractable sw =   24.99 (mm)
+                     stover N conc =     5.85 (%)    extractable sw =   25.00 (mm)
 9 June 1945(Day of year=160), wheat: 
       stage 4.0 end_of_juvenile
                      biomass =           0.57 (g/m^2)   lai          =   0.022 (m^2/m^2)
-                     stover N conc =     5.84 (%)    extractable sw =   23.62 (mm)
+                     stover N conc =     5.84 (%)    extractable sw =   23.64 (mm)
 6 August 1945(Day of year=218), wheat: 
       stage 5.0 floral_initiation
                      biomass =         202.80 (g/m^2)   lai          =   2.825 (m^2/m^2)
-                     stover N conc =     3.24 (%)    extractable sw =  122.59 (mm)
+                     stover N conc =     3.24 (%)    extractable sw =  136.64 (mm)
 13 September 1945(Day of year=256), wheat: 
       stage 6.0 flowering
-                     biomass =         760.15 (g/m^2)   lai          =   2.400 (m^2/m^2)
-                     stover N conc =     1.50 (%)    extractable sw =   27.57 (mm)
+                     biomass =         785.87 (g/m^2)   lai          =   2.606 (m^2/m^2)
+                     stover N conc =     1.46 (%)    extractable sw =   42.52 (mm)
 20 September 1945(Day of year=263), wheat: 
       stage 7.0 start_grain_fill
-                     biomass =         797.35 (g/m^2)   lai          =   1.499 (m^2/m^2)
-                     stover N conc =     1.36 (%)    extractable sw =   15.60 (mm)
+                     biomass =         838.20 (g/m^2)   lai          =   1.767 (m^2/m^2)
+                     stover N conc =     1.39 (%)    extractable sw =   26.34 (mm)
 19 October 1945(Day of year=292), wheat: 
       stage 8.0 end_grain_fill
-                     biomass =         855.34 (g/m^2)   lai          =   0.162 (m^2/m^2)
-                     stover N conc =     0.80 (%)    extractable sw =    2.62 (mm)
+                     biomass =         925.96 (g/m^2)   lai          =   0.235 (m^2/m^2)
+                     stover N conc =     1.49 (%)    extractable sw =    6.57 (mm)
 21 October 1945(Day of year=294), wheat: 
       stage 9.0 maturity
-                     biomass =         855.56 (g/m^2)   lai          =   0.160 (m^2/m^2)
-                     stover N conc =     0.80 (%)    extractable sw =    2.32 (mm)
+                     biomass =         926.32 (g/m^2)   lai          =   0.235 (m^2/m^2)
+                     stover N conc =     1.49 (%)    extractable sw =    6.07 (mm)
 22 October 1945(Day of year=295), wheat: 
       stage 10.0 harvest_ripe
-                     biomass =         855.56 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     0.80 (%)    extractable sw =    2.22 (mm)
+                     biomass =         926.32 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.51 (%)    extractable sw =    5.93 (mm)
 22 October 1945(Day of year=295), WheatHarvesting: 
      Manager sending message :- wheat harvest
      
-      flowering day          =  256                           stover (kg/ha)         =     6041.4
-      maturity day           =  294                           grain yield (kg/ha)    =     2514.2
-      grain % water content  =   12.5                         grain yield wet (kg/ha)=     2873.4
-      grain wt (g)           =    0.022                       grains/m^2             =    11366.8
-      grains/plant           =  113.7                         maximum lai            =      3.510
-      total above ground biomass (kg/ha)    =     8555.6
-      live above ground biomass (kg/ha)     =     8555.6
-      green above ground biomass (kg/ha)    =     7063.1
+      flowering day          =  256                           stover (kg/ha)         =     6262.3
+      maturity day           =  294                           grain yield (kg/ha)    =     3001.0
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     3429.7
+      grain wt (g)           =    0.026                       grains/m^2             =    11756.3
+      grains/plant           =  117.6                         maximum lai            =      3.510
+      total above ground biomass (kg/ha)    =     9263.2
+      live above ground biomass (kg/ha)     =     9263.2
+      green above ground biomass (kg/ha)    =     7770.7
       senesced above ground biomass (kg/ha) =     1492.6
       number of leaves       =     38.7
-      DM Root:Shoot ratio    =     0.17                       Harvest Index          =       0.29
-      Stover C:N ratio       =    54.83                       Root C:N ratio         =      17.24
-      grain N percent        =     2.91                       total N content (kg/ha)=     117.13
-      grain N uptake (kg/ha) =    73.06                       senesced N content (kg/ha)=    7.46
-      green N content (kg/ha)=    36.61
+      DM Root:Shoot ratio    =     0.16                       Harvest Index          =       0.32
+      Stover C:N ratio       =    31.56                       Root C:N ratio         =      17.31
+      grain N percent        =     2.90                       total N content (kg/ha)=     166.44
+      grain N uptake (kg/ha) =    87.07                       senesced N content (kg/ha)=    7.46
+      green N content (kg/ha)=    71.91
      
       Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
          emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
          end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
-         floral_initiation    to flowering               0.077        0.101        0.000        0.000
-         flowering            to start_grain_fill        0.650        0.750        0.000        0.000
-         start_grain_fill     to end_grain_fill          0.738        0.834        0.000        0.000
+         floral_initiation    to flowering               0.042        0.060        0.000        0.000
+         flowering            to start_grain_fill        0.539        0.639        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.671        0.768        0.000        0.000
      
      
      Crop harvested.
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                6041.4                     0.0
-                          N  (kg/ha) =                  44.07                    0.00
+                          DM (kg/ha) =                6262.2                     0.0
+                          N  (kg/ha) =                  79.38                    0.00
      
          Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                2514.2                     0.0
-                          N  (kg/ha) =                  73.06                    0.00
+                          DM (kg/ha) =                3001.0                     0.0
+                          N  (kg/ha) =                  87.07                    0.00
      
       stage 4.0 end_of_juvenile
                      biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
-                     stover N conc =     6.30 (%)    extractable sw =    2.22 (mm)
+                     stover N conc =     6.30 (%)    extractable sw =    5.93 (mm)
      Manager sending message :- wheat end_crop
      Crop ended. Yield (dw) =     0.0  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                   0.0                  1473.3
-                          N  (kg/ha) =                   0.00                   34.19
+                          DM (kg/ha) =                   0.0                  1504.8
+                          N  (kg/ha) =                   0.00                   34.77
      
 19 November 1946(Day of year=323), CottonSowing: 
-     Manager sending message :- cotton sow  population_pm = 10, sowing_depth = 30, cultivar = siok, row_spacing = 1000, skiprow = 0
+     Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 30, cultivar = siok, row_spacing = 1000, skiprow = 0
 19 November 1946(Day of year=323), cotton: 
      Sow
      
@@ -1255,423 +919,30 @@ Paddock:
          Sowing  Depth Plants Spacing Cultivar
          Day no   mm     m       mm     Name
          ------------------------------------------------
-            323   30.0   0.0   1000.0 siok
+            323   30.0  10.0   1000.0 siok
          ------------------------------------------------
 25 November 1946(Day of year=329), cotton: 
-      *** Crop emerged with  0.0 plants per m sq, NaN% of target population of   0.0
-23 December 1946(Day of year=357): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.3725290E-08)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-24 December 1946(Day of year=358): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(2)
-     Condition : 0.00 <= -3.7252903e-009 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(2)
-     Condition : 0.00 <= -3.7252903e-009 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-29 December 1946(Day of year=363): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.3725290E-08)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-30 December 1946(Day of year=364): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(2)
-     Condition : 0.00 <= -3.7252903e-009 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(2)
-     Condition : 0.00 <= -3.7252903e-009 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.3725290E-08)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-17 January 1947(Day of year=17): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.1776357E-14)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.2328306E-09)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-18 January 1947(Day of year=18): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(4)
-     Condition : 0.00 <= -1.77635684e-015 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(5)
-     Condition : 0.00 <= -2.32830644e-010 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(4)
-     Condition : 0.00 <= -1.77635684e-015 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(5)
-     Condition : 0.00 <= -2.32830644e-010 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.1776357E-14)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-19 January 1947(Day of year=19): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(4)
-     Condition : 0.00 <= -1.77635684e-015 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(4)
-     Condition : 0.00 <= -1.77635684e-015 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-26 January 1947(Day of year=26): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.1776357E-14)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.2328306E-09)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-27 January 1947(Day of year=27): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(4)
-     Condition : 0.00 <= -1.77635684e-015 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(5)
-     Condition : 0.00 <= -2.32830644e-010 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(4)
-     Condition : 0.00 <= -1.77635684e-015 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(5)
-     Condition : 0.00 <= -2.32830644e-010 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-30 March 1947(Day of year=89): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.7450581E-08)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.1455192E-10)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-31 March 1947(Day of year=90): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(1)
-     Condition : 0.00 <= -7.4505806e-009 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(2)
-     Condition : 0.00 <= -1.45519152e-011 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(1)
-     Condition : 0.00 <= -7.4505806e-009 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(2)
-     Condition : 0.00 <= -1.45519152e-011 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.7450581E-08)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.1455192E-10)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-12 June 1947(Day of year=163), cotton: 
-      *** Crop killed by frost before fruiting.
-12 June 1947(Day of year=163), CottonHarvesting: 
+      *** Crop emerged with 10.0 plants per m sq,100.% of target population of  10.0
+1 May 1947(Day of year=121), cotton: 
+         Defoliant spray    1
+11 May 1947(Day of year=131), cotton: 
+         Defoliant spray    2
+21 May 1947(Day of year=141), cotton: 
+         First Pick  183 days from sowing. There are enough bolls for a 2nd pick.
+         Crop terminated: first pick.
+21 May 1947(Day of year=141), CottonHarvesting: 
      Manager sending message :- cotton harvest
      harvest
      
      
      
-      Days after sowing      =    205
-      bolls/m2               =    NaN        Lint (kg/ha)           =        NaN
-      N uptake (kg/ha)       =    NaN        bolls sc (g/boll)      =        0.0
-      max squares das (days) =     29        max lai das (days)     =     30
-      maximum squares/m2     =   0.50        maximum lai (m2/m2)    =  0.003
-      total above ground biomass (kg/ha) =        NaN
-13 June 1947(Day of year=164), cotton: 
+      Days after sowing      =    183
+      bolls/m2               = 116.20        Lint (kg/ha)           =     2369.0
+      N uptake (kg/ha)       = 240.00        bolls sc (g/boll)      =        4.9
+      max squares das (days) =     71        max lai das (days)     =    118
+      maximum squares/m2     = 156.95        maximum lai (m2/m2)    =  1.799
+      total above ground biomass (kg/ha) =    13420.0
+22 May 1947(Day of year=142), cotton: 
      Initialising
      
          - Reading constants
@@ -1697,8 +968,153 @@ Paddock:
      
      
      
+27 May 1947(Day of year=147), ChickPeaSowing: 
+     Manager sending message :- chickpea sow  plants = 25, sowing_depth = 30, cultivar = amethyst, row_spacing = 500, crop_class = plant
+27 May 1947(Day of year=147), chickpea: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = amethyst
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     515     515 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    10.7      17 (h)
+              y_tt_end_of_juvenile       =     446       0 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      33      33 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     450     450 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     690     690 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      60 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.50       0.50
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.210       1.000
+         150.0     0.100          0.210       1.000
+         300.0     0.080          0.220       1.000
+         300.0     0.060          0.270       1.000
+         300.0     0.040          0.290       1.000
+         300.0     0.020          0.340       1.000
+         300.0     0.010          0.380       1.000
+         -----------------------------------------------
+         Extractable SW:   198mm in  1800mm total depth ( 11%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            147   30.0   25.0  500.0   0.0   0.0 amethyst
+         ------------------------------------------------
+     
+28 May 1947(Day of year=148), chickpea: 
+      stage 2.0 germination
+3 June 1947(Day of year=154), chickpea: 
+      stage 3.0 emergence
+                     biomass =           5.00 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   19.27 (mm)
+17 July 1947(Day of year=198), chickpea: 
+      stage 4.0 end_of_juvenile
+                     biomass =           7.91 (g/m^2)   lai          =   0.066 (m^2/m^2)
+                     stover N conc =     4.79 (%)    extractable sw =   91.19 (mm)
+14 August 1947(Day of year=226), chickpea: 
+      stage 5.0 floral_initiation
+                     biomass =          37.74 (g/m^2)   lai          =   0.729 (m^2/m^2)
+                     stover N conc =     3.78 (%)    extractable sw =  114.22 (mm)
+18 August 1947(Day of year=230), chickpea: 
+      stage 6.0 flowering
+                     biomass =          45.26 (g/m^2)   lai          =   0.872 (m^2/m^2)
+                     stover N conc =     3.35 (%)    extractable sw =  116.54 (mm)
+19 September 1947(Day of year=262), chickpea: 
+      stage 7.0 start_grain_fill
+                     biomass =         208.05 (g/m^2)   lai          =   2.444 (m^2/m^2)
+                     stover N conc =     1.94 (%)    extractable sw =  110.88 (mm)
+26 October 1947(Day of year=299), chickpea: 
+      stage 8.0 end_grain_fill
+                     biomass =         507.66 (g/m^2)   lai          =   1.496 (m^2/m^2)
+                     stover N conc =     1.80 (%)    extractable sw =   19.06 (mm)
+29 October 1947(Day of year=302), chickpea: 
+      stage 9.0 maturity
+                     biomass =         513.79 (g/m^2)   lai          =   1.174 (m^2/m^2)
+                     stover N conc =     1.79 (%)    extractable sw =   12.92 (mm)
+30 October 1947(Day of year=303), chickpea: 
+      stage 10.0 harvest_ripe
+                     biomass =         514.57 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.87 (%)    extractable sw =   12.11 (mm)
+30 October 1947(Day of year=303), ChickPeaHarvesting: 
+     Manager sending message :- chickpea harvest
+     
+      flowering day          =  230                           stover (kg/ha)         =     3096.9
+      maturity day           =  302                           grain yield (kg/ha)    =     2048.9
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     2328.3
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      2.983
+      total above ground biomass (kg/ha)    =     5145.7
+      live above ground biomass (kg/ha)     =     5145.7
+      green above ground biomass (kg/ha)    =     3914.8
+      senesced above ground biomass (kg/ha) =     1231.0
+      number of leaves       =    285.2
+      DM Root:Shoot ratio    =     0.18                       Harvest Index          =       0.40
+      Stover C:N ratio       =    23.25                       Root C:N ratio         =      26.22
+      grain N percent        =     3.60                       total N content (kg/ha)=     127.03
+      grain N uptake (kg/ha) =    73.76                       senesced N content (kg/ha)=   18.46
+      green N content (kg/ha)=    34.81
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.000        0.000        0.000        0.000
+         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.198        0.250        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                3096.9                     0.0
+                          N  (kg/ha) =                  53.27                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2048.9                     0.0
+                          N  (kg/ha) =                  73.76                    0.00
+     
+      stage 11.0 end_crop
+     Manager sending message :- chickpea end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                   903.3
+                          N  (kg/ha) =                   0.00                   13.78
+     
 9 June 1948(Day of year=161), WheatSowing: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
 9 June 1948(Day of year=161), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -1776,74 +1192,74 @@ Paddock:
 14 August 1948(Day of year=227), wheat: 
       stage 5.0 floral_initiation
                      biomass =         309.58 (g/m^2)   lai          =   4.279 (m^2/m^2)
-                     stover N conc =     3.28 (%)    extractable sw =   73.27 (mm)
+                     stover N conc =     3.28 (%)    extractable sw =   84.46 (mm)
 22 September 1948(Day of year=266), wheat: 
       stage 6.0 flowering
-                     biomass =         731.04 (g/m^2)   lai          =   1.446 (m^2/m^2)
-                     stover N conc =     2.06 (%)    extractable sw =   21.21 (mm)
+                     biomass =         771.82 (g/m^2)   lai          =   1.710 (m^2/m^2)
+                     stover N conc =     1.97 (%)    extractable sw =   25.81 (mm)
 29 September 1948(Day of year=273), wheat: 
       stage 7.0 start_grain_fill
-                     biomass =         781.60 (g/m^2)   lai          =   1.114 (m^2/m^2)
-                     stover N conc =     1.92 (%)    extractable sw =   11.54 (mm)
+                     biomass =         828.34 (g/m^2)   lai          =   1.318 (m^2/m^2)
+                     stover N conc =     1.83 (%)    extractable sw =   15.15 (mm)
 27 October 1948(Day of year=301), wheat: 
       stage 8.0 end_grain_fill
-                     biomass =         800.12 (g/m^2)   lai          =   0.081 (m^2/m^2)
-                     stover N conc =     1.67 (%)    extractable sw =    0.38 (mm)
+                     biomass =         857.07 (g/m^2)   lai          =   0.111 (m^2/m^2)
+                     stover N conc =     1.86 (%)    extractable sw =    1.59 (mm)
 28 October 1948(Day of year=302), wheat: 
       stage 9.0 maturity
-                     biomass =         800.12 (g/m^2)   lai          =   0.074 (m^2/m^2)
-                     stover N conc =     1.67 (%)    extractable sw =    0.35 (mm)
+                     biomass =         857.07 (g/m^2)   lai          =   0.103 (m^2/m^2)
+                     stover N conc =     1.86 (%)    extractable sw =    1.51 (mm)
 29 October 1948(Day of year=303), wheat: 
       stage 10.0 harvest_ripe
-                     biomass =         800.12 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     1.68 (%)    extractable sw =    0.32 (mm)
+                     biomass =         857.07 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.87 (%)    extractable sw =    1.44 (mm)
 29 October 1948(Day of year=303), WheatHarvesting: 
      Manager sending message :- wheat harvest
      
-      flowering day          =  266                           stover (kg/ha)         =     5960.4
-      maturity day           =  302                           grain yield (kg/ha)    =     2040.8
-      grain % water content  =   12.5                         grain yield wet (kg/ha)=     2332.4
-      grain wt (g)           =    0.020                       grains/m^2             =    10121.8
-      grains/plant           =  101.2                         maximum lai            =      5.150
-      total above ground biomass (kg/ha)    =     8001.2
-      live above ground biomass (kg/ha)     =     8001.2
-      green above ground biomass (kg/ha)    =     5728.2
-      senesced above ground biomass (kg/ha) =     2273.0
+      flowering day          =  266                           stover (kg/ha)         =     6288.3
+      maturity day           =  302                           grain yield (kg/ha)    =     2282.4
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     2608.5
+      grain wt (g)           =    0.021                       grains/m^2             =    10790.8
+      grains/plant           =  107.9                         maximum lai            =      5.187
+      total above ground biomass (kg/ha)    =     8570.7
+      live above ground biomass (kg/ha)     =     8570.7
+      green above ground biomass (kg/ha)    =     6286.8
+      senesced above ground biomass (kg/ha) =     2283.9
       number of leaves       =     43.2
-      DM Root:Shoot ratio    =     0.21                       Harvest Index          =       0.26
-      Stover C:N ratio       =    32.58                       Root C:N ratio         =      17.42
-      grain N percent        =     2.90                       total N content (kg/ha)=     132.40
-      grain N uptake (kg/ha) =    59.22                       senesced N content (kg/ha)=   11.36
-      green N content (kg/ha)=    61.82
+      DM Root:Shoot ratio    =     0.20                       Harvest Index          =       0.27
+      Stover C:N ratio       =    29.13                       Root C:N ratio         =      17.47
+      grain N percent        =     2.91                       total N content (kg/ha)=     152.69
+      grain N uptake (kg/ha) =    66.33                       senesced N content (kg/ha)=   11.42
+      green N content (kg/ha)=    74.93
      
       Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
          emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
          end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
-         floral_initiation    to flowering               0.324        0.392        0.000        0.000
-         flowering            to start_grain_fill        0.362        0.447        0.000        0.000
-         start_grain_fill     to end_grain_fill          0.895        0.971        0.000        0.000
+         floral_initiation    to flowering               0.281        0.347        0.000        0.000
+         flowering            to start_grain_fill        0.362        0.448        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.845        0.945        0.000        0.000
      
      
      Crop harvested.
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                5960.4                     0.0
-                          N  (kg/ha) =                  73.19                    0.00
+                          DM (kg/ha) =                6288.3                     0.0
+                          N  (kg/ha) =                  86.35                    0.00
      
          Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                2040.8                     0.0
-                          N  (kg/ha) =                  59.22                    0.00
+                          DM (kg/ha) =                2282.4                     0.0
+                          N  (kg/ha) =                  66.33                    0.00
      
       stage 4.0 end_of_juvenile
                      biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
-                     stover N conc =     6.30 (%)    extractable sw =    0.32 (mm)
+                     stover N conc =     6.30 (%)    extractable sw =    1.44 (mm)
      Manager sending message :- wheat end_crop
      Crop ended. Yield (dw) =     0.0  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                   0.0                  1644.8
-                          N  (kg/ha) =                   0.00                   37.78
+                          DM (kg/ha) =                   0.0                  1717.5
+                          N  (kg/ha) =                   0.00                   39.33
      
 11 October 1949(Day of year=284), CottonSowing: 
-     Manager sending message :- cotton sow  population_pm = 10, sowing_depth = 30, cultivar = siok, row_spacing = 1000, skiprow = 0
+     Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 30, cultivar = siok, row_spacing = 1000, skiprow = 0
 11 October 1949(Day of year=284), cotton: 
      Sow
      
@@ -1879,582 +1295,25 @@ Paddock:
          Sowing  Depth Plants Spacing Cultivar
          Day no   mm     m       mm     Name
          ------------------------------------------------
-            284   30.0   0.0   1000.0 siok
+            284   30.0  10.0   1000.0 siok
          ------------------------------------------------
 17 October 1949(Day of year=290), cotton: 
-      *** Crop emerged with  0.0 plants per m sq, NaN% of target population of   0.0
-7 December 1949(Day of year=341): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.4656613E-09)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.9536743E-06)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-8 December 1949(Day of year=342): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(4)
-     Condition : 0.00 <= -4.65661287e-010 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(5)
-     Condition : 0.00 <= -9.53674316e-007 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(4)
-     Condition : 0.00 <= -4.65661287e-010 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(5)
-     Condition : 0.00 <= -9.53674316e-007 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000010
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound     0.000000    is > upper bound  -0.4656613E-09
-             Variable is not constrained
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.4736951E-16)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.4656612E-09)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-9 December 1949(Day of year=343): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.5820766E-10)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-10 December 1949(Day of year=344): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(5)
-     Condition : 0.00 <= -5.82076609e-011 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(5)
-     Condition : 0.00 <= -5.82076609e-011 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-18 December 1949(Day of year=352): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.5820766E-10)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-19 December 1949(Day of year=353): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(5)
-     Condition : 0.00 <= -5.82076609e-011 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(5)
-     Condition : 0.00 <= -5.82076609e-011 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-28 December 1949(Day of year=362): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.3637979E-11)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-29 December 1949(Day of year=363): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(6)
-     Condition : 0.00 <= -3.63797881e-012 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(6)
-     Condition : 0.00 <= -3.63797881e-012 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-2 January 1950(Day of year=2): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.3637979E-11)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-3 January 1950(Day of year=3): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(6)
-     Condition : 0.00 <= -3.63797881e-012 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(6)
-     Condition : 0.00 <= -3.63797881e-012 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-7 February 1950(Day of year=38): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.2910383E-10)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-8 February 1950(Day of year=39): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(2)
-     Condition : 0.00 <= -2.91038305e-011 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(2)
-     Condition : 0.00 <= -2.91038305e-011 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.2910383E-10)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-17 February 1950(Day of year=48): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.3725290E-08)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.3637979E-11)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-18 February 1950(Day of year=49): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(1)
-     Condition : 0.00 <= -3.7252903e-009 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(2)
-     Condition : 0.00 <= -3.63797881e-012 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(1)
-     Condition : 0.00 <= -3.7252903e-009 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(2)
-     Condition : 0.00 <= -3.63797881e-012 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound     0.000000    is > upper bound  -0.3725290E-08
-             Variable is not constrained
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound     0.000000    is > upper bound  -0.2086876E-10
-             Variable is not constrained
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.3708059E-08)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.2086440E-10)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.4357372E-14)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-24 May 1950(Day of year=144): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.2910383E-10)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-25 May 1950(Day of year=145): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(2)
-     Condition : 0.00 <= -2.91038305e-011 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(2)
-     Condition : 0.00 <= -2.91038305e-011 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.2910383E-10)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-26 June 1950(Day of year=177): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.1455192E-10)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-27 June 1950(Day of year=178): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(2)
-     Condition : 0.00 <= -1.45519152e-011 <= 10000.00
-     Component name: chickpea
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Bound check warning while getting variable.
-     Variable  : no3(2)
-     Condition : 0.00 <= -1.45519152e-011 <= 10000.00
-     Component name: wheat
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Value of variable is out of bounds.
-     Variable: no3
-     Value:       -0.0000000
-     Bounds:        0.0000000 to    30000.0000000
-     Component name: Soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.1455192E-10)
-             Variable is not checked
-     Component name: Soil Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-7 August 1950(Day of year=219), cotton: 
-      *** Season > 300 days; terminate crop.
-7 August 1950(Day of year=219), CottonHarvesting: 
+      *** Crop emerged with 10.0 plants per m sq,100.% of target population of  10.0
+8 March 1950(Day of year=67), cotton: 
+      *** All bolls open; crop finished.
+8 March 1950(Day of year=67), CottonHarvesting: 
      Manager sending message :- cotton harvest
      harvest
      
      
      
-      Days after sowing      =    300
-      bolls/m2               =    NaN        Lint (kg/ha)           =        NaN
-      N uptake (kg/ha)       =    NaN        bolls sc (g/boll)      =        0.0
-      max squares das (days) =     43        max lai das (days)     =     44
-      maximum squares/m2     =   0.50        maximum lai (m2/m2)    =  0.004
-      total above ground biomass (kg/ha) =        NaN
-8 August 1950(Day of year=220), cotton: 
+      Days after sowing      =    148
+      bolls/m2               =  43.92        Lint (kg/ha)           =      632.8
+      N uptake (kg/ha)       = 106.78        bolls sc (g/boll)      =        3.4
+      max squares das (days) =     80        max lai das (days)     =     83
+      maximum squares/m2     = 153.25        maximum lai (m2/m2)    =  0.772
+      total above ground biomass (kg/ha) =     4929.3
+9 March 1950(Day of year=68), cotton: 
      Initialising
      
          - Reading constants
@@ -2479,6 +1338,151 @@ Paddock:
      ------------------------
      
      
+     
+25 May 1950(Day of year=145), ChickPeaSowing: 
+     Manager sending message :- chickpea sow  plants = 25, sowing_depth = 30, cultivar = amethyst, row_spacing = 500, crop_class = plant
+25 May 1950(Day of year=145), chickpea: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = amethyst
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     515     515 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    10.7      17 (h)
+              y_tt_end_of_juvenile       =     446       0 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      33      33 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     450     450 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     690     690 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      60 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.50       0.50
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.210       1.000
+         150.0     0.100          0.210       1.000
+         300.0     0.080          0.220       1.000
+         300.0     0.060          0.270       1.000
+         300.0     0.040          0.290       1.000
+         300.0     0.020          0.340       1.000
+         300.0     0.010          0.380       1.000
+         -----------------------------------------------
+         Extractable SW:   198mm in  1800mm total depth ( 11%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            145   30.0   25.0  500.0   0.0   0.0 amethyst
+         ------------------------------------------------
+     
+26 May 1950(Day of year=146), chickpea: 
+      stage 2.0 germination
+30 May 1950(Day of year=150), chickpea: 
+      stage 3.0 emergence
+                     biomass =           5.00 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   18.06 (mm)
+8 July 1950(Day of year=189), chickpea: 
+      stage 4.0 end_of_juvenile
+                     biomass =           6.24 (g/m^2)   lai          =   0.032 (m^2/m^2)
+                     stover N conc =     5.37 (%)    extractable sw =  131.69 (mm)
+2 August 1950(Day of year=214), chickpea: 
+      stage 5.0 floral_initiation
+                     biomass =          10.61 (g/m^2)   lai          =   0.133 (m^2/m^2)
+                     stover N conc =     4.04 (%)    extractable sw =  218.87 (mm)
+5 August 1950(Day of year=217), chickpea: 
+      stage 6.0 flowering
+                     biomass =          11.89 (g/m^2)   lai          =   0.163 (m^2/m^2)
+                     stover N conc =     3.71 (%)    extractable sw =  205.58 (mm)
+7 September 1950(Day of year=250), chickpea: 
+      stage 7.0 start_grain_fill
+                     biomass =         112.38 (g/m^2)   lai          =   1.545 (m^2/m^2)
+                     stover N conc =     2.19 (%)    extractable sw =  152.74 (mm)
+14 October 1950(Day of year=287), chickpea: 
+      stage 8.0 end_grain_fill
+                     biomass =         408.89 (g/m^2)   lai          =   2.339 (m^2/m^2)
+                     stover N conc =     1.76 (%)    extractable sw =  147.10 (mm)
+17 October 1950(Day of year=290), chickpea: 
+      stage 9.0 maturity
+                     biomass =         438.29 (g/m^2)   lai          =   2.250 (m^2/m^2)
+                     stover N conc =     1.74 (%)    extractable sw =  136.42 (mm)
+18 October 1950(Day of year=291), chickpea: 
+      stage 10.0 harvest_ripe
+                     biomass =         444.09 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.80 (%)    extractable sw =  132.53 (mm)
+18 October 1950(Day of year=291), ChickPeaHarvesting: 
+     Manager sending message :- chickpea harvest
+     
+      flowering day          =  217                           stover (kg/ha)         =     2728.1
+      maturity day           =  290                           grain yield (kg/ha)    =     1712.8
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     1946.4
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      2.581
+      total above ground biomass (kg/ha)    =     4440.9
+      live above ground biomass (kg/ha)     =     4440.9
+      green above ground biomass (kg/ha)    =     3512.5
+      senesced above ground biomass (kg/ha) =      928.4
+      number of leaves       =    241.2
+      DM Root:Shoot ratio    =     0.12                       Harvest Index          =       0.39
+      Stover C:N ratio       =    23.52                       Root C:N ratio         =      26.35
+      grain N percent        =     3.60                       total N content (kg/ha)=     108.05
+      grain N uptake (kg/ha) =    61.66                       senesced N content (kg/ha)=   13.93
+      green N content (kg/ha)=    32.46
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.000        0.000        0.000        0.000
+         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.003        0.006        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                2728.1                     0.0
+                          N  (kg/ha) =                  46.39                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                1712.8                     0.0
+                          N  (kg/ha) =                  61.66                    0.00
+     
+      stage 11.0 end_crop
+     Manager sending message :- chickpea end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                   533.5
+                          N  (kg/ha) =                   0.00                    8.10
      
 31 December 1950(Day of year=365), clock: 
      Simulation is terminating due to end criteria being met.

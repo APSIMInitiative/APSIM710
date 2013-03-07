@@ -37,10 +37,10 @@ end_date=19/2/1993     ! dd/mm/yyyy
 [sorghum.manager.start_of_day]
 
    if day = 305 and year = 1992 then
-      sorghum sow cultivar = early, population = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0 (), row_spacing = 1.0 (m)
+      sorghum sow cultivar = early, plants = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0 (), row_spacing = 1.0 (m)
    endif
 
-   if (sorghum.PhenologyStage = 11) then
+   if (sorghum.stage = 11) then
       sorghum harvest
       sorghum end_crop
    endif
@@ -73,7 +73,7 @@ below_gnd_diff = P_below_ground - P_below_ground_yest
 residue_P_yest =  surfaceom.surfaceom_P
 P_below_ground_yest = P_below_ground
 
-  if (sorghum.PhenologyStage >=1 and sorghum.PhenologyStage <= 11) then
+  if (sorghum.stage >=1 and sorghum.stage <= 11) then
       report do_output
   endif
 

@@ -84,10 +84,10 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
               then
               if (wht_crop_num < wht_crops_max) then
                  if (day >= wht_win2) then
-                    wheat sow population = 100, sowing_depth = 80, cultivar = hartog
+                    wheat sow plants = 100, sowing_depth = 80, cultivar = hartog
                     wht_crop_num = wht_crop_num + 1
                  else
-                    wheat sow population = 100, sowing_depth = 80, cultivar = sunco
+                    wheat sow plants = 100, sowing_depth = 80, cultivar = sunco
                     wht_crop_num = wht_crop_num + 1
                  endif
                  rz_no3 = no3(1) + no3(2) + no3(3)
@@ -98,9 +98,9 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
               else
                  wht_crop_num = 0
                  if (day >= wht_win2) then
-                    chickpea sow population = 25, sowing_depth = 80, cultivar = amethyst
+                    chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
                  else
-                    chickpea sow population = 25, sowing_depth = 80, cultivar = amethyst
+                    chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
                  endif
               endif
               surfaceom tillage type = planter ()
@@ -119,9 +119,9 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
            if (fasw10 >= 0.0) and (fasw10 <= 0.99) and (fasw70 >= 0.75)
                 then
               if (srg_seeding = 1 ) then
-                  sorghum sow population = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+                  sorghum sow plants = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
               else
-                  sorghum sow population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+                  sorghum sow plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
               endif
               rz_no3 = no3(1) + no3(2) + no3(3)
               if rz_no3 < srg_fert_target then
@@ -142,20 +142,20 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
         else
         endif
      else
-        if wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' then
+        if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
            w_mat_day = day
            wheat harvest
            wheat kill_crop
            wheat end_crop
            crop_in = 0
         endif
-        if (chickpea.phenologystage = 11) or (chickpea.plantstatus = 'dead') then
+        if (chickpea.stage = 11) or (chickpea.plant_status = 'dead') then
            c_mat_day = day
            chickpea harvest
            chickpea end_crop
            crop_in = 0
         endif
-        if (sorghum.phenologystage = 11) or (sorghum.plantstatus = 'dead') or ((sorghum.plantstatus = 'alive') and (day = 166)) then
+        if (sorghum.stage = 11) or (sorghum.plant_status = 'dead') or ((sorghum.plant_status = 'alive') and (day = 166)) then
            s_mat_day = day
            sorghum harvest
            sorghum kill_crop
@@ -434,15 +434,15 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
 
 ------- Tracker Initialisation ------------------------------------------------
      Tracker variables:
-        maximum of wheat.Yield on end_of_day from reported to now as wht_yield
+        maximum of wheat.yield on end_of_day from reported to now as wht_yield
         sum of wheat.ep on end_of_day from reported to now as wht_ep
-        maximum of wheat.LAI on end_of_day from reported to now as wht_laimax
-        maximum of chickpea.Yield on end_of_day from reported to now as chk_yield
+        maximum of wheat.lai on end_of_day from reported to now as wht_laimax
+        maximum of chickpea.yield on end_of_day from reported to now as chk_yield
         sum of chickpea.ep on end_of_day from reported to now as chk_ep
-        maximum of chickpea.LAI on end_of_day from reported to now as chk_laimax
-        maximum of sorghum.Yield on end_of_day from reported to now as sor_yield
+        maximum of chickpea.lai on end_of_day from reported to now as chk_laimax
+        maximum of sorghum.yield on end_of_day from reported to now as sor_yield
         sum of sorghum.ep on end_of_day from reported to now as sor_ep
-        maximum of sorghum.LAI on end_of_day from reported to now as sor_laimax
+        maximum of sorghum.lai on end_of_day from reported to now as sor_laimax
         average of surfaceom.surfaceom_wt on end_of_day from reported to now as avg_residue
         maximum of surfaceom.surfaceom_wt on end_of_day from reported to now as max_residue
         minimum of surfaceom.surfaceom_wt on end_of_day from reported to now as min_residue
@@ -493,7 +493,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
      
 25 July 1971(Day of year=206), Manager: 
      Manager creating a new local real variable : wht_crop_num = 0.00000
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = hartog
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 25 July 1971(Day of year=206), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -652,7 +652,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
                           N  (kg/ha) =                   0.00                   25.60
      
 30 October 1972(Day of year=304), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 30 October 1972(Day of year=304), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -801,7 +801,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
                          N  (kg/ha) =                 26.13		    3.63
                          P  (kg/ha) =                  0.00		    0.00
 20 May 1974(Day of year=140), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = sunco
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1974(Day of year=140), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -964,7 +964,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
                           N  (kg/ha) =                   0.00                   15.41
      
 27 October 1975(Day of year=300), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 27 October 1975(Day of year=300), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1112,7 +1112,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
                          N  (kg/ha) =                 25.62		    3.56
                          P  (kg/ha) =                  0.00		    0.00
 20 May 1977(Day of year=140), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = sunco
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1977(Day of year=140), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -1269,7 +1269,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
                           N  (kg/ha) =                   0.00                   15.14
      
 27 October 1978(Day of year=300), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 27 October 1978(Day of year=300), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1417,7 +1417,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
                          N  (kg/ha) =                 28.31		    4.44
                          P  (kg/ha) =                  0.00		    0.00
 30 May 1980(Day of year=151), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = sunco
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 30 May 1980(Day of year=151), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -1574,7 +1574,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
                           N  (kg/ha) =                   0.00                   15.51
      
 4 November 1981(Day of year=308), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 4 November 1981(Day of year=308), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1722,7 +1722,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
                          N  (kg/ha) =                 27.50		    4.12
                          P  (kg/ha) =                  0.00		    0.00
 23 May 1983(Day of year=143), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = sunco
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 23 May 1983(Day of year=143), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -1885,7 +1885,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
                           N  (kg/ha) =                   0.00                   17.26
      
 31 October 1984(Day of year=305), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 31 October 1984(Day of year=305), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2033,7 +2033,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
                          N  (kg/ha) =                 25.79		    3.81
                          P  (kg/ha) =                  0.00		    0.00
 30 July 1986(Day of year=211), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = hartog
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 30 July 1986(Day of year=211), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -2190,7 +2190,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
                           N  (kg/ha) =                   0.00                   23.54
      
 27 October 1987(Day of year=300), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 27 October 1987(Day of year=300), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2338,7 +2338,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
                          N  (kg/ha) =                 27.69		    3.62
                          P  (kg/ha) =                  0.00		    0.00
 20 May 1989(Day of year=140), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = sunco
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1989(Day of year=140), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -2501,7 +2501,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
                           N  (kg/ha) =                   0.00                   14.69
      
 27 October 1990(Day of year=300), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 27 October 1990(Day of year=300), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2649,7 +2649,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
                          N  (kg/ha) =                 26.15		    3.45
                          P  (kg/ha) =                  0.00		    0.00
 20 May 1992(Day of year=141), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = sunco
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1992(Day of year=141), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -2806,7 +2806,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
                           N  (kg/ha) =                   0.00                   16.75
      
 11 December 1993(Day of year=345), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 11 December 1993(Day of year=345), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2954,7 +2954,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
                          N  (kg/ha) =                 19.45		    2.78
                          P  (kg/ha) =                  0.00		    0.00
 18 June 1995(Day of year=169), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = hartog
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 18 June 1995(Day of year=169), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -3117,7 +3117,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
                           N  (kg/ha) =                   0.00                   14.97
      
 7 November 1996(Day of year=312), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 7 November 1996(Day of year=312), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -3259,7 +3259,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
                          N  (kg/ha) =                 21.49		    2.91
                          P  (kg/ha) =                  0.00		    0.00
 20 May 1998(Day of year=140), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = sunco
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1998(Day of year=140), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -3422,7 +3422,7 @@ Title                  = site=goondiwindi; soil=lg1; treatment=LongFallow1; Nrat
                           N  (kg/ha) =                   0.00                   15.24
      
 27 October 1999(Day of year=300), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 27 October 1999(Day of year=300), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

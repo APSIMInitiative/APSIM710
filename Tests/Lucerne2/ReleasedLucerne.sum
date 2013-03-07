@@ -52,35 +52,35 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        PhenologyStage
+        stage
         stagename
         tt
-        RootDepth
+        root_depth
         rld()
-        NodeNumber
+        node_no
         leaves_per_node
-        LeafNumber
+        leaf_no
         leaf_no_green
-        LeafNumberDead
-        LAI
-        AboveGroundWt
-        AboveGroundLiveWt
+        leaf_no_sen
+        lai
+        biomass_wt
+        green_biomass_wt
         leaftotalwt
-        LeafLiveWt
+        leafgreenwt
         stemtotalwt
-        StemLiveWt
+        stemgreenwt
         roottotalwt
         podtotalwt
-        GrainWt
-        WaterStressExpansion
-        WaterStressPhoto
-        GrowthRate
+        grain_wt
+        swdef_expan
+        swdef_photo
+        dlt_dm
         repro_dm
         esw
         sw
-        NStressExpansion
-        NStressPhoto
-        LeafDeadWt
+        nfact_expan
+        nfact_photo
+        leafsenescedwt
         leafdetachingwt
         leafsenescingwt
         temp_stress_photo
@@ -97,7 +97,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('1-jun-1940') then
-       lucerne sow population =300, sowing_depth = 10, cultivar = hunter_river, row_spacing = 500, crop_class = plant
+       lucerne sow plants =300, sowing_depth = 10, cultivar = hunter_river, row_spacing = 500, crop_class = plant
               endif
      END of rules
      
@@ -116,7 +116,7 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-              if (lucerne.plantstatus = 'alive') then
+              if (lucerne.plant_status = 'alive') then
      no3_available = no3(1) + no3(2) + no3(3)
      if (no3_available <= 100) then
         n_deficit = 200 - no3_available
@@ -136,7 +136,7 @@ Paddock:
      SECTION:- start_of_day
      
      SECTION:- end_of_day
-     leaf_no_green = leafnumber - leafnumberdead
+     leaf_no_green = leaf_no - leaf_no_sen
      repro_dm = podtotalwt + grainwt
      END of rules
      
@@ -307,7 +307,7 @@ Paddock:
            Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager sending message :- lucerne sow  population = 300, sowing_depth = 10, cultivar = hunter_river, row_spacing = 500, crop_class = plant
+     Manager sending message :- lucerne sow  plants = 300, sowing_depth = 10, cultivar = hunter_river, row_spacing = 500, crop_class = plant
 1 June 1940(Day of year=153), lucerne: 
      Crop Sow
         ------------------------------------------------

@@ -5,13 +5,13 @@ outputfile  =peanut.out
 
 variable = clock.day
 variable = clock.year
-variable = peanut.LAI
-variable = peanut.Biomass
+variable = peanut.lai
+variable = peanut.biomass
 variable = peanut.green_biomass
 
-variable = peanut.LiveWt
-variable = peanut.LiveP
-variable = peanut.DeadP
+variable = peanut.GreenWt
+variable = peanut.GreenP
+variable = peanut.SenescedP
 variable = peanut.p_demand
 variable = peanut.pfact_photo
 variable = peanut.pfact_pheno
@@ -19,19 +19,19 @@ variable = peanut.pfact_expansion
 variable = peanut.pfact_grain
 variable = peanut.biomass_p
 variable = peanut.green_biomass_p
-variable = peanut.GrainP
-variable = peanut.LeafLiveP
-variable = peanut.StemLiveP
-variable = peanut.RootLiveP
-variable = peanut.PodLiveP
+variable = peanut.grain_p
+variable = peanut.LeafGreenP
+variable = peanut.StemGreenP
+variable = peanut.RootGreenP
+variable = peanut.PodGreenP
 variable = peanut.FruitTotalP
 variable = peanut.GrowthP
 variable = peanut.RetranslocationP
 variable = peanut.DetachingP
 variable = peanut.p_conc_stover
-variable = peanut.LeafLivePConc
-variable = peanut.StemLivePConc
-variable = peanut.GrainLivePConc
+variable = peanut.LeafGreenPConc
+variable = peanut.StemGreenPConc
+variable = peanut.GrainGreenPConc
 variable = peanut.p_uptake_stover
 variable = peanut.grain_p_demand
 
@@ -73,7 +73,7 @@ if day = 330 and year  = 1988 then
    peanut sow cultivar = early_bunch, plants = 10 (/m2), sowing_depth = 40 (mm)
 endif
 
-if peanut.StageName = 'harvest_ripe' or peanut.PlantStatus = 'dead' then
+if peanut.StageName = 'harvest_ripe' or peanut.plant_status = 'dead' then
    peanut harvest
    peanut end_crop
 

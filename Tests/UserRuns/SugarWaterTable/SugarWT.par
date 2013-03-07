@@ -6,11 +6,11 @@ outputfile =SugarWT.out
 variable = clock.dd/mm/yyyy as date
 variable = manager.WTdepth
 variable = SWIM2.flow(20) as drain230
-variable = sugar.LAI
+variable = sugar.lai
 variable = sugar.ep
-variable = sugar.RootDepth
-variable = sugar.NStressPhoto
-variable = sugar.WaterStressPhoto
+variable = sugar.root_depth
+variable = sugar.nfact_photo
+variable = sugar.swdef_photo
 variable = SWIM2.sw(9) as sw50
 variable = SWIM2.sw(13) as sw100
 variable = SWIM2.sw(15) as sw140
@@ -287,7 +287,7 @@ elseif (sugar.crop_status = 'dead') then
    endif
 
 elseif (sugar.crop_status = 'out') and (day = planting_day) then
-   sugar sow population = 10 (), cultivar = q117, sowing_depth = 150
+   sugar sow plants = 10 (), cultivar = q117, sowing_depth = 150
    sugar.plants = plant_stalks
    if (irrigate_flag = 1) then
       irrigation.automatic_irrigation = 'on'

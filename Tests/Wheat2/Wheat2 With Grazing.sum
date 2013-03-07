@@ -56,9 +56,9 @@ Paddock:
         alw
         stocking_rate
         acc_eaten
-        Yield
-        Biomass
-        LAI
+        yield
+        biomass
+        lai
         PHenologyStage
 
      Output file = Wheat2 With Grazing.out
@@ -81,8 +81,8 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-             if wheat2.plantstatus <> 'out' then
-                if wheat2.phenologycurrentphasename = 'readyforharvesting' or  wheat2.plantstatus = 'dead' then
+             if wheat2.plant_status <> 'out' then
+                if wheat2.phenologycurrentphasename = 'readyforharvesting' or  wheat2.plant_status = 'dead' then
        wheat2  harvest
        wheat2  endcrop
                 endif

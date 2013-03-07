@@ -64,9 +64,9 @@ Paddock:
      Output variables:
         dd/mm/yyyy as Date
         SweetSorghum.zadok_stage
-        SweetSorghum.LAI
-        SweetSorghum.LeafLiveWt
-        SweetSorghum.StemLiveWt
+        SweetSorghum.lai
+        SweetSorghum.LeafGreenWt
+        SweetSorghum.StemGreenWt
         SweetSorghum.HeadTotalWt
         SweetSorghum.biomass_wt
 
@@ -92,7 +92,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if sweetsorghum.stagename = 'harvest_ripe' or sweetsorghum.plantstatus = 'dead' then
+                if sweetsorghum.stagename = 'harvest_ripe' or sweetsorghum.plant_status = 'dead' then
        sweetsorghum  harvest
        sweetsorghum  end_crop
                 endif
@@ -112,7 +112,7 @@ Paddock:
      
      SECTION:- start_of_day
            if (today = date('15-sep') then
-             sweetsorghum sow population =10, sowing_depth = 50, cultivar = sugargraze, row_spacing = 600
+             sweetsorghum sow plants =10, sowing_depth = 50, cultivar = sugargraze, row_spacing = 600
              endif
      END of rules
      
@@ -264,9 +264,9 @@ Paddock:
      Output variables:
         dd/mm/yyyy as Date
         SweetSorghum.zadok_stage
-        SweetSorghum.LAI
-        SweetSorghum.LeafLiveWt
-        SweetSorghum.StemLiveWt
+        SweetSorghum.lai
+        SweetSorghum.LeafGreenWt
+        SweetSorghum.StemGreenWt
         SweetSorghum.HeadTotalWt
         SweetSorghum.biomass_wt
 
@@ -292,7 +292,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if sweetsorghum.stagename = 'harvest_ripe' or sweetsorghum.plantstatus = 'dead' then
+                if sweetsorghum.stagename = 'harvest_ripe' or sweetsorghum.plant_status = 'dead' then
        sweetsorghum  harvest
        sweetsorghum  end_crop
                 endif
@@ -312,7 +312,7 @@ Paddock:
      
      SECTION:- start_of_day
            if (today = date('12-jan') then
-             sweetsorghum sow population =10, sowing_depth = 50, cultivar = sugargraze, row_spacing = 600
+             sweetsorghum sow plants =10, sowing_depth = 50, cultivar = sugargraze, row_spacing = 600
              endif
      END of rules
      
@@ -459,7 +459,7 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 15 September 2004(Day of year=259), Sow on a fixed date: 
-     Manager sending message :- sweetsorghum sow  population = 10, sowing_depth = 50, cultivar = sugargraze, row_spacing = 600
+     Manager sending message :- sweetsorghum sow  plants = 10, sowing_depth = 50, cultivar = sugargraze, row_spacing = 600
 15 September 2004(Day of year=259), SweetSorghum: 
      Crop Sow
         ------------------------------------------------
@@ -613,7 +613,7 @@ Paddock:
                           N  (kg/ha) =                   0.00                   24.54
      
 12 January 2005(Day of year=12), Sow on a fixed date: 
-     Manager sending message :- sweetsorghum sow  population = 10, sowing_depth = 50, cultivar = sugargraze, row_spacing = 600
+     Manager sending message :- sweetsorghum sow  plants = 10, sowing_depth = 50, cultivar = sugargraze, row_spacing = 600
 12 January 2005(Day of year=12), SweetSorghum: 
      Crop Sow
         ------------------------------------------------

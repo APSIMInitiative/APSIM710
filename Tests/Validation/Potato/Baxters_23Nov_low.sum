@@ -52,21 +52,21 @@ Paddock:
         post
      Output variables:
         dd/mmm/yyyy
-        Biomass
-        LeafLiveWt
-        LeafLiveN
-        LeafDeadWt
-        StemLiveWt
-        StemLiveN
-        TuberLiveWt
+        biomass
+        leafgreenwt
+        leafgreenn
+        leafsenescedwt
+        stemgreenwt
+        stemgreenn
+        TuberGreenWt
         TuberGreenN
-        NStressExpansion
-        NStressPhoto
-        LAI
-        LeafNumber
+        nfact_expan
+        nfact_photo
+        lai
+        leaf_no
         stagename
         tt
-        NodeNumber
+        node_no
 
      Output file = Baxters_23Nov_low.out
      Format = normal
@@ -105,7 +105,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if potato.stagename = 'maturity' or potato.plantstatus = 'dead' then
+                if potato.stagename = 'maturity' or potato.plant_status = 'dead' then
        potato  harvest
        potato  end_crop
                 endif
@@ -136,7 +136,7 @@ Paddock:
            swf = 1
         endif
         density = 2.16*4
-        potato sow population = density, sowing_depth = 30, cultivar = russet, row_spacing = 650, crop_class = plant
+        potato sow plants = density, sowing_depth = 30, cultivar = russet, row_spacing = 650, crop_class = plant
      endif
               endif
            endif

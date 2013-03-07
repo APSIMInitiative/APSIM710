@@ -271,7 +271,7 @@
      :                                  , cover, numvals
      :                                  , 0.0, 1000.0)
 
-cjh      call get_real_var (unknown_module, 'coverlive', '(mm)'
+cjh      call get_real_var (unknown_module, 'cover_green', '(mm)'
 cjh     :                                  , cover_green, numvals
 cjh     :                                  , 0.0, 1000.0)
 
@@ -285,7 +285,7 @@ cjh
       bare = (1.0 - cover)
 1000  continue
          crop = crop + 1
-         call get_real_vars (crop, 'coverlive', '()'
+         call get_real_vars (crop, 'cover_green', '()'
      :                            , cover_green, numvals
      :                            , 0.0, 1.0)
 

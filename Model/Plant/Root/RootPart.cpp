@@ -73,7 +73,7 @@ void RootPart::onInit1(protocol::Component *system)
    SimplePart::onInit1(system);
    (*soil[0]).onInit1 (system);
 
-   system->addGettableVar("RootDepth",
+   system->addGettableVar("root_depth",
                root_depth, "mm", "depth of roots");
 
    system->addGettableVar("root_depth_max",
@@ -124,7 +124,7 @@ void RootPart::onInit1(protocol::Component *system)
                     &RootPart::get_no3_tot,"g/m^2", "NO3 available to plants");
    setupGetFunction(system, "ll", protocol::DTsingle, true,
                     &RootPart::get_ll,"%vol","Crop lower limit");
-   setupGetFunction(system, "RootNSupply", protocol::DTsingle, false,
+   setupGetFunction(system, "n_supply_soil", protocol::DTsingle, false,
                     &RootPart::get_n_supply_soil,
                     "g/m^2", "N supply");
 
@@ -400,7 +400,7 @@ void RootPart::update(void)
 
    bound_check_real_var(scienceAPI, root_depth, 0.0
                         , sum_real_array ((*soil[0]).dlayer, max_layer)
-                        , "RootDepth");
+                        , "root_depth");
    Debug("root.RootDepth=%f", root_depth);
    Debug("root.RootLength=%f", sum_real_array(root_length, max_layer));
    Debug("root.RootLengthSenesced=%f", sum_real_array(root_length_senesced, max_layer));

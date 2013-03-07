@@ -41,8 +41,8 @@ Title                  = Winter dicot fallow Simulation
      Output variables:
         clock.day
         clock.year
-        weed.LAI as weed_lai
-        weed.Biomass as weed_biomass
+        weed.lai as weed_lai
+        weed.biomass as weed_biomass
         weed.green_biomass as weed_grn_biomass
 
      Output file = winterfallow.out
@@ -60,7 +60,7 @@ Title                  = Winter dicot fallow Simulation
         weed sow cultivar = late, plants = 15 (/m2), crop_class = winter_dicot, sowing_depth = 40 (mm)
         weed_in = 1
      endif
-     if weed.phenologystage = 10 or weed.plantstatus = 'dead' then
+     if weed.stage = 10 or weed.plant_status = 'dead' then
         weed kill_crop
         weed end_crop
      endif
@@ -218,13 +218,105 @@ Title                  = Winter dicot fallow Simulation
      Manager sending message :- weed sow  cultivar = late, plants = 15 (/m2), crop_class = winter_dicot, sowing_depth = 40 (mm)
 29 April 1988(Day of year=120), weed: 
      Crop Sow
-29 April 1988(Day of year=120): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: weed
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = late
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     700     700 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =       1      24 (h)
+              y_tt_end_of_juvenile       =     500     500 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      50      50 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     120     120 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     580     580 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      60 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.15       0.15
+        ------------------------------------------------
      
      
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.080          0.230       1.000
+         150.0     0.080          0.240       1.000
+         300.0     0.080          0.240       1.000
+         300.0     0.080          0.250       1.000
+         300.0     0.050          0.260       1.000
+         300.0     0.030          0.270       1.000
+         300.0     0.010          0.280       1.000
+         -----------------------------------------------
+         Extractable SW:   315mm in  1800mm total depth ( 17%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            120   40.0   15.0  350.0   0.0   0.0 late
+         ------------------------------------------------
+     
+30 April 1988(Day of year=121), weed: 
+      stage 2.0 germination
+4 May 1988(Day of year=125), weed: 
+      stage 3.0 emergence
+                     biomass =           0.90 (g/m^2)   lai          =   0.004 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   29.00 (mm)
+20 June 1988(Day of year=172), weed: 
+      stage 4.0 end_of_juvenile
+                     biomass =         179.61 (g/m^2)   lai          =   2.755 (m^2/m^2)
+                     stover N conc =     3.12 (%)    extractable sw =  200.98 (mm)
+28 July 1988(Day of year=210), weed: 
+      stage 5.0 floral_initiation
+                     biomass =         599.84 (g/m^2)   lai          =   5.212 (m^2/m^2)
+                     stover N conc =     1.72 (%)    extractable sw =  266.49 (mm)
+1 August 1988(Day of year=214), weed: 
+      stage 6.0 flowering
+                     biomass =         647.68 (g/m^2)   lai          =   5.233 (m^2/m^2)
+                     stover N conc =     1.65 (%)    extractable sw =  254.32 (mm)
+10 August 1988(Day of year=223), weed: 
+      stage 7.0 start_grain_fill
+                     biomass =         758.35 (g/m^2)   lai          =   5.211 (m^2/m^2)
+                     stover N conc =     1.49 (%)    extractable sw =  226.52 (mm)
+14 September 1988(Day of year=258), weed: 
+     Crop failure because of total leaf senescence.
+     Plant death. standing above-ground dm = 10945.83 (kg/ha)
+15 September 1988(Day of year=259), Manager: 
+     Manager sending message :- weed kill_crop
+15 September 1988(Day of year=259), weed: 
+     Plant kill. 100.00% crop killed because of external action.
+     Manager sending message :- weed end_crop
+     Crop ended. Yield (dw) =  1643.2  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =               10954.7                  2965.8
+                          N  (kg/ha) =                 108.84                   10.93
+     
+30 May 1989(Day of year=150), Clock: 
+     Simulation is terminating due to end criteria being met.
 

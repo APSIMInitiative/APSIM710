@@ -35,19 +35,19 @@ void Leaf::doRegistrations(void)
    scienceAPI.expose("TPLA",           "m2",    "Total plant leaf area",           false, tpla);
    scienceAPI.expose("SPLA",           "m2",    "Senesced plant leaf area",        false, spla);
    scienceAPI.expose("GPLA",           "m2",    "Green plant leaf area",           false, spla);
-   scienceAPI.expose("LeafNumber",         "leaves","Number of fully expanded leaves", false, nLeaves);
-   scienceAPI.expose("LeafLiveWt",    "g/m^2", "Live leaf dry weight",            false, dmGreen);
-   scienceAPI.expose("LeafDeadWt", "g/m^2", "Senesced leaf dry weight",        false, dmSenesced);
+   scienceAPI.expose("LeafNo",         "leaves","Number of fully expanded leaves", false, nLeaves);
+   scienceAPI.expose("LeafGreenWt",    "g/m^2", "Live leaf dry weight",            false, dmGreen);
+   scienceAPI.expose("LeafSenescedWt", "g/m^2", "Senesced leaf dry weight",        false, dmSenesced);
    scienceAPI.expose("MaxLAI",         "m2/m2", "Maximum LAI reached",             false, maxLai);
-   scienceAPI.expose("LeafLiveN",     "g/m^2", "N in green leaf",                 false, nGreen);
-   scienceAPI.expose("LeafDeadN",  "g/m^2", "N in senesced leaf",              false, nSenesced);
+   scienceAPI.expose("LeafGreenN",     "g/m^2", "N in green leaf",                 false, nGreen);
+   scienceAPI.expose("LeafSenescedN",  "g/m^2", "N in senesced leaf",              false, nSenesced);
    scienceAPI.expose("SLN",            "g(N)/m2","Specific Leaf Nitrogen",         false, SLN);
-   scienceAPI.expose("LeafLiveNConc", "%",     "Live leaf N concentration",       false, nConc);
+   scienceAPI.expose("LeafGreenNConc", "%",     "Live leaf N concentration",       false, nConc);
    scienceAPI.expose("LeafNDemand",    "g/m^2", "Today's N demand from leaves",    false, nDemand);
    scienceAPI.expose("DeltaLeafGreenN","g/m^2", "Daily N increase in leaves",      false, dltNGreen);
    scienceAPI.expose("DeltaLeafNo",    "lvs/d", "Fraction of oldest leaf expanded",false, dltLeafNo);
    scienceAPI.expose("ExtinctionCoef", "()",    "Light Extinction coefficient",    false, extinctionCoef);
-   scienceAPI.expose("LeafLiveP",     "g/m^2" ,"P in live leaf",                  false, pGreen);
+   scienceAPI.expose("LeafGreenP",     "g/m^2" ,"P in live leaf",                  false, pGreen);
    }
 //------------------------------------------------------------------------------------------------
 //------- Initialize variables

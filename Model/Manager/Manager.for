@@ -1106,7 +1106,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
          do while (.not. crop_in_ground .and. more_crops_to_check)
             crop = crop + 1
-            call get_char_vars(crop, 'PlantStatus', '()'
+            call get_char_vars(crop, 'plant_status', '()'
      :                             , plant_status, numvals)
 
             if (numvals.ne.0) then

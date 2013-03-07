@@ -5,12 +5,12 @@ outputfile  =cowpea.out
 
 variable = clock.day
 variable = clock.year
-variable = cowpea.LAI
-variable = cowpea.Biomass
+variable = cowpea.lai
+variable = cowpea.biomass
 variable = cowpea.green_biomass
-variable = cowpea.LiveWt
-variable = cowpea.LiveP
-variable = cowpea.DeadP
+variable = cowpea.GreenWt
+variable = cowpea.GreenP
+variable = cowpea.SenescedP
 variable = cowpea.p_demand
 variable = cowpea.pfact_photo
 variable = cowpea.pfact_pheno
@@ -18,20 +18,20 @@ variable = cowpea.pfact_expansion
 variable = cowpea.pfact_grain
 variable = cowpea.biomass_p
 variable = cowpea.green_biomass_p
-variable = cowpea.GrainP
-variable = cowpea.LeafLiveP
-variable = cowpea.StemLiveP
-variable = cowpea.RootLiveP
-variable = cowpea.PodLiveP
+variable = cowpea.grain_p
+variable = cowpea.LeafGreenP
+variable = cowpea.StemGreenP
+variable = cowpea.RootGreenP
+variable = cowpea.PodGreenP
 variable = cowpea.FruitTotalP
-variable = cowpea.dltLeafLiveP
-variable = cowpea.dltStemLiveP
-variable = cowpea.dltRootLiveP
-variable = cowpea.dltPodLiveP
+variable = cowpea.dltLeafGreenP
+variable = cowpea.dltStemGreenP
+variable = cowpea.dltRootGreenP
+variable = cowpea.dltPodGreenP
 variable = cowpea.p_conc_stover
-variable = cowpea.LeafLivePConc
-variable = cowpea.StemLivePConc
-variable = cowpea.GrainLivePConc
+variable = cowpea.LeafGreenPConc
+variable = cowpea.StemGreenPConc
+variable = cowpea.GrainGreenPConc
 variable = cowpea.p_uptake_stover
 variable = cowpea.grain_p_demand
 variable = surfaceom.surfaceom_p
@@ -74,7 +74,7 @@ if day = 330 and year  = 1988 then
    cowpea sow cultivar = banjo, plants = 25 (/m2), sowing_depth = 40 (mm)
 endif
 
-if cowpea.StageName = 'harvest_ripe' or cowpea.PlantStatus = 'dead' then
+if cowpea.StageName = 'harvest_ripe' or cowpea.plant_status = 'dead' then
    cowpea harvest
    cowpea end_crop
 

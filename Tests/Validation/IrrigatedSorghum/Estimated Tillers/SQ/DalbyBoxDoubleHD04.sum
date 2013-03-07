@@ -52,16 +52,16 @@ Paddock:
         dul_dep()
         WaterSD
         Biomass
-        Yield
-        LAI
+        yield
+        lai
         GrainNo
-        PhenologyStage
+        stage
         biomass_wt
         GrainGreenWt
         RachisGreenWt
-        StemLiveWt
+        StemGreenWt
         GrainSize
-        LeafDeadWt
+        LeafSenescedWt
         TillerNoFertile
 
      Output file = DalbyBoxDoubleHD04.out
@@ -89,7 +89,7 @@ Paddock:
        sowday = day
         sowyear = year
      ftn = 0
-       sorghum sow population =5, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = double, tiller_no_fertile =
+       sorghum sow plants =5, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = double, tiller_no_fertile =
                 ()
      endif
      if (paddock_is_fallow() = 0) then
@@ -102,7 +102,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if sorghum.stagename = 'harvest_ripe' or sorghum.plantstatus = 'dead' then
+                if sorghum.stagename = 'harvest_ripe' or sorghum.plant_status = 'dead' then
        sorghum  harvest
        sorghum  end_crop
                 endif
@@ -258,7 +258,7 @@ Paddock:
      Manager creating a new local real variable : sowday = 331.00000
      Manager creating a new local real variable : sowyear = 2004.00000
      Manager creating a new local real variable : ftn = 0.00000
-     Manager sending message :- sorghum sow  population = 5, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = double, tiller_no_fertile =
+     Manager sending message :- sorghum sow  plants = 5, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = double, tiller_no_fertile =
 sorghum: 
      Sowing initiate
      

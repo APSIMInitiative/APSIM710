@@ -137,7 +137,7 @@ endif
 
 !Temporary assumption about cut at flowering
 !if (lucerne.StageName = 'flowering') then
-!   lucerne harvest Height = 50 (mm), remove = 0.95
+!   lucerne harvest height = 50 (mm), remove = 0.95
 !endif
 
 !winter activity adjustments
@@ -281,7 +281,7 @@ report4 do_end_day_output
 
 [weeds.manager.start_of_day]
 if ((day = 361) and (year = 1992)) then
-   nwheat sow population = 40, depth = 40, cultivar = weed
+   nwheat sow plants = 40, depth = 40, cultivar = weed
    cult = 2
    crop_in = 1
 endif
@@ -291,7 +291,7 @@ if ((crop_in = 0) and (lucerne.plant_status = 'out')) then
       ! weeds allowed to germinate
       if ((date_within('1-dec,28-feb') and (rain[2] >= 25)) or
           (date_within('1-mar,30-apr') and (rain[2] >= 20))) then
-         nwheat sow population = 40, depth = 40, cultivar = weed
+         nwheat sow plants = 40, depth = 40, cultivar = weed
          cult = 2
          crop_in = 1
       endif
@@ -338,7 +338,7 @@ endif
 !Farmer's field windrowed on same day or shortly after????????
 !Model harvest 1 day later - as it happens before output of crop stuff/calculation ET
 
-134 1997 canola sow population = 134 (/m2), crop_class = triazine, row_spacing = 175 (mm), sowing_depth = 20 (mm), cultivar = Karoo
+134 1997 canola sow plants = 134 (/m2), crop_class = triazine, row_spacing = 175 (mm), sowing_depth = 20 (mm), cultivar = Karoo
 134 1997 fertiliz apply amount = 30 (kg/ha), type = nh4_n, depth = 60 (mm)
 218 1997 fertiliz apply amount = 65 (kg/ha), type = urea_n (), depth = 10 (mm)
 311 1997 canola harvest
@@ -364,7 +364,7 @@ endif
 !To best match neutron probe data, assume 10/12/98 in model run
 !Model harvest 1 day later - as it happens before output of crop stuff/calculation ET
 
-150 1998 wheat sow population = 94, sowing_depth = 40, cultivar = janz
+150 1998 wheat sow plants = 94, sowing_depth = 40, cultivar = janz
 150 1998 fertiliz apply amount = 26 (kg/ha), type = nh4_n, depth = 60 (mm)
 189 1998 fertiliz apply amount = 90 (kg/ha), type = urea_n (), depth = 10 (mm)
 345 1998 wheat harvest

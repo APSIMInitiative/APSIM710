@@ -100,7 +100,7 @@
          call Write_string ( 'Sowing initiate')
 
          cultivar = Sow%Cultivar
-         g%plants = Sow%Population
+         g%plants = Sow%plants
          g%sowing_depth = Sow%sowing_depth
          g%row_spacing = Sow%row_spacing
 
@@ -814,7 +814,7 @@ c      end if
       !================================================================
       !crop status, thermal time and development stages
 
-      elseif (variable_name .eq. 'plantstatus') then
+      elseif (variable_name .eq. 'plant_status') then
          call respond2get_char_var (variable_name
      :                             , '()'
      :                             , g%plant_status)
@@ -844,7 +844,7 @@ c      end if
      :                             , 0.0)
          endif
 
-      elseif (variable_name .eq. 'phenologystage') then
+      elseif (variable_name .eq. 'stage') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%current_stage)
@@ -907,12 +907,12 @@ c      end if
       !================================================================
       !flowering and maturity dates
 
-      elseif (variable_name .eq. 'floweringdate') then
+      elseif (variable_name .eq. 'flowering_date') then
          call respond2get_integer_var (variable_name
      :                             , '(doy)'
      :                             , g%flowering_date)
 
-      elseif (variable_name .eq. 'maturitydate') then
+      elseif (variable_name .eq. 'maturity_date') then
          call respond2get_integer_var (variable_name
      :                             , '(doy)'
      :                             , g%maturity_date)
@@ -941,7 +941,7 @@ c      end if
      :                             , 'lvs'
      :                             , g%leaf_no_final)
 
-      elseif (variable_name .eq. 'leafnumber') then
+      elseif (variable_name .eq. 'leaf_no') then
         leaf_no_now = sum_between (emerg, harvest_ripe, g%leaf_no)
          call respond2get_real_var (variable_name
      :                              , '()'
@@ -967,12 +967,12 @@ c      end if
      :                              , max_leaf)
 
 
-      elseif (variable_name .eq. 'coverlive') then
+      elseif (variable_name .eq. 'cover_green') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%cover_green)
 
-      elseif (variable_name .eq. 'covertotal') then
+      elseif (variable_name .eq. 'cover_tot') then
          cover_tot = 1.0
      :             - (1.0 - g%cover_green)
      :             * (1.0 - g%cover_sen)
@@ -999,7 +999,7 @@ c      end if
      :                             , '()'
      :                             , lai_sum)
 
-      elseif (variable_name .eq. 'laitotal') then
+      elseif (variable_name .eq. 'tlai') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%lai + g%slai)
@@ -1071,7 +1071,7 @@ c      end if
      :                             , g%dlt_slai_nitrogen)
       !...................................................
 
-      elseif (variable_name .eq. 'population') then
+      elseif (variable_name .eq. 'plants') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%plants)
@@ -1091,7 +1091,7 @@ c      end if
      :                             , '()'
      :                             , g%tiller_no_fertile)
 
-      elseif (variable_name .eq. 'grainnumber') then
+      elseif (variable_name .eq. 'grain_no') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%grain_no)
@@ -1106,7 +1106,7 @@ c      end if
       !================================================================
       ! Root depth and length
 
-      elseif (variable_name .eq. 'rootdepth') then
+      elseif (variable_name .eq. 'root_depth') then
          call respond2get_real_var (variable_name
      :                             , '(mm)'
      :                             , g%root_depth)
@@ -1175,7 +1175,7 @@ c      end if
       !----------------------------------------------------------------
       !Biomass in g/m2
 
-      elseif (variable_name .eq. 'leaflivewt') then
+      elseif (variable_name .eq. 'leafgreenwt') then
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , g%dm_green(leaf))
@@ -1192,7 +1192,7 @@ c      end if
      :                             , g%dm_green(leaf)
      :                             + g%dm_senesced(leaf))
 
-      elseif (variable_name .eq. 'stemlivewt') then
+      elseif (variable_name .eq. 'stemgreenwt') then
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , g%dm_green(stem))
@@ -1208,13 +1208,13 @@ c      end if
      :                             , g%dm_green(stem)
      :                               +g%dm_green(flower))
 
-      elseif (variable_name .eq. 'grainwt') then
+      elseif (variable_name .eq. 'grain_wt') then
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , g%dm_green(grain))
 
 
-      elseif (variable_name .eq. 'rootlivewt') then
+      elseif (variable_name .eq. 'rootgreenwt') then
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , g%dm_green(root))
@@ -1245,7 +1245,7 @@ c      end if
      :                             , biomass)
 
 
-      elseif (variable_name .eq. 'abovegroundlivewt') then
+      elseif (variable_name .eq. 'green_biomass_wt') then
          biomass = sum_real_array (g%dm_green, max_part)
      :           - g%dm_green(root) - g%dm_green(energy)
 
@@ -1273,12 +1273,12 @@ c      end if
       !----------------------------------------------------
       !Biomass arrays in g/m2
 
-            elseif (variable_name .eq. 'livewt') then
+            elseif (variable_name .eq. 'greenwt') then
          call respond2get_real_var (variable_name
      :                       , '(g/m^2)'
      :                       , sum_real_array(g%dm_green, max_part))
 
-      elseif (variable_name .eq. 'deadwt') then
+      elseif (variable_name .eq. 'senescedwt') then
          call respond2get_real_var (variable_name
      :                       , '(g/m^2)'
      :                       , sum_real_array(g%dm_senesced, max_part))
@@ -1378,7 +1378,7 @@ c      end if
      :                             , g%dlt_dm_light)
 
 
-      elseif (variable_name .eq. 'growthrate') then
+      elseif (variable_name .eq. 'dlt_dm') then
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , g%dlt_dm)
@@ -1436,7 +1436,7 @@ c      end if
      :                             , '()'
      :                             , g%swdef_tiller)
 
-      elseif (variable_name .eq. 'waterstressphoto') then
+      elseif (variable_name .eq. 'sw_stress_photo') then
          if (g%swdef_photo .gt. 0.0) then
             stress = 1.0 - g%swdef_photo
          else
@@ -1446,7 +1446,7 @@ c      end if
      :                             , '()'
      :                             , stress)
 
-      elseif (variable_name .eq. 'waterstresspheno') then
+      elseif (variable_name .eq. 'sw_stress_pheno') then
          if (g%swdef_pheno .gt. 0.0) then
             stress = 1.0 - g%swdef_pheno
          else
@@ -1456,7 +1456,7 @@ c      end if
      :                             , '()'
      :                             , stress)
 
-      elseif (variable_name .eq. 'waterstressexpansion') then
+      elseif (variable_name .eq. 'sw_stress_expan') then
          if (g%swdef_expansion .gt. 0.0) then
             stress = 1.0 - g%swdef_expansion
          else
@@ -1466,7 +1466,7 @@ c      end if
      :                             , '()'
      :                             , stress)
 
-      elseif (variable_name .eq. 'waterstresstiller') then
+      elseif (variable_name .eq. 'sw_stress_tiller') then
          if (g%swdef_tiller .gt. 0.0) then
             stress = 1.0 - g%swdef_tiller
          else
@@ -1652,7 +1652,7 @@ c      end if
      :                             , '(g/m^2)'
      :                             , g%n_demand(root))
 
-      elseif (variable_name .eq. 'rootndemand') then
+      elseif (variable_name .eq. 'n_demand') then
          N_demand = sum_real_array (g%N_demand, max_part)
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
@@ -1665,7 +1665,7 @@ c      end if
      :                             , '(kg/ha)'
      :                             , N_demand)
 
-      elseif (variable_name .eq. 'rootnsupply') then
+      elseif (variable_name .eq. 'n_supply_soil') then
          deepest_layer = find_layer_no (g%root_depth,g%dlayer,max_layer)
          N_uptake_sum = - sum_real_array (g%dlt_NO3gsm, deepest_layer)
      :                  - sum_real_array (g%dlt_NH4gsm, deepest_layer)
@@ -1867,7 +1867,7 @@ c      end if
      :                             , '(g/m^2)'
      :                             , biomass_n)
 
-      elseif (variable_name .eq. 'abovegroundliven') then
+      elseif (variable_name .eq. 'green_biomass_n') then
          biomass_n = (sum_real_array (g%n_green, max_part)
      :                - g%n_green(root) - g%n_green(energy))
 
@@ -1885,7 +1885,7 @@ c      end if
      :                             , '(g/m^2)'
      :                             , apt_N_up)
 
-      elseif (variable_name .eq. 'grainn') then
+      elseif (variable_name .eq. 'grain_n') then
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , g%n_green(grain))
@@ -2006,7 +2006,7 @@ c      end if
      :                             , '(%)'
      :                             , N_conc)
 
-      elseif (variable_name .eq. 'leaflivenconc') then
+      elseif (variable_name .eq. 'leafgreennconc') then
          N_conc = divide (g%N_green(leaf)
      :                  , g%dm_green(leaf)
      :                  , 0.0) * 100.
@@ -2015,7 +2015,7 @@ c      end if
      :                             , '(%)'
      :                             , N_conc)
 
-      elseif (variable_name .eq. 'stemlivenconc') then
+      elseif (variable_name .eq. 'stemgreennconc') then
          N_conc = divide (g%N_green(stem)
      :                  , g%dm_green(stem)
      :                  , 0.0) * 100.
@@ -2181,17 +2181,17 @@ c      end if
       !---------------------------------------------------
       !Nitrogen stress factors
 
-      elseif (variable_name .eq. 'nstressphoto') then
+      elseif (variable_name .eq. 'nfact_photo') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%nfact_photo)
 
-      elseif (variable_name .eq. 'nstresspheno') then
+      elseif (variable_name .eq. 'nfact_pheno') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%nfact_pheno)
 
-      elseif (variable_name .eq. 'nstressexpansion') then
+      elseif (variable_name .eq. 'nfact_expan') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%nfact_expansion)
@@ -2201,7 +2201,7 @@ c      end if
      :                             , '()'
      :                             , g%nfact_tiller)
 
-      elseif (variable_name .eq. 'nstressgrain') then
+      elseif (variable_name .eq. 'nfact_grain') then
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%nfact_grain_conc)
@@ -2242,7 +2242,6 @@ c      end if
      :                             , '()'
      :                             , stress)
 
-
       elseif (variable_name .eq. 'n_stress_tiller') then
          if (g%nfact_tiller .gt. 0.0) then
             stress = 1.0 - g%nfact_tiller
@@ -2253,7 +2252,7 @@ c      end if
      :                             , '()'
      :                             , stress)
 
-      elseif (variable_name .eq. 'nstressgrain') then
+      elseif (variable_name .eq. 'n_stress_grain') then
          if (g%nfact_grain_conc .gt. 0.0) then
             stress = 1.0 - g%nfact_grain_conc
          else
@@ -4364,7 +4363,7 @@ c         enddo
      :           (sum_real_array (g_leaf_no, max_stage)
      :          , 0.0
      :          , real (max_leaf)
-     :          , 'leafnumber')
+     :          , 'leaf_no')
 
       call bound_check_real_var
      :           (sum_real_array (g_leaf_no_dead, max_stage)
@@ -4382,7 +4381,7 @@ c         enddo
      :           (g_grain_no
      :          , 0.0
      :          , 200000.0 !c_head_grain_no_max_ub   !p_head_grain_no_max * g_plants  -ew
-     :          , 'GrainNumber')
+     :          , 'grain_no')
 
       call bound_check_real_var
      :           (g_current_stage
@@ -4432,7 +4431,7 @@ c         enddo
      :           (g_slai
      :          , 0.0
      :          , 30.0 - g_lai - g_tlai_dead
-     :          , 'SLAI')
+     :          , 'slai')
 
       call bound_check_real_var
      :           (g_tlai_dead
@@ -4444,7 +4443,7 @@ c         enddo
      :           (g_cover_green
      :          , 0.0
      :          , 1.0
-     :          , 'coverlive')
+     :          , 'cover_green')
 
       call bound_check_real_var
      :           (g_cover_sen

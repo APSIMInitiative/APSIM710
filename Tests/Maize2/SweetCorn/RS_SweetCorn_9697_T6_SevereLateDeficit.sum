@@ -20,6 +20,7 @@ Paddock:
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component               "ClimateControl" = %apsim%\Model\Manager.dll
+   Component                "New variables" = %apsim%\Model\Manager.dll
    Component      "Templeton deep 1  Water" = %apsim%\Model\SoilWat.dll
    Component    "Soil Temperature (dotNET)" = %apsim%\Model\SoilTemp2.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
@@ -54,25 +55,25 @@ Paddock:
         rain
         day
         year
-        Yield
+        yield
         stover
-        Biomass
-        LAI
+        biomass
+        lai
         pfact_photo
-        NStressPhoto
-        WaterStressPhoto
+        nfact_photo
+        swdef_photo
         sw
         sw_dep()
         esw
-        GrainWt
-        StemLiveWt
-        LeafLiveWt
+        grain_wt
+        stemgreenwt
+        leafgreenwt
         green_biomass
-        Height
-        EarLiveWt
+        height
+        ear_wt
         senescedwt
-        Yield
-        GrainWt
+        yield
+        grain_wt
 
      Output file = RS_SweetCorn_9697_T6_SevereLateDeficit.out
      Format = normal
@@ -127,6 +128,20 @@ Paddock:
      END of rules
      
      Manager creating a new local real variable : co2 = 350.00000
+
+------- New variables Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     ear_wt=0
+     
+     SECTION:- start_of_day
+     ear_wt = green_biomass/10 - leafgreenwt - stemgreenwt - flowergreenwt
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local real variable : ear_wt = 0.00000
 
 ------- Templeton deep 1  Water Initialisation --------------------------------
      
@@ -292,6 +307,46 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
      Manager sending message :- maize2 sow  population = 5.7, depth = 20, cultivar = pionere1234, maxcover = 1.0, budnumber = 1, row_spacing = 700, crop_class = plant
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "green_biomass".
+     Variables should have a value before they are used in an expression.
+     Component name: New variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : green_biomass = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "leafgreenwt".
+     Variables should have a value before they are used in an expression.
+     Component name: New variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : leafgreenwt = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "stemgreenwt".
+     Variables should have a value before they are used in an expression.
+     Component name: New variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : stemgreenwt = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "flowergreenwt".
+     Variables should have a value before they are used in an expression.
+     Component name: New variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : flowergreenwt = 0.00000
 31 October 1996 - Germination
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)

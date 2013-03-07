@@ -5893,7 +5893,7 @@ cnh different to the way the rest of the crop variables are obtained.
          bare = 1.0
 2000     continue
             crop = crop + 1
-            call get_real_vars (crop, 'CoverTotal', '()'
+            call get_real_vars (crop, 'cover_tot', '()'
      :                              , cover, numvals
      :                              , 0.0, 1.0)
 
@@ -7170,7 +7170,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
          bare = 1.d0
 1000     continue
             crop = crop + 1
-            call get_double_vars (crop, 'coverlive', '()'
+            call get_double_vars (crop, 'cover_green', '()'
      :                              , cover, numvals
      :                              , 0.d0, 1.d0)
 

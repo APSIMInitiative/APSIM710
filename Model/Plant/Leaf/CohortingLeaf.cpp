@@ -94,7 +94,7 @@ void CohortingLeaf::onInit1(protocol::Component *system)
    {
    SimplePart::onInit1(system);
    Leaf::onInit1(system);
-   setupGetFunction(system, "NodeNumber", protocol::DTsingle, false,
+   setupGetFunction(system, "node_no", protocol::DTsingle, false,
                     &CohortingLeaf::get_node_no, "/plant", "Number of main stem nodes");
 
    setupGetFunction(system, "node_no_sen", protocol::DTsingle, false,
@@ -103,7 +103,7 @@ void CohortingLeaf::onInit1(protocol::Component *system)
    setupGetFunction(system, "node_no_fx", protocol::DTsingle, false,
                     &CohortingLeaf::get_node_no_fx, "/plant", "Number of main stem nodes senesced");
 
-   setupGetFunction(system, "LeafNumber", protocol::DTsingle, false,
+   setupGetFunction(system, "leaf_no", protocol::DTsingle, false,
                     &CohortingLeaf::get_leaf_no, "/plant", "Number of leaves on the plant");
 
    setupGetFunction(system, "leaf_area", protocol::DTsingle, true,
@@ -121,10 +121,10 @@ void CohortingLeaf::onInit1(protocol::Component *system)
    setupGetFunction(system, "lai_sum", protocol::DTsingle, false,
                     &CohortingLeaf::get_lai_sum, "m^2/m^2", "LAI of all leaf components");
 
-   setupGetFunction(system, "LAITotal", protocol::DTsingle, false,
+   setupGetFunction(system, "tlai", protocol::DTsingle, false,
                     &CohortingLeaf::get_tlai, "m^2/m^2", "Total lai");
 
-   setupGetFunction(system, "SLAI", protocol::DTsingle, false,
+   setupGetFunction(system, "slai", protocol::DTsingle, false,
                     &CohortingLeaf::get_sen_leaf_area_index, "m^2/m^2", "Senesced leaf area index");
 
    setupGetFunction(system, "lai", protocol::DTsingle, false,

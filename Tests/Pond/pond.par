@@ -5,11 +5,11 @@ outputfile =pond.out
 variable = clock.year
 variable = clock.day
 
-variable = oryza.PlantStatus    ! out, alive, or dead
+variable = oryza.plant_status    ! out, alive, or dead
 variable = oryza.crop_type       ! usually rice
-variable = oryza.cropsta         ! Crop PhenologyStage   (0-4)
+variable = oryza.cropsta         ! Crop stage   (0-4)
 variable = oryza.dae             ! Days after emergence  (days)
-variable = oryza.dvs             ! Development PhenologyStage of crop   (0-2)
+variable = oryza.dvs             ! Development stage of crop   (0-2)
 variable = oryza.wagt            ! Total aboveground dry matter  !kg DM ha-1 
 variable = oryza.wrr
 variable = pond.pond_active
@@ -51,7 +51,7 @@ endif
 
 ! Transplant day = 4th Feb = doy 35 1985
 
-if oryza.PlantStatus = 'dead' then
+if oryza.plant_status = 'dead' then
     oryza end_crop
     tot_irrig = 0
     top_dress = 0
@@ -72,7 +72,7 @@ endif
 [sample.manager.end_of_day]
 ponded_depth = pond
 
-!if  rice.PlantStatus = 'alive' then
+!if  rice.plant_status = 'alive' then
 if day > 10 then
     irrig_amount = 50-ponded_depth
     Irrigation apply amount = irrig_amount

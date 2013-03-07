@@ -52,13 +52,13 @@ Paddock:
      Output variables:
         dd/mmm/yyyy as Date
         year
-        Biomass
-        PhenologyStage
+        biomass
+        stage
         DMharvest
         irrigation
         fertiliser
-        NodeNumber
-        LeafNumber
+        node_no
+        leaf_no
         plants
 
      Output file = ChicorySim paddockSpecifiedDates.out
@@ -84,7 +84,7 @@ Paddock:
      
      SECTION:- start_of_day
      if (today = date('23/10/2008') then
-          chicory sow population =200, sowing_depth = 10, cultivar = choice, row_spacing = 150
+          chicory sow plants =200, sowing_depth = 10, cultivar = choice, row_spacing = 150
      endif
      
      SECTION:- init
@@ -97,7 +97,7 @@ Paddock:
      SECTION:- end_of_day
      critt = 2
      accumdays = 10
-     if (chicory.plantstatus = 'alive' and dormant = 0 and day > 120 and day < 240 and mint < critt) then
+     if (chicory.plant_status = 'alive' and dormant = 0 and day > 120 and day < 240 and mint < critt) then
         daycount1 = daycount1 + 1
         if (daycount1 < accumdays) then
             dormaccumt = dormaccumt + mint
@@ -105,7 +105,7 @@ Paddock:
             dormaccumt = (accumdays-1)/accumdays*dormaccumt + mint
         endif
      endif
-     if (chicory.plantstatus = 'alive' and dormant = 1 and day > 180 and mint >=critt ) then
+     if (chicory.plant_status = 'alive' and dormant = 1 and day > 180 and mint >=critt ) then
         daycount2 = daycount2 + 1
         if (daycount2 < accumdays) then
             regrowaccumt = regrowaccumt + mint
@@ -141,7 +141,7 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-              if (chicory.plantstatus = 'alive') then
+              if (chicory.plant_status = 'alive') then
      no3_available = no3(1) + no3(2) + no3(3)
      if (no3_available <= 100) then
         n_deficit = 200 - no3_available
@@ -290,7 +290,7 @@ Paddock:
      Manager creating a new local real variable : critt = 2.00000
      Manager creating a new local real variable : accumdays = 10.00000
 23 October 2008(Day of year=297), Sow on a fixed date: 
-     Manager sending message :- chicory sow  population = 200, sowing_depth = 10, cultivar = choice, row_spacing = 150
+     Manager sending message :- chicory sow  plants = 200, sowing_depth = 10, cultivar = choice, row_spacing = 150
 23 October 2008(Day of year=297), Chicory: 
      Crop Sow
         ------------------------------------------------

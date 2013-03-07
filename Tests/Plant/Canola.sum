@@ -49,12 +49,12 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        Biomass
-        Yield
+        biomass
+        yield
         grain_protein
         grain_size
         esw
-        LAI
+        lai
         oil
 
      Output file = Canola.out
@@ -68,7 +68,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('1-jun') then
-       canola sow population =10, sowing_depth = 50, cultivar = rainbow, row_spacing = 500, crop_class = plant
+       canola sow plants =10, sowing_depth = 50, cultivar = rainbow, row_spacing = 500, crop_class = plant
               endif
      END of rules
      
@@ -77,7 +77,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if canola.stagename = 'harvest_ripe' or canola.plantstatus = 'dead' then
+                if canola.stagename = 'harvest_ripe' or canola.plant_status = 'dead' then
        canola  harvest
        canola  end_crop
                 endif
@@ -242,7 +242,7 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 1 June 1988(Day of year=153), Sow on a fixed date: 
-     Manager sending message :- canola sow  population = 10, sowing_depth = 50, cultivar = rainbow, row_spacing = 500, crop_class = plant
+     Manager sending message :- canola sow  plants = 10, sowing_depth = 50, cultivar = rainbow, row_spacing = 500, crop_class = plant
 1 June 1988(Day of year=153), canola: 
      Crop Sow
         ------------------------------------------------
@@ -393,7 +393,7 @@ Paddock:
                           N  (kg/ha) =                   0.00                    7.62
      
 1 June 1989(Day of year=152), Sow on a fixed date: 
-     Manager sending message :- canola sow  population = 10, sowing_depth = 50, cultivar = rainbow, row_spacing = 500, crop_class = plant
+     Manager sending message :- canola sow  plants = 10, sowing_depth = 50, cultivar = rainbow, row_spacing = 500, crop_class = plant
 1 June 1989(Day of year=152), canola: 
      Crop Sow
         ------------------------------------------------

@@ -1162,7 +1162,7 @@ End Class
             if (rain[[rainnumdays]] >= [raincrit] AND esw >= [esw_amount]) OR
                 ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
                ChooseNextCrop = 'yes'   ! for rotations
-               [crop] sow Population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
             endif
             if today = date('[date2]') then
                ChooseNextCrop = 'yes'
@@ -1205,7 +1205,7 @@ End Class
           <script name="end_of_day">
             <text>
 
-           if [crop].StageName = 'harvest_ripe' or [crop].PlantStatus = 'dead' then
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
               [crop]  harvest
               [crop]  end_crop
            endif

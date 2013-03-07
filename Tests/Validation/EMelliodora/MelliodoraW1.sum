@@ -67,7 +67,7 @@ Paddock:
      Output variables:
         dd/mm/yyyy as Date
         day
-        LAI
+        lai
         adm_green(1) as stem_wt
         foliage_mass as leaf_wt
         fw
@@ -83,11 +83,11 @@ Paddock:
         plantla
         plantbiomass
         swsi
-        Population
-        SLAI
+        plants
+        slai
         no3()
         nh4()
-        RootDepth
+        root_depth
         rlv
         ep
         eo
@@ -96,7 +96,7 @@ Paddock:
         petr
         peta
         ffasw
-        Height
+        height
         ftcanopy
         sw_demand
         sw_supply
@@ -105,7 +105,7 @@ Paddock:
         esw
         fwcanopy
         ga
-        Biomass
+        biomass
         fvpd
 
      Output file = MelliodoraW1.out
@@ -148,12 +148,12 @@ Paddock:
      
      SECTION:- endofday
      if lai > 0 then
-        plantbiomass = biomass/population*1000
-        plantleaf = foliage_mass/population*1000
-        plantstem = adm_green(1)/ population*1000
-        plantla = lai * 10000 / population
-        swsi = swsi + (1.0 - waterstressphoto)
-        rtr = ep / (eo * coverlive)
+        plantbiomass = biomass/plants*1000
+        plantleaf = foliage_mass/plants*1000
+        plantstem = adm_green(1)/ plants*1000
+        plantla = lai * 10000 / plants
+        swsi = swsi + (1.0 - swdef_photo)
+        rtr = ep / (eo * cover_green)
      endif
        sw150 = sw_dep(1) + sw_dep(2) + sw_dep(3) + sw_dep(4) + sw_dep(5) + sw_dep(6)
        sw60 = sw_dep(1) + sw_dep(2) + sw_dep(3)

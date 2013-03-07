@@ -1,4 +1,4 @@
-<folder version="34" name="RS_Barley_8889">
+<folder version="33" name="RS_Barley_8889">
   <simulation name="RS_Barley_8889_Control">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%\Examples\MetFiles\lincoln.met</filename>
@@ -24,28 +24,28 @@
         </events>
         <variables name="Variables">
           <variable>dd/mmm/yyyy as Date</variable>
-          <variable>Biomass</variable>
-          <variable>Yield</variable>
+          <variable>biomass</variable>
+          <variable>yield</variable>
           <variable>rain</variable>
           <variable>es</variable>
-          <variable>Biomass</variable>
+          <variable>biomass</variable>
           <variable>drain</variable>
           <variable>runoff</variable>
           <variable>irrigation</variable>
-          <variable>LeafLiveWt</variable>
-          <variable>CoverLive</variable>
-          <variable>LeafDeadWt</variable>
-          <variable>StemLiveWt</variable>
-          <variable>HeadLiveWt</variable>
-          <variable>LAI</variable>
+          <variable>leafgreenwt</variable>
+          <variable>cover_green</variable>
+          <variable>leafsenescedwt</variable>
+          <variable>stemgreenwt</variable>
+          <variable>headgreenwt</variable>
+          <variable>lai</variable>
           <variable>ep</variable>
-          <variable>Height</variable>
+          <variable>height</variable>
           <variable>sw_dep()</variable>
           <variable>runoff</variable>
           <variable>drain</variable>
           <variable>yieldwet</variable>
-          <variable>Yield</variable>
-          <variable>GrainWt</variable>
+          <variable>yield</variable>
+          <variable>grain_wt</variable>
           <variable>grainwt</variable>
           <variable>graintotalwt</variable>
           <variable>sw</variable>
@@ -53,13 +53,13 @@
           <variable>esw</variable>
           <variable>sw_demand</variable>
           <variable>sw_supply</variable>
-          <variable>WaterStressPhoto</variable>
-          <variable>NStressPhoto</variable>
-          <variable>PhenologyStage</variable>
-          <variable>NodeNumber</variable>
-          <variable>LeafNumber</variable>
-          <variable>CoverLive</variable>
-          <variable>RootDepth</variable>
+          <variable>sw_stress_photo</variable>
+          <variable>n_stress_photo</variable>
+          <variable>stage</variable>
+          <variable>node_no</variable>
+          <variable>leaf_no</variable>
+          <variable>cover_green</variable>
+          <variable>root_depth</variable>
         </variables>
       </outputfile>
       <Soil name="Templeton deep 1 ">
@@ -628,7 +628,7 @@ if (date_within('[date1], [date2]') = 1) then
           </ui>
           <script>
             <text>if today = date('[date]') then
-   [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+   [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
 endif</text>
             <event>start_of_day</event>
           </script>

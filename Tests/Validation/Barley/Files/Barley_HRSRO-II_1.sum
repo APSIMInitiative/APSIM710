@@ -52,33 +52,33 @@ Paddock:
      Output variables:
         dd/mm/yyyy as Date
         barley.DaysAfterSowing
-        barley.PhenologyStage
-        barley.AboveGroundWt
-        barley.LeafLiveWt as dmLeaf
-        barley.StemLiveWt as dmStem 
-        barley.GrainWt as dmGrain
+        barley.stage
+        barley.biomass_wt
+        barley.LeafGreenWt as dmLeaf
+        barley.StemGreenWt as dmStem 
+        barley.grain_wt as dmGrain
         barley.biomass_n as nBiomass
-        barley.StemLiveN as nStem
-        barley.PodLiveN as nRachis
-        barley.GrainN as nGrain
-        barley.LeafDeadN as nSenLeaf
+        barley.StemGreenN as nStem
+        barley.PodGreenN as nRachis
+        barley.grain_n as nGrain
+        barley.SenescedN as nSenLeaf
         barley.n_conc_grain as nConcGrain
-        barley.GrainNumber
-        barley.LAI
-        barley.RootDepth
-        barley.WaterStressExpansion
-        barley.WaterStressPheno
-        barley.WaterStressPhoto
-        barley.NStressExpansion
-        barley.NStressPheno
-        barley.NStressPhoto
+        barley.grain_no
+        barley.lai
+        barley.root_depth
+        barley.swdef_expan
+        barley.swdef_pheno
+        barley.swdef_photo
+        barley.nfact_expan
+        barley.nfact_pheno
+        barley.nfact_photo
         eo
         es
         esw
         water_table
         barley.leaves_per_node
-        barley.LeafNumber
-        barley.NodeNumber
+        barley.leaf_no
+        barley.node_no
         Irrigation.irrigation
 
      Output file = Barley_HRSRO-II_1.out
@@ -104,7 +104,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('30/6/1991') then
-       barley sow population =100, sowing_depth = 50, cultivar = grimmett, row_spacing = 250
+       barley sow plants =100, sowing_depth = 50, cultivar = grimmett, row_spacing = 250
               endif
      END of rules
      
@@ -116,7 +116,7 @@ Paddock:
       if (paddock_is_fallow() = 0) then
         outputfile do_output
      endif
-                if barley.stagename = 'harvest_ripe' or barley.plantstatus = 'dead' then
+                if barley.stagename = 'harvest_ripe' or barley.plant_status = 'dead' then
        barley  harvest
        barley  end_crop
                 endif
@@ -354,7 +354,7 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 30 June 1991(Day of year=181), Sow on a fixed date: 
-     Manager sending message :- barley sow  population = 100, sowing_depth = 50, cultivar = grimmett, row_spacing = 250
+     Manager sending message :- barley sow  plants = 100, sowing_depth = 50, cultivar = grimmett, row_spacing = 250
 30 June 1991(Day of year=181), barley: 
      Crop Sow
         ------------------------------------------------

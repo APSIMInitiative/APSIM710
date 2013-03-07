@@ -1,4 +1,4 @@
-<folder version="34" name="RS_Barley_9596">
+<folder version="32" name="RS_Barley_9596">
   <simulation name="RS_Barley_9596_Fulldrought_N150">
     <metfile name="met">
       <filename name="filename" input="yes">lincoln.met</filename>
@@ -24,28 +24,28 @@
         </events>
         <variables name="Variables">
           <variable>dd/mmm/yyyy as Date</variable>
-          <variable>Biomass</variable>
-          <variable>Yield</variable>
+          <variable>biomass</variable>
+          <variable>yield</variable>
           <variable>rain</variable>
           <variable>es</variable>
-          <variable>Biomass</variable>
+          <variable>biomass</variable>
           <variable>drain</variable>
           <variable>runoff</variable>
           <variable>irrigation</variable>
-          <variable>LeafLiveWt</variable>
-          <variable>CoverLive</variable>
-          <variable>LeafDeadWt</variable>
-          <variable>StemLiveWt</variable>
-          <variable>HeadLiveWt</variable>
-          <variable>LAI</variable>
+          <variable>leafgreenwt</variable>
+          <variable>cover_green</variable>
+          <variable>leafsenescedwt</variable>
+          <variable>stemgreenwt</variable>
+          <variable>headgreenwt</variable>
+          <variable>lai</variable>
           <variable>ep</variable>
-          <variable>Height</variable>
+          <variable>height</variable>
           <variable>sw_dep()</variable>
           <variable>runoff</variable>
           <variable>drain</variable>
           <variable>yieldwet</variable>
-          <variable>Yield</variable>
-          <variable>GrainWt</variable>
+          <variable>yield</variable>
+          <variable>grain_wt</variable>
           <variable>grainwt</variable>
           <variable>graintotalwt</variable>
           <variable>sw</variable>
@@ -53,823 +53,749 @@
           <variable>esw</variable>
         </variables>
       </outputfile>
-      <Soil name="Templeton deep 1 ">
+      <soil name="Templeton deep 1 ">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
         <SoilType description="Soil description">NZ_sedementary</SoilType>
+        <LocalName />
         <Site>-</Site>
         <NearestTown>-</NearestTown>
         <Region>Plains</Region>
         <State>Canterbury</State>
         <Country>New Zealand</Country>
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
         <DataSource type="multiedit">Generic profile descriptions provided by Trevor Webb and data for functional horizions based on SWAMP project results</DataSource>
         <Comments type="multiedit">Bulk density values were measured on the fine earth fraction so values entered into apsim soil are adjusted down to account for stone content (assuming stones are inert from all soil process so their mass and volume is removed from model paramaters).  SAT, DUL, LL15 and Air dry have been adjusted down to account for stone content.  OC has not been adjusted so the model will get the correct carbon and N amounts using the adjusted BD.</Comments>
         <Analysis>
-          <Thickness>
-            <double>180</double>
-            <double>150</double>
-            <double>400</double>
-            <double>270</double>
-            <double>500</double>
-          </Thickness>
-          <Rocks>
-            <double>0</double>
-            <double>0</double>
-            <double>0</double>
-            <double>0</double>
-            <double>0</double>
-          </Rocks>
-          <RocksMetadata>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-          </RocksMetadata>
-          <PH>
-            <double>6</double>
-            <double>6</double>
-            <double>6</double>
-            <double>6</double>
-            <double>6</double>
-          </PH>
-          <PHMetadata>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-          </PHMetadata>
-          <CEC>
-            <double>13</double>
-            <double>9</double>
-            <double>9</double>
-            <double>9</double>
-            <double>9</double>
-          </CEC>
-          <CECMetadata>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-          </CECMetadata>
-          <ParticleSizeSand>
-            <double>14.5</double>
-            <double>18</double>
-            <double>14</double>
-            <double>15</double>
-            <double>15</double>
-          </ParticleSizeSand>
-          <ParticleSizeSandMetadata>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-          </ParticleSizeSandMetadata>
-          <ParticleSizeSilt>
-            <double>65.5</double>
-            <double>58</double>
-            <double>63</double>
-            <double>66</double>
-            <double>66</double>
-          </ParticleSizeSilt>
-          <ParticleSizeSiltMetadata>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-          </ParticleSizeSiltMetadata>
-          <ParticleSizeClay>
-            <double>20</double>
-            <double>24</double>
-            <double>23</double>
-            <double>19</double>
-            <double>19</double>
-          </ParticleSizeClay>
-          <ParticleSizeClayMetadata>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-          </ParticleSizeClayMetadata>
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <Rocks units="%" code="E">0</Rocks>
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH units="1:5 water" code="E">6</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" code="E">13</CEC>
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" code="E">14.5</ParticleSizeSand>
+            <ParticleSizeSilt units="%" code="E">65.5</ParticleSizeSilt>
+            <ParticleSizeClay units="%" code="E">20</ParticleSizeClay>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <Rocks code="E">0</Rocks>
+            <Texture />
+            <MunsellColour />
+            <EC />
+            <PH code="E">6</PH>
+            <CL />
+            <Boron />
+            <CEC code="E">9</CEC>
+            <Ca />
+            <Mg />
+            <Na />
+            <K />
+            <ESP />
+            <Mn />
+            <Al />
+            <ParticleSizeSand code="E">18</ParticleSizeSand>
+            <ParticleSizeSilt code="E">58</ParticleSizeSilt>
+            <ParticleSizeClay code="E">24</ParticleSizeClay>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <Rocks code="E">0</Rocks>
+            <Texture />
+            <MunsellColour />
+            <EC />
+            <PH code="E">6</PH>
+            <CL />
+            <Boron />
+            <CEC code="E">9</CEC>
+            <Ca />
+            <Mg />
+            <Na />
+            <K />
+            <ESP />
+            <Mn />
+            <Al />
+            <ParticleSizeSand code="E">14</ParticleSizeSand>
+            <ParticleSizeSilt code="E">63</ParticleSizeSilt>
+            <ParticleSizeClay code="E">23</ParticleSizeClay>
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <Rocks code="E">0</Rocks>
+            <Texture />
+            <MunsellColour />
+            <EC />
+            <PH code="E">6</PH>
+            <CL />
+            <Boron />
+            <CEC code="E">9</CEC>
+            <Ca />
+            <Mg />
+            <Na />
+            <K />
+            <ESP />
+            <Mn />
+            <Al />
+            <ParticleSizeSand code="E">15</ParticleSizeSand>
+            <ParticleSizeSilt code="E">66</ParticleSizeSilt>
+            <ParticleSizeClay code="E">19</ParticleSizeClay>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <Rocks code="E">0</Rocks>
+            <Texture />
+            <MunsellColour />
+            <EC />
+            <PH code="E">6</PH>
+            <CL />
+            <Boron />
+            <CEC code="E">9</CEC>
+            <Ca />
+            <Mg />
+            <Na />
+            <K />
+            <ESP />
+            <Mn />
+            <Al />
+            <ParticleSizeSand code="E">15</ParticleSizeSand>
+            <ParticleSizeSilt code="E">66</ParticleSizeSilt>
+            <ParticleSizeClay code="E">19</ParticleSizeClay>
+          </Layer>
         </Analysis>
         <Water>
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <KS units="mm/day">4832.03882317437</KS>
+            <BD units="g/cc" code="E">1.3105</BD>
+            <Airdry units="mm/mm" code="">0.0115</Airdry>
+            <LL15 units="mm/mm" code="">0.0115</LL15>
+            <DUL units="mm/mm" code="">0.23</DUL>
+            <SAT units="mm/mm" code="">0.3805</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <KS>389.229035400118</KS>
+            <BD code="E">1.524</BD>
+            <Airdry code="">0.012</Airdry>
+            <LL15 code="">0.012</LL15>
+            <DUL code="">0.24</DUL>
+            <SAT code="">0.384</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <KS>16.3618936612702</KS>
+            <BD code="E">1.65</BD>
+            <Airdry code="">0.149</Airdry>
+            <LL15 code="">0.149</LL15>
+            <DUL code="">0.28</DUL>
+            <SAT code="">0.3415</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <KS>97.9950031817664</KS>
+            <BD code="E">1.601</BD>
+            <Airdry code="">0.157</Airdry>
+            <LL15 code="">0.157</LL15>
+            <DUL code="">0.29</DUL>
+            <SAT code="">0.3495</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <KS>97.9950031817664</KS>
+            <BD code="E">1.601</BD>
+            <Airdry code="">0.165000015</Airdry>
+            <LL15 code="">0.165000015</LL15>
+            <DUL code="">0.3</DUL>
+            <SAT code="">0.357500015</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <KS>97.995</KS>
+            <BD>1.601</BD>
+            <Airdry>0.173</Airdry>
+            <LL15>0.173</LL15>
+            <DUL>0.31</DUL>
+            <SAT>0.3655</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <KS>97.995</KS>
+            <BD>1.601</BD>
+            <Airdry>0.185</Airdry>
+            <LL15>0.185</LL15>
+            <DUL>0.325</DUL>
+            <SAT>0.3775</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <KS>97.995</KS>
+            <BD>1.601</BD>
+            <Airdry>0.198600006</Airdry>
+            <LL15>0.198600006</LL15>
+            <DUL>0.342</DUL>
+            <SAT>0.391100006</SAT>
+          </Layer>
           <SoilCrop name="Barley">
-            <Thickness>
-              <double>180</double>
-              <double>150</double>
-              <double>400</double>
-              <double>270</double>
-              <double>500</double>
-            </Thickness>
-            <LL>
-              <double>0.1535</double>
-              <double>0.201</double>
-              <double>0.201</double>
-              <double>0.162</double>
-              <double>0.162</double>
-            </LL>
-            <LLMetadata>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-            </LLMetadata>
-            <KL>
-              <double>0.242628872394562</double>
-              <double>0.36744047999382</double>
-              <double>0.0472521595656872</double>
-              <double>0.0293168395757675</double>
-              <double>0.00528755336999893</double>
-            </KL>
-            <XF>
-              <double>1</double>
-              <double>1</double>
-              <double>0.301194211912202</double>
-              <double>1</double>
-              <double>1</double>
-            </XF>
+            <Layer>
+              <Thickness units="mm">180</Thickness>
+              <LL units="mm/mm" code="E">0.1535</LL>
+              <kl units="/day">0.242628872394562</kl>
+              <xf units="0-1">1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.36744047999382</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>400</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.0472521595656872</kl>
+              <xf>0.301194211912202</xf>
+            </Layer>
+            <Layer>
+              <Thickness>270</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.0293168395757675</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>500</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.00528755336999893</kl>
+              <xf>1</xf>
+            </Layer>
           </SoilCrop>
           <SoilCrop name="Canola">
-            <Thickness>
-              <double>180</double>
-              <double>150</double>
-              <double>400</double>
-              <double>270</double>
-              <double>500</double>
-            </Thickness>
-            <LL>
-              <double>0.1535</double>
-              <double>0.201</double>
-              <double>0.201</double>
-              <double>0.162</double>
-              <double>0.162</double>
-            </LL>
-            <LLMetadata>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-            </LLMetadata>
-            <KL>
-              <double>0.242628872394562</double>
-              <double>0.36744047999382</double>
-              <double>0.0472521595656872</double>
-              <double>0.0293168395757675</double>
-              <double>0.00528755336999893</double>
-            </KL>
-            <XF>
-              <double>1</double>
-              <double>0.825306868491682</double>
-              <double>0.120995732814878</double>
-              <double>0.510686183366188</double>
-              <double>0.510686183366188</double>
-            </XF>
+            <Layer>
+              <Thickness units="mm">180</Thickness>
+              <LL units="mm/mm" code="E">0.1535</LL>
+              <kl units="/day">0.242628872394562</kl>
+              <xf units="0-1">1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.36744047999382</kl>
+              <xf>0.825306868491682</xf>
+            </Layer>
+            <Layer>
+              <Thickness>400</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.0472521595656872</kl>
+              <xf>0.120995732814878</xf>
+            </Layer>
+            <Layer>
+              <Thickness>270</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.0293168395757675</kl>
+              <xf>0.510686183366188</xf>
+            </Layer>
+            <Layer>
+              <Thickness>500</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.00528755336999893</kl>
+              <xf>0.510686183366188</xf>
+            </Layer>
           </SoilCrop>
           <SoilCrop name="Cloverseed">
-            <Thickness>
-              <double>180</double>
-              <double>150</double>
-              <double>400</double>
-              <double>270</double>
-              <double>500</double>
-            </Thickness>
-            <LL>
-              <double>0.1535</double>
-              <double>0.201</double>
-              <double>0.201</double>
-              <double>0.162</double>
-              <double>0.162</double>
-            </LL>
-            <LLMetadata>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-            </LLMetadata>
-            <KL>
-              <double>0.17341274023056</double>
-              <double>0.193986475467682</double>
-              <double>0.0143600748851895</double>
-              <double>0.00706269294023514</double>
-              <double>0.000616139033809304</double>
-            </KL>
-            <XF>
-              <double>1</double>
-              <double>1</double>
-              <double>0.153815722533429</double>
-              <double>0.731981528228313</double>
-              <double>0.731981528228313</double>
-            </XF>
+            <Layer>
+              <Thickness units="mm">180</Thickness>
+              <LL units="mm/mm" code="E">0.1535</LL>
+              <kl units="/day">0.17341274023056</kl>
+              <xf units="0-1">1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.193986475467682</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>400</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.0143600748851895</kl>
+              <xf>0.153815722533429</xf>
+            </Layer>
+            <Layer>
+              <Thickness>270</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.00706269294023514</kl>
+              <xf>0.731981528228313</xf>
+            </Layer>
+            <Layer>
+              <Thickness>500</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.000616139033809304</kl>
+              <xf>0.731981528228313</xf>
+            </Layer>
           </SoilCrop>
           <SoilCrop name="Fieldpea">
-            <Thickness>
-              <double>180</double>
-              <double>150</double>
-              <double>400</double>
-              <double>270</double>
-              <double>500</double>
-            </Thickness>
-            <LL>
-              <double>0.1535</double>
-              <double>0.201</double>
-              <double>0.201</double>
-              <double>0.162</double>
-              <double>0.162</double>
-            </LL>
-            <LLMetadata>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-            </LLMetadata>
-            <KL>
-              <double>0.228819847106934</double>
-              <double>0.330127707123756</double>
-              <double>0.0241696406155825</double>
-              <double>0.0132411256432533</double>
-              <double>0.00122551582753658</double>
-            </KL>
-            <XF>
-              <double>1</double>
-              <double>0.449328964117222</double>
-              <double>0.0907179532894125</double>
-              <double>0.301194211912202</double>
-              <double>0.301194211912202</double>
-            </XF>
+            <Layer>
+              <Thickness units="mm">180</Thickness>
+              <LL units="mm/mm" code="E">0.1535</LL>
+              <kl units="/day">0.228819847106934</kl>
+              <xf units="0-1">1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.330127707123756</kl>
+              <xf>0.449328964117222</xf>
+            </Layer>
+            <Layer>
+              <Thickness>400</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.0241696406155825</kl>
+              <xf>0.0907179532894125</xf>
+            </Layer>
+            <Layer>
+              <Thickness>270</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.0132411256432533</kl>
+              <xf>0.301194211912202</xf>
+            </Layer>
+            <Layer>
+              <Thickness>500</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.00122551582753658</kl>
+              <xf>0.301194211912202</xf>
+            </Layer>
           </SoilCrop>
           <SoilCrop name="Fababean">
-            <Thickness>
-              <double>180</double>
-              <double>150</double>
-              <double>400</double>
-              <double>270</double>
-              <double>500</double>
-            </Thickness>
-            <LL>
-              <double>0.1535</double>
-              <double>0.201</double>
-              <double>0.201</double>
-              <double>0.162</double>
-              <double>0.162</double>
-            </LL>
-            <LLMetadata>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-            </LLMetadata>
-            <KL>
-              <double>0.255792379379272</double>
-              <double>0.420881912112236</double>
-              <double>0.120697714388371</double>
-              <double>0.0591380536556244</double>
-              <double>0.0201339855790138</double>
-            </KL>
-            <XF>
-              <double>1</double>
-              <double>0.825306868491682</double>
-              <double>0.120995732814878</double>
-              <double>0.510686183366188</double>
-              <double>0.510686183366188</double>
-            </XF>
+            <Layer>
+              <Thickness units="mm">180</Thickness>
+              <LL units="mm/mm" code="E">0.1535</LL>
+              <kl units="/day">0.255792379379272</kl>
+              <xf units="0-1">1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.420881912112236</kl>
+              <xf>0.825306868491682</xf>
+            </Layer>
+            <Layer>
+              <Thickness>400</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.120697714388371</kl>
+              <xf>0.120995732814878</xf>
+            </Layer>
+            <Layer>
+              <Thickness>270</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.0591380536556244</kl>
+              <xf>0.510686183366188</xf>
+            </Layer>
+            <Layer>
+              <Thickness>500</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.0201339855790138</kl>
+              <xf>0.510686183366188</xf>
+            </Layer>
           </SoilCrop>
           <SoilCrop name="kale">
-            <Thickness>
-              <double>180</double>
-              <double>150</double>
-              <double>400</double>
-              <double>270</double>
-              <double>500</double>
-            </Thickness>
-            <LL>
-              <double>0.1535</double>
-              <double>0.201</double>
-              <double>0.201</double>
-              <double>0.162</double>
-              <double>0.162</double>
-            </LL>
-            <LLMetadata>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-            </LLMetadata>
-            <KL>
-              <double>0.242628872394562</double>
-              <double>0.36744047999382</double>
-              <double>0.0472521595656872</double>
-              <double>0.0293168395757675</double>
-              <double>0.00528755336999893</double>
-            </KL>
-            <XF>
-              <double>1</double>
-              <double>0.825306868491682</double>
-              <double>0.120995732814878</double>
-              <double>0.510686183366188</double>
-              <double>0.510686183366188</double>
-            </XF>
+            <Layer>
+              <Thickness units="mm">180</Thickness>
+              <LL units="mm/mm" code="E">0.1535</LL>
+              <kl units="/day">0.242628872394562</kl>
+              <xf units="0-1">1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.36744047999382</kl>
+              <xf>0.825306868491682</xf>
+            </Layer>
+            <Layer>
+              <Thickness>400</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.0472521595656872</kl>
+              <xf>0.120995732814878</xf>
+            </Layer>
+            <Layer>
+              <Thickness>270</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.0293168395757675</kl>
+              <xf>0.510686183366188</xf>
+            </Layer>
+            <Layer>
+              <Thickness>500</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.00528755336999893</kl>
+              <xf>0.510686183366188</xf>
+            </Layer>
           </SoilCrop>
           <SoilCrop name="ItallianRyegrass">
-            <Thickness>
-              <double>180</double>
-              <double>150</double>
-              <double>400</double>
-              <double>270</double>
-              <double>500</double>
-            </Thickness>
-            <LL>
-              <double>0.1535</double>
-              <double>0.201</double>
-              <double>0.201</double>
-              <double>0.162</double>
-              <double>0.162</double>
-            </LL>
-            <LLMetadata>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-            </LLMetadata>
-            <KL>
-              <double>0.242628872394562</double>
-              <double>0.36744047999382</double>
-              <double>0.0472521595656872</double>
-              <double>0.0293168395757675</double>
-              <double>0.00528755336999893</double>
-            </KL>
-            <XF>
-              <double>1</double>
-              <double>0.825306868491682</double>
-              <double>0.120995732814878</double>
-              <double>0.510686183366188</double>
-              <double>0.510686183366188</double>
-            </XF>
+            <Layer>
+              <Thickness units="mm">180</Thickness>
+              <LL units="mm/mm" code="E">0.1535</LL>
+              <kl units="/day">0.242628872394562</kl>
+              <xf units="0-1">1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.36744047999382</kl>
+              <xf>0.825306868491682</xf>
+            </Layer>
+            <Layer>
+              <Thickness>400</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.0472521595656872</kl>
+              <xf>0.120995732814878</xf>
+            </Layer>
+            <Layer>
+              <Thickness>270</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.0293168395757675</kl>
+              <xf>0.510686183366188</xf>
+            </Layer>
+            <Layer>
+              <Thickness>500</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.00528755336999893</kl>
+              <xf>0.510686183366188</xf>
+            </Layer>
           </SoilCrop>
           <SoilCrop name="Lucerne">
-            <Thickness>
-              <double>180</double>
-              <double>150</double>
-              <double>400</double>
-              <double>270</double>
-              <double>500</double>
-            </Thickness>
-            <LL>
-              <double>0.1535</double>
-              <double>0.201</double>
-              <double>0.201</double>
-              <double>0.162</double>
-              <double>0.162</double>
-            </LL>
-            <LLMetadata>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-            </LLMetadata>
-            <KL>
-              <double>0.204260140657425</double>
-              <double>0.386304697394371</double>
-              <double>0.158900246024132</double>
-              <double>0.10663788318634</double>
-              <double>0.0441555351018906</double>
-            </KL>
-            <XF>
-              <double>1</double>
-              <double>1</double>
-              <double>0.301194211912202</double>
-              <double>1</double>
-              <double>1</double>
-            </XF>
+            <Layer>
+              <Thickness units="mm">180</Thickness>
+              <LL units="mm/mm" code="E">0.1535</LL>
+              <kl units="/day">0.204260140657425</kl>
+              <xf units="0-1">1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.386304697394371</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>400</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.158900246024132</kl>
+              <xf>0.301194211912202</xf>
+            </Layer>
+            <Layer>
+              <Thickness>270</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.10663788318634</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>500</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.0441555351018906</kl>
+              <xf>1</xf>
+            </Layer>
           </SoilCrop>
           <SoilCrop name="Maize">
-            <Thickness>
-              <double>180</double>
-              <double>150</double>
-              <double>400</double>
-              <double>270</double>
-              <double>500</double>
-            </Thickness>
-            <LL>
-              <double>0.1535</double>
-              <double>0.201</double>
-              <double>0.201</double>
-              <double>0.162</double>
-              <double>0.162</double>
-            </LL>
-            <LLMetadata>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-            </LLMetadata>
-            <KL>
-              <double>0.262296378612518</double>
-              <double>0.446103501319885</double>
-              <double>0.159359484910965</double>
-              <double>0.10596421957016</double>
-              <double>0.0347418755292893</double>
-            </KL>
-            <XF>
-              <double>1</double>
-              <double>0.825306868491682</double>
-              <double>0.120995732814878</double>
-              <double>0.510686183366188</double>
-              <double>0.510686183366188</double>
-            </XF>
+            <Layer>
+              <Thickness units="mm">180</Thickness>
+              <LL units="mm/mm" code="E">0.1535</LL>
+              <kl units="/day">0.262296378612518</kl>
+              <xf units="0-1">1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.446103501319885</kl>
+              <xf>0.825306868491682</xf>
+            </Layer>
+            <Layer>
+              <Thickness>400</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.159359484910965</kl>
+              <xf>0.120995732814878</xf>
+            </Layer>
+            <Layer>
+              <Thickness>270</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.10596421957016</kl>
+              <xf>0.510686183366188</xf>
+            </Layer>
+            <Layer>
+              <Thickness>500</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.0347418755292893</kl>
+              <xf>0.510686183366188</xf>
+            </Layer>
           </SoilCrop>
           <SoilCrop name="Oats">
-            <Thickness>
-              <double>180</double>
-              <double>150</double>
-              <double>400</double>
-              <double>270</double>
-              <double>500</double>
-            </Thickness>
-            <LL>
-              <double>0.1535</double>
-              <double>0.201</double>
-              <double>0.201</double>
-              <double>0.162</double>
-              <double>0.162</double>
-            </LL>
-            <LLMetadata>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-            </LLMetadata>
-            <KL>
-              <double>0.242628872394562</double>
-              <double>0.36744047999382</double>
-              <double>0.0472521595656872</double>
-              <double>0.0293168395757675</double>
-              <double>0.00528755336999893</double>
-            </KL>
-            <XF>
-              <double>1</double>
-              <double>1</double>
-              <double>0.153815722533429</double>
-              <double>0.731981528228313</double>
-              <double>0.731981528228313</double>
-            </XF>
+            <Layer>
+              <Thickness units="mm">180</Thickness>
+              <LL units="mm/mm" code="E">0.1535</LL>
+              <kl units="/day">0.242628872394562</kl>
+              <xf units="0-1">1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.36744047999382</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>400</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.0472521595656872</kl>
+              <xf>0.153815722533429</xf>
+            </Layer>
+            <Layer>
+              <Thickness>270</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.0293168395757675</kl>
+              <xf>0.731981528228313</xf>
+            </Layer>
+            <Layer>
+              <Thickness>500</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.00528755336999893</kl>
+              <xf>0.731981528228313</xf>
+            </Layer>
           </SoilCrop>
           <SoilCrop name="Potato">
-            <Thickness>
-              <double>180</double>
-              <double>150</double>
-              <double>400</double>
-              <double>270</double>
-              <double>500</double>
-            </Thickness>
-            <LL>
-              <double>0.1535</double>
-              <double>0.201</double>
-              <double>0.201</double>
-              <double>0.162</double>
-              <double>0.162</double>
-            </LL>
-            <LLMetadata>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-            </LLMetadata>
-            <KL>
-              <double>0.199694439768791</double>
-              <double>0.201524528861046</double>
-              <double>0.00753395445644856</double>
-              <double>0.00200619343668222</double>
-              <double>6.16568373516202E-05</double>
-            </KL>
-            <XF>
-              <double>1</double>
-              <double>0.449328964117222</double>
-              <double>0.0907179532894125</double>
-              <double>0.301194211912202</double>
-              <double>0.301194211912202</double>
-            </XF>
+            <Layer>
+              <Thickness units="mm">180</Thickness>
+              <LL units="mm/mm" code="E">0.1535</LL>
+              <kl units="/day">0.199694439768791</kl>
+              <xf units="0-1">1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.201524528861046</kl>
+              <xf>0.449328964117222</xf>
+            </Layer>
+            <Layer>
+              <Thickness>400</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.00753395445644856</kl>
+              <xf>0.0907179532894125</xf>
+            </Layer>
+            <Layer>
+              <Thickness>270</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.00200619343668222</kl>
+              <xf>0.301194211912202</xf>
+            </Layer>
+            <Layer>
+              <Thickness>500</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>6.16568373516202E-05</kl>
+              <xf>0.301194211912202</xf>
+            </Layer>
           </SoilCrop>
           <SoilCrop name="Grassseed">
-            <Thickness>
-              <double>180</double>
-              <double>150</double>
-              <double>400</double>
-              <double>270</double>
-              <double>500</double>
-            </Thickness>
-            <LL>
-              <double>0.1535</double>
-              <double>0.201</double>
-              <double>0.201</double>
-              <double>0.162</double>
-              <double>0.162</double>
-            </LL>
-            <LLMetadata>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-            </LLMetadata>
-            <KL>
-              <double>0.214377656579018</double>
-              <double>0.271649757027626</double>
-              <double>0.0139478892087936</double>
-              <double>0.00528755336999893</double>
-              <double>0.000275798817165196</double>
-            </KL>
-            <XF>
-              <double>1</double>
-              <double>0.825306868491682</double>
-              <double>0.120995732814878</double>
-              <double>0.510686183366188</double>
-              <double>0.510686183366188</double>
-            </XF>
+            <Layer>
+              <Thickness units="mm">180</Thickness>
+              <LL units="mm/mm" code="E">0.1535</LL>
+              <kl units="/day">0.214377656579018</kl>
+              <xf units="0-1">1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.271649757027626</kl>
+              <xf>0.825306868491682</xf>
+            </Layer>
+            <Layer>
+              <Thickness>400</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.0139478892087936</kl>
+              <xf>0.120995732814878</xf>
+            </Layer>
+            <Layer>
+              <Thickness>270</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.00528755336999893</kl>
+              <xf>0.510686183366188</xf>
+            </Layer>
+            <Layer>
+              <Thickness>500</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.000275798817165196</kl>
+              <xf>0.510686183366188</xf>
+            </Layer>
           </SoilCrop>
           <SoilCrop name="Triticale">
-            <Thickness>
-              <double>180</double>
-              <double>150</double>
-              <double>400</double>
-              <double>270</double>
-              <double>500</double>
-            </Thickness>
-            <LL>
-              <double>0.1535</double>
-              <double>0.201</double>
-              <double>0.201</double>
-              <double>0.162</double>
-              <double>0.162</double>
-            </LL>
-            <LLMetadata>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-            </LLMetadata>
-            <KL>
-              <double>0.242628872394562</double>
-              <double>0.36744047999382</double>
-              <double>0.0472521595656872</double>
-              <double>0.0293168395757675</double>
-              <double>0.00528755336999893</double>
-            </KL>
-            <XF>
-              <double>1</double>
-              <double>1</double>
-              <double>0.153815722533429</double>
-              <double>0.731981528228313</double>
-              <double>0.731981528228313</double>
-            </XF>
+            <Layer>
+              <Thickness units="mm">180</Thickness>
+              <LL units="mm/mm" code="E">0.1535</LL>
+              <kl units="/day">0.242628872394562</kl>
+              <xf units="0-1">1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.36744047999382</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>400</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.0472521595656872</kl>
+              <xf>0.153815722533429</xf>
+            </Layer>
+            <Layer>
+              <Thickness>270</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.0293168395757675</kl>
+              <xf>0.731981528228313</xf>
+            </Layer>
+            <Layer>
+              <Thickness>500</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.00528755336999893</kl>
+              <xf>0.731981528228313</xf>
+            </Layer>
           </SoilCrop>
           <SoilCrop name="Wheat">
-            <Thickness>
-              <double>180</double>
-              <double>150</double>
-              <double>400</double>
-              <double>270</double>
-              <double>500</double>
-            </Thickness>
-            <LL>
-              <double>0.1535</double>
-              <double>0.201</double>
-              <double>0.201</double>
-              <double>0.162</double>
-              <double>0.162</double>
-            </LL>
-            <LLMetadata>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-            </LLMetadata>
-            <KL>
-              <double>0.242628872394562</double>
-              <double>0.36744047999382</double>
-              <double>0.0472521595656872</double>
-              <double>0.0293168395757675</double>
-              <double>0.00528755336999893</double>
-            </KL>
-            <XF>
-              <double>1</double>
-              <double>1</double>
-              <double>0.153815722533429</double>
-              <double>0.731981528228313</double>
-              <double>0.731981528228313</double>
-            </XF>
+            <Layer>
+              <Thickness units="mm">180</Thickness>
+              <LL units="mm/mm" code="E">0.1535</LL>
+              <kl units="/day">0.242628872394562</kl>
+              <xf units="0-1">1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.36744047999382</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>400</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.0472521595656872</kl>
+              <xf>0.153815722533429</xf>
+            </Layer>
+            <Layer>
+              <Thickness>270</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.0293168395757675</kl>
+              <xf>0.731981528228313</xf>
+            </Layer>
+            <Layer>
+              <Thickness>500</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.00528755336999893</kl>
+              <xf>0.731981528228313</xf>
+            </Layer>
           </SoilCrop>
           <SoilCrop name="ryegrass_clover">
-            <Thickness>
-              <double>180</double>
-              <double>150</double>
-              <double>400</double>
-              <double>270</double>
-              <double>500</double>
-            </Thickness>
-            <LL>
-              <double>0.1535</double>
-              <double>0.201</double>
-              <double>0.201</double>
-              <double>0.162</double>
-              <double>0.162</double>
-            </LL>
-            <LLMetadata>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-            </LLMetadata>
-            <KL>
-              <double>0.214377656579018</double>
-              <double>0.271649757027626</double>
-              <double>0.0139478892087936</double>
-              <double>0.00528755336999893</double>
-              <double>0.000275798817165196</double>
-            </KL>
-            <XF>
-              <double>1</double>
-              <double>0.825306868491682</double>
-              <double>0.120995732814878</double>
-              <double>0.510686183366188</double>
-              <double>0.510686183366188</double>
-            </XF>
+            <Layer>
+              <Thickness units="mm">180</Thickness>
+              <LL units="mm/mm" code="E">0.1535</LL>
+              <kl units="/day">0.214377656579018</kl>
+              <xf units="0-1">1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.271649757027626</kl>
+              <xf>0.825306868491682</xf>
+            </Layer>
+            <Layer>
+              <Thickness>400</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.0139478892087936</kl>
+              <xf>0.120995732814878</xf>
+            </Layer>
+            <Layer>
+              <Thickness>270</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.00528755336999893</kl>
+              <xf>0.510686183366188</xf>
+            </Layer>
+            <Layer>
+              <Thickness>500</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.000275798817165196</kl>
+              <xf>0.510686183366188</xf>
+            </Layer>
           </SoilCrop>
           <SoilCrop name="ryegrass">
-            <Thickness>
-              <double>180</double>
-              <double>150</double>
-              <double>400</double>
-              <double>270</double>
-              <double>500</double>
-            </Thickness>
-            <LL>
-              <double>0.1535</double>
-              <double>0.201</double>
-              <double>0.201</double>
-              <double>0.162</double>
-              <double>0.162</double>
-            </LL>
-            <LLMetadata>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-            </LLMetadata>
-            <KL>
-              <double>0.214377656579018</double>
-              <double>0.271649757027626</double>
-              <double>0.0139478892087936</double>
-              <double>0.00528755336999893</double>
-              <double>0.000275798817165196</double>
-            </KL>
-            <XF>
-              <double>1</double>
-              <double>0.825306868491682</double>
-              <double>0.120995732814878</double>
-              <double>0.510686183366188</double>
-              <double>0.510686183366188</double>
-            </XF>
+            <Layer>
+              <Thickness units="mm">180</Thickness>
+              <LL units="mm/mm" code="E">0.1535</LL>
+              <kl units="/day">0.214377656579018</kl>
+              <xf units="0-1">1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.271649757027626</kl>
+              <xf>0.825306868491682</xf>
+            </Layer>
+            <Layer>
+              <Thickness>400</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.0139478892087936</kl>
+              <xf>0.120995732814878</xf>
+            </Layer>
+            <Layer>
+              <Thickness>270</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.00528755336999893</kl>
+              <xf>0.510686183366188</xf>
+            </Layer>
+            <Layer>
+              <Thickness>500</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.000275798817165196</kl>
+              <xf>0.510686183366188</xf>
+            </Layer>
           </SoilCrop>
           <SoilCrop name="whiteclover">
-            <Thickness>
-              <double>180</double>
-              <double>150</double>
-              <double>400</double>
-              <double>270</double>
-              <double>500</double>
-            </Thickness>
-            <LL>
-              <double>0.1535</double>
-              <double>0.201</double>
-              <double>0.201</double>
-              <double>0.162</double>
-              <double>0.162</double>
-            </LL>
-            <LLMetadata>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-              <string>Estimated based on local knowledge</string>
-            </LLMetadata>
-            <KL>
-              <double>0.228819847106934</double>
-              <double>0.330127707123756</double>
-              <double>0.0241696406155825</double>
-              <double>0.0132411256432533</double>
-              <double>0.00122551582753658</double>
-            </KL>
-            <XF>
-              <double>1</double>
-              <double>0.449328964117222</double>
-              <double>0.0907179532894125</double>
-              <double>0.301194211912202</double>
-              <double>0.301194211912202</double>
-            </XF>
+            <Layer>
+              <Thickness units="mm">180</Thickness>
+              <LL units="mm/mm" code="E">0.1535</LL>
+              <kl units="/day">0.228819847106934</kl>
+              <xf units="0-1">1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.330127707123756</kl>
+              <xf>0.449328964117222</xf>
+            </Layer>
+            <Layer>
+              <Thickness>400</Thickness>
+              <LL code="E">0.201</LL>
+              <kl>0.0241696406155825</kl>
+              <xf>0.0907179532894125</xf>
+            </Layer>
+            <Layer>
+              <Thickness>270</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.0132411256432533</kl>
+              <xf>0.301194211912202</xf>
+            </Layer>
+            <Layer>
+              <Thickness>500</Thickness>
+              <LL code="E">0.162</LL>
+              <kl>0.00122551582753658</kl>
+              <xf>0.301194211912202</xf>
+            </Layer>
           </SoilCrop>
-          <Thickness>
-            <double>200</double>
-            <double>200</double>
-            <double>200</double>
-            <double>200</double>
-            <double>200</double>
-            <double>200</double>
-            <double>200</double>
-            <double>200</double>
-          </Thickness>
-          <KS>
-            <double>4832.03882317437</double>
-            <double>389.229035400118</double>
-            <double>16.3618936612702</double>
-            <double>97.9950031817664</double>
-            <double>97.9950031817664</double>
-            <double>97.995</double>
-            <double>97.995</double>
-            <double>97.995</double>
-          </KS>
-          <BD>
-            <double>1.3105</double>
-            <double>1.524</double>
-            <double>1.65</double>
-            <double>1.601</double>
-            <double>1.601</double>
-            <double>1.601</double>
-            <double>1.601</double>
-            <double>1.601</double>
-          </BD>
-          <BDMetadata>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>
-            </string>
-            <string>
-            </string>
-            <string>
-            </string>
-          </BDMetadata>
-          <AirDry>
-            <double>0.0115</double>
-            <double>0.012</double>
-            <double>0.149</double>
-            <double>0.157</double>
-            <double>0.165000015</double>
-            <double>0.173</double>
-            <double>0.185</double>
-            <double>0.198600006</double>
-          </AirDry>
-          <LL15>
-            <double>0.0115</double>
-            <double>0.012</double>
-            <double>0.149</double>
-            <double>0.157</double>
-            <double>0.165000015</double>
-            <double>0.173</double>
-            <double>0.185</double>
-            <double>0.198600006</double>
-          </LL15>
-          <DUL>
-            <double>0.23</double>
-            <double>0.24</double>
-            <double>0.28</double>
-            <double>0.29</double>
-            <double>0.3</double>
-            <double>0.31</double>
-            <double>0.325</double>
-            <double>0.342</double>
-          </DUL>
-          <SAT>
-            <double>0.3805</double>
-            <double>0.384</double>
-            <double>0.3415</double>
-            <double>0.3495</double>
-            <double>0.357500015</double>
-            <double>0.3655</double>
-            <double>0.3775</double>
-            <double>0.391100006</double>
-          </SAT>
         </Water>
-        <SoilWater>
+        <SoilWat>
           <SummerCona>4.4</SummerCona>
           <SummerU>9</SummerU>
           <SummerDate>1-Oct</SummerDate>
@@ -879,88 +805,103 @@
           <DiffusConst>88</DiffusConst>
           <DiffusSlope>35</DiffusSlope>
           <Salb>0.13</Salb>
-          <CN2Bare>73</CN2Bare>
-          <CNRed>20</CNRed>
-          <CNCov>0.8</CNCov>
-          <Thickness>
-            <double>180</double>
-            <double>150</double>
-            <double>400</double>
-            <double>270</double>
-            <double>500</double>
-          </Thickness>
-          <SWCON>
-            <double>0.496441652363301</double>
-            <double>0.365575319464424</double>
-            <double>0.0968316236981163</double>
-            <double>0.306272690019786</double>
-            <double>0.306272690019786</double>
-          </SWCON>
-        </SoilWater>
+          <Cn2Bare>73</Cn2Bare>
+          <CnRed>20</CnRed>
+          <CnCov>0.8</CnCov>
+          <Slope />
+          <DischargeWidth />
+          <CatchmentArea />
+          <MaxPond />
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <SWCON units="0-1">0.496441652363301</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <SWCON>0.365575319464424</SWCON>
+            <MWCON />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <SWCON>0.0968316236981163</SWCON>
+            <MWCON />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <SWCON>0.306272690019786</SWCON>
+            <MWCON />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <SWCON>0.306272690019786</SWCON>
+            <MWCON />
+            <KLAT units="mm/d" />
+          </Layer>
+        </SoilWat>
         <SoilOrganicMatter>
-          <RootCN>40</RootCN>
+          <RootCn>40</RootCn>
           <RootWt>1000</RootWt>
-          <SoilCN>11</SoilCN>
+          <SoilCn>11</SoilCn>
           <EnrACoeff>7.4</EnrACoeff>
           <EnrBCoeff>0.2</EnrBCoeff>
-          <Thickness>
-            <double>180</double>
-            <double>150</double>
-            <double>400</double>
-            <double>270</double>
-            <double>500</double>
-          </Thickness>
-          <OC>
-            <double>2.62509797633343</double>
-            <double>1.24694031672971</double>
-            <double>0.316004293710514</double>
-            <double>0.207953620272232</double>
-            <double>0.200365542475381</double>
-          </OC>
-          <OCMetadata>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-            <string>Estimated based on local knowledge</string>
-          </OCMetadata>
-          <FBiom>
-            <double>0.0333099300949596</double>
-            <double>0.0186614266926403</double>
-            <double>0.0116634262048469</double>
-            <double>0.0102228802725968</double>
-            <double>0.0100221233748059</double>
-          </FBiom>
-          <FInert>
-            <double>0.437120879838036</double>
-            <double>0.656885264024723</double>
-            <double>0.849635116265262</double>
-            <double>0.944959741045969</double>
-            <double>0.982659151583417</double>
-          </FInert>
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <OC units="Total %" code="E">2.62509797633343</OC>
+            <FBIOM units="0-1">0.0333099300949596</FBIOM>
+            <FINERT units="0-1">0.437120879838036</FINERT>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <OC code="E">1.24694031672971</OC>
+            <FBIOM>0.0186614266926403</FBIOM>
+            <FINERT>0.656885264024723</FINERT>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <OC code="E">0.316004293710514</OC>
+            <FBIOM>0.0116634262048469</FBIOM>
+            <FINERT>0.849635116265262</FINERT>
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <OC code="E">0.207953620272232</OC>
+            <FBIOM>0.0102228802725968</FBIOM>
+            <FINERT>0.944959741045969</FINERT>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <OC code="E">0.200365542475381</OC>
+            <FBIOM>0.0100221233748059</FBIOM>
+            <FINERT>0.982659151583417</FINERT>
+          </Layer>
         </SoilOrganicMatter>
-        <InitialWater>
-          <FractionFull>1</FractionFull>
-          <PercentMethod>FilledFromTop</PercentMethod>
-        </InitialWater>
+        <InitWater>
+          <percentmethod>
+            <percent>1</percent>
+            <distributed>filled from top</distributed>
+          </percentmethod>
+        </InitWater>
         <Sample name="Initial nitrogen">
           <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>200</double>
-            <double>1800</double>
-          </Thickness>
-          <NO3>
-            <double>30</double>
-            <double>20</double>
-          </NO3>
-          <NO3Units>kgha</NO3Units>
-          <NH4>
-            <double>5</double>
-            <double>1</double>
-          </NH4>
-          <NH4Units>kgha</NH4Units>
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <no3 units="kg/ha">30</no3>
+            <nh4 units="kg/ha">5</nh4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>1800</Thickness>
+            <no3 units="kg/ha">20</no3>
+            <nh4 units="kg/ha">1</nh4>
+            <SW units="mm/mm" />
+          </Layer>
         </Sample>
-      </Soil>
+      </soil>
       <barley />
       <folder name="Manager folder">
         <operations>
@@ -1137,7 +1078,7 @@ if (date_within('[date1], [date2]') = 1) then
           </ui>
           <script>
             <text>if today = date('[date]') then
-   [crop] sow population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+   [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
 endif</text>
             <event>start_of_day</event>
           </script>
@@ -1149,7 +1090,7 @@ endif</text>
           </script>
           <script>
             <text>if (plants &lt;&gt; 0) then
-   grain_no_per_head = GrainNumber / plants
+   grain_no_per_head = grain_no / plants
 endif</text>
             <event>start_of_day</event>
           </script>
@@ -1556,7 +1497,23 @@ endif</text>
         <events name="Reporting Frequency" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/outputfile/Reporting Frequency" />
         <variables name="Variables" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/outputfile/Variables" />
       </outputfile>
-      <Soil name="Templeton deep 1 " shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 ">
+      <soil name="Templeton deep 1 " shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 ">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Analysis shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Analysis" />
         <Water shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Water">
           <SoilCrop name="Barley" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Water/Barley" />
@@ -1577,11 +1534,11 @@ endif</text>
           <SoilCrop name="ryegrass" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Water/ryegrass" />
           <SoilCrop name="whiteclover" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Water/whiteclover" />
         </Water>
-        <SoilWater shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /SoilWater" />
+        <SoilWat shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /SoilWat" />
         <SoilOrganicMatter shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /SoilOrganicMatter" />
-        <InitialWater shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /InitialWater" />
+        <InitWater shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /InitWater" />
         <Sample name="Initial nitrogen" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Initial nitrogen" />
-      </Soil>
+      </soil>
       <barley shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/barley" />
       <folder name="Manager folder" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Manager folder">
         <operations>
@@ -2068,7 +2025,23 @@ endif</text>
         <events name="Reporting Frequency" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/outputfile/Reporting Frequency" />
         <variables name="Variables" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/outputfile/Variables" />
       </outputfile>
-      <Soil name="Templeton deep 1 " shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 ">
+      <soil name="Templeton deep 1 " shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 ">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Analysis shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Analysis" />
         <Water shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Water">
           <SoilCrop name="Barley" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Water/Barley" />
@@ -2089,11 +2062,11 @@ endif</text>
           <SoilCrop name="ryegrass" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Water/ryegrass" />
           <SoilCrop name="whiteclover" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Water/whiteclover" />
         </Water>
-        <SoilWater shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /SoilWater" />
+        <SoilWat shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /SoilWat" />
         <SoilOrganicMatter shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /SoilOrganicMatter" />
-        <InitialWater shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /InitialWater" />
+        <InitWater shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /InitWater" />
         <Sample name="Initial nitrogen" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Initial nitrogen" />
-      </Soil>
+      </soil>
       <barley shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/barley" />
       <folder name="Manager folder" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Manager folder">
         <operations>
@@ -2586,7 +2559,23 @@ endif</text>
         <events name="Reporting Frequency" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/outputfile/Reporting Frequency" />
         <variables name="Variables" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/outputfile/Variables" />
       </outputfile>
-      <Soil name="Templeton deep 1 " shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 ">
+      <soil name="Templeton deep 1 " shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 ">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Analysis shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Analysis" />
         <Water shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Water">
           <SoilCrop name="Barley" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Water/Barley" />
@@ -2607,11 +2596,11 @@ endif</text>
           <SoilCrop name="ryegrass" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Water/ryegrass" />
           <SoilCrop name="whiteclover" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Water/whiteclover" />
         </Water>
-        <SoilWater shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /SoilWater" />
+        <SoilWat shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /SoilWat" />
         <SoilOrganicMatter shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /SoilOrganicMatter" />
-        <InitialWater shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /InitialWater" />
+        <InitWater shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /InitWater" />
         <Sample name="Initial nitrogen" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Initial nitrogen" />
-      </Soil>
+      </soil>
       <barley shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/barley" />
       <folder name="Manager folder" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Manager folder">
         <operations>
@@ -3112,7 +3101,23 @@ endif</text>
         <events name="Reporting Frequency" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/outputfile/Reporting Frequency" />
         <variables name="Variables" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/outputfile/Variables" />
       </outputfile>
-      <Soil name="Templeton deep 1 " shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 ">
+      <soil name="Templeton deep 1 " shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 ">
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description" />
+        <LocalName />
+        <Site />
+        <NearestTown />
+        <Region />
+        <State />
+        <Country />
+        <NaturalVegetation />
+        <ApsoilNumber />
+        <Latitude />
+        <Longitude />
+        <LocationAccuracy />
+        <DataSource />
+        <Comments />
         <Analysis shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Analysis" />
         <Water shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Water">
           <SoilCrop name="Barley" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Water/Barley" />
@@ -3133,11 +3138,11 @@ endif</text>
           <SoilCrop name="ryegrass" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Water/ryegrass" />
           <SoilCrop name="whiteclover" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Water/whiteclover" />
         </Water>
-        <SoilWater shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /SoilWater" />
+        <SoilWat shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /SoilWat" />
         <SoilOrganicMatter shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /SoilOrganicMatter" />
-        <InitialWater shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /InitialWater" />
+        <InitWater shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /InitWater" />
         <Sample name="Initial nitrogen" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Templeton deep 1 /Initial nitrogen" />
-      </Soil>
+      </soil>
       <barley shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/barley" />
       <folder name="Manager folder" shortcut="/RS_Barley_9596/RS_Barley_9596_Fulldrought_N150/paddock/Manager folder">
         <operations>

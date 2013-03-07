@@ -3,21 +3,21 @@ outputfile    =sunflower.out
 variable = clock.year
 variable = clock.dd/mm/yyyy
 variable = sunflower.das_int as DaysAfterSowing
-variable = sunflower.PhenologyStage
-variable = sunflower.LAI
-variable = sunflower.biomass_wt as Biomass
-variable = sunflower.GrainWt as grain
-variable = sunflower.Yield
-variable = sunflower.GrainN as GrainN
+variable = sunflower.stage
+variable = sunflower.lai
+variable = sunflower.biomass_wt as biomass
+variable = sunflower.grain_wt as grain
+variable = sunflower.yield
+variable = sunflower.grain_n as grain_n
 variable = sunflower.tiller_no_fertile as tillers
-variable = sunflower.RootDepth as rootdepth
-variable = sunflower.WaterStressPheno as ws_pheno
-variable = sunflower.WaterStressPhoto as ws_photo
-variable = sunflower.WaterStressExpansion as ws_expan
+variable = sunflower.root_depth as rootdepth
+variable = sunflower.swdef_pheno as ws_pheno
+variable = sunflower.swdef_photo as ws_photo
+variable = sunflower.swdef_expan as ws_expan
 variable = sunflower.swdef_tiller as ws_tiller
-variable = sunflower.NStressPheno as Ns_pheno
-variable = sunflower.NStressPhoto as Ns_photo
-variable = sunflower.NStressExpansion as Ns_expan
+variable = sunflower.nfact_pheno as Ns_pheno
+variable = sunflower.nfact_photo as Ns_photo
+variable = sunflower.nfact_expan as Ns_expan
 variable = sunflower.nfact_tiller as Ns_tiller
 
 [sample.clock.parameters]
@@ -29,14 +29,14 @@ if day = 349 and year = 1988 then
    sunflower sow cultivar = Sunfola68-2, plants = 5, sowing_depth = 50 (mm)
 endif
 
-if (sunflower.PhenologyStage = 11) then
+if (sunflower.stage = 11) then
    sunflower harvest
    sunflower end_crop
 endif
 
 
 [sample.manager.end_of_day]
-if (sunflower.PhenologyStage > 0 and sunflower.PhenologyStage <12 ) then
+if (sunflower.stage > 0 and sunflower.stage <12 ) then
    report do_output
 endif
 

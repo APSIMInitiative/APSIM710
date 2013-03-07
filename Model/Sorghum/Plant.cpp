@@ -154,11 +154,11 @@ void Plant::onSowCrop(SowType &sow)
    else
       cultivar = sow.Cultivar;
 
-   plantDensity = (float)sow.Population;
+   plantDensity = (float)sow.plants;
    if (plantDensity == 0)
       throw std::runtime_error("plant density ('plants') not specified");
 
-   checkRange(scienceAPI, plantDensity, 0.0, 1000.0, "Population");
+   checkRange(scienceAPI, plantDensity, 0.0, 1000.0, "plants");
 
    sowingDepth = (float)sow.sowing_depth;
    if (sowingDepth == 0)

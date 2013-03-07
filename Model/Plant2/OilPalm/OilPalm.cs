@@ -374,7 +374,7 @@ public class OilPalm
     }
     private void DoGrowth()
     {
-        DltDM = RUE.Value * Radn * CoverTotal*FW;
+        DltDM = RUE.Value * Radn * cover_green*FW;
         double DMAvailable = DltDM;
 
         RootGrowth = (DltDM * RootFraction.Value);
@@ -450,7 +450,7 @@ public class OilPalm
     }
     private void DoWaterBalance()
     {
-        PEP = eo * CoverTotal;
+        PEP = eo * cover_green;
 
 
         for (int j = 0; j < ll15_dep.Length; j++)
@@ -691,7 +691,7 @@ public class OilPalm
     }
 
     [Output]
-    public double CoverTotal
+    public double cover_green
     {
         get
         {

@@ -14,21 +14,21 @@ variable = surfaceom.surfaceom_wt
 variable = surfaceom.surfaceom_cover
 variable = surfaceom.surfaceom_n
 variable = fieldpea.DaysAfterSowing
-variable = fieldpea.PhenologyStage
-variable = fieldpea.LAI
-variable = fieldpea.Biomass
+variable = fieldpea.stage
+variable = fieldpea.lai
+variable = fieldpea.biomass
 variable = fieldpea.green_biomass
-variable = fieldpea.Yield
+variable = fieldpea.yield
 variable = fieldpea.ep
-variable = fieldpea.WaterStressPhoto
-variable = fieldpea.NStressPhoto
-variable = fieldpea.RootDepth
-variable = fieldpea.NodeNumber
-variable = fieldpea.LeafLiveWt
-variable = fieldpea.StemLiveWt
-variable = fieldpea.FloweringDate
-variable = fieldpea.MaturityDate
-variable = fieldpea.LeafNumber
+variable = fieldpea.swdef_photo
+variable = fieldpea.nfact_photo
+variable = fieldpea.root_depth
+variable = fieldpea.node_no
+variable = fieldpea.LeafGreenWt
+variable = fieldpea.StemGreenWt
+variable = fieldpea.flowering_date
+variable = fieldpea.maturity_date
+variable = fieldpea.leaf_no
 variable = SoilWat.esw
 
 [all.clock.parameters]
@@ -48,15 +48,15 @@ name = wheat
 
 report do_output
 
-if fieldpea.StageName = 'harvest_ripe' or fieldpea.PlantStatus = 'dead' then
+if fieldpea.StageName = 'harvest_ripe' or fieldpea.plant_status = 'dead' then
    fieldpea harvest
    fieldpea kill_crop
    fieldpea end_crop
 endif
 
 [fieldpea_sample.Operations.parameters]
- 137 2002 fieldpea sow population = 50, sowing_depth = 30, cultivar = parafield
- 176 2003 fieldpea sow population = 70, sowing_depth = 30, cultivar = mutka
+ 137 2002 fieldpea sow plants = 50, sowing_depth = 30, cultivar = parafield
+ 176 2003 fieldpea sow plants = 70, sowing_depth = 30, cultivar = mutka
 
 
 

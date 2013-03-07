@@ -170,7 +170,7 @@ proc canHarvestCrop {paddock crop} {
 
    if {$crop == "wheat" || $crop == "sorghum" || $crop == "maize" || $crop == "chickpea" || $crop == "weed"} {
       set stageName [apsimGet $paddock.$crop.StageName]
-      set plant_status [apsimGet $paddock.$crop.PlantStatus]
+      set plant_status [apsimGet $paddock.$crop.plant_status]
       if {$stageName == "harvest_ripe" || $plant_status == "dead"} {
          return 1
       }
@@ -190,7 +190,7 @@ proc harvestAndEndCrop {paddock crop} {
       set realCrop $crop
    }
 
-   if {[apsimGet .masterpm.$paddock.$realcrop.PlantStatus] != "dead"} {
+   if {[apsimGet .masterpm.$paddock.$realCrop.plant_status] != "dead"} {
       if {$realCrop == "wheat"} {
          apsimSendMessage economics income {category cropprice} "name $realCrop"  \
                           "yield [expr [apsimGet .masterpm.$paddock.$realCrop.yield]/1000.0]" \

@@ -52,28 +52,28 @@ Paddock:
      Output variables:
         year
         day
-        canola.PhenologyStage
-        canola.PlantStatus
+        canola.stage
+        canola.plant_status
         manager.event
-        canola.GrainN
-        canola.DaysAfterSowing
-        canola.TTAfterSowing
-        canola.GrainWt
-        canola.Yield units kg/ha
-        canola.AboveGroundWt
-        canola.population
-        canola.LeafNumber
-        canola.RootDepth
-        canola.AboveGroundLiveWt as green_biomass
+        canola.grain_n
+        canola.daysaftersowing
+        canola.ttaftersowing
+        canola.grain_wt
+        canola.yield units kg/ha
+        canola.biomass_wt
+        canola.plants
+        canola.leaf_no
+        canola.root_depth
+        canola.green_biomass_wt as green_biomass
         tracker1.avg@canola_swdef_pheno
         tracker1.avg@canola_swdef_photo
         tracker1.avg@canola_swdef_expan
         tracker1.avg@canola_nfact_photo
         tracker1.avg@canola_nfact_grain
-        canola.AboveGroundN
+        canola.n_uptake
         canola.n_uptake_stover as stover_n
         canola.esw_layr()
-        canola.LAI
+        canola.lai
         sw_dep() as total_sw
         no3() as total_no3
         tracker1.sum@canola_ep[]
@@ -83,41 +83,41 @@ Paddock:
         tracker1.sum@soilwat2_drain
         surfaceom.surfaceom_wt
         canola.flowering_das as flow_das
-        canola.FloweringDate as flow_date
+        canola.flowering_date as flow_date
         day_length
         canola.maturity_das as mat_das
-        canola.MaturityDate as mat_date
-        canola.CoverLive
+        canola.maturity_date as mat_date
+        canola.cover_green
         tracker1.avg@met_maxt
         tracker1.avg@met_mint
         tracker1.avg@met_radn
         tracker1.sum@met_rain
-        canola.Height
-        canola.NodeNumber
+        canola.height
+        canola.node_no
         manager.oil_conc
         manager.avg_temp
-        canola.LeafLiveWt
-        canola.StemLiveWt
-        canola.PodLiveWt
-        canola.PAI
+        canola.leafgreenwt
+        canola.stemgreenwt
+        canola.podgreenwt
+        canola.pai
         dd/mm/yyyy as date
-        canola.AboveGroundLiveN as green_n
-        canola.LeafLiveN
-        canola.StemLiveN
-        canola.PodLiveN
-        canola.LAITotal
-        canola.meallivewt
-        canola.oillivewt
+        canola.green_biomass_n as green_n
+        canola.leafgreenn
+        canola.stemgreenn
+        canola.podgreenn
+        canola.tlai
+        canola.mealgreenwt
+        canola.oilgreenwt
         canola.dlt_dm_grain_demand
         canola.grain_oil_conc
         canola.dlt_dm_oil_conv
         canola.dlt_dm_oil_conv_retrans
         canola.growthn
         canola.retranslocationn
-        canola.LeafLiveNConc
-        canola.StemLiveNConc
+        canola.leafgreennconc
+        canola.stemgreennconc
         canola.n_conc_grain
-        canola.meallivenconc
+        canola.mealgreennconc
         canola.n_conc_crit
         canola.n_conc_min
         manager.avg_swdef
@@ -131,7 +131,7 @@ Paddock:
 ------- Operations Initialisation ---------------------------------------------
      Operations Schedule
      ===================
-      18/06/1999  Prepare      canola sow population = 40, row_spacing = 200, sowing_depth = 20, cultivar = monty
+      18/06/1999  Prepare      canola sow plants = 40, row_spacing = 200, sowing_depth = 20, cultivar = monty
       18/06/1999  Prepare      fertiliser apply amount = 120, depth = 50, type = nh4no3
 
 ------- irrigation Initialisation ---------------------------------------------
@@ -170,7 +170,7 @@ Paddock:
                       stagename = 'maturity' or
                       stagename = 'harvest_ripe') then
            cum_temp = cum_temp + (maxt + mint) / 2
-           cum_swdef = cum_swdef + (1 - waterstressphoto)
+           cum_swdef = cum_swdef + swdef_photo
            cum_days = cum_days + 1
         endif
         if (cum_days > 0) then
@@ -184,7 +184,7 @@ Paddock:
         else
            oil_conc = 0
         endif
-     if (canola.stagename = 'harvest_ripe' or canola.plantstatus = 'dead') then
+     if (canola.stagename = 'harvest_ripe' or canola.plant_status = 'dead') then
         canola harvest
         canola kill_crop
         canola end_crop

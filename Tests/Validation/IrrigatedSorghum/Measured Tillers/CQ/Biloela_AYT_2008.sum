@@ -55,17 +55,17 @@ Paddock:
         dul_dep()
         WaterSD
         Biomass
-        Yield
-        LAI
+        yield
+        lai
         GrainNo
-        PhenologyStage
+        stage
         biomass_wt
         GrainGreenWt
         RachisGreenWt
-        StemLiveWt
+        StemGreenWt
         GrainSize
-        LeafDeadWt
-        LeafLiveWt
+        LeafSenescedWt
+        LeafGreenWt
         TillerNoFertile
 
      Output file = Biloela_AYT_2008.out
@@ -104,7 +104,7 @@ Paddock:
          sowyear = year
         adjftn = 1.2 *   1.0
         adjdensity = 6.9 * 1.0
-        sorghum sow population = adjdensity, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = solid, tiller_no_fertile = adjftn
+        sorghum sow plants = adjdensity, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = solid, tiller_no_fertile = adjftn
      endif
      if (paddock_is_fallow() = 0) then
             outputfile do_output
@@ -116,7 +116,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if sorghum.stagename = 'harvest_ripe' or sorghum.plantstatus = 'dead' then
+                if sorghum.stagename = 'harvest_ripe' or sorghum.plant_status = 'dead' then
        sorghum  harvest
        sorghum  end_crop
                 endif
@@ -274,7 +274,7 @@ Paddock:
      Manager creating a new local real variable : sowyear = 2009.00000
      Manager creating a new local real variable : adjftn = 1.20000
      Manager creating a new local real variable : adjdensity = 6.90000
-     Manager sending message :- sorghum sow  population = 6.90000, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = solid, tiller_no_fertile = 1.20000
+     Manager sending message :- sorghum sow  plants = 6.90000, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = solid, tiller_no_fertile = 1.20000
 30 January 2009(Day of year=30), Sorghum: 
      Sowing initiate
      

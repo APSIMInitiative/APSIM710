@@ -5,8 +5,8 @@ outputfile  =soybean.out
 
 variable = clock.day
 variable = clock.year
-variable = soybean.LAI
-variable = soybean.Biomass
+variable = soybean.lai
+variable = soybean.biomass
 variable = soybean.green_biomass
 [sample.clock.parameters]
 ! Start and end date of run (day number of year and year)
@@ -19,7 +19,7 @@ if day = 330 and year  = 1988 then
    soybean sow cultivar = davis, plants = 25 (/m2), sowing_depth = 40 (mm)
 endif
 
-if soybean.StageName = 'harvest_ripe' or soybean.PlantStatus = 'dead' then
+if soybean.StageName = 'harvest_ripe' or soybean.plant_status = 'dead' then
    soybean harvest
    soybean end_crop   
 

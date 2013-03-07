@@ -53,26 +53,26 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        Biomass
-        LAI
-        LeafLiveWt
-        StemLiveWt
-        TuberLiveWt
+        biomass
+        lai
+        LeafGreenWt
+        StemGreenWt
+        TuberGreenWt
         st(1)
         plants
-        NodeNumber
+        node_no
         node_no_sen
         stf
-        PhenologyStage
-        NStressPheno
-        NStressPhoto
-        WaterStressPheno
-        WaterStressPhoto
-        StemLiveP
+        stage
+        nfact_pheno
+        nfact_photo
+        swdef_pheno
+        swdef_photo
+        StemGreenP
         density
         applied_irr_tot
-        AboveGroundN
-        PhenologyStage
+        n_uptake
+        stage
 
      Output file = 33-E_Devonport_04.out
      Format = normal
@@ -122,7 +122,7 @@ Paddock:
            swf = 1
         endif
         density = 9 * stem_per_seed * stf * swf
-        potato sow population = density, sowing_depth = 20, cultivar = russet, row_spacing = 815, crop_class = plant
+        potato sow plants = density, sowing_depth = 20, cultivar = russet, row_spacing = 815, crop_class = plant
      endif
      if today = date('11-nov') then
         choosenextcrop = 'yes'
@@ -136,7 +136,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if potato.stagename = 'maturity' or potato.plantstatus = 'dead' then
+                if potato.stagename = 'maturity' or potato.plant_status = 'dead' then
        potato  harvest
        potato  end_crop
                 endif
@@ -173,7 +173,7 @@ Paddock:
      
      SECTION:- start_of_day
      irriginterval = irriginterval + 1
-      if potato.plantstatus = 'alive'  and (potato.phenologystage > 3) and (potato.phenologystage < 6) and (irriginterval > 12) then
+      if potato.plant_status = 'alive'  and (potato.stage > 3) and (potato.stage < 6) and (irriginterval > 12) then
      'tul_2 water' set dlt_sw_dep = 30.0 0.0 0.0 0.0 0.0
                 irriginterval = 0
                 applied_irr_tot = applied_irr_tot + 30

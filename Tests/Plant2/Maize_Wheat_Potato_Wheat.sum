@@ -91,15 +91,15 @@ Paddock:
         PTmin_res
         PTdnit
         topsgreenwt
-        Yield
-        TuberLiveWt
+        yield
+        tubergreenwt
         nit_tot
         carbon_tot
         hum_n
-        LAI
+        lai
         zadok_stage
-        PhenologyStage
-        Biomass
+        stage
+        biomass
         TotalWt
 
      Output file = Maize_Wheat_Potato_Wheat.out
@@ -150,13 +150,13 @@ Paddock:
      reset_pt = 0
      if (date_within('1-oct,1-nov') = 1) and
      (rotation_counter = 0) and (days_after_harvest > 2) and (swd_top<=1)  then
-        maize sow population =10, sowing_depth =30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
+        maize sow plants =10, sowing_depth =30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
         outputfile do_output
         rotation_counter = 1
         reset_pt = 1
      elseif (date_within('2-nov,1-dec') = 1) and
      (rotation_counter = 0) and (days_after_harvest > 2) and (swd_top<=1)then
-        maize sow population =10, sowing_depth =30, cultivar  pioneer_3153, row_spacing = 0.762, crop_class = plant
+        maize sow plants =10, sowing_depth =30, cultivar  pioneer_3153, row_spacing = 0.762, crop_class = plant
         outputfile do_output
         rotation_counter = 1
         reset_pt = 1
@@ -166,8 +166,8 @@ Paddock:
         rotation_counter = 2
         reset_pt = 1
      endif
-     if maize.plantstatus <> 'out' then
-     if           (rotation_counter = 1) and (maize.stagename = 'end_grain_fill' or maize.plantstatus = 'dead' or today=date('31-may')) then
+     if maize.plant_status <> 'out' then
+     if           (rotation_counter = 1) and (maize.stagename = 'end_grain_fill' or maize.plant_status = 'dead' or today=date('31-may')) then
         outputfile do_output
         maize harvest height = 0.1 (mm) , remove = 0.98 ()
         maize end_crop
@@ -178,7 +178,7 @@ Paddock:
      endif
      if           today<date('1-jul') and
       (rotation_counter = 2) and (days_after_harvest > 2) and (swd_top<=1)  then
-          wheat sow population =400, sowing_depth =30, cultivar = avalon, row_spacing = 150, crop_class = plant
+          wheat sow plants =400, sowing_depth =30, cultivar = avalon, row_spacing = 150, crop_class = plant
         outputfile do_output
         rotation_counter = 3
         reset_pt = 1
@@ -188,8 +188,8 @@ Paddock:
         rotation_counter = 4
         reset_pt = 1
      endif
-     if wheat.plantstatus <> 'out' then
-     if           (rotation_counter = 3) and (wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' or today = date('23-jul')) then
+     if wheat.plant_status <> 'out' then
+     if           (rotation_counter = 3) and (wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' or today = date('23-jul')) then
         outputfile do_output
         wheat  harvest height = 0.1 (mm) , remove = 0.98 ()
         wheat  end_crop
@@ -210,8 +210,8 @@ Paddock:
      rotation_counter = 6
         reset_pt = 1
      endif
-     if potato2.plantstatus <> 'out' then
-     if           ((rotation_counter = 5) and (potato2.phenologycurrentphasename = 'maturity' or potato2.plantstatus = 'dead')) then
+     if potato2.plant_status <> 'out' then
+     if           ((rotation_counter = 5) and (potato2.phenologycurrentphasename = 'maturity' or potato2.plant_status = 'dead')) then
         outputfile do_output
         potato2 harvest height = 0.1 (mm) , remove = 0.98 ()
         potato2 endcrop
@@ -223,7 +223,7 @@ Paddock:
      endif
      if          (today<date('1-jun') and
      (rotation_counter = 6) and (days_after_harvest > 2) and (swd_top<=1)  then
-        wheat sow population =400, sowing_depth =30, cultivar = avalon, row_spacing = 150, crop_class = plant
+        wheat sow plants =400, sowing_depth =30, cultivar = avalon, row_spacing = 150, crop_class = plant
         outputfile do_output
         rotation_counter = 7
         reset_pt = 1
@@ -233,8 +233,8 @@ Paddock:
         rotation_counter = 0
         reset_pt = 1
      endif
-     if wheat.plantstatus <> 'out' then
-     if           (rotation_counter = 7) and (wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' or today = date('1-may')) then
+     if wheat.plant_status <> 'out' then
+     if           (rotation_counter = 7) and (wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' or today = date('1-may')) then
         outputfile do_output
         wheat  harvest height = 0.1 (mm) , remove = 0.98 ()
         wheat  end_crop
@@ -256,15 +256,15 @@ Paddock:
      ptmin = ptmin + dlt_n_min()
      ptmin_res = ptmin_res + dlt_n_min_res()
      ptdnit = ptdnit + dnit()
-     if wheat.plantstatus <> 'out' then
+     if wheat.plant_status <> 'out' then
        ptep = ptep + wheat.ep
-       ptcropn = ptcropn + wheat.abovegroundn
+       ptcropn = ptcropn + wheat.n_uptake
      endif
-     if maize.plantstatus <> 'out' then
+     if maize.plant_status <> 'out' then
        ptep = ptep + maize.ep
        ptcropn = ptcropn + maize.no3_uptake
      endif
-     if potato2.plantstatus <> 'out' then
+     if potato2.plant_status <> 'out' then
        ptep = ptep + potato2.leaftranspiration
        ptcropn = ptcropn + potato2.rootnuptake
      endif
@@ -375,20 +375,20 @@ Paddock:
       fertilising_window = 0
      else    fertilising_window = 1
      endif
-     if               (wheat.plantstatus = 'alive') then
+     if               (wheat.plant_status = 'alive') then
        if               (n_available < trigger_level)          and
-          (wheat.phenologystage > 3)                                 and
+          (wheat.stage > 3)                                 and
           fertilising_window = 1                        and
-          (wheat.phenologystage < 6)                                          then
+          (wheat.stage < 6)                                          then
      fertiliser apply amount = n_application_amount (kg/ha), depth = 50 (mm), type = urea_n ()
        endif
-     elseif      (maize.plantstatus = 'alive')           and
+     elseif      (maize.plant_status = 'alive')           and
           (n_available < trigger_level)          and
-          (maize.phenologystage > 3)                                and
+          (maize.stage > 3)                                and
           fertilising_window = 1                        and
-          (maize.phenologystage < 7)                                          then
+          (maize.stage < 7)                                          then
      fertiliser apply amount = n_application_amount (kg/ha), depth = 50 (mm), type = urea_n ()
-     elseif      (potato2.plantstatus = 'alive') then
+     elseif      (potato2.plant_status = 'alive') then
        if               (n_available < trigger_level)           and
           (potato2.stagecodevalue > 3)                                 and
           fertilising_window = 1                        and
@@ -594,7 +594,7 @@ Paddock:
      
      Manager creating a new local real variable : nh4_leach(7) = 0.00000
 1 October 1972(Day of year=275), HawkesBay base Rotation: 
-     Manager sending message :- maize sow  population = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
+     Manager sending message :- maize sow  plants = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
 1 October 1972(Day of year=275), maize: 
      Sowing initiate
      
@@ -795,7 +795,7 @@ Paddock:
                           P  (kg/ha) =                  0.00                    0.00
      
 4 June 1973(Day of year=155), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 4 June 1973(Day of year=155), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -1020,7 +1020,7 @@ Paddock:
      Manager sending message :- potato2 endcrop
      Manager creating a new local real variable : reset_pt_variables = 1.00000
 8 March 1974(Day of year=67), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 8 March 1974(Day of year=67), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -1149,7 +1149,7 @@ Paddock:
                           N  (kg/ha) =                   0.88                   51.87
      
 1 October 1974(Day of year=274), HawkesBay base Rotation: 
-     Manager sending message :- maize sow  population = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
+     Manager sending message :- maize sow  plants = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
 1 October 1974(Day of year=274), maize: 
      Sowing initiate
      
@@ -1317,7 +1317,7 @@ Paddock:
                           P  (kg/ha) =                  0.00                    0.00
      
 23 April 1975(Day of year=113), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 23 April 1975(Day of year=113), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -1528,7 +1528,7 @@ Paddock:
 27 February 1976(Day of year=58), Roto-rainer_irrigation: 
      Manager sending message :- irrigation apply  amount = 50.00000
 3 March 1976(Day of year=63), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 3 March 1976(Day of year=63), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -1657,7 +1657,7 @@ Paddock:
                           N  (kg/ha) =                   0.88                   56.86
      
 1 October 1976(Day of year=275), HawkesBay base Rotation: 
-     Manager sending message :- maize sow  population = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
+     Manager sending message :- maize sow  plants = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
 1 October 1976(Day of year=275), maize: 
      Sowing initiate
      
@@ -1837,7 +1837,7 @@ Paddock:
                           P  (kg/ha) =                  0.00                    0.00
      
 10 June 1977(Day of year=161), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 10 June 1977(Day of year=161), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -2041,7 +2041,7 @@ Paddock:
      Manager sending message :- potato2 harvest  height = 0.1 (mm), remove = 0.98
      Manager sending message :- potato2 endcrop
 14 March 1978(Day of year=73), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 14 March 1978(Day of year=73), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -2158,7 +2158,7 @@ Paddock:
                           N  (kg/ha) =                   0.91                   33.86
      
 2 October 1978(Day of year=275), HawkesBay base Rotation: 
-     Manager sending message :- maize sow  population = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
+     Manager sending message :- maize sow  plants = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
 2 October 1978(Day of year=275), maize: 
      Sowing initiate
      
@@ -2326,7 +2326,7 @@ Paddock:
                           P  (kg/ha) =                  0.00                    0.00
      
 21 May 1979(Day of year=141), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 21 May 1979(Day of year=141), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -2521,7 +2521,7 @@ Paddock:
      Manager sending message :- potato2 harvest  height = 0.1 (mm), remove = 0.98
      Manager sending message :- potato2 endcrop
 10 March 1980(Day of year=70), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 10 March 1980(Day of year=70), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -2650,7 +2650,7 @@ Paddock:
                           N  (kg/ha) =                   0.90                   40.95
      
 1 October 1980(Day of year=275), HawkesBay base Rotation: 
-     Manager sending message :- maize sow  population = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
+     Manager sending message :- maize sow  plants = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
 1 October 1980(Day of year=275), maize: 
      Sowing initiate
      
@@ -2818,7 +2818,7 @@ Paddock:
                           P  (kg/ha) =                  0.00                    0.00
      
 28 April 1981(Day of year=118), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 28 April 1981(Day of year=118), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -3026,7 +3026,7 @@ Paddock:
      Manager sending message :- potato2 harvest  height = 0.1 (mm), remove = 0.98
      Manager sending message :- potato2 endcrop
 2 March 1982(Day of year=61), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 2 March 1982(Day of year=61), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -3155,7 +3155,7 @@ Paddock:
                           N  (kg/ha) =                   0.87                   61.30
      
 1 October 1982(Day of year=274), HawkesBay base Rotation: 
-     Manager sending message :- maize sow  population = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
+     Manager sending message :- maize sow  plants = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
 1 October 1982(Day of year=274), maize: 
      Sowing initiate
      
@@ -3323,7 +3323,7 @@ Paddock:
                           P  (kg/ha) =                  0.00                    0.00
      
 7 June 1983(Day of year=158), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 7 June 1983(Day of year=158), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -3515,7 +3515,7 @@ Paddock:
      Manager sending message :- potato2 harvest  height = 0.1 (mm), remove = 0.98
      Manager sending message :- potato2 endcrop
 29 February 1984(Day of year=60), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 29 February 1984(Day of year=60), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -3644,7 +3644,7 @@ Paddock:
                           N  (kg/ha) =                   0.88                   61.44
      
 3 October 1984(Day of year=277), HawkesBay base Rotation: 
-     Manager sending message :- maize sow  population = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
+     Manager sending message :- maize sow  plants = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
 3 October 1984(Day of year=277), maize: 
      Sowing initiate
      
@@ -3817,7 +3817,7 @@ Paddock:
                           P  (kg/ha) =                  0.00                    0.00
      
 3 May 1985(Day of year=123), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 3 May 1985(Day of year=123), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -4034,7 +4034,7 @@ Paddock:
      Manager sending message :- potato2 harvest  height = 0.1 (mm), remove = 0.98
      Manager sending message :- potato2 endcrop
 10 March 1986(Day of year=69), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 10 March 1986(Day of year=69), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -4156,7 +4156,7 @@ Paddock:
                           N  (kg/ha) =                   0.89                   52.04
      
 1 October 1986(Day of year=274), HawkesBay base Rotation: 
-     Manager sending message :- maize sow  population = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
+     Manager sending message :- maize sow  plants = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
 1 October 1986(Day of year=274), maize: 
      Sowing initiate
      
@@ -4321,7 +4321,7 @@ Paddock:
                           P  (kg/ha) =                  0.00                    0.00
      
 15 May 1987(Day of year=135), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 15 May 1987(Day of year=135), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -4518,7 +4518,7 @@ Paddock:
      Manager sending message :- potato2 harvest  height = 0.1 (mm), remove = 0.98
      Manager sending message :- potato2 endcrop
 28 February 1988(Day of year=59), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 28 February 1988(Day of year=59), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -4640,7 +4640,7 @@ Paddock:
                           N  (kg/ha) =                   0.88                   60.15
      
 3 October 1988(Day of year=277), HawkesBay base Rotation: 
-     Manager sending message :- maize sow  population = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
+     Manager sending message :- maize sow  plants = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
 3 October 1988(Day of year=277), maize: 
      Sowing initiate
      
@@ -4812,7 +4812,7 @@ Paddock:
                           P  (kg/ha) =                  0.00                    0.00
      
 8 May 1989(Day of year=128), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 8 May 1989(Day of year=128), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -5015,7 +5015,7 @@ Paddock:
 20 February 1990(Day of year=51), Roto-rainer_irrigation: 
      Manager sending message :- irrigation apply  amount = 50.00000
 26 February 1990(Day of year=57), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 26 February 1990(Day of year=57), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -5144,7 +5144,7 @@ Paddock:
                           N  (kg/ha) =                   0.88                   61.23
      
 3 October 1990(Day of year=276), HawkesBay base Rotation: 
-     Manager sending message :- maize sow  population = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
+     Manager sending message :- maize sow  plants = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
 3 October 1990(Day of year=276), maize: 
      Sowing initiate
      
@@ -5314,7 +5314,7 @@ Paddock:
                           P  (kg/ha) =                  0.00                    0.00
      
 22 May 1991(Day of year=142), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 22 May 1991(Day of year=142), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -5508,7 +5508,7 @@ Paddock:
      Manager sending message :- potato2 harvest  height = 0.1 (mm), remove = 0.98
      Manager sending message :- potato2 endcrop
 6 March 1992(Day of year=66), HawkesBay base Rotation: 
-     Manager sending message :- wheat sow  population = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 400, sowing_depth = 30, cultivar = avalon, row_spacing = 150, crop_class = plant
 6 March 1992(Day of year=66), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -5630,7 +5630,7 @@ Paddock:
                           N  (kg/ha) =                   0.91                   41.13
      
 1 October 1992(Day of year=275), HawkesBay base Rotation: 
-     Manager sending message :- maize sow  population = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
+     Manager sending message :- maize sow  plants = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
 1 October 1992(Day of year=275), maize: 
      Sowing initiate
      

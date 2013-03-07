@@ -48,8 +48,8 @@ Paddock:
         harvesting
      Output variables:
         dd/mm/yyyy
-        Yield
-        Biomass
+        yield
+        biomass
 
      Output file = RSinglePaddock.out
      Format = normal
@@ -241,7 +241,7 @@ apsim$subscribe("newmet", "NewMet", "onNewMet")
 
      --->Section: post
 
-if (apsim$get("wheat.StageName") == "harvest_ripe" || apsim$get("wheat.plantstatus") == "dead") {
+if (apsim$get("wheat.StageName") == "harvest_ripe" || apsim$get("wheat.plant_status") == "dead") {
    apsim$publish("wheat.harvest",  "Harvest", list(Remove=1.0))
    apsim$publish("wheat.end_crop", "Null", list())  
 }
@@ -261,7 +261,7 @@ if (as.Date("10-jul", "%d-%b") < as.Date("15-may", "%d-%b")) {
 }
 
 # Publishing apsim events. NB named list items are case sensitive.
-if (apsim$get("wheat.PlantStatus") == "out" && today >= w1 && today <= w2) {
+if (apsim$get("wheat.plant_status") == "out" && today >= w1 && today <= w2) {
    if ((apsim$get("rain[7]") > 25 && apsim$get("esw") >= 100) ||
        ("yes" == "yes" && today == w2)) {
       apsim$publish("wheat.sow", "Sow", list(plants=100, sowing_depth=30, Cultivar ="hartog", row_spacing = 250, crop_class = "plant"))

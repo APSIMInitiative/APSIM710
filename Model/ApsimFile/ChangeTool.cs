@@ -731,7 +731,7 @@ namespace ApsimFile
                         string NewName = Bits[4];
                         foreach (XmlNode Variable in XmlHelper.ChildNodes(Variables, "Variable"))
                         {
-                            string VariableLine = Variable.InnerText;
+                            string VariableLine = XmlHelper.Name(Variable);
 
                             // Do replacement where a module name was specified.
                             int Pos = VariableLine.ToLower().IndexOf("." + OldName);
@@ -746,15 +746,13 @@ namespace ApsimFile
                                                   + VariableLine.Substring(Pos + OldName.Length + 1);
                                 }
                             }
-                            // changing this as it had the effect of changing names with the same substring. e.g grain_n and grain_no evaluated as equal.
-                            //else if (VariableLine.Length >= OldName.Length && VariableLine.ToLower().Substring(0, OldName.Length) == OldName.ToLower())
-                            else if (VariableLine.ToLower().Equals(OldName))
+                            else if (VariableLine.Length >= OldName.Length && VariableLine.ToLower().Substring(0, OldName.Length) == OldName.ToLower())
                             {
                                 VariableLine = NewName;
                                 if (NewName.Length < VariableLine.Length)
                                     VariableLine += VariableLine.Substring(NewName.Length);
                             }
-                            Variable.InnerText = VariableLine;
+                            XmlHelper.SetName(Variable, VariableLine);
                         }
                     }
                     else if (Bits.Length == 3 && Bits[0] == "Removed")

@@ -49,8 +49,8 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        Biomass
-        Yield
+        biomass
+        yield
         grain_protein
         grain_size
         esw
@@ -65,9 +65,9 @@ Paddock:
         leaftotaln
         podtotaln
         graintotaln
-        LAI
-        WaterStressPhoto
-        NStressPhoto
+        lai
+        swdef_photo
+        nfact_photo
 
      Output file = Lucerne.out
      Format = normal
@@ -80,7 +80,7 @@ Paddock:
      
      SECTION:- start_of_day
             if (today = date('1-jan-1988') then
-       lucerne sow population =200, sowing_depth = 20, cultivar = trifecta, row_spacing = 250, crop_class = plant
+       lucerne sow plants =200, sowing_depth = 20, cultivar = trifecta, row_spacing = 250, crop_class = plant
        lucerneleyyears = 3
             endif
      
@@ -88,7 +88,7 @@ Paddock:
       if lucerne.stagename = 'flowering'  then
          lucerne  harvest height = 50, remove = 0.95
        endif
-       if today= date('15-nov-1989') and lucerne.plantstatus <>'out' then
+       if today= date('15-nov-1989') and lucerne.plant_status <>'out' then
             if ( lucerneleyyears > 0 ) then
                   lucerneleyyears = lucerneleyyears - 1
             else
@@ -102,7 +102,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if lucerne.stagename = 'harvest_ripe' or lucerne.plantstatus = 'dead' then
+                if lucerne.stagename = 'harvest_ripe' or lucerne.plant_status = 'dead' then
        lucerne  harvest
        lucerne  end_crop
                 endif
@@ -266,7 +266,7 @@ Paddock:
            Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager sending message :- lucerne sow  population = 200, sowing_depth = 20, cultivar = trifecta, row_spacing = 250, crop_class = plant
+     Manager sending message :- lucerne sow  plants = 200, sowing_depth = 20, cultivar = trifecta, row_spacing = 250, crop_class = plant
 1 January 1988(Day of year=1), lucerne: 
      Crop Sow
         ------------------------------------------------

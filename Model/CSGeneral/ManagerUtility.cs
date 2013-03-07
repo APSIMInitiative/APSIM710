@@ -28,7 +28,7 @@ namespace CSGeneral
                 foreach (dynamic crop in mypaddock.Crops)
                 {
                     hascrops = true;
-                    if (crop.Variable("PlantStatus").ToString() != "out")
+                    if (crop.Variable("plant_status").ToString() != "out")
                         return false;
                 }
 

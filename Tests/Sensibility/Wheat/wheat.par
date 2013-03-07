@@ -100,20 +100,20 @@ variable = clock.day
 variable = clock.year
 variable = manager.in_crop_rain
 variable = manager.eff_in_crop_rain
-variable = Wheat.LAI
-variable = Wheat.Biomass
-variable = Wheat.Yield
+variable = Wheat.lai
+variable = Wheat.biomass
+variable = Wheat.yield
 variable = manager.hi
 variable = manager.nhi
 variable = tracker.sum_ep
 variable = wheat.n_conc_grain
-variable = wheat.GrainN
+variable = wheat.grain_n
 variable = SoilN.no3()
 variable = SoilWat.esw
-variable = wheat.FloweringDate
+variable = wheat.flowering_date
 variable = wheat.grain_protein
 variable = manager.sowing_paw2n
-!variable = wheat.GrainN_demand
+!variable = wheat.grain_n_demand
 !variable = wheat.GrowthN(5)
 !variable = wheat.RetranslocationN(5)
 
@@ -203,14 +203,14 @@ in_crop_rain = in_crop_rain + met.rain
 eff_in_crop_rain = eff_in_crop_rain + met.rain - SoilWat.drain - SoilWat.runoff
 
 !if wheat.biomass > 1 then
-!   hi = wheat.Yield/wheat.biomass
-!   nhi = wheat.GrainN/wheat.biomass_n
+!   hi = wheat.yield/wheat.biomass
+!   nhi = wheat.grain_n/wheat.biomass_n
 !   report do_output
 !endif
 
-if Wheat.StageName = 'harvest_ripe' or Wheat.PlantStatus = 'dead' then
-   hi = wheat.Yield/wheat.biomass
-   nhi = wheat.GrainN/wheat.biomass_n
+if Wheat.StageName = 'harvest_ripe' or Wheat.plant_status = 'dead' then
+   hi = wheat.yield/wheat.biomass
+   nhi = wheat.grain_n/wheat.biomass_n
    report do_output
    Wheat harvest
    Wheat end_crop
@@ -225,7 +225,7 @@ if today = date('1-mar') then
    surfaceom reset
  endif
 
-if date_within('15-apr,15-jun') and wheat.PlantStatus = 'out' and rain[3] > 20 then
+if date_within('15-apr,15-jun') and wheat.plant_status = 'out' and rain[3] > 20 then
    Fertiliser apply amount = nrate, type = no3_n, depth = 5 (mm)
    wheat sow cultivar = cultivar, plants = 200 (/m2), sowing_depth = 30 (mm)
    in_crop_rain = 0
@@ -240,16 +240,16 @@ if today = date('15-aug') then
 in_crop_rain = in_crop_rain + met.rain
 eff_in_crop_rain = eff_in_crop_rain + met.rain - SoilWat.drain - SoilWat.runoff
 
-!if wheat.Biomass > 1 then
-!   hi = wheat.Yield/wheat.Biomass
-!   nhi = wheat.GrainN/wheat.biomass_n
+!if wheat.biomass > 1 then
+!   hi = wheat.yield/wheat.biomass
+!   nhi = wheat.grain_n/wheat.biomass_n
 !   report do_output
 !endif
 
-if Wheat.StageName = 'harvest_ripe' or Wheat.PlantStatus = 'dead' then
-   if wheat.Biomass > 1 then
-      hi = wheat.Yield/wheat.Biomass
-      nhi = wheat.GrainN/wheat.biomass_n
+if Wheat.StageName = 'harvest_ripe' or Wheat.plant_status = 'dead' then
+   if wheat.biomass > 1 then
+      hi = wheat.yield/wheat.biomass
+      nhi = wheat.grain_n/wheat.biomass_n
       report do_output
    endif
    Wheat harvest

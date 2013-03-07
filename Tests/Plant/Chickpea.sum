@@ -49,8 +49,8 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        Biomass
-        Yield
+        biomass
+        yield
         grain_protein
         grain_size
         esw
@@ -65,9 +65,9 @@ Paddock:
         leaftotaln
         podtotaln
         graintotaln
-        LAI
-        WaterStressPhoto
-        NStressPhoto
+        lai
+        swdef_photo
+        nfact_photo
 
      Output file = Chickpea.out
      Format = normal
@@ -80,7 +80,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('1-jun') then
-       chickpea sow population =10, sowing_depth = 50, cultivar = amethyst, row_spacing = 500, crop_class = plant
+       chickpea sow plants =10, sowing_depth = 50, cultivar = amethyst, row_spacing = 500, crop_class = plant
               endif
      END of rules
      
@@ -89,7 +89,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if chickpea.stagename = 'harvest_ripe' or chickpea.plantstatus = 'dead' then
+                if chickpea.stagename = 'harvest_ripe' or chickpea.plant_status = 'dead' then
        chickpea  harvest
        chickpea  end_crop
                 endif
@@ -254,7 +254,7 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 1 June 1988(Day of year=153), Sow on a fixed date: 
-     Manager sending message :- chickpea sow  population = 10, sowing_depth = 50, cultivar = amethyst, row_spacing = 500, crop_class = plant
+     Manager sending message :- chickpea sow  plants = 10, sowing_depth = 50, cultivar = amethyst, row_spacing = 500, crop_class = plant
 1 June 1988(Day of year=153), chickpea: 
      Crop Sow
         ------------------------------------------------
@@ -403,7 +403,7 @@ Paddock:
                           N  (kg/ha) =                   0.00                    7.29
      
 1 June 1989(Day of year=152), Sow on a fixed date: 
-     Manager sending message :- chickpea sow  population = 10, sowing_depth = 50, cultivar = amethyst, row_spacing = 500, crop_class = plant
+     Manager sending message :- chickpea sow  plants = 10, sowing_depth = 50, cultivar = amethyst, row_spacing = 500, crop_class = plant
 1 June 1989(Day of year=152), chickpea: 
      Crop Sow
         ------------------------------------------------

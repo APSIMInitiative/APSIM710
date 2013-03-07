@@ -84,10 +84,10 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
               then
               if (wht_crop_num < wht_crops_max) then
                  if (day >= wht_win2) then
-                    wheat sow population = 100, sowing_depth = 80, cultivar = hartog
+                    wheat sow plants = 100, sowing_depth = 80, cultivar = hartog
                     wht_crop_num = wht_crop_num + 1
                  else
-                    wheat sow population = 100, sowing_depth = 80, cultivar = sunco
+                    wheat sow plants = 100, sowing_depth = 80, cultivar = sunco
                     wht_crop_num = wht_crop_num + 1
                  endif
                  rz_no3 = no3(1) + no3(2) + no3(3)
@@ -98,9 +98,9 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
               else
                  wht_crop_num = 0
                  if (day >= wht_win2) then
-                    chickpea sow population = 25, sowing_depth = 80, cultivar = amethyst
+                    chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
                  else
-                    chickpea sow population = 25, sowing_depth = 80, cultivar = amethyst
+                    chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
                  endif
               endif
               surfaceom tillage type = planter ()
@@ -119,9 +119,9 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
            if (fasw10 >= 0.0) and (fasw10 <= 0.99) and (fasw110 >= 0.75)
                 then
               if (srg_seeding = 1 ) then
-                  sorghum sow population = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+                  sorghum sow plants = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
               else
-                  sorghum sow population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+                  sorghum sow plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
               endif
               rz_no3 = no3(1) + no3(2) + no3(3)
               if rz_no3 < srg_fert_target then
@@ -142,20 +142,20 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
         else
         endif
      else
-        if wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' then
+        if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
            w_mat_day = day
            wheat harvest
            wheat kill_crop
            wheat end_crop
            crop_in = 0
         endif
-        if (chickpea.phenologystage = 11) or (chickpea.plantstatus = 'dead') then
+        if (chickpea.stage = 11) or (chickpea.plant_status = 'dead') then
            c_mat_day = day
            chickpea harvest
            chickpea end_crop
            crop_in = 0
         endif
-        if (sorghum.phenologystage = 11) or (sorghum.plantstatus = 'dead') or ((sorghum.plantstatus = 'alive') and (day = 166)) then
+        if (sorghum.stage = 11) or (sorghum.plant_status = 'dead') or ((sorghum.plant_status = 'alive') and (day = 166)) then
            s_mat_day = day
            sorghum harvest
            sorghum kill_crop
@@ -434,15 +434,15 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
 
 ------- Tracker Initialisation ------------------------------------------------
      Tracker variables:
-        maximum of wheat.Yield on end_of_day from reported to now as wht_yield
+        maximum of wheat.yield on end_of_day from reported to now as wht_yield
         sum of wheat.ep on end_of_day from reported to now as wht_ep
-        maximum of wheat.LAI on end_of_day from reported to now as wht_laimax
-        maximum of chickpea.Yield on end_of_day from reported to now as chk_yield
+        maximum of wheat.lai on end_of_day from reported to now as wht_laimax
+        maximum of chickpea.yield on end_of_day from reported to now as chk_yield
         sum of chickpea.ep on end_of_day from reported to now as chk_ep
-        maximum of chickpea.LAI on end_of_day from reported to now as chk_laimax
-        maximum of sorghum.Yield on end_of_day from reported to now as sor_yield
+        maximum of chickpea.lai on end_of_day from reported to now as chk_laimax
+        maximum of sorghum.yield on end_of_day from reported to now as sor_yield
         sum of sorghum.ep on end_of_day from reported to now as sor_ep
-        maximum of sorghum.LAI on end_of_day from reported to now as sor_laimax
+        maximum of sorghum.lai on end_of_day from reported to now as sor_laimax
         average of surfaceom.surfaceom_wt on end_of_day from reported to now as avg_residue
         maximum of surfaceom.surfaceom_wt on end_of_day from reported to now as max_residue
         minimum of surfaceom.surfaceom_wt on end_of_day from reported to now as min_residue
@@ -482,7 +482,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
      Manager creating a new local real variable : fasw170 = 1.00000
      Manager creating a new local real variable : fasw190 = 1.00000
 3 January 1970(Day of year=3), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 3 January 1970(Day of year=3), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -634,7 +634,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
 8 August 1970(Day of year=220), Manager: 
      Manager creating a new local real variable : wht_crop_num = 0.00000
 9 November 1970(Day of year=313), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 9 November 1970(Day of year=313), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -782,7 +782,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                          N  (kg/ha) =                 24.95		    2.78
                          P  (kg/ha) =                  0.00		    0.00
 20 July 1971(Day of year=201), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = hartog
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 20 July 1971(Day of year=201), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -946,7 +946,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                    8.22
      
 1 November 1972(Day of year=306), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 1 November 1972(Day of year=306), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1094,7 +1094,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                          N  (kg/ha) =                 29.42		    2.94
                          P  (kg/ha) =                  0.00		    0.00
 14 June 1973(Day of year=165), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = hartog
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 14 June 1973(Day of year=165), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -1257,7 +1257,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                    8.44
      
 29 November 1973(Day of year=333), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 29 November 1973(Day of year=333), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1405,7 +1405,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                          N  (kg/ha) =                 11.06		    1.20
                          P  (kg/ha) =                  0.00		    0.00
 9 July 1974(Day of year=190), Manager: 
-     Manager sending message :- chickpea sow  population = 25, sowing_depth = 80, cultivar = amethyst
+     Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 9 July 1974(Day of year=190), chickpea: 
      Crop Sow
         ------------------------------------------------
@@ -1569,7 +1569,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                   13.05
      
 23 June 1975(Day of year=174), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = hartog
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 23 June 1975(Day of year=174), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -1732,7 +1732,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                   13.17
      
 21 June 1976(Day of year=173), Manager: 
-     Manager sending message :- chickpea sow  population = 25, sowing_depth = 80, cultivar = amethyst
+     Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 21 June 1976(Day of year=173), chickpea: 
      Crop Sow
         ------------------------------------------------
@@ -1895,7 +1895,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                   15.97
      
 21 May 1977(Day of year=141), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = sunco
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 21 May 1977(Day of year=141), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -2058,7 +2058,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                    8.47
      
 6 June 1978(Day of year=157), Manager: 
-     Manager sending message :- chickpea sow  population = 25, sowing_depth = 80, cultivar = amethyst
+     Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 6 June 1978(Day of year=157), chickpea: 
      Crop Sow
         ------------------------------------------------
@@ -2221,7 +2221,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                   13.18
      
 29 December 1978(Day of year=363), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 29 December 1978(Day of year=363), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2369,7 +2369,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                          N  (kg/ha) =                 16.56		    2.05
                          P  (kg/ha) =                  0.00		    0.00
 20 May 1980(Day of year=141), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = sunco
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1980(Day of year=141), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -2526,7 +2526,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                   17.00
      
 31 May 1981(Day of year=151), Manager: 
-     Manager sending message :- chickpea sow  population = 25, sowing_depth = 80, cultivar = amethyst
+     Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 31 May 1981(Day of year=151), chickpea: 
      Crop Sow
         ------------------------------------------------
@@ -2689,7 +2689,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                   12.88
      
 28 October 1982(Day of year=301), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 28 October 1982(Day of year=301), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2831,7 +2831,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                          N  (kg/ha) =                 30.65		    2.62
                          P  (kg/ha) =                  0.00		    0.00
 28 May 1983(Day of year=148), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = sunco
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 28 May 1983(Day of year=148), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -2988,7 +2988,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                   14.89
      
 3 December 1983(Day of year=337), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 3 December 1983(Day of year=337), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -3136,7 +3136,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                          N  (kg/ha) =                 27.00		    3.31
                          P  (kg/ha) =                  0.00		    0.00
 1 August 1984(Day of year=214), Manager: 
-     Manager sending message :- chickpea sow  population = 25, sowing_depth = 80, cultivar = amethyst
+     Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 1 August 1984(Day of year=214), chickpea: 
      Crop Sow
         ------------------------------------------------
@@ -3299,7 +3299,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                   13.91
      
 20 May 1988(Day of year=141), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = sunco
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 20 May 1988(Day of year=141), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -3456,7 +3456,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                   35.27
      
 20 May 1989(Day of year=140), Manager: 
-     Manager sending message :- chickpea sow  population = 25, sowing_depth = 80, cultivar = amethyst
+     Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 20 May 1989(Day of year=140), chickpea: 
      Crop Sow
         ------------------------------------------------
@@ -3619,7 +3619,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                   11.93
      
 21 May 1990(Day of year=141), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = sunco
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 21 May 1990(Day of year=141), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -3776,7 +3776,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                   34.42
      
 17 December 1991(Day of year=351), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 17 December 1991(Day of year=351), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -3924,7 +3924,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                          N  (kg/ha) =                 19.98		    2.93
                          P  (kg/ha) =                  0.00		    0.00
 6 June 1993(Day of year=157), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = sunco
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 6 June 1993(Day of year=157), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -4087,7 +4087,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                   14.45
      
 22 November 1994(Day of year=326), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 22 November 1994(Day of year=326), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -4235,7 +4235,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                          N  (kg/ha) =                 23.85		    3.34
                          P  (kg/ha) =                  0.00		    0.00
 24 May 1995(Day of year=144), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = sunco
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 24 May 1995(Day of year=144), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -4398,7 +4398,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                    2.49
      
 4 December 1995(Day of year=338), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 4 December 1995(Day of year=338), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -4546,7 +4546,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                          N  (kg/ha) =                 22.33		    2.82
                          P  (kg/ha) =                  0.00		    0.00
 21 May 1997(Day of year=141), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = sunco
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
 21 May 1997(Day of year=141), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -4703,7 +4703,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                   17.19
      
 21 May 1998(Day of year=141), Manager: 
-     Manager sending message :- chickpea sow  population = 25, sowing_depth = 80, cultivar = amethyst
+     Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 21 May 1998(Day of year=141), chickpea: 
      Crop Sow
         ------------------------------------------------
@@ -4866,7 +4866,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                   11.78
      
 11 June 1999(Day of year=162), Manager: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 80, cultivar = hartog
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
 11 June 1999(Day of year=162), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -5029,7 +5029,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                   16.86
      
 27 May 2000(Day of year=148), Manager: 
-     Manager sending message :- chickpea sow  population = 25, sowing_depth = 80, cultivar = amethyst
+     Manager sending message :- chickpea sow  plants = 25, sowing_depth = 80, cultivar = amethyst
 27 May 2000(Day of year=148), chickpea: 
      Crop Sow
         ------------------------------------------------
@@ -5192,7 +5192,7 @@ Title                  = site=coonamble; soil=cd2; treatment=oc2; Nrate=50; Root
                           N  (kg/ha) =                   0.00                   10.55
      
 22 November 2000(Day of year=327), Manager: 
-     Manager sending message :- sorghum sow  population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
 22 November 2000(Day of year=327), Sorghum: 
      Sowing initiate
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

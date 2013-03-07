@@ -18,7 +18,7 @@
             if (rain[[rainnumdays]] >= [raincrit] AND esw >= [esw_amount]) OR
                 ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
                ChooseNextCrop = 'yes'   ! for rotations
-               [crop] sow Population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
             endif
          endif
       endif
@@ -46,7 +46,7 @@
           <script>
             <text>
 
-           if [crop].StageName = 'harvest_ripe' or [crop].PlantStatus = 'dead' then
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
               [crop]  harvest
               [crop]  end_crop
            endif
@@ -1191,7 +1191,7 @@ avail_sw_proportion = avail_soil_water / max_avail_soil_water
 deficit = max_avail_soil_water - avail_soil_water
 
 
-If wheat.PlantStatus = 'alive' and deficit >35.0 then
+If wheat.plant_status = 'alive' and deficit >35.0 then
      Irrigation apply amount = deficit, source = dam , crop_area = my_crop_area
 endif
 
@@ -1339,7 +1339,7 @@ outputfile do_output</text>
             if ('[paddock].Soil Water.esw' >= [esw_amount]) OR
                 ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
               [paddockName]InCrop = 'yes'
-               '[paddock].[crop]' sow Population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [skiprow]
+               '[paddock].[crop]' sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [skiprow]
             endif
             if today = date('[date2]') then
                ChooseNextCrop = 'yes'
@@ -1368,7 +1368,7 @@ outputfile do_output</text>
         <script name="end_of_day">
           <text>
 
-           if [paddock].[crop].StageName = 'harvest_ripe' or [paddock].[crop].PlantStatus = 'dead' then
+           if [paddock].[crop].StageName = 'harvest_ripe' or [paddock].[crop].plant_status = 'dead' then
               reportKey = '[paddockName]'
               .masterpm.outputfile do_output
               [paddock].[crop]  harvest
@@ -1429,7 +1429,7 @@ outputfile do_output</text>
             if ('[paddock].Soil Water.esw' >= [esw_amount]) OR
                 ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
               [paddockName]InCrop = 'yes'
-               '[paddock].[crop]' sow Population =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [skiprow]
+               '[paddock].[crop]' sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [skiprow]
             endif
             if today = date('[date2]') then
                ChooseNextCrop = 'yes'
@@ -1458,7 +1458,7 @@ outputfile do_output</text>
         <script name="end_of_day">
           <text>
 
-           if [paddock].[crop].StageName = 'harvest_ripe' or [paddock].[crop].PlantStatus = 'dead' then
+           if [paddock].[crop].StageName = 'harvest_ripe' or [paddock].[crop].plant_status = 'dead' then
                reportKey = '[paddockName]'
               .masterpm.outputfile do_output
               [paddock].[crop]  harvest

@@ -40,8 +40,8 @@ Title                  = navybean Sample Simulation
      Output variables:
         clock.day
         clock.year
-        navybean.LAI
-        navybean.Biomass
+        navybean.lai
+        navybean.biomass
         navybean.green_biomass
 
      Output file = navybean.out
@@ -58,7 +58,7 @@ Title                  = navybean Sample Simulation
      if day = 330 and year  = 1988 then
         navybean sow cultivar = rainbird, plants = 25 (/m2), sowing_depth = 40 (mm)
      endif
-     if navybean.stagename = 'harvest_ripe' or navybean.plantstatus = 'dead' then
+     if navybean.stagename = 'harvest_ripe' or navybean.plant_status = 'dead' then
         navybean harvest
         navybean end_crop
      endif
@@ -212,13 +212,148 @@ Title                  = navybean Sample Simulation
      Manager sending message :- navybean sow  cultivar = rainbird, plants = 25 (/m2), sowing_depth = 40 (mm)
 25 November 1988(Day of year=330), navybean: 
      Crop Sow
-25 November 1988(Day of year=330): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: navybean
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = rainbird
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       1 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     340     340 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =       5      17 (h)
+              y_tt_end_of_juvenile       =      50      50 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      25      25 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =      30      30 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     445     445 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      25 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0080     0.0080
+        x_hi_max_pot_stress        =       0.00       0.80       1.00
+        y_hi_max_pot               =       0.45       0.45       0.45
+        ------------------------------------------------
      
      
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.080          0.230       1.000
+         150.0     0.080          0.240       1.000
+         300.0     0.080          0.240       1.000
+         300.0     0.080          0.250       1.000
+         300.0     0.050          0.260       1.000
+         300.0     0.030          0.270       1.000
+         300.0     0.010          0.280       1.000
+         -----------------------------------------------
+         Extractable SW:   315mm in  1800mm total depth ( 17%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            330   40.0   25.0  500.0   0.0   0.0 rainbird
+         ------------------------------------------------
+     
+26 November 1988(Day of year=331), navybean: 
+      stage 2.0 germination
+30 November 1988(Day of year=335), navybean: 
+      stage 3.0 emergence
+                     biomass =           2.50 (g/m^2)   lai          =   0.010 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   23.25 (mm)
+31 December 1988(Day of year=366), navybean: 
+      stage 4.0 end_of_juvenile
+                     biomass =         102.30 (g/m^2)   lai          =   1.899 (m^2/m^2)
+                     stover N conc =     4.89 (%)    extractable sw =  198.50 (mm)
+4 January 1989(Day of year=4), navybean: 
+      stage 5.0 floral_initiation
+                     biomass =         155.06 (g/m^2)   lai          =   2.849 (m^2/m^2)
+                     stover N conc =     4.20 (%)    extractable sw =  229.89 (mm)
+7 January 1989(Day of year=7), navybean: 
+      stage 6.0 flowering
+                     biomass =         194.40 (g/m^2)   lai          =   3.423 (m^2/m^2)
+                     stover N conc =     3.44 (%)    extractable sw =  231.06 (mm)
+9 January 1989(Day of year=9), navybean: 
+      stage 7.0 start_grain_fill
+                     biomass =         228.33 (g/m^2)   lai          =   3.790 (m^2/m^2)
+                     stover N conc =     3.10 (%)    extractable sw =  215.94 (mm)
+20 February 1989(Day of year=51), navybean: 
+      stage 8.0 end_grain_fill
+                     biomass =         732.92 (g/m^2)   lai          =   1.325 (m^2/m^2)
+                     stover N conc =     1.26 (%)    extractable sw =   44.72 (mm)
+22 February 1989(Day of year=53), navybean: 
+      stage 9.0 maturity
+                     biomass =         737.30 (g/m^2)   lai          =   0.885 (m^2/m^2)
+                     stover N conc =     1.29 (%)    extractable sw =  134.71 (mm)
+23 February 1989(Day of year=54), navybean: 
+      stage 10.0 harvest_ripe
+                     biomass =         739.50 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.34 (%)    extractable sw =  132.99 (mm)
+24 February 1989(Day of year=55), Manager: 
+     Manager sending message :- navybean harvest
+24 February 1989(Day of year=55), navybean: 
+     
+      flowering day          =    7                           stover (kg/ha)         =     4808.4
+      maturity day           =   53                           grain yield (kg/ha)    =     2586.5
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     2939.3
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      5.463
+      total above ground biomass (kg/ha)    =     7395.0
+      live above ground biomass (kg/ha)     =     7395.0
+      green above ground biomass (kg/ha)    =     4958.5
+      senesced above ground biomass (kg/ha) =     2436.5
+      number of leaves       =     20.6
+      DM Root:Shoot ratio    =     0.22                       Harvest Index          =       0.35
+      Stover C:N ratio       =    34.32                       Root C:N ratio         =      28.05
+      grain N percent        =     2.75                       total N content (kg/ha)=     127.11
+      grain N uptake (kg/ha) =    71.06                       senesced N content (kg/ha)=   24.37
+      green N content (kg/ha)=    31.68
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.040
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.008
+         floral_initiation    to flowering               0.000        0.000        0.000        0.000
+         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.131        0.182        0.243        0.352
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                4808.4                     0.0
+                          N  (kg/ha) =                  56.05                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2586.5                     0.0
+                          N  (kg/ha) =                  71.06                    0.00
+     
+      stage 11.0 end_crop
+     Manager sending message :- navybean end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1646.2
+                          N  (kg/ha) =                   0.00                   23.47
+     
+1 March 1989(Day of year=60), Clock: 
+     Simulation is terminating due to end criteria being met.
 

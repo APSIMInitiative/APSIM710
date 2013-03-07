@@ -49,23 +49,23 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        PhenologyStage
+        stage
         stagename
         tt
-        RootDepth
-        LeafNumber
-        LeafNumberDead
-        NodeNumber
-        LeafLiveWt
-        LAI
+        root_depth
+        leaf_no
+        leaf_no_sen
+        node_no
+        leafgreenwt
+        lai
         biomass_wt
-        StemLiveWt
-        LeafLiveWt
-        Height
-        WaterStressPhoto
+        stemgreenwt
+        leafgreenwt
+        height
+        swdef_photo
         stemtotalwt
-        PodLiveWt
-        GrainWt
+        podgreenwt
+        grain_wt
         HI
         sw_dep()
         ep
@@ -82,7 +82,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('1-jun') then
-       chickpea sow population =30, sowing_depth = 50, cultivar = amethyst, row_spacing = 500, crop_class = plant
+       chickpea sow plants =30, sowing_depth = 50, cultivar = amethyst, row_spacing = 500, crop_class = plant
               endif
      END of rules
      
@@ -91,7 +91,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if chickpea.stagename = 'harvest_ripe' or chickpea.plantstatus = 'dead' then
+                if chickpea.stagename = 'harvest_ripe' or chickpea.plant_status = 'dead' then
        chickpea  harvest
        chickpea  end_crop
                 endif
@@ -255,7 +255,7 @@ Paddock:
            Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager sending message :- chickpea sow  population = 30, sowing_depth = 50, cultivar = amethyst, row_spacing = 500, crop_class = plant
+     Manager sending message :- chickpea sow  plants = 30, sowing_depth = 50, cultivar = amethyst, row_spacing = 500, crop_class = plant
 1 June 1940(Day of year=153), chickpea: 
      Crop Sow
         ------------------------------------------------

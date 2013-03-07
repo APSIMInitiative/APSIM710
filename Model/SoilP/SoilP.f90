@@ -1383,7 +1383,7 @@ subroutine soilp_get_crop_variables ()
 !!JH What is rlv for? It doesn't appear to be used         endif
 
          !  mep/dsg 200302  added get for root_depth
-         call get_real_var (g%crop_owners(vegnum),'rootdepth','(mm)',g%root_depth(vegnum),numvals,0.0,10000.0)
+         call get_real_var (g%crop_owners(vegnum),'root_depth','(mm)',g%root_depth(vegnum),numvals,0.0,10000.0)
 
          if (numvals .eq. 0) then
             call fatal_error (Err_Internal,'no root_depth returned from '//g%crop_names(vegnum))

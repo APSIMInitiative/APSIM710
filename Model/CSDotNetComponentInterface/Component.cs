@@ -353,13 +353,13 @@ namespace ModelFramework
             }
             else
             {   //external component
-                if (ApsimObjectsByName.ContainsKey(NameToFind))   
+                if (ApsimObjectsByName.ContainsKey(NameToFind))
                 {
                     return ApsimObjectsByName[NameToFind];            //if already found
                 }
                 else
                 {
-                    Object foundObject =  LinkField.FindApsimObject(null,
+                    Object foundObject = LinkField.FindApsimObject(null,
                                                      AddMasterPM(NameToFind),
                                                      StringManip.ParentName(HostComponent.InstanceName),
                                                      HostComponent);

@@ -50,12 +50,12 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        Biomass
-        Yield
+        biomass
+        yield
         grain_protein
         grain_size
         esw
-        LAI
+        lai
         RUEFactor
         TEFactor
         transp_eff
@@ -75,7 +75,7 @@ Paddock:
      if (rain[7] >= 25 and esw >= 100) or
          ('yes' = 'yes' and today = date('10-jul'))) then
         choosenextcrop = 'yes'
-        wheat sow population =100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+        wheat sow plants =100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
      endif
      if today = date('10-jul') then
         choosenextcrop = 'yes'
@@ -103,7 +103,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' then
+                if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
        wheat  harvest
        wheat  end_crop
                 endif
@@ -269,7 +269,7 @@ Paddock:
 ------- Start of simulation  --------------------------------------------------
 2 June 1945(Day of year=153), Sowing rule: 
      Manager creating a new local string variable : choosenextcrop = yes
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
 2 June 1945(Day of year=153), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -418,7 +418,7 @@ Paddock:
                           N  (kg/ha) =                   0.00                   35.30
      
 10 July 1946(Day of year=191), Sowing rule: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
 10 July 1946(Day of year=191), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -567,7 +567,7 @@ Paddock:
                           N  (kg/ha) =                   0.00                   41.25
      
 27 May 1947(Day of year=147), Sowing rule: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
 27 May 1947(Day of year=147), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -716,7 +716,7 @@ Paddock:
                           N  (kg/ha) =                   0.00                   30.56
      
 9 June 1948(Day of year=161), Sowing rule: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
 9 June 1948(Day of year=161), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -865,7 +865,7 @@ Paddock:
                           N  (kg/ha) =                   0.00                   25.85
      
 3 June 1949(Day of year=154), Sowing rule: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
 3 June 1949(Day of year=154), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -1014,7 +1014,7 @@ Paddock:
                           N  (kg/ha) =                   0.00                   33.39
      
 25 May 1950(Day of year=145), Sowing rule: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
 25 May 1950(Day of year=145), wheat: 
      Crop Sow
         ------------------------------------------------

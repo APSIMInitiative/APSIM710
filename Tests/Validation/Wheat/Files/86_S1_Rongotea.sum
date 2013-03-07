@@ -53,23 +53,23 @@ Paddock:
      Output variables:
         dd/mmm/yyyy
         zadok_stage
-        Biomass
-        Yield
-        GrainWt
+        biomass
+        yield
+        grain_wt
         rain
         sw_uptake()
         sw_demand
         sw_supply
         fertilizer
-        LeafLiveWt
-        LeafLiveN
-        LeafDeadWt
-        StemLiveWt
-        StemLiveN
+        leafgreenwt
+        leafgreenn
+        leafsenescedwt
+        stemgreenwt
+        stemgreenn
         wheat.HeadTotalWt
-        headliven
-        NStressExpansion
-        NStressPhoto
+        headgreenn
+        nfact_expan
+        nfact_photo
         biomass_n
 
      Output file = 86_S1_Rongotea.out
@@ -110,7 +110,7 @@ Paddock:
      if (rain[3] >= 30 and esw >= 200) or
          ('yes' = 'yes' and today = date('09-may'))) then
         choosenextcrop = 'yes'
-        wheat sow population =300, sowing_depth = 30, cultivar = rongotea, row_spacing = 150, crop_class = plant
+        wheat sow plants =300, sowing_depth = 30, cultivar = rongotea, row_spacing = 150, crop_class = plant
      endif
      if today = date('09-may') then
         choosenextcrop = 'yes'
@@ -130,7 +130,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' then
+                if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
        wheat  harvest
        wheat  end_crop
                 endif
@@ -297,7 +297,7 @@ Paddock:
                                          added at depth   10.00 (layer   1)
 9 May 1986(Day of year=129), Sowing rule: 
      Manager creating a new local string variable : choosenextcrop = yes
-     Manager sending message :- wheat sow  population = 300, sowing_depth = 30, cultivar = rongotea, row_spacing = 150, crop_class = plant
+     Manager sending message :- wheat sow  plants = 300, sowing_depth = 30, cultivar = rongotea, row_spacing = 150, crop_class = plant
 9 May 1986(Day of year=129), wheat: 
      Crop Sow
         ------------------------------------------------

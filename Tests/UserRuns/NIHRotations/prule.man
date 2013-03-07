@@ -210,10 +210,10 @@ if (crop_in = 0) THEN
          if (wht_crop_num < wht_crops_max) then
 
             if (day >= wht_win2) then
-               wheat sow population = 100, sowing_depth = 80, cultivar = hartog
+               wheat sow plants = 100, sowing_depth = 80, cultivar = hartog
                wht_crop_num = wht_crop_num + 1
             else
-               wheat sow population = 100, sowing_depth = 80, cultivar = sunco
+               wheat sow plants = 100, sowing_depth = 80, cultivar = sunco
                wht_crop_num = wht_crop_num + 1
             endif
 
@@ -229,9 +229,9 @@ if (crop_in = 0) THEN
             wht_crop_num = 0
 
             if (day >= wht_win2) then
-               chickpea sow population = 25, sowing_depth = 80, cultivar = amethyst
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
             else
-               chickpea sow population = 25, sowing_depth = 80, cultivar = amethyst
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
             endif
          endif
 
@@ -264,10 +264,10 @@ if (crop_in = 0) THEN
 
          if (srg_seeding = 1 ) then
              !wht_crop_num = 0
-             sorghum sow population = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+             sorghum sow plants = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
          else
              !wht_crop_num = 0
-             sorghum sow population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+             sorghum sow plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
          endif
 
          !rz_no3 = no3(1) + no3(2) + no3(3) + no3(4) + no3(5) + no3(6) + no3(7) + no3(8)
@@ -294,9 +294,9 @@ if (crop_in = 0) THEN
    endif
 else
 
-! Wheat harvest at PhenologyStage 10
+! Wheat harvest at stage 10
 
-   if wheat.StageName = 'harvest_ripe' or wheat.PlantStatus = 'dead' then
+   if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' then
       w_mat_day = day
       wheat harvest
       wheat kill_crop
@@ -304,7 +304,7 @@ else
       crop_in = 0
    endif
 
-   if (chickpea.PhenologyStage = 11) OR (chickpea.PlantStatus = 'dead') then
+   if (chickpea.stage = 11) OR (chickpea.plant_status = 'dead') then
       c_mat_day = day
 
       chickpea harvest
@@ -312,9 +312,9 @@ else
       crop_in = 0
    endif
 
-! Sorghum harvest at PhenologyStage 11 or on 15 June, whichever is earlier
+! Sorghum harvest at stage 11 or on 15 June, whichever is earlier
 
-   if (sorghum.PhenologyStage = 11) OR (sorghum.PlantStatus = 'dead') OR ((sorghum.PlantStatus = 'alive') AND (day = 166)) then
+   if (sorghum.stage = 11) OR (sorghum.plant_status = 'dead') OR ((sorghum.plant_status = 'alive') AND (day = 166)) then
       s_mat_day = day
       sorghum harvest
       sorghum kill_crop
@@ -345,10 +345,10 @@ if (crop_in = 0) THEN
          if (wht_crop_num < wht_crops_max) then
 
             if (day >= wht_win2) then
-               wheat sow population = 100, sowing_depth = 80, cultivar = hartog
+               wheat sow plants = 100, sowing_depth = 80, cultivar = hartog
                wht_crop_num = wht_crop_num + 1
             else
-               wheat sow population = 100, sowing_depth = 80, cultivar = sunco
+               wheat sow plants = 100, sowing_depth = 80, cultivar = sunco
                wht_crop_num = wht_crop_num + 1
             endif
 
@@ -364,9 +364,9 @@ if (crop_in = 0) THEN
             wht_crop_num = 0
 
             if (day >= wht_win2) then
-               chickpea sow population = 25, sowing_depth = 80, cultivar = amethyst
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
             else
-               chickpea sow population = 25, sowing_depth = 80, cultivar = amethyst
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
             endif
          endif
 
@@ -399,10 +399,10 @@ if (crop_in = 0) THEN
 
          if (srg_seeding = 1 ) then
              !wht_crop_num = 0
-             sorghum sow population = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+             sorghum sow plants = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
          else
              !wht_crop_num = 0
-             sorghum sow population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+             sorghum sow plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
          endif
 
          !rz_no3 = no3(1) + no3(2) + no3(3) + no3(4) + no3(5) + no3(6) + no3(7) + no3(8)
@@ -429,9 +429,9 @@ if (crop_in = 0) THEN
    endif
 else
 
-! Wheat harvest at PhenologyStage 10
+! Wheat harvest at stage 10
 
-   if wheat.stagename = 'harvest_ripe' or wheat.PlantStatus = 'dead' then
+   if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
       w_mat_day = day
       wheat harvest
       wheat kill_crop
@@ -439,7 +439,7 @@ else
       crop_in = 0
    endif
 
-   if (chickpea.PhenologyStage = 11) OR (chickpea.PlantStatus = 'dead') then
+   if (chickpea.stage = 11) OR (chickpea.plant_status = 'dead') then
       c_mat_day = day
 
       chickpea harvest
@@ -447,9 +447,9 @@ else
       crop_in = 0
    endif
 
-! Sorghum harvest at PhenologyStage 11 or on 15 June, whichever is earlier
+! Sorghum harvest at stage 11 or on 15 June, whichever is earlier
 
-   if (sorghum.PhenologyStage = 11) OR (sorghum.PlantStatus = 'dead') OR ((sorghum.PlantStatus = 'alive') AND (day = 166)) then
+   if (sorghum.stage = 11) OR (sorghum.plant_status = 'dead') OR ((sorghum.plant_status = 'alive') AND (day = 166)) then
       s_mat_day = day
       sorghum harvest
       sorghum kill_crop
@@ -480,10 +480,10 @@ if (crop_in = 0) THEN
          if (wht_crop_num < wht_crops_max) then
 
             if (day >= wht_win2) then
-               wheat sow population = 100, sowing_depth = 80, cultivar = hartog
+               wheat sow plants = 100, sowing_depth = 80, cultivar = hartog
                wht_crop_num = wht_crop_num + 1
             else
-               wheat sow population = 100, sowing_depth = 80, cultivar = sunco
+               wheat sow plants = 100, sowing_depth = 80, cultivar = sunco
                wht_crop_num = wht_crop_num + 1
             endif
 
@@ -499,9 +499,9 @@ if (crop_in = 0) THEN
             wht_crop_num = 0
 
             if (day >= wht_win2) then
-               chickpea sow population = 25, sowing_depth = 80, cultivar = amethyst
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
             else
-               chickpea sow population = 25, sowing_depth = 80, cultivar = amethyst
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
             endif
          endif
 
@@ -534,10 +534,10 @@ if (crop_in = 0) THEN
 
          if (srg_seeding = 1 ) then
              !wht_crop_num = 0
-             sorghum sow population = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+             sorghum sow plants = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
          else
              !wht_crop_num = 0
-             sorghum sow population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+             sorghum sow plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
          endif
 
          !rz_no3 = no3(1) + no3(2) + no3(3) + no3(4) + no3(5) + no3(6) + no3(7) + no3(8)
@@ -564,9 +564,9 @@ if (crop_in = 0) THEN
    endif
 else
 
-! Wheat harvest at PhenologyStage 10
+! Wheat harvest at stage 10
 
-   if wheat.StageName = 'harvest_ripe' or wheat.PlantStatus = 'dead' then
+   if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' then
       w_mat_day = day
       wheat harvest
       wheat kill_crop
@@ -574,7 +574,7 @@ else
       crop_in = 0
    endif
 
-   if (chickpea.PhenologyStage = 11) OR (chickpea.PlantStatus = 'dead') then
+   if (chickpea.stage = 11) OR (chickpea.plant_status = 'dead') then
       c_mat_day = day
 
       chickpea harvest
@@ -582,9 +582,9 @@ else
       crop_in = 0
    endif
 
-! Sorghum harvest at PhenologyStage 11 or on 15 June, whichever is earlier
+! Sorghum harvest at stage 11 or on 15 June, whichever is earlier
 
-   if (sorghum.PhenologyStage = 11) OR (sorghum.PlantStatus = 'dead') OR ((sorghum.PlantStatus = 'alive') AND (day = 166)) then
+   if (sorghum.stage = 11) OR (sorghum.plant_status = 'dead') OR ((sorghum.plant_status = 'alive') AND (day = 166)) then
       s_mat_day = day
       sorghum harvest
       sorghum kill_crop
@@ -615,10 +615,10 @@ if (crop_in = 0) THEN
          if (wht_crop_num < wht_crops_max) then
 
             if (day >= wht_win2) then
-               wheat sow population = 100, sowing_depth = 80, cultivar = hartog
+               wheat sow plants = 100, sowing_depth = 80, cultivar = hartog
                wht_crop_num = wht_crop_num + 1
             else
-               wheat sow population = 100, sowing_depth = 80, cultivar = sunco
+               wheat sow plants = 100, sowing_depth = 80, cultivar = sunco
                wht_crop_num = wht_crop_num + 1
             endif
 
@@ -634,9 +634,9 @@ if (crop_in = 0) THEN
             wht_crop_num = 0
 
             if (day >= wht_win2) then
-               chickpea sow population = 25, sowing_depth = 80, cultivar = amethyst
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
             else
-               chickpea sow population = 25, sowing_depth = 80, cultivar = amethyst
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
             endif
          endif
 
@@ -669,10 +669,10 @@ if (crop_in = 0) THEN
 
          if (srg_seeding = 1 ) then
              !wht_crop_num = 0
-             sorghum sow population = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+             sorghum sow plants = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
          else
              !wht_crop_num = 0
-             sorghum sow population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+             sorghum sow plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
          endif
 
          !rz_no3 = no3(1) + no3(2) + no3(3) + no3(4) + no3(5) + no3(6) + no3(7) + no3(8)
@@ -699,9 +699,9 @@ if (crop_in = 0) THEN
    endif
 else
 
-! Wheat harvest at PhenologyStage 10
+! Wheat harvest at stage 10
 
-   if wheat.stagename = 'harvest_ripe' or wheat.PlantStatus = 'dead' then
+   if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
       w_mat_day = day
       wheat harvest
       wheat kill_crop
@@ -709,7 +709,7 @@ else
       crop_in = 0
    endif
 
-   if (chickpea.PhenologyStage = 11) OR (chickpea.PlantStatus = 'dead') then
+   if (chickpea.stage = 11) OR (chickpea.plant_status = 'dead') then
       c_mat_day = day
 
       chickpea harvest
@@ -717,9 +717,9 @@ else
       crop_in = 0
    endif
 
-! Sorghum harvest at PhenologyStage 11 or on 15 June, whichever is earlier
+! Sorghum harvest at stage 11 or on 15 June, whichever is earlier
 
-   if (sorghum.PhenologyStage = 11) OR (sorghum.PlantStatus = 'dead') OR ((sorghum.PlantStatus = 'alive') AND (day = 166)) then
+   if (sorghum.stage = 11) OR (sorghum.plant_status = 'dead') OR ((sorghum.plant_status = 'alive') AND (day = 166)) then
       s_mat_day = day
       sorghum harvest
       sorghum kill_crop
@@ -750,10 +750,10 @@ if (crop_in = 0) THEN
          if (wht_crop_num < wht_crops_max) then
 
             if (day >= wht_win2) then
-               wheat sow population = 100, sowing_depth = 80, cultivar = hartog
+               wheat sow plants = 100, sowing_depth = 80, cultivar = hartog
                wht_crop_num = wht_crop_num + 1
             else
-               wheat sow population = 100, sowing_depth = 80, cultivar = sunco
+               wheat sow plants = 100, sowing_depth = 80, cultivar = sunco
                wht_crop_num = wht_crop_num + 1
             endif
 
@@ -769,9 +769,9 @@ if (crop_in = 0) THEN
             wht_crop_num = 0
 
             if (day >= wht_win2) then
-               chickpea sow population = 25, sowing_depth = 80, cultivar = amethyst
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
             else
-               chickpea sow population = 25, sowing_depth = 80, cultivar = amethyst
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
             endif
          endif
 
@@ -804,10 +804,10 @@ if (crop_in = 0) THEN
 
          if (srg_seeding = 1 ) then
              !wht_crop_num = 0
-             sorghum sow population = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+             sorghum sow plants = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
          else
              !wht_crop_num = 0
-             sorghum sow population = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+             sorghum sow plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
          endif
 
          !rz_no3 = no3(1) + no3(2) + no3(3) + no3(4) + no3(5) + no3(6) + no3(7) + no3(8)
@@ -834,9 +834,9 @@ if (crop_in = 0) THEN
    endif
 else
 
-! Wheat harvest at PhenologyStage 10
+! Wheat harvest at stage 10
 
-   if wheat.StageName = 'harvest_ripe' or wheat.PlantStatus = 'dead' then
+   if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' then
       w_mat_day = day
       wheat harvest
       wheat kill_crop
@@ -844,7 +844,7 @@ else
       crop_in = 0
    endif
 
-   if (chickpea.PhenologyStage = 11) OR (chickpea.PlantStatus = 'dead') then
+   if (chickpea.stage = 11) OR (chickpea.plant_status = 'dead') then
       c_mat_day = day
 
       chickpea harvest
@@ -852,9 +852,9 @@ else
       crop_in = 0
    endif
 
-! Sorghum harvest at PhenologyStage 11 or on 15 June, whichever is earlier
+! Sorghum harvest at stage 11 or on 15 June, whichever is earlier
 
-   if (sorghum.PhenologyStage = 11) OR (sorghum.PlantStatus = 'dead') OR ((sorghum.PlantStatus = 'alive') AND (day = 166)) then
+   if (sorghum.stage = 11) OR (sorghum.plant_status = 'dead') OR ((sorghum.plant_status = 'alive') AND (day = 166)) then
       s_mat_day = day
       sorghum harvest
       sorghum kill_crop

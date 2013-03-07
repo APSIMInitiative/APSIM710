@@ -66,12 +66,12 @@ Paddock:
         millet_biomass
         millet_yield
         esw
-        Yield
-        Biomass
-        LAI
+        yield
+        biomass
+        lai
         pfact_photo
-        NStressPhoto
-        WaterStressPhoto
+        nfact_photo
+        swdef_photo
 
      Output file = Millet P.out
      Format = normal
@@ -101,7 +101,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('1-dec') then
-     millet sow population =7.5, sowing_depth = 30, cultivar = wrajpop
+     millet sow plants =7.5, sowing_depth = 30, cultivar = wrajpop
               endif
      END of rules
      
@@ -126,7 +126,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-     if millet.stagename = 'harvest_ripe' or millet.plantstatus = 'dead' then
+     if millet.stagename = 'harvest_ripe' or millet.plant_status = 'dead' then
         millet harvest
         millet1 harvest
         millet2 harvest
@@ -379,7 +379,7 @@ Paddock:
          - Reading constants
 ------- Start of simulation  --------------------------------------------------
 1 December 1988(Day of year=336), Sow on a fixed date: 
-     Manager sending message :- millet sow  population = 7.5, sowing_depth = 30, cultivar = wrajpop
+     Manager sending message :- millet sow  plants = 7.5, sowing_depth = 30, cultivar = wrajpop
 1 December 1988(Day of year=336), millet: 
      Sow
 1 December 1988(Day of year=336), Fertilise N at sowing: 

@@ -46,8 +46,8 @@ Title                  = Test sowing after out on same day
      Output variables:
         clock.day
         clock.year
-        millet.LAI
-        millet.Biomass
+        millet.lai
+        millet.biomass
         millet.green_biomass
 
      Output file = test2.out
@@ -66,7 +66,7 @@ Title                  = Test sowing after out on same day
      Manager rules:
      
      SECTION:- start_of_day
-     if millet.stagename = 'harvest_ripe' or millet.plantstatus = 'dead' then
+     if millet.stagename = 'harvest_ripe' or millet.plant_status = 'dead' then
         millet harvest
         millet1 harvest
         millet2 harvest
@@ -79,7 +79,7 @@ Title                  = Test sowing after out on same day
         millet3 end_crop
         millet4 end_crop
         millet5 end_crop
-        millet sow population =  7.5, sowing_depth = 30, cultivar = wrajpop
+        millet sow plants =  7.5, sowing_depth = 30, cultivar = wrajpop
      endif
      
      SECTION:- init
@@ -87,7 +87,7 @@ Title                  = Test sowing after out on same day
      
      SECTION:- start_of_day
      if day = 166 and year  = 1988 then
-        millet sow population =  7.5, sowing_depth = 30, cultivar = wrajpop
+        millet sow plants =  7.5, sowing_depth = 30, cultivar = wrajpop
      endif
      
      SECTION:- end_of_day
@@ -267,7 +267,7 @@ Title                  = Test sowing after out on same day
          - Reading constants
 ------- Start of simulation  --------------------------------------------------
 14 June 1988(Day of year=166), Manager: 
-     Manager sending message :- millet sow  population = 7.5, sowing_depth = 30, cultivar = wrajpop
+     Manager sending message :- millet sow  plants = 7.5, sowing_depth = 30, cultivar = wrajpop
 14 June 1988(Day of year=166), Millet: 
      Sow
      
@@ -1173,7 +1173,7 @@ Title                  = Test sowing after out on same day
                                                straw N =    6.5 kg/ha
                                                root residue =  203.7 kg/ha
                                                root N =    2.2 kg/ha
-     Manager sending message :- millet sow  population = 7.5, sowing_depth = 30, cultivar = wrajpop
+     Manager sending message :- millet sow  plants = 7.5, sowing_depth = 30, cultivar = wrajpop
 12 November 1988(Day of year=317): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM  Fatal  Error

@@ -81,17 +81,17 @@ Paddock:
         sow_year
         DaysAfterSowing
         simulation_end_date format dd/mm/yyyy
-        Biomass
+        biomass
         wetyield
         Grain_protein
-        GrainN
-        GrainNumber
+        grain_n
+        grain_no
         oil_conc
-        LeafNumber
-        WaterStressExpansion
-        WaterStressPhoto
-        NStressExpansion
-        NStressPhoto
+        leaf_no
+        sw_stress_expan
+        sw_stress_photo
+        n_stress_expan
+        n_stress_photo
         Hay
         Z
         Zadok11Das
@@ -111,7 +111,7 @@ Paddock:
         Zadok75Das
         flowering_das
         maturity_das
-        RootDepth
+        root_depth
         Bank
         TwoTimesCost 
         CurrentFallow
@@ -236,7 +236,7 @@ Paddock:
               twotimescost = twotimescost + 2 * cost
            endif
         endif
-        if stagename = 'harvest_ripe' or plantstatus = 'dead' then
+        if stagename = 'harvest_ripe' or plant_status = 'dead' then
            if (grain_protein > 10.5) then
               fullprice = 140 + (grain_protein - 10.5) * 2 * 2
            else
@@ -297,9 +297,9 @@ Paddock:
            sow_year = year
            if ('no' = 'yes') then
               skiprow = (4 * (( - 0.2)^2) + 3 * (( - 0.2)^2) ) / (1 + (( - ) * )^2)
-              wheat sow population =150, sowing_depth = 30, cultivar = wedgetail, row_spacing = 250, crop_class = plant, tiller_no_fertile = 1 (), skip = solid, skiprow = skiprow
+              wheat sow plants =150, sowing_depth = 30, cultivar = wedgetail, row_spacing = 250, crop_class = plant, tiller_no_fertile = 1 (), skip = solid, skiprow = skiprow
            else
-              wheat sow population =150, sowing_depth = 30, cultivar = wedgetail, row_spacing = 250, crop_class = plant, tiller_no_fertile = 1 (), skip = solid
+              wheat sow plants =150, sowing_depth = 30, cultivar = wedgetail, row_spacing = 250, crop_class = plant, tiller_no_fertile = 1 (), skip = solid
            endif
         endif
      
@@ -321,7 +321,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' then
+                if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
        wheat  harvest
        wheat  end_crop
        harvesttoday = 1
@@ -519,19 +519,19 @@ Paddock:
      SECTION:- post
         if (cropsown = 'sorghum') then
            if (daysaftersowing < 3) then
-              waterstressexpansion = 0
-              waterstressphoto = 0
+              sw_stress_expan = 0
+              sw_stress_photo = 0
               n_stress_expan = 0
-              nstressphoto = 0
+              n_stress_photo = 0
            else
-              waterstressexpansion = 1 - waterstressexpansion
-              waterstressphoto = 1 - waterstressphoto
-              n_stress_expan = 1 - nstressexpansion
-              nstressphoto = 1 - nstressphoto
+              sw_stress_expan = 1 - swdef_expan
+              sw_stress_photo = 1 - swdef_photo
+              n_stress_expan = 1 - nfact_expan
+              n_stress_photo = 1 - nfact_photo
            endif
-           leafnumber = leafno
-           grainnumber = grainno
-           grainn = graingreenn
+           leaf_no = leafno
+           grain_no = grainno
+           grain_n = graingreenn
            flowering_das = floweringdas
            maturity_das = maturitydas
         endif
@@ -576,7 +576,7 @@ Paddock:
            act_mods threemonthstime
         endif
         if (zadok_stage < 30) then
-           z = nodenumber + 9
+           z = node_no + 9
            if (z > 16) then
               z = 16
            endif
@@ -651,7 +651,7 @@ Paddock:
         availablewater = sw_dep() - ll_dep()
         pawc = dul_dep() - ll_dep()
         nuptakekgha = no3_uptake() * -1
-        ninplant = (biomass_n * 10) + (rootliven * 10)
+        ninplant = (biomass_n * 10) + (rootgreenn * 10)
         ningrain = graintotaln * 10
         if (daysaftersowing = 1) then
            zadok11das = 0
@@ -714,7 +714,7 @@ Paddock:
         availablewater = sw_dep() - ll_dep()
         pawc = dul_dep() - ll_dep()
         nuptakekgha = no3_uptake() * -1
-        ninplant = (biomass_n * 10) + (rootliven * 10)
+        ninplant = (biomass_n * 10) + (rootgreenn * 10)
         ningrain = graintotaln * 10
         if (daysaftersowing = 1) then
            zadok11das = 0
@@ -777,7 +777,7 @@ Paddock:
         availablewater = sw_dep() - ll_dep()
         pawc = dul_dep() - ll_dep()
         nuptakekgha = no3_uptake() * -1
-        ninplant = (biomass_n * 10) + (rootliven * 10)
+        ninplant = (biomass_n * 10) + (rootgreenn * 10)
         ningrain = graintotaln * 10
         if (daysaftersowing = 1) then
            zadok11das = 0
@@ -840,7 +840,7 @@ Paddock:
         availablewater = sw_dep() - ll_dep()
         pawc = dul_dep() - ll_dep()
         nuptakekgha = no3_uptake() * -1
-        ninplant = (biomass_n * 10) + (rootliven * 10)
+        ninplant = (biomass_n * 10) + (rootgreenn * 10)
         ningrain = graintotaln * 10
         if (daysaftersowing = 1) then
            zadok11das = 0
@@ -976,7 +976,7 @@ Paddock:
          stagename = 'maturity' or
          stagename = 'harvest_ripe') then
            cum_temp = cum_temp + (maxt + mint) / 2
-           cum_swdef = cum_swdef + waterstressphoto
+           cum_swdef = cum_swdef + swdef_photo
            cum_days = cum_days + 1
         endif
         if (cum_days > 0) then
@@ -1370,7 +1370,7 @@ Paddock:
 6 May 2008(Day of year=127), Script: 
      Manager creating a new local real variable : sowingfertiliser = 0.00000
 10 May 2008(Day of year=131), Sow: 
-     Manager sending message :- wheat sow  population = 150, sowing_depth = 30, cultivar = wedgetail, row_spacing = 250, crop_class = plant, tiller_no_fertile = 1, skip = solid
+     Manager sending message :- wheat sow  plants = 150, sowing_depth = 30, cultivar = wedgetail, row_spacing = 250, crop_class = plant, tiller_no_fertile = 1, skip = solid
 10 May 2008(Day of year=131), Wheat: 
      Crop Sow
         ------------------------------------------------
@@ -1480,7 +1480,7 @@ Paddock:
                      stover N conc =     1.07 (%)    extractable sw =   11.74 (mm)
 24 October 2008(Day of year=298), CanolaOilConc: 
      Manager creating a new local real variable : avg_temp = 20.25000
-     Manager creating a new local real variable : avg_swdef = 0.78898
+     Manager creating a new local real variable : avg_swdef = 0.21102
 24 November 2008(Day of year=329), Wheat: 
       stage 8.0 end_grain_fill
                      biomass =         852.23 (g/m^2)   lai          =   0.455 (m^2/m^2)

@@ -1860,7 +1860,7 @@
          call respond2get_real_var (variable_name
      :        , '(m^2/m^2)', g%alai)
 
-      elseif (variable_name .eq. 'coverlive') then
+      elseif (variable_name .eq. 'cover_green') then
          if (g%plant_status .eq. status_alive) then
             cover = l_bound (1.0 - g%tr, 0.0)
          else 
@@ -1870,7 +1870,7 @@
      :                             , '()'
      :                             , cover)
 
-      elseif (variable_name .eq. 'covertotal') then
+      elseif (variable_name .eq. 'cover_tot') then
          if (g%plant_status .eq. status_alive) then
             cover = g%f_intz
          else 
@@ -1909,7 +1909,7 @@
          call respond2get_real_var (variable_name
      :        , '(kg/ha)', g%yest_tsnh4)
 
-      else if (Variable_name .eq. 'AboveGroundN') then
+      else if (Variable_name .eq. 'n_uptake') then
          d_nup = g%dn_plant * 10.
          call respond2get_real_var (variable_name
      :        , '(kg/ha)', d_nup)
@@ -1958,7 +1958,7 @@
          call respond2get_integer_var (variable_name
      :        , '()', g%iend)
 
-      else if (variable_name .eq. 'plantstatus') then
+      else if (variable_name .eq. 'plant_status') then
          call respond2get_char_var (variable_name
      :        , '()', g%plant_status)
 
@@ -7631,9 +7631,9 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
      :                                    floatTypeDDML, 'bales/ha')
       dummy = add_registration_with_units(respondToGetReg, 'lai',
      :                                    floatTypeDDML, 'm^2/m^2')
-      dummy = add_registration_with_units(respondToGetReg, 'CoverLive',
-     :                                    floatTypeDDML, '')
-      dummy = add_registration_with_units(respondToGetReg, 'CoverTotal',
+      dummy = add_registration_with_units(respondToGetReg,
+     :                               'cover_green', floatTypeDDML, '')
+      dummy = add_registration_with_units(respondToGetReg, 'cover_tot',
      :                                    floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg, 'height',
      :                                    floatTypeDDML, 'mm')
@@ -7649,8 +7649,8 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
      :                                    floatTypeDDML, 'kg/ha')
       dummy = add_registration_with_units(respondToGetReg, 'ysnh4',
      :                                    floatTypeDDML, 'kg/ha')
-      dummy = add_registration_with_units(respondToGetReg, 
-     :                         'AboveGroundN', floatTypeDDML, 'kg/ha')
+      dummy = add_registration_with_units(respondToGetReg, 'n_uptake',
+     :                                    floatTypeDDML, 'kg/ha')
       dummy = add_registration_with_units(respondToGetReg, 'rtdep',
      :                                    floatTypeDDML, 'cm')
       dummy = add_registration_with_units(respondToGetReg, 's_bed_mi',

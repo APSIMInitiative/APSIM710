@@ -30,9 +30,9 @@ endif
 ! sowing rule for sowing maize
 if date_within('15-nov, 15-jan') AND
                   rain[5] >= 20 AND
-                  maize.PlantStatus = 'out' THEN
+                  maize.plant_status = 'out' THEN
          crop_flag = 1
-         maize sow population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+         maize sow plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
          mz_sowdate = day
 endif
 
@@ -150,16 +150,16 @@ if maize.DaysAfterSowing = 1 or maize.DaysAfterSowing = 42 or maize.DaysAfterSow
 
 [all.manager.end_of_day]
 
-     if PhenologyStage = 3 and emer_date = 0 then
+     if Stage = 3 and emer_date = 0 then
         emer_date = DaysAfterSowing
-     elseif PhenologyStage = 7 and anth_date = 0 then
+     elseif Stage = 7 and anth_date = 0 then
         anth_date = DaysAfterSowing
-     elseif PhenologyStage = 11 and mat_date = 0 then
+     elseif Stage = 11 and mat_date = 0 then
         mat_date = DaysAfterSowing
      endif
 
-     if (maize.PhenologyStage = 11 OR
-   maize.PlantStatus = 'dead') THEN
+     if (maize.Stage = 11 OR
+   maize.plant_status = 'dead') THEN
         report do_output
         maize harvest
         maize end_crop
@@ -167,7 +167,7 @@ if maize.DaysAfterSowing = 1 or maize.DaysAfterSowing = 42 or maize.DaysAfterSow
      endif
 
      if
-        maize.PlantStatus = 'out' and
+        maize.plant_status = 'out' and
         day = harvd + 30 then
         surfaceom tillage type = user_defined, f_incorp = 0.50 (), tillage_depth = 0 (mm)
         crop_flag = 0
@@ -185,8 +185,8 @@ variable = sum of met.rain on end_of_day from report.reported to now as sum@met_
 variable = sum of SoilWat.runoff on end_of_day from report.reported to now as sum@soilwat2_runoff
 variable = sum of SoilWat.drain on end_of_day from report.reported to now as sum@soilwat2_drain
 variable = sum of SoilWat.es on end_of_day from report.reported to now as sum@soilwat2_es
-variable = average of maize.WaterStressPhoto on end_of_day from report.reported to now as avg@maize_swdef_photo
-variable = average of maize.NStressPhoto on end_of_day from report.reported to now as avg@maize_nfact_photo
+variable = average of maize.swdef_photo on end_of_day from report.reported to now as avg@maize_swdef_photo
+variable = average of maize.nfact_photo on end_of_day from report.reported to now as avg@maize_nfact_photo
 variable = average of maize.pfact_photo on end_of_day from report.reported to now as avg@maize_pfact_photo
 variable = sum of SoilWat.flow_no3(5) on end_of_day from report.reported to now as sum@soilwat2_flow_no3[5]
 

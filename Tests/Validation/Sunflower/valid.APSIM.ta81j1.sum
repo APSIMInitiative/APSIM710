@@ -43,9 +43,9 @@ Title                  = TATURA 1981 EXP 1, IRRIG, SUNGOLD
      Output variables:
         clock.year as year
         sunflower.das_int as DaysAfterSowing
-        sunflower.LAI as LAI
-        sunflower.biomass_wt as Biomass
-        sunflower.GrainWt as Yield
+        sunflower.lai as lai
+        sunflower.biomass_wt as biomass
+        sunflower.grain_wt as yield
         manager.cum_et as et
 
      Output file = new\ta81j1.out
@@ -89,7 +89,7 @@ Title                  = TATURA 1981 EXP 1, IRRIG, SUNGOLD
            sunflower sow cultivar = sc150, plants = 5, sowing_depth = 50 (mm), tiller_no_fertile = 0 ()
         endif
      endif
-     if (sunflower.phenologystage = 11) then
+     if (sunflower.stage = 11) then
         sunflower harvest
         sunflower kill_crop
         sunflower end_crop
@@ -293,7 +293,7 @@ Title                  = TATURA 1981 EXP 1, IRRIG, SUNGOLD
          Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
          Day no    mm      m^2    m      code     name       no
          -------------------------------------------------------
-            330   50.0    0.0    0.0    0.0   sungold       0.00
+            330   50.0    5.3    0.0    0.0   sungold       0.00
          -------------------------------------------------------
      
         - Reading root profile parameters
@@ -358,7 +358,104 @@ Title                  = TATURA 1981 EXP 1, IRRIG, SUNGOLD
      Manager creating a new local real variable : cum_et = 1.00000
      Manager creating a new local real variable : supply_demand_ratio = 0.00000
      Manager creating a new local real variable : dw1000gr = 0.00000
-         kill. Standing above-ground dm =     0.0 (kg/ha)
+27 November 1981(Day of year=331), sunflower: 
+      stage    2.0 germination
+2 December 1981(Day of year=336), sunflower: 
+      stage    3.0 emergence
+                          biomass =           1.066000       lai =    0.2132000E-02
+                          stover N conc =    5.000000       extractable sw =    81.24852
+16 December 1981(Day of year=350), sunflower: 
+      stage    4.0 end_of_juvenile
+                          biomass =           14.81842       lai =    0.9356517E-01
+                          stover N conc =    4.085612       extractable sw =    212.7849
+10 January 1982(Day of year=10), sunflower: 
+      stage    5.0 floral_initiation
+                          biomass =           271.9543       lai =     1.487235
+                          stover N conc =    3.903274       extractable sw =    211.1479
+3 February 1982(Day of year=34), sunflower: 
+      stage    6.0 flag_leaf
+                          biomass =           735.8424       lai =     2.106863
+                          stover N conc =    2.390024       extractable sw =    143.2140
+4 February 1982(Day of year=35), sunflower: 
+      stage    7.0 flowering
+                          biomass =           757.1218       lai =     2.091676
+                          stover N conc =    2.340592       extractable sw =    132.2831
+8 February 1982(Day of year=39), sunflower: 
+      stage    8.0 start_grain_fill
+                          biomass =           803.0232       lai =     2.026202
+                          stover N conc =    2.284498       extractable sw =    96.88045
+5 March 1982(Day of year=64): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     dm_retranslocate mass balance =    0.2384186E-06
+             exceeds upper limit of   0.1192093E-06
+     Component name: sunflower
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+6 March 1982(Day of year=65), sunflower: 
+      stage    9.0 end_grain_fill
+                          biomass =           1123.184       lai =    0.7142807
+                          stover N conc =    1.924483       extractable sw =    90.15984
+8 March 1982(Day of year=67), sunflower: 
+      stage   10.0 maturity
+                          biomass =           1141.741       lai =    0.4451236
+                          stover N conc =    1.930079       extractable sw =    77.99448
+9 March 1982(Day of year=68), sunflower: 
+      stage   11.0 harvest_ripe
+                          biomass =           1141.741       lai =     0.000000
+                          stover N conc =    1.992778       extractable sw =    84.81659
+10 March 1982(Day of year=69), Manager: 
+     Manager sending message :- sunflower harvest
+10 March 1982(Day of year=69), sunflower: 
+     
+     
+     
+     flowering (DAS) =   70                                maturity (DAS)  =     102
+      flowering day  =   35                                 stover (kg/ha) =    8391.4
+      maturity day        =   67                            grain yield (kg/ha) =    3026.0
+      grain % water content   =    9.0                      grain yield wet (kg/ha) =    3325.3
+      grain wt (g) =     0.000                              grains/m^2   =     0.000
+      grains/head =   0.0                                   maximum lai = 2.134
+      total above ground biomass (kg/ha) =   11417.4
+      live above ground biomass (kg/ha) =   11417.4
+      green above ground biomass (kg/ha) =    9018.5
+      senesced above ground biomass (kg/ha) =    2398.9
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  33.6
+      grain N percent =      2.02                           total N content (kg/ha) =    196.51
+      grain N uptake (kg/ha) =     61.00                    senesced N content (kg/ha) =     16.79
+      green N content (kg/ha) =    118.72                   dead N content (kg/ha) =      0.00
+     
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence           to end_of_juvenile         0.000        0.000        0.000        0.094
+         end_of_juvenile     to floral_initiation       0.002        0.042        0.000        0.116
+         floral_initiation   to flag_leaf               0.175        0.707        0.000        0.007
+         flag_leaf           to flowering               0.016        0.574        0.000        0.000
+         flowering           to start_grain_fill        0.340        0.821        0.000        0.000
+         start_grain_fill    to end_grain_fill          0.142        0.695        0.000        0.000
+     
+     Crop harvested.
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =               3026.04                    0.00
+                          N  (kg/ha) =                 61.00                    0.00
+     
+     Manager sending message :- sunflower kill_crop
+         kill. Standing above-ground dm =  9046.4 (kg/ha)
+     Manager sending message :- sunflower end_crop
+         Crop ended. Yield (dw) =     0.0
+10 March 1982(Day of year=69), SurfaceOM: 
+      Added surfom
+        SurfaceOM Type         = sunflower
+        Amount Added (kg/ha) =    9046.35547
+     
+         Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
+                          DM (kg/ha) =               9046.36                 3455.01
+                          N  (kg/ha) =                135.52                   56.38
+                          P  (kg/ha) =                  0.00                    0.00
+     
 25 March 1982(Day of year=84), Clock: 
      Simulation is terminating due to end criteria being met.
 

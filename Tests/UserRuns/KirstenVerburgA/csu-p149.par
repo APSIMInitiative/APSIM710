@@ -147,7 +147,7 @@ endif
 
 !Temporary assumption about cut at flowering
 !if (lucerne.StageName = 'flowering') then
-!   lucerne harvest Height = 50 (mm), remove = 0.95
+!   lucerne harvest height = 50 (mm), remove = 0.95
 !endif
 
 if (year = 1992 and day = 350) then
@@ -253,17 +253,17 @@ report4 do_end_day_output
 
 [weeds.manager.start_of_day]
 if ((day = 361) and (year = 1992)) then
-   weed sow population = 40, sowing_depth = 40,crop_class = winter_grass, cultivar = early
+   weed sow plants = 40, sowing_depth = 40,crop_class = winter_grass, cultivar = early
    cult = 2
    crop_in = 1
 endif
 
-if ((crop_in = 0) and (lucerne.PlantStatus = 'out')) then
+if ((crop_in = 0) and (lucerne.plant_status = 'out')) then
    if (date_within('1-dec, 30-apr') = 1) then
       ! weeds allowed to germinate
       if ((date_within('1-dec,28-feb') and (rain[2] >= 25)) or
           (date_within('1-mar,30-apr') and (rain[2] >= 20))) then
-         weed sow population = 40, sowing_depth = 40, crop_class = winter_grass, cultivar = early
+         weed sow plants = 40, sowing_depth = 40, crop_class = winter_grass, cultivar = early
          cult = 2
          crop_in = 1
       endif
@@ -289,7 +289,7 @@ endif
 
 !------1993 wheat-------
 !wheat sown and DAP (17 kg N/ha, 25 kg P/ha) applied on 6/6/93
-157 1993 wheat sow population = 210, sowing_depth = 40, cultivar = janz
+157 1993 wheat sow plants = 210, sowing_depth = 40, cultivar = janz
 157 1993 Fertiliser apply amount = 17 (kg/ha), type = nh4_n, depth = 60 (mm)
 !wheat harvest on 15/12/93
 349 1993 wheat harvest
@@ -346,8 +346,8 @@ endif
 
 !-------1998 canola-------
 !lysimeters sown on 4/5/98 ; field plots direct drilled on 29/4/98 with 130 kg/ha DAP
-124   1998     canola sow population = 35, crop_class = triazine, row_spacing = 180, sowing_depth = 20, cultivar = Karoo
-!124   1998     canola sow population = 35, row_spacing = 180, sowing_depth = 20, cultivar = Karoo
+124   1998     canola sow plants = 35, crop_class = triazine, row_spacing = 180, sowing_depth = 20, cultivar = Karoo
+!124   1998     canola sow plants = 35, row_spacing = 180, sowing_depth = 20, cultivar = Karoo
 124   1998     Fertiliser apply amount = 27.3 (kg/ha), type = nh4_n, depth = 40 (mm)
 !canola windrowed on 13/11/98
 !may need to delay harvest for yield purposes - check whether it still uses water or not.
@@ -359,7 +359,7 @@ endif
 
 !-------1999 triticale-------
 !tritiale sown with 120 kg/ha DAP on 21/5/99 (=25 kg N/ha, 28 kg P/ha)
-141 1999 wheat sow population = 194, depth = 40, cultivar = janz
+141 1999 wheat sow plants = 194, depth = 40, cultivar = janz
 141 1999 Fertiliser apply amount = 25 (kg/ha), type = nh4_n, depth = 60 (mm)
 !wheat harvest on 7/12/99 or 9/12/99 - assume 8/12/99
 342 1999 wheat harvest

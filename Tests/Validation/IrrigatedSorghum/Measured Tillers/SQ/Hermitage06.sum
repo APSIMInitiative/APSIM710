@@ -51,17 +51,17 @@ Paddock:
         dul_dep()
         WaterSD
         Biomass
-        Yield
-        LAI
+        yield
+        lai
         GrainNo
-        PhenologyStage
+        stage
         biomass_wt
         GrainGreenWt
         RachisGreenWt
-        StemLiveWt
+        StemGreenWt
         GrainSize
-        LeafDeadWt
-        LeafLiveWt
+        LeafSenescedWt
+        LeafGreenWt
         TillerNoFertile
 
      Output file = Hermitage06.out
@@ -83,7 +83,7 @@ Paddock:
           sowyear = year
           adjftn = 0.9 * 1
           adjdensity = 7.3 * 1
-          sorghum sow population =adjdensity , sowing_depth = 30, cultivar = buster, row_spacing = 0.75, skip = solid, tiller_no_fertile = adjftn  ()
+          sorghum sow plants =adjdensity , sowing_depth = 30, cultivar = buster, row_spacing = 0.75, skip = solid, tiller_no_fertile = adjftn  ()
      endif
      END of rules
      
@@ -92,7 +92,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if sorghum.stagename = 'harvest_ripe' or sorghum.plantstatus = 'dead' then
+                if sorghum.stagename = 'harvest_ripe' or sorghum.plant_status = 'dead' then
        sorghum  harvest
        sorghum  end_crop
                 endif
@@ -238,7 +238,7 @@ Paddock:
      Manager creating a new local real variable : sowyear = 2006.00000
      Manager creating a new local real variable : adjftn = 0.90000
      Manager creating a new local real variable : adjdensity = 7.30000
-     Manager sending message :- sorghum sow  population = 7.30000, sowing_depth = 30, cultivar = buster, row_spacing = 0.75, skip = solid, tiller_no_fertile = 0.90000
+     Manager sending message :- sorghum sow  plants = 7.30000, sowing_depth = 30, cultivar = buster, row_spacing = 0.75, skip = solid, tiller_no_fertile = 0.90000
 21 November 2006(Day of year=325), Sorghum: 
      Sowing initiate
      

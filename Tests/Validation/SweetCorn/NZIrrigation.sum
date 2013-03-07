@@ -66,28 +66,28 @@ Paddock:
      Output variables:
         dd/mmm/yyyy as Date
         SweetCorn.zadok_stage
-        SweetCorn.LAI
-        SweetCorn.LeafLiveWt
-        SweetCorn.StemLiveWt
+        SweetCorn.lai
+        SweetCorn.LeafGreenWt
+        SweetCorn.StemGreenWt
         SweetCorn.EarTotalWt
         SweetCorn.biomass_wt
-        SweetCorn.WaterStressPhoto
-        SweetCorn.NodeNumber
+        SweetCorn.swdef_photo
+        SweetCorn.node_no
         SweetCorn.node_no_sen
         SweetCorn.node_no_fx
-        SweetCorn.NStressPhoto
+        SweetCorn.nfact_photo
         SweetCorn.temp_stress_photo
         SweetCorn.tt_tot
         SweetCorn.DaysAfterSowing
         Irrigation.irrigation
-        SweetCorn.RootDepth
+        SweetCorn.root_depth
         sw_dep()
         sw
         SweetCorn.dlt_lai_pot
         SweetCorn.ep
         SweetCorn.sw_demand
-        SweetCorn.NStressExpansion
-        SweetCorn.WaterStressExpansion
+        SweetCorn.nfact_expan
+        SweetCorn.swdef_expan
         runoff
         es
 
@@ -113,7 +113,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if sweetcorn.stagename = 'harvest_ripe' or sweetcorn.plantstatus = 'dead' then
+                if sweetcorn.stagename = 'harvest_ripe' or sweetcorn.plant_status = 'dead' then
        sweetcorn  harvest
        sweetcorn  end_crop
                 endif
@@ -133,7 +133,7 @@ Paddock:
      
      SECTION:- start_of_day
            if (today = date('30-oct') then
-             sweetcorn sow population =5.7, sowing_depth = 50, cultivar = challenger, row_spacing = 700
+             sweetcorn sow plants =5.7, sowing_depth = 50, cultivar = challenger, row_spacing = 700
              endif
      END of rules
      
@@ -298,28 +298,28 @@ Paddock:
      Output variables:
         dd/mmm/yyyy as Date
         SweetCorn.zadok_stage
-        SweetCorn.LAI
-        SweetCorn.LeafLiveWt
-        SweetCorn.StemLiveWt
+        SweetCorn.lai
+        SweetCorn.LeafGreenWt
+        SweetCorn.StemGreenWt
         SweetCorn.EarTotalWt
         SweetCorn.biomass_wt
-        SweetCorn.WaterStressPhoto
-        SweetCorn.NodeNumber
+        SweetCorn.swdef_photo
+        SweetCorn.node_no
         SweetCorn.node_no_sen
         SweetCorn.node_no_fx
-        SweetCorn.NStressPhoto
+        SweetCorn.nfact_photo
         SweetCorn.temp_stress_photo
         SweetCorn.tt_tot
         SweetCorn.DaysAfterSowing
         Irrigation.irrigation
-        SweetCorn.RootDepth
+        SweetCorn.root_depth
         sw_dep()
         sw
         SweetCorn.dlt_lai_pot
         SweetCorn.ep
         SweetCorn.sw_demand
-        SweetCorn.NStressExpansion
-        SweetCorn.WaterStressExpansion
+        SweetCorn.nfact_expan
+        SweetCorn.swdef_expan
         runoff
         es
 
@@ -345,7 +345,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if sweetcorn.stagename = 'harvest_ripe' or sweetcorn.plantstatus = 'dead' then
+                if sweetcorn.stagename = 'harvest_ripe' or sweetcorn.plant_status = 'dead' then
        sweetcorn  harvest
        sweetcorn  end_crop
                 endif
@@ -365,7 +365,7 @@ Paddock:
      
      SECTION:- start_of_day
            if (today = date('30-oct') then
-             sweetcorn sow population =5.7, sowing_depth = 50, cultivar = challenger, row_spacing = 700
+             sweetcorn sow plants =5.7, sowing_depth = 50, cultivar = challenger, row_spacing = 700
              endif
      END of rules
      
@@ -524,7 +524,7 @@ Paddock:
            Totals  189470.0 15157.6   778.0    97.3    80.0     2.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager sending message :- sweetcorn sow  population = 5.7, sowing_depth = 50, cultivar = challenger, row_spacing = 700
+     Manager sending message :- sweetcorn sow  plants = 5.7, sowing_depth = 50, cultivar = challenger, row_spacing = 700
 30 October 1996(Day of year=304), SweetCorn: 
      Crop Sow
         ------------------------------------------------
@@ -589,7 +589,7 @@ Paddock:
             304   50.0    5.7  700.0   0.0   0.0 challenger
          ------------------------------------------------
      
-     Manager sending message :- sweetcorn sow  population = 5.7, sowing_depth = 50, cultivar = challenger, row_spacing = 700
+     Manager sending message :- sweetcorn sow  plants = 5.7, sowing_depth = 50, cultivar = challenger, row_spacing = 700
 30 October 1996(Day of year=304), SweetCorn: 
      Crop Sow
         ------------------------------------------------

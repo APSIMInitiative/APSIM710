@@ -1,4 +1,4 @@
-<folder version="34" name="Simulations">
+<folder version="33" name="Simulations">
   <simulation name="ShallowSoilSampleHighCL">
     <clock name="Clock" />
     <metfile name="met">
@@ -22,7 +22,7 @@
             <ProteinIncrement type="text" description="Protein increment payment ($/t) : ">2</ProteinIncrement>
           </ui>
           <script name="post">
-            <text>   ! Reset the bank to zero the day after harvest.
+            <text><![CDATA[   ! Reset the bank to zero the day after harvest.
    if (ResetBank = 1 or today = met_start_date) then
       Bank = 0
       ResetBank = 0
@@ -30,7 +30,7 @@
    endif
 
    ! Keep track of the number of fertiliser applications.
-   if (fertiliser &gt; 0)then
+   if (fertiliser > 0)then
       Cost = [FertiliserCost] * fertiliser + [FertiliserApplicationCost]
       Bank = Bank - Cost
       if ScenarioApplication = 'yes' then
@@ -39,7 +39,7 @@
    endif
 
    ! Keep track of the number of irrigation applications.
-   if (irrig_tot &gt; 0)then
+   if (irrig_tot > 0)then
       Cost = [WaterCost] * (irrig_tot / 100)
       Bank = Bank - Cost
       if ScenarioApplication = 'yes' then
@@ -48,8 +48,8 @@
    endif
 
    ! Calculate gross margin at harvest.
-   if StageName = 'harvest_ripe' or PlantStatus = 'dead' then
-      if (grain_protein &gt; [ProteinContent]) then
+   if StageName = 'harvest_ripe' or plant_status = 'dead' then
+      if (grain_protein > [ProteinContent]) then
          FullPrice = [Price] + (grain_protein - [ProteinContent]) * 2 * [ProteinIncrement]
       else
          FullPrice = [Price]
@@ -57,7 +57,7 @@
       Bank = Bank + FullPrice * WetYield
       ResetBank = 1
    endif
-</text>
+]]></text>
             <event>post</event>
           </script>
           <script name="init">
@@ -80,11 +80,11 @@
             <resetSurfaceOM type="yesno" description="Reset surface organic matter?">yes</resetSurfaceOM>
           </ui>
           <script name="start_of_day">
-            <text>   ! If the reset date is after the sow date then we want to reset on both sowing and on the reset date.
+            <text><![CDATA[   ! If the reset date is after the sow date then we want to reset on both sowing and on the reset date.
    ! Otherwise, just reset on the reset date.
    DoReset = 0
-   if (date('[ResetDate]')&gt; SowDate) then
-      if (today = date('[ResetDate]') or (today = SowDate and ResetDate - SowDate &lt; 90)) then
+   if (date('[ResetDate]')> SowDate) then
+      if (today = date('[ResetDate]') or (today = SowDate and ResetDate - SowDate < 90)) then
          DoReset = 1
       endif
    elseif (today = date('[ResetDate]')) then
@@ -106,7 +106,7 @@
       endif
       act_mods reseting
    endif
-      </text>
+      ]]></text>
             <event>start_of_day</event>
           </script>
         </manager>
@@ -135,9 +135,9 @@
       sow_year = year
       if ('[FurrowIrrigation]' = 'yes') then
          skiprow = (4 * (([BedRowSpacing] - 0.2)^2) + 3 * (([FurrowRowSpacing] - 0.2)^2) ) / (1 + (([BedRowSpacing] - [FurrowRowSpacing]) * [BedWidth])^2)
-         [crop] sow population =[SowingDensity], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [RowSpacing], crop_class = [class], tiller_no_fertile = [ftn] (), skip = [skiprow], skiprow = skiprow
+         [crop] sow plants =[SowingDensity], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [RowSpacing], crop_class = [class], tiller_no_fertile = [ftn] (), skip = [skiprow], skiprow = skiprow
       else
-         [crop] sow population =[SowingDensity], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [RowSpacing], crop_class = [class], tiller_no_fertile = [ftn] (), skip = [skiprow]
+         [crop] sow plants =[SowingDensity], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [RowSpacing], crop_class = [class], tiller_no_fertile = [ftn] (), skip = [skiprow]
       endif
    endif
                </text>
@@ -171,7 +171,7 @@
           <script name="end_of_day">
             <text>
 
-           if [crop].StageName = 'harvest_ripe' or [crop].PlantStatus = 'dead' then
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
               [crop]  harvest
               [crop]  end_crop
               harvesttoday = 1
@@ -190,7 +190,7 @@
    else
       MoistureContent = 12     ! %
    endif
-   WetYield = Yield / (1 - MoistureContent/100) / 1000
+   WetYield = yield / (1 - MoistureContent/100) / 1000
 </text>
             <event>start_of_day</event>
           </script>
@@ -206,14 +206,14 @@
             <GrainPrice type="text" description="Grain Price ($/t) :">200</GrainPrice>
           </ui>
           <script name="post">
-            <text>
-   ! Calculate hay Biomass and convert kg/ha to t/ha - assume 13% moisture
-   CropBiomass =  (Biomass / (1 - 13/100) / 1000)
+            <text><![CDATA[
+   ! Calculate hay biomass and convert kg/ha to t/ha - assume 13% moisture
+   CropBiomass =  (biomass / (1 - 13/100) / 1000)
    HayBiomassPercent = 70
-   if (Biomass &gt;= 2000 and Biomass &lt;= 12000) then
-      HayBiomassPercent = 70 + (Biomass-2000) / (12000-2000) * 5
-   elseif (Biomass &gt; 12000) then
-      HayBiomassPercent = 75 + (Biomass-12000) / (25000-12000) * 5
+   if (biomass >= 2000 and biomass <= 12000) then
+      HayBiomassPercent = 70 + (biomass-2000) / (12000-2000) * 5
+   elseif (biomass > 12000) then
+      HayBiomassPercent = 75 + (biomass-12000) / (25000-12000) * 5
    endif
    HayBiomass = (HayBiomassPercent / 100) * CropBiomass
 
@@ -222,7 +222,7 @@
 
    HayGrossMargin = HayBiomass * [HayPrice] - [HayCost] - ([BalingCost] * HayBiomass)
    GrainGrossMargin = WetYield * [GrainPrice] - [GrainCost]
-</text>
+]]></text>
             <event>post</event>
           </script>
           <script name="init">
@@ -247,19 +247,19 @@
             <EventName type="text" description="Name of event to publish when above 2 conditions are met : ">MildFrost</EventName>
           </ui>
           <script name="post">
-            <text>
+            <text><![CDATA[
    if (DaysAfterSowing = 1) then
       [EventName]Count = 0
    endif
 
-          if ([VariableName1] &gt;= [LowerBound1] and
-              [VariableName1] &lt;= [UpperBound1] and
-              [VariableName2] &gt;= [LowerBound2] and
-              [VariableName2] &lt; [UpperBound2]) then
+          if ([VariableName1] >= [LowerBound1] and
+              [VariableName1] <= [UpperBound1] and
+              [VariableName2] >= [LowerBound2] and
+              [VariableName2] < [UpperBound2]) then
              act_mods [EventName]
              [EventName]Count =  [EventName]Count +1
           endif
-</text>
+]]></text>
             <event>post</event>
           </script>
         </manager>
@@ -277,19 +277,19 @@
             <EventName type="text" description="Name of event to publish when above 2 conditions are met : ">ModerateFrost</EventName>
           </ui>
           <script name="post">
-            <text>
+            <text><![CDATA[
    if (DaysAfterSowing = 1) then
       [EventName]Count = 0
    endif
 
-          if ([VariableName1] &gt;= [LowerBound1] and
-              [VariableName1] &lt;= [UpperBound1] and
-              [VariableName2] &gt;= [LowerBound2] and
-              [VariableName2] &lt; [UpperBound2]) then
+          if ([VariableName1] >= [LowerBound1] and
+              [VariableName1] <= [UpperBound1] and
+              [VariableName2] >= [LowerBound2] and
+              [VariableName2] < [UpperBound2]) then
              act_mods [EventName]
              [EventName]Count =  [EventName]Count +1
           endif
-</text>
+]]></text>
             <event>post</event>
           </script>
         </manager>
@@ -307,19 +307,19 @@
             <EventName type="text" description="Name of event to publish when above 2 conditions are met : ">SevereFrost</EventName>
           </ui>
           <script name="post">
-            <text>
+            <text><![CDATA[
    if (DaysAfterSowing = 1) then
       [EventName]Count = 0
    endif
 
-          if ([VariableName1] &gt;= [LowerBound1] and
-              [VariableName1] &lt;= [UpperBound1] and
-              [VariableName2] &gt;= [LowerBound2] and
-              [VariableName2] &lt; [UpperBound2]) then
+          if ([VariableName1] >= [LowerBound1] and
+              [VariableName1] <= [UpperBound1] and
+              [VariableName2] >= [LowerBound2] and
+              [VariableName2] < [UpperBound2]) then
              act_mods [EventName]
              [EventName]Count =  [EventName]Count +1
           endif
-</text>
+]]></text>
             <event>post</event>
           </script>
         </manager>
@@ -337,19 +337,19 @@
             <EventName type="text" description="Name of event to publish when above 2 conditions are met : ">MildHeatShock</EventName>
           </ui>
           <script name="post">
-            <text>
+            <text><![CDATA[
    if (DaysAfterSowing = 1) then
       [EventName]Count = 0
    endif
 
-          if ([VariableName1] &gt;= [LowerBound1] and
-              [VariableName1] &lt;= [UpperBound1] and
-              [VariableName2] &gt;= [LowerBound2] and
-              [VariableName2] &lt; [UpperBound2]) then
+          if ([VariableName1] >= [LowerBound1] and
+              [VariableName1] <= [UpperBound1] and
+              [VariableName2] >= [LowerBound2] and
+              [VariableName2] < [UpperBound2]) then
              act_mods [EventName]
              [EventName]Count =  [EventName]Count +1
           endif
-</text>
+]]></text>
             <event>post</event>
           </script>
         </manager>
@@ -367,19 +367,19 @@
             <EventName type="text" description="Name of event to publish when above 2 conditions are met : ">ModerateHeatShock</EventName>
           </ui>
           <script name="post">
-            <text>
+            <text><![CDATA[
    if (DaysAfterSowing = 1) then
       [EventName]Count = 0
    endif
 
-          if ([VariableName1] &gt;= [LowerBound1] and
-              [VariableName1] &lt;= [UpperBound1] and
-              [VariableName2] &gt;= [LowerBound2] and
-              [VariableName2] &lt; [UpperBound2]) then
+          if ([VariableName1] >= [LowerBound1] and
+              [VariableName1] <= [UpperBound1] and
+              [VariableName2] >= [LowerBound2] and
+              [VariableName2] < [UpperBound2]) then
              act_mods [EventName]
              [EventName]Count =  [EventName]Count +1
           endif
-</text>
+]]></text>
             <event>post</event>
           </script>
         </manager>
@@ -397,19 +397,19 @@
             <EventName type="text" description="Name of event to publish when above 2 conditions are met : ">SevereHeatShock</EventName>
           </ui>
           <script name="post">
-            <text>
+            <text><![CDATA[
    if (DaysAfterSowing = 1) then
       [EventName]Count = 0
    endif
 
-          if ([VariableName1] &gt;= [LowerBound1] and
-              [VariableName1] &lt;= [UpperBound1] and
-              [VariableName2] &gt;= [LowerBound2] and
-              [VariableName2] &lt; [UpperBound2]) then
+          if ([VariableName1] >= [LowerBound1] and
+              [VariableName1] <= [UpperBound1] and
+              [VariableName2] >= [LowerBound2] and
+              [VariableName2] < [UpperBound2]) then
              act_mods [EventName]
              [EventName]Count =  [EventName]Count +1
           endif
-</text>
+]]></text>
             <event>post</event>
           </script>
         </manager>
@@ -522,20 +522,20 @@ StationNumber=78078
             <text>
 
    if (CropSown = 'sorghum') then
-      if (DaysAfterSowing &lt; 3) then   ! There's a bug in Sorghum when WaterStressExpansion=0 before das = 3
-         WaterStressExpansion = 0
-         WaterStressPhoto = 0
+      if (DaysAfterSowing &lt; 3) then   ! There's a bug in Sorghum when swdef_expan=0 before das = 3
+         sw_stress_expan = 0
+         sw_stress_photo = 0
          n_stress_expan = 0
-         NStressPhoto = 0
+         n_stress_photo = 0
       else
-         WaterStressExpansion = 1 - WaterStressExpansion
-         WaterStressPhoto = 1 - WaterStressPhoto
-         n_stress_expan = 1 - NStressExpansion
-         NStressPhoto = 1 - NStressPhoto
+         sw_stress_expan = 1 - swdef_expan
+         sw_stress_photo = 1 - swdef_photo
+         n_stress_expan = 1 - nfact_expan
+         n_stress_photo = 1 - nfact_photo
       endif
-      LeafNumber = LeafNo
-      GrainNumber = GrainNo
-      GrainN = GrainGreenN
+      leaf_no = LeafNo
+      grain_no = GrainNo
+      grain_n = GrainGreenN
       flowering_das = FloweringDAS
       maturity_das = MaturityDAS
    endif
@@ -609,7 +609,7 @@ StationNumber=78078
    ! Improved Zadok_stage
    ! -----------------------------------------
    if (zadok_stage &lt; 30) then
-      Z = NodeNumber + 9
+      Z = node_no + 9
       if (Z &gt; 16) then
          Z = 16
       endif
@@ -713,7 +713,7 @@ StationNumber=78078
 
    PAWC = dul_dep() - ll_dep()
    NUptakeKgHa = no3_uptake() * -1                            ! convert to positive number
-   NInPlant = (biomass_n * 10) + (rootliven * 10)    ! unit conversion g/m2 to kg/ha
+   NInPlant = (biomass_n * 10) + (RootGreenN * 10)    ! unit conversion g/m2 to kg/ha
    NInGrain = GrainTotalN * 10     ! unit conversion g/m2 to kg/ha
 
 
@@ -782,7 +782,7 @@ StationNumber=78078
 
    PAWC = dul_dep() - ll_dep()
    NUptakeKgHa = no3_uptake() * -1                            ! convert to positive number
-   NInPlant = (biomass_n * 10) + (rootliven * 10)    ! unit conversion g/m2 to kg/ha
+   NInPlant = (biomass_n * 10) + (RootGreenN * 10)    ! unit conversion g/m2 to kg/ha
    NInGrain = GrainTotalN * 10     ! unit conversion g/m2 to kg/ha
 
 
@@ -851,7 +851,7 @@ StationNumber=78078
 
    PAWC = dul_dep() - ll_dep()
    NUptakeKgHa = no3_uptake() * -1                            ! convert to positive number
-   NInPlant = (biomass_n * 10) + (rootliven * 10)    ! unit conversion g/m2 to kg/ha
+   NInPlant = (biomass_n * 10) + (RootGreenN * 10)    ! unit conversion g/m2 to kg/ha
    NInGrain = GrainTotalN * 10     ! unit conversion g/m2 to kg/ha
 
 
@@ -920,7 +920,7 @@ StationNumber=78078
 
    PAWC = dul_dep() - ll_dep()
    NUptakeKgHa = no3_uptake() * -1                            ! convert to positive number
-   NInPlant = (biomass_n * 10) + (rootliven * 10)    ! unit conversion g/m2 to kg/ha
+   NInPlant = (biomass_n * 10) + (RootGreenN * 10)    ! unit conversion g/m2 to kg/ha
    NInGrain = GrainTotalN * 10     ! unit conversion g/m2 to kg/ha
 
 
@@ -1038,7 +1038,7 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
         </manager>
         <manager name="CanolaOilConc">
           <script name="start_of_day">
-            <text>   if (DaysAfterSowing = 1) then
+            <text><![CDATA[   if (DaysAfterSowing = 1) then
       cum_temp = 0
       cum_swdef = 0
       cum_days = 0
@@ -1048,15 +1048,15 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
                 StageName = 'maturity' or
                 StageName = 'harvest_ripe') then
       cum_temp = cum_temp + (maxt + mint) / 2
-      cum_swdef = cum_swdef + WaterStressPhoto
+      cum_swdef = cum_swdef + swdef_photo
       cum_days = cum_days + 1
    endif
 
    ! calculate canola oil content
-   if (cum_days &gt; 0) then
+   if (cum_days > 0) then
       avg_temp = cum_temp / cum_days
       avg_swdef = cum_swdef / cum_days
-      if (avg_temp &lt;= 14) then
+      if (avg_temp <= 14) then
          oil_conc =  47
       else
          oil_conc = (47 - ((avg_temp - 14)*1.21)) - (1.91*(1 - avg_swdef^2))
@@ -1064,7 +1064,7 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
    else
       oil_conc = 0
    endif
-</text>
+]]></text>
             <event>start_of_day</event>
           </script>
           <script name="end_of_day">
@@ -1119,22 +1119,22 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
             <BedWidth type="test" description="Bed width (m):" />
           </ui>
           <script name="start_of_day">
-            <text>   if (paddock_is_fallow()) then
+            <text><![CDATA[   if (paddock_is_fallow()) then
          if (date_within('[date1], [date2]') = 1) then
-            if (rain[[rainnumdays]] &gt;= [raincrit]) OR
+            if (rain[[rainnumdays]] >= [raincrit]) OR
                 ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
 
               sow_year = year
               if ('[FurrowIrrigation]' = 'yes') then
                  skiprow = (4 * (([BedRowSpacing] - 0.2)^2) + 3 * (([FurrowRowSpacing] - 0.2)^2) ) / (1 + (([BedRowSpacing] - [FurrowRowSpacing]) * [BedWidth])^2)
-                 [crop] sow population =[SowingDensity], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [RowSpacing], crop_class = [class], tiller_no_fertile = [ftn] (), skip = [skiprow], skiprow = skiprow
+                 [crop] sow plants =[SowingDensity], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [RowSpacing], crop_class = [class], tiller_no_fertile = [ftn] (), skip = [skiprow], skiprow = skiprow
               else
-                 [crop] sow population =[SowingDensity], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [RowSpacing], crop_class = [class], tiller_no_fertile = [ftn] (), skip = [skiprow]
+                 [crop] sow plants =[SowingDensity], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [RowSpacing], crop_class = [class], tiller_no_fertile = [ftn] (), skip = [skiprow]
               endif
 
             endif
          endif
-    endif</text>
+    endif]]></text>
             <event>start_of_day</event>
           </script>
         </manager>
@@ -1148,11 +1148,11 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
             <Amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">25</Amount>
           </ui>
           <script name="start_of_day">
-            <text>
-   if (DaysAfterSowing &gt; 0 AND Z &lt;= [GrowthStage]  AND Nitrogen &lt; [Threshold]) then
+            <text><![CDATA[
+   if (DaysAfterSowing > 0 AND Z <= [GrowthStage]  AND Nitrogen < [Threshold]) then
         [FertModule] apply amount = [Amount] (kg/ha), depth = 20 (mm), type = no3_n ()
    endif
-         </text>
+         ]]></text>
             <event>start_of_day</event>
           </script>
         </manager>
@@ -1177,11 +1177,11 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
             <soilmodule type="modulename" description="Name of your soil module : ">Soil</soilmodule>
           </ui>
           <script name="start_of_day">
-            <text>   ! If the reset date is after the sow date then we want to reset on both sowing and on the reset date.
+            <text><![CDATA[   ! If the reset date is after the sow date then we want to reset on both sowing and on the reset date.
    ! Otherwise, just reset on the reset date.
    DoReset = 0
-   if (date('[ResetDate]')&gt; SowDate) then
-      if (today = date('[ResetDate]') or (today = SowDate and ResetDate - SowDate &lt; 90)) then
+   if (date('[ResetDate]')> SowDate) then
+      if (today = date('[ResetDate]') or (today = SowDate and ResetDate - SowDate < 90)) then
          DoReset = 1
       endif
    elseif (today = date('[ResetDate]')) then
@@ -1192,7 +1192,7 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
        '[soilmodule] Nitrogen' reset
        act_mods reseting
    endif
-      </text>
+      ]]></text>
             <event>start_of_day</event>
           </script>
         </manager>
@@ -1270,17 +1270,17 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
           <variable>sow_year</variable>
           <variable>DaysAfterSowing</variable>
           <variable>simulation_end_date format dd/mm/yyyy</variable>
-          <variable>Biomass</variable>
+          <variable>biomass</variable>
           <variable>wetyield</variable>
           <variable>Grain_protein</variable>
-          <variable>GrainN</variable>
-          <variable>GrainNumber</variable>
+          <variable>grain_n</variable>
+          <variable>grain_no</variable>
           <variable>oil_conc</variable>
-          <variable>LeafNumber</variable>
-          <variable>WaterStressExpansion</variable>
-          <variable>WaterStressPhoto</variable>
-          <variable>NStressExpansion</variable>
-          <variable>NStressPhoto</variable>
+          <variable>leaf_no</variable>
+          <variable>sw_stress_expan</variable>
+          <variable>sw_stress_photo</variable>
+          <variable>n_stress_expan</variable>
+          <variable>n_stress_photo</variable>
           <variable>Hay</variable>
           <variable>Z</variable>
           <variable>Zadok11Das</variable>
@@ -1300,7 +1300,7 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
           <variable>Zadok75Das</variable>
           <variable>flowering_das</variable>
           <variable>maturity_das</variable>
-          <variable>RootDepth</variable>
+          <variable>root_depth</variable>
           <variable>Bank</variable>
           <variable>TwoTimesCost </variable>
           <variable>CurrentFallow</variable>
@@ -1844,7 +1844,7 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
       <filename>89034.met</filename>
     </metfile>
     <patchinput name="PatchInput">
-      <filename name="filename" input="yes">Tatyoon Rural^Russell Duver - Paddock13.rain</filename>
+      <filename name="filename">Tatyoon Rural^Russell Duver - Paddock13.rain</filename>
     </patchinput>
     <summaryfile name="SummaryFile" />
     <area name="Paddock">
@@ -1861,7 +1861,7 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
             <ProteinIncrement type="text" description="Protein increment payment ($/t) : ">2</ProteinIncrement>
           </ui>
           <script name="post">
-            <text>   ! Reset the bank to zero the day after harvest.
+            <text><![CDATA[   ! Reset the bank to zero the day after harvest.
    if (ResetBank = 1 or today = met_start_date) then
       Bank = 0
       ResetBank = 0
@@ -1869,7 +1869,7 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
    endif
 
    ! Keep track of the number of fertiliser applications.
-   if (fertiliser &gt; 0)then
+   if (fertiliser > 0)then
       Cost = [FertiliserCost] * fertiliser + [FertiliserApplicationCost]
       Bank = Bank - Cost
       if ScenarioApplication = 'yes' then
@@ -1878,7 +1878,7 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
    endif
 
    ! Keep track of the number of irrigation applications.
-   if (irrig_tot &gt; 0)then
+   if (irrig_tot > 0)then
       Cost = [WaterCost] * (irrig_tot / 100)
       Bank = Bank - Cost
       if ScenarioApplication = 'yes' then
@@ -1887,8 +1887,8 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
    endif
 
    ! Calculate gross margin at harvest.
-   if StageName = 'harvest_ripe' or PlantStatus = 'dead' then
-      if (grain_protein &gt; [ProteinContent]) then
+   if StageName = 'harvest_ripe' or plant_status = 'dead' then
+      if (grain_protein > [ProteinContent]) then
          FullPrice = [Price] + (grain_protein - [ProteinContent]) * 2 * [ProteinIncrement]
       else
          FullPrice = [Price]
@@ -1896,7 +1896,7 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
       Bank = Bank + FullPrice * WetYield
       ResetBank = 1
    endif
-</text>
+]]></text>
             <event>post</event>
           </script>
           <script name="init">
@@ -1919,11 +1919,11 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
             <resetSurfaceOM type="yesno" description="Reset surface organic matter?">yes</resetSurfaceOM>
           </ui>
           <script name="start_of_day">
-            <text>   ! If the reset date is after the sow date then we want to reset on both sowing and on the reset date.
+            <text><![CDATA[   ! If the reset date is after the sow date then we want to reset on both sowing and on the reset date.
    ! Otherwise, just reset on the reset date.
    DoReset = 0
-   if (date('[ResetDate]')&gt; SowDate) then
-      if (today = date('[ResetDate]') or (today = SowDate and ResetDate - SowDate &lt; 90)) then
+   if (date('[ResetDate]')> SowDate) then
+      if (today = date('[ResetDate]') or (today = SowDate and ResetDate - SowDate < 90)) then
          DoReset = 1
       endif
    elseif (today = date('[ResetDate]')) then
@@ -1945,7 +1945,7 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
       endif
       act_mods reseting
    endif
-      </text>
+      ]]></text>
             <event>start_of_day</event>
           </script>
         </manager>
@@ -1974,9 +1974,9 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
       sow_year = year
       if ('[FurrowIrrigation]' = 'yes') then
          skiprow = (4 * (([BedRowSpacing] - 0.2)^2) + 3 * (([FurrowRowSpacing] - 0.2)^2) ) / (1 + (([BedRowSpacing] - [FurrowRowSpacing]) * [BedWidth])^2)
-         [crop] sow population =[SowingDensity], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [RowSpacing], crop_class = [class], tiller_no_fertile = [ftn] (), skip = [skiprow], skiprow = skiprow
+         [crop] sow plants =[SowingDensity], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [RowSpacing], crop_class = [class], tiller_no_fertile = [ftn] (), skip = [skiprow], skiprow = skiprow
       else
-         [crop] sow population =[SowingDensity], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [RowSpacing], crop_class = [class], tiller_no_fertile = [ftn] (), skip = [skiprow]
+         [crop] sow plants =[SowingDensity], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [RowSpacing], crop_class = [class], tiller_no_fertile = [ftn] (), skip = [skiprow]
       endif
    endif
                </text>
@@ -2010,7 +2010,7 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
           <script name="end_of_day">
             <text>
 
-           if [crop].StageName = 'harvest_ripe' or [crop].PlantStatus = 'dead' then
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
               [crop]  harvest
               [crop]  end_crop
               harvesttoday = 1
@@ -2029,7 +2029,7 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
    else
       MoistureContent = 12     ! %
    endif
-   WetYield = Yield / (1 - MoistureContent/100) / 1000
+   WetYield = yield / (1 - MoistureContent/100) / 1000
 </text>
             <event>start_of_day</event>
           </script>
@@ -2045,14 +2045,14 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
             <GrainPrice type="text" description="Grain Price ($/t) :">200</GrainPrice>
           </ui>
           <script name="post">
-            <text>
-   ! Calculate hay Biomass and convert kg/ha to t/ha - assume 13% moisture
-   CropBiomass =  (Biomass / (1 - 13/100) / 1000)
+            <text><![CDATA[
+   ! Calculate hay biomass and convert kg/ha to t/ha - assume 13% moisture
+   CropBiomass =  (biomass / (1 - 13/100) / 1000)
    HayBiomassPercent = 70
-   if (Biomass &gt;= 2000 and Biomass &lt;= 12000) then
-      HayBiomassPercent = 70 + (Biomass-2000) / (12000-2000) * 5
-   elseif (Biomass &gt; 12000) then
-      HayBiomassPercent = 75 + (Biomass-12000) / (25000-12000) * 5
+   if (biomass >= 2000 and biomass <= 12000) then
+      HayBiomassPercent = 70 + (biomass-2000) / (12000-2000) * 5
+   elseif (biomass > 12000) then
+      HayBiomassPercent = 75 + (biomass-12000) / (25000-12000) * 5
    endif
    HayBiomass = (HayBiomassPercent / 100) * CropBiomass
 
@@ -2061,7 +2061,7 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
 
    HayGrossMargin = HayBiomass * [HayPrice] - [HayCost] - ([BalingCost] * HayBiomass)
    GrainGrossMargin = WetYield * [GrainPrice] - [GrainCost]
-</text>
+]]></text>
             <event>post</event>
           </script>
           <script name="init">
@@ -2086,19 +2086,19 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
             <EventName type="text" description="Name of event to publish when above 2 conditions are met : ">MildFrost</EventName>
           </ui>
           <script name="post">
-            <text>
+            <text><![CDATA[
    if (DaysAfterSowing = 1) then
       [EventName]Count = 0
    endif
 
-          if ([VariableName1] &gt;= [LowerBound1] and
-              [VariableName1] &lt;= [UpperBound1] and
-              [VariableName2] &gt;= [LowerBound2] and
-              [VariableName2] &lt; [UpperBound2]) then
+          if ([VariableName1] >= [LowerBound1] and
+              [VariableName1] <= [UpperBound1] and
+              [VariableName2] >= [LowerBound2] and
+              [VariableName2] < [UpperBound2]) then
              act_mods [EventName]
              [EventName]Count =  [EventName]Count +1
           endif
-</text>
+]]></text>
             <event>post</event>
           </script>
         </manager>
@@ -2116,19 +2116,19 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
             <EventName type="text" description="Name of event to publish when above 2 conditions are met : ">ModerateFrost</EventName>
           </ui>
           <script name="post">
-            <text>
+            <text><![CDATA[
    if (DaysAfterSowing = 1) then
       [EventName]Count = 0
    endif
 
-          if ([VariableName1] &gt;= [LowerBound1] and
-              [VariableName1] &lt;= [UpperBound1] and
-              [VariableName2] &gt;= [LowerBound2] and
-              [VariableName2] &lt; [UpperBound2]) then
+          if ([VariableName1] >= [LowerBound1] and
+              [VariableName1] <= [UpperBound1] and
+              [VariableName2] >= [LowerBound2] and
+              [VariableName2] < [UpperBound2]) then
              act_mods [EventName]
              [EventName]Count =  [EventName]Count +1
           endif
-</text>
+]]></text>
             <event>post</event>
           </script>
         </manager>
@@ -2146,19 +2146,19 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
             <EventName type="text" description="Name of event to publish when above 2 conditions are met : ">SevereFrost</EventName>
           </ui>
           <script name="post">
-            <text>
+            <text><![CDATA[
    if (DaysAfterSowing = 1) then
       [EventName]Count = 0
    endif
 
-          if ([VariableName1] &gt;= [LowerBound1] and
-              [VariableName1] &lt;= [UpperBound1] and
-              [VariableName2] &gt;= [LowerBound2] and
-              [VariableName2] &lt; [UpperBound2]) then
+          if ([VariableName1] >= [LowerBound1] and
+              [VariableName1] <= [UpperBound1] and
+              [VariableName2] >= [LowerBound2] and
+              [VariableName2] < [UpperBound2]) then
              act_mods [EventName]
              [EventName]Count =  [EventName]Count +1
           endif
-</text>
+]]></text>
             <event>post</event>
           </script>
         </manager>
@@ -2176,19 +2176,19 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
             <EventName type="text" description="Name of event to publish when above 2 conditions are met : ">MildHeatShock</EventName>
           </ui>
           <script name="post">
-            <text>
+            <text><![CDATA[
    if (DaysAfterSowing = 1) then
       [EventName]Count = 0
    endif
 
-          if ([VariableName1] &gt;= [LowerBound1] and
-              [VariableName1] &lt;= [UpperBound1] and
-              [VariableName2] &gt;= [LowerBound2] and
-              [VariableName2] &lt; [UpperBound2]) then
+          if ([VariableName1] >= [LowerBound1] and
+              [VariableName1] <= [UpperBound1] and
+              [VariableName2] >= [LowerBound2] and
+              [VariableName2] < [UpperBound2]) then
              act_mods [EventName]
              [EventName]Count =  [EventName]Count +1
           endif
-</text>
+]]></text>
             <event>post</event>
           </script>
         </manager>
@@ -2206,19 +2206,19 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
             <EventName type="text" description="Name of event to publish when above 2 conditions are met : ">ModerateHeatShock</EventName>
           </ui>
           <script name="post">
-            <text>
+            <text><![CDATA[
    if (DaysAfterSowing = 1) then
       [EventName]Count = 0
    endif
 
-          if ([VariableName1] &gt;= [LowerBound1] and
-              [VariableName1] &lt;= [UpperBound1] and
-              [VariableName2] &gt;= [LowerBound2] and
-              [VariableName2] &lt; [UpperBound2]) then
+          if ([VariableName1] >= [LowerBound1] and
+              [VariableName1] <= [UpperBound1] and
+              [VariableName2] >= [LowerBound2] and
+              [VariableName2] < [UpperBound2]) then
              act_mods [EventName]
              [EventName]Count =  [EventName]Count +1
           endif
-</text>
+]]></text>
             <event>post</event>
           </script>
         </manager>
@@ -2236,19 +2236,19 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
             <EventName type="text" description="Name of event to publish when above 2 conditions are met : ">SevereHeatShock</EventName>
           </ui>
           <script name="post">
-            <text>
+            <text><![CDATA[
    if (DaysAfterSowing = 1) then
       [EventName]Count = 0
    endif
 
-          if ([VariableName1] &gt;= [LowerBound1] and
-              [VariableName1] &lt;= [UpperBound1] and
-              [VariableName2] &gt;= [LowerBound2] and
-              [VariableName2] &lt; [UpperBound2]) then
+          if ([VariableName1] >= [LowerBound1] and
+              [VariableName1] <= [UpperBound1] and
+              [VariableName2] >= [LowerBound2] and
+              [VariableName2] < [UpperBound2]) then
              act_mods [EventName]
              [EventName]Count =  [EventName]Count +1
           endif
-</text>
+]]></text>
             <event>post</event>
           </script>
         </manager>
@@ -2342,26 +2342,39 @@ SowDate=date('06-May')
 </text>
             <event>start_of_day</event>
           </script>
+          <start_of_day>
+            <text>
+TodayDate=date('')
+TodayDateFull=date('')
+StartSeasonDate=date('01-Apr')
+StartSeasonDateFull=date('01/04/2008')
+ResetDate=date('15-Apr')
+ResetDateFull=date('15/04/2008')
+SowDateFull=date('27/06/2008')
+SowDate=date('27-Jun')
+StationNumber=89034
+</text>
+          </start_of_day>
         </manager>
         <manager name="Script">
           <script>
             <text>
 
    if (CropSown = 'sorghum') then
-      if (DaysAfterSowing &lt; 3) then   ! There's a bug in Sorghum when WaterStressExpansion=0 before das = 3
-         WaterStressExpansion = 0
-         WaterStressPhoto = 0
+      if (DaysAfterSowing &lt; 3) then   ! There's a bug in Sorghum when swdef_expan=0 before das = 3
+         sw_stress_expan = 0
+         sw_stress_photo = 0
          n_stress_expan = 0
-         NStressPhoto = 0
+         n_stress_photo = 0
       else
-         WaterStressExpansion = 1 - WaterStressExpansion
-         WaterStressPhoto = 1 - WaterStressPhoto
-         n_stress_expan = 1 - NStressExpansion
-         NStressPhoto = 1 - NStressPhoto
+         sw_stress_expan = 1 - swdef_expan
+         sw_stress_photo = 1 - swdef_photo
+         n_stress_expan = 1 - nfact_expan
+         n_stress_photo = 1 - nfact_photo
       endif
-      LeafNumber = LeafNo
-      GrainNumber = GrainNo
-      GrainN = GrainGreenN
+      leaf_no = LeafNo
+      grain_no = GrainNo
+      grain_n = GrainGreenN
       flowering_das = FloweringDAS
       maturity_das = MaturityDAS
    endif
@@ -2435,7 +2448,7 @@ SowDate=date('06-May')
    ! Improved Zadok_stage
    ! -----------------------------------------
    if (zadok_stage &lt; 30) then
-      Z = NodeNumber + 9
+      Z = node_no + 9
       if (Z &gt; 16) then
          Z = 16
       endif
@@ -2539,7 +2552,7 @@ SowDate=date('06-May')
 
    PAWC = dul_dep() - ll_dep()
    NUptakeKgHa = no3_uptake() * -1                            ! convert to positive number
-   NInPlant = (biomass_n * 10) + (rootliven * 10)    ! unit conversion g/m2 to kg/ha
+   NInPlant = (biomass_n * 10) + (RootGreenN * 10)    ! unit conversion g/m2 to kg/ha
    NInGrain = GrainTotalN * 10     ! unit conversion g/m2 to kg/ha
 
 
@@ -2608,7 +2621,7 @@ SowDate=date('06-May')
 
    PAWC = dul_dep() - ll_dep()
    NUptakeKgHa = no3_uptake() * -1                            ! convert to positive number
-   NInPlant = (biomass_n * 10) + (rootliven * 10)    ! unit conversion g/m2 to kg/ha
+   NInPlant = (biomass_n * 10) + (RootGreenN * 10)    ! unit conversion g/m2 to kg/ha
    NInGrain = GrainTotalN * 10     ! unit conversion g/m2 to kg/ha
 
 
@@ -2677,7 +2690,7 @@ SowDate=date('06-May')
 
    PAWC = dul_dep() - ll_dep()
    NUptakeKgHa = no3_uptake() * -1                            ! convert to positive number
-   NInPlant = (biomass_n * 10) + (rootliven * 10)    ! unit conversion g/m2 to kg/ha
+   NInPlant = (biomass_n * 10) + (RootGreenN * 10)    ! unit conversion g/m2 to kg/ha
    NInGrain = GrainTotalN * 10     ! unit conversion g/m2 to kg/ha
 
 
@@ -2746,7 +2759,7 @@ SowDate=date('06-May')
 
    PAWC = dul_dep() - ll_dep()
    NUptakeKgHa = no3_uptake() * -1                            ! convert to positive number
-   NInPlant = (biomass_n * 10) + (rootliven * 10)    ! unit conversion g/m2 to kg/ha
+   NInPlant = (biomass_n * 10) + (RootGreenN * 10)    ! unit conversion g/m2 to kg/ha
    NInGrain = GrainTotalN * 10     ! unit conversion g/m2 to kg/ha
 
 
@@ -2864,7 +2877,7 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
         </manager>
         <manager name="CanolaOilConc">
           <script name="start_of_day">
-            <text>   if (DaysAfterSowing = 1) then
+            <text><![CDATA[   if (DaysAfterSowing = 1) then
       cum_temp = 0
       cum_swdef = 0
       cum_days = 0
@@ -2874,15 +2887,15 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
                 StageName = 'maturity' or
                 StageName = 'harvest_ripe') then
       cum_temp = cum_temp + (maxt + mint) / 2
-      cum_swdef = cum_swdef + WaterStressPhoto
+      cum_swdef = cum_swdef + swdef_photo
       cum_days = cum_days + 1
    endif
 
    ! calculate canola oil content
-   if (cum_days &gt; 0) then
+   if (cum_days > 0) then
       avg_temp = cum_temp / cum_days
       avg_swdef = cum_swdef / cum_days
-      if (avg_temp &lt;= 14) then
+      if (avg_temp <= 14) then
          oil_conc =  47
       else
          oil_conc = (47 - ((avg_temp - 14)*1.21)) - (1.91*(1 - avg_swdef^2))
@@ -2890,7 +2903,7 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
    else
       oil_conc = 0
    endif
-</text>
+]]></text>
             <event>start_of_day</event>
           </script>
           <script name="end_of_day">
@@ -2945,22 +2958,22 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
             <BedWidth type="test" description="Bed width (m):" />
           </ui>
           <script name="start_of_day">
-            <text>   if (paddock_is_fallow()) then
+            <text><![CDATA[   if (paddock_is_fallow()) then
          if (date_within('[date1], [date2]') = 1) then
-            if (rain[[rainnumdays]] &gt;= [raincrit]) OR
+            if (rain[[rainnumdays]] >= [raincrit]) OR
                 ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
 
               sow_year = year
               if ('[FurrowIrrigation]' = 'yes') then
                  skiprow = (4 * (([BedRowSpacing] - 0.2)^2) + 3 * (([FurrowRowSpacing] - 0.2)^2) ) / (1 + (([BedRowSpacing] - [FurrowRowSpacing]) * [BedWidth])^2)
-                 [crop] sow population =[SowingDensity], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [RowSpacing], crop_class = [class], tiller_no_fertile = [ftn] (), skip = [skiprow], skiprow = skiprow
+                 [crop] sow plants =[SowingDensity], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [RowSpacing], crop_class = [class], tiller_no_fertile = [ftn] (), skip = [skiprow], skiprow = skiprow
               else
-                 [crop] sow population =[SowingDensity], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [RowSpacing], crop_class = [class], tiller_no_fertile = [ftn] (), skip = [skiprow]
+                 [crop] sow plants =[SowingDensity], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [RowSpacing], crop_class = [class], tiller_no_fertile = [ftn] (), skip = [skiprow]
               endif
 
             endif
          endif
-    endif</text>
+    endif]]></text>
             <event>start_of_day</event>
           </script>
         </manager>
@@ -2974,11 +2987,11 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
             <Amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">25</Amount>
           </ui>
           <script name="start_of_day">
-            <text>
-   if (DaysAfterSowing &gt; 0 AND Z &lt;= [GrowthStage]  AND Nitrogen &lt; [Threshold]) then
+            <text><![CDATA[
+   if (DaysAfterSowing > 0 AND Z <= [GrowthStage]  AND Nitrogen < [Threshold]) then
         [FertModule] apply amount = [Amount] (kg/ha), depth = 20 (mm), type = no3_n ()
    endif
-         </text>
+         ]]></text>
             <event>start_of_day</event>
           </script>
         </manager>
@@ -3003,11 +3016,11 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
             <soilmodule type="modulename" description="Name of your soil module : ">Soil</soilmodule>
           </ui>
           <script name="start_of_day">
-            <text>   ! If the reset date is after the sow date then we want to reset on both sowing and on the reset date.
+            <text><![CDATA[   ! If the reset date is after the sow date then we want to reset on both sowing and on the reset date.
    ! Otherwise, just reset on the reset date.
    DoReset = 0
-   if (date('[ResetDate]')&gt; SowDate) then
-      if (today = date('[ResetDate]') or (today = SowDate and ResetDate - SowDate &lt; 90)) then
+   if (date('[ResetDate]')> SowDate) then
+      if (today = date('[ResetDate]') or (today = SowDate and ResetDate - SowDate < 90)) then
          DoReset = 1
       endif
    elseif (today = date('[ResetDate]')) then
@@ -3018,7 +3031,7 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
        '[soilmodule] Nitrogen' reset
        act_mods reseting
    endif
-      </text>
+      ]]></text>
             <event>start_of_day</event>
           </script>
         </manager>
@@ -3076,17 +3089,17 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
           <variable>sow_year</variable>
           <variable>DaysAfterSowing</variable>
           <variable>simulation_end_date format dd/mm/yyyy</variable>
-          <variable>Biomass</variable>
+          <variable>biomass</variable>
           <variable>wetyield</variable>
           <variable>Grain_protein</variable>
-          <variable>GrainN</variable>
-          <variable>GrainNumber</variable>
+          <variable>grain_n</variable>
+          <variable>grain_no</variable>
           <variable>oil_conc</variable>
-          <variable>LeafNumber</variable>
-          <variable>WaterStressExpansion</variable>
-          <variable>WaterStressPhoto</variable>
-          <variable>NStressExpansion</variable>
-          <variable>NStressPhoto</variable>
+          <variable>leaf_no</variable>
+          <variable>sw_stress_expan</variable>
+          <variable>sw_stress_photo</variable>
+          <variable>n_stress_expan</variable>
+          <variable>n_stress_photo</variable>
           <variable>Hay</variable>
           <variable>Z</variable>
           <variable>Zadok11Das</variable>
@@ -3106,7 +3119,7 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
           <variable>Zadok75Das</variable>
           <variable>flowering_das</variable>
           <variable>maturity_das</variable>
-          <variable>RootDepth</variable>
+          <variable>root_depth</variable>
           <variable>Bank</variable>
           <variable>TwoTimesCost </variable>
           <variable>CurrentFallow</variable>
@@ -3187,10 +3200,9 @@ FloweringDate = SowDateFull + DaysAfterSowing</text>
           <variable>GrainGrossMargin </variable>
           <variable>RainToMaturity</variable>
           <variable>HayBiomass</variable>
-          <variable>Wheat</variable>
-          <constants>
+          <Constants>
             <constant name="Crop">Wheat</constant>
-          </constants>
+          </Constants>
         </variables>
       </outputfile>
       <tracker name="Tracker">

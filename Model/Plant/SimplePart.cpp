@@ -78,7 +78,7 @@ void SimplePart::onInit1(protocol::Component*)
 
    scienceAPI.exposeFunction(addPartToVar("dlt_n_senesced_trans"), "g/m^2", addPartToDesc("N translocated to/from senesced "), FloatGetter(&SimplePart::dltNSenescedTrans));
    scienceAPI.exposeFunction(addPartToVar("dlt_n_senesced_retrans"), "g/m^2", addPartToDesc("N retranslocated to/from senesced "), FloatGetter(&SimplePart::dltNSenescedRetrans));
-   scienceAPI.exposeFunction(addPartToVar("NDemand"), "g/m^2", addPartToDesc("N demand of "), FloatGetter(&SimplePart::nDemand));
+   scienceAPI.exposeFunction(addPartToVar("n_demand"), "g/m^2", addPartToDesc("N demand of "), FloatGetter(&SimplePart::nDemand));
 
 
    if (tempFlagToShortCircuitInit1) return;
@@ -513,13 +513,13 @@ void SimplePart::doRemoveBiomass(protocol::RemoveCropBiomassType dmRemoved, bool
     {
        for (unsigned int part = 0; part < dmRemoved.dm[pool].part.size(); part++)
        {
-          if (Str_i_Eq(dmRemoved.dm[pool].pool, "Live"))
+          if (Str_i_Eq(dmRemoved.dm[pool].pool, "green"))
           {
              if (Str_i_Eq(dmRemoved.dm[pool].part[part], myName))       {giveDmGreenRemoved((float)dmRemoved.dm[pool].dlt[part]); }
              else {  /* not my part */ }
           }
 
-          else if (Str_i_Eq(dmRemoved.dm[pool].pool, "Dead"))
+          else if (Str_i_Eq(dmRemoved.dm[pool].pool, "senesced"))
           {
              if (Str_i_Eq(dmRemoved.dm[pool].part[part], myName))       {giveDmSenescedRemoved((float)dmRemoved.dm[pool].dlt[part]); }
              else { /* not my part */ }

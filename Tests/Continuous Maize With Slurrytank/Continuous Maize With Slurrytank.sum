@@ -175,7 +175,7 @@ Paddock:
         endif
         if ((crop_in = 0 or 'no' = 'yes') and (ready_to_till_pre_sow = 1)) then
          if (crop_current = 'weed' or crop_current1 = 'weed' or crop_current2 = 'weed') then
-           if (weed.plantstatus <> 'out') then
+           if (weed.plant_status <> 'out') then
                  weed harvest, remove=0
                  weed kill_crop
                  weed end_crop
@@ -214,7 +214,7 @@ Paddock:
      else
      endif
               if (crop_in = 0 or ('sole' = 'intercrop'
-      and maize.plantstatus = 'out')) then
+      and maize.plant_status = 'out')) then
         if (date_within('1-nov, 30-dec') = 1) then
            crop_sow = 'waiting'
            surface_moist = (sw(1) - ll15(1)) / (dul(1)- ll15(1))
@@ -227,9 +227,9 @@ Paddock:
               endif
               if ((wht_sow_opp_num >= 1) or ('no' = 'yes' and today = date('30-dec')) then
                  if ('maize' = 'sorghum') then
-                    maize sow population =2.2, sowing_depth = 100, cultivar = sc401, row_spacing = 0.9, tiller_no_fertile = 1 (), skip = solid
+                    maize sow plants =2.2, sowing_depth = 100, cultivar = sc401, row_spacing = 0.9, tiller_no_fertile = 1 (), skip = solid
                  else
-                   maize sow cultivar = sc401, population = 2.2 (population/m2), sowing_depth = 100, row_spacing = 0.9
+                   maize sow cultivar = sc401, plants = 2.2 (plants/m2), sowing_depth = 100, row_spacing = 0.9
                  endif
                  crop_in = crop_in + 1
                  if ('no' = 'no') then
@@ -244,7 +244,7 @@ Paddock:
                     fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = urea_n ()
                  endif
                  if (crop_current = 'weed' or crop_current1 = 'weed' or crop_current2 = 'weed') then
-                    if (weed.plantstatus <> 'out' and 1 > 0) then
+                    if (weed.plant_status <> 'out' and 1 > 0) then
                        weed kill_crop plants_kill_fraction = 1
                        if (1 = 1.0) then
                           weed end_crop
@@ -344,7 +344,7 @@ Paddock:
         crop_current2 = blank
      endif
               endif
-              if (maize.stagename = 'harvest_ripe' or maize.plantstatus = 'dead') then
+              if (maize.stagename = 'harvest_ripe' or maize.plant_status = 'dead') then
      maize_to_harvest = 1
               endif
      END of rules
@@ -538,7 +538,7 @@ at day 82
                                          added at depth   50.00 (layer   1)
 1 November 1985(Day of year=305), Sow using a variable rule with intercropping: 
      Manager creating a new local real variable : surface_moist = 1.00000
-     Manager sending message :- maize sow  cultivar = sc401, population = 2.2 (population/m2), sowing_depth = 100, row_spacing = 0.9
+     Manager sending message :- maize sow  cultivar = sc401, plants = 2.2 (plants/m2), sowing_depth = 100, row_spacing = 0.9
 1 November 1985(Day of year=305), maize: 
      Sowing initiate
      

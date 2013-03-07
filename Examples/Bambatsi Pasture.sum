@@ -51,8 +51,8 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        Biomass
-        LAI
+        biomass
+        lai
 
      Output file = Bambatsi Pasture.out
      Format = normal
@@ -64,8 +64,8 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-              if (date('1-feb') = today) and bambatsi.plantstatus = 'out' then
-        bambatsi  establish population =400, init_section = seedling
+              if (date('1-feb') = today) and bambatsi.plant_status = 'out' then
+        bambatsi  establish plants =400, init_section = seedling
               endif
      END of rules
      
@@ -82,7 +82,7 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-              if (bambatsi.biomass > 2000 and bambatsi.plantstatus = 'alive' then
+              if (bambatsi.biomass > 2000 and bambatsi.plant_status = 'alive' then
         bambatsi  cut foliage_remove_fr = 0.9, adm_remove_fr = 0.9
               endif
      END of rules
@@ -253,7 +253,7 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 1 February 1970(Day of year=32), Planting rule: 
-     Manager sending message :- bambatsi establish  population = 400, init_section = seedling
+     Manager sending message :- bambatsi establish  plants = 400, init_section = seedling
 1 February 1970(Day of year=32), bambatsi: 
      Establishing
 1 February 1970(Day of year=32), Establishment fertiliser: 
@@ -263,14 +263,24 @@ Paddock:
    - Reading Fertiliser Type Parameters
        150.00 of N as urea (urea_n)
                                          added at depth   50.00 (layer   1)
-1 February 1970(Day of year=32): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Cannot collect variable from postbox.  Variable doesn't exist.
-     Variable: plants
-     Component name: bambatsi
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
+5 December 1970(Day of year=339), Cutting rule: 
+     Manager sending message :- bambatsi cut  foliage_remove_fr = 0.9, adm_remove_fr = 0.9
+31 December 1970(Day of year=365), Cutting rule: 
+     Manager sending message :- bambatsi cut  foliage_remove_fr = 0.9, adm_remove_fr = 0.9
+23 January 1971(Day of year=23), Cutting rule: 
+     Manager sending message :- bambatsi cut  foliage_remove_fr = 0.9, adm_remove_fr = 0.9
+20 February 1971(Day of year=51), Cutting rule: 
+     Manager sending message :- bambatsi cut  foliage_remove_fr = 0.9, adm_remove_fr = 0.9
+20 March 1971(Day of year=79), Cutting rule: 
+     Manager sending message :- bambatsi cut  foliage_remove_fr = 0.9, adm_remove_fr = 0.9
+20 October 1971(Day of year=293), Cutting rule: 
+     Manager sending message :- bambatsi cut  foliage_remove_fr = 0.9, adm_remove_fr = 0.9
+16 November 1971(Day of year=320), Cutting rule: 
+     Manager sending message :- bambatsi cut  foliage_remove_fr = 0.9, adm_remove_fr = 0.9
+16 April 1973(Day of year=106), Cutting rule: 
+     Manager sending message :- bambatsi cut  foliage_remove_fr = 0.9, adm_remove_fr = 0.9
+26 February 1974(Day of year=57), Cutting rule: 
+     Manager sending message :- bambatsi cut  foliage_remove_fr = 0.9, adm_remove_fr = 0.9
+31 December 1974(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.
 

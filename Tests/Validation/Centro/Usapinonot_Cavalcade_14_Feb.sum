@@ -72,29 +72,29 @@ Paddock:
         day
         DaysAfterSowing
         flowering_das
-        FloweringDate
+        flowering_date
         StageName
-        Yield
-        AboveGroundWt
+        yield
+        biomass_wt
         LeafTotalWt
         StemTotalWt
         podTotalWt
-        LeafDeadWt
+        LeafSenescedWt
         biom as green_biomass
-        LeafLiveWt
-        StemLiveWt
-        LeafNumber
-        LeafNumberDead
+        LeafGreenWt
+        StemGreenWt
+        leaf_no
+        leaf_no_sen
         leaf_area()
-        NodeNumber
-        LAI
+        node_no
+        lai
         stover_wt
         ep
         esw_layr()
-        RootDepth
+        root_depth
         no3()
         manager.total_minN
-        Height
+        height
         sw
         no3
 
@@ -113,7 +113,7 @@ Paddock:
      if (rain[3] >= 30 and esw >= 200) or
          ('yes' = 'yes' and today = date('14-feb-2007'))) then
         choosenextcrop = 'yes'
-        centro sow population =15, sowing_depth = 30, cultivar = cavalcade_timor, row_spacing = 200, crop_class = plant
+        centro sow plants =15, sowing_depth = 30, cultivar = cavalcade_timor, row_spacing = 200, crop_class = plant
      endif
      if today = date('14-feb-2007') then
         choosenextcrop = 'yes'
@@ -127,7 +127,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if centro.stagename = 'harvest_ripe' or centro.plantstatus = 'dead' then
+                if centro.stagename = 'harvest_ripe' or centro.plant_status = 'dead' then
        centro  harvest
        centro  end_crop
                 endif
@@ -151,7 +151,7 @@ Paddock:
      biom = 0
      
      SECTION:- start_of_day
-       biom = leaflivewt + stemlivewt
+       biom = leafgreenwt + stemgreenwt
      
      SECTION:- end_of_day
        total_minn = total_minn + dlt_n_min_tot()
@@ -383,7 +383,7 @@ Paddock:
      
 14 February 2007(Day of year=45), Sowing rule: 
      Manager creating a new local string variable : choosenextcrop = yes
-     Manager sending message :- centro sow  population = 15, sowing_depth = 30, cultivar = cavalcade_timor, row_spacing = 200, crop_class = plant
+     Manager sending message :- centro sow  plants = 15, sowing_depth = 30, cultivar = cavalcade_timor, row_spacing = 200, crop_class = plant
 14 February 2007(Day of year=45), centro: 
      Crop Sow
         ------------------------------------------------

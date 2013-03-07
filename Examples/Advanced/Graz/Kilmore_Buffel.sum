@@ -86,10 +86,10 @@ Paddock:
 
 ------- tracker Initialisation ------------------------------------------------
      Tracker variables:
-        sum of .masterpm.p1.buffel_avg.GrowthRate on post from start_year to now as p1Growth
-        sum of .masterpm.p2.native_grass.GrowthRate on post from start_year to now as p2Growth
-        sum of .masterpm.p3.buffel_avg.GrowthRate on post from start_year to now as p3Growth
-        sum of .masterpm.p4.native_grass.GrowthRate on post from start_year to now as p4Growth
+        sum of .masterpm.p1.buffel_avg.dlt_dm on post from start_year to now as p1Growth
+        sum of .masterpm.p2.native_grass.dlt_dm on post from start_year to now as p2Growth
+        sum of .masterpm.p3.buffel_avg.dlt_dm on post from start_year to now as p3Growth
+        sum of .masterpm.p4.native_grass.dlt_dm on post from start_year to now as p4Growth
         sum of cull_cows.lwg on post from start_year to now as cull_lwg
         sum of bollocks.lwg on post from start_year to now as bull_lwg
 
@@ -148,13 +148,13 @@ proc moveStockTo {which paddock crop} {
    set config($which,state) "$paddock.$crop"
 }
 
-# This "GrowthRate" variable is accumulated by the grazing module - it uses 
+# This "dlt_dm" variable is accumulated by the grazing module - it uses 
 # the ratio of (grass eaten / grass growth) internlly. Here's it's requested, but not used.
 proc doPrepareAnimals {} {
    global config
    foreach animal $config(animals) {
       if {$config($animal,state) == "feedlot"} {
-         uplevel #0 set GrowthRate 100.0
+         uplevel #0 set dlt_dm 100.0
       } 
    } 
 }
@@ -202,8 +202,8 @@ proc animalsOff {which } {
 }
 
 # Extra bits (needed to fool animals talking to top level when in feedlot)
-apsimRegisterGetSet GrowthRate
-set GrowthRate         100.0
+apsimRegisterGetSet dlt_dm
+set dlt_dm         100.0
 apsimRegisterGetSet leafgreenwt
 set leafgreenwt    0.0
 apsimRegisterGetSet stemgreenwt

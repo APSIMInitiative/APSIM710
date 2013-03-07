@@ -5,8 +5,8 @@ outputfile  =cowpea.out
 
 variable = clock.day
 variable = clock.year
-variable = cowpea.LAI
-variable = cowpea.Biomass format 1
+variable = cowpea.lai
+variable = cowpea.biomass format 1
 variable = cowpea.green_biomass format 1
 [sample.clock.parameters]
 ! Start and end date of run (day number of year and year)
@@ -19,7 +19,7 @@ if day = 330 and year  = 1988 then
    cowpea sow cultivar = banjo, plants = 25 (/m2), sowing_depth = 40 (mm)
 endif
 
-if cowpea.StageName = 'harvest_ripe' or cowpea.PlantStatus = 'dead' then
+if cowpea.StageName = 'harvest_ripe' or cowpea.plant_status = 'dead' then
    cowpea harvest
    cowpea end_crop   
 

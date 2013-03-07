@@ -66,13 +66,13 @@ Title                  = p70N125
         tracker1.avg@maize_swdef_photo
         tracker1.avg@maize_nfact_photo
         tracker1.avg@maize_pfact_photo
-        maize.FloweringDate
-        maize.Yield as Yield
-        maize.Biomass as Biomass
+        maize.flowering_date
+        maize.yield as yield
+        maize.biomass as biomass
         maize.GreenP as p_uptake
-        maize.AboveGroundLiveN as AboveGroundN
-        maize.RootDepth
-        maize.RootLiveWt
+        maize.green_biomass_n as n_uptake
+        maize.root_depth
+        maize.RootGreenWt
         SoilN.no3
         soilp.unavail_p(1)
         tracker1.sum@soilwat2_flow_no3[5] as N_leach
@@ -112,29 +112,29 @@ Title                  = p70N125
      endif
      if date_within('15-nov, 15-jan') and
                        rain[5] >= 20 and
-                       maize.plantstatus = 'out' then
+                       maize.plant_status = 'out' then
               crop_flag = 1
-              maize sow population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+              maize sow plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
               mz_sowdate = day
      endif
      
      SECTION:- end_of_day
-          if phenologystage = 3 and emer_date = 0 then
+          if stage = 3 and emer_date = 0 then
              emer_date = daysaftersowing
-          elseif phenologystage = 7 and anth_date = 0 then
+          elseif stage = 7 and anth_date = 0 then
              anth_date = daysaftersowing
-          elseif phenologystage = 11 and mat_date = 0 then
+          elseif stage = 11 and mat_date = 0 then
              mat_date = daysaftersowing
           endif
-          if (maize.phenologystage = 11 or
-        maize.plantstatus = 'dead') then
+          if (maize.stage = 11 or
+        maize.plant_status = 'dead') then
              report do_output
              maize harvest
              maize end_crop
              harvd = day
           endif
           if
-             maize.plantstatus = 'out' and
+             maize.plant_status = 'out' and
              day = harvd + 30 then
              surfaceom tillage type = user_defined, f_incorp = 0.50 (), tillage_depth = 0 (mm)
              crop_flag = 0
@@ -366,8 +366,8 @@ Title                  = p70N125
         sum of SoilWat.runoff on end_of_day from report.reported to now as sum@soilwat2_runoff
         sum of SoilWat.drain on end_of_day from report.reported to now as sum@soilwat2_drain
         sum of SoilWat.es on end_of_day from report.reported to now as sum@soilwat2_es
-        average of maize.WaterStressPhoto on end_of_day from report.reported to now as avg@maize_swdef_photo
-        average of maize.NStressPhoto on end_of_day from report.reported to now as avg@maize_nfact_photo
+        average of maize.swdef_photo on end_of_day from report.reported to now as avg@maize_swdef_photo
+        average of maize.nfact_photo on end_of_day from report.reported to now as avg@maize_nfact_photo
         average of maize.pfact_photo on end_of_day from report.reported to now as avg@maize_pfact_photo
         sum of SoilWat.flow_no3(5) on end_of_day from report.reported to now as sum@soilwat2_flow_no3[5]
 ------- Start of simulation  --------------------------------------------------
@@ -385,7 +385,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 29 November 1975(Day of year=333), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 29 November 1975(Day of year=333), Maize: 
      Sowing initiate
      
@@ -563,7 +563,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 9 December 1976(Day of year=344), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 9 December 1976(Day of year=344), Maize: 
      Sowing initiate
      
@@ -740,7 +740,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 29 November 1977(Day of year=333), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 29 November 1977(Day of year=333), Maize: 
      Sowing initiate
      
@@ -917,7 +917,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 7 December 1978(Day of year=341), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 7 December 1978(Day of year=341), Maize: 
      Sowing initiate
      
@@ -1087,7 +1087,7 @@ Title                  = p70N125
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
 15 November 1979(Day of year=319), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 15 November 1979(Day of year=319), Maize: 
      Sowing initiate
      
@@ -1264,7 +1264,7 @@ Title                  = p70N125
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
 16 November 1980(Day of year=321), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 16 November 1980(Day of year=321), Maize: 
      Sowing initiate
      
@@ -1447,7 +1447,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 25 November 1981(Day of year=329), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 25 November 1981(Day of year=329), Maize: 
      Sowing initiate
      
@@ -1624,7 +1624,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 9 December 1982(Day of year=343), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 9 December 1982(Day of year=343), Maize: 
      Sowing initiate
      
@@ -1801,7 +1801,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 9 December 1983(Day of year=343), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 9 December 1983(Day of year=343), Maize: 
      Sowing initiate
      
@@ -1978,7 +1978,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 26 November 1984(Day of year=331), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 26 November 1984(Day of year=331), Maize: 
      Sowing initiate
      
@@ -2155,7 +2155,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 5 December 1985(Day of year=339), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 5 December 1985(Day of year=339), Maize: 
      Sowing initiate
      
@@ -2332,7 +2332,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 1 December 1986(Day of year=335), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 1 December 1986(Day of year=335), Maize: 
      Sowing initiate
      
@@ -2509,7 +2509,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 2 December 1987(Day of year=336), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 2 December 1987(Day of year=336), Maize: 
      Sowing initiate
      
@@ -2686,7 +2686,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 30 November 1988(Day of year=335), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 30 November 1988(Day of year=335), Maize: 
      Sowing initiate
      
@@ -2856,7 +2856,7 @@ Title                  = p70N125
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
 15 November 1989(Day of year=319), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 15 November 1989(Day of year=319), Maize: 
      Sowing initiate
      
@@ -3040,7 +3040,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 22 November 1990(Day of year=326), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 22 November 1990(Day of year=326), Maize: 
      Sowing initiate
      
@@ -3217,7 +3217,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 22 November 1991(Day of year=326), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 22 November 1991(Day of year=326), Maize: 
      Sowing initiate
      
@@ -3394,7 +3394,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 26 November 1992(Day of year=331), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 26 November 1992(Day of year=331), Maize: 
      Sowing initiate
      
@@ -3564,7 +3564,7 @@ Title                  = p70N125
                                              Fraction Incorporated =     0.90
                                              Incorporated Depth    =   100.00
 15 November 1993(Day of year=319), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 15 November 1993(Day of year=319), Maize: 
      Sowing initiate
      
@@ -3748,7 +3748,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 10 December 1994(Day of year=344), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 10 December 1994(Day of year=344), Maize: 
      Sowing initiate
      
@@ -3925,7 +3925,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 21 November 1995(Day of year=325), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 21 November 1995(Day of year=325), Maize: 
      Sowing initiate
      
@@ -4102,7 +4102,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 29 November 1996(Day of year=334), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 29 November 1996(Day of year=334), Maize: 
      Sowing initiate
      
@@ -4279,7 +4279,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 28 November 1997(Day of year=332), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 28 November 1997(Day of year=332), Maize: 
      Sowing initiate
      
@@ -4456,7 +4456,7 @@ Title                  = p70N125
         70.00 of Broadcast Phosporus (broadcast_p)
                                          added at depth   50.00 (layer   1)
 21 November 1998(Day of year=325), Manager: 
-     Manager sending message :- maize sow  population = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+     Manager sending message :- maize sow  plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
 21 November 1998(Day of year=325), Maize: 
      Sowing initiate
      

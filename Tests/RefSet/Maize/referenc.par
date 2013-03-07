@@ -8,20 +8,20 @@ variable = clock.day
 variable = SoilN.no3
 variable = SoilWat.sw_dep
 variable = maize.TTAfterSowing
-variable = maize.LAI
-variable = maize.Biomass
+variable = maize.lai
+variable = maize.biomass
 variable = maize.root_length
-variable = maize.RootDepth
+variable = maize.root_depth
 variable = tracker.avg_swdef_photo
 variable = tracker.avg_nfact_photo
-variable = maize.PlantStatus
-variable = maize.Yield
-variable = maize.Height
+variable = maize.plant_status
+variable = maize.yield
+variable = maize.height
 variable = surfaceom.surfaceom_wt
 variable = surfaceom.surfaceom_n
 variable = SoilN.fom_c()
 variable = SoilN.fom_n()
-variable = maize.LeafNumber
+variable = maize.leaf_no
 
 
 ! [soil_nitrogen.no3]
@@ -33,19 +33,19 @@ variable = maize.LeafNumber
 ! [temperature.tt_tot]
 ! [photoperiod.tt_tot]
 
-! [temperature.LAI]
-! [radiation.LAI]
-! [soil_moisture.LAI]
-! [soil_nitrogen.LAI]
+! [temperature.lai]
+! [radiation.lai]
+! [soil_moisture.lai]
+! [soil_nitrogen.lai]
 
-! [temperature.Biomass]
-! [radiation.Biomass]
-! [soil_moisture.Biomass]
-! [soil_nitrogen.Biomass]
+! [temperature.biomass]
+! [radiation.biomass]
+! [soil_moisture.biomass]
+! [soil_nitrogen.biomass]
 ! [soil_nitrogen.root_length]
-! [soil_moisture.WaterStressPhoto]
+! [soil_moisture.swdef_photo]
 
-! [soil_nitrogen.NStressPhoto]
+! [soil_nitrogen.nfact_photo]
 
 ! [sow_msg.crop_status]
 ! [kill_crop_msg.crop_status]
@@ -53,7 +53,7 @@ variable = maize.LeafNumber
 
 ! [kill_crop_msg.crop_status]
 
-! [harvest_msg.Yield]
+! [harvest_msg.yield]
 
 ! [add_residue_msg.residue_wt]
 ! [add_residue_msg.residue_n]
@@ -63,8 +63,8 @@ variable = maize.LeafNumber
 
 
 [reference.tracker.parameters]
-variable = average of maize.NStressPhoto on process from reported to now as avg_nfact_photo
-variable = average of maize.WaterStressPhoto on process from reported to now as avg_swdef_photo
+variable = average of maize.nfact_photo on process from reported to now as avg_nfact_photo
+variable = average of maize.swdef_photo on process from reported to now as avg_swdef_photo
 
 [reference.clock.parameters]
 start_date=1/1/1993
@@ -199,13 +199,13 @@ asw_depth =      500
 
 [reference.manager.end_of_day]
 
-     if (maize.PlantStatus = 'dead') then
+     if (maize.plant_status = 'dead') then
         ! [end_crop_msg.end_crop] - end crop should remove crop altogether
         ! [add_residue_msg.add_reside] - should place residues on soil surface
         ! [incorp_fom_msg.incorp_fom] - should incorporate dead roots
         maize    end_crop
         report do_output
-     elseif (maize.PhenologyStage = 11) then
+     elseif (maize.stage = 11) then
         ! harvest and kill the crop
         ! do not end it until we have the chance to report
         ! the effects of these two messages

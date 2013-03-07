@@ -50,24 +50,24 @@ Title                  = pat82_d1
      Output variables:
         clock.year
         clock.day
-        millet.Yield as y0
-        millet1.Yield as y1
-        millet2.Yield as y2
-        millet3.Yield as y3
-        millet4.Yield as y4
-        millet5.Yield as y5
-        millet.Biomass as bio0
-        millet1.Biomass as bio1
-        millet2.Biomass as bio2
-        millet3.Biomass as bio3
-        millet4.Biomass as bio4
-        millet5.Biomass as bio5
-        millet.LAI as lai0
-        millet1.LAI as lai1
-        millet2.LAI as lai2
-        millet3.LAI as lai3
-        millet4.LAI as lai4
-        millet5.LAI as lai5
+        millet.yield as y0
+        millet1.yield as y1
+        millet2.yield as y2
+        millet3.yield as y3
+        millet4.yield as y4
+        millet5.yield as y5
+        millet.biomass as bio0
+        millet1.biomass as bio1
+        millet2.biomass as bio2
+        millet3.biomass as bio3
+        millet4.biomass as bio4
+        millet5.biomass as bio5
+        millet.lai as lai0
+        millet1.lai as lai1
+        millet2.lai as lai2
+        millet3.lai as lai3
+        millet4.lai as lai4
+        millet5.lai as lai5
 
      Output file = val_4.out
      Format = normal
@@ -84,7 +84,7 @@ Title                  = pat82_d1
 ------- Operations Initialisation ---------------------------------------------
      Operations Schedule
      ===================
-       19/6/1982  Prepare       millet sow population =  5.0, sowing_depth = 30, cultivar = bj104
+       19/6/1982  Prepare       millet sow plants =  5.0, sowing_depth = 30, cultivar = bj104
         4/7/1982  Prepare       Fertiliser apply amount = 23 (kg/ha), depth=10(mm), type=can
        11/7/1982  Prepare       Fertiliser apply amount =  5 (kg/ha), depth=10(mm), type=can
 
@@ -137,54 +137,54 @@ Title                  = pat82_d1
      if (millet5.stagename = 'initiate' or millet5.stagename = 'emergence') then
          tiller5_finished = 1
      endif
-          if (millet.stagename = 'harvest_ripe' and millet.plantstatus = 'alive') or
-             (millet.stagename = 'end_crop' and millet.plantstatus = 'dead') or
-             (tiller0_finished = 1 and millet.plantstatus = 'out')   then
+          if (millet.stagename = 'harvest_ripe' and millet.plant_status = 'alive') or
+             (millet.stagename = 'end_crop' and millet.plant_status = 'dead') or
+             (tiller0_finished = 1 and millet.plant_status = 'out')   then
           millet harvest
           millet kill_crop
           millet end_crop
           surfaceom tillage type = burn
           tiller0_finished = 2
           endif
-          if (millet1.stagename = 'harvest_ripe' and millet1.plantstatus = 'alive') or
-             (millet1.stagename = 'end_crop' and millet1.plantstatus = 'dead') or
-             (tiller1_finished = 1 and millet1.plantstatus = 'out')  then
+          if (millet1.stagename = 'harvest_ripe' and millet1.plant_status = 'alive') or
+             (millet1.stagename = 'end_crop' and millet1.plant_status = 'dead') or
+             (tiller1_finished = 1 and millet1.plant_status = 'out')  then
           millet1 harvest
           millet1 kill_crop
           millet1 end_crop
           surfaceom tillage type = burn
           tiller1_finished = 2
           endif
-          if (millet2.stagename = 'harvest_ripe' and millet2.plantstatus = 'alive') or
-             (millet2.stagename = 'end_crop' and millet2.plantstatus = 'dead') or
-             (tiller2_finished = 1 and millet2.plantstatus = 'out')  then
+          if (millet2.stagename = 'harvest_ripe' and millet2.plant_status = 'alive') or
+             (millet2.stagename = 'end_crop' and millet2.plant_status = 'dead') or
+             (tiller2_finished = 1 and millet2.plant_status = 'out')  then
           millet2 harvest
           millet2 kill_crop
           millet2 end_crop
           surfaceom tillage type = burn
           tiller2_finished = 2
           endif
-          if (millet3.stagename = 'harvest_ripe' and millet3.plantstatus = 'alive') or
-             (millet3.stagename = 'end_crop' and millet3.plantstatus = 'dead') or
-             (tiller3_finished = 1 and millet3.plantstatus = 'out')  then
+          if (millet3.stagename = 'harvest_ripe' and millet3.plant_status = 'alive') or
+             (millet3.stagename = 'end_crop' and millet3.plant_status = 'dead') or
+             (tiller3_finished = 1 and millet3.plant_status = 'out')  then
           millet3 harvest
           millet3 kill_crop
           millet3 end_crop
           surfaceom tillage type = burn
           tiller3_finished = 2
           endif
-          if (millet4.stagename = 'harvest_ripe' and millet4.plantstatus = 'alive') or
-             (millet4.stagename = 'end_crop' and millet4.plantstatus = 'dead') or
-             (tiller4_finished = 1 and millet4.plantstatus = 'out')  then
+          if (millet4.stagename = 'harvest_ripe' and millet4.plant_status = 'alive') or
+             (millet4.stagename = 'end_crop' and millet4.plant_status = 'dead') or
+             (tiller4_finished = 1 and millet4.plant_status = 'out')  then
           millet4 harvest
           millet4 kill_crop
           millet4 end_crop
           surfaceom tillage type = burn
           tiller4_finished = 2
           endif
-          if (millet5.stagename = 'harvest_ripe' and millet5.plantstatus = 'alive') or
-             (millet5.stagename = 'end_crop' and millet5.plantstatus = 'dead') or
-             (tiller5_finished = 1 and millet5.plantstatus = 'out')  then
+          if (millet5.stagename = 'harvest_ripe' and millet5.plant_status = 'alive') or
+             (millet5.stagename = 'end_crop' and millet5.plant_status = 'dead') or
+             (tiller5_finished = 1 and millet5.plant_status = 'out')  then
           millet5 harvest
           millet5 kill_crop
           millet5 end_crop
@@ -890,44 +890,34 @@ Title                  = pat82_d1
       stage    8.0 start_grain_fill
                           biomass =           33.18254       lai =    0.2215354
                           stover N conc =    1.100194       extractable sw =    92.37003
-26 August 1982(Day of year=238): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     dm_retranslocate mass balance =   -0.2980232E-07
-             less than lower limit of    0.000000
-     Component name: millet3
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
 28 August 1982(Day of year=240), millet: 
       stage    9.0 end_grain_fill
                           biomass =           282.0903       lai =    0.2033040
-                          stover N conc =   0.9239492       extractable sw =    103.8872
+                          stover N conc =   0.9239468       extractable sw =    103.8872
 29 August 1982(Day of year=241), millet3: 
       stage    9.0 end_grain_fill
                           biomass =           84.59132       lai =    0.8700155E-01
-                          stover N conc =   0.9029748       extractable sw =    69.13822
+                          stover N conc =   0.9305599       extractable sw =    69.13822
 29 August 1982(Day of year=241), millet: 
       stage   10.0 maturity
                           biomass =           285.3742       lai =    0.1886659
-                          stover N conc =   0.9184272       extractable sw =    100.7530
+                          stover N conc =   0.9184173       extractable sw =    100.7530
 29 August 1982(Day of year=241), millet1: 
       stage    9.0 end_grain_fill
                           biomass =           177.7057       lai =    0.1693203
-                          stover N conc =   0.9304254       extractable sw =    68.38146
+                          stover N conc =   0.9304196       extractable sw =    68.38146
 29 August 1982(Day of year=241), millet2: 
       stage    9.0 end_grain_fill
                           biomass =           124.9261       lai =    0.1185081
-                          stover N conc =   0.9371032       extractable sw =    68.05313
+                          stover N conc =   0.9427468       extractable sw =    68.05313
 30 August 1982(Day of year=242), millet3: 
       stage   10.0 maturity
                           biomass =           85.28036       lai =    0.7508038E-01
-                          stover N conc =   0.8978269       extractable sw =    66.08853
+                          stover N conc =   0.9274293       extractable sw =    66.08853
 30 August 1982(Day of year=242), millet: 
       stage   11.0 harvest_ripe
                           biomass =           285.3742       lai =    0.1000017E-02
-                          stover N conc =   0.9430671       extractable sw =    97.74170
+                          stover N conc =   0.9430569       extractable sw =    97.74170
 30 August 1982(Day of year=242), Manager: 
      Manager sending message :- millet harvest
      
@@ -1001,48 +991,38 @@ Title                  = pat82_d1
 31 August 1982(Day of year=243), millet1: 
       stage   10.0 maturity
                           biomass =           181.3746       lai =    0.1375562
-                          stover N conc =   0.9219147       extractable sw =    64.20200
+                          stover N conc =   0.9218929       extractable sw =    64.20200
 31 August 1982(Day of year=243), millet2: 
       stage   10.0 maturity
                           biomass =           127.2543       lai =    0.9261207E-01
-                          stover N conc =   0.9262079       extractable sw =    63.84932
+                          stover N conc =   0.9350988       extractable sw =    63.84932
 31 August 1982(Day of year=243), millet3: 
       stage   11.0 harvest_ripe
                           biomass =           85.28036       lai =    0.1000032E-02
-                          stover N conc =   0.8984771       extractable sw =    63.62616
-31 August 1982(Day of year=243): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     dm_retranslocate mass balance =    0.2980232E-07
-             exceeds upper limit of    0.000000
-     Component name: millet4
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
+                          stover N conc =   0.9429780       extractable sw =    63.62616
 31 August 1982(Day of year=243), millet5: 
       stage    9.0 end_grain_fill
                           biomass =           26.46042       lai =    0.2686591E-01
-                          stover N conc =   0.9521584       extractable sw =    63.50761
+                          stover N conc =   0.9521483       extractable sw =    63.50761
 31 August 1982(Day of year=243), Manager: 
      Manager sending message :- millet3 harvest
      
      
      
-      flowering day  =  214                  stover (kg/ha) =     363.7
-      maturity day        =  242             grain yield (kg/ha) =     489.1
-      grain % water content   =   15.5       grain yield wet (kg/ha) =     578.8
-      grain wt (g) =     0.011               grains/m^2   =  4656.487
+      flowering day  =  214                  stover (kg/ha) =     392.8
+      maturity day        =  242             grain yield (kg/ha) =     460.0
+      grain % water content   =   15.5       grain yield wet (kg/ha) =     544.4
+      grain wt (g) =     0.010               grains/m^2   =  4656.487
       grains/head = 931.3                    maximum lai = 0.357
       total above ground biomass (kg/ha) =     852.8
       live above ground biomass (kg/ha) =     852.8
-      green above ground biomass (kg/ha) =     810.3
-      senesced above ground biomass (kg/ha) =      42.5
+      green above ground biomass (kg/ha) =     781.4
+      senesced above ground biomass (kg/ha) =      71.4
       dead above ground biomass (kg/ha) =       0.0
       number of leaves =  10.3
-      grain N percent =      0.81            total N content (kg/ha) =      7.32
-      grain N uptake (kg/ha) =      3.94     senesced N content (kg/ha) =      0.04
-      green N content (kg/ha) =      3.34    dead N content (kg/ha) =      0.00
+      grain N percent =      0.96            total N content (kg/ha) =      7.44
+      grain N uptake (kg/ha) =      4.43     senesced N content (kg/ha) =      0.07
+      green N content (kg/ha) =      2.94    dead N content (kg/ha) =      0.00
      
      
      
@@ -1080,11 +1060,11 @@ Title                  = pat82_d1
       water stress 1 =       0.0000000   nitrogen stress 1 =       0.0000000
       water stress 2 =       0.0000000   nitrogen stress 2 =       0.0000000
      Manager sending message :- millet3 kill_crop
-         kill. Standing above-ground dm =   363.7 (kg/ha)
+         kill. Standing above-ground dm =   392.8 (kg/ha)
      Manager sending message :- millet3 end_crop
          ended. Yield (dw) =     0.0
-                                               straw residue =  363.7 kg/ha
-                                               straw N =    3.4 kg/ha
+                                               straw residue =  392.8 kg/ha
+                                               straw N =    3.0 kg/ha
                                                root residue =  148.8 kg/ha
                                                root N =    1.6 kg/ha
      Manager sending message :- surfaceom tillage  type = burn
@@ -1097,19 +1077,19 @@ Title                  = pat82_d1
 1 September 1982(Day of year=244), millet1: 
       stage   11.0 harvest_ripe
                           biomass =           181.3746       lai =    0.9999871E-03
-                          stover N conc =   0.9411091       extractable sw =    62.14248
+                          stover N conc =   0.9410869       extractable sw =    62.14248
 1 September 1982(Day of year=244), millet2: 
       stage   11.0 harvest_ripe
                           biomass =           127.2543       lai =    0.9999424E-03
-                          stover N conc =   0.9298786       extractable sw =    62.14248
+                          stover N conc =   0.9513337       extractable sw =    62.14248
 1 September 1982(Day of year=244), millet4: 
       stage    9.0 end_grain_fill
-                          biomass =           51.65775       lai =    0.4802644E-01
-                          stover N conc =   0.9125544       extractable sw =    62.14248
+                          biomass =           51.65774       lai =    0.4802644E-01
+                          stover N conc =   0.9238255       extractable sw =    62.14248
 1 September 1982(Day of year=244), millet5: 
       stage   10.0 maturity
                           biomass =           26.77945       lai =    0.2255687E-01
-                          stover N conc =   0.9466615       extractable sw =    62.02024
+                          stover N conc =   0.9466386       extractable sw =    62.02024
 1 September 1982(Day of year=244), Manager: 
      Manager sending message :- millet1 harvest
      
@@ -1184,20 +1164,20 @@ Title                  = pat82_d1
      
      
      
-      flowering day  =  214                  stover (kg/ha) =     582.3
-      maturity day        =  243             grain yield (kg/ha) =     690.2
-      grain % water content   =   15.5       grain yield wet (kg/ha) =     816.8
+      flowering day  =  214                  stover (kg/ha) =     612.1
+      maturity day        =  243             grain yield (kg/ha) =     660.5
+      grain % water content   =   15.5       grain yield wet (kg/ha) =     781.6
       grain wt (g) =     0.011               grains/m^2   =  6146.393
       grains/head =1229.3                    maximum lai = 0.440
       total above ground biomass (kg/ha) =    1272.5
       live above ground biomass (kg/ha) =    1272.5
-      green above ground biomass (kg/ha) =    1191.2
-      senesced above ground biomass (kg/ha) =      81.3
+      green above ground biomass (kg/ha) =    1161.7
+      senesced above ground biomass (kg/ha) =     110.8
       dead above ground biomass (kg/ha) =       0.0
       number of leaves =  11.3
-      grain N percent =      0.91            total N content (kg/ha) =     11.16
-      grain N uptake (kg/ha) =      6.25     senesced N content (kg/ha) =      0.08
-      green N content (kg/ha) =      4.83    dead N content (kg/ha) =      0.00
+      grain N percent =      0.95            total N content (kg/ha) =     11.16
+      grain N uptake (kg/ha) =      6.25     senesced N content (kg/ha) =      0.11
+      green N content (kg/ha) =      4.80    dead N content (kg/ha) =      0.00
      
      
      
@@ -1235,10 +1215,10 @@ Title                  = pat82_d1
       water stress 1 =       0.0000000   nitrogen stress 1 =       0.0000000
       water stress 2 =       0.0000000   nitrogen stress 2 =       0.0000000
      Manager sending message :- millet2 kill_crop
-         kill. Standing above-ground dm =   582.3 (kg/ha)
+         kill. Standing above-ground dm =   612.1 (kg/ha)
      Manager sending message :- millet2 end_crop
          ended. Yield (dw) =     0.0
-                                               straw residue =  582.3 kg/ha
+                                               straw residue =  612.1 kg/ha
                                                straw N =    4.9 kg/ha
                                                root residue =  222.2 kg/ha
                                                root N =    2.4 kg/ha
@@ -1251,11 +1231,11 @@ Title                  = pat82_d1
 2 September 1982(Day of year=245), millet5: 
       stage   11.0 harvest_ripe
                           biomass =           26.77945       lai =    0.9999722E-03
-                          stover N conc =   0.9580459       extractable sw =    60.75011
+                          stover N conc =   0.9580227       extractable sw =    60.75011
 2 September 1982(Day of year=245), millet4: 
       stage   10.0 maturity
                           biomass =           52.36734       lai =    0.3971121E-01
-                          stover N conc =   0.9058504       extractable sw =    60.75011
+                          stover N conc =   0.9190224       extractable sw =    60.75011
 2 September 1982(Day of year=245), Manager: 
      Manager sending message :- millet5 harvest
      
@@ -1329,26 +1309,26 @@ Title                  = pat82_d1
 3 September 1982(Day of year=246), millet4: 
       stage   11.0 harvest_ripe
                           biomass =           52.36734       lai =    0.1330435E-02
-                          stover N conc =   0.9058998       extractable sw =    70.25330
+                          stover N conc =   0.9290351       extractable sw =    70.25330
 3 September 1982(Day of year=246), Manager: 
      Manager sending message :- millet4 harvest
      
      
      
-      flowering day  =  217                  stover (kg/ha) =     232.6
-      maturity day        =  245             grain yield (kg/ha) =     291.1
-      grain % water content   =   15.5       grain yield wet (kg/ha) =     344.5
+      flowering day  =  217                  stover (kg/ha) =     243.3
+      maturity day        =  245             grain yield (kg/ha) =     280.4
+      grain % water content   =   15.5       grain yield wet (kg/ha) =     331.8
       grain wt (g) =     0.011               grains/m^2   =  2582.818
       grains/head = 516.6                    maximum lai = 0.249
       total above ground biomass (kg/ha) =     523.7
       live above ground biomass (kg/ha) =     523.7
-      green above ground biomass (kg/ha) =     495.7
-      senesced above ground biomass (kg/ha) =      27.9
+      green above ground biomass (kg/ha) =     485.2
+      senesced above ground biomass (kg/ha) =      38.5
       dead above ground biomass (kg/ha) =       0.0
       number of leaves =   9.8
-      grain N percent =      0.96            total N content (kg/ha) =      4.52
-      grain N uptake (kg/ha) =      2.80     senesced N content (kg/ha) =      0.03
-      green N content (kg/ha) =      1.69    dead N content (kg/ha) =      0.00
+      grain N percent =      1.04            total N content (kg/ha) =      4.55
+      grain N uptake (kg/ha) =      2.91     senesced N content (kg/ha) =      0.04
+      green N content (kg/ha) =      1.60    dead N content (kg/ha) =      0.00
      
      
      
@@ -1386,11 +1366,11 @@ Title                  = pat82_d1
       water stress 1 =       0.0000000   nitrogen stress 1 =       0.0000000
       water stress 2 =       0.0000000   nitrogen stress 2 =       0.0000000
      Manager sending message :- millet4 kill_crop
-         kill. Standing above-ground dm =   232.6 (kg/ha)
+         kill. Standing above-ground dm =   243.3 (kg/ha)
      Manager sending message :- millet4 end_crop
          ended. Yield (dw) =     0.0
-                                               straw residue =  232.6 kg/ha
-                                               straw N =    1.7 kg/ha
+                                               straw residue =  243.3 kg/ha
+                                               straw N =    1.6 kg/ha
                                                root residue =   90.4 kg/ha
                                                root N =    1.0 kg/ha
      Manager sending message :- surfaceom tillage  type = burn

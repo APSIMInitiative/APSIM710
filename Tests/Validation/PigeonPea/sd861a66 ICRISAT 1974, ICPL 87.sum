@@ -50,32 +50,32 @@ Paddock:
         year
         day
         pigeonpea.stagename
-        pigeonpea.PlantStatus
-        pigeonpea.DaysAfterSowing
-        pigeonpea.TTAfterSowing
-        pigeonpea.Yield
-        pigeonpea.Biomass
-        pigeonpea.Population
-        pigeonpea.GrowthRate
-        pigeonpea.RootLiveWt
-        pigeonpea.LeafLiveWt
-        pigeonpea.StemLiveWt
-        pigeonpea.PodLiveWt
-        pigeonpea.GrainWt
-        pigeonpea.PhenologyStage
-        pigeonpea.Height
-        pigeonpea.LAI
-        pigeonpea.LAITotal
-        pigeonpea.SLAI
-        pigeonpea.NodeNumber as node_no
-        pigeonpea.LeafNumber as LeafNumber
+        pigeonpea.plant_status
+        pigeonpea.daysaftersowing
+        pigeonpea.ttaftersowing
+        pigeonpea.yield
+        pigeonpea.biomass
+        pigeonpea.plants
+        pigeonpea.dlt_dm
+        pigeonpea.rootgreenwt
+        pigeonpea.leafgreenwt
+        pigeonpea.stemgreenwt
+        pigeonpea.podgreenwt
+        pigeonpea.grain_wt
+        pigeonpea.stage
+        pigeonpea.height
+        pigeonpea.lai
+        pigeonpea.tlai
+        pigeonpea.slai
+        pigeonpea.node_no as node_no
+        pigeonpea.leaf_no as leaf_no
         pigeonpea.leaf_no_dead
-        pigeonpea.RootDepth
+        pigeonpea.root_depth
         pigeonpea.oxdef_photo
-        pigeonpea.WaterStressPhoto
-        pigeonpea.WaterStressExpansion
-        pigeonpea.NStressPhoto
-        pigeonpea.AboveGroundN
+        pigeonpea.swdef_photo
+        pigeonpea.swdef_expan
+        pigeonpea.nfact_photo
+        pigeonpea.n_uptake
         pigeonpea.ep
         es
         sw_dep() as tot_sw
@@ -97,7 +97,7 @@ Paddock:
 ------- Operations Initialisation ---------------------------------------------
      Operations Schedule
      ===================
-      09/07/1986  Prepare      pigeonpea sow population = 66.7 (plants/m^2), sowing_depth = 30. , cultivar = short_duration, row_spacing = 300
+      09/07/1986  Prepare      pigeonpea sow plants = 66.7 (plants/m^2), sowing_depth = 30. , cultivar = short_duration, row_spacing = 300
       09/07/1986  Prepare      fertiliser apply amount = 100.0 (kg/ha) , depth = 50 ,type = nh4no3
 
 ------- irrigation Initialisation ---------------------------------------------
@@ -123,23 +123,23 @@ Paddock:
           mat_date = 0
      
      SECTION:- end_of_day
-          if pigeonpea.phenologystage = 3 and dateset = 0 then
+          if pigeonpea.stage = 3 and dateset = 0 then
              emer_date = daysaftersowing
              dateset = 1
           endif
-          if pigeonpea.phenologystage = 4 and dateset = 1 then
+          if pigeonpea.stage = 4 and dateset = 1 then
              endjuv_date = daysaftersowing
              dateset = 2
           endif
-          if pigeonpea.phenologystage = 6 and dateset = 2 then
+          if pigeonpea.stage = 6 and dateset = 2 then
              anth_date = daysaftersowing
              dateset = 3
           endif
-          if pigeonpea.phenologystage = 9 and dateset = 3 then
+          if pigeonpea.stage = 9 and dateset = 3 then
              mat_date = daysaftersowing
              dateset = 4
           endif
-     if (pigeonpea.stagename = 'maturity' or pigeonpea.plantstatus = 'dead') then
+     if (pigeonpea.stagename = 'maturity' or pigeonpea.plant_status = 'dead') then
         outputfile do_output
         pigeonpea harvest
         pigeonpea kill_crop

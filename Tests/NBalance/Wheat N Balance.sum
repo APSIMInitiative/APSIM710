@@ -52,15 +52,15 @@ Paddock:
      Output variables:
         dd/mm/yyyy as Date
         esw
-        Biomass
-        Yield
+        biomass
+        yield
         dnit() format 5
         nit_tot()
         surfaceom_n
         leach_no3 format 5
         flow_no3(11) format 5
         biomass_n
-        RootLiveN
+        rootgreenn
         InitialN
         PlantN
         SoilN
@@ -88,7 +88,7 @@ Paddock:
      if (rain[7] >= 10 and esw >= 80) or
          ('no' = 'yes' and today = date('10-jul'))) then
         choosenextcrop = 'yes'
-        wheat sow population =100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+        wheat sow plants =100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
      endif
      if today = date('10-jul') then
         choosenextcrop = 'yes'
@@ -118,8 +118,8 @@ Paddock:
      SECTION:- end_of_day
      
      SECTION:- process
-                if wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' then
-       nbalance.lostn = nbalance.lostn + wheat.grainliven * 10.
+                if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+       nbalance.lostn = nbalance.lostn + wheat.graingreenn * 10.
        wheat  harvest
        wheat  end_crop
                 endif
@@ -146,7 +146,7 @@ Paddock:
      endif
      
      SECTION:- end_of_day
-     plantn = (wheat.biomass_n + wheat.rootliven) * 10.
+     plantn = (wheat.biomass_n + wheat.rootgreenn) * 10.
      soiln = nit_tot() + surfaceom_n
      lostn = lostn + dnit() +  flow_no3(11)
      loss = dnit() + flow_no3(11)
@@ -329,7 +329,7 @@ Paddock:
      Manager creating a new local real variable : nbalance = -0.00091
 19 May 1988(Day of year=140), Sowing rule: 
      Manager creating a new local string variable : choosenextcrop = yes
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
 19 May 1988(Day of year=140), wheat: 
      Crop Sow
         ------------------------------------------------
@@ -479,7 +479,7 @@ Paddock:
                           N  (kg/ha) =                   0.00                   32.31
      
 15 May 1989(Day of year=135), Sowing rule: 
-     Manager sending message :- wheat sow  population = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
 15 May 1989(Day of year=135), wheat: 
      Crop Sow
         ------------------------------------------------

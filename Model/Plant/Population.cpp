@@ -11,7 +11,7 @@ Population::Population(ScienceAPI& api, plantInterface& plant)
    SoilTemp.push_back(0);
    SoilTemp.push_back(0);
    SoilTemp.push_back(0);
-   scienceAPI.expose("Population", "plants/m^2", "Plant density", plants);
+   scienceAPI.expose("plants", "plants/m^2", "Plant desnity", plants);
    scienceAPI.subscribe("prepare", NullFunction(&Population::OnPrepare));
    scienceAPI.subscribe("kill_crop", KillCropFunction(&Population::OnKillCrop));
    scienceAPI.subscribe("end_crop", NullFunction(&Population::OnEndCrop));
@@ -72,7 +72,7 @@ void Population::OnEndCrop()
 void Population::SetPlants(float Density)
    {
    plants = Density;
-   bound_check_real_var(scienceAPI, plants, 0.0, 10000.0, "Population");
+   bound_check_real_var(scienceAPI, plants, 0.0, 10000.0, "plants");
    }
 
 void Population::PlantDeath()

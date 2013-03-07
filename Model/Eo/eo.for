@@ -1261,7 +1261,7 @@ cjh   crop type.
             ! green cover
       call get_real_var_optional (
      :      unknown_module
-     :     ,'coverlive'
+     :     ,'cover_green'
      :     ,'()'
      :     ,g%cover_green
      :     ,numvals

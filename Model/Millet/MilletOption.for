@@ -665,7 +665,7 @@
      :              , emerg
      :              , g%current_stage
      :              , g%days_tot
-     :              , g%Population
+     :              , g%plants
      :              , g%lai
      :              )
 
@@ -842,7 +842,7 @@ cjh special for erik - end
      :        , c%b_slope2
 !cjh     :        , g%dlt_leaf_no
      :        , g%dlt_leaf_no_pot
-     :        , g%Population
+     :        , g%plants
      :        , g%swdef_expansion
      :        , g%dlt_lai_pot) ! individual leaf approach
 
@@ -937,7 +937,7 @@ cjh special for erik - end
 !         call millet_dm_init (g%current_stage,
 !     :          g%days_tot,
 !     :          c%dm_root_init,
-!     :          g%Population,
+!     :          g%plants,
 !     :          c%dm_stem_init,
 !     :          c%dm_leaf_init,
 !     :          c%stem_trans_frac,
@@ -1084,7 +1084,7 @@ cjh special for erik - end
 !     :              , g%dlt_dm_green
 !     :              , g%dm_green
 !     :              , g%dm_plant_min
-!     :              , g%Population
+!     :              , g%plants
 !     :              , g%dlt_dm_green_retrans
 !     :               )
 
@@ -1176,7 +1176,7 @@ cjh special for erik - end
      :              , p%y_height
      :              , p%num_stem_wt
      :              , g%dm_green
-     :              , g%Population
+     :              , g%plants
      :              , stem
      :              , g%dlt_canopy_height
      :               )
@@ -1238,7 +1238,7 @@ cjh special for erik - end
      :        , g%N_conc_min
      :        , g%dm_green
      :        , g%N_green
-     :        , g%Population
+     :        , g%plants
      :        , c%seed_wt_min
      :        , c%grain_N_conc_min
      :        , g%grain_no)              ! set grain number
@@ -1303,7 +1303,7 @@ cjh special for erik - end
      :        , g%N_conc_min
      :        , g%dm_green
      :        , g%N_green
-     :        , g%Population
+     :        , g%plants
      :        , c%seed_wt_min
      :        , c%grain_N_conc_min
      :        , g%grain_no)              ! set grain number
@@ -1348,7 +1348,7 @@ cjh special for erik - end
 !     :          g%N_conc_min,
 !     :          g%dm_green,
 !     :          g%N_green,
-!     :          g%Population,
+!     :          g%plants,
 !     :          c%seed_wt_min,
 !     :          c%grain_N_conc_min,
 !     :          g%grain_no)              ! set grain number
@@ -1463,7 +1463,7 @@ cjh special for erik - end
      :              , g%lai
      :              , g%leaf_area
      :              , g%leaf_no_dead
-     :              , g%Population
+     :              , g%plants
      :              , g%slai
      :              , c%tpla_min
      :              , g%dlt_slai_age
@@ -2432,27 +2432,27 @@ cnh      real dlt_plants
      :        , c%days_germ_limit
      :        , g%current_stage
      :        , g%days_tot
-     :        , g%Population
+     :        , g%plants
      :        , g%dlt_plants_failure_germ)
 
          call crop_failure_emergence (germ, emerg, now
      :        , c%tt_emerg_limit
      :        , g%current_stage
-     :        , g%Population
+     :        , g%plants
      :        , g%tt_tot
      :        , g%dlt_plants_failure_emergence)
 
          call millet_failure_leaf_sen (
      :          g%lai
      :        , g%current_stage
-     :        , g%Population
+     :        , g%plants
      :        , g%dlt_plants_failure_leaf_sen)
 
          call millet_failure_phen_delay (
      :          g%cswd_pheno
      :        , g%current_stage
      :        , c%swdf_pheno_limit
-     :        , g%Population
+     :        , g%plants
      :        , g%dlt_plants_failure_phen_delay)
 
          call millet_death_barrenness (
@@ -2462,7 +2462,7 @@ cnh      real dlt_plants
      :        , p%head_grain_no_max
      :        , c%barren_crit
      :        , g%grain_no
-     :        , g%Population
+     :        , g%plants
      :        , g%dlt_plants_death_barrenness)
 
          call millet_death_seedling (
@@ -2473,7 +2473,7 @@ cnh      real dlt_plants
      :        , c%x_weighted_temp
      :        , c%y_plant_death
      :        , c%num_weighted_temp
-     :        , g%Population
+     :        , g%plants
      :        , g%dlt_plants_death_seedling)
 
          call millet_death_drought (
@@ -2483,7 +2483,7 @@ cnh      real dlt_plants
      :        , c%swdf_photo_limit
      :        , g%swdef_photo
      :        , c%swdf_photo_rate
-     :        , g%Population
+     :        , g%plants
      :        , g%dlt_plants_death_drought)
 
          call millet_death_actual (
@@ -2497,7 +2497,7 @@ cnh      real dlt_plants
      :        , g%dlt_plants
      :            )
 
-         if (reals_are_equal (g%dlt_plants + g%Population, 0.0)) then
+         if (reals_are_equal (g%dlt_plants + g%plants, 0.0)) then
             call millet_kill_crop (
      :          g%plant_status
      :        , g%dm_green
@@ -2512,27 +2512,27 @@ cnh      real dlt_plants
      :        , c%days_germ_limit
      :        , g%current_stage
      :        , g%days_tot
-     :        , g%Population
+     :        , g%plants
      :        , g%dlt_plants_failure_germ)
 
          call crop_failure_emergence (germ, emerg, now
      :        , c%tt_emerg_limit
      :        , g%current_stage
-     :        , g%Population
+     :        , g%plants
      :        , g%tt_tot
      :        , g%dlt_plants_failure_emergence)
 
          call millet_failure_leaf_sen (
      :          g%lai
      :        , g%current_stage
-     :        , g%Population
+     :        , g%plants
      :        , g%dlt_plants_failure_leaf_sen)
 
          call millet_failure_phen_delay (
      :          g%cswd_pheno
      :        , g%current_stage
      :        , c%swdf_pheno_limit
-     :        , g%Population
+     :        , g%plants
      :        , g%dlt_plants_failure_phen_delay)
 
          call millet_death_barrenness0 (
@@ -2542,7 +2542,7 @@ cnh      real dlt_plants
      :        , p%head_grain_no_max
      :        , c%barren_crit
      :        , g%grain_no
-     :        , g%Population
+     :        , g%plants
      :        , g%dlt_plants_death_barrenness)
 
          call millet_death_seedling (
@@ -2553,7 +2553,7 @@ cnh      real dlt_plants
      :        , c%x_weighted_temp
      :        , c%y_plant_death
      :        , c%num_weighted_temp
-     :        , g%Population
+     :        , g%plants
      :        , g%dlt_plants_death_seedling)
 
          call millet_death_drought (
@@ -2563,7 +2563,7 @@ cnh      real dlt_plants
      :        , c%swdf_photo_limit
      :        , g%swdef_photo
      :        , c%swdf_photo_rate
-     :        , g%Population
+     :        , g%plants
      :        , g%dlt_plants_death_drought)
 
          call millet_death_actual (
@@ -2577,7 +2577,7 @@ cnh      real dlt_plants
      :        , g%dlt_plants
      :            )
 
-         if (reals_are_equal (g%dlt_plants + g%Population, 0.0)) then
+         if (reals_are_equal (g%dlt_plants + g%plants, 0.0)) then
             call millet_kill_crop (
      :          g%plant_status
      :        , g%dm_green

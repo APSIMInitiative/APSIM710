@@ -45,7 +45,7 @@ void fruitGrainPartFN::onInit1(protocol::Component *system)
 {
    fruitGrainPart::onInit1(system);
 
-   system->addGettableVar("GrainNumber",gGrain_no, "/m^2", "Grain number");
+   system->addGettableVar("grain_no",gGrain_no, "/m^2", "Grain number");
    setupGetFunction(system, "grain_size", protocol::DTsingle, false, &fruitGrainPartFN::get_grain_size, "g", "Size of each grain");
 }
 

@@ -49,8 +49,8 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        Biomass
-        Yield
+        biomass
+        yield
         grain_protein
         grain_size
         esw
@@ -65,9 +65,9 @@ Paddock:
         leaftotaln
         podtotaln
         graintotaln
-        LAI
-        WaterStressPhoto
-        NStressPhoto
+        lai
+        swdef_photo
+        nfact_photo
 
      Output file = Soybean.out
      Format = normal
@@ -80,7 +80,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('1-dec') then
-       soybean sow population =10, sowing_depth = 50, cultivar = buchanan, row_spacing = 500, crop_class = plant
+       soybean sow plants =10, sowing_depth = 50, cultivar = buchanan, row_spacing = 500, crop_class = plant
               endif
      END of rules
      
@@ -89,7 +89,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if soybean.stagename = 'harvest_ripe' or soybean.plantstatus = 'dead' then
+                if soybean.stagename = 'harvest_ripe' or soybean.plant_status = 'dead' then
        soybean  harvest
        soybean  end_crop
                 endif
@@ -254,7 +254,7 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 1 December 1988(Day of year=336), Sow on a fixed date: 
-     Manager sending message :- soybean sow  population = 10, sowing_depth = 50, cultivar = buchanan, row_spacing = 500, crop_class = plant
+     Manager sending message :- soybean sow  plants = 10, sowing_depth = 50, cultivar = buchanan, row_spacing = 500, crop_class = plant
 1 December 1988(Day of year=336), soybean: 
      Crop Sow
         ------------------------------------------------
@@ -393,7 +393,7 @@ Paddock:
                           N  (kg/ha) =                   0.00                   71.20
      
 1 December 1989(Day of year=335), Sow on a fixed date: 
-     Manager sending message :- soybean sow  population = 10, sowing_depth = 50, cultivar = buchanan, row_spacing = 500, crop_class = plant
+     Manager sending message :- soybean sow  plants = 10, sowing_depth = 50, cultivar = buchanan, row_spacing = 500, crop_class = plant
 1 December 1989(Day of year=335), soybean: 
      Crop Sow
         ------------------------------------------------

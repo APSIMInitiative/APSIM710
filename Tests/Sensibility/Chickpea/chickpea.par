@@ -11,9 +11,9 @@ outputfile  =Roma800.out
 
 variable = clock.day
 variable = clock.year
-variable = chickpea.LAI
-variable = chickpea.Biomass
-variable = chickpea.Yield
+variable = chickpea.lai
+variable = chickpea.biomass
+variable = chickpea.yield
 variable = tracker.sum_ep
 
 [sensibility.clock.parameters]
@@ -31,7 +31,7 @@ if today = date('15-may') then
 endif
 
 [sensibility.manager.end_of_day]
-if chickpea.StageName = 'harvest_ripe' or chickpea.PlantStatus = 'dead' then
+if chickpea.StageName = 'harvest_ripe' or chickpea.plant_status = 'dead' then
 
    report do_output
    chickpea harvest

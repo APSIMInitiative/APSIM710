@@ -49,8 +49,8 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        Biomass
-        Yield
+        biomass
+        yield
         grain_protein
         grain_size
         esw
@@ -65,9 +65,9 @@ Paddock:
         leaftotaln
         podtotaln
         graintotaln
-        LAI
-        WaterStressPhoto
-        NStressPhoto
+        lai
+        swdef_photo
+        nfact_photo
 
      Output file = Barley.out
      Format = normal
@@ -80,7 +80,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('1-jun') then
-       barley sow population =10, sowing_depth = 50, cultivar = schooner, row_spacing = 500, crop_class = plant
+       barley sow plants =10, sowing_depth = 50, cultivar = schooner, row_spacing = 500, crop_class = plant
               endif
      END of rules
      
@@ -89,7 +89,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if barley.stagename = 'harvest_ripe' or barley.plantstatus = 'dead' then
+                if barley.stagename = 'harvest_ripe' or barley.plant_status = 'dead' then
        barley  harvest
        barley  end_crop
                 endif
@@ -254,7 +254,7 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 1 June 1988(Day of year=153), Sow on a fixed date: 
-     Manager sending message :- barley sow  population = 10, sowing_depth = 50, cultivar = schooner, row_spacing = 500, crop_class = plant
+     Manager sending message :- barley sow  plants = 10, sowing_depth = 50, cultivar = schooner, row_spacing = 500, crop_class = plant
 1 June 1988(Day of year=153), barley: 
      Crop Sow
         ------------------------------------------------
@@ -395,7 +395,7 @@ Paddock:
                           N  (kg/ha) =                   0.00                    5.05
      
 1 June 1989(Day of year=152), Sow on a fixed date: 
-     Manager sending message :- barley sow  population = 10, sowing_depth = 50, cultivar = schooner, row_spacing = 500, crop_class = plant
+     Manager sending message :- barley sow  plants = 10, sowing_depth = 50, cultivar = schooner, row_spacing = 500, crop_class = plant
 1 June 1989(Day of year=152), barley: 
      Crop Sow
         ------------------------------------------------

@@ -43,9 +43,9 @@ Title                  = MYALL VALE 1981 SOW 5, DRY, SUNCROSS52
      Output variables:
         clock.year as year
         sunflower.das_int as DaysAfterSowing
-        sunflower.LAI as LAI
-        sunflower.biomass_wt as Biomass
-        sunflower.GrainWt as Yield
+        sunflower.lai as lai
+        sunflower.biomass_wt as biomass
+        sunflower.grain_wt as yield
         manager.cum_et as et
 
      Output file = new\mvs5d.out
@@ -89,7 +89,7 @@ Title                  = MYALL VALE 1981 SOW 5, DRY, SUNCROSS52
            sunflower sow cultivar = sc150, plants = 5, sowing_depth = 50 (mm), tiller_no_fertile = 0 ()
         endif
      endif
-     if (sunflower.phenologystage = 11) then
+     if (sunflower.stage = 11) then
         sunflower harvest
         sunflower kill_crop
         sunflower end_crop
@@ -293,7 +293,7 @@ Title                  = MYALL VALE 1981 SOW 5, DRY, SUNCROSS52
          Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
          Day no    mm      m^2    m      code     name       no
          -------------------------------------------------------
-             21   50.0    0.0    0.0    0.0   sc52          0.00
+             21   50.0    5.0    0.0    0.0   sc52          0.00
          -------------------------------------------------------
      
         - Reading root profile parameters
@@ -358,7 +358,50 @@ Title                  = MYALL VALE 1981 SOW 5, DRY, SUNCROSS52
      Manager creating a new local real variable : cum_et = 1.00000
      Manager creating a new local real variable : supply_demand_ratio = 0.00000
      Manager creating a new local real variable : dw1000gr = 0.00000
-         kill. Standing above-ground dm =     0.0 (kg/ha)
+22 January 1981(Day of year=22), sunflower: 
+      stage    2.0 germination
+27 January 1981(Day of year=27), sunflower: 
+      stage    3.0 emergence
+                          biomass =           1.000000       lai =    0.2000000E-02
+                          stover N conc =    5.000000       extractable sw =    78.79002
+10 February 1981(Day of year=41), sunflower: 
+      stage    4.0 end_of_juvenile
+                          biomass =           9.905340       lai =    0.7504904E-01
+                          stover N conc =    4.365611       extractable sw =    174.4071
+5 March 1981(Day of year=64), sunflower: 
+      stage    5.0 floral_initiation
+                          biomass =           212.7913       lai =     1.223657
+                          stover N conc =    3.810255       extractable sw =    136.9055
+31 March 1981(Day of year=90), sunflower: 
+      stage    6.0 flag_leaf
+                          biomass =           423.2379       lai =     1.370655
+                          stover N conc =    2.796997       extractable sw =    25.99426
+1 April 1981(Day of year=91), sunflower: 
+      stage    7.0 flowering
+                          biomass =           427.9397       lai =     1.370655
+                          stover N conc =    2.767127       extractable sw =    24.72559
+4 April 1981(Day of year=94), sunflower: 
+      stage    8.0 start_grain_fill
+                          biomass =           439.9525       lai =     1.352998
+                          stover N conc =    2.707303       extractable sw =    24.56194
+20 April 1981(Day of year=110): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     dm_retranslocate mass balance =    0.1341105E-06
+             exceeds upper limit of   0.1192093E-06
+     Component name: sunflower
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3 May 1981(Day of year=123), sunflower: 
+      stage    9.0 end_grain_fill
+                          biomass =           478.7266       lai =     0.000000
+                          stover N conc =    3.255956       extractable sw =    7.593334
+5 May 1981(Day of year=125), sunflower: 
+      stage   10.0 maturity
+                          biomass =           478.7266       lai =     0.000000
+                          stover N conc =    3.255956       extractable sw =    7.378883
 5 May 1981(Day of year=125), Clock: 
      Simulation is terminating due to end criteria being met.
 

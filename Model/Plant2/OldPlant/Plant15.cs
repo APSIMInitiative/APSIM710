@@ -148,7 +148,7 @@ public class Plant15
     public event NullTypeDelegate Harvesting;
 
     [Output]
-    public string PlantStatus
+    public string plant_status
     {
         get
         {

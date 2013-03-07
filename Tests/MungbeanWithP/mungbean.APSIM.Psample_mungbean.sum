@@ -41,12 +41,12 @@ Title                  = mungbean P Sample Simulation
      Output variables:
         clock.day
         clock.year
-        mungbean.LAI
-        mungbean.Biomass
+        mungbean.lai
+        mungbean.biomass
         mungbean.green_biomass
-        mungbean.LiveWt
-        mungbean.LiveP
-        mungbean.DeadP
+        mungbean.GreenWt
+        mungbean.GreenP
+        mungbean.SenescedP
         mungbean.p_demand
         mungbean.pfact_photo
         mungbean.pfact_pheno
@@ -54,19 +54,19 @@ Title                  = mungbean P Sample Simulation
         mungbean.pfact_grain
         mungbean.biomass_p
         mungbean.green_biomass_p
-        mungbean.GrainP
-        mungbean.LeafLiveP
-        mungbean.StemLiveP
-        mungbean.RootLiveP
-        mungbean.PodLiveP
+        mungbean.grain_p
+        mungbean.LeafGreenP
+        mungbean.StemGreenP
+        mungbean.RootGreenP
+        mungbean.PodGreenP
         mungbean.FruitTotalP
         mungbean.GrowthP
         mungbean.RetranslocationP
         mungbean.DetachingP
         mungbean.p_conc_stover
-        mungbean.LeafLivePConc
-        mungbean.StemLivePConc
-        mungbean.GrainLivePConc
+        mungbean.LeafGreenPConc
+        mungbean.StemGreenPConc
+        mungbean.GrainGreenPConc
         mungbean.p_uptake_stover
         mungbean.grain_p_demand
         surfaceom.surfaceom_p
@@ -85,7 +85,7 @@ Title                  = mungbean P Sample Simulation
      if day = 330 and year  = 1988 then
         mungbean sow cultivar = berken, plants = 25 (/m2), sowing_depth = 40 (mm)
      endif
-     if mungbean.stagename = 'harvest_ripe' or mungbean.plantstatus = 'dead' then
+     if mungbean.stagename = 'harvest_ripe' or mungbean.plant_status = 'dead' then
         mungbean harvest
         mungbean end_crop
      endif
@@ -273,13 +273,154 @@ Title                  = mungbean P Sample Simulation
      Manager sending message :- mungbean sow  cultivar = berken, plants = 25 (/m2), sowing_depth = 40 (mm)
 25 November 1988(Day of year=330), mungbean: 
      Crop Sow
-25 November 1988(Day of year=330): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     plant density ('Population') not specified
-     Component name: mungbean
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ------------------------------------------------
+        cultivar                   = berken
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       1 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     550     550 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    12.5      17 (h)
+              y_tt_end_of_juvenile       =       1       5 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      25      25 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     206     206 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =   316.5   316.5 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      28 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0150     0.0150
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.40       0.40
+        ------------------------------------------------
      
      
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.080          0.230       1.000
+         150.0     0.080          0.240       1.000
+         300.0     0.080          0.240       1.000
+         300.0     0.080          0.250       1.000
+         300.0     0.050          0.260       1.000
+         300.0     0.030          0.270       1.000
+         300.0     0.010          0.280       1.000
+         -----------------------------------------------
+         Extractable SW:   315mm in  1800mm total depth ( 17%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            330   40.0   25.0  500.0   0.0   0.0 berken
+         ------------------------------------------------
+     
+26 November 1988(Day of year=331), mungbean: 
+      stage 2.0 germination
+28 November 1988(Day of year=333), mungbean: 
+      stage 3.0 emergence
+                     biomass =           2.50 (g/m^2)   lai          =   0.005 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   23.29 (mm)
+1 January 1989(Day of year=1), mungbean: 
+      stage 4.0 end_of_juvenile
+                     biomass =          52.44 (g/m^2)   lai          =   1.050 (m^2/m^2)
+                     stover N conc =     5.00 (%)    extractable sw =  215.75 (mm)
+2 January 1989(Day of year=2), mungbean: 
+      stage 5.0 floral_initiation
+                     biomass =          54.48 (g/m^2)   lai          =   1.092 (m^2/m^2)
+                     stover N conc =     5.00 (%)    extractable sw =  215.35 (mm)
+3 January 1989(Day of year=3), mungbean: 
+      stage 6.0 flowering
+                     biomass =          60.81 (g/m^2)   lai          =   1.186 (m^2/m^2)
+                     stover N conc =     4.48 (%)    extractable sw =  264.36 (mm)
+15 January 1989(Day of year=15), mungbean: 
+      stage 7.0 start_grain_fill
+                     biomass =         126.42 (g/m^2)   lai          =   1.858 (m^2/m^2)
+                     stover N conc =     2.69 (%)    extractable sw =  305.84 (mm)
+6 February 1989(Day of year=37), mungbean: 
+      stage 8.0 end_grain_fill
+                     biomass =         152.68 (g/m^2)   lai          =   1.070 (m^2/m^2)
+                     stover N conc =     2.40 (%)    extractable sw =  312.26 (mm)
+8 February 1989(Day of year=39), mungbean: 
+      stage 9.0 maturity
+                     biomass =         155.11 (g/m^2)   lai          =   0.992 (m^2/m^2)
+                     stover N conc =     2.33 (%)    extractable sw =  308.56 (mm)
+9 February 1989(Day of year=40), mungbean: 
+      stage 10.0 harvest_ripe
+                     biomass =         156.45 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     2.75 (%)    extractable sw =  306.15 (mm)
+10 February 1989(Day of year=41), Manager: 
+     Manager sending message :- mungbean harvest
+10 February 1989(Day of year=41), mungbean: 
+     
+      flowering day          =    3                           stover (kg/ha)         =     1009.9
+      maturity day           =   39                           grain yield (kg/ha)    =      554.7
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=      630.3
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      1.874
+      total above ground biomass (kg/ha)    =     1564.5
+      live above ground biomass (kg/ha)     =     1564.5
+      green above ground biomass (kg/ha)    =     1079.1
+      senesced above ground biomass (kg/ha) =      485.4
+      number of leaves       =     17.4
+      DM Root:Shoot ratio    =     0.41                       Harvest Index          =       0.35
+      Stover C:N ratio       =    20.98                       Root C:N ratio         =      25.91
+      grain N percent        =     4.50                       total N content (kg/ha)=      44.21
+      grain N uptake (kg/ha) =    24.96                       senesced N content (kg/ha)=    4.85
+      green N content (kg/ha)=    14.40
+      grain P percent        =       0.33                     total P content (kg/ha)=       3.38
+      grain P uptake (kg/ha) =       1.84                     senesced P content (kg/ha)=    0.63
+      green P content (kg/ha)=       0.91                     dead P content (kg/ha) =       0.00
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.035
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.001
+         floral_initiation    to flowering               0.000        0.000        0.000        0.000
+         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.000        0.000        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                1009.9                     0.0
+                          N  (kg/ha) =                  19.25                    0.00
+                          P  (kg/ha) =                   1.5                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                 554.7                     0.0
+                          N  (kg/ha) =                  24.96                    0.00
+                          P  (kg/ha) =                  1.84                    0.00
+     
+      stage 11.0 end_crop
+     Manager sending message :- mungbean end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                   649.0
+                          N  (kg/ha) =                   0.00                   10.02
+                          P  (kg/ha) =                  0.00                    0.92
+     
+1 March 1989(Day of year=60), Clock: 
+     Simulation is terminating due to end criteria being met.
 

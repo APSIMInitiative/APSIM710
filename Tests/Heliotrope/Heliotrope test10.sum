@@ -67,22 +67,22 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        LeafNumber
-        NodeNumber
-        RootDepth
-        AboveGroundLiveWt
+        leaf_no
+        node_no
+        root_depth
+        green_biomass_wt
         tt
-        LAI
-        PhenologyStage
+        lai
+        stage
         ttcum
-        RootDepth
-        Height
-        StemLiveWt
+        root_depth
+        height
+        stemgreenwt
         sw_supply
         sw_demand
-        WaterStressPhoto
-        WaterStressPheno
-        WaterStressExpansion
+        sw_stress_photo
+        sw_stress_pheno
+        sw_stress_expan
 
      Output file = Heliotrope test10 plant.out
      Format = normal
@@ -99,7 +99,7 @@ Paddock:
      if (rain[3] >= 30 and esw >= 200) or
          ('yes' = 'yes' and today = date('23-nov'))) then
         choosenextcrop = 'yes'
-        heliotrope sow population =10, sowing_depth = 10, cultivar = green_diamond, row_spacing = 100, crop_class = plant
+        heliotrope sow plants =10, sowing_depth = 10, cultivar = green_diamond, row_spacing = 100, crop_class = plant
      endif
      if today = date('23-nov') then
         choosenextcrop = 'yes'
@@ -264,7 +264,7 @@ Paddock:
 ------- Start of simulation  --------------------------------------------------
 23 November 2009(Day of year=327), Sowing rule: 
      Manager creating a new local string variable : choosenextcrop = yes
-     Manager sending message :- heliotrope sow  population = 10, sowing_depth = 10, cultivar = green_diamond, row_spacing = 100, crop_class = plant
+     Manager sending message :- heliotrope sow  plants = 10, sowing_depth = 10, cultivar = green_diamond, row_spacing = 100, crop_class = plant
 23 November 2009(Day of year=327), Heliotrope: 
      Crop Sow
         ------------------------------------------------

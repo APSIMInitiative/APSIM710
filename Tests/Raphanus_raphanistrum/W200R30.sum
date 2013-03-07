@@ -56,24 +56,24 @@ Paddock:
         day
         year
         dd/mm/yyyy as date
-        raphanus_raphanistrum.Height as R_height
-        raphanus_raphanistrum.LAI as R_lai
-        raphanus_raphanistrum.LeafNumber as R_LeafNumber
-        raphanus_raphanistrum.LeafNumberDead as R_LeafNumberDead
-        raphanus_raphanistrum.Biomass as R_biomass
-        raphanus_raphanistrum.LeafLiveWt as R_LeafLiveWt
-        raphanus_raphanistrum.StemLiveWt as R_StemLiveWt
-        raphanus_raphanistrum.GrainWt as R_GrainWt
-        raphanus_raphanistrum.Yield as R_yield
-        wheat.Height as W_height
-        wheat.LAI as W_lai
-        wheat.LeafNumber as W_LeafNumber
-        wheat.LeafNumberDead as W_LeafNumberDead
-        wheat.Biomass as W_biomass
-        wheat.LeafLiveWt as W_LeafLiveWt
-        wheat.StemLiveWt as W_StemLiveWt
-        wheat.GrainWt as W_GrainWt
-        wheat.Yield as W_yield
+        raphanus_raphanistrum.height as R_height
+        raphanus_raphanistrum.lai as R_lai
+        raphanus_raphanistrum.leaf_no as R_leaf_no
+        raphanus_raphanistrum.leaf_no_sen as R_leaf_no_sen
+        raphanus_raphanistrum.biomass as R_biomass
+        raphanus_raphanistrum.leafgreenwt as R_leafgreenwt
+        raphanus_raphanistrum.stemgreenwt as R_stemgreenwt
+        raphanus_raphanistrum.grain_wt as R_grain_wt
+        raphanus_raphanistrum.yield as R_yield
+        wheat.height as W_height
+        wheat.lai as W_lai
+        wheat.leaf_no as W_leaf_no
+        wheat.leaf_no_sen as W_leaf_no_sen
+        wheat.biomass as W_biomass
+        wheat.leafgreenwt as W_leafgreenwt
+        wheat.stemgreenwt as W_stemgreenwt
+        wheat.grain_wt as W_grain_wt
+        wheat.yield as W_yield
 
      Output file = W200R30.out
      Format = normal
@@ -89,16 +89,16 @@ Paddock:
 ------- Operations Schedule Initialisation ------------------------------------
      Operations Schedule
      ===================
-      10/06/2003  Prepare      Raphanus_raphanistrum sow population = 30, sowing_depth = 10, cultivar =  radish_SA, row_spacing = 170, crop_class = plant
+      10/06/2003  Prepare      Raphanus_raphanistrum sow plants = 30, sowing_depth = 10, cultivar =  radish_SA, row_spacing = 170, crop_class = plant
       10/06/2003  Prepare      fertiliser apply amount = 57 (kg/ha), depth = 50 (mm), type = NO3_N
       10/06/2003  Prepare      fertiliser apply amount = 12 (kg/ha), depth = 50 (mm), type = NO3_N
-      10/06/2003  Prepare      wheat sow population = 200, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+      10/06/2003  Prepare      wheat sow plants = 200, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
 
 ------- Harvesting radish Initialisation --------------------------------------
      Manager rules:
      
      SECTION:- end_of_day
-                if raphanus_raphanistrum.stagename = 'harvest_ripe' or raphanus_raphanistrum.plantstatus = 'dead' then
+                if raphanus_raphanistrum.stagename = 'harvest_ripe' or raphanus_raphanistrum.plant_status = 'dead' then
        raphanus_raphanistrum  harvest
        raphanus_raphanistrum  end_crop
                 endif
@@ -109,7 +109,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' then
+                if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
        wheat  harvest
        wheat  end_crop
                 endif

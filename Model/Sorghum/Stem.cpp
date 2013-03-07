@@ -19,12 +19,12 @@ Stem::Stem(ScienceAPI2 &api, Plant *p) : PlantPart(api)
 //--------------------------------------------------------------------------------------------------
 void Stem::doRegistrations(void)
    {
-   scienceAPI.expose("StemLiveWt",    "g/m^2", "Stem dry weight",           false, dmGreen);
-   scienceAPI.expose("StemLiveN",     "g/m^2", "N in stem",                 false, nGreen);
-   scienceAPI.expose("StemLiveNConc", "%",     "Live stem N concentration", false, nConc);
+   scienceAPI.expose("StemGreenWt",    "g/m^2", "Stem dry weight",           false, dmGreen);
+   scienceAPI.expose("StemGreenN",     "g/m^2", "N in stem",                 false, nGreen);
+   scienceAPI.expose("StemGreenNConc", "%",     "Live stem N concentration", false, nConc);
    scienceAPI.expose("DeltaStemGreenN","g/m^2", "Today's N increase in stem",false, dltNGreen);
-   scienceAPI.expose("StemLiveNConc", "%",     "Live stem N concentration", false, nConc);
-   scienceAPI.expose("StemLiveP",     "g/m^2" ,"P in live Stem",            false, pGreen);
+   scienceAPI.expose("StemGreenNConc", "%",     "Live stem N concentration", false, nConc);
+   scienceAPI.expose("StemGreenP",     "g/m^2" ,"P in live Stem",            false, pGreen);
    }
 //------------------------------------------------------------------------------------------------
 //------- Initialize variables

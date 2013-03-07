@@ -55,12 +55,12 @@ Paddock:
         dd/mm/yyyy as date
         height as R_height
         lai as R_lai
-        LeafNumber as R_LeafNumber
-        LeafNumberDead as R_LeafNumberDead
+        leaf_no as R_leaf_no
+        leaf_no_sen as R_leaf_no_sen
         biomass as R_biomass
-        LeafLiveWt as R_LeafLiveWt
-        StemLiveWt as R_StemLiveWt
-        GrainWt as R_GrainWt
+        leafgreenwt as R_leafgreenwt
+        stemgreenwt as R_stemgreenwt
+        grain_wt as R_grain_wt
         yield as R_yield
         green_biomass as R_green_biomass
 
@@ -74,14 +74,14 @@ Paddock:
         day
         year
         dd/mm/yyyy as date
-        NStressExpansion
-        NStressGrain
-        NStressPheno
-        NStressPhoto
-        WaterStressExpansion
-        WaterStressFixation
-        WaterStressPheno
-        WaterStressPhoto
+        n_stress_expan
+        n_stress_grain
+        n_stress_pheno
+        n_stress_photo
+        sw_stress_expan
+        sw_stress_fixation
+        sw_stress_pheno
+        sw_stress_photo
         sw
         esw
 
@@ -94,7 +94,7 @@ Paddock:
 ------- Operations Schedule Initialisation ------------------------------------
      Operations Schedule
      ===================
-      10/06/2003  Prepare      Raphanus_raphanistrum sow population =30, sowing_depth = 10, cultivar = radish_SA, row_spacing = 170, crop_class = plant
+      10/06/2003  Prepare      Raphanus_raphanistrum sow plants =30, sowing_depth = 10, cultivar = radish_SA, row_spacing = 170, crop_class = plant
       10/06/2003  Prepare      fertiliser apply amount = 123 (kg/ha), depth = 50 (mm), type = urea()
       10/06/2003  Prepare      fertiliser apply amount = 19 (kg/ha), depth = 50 (mm), type = nh4_n()
 
@@ -102,7 +102,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if raphanus_raphanistrum.stagename = 'harvest_ripe' or raphanus_raphanistrum.plantstatus = 'dead' then
+                if raphanus_raphanistrum.stagename = 'harvest_ripe' or raphanus_raphanistrum.plant_status = 'dead' then
        raphanus_raphanistrum  harvest
        raphanus_raphanistrum  end_crop
                 endif

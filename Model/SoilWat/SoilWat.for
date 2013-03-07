@@ -4064,7 +4064,7 @@ c     :                           , 0.0, 1.0)
       crop = 0
 1000  continue
 
-         call get_real_vars (crop+1, 'coverlive', '()'
+         call get_real_vars (crop+1, 'cover_green', '()'
      :                              , cover, numvals
      :                              , 0.0, 1.0)
          if (numvals.ne.0) then
@@ -4089,7 +4089,7 @@ c     :                           , 0.0, 1.0)
       do 2000 crop = 1, g%num_crops
 
          call get_real_var  (g%crop_module(crop)
-     :                      ,'CoverTotal'
+     :                      ,'cover_tot'
      :                      ,'()'
      :                      ,g%cover_tot(crop)
      :                      ,numvals
@@ -7757,9 +7757,9 @@ c
       ! variables we get from other modules.
       dummy = add_registration_with_units(getVariableReg,
      .                     'surfaceom_cover', floatTypeDDML, '')
-      dummy = add_registration_with_units(getVariableReg, 'coverlive',
+      dummy = add_registration_with_units(getVariableReg, 'cover_green',
      .                     floatTypeDDML, '')
-      dummy = add_registration_with_units(getVariableReg, 'CoverTotal',
+      dummy = add_registration_with_units(getVariableReg, 'cover_tot',
      .                     floatTypeDDML, '')
       dummy = add_registration_with_units(getVariableReg, 'height',
      .                     floatTypeDDML, 'mm')

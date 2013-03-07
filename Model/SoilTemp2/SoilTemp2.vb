@@ -599,7 +599,7 @@ Public Class SoilTempdotNET
 
         BoundCheck(es, -30.0, 40.0, "es")
         gEs = es
-        'BoundCheck(cover_tot, 0.0, 1.0, "CoverTotal")
+        'BoundCheck(cover_tot, 0.0, 1.0, "cover_tot")
 
         If (wind > 0.0) Then
             gWindSpeed = wind * KM2M / (DAY2HR * HR2SEC)

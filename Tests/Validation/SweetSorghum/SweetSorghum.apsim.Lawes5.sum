@@ -45,28 +45,28 @@ Title                  = Lawes Planting Five
         sweetsorghum.DaysAfterSowing
         sweetsorghum.zadok_stage
         met.day_length
-        sweetsorghum.PhenologyStage
-        sweetsorghum.LAI
-        sweetsorghum.Biomass
-        sweetsorghum.Yield
-        sweetsorghum.RootDepth
+        sweetsorghum.stage
+        sweetsorghum.lai
+        sweetsorghum.biomass
+        sweetsorghum.yield
+        sweetsorghum.root_depth
         sweetsorghum.ep
-        sweetsorghum.WaterStressPhoto
-        sweetsorghum.WaterStressExpansion
-        sweetsorghum.NStressPhoto
+        sweetsorghum.swdef_photo
+        sweetsorghum.swdef_expan
+        sweetsorghum.nfact_photo
         sweetsorghum.temp_stress_photo
         met.maxt
         met.mint
         met.radn
         sweetsorghum.TTAfterSowing
         sweetsorghum.TT
-        sweetsorghum.LeafLiveWt
-        sweetsorghum.StemLiveWt
-        sweetsorghum.NodeNumber
-        sweetsorghum.Height
+        sweetsorghum.LeafGreenWt
+        sweetsorghum.StemGreenWt
+        sweetsorghum.node_no
+        sweetsorghum.height
         sweetsorghum.HeadTotalWt
-        sweetsorghum.LeafDeadWt as dead_leaf
-        sweetsorghum.LeafNumberDead
+        sweetsorghum.LeafSenescedWt as dead_leaf
+        sweetsorghum.leaf_no_sen
 
      Output file = Lawes5.out
      Format = normal
@@ -97,10 +97,10 @@ Title                  = Lawes Planting Five
           endif
      
      SECTION:- end_of_day
-          if sweetsorghum.plantstatus = 'alive' then
+          if sweetsorghum.plant_status = 'alive' then
              report do_output
           endif
-          if sweetsorghum.stagename = 'harvest_ripe' or sweetsorghum.plantstatus = 'dead' then
+          if sweetsorghum.stagename = 'harvest_ripe' or sweetsorghum.plant_status = 'dead' then
              sweetsorghum harvest
              sweetsorghum end_crop
           endif

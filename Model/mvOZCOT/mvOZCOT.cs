@@ -1332,7 +1332,7 @@ namespace ManagedComponent.MvOZCOT
 
             //====================================================================
             //Output 'readable only' properties
-            addProperty("PlantStatus", PROP_plant_status, true, false, false, "-", false, "string", "Plant status", "Plant status");
+            addProperty("plant_status", PROP_plant_status, true, false, false, "-", false, "string", "Plant status", "Plant status");
             addProperty("ozcot_status", PROP_ozcot_status, true, false, false, "-", false, "integer4", "model status", "model status - termination reason");
             addProperty("status", PROP_status, true, false, false, "-", false, "integer4", "model status", "model status - apsim terminology");
             addProperty("crop_in", PROP_crop_in, true, false, false, "-", false, "integer4", "status flag - crop planted", "status flag - crop is in the ground");
@@ -1377,8 +1377,8 @@ namespace ManagedComponent.MvOZCOT
             addProperty("totnup", PROP_totnup, true, false, false, "kg/ha", false, "double", "total Nitrogen uptake", "total Nitrogen uptake");
             addProperty("yield", PROP_yield, true, false, false, "kg/ha", false, "double", "lint yield kg/ha", "lint yield kg/ha");
             addProperty("lint_yield", PROP_lint_yield, true, false, false, "kg/ha", false, "double", "lint yield kg/ha", "lint yield kg/ha");
-            addProperty("CoverLive", PROP_cover_green, true, false, false, "-", false, "double", "crop coverage", "crop coverage of the ground on an area basis");
-            addProperty("CoverTotal", PROP_cover_tot, true, false, false, "-", false, "double", "crop coverage of ground", "");
+            addProperty("cover_green", PROP_cover_green, true, false, false, "-", false, "double", "crop coverage", "crop coverage of the ground on an area basis");
+            addProperty("cover_tot", PROP_cover_tot, true, false, false, "-", false, "double", "crop coverage of ground", "");
             addProperty("availn", PROP_availn, true, false, false, "kg/ha", false, "double", "N available in soil", "N available in soil for uptake");
             addProperty("uptakn", PROP_uptakn, true, false, false, "kg/ha", false, "double", "N taken up by crop", "N taken up by crop");
             addProperty("tsno3", PROP_tsno3, true, false, false, "kg/ha", false, "double", "soil nitrate", "total soil nitrate");

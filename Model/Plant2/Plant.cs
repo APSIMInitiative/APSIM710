@@ -42,7 +42,7 @@ public class Plant
     [Output]
     private double WaterSupplyDemandRatio = 0;
     [Output]
-    public string PlantStatus
+    public string plant_status
     {
         get
         {

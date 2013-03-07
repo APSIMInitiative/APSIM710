@@ -50,8 +50,8 @@ Paddock:
         harvesting
      Output variables:
         dd/mm/yyyy as Date
-        wheat.Yield as whtYield
-        lucerne.Biomass as lucerneBiomass
+        wheat.yield as whtYield
+        lucerne.biomass as lucerneBiomass
         alw
         stocking_rate
 
@@ -315,7 +315,7 @@ set colour(lucernePrepn) "-657956"
 stateGraph arc insert "Lucerne" "Reestablish" "arc2"
 stateGraph arc lappend "arc2" actions {apsimSendMessage lucerne end_crop}
 stateGraph arc lappend "arc2" actions {set waiting 0}
-stateGraph arc lappend "arc2" rules {[string match [apsimGet lucerne.PlantStatus]  dead] }
+stateGraph arc lappend "arc2" rules {[string match [apsimGet lucerne.plant_status]  dead] }
 stateGraph arc insert "wheatPrepn" "Wheat" "arc11"
 stateGraph arc lappend "arc11" actions {sow_wheat}
 stateGraph arc lappend "arc11" rules {[canPlant_wheat]}
@@ -366,11 +366,11 @@ proc canPlant_wheat {} {
 # Plant a crop now
 proc sow_wheat {} {
   if {"plant" == "plant"} {
-     apsimSendMessage wheat sow {Population 100} {sowing_depth 30} \
+     apsimSendMessage wheat sow {plants 100} {sowing_depth 30} \
              {cultivar hartog} {row_spacing 250} \
              {skipplant 0} {skiprow 0} {crop_class plant} 
   } elseif {"plant" == "cropmod"} {
-     apsimSendMessage wheat sow {Population [density]} {sowing_depth [depth]} \
+     apsimSendMessage wheat sow {plants [density]} {sowing_depth [depth]} \
              {cultivar hartog} {row_spacing 250} {skiprow 0} 
   } elseif {"plant" == "growth"} {
      apsimSendMessage wheat ???
@@ -380,11 +380,11 @@ proc sow_wheat {} {
   } elseif {"plant" == "oryza"} {
      apsimSendMessage wheat sow {cultivar hartog} 
   } elseif {"plant" == "sorghum"} {
-     apsimSendMessage wheat sow {Population 100} {sowing_depth 30} \
+     apsimSendMessage wheat sow {plants 100} {sowing_depth 30} \
              {cultivar hartog} {row_spacing 250} {skiprow 0} \
              {tiller_no_fertile [tiller_no_fertile]}
   } elseif {"plant" == "sugar"} {
-     apsimSendMessage wheat sow {Population 100} {cultivar hartog} {sowing_depth 30}
+     apsimSendMessage wheat sow {plants 100} {cultivar hartog} {sowing_depth 30}
   } else {
     error "Unknown crop module \"plant\"."
   }
@@ -393,7 +393,7 @@ proc sow_wheat {} {
 
 proc canHarvest_wheat {} {
    return [expr [string match [apsimGet wheat.stagename] "harvest_ripe"] &&\
-                [string match [apsimGet wheat.PlantStatus] "dead"]]
+                [string match [apsimGet wheat.plant_status] "dead"]]
 }
 
 
@@ -428,11 +428,11 @@ proc canPlant_lucerne {} {
 # Plant a crop now
 proc sow_lucerne {} {
   if {"plant" == "plant"} {
-     apsimSendMessage lucerne sow {Population 200} {sowing_depth 10} \
+     apsimSendMessage lucerne sow {plants 200} {sowing_depth 10} \
              {cultivar hunter_river} {row_spacing 250} \
              {skipplant 0} {skiprow 0} {crop_class plant} 
   } elseif {"plant" == "cropmod"} {
-     apsimSendMessage lucerne sow {Population [density]} {sowing_depth [depth]} \
+     apsimSendMessage lucerne sow {plants [density]} {sowing_depth [depth]} \
              {cultivar hunter_river} {row_spacing 250} {skiprow 0} 
   } elseif {"plant" == "growth"} {
      apsimSendMessage lucerne ???
@@ -442,11 +442,11 @@ proc sow_lucerne {} {
   } elseif {"plant" == "oryza"} {
      apsimSendMessage lucerne sow {cultivar hunter_river} 
   } elseif {"plant" == "sorghum"} {
-     apsimSendMessage lucerne sow {Population 200} {sowing_depth 10} \
+     apsimSendMessage lucerne sow {plants 200} {sowing_depth 10} \
              {cultivar hunter_river} {row_spacing 250} {skiprow 0} \
              {tiller_no_fertile [tiller_no_fertile]}
   } elseif {"plant" == "sugar"} {
-     apsimSendMessage lucerne sow {Population 200} {cultivar hunter_river} {sowing_depth 10}
+     apsimSendMessage lucerne sow {plants 200} {cultivar hunter_river} {sowing_depth 10}
   } else {
     error "Unknown crop module \"plant\"."
   }
@@ -488,7 +488,7 @@ if { $paddockState != "empty"  && $nLucerneDays == 0} {
 
 # This is needed by graz (for some obscure reason).
 if { $paddockState != "empty" } {
-  set growth [apsimGet lucerne.GrowthRate]
+  set growth [apsimGet lucerne.dlt_dm]
 }
 
 

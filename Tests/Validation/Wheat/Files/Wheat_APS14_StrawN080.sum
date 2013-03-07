@@ -58,35 +58,35 @@ Paddock:
         year
         wheat.zadok_stage
         wheat.StageName
-        wheat.Biomass
-        wheat.Yield
+        wheat.biomass
+        wheat.yield
         wheat.grain_size
         wheat.biomass_wt
         wheat.biomass_n
-        wheat.LAI
+        wheat.lai
         wheat.HeadTotalWt
-        wheat.GrainWt
-        wheat.LeafLiveWt
+        wheat.grain_wt
+        wheat.LeafGreenWt
         wheat.HeadTotalN
-        wheat.GrainN
-        wheat.LeafLiveN
-        wheat.StemLiveN
-        wheat.StemLiveWt
-        wheat.GrainNumber
+        wheat.grain_n
+        wheat.LeafGreenN
+        wheat.StemGreenN
+        wheat.StemGreenWt
+        wheat.grain_no
         sw_dep()
         wheat.n_conc_grain
         wheat.grain_protein
-        wheat.WaterStressPhoto
-        wheat.WaterStressExpansion
-        wheat.NStressPhoto
-        wheat.NStressExpansion
-        wheat.RootDepth
+        wheat.swdef_photo
+        wheat.swdef_expan
+        wheat.nfact_photo
+        wheat.nfact_expan
+        wheat.root_depth
         wheat.ep
         eo
         water_table
-        NodeNumber
+        node_no
         et
-        Population
+        plants
 
      Output file = Wheat_APS14_StrawN080.out
      Format = normal
@@ -117,7 +117,7 @@ Paddock:
      
      SECTION:- start_of_day
         if (paddock_is_fallow() = 1 and today = date('29/06/1993')) then
-          wheat sow population =114, sowing_depth = 30, cultivar = gatton_hartog, row_spacing = 250
+          wheat sow plants =114, sowing_depth = 30, cultivar = gatton_hartog, row_spacing = 250
         endif
      END of rules
      
@@ -126,7 +126,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-       if wheat.stagename = 'harvest_ripe' or wheat.plantstatus = 'dead' then
+       if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
           wheat  harvest
           wheat  end_crop
        endif
@@ -382,7 +382,7 @@ Paddock:
 23 June 1993(Day of year=174), Irrigator: 
      Manager sending message :- irrigation apply  amount = 13 (mm)
 29 June 1993(Day of year=180), Sow on a fixed date: 
-     Manager sending message :- wheat sow  population = 114, sowing_depth = 30, cultivar = gatton_hartog, row_spacing = 250
+     Manager sending message :- wheat sow  plants = 114, sowing_depth = 30, cultivar = gatton_hartog, row_spacing = 250
 29 June 1993(Day of year=180), wheat: 
      Crop Sow
         ------------------------------------------------

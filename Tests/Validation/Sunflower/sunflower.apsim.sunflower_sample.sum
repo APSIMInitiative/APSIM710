@@ -42,21 +42,21 @@ Title                  = Sunflower sample simulation
         clock.year
         clock.dd/mm/yyyy
         sunflower.das_int as DaysAfterSowing
-        sunflower.PhenologyStage
-        sunflower.LAI
-        sunflower.biomass_wt as Biomass
-        sunflower.GrainWt as grain
-        sunflower.Yield
-        sunflower.GrainN as GrainN
+        sunflower.stage
+        sunflower.lai
+        sunflower.biomass_wt as biomass
+        sunflower.grain_wt as grain
+        sunflower.yield
+        sunflower.grain_n as grain_n
         sunflower.tiller_no_fertile as tillers
-        sunflower.RootDepth as rootdepth
-        sunflower.WaterStressPheno as ws_pheno
-        sunflower.WaterStressPhoto as ws_photo
-        sunflower.WaterStressExpansion as ws_expan
+        sunflower.root_depth as rootdepth
+        sunflower.swdef_pheno as ws_pheno
+        sunflower.swdef_photo as ws_photo
+        sunflower.swdef_expan as ws_expan
         sunflower.swdef_tiller as ws_tiller
-        sunflower.NStressPheno as Ns_pheno
-        sunflower.NStressPhoto as Ns_photo
-        sunflower.NStressExpansion as Ns_expan
+        sunflower.nfact_pheno as Ns_pheno
+        sunflower.nfact_photo as Ns_photo
+        sunflower.nfact_expan as Ns_expan
         sunflower.nfact_tiller as Ns_tiller
 
      Output file = sunflower.out
@@ -73,13 +73,13 @@ Title                  = Sunflower sample simulation
      if day = 349 and year = 1988 then
         sunflower sow cultivar = sunfola68-2, plants = 5, sowing_depth = 50 (mm)
      endif
-     if (sunflower.phenologystage = 11) then
+     if (sunflower.stage = 11) then
         sunflower harvest
         sunflower end_crop
      endif
      
      SECTION:- end_of_day
-     if (sunflower.phenologystage > 0 and sunflower.phenologystage <12 ) then
+     if (sunflower.stage > 0 and sunflower.stage <12 ) then
         report do_output
      endif
      END of rules
@@ -242,7 +242,7 @@ Title                  = Sunflower sample simulation
          Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
          Day no    mm      m^2    m      code     name       no
          -------------------------------------------------------
-            349   50.0    0.0    0.0    0.0   sunfola68-    0.00
+            349   50.0    5.0    0.0    0.0   sunfola68-    0.00
          -------------------------------------------------------
      
         - Reading root profile parameters
@@ -298,7 +298,97 @@ Title                  = Sunflower sample simulation
      
      
      
-         kill. Standing above-ground dm =     0.0 (kg/ha)
+15 December 1988(Day of year=350), sunflower: 
+      stage    2.0 germination
+19 December 1988(Day of year=354), sunflower: 
+      stage    3.0 emergence
+                          biomass =           1.000000       lai =    0.2000000E-02
+                          stover N conc =    5.000000       extractable sw =    66.58138
+30 December 1988(Day of year=365), sunflower: 
+      stage    4.0 end_of_juvenile
+                          biomass =           8.277340       lai =    0.6129461E-01
+                          stover N conc =    4.037220       extractable sw =    173.1901
+20 January 1989(Day of year=20), sunflower: 
+      stage    5.0 floral_initiation
+                          biomass =           169.5177       lai =     1.303934
+                          stover N conc =    3.833466       extractable sw =    225.0237
+12 February 1989(Day of year=43), sunflower: 
+      stage    6.0 flag_leaf
+                          biomass =           565.9542       lai =     2.877182
+                          stover N conc =    1.960362       extractable sw =    119.5799
+13 February 1989(Day of year=44), sunflower: 
+      stage    7.0 flowering
+                          biomass =           585.9554       lai =     2.857401
+                          stover N conc =    1.899210       extractable sw =    112.4357
+16 February 1989(Day of year=47), sunflower: 
+      stage    8.0 start_grain_fill
+                          biomass =           628.4714       lai =     2.786607
+                          stover N conc =    1.786386       extractable sw =    83.22922
+11 March 1989(Day of year=70): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     dm_retranslocate mass balance =   -0.2384186E-06
+             less than lower limit of  -0.1192093E-06
+     Component name: sunflower
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+13 March 1989(Day of year=72), sunflower: 
+      stage    9.0 end_grain_fill
+                          biomass =           897.1606       lai =    0.7774875
+                          stover N conc =    1.419955       extractable sw =    24.63748
+14 March 1989(Day of year=73), sunflower: 
+      stage   10.0 maturity
+                          biomass =           900.7389       lai =    0.5925932
+                          stover N conc =    1.427561       extractable sw =    22.38967
+15 March 1989(Day of year=74), sunflower: 
+      stage   11.0 harvest_ripe
+                          biomass =           900.7389       lai =     0.000000
+                          stover N conc =    1.476311       extractable sw =    20.35371
+16 March 1989(Day of year=75), Manager: 
+     Manager sending message :- sunflower harvest
+16 March 1989(Day of year=75), sunflower: 
+     
+     
+     
+     flowering (DAS) =   61                                maturity (DAS)  =      90
+      flowering day  =   44                                 stover (kg/ha) =    6881.2
+      maturity day        =   73                            grain yield (kg/ha) =    2126.2
+      grain % water content   =    9.0                      grain yield wet (kg/ha) =    2336.4
+      grain wt (g) =     0.000                              grains/m^2   =     0.000
+      grains/head =   0.0                                   maximum lai = 2.917
+      total above ground biomass (kg/ha) =    9007.4
+      live above ground biomass (kg/ha) =    9007.4
+      green above ground biomass (kg/ha) =    6639.1
+      senesced above ground biomass (kg/ha) =    2368.3
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  32.0
+      grain N percent =      1.78                           total N content (kg/ha) =    114.59
+      grain N uptake (kg/ha) =     37.94                    senesced N content (kg/ha) =     16.58
+      green N content (kg/ha) =     60.07                   dead N content (kg/ha) =      0.00
+     
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence           to end_of_juvenile         0.000        0.000        0.009        0.172
+         end_of_juvenile     to floral_initiation       0.000        0.000        0.035        0.228
+         floral_initiation   to flag_leaf               0.017        0.220        0.050        0.204
+         flag_leaf           to flowering               0.072        0.685        0.071        0.257
+         flowering           to start_grain_fill        0.255        0.824        0.067        0.253
+         start_grain_fill    to end_grain_fill          0.259        0.685        0.028        0.206
+     
+     Crop harvested.
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =               2126.17                    0.00
+                          N  (kg/ha) =                 37.94                    0.00
+     
+     Manager sending message :- sunflower end_crop
+         Crop ended. Yield (dw) =     0.0
+         Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
+                          DM (kg/ha) =               7310.59                 2502.20
+                          N  (kg/ha) =                 76.65                   20.97
+                          P  (kg/ha) =                  0.00                    0.00
+     
 30 June 1989(Day of year=181), Clock: 
      Simulation is terminating due to end criteria being met.
 
