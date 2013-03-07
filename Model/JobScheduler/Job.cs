@@ -27,8 +27,9 @@ public class Job
     public int JobSchedulerProcessID { get; set; }
     public DateTime StartTime { get; set; }
     public DateTime FinishTime { get; set; }
-    public int taskProgress;
+    public int taskProgress = 0;
     public int maxLines { get; set; }
+    public bool SendStdErrToConsole { get; set; }
     private int lineCount;
 
     [XmlAttribute("name")]
@@ -69,6 +70,7 @@ public class Job
         StdOutFilename = "";
         IgnoreErrors = false;
         maxLines = -1;
+        SendStdErrToConsole = false;
     }
 
     /// <summary>
@@ -139,8 +141,8 @@ public class Job
     {
         get
         {
-            if (IsRunning)
-                return 0;
+            if (Status == "Fail")
+                return 100;
             else
                 return Math.Max((int)0, (int)Math.Min((int)100, taskProgress));
         }
@@ -240,6 +242,7 @@ public class Job
     /// </summary>
     void OnExited(object sender, EventArgs e)
     {
+        taskProgress = 100;
         Process P = null;
         if (sender != null) P = (Process)sender;
         // Job has finished.
@@ -313,7 +316,9 @@ public class Job
     /// </summary>
     protected virtual void OnStdError(object sender, DataReceivedEventArgs e)
     {
-        if (e.Data != null && e.Data.Length > 0)
+        if (SendStdErrToConsole)
+            Console.Error.WriteLine(e.Data);
+        else if (e.Data != null && e.Data.Length > 0)
         {
             if (e.Data[0] == '%' && e.Data[1] == ' ')
             {

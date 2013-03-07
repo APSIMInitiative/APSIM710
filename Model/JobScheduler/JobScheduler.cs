@@ -85,6 +85,7 @@ public class JobScheduler
     private Dictionary<string, string> Macros = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
     private Project Project;
     private Project Log = new Project();
+    private int _PercentComplete;
 
     private Int32 listenPort = 0;
     private IPAddress listenIP = IPAddress.Parse("127.0.0.1");
@@ -161,6 +162,8 @@ public class JobScheduler
     Process RunnerProcess;
     public void Start(Project P, string TargetToRun = null)
     {
+        _PercentComplete = 0;
+
         Project = P;
 
         // Give the project to each target.
@@ -236,6 +239,7 @@ public class JobScheduler
     }
     private void OnRunnerStdOut(object sender, DataReceivedEventArgs e)
     {
+        Debug.WriteLine(e.Data);
         Console.WriteLine(e.Data);
     }
     private void OnRunnerStdError(object sender, DataReceivedEventArgs e)
@@ -308,14 +312,7 @@ public class JobScheduler
     {
         get
         {
-            if (Log.Targets[0].Jobs.Count > 0)
-            {
-                double x = 0;
-                foreach (Job J in Log.Targets[0].Jobs)
-                    x += 0.01 * J.PercentComplete;
-                return (int) Math.Max(0, Math.Min(100, 100.0 * x / Log.Targets[0].Jobs.Count));
-            }
-            return 0;
+            return _PercentComplete;
         }
     }
     /// <summary>
@@ -529,7 +526,7 @@ public class JobScheduler
 
         else if (CommandBits.Length == 3 && CommandBits[0] == "AddVariable")
         {
-			AddVariable(CommandBits[1], CommandBits[2]);
+            AddVariable(CommandBits[1], CommandBits[2]);
         }
         else if (CommandBits.Length == 2 && CommandBits[0] == "GetVariable")
         {
@@ -552,6 +549,19 @@ public class JobScheduler
             Console.WriteLine("Error from JobRunner: " + CommandBits[1]);
             CancelWorkerThread = true;
         }
+        else if (CommandBits.Length == 3 && CommandBits[0] == "PercentComplete")
+        {
+            // The % value passed will be the percent complete of a subset of all jobs e.g. 60% of 4 jobs.
+            // The total number of jobs may be higher e.g. 8 so correct the percent.
+
+            if (Project.Targets[0].Jobs.Count > 0)
+            {
+                int PercentSoFar = Convert.ToInt32(CommandBits[1]);
+                int TotalJobsSoFar = Convert.ToInt32(CommandBits[2]);
+                _PercentComplete = Convert.ToInt32(PercentSoFar / 100.0 * TotalJobsSoFar / Project.Targets[0].Jobs.Count * 100.0);
+            }
+        }
+
         else if (Data != "")
             throw new Exception("Dont know about socket command: " + Data);
 

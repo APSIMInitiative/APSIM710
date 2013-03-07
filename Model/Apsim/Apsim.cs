@@ -47,30 +47,30 @@ public class Apsim
 
             for (int i = 0; i < args.Length; i++)
 			{
-                string[] x = realNamesOfFiles(args[i]);
-                if (x != null)
+                int pos = args[i].IndexOf('=');
+                if (pos > 0)
+				{
+					string name = args[i].Substring(0,pos).Replace("\"", "");
+					string value = args[i].Substring(pos+1).Replace("\"", "");
+                    Macros.Add(name, value);
+ 				}
+                else
                 {
-                    for (int j = 0; j < x.Length; ++j)
+                    string[] x = realNamesOfFiles(args[i]);
+                    if (x != null)
                     {
-                        if (File.Exists(x[j]))
+                        for (int j = 0; j < x.Length; ++j)
                         {
-                            int l = FileNames == null ? 0 : FileNames.Length;
-                            Array.Resize(ref FileNames, l + 1);
-                            FileNames[l] = x[j];
+                            if (File.Exists(x[j]))
+                            {
+                                int l = FileNames == null ? 0 : FileNames.Length;
+                                Array.Resize(ref FileNames, l + 1);
+                                FileNames[l] = x[j];
+                            }
                         }
                     }
-                } else {
-  				    int pos = args[i].IndexOf('=');
-                    if (pos > 0)
-				    {
-					    string name = args[i].Substring(0,pos).Replace("\"", "");
-					    string value = args[i].Substring(pos+1).Replace("\"", "");
-                        Macros.Add(name, value);
- 					}
 					else 
-					{
 						Console.WriteLine("Dont know what to make of \"" + args[i] + "\"");
-					}
 				}
 			}
 
@@ -95,7 +95,8 @@ public class Apsim
                 Apsim.NumJobsBeingRun = 1;
 				if (Path.GetExtension(FileNames[0]).ToLower() == ".apsim") 
                     Apsim.StartAPSIM(new ApsimFile.ApsimFile(FileNames[0]), 
-				                     Macros["Simulation"]);
+				                     Macros["Simulation"],
+                                     true);
 				else if (Path.GetExtension(FileNames[0]).ToLower() == ".con") 
 				    Apsim.StartCON(FileNames[0], Macros["Simulation"]);
 				
@@ -104,7 +105,7 @@ public class Apsim
 			else if ((FileNames.Length == 1) && (Path.GetExtension(FileNames[0]) == ".sim"))
 			{
                 Apsim.NumJobsBeingRun = 1;
-				Apsim.StartSIM(FileNames[0]);
+				Apsim.StartSIM(FileNames[0], true);
                 Apsim.WaitForAPSIMToFinish();
 			}
             else
@@ -183,7 +184,7 @@ public class Apsim
 		if (SimulationPaths.Count == 1) 
 		{
             NumJobsBeingRun = 1;
-            StartAPSIM(F,SimulationPaths[0]); 
+            StartAPSIM(F,SimulationPaths[0], true); 
 		}
 		else
 		{
@@ -287,7 +288,7 @@ public class Apsim
     /// <summary>
     /// Run a single simulation in a .apsim file
     /// </summary>
-    public void StartAPSIM(ApsimFile.ApsimFile F, string SimulationName)
+    public void StartAPSIM(ApsimFile.ApsimFile F, string SimulationName, bool SendStdErrToConsole)
     {
         // store the simulation name for later.
         Component C;
@@ -304,14 +305,14 @@ public class Apsim
         {
             SimFileName = ApsimToSim.WriteSimFile(C);
             NumJobsBeingRun = 1;
-            StartSIM(SimFileName);
+            StartSIM(SimFileName, SendStdErrToConsole);
         }
     }
 
     /// <summary>
     /// Run a .sim file
     /// </summary>
-    public void StartSIM(string SimFileName)
+    public void StartSIM(string SimFileName, bool SendStdErrToConsole)
     {
         _J = new Job();
         _J.WorkingDirectory = Path.GetDirectoryName(SimFileName);
@@ -319,6 +320,7 @@ public class Apsim
                          StringManip.DQuote(SimFileName);
         _J.StdOutFilename = Path.ChangeExtension(SimFileName, ".sum");
         _J.maxLines = maxLines;
+        _J.SendStdErrToConsole = SendStdErrToConsole;
         _J.Run();
     }
 
@@ -338,7 +340,7 @@ public class Apsim
         string SimFileName = Path.Combine(Path.GetDirectoryName(FileName),
                                           Path.GetFileNameWithoutExtension(FileName) + "." + SimulationName + ".sim");
         NumJobsBeingRun = 1;
-        StartSIM(SimFileName);
+        StartSIM(SimFileName, false);
     }
 
     /// <summary>

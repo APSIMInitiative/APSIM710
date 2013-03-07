@@ -156,7 +156,7 @@ public class ApsimRunToolStrip
             return;
         }
         if (SimsToRun.Count == 1)
-            Apsim.StartAPSIM(_F, SimsToRun[0]);
+            Apsim.StartAPSIM(_F, SimsToRun[0], false);
         else if (SimsToRun.Count > 1)
             Apsim.StartMultipleFromPaths(_F, SimsToRun);
         Timer.Enabled = true;

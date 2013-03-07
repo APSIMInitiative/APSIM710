@@ -49,6 +49,7 @@ class JobRunner
 
         Console.WriteLine("JobRunner listening to " + Macros["Server"] + ":" + Macros["Port"] + " - managing " + NumCPUsToUse + " Process" + (NumCPUsToUse > 1 ? "es" : ""));
         List<Job> Jobs = new List<Job>();
+        int NumFinishedJobs = 0;
         bool ESCWasPressed = false;
         bool AutoClose = Macros.ContainsKey("AutoClose") && Macros["AutoClose"].ToLower() == "yes";
         int NumServerConnectErrors = 0;
@@ -58,46 +59,48 @@ class JobRunner
             bool idle = true;
             try
             {
+                // Send back a percent complete
+                SendPercentComplete(Macros, Jobs, NumFinishedJobs);
+
                 // See if any jobs have finished.
-                SendBackFinishedJobs(Macros, Jobs);
+                NumFinishedJobs += SendBackFinishedJobs(Macros, Jobs);
 
                 // See if we can support another job.
                 if (Jobs.Count < NumCPUsToUse)
                 {
-                    List<Job> NewJobs = GetNextJobToRun(Macros, NumCPUsToUse-Jobs.Count);
+                    int NewJobIndex = Jobs.Count;
+                    List<Job> NewJobs = GetNextJobToRun(Macros, NumCPUsToUse - Jobs.Count);
+                    if (NewJobs != null)
+                        Jobs.AddRange(NewJobs);
 
-                    if (NewJobs == null && Jobs.Count == 0)
+                    if (NewJobIndex == Jobs.Count && Jobs.Count == 0)
                     {
                         Console.WriteLine("No more jobs and none running - exiting");
                         ESCWasPressed = true; // All done. 
                     }
 					
-                    if (NewJobs != null)
+                    for (int i = NewJobIndex; i < Jobs.Count; i++)
                     {
-                        foreach (Job J in NewJobs)
+                        try
                         {
-                            try
-                            {
-                                Console.WriteLine(J.Name);
-                                J.Run();
-                                Thread.Sleep(100);
-                            }
-                            catch (Exception err)
-                            {
-                                J.ExitCode = 1;
-                                J.StdOut = "";
-                                string msg = "Internal Error\n";
-                                if (J.WorkingDirectory != null && J.WorkingDirectory != "")
-                                    msg += "Working Directory = \"" + J.WorkingDirectory+"\"";
-                                msg += "Command Line = \"" + J.CommandLine + "\"";
-                                msg += "Error = " + err.Message;
-                                msg += "Stack Trace = " + err.StackTrace;
-                                J.StdErr = msg;
-                                J.Status = "Fail";
-                            }
-                            Jobs.Add(J);
-							idle = false;
+                            Console.WriteLine(Jobs[i].Name);
+                            Jobs[i].Run();
+                            Thread.Sleep(100);
                         }
+                        catch (Exception err)
+                        {
+                            Jobs[i].ExitCode = 1;
+                            Jobs[i].StdOut = "";
+                            string msg = "Internal Error\n";
+                            if (Jobs[i].WorkingDirectory != null && Jobs[i].WorkingDirectory != "")
+                                msg += "Working Directory = \"" + Jobs[i].WorkingDirectory + "\"";
+                            msg += "Command Line = \"" + Jobs[i].CommandLine + "\"\r\n";
+                            msg += "Error = " + err.Message + "\r\n";
+                            msg += "Stack Trace = " + err.StackTrace + "\r\n";
+                            Jobs[i].StdErr = msg;
+                            Jobs[i].Status = "Fail";
+                        }
+						idle = false;
                     }
                 }
                 
@@ -128,10 +131,32 @@ class JobRunner
             J.Stop();
     }
 
+    public static void SendPercentComplete(Dictionary<string, string> Macros, List<Job> Jobs, int NumFinishedJobs)
+    {
+        int TotalNumJobs = Jobs.Count + NumFinishedJobs;
+
+        if (TotalNumJobs > 0)
+        {
+            double x = 0;
+            string debug = "";
+            foreach (Job J in Jobs)
+            {
+                x += J.PercentComplete / 100.0;
+                debug += J.PercentComplete + ",";
+            }
+            x += NumFinishedJobs;
+            double PercentComplete = (int)Math.Max(0, Math.Min(100, 100.0 * (x / TotalNumJobs)));
+            Utility.SocketSend(Macros["Server"],
+                                Convert.ToInt32(Macros["Port"]),
+                                "PercentComplete~" + PercentComplete.ToString("f0") + "~" + TotalNumJobs);
+        }
+    }
+
+
     /// <summary>
     /// Send back all finished jobs to job scheduler.
     /// </summary>
-    private static void SendBackFinishedJobs(Dictionary<string, string> Macros, List<Job> Jobs)
+    private static int SendBackFinishedJobs(Dictionary<string, string> Macros, List<Job> Jobs)
     {
         List<Job> FinishedJobs = null;
         for (int i = 0; i < Jobs.Count; i++)
@@ -155,7 +180,9 @@ class JobRunner
             // If we get this far then we haven't thrown so remove finished jobs from job list.
             foreach (Job J in FinishedJobs)
                 Jobs.Remove(J);
+            return FinishedJobs.Count;
         }
+        return 0;
     }
 
     /// <summary>
