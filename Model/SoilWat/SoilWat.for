@@ -3276,7 +3276,7 @@ c       be set to '1' in all layers by default
       call read_real_array_optional (section_name
      :                     , 'ks', max_layer, '()'
      :                     , p%ks, numvals
-     :                     , 0.0, 1000.)
+     :                     , 0.0, 7200.)
       if (numvals.eq.0) then
           p%using_ks = .false.
       else
