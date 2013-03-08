@@ -176,6 +176,10 @@ class EXPORT ScienceAPI
       #define RemovedByAnimalSetter(address) boost::function1<void, const protocol::RemovedByAnimalType&>(boost::bind(address, this, _1))
       void exposeWritable(const std::string& name, const std::string& units, const std::string& description, boost::function1<void, const protocol::RemovedByAnimalType&> fn);
 
+      #define NitrogenChangedFunctionType boost::function1<void, protocol::NitrogenChangedType&>
+      #define NitrogenChangedunction(address) NitrogenChangedFunctionType(boost::bind(address, this, _1))
+      void publish(const std::string& name, protocol::NitrogenChangedType& value);
+      
    private:
       std::string currentClass1;
       std::string currentClass2;

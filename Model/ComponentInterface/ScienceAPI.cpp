@@ -898,6 +898,15 @@ void ScienceAPI::publish(const std::string& name, protocol::FOMLayerType& value)
    unsigned id = component->addRegistration(::event, destID, regName, ddml, "");
    component->publish(id, value);
    }
+void ScienceAPI::publish(const std::string& name, protocol::NitrogenChangedType& value)
+   {
+   string ddml = protocol::DDML(value);
+   int destID;
+   string regName;
+   ApsimRegistry::getApsimRegistry().unCrackPath(component->getId(), name, destID, regName);
+   unsigned id = component->addRegistration(::event, destID, regName, ddml, "");
+   component->publish(id, value);
+   }   
 void ScienceAPI::publish(const std::string& name, protocol::ApsimVariant& value)
    {
    string ddml = protocol::DDML(value);

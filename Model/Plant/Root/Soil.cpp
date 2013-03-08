@@ -716,15 +716,21 @@ void Soil::UpdateOtherVariables(string uptake_source)
    {
    if (Str_i_Eq(uptake_source, "calc"))
       {
-      vector<float> dltNO3KgHa, dltNH4KgHa, dltSwDep;
+      vector<double> dltNO3KgHa, dltNH4KgHa, dltUrea;
+      vector<float> dltSwDep;
       for (int layer = 0; layer< num_layers;layer++)
          {
          dltNO3KgHa.push_back(dlt_no3gsm[layer] * gm2kg /sm2ha);
          dltNH4KgHa.push_back(dlt_nh4gsm[layer] * gm2kg /sm2ha);
          dltSwDep.push_back(dlt_sw_dep[layer]);
          }
-      scienceAPI.set("dlt_no3", "kg/ha", dltNO3KgHa);
-      scienceAPI.set("dlt_nh4", "kg/ha", dltNH4KgHa);
+      protocol::NitrogenChangedType NChanged;
+      NChanged.Sender = plant.Name();
+      NChanged.DeltaNO3 = dltNO3KgHa;
+      NChanged.DeltaNH4 = dltNH4KgHa;
+      NChanged.DeltaUrea = dltUrea;
+      scienceAPI.publish("NitrogenChanged", NChanged);
+      
       scienceAPI.set("dlt_sw_dep", "mm", dltSwDep);
       Debug("Root.NitrogenUptake.DeltaNO3=%f", sum(dltNO3KgHa));
       Debug("Root.NitrogenUptake.DeltaNH4=%f", sum(dltNH4KgHa));
