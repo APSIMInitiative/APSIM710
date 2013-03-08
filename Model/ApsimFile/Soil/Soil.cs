@@ -292,7 +292,7 @@ namespace ApsimFile
             SoilCrop Predicted = PredictedCrop(CropName);
             if (Predicted != null)
                 return Predicted;
-            throw new Exception("Cannot find crop: " + CropName);
+            throw new Exception("Soil could not find crop: " + CropName);
         }
 
         /// <summary>
