@@ -100,7 +100,7 @@ void GenericLeaf::onInit1(protocol::Component *system)
                     &GenericLeaf::get_leaf_area, "mm^2", "Leaf area for each node");
 
    setupGetFunction(system, "leaf_area_tot", protocol::DTsingle, false,
-                    &GenericLeaf::get_leaf_area_tot, "m^2", "Total plant leaf area");
+                    &GenericLeaf::get_leaf_area_tot, "mm^2/plant", "Total plant leaf area");
 
    setupGetFunction(system, "lai_sum", protocol::DTsingle, false,
                     &GenericLeaf::get_lai_sum, "m^2/m^2", "LAI of all leaf components");
