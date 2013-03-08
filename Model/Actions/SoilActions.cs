@@ -103,7 +103,7 @@ namespace Actions
 				Cursor.Current = Cursors.WaitCursor;
 				DataTable Table = ExcelUtility.ExcelHelper.GetDataFromSheet(Dialog.FileName, "SoilData");
                 XmlNode Data = SoilDataTable.TableToSoilXML(Table, UpdateProgress);
-				Controller.ApsimData = new ApsimFile.ApsimFile(Data.OuterXml);
+				Controller.ApsimData.New(Data.OuterXml);
 				Cursor.Current = Cursors.Default;
 			}
 			StatusBar.Visible = false;
