@@ -107,6 +107,7 @@ void Plant::onInit1(void)
     maturityEventObserver = new eventObserver(scienceAPI, "maturity", this);
     plant.addThing(maturityEventObserver);
 
+   scienceAPI.subscribe("tick",       NullFunction(&Plant::onTick));
    scienceAPI.subscribe("prepare",    NullFunction(&Plant::onPrepare));
    scienceAPI.subscribe("process",    NullFunction(&Plant::onProcess));
    scienceAPI.subscribe("sow",        SowFunction(&Plant::onSow));
@@ -321,6 +322,16 @@ void Plant::doPlantEvent(const string& oldStageName,
       }
    }
 
+void Plant::onTick()
+   {
+   // --------------------------------------------------------------------------
+   // Event Handler for Tick Event.
+   // --------------------------------------------------------------------------
+   // Reset this flag so that we can sow on the day after an end_crop event. 
+   // Defect #: T1664
+   g.plant_status_out_today = false;
+   }   
+   
 void Plant::onPrepare()
    {
    // --------------------------------------------------------------------------
