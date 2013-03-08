@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-//using ModelFramework;
 using System.Runtime.InteropServices;
 using System.Xml;
 using CSGeneral;
@@ -19,6 +18,8 @@ public class Variables
 {
     [Param]
     public string[] Variable = null;
+    [Param]
+    public string OutputFrequency = null;
 }
 
 public class ReportDb
@@ -32,7 +33,7 @@ public class ReportDb
     private SQLiteCommand InsertCommand;
     private SQLiteTransaction InsertTransaction = null;
 #endif
-    private string FileName = "Output.db";
+    private string FileName;
     private int SimulationID = -1;
 
     [Input]
@@ -43,11 +44,12 @@ public class ReportDb
 
     [Link]
     Variables Variables = null;
-    //[Param]
-    //string[] OutputFrequencys = null;
 
     [Link]
     Paddock Paddock = null;
+
+    [Link]
+    Component My = null;
 
     /// <summary>
     /// Constructor
@@ -76,6 +78,14 @@ public class ReportDb
     [EventHandler]
     public void OnInitialised()
     {
+        if (Title == null)
+        {
+            Component Simulation = Paddock.LinkByType("Simulation") as Component;
+            if (Simulation != null)
+                Simulation.Get("Title", out Title);
+        }
+        
+        FileName = Title + "-" + My.Name + ".db";
 #if __MonoCS__
         Connection = new SqliteConnection("Data Source=" + FileName + ";Version=3;New=False;Compress=True;");
         Connection.Open();
@@ -85,12 +95,6 @@ public class ReportDb
         Connection.Open();
         SQLiteCommand sql_cmd = new SQLiteCommand(Connection);
 #endif
-        if (Title == null)
-        {
-            Component Simulation = Paddock.LinkByType("Simulation") as Component;
-            if (Simulation != null)
-                Simulation.Get("Title", out Title);
-        }
 
 #if __MonoCS__
         using (SqliteTransaction dbTrans = Connection.BeginTransaction())
@@ -144,6 +148,9 @@ public class ReportDb
         sql_cmd = Connection.CreateCommand();
         sql_cmd.CommandText = "PRAGMA synchronous=OFF";
         sql_cmd.ExecuteNonQuery();
+
+        // subscribe to all events.
+        Paddock.Subscribe(Variables.OutputFrequency, OnDoReport);
     }
 
     /// <summary>
@@ -388,10 +395,9 @@ public class ReportDb
     }
 
     /// <summary>
-    /// Daily timestep handler.
+    /// Called when we need to do a report.
     /// </summary>
-    [EventHandler]
-    public void OnHarvesting()
+    public void OnDoReport()
     {
         List<KeyValuePair<string, object>> Values = GetValues();
 

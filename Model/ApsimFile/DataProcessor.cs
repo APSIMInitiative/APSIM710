@@ -587,12 +587,12 @@ public class DataProcessor
 
     private DataTable ProcessReportDb(XmlNode Node)
     {
-        if (File.Exists("Output.db"))
+        if (DefaultFileNames.Count > 0 && File.Exists(DefaultFileNames[0]))
         {
 #if __MonoCS__
             SqliteConnection sql_con = new SqliteConnection("Data Source=Output.db;Version=3;New=False;Compress=True;");
 #else
-            SQLiteConnection sql_con = new SQLiteConnection("Data Source=Output.db;Version=3;New=False;Compress=True;");
+            SQLiteConnection sql_con = new SQLiteConnection("Data Source=" + DefaultFileNames[0] + ";Version=3;New=False;Compress=True;");
 #endif
             sql_con.Open();
             string SQL = "SELECT Title, Data.* FROM Simulations, Data WHERE Simulations.ID = Data.SimulationID";
