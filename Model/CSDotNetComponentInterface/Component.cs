@@ -721,7 +721,10 @@ namespace ModelFramework
                     // external variable
                     // try a full address first. If that doesn't work then try relative address.
                     if (!HostComponent.Get(NamePrefix + NamePath, Data, true))
-                        return HostComponent.Get(NamePath, Data, true);
+                        if (this is Paddock)
+                            return HostComponent.Get(NamePath, Data, true);
+                        else
+                            return false;
                     else
                         return true;
                 }

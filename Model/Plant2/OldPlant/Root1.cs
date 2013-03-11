@@ -16,6 +16,9 @@ public class Root1 : BaseOrgan1, BelowGround
     public Component My;
 
     [Link]
+    public Paddock MyPaddock;
+
+    [Link]
     Function RootAdvanceFactorTemp = null;
 
     [Link]
@@ -252,7 +255,7 @@ public class Root1 : BaseOrgan1, BelowGround
     
         if (SwimIsPresent)
         {
-            My.Get("uptake_water_" + Plant.CropType, out dlt_sw_dep);
+            MyPaddock.Get("uptake_water_" + Plant.CropType, out dlt_sw_dep);
             dlt_sw_dep = MathUtility.Multiply_Value(dlt_sw_dep, -1);   // make them negative numbers.
         }
         else
