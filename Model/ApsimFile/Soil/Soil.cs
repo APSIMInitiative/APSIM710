@@ -66,7 +66,6 @@ namespace ApsimFile
 
         [XmlElement("Sample")]
         public List<Sample> Samples { get; set; }
-
         
         /// <summary>
         /// Constructor
@@ -132,57 +131,30 @@ namespace ApsimFile
         {
             get
             {
-                double[] Thicknesses = Water.Thickness;
-                double[] Values = null;
+                return SWMapped(SWAtWaterThickness, Water.Thickness, Thickness);
+            }
+        }
+
+        /// <summary>
+        /// Calculate and return SW relative to the Water node thicknesses.
+        /// </summary>
+        public double[] SWAtWaterThickness
+        {
+            get
+            {
                 if (InitialWater != null)
-                    Values = InitialWater.SW(Water.Thickness, Water.LL15, Water.DUL, null);
+                    return InitialWater.SW(Water.Thickness, Water.LL15, Water.DUL, null);
                 else
                 {
                     foreach (Sample Sample in Samples)
                     {
                         if (MathUtility.ValuesInArray(Sample.SW))
                         {
-                            Values = Sample.SWVolumetric(this);
-                            Thicknesses = Sample.Thickness;
+                            return SWMapped(Sample.SWVolumetric(this), Sample.Thickness, Water.Thickness);
                         }
                     }
-
                 }
-
-                if (Thicknesses == Thickness)
-                    return Values;
-
-
-                // Get the last item in the sw array and its indx.
-                double LastSW = LastValue(Values);
-                double LastThickness = LastValue(Thicknesses);
-                int LastIndex = Values.Length - 1;
-
-                Array.Resize(ref Thicknesses, Thicknesses.Length + 3); // Increase array size by 3.
-                Array.Resize(ref Values, Values.Length + 3);
-
-                Thicknesses[LastIndex + 1] = LastThickness;
-                Thicknesses[LastIndex + 2] = LastThickness;
-                Thicknesses[LastIndex + 3] = 3000;
-
-                Values[LastIndex + 1] = LastSW * 0.8;
-                Values[LastIndex + 2] = LastSW * 0.4;
-                Values[LastIndex + 3] = 0.0; // This will be constrained below to crop LL below.
-
-                // Get the first crop ll or ll15.
-                double[] LowerBound;
-                if (Water.Crops.Count > 0)
-                    LowerBound = LLMapped(Water.Crops[0].Name, Thicknesses);
-                else
-                    LowerBound = LL15Mapped(Thicknesses);
-                if (LowerBound == null)
-                    throw new Exception("Cannot find crop lower limit or LL15 in soil");
-
-                // Make sure all SW values below LastIndex don't go below CLL.
-                for (int i = LastIndex + 1; i < Thicknesses.Length; i++)
-                    Values[i] = Math.Max(Values[i], LowerBound[i]);
-
-                return Map(Values, Thicknesses, Thickness, MapType.Concentration);
+                return null;
             }
         }
 
@@ -237,7 +209,7 @@ namespace ApsimFile
 
 
         /// <summary>
-        /// Return the plant available water CAPACITY. Units: mm/mm
+        /// Return the plant available water CAPACITY at standard thickness. Units: mm/mm
         /// </summary>
         public double[] PAWC
         {
@@ -251,23 +223,64 @@ namespace ApsimFile
         }
 
         /// <summary>
-        /// Return the plant available water CAPACITY. Units: mm
+        /// Return the plant available water CAPACITY at standard thickness. Units: mm
         /// </summary>
         public double[] PAWCmm
         {
             get
             {
-                return MathUtility.Multiply(PAWC, Water.Thickness);
+                return MathUtility.Multiply(PAWC, Thickness);
             }
         }
 
+        /// <summary>
+        /// Plant available water at standard thickness. Units:mm/mm
+        /// </summary>
         public double[] PAW
+        {
+            get
+            {
+                return CalcPAWC(Thickness,
+                                LL15,
+                                SW,
+                                null);
+            }
+        }
+        /// <summary>
+        /// Return the plant available water CAPACITY at water node thickness. Units: mm/mm
+        /// </summary>
+        public double[] PAWCAtWaterThickness
         {
             get
             {
                 return CalcPAWC(Water.Thickness,
                                 Water.LL15,
-                                SW,
+                                Water.DUL,
+                                null);
+            }
+        }
+
+        /// <summary>
+        /// Return the plant available water CAPACITY at water node thickenss. Units: mm
+        /// </summary>
+        public double[] PAWCmmAtWaterThickness
+        {
+            get
+            {
+                return MathUtility.Multiply(PAWCAtWaterThickness, Water.Thickness);
+            }
+        }
+
+        /// <summary>
+        /// Plant available water at standard thickness at water node thickness. Units:mm/mm
+        /// </summary>
+        public double[] PAWAtWaterThickness
+        {
+            get
+            {
+                return CalcPAWC(Water.Thickness,
+                                Water.LL15,
+                                SWAtWaterThickness,
                                 null);
             }
         }
@@ -327,9 +340,9 @@ namespace ApsimFile
         /// </summary>
         public double[] PAWCCrop(string CropName)
         {
-            return CalcPAWC(Water.Thickness,
-                            LLMapped(CropName, Thickness),
-                            Water.DUL,
+            return CalcPAWC(Thickness,
+                            LL(CropName),
+                            DUL,
                             XF(CropName));
         }
 
@@ -338,14 +351,44 @@ namespace ApsimFile
         /// </summary>
         public double[] PAWCrop(string CropName)
         {
-            return CalcPAWC(Water.Thickness,
-                            LLMapped(CropName, Thickness),
+            return CalcPAWC(Thickness,
+                            LL(CropName),
                             SW,
                             XF(CropName));
         }
         public double[] PAWmm(string CropName)
         {
             return MathUtility.Multiply(PAWCrop(CropName), Thickness);
+        }
+
+        /// <summary>
+        /// Return the plant available water CAPACITY at water node thickness. Units: mm/mm
+        /// </summary>
+        public double[] PAWCCropAtWaterThickness(string CropName)
+        {
+            return CalcPAWC(Water.Thickness,
+                            LLMapped(CropName, Water.Thickness),
+                            DULMapped(Water.Thickness),
+                            XFMapped(CropName, Water.Thickness));
+        }
+
+        /// <summary>
+        /// Plant available water for the specified crop at water node thickness. Will throw if crop not found. Units: mm/mm
+        /// </summary>
+        public double[] PAWCropAtWaterThickness(string CropName)
+        {
+            return CalcPAWC(Water.Thickness,
+                            LLMapped(CropName, Water.Thickness),
+                            SWAtWaterThickness,
+                            XFMapped(CropName, Water.Thickness));
+        }
+
+        /// <summary>
+        /// Plant available water for the specified crop at water node thickness. Will throw if crop not found. Units: mm
+        /// </summary>
+        public double[] PAWmmAtWaterThickness(string CropName)
+        {
+            return MathUtility.Multiply(PAWCropAtWaterThickness(CropName), Water.Thickness);
         }
         #endregion
 
@@ -971,6 +1014,46 @@ namespace ApsimFile
         }
 
         /// <summary>
+        /// SW - mapped to the specified layer structure. Units: mm/mm
+        /// </summary>
+        internal double[] SWMapped(double[] Values, double[] Thicknesses, double[] ToThickness)
+        {
+            if (Thicknesses == ToThickness)
+                return Values;
+
+            // Get the last item in the sw array and its indx.
+            double LastSW = LastValue(Values);
+            double LastThickness = LastValue(Thicknesses);
+            int LastIndex = Values.Length - 1;
+
+            Array.Resize(ref Thicknesses, Thicknesses.Length + 3); // Increase array size by 3.
+            Array.Resize(ref Values, Values.Length + 3);
+
+            Thicknesses[LastIndex + 1] = LastThickness;
+            Thicknesses[LastIndex + 2] = LastThickness;
+            Thicknesses[LastIndex + 3] = 3000;
+
+            Values[LastIndex + 1] = LastSW * 0.8;
+            Values[LastIndex + 2] = LastSW * 0.4;
+            Values[LastIndex + 3] = 0.0; // This will be constrained below to crop LL below.
+
+            // Get the first crop ll or ll15.
+            double[] LowerBound;
+            if (Water.Crops.Count > 0)
+                LowerBound = LLMapped(Water.Crops[0].Name, Thicknesses);
+            else
+                LowerBound = LL15Mapped(Thicknesses);
+            if (LowerBound == null)
+                throw new Exception("Cannot find crop lower limit or LL15 in soil");
+
+            // Make sure all SW values below LastIndex don't go below CLL.
+            for (int i = LastIndex + 1; i < Thicknesses.Length; i++)
+                Values[i] = Math.Max(Values[i], LowerBound[i]);
+
+            return Map(Values, Thicknesses, ToThickness, MapType.Concentration);
+        }
+
+        /// <summary>
         /// Crop lower limit mapped. Units: mm/mm
         /// </summary>
         internal double[] LLMapped(string CropName, double[] ToThickness)
@@ -988,6 +1071,17 @@ namespace ApsimFile
                 Values[i] = Math.Min(Values[i], DUL[i]);
             }
             return Values;
+        }
+
+        /// <summary>
+        /// Crop XF mapped. Units: 0-1
+        /// </summary>
+        internal double[] XFMapped(string CropName, double[] ToThickness)
+        {
+            SoilCrop SoilCrop = Crop(CropName);
+            if (MathUtility.AreEqual(SoilCrop.Thickness, ToThickness))
+                return SoilCrop.XF;
+            return Map(SoilCrop.XF, SoilCrop.Thickness, ToThickness, MapType.Concentration, LastValue(SoilCrop.XF));
         }
 
         private enum MapType { Mass, Concentration, UseBD }
@@ -1203,7 +1297,7 @@ namespace ApsimFile
         /// <summary>
         /// Plant available water for the specified crop. Will throw if crop not found. Units: mm/mm
         /// </summary>
-        static private double[] CalcPAWC(double[] Thickness, double[] LL, double[] DUL, double[] XF)
+        internal static double[] CalcPAWC(double[] Thickness, double[] LL, double[] DUL, double[] XF)
         {
             double[] PAWC = new double[Thickness.Length];
             if (LL == null)

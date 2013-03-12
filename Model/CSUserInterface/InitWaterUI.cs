@@ -82,13 +82,13 @@ namespace CSUserInterface
             double[] PAWLayered;
             if (RelativeToCombo.Text == "ll15")
             {
-                PAWCLayered = Soil.PAWC;
-                PAWLayered = Soil.PAW;
+                PAWCLayered = Soil.PAWCAtWaterThickness;
+                PAWLayered = Soil.PAWAtWaterThickness;
             }
             else
             {
-                PAWCLayered = Soil.PAWCCrop(RelativeToCombo.Text);
-                PAWLayered = Soil.PAWCrop(RelativeToCombo.Text);
+                PAWCLayered = Soil.PAWCCropAtWaterThickness(RelativeToCombo.Text);
+                PAWLayered = Soil.PAWCropAtWaterThickness(RelativeToCombo.Text);
             }
             // Convert to mm
             PAWCLayered = MathUtility.Multiply(PAWCLayered, Soil.Water.Thickness);
@@ -209,7 +209,7 @@ namespace CSUserInterface
             DataTable Table = new DataTable();
             Table.TableName = "InitWater";
             DataTableUtility.AddColumn(Table, "DepthMidPoints (mm)", Soil.ToMidPoints(Soil.Water.Thickness));
-            DataTableUtility.AddColumn(Table, "SW (mm/mm)", Soil.SW);
+            DataTableUtility.AddColumn(Table, "SW (mm/mm)", Soil.SWAtWaterThickness);
             DataTableUtility.AddColumn(Table, "AirDry (mm/mm)", Soil.Water.AirDry);
             DataTableUtility.AddColumn(Table, "LL15 (mm/mm)", Soil.Water.LL15);
             DataTableUtility.AddColumn(Table, "DUL (mm/mm)", Soil.Water.DUL);
