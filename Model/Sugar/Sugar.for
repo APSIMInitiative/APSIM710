@@ -1997,10 +1997,12 @@ c     :                    , g_dlt_N_detached(root))
       dlt_lai_dead  = g_lai  * dying_fract
       dlt_slai_dead = g_slai * dying_fract
 
-      g_lai = g_lai + g_dlt_lai - dlt_lai_dead - g_dlt_slai
-      g_slai = g_slai + g_dlt_slai - dlt_slai_dead - g_dlt_slai_detached
-      g_tlai_dead = g_tlai_dead + dlt_lai_dead + dlt_slai_dead
-     :            - g_dlt_tlai_dead_detached
+      g_lai = l_bound(g_lai + g_dlt_lai - dlt_lai_dead - g_dlt_slai, 
+     :                 0.0)
+      g_slai = l_bound(g_slai + g_dlt_slai - dlt_slai_dead - 
+     : g_dlt_slai_detached, 0.0)
+      g_tlai_dead = l_bound(g_tlai_dead + dlt_lai_dead + dlt_slai_dead
+     :            - g_dlt_tlai_dead_detached, 0.0)
 
 
          ! plant leaf development
