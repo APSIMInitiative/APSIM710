@@ -350,8 +350,55 @@ namespace Actions
 			// --------------------------------------------------------
 			IDataObject iData = Clipboard.GetDataObject();
 			string xml = Convert.ToString(iData.GetData(DataFormats.Text));
+                string[] sims = xml.Split(new string[] { "simulation name=\"" }, StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 1; i < sims.Length; i++)
+                {
+                    sims[i] = sims[i].Substring(0, sims[i].IndexOf('\"'));
+
+                    bool unique = true;
+                    byte count = 1;
+                    do
+                    {
+                        foreach (Component sim in Controller.ApsimData.RootComponent.ChildNodes)
+                        {
+                            unique = IsNameUnique(sim, sims[i]);
+                            if (!unique)
+                                break;
+                        }
+                        if (!unique)
+                        {
+                            if (count > 9)
+                                xml = xml.Replace("\"" + sims[i], "\"" + sims[i].Substring(0, sims[i].Length - 2) + count);
+                            else if (count > 1)
+                                xml = xml.Replace("\"" + sims[i], "\"" + sims[i].Substring(0, sims[i].Length - 1) + count); //can be done faster with StringBuilder, not worth the overhead unless replacing thousands of names.
+                            else
+                                xml = xml.Replace("\"" + sims[i], "\"" + sims[i] + count); //can be done faster with StringBuilder, not worth the overhead unless replacing thousands of names.
+                            sims = xml.Split(new string[] { "simulation name=\"" }, StringSplitOptions.RemoveEmptyEntries);
+                            sims[i] = sims[i].Substring(0, sims[i].IndexOf('\"'));
+                        }
+                        count++;
+                    } while (!unique);
+                }
+
 			Controller.Selection.Add(xml);
 		}
+
+        private static bool IsNameUnique(Component parent, string name)
+        {
+            bool unique = true;
+
+            if (parent.Name.Equals(name))
+               unique = false;
+            else
+                foreach (Component c in parent.ChildNodes)
+                {
+                    if (!IsNameUnique(c, name))
+                        unique=false;
+                }
+
+            return unique;    
+        }
+
 		public static void MoveUp(BaseController Controller)
 		{
 			// --------------------------------------------------------        
