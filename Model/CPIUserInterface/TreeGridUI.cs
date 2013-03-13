@@ -422,6 +422,19 @@ namespace CPIUserInterface
                     MessageBox.Show("Cannot find help file " + helpFileName);
             }
         }
+        //=========================================================================
+        /// <summary>
+        /// Opens the component's initialising dialog.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        //=========================================================================
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            String sInitSDML = WriteInitsectionXml(); //with no subscribed events in the SDML
+            if (Initialise(FDllFileName, ref sInitSDML))
+                InitFromInitSection(sInitSDML);
+        }
 
 	} 
 }
