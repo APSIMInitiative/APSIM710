@@ -1,4 +1,4 @@
-<folder version="33" name="simulations">
+<folder version="36" name="simulations">
   <simulation name="NoDCD">
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">01/03/2000</start_date>
@@ -1747,18 +1747,6 @@ End Class
         <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">0.50   0.70   0.80   0.80   0.80   0.80   0.80   0.80   0.80   0.80   0.80   0.70   0.60   0.50   0.40   0.40   0.30   0.30   0.20   0.20   0.20   0.20   0.20   0.10   0.10   0.10   0.10   0.08   0.07   0.07   0.07</nh4ppm>
         <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00</ureappm>
       </SoilNitrogen>
-      <SoilTemp2 name="SoilTemp2 (withSWIM)">
-        <maxt_time_default type="text" description="hours">14</maxt_time_default>
-        <bound_layer_cond_source type="text" description="boundary layer conductance source (calc/constant)">calc</bound_layer_cond_source>
-        <bound_layer_cond type="text" description="boundary layer conductance">20</bound_layer_cond>
-        <boundary_layer_conductance_iterations type="text" description="Number of iterations to calc boundary layer conductance (0-10)">1</boundary_layer_conductance_iterations>
-        <net_radn_source type="text" description="net radiation source (calc/eos)">calc</net_radn_source>
-        <default_wind_speed type="text" description="m/s">3</default_wind_speed>
-        <default_altitude type="text" description="default altitude (m) 275m (700 ft) is approx 980 hPa">18</default_altitude>
-        <default_instrum_height type="text" description="default instrument height for wind and temperature (m)">1.2</default_instrum_height>
-        <bare_soil_height type="text" description="height of bare soil (mm)">57</bare_soil_height>
-        <clay type="text" description="The clay content for each soil layer (%):">15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0</clay>
-      </SoilTemp2>
       <AgPasture>
         <Nspecies type="text" description="Number of species">2</Nspecies>
         <thisCropName type="text" description="Crop name shown as on the simulation tree">AgPasture</thisCropName>
@@ -2025,6 +2013,18 @@ End Class
           </Plot>
         </Graph>
       </outputfile>
+      <SoilTemperature2>
+        <MaxTTimeDefault>14</MaxTTimeDefault>
+        <BoundaryLayerConductanceSource>calc</BoundaryLayerConductanceSource>
+        <BoundaryLayerConductance>20</BoundaryLayerConductance>
+        <BoundaryLayerConductanceIterations>1</BoundaryLayerConductanceIterations>
+        <NetRadiationSource>calc</NetRadiationSource>
+        <DefaultWindSpeed>3</DefaultWindSpeed>
+        <DefaultAltitude>18</DefaultAltitude>
+        <DefaultInstrumentHeight>1.2</DefaultInstrumentHeight>
+        <BareSoilHeight>57</BareSoilHeight>
+        <Clay>15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0</Clay>
+      </SoilTemperature2>
     </area>
   </simulation>
   <simulation name="WithDCD+1day" shortcut="/simulations/NoDCD">
@@ -2165,7 +2165,6 @@ End Class
         <ini name="Ini_SWIM2" shortcut="/simulations/NoDCD/paddock/SWIM2ui/Ini_SWIM2" />
       </SWIM2ui>
       <SoilNitrogen shortcut="/simulations/NoDCD/paddock/SoilNitrogen" />
-      <SoilTemp2 name="SoilTemp2 (withSWIM)" shortcut="/simulations/NoDCD/paddock/SoilTemp2 (withSWIM)" />
       <AgPasture shortcut="/simulations/NoDCD/paddock/AgPasture" />
       <outputfile name="Outputs" shortcut="/simulations/NoDCD/paddock/Outputs">
         <filename output="yes">WithDCD+1day Outputs.out</filename>
@@ -2213,6 +2212,18 @@ End Class
           </Plot>
         </Graph>
       </outputfile>
+      <SoilTemperature2>
+        <MaxTTimeDefault>14</MaxTTimeDefault>
+        <BoundaryLayerConductanceSource>calc</BoundaryLayerConductanceSource>
+        <BoundaryLayerConductance>20</BoundaryLayerConductance>
+        <BoundaryLayerConductanceIterations>1</BoundaryLayerConductanceIterations>
+        <NetRadiationSource>calc</NetRadiationSource>
+        <DefaultWindSpeed>3</DefaultWindSpeed>
+        <DefaultAltitude>18</DefaultAltitude>
+        <DefaultInstrumentHeight>1.2</DefaultInstrumentHeight>
+        <BareSoilHeight>57</BareSoilHeight>
+        <Clay>15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0</Clay>
+      </SoilTemperature2>
     </area>
   </simulation>
   <simulation name="WithDCD+1week" shortcut="/simulations/NoDCD">
@@ -2343,7 +2354,6 @@ End Class
         <ini name="Ini_SWIM2" shortcut="/simulations/NoDCD/paddock/SWIM2ui/Ini_SWIM2" />
       </SWIM2ui>
       <SoilNitrogen shortcut="/simulations/NoDCD/paddock/SoilNitrogen" />
-      <SoilTemp2 name="SoilTemp2 (withSWIM)" shortcut="/simulations/NoDCD/paddock/SoilTemp2 (withSWIM)" />
       <AgPasture shortcut="/simulations/NoDCD/paddock/AgPasture" />
       <outputfile name="Outputs" shortcut="/simulations/NoDCD/paddock/Outputs">
         <filename output="yes">WithDCD+1week Outputs.out</filename>
@@ -2391,6 +2401,18 @@ End Class
           </Plot>
         </Graph>
       </outputfile>
+      <SoilTemperature2>
+        <MaxTTimeDefault>14</MaxTTimeDefault>
+        <BoundaryLayerConductanceSource>calc</BoundaryLayerConductanceSource>
+        <BoundaryLayerConductance>20</BoundaryLayerConductance>
+        <BoundaryLayerConductanceIterations>1</BoundaryLayerConductanceIterations>
+        <NetRadiationSource>calc</NetRadiationSource>
+        <DefaultWindSpeed>3</DefaultWindSpeed>
+        <DefaultAltitude>18</DefaultAltitude>
+        <DefaultInstrumentHeight>1.2</DefaultInstrumentHeight>
+        <BareSoilHeight>57</BareSoilHeight>
+        <Clay>15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0</Clay>
+      </SoilTemperature2>
     </area>
   </simulation>
   <simulation name="WithDCD+1month" shortcut="/simulations/NoDCD">
@@ -2521,7 +2543,6 @@ End Class
         <ini name="Ini_SWIM2" shortcut="/simulations/NoDCD/paddock/SWIM2ui/Ini_SWIM2" />
       </SWIM2ui>
       <SoilNitrogen shortcut="/simulations/NoDCD/paddock/SoilNitrogen" />
-      <SoilTemp2 name="SoilTemp2 (withSWIM)" shortcut="/simulations/NoDCD/paddock/SoilTemp2 (withSWIM)" />
       <AgPasture shortcut="/simulations/NoDCD/paddock/AgPasture" />
       <outputfile name="Outputs" shortcut="/simulations/NoDCD/paddock/Outputs">
         <filename output="yes">WithDCD+1month Outputs.out</filename>
@@ -2569,6 +2590,18 @@ End Class
           </Plot>
         </Graph>
       </outputfile>
+      <SoilTemperature2>
+        <MaxTTimeDefault>14</MaxTTimeDefault>
+        <BoundaryLayerConductanceSource>calc</BoundaryLayerConductanceSource>
+        <BoundaryLayerConductance>20</BoundaryLayerConductance>
+        <BoundaryLayerConductanceIterations>1</BoundaryLayerConductanceIterations>
+        <NetRadiationSource>calc</NetRadiationSource>
+        <DefaultWindSpeed>3</DefaultWindSpeed>
+        <DefaultAltitude>18</DefaultAltitude>
+        <DefaultInstrumentHeight>1.2</DefaultInstrumentHeight>
+        <BareSoilHeight>57</BareSoilHeight>
+        <Clay>15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0</Clay>
+      </SoilTemperature2>
     </area>
   </simulation>
   <Graph name="DCD">

@@ -13,7 +13,7 @@ Imports ModelFramework
 ''' p36, Campbell, G.S. (1985) "Soil physics with BASIC: Transport models for soil-plant systems" (Amsterdam, Elsevier)
 ''' </summary>
 
-Public Class SoilTempdotNET
+Public Class SoilTemperature2
     '------------------------------------------------------------------------------------------------------------
     '-----------------------------------------------IMPORTANT NOTE-----------------------------------------------
     ' Due to FORTRAN's 'flexibility' with arrays there have been a few modifications to array sizes in this
@@ -164,25 +164,25 @@ Public Class SoilTempdotNET
     <Param()> _
     Private vol_spec_heat_water As Double = 0.0 '[Joules*m-3*K-1]
     <Param()> _
-    Private maxt_time_default As Double = 0.0
+    Private MaxTTimeDefault As Double = 0.0
     '[Param]
     Private gAveTsoil() As Double  'FIXME - optional. Allow setting from set in manager or get from input //init to average soil temperature 
     <Param()> _
-    Private bound_layer_cond_source As String = ""
+    Private BoundaryLayerConductanceSource As String = ""
     <Param()> _
-    Private boundary_layer_cond As Double = 0.0
+    Private BoundaryLayerConductance As Double = 0.0
     <Param()> _
-    Private boundary_layer_conductance_iterations As Double = 0    ' maximum number of iterations to calculate atmosphere boundary layer conductance
+    Private BoundaryLayerConductanceIterations As Double = 0    ' maximum number of iterations to calculate atmosphere boundary layer conductance
     <Param()> _
-    Private net_radn_source As String = ""
+    Private NetRadiationSource As String = ""
     <Param()> _
-    Private default_wind_speed As Double = 0.0      ' default wind speed (m/s)
+    Private DefaultWindSpeed As Double = 0.0      ' default wind speed (m/s)
     <Param()> _
-    Private default_altitude As Double = 0.0    ' default altitude (m)
+    Private DefaultAltitude As Double = 0.0    ' default altitude (m)
     <Param()> _
-    Private default_instrum_height As Double = 0.0  ' default instrument height (m)
+    Private DefaultInstrumentHeight As Double = 0.0  ' default instrument height (m)
     <Param()> _
-    Private bare_soil_height As Double = 0.0        ' roughness element height of bare soil (mm)
+    Private BareSoilHeight As Double = 0.0        ' roughness element height of bare soil (mm)
 
 #End Region
 
@@ -334,7 +334,7 @@ Public Class SoilTempdotNET
     <EventHandler()> _
     Public Sub OnProcess()
 
-        gMaxT_time = maxt_time_default
+        gMaxT_time = MaxTTimeDefault
         BoundCheck(gMaxT_time, 0.0, DAYhrs, "maxt_time")
 
         GetOtherVariables()       ' FIXME - note: Need to set yesterday's MaxTg and MinTg to today's at initialisation
@@ -391,7 +391,7 @@ Public Class SoilTempdotNET
         If (instrum_height > 0.00001) Then
             gInstrumHt = instrum_height
         Else
-            gInstrumHt = default_instrum_height
+            gInstrumHt = DefaultInstrumentHeight
         End If
         BoundCheck(gInstrumHt, 0.0, 5.0, "instrum_height (m)")
 
@@ -400,7 +400,7 @@ Public Class SoilTempdotNET
         'If (altitude >= 0.0) Then
         '    AltitudeMetres = altitude
         'Else
-        AltitudeMetres = default_altitude       ' FIXME - need to detect if altitude not supplied elsewhere.
+        AltitudeMetres = DefaultAltitude       ' FIXME - need to detect if altitude not supplied elsewhere.
         'End If
 
         gAirPressure = 101325.0 * Math.Pow((1.0 - 2.25577 * 0.00001 * AltitudeMetres), 5.25588) * PA2HPA
@@ -517,26 +517,26 @@ Public Class SoilTempdotNET
         BoundCheck(vol_spec_heat_om, 1000000.0, 10000000.0, "vol_spec_heat_om")
         BoundCheck(vol_spec_heat_water, 1000000.0, 10000000.0, "vol_spec_heat_water")
         BoundCheck(vol_spec_heat_clay, 1000000.0, 10000000.0, "vol_spec_heat_clay")
-        BoundCheck(maxt_time_default, 0.0, DAYhrs, "maxt_time_default")
-        BoundCheck(default_wind_speed, 0.0, 10.0, "default_wind_speed")
-        BoundCheck(default_altitude, -100.0, 1200.0, "default_altitude")
-        BoundCheck(default_instrum_height, 0.0, 5.0, "default_instrum_height")
-        BoundCheck(bare_soil_height, 0.0, 150.0, "bare_soil_height")     ' "canopy height" when no canopy is present. FIXME - need to test if canopy is absent and set to this.
-        gSoilRoughnessHeight = bare_soil_height
-        Select Case bound_layer_cond_source.ToLower()
+        BoundCheck(MaxTTimeDefault, 0.0, DAYhrs, "maxt_time_default")
+        BoundCheck(DefaultWindSpeed, 0.0, 10.0, "default_wind_speed")
+        BoundCheck(DefaultAltitude, -100.0, 1200.0, "default_altitude")
+        BoundCheck(DefaultInstrumentHeight, 0.0, 5.0, "default_instrum_height")
+        BoundCheck(BareSoilHeight, 0.0, 150.0, "bare_soil_height")     ' "canopy height" when no canopy is present. FIXME - need to test if canopy is absent and set to this.
+        gSoilRoughnessHeight = BareSoilHeight
+        Select Case BoundaryLayerConductanceSource.ToLower()
             Case "calc", "constant"
                 ' ok, legal values
             Case Else
-                Throw New Exception("bound_layer_cond_source (" + bound_layer_cond_source + ") must be either 'calc' or 'constant'")
+                Throw New Exception("bound_layer_cond_source (" + BoundaryLayerConductanceSource + ") must be either 'calc' or 'constant'")
         End Select
-        BoundCheck(boundary_layer_conductance_iterations, 0, 10, "boundary_layer_conductance_iterations")
-        BoundCheck(boundary_layer_cond, 10.0, 40.0, "boundary_layer_cond")
-        gBoundaryLayerConductanceIterations = CInt(boundary_layer_conductance_iterations)
-        Select Case net_radn_source.ToLower()
+        BoundCheck(BoundaryLayerConductanceIterations, 0, 10, "boundary_layer_conductance_iterations")
+        BoundCheck(BoundaryLayerConductance, 10.0, 40.0, "boundary_layer_cond")
+        gBoundaryLayerConductanceIterations = CInt(BoundaryLayerConductanceIterations)
+        Select Case NetRadiationSource.ToLower()
             Case "calc", "eos"
                 ' ok, legal values
             Case Else
-                Throw New Exception("net_radn_source (" + net_radn_source + ") must be either 'calc' or 'eos'")
+                Throw New Exception("net_radn_source (" + NetRadiationSource + ") must be either 'calc' or 'eos'")
         End Select
     End Sub 'readParam
     ''' <summary>
@@ -604,7 +604,7 @@ Public Class SoilTempdotNET
         If (wind > 0.0) Then
             gWindSpeed = wind * KM2M / (DAY2HR * HR2SEC)
         Else
-            gWindSpeed = default_wind_speed
+            gWindSpeed = DefaultWindSpeed
         End If
         BoundCheck(gWindSpeed, 0.0, 1000.0, "wind")
 
@@ -653,7 +653,7 @@ Public Class SoilTempdotNET
             doVolumetricSpecificHeat()      'RETURNS gVolSpecHeatSoil() (volumetric heat capacity of nodes)
 
             doThermConductivity()     'RETURNS gThermConductivity_zb()
-            Select Case bound_layer_cond_source.ToLower()
+            Select Case BoundaryLayerConductanceSource.ToLower()
                 Case "constant"
                     gThermConductivity_zb(AIRnode) = boundaryLayerConductanceConst()
                 Case "calc"
@@ -661,10 +661,10 @@ Public Class SoilTempdotNET
                     ' heat flow calculation at least once, since surface temperature depends on heat flux to 
                     ' the atmosphere, but heat flux to the atmosphere is determined, in part, by the surface
                     ' temperature.
-                    gThermConductivity_zb(AIRnode) = boundaryLayerConductance(gTNew_zb)
+                    gThermConductivity_zb(AIRnode) = boundaryLayerConductanceF(gTNew_zb)
                     For iteration As Integer = 1 To gBoundaryLayerConductanceIterations
                         doThomas(gTNew_zb)        'RETURNS TNew_zb()
-                        gThermConductivity_zb(AIRnode) = boundaryLayerConductance(gTNew_zb)
+                        gThermConductivity_zb(AIRnode) = boundaryLayerConductanceF(gTNew_zb)
                     Next iteration
             End Select
             ' Now start again with final atmosphere boundary layer conductance
@@ -799,7 +799,7 @@ Public Class SoilTempdotNET
         ' latent heat flux. Eqn. 4.17
 
         Dim RadnNet As Double = 0.0     ' (W/m)
-        Select Case net_radn_source.ToLower()
+        Select Case NetRadiationSource.ToLower()
             Case "calc"
                 RadnNet = gRadnNet * MJ2J / gDt       ' net Radiation Rn heat flux (J/m2/s or W/m2).
             Case "eos"
@@ -1019,7 +1019,7 @@ Public Class SoilTempdotNET
     ''' to reduce sensible heat exchange between the soil surface and the air to almost nothing. If stability
     ''' corrections are not made, soil temperature profiles can have large errors.
     ''' </remarks>
-    Private Function boundaryLayerConductance(ByVal TNew_zb() As Double) As Double
+    Private Function boundaryLayerConductanceF(ByVal TNew_zb() As Double) As Double
 
         Const VONK As Double = 0.41                 ' VK; von Karman's constant
         Const GRAVITATIONALconst As Double = 9.8    ' GR; gravitational constant (m/s/s)
@@ -1113,7 +1113,7 @@ Public Class SoilTempdotNET
         ' canopy_height, instrum_ht = 1.2m, AirPressure = 1010
         ' therm_cond(0) = 20.0 ' boundary layer conductance W m-2 K-1
 
-        Return boundary_layer_cond '(W/m2/K)
+        Return BoundaryLayerConductance '(W/m2/K)
     End Function
     ''' <summary>
     ''' Convert deg Celcius to deg Kelvin

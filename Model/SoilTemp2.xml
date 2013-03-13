@@ -1,17 +1,14 @@
-<Type name="SoilTemp2">
+<Type name="SoilTemperature2">
    <MetaData>
       <UItype>CSUserInterface.GenericUI</UItype>
       <IsCrop>No</IsCrop>
       <ShowInMainTree>Yes</ShowInMainTree>
-      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
-      <Documentation>%apsim%\Documentation\4 Module Reference\SoilTemp.htm</Documentation>
       <LargeIcon>%apsim%\UserInterface\Images\thermometer32.png</LargeIcon>
       <SmallIcon>%apsim%\UserInterface\Images\thermometer16.png</SmallIcon>
       <dll>%apsim%\Model\SoilTemp2.dll</dll>
       <drops>
-         <drop>toolbox</drop>
+         <drop>Soil</drop>
          <drop>area</drop>
-         <drop>simulation</drop>
          <drop>folder</drop>
       </drops>
       <ApsimToSim>
@@ -20,28 +17,28 @@
             <initdata>
                [Model]
                   <clay description="percentage of clay">[soil.ParticleSizeClay]</clay> 
-               [SoilTemp2.innerxml] 
+               [SoilTemperature2.innerxml] 
             </initdata> 
          </component>
       </ApsimToSim>
    </MetaData>
    <Model>
-      <SoilTempdotNET>
+      <SoilTemperature2>
          <nu description="(-) control forward/backward differencing">0.6 </nu>
          <vol_spec_heat_om description="(Joules*m-3*K-1)">5.00e6 </vol_spec_heat_om>
          <vol_spec_heat_water description="(Joules*m-3*K-1)">4.18e6 </vol_spec_heat_water>
          <vol_spec_heat_clay description="(Joules*m-3*K-1)">2.39e6 </vol_spec_heat_clay>
-         <maxt_time_default description="hours">14.0 </maxt_time_default>
-         <bound_layer_cond_source description="boundary layer conductance source (calc/constant)">constant</bound_layer_cond_source>
-         <boundary_layer_cond description="boundary layer conductance (W/m2/K)">20.0</boundary_layer_cond>
-         <boundary_layer_conductance_iterations description="Number of iterations to calc boundary layer conductance (0-10)">1</boundary_layer_conductance_iterations>
-         <net_radn_source description="net radiation source (calc/eos)">eos</net_radn_source>
+         <MaxtTimeDefault description="hours">14.0 </MaxtTimeDefault>
+         <BoundaryLayerConductanceSource description="boundary layer conductance source (calc/constant)">constant</BoundaryLayerConductanceSource>
+         <BoundaryLayerConductance description="boundary layer conductance (W/m2/K)">20.0</BoundaryLayerConductance>
+         <BoundaryLayerConductanceIterations description="Number of iterations to calc boundary layer conductance (0-10)">1</BoundaryLayerConductanceIterations>
+         <NetRadiationSource description="net radiation source (calc/eos)">eos</NetRadiationSource>
 		   <clay description="proportion of clay">1.0</clay>
-         <default_wind_speed description="m/s">3.0</default_wind_speed>
-         <default_altitude description="default altitude (m) 275m (700 ft) is approx 980 hPa">275.0</default_altitude>
-         <default_instrum_height description="default instrument height for wind and temperature (m)">1.2</default_instrum_height>
-         <bare_soil_height description="height of bare soil (mm)">57.0</bare_soil_height>
-      </SoilTempdotNET>
+         <DefaultWindSpeed description="m/s">3.0</DefaultWindSpeed>
+         <DefaultAltitude description="default altitude (m) 275m (700 ft) is approx 980 hPa">275.0</DefaultAltitude>
+         <DefaultInstrumentHeight description="default instrument height for wind and temperature (m)">1.2</DefaultInstrumentHeight>
+         <BareSoilHeight description="height of bare soil (mm)">57.0</BareSoilHeight>
+      </SoilTemperature2>
    </Model>
    
 </Type>

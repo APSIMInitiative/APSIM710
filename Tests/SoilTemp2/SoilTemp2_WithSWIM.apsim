@@ -1,4 +1,4 @@
-<folder version="32" name="simulations">
+<folder version="36" name="simulations">
   <simulation name="Easy">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%\Examples\MetFiles\Goond.met</filename>
@@ -14,6 +14,18 @@
           <filename>ini_SWIM(LUCI_Base).xml</filename>
         </ini>
       </SWIM2uiForDean>
+      <SoilTemperature2 name="SoilTemp2 (withSWIM)">
+        <MaxTTimeDefault type="text" description="hours">14</MaxTTimeDefault>
+        <BoundaryLayerConductanceSource type="text" description="boundary layer conductance source (calc/constant)">calc</BoundaryLayerConductanceSource>
+        <BoundaryLayerConductance type="text" description="boundary layer conductance">20</BoundaryLayerConductance>
+        <BoundaryLayerConductanceIterations type="text" description="Number of iterations to calc boundary layer conductance (0-10)">1</BoundaryLayerConductanceIterations>
+        <NetRadiationSource type="text" description="net radiation source (calc/eos)">calc</NetRadiationSource>
+        <DefaultWindSpeed type="text" description="m/s">3</DefaultWindSpeed>
+        <DefaultAltitude type="text" description="default altitude (m) 275m (700 ft) is approx 980 hPa">18</DefaultAltitude>
+        <DefaultInstrumentHeight type="text" description="default instrument height for wind and temperature (m)">1.2</DefaultInstrumentHeight>
+        <BareSoilHeight type="text" description="height of bare soil (mm)">57</BareSoilHeight>
+        <clay type="text" description="The clay content for each soil layer (%):">21  21  21  21  21  21  21  21  21  21  21  21  21  22  23  24  24  24  24  24  24  22  21  19  19  19  19  19  19  19   19</clay>
+      </SoilTemperature2>
       <micromet name="Micromet">
         <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
         <a_interception type="text" description="a_interception">0</a_interception>
@@ -52,18 +64,6 @@
           <filename>Easy_SWIM_Soil.xml</filename>
         </ini>
       </SWIM2ui>
-      <SoilTemp2 name="SoilTemp2 (withSWIM)">
-        <maxt_time_default type="text" description="hours">14</maxt_time_default>
-        <bound_layer_cond_source type="text" description="boundary layer conductance source (calc/constant)">calc</bound_layer_cond_source>
-        <bound_layer_cond type="text" description="boundary layer conductance">20</bound_layer_cond>
-        <boundary_layer_conductance_iterations type="text" description="Number of iterations to calc boundary layer conductance (0-10)">1</boundary_layer_conductance_iterations>
-        <net_radn_source type="text" description="net radiation source (calc/eos)">calc</net_radn_source>
-        <default_wind_speed type="text" description="m/s">3</default_wind_speed>
-        <default_altitude type="text" description="default altitude (m) 275m (700 ft) is approx 980 hPa">18</default_altitude>
-        <default_instrum_height type="text" description="default instrument height for wind and temperature (m)">1.2</default_instrum_height>
-        <bare_soil_height type="text" description="height of bare soil (mm)">57</bare_soil_height>
-        <clay type="text" description="The clay content for each soil layer (%):">21  21  21  21  21  21  21  21  21  21  21  21  21  22  23  24  24  24  24  24  24  22  21  19  19  19  19  19  19  19   19</clay>
-      </SoilTemp2>
       <AgPasture>
         <Nspecies type="text" description="Number of species">2</Nspecies>
         <thisCropName type="text" description="Crop name shown as on the simulation tree">AgPasture</thisCropName>

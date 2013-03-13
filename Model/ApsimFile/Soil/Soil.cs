@@ -63,6 +63,8 @@ namespace ApsimFile
         public Phosphorus Phosphorus { get; set; }
         public Swim Swim { get; set; }
         public LayerStructure LayerStructure { get; set; }
+        public SoilTemperature SoilTemperature { get; set; }
+        public SoilTemperature2 SoilTemperature2 { get; set; }
 
         [XmlElement("Sample")]
         public List<Sample> Samples { get; set; }
@@ -979,7 +981,125 @@ namespace ApsimFile
             }
         }
         #endregion
-        
+
+        #region Soil Temperature
+
+        public double BoundaryLayerConductance
+        {
+            get
+            {
+                if (SoilTemperature != null)
+                    return SoilTemperature.BoundaryLayerConductance;
+                else if (SoilTemperature2 != null)
+                    return SoilTemperature2.BoundaryLayerConductance; 
+                else
+                    return 0;
+            }
+        }
+
+        public double[] InitialSoilTemperature
+        {
+            get
+            {
+                if (SoilTemperature != null)
+                    return Map(SoilTemperature.InitialSoilTemperature, SoilTemperature.Thickness, Thickness, MapType.Concentration, SoilTemperature.InitialSoilTemperature.Last());
+                else
+                    return null;
+            }
+        }
+
+        #endregion
+
+        #region Soil Temperature2
+        public double MaxTTimeDefault
+        {
+            get
+            {
+                if (SoilTemperature2 != null)
+                    return SoilTemperature2.MaxTTimeDefault;
+                else
+                    return 0;
+            }
+        }
+
+        public string BoundaryLayerConductanceSource
+        {
+            get
+            {
+                if (SoilTemperature2 != null)
+                    return SoilTemperature2.BoundaryLayerConductanceSource;
+                else
+                    return "";
+            }
+        }
+
+        public int BoundaryLayerConductanceIterations
+        {
+            get
+            {
+                if (SoilTemperature2 != null)
+                    return SoilTemperature2.BoundaryLayerConductanceIterations;
+                else
+                    return 0;
+            }
+        }
+
+        public string NetRadiationSource
+        {
+            get
+            {
+                if (SoilTemperature2 != null)
+                    return SoilTemperature2.NetRadiationSource;
+                else
+                    return "";
+            }
+        }
+
+        public double DefaultWindSpeed
+        {
+            get
+            {
+                if (SoilTemperature2 != null)
+                    return SoilTemperature2.DefaultWindSpeed;
+                else
+                    return 0;
+            }
+        }
+
+        public double DefaultAltitude
+        {
+            get
+            {
+                if (SoilTemperature2 != null)
+                    return SoilTemperature2.DefaultAltitude;
+                else
+                    return 0;
+            }
+        }
+
+        public double DefaultInstrumentHeight
+        {
+            get
+            {
+                if (SoilTemperature2 != null)
+                    return SoilTemperature2.DefaultInstrumentHeight;
+                else
+                    return 0;
+            }
+        }
+
+        public double BareSoilHeight
+        {
+            get
+            {
+                if (SoilTemperature2 != null)
+                    return SoilTemperature2.BareSoilHeight;
+                else
+                    return 0;
+            }
+        }
+        #endregion
+
         #region Mapping
         /// <summary>
         /// Bulk density - mapped to the specified layer structure. Units: mm/mm

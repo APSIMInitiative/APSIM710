@@ -115,8 +115,14 @@ public class ApsimToSim
 
                 // Add in any child components that don't have anything in their <ApsimToSim>
                 foreach (Component SubChild in Child.ChildNodes)
-                    RecursivelyAddChildContent(SubChild, ChildValues.DocumentElement);
-
+                {
+                    // This next if stmt is for SoilTemperature 1 and 2 which have a <ApsimToSim> for when they
+                    // are not under a <soil>
+                    if (Child.Type == "Soil")
+                        ChildValues.DocumentElement.AppendChild(ChildValues.DocumentElement.OwnerDocument.ImportNode(SubChild.ContentsAsXML, true));
+                    else
+                        RecursivelyAddChildContent(SubChild, ChildValues.DocumentElement);
+                }
                 Macro Macro = new Macro();
                 return Macro.Go(ChildValues.DocumentElement, XmlHelper.FormattedXML(ApsimToSimContents));
             }
@@ -263,7 +269,7 @@ public class ApsimToSim
         {
             // Firstly we need to locate the nearest soil.
             Component SoilComponent = null;
-            if (ApsimComponent.Type == "soil")
+            if (ApsimComponent.Type.ToLower() == "soil")
                 SoilComponent = ApsimComponent;
             else
             {

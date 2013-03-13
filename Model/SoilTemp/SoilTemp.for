@@ -1046,10 +1046,15 @@
      :          ,p%clay                 ! array
      :          ,numvals             ! number of values returned
      :          ,1e-6                  !lower
-     :          ,1.0)                 !upper
+     :          ,100.0)                 !upper
       g%nz = numvals + 1
       p%clay(g%nz) = p%clay(numvals)
 
+      ! convert clay percents to fraction
+      do i = 1,g%nz
+         p%clay(i) = p%clay(i) / 100.0
+      enddo
+      
       do i = 1,g%nz
          g%c1(i) = 0.65 - 0.78*e%rhob(i) + 0.6 * e%rhob(i)**2   !A  approximation to e
          g%c2(i) = 1.06 * e%rhob(i)! * e%sw(i)           !B   for mineral soil - assume
@@ -1061,7 +1066,7 @@
 !t(i) = initial temperature - if not there then set to average temperature
       call read_real_array_optional (
      :           section_name         ! section header
-     :          ,'soil_temp'               ! keyword
+     :          ,'InitialSoilTemperature'               ! keyword
      :          ,max_layer                 ! array size
      :          ,'(oC)'             ! units
      :          ,temp_array                 ! array
@@ -1073,13 +1078,16 @@
             g%t(i) = e%t_ave
             g%tn(i) = e%t_ave
          enddo
-      elseif (numvals.ne.g%nz) then
+      elseif (numvals+1.ne.g%nz) then
          call fatal_error(ERR_USER,
      :'soil_temp has the wrong number of elements')
       else
-         do i=1,g%nz
-            g%t(i) = temp_array(i)
-            g%tn(i) = temp_array(i)
+         g%t(1) = temp_array(1)
+         g%tn(1) = temp_array(1)
+      
+         do i=2,g%nz
+            g%t(i) = temp_array(i-1)
+            g%tn(i) = temp_array(i-1)
          enddo
          g%t(g%nz+1) = e%t_ave
          g%tn(g%nz+1) = e%t_ave
@@ -1090,7 +1098,7 @@
 !therm_cond(0) = 20.0 ! boundary layer condictance W m-2 K-1
       call read_real_var (
      :           section_name         ! section header
-     :          ,'bound_layer_cond'               ! keyword
+     :          ,'BoundaryLayerConductance'               ! keyword
      :          ,'(W/m2/K)'             ! units
      :          ,temp                 ! array
      :          ,numvals             ! number of values returned

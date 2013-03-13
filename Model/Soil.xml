@@ -164,6 +164,36 @@
          </initdata>
       </component>
       [endif]
+      [foreach soil.SoilTemperature]
+      <component name="SoilTemperature" executable="%apsim%/Model/SoilTemp.%dllext%" class="SoilTemperature">
+            <executable name="%apsim%/Model/SoilTemp.%dllext%" version="1.0"/>
+            <initdata>
+               [Model SoilTemperature]
+                <clay description="percentage of clay">[soil.ParticleSizeClay]</clay> 
+                <BoundaryLayerConductance>[soil.BoundaryLayerConductance]</BoundaryLayerConductance>
+                [if [soil.InitialSoilTemperature]]<InitialSoilTemperature>[soil.InitialSoilTemperature]</InitialSoilTemperature>[endif]
+            </initdata>
+      </component>
+      [endfor]
+      [foreach soil.SoilTemperature2]
+      <component name="SoilTemperature2" executable="%apsim%/Model/SoilTemp2.%dllext%" class="SoilTemperature2">
+         <executable name="%apsim%/Model/SoilTemp2.%dllext%" version="1.0"/>
+         <initdata>
+            [Model SoilTemperature2]
+               <clay>[soil.ParticleSizeClay]</clay>
+               <MaxTTimeDefault>[soil.MaxTTimeDefault]</MaxTTimeDefault>
+               <BoundaryLayerConductanceSource>[soil.BoundaryLayerConductanceSource]</BoundaryLayerConductanceSource>
+               <BoundaryLayerConductance>[soil.BoundaryLayerConductance]</BoundaryLayerConductance>
+               <BoundaryLayerConductanceIterations>[soil.BoundaryLayerConductanceIterations]</BoundaryLayerConductanceIterations>
+               <NetRadiationSource>[soil.NetRadiationSource]</NetRadiationSource>
+               <DefaultWindSpeed>[soil.DefaultWindSpeed]</DefaultWindSpeed>
+               <DefaultAltitude>[soil.DefaultAltitude]</DefaultAltitude>
+               <DefaultInstrumentHeight>[soil.DefaultInstrumentHeight]</DefaultInstrumentHeight>
+               <BareSoilHeight>[soil.BareSoilHeight]</BareSoilHeight>            
+         </initdata> 
+      </component>      
+      [endfor]
+      
     </ApsimToSim>
   </MetaData>
   <Model name="SoilWater">
@@ -682,184 +712,29 @@
       Bounds
       ******
       --><lb_exco>0</lb_exco><ub_exco>15000</ub_exco><lb_fip>0</lb_fip><ub_fip>100</ub_fip><lb_dis>0</lb_dis><ub_dis>20</ub_dis><lb_slupf>0</lb_slupf><ub_slupf>1</ub_slupf><lb_slos>0</lb_slos><ub_slos>10</ub_slos><lb_d0>0</lb_d0><ub_d0>1</ub_d0><lb_a>0</lb_a><ub_a>100</ub_a><lb_dthc>0</lb_dthc><ub_dthc>1</ub_dthc><lb_dthp>0</lb_dthp><ub_dthp>10</ub_dthp><lb_disp>0</lb_disp><ub_disp>5</ub_disp><lb_solute>0</lb_solute><ub_solute>1000</ub_solute></Model>
-  <Info name="SoilWat">
-    <variables>
-      <variable name="active" description="" read="T" write="F" kind="integer4" array="F" units="" />
-      <variable name="air_dry" description="Air Dry water content" read="T" write="T" kind="single" array="T" units="mm/mm" />
-      <variable name="air_dry_dep" description="Air Dry water content" read="T" write="T" kind="single" array="T" units="mm" />
-      <variable name="author" description="" read="T" write="F" kind="string" array="F" units="" />
-      <variable name="bd" description="Bulk density" read="T" write="F" kind="single" array="T" units="g/cm^3" />
-      <variable name="cn2_bare" description="curve number input used to calculate runoff" read="F" write="T" kind="single" array="" units="" />
-      <variable name="cn2_new" description="CN2 after modification for crop cover" read="T" write="F" kind="single" array="" units="" />
-      <variable name="cn_cov" description="cover term in curve number equation" read="F" write="T" kind="single" array="" units="" />
-      <variable name="cn_red" description="CN reduction in curve number equation (cover)" read="F" write="T" kind="single" array="" units="" />
-      <variable name="cona" description="Stage 2 evaporation coefficient" read="T" write="F" kind="single" array="" units="" />
-      <variable name="cover_surface_runoff" description="Effective cover used in runoff calculation" read="T" write="F" kind="single" array="" units="" />
-      <variable name="dlayer" description="Thickness of profile layer" read="T" write="T" kind="single" array="T" units="mm" />
-      <variable name="dlt_dlayer" description="Change to profile thickness" read="F" write="T" kind="single" array="T" units="mm" />
-      <variable name="dlt_sw" description="Change to sw" read="F" write="T" kind="single" array="T" units="mm/mm" />
-      <variable name="dlt_sw_dep" description="Change to sw" read="F" write="T" kind="single" array="T" units="mm" />
-      <variable name="drain" description="Drainage from bottom layer" read="T" write="F" kind="single" array="" units="mm" />
-      <variable name="dul" description="Drained Upper Limit" read="T" write="T" kind="single" array="T" units="mm/mm" />
-      <variable name="dul_dep" description="Drained Upper Limit" read="T" write="T" kind="single" array="T" units="mm" />
-      <variable name="eff_rain" description="daily effective rainfall" read="T" write="F" kind="single" array="" units="mm" />
-      <variable name="eo" description="Potential evapotranspiration via priestly-taylor" read="T" write="F" kind="single" array="" units="mm" />
-      <variable name="eos" description="Potential evap after modification for green cover and residue" read="T" write="F" kind="single" array="" units="mm" />
-      <variable name="es" description="Soil Evaporation" read="T" write="F" kind="single" array="" units="mm" />
-      <variable name="esw" description="Extractible soil water relative to LL15" read="T" write="F" kind="single" array="" units="mm" />
-      <variable name="flow" description="depth of water moving from layer l+1 into layer l because of unsaturated flow. positive value indicates upward movement into layer l, negative value indicates downward movement (mm) out of layer l" read="T" write="F" kind="single" array="T" units="mm" />
-      <variable name="flow_water" description="Flux - Flow" read="T" write="F" kind="single" array="T" units="mm" />
-      <variable name="flux" description="initially, water moving downward into layer l, then water moving downward  out of layer l" read="T" write="F" kind="single" array="T" units="mm" />
-      <variable name="infiltration" description="Infiltration" read="T" write="F" kind="single" array="" units="mm" />
-      <variable name="insoil" description="initial soil water" read="F" write="T" kind="single" array="" units="" />
-      <variable name="ll15" description="15 bar Lower Limit" read="T" write="T" kind="single" array="T" units="mm/mm" />
-      <variable name="ll15_dep" description="15 bar Lower Limit" read="T" write="T" kind="single" array="T" units="mm" />
-      <variable name="max_pond" description="Height of pond" read="F" write="T" kind="single" array="" units="mm" />
-      <variable name="name" description="" read="T" write="F" kind="string" array="F" units="" />
-      <variable name="outflow_lat" description="lateral flow out of the profile" read="T" write="F" kind="single" array="T" units="mm" />
-      <variable name="pond" description="Surface ponding depth" read="T" write="F" kind="single" array="" units="mm" />
-      <variable name="pond_evap" description="Evaporation from pond surface" read="T" write="F" kind="single" array="" units="mm" />
-      <variable name="profile_esw_depth" description="initial depth of extractable soil water distributed from the top down" read="F" write="T" kind="single" array="" units="mm" />
-      <variable name="profile_fesw" description="initial fraction of esw of profile distributed from  top down" read="F" write="T" kind="single" array="" units="" />
-      <variable name="runoff" description="Runoff" read="T" write="F" kind="single" array="" units="mm" />
-      <variable name="salb" description="bare soil albedo" read="T" write="F" kind="single" array="" units="0-1" />
-      <variable name="sat" description="Saturated water content" read="T" write="T" kind="single" array="T" units="mm/mm" />
-      <variable name="sat_dep" description="Saturated water content" read="T" write="T" kind="single" array="T" units="mm" />
-      <variable name="state" description="" read="T" write="F" kind="string" array="F" units="" />
-      <variable name="sw" description="Soil water content" read="T" write="T" kind="single" array="T" units="mm/mm" />
-      <variable name="sw_dep" description="Soil water content" read="T" write="T" kind="single" array="T" units="mm" />
-      <variable name="sws" description="soil water" read="T" write="F" kind="single" array="T" units="mm/mm" />
-      <variable name="t" description="time after 2nd-stage soil evaporation begins" read="T" write="F" kind="single" array="" units="day" />
-      <variable name="type" description="" read="T" write="F" kind="string" array="F" units="" />
-      <variable name="u" description="upper limit of stage 1 evaporation" read="T" write="F" kind="single" array="" units="" />
-      <variable name="version" description="" read="T" write="F" kind="string" array="F" units="" />
-      <variable name="water_table" description="water table depth" read="T" write="F" kind="single" array="" units="mm" />
-      <variable name="wet_soil_depth" description="initial depth of soil filled to drained upper limit (field capacity)" read="F" write="T" kind="single" array="" units="mm" />
-    </variables>
-    <events>
-      <event name="externalmassflow" description="" />
-      <event name="new_profile" description="" />
-      <event name="runoffevent" description="" />
-    </events>
-  </Info>
-  <Info name="SoilN">
-    <variables>
-      <variable name="active" description="" read="T" write="F" kind="integer4" array="F" units="" />
-      <variable name="author" description="" read="T" write="F" kind="string" array="F" units="" />
-      <variable name="biom_c" description="Biomass C" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="biom_n" description="Biomass nitrogen" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="carbon_tot" description="Total carbon" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_biom_c_atm" description="Biomass C lost to atmosphere" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_biom_c_hum" description="Biomass C converted to humic" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_biom_n_min" description="Net biomass N mineralized" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_c_loss_in_sed" description="Carbon loss in sediment" read="T" write="F" kind="single" array="" units="kg" />
-      <variable name="dlt_fom_c_atm" description="Fom C lost to atmosphere" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_fom_c_biom" description="Fom C converted to biomass" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_fom_c_hum" description="Fom C converted to humic" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_fom_c_pool1" description="delta fom C pool in fraction 1" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_fom_c_pool2" description="delta fom C pool in fraction 2" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_fom_c_pool3" description="delta fom C pool in fraction 3" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_fom_n_min" description="Net FOM N mineralized, negative for immobilization" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_hum_c_atm" description="Humic C lost to atmosphere" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_hum_c_biom" description="Humic C converted to biomass" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_hum_n_min" description="Net humic N mineralized" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_n_loss_in_sed" description="N loss in sediment" read="T" write="F" kind="single" array="" units="kg" />
-      <variable name="dlt_n_min" description="Net N mineralized" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_n_min_res" description="Net Residue N mineralisation" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_n_min_tot" description="Humic N mineralized" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_nh4" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_nh4_dnit" description="NH4 N denitrified" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_nh4_net" description="Net NH4 change today" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_nh4ppm" description="" read="F" write="T" kind="single" array="T" units="mg/kg" />
-      <variable name="dlt_no3" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_no3_dnit" description="NO3 N denitrified" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_no3_net" description="Net NO3 change today" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_no3ppm" description="" read="F" write="T" kind="single" array="T" units="mg/kg" />
-      <variable name="dlt_org_c_pool1" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_org_c_pool2" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_org_c_pool3" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_org_n" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_res_c_atm" description="Carbon from residues lost to atmosphere" read="T" write="F" kind="single" array="" units="kg/ha" />
-      <variable name="dlt_res_c_biom" description="Carbon from residues lost to atmosphere" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_res_c_hum" description="Carbon from residues converted to humic" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_res_nh4_min" description="Net NH4 transformation" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_res_no3_min" description="Net Residue NO3 mineralisation" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_urea" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="dlt_urea_hydrol" description="Nitrogen moved by hydrolysis" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="dnit" description="Denitrification" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="effective_nitrification" description="Effective nitrogen moved by nitrification" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="excess_nh4" description="Excess N required above NH4 supply" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_c" description="FOM C" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_c_pool1" description="FOM C in pool1" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_c_pool2" description="FOM C in pool2" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_c_pool3" description="FOM C in pool3" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_n" description="Nitrogen in FOM" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_n_pool1" description="Nitrogen in FOM pool 1" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_n_pool2" description="Nitrogen in FOM pool 2" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_n_pool3" description="Nitrogen in FOM pool 3" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fr_carb" description="Fraction of carbohydrate" read="T" write="F" kind="single" array="" units="" />
-      <variable name="fr_cell" description="Fraction of cellulose" read="T" write="F" kind="single" array="" units="" />
-      <variable name="fr_lign" description="Fraction of lignin" read="T" write="F" kind="single" array="" units="" />
-      <variable name="hum_c" description="Humic C" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="hum_n" description="Humic nitrogen" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="n2o_atm" description="Amount of N20 produced" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="n_reduction" description="" read="F" write="T" kind="string" array="" units="" />
-      <variable name="name" description="" read="T" write="F" kind="string" array="F" units="" />
-      <variable name="nh4" description="Ammonium nitrogen" read="T" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="nh4_min" description="Minimum allowable NH4" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="nh4_transform_net" description="Net NH4 transformation" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="nh4ppm" description="Ammonium nitrogen" read="T" write="T" kind="single" array="T" units="mg/kg" />
-      <variable name="nit_tot" description="total N in soil" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="nitrification" description="Nitrogen moved by nitrification" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="no3" description="Nitrate nitrogen" read="T" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="no3_min" description="Minimum allowable NO3" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="no3_transform_net" description="Net NO3 transformation" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="no3ppm" description="Nitrate nitrogen" read="T" write="T" kind="single" array="T" units="mg/kg" />
-      <variable name="num_fom_types" description="Number of FOM types" read="T" write="F" kind="integer4" array="" units="" />
-      <variable name="oc" description="Organic carbon" read="T" write="F" kind="single" array="T" units="%" />
-      <variable name="org_c_pool" description="Organic C" read="T" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="org_n" description="Organic N" read="T" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="soilp_dlt_org_p" description="variable needed by soilp in its calculations" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="soilp_dlt_res_c_atm" description="Carbon from all residues to atmosphere" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="soilp_dlt_res_c_biom" description="Carbon from all residues to biomass" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="soilp_dlt_res_c_hum" description="Carbon from all residues to humic" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="st" description="Surface temperature" read="T" write="F" kind="single" array="T" units="oC" />
-      <variable name="state" description="" read="T" write="F" kind="string" array="F" units="" />
-      <variable name="type" description="" read="T" write="F" kind="string" array="F" units="" />
-      <variable name="urea" description="Urea nitrogen" read="T" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="version" description="" read="T" write="F" kind="string" array="F" units="" />
-    </variables>
-    <events>
-      <event name="actualresiduedecompositioncalculated" description="" />
-      <event name="externalmassflow" description="" />
-      <event name="new_solute" description="" />
-    </events>
-  </Info>
-  <Info name="SoilP">
-    <variables>
-      <variable name="active" description="" read="T" write="F" kind="integer4" array="F" units="" />
-      <variable name="author" description="" read="T" write="F" kind="string" array="F" units="" />
-      <variable name="banded_p" description="Banded P" read="T" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="biom_p" description="P in biomass pool" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="demand_p_{crop}" description="P demand from {crop}" read="T" write="F" kind="single" array="" units="kg/ha" />
-      <variable name="fom_cp" description="C:P ratio in FOM pool" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_p" description="P in FOM pool" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_p_pool1" description="P in FOM pool 1" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_p_pool2" description="P in FOM pool 2" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="fom_p_pool3" description="P in FOM pool 3" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="hum_p" description="P in humic pool" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="labile_p" description="Labile P" read="T" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="name" description="" read="T" write="F" kind="string" array="F" units="" />
-      <variable name="rock_p" description="Rock P" read="T" write="T" kind="single" array="T" units="kg/ha" />
-      <variable name="soil_test_p" description="Labile + Banded P" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="state" description="" read="T" write="F" kind="string" array="F" units="" />
-      <variable name="type" description="" read="T" write="F" kind="string" array="F" units="" />
-      <variable name="unavail_p" description="Unavailable P" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="uptake_p_{crop}" description="P uptake from {crop}" read="T" write="F" kind="single" array="T" units="kg/ha" />
-      <variable name="version" description="" read="T" write="F" kind="string" array="F" units="" />
-    </variables>
-    <events>
-      <event name="externalmassflow" description="" />
-    </events>
-  </Info>
+   <Model name="SoilTemperature">
+      <nu description="(-) control forward/backward differencing">0.6 </nu>
+      <vol_spec_heat_om description="(Joules*m-3*K-1)">5.00e6 </vol_spec_heat_om>
+      <vol_spec_heat_water description="(Joules*m-3*K-1)">4.18e6 </vol_spec_heat_water>
+      <vol_spec_heat_clay description="(Joules*m-3*K-1)">2.39e6 </vol_spec_heat_clay>
+      <maxt_time_default description="hours">14.0 </maxt_time_default>
+   </Model>
+   <Model name="SoilTemperature2">
+      <SoilTemperature2>
+         <nu description="(-) control forward/backward differencing">0.6 </nu>
+         <vol_spec_heat_om description="(Joules*m-3*K-1)">5.00e6 </vol_spec_heat_om>
+         <vol_spec_heat_water description="(Joules*m-3*K-1)">4.18e6 </vol_spec_heat_water>
+         <vol_spec_heat_clay description="(Joules*m-3*K-1)">2.39e6 </vol_spec_heat_clay>
+         <MaxTTimeDefault description="hours">14.0 </MaxTTimeDefault>
+         <BoundaryLayerConductanceSource description="boundary layer conductance source (calc/constant)">constant</BoundaryLayerConductanceSource>
+         <BoundaryLayerConductance description="boundary layer conductance (W/m2/K)">20.0</BoundaryLayerConductance>
+         <BoundaryLayerConductanceIterations description="Number of iterations to calc boundary layer conductance (0-10)">1</BoundaryLayerConductanceIterations>
+         <NetRadiationSource description="net radiation source (calc/eos)">eos</NetRadiationSource>
+		   <clay description="proportion of clay">1.0</clay>
+         <DefaultWindSpeed description="m/s">3.0</DefaultWindSpeed>
+         <DefaultAltitude description="default altitude (m) 275m (700 ft) is approx 980 hPa">275.0</DefaultAltitude>
+         <DefaultInstrumentHeight description="default instrument height for wind and temperature (m)">1.2</DefaultInstrumentHeight>
+         <BareSoilHeight description="height of bare soil (mm)">57.0</BareSoilHeight>
+      </SoilTemperature2>
+   </Model>   
 </Type>
