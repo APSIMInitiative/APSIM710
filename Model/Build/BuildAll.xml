@@ -768,26 +768,9 @@
       </Job>
    </Target>
 
-
-   <!-- ############### Documentation target ############### -->
-   <Target name="Documentation">
-      <DependsOn>BobBuildAndRun</DependsOn>
-      <Job name="Create Broccoli Documentation">
-         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-         <CommandLine>Plant2Documentation.exe Broccoli.xml "%Apsim%\Documentation\4 Module Reference\Broccoli.htm"</CommandLine>
-         <CommandLineUnix>/bin/true</CommandLineUnix>
-      </Job>
-      <Job name="Create Vine Documentation">
-         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-         <CommandLine>Plant2Documentation.exe Vine.xml "%Apsim%\Documentation\4 Module Reference\Vine.htm"</CommandLine>
-         <CommandLineUnix>/bin/true</CommandLineUnix>
-      </Job>
-   </Target>
-
    <!-- ############### Release target ############### -->
    <Target name="Release">
       <DependsOn>BobBuildAndRun</DependsOn>
-      <DependsOn>Documentation</DependsOn>
       <Job name="Compile InsertFilesIntoSetup">
          <WorkingDirectory>%APSIM%/Release/InsertFilesIntoSetup</WorkingDirectory>
          <CommandLine>"%VS100COMNTOOLS%\..\IDE\devenv" InsertFilesIntoSetup.sln /build release</CommandLine>
@@ -846,7 +829,6 @@
 
    <Target name="Bob">
       <DependsOn IgnoreErrors="true">BobBuildAndRun</DependsOn>
-      <DependsOn IgnoreErrors="true">Documentation</DependsOn>
       <DependsOn IgnoreErrors="true">Release</DependsOn>
       <Job name="Create Diff Zip">
         <WorkingDirectory>%APSIM%</WorkingDirectory>
