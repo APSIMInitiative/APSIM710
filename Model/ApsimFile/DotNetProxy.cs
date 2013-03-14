@@ -39,8 +39,13 @@ class DLLProber
             if (ModuleName == "SoilWater" || ModuleName == "SoilNitrogen")
                 ModelConfiguration = "<" + ModuleName + ">" + ModelConfiguration + "</" + ModuleName + ">";
 
+            string className = ModuleName;
+            if (string.Compare(className, TypeName, true) != 0)
+                className = className + '.' + TypeName;
+
             // Write some .sim script to pass to the DLL.
-            string initScript = "<component name=\"" + ModuleName + "\" executable=\"" + DllFileName + "\">\r\n";
+            string initScript = "<component name=\"" + ModuleName + "\" executable=\"" + DllFileName + 
+                               "\" class =\"" + className + "\">\r\n";
             initScript += "   <initdata>\r\n";
             initScript += ModelConfiguration + "\r\n";
             initScript += "   </initdata>\r\n";

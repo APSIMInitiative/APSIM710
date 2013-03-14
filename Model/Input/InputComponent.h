@@ -15,7 +15,7 @@ class EXPORT InputComponent : public protocol::Component
       virtual void respondToEvent(unsigned int& fromID, unsigned int& eventID, protocol::Variant& variant);
       virtual bool respondToSet(unsigned int& fromID, protocol::QuerySetValueData& setValueData);
 
-      virtual std::string getType(void) {return "Metfile";};
+      virtual std::string getType(void) {return "Input";};
    protected:
       typedef std::map<unsigned, StringVariant> Variables;
       Variables variables;

@@ -125,7 +125,7 @@ void InputComponent::doInit1(const protocol::Init1Data& init1Data)
 	  getDataMethodID = addRegistration(::respondToEvent, 0, "getData", getDataDDML);
 	  haveReadTodaysDataID = addRegistration(::event, 0, "HaveReadTodaysData", nullTypeDDML);
      
-	  iAmMet = (Str_i_Cmp(getName(), "met") == 0);
+	  iAmMet = (findSubString(getClassType(), "metfile") != string::npos) || (Str_i_Cmp(getName(), "met") == 0);
 	  if (iAmMet)
 		 {
 		 daylengthID = addRegistration(::respondToGet, 0, "day_length", dayLengthType);
@@ -153,7 +153,7 @@ void InputComponent::doInit1(const protocol::Init1Data& init1Data)
 
      // When the DLL is probed the filename will be blank. Send out some dummy variables so that the GUI
      // and other tools can see the met variables.
-     if (ToLower(getName()) == "input" && getVariableValue("maxt") == 0.0)
+     if (iAmMet && getVariableValue("maxt") == 0.0)
         {
           addRegistration(::respondToGetSet, 0, "MaxT", singleType);       
           addRegistration(::respondToGetSet, 0, "MinT", singleType);       
