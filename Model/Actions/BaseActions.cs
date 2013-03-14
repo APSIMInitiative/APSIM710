@@ -368,11 +368,11 @@ namespace Actions
                         if (!unique)
                         {
                             if (count > 9)
-                                xml = xml.Replace("\"" + sims[i], "\"" + sims[i].Substring(0, sims[i].Length - 2) + count);
+                                xml = xml.Replace("\"" + sims[i], "\"" + sims[i].Substring(0, sims[i].Length - 2) + count); //can be done faster with StringBuilder, not worth the overhead unless replacing thousands of names.
                             else if (count > 1)
-                                xml = xml.Replace("\"" + sims[i], "\"" + sims[i].Substring(0, sims[i].Length - 1) + count); //can be done faster with StringBuilder, not worth the overhead unless replacing thousands of names.
+                                xml = xml.Replace("\"" + sims[i], "\"" + sims[i].Substring(0, sims[i].Length - 1) + count); 
                             else
-                                xml = xml.Replace("\"" + sims[i], "\"" + sims[i] + count); //can be done faster with StringBuilder, not worth the overhead unless replacing thousands of names.
+                                xml = xml.Replace("\"" + sims[i], "\"" + sims[i] + count);
                             sims = xml.Split(new string[] { "simulation name=\"" }, StringSplitOptions.RemoveEmptyEntries);
                             sims[i] = sims[i].Substring(0, sims[i].IndexOf('\"'));
                         }
