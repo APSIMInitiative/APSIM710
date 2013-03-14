@@ -217,6 +217,22 @@ public class SoilWater
     [Units("mm/m/d")]
     [Description("Rate parameter for flow due to water tables")]
     private double coeff_water_table = 0.0;
+
+    [Param(IsOptional = true)]
+    [Units("-")]
+    [Description("Value of b_runoff when a solute has a zero adsorption coefficient")]
+    private double b_runoff_max = 0.5;
+
+    [Param(IsOptional = true)]
+    [Units("-")]
+    [Description("Minimum value of b_runoff")]
+    private double b_runoff_min = 0.1;
+
+    [Param(IsOptional = true)]
+    [Units("cm^3/g")]
+    [Description("Value of the adsorption coefficient at which b_runoff reaches its minimum value")]
+    private double a_runoff_min = 3.0;
+
     //Soilwat2Constants
 
     //OnTillage Event
@@ -642,6 +658,7 @@ public class SoilWater
     private double pond_evap;      //! evaporation from the surface of the pond (mm)
     private double ts_pond_evap;
 
+    private double starting_pond;
     [Output]
     [Units("mm")]
     [Description("Surface water ponding depth")]
@@ -720,33 +737,35 @@ public class SoilWater
             //resize all the arrays if they changed the number of layers
             if (_dlayer == null || num_layers != _dlayer.Length)
             {
-                Array.Resize(ref _air_dry_dep, num_layers);
-                Array.Resize(ref _dul_dep, num_layers);
-                Array.Resize(ref _ll15_dep, num_layers);
-                Array.Resize(ref _sat_dep, num_layers);
-                Array.Resize(ref _sw_dep, num_layers);
-                Array.Resize(ref root_water_uptake, num_layers);
-                Array.Resize(ref _dlayer, num_layers);
-                Array.Resize(ref bd, num_layers);
-                Array.Resize(ref es_layers, num_layers);
-                Array.Resize(ref flow, num_layers);
-                Array.Resize(ref flux, num_layers);
-                Array.Resize(ref outflow_lat, num_layers);
-                Array.Resize(ref coarse_fragments, num_layers);
-                Array.Resize(ref k_dul_dep, num_layers);
-                Array.Resize(ref k_ll15_dep, num_layers);
-                Array.Resize(ref ks, num_layers);
-                Array.Resize(ref psi_dul_dep, num_layers);
+                ResizeLayerArray(ref _air_dry_dep, num_layers);
+                ResizeLayerArray(ref _dul_dep, num_layers);
+                ResizeLayerArray(ref _ll15_dep, num_layers);
+                ResizeLayerArray(ref _sat_dep, num_layers);
+                ResizeLayerArray(ref _sw_dep, num_layers);
+                ResizeLayerArray(ref root_water_uptake, num_layers);
+                ResizeLayerArray(ref _dlayer, num_layers);
+                ResizeLayerArray(ref bd, num_layers);
+                ResizeLayerArray(ref es_layers, num_layers);
+                ResizeLayerArray(ref flow, num_layers);
+                ResizeLayerArray(ref flux, num_layers);
+                ResizeLayerArray(ref outflow_lat, num_layers);
+                ResizeLayerArray(ref coarse_fragments, num_layers);
+                ResizeLayerArray(ref k_dul_dep, num_layers);
+                ResizeLayerArray(ref k_ll15_dep, num_layers);
+                ResizeLayerArray(ref ks, num_layers);
+                ResizeLayerArray(ref psi_dul_dep, num_layers);
                 //also resize for all solutes in this simulation.
                 for (int solnum = 0; solnum < num_solutes; solnum++)
                 {
-                    Array.Resize(ref solutes[solnum].amount, num_layers);
-                    Array.Resize(ref solutes[solnum].retained, num_layers);
-                    Array.Resize(ref solutes[solnum].leach, num_layers);
-                    Array.Resize(ref solutes[solnum].ts_leach, num_layers);
-                    Array.Resize(ref solutes[solnum].up, num_layers);
-                    Array.Resize(ref solutes[solnum].delta, num_layers);
-                    Array.Resize(ref solutes[solnum].ts_delta, num_layers);
+                    ResizeLayerArray(ref solutes[solnum].amount, num_layers);
+                    ResizeLayerArray(ref solutes[solnum].retained, num_layers);
+                    ResizeLayerArray(ref solutes[solnum].leach, num_layers);
+                    ResizeLayerArray(ref solutes[solnum].ts_leach, num_layers);
+                    ResizeLayerArray(ref solutes[solnum].up, num_layers);
+                    ResizeLayerArray(ref solutes[solnum].delta, num_layers);
+                    ResizeLayerArray(ref solutes[solnum].ts_delta, num_layers);
+                    ResizeLayerArray(ref solutes[solnum].parms.adsorption_coeff, num_layers);
+                    ResizeLayerArray(ref solutes[solnum].parms.diff_equil_param, num_layers);
                 }
             }
 
@@ -1278,33 +1297,35 @@ public class SoilWater
             //resize all the arrays if they changed the number of layers
             if (num_layers != _dlayer.Length)
             {
-                Array.Resize(ref _air_dry_dep, num_layers);
-                Array.Resize(ref _dul_dep, num_layers);
-                Array.Resize(ref _ll15_dep, num_layers);
-                Array.Resize(ref _sat_dep, num_layers);
-                Array.Resize(ref _sw_dep, num_layers);
-                Array.Resize(ref root_water_uptake, num_layers);
-                Array.Resize(ref _dlayer, num_layers);
-                Array.Resize(ref bd, num_layers);
-                Array.Resize(ref es_layers, num_layers);
-                Array.Resize(ref flow, num_layers);
-                Array.Resize(ref flux, num_layers);
-                Array.Resize(ref outflow_lat, num_layers);
-                Array.Resize(ref coarse_fragments, num_layers);
-                Array.Resize(ref k_dul_dep, num_layers);
-                Array.Resize(ref k_ll15_dep, num_layers);
-                Array.Resize(ref ks, num_layers);
-                Array.Resize(ref psi_dul_dep, num_layers);
+                ResizeLayerArray(ref _air_dry_dep, num_layers);
+                ResizeLayerArray(ref _dul_dep, num_layers);
+                ResizeLayerArray(ref _ll15_dep, num_layers);
+                ResizeLayerArray(ref _sat_dep, num_layers);
+                ResizeLayerArray(ref _sw_dep, num_layers);
+                ResizeLayerArray(ref root_water_uptake, num_layers);
+                ResizeLayerArray(ref _dlayer, num_layers);
+                ResizeLayerArray(ref bd, num_layers);
+                ResizeLayerArray(ref es_layers, num_layers);
+                ResizeLayerArray(ref flow, num_layers);
+                ResizeLayerArray(ref flux, num_layers);
+                ResizeLayerArray(ref outflow_lat, num_layers);
+                ResizeLayerArray(ref coarse_fragments, num_layers);
+                ResizeLayerArray(ref k_dul_dep, num_layers);
+                ResizeLayerArray(ref k_ll15_dep, num_layers);
+                ResizeLayerArray(ref ks, num_layers);
+                ResizeLayerArray(ref psi_dul_dep, num_layers);
                 //also resize for all solutes in this simulation.
                 for (int solnum = 0; solnum < num_solutes; solnum++)
                 {
-                    Array.Resize(ref solutes[solnum].amount, num_layers);
-                    Array.Resize(ref solutes[solnum].retained, num_layers);
-                    Array.Resize(ref solutes[solnum].leach, num_layers);
-                    Array.Resize(ref solutes[solnum].ts_leach, num_layers);
-                    Array.Resize(ref solutes[solnum].up, num_layers);
-                    Array.Resize(ref solutes[solnum].delta, num_layers);
-                    Array.Resize(ref solutes[solnum].ts_delta, num_layers);
+                    ResizeLayerArray(ref solutes[solnum].amount, num_layers);
+                    ResizeLayerArray(ref solutes[solnum].retained, num_layers);
+                    ResizeLayerArray(ref solutes[solnum].leach, num_layers);
+                    ResizeLayerArray(ref solutes[solnum].ts_leach, num_layers);
+                    ResizeLayerArray(ref solutes[solnum].up, num_layers);
+                    ResizeLayerArray(ref solutes[solnum].delta, num_layers);
+                    ResizeLayerArray(ref solutes[solnum].ts_delta, num_layers);
+                    ResizeLayerArray(ref solutes[solnum].parms.adsorption_coeff, num_layers);
+                    ResizeLayerArray(ref solutes[solnum].parms.diff_equil_param, num_layers);
                 }
 
                 for (int layer = num_layers; layer < _dlayer.Length; layer++)
@@ -1519,7 +1540,7 @@ public class SoilWater
             for (int layer = 0; layer < num_layers; layer++)
             {
                 temp_dlt_solute[layer] = (float)((layer > 0 ? solutes[solnum].leach[layer - 1] : 0) - solutes[solnum].leach[layer]);
-                if (irrigation > 0.0 && layer == irrigation_layer)
+                if (irrigation > 0.0 && layer == irrigation_layer - 1)
                     temp_dlt_solute[layer] += (float)solutes[solnum].irrigation;
             }
 
@@ -1627,17 +1648,19 @@ public class SoilWater
     {
         public string name;        // Name of the solute
         public string ownerName;    // FQN of the component handling this solute
-        public double[] amount;    // total amount of solute in each layer (kg/ha) - a state variable, but officially held in another component
+        public double[] amount;    // total amount of solute in each layer (kg/ha) - a state variable, but held in another component
         public double[] retained;  // amount of solute in "retained" water in each layer (kg/ha) - STATE VARIABLE
         public double[] leach;     // amount leached from each layer (kg/ha) over the full day
         public double[] ts_leach;  // amount leached from each layer (kg/ha) in the current time step
         public double[] up;        // amount "upped" from each layer (kg/ha)
         public double[] delta;     // change in solute in each layer (kg/ha) over the full day
         public double[] ts_delta;  // change in solute in each layer (kg/ha) in the current time step
-        public double rain_conc;   // concentration entering via rainfall (ppm)
+        public double pond_amount; // amount of solute in ponded water (kg/ha) - STATE VARIABLE
+        public double runoff_loss; // amount of solute in runoff water (kg/ha)
         public double irrigation;  // amount of solute in irrigation water (kg/ha)
         public int get_flow_id;    // registration ID for getting flow values
         public int get_leach_id;    // registration ID for getting leach value
+        public SoluteParams parms; // parameters for adsorption and diffusion, for each soil layer
     };
 
     private Solute[] solutes;
@@ -1688,6 +1711,19 @@ public class SoilWater
 
 
     //MODEL
+
+    private static void ResizeLayerArray(ref double[] A, int newLen)
+    {
+        // Calls Array.Resize, but if the array is being extended, the last
+        // element of the original array is duplicated into the new elements
+        int oldLen = (A == null) ? 0 : A.Length;
+        Array.Resize(ref A, newLen);
+        if (newLen > oldLen && oldLen > 0)
+        {
+            for (int i = oldLen; i < newLen; i++)
+                A[i] = A[oldLen - 1];
+        }
+    }
 
     #region Functions to Zero Variables
 
@@ -1777,7 +1813,6 @@ public class SoilWater
             ZeroArray(ref solutes[sol].delta);
             ZeroArray(ref solutes[sol].leach);  //! amount of solute leached from each layer (kg/ha)
             ZeroArray(ref solutes[sol].up);     //! amount of solute upped from each layer (kg/ha)
-            solutes[sol].rain_conc = 0.0;
             solutes[sol].irrigation = 0.0;
         }
 
@@ -1857,7 +1892,7 @@ public class SoilWater
             ZeroArray(ref solutes[solnum].leach);
             ZeroArray(ref solutes[solnum].up);
             ZeroArray(ref solutes[solnum].delta);
-            solutes[solnum].rain_conc = 0.0;
+            solutes[solnum].runoff_loss = 0.0;
         }
 
     }
@@ -2899,7 +2934,7 @@ public class SoilWater
         int num_layers = _dlayer.Length;
         for (int layer = 0; layer < num_layers; layer++)
         {
-            _sw_dep[layer] += time_step * ((irrigation_layer == layer ? irrigation : 0.0) + inflow_lat[layer] - ts_outflow_lat[layer]
+            _sw_dep[layer] += time_step * ((irrigation_layer - 1 == layer ? irrigation : 0.0) + inflow_lat[layer] - ts_outflow_lat[layer]
                 + (layer == 0 ? ts_infiltration : ts_flux[layer - 1] + ts_flow[layer - 1]) - ts_flux[layer] - ts_flow[layer] - ts_es_layers[layer]
                 - rwu[layer]);
             if (Double.IsNaN(_sw_dep[layer]) || _sw_dep[layer] < 0.0)
@@ -3236,12 +3271,7 @@ public class SoilWater
         drain_star = new double[num_layers];
         cond = new double[num_layers];
         if (ks.Length < num_layers)   // TEMPORARY - until parameter setting is handled better
-        {
-            int oldLeng = ks.Length;
-            Array.Resize(ref ks, num_layers);
-            for (int layer = oldLeng; layer < num_layers; layer++)
-                ks[layer] = ks[oldLeng - 1];
-        }
+            ResizeLayerArray(ref ks, num_layers);
 
         for (int layer = num_layers - 1; layer >= 0; layer--) // Work from the bottom up....
         {
@@ -3334,7 +3364,57 @@ public class SoilWater
         double[] leach_1_from_above = new double[num_solutes];
         double[] leach_2_from_above = new double[num_solutes];
         if (irrigation > 0.0)
-          IrrigSolute(); // Add any solute coming from irrigation
+            IrrigSolute(); // Add any solute coming from irrigation
+        if (rain > 0.0)
+            RainSolute(); // Add any solute coming from rain
+
+        // Calculate solute movement in runoff
+        if (runoff > 0.0)
+        {
+            double p_pond = Math.Min(1.0, starting_pond / runoff);
+            for (int solnum = 0; solnum < num_solutes; solnum++)
+            {
+                double k_ads = solutes[solnum].parms.adsorption_coeff[0];
+                double b_runoff = b_runoff_max - (b_runoff_max - b_runoff_min) *
+                    Math.Min(k_ads / a_runoff_min, 1.0);
+                double c_runoff = (solutes[solnum].amount[0] / (dlayer[0] * bd_fine[0])) *
+                    Math.Exp(-infiltration / (dlayer[0] * (k_ads * bd_fine[0] + sat_fine[0]))) *
+                    (b_runoff / (1 + b_runoff * k_ads));
+                if (starting_pond > 0.0)
+                {
+                    solutes[solnum].runoff_loss = runoff * (p_pond * (solutes[solnum].pond_amount / starting_pond) +
+                        (1.0 - p_pond) * c_runoff);
+                }
+                else
+                    solutes[solnum].runoff_loss = runoff * c_runoff;
+
+                double from_pond = Math.Min(solutes[solnum].pond_amount, solutes[solnum].runoff_loss);
+                solutes[solnum].pond_amount -= from_pond;
+                solutes[solnum].amount[0] -= solutes[solnum].runoff_loss - from_pond;
+            }
+        }
+
+        // Now calculate movement of solutes from any ponded water into the top-most horizon.
+
+        for (int solnum = 0; solnum < num_solutes; solnum++)
+        {
+            double prop_leach_1 = 0.5;
+            double prop_leach_2 = 1.0;
+            if (starting_pond > 0.0)
+            {
+                prop_leach_1 = 0.5 * infiltration / starting_pond;
+                prop_leach_2 = 0.5 * infiltration / (starting_pond - 0.5 * infiltration);
+            }
+            double mass_mobile_0 = solutes[solnum].pond_amount;
+            double leach_1 = prop_leach_1 * mass_mobile_0;
+            leach_1_from_above[solnum] = leach_1;  // Store these values for the next layer's calculations
+            double mass_mobile_2 = mass_mobile_0 - leach_1;
+            double leach_2 = prop_leach_2 * mass_mobile_2;
+            leach_2_from_above[solnum] = leach_2;
+            solutes[solnum].pond_amount -= leach_1 + leach_2;
+            if (pond <= 0.0 || solutes[solnum].pond_amount < 0.0)
+                solutes[solnum].pond_amount = 0.0;
+        }
 
         for (int layer = 0; layer < num_layers; layer++)
         {
@@ -3347,7 +3427,9 @@ public class SoilWater
             {
                 //double psi_excl = -310;  // Need some values here. What are likely values? -310 is air-dry, which should be close to what we need
                 //double excl = _ll15_dep[layer] * Math.Pow(MathUtility.Divide(psi_excl, psi_ll15, 0.0), MathUtility.Divide(1.0, b[layer], 0.0));
-                //double excl = _air_dry_dep[layer]; // Why not take the direct approach?
+                //double excl = _air_dry_dep[layer]; 
+                
+                // Why not take the direct approach?
                 double excl = 0.5 * _ll15_dep[layer]; // This follows Addicott and Whitmore - one half of ll15.
                 double flux_in;
                 if (layer == 0)
@@ -3378,7 +3460,11 @@ public class SoilWater
 
                 for (int solnum = 0; solnum < num_solutes; solnum++)
                 {
-                    double beta = 0.1 ; /// NEED TO GET VALUE(S) AS PARAMETERS
+                    double beta;
+                    if (solutes[solnum].parms.diff_equil_param.Length > layer)
+                       beta = solutes[solnum].parms.diff_equil_param[layer];
+                    else
+                       beta = solutes[solnum].parms.diff_equil_param[solutes[solnum].parms.diff_equil_param.Length - 1];
                     double mass_retained_0 = Math.Max(0.0, Math.Min(solutes[solnum].amount[layer], solutes[solnum].retained[layer]));
                     double mass_mobile_0 = Math.Max(0.0, solutes[solnum].amount[layer] - solutes[solnum].retained[layer]);
                     double leach_1 = prop_leach_1 * mass_mobile_0;
@@ -3396,7 +3482,6 @@ public class SoilWater
         }
     }
 
-
     private void IrrigSolute()
     {
         //*+  Mission Statement
@@ -3405,16 +3490,26 @@ public class SoilWater
         int solnum;     //! solute number counter variable     
         int layer;      //! soil layer
 
-        if (irrigation_layer == 0)   //sv- if user did not enter an irrigation_layer
-            layer = 0;             //!addition at surface
-        else
-            layer = irrigation_layer - 1;
+        layer = irrigation_layer - 1;
 
         for (solnum = 0; solnum < num_solutes; solnum++)
         {
-            solutes[solnum].amount[layer] += solutes[solnum].irrigation;
+            if (layer >= 0)
+                solutes[solnum].amount[layer] += solutes[solnum].irrigation;
+            else
+                solutes[solnum].pond_amount += solutes[solnum].irrigation;
         }
+    }
 
+    private void RainSolute()
+    {
+        //*+  Mission Statement
+        //*      Add solutes with rain
+
+        for (int solnum = 0; solnum < num_solutes; solnum++)
+        {
+            solutes[solnum].pond_amount += rain * solutes[solnum].parms.rain_conc * 0.01; // Convert to kg/ha
+        }
     }
 
     #endregion
@@ -3863,7 +3958,6 @@ public class SoilWater
     #region Clock Event Handlers
 
 
-
     [EventHandler]
     public void OnInitialised()
     {
@@ -3955,9 +4049,10 @@ public class SoilWater
             _u = summeru;
         }
 
-        // Store the staring values for _sw_dep
+        // Store the staring values for _sw_dep and pond
         starting_sw_dep = new double[_sw_dep.Length];
         Array.Copy(_sw_dep, starting_sw_dep, _sw_dep.Length);
+        starting_pond = pond;
 
         // CalcPotEvapotranspiration();  // Done in OnPrepare
 
@@ -4010,7 +4105,7 @@ public class SoilWater
             {
                 for (int layer = 0; layer < num_layers; layer++)
                 {
-                    double delta = time_step * ((irrigation_layer == layer ? irrigation : 0.0) + inflow_lat[layer] - ts_outflow_lat[layer]
+                    double delta = time_step * ((irrigation_layer - 1 == layer ? irrigation : 0.0) + inflow_lat[layer] - ts_outflow_lat[layer]
                         + (layer == 0 ? ts_infiltration : ts_flux[layer - 1] + ts_flow[layer - 1]) - ts_flux[layer] - ts_flow[layer] - ts_es_layers[layer]
                         - rwu[layer]);
                     // If we go beyond either air-dry or saturated in any layer, we probably need a smaller timestep.
@@ -4169,7 +4264,6 @@ public class SoilWater
 #else
         string compName = MyPaddock.SiblingNameFromId(newsolute.sender_id);
 #endif
-
         sender = newsolute.sender_id;
         numvals = newsolute.solutes.Length;
 
@@ -4180,6 +4274,11 @@ public class SoilWater
             name = newsolute.solutes[counter].ToLower();
             solutes[num_solutes].name = name;
             solutes[num_solutes].ownerName = compName;
+            // These values should already be 0.0, but
+            // let's make it explicit...
+            solutes[num_solutes].pond_amount = 0.0;
+            solutes[num_solutes].irrigation = 0.0;
+            solutes[num_solutes].runoff_loss = 0.0;
             int nLayers = _dlayer.Length;
             // Create layer arrays for the new solute
             solutes[num_solutes].amount = new double[nLayers];
@@ -4195,6 +4294,20 @@ public class SoilWater
             solutes[num_solutes].get_flow_id = My.RegisterProperty("flow_" + name, "<type kind=\"double\" array=\"T\" unit=\"kg/ha\"/>", true, false, false, "flow of " + name, "", getPropertyValue);
             solutes[num_solutes].get_leach_id = My.RegisterProperty("leach_" + name, "<type kind=\"double\" unit=\"kg/ha\"/>", true, false, false, "leaching of " + name, "", getPropertyValue);
 #endif
+            solutes[num_solutes].parms = My.LinkByName(name) as SoluteParams;
+            if (solutes[num_solutes].parms == null)
+                solutes[num_solutes].parms = new SoluteParams();
+            if (solutes[num_solutes].parms.adsorption_coeff == null ||
+                solutes[num_solutes].parms.diff_equil_param == null)
+            {
+                solutes[num_solutes].parms.adsorption_coeff = new double[nLayers];
+                solutes[num_solutes].parms.diff_equil_param = new double[nLayers];
+                for (int layer = 0; layer < nLayers; layer++)
+                {
+                    solutes[num_solutes].parms.adsorption_coeff[layer] = 0.5;
+                    solutes[num_solutes].parms.diff_equil_param[layer] = 0.1;
+                }                    
+            }
             num_solutes = num_solutes + 1;
         }
     }
@@ -4474,3 +4587,22 @@ public class SoilWater
     #endregion
 
 }
+
+public class SoluteParams
+{
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    [Units("cm^3/g")]
+    [Description("Solute adsorption coefficient for each soil layer")]
+    internal double[] adsorption_coeff;   
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    [Units("-")]
+    [Description("Diffusive equilibrium parameter")]
+    internal double[] diff_equil_param;        //! canopy factors for cover runoff effect ()
+
+    [Param(IsOptional = true, MinVal = 0.0)]
+    [Units("mg/l")]
+    [Description("Solute concentration in rainfall")]
+    internal double rain_conc = 0.0;
+}
+
