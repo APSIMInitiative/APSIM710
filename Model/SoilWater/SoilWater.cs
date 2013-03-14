@@ -1291,8 +1291,8 @@ public class SoilWater
         int i = 0;
         foreach (Component Comp in MyPaddock.Crops)
         {
-            foundCL = MyPaddock.Get(Comp.FullName + ".CoverLive", out coverLive);
-            foundCT = MyPaddock.Get(Comp.FullName + ".CoverTotal", out coverTotal);
+            foundCL = MyPaddock.Get(Comp.FullName + ".cover_green", out coverLive);
+            foundCT = MyPaddock.Get(Comp.FullName + ".cover_tot", out coverTotal);
             foundH = MyPaddock.Get(Comp.FullName + ".Height", out height);
 
             ////must have at least these three variables to be considered a "crop" component.
@@ -1310,7 +1310,7 @@ public class SoilWater
             else
                 {
                 throw new Exception("Crop Module: " +  Comp.FullName  + 
-                        " is missing one/or more of the following 3 output variables (CoverLive, CoverTotal, Height) " + Environment.NewLine +
+                        " is missing one/or more of the following 3 output variables (cover_green, cover_tot, height) " + Environment.NewLine +
                         "These 3 output variables are needed by the SoilWater module (for evaporation, runoff etc.");
                 }
         }
@@ -5297,6 +5297,7 @@ public class SoilWater
 #if (APSIMX == true)
         string compName = "";
 #else
+        sender = (int)My.eventSenderId;
         string compName = MyPaddock.SiblingNameFromId(newsolute.sender_id);
 #endif
 
