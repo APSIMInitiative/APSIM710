@@ -1928,262 +1928,244 @@ namespace ApsimFile
                 ChangeNodeName(Node, "ASC_Order", "ASCOrder");
                 ChangeNodeName(Node, "ASC_Sub-Order", "ASCSubOrder");
 
-                XmlNode WaterNode = XmlHelper.Find(Node, "Water");
-                if (WaterNode != null)
+                foreach (XmlNode Child in XmlHelper.ChildNodes(Node, ""))
+                    ToVersion33(Child);
+            }
+
+            else if (Node.Name.ToLower() == "water")
+            {
+                // If we have a mix of shortcut <SoilCrop> and non short cut nodes then
+                // we have to remove the shortcuts from all <SoilCrop> nodes and the parent
+                // WaterNode.
+                bool WaterNodeIsShortcutted = XmlHelper.Attribute(Node, "shortcut") != "";
+                bool AllCropsShortcutted = true;
+                foreach (XmlNode SoilCrop in XmlHelper.ChildNodes(Node, "SoilCrop"))
                 {
-                    // If we have a mix of shortcut <SoilCrop> and non short cut nodes then
-                    // we have to remove the shortcuts from all <SoilCrop> nodes and the parent
-                    // WaterNode.
-                    bool WaterNodeIsShortcutted = XmlHelper.Attribute(WaterNode, "shortcut") != "";
-                    bool AllCropsShortcutted = true;
-                    foreach (XmlNode SoilCrop in XmlHelper.ChildNodes(WaterNode, "SoilCrop"))
-                    {
-                        if (XmlHelper.Attribute(SoilCrop, "shortcut") == "")
-                            AllCropsShortcutted = false;
-                    }
-                    // If the <water> node has a shortcut and there are <SoilCrop> children that
-                    // are not shortcutted then we need to remove all shortcuts on <Water> and the 
-                    // <SoilCrop> children.
-                    if (WaterNodeIsShortcutted && AllCropsShortcutted)
-                    {
-                        // Leave alone
-                    }
+                    if (XmlHelper.Attribute(SoilCrop, "shortcut") == "")
+                        AllCropsShortcutted = false;
+                }
+                // If the <water> node has a shortcut and there are <SoilCrop> children that
+                // are not shortcutted then we need to remove all shortcuts on <Water> and the 
+                // <SoilCrop> children.
+                if (WaterNodeIsShortcutted && AllCropsShortcutted)
+                {
+                    // Leave alone
+                }
+                else
+                {
+                    if (WaterNodeIsShortcutted)
+                        UnlinkNode(Node);
                     else
                     {
-                        if (WaterNodeIsShortcutted)
-                            UnlinkNode(WaterNode);
-                        else
+                        foreach (XmlNode SoilCrop in XmlHelper.ChildNodes(Node, "SoilCrop"))
                         {
-                            foreach (XmlNode SoilCrop in XmlHelper.ChildNodes(WaterNode, "SoilCrop"))
-                            {
-                                if (XmlHelper.Attribute(SoilCrop, "shortcut") != "")
-                                    UnlinkNode(SoilCrop);
-                            }
+                            if (XmlHelper.Attribute(SoilCrop, "shortcut") != "")
+                                UnlinkNode(SoilCrop);
                         }
                     }
-
-                    WriteLayeredDataAsArray(WaterNode, "Thickness", "double", "mm");
-                    WriteLayeredDataAsArray(WaterNode, "KS", "double", "mm/day");
-                    WriteLayeredDataAsArray(WaterNode, "BD", "double", "g/cc");
-                    WriteLayeredDataAsArray(WaterNode, "AirDry", "double", "mm/mm");
-                    WriteLayeredDataAsArray(WaterNode, "LL15", "double", "mm/mm");
-                    WriteLayeredDataAsArray(WaterNode, "DUL", "double", "mm/mm");
-                    WriteLayeredDataAsArray(WaterNode, "SAT", "double", "mm/mm");
-                    foreach (XmlNode Layer in XmlHelper.ChildNodes(WaterNode, "Layer"))
-                        WaterNode.RemoveChild(Layer);
-
-
-                    // Now convert all soil crop nodes.
-                    foreach (XmlNode SoilCrop in XmlHelper.ChildNodes(WaterNode, "SoilCrop"))
-                    {
-                        WriteLayeredDataAsArray(SoilCrop, "Thickness", "double", "mm");
-                        WriteLayeredDataAsArray(SoilCrop, "LL", "double", "mm/mm");
-                        WriteLayeredDataAsArray(SoilCrop, "KL", "double", "/day");
-                        WriteLayeredDataAsArray(SoilCrop, "XF", "double", "0-1");
-                        foreach (XmlNode Layer in XmlHelper.ChildNodes(SoilCrop, "Layer"))
-                            SoilCrop.RemoveChild(Layer);
-                    }
-
                 }
 
-                XmlNode SoilWat = XmlHelper.Find(Node, "SoilWat");
-                if (SoilWat != null)
+                WriteLayeredDataAsArray(Node, "Thickness", "double", "mm");
+                WriteLayeredDataAsArray(Node, "KS", "double", "mm/day");
+                WriteLayeredDataAsArray(Node, "BD", "double", "g/cc");
+                WriteLayeredDataAsArray(Node, "AirDry", "double", "mm/mm");
+                WriteLayeredDataAsArray(Node, "LL15", "double", "mm/mm");
+                WriteLayeredDataAsArray(Node, "DUL", "double", "mm/mm");
+                WriteLayeredDataAsArray(Node, "SAT", "double", "mm/mm");
+                foreach (XmlNode Layer in XmlHelper.ChildNodes(Node, "Layer"))
+                    Node.RemoveChild(Layer);
+
+
+                // Now convert all soil crop nodes.
+                foreach (XmlNode SoilCrop in XmlHelper.ChildNodes(Node, "SoilCrop"))
                 {
-                    string Shortcut = XmlHelper.Attribute(SoilWat, "shortcut");
-                    SoilWat = XmlHelper.ChangeType(SoilWat, "SoilWater");
-
-                    if (Shortcut != "")
-                    {
-                        Shortcut = ReplaceLastOccurrenceOf(Shortcut, "/SoilWat", "/SoilWater");
-                        XmlHelper.SetAttribute(SoilWat, "shortcut", Shortcut);
-                    }
-                    ChangeNodeName(SoilWat, "Cn2Bare", "CN2Bare");
-                    ChangeNodeName(SoilWat, "CnRed", "CNRed");
-                    ChangeNodeName(SoilWat, "CnCov", "CNCov");
-                    WriteLayeredDataAsArray(SoilWat, "Thickness", "double", "mm");
-                    WriteLayeredDataAsArray(SoilWat, "SWCON", "double", "0-1");
-                    WriteLayeredDataAsArray(SoilWat, "MWCON", "double", "0-1");
-                    WriteLayeredDataAsArray(SoilWat, "KLAT", "double", "mm/d");
-                    foreach (XmlNode Layer in XmlHelper.ChildNodes(SoilWat, "Layer"))
-                        SoilWat.RemoveChild(Layer);
-                    RemoveBlankNodes(SoilWat);
+                    WriteLayeredDataAsArray(SoilCrop, "Thickness", "double", "mm");
+                    WriteLayeredDataAsArray(SoilCrop, "LL", "double", "mm/mm");
+                    WriteLayeredDataAsArray(SoilCrop, "KL", "double", "/day");
+                    WriteLayeredDataAsArray(SoilCrop, "XF", "double", "0-1");
+                    foreach (XmlNode Layer in XmlHelper.ChildNodes(SoilCrop, "Layer"))
+                        SoilCrop.RemoveChild(Layer);
                 }
 
-                XmlNode SoilOrganicMatter = XmlHelper.Find(Node, "SoilOrganicMatter");
-                if (SoilOrganicMatter != null)
-                {
-                    ChangeNodeName(SoilOrganicMatter, "RootCn", "RootCN");
-                    ChangeNodeName(SoilOrganicMatter, "SoilCn", "SoilCN");
-                    ChangeNodeName(SoilOrganicMatter, "RootWT", "RootWt");
-
-                    WriteLayeredDataAsArray(SoilOrganicMatter, "Thickness", "double", "mm");
-                    WriteLayeredDataAsArray(SoilOrganicMatter, "OC", "double", "Total %");
-                    WriteLayeredDataAsArray(SoilOrganicMatter, "FBiom", "double", "0-1");
-                    WriteLayeredDataAsArray(SoilOrganicMatter, "FInert", "double", "0-1");
-                    foreach (XmlNode Layer in XmlHelper.ChildNodes(SoilOrganicMatter, "Layer"))
-                        SoilOrganicMatter.RemoveChild(Layer);
-                    RemoveBlankNodes(SoilOrganicMatter);
-                }
-
-                XmlNode Analysis = XmlHelper.Find(Node, "Analysis");
-                if (Analysis != null)
-                {
-                    WriteLayeredDataAsArray(Analysis, "Thickness", "double", "mm");
-                    WriteLayeredDataAsArray(Analysis, "Rocks", "double", "%");
-                    WriteLayeredDataAsArray(Analysis, "Texture", "string", "");
-                    WriteLayeredDataAsArray(Analysis, "MunsellColour", "string", "");
-                    WriteLayeredDataAsArray(Analysis, "EC", "double", "1:5 dS/m");
-                    WriteLayeredDataAsArray(Analysis, "PH", "double", "1:5 water");
-                    WriteLayeredDataAsArray(Analysis, "CL", "double", "mg/kg");
-                    WriteLayeredDataAsArray(Analysis, "Boron", "double", "Hot water mg/kg");
-                    WriteLayeredDataAsArray(Analysis, "CEC", "double", "cmol+/kg");
-                    WriteLayeredDataAsArray(Analysis, "Ca", "double", "cmol+/kg");
-                    WriteLayeredDataAsArray(Analysis, "Mg", "double", "cmol+/kg");
-                    WriteLayeredDataAsArray(Analysis, "Na", "double", "cmol+/kg");
-                    WriteLayeredDataAsArray(Analysis, "K", "double", "cmol+/kg");
-                    WriteLayeredDataAsArray(Analysis, "ESP", "double", "%");
-                    WriteLayeredDataAsArray(Analysis, "Mn", "double", "mg/kg");
-                    WriteLayeredDataAsArray(Analysis, "Al", "double", "cmol+/kg");
-                    WriteLayeredDataAsArray(Analysis, "ParticleSizeSand", "double", "%");
-                    WriteLayeredDataAsArray(Analysis, "ParticleSizeSilt", "double", "%");
-                    WriteLayeredDataAsArray(Analysis, "ParticleSizeClay", "double", "%");
-                    foreach (XmlNode Layer in XmlHelper.ChildNodes(Analysis, "Layer"))
-                        Analysis.RemoveChild(Layer);
-                }
-
-                foreach (XmlNode Sample in XmlHelper.ChildNodes(Node, "Sample"))
-                {
-                    WriteLayeredDataAsArray(Sample, "Thickness", "double", "mm");
-                    WriteLayeredDataAsArray(Sample, "NO3", "double", "ppm");
-                    WriteLayeredDataAsArray(Sample, "NH4", "double", "ppm");
-                    WriteLayeredDataAsArray(Sample, "SW", "double", "mm/mm");
-                    WriteLayeredDataAsArray(Sample, "OC", "double", "Total %");
-                    WriteLayeredDataAsArray(Sample, "EC", "double", "1:5 dS/m");
-                    WriteLayeredDataAsArray(Sample, "PH", "double", "1:5 water");
-                    WriteLayeredDataAsArray(Sample, "CL", "double", "mg/kg");
-                    WriteLayeredDataAsArray(Sample, "ESP", "double", "%");
-                    foreach (XmlNode Layer in XmlHelper.ChildNodes(Sample, "Layer"))
-                        Sample.RemoveChild(Layer);
-                }
-
-                XmlNode InitWater = XmlHelper.FindByType(Node, "InitWater");
-                if (InitWater != null)
-                {
-                    string Shortcut = XmlHelper.Attribute(InitWater, "shortcut");
-                    InitWater = XmlHelper.ChangeType(InitWater, "InitialWater");
-                    if (Shortcut != null)
-                    {
-                        Shortcut = ReplaceLastOccurrenceOf(Shortcut, "/InitWater", "/InitialWater");
-                        XmlHelper.SetAttribute(InitWater, "shortcut", Shortcut);
-                    }
-
-                    string Percent = XmlHelper.Value(InitWater, "percentmethod/percent");
-                    string distributed = XmlHelper.Value(InitWater, "percentmethod/distributed");
-                    string DepthWetSoil = XmlHelper.Value(InitWater, "DepthWetSoilMethod/Depth");
-                    string RelativeTo = XmlHelper.Value(InitWater, "RelativeTo");
-                    if (Percent != "")
-                    {
-                        // remove old <percentmethod> - case was wrong.
-                        InitWater.RemoveChild(XmlHelper.Find(InitWater, "percentmethod"));
-
-                        if (distributed.Equals("filled from top", StringComparison.CurrentCultureIgnoreCase))
-                            distributed = "FilledFromTop";
-                        else
-                            distributed = "EvenlyDistributed";
-
-                        XmlHelper.SetValue(InitWater, "FractionFull", Percent);
-                        XmlHelper.SetValue(InitWater, "PercentMethod", distributed);
-                    }
-                    else if (DepthWetSoil != "")
-                        XmlHelper.SetValue(InitWater, "DepthWetSoil", DepthWetSoil);
-
-                    if (RelativeTo != "")
-                        XmlHelper.SetValue(InitWater, "RelativeTo", RelativeTo);
-                }
-
-                XmlNode Phosphorus = XmlHelper.FindByType(Node, "Phosphorus");
-                if (Phosphorus != null)
-                {
-                    WriteLayeredDataAsArray(Phosphorus, "Thickness", "double", "mm");
-                    WriteLayeredDataAsArray(Phosphorus, "LabileP", "double", "mg/kg");
-                    WriteLayeredDataAsArray(Phosphorus, "BandedP", "double", "kg/ha");
-                    WriteLayeredDataAsArray(Phosphorus, "RockP", "double", "kg/ha");
-                    WriteLayeredDataAsArray(Phosphorus, "Sorption", "double", "-");
-                    foreach (XmlNode Layer in XmlHelper.ChildNodes(Phosphorus, "Layer"))
-                        Phosphorus.RemoveChild(Layer);
-                    RemoveBlankNodes(Phosphorus);
-                }
-
-                XmlNode Swim = XmlHelper.Find(Node, "Swim");
-                if (Swim != null)
-                {
-                    if (XmlHelper.Value(Swim, "VC").Equals("on", StringComparison.CurrentCultureIgnoreCase))
-                        XmlHelper.SetValue(Swim, "VC", "true");
-                    else
-                        XmlHelper.SetValue(Swim, "VC", "false");
-                    if (XmlHelper.Value(Swim, "diagnostics").Equals("yes", StringComparison.CurrentCultureIgnoreCase))
-                        XmlHelper.SetValue(Swim, "diagnostics", "true");
-                    else
-                        XmlHelper.SetValue(Swim, "diagnostics", "false");
-
-                    ChangeNodeName(Swim, "Cn2Bare", "CN2Bare");
-                    ChangeNodeName(Swim, "CnRed", "CNRed");
-                    ChangeNodeName(Swim, "CnCov", "CNCov");
-                    ChangeNodeName(Swim, "Kdul", "KDul");
-                    ChangeNodeName(Swim, "psidul", "PSIDul");
-                    ChangeNodeName(Swim, "dtmin", "DTmin");
-                    ChangeNodeName(Swim, "dtmax", "DTmax");
-                    ChangeNodeName(Swim, "diagnostics", "Diagnostics");
-
-                    foreach (XmlNode SwimSolute in XmlHelper.ChildNodes(Swim, "SwimSoluteParameters"))
-                    {
-                        ChangeNodeName(SwimSolute, "dis", "Dis");
-                        ChangeNodeName(SwimSolute, "disp", "Disp");
-                        ChangeNodeName(SwimSolute, "a", "A");
-                        ChangeNodeName(SwimSolute, "dthc", "DTHC");
-                        ChangeNodeName(SwimSolute, "dthp", "DTHP");
-
-                        WriteLayeredDataAsArray(SwimSolute, "Thickness", "double", "");
-                        WriteLayeredDataAsArray(SwimSolute, "NO3Exco", "double", "");
-                        WriteLayeredDataAsArray(SwimSolute, "NO3FIP", "double", "");
-                        WriteLayeredDataAsArray(SwimSolute, "NH4Exco", "double", "");
-                        WriteLayeredDataAsArray(SwimSolute, "NH4FIP", "double", "");
-                        WriteLayeredDataAsArray(SwimSolute, "UreaExco", "double", "");
-                        WriteLayeredDataAsArray(SwimSolute, "UreaFIP", "double", "");
-                        WriteLayeredDataAsArray(SwimSolute, "ClExco", "double", "");
-                        WriteLayeredDataAsArray(SwimSolute, "ClFIP", "double", "");
-                        foreach (XmlNode Layer in XmlHelper.ChildNodes(SwimSolute, "Layer"))
-                            SwimSolute.RemoveChild(Layer);
-                        RemoveBlankNodes(SwimSolute);
-                    }
-                }
-
-                XmlNode LayerStructure = XmlHelper.Find(Node, "LayerStructure");
-                if (LayerStructure != null)
-                {
-                    string Shortcut = XmlHelper.Attribute(LayerStructure, "shortcut");
-                    if (Shortcut != "")
-                    {
-                        Shortcut = ReplaceLastOccurrenceOf(Shortcut, "/Thickness", "/LayerStructure");
-                        XmlHelper.SetAttribute(LayerStructure, "shortcut", Shortcut);
-                    }
-                    else
-                    {
-                        string[] Values = XmlHelper.Value(LayerStructure, "Values").Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                        XmlNode ThicknessNode = LayerStructure.AppendChild(Node.OwnerDocument.CreateElement("Thickness"));
-                        XmlHelper.SetValues(ThicknessNode, "double", Values);
-                        LayerStructure.RemoveChild(XmlHelper.Find(LayerStructure, "Values"));
-                    }
-                }
             }
-            else if (Node.Name.ToLower() == "area")
+            else if (Node.Name.ToLower() == "soilwat")
             {
-                XmlNode Cl = XmlHelper.Find(Node, "cl");
-                if (Cl != null)
+                string Shortcut = XmlHelper.Attribute(Node, "shortcut");
+                Node = XmlHelper.ChangeType(Node, "SoilWater");
+
+                if (Shortcut != "")
                 {
-                    XmlHelper.ChangeType(Cl, "Solute");
+                    Shortcut = ReplaceLastOccurrenceOf(Shortcut, "/SoilWat", "/SoilWater");
+                    XmlHelper.SetAttribute(Node, "shortcut", Shortcut);
+                }
+                ChangeNodeName(Node, "Cn2Bare", "CN2Bare");
+                ChangeNodeName(Node, "CnRed", "CNRed");
+                ChangeNodeName(Node, "CnCov", "CNCov");
+                WriteLayeredDataAsArray(Node, "Thickness", "double", "mm");
+                WriteLayeredDataAsArray(Node, "SWCON", "double", "0-1");
+                WriteLayeredDataAsArray(Node, "MWCON", "double", "0-1");
+                WriteLayeredDataAsArray(Node, "KLAT", "double", "mm/d");
+                foreach (XmlNode Layer in XmlHelper.ChildNodes(Node, "Layer"))
+                    Node.RemoveChild(Layer);
+                RemoveBlankNodes(Node);
+            }
+            else if (Node.Name == "SoilOrganicMatter")
+            {
+                ChangeNodeName(Node, "RootCn", "RootCN");
+                ChangeNodeName(Node, "SoilCn", "SoilCN");
+                ChangeNodeName(Node, "RootWT", "RootWt");
+
+                WriteLayeredDataAsArray(Node, "Thickness", "double", "mm");
+                WriteLayeredDataAsArray(Node, "OC", "double", "Total %");
+                WriteLayeredDataAsArray(Node, "FBiom", "double", "0-1");
+                WriteLayeredDataAsArray(Node, "FInert", "double", "0-1");
+                foreach (XmlNode Layer in XmlHelper.ChildNodes(Node, "Layer"))
+                    Node.RemoveChild(Layer);
+                RemoveBlankNodes(Node);
+
+            }
+            else if (Node.Name == "Analysis")
+            {
+                WriteLayeredDataAsArray(Node, "Thickness", "double", "mm");
+                WriteLayeredDataAsArray(Node, "Rocks", "double", "%");
+                WriteLayeredDataAsArray(Node, "Texture", "string", "");
+                WriteLayeredDataAsArray(Node, "MunsellColour", "string", "");
+                WriteLayeredDataAsArray(Node, "EC", "double", "1:5 dS/m");
+                WriteLayeredDataAsArray(Node, "PH", "double", "1:5 water");
+                WriteLayeredDataAsArray(Node, "CL", "double", "mg/kg");
+                WriteLayeredDataAsArray(Node, "Boron", "double", "Hot water mg/kg");
+                WriteLayeredDataAsArray(Node, "CEC", "double", "cmol+/kg");
+                WriteLayeredDataAsArray(Node, "Ca", "double", "cmol+/kg");
+                WriteLayeredDataAsArray(Node, "Mg", "double", "cmol+/kg");
+                WriteLayeredDataAsArray(Node, "Na", "double", "cmol+/kg");
+                WriteLayeredDataAsArray(Node, "K", "double", "cmol+/kg");
+                WriteLayeredDataAsArray(Node, "ESP", "double", "%");
+                WriteLayeredDataAsArray(Node, "Mn", "double", "mg/kg");
+                WriteLayeredDataAsArray(Node, "Al", "double", "cmol+/kg");
+                WriteLayeredDataAsArray(Node, "ParticleSizeSand", "double", "%");
+                WriteLayeredDataAsArray(Node, "ParticleSizeSilt", "double", "%");
+                WriteLayeredDataAsArray(Node, "ParticleSizeClay", "double", "%");
+                foreach (XmlNode Layer in XmlHelper.ChildNodes(Node, "Layer"))
+                    Node.RemoveChild(Layer);
+            }
+            else if (Node.Name == "Sample")
+            {
+                WriteLayeredDataAsArray(Node, "Thickness", "double", "mm");
+                WriteLayeredDataAsArray(Node, "NO3", "double", "ppm");
+                WriteLayeredDataAsArray(Node, "NH4", "double", "ppm");
+                WriteLayeredDataAsArray(Node, "SW", "double", "mm/mm");
+                WriteLayeredDataAsArray(Node, "OC", "double", "Total %");
+                WriteLayeredDataAsArray(Node, "EC", "double", "1:5 dS/m");
+                WriteLayeredDataAsArray(Node, "PH", "double", "1:5 water");
+                WriteLayeredDataAsArray(Node, "CL", "double", "mg/kg");
+                WriteLayeredDataAsArray(Node, "ESP", "double", "%");
+                foreach (XmlNode Layer in XmlHelper.ChildNodes(Node, "Layer"))
+                    Node.RemoveChild(Layer);
+            }
+            else if (Node.Name == "InitWater")
+            {
+                string Shortcut = XmlHelper.Attribute(Node, "shortcut");
+                Node = XmlHelper.ChangeType(Node, "InitialWater");
+                if (Shortcut != null)
+                {
+                    Shortcut = ReplaceLastOccurrenceOf(Shortcut, "/InitWater", "/InitialWater");
+                    XmlHelper.SetAttribute(Node, "shortcut", Shortcut);
+                }
+
+                string Percent = XmlHelper.Value(Node, "percentmethod/percent");
+                string distributed = XmlHelper.Value(Node, "percentmethod/distributed");
+                string DepthWetSoil = XmlHelper.Value(Node, "DepthWetSoilMethod/Depth");
+                string RelativeTo = XmlHelper.Value(Node, "RelativeTo");
+                if (Percent != "")
+                {
+                    // remove old <percentmethod> - case was wrong.
+                    Node.RemoveChild(XmlHelper.Find(Node, "percentmethod"));
+
+                    if (distributed.Equals("filled from top", StringComparison.CurrentCultureIgnoreCase))
+                        distributed = "FilledFromTop";
+                    else
+                        distributed = "EvenlyDistributed";
+
+                    XmlHelper.SetValue(Node, "FractionFull", Percent);
+                    XmlHelper.SetValue(Node, "PercentMethod", distributed);
+                }
+                else if (DepthWetSoil != "")
+                    XmlHelper.SetValue(Node, "DepthWetSoil", DepthWetSoil);
+
+                if (RelativeTo != "")
+                    XmlHelper.SetValue(Node, "RelativeTo", RelativeTo);
+            }
+            else if (Node.Name == "Phosphorus")
+            {
+                WriteLayeredDataAsArray(Node, "Thickness", "double", "mm");
+                WriteLayeredDataAsArray(Node, "LabileP", "double", "mg/kg");
+                WriteLayeredDataAsArray(Node, "BandedP", "double", "kg/ha");
+                WriteLayeredDataAsArray(Node, "RockP", "double", "kg/ha");
+                WriteLayeredDataAsArray(Node, "Sorption", "double", "-");
+                foreach (XmlNode Layer in XmlHelper.ChildNodes(Node, "Layer"))
+                    Node.RemoveChild(Layer);
+                RemoveBlankNodes(Node);
+            }
+            else if (Node.Name == "Swim")
+            {
+                if (XmlHelper.Value(Node, "VC").Equals("on", StringComparison.CurrentCultureIgnoreCase))
+                    XmlHelper.SetValue(Node, "VC", "true");
+                else
+                    XmlHelper.SetValue(Node, "VC", "false");
+                if (XmlHelper.Value(Node, "diagnostics").Equals("yes", StringComparison.CurrentCultureIgnoreCase))
+                    XmlHelper.SetValue(Node, "diagnostics", "true");
+                else
+                    XmlHelper.SetValue(Node, "diagnostics", "false");
+
+                ChangeNodeName(Node, "Cn2Bare", "CN2Bare");
+                ChangeNodeName(Node, "CnRed", "CNRed");
+                ChangeNodeName(Node, "CnCov", "CNCov");
+                ChangeNodeName(Node, "Kdul", "KDul");
+                ChangeNodeName(Node, "psidul", "PSIDul");
+                ChangeNodeName(Node, "dtmin", "DTmin");
+                ChangeNodeName(Node, "dtmax", "DTmax");
+                ChangeNodeName(Node, "diagnostics", "Diagnostics");
+
+                foreach (XmlNode SwimSolute in XmlHelper.ChildNodes(Node, "SwimSoluteParameters"))
+                {
+                    ChangeNodeName(SwimSolute, "dis", "Dis");
+                    ChangeNodeName(SwimSolute, "disp", "Disp");
+                    ChangeNodeName(SwimSolute, "a", "A");
+                    ChangeNodeName(SwimSolute, "dthc", "DTHC");
+                    ChangeNodeName(SwimSolute, "dthp", "DTHP");
+
+                    WriteLayeredDataAsArray(SwimSolute, "Thickness", "double", "");
+                    WriteLayeredDataAsArray(SwimSolute, "NO3Exco", "double", "");
+                    WriteLayeredDataAsArray(SwimSolute, "NO3FIP", "double", "");
+                    WriteLayeredDataAsArray(SwimSolute, "NH4Exco", "double", "");
+                    WriteLayeredDataAsArray(SwimSolute, "NH4FIP", "double", "");
+                    WriteLayeredDataAsArray(SwimSolute, "UreaExco", "double", "");
+                    WriteLayeredDataAsArray(SwimSolute, "UreaFIP", "double", "");
+                    WriteLayeredDataAsArray(SwimSolute, "ClExco", "double", "");
+                    WriteLayeredDataAsArray(SwimSolute, "ClFIP", "double", "");
+                    foreach (XmlNode Layer in XmlHelper.ChildNodes(SwimSolute, "Layer"))
+                        SwimSolute.RemoveChild(Layer);
+                    RemoveBlankNodes(SwimSolute);
                 }
             }
+            else if (Node.Name == "LayerStructure")
+            {
+                string Shortcut = XmlHelper.Attribute(Node, "shortcut");
+                if (Shortcut != "")
+                {
+                    Shortcut = ReplaceLastOccurrenceOf(Shortcut, "/Thickness", "/LayerStructure");
+                    XmlHelper.SetAttribute(Node, "shortcut", Shortcut);
+                }
+                else
+                {
+                    string[] Values = XmlHelper.Value(Node, "Values").Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    XmlNode ThicknessNode = Node.AppendChild(Node.OwnerDocument.CreateElement("Thickness"));
+                    XmlHelper.SetValues(ThicknessNode, "double", Values);
+                    Node.RemoveChild(XmlHelper.Find(Node, "Values"));
+                }
+            }
+            else if (Node.Name.ToLower() == "cl")
+                XmlHelper.ChangeType(Node, "Solute");
         }
 
         /// <summary>

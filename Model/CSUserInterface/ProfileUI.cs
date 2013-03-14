@@ -157,6 +157,13 @@ namespace CSUserInterface
             XmlDocument Doc = new XmlDocument();
             Doc.LoadXml(Soil.ToXml());
             XmlNode NodeWereInterestedIn = XmlHelper.FindRecursively(Doc.DocumentElement, OurComponent.Name);
+
+            // Some times NodeWereInterestedIn can be null e.g.
+            //    <SoilOrganicMatter shortcut="/simulations/folder/plot/SoilOrganicMatter Medium" />
+            // In this example OurComponent.Name = "SoilOrganicMatter Medium"
+            // When we do a FindRecursively on the executable line able, this won't be found.
+            if (NodeWereInterestedIn == null)
+                NodeWereInterestedIn = XmlHelper.FindRecursively(Doc.DocumentElement, OurComponent.Type);
             Data.InnerXml = NodeWereInterestedIn.InnerXml;
 
             Graph.OnSave();
