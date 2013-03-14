@@ -436,6 +436,10 @@ public class Apsim
         {
             return NumJobsBeingRun;
         }
+        set
+        {
+            NumJobsBeingRun = value;
+        }
     }
 
     /// <summary>

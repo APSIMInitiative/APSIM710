@@ -115,7 +115,7 @@ public class ApsimRunToolStrip
         }
         // JF 061211 - Added check for duplicate simulation names in different folders.
         //Create a list of sim names
-        simList.AddRange(ApsimFile.ApsimFile.GetSimsInApsimFile(_F.FileName));//new List<String>();
+        simList.AddRange(ApsimFile.ApsimFile.GetSimsInApsimFile(_F.FileName));
         List<String> duplicates = new List<String>();
         for (int i = 0; i < simList.Count; i++)
         {
@@ -159,6 +159,9 @@ public class ApsimRunToolStrip
             Apsim.StartAPSIM(_F, SimsToRun[0], false);
         else if (SimsToRun.Count > 1)
             Apsim.StartMultipleFromPaths(_F, SimsToRun);
+        else
+            Apsim.NumJobs = 0;
+            
         Timer.Enabled = true;
     }
 
