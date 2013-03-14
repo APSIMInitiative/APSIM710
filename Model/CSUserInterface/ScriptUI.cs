@@ -124,6 +124,12 @@ namespace CSUserInterface
 			}
 			PropertiesMenuItem.Checked = TabControl.TabPages.Count == 2;
 		}
+
+        private void VariablesButton_Click(object sender, EventArgs e)
+        {
+            VariablesEventsForm F = new VariablesEventsForm(Controller);
+            F.Show();
+        }
 	}
 }
 
