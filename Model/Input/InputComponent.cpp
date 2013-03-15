@@ -153,7 +153,7 @@ void InputComponent::doInit1(const protocol::Init1Data& init1Data)
 
      // When the DLL is probed the filename will be blank. Send out some dummy variables so that the GUI
      // and other tools can see the met variables.
-     if (iAmMet && getVariableValue("maxt") == 0.0)
+     if (ToLower(getName()) == "input" && getVariableValue("maxt") == 0.0)
         {
           addRegistration(::respondToGetSet, 0, "MaxT", singleType);       
           addRegistration(::respondToGetSet, 0, "MinT", singleType);       
