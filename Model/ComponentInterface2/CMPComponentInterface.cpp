@@ -20,7 +20,7 @@ string state = "";
 // =============================================================================
 // =============================================================================
 CMPComponentInterface::CMPComponentInterface(uintptr_t* callbackarg, CallbackType* callback,
-                                             unsigned componentid, unsigned parentid, 
+                                             unsigned componentid, unsigned parentid,
                                              const std::string &_dllName)
    // -----------------------------------------------------------------------
    // constructor
@@ -50,9 +50,9 @@ CMPComponentInterface::~CMPComponentInterface()
                                i++)
       {
       Reg *reg = i->second;
-      if (reg != NULL) 
+      if (reg != NULL)
           {
-          if (reg->data != NULL) 
+          if (reg->data != NULL)
              delete reg->data;
           delete reg;
           }
@@ -239,11 +239,11 @@ bool CMPComponentInterface::readScripts(std::map<std::string, std::string> &scri
    scripts.clear();
 
    readAndDemangleScripts(scripts, initData);
-   
+
    return (scripts.size() > 0);
    }
 
-void CMPComponentInterface::readAndDemangleScripts(std::map<std::string, std::string> &scripts, 
+void CMPComponentInterface::readAndDemangleScripts(std::map<std::string, std::string> &scripts,
 	                                              XMLNode::iterator &data)
    {
    XMLNode ui;
@@ -251,23 +251,23 @@ void CMPComponentInterface::readAndDemangleScripts(std::map<std::string, std::st
                           i != data->end();
                           i++)
       {
-      if (i->getName() == "ui") 
+      if (i->getName() == "ui")
       	 {
-      	 ui = *i; 
-         } 
-      else if (i->getName() == "rule") 
-         { 
+      	 ui = *i;
+         }
+      else if (i->getName() == "rule")
+         {
          string eventName = i->getAttribute("condition");
-         if (eventName != "") 
+         if (eventName != "")
          	  {
             replaceManagerMacros(eventName, ui);
             string script = i->getValue();
             replaceManagerMacros(script, ui);
             scripts[eventName] += script;
             }
-         readAndDemangleScripts(scripts, i); 
-         } 
-      else if (i->getName() == "script") 
+         readAndDemangleScripts(scripts, i);
+         }
+      else if (i->getName() == "script")
          {
          string eventName = findNodeValue(*i, "event");
          replaceManagerMacros(eventName, ui);
@@ -283,7 +283,7 @@ void CMPComponentInterface::readAndDemangleScripts(std::map<std::string, std::st
 // Replace all manager macros found in the specified contents
 // by using the nodes under <ui>
 // ------------------------------------------------------------------
-void CMPComponentInterface::replaceManagerMacros(std::string& contents, XMLNode ui) 
+void CMPComponentInterface::replaceManagerMacros(std::string& contents, XMLNode ui)
    {
    if (ui.isValid())
       {
@@ -512,6 +512,53 @@ void CMPComponentInterface::query(const std::string& pattern, std::vector<QueryM
       delete arraySpecifier;
    }
 
+void CMPComponentInterface::queryVariable(const std::string& pattern, std::vector<QueryMatch>& matches)
+   {
+   // -----------------------------------------------------------------------
+   // Return a list of all variables or components (fully qualified)
+   // that match the specified pattern.
+   //      wheat.* will return a list of all variables for the wheat module
+   //      *.lai will return a list of all lai variables for all modules.
+   // -----------------------------------------------------------------------
+
+   clearMessages();
+
+   // the report component sometimes passes through an array specifier
+   // e.g. tt_tot() - need to remove that before sending message to PM.
+   ArraySpecifier* arraySpecifier = ArraySpecifier::create(pattern);
+   string nameWithoutArraySpec = pattern;
+   if (arraySpecifier != NULL)
+      nameWithoutArraySpec = arraySpecifier->variableName();
+
+   QueryInfoType queryInfo;
+   queryInfo.name = nameWithoutArraySpec;
+
+   // work out if we dealing with a list of components or a list of variables.
+   queryInfo.kind = 2;
+   sendMessage(newMessage(Message::QueryInfo, componentID, parentID, false, queryInfo));
+
+   matches.erase(matches.begin(), matches.end());
+	for (unsigned i = 0; i != messages.size(); i++)
+      {
+		ReturnInfoType returnInfo;
+      MessageData returnInfoData(*messages[i]);
+		unpack(returnInfoData, returnInfo);
+      QueryMatch queryMatch;
+      queryMatch.name = returnInfo.name;
+      queryMatch.ddml = returnInfo.type;
+
+      if (getAttributeFromXML(queryMatch.ddml, "array") == "T" &&
+          arraySpecifier != NULL)
+         arraySpecifier->adornVariableName(queryMatch.name);
+
+      matches.push_back(queryMatch);
+      }
+
+   if (arraySpecifier != NULL)
+      delete arraySpecifier;
+   }
+
+
 void CMPComponentInterface::write(const std::string& msg)
    {
    // -----------------------------------------------------------------------
@@ -600,7 +647,7 @@ int CMPComponentInterface::RegisterWithPM(const string& name, const string& unit
      {
      // This is the second time the variable has been exposed, so we dont need to update the registration - only the data
      reg = oldReg->second;
-     if (reg->data != NULL) 
+     if (reg->data != NULL)
        delete reg->data;
      reg->data = data;
      reg->ddml = ddml;
@@ -700,11 +747,11 @@ void CMPComponentInterface::onInit1(const Message& message)
    expose("active", "", "", false, new CMPBuiltIn<int&>(active));
    expose("state", "", "", false, new CMPBuiltIn<string&>(state));
 
-   if (this->init1 != NULL) 
+   if (this->init1 != NULL)
       {
       this->init1->unpack(messageData, "");
 	  delete this->init1;
-      } 
+      }
    }
 
 void CMPComponentInterface::onInit2(const Message& message)
@@ -717,9 +764,9 @@ void CMPComponentInterface::onInit2(const Message& message)
       MessageData Data(message);
       init2[i]->unpack(Data, "");
       }
-   if ((tickID = nameToRegistrationID("tick", respondToEventReg)) == 0) 
+   if ((tickID = nameToRegistrationID("tick", respondToEventReg)) == 0)
    	  {
-   	  // We need a tick to determine when to write the "day = ..." heading to a summary file. 
+   	  // We need a tick to determine when to write the "day = ..." heading to a summary file.
       Null dummy;
    	  tickID = RegisterWithPM("tick", "", "", respondToEventReg, new PackableWrapper< Null >(dummy));
    	  }
@@ -736,7 +783,7 @@ void CMPComponentInterface::onQueryValue(const Message& message)
    Reg* reg = NULL;
    if (queryValue.ID <= Registrations.size())
      reg = Registrations[queryValue.ID - 1];
-   if (reg != NULL && reg->data != NULL) 
+   if (reg != NULL && reg->data != NULL)
       {
       Packable& data = *(reg->data);
       ReplyValueType replyValue;

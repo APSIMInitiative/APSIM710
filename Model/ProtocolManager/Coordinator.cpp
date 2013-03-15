@@ -716,7 +716,7 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
       std::string componentName;
 
       if (matches[i]->getComponentID() == componentID)
-         componentName = getName();
+         componentName = getFQName();
       else if (components.find(matches[i]->getComponentID()) != components.end())
          componentName = components[matches[i]->getComponentID()]->getName();
 

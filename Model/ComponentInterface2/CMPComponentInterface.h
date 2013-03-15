@@ -26,6 +26,7 @@ class EXPORT CMPComponentInterface
       void publish(const std::string& name, Packable* data);
       void subscribe(const std::string& eventName, Packable* handler);
       void query(const std::string& pattern, std::vector<QueryMatch>& matches);
+      void queryVariable(const std::string& pattern, std::vector<QueryMatch>& matches);
 
       void setSearchOrder(const std::vector<std::string> &list) {simSectionsToSearch = list;};
       void getSearchOrder(std::vector<std::string> &list) {list = simSectionsToSearch;};
@@ -48,7 +49,7 @@ class EXPORT CMPComponentInterface
       std::string getFQName(void);
       std::string getExecutableFileName(void);
       const std::string getInitData(void) {return simScript->documentElement().write();}
-      
+
       // internal stuff.
       void messageToLogic(const Message& message);
 
