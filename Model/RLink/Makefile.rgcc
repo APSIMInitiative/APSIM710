@@ -4,9 +4,9 @@
 #     to build this dll. Don't forget to copy it to the runtime dll directory.
 
 # May be necessary. 
-R_HOME = "C:/Program Files/R/R-2.15.0"
+#R_HOME = "C:/Program Files/R/R-2.15.1"
 R_HOME = "d:/R-2.15.1"
-
+APSIM = d:\\apsim
 CXXFLAGS :=
 
 ## include headers and libraries for R
@@ -21,18 +21,21 @@ RCPPLIBS := 		$(shell echo 'Rcpp:::LdFlags()'  | $(R_HOME)/bin/R $(R_ARCH) --van
 RINSIDEINCL := 		$(shell echo 'RInside:::CxxFlags()' | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
 RINSIDELIBS := 		$(shell echo 'RInside:::LdFlags()'  | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
 RCPPFLAGS := 		-Wall $(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CPPFLAGS)
-RCXXFLAGS := 		$(RCPPFLAGS) $(RRCPPFLAGS) "$(RCPPINCL)" "$(RINSIDEINCL)" $(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXXFLAGS)
+RCXXFLAGS := 		$(RCPPFLAGS) $(RRCPPFLAGS) "$(RCPPINCL)" "$(RINSIDEINCL)" -I $(APSIM)/Model $(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXXFLAGS)
 RLDFLAGS = $(RRLDFLAGS) 
 RLDLIBS :=  $(RINSIDELIBS) "$(RCPPLIBS)" $(RRCPPLIBS)
 RCXX := 			$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXX)
 
-# Stuff for REmbedder.cpp RInside.cpp here
-../REmbed.dll: REmbedder.o RDataTypesRcpp.o
-	$(RCXX) $(CXXFLAGS) -shared -s -static-libgcc -o $@ REmbedder.o  RDataTypesRcpp.o $(RLDFLAGS) $(RLDLIBS)
+# Stuff for REmbedder.cpp here
+../REmbed.dll: REmbedder.o RDataTypesEmbedded.o libRLink.a
+	$(RCXX) $(CXXFLAGS) -shared -s -static-libgcc -o $@ REmbedder.o  RDataTypesEmbedded.o $(RLDFLAGS) libRLink.a $(RLDLIBS)
 
-REmbedder.o: REmbedder.cpp apsimPublish.cpp
+REmbedder.o: REmbedder.cpp 
 	$(RCXX) -c $(CXXFLAGS) $(RCXXFLAGS)  REmbedder.cpp 
 
-RDataTypesRcpp.o: RDataTypesRcpp.cpp
-	$(RCXX) -c $(CXXFLAGS) $(RCXXFLAGS)  RDataTypesRcpp.cpp 
+RDataTypesEmbedded.o: RDataTypesEmbedded.cpp
+	$(RCXX) -c $(CXXFLAGS) $(RCXXFLAGS)  RDataTypesEmbedded.cpp 
 
+libRLink.a: RLink.def
+	dlltool -d RLink.def -l libRLink.a
+    

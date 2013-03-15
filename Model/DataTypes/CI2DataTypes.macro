@@ -179,6 +179,7 @@ class EXPORT ScienceAPI2
       //      *.lai will return a list of all lai variables for all modules.
       // -----------------------------------------------------------------------
       virtual void query(const std::string& pattern, std::vector<QueryMatch>& matches) = 0;
+      virtual void queryVariable(const std::string& pattern, std::vector<QueryMatch>& matches) = 0;
 
       // Methods for doing "search orders" when reading parameters:
       virtual void setSearchOrder(const std::vector<std::string> &)=0;
@@ -213,9 +214,9 @@ class EXPORT ScienceAPI2
       virtual void exposeFunction(const std::string& name, const std::string& units, const std::string& description, boost::function1<void, [builtin.cpptype]&> fn) = 0;
       virtual void exposeFunction(const std::string& name, const std::string& units, const std::string& description, boost::function1<void, [builtin.cpptype]&> getter,
                                   boost::function1<void, [builtin.cpptype]&> setter) = 0;
-      virtual void exposeFunction2(const std::string& name, const std::string& units, const std::string& description, 
+      virtual void exposeFunction2(const std::string& name, const std::string& units, const std::string& description,
                                   boost::function2<void, const std::string &, [builtin.cpptype]&> fn) = 0;
-      virtual void exposeFunction2(const std::string& name, const std::string& units, const std::string& description, 
+      virtual void exposeFunction2(const std::string& name, const std::string& units, const std::string& description,
                                   boost::function2<void, const std::string &, [builtin.cpptype]&> getter,
                                   boost::function2<void, const std::string &, [builtin.cpptype]&> setter) = 0;
 
@@ -237,7 +238,7 @@ class EXPORT ScienceAPI2
 
       #define VariantFunction(address) boost::function1<void, Variant& >(boost::bind(address, this, _1))
       virtual void subscribe(const std::string& name, boost::function1<void, Variant&> handler) = 0;
-      
+
       #define VariantFunction2(name, address) boost::function2<void, const std::string &, Variant& >(boost::bind(address, this, _1, _2))
       virtual void subscribe(const std::string& name, boost::function2<void, const std::string &, Variant&> handler) = 0;
 
@@ -278,6 +279,7 @@ class EXPORT ScienceAPI2Impl : public ScienceAPI2
       virtual void getSearchOrder(std::vector<std::string> &list);
 
       virtual void query(const std::string& pattern, std::vector<QueryMatch>& matches);
+      virtual void queryVariable(const std::string& pattern, std::vector<QueryMatch>& matches);
 
       // Methods for reading raw strings
       virtual bool readFiltered(const std::string& filterName, std::vector<std::string> &values);
@@ -307,7 +309,7 @@ class EXPORT ScienceAPI2Impl : public ScienceAPI2
       virtual void exposeFunction(const std::string& name, const std::string& units, const std::string& description,
                                   boost::function1<void, [builtin.cpptype]&> getter,
                                   boost::function1<void, [builtin.cpptype]&> setter);
-      virtual void exposeFunction2(const std::string& name, const std::string& units, const std::string& description, 
+      virtual void exposeFunction2(const std::string& name, const std::string& units, const std::string& description,
                                    boost::function2<void, const std::string&, [builtin.cpptype]&> method);
       virtual void exposeFunction2(const std::string& name, const std::string& units, const std::string& description,
                                    boost::function2<void, const std::string&, [builtin.cpptype]&> getter,
@@ -357,7 +359,7 @@ string ScienceAPI2Impl::FQName(void)
    {return componentInterface.getFQName();}
 string ScienceAPI2Impl::getExecutableFileName(void)
    {return componentInterface.getExecutableFileName();}
-const std::string ScienceAPI2Impl::getInitData(void) 
+const std::string ScienceAPI2Impl::getInitData(void)
    {return componentInterface.getInitData();}
 void ScienceAPI2Impl::write(const string& msg)
    {
@@ -367,6 +369,10 @@ void ScienceAPI2Impl::write(const string& msg)
 void ScienceAPI2Impl::query(const string& pattern, vector<QueryMatch>& matches)
    {
    componentInterface.query(pattern, matches);
+   }
+void ScienceAPI2Impl::queryVariable(const string& pattern, vector<QueryMatch>& matches)
+   {
+   componentInterface.queryVariable(pattern, matches);
    }
 
 void ScienceAPI2Impl::setSearchOrder(const std::vector<string> &list) {componentInterface.setSearchOrder(list);};
@@ -446,10 +452,10 @@ void ScienceAPI2Impl::exposeFunction(const std::string& name, const std::string&
    componentInterface.expose(name, units, description, true,
                              new DualMethod<boost::function1<void, [builtin.cpptype]&>, [builtin.cpptype] > (getter, setter));
    }
-void ScienceAPI2Impl::exposeFunction2(const std::string& name, const std::string& units, const std::string& description, 
+void ScienceAPI2Impl::exposeFunction2(const std::string& name, const std::string& units, const std::string& description,
                                      boost::function2<void, const std::string &, [builtin.cpptype]&> fn)
    {
-   componentInterface.expose(name, units, description, false, 
+   componentInterface.expose(name, units, description, false,
                              new NamedMethod<boost::function2<void, const std::string &, [builtin.cpptype]&>, [builtin.cpptype] >(name, fn));
    }
 void ScienceAPI2Impl::exposeFunction2(const std::string& name, const std::string& units, const std::string& description,
@@ -459,7 +465,7 @@ void ScienceAPI2Impl::exposeFunction2(const std::string& name, const std::string
    componentInterface.expose(name, units, description, true,
                              new NamedDualMethod<boost::function2<void, const std::string&, [builtin.cpptype]&>, [builtin.cpptype] > (name, getter, setter));
    }
-   
+
 void ScienceAPI2Impl::subscribe(const std::string& name, boost::function1<void, [builtin.cpptype]&> handler)
    {componentInterface.subscribe(name, new Method<boost::function1<void, [builtin.cpptype]&>, [builtin.cpptype] > (handler));}
 void ScienceAPI2Impl::publish(const std::string& name, [builtin.cpptype]& data)
@@ -474,7 +480,7 @@ void ScienceAPI2Impl::set(const std::string& name, [type.name]Type& data)
 void ScienceAPI2Impl::expose(const std::string& name, const std::string& description, bool writable, [type.name]Type & variable)
    {componentInterface.expose(name, "", description, writable, new PackableWrapper<[type.name]Type& >(variable));}
 void ScienceAPI2Impl::expose(const std::string& name, const std::string& description, boost::function1<void, [type.name]Type&> getter, boost::function1<void, [type.name]Type&> setter)
-   {componentInterface.expose(name, "", description, 1,  
+   {componentInterface.expose(name, "", description, 1,
                               new DualMethod<boost::function1<void, [type.name]Type&>, [type.name]Type > (getter, setter));}
 void ScienceAPI2Impl::subscribe(const std::string& name, boost::function1<void, [type.name]Type&> handler)
      {componentInterface.subscribe(name, new MethodWithStructureConverter<boost::function1<void, [type.name]Type&>, [type.name]Type > (handler));}
@@ -682,30 +688,30 @@ extern "C" void EXPORT STDCALL Get[type.name]Type(const char* variableName,
    string units = "";
    currentWrapper->componentInterface().get(FortranString(variableName, variableNameLength).toString(), units, optional, new PackableWrapper2< F[type.name]Type & >(*Data));
    }
-extern "C" void EXPORT STDCALL Expose[type.name]Type(const char* variableName, 
+extern "C" void EXPORT STDCALL Expose[type.name]Type(const char* variableName,
                                                      const char* description,
                                                      bool writeable,
                                                      F[type.name]Type* Data,
                                                      unsigned variableNameLength,
                                                      unsigned descriptionLength)
    {
-   currentWrapper->componentInterface().expose(FortranString(variableName, variableNameLength).toString(), 
-                                               "", 
-                                               FortranString(description, descriptionLength).toString(), 
-                                               writeable, 
+   currentWrapper->componentInterface().expose(FortranString(variableName, variableNameLength).toString(),
+                                               "",
+                                               FortranString(description, descriptionLength).toString(),
+                                               writeable,
                                                new PackableWrapper2< F[type.name]Type & >(*Data));
    }
-extern "C" void EXPORT STDCALL Expose[type.name]TypeFunction(const char* variableName, 
+extern "C" void EXPORT STDCALL Expose[type.name]TypeFunction(const char* variableName,
                                                      const char* description,
                                                      F[type.name]TypeFunction* Getter,
                                                      F[type.name]TypeFunction* Setter,
                                                      unsigned variableNameLength,
                                                      unsigned descriptionLength)
    {
-   currentWrapper->componentInterface().expose(FortranString(variableName, variableNameLength).toString(), 
-                                               "", 
-                                               FortranString(description, descriptionLength).toString(), 
-                                               Setter != NULL,   
+   currentWrapper->componentInterface().expose(FortranString(variableName, variableNameLength).toString(),
+                                               "",
+                                               FortranString(description, descriptionLength).toString(),
+                                               Setter != NULL,
                                                new FortranDualMethod<F[type.name]TypeFunction, F[type.name]Type > (currentWrapper, Getter, Setter));
 
    }
@@ -967,7 +973,7 @@ module ScienceAPI2
       end function
      [endfor]
    end interface
- 
+
    interface Set
       subroutine SetInteger(Name, Units, Value)
       ml_external SetInteger
@@ -1087,7 +1093,7 @@ module ScienceAPI2
       logical           :: Writable
       integer           :: Data(*)
       integer           :: numvalues
-      integer           :: maxvalues	  
+      integer           :: maxvalues
       end subroutine
       subroutine ExposeRealArray(Name, Units, Description, Writable, Data, numvalues, maxvalues)
       ml_external ExposeRealArray
@@ -1098,7 +1104,7 @@ module ScienceAPI2
       logical           :: Writable
       real              :: Data(*)
       integer           :: numvalues
-      integer           :: maxvalues	  
+      integer           :: maxvalues
       end subroutine
       subroutine ExposeDoubleArray(Name, Units, Description, Writable, Data, numvalues, maxvalues)
       ml_external ExposeDoubleArray
@@ -1109,7 +1115,7 @@ module ScienceAPI2
       logical           :: Writable
       double precision  :: Data(*)
       integer           :: numvalues
-      integer           :: maxvalues	  
+      integer           :: maxvalues
       end subroutine
       subroutine ExposeStringArray(Name, Units, Description, Writable, Data, numvalues, maxvalues)
       ml_external ExposeStringArray
@@ -1120,7 +1126,7 @@ module ScienceAPI2
       logical           :: Writable
       character (len=*) :: Data(*)
       integer           :: numvalues
-      integer           :: maxvalues	  
+      integer           :: maxvalues
       end subroutine
 !!! Ugh. This is a blight. Assumes it will call a fortran function with 2 arguments - variable name and value.
       subroutine ExposeRealFunction(Name, Units, Description, Getter, Setter)
