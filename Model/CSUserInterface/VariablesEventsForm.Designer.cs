@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.FilterPanel = new System.Windows.Forms.Panel();
+            this.EventsCheckBox = new System.Windows.Forms.CheckBox();
             this.VariableListView = new System.Windows.Forms.ListView();
             this.ColumnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ColumnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -36,7 +37,6 @@
             this.ColumnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Label1 = new System.Windows.Forms.Label();
             this.ComponentFilter = new System.Windows.Forms.ComboBox();
-            this.EventsCheckBox = new System.Windows.Forms.CheckBox();
             this.FilterPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -46,11 +46,22 @@
             this.FilterPanel.Controls.Add(this.VariableListView);
             this.FilterPanel.Controls.Add(this.Label1);
             this.FilterPanel.Controls.Add(this.ComponentFilter);
-            this.FilterPanel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.FilterPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.FilterPanel.Location = new System.Drawing.Point(0, 0);
             this.FilterPanel.Name = "FilterPanel";
-            this.FilterPanel.Size = new System.Drawing.Size(397, 658);
+            this.FilterPanel.Size = new System.Drawing.Size(450, 732);
             this.FilterPanel.TabIndex = 19;
+            // 
+            // EventsCheckBox
+            // 
+            this.EventsCheckBox.AutoSize = true;
+            this.EventsCheckBox.Location = new System.Drawing.Point(262, 15);
+            this.EventsCheckBox.Name = "EventsCheckBox";
+            this.EventsCheckBox.Size = new System.Drawing.Size(95, 17);
+            this.EventsCheckBox.TabIndex = 21;
+            this.EventsCheckBox.Text = "Show Events?";
+            this.EventsCheckBox.UseVisualStyleBackColor = true;
+            this.EventsCheckBox.CheckedChanged += new System.EventHandler(this.EventsCheckBox_CheckedChanged);
             // 
             // VariableListView
             // 
@@ -65,7 +76,7 @@
             this.VariableListView.FullRowSelect = true;
             this.VariableListView.Location = new System.Drawing.Point(11, 39);
             this.VariableListView.Name = "VariableListView";
-            this.VariableListView.Size = new System.Drawing.Size(374, 605);
+            this.VariableListView.Size = new System.Drawing.Size(427, 679);
             this.VariableListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.VariableListView.TabIndex = 20;
             this.VariableListView.UseCompatibleStateImageBehavior = false;
@@ -108,22 +119,11 @@
             this.ComponentFilter.TabIndex = 18;
             this.ComponentFilter.TextChanged += new System.EventHandler(this.ComponentFilter_TextChanged);
             // 
-            // EventsCheckBox
-            // 
-            this.EventsCheckBox.AutoSize = true;
-            this.EventsCheckBox.Location = new System.Drawing.Point(262, 15);
-            this.EventsCheckBox.Name = "EventsCheckBox";
-            this.EventsCheckBox.Size = new System.Drawing.Size(95, 17);
-            this.EventsCheckBox.TabIndex = 21;
-            this.EventsCheckBox.Text = "Show Events?";
-            this.EventsCheckBox.UseVisualStyleBackColor = true;
-            this.EventsCheckBox.CheckedChanged += new System.EventHandler(this.EventsCheckBox_CheckedChanged);
-            // 
             // VariablesEventsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(397, 658);
+            this.ClientSize = new System.Drawing.Size(450, 732);
             this.Controls.Add(this.FilterPanel);
             this.Name = "VariablesEventsForm";
             this.Text = "VariablesEventsForm";
