@@ -1081,7 +1081,7 @@ public partial class SoilErosion
         double alpha = 1.0 / Math.Log((max_silt_radius - max_clay_radius) / (max_fine_sand_radius - max_clay_radius));
         double beta = alpha * Math.Log((max_silt_radius - max_clay_radius) / max_clay_radius);
         double v = Math.Log((1.0 / (fraction_clay + fraction_silt) - 1.0) / (1.0 / fraction_clay - 1.0));
-        double w = Math.Log((1.0 / (fraction_clay + fraction_silt + fraction_fine_sand) - 1.0) / (1.0 / fraction_clay - 1.0));
+        double w = Math.Log((1.0 / Math.Min(0.9999, fraction_clay + fraction_silt + fraction_fine_sand) - 1.0) / (1.0 / fraction_clay - 1.0));
 
         double c = alpha * Math.Log(v / w);
         double u = Math.Pow(-v, 1.0 - beta) * Math.Pow(-w, beta);
