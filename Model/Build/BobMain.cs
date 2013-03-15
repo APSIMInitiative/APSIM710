@@ -54,8 +54,13 @@ class BobMain
 
          // Run the version stamper.
          Run("Run version stamper", "%APSIM%/Model/cscs.exe",
-             "%APSIM%/Model/Build/VersionStamper.cs Directory=%APSIM% [Increment=Yes]",
+             "%APSIM%/Model/Build/VersionStamper.cs Directory=%APSIM% Increment=Yes",
              "%APSIM%/Model/Build");
+             
+         // Set the VersionStamper increment environment variable to indicate that the 
+         // VersionStamper should increment the revision number. This is necessary to
+         // keep the revision number reported by APSIM inline with SVN.
+         System.Environment.SetEnvironmentVariable("Increment", "Yes");
 
          // Compile the JobScheduler.
          Run("Compile job scheduler",
@@ -84,7 +89,8 @@ class BobMain
       }
       catch (Exception err)
       {
-         Console.WriteLine(err.Message);
+         Console.WriteLine("Error from BobMain.cs: " + err.Message);
+         EnsureUpdateFieldInDBExists();
          if (System.Environment.MachineName.ToUpper() == "BOB")
             Run("Set status of job", "%APSIM%/Model/UpdateFieldInDB.exe", "Status Fail", "%APSIM%/Model");
          else
@@ -142,6 +148,21 @@ class BobMain
       Process P = RunProcess(Executable, Arguments, JobFolder);
       return CheckProcessExitedProperly(Name, P);
    }
+   
+   // Ensure that UpdateFieldInDB.exe exists.
+   static void EnsureUpdateFieldInDBExists()
+   {
+      string Executable = "%APSIM%/Model/UpdateFieldInDB.exe";
+      Executable = ReplaceEnvironmentVariables(Executable);
+      if (!File.Exists(Executable))
+      {
+         // Compile the JobScheduler.
+         Run("Compile job scheduler-somthing went wrong",
+             (Path.DirectorySeparatorChar != '/' ? "%VS100COMNTOOLS%\\..\\IDE\\devenv.exe" : "xbuild"),
+             (Path.DirectorySeparatorChar != '/' ? "%APSIM%/Model/JobScheduler/JobScheduler.sln /build debug" : "%APSIM%/Model/JobScheduler/JobScheduler.sln /target:Build"),
+             "%APSIM%/Model/JobScheduler");
+      }
+   }   
 
    static Process RunProcess(string Executable, string Arguments, string JobFolder)
    {
