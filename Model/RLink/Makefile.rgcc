@@ -6,7 +6,7 @@
 # May be necessary. 
 #R_HOME = "C:/Program Files/R/R-2.15.1"
 R_HOME = "d:/R-2.15.1"
-APSIM = d:\\apsim
+APSIM = d:/apsim
 CXXFLAGS :=
 
 ## include headers and libraries for R
@@ -27,14 +27,17 @@ RLDLIBS :=  $(RINSIDELIBS) "$(RCPPLIBS)" $(RRCPPLIBS)
 RCXX := 			$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXX)
 
 # Stuff for REmbedder.cpp here
-../REmbed.dll: REmbedder.o RDataTypesEmbedded.o libRLink.a
-	$(RCXX) $(CXXFLAGS) -shared -s -static-libgcc -o $@ REmbedder.o  RDataTypesEmbedded.o $(RLDFLAGS) libRLink.a $(RLDLIBS)
+../REmbed.dll: REmbedder.o RDataTypesEmbedded.o dllProcAddressWrapper.o libRLink.a
+	$(RCXX) $(CXXFLAGS) -shared -s -static-libgcc -o $@ REmbedder.o  RDataTypesEmbedded.o dllProcAddressWrapper.o $(RLDFLAGS) libRLink.a $(RLDLIBS)
 
 REmbedder.o: REmbedder.cpp 
 	$(RCXX) -c $(CXXFLAGS) $(RCXXFLAGS)  REmbedder.cpp 
 
 RDataTypesEmbedded.o: RDataTypesEmbedded.cpp
 	$(RCXX) -c $(CXXFLAGS) $(RCXXFLAGS)  RDataTypesEmbedded.cpp 
+
+dllProcAddressWrapper.o: dllProcAddressWrapper.cpp
+	$(RCXX) -c $(CXXFLAGS) dllProcAddressWrapper.cpp
 
 libRLink.a: RLink.def
 	dlltool -d RLink.def -l libRLink.a

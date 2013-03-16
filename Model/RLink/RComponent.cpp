@@ -35,11 +35,22 @@ extern "C" void EXPORT STDCALL deleteComponent(RComponent* component)
    }
 
 #ifdef __WIN32__
+HMODULE GetCurrentModule()
+{ // NB: XP+ solution!
+  HMODULE hModule = NULL;
+  GetModuleHandleEx(
+    GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
+    (LPCTSTR)GetCurrentModule,
+    &hModule);
+
+  return hModule;
+}
 //--------------------------- R Embedder DLL initialisation
 void *RDLLHandle = NULL;
+void *MyDLLHandle = NULL;
 typedef bool (*B_VOID_FN)(void);
 typedef bool (*B_CHAR_FN)(const char*);
-typedef bool (*B_CHAR2_FN)(const char*, const char*);
+typedef bool (*B_CHAR2_FN)(void *, const char*, const char*);
 typedef bool (*B_VOIDPTR_FN)(void *);
 typedef bool (*B_VEC_FN)(const char*, char *, unsigned int, unsigned int, unsigned int *);
 typedef bool (*B_2CHAR_FN)(const char*, char*, int);
@@ -52,6 +63,8 @@ B_2CHAR_FN   R_EvalCharSimpleFn;
 // Load and initialise the dll. Call once.
 bool StartR (const char *R_Home, const char *UserLibs, const char *exeName)
    {
+    MyDLLHandle = (void*)GetCurrentModule();
+
     RDLLHandle = loadDLL(exeName);
     if (RDLLHandle == NULL)
       throw std::runtime_error(string("Can't load R DLL ") + exeName);
@@ -60,7 +73,7 @@ bool StartR (const char *R_Home, const char *UserLibs, const char *exeName)
     if (R_StartFn == NULL)
        goto baddll;
 
-    if (!R_StartFn(R_Home, UserLibs ))
+    if (!R_StartFn(MyDLLHandle, R_Home, UserLibs ))
        throw std::runtime_error(string("R_Start failed in ") + exeName);
 
     if (NULL == (R_EvalCharFn = (B_CHAR_FN) dllProcAddress(RDLLHandle, "EmbeddedR_Eval"))) goto baddll;

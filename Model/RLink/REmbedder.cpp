@@ -9,7 +9,6 @@
 #include "REmbedder.h"
 #include "RDataTypes.h"
 #include "RDataTypesEmbedded.h"
-
 void apsimFatalError( std::string message )
   {
   apsimFatalErrorRaw( message.c_str());
@@ -56,13 +55,18 @@ RCPP_MODULE(apsim){
 
 ///////////////////START
 RInside *ptrR = NULL;
+void * DLLEXPORT RLinkDLLHandle = NULL;
+
 // These "Embedded_xxxx" routines are called via dlsym() from the apsim component
 // Return false on error
-extern "C" bool DLLEXPORT EmbeddedR_Start(const char *R_Home, const char *UserLibs)
+
+extern "C" bool DLLEXPORT EmbeddedR_Start(void *handle, const char *R_Home, const char *UserLibs)
 {
    int argc = 0;
    char **argv = NULL;
 #ifdef WIN32
+   RLinkDLLHandle = handle;
+     
    std::string newPath = getenv("PATH");
    std::replace(newPath.begin(), newPath.end(), '\\', '/');
    newPath = std::string(R_Home) + "/bin/i386;" + newPath;
