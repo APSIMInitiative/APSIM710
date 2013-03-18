@@ -383,7 +383,7 @@ namespace CSGeneral
 
             for (int Index = 0; Index != Values.Count; Index++)
             {
-                if (Values[Index].ToString() == "")
+                if (Values[Index].ToString() == "" || Values[Index].ToString() == "NaN")
                     ReturnValues[Index] = MathUtility.MissingValue;
                 else
                     ReturnValues[Index] = Convert.ToDouble(Values[Index]);

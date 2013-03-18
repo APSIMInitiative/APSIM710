@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Xml;
 using System.Diagnostics;
 using System.Threading;
+using System.Globalization;
 
 public class Apsim
 {
@@ -35,6 +36,7 @@ public class Apsim
     /// </summary>
     static int Main(string[] args)
     {
+        Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-au");
         try
         {
             Apsim Apsim = new Apsim();

@@ -113,6 +113,7 @@ int main(int argc, char **argv)
       return 1;
       }
 
+   setlocale(LC_ALL, "English_Australia.1252");
    // Get the full path name to the sim file.
    std::string simPath = argv[1];
    #ifdef __WIN32__

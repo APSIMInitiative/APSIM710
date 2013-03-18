@@ -6,6 +6,8 @@ using System.IO;
 using System.Xml;
 using System.Collections;
 using CSGeneral;
+using System.Threading;
+using System.Globalization;
 
 public class ApsimToSim
 {
@@ -341,7 +343,7 @@ public class ApsimToSim
                         foreach (object I in Obj as IList)
                         {
                             if (I is double)
-                                MacroValue += ((double)I).ToString("f3") + " ";
+                                MacroValue += ((double)I).ToString("f3", CultureInfo.CreateSpecificCulture("en-AU")) + " ";
                             else
                                 MacroValue += I.ToString() + " ";
                         }
@@ -351,7 +353,7 @@ public class ApsimToSim
                         if (double.IsNaN(Convert.ToDouble(Obj)))
                             MacroValue = "";
                         else
-                            MacroValue = ((Double)Obj).ToString("f3");
+                            MacroValue = ((Double)Obj).ToString("f3", CultureInfo.CreateSpecificCulture("en-AU"));
                     }
                     else
                         MacroValue = Obj.ToString();

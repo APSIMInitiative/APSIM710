@@ -3,6 +3,8 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
+using System.Threading;
+using System.Globalization;
 using System.Windows.Forms;
 
 using System.Collections.Specialized;
@@ -38,7 +40,9 @@ namespace APSIMUI
         [System.STAThread()]
         public static void Main(string[] Args)
         {
-			try { Application.EnableVisualStyles(); } catch (Exception) {} 
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-au");
+
+            try { Application.EnableVisualStyles(); } catch (Exception) {} 
             Application.DoEvents();
             Application.DoEvents();
             Application.Run(new MainUI(Args));
