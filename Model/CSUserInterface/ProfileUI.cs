@@ -259,49 +259,56 @@ namespace CSUserInterface
         private void SaveGrid()
         {
             // Loop through all columns in grid.
-            foreach (DataGridViewColumn Col in Grid.Columns)
+            try
             {
-                // Extract the property name from the column header.
-                string PropertyName = Col.HeaderText;
-                if (PropertyName.Contains("\r\n"))
-                    PropertyName = PropertyName.Remove(PropertyName.IndexOf("\r\n"));
-
-                // Set the properties values.
-                PropertyInfo Property = null;
-                object Values = null;
-                if (PropertyName == "Depth")
+                foreach (DataGridViewColumn Col in Grid.Columns)
                 {
-                    Property = OurObject.GetType().GetProperty("Thickness");
-                    Values = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, Col.Index));
-                }
-                else
-                {
-                    // Find the property in Obj.
-                    Property = OurObject.GetType().GetProperty(PropertyName);
+                    // Extract the property name from the column header.
+                    string PropertyName = Col.HeaderText;
+                    if (PropertyName.Contains("\r\n"))
+                        PropertyName = PropertyName.Remove(PropertyName.IndexOf("\r\n"));
 
-                    if (Property != null)
+                    // Set the properties values.
+                    PropertyInfo Property = null;
+                    object Values = null;
+                    if (PropertyName == "Depth")
                     {
-                        if (Property.PropertyType.Name == "Double[]")
-                            Values = GridUtility.GetColumnAsDoubles(Grid, Col.Index);
+                        Property = OurObject.GetType().GetProperty("Thickness");
+                        Values = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, Col.Index));
+                    }
+                    else
+                    {
+                        // Find the property in Obj.
+                        Property = OurObject.GetType().GetProperty(PropertyName);
 
-                        else if (Property.PropertyType.Name == "String[]")
-                            Values = GridUtility.GetColumnAsStrings(Grid, Col.Index);
+                        if (Property != null)
+                        {
+                            if (Property.PropertyType.Name == "Double[]")
+                                Values = GridUtility.GetColumnAsDoubles(Grid, Col.Index);
+
+                            else if (Property.PropertyType.Name == "String[]")
+                                Values = GridUtility.GetColumnAsStrings(Grid, Col.Index);
+                        }
+                    }
+                    if (Property != null)
+                        Property.SetValue(OurObject, Values, null);
+
+                    // Set the metadata.
+                    PropertyInfo Metadata = OurObject.GetType().GetProperty(PropertyName + "Metadata");
+                    if (Metadata != null)
+                    {
+                        string[] MetadataStrings = GridUtility.GetColumnOfToolTips(Grid, Col.Index);
+                        Metadata.SetValue(OurObject, MetadataStrings, null);
                     }
                 }
-                if (Property != null)
-                    Property.SetValue(OurObject, Values, null);
 
-                // Set the metadata.
-                PropertyInfo Metadata = OurObject.GetType().GetProperty(PropertyName + "Metadata");
-                if (Metadata != null)
-                {
-                    string[] MetadataStrings = GridUtility.GetColumnOfToolTips(Grid, Col.Index);
-                    Metadata.SetValue(OurObject, MetadataStrings, null);
-                }
+                if (OurObject is Water)
+                    SaveCropColumns();
             }
-
-            if (OurObject is Water)
-                SaveCropColumns();
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         /// <summary>
@@ -411,39 +418,46 @@ namespace CSUserInterface
         /// </summary>
         private void OnEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            if (Grid.Columns[e.ColumnIndex].HeaderText.Contains("DUL"))
+            try
             {
-                Soil.Water.DUL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
-
-                // Update all PAWC columns.
-                foreach (DataGridViewColumn Column in Grid.Columns)
+                if (Grid.Columns[e.ColumnIndex].HeaderText.Contains("DUL"))
                 {
-                    if (Column.HeaderText.Contains("PAWC"))
-                        UpdatePAWCColumn(Column);
+                    Soil.Water.DUL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
+
+                    // Update all PAWC columns.
+                    foreach (DataGridViewColumn Column in Grid.Columns)
+                    {
+                        if (Column.HeaderText.Contains("PAWC"))
+                            UpdatePAWCColumn(Column);
+                    }
                 }
+                else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" LL"))
+                {
+                    string CropName = CropNameFromColumn(e.ColumnIndex);
+                    Soil.Crop(CropName).LL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
+                    UpdatePAWCColumn(Grid.Columns[e.ColumnIndex + 1]);
+                }
+                else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" KL"))
+                {
+                    string CropName = CropNameFromColumn(e.ColumnIndex);
+                    Soil.Crop(CropName).KL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
+                    UpdatePAWCColumn(Grid.Columns[e.ColumnIndex - 1]);
+                }
+                else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" XF"))
+                {
+                    string CropName = CropNameFromColumn(e.ColumnIndex);
+                    Soil.Crop(CropName).XF = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
+                    UpdatePAWCColumn(Grid.Columns[e.ColumnIndex - 2]);
+                }
+                if (OurComponent.Type == "Water" || OurComponent.Type == "SoilOrganicMatter")
+                    Graph.Populate(Soil, OurComponent.Type);
+                else
+                    Graph.Populate(Grid.ToTable(), OurComponent.Type, Soil);
             }
-            else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" LL"))
+            catch (Exception ex)
             {
-                string CropName = CropNameFromColumn(e.ColumnIndex);
-                Soil.Crop(CropName).LL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
-                UpdatePAWCColumn(Grid.Columns[e.ColumnIndex + 1]);
+                MessageBox.Show(ex.Message);
             }
-            else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" KL"))
-            {
-                string CropName = CropNameFromColumn(e.ColumnIndex);
-                Soil.Crop(CropName).KL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
-                UpdatePAWCColumn(Grid.Columns[e.ColumnIndex - 1]);
-            }
-            else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" XF"))
-            {
-                string CropName = CropNameFromColumn(e.ColumnIndex);
-                Soil.Crop(CropName).XF = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
-                UpdatePAWCColumn(Grid.Columns[e.ColumnIndex - 2]);
-            }
-            if (OurComponent.Type == "Water" || OurComponent.Type == "SoilOrganicMatter")
-                Graph.Populate(Soil, OurComponent.Type);
-            else
-                Graph.Populate(Grid.ToTable(), OurComponent.Type, Soil);
         }
 
         /// <summary>

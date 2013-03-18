@@ -65,10 +65,17 @@ namespace Graph
             // Make sure there is a DepthMidPoints column
             if (DataSource.Columns.IndexOf("DepthMidPoints (mm)") == -1)
             {
-                string[] Depths = DataTableUtility.GetColumnAsStrings(DataSource, "Depth (cm)");
-                double[] Thickness = Soil.ToThickness(Depths);
-                double[] DepthMidPoints = Soil.ToMidPoints(Thickness);
-                DataTableUtility.AddColumn(DataSource, "DepthMidPoints (mm)", DepthMidPoints);
+                try
+                {
+                    string[] Depths = DataTableUtility.GetColumnAsStrings(DataSource, "Depth (cm)");
+                    double[] Thickness = Soil.ToThickness(Depths);
+                    double[] DepthMidPoints = Soil.ToMidPoints(Thickness);
+                    DataTableUtility.AddColumn(DataSource, "DepthMidPoints (mm)", DepthMidPoints);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
             }
 
             // Add in LL series and SW if it is present.
