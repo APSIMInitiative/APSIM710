@@ -132,21 +132,21 @@ void grazComponent::onPrepare(void)
 
       green_leaf = green_stem = dead_leaf = dead_stem = -1.0;
 //        cout << "getAvail:" << endl;
-      for (unsigned cohort = 0; cohort < avail.Cohorts.size(); cohort++) 
+      for (unsigned cohort = 0; cohort < avail.element.size(); cohort++) 
         {
 //        cout << avail.Cohorts[cohort].Organ << " " << avail.Cohorts[cohort].AgeID << endl;
-        if (Str_i_Eq(avail.Cohorts[cohort].Organ , "leaf") &&
-            Str_i_Eq(avail.Cohorts[cohort].AgeID , "live")) 
-           green_leaf = avail.Cohorts[cohort].Weight;        // comes in kg/ha
-        else if (Str_i_Eq(avail.Cohorts[cohort].Organ , "stem") &&
-                 Str_i_Eq(avail.Cohorts[cohort].AgeID , "live"))
-           green_stem = avail.Cohorts[cohort].Weight;
-        else if (Str_i_Eq(avail.Cohorts[cohort].Organ , "leaf") &&
-                 Str_i_Eq(avail.Cohorts[cohort].AgeID , "dead"))
-           dead_leaf = avail.Cohorts[cohort].Weight;
-        else if (Str_i_Eq(avail.Cohorts[cohort].Organ , "stem") &&
-                 Str_i_Eq(avail.Cohorts[cohort].AgeID , "dead")) 
-           dead_stem = avail.Cohorts[cohort].Weight;
+        if (Str_i_Eq(avail.element[cohort].Organ , "leaf") &&
+            Str_i_Eq(avail.element[cohort].AgeID , "live")) 
+           green_leaf = avail.element[cohort].Weight;        // comes in kg/ha
+        else if (Str_i_Eq(avail.element[cohort].Organ , "stem") &&
+                 Str_i_Eq(avail.element[cohort].AgeID , "live"))
+           green_stem = avail.element[cohort].Weight;
+        else if (Str_i_Eq(avail.element[cohort].Organ , "leaf") &&
+                 Str_i_Eq(avail.element[cohort].AgeID , "dead"))
+           dead_leaf = avail.element[cohort].Weight;
+        else if (Str_i_Eq(avail.element[cohort].Organ , "stem") &&
+                 Str_i_Eq(avail.element[cohort].AgeID , "dead")) 
+           dead_stem = avail.element[cohort].Weight;
         }
       if (green_leaf < 0 || green_stem < 0 || dead_leaf < 0 || dead_stem < 0 )
          throw std::runtime_error("Missing parts in AvailableToAnimalType??");
@@ -356,7 +356,7 @@ void grazComponent::update (void)
        dead_stem_eaten + green_stem_eaten > 0.0 )
       {
       RemovedByAnimalType dmEaten;
-      RemovedByAnimalCohortsType pool;
+      RemovedByAnimalelementType pool;
 
       pool.CohortID = pasture_source;
       pool.Organ = "leaf";
@@ -365,17 +365,17 @@ void grazComponent::update (void)
       pool.Top = 0;
       pool.Bottom = 0;
       pool.Chem = "";
-      dmEaten.Cohorts.push_back(pool);
+      dmEaten.element.push_back(pool);
       pool.AgeID = "dead";
       pool.WeightRemoved = dead_leaf_eaten;
-      dmEaten.Cohorts.push_back(pool);
+      dmEaten.element.push_back(pool);
       pool.Organ = "stem";
       pool.AgeID = "live";
       pool.WeightRemoved = green_stem_eaten;
-      dmEaten.Cohorts.push_back(pool);
+      dmEaten.element.push_back(pool);
       pool.AgeID = "dead";
       pool.WeightRemoved = dead_stem_eaten;
-      dmEaten.Cohorts.push_back(pool);
+      dmEaten.element.push_back(pool);
       string s;
       if (pasture_source == "")
          s = "RemovedByAnimal";

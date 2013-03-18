@@ -1021,38 +1021,50 @@
 	   <field name="value" kind="double" />
 	 </field>
    </type>
-   
+
    <type name="ChangeGSMax">
-      <field name="component" descr="" kind="string" /> 
-      <field name="dlt" descr="" kind="double" unit="m/s" /> 
+      <field name="component" descr="" kind="string" />
+      <field name="dlt" descr="" kind="double" unit="m/s" />
    </type>
 
    <!--!   !!!!! Grazing types  !!!!!!!!!!!!!!!!!!!!!!-->
    <!-- http://www.apsim.info/Wiki/Inter-component-communications.ashx -->
-   <type name="AvailableToAnimal">
-     <field name="Cohorts" array="T" >
-      <field name="CohortID"         kind="string"/>   
-      <field name="Organ"            kind="string" /> 
-      <field name="AgeID"            kind="string" /> 
-      <field name="Bottom"           kind="double" unit="mm"  />
-      <field name="Top"              kind="double" unit="mm"  />
-      <field name="Chem"             kind="string" /> 
-      <field name="Weight"           kind="double" unit="kg/ha" />    
-      <field name="N"                kind="double" unit="kg/ha" />    
-      <field name="P"                kind="double" unit="kg/ha" />    
-      <field name="S"                kind="double" unit="kg/ha" />    
-      <field name="AshAlk"           kind="double" unit="mol/ha" />    
-     </field> 
-   </type>
-   <type name="RemovedByAnimal">
-     <field name="Cohorts" array="T" >
-      <field name="CohortID"         kind="string"/> 
+   <type name="AvailableToAnimal" array="T">
+     <element>
+      <field name="CohortID"         kind="string"/>
       <field name="Organ"            kind="string" />
       <field name="AgeID"            kind="string" />
       <field name="Bottom"           kind="double" unit="mm"  />
       <field name="Top"              kind="double" unit="mm"  />
       <field name="Chem"             kind="string" />
-      <field name="WeightRemoved"    kind="double" unit="kg/ha" />    
-     </field> 
+      <field name="Weight"           kind="double" unit="kg/ha" />
+      <field name="N"                kind="double" unit="kg/ha" />
+      <field name="P"                kind="double" unit="kg/ha" />
+      <field name="S"                kind="double" unit="kg/ha" />
+      <field name="AshAlk"           kind="double" unit="mol/ha" />
+     </element>
+   </type>
+
+   <type name="RemovedByAnimal" array="T">
+     <element>
+      <field name="CohortID"         kind="string"/>
+      <field name="Organ"            kind="string" />
+      <field name="AgeID"            kind="string" />
+      <field name="Bottom"           kind="double" unit="mm"  />
+      <field name="Top"              kind="double" unit="mm"  />
+      <field name="Chem"             kind="string" />
+      <field name="WeightRemoved"    kind="double" unit="kg/ha" />
+     </element>
+   </type>
+
+   <!-- CPI Textoutput component -->
+   <type name="OutputList">
+     <field name="outputs" array="T">
+      <field name="varname"     kind="string"/>
+      <field name="alias"       kind="string"/>
+      <field name="aggreg"      kind="string"/>
+      <field name="decplaces"   kind="integer4"/>
+     </field>
    </type>
  </types>
+

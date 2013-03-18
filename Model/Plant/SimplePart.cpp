@@ -467,7 +467,7 @@ void SimplePart::removeBiomass(void)
    }
 void  SimplePart::get_AvailableToAnimal(protocol::AvailableToAnimalType &avail)
 {
-   protocol::AvailableToAnimalCohortsType cohort;
+   protocol::AvailableToAnimalelementType cohort;
 
    cohort.CohortID = plant->Name();
    cohort.Organ = myName;
@@ -480,16 +480,16 @@ void  SimplePart::get_AvailableToAnimal(protocol::AvailableToAnimalType &avail)
    cohort.P =      Green.P()* gm2kg / sm2ha;
    cohort.S =      0.0;
    cohort.AshAlk = 0.0;
-   avail.Cohorts.push_back(cohort);
+   avail.element.push_back(cohort);
    cohort.AgeID = "dead";
    cohort.Weight = Senesced.DM()* gm2kg / sm2ha;
    cohort.N =      Senesced.N()* gm2kg / sm2ha;
    cohort.P =      Senesced.P()* gm2kg / sm2ha;
-   avail.Cohorts.push_back(cohort);
+   avail.element.push_back(cohort);
    }
 void  SimplePart::set_RemovedByAnimal(const protocol::RemovedByAnimalType &dm)
 {
-   for (vector<protocol::RemovedByAnimalCohortsType>::const_iterator cohort = dm.Cohorts.begin(); cohort != dm.Cohorts.end(); cohort++)
+   for (vector<protocol::RemovedByAnimalelementType>::const_iterator cohort = dm.element.begin(); cohort != dm.element.end(); cohort++)
    {
       if (Str_i_Eq(cohort->Organ, myName) )
          {

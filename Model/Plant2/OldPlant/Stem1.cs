@@ -410,13 +410,13 @@ public class Stem1 : BaseOrgan1, AboveGround
     #endregion
 
     #region Grazing
-    public override AvailableToAnimalCohortsType[] AvailableToAnimal
+    public override AvailableToAnimalelementType[] AvailableToAnimal
     { get { return Util.AvailableToAnimal(Plant.Name, My.Name, Height, Live, Dead); } }
     public override RemovedByAnimalType RemovedByAnimal
     {
         set
         {
-            foreach (RemovedByAnimalCohortsType Cohort in value.Cohorts)
+            foreach (RemovedByAnimalelementType Cohort in value.element)
             {
                 if (Cohort.Organ.Equals(My.Name, StringComparison.CurrentCultureIgnoreCase))
                 {

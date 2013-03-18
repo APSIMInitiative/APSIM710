@@ -864,15 +864,15 @@ public class Plant15
     {
         get
         {
-            List<AvailableToAnimalCohortsType> All = new List<AvailableToAnimalCohortsType>();
+            List<AvailableToAnimalelementType> All = new List<AvailableToAnimalelementType>();
             foreach (Organ1 Organ in Organ1s)
             {
-                AvailableToAnimalCohortsType[] Available = Organ.AvailableToAnimal;
+                AvailableToAnimalelementType[] Available = Organ.AvailableToAnimal;
                 if (Available != null)
                     All.AddRange(Available);
             }
             AvailableToAnimalType AvailableToAnimal = new AvailableToAnimalType();
-            AvailableToAnimal.Cohorts = All.ToArray();
+            AvailableToAnimal.element = All.ToArray();
             return AvailableToAnimal;
         }
     }
@@ -887,7 +887,7 @@ public class Plant15
         }
         set
         {
-            if (value == null || value.Cohorts == null)
+            if (value == null || value.element == null)
                 return;
 
             double dmRemovedGreenTops = 0.0;

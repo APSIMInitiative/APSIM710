@@ -76,6 +76,6 @@ interface Organ1
     void OnEndCrop(BiomassRemovedType BiomassRemoved);
 
     // grazing
-    AvailableToAnimalCohortsType[] AvailableToAnimal { get; }
+    AvailableToAnimalelementType[] AvailableToAnimal { get; }
     RemovedByAnimalType RemovedByAnimal { set; }
 }

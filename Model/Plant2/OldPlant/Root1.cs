@@ -1166,7 +1166,7 @@ public class Root1 : BaseOrgan1, BelowGround
 
 
     #region Grazing
-    public override AvailableToAnimalCohortsType[] AvailableToAnimal { get { return null; } }
+    public override AvailableToAnimalelementType[] AvailableToAnimal { get { return null; } }
     public override RemovedByAnimalType RemovedByAnimal { set { } }
     #endregion
 }

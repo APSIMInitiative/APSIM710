@@ -2115,54 +2115,54 @@ c      need to be changed. FIXME!
          call Grasp_Send_Crop_Chopped_Event (g%detach(:), N_detach(:))
       endif
 
-      g%dmAvailable%num_cohorts = 4
-      g%dmAvailable%cohorts(1)%CohortID = p%crop_type
-      g%dmAvailable%cohorts(1)%organ = 'leaf'
-      g%dmAvailable%cohorts(1)%AgeID = 'live'
-      g%dmAvailable%cohorts(1)%Bottom = 0.0
-      g%dmAvailable%cohorts(1)%Top =    g%canopy_height
-      g%dmAvailable%cohorts(1)%Chem =   'digestible'
-      g%dmAvailable%cohorts(1)%Weight = g%dm_green(leaf)
-      g%dmAvailable%cohorts(1)%N =      g%n_green(leaf)
-      g%dmAvailable%cohorts(1)%P =      0.0
-      g%dmAvailable%cohorts(1)%S =      0.0
-      g%dmAvailable%cohorts(1)%AshAlk = 0.0
+      g%dmAvailable%num_element = 4
+      g%dmAvailable%element(1)%CohortID = p%crop_type
+      g%dmAvailable%element(1)%organ = 'leaf'
+      g%dmAvailable%element(1)%AgeID = 'live'
+      g%dmAvailable%element(1)%Bottom = 0.0
+      g%dmAvailable%element(1)%Top =    g%canopy_height
+      g%dmAvailable%element(1)%Chem =   'digestible'
+      g%dmAvailable%element(1)%Weight = g%dm_green(leaf)
+      g%dmAvailable%element(1)%N =      g%n_green(leaf)
+      g%dmAvailable%element(1)%P =      0.0
+      g%dmAvailable%element(1)%S =      0.0
+      g%dmAvailable%element(1)%AshAlk = 0.0
 
-      g%dmAvailable%cohorts(2)%CohortID = p%crop_type
-      g%dmAvailable%cohorts(2)%organ = 'leaf'
-      g%dmAvailable%cohorts(2)%AgeID = 'dead'
-      g%dmAvailable%cohorts(2)%Bottom = 0.0
-      g%dmAvailable%cohorts(2)%Top =    g%canopy_height
-      g%dmAvailable%cohorts(2)%Chem =   'digestible'
-      g%dmAvailable%cohorts(2)%Weight = g%dm_dead(leaf)
-      g%dmAvailable%cohorts(2)%N =      g%n_dead(leaf)
-      g%dmAvailable%cohorts(2)%P =      0.0
-      g%dmAvailable%cohorts(2)%S =      0.0
-      g%dmAvailable%cohorts(2)%AshAlk = 0.0
+      g%dmAvailable%element(2)%CohortID = p%crop_type
+      g%dmAvailable%element(2)%organ = 'leaf'
+      g%dmAvailable%element(2)%AgeID = 'dead'
+      g%dmAvailable%element(2)%Bottom = 0.0
+      g%dmAvailable%element(2)%Top =    g%canopy_height
+      g%dmAvailable%element(2)%Chem =   'digestible'
+      g%dmAvailable%element(2)%Weight = g%dm_dead(leaf)
+      g%dmAvailable%element(2)%N =      g%n_dead(leaf)
+      g%dmAvailable%element(2)%P =      0.0
+      g%dmAvailable%element(2)%S =      0.0
+      g%dmAvailable%element(2)%AshAlk = 0.0
 
-      g%dmAvailable%cohorts(3)%CohortID = p%crop_type
-      g%dmAvailable%cohorts(3)%organ = 'stem'
-      g%dmAvailable%cohorts(3)%AgeID = 'live'
-      g%dmAvailable%cohorts(3)%Bottom = 0.0
-      g%dmAvailable%cohorts(3)%Top =    g%canopy_height
-      g%dmAvailable%cohorts(3)%Chem =   'digestible'
-      g%dmAvailable%cohorts(3)%Weight = g%dm_green(stem)
-      g%dmAvailable%cohorts(3)%N =      g%n_green(stem)
-      g%dmAvailable%cohorts(3)%P =      0.0
-      g%dmAvailable%cohorts(3)%S =      0.0
-      g%dmAvailable%cohorts(3)%AshAlk = 0.0
+      g%dmAvailable%element(3)%CohortID = p%crop_type
+      g%dmAvailable%element(3)%organ = 'stem'
+      g%dmAvailable%element(3)%AgeID = 'live'
+      g%dmAvailable%element(3)%Bottom = 0.0
+      g%dmAvailable%element(3)%Top =    g%canopy_height
+      g%dmAvailable%element(3)%Chem =   'digestible'
+      g%dmAvailable%element(3)%Weight = g%dm_green(stem)
+      g%dmAvailable%element(3)%N =      g%n_green(stem)
+      g%dmAvailable%element(3)%P =      0.0
+      g%dmAvailable%element(3)%S =      0.0
+      g%dmAvailable%element(3)%AshAlk = 0.0
 
-      g%dmAvailable%cohorts(4)%CohortID = p%crop_type
-      g%dmAvailable%cohorts(4)%organ = 'stem'
-      g%dmAvailable%cohorts(4)%AgeID = 'dead'
-      g%dmAvailable%cohorts(4)%Bottom = 0.0
-      g%dmAvailable%cohorts(4)%Top =    g%canopy_height
-      g%dmAvailable%cohorts(4)%Chem =   'digestible'
-      g%dmAvailable%cohorts(4)%Weight = g%dm_dead(stem)
-      g%dmAvailable%cohorts(4)%N =      g%n_dead(stem)
-      g%dmAvailable%cohorts(4)%P =      0.0
-      g%dmAvailable%cohorts(4)%S =      0.0
-      g%dmAvailable%cohorts(4)%AshAlk = 0.0
+      g%dmAvailable%element(4)%CohortID = p%crop_type
+      g%dmAvailable%element(4)%organ = 'stem'
+      g%dmAvailable%element(4)%AgeID = 'dead'
+      g%dmAvailable%element(4)%Bottom = 0.0
+      g%dmAvailable%element(4)%Top =    g%canopy_height
+      g%dmAvailable%element(4)%Chem =   'digestible'
+      g%dmAvailable%element(4)%Weight = g%dm_dead(stem)
+      g%dmAvailable%element(4)%N =      g%n_dead(stem)
+      g%dmAvailable%element(4)%P =      0.0
+      g%dmAvailable%element(4)%S =      0.0
+      g%dmAvailable%element(4)%AshAlk = 0.0
 
 C     Accumulate soilevap + grass transpiration (evapotranspiration) for
 C     basal area calculation. Note the obscureness of the date
@@ -2817,7 +2817,7 @@ c     Bound to reasonable values:
       call fill_real_array (g%out_death_pheno, 0.0, max_part)
       call fill_real_array (g%out_death_water, 0.0, max_part)
 
-      g%dmAvailable%num_cohorts = 0
+      g%dmAvailable%num_element = 0
 
       return
       end subroutine
@@ -3954,18 +3954,18 @@ c     real       N_demand              ! sum N demand for plant parts (g/plant)
       greenStemPart = 0
       deadLeafPart = 0
       deadStemPart = 0
-      do pool = 1, RemovedByAnimal%num_cohorts
-        if (RemovedByAnimal%cohorts(pool)%organ .eq. 'leaf' .and.
-     :      RemovedByAnimal%cohorts(pool)%AgeID .eq. 'live') then
+      do pool = 1, RemovedByAnimal%num_element
+        if (RemovedByAnimal%element(pool)%organ .eq. 'leaf' .and.
+     :      RemovedByAnimal%element(pool)%AgeID .eq. 'live') then
            greenLeafPart = pool
-        elseif (RemovedByAnimal%cohorts(pool)%organ .eq. 'leaf' .and.
-     :          RemovedByAnimal%cohorts(pool)%AgeID .eq. 'dead') then
+        elseif (RemovedByAnimal%element(pool)%organ .eq. 'leaf' .and.
+     :          RemovedByAnimal%element(pool)%AgeID .eq. 'dead') then
            deadLeafPart = pool
-        elseif (RemovedByAnimal%cohorts(pool)%organ .eq. 'stem' .and.
-     :          RemovedByAnimal%cohorts(pool)%AgeID .eq. 'live') then
+        elseif (RemovedByAnimal%element(pool)%organ .eq. 'stem' .and.
+     :          RemovedByAnimal%element(pool)%AgeID .eq. 'live') then
            greenStemPart = pool
-        elseif (RemovedByAnimal%cohorts(pool)%organ .eq. 'stem' .and.
-     :          RemovedByAnimal%cohorts(pool)%AgeID .eq. 'dead') then
+        elseif (RemovedByAnimal%element(pool)%organ .eq. 'stem' .and.
+     :          RemovedByAnimal%element(pool)%AgeID .eq. 'dead') then
            deadStemPart = pool
         endif
       end do
@@ -3978,7 +3978,7 @@ c     real       N_demand              ! sum N demand for plant parts (g/plant)
         else
           n_conc = c%litter_n / 100.0
         endif
-        dlt = RemovedByAnimal%cohorts(greenLeafPart)%WeightRemoved
+        dlt = RemovedByAnimal%element(greenLeafPart)%WeightRemoved
         g%dm_green(leaf) = g%dm_green(leaf) - dlt
         if (g%dm_green(leaf) .lt. 0.0 ) then
            g%dm_green(leaf) = 0.0
@@ -3998,7 +3998,7 @@ c     real       N_demand              ! sum N demand for plant parts (g/plant)
         else
           n_conc = c%litter_n / 100.0
         endif
-        dlt = RemovedByAnimal%cohorts(greenStemPart)%WeightRemoved
+        dlt = RemovedByAnimal%element(greenStemPart)%WeightRemoved
         g%dm_green(stem) = g%dm_green(stem) - dlt
         if (g%dm_green(stem) .lt. 0.0 ) then
            g%dm_green(stem) = 0.0
@@ -4018,7 +4018,7 @@ c     real       N_demand              ! sum N demand for plant parts (g/plant)
         else
           n_conc = c%litter_n / 100.0
         endif
-        dlt = RemovedByAnimal%cohorts(deadLeafPart)%WeightRemoved
+        dlt = RemovedByAnimal%element(deadLeafPart)%WeightRemoved
         g%dm_dead(leaf) = g%dm_dead(leaf) - dlt
         if (g%dm_dead(leaf) .lt. 0.0 ) then
            g%dm_dead(leaf) = 0.0
@@ -4038,7 +4038,7 @@ c     real       N_demand              ! sum N demand for plant parts (g/plant)
         else
           n_conc = c%litter_n / 100.0
         endif
-        dlt = RemovedByAnimal%cohorts(deadStemPart)%WeightRemoved
+        dlt = RemovedByAnimal%element(deadStemPart)%WeightRemoved
         g%dm_dead(stem) = g%dm_dead(stem) - dlt
         if (g%dm_dead(stem) .lt. 0.0 ) then
            g%dm_dead(stem) = 0.0

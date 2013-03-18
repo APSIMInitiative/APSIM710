@@ -24,7 +24,7 @@ using ModelFramework;
             format = format.Replace("%f", "{0:0.000}");
             format = format.Replace("%i", "{0:0}");
             format = format.Replace("%s", "{0}");
-            Dbg.WriteLine(string.Format(format, value));
+            Dbg.WriteLine(string.Format(format, value)); 
         }
 
         [Conditional("DEBUG")]
@@ -305,11 +305,11 @@ using ModelFramework;
                 NDemand = NMax = 0.0;
         }
 
-        public static AvailableToAnimalCohortsType[] AvailableToAnimal(string PlantName, string OrganName, double PlantHeight,
+        public static AvailableToAnimalelementType[] AvailableToAnimal(string PlantName, string OrganName, double PlantHeight,
                                                                        Biomass Live, Biomass Dead)
         {
-            AvailableToAnimalCohortsType[] Available = new AvailableToAnimalCohortsType[2];
-            Available[0] = new AvailableToAnimalCohortsType();
+            AvailableToAnimalelementType[] Available = new AvailableToAnimalelementType[2];
+            Available[0] = new AvailableToAnimalelementType();
             Available[0].CohortID = PlantName;
             Available[0].Organ = OrganName;
             Available[0].AgeID = "live";
@@ -322,7 +322,7 @@ using ModelFramework;
             Available[0].S = 0.0;
             Available[0].AshAlk = 0.0;
 
-            Available[1] = new AvailableToAnimalCohortsType();
+            Available[1] = new AvailableToAnimalelementType();
             Available[1].CohortID = PlantName;
             Available[1].Organ = OrganName;
             Available[1].AgeID = "dead";

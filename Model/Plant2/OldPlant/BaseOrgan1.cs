@@ -107,7 +107,7 @@ abstract public class BaseOrgan1 : Organ1
     public abstract void OnEndCrop(BiomassRemovedType BiomassRemoved);
 
     // grazing
-    public abstract AvailableToAnimalCohortsType[] AvailableToAnimal { get; }
+    public abstract AvailableToAnimalelementType[] AvailableToAnimal { get; }
     public abstract RemovedByAnimalType RemovedByAnimal { set; }
 
 }

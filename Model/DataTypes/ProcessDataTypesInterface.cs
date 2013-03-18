@@ -165,10 +165,10 @@ namespace ProcessDataTypesInterface
          XmlHelper.SetValue(NewDataType, "cpptype", CalcCPPType(Field));
          XmlHelper.SetValue(NewDataType, "fortype", CalcForType(Field));
          XmlHelper.SetValue(NewDataType, "ctype", CalcCType(Field));
-         if (XmlHelper.Attribute(Field, "array") == "T")
+         if ( (XmlHelper.Attribute(Field, "array") == "T") || (Field.Name == "element") )
             {
             XmlHelper.SetValue(NewDataType, "array", "T");
-            if (Kind == "")
+            if (Kind == "") 
                XmlHelper.SetValue(NewDataType, "arrayofstructures", "T");
             }
          if (CalcCPPType(Field) == "std::vector<std::string>")
@@ -209,6 +209,8 @@ namespace ProcessDataTypesInterface
          {
          string CTypeName = CalcRawCPPType(DataType);
          if (XmlHelper.Attribute(DataType, "array") == "T")
+            CTypeName = "std::vector<" + CTypeName + ">";
+         if (DataType.Name == "element")
             CTypeName = "std::vector<" + CTypeName + ">";
          return CTypeName;
          }
