@@ -45,30 +45,30 @@ public class Apsim
 
             for (int i = 0; i < args.Length; i++)
 			{
-                int pos = args[i].IndexOf('=');
-                if (pos > 0)
-				{
-					string name = args[i].Substring(0,pos).Replace("\"", "");
-					string value = args[i].Substring(pos+1).Replace("\"", "");
-                    Macros.Add(name, value);
- 				}
-                else
+                string[] x = realNamesOfFiles(args[i]);
+                if (x != null)
                 {
-                    string[] x = realNamesOfFiles(args[i]);
-                    if (x != null)
+                    for (int j = 0; j < x.Length; ++j)
                     {
-                        for (int j = 0; j < x.Length; ++j)
-                        {
-                            if (File.Exists(x[j]))
-                            {
-                                int l = FileNames == null ? 0 : FileNames.Length;
-                                Array.Resize(ref FileNames, l + 1);
-                                FileNames[l] = x[j];
-                            }
-                        }
+                       if (File.Exists(x[j]))
+                       {
+                           int l = FileNames == null ? 0 : FileNames.Length;
+                           Array.Resize(ref FileNames, l + 1);
+                           FileNames[l] = x[j];
+                       }
                     }
-					else 
-						Console.WriteLine("Dont know what to make of \"" + args[i] + "\"");
+                }
+				else 
+                {
+                    int pos = args[i].IndexOf('=');
+                    if (pos > 0)
+				    {
+					    string name = args[i].Substring(0,pos).Replace("\"", "");
+					    string value = args[i].Substring(pos+1).Replace("\"", "");
+                        Macros.Add(name, value);
+ 				    }
+                else
+				    Console.WriteLine("Dont know what to make of \"" + args[i] + "\"");
 				}
 			}
 
@@ -94,6 +94,7 @@ public class Apsim
 
             // Run
             RunApsim Run = new RunApsim();
+            Run.MaxLinesInSummaryFile = maxLines;
 			Run.Start(FileNames, SimulationPaths.ToArray());
             Run.WaitUntilFinished();
         }
