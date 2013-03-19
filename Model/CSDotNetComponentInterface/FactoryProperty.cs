@@ -84,6 +84,8 @@ public abstract class ReflectedType : NamedItem
                 }
                 SetObject(Values);
             }
+            else if (Typ.Name == "DateTime")
+                SetObject(DateTime.Parse(Value));
             else
                 throw new Exception("Cannot set value of property: " + Name +
                                         ". Cannot convert: " + Value.ToString() + " to: " + Typ.Name);
