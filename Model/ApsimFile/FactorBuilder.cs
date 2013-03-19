@@ -671,7 +671,7 @@ namespace ApsimFile
             tmpFile.New(doc.OuterXml);
             return tmpFile;
         }
-        public static List<SimFactorItem> CreateSimFiles(ApsimFile _F, List<String> SimsToRun)
+        public static List<SimFactorItem> CreateSimFiles(ApsimFile _F, string[] SimsToRun)
         {
             List<SimFactorItem> SimFiles = new List<SimFactorItem>();
             //make a copy of the file - should avoid problems with changes being applied during the processing of the factorial nodes

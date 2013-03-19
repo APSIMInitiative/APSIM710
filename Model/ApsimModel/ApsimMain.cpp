@@ -34,16 +34,22 @@ string ConvertToSim(const string& apsimPath, string& simulationName)
    string CommandLine = "%apsim%\\Model\\ApsimToSim.exe \"" + apsimPath + "\"";
    if (simulationName != "")
       {
-      replaceAll(simulationName, "Simulation=", "");
-      replaceAll(simulationName, "simulation=", "");
       CommandLine += " \"" + simulationName + "\"";
       }
-   CommandLine += " 2> apsim.tmp";
+      
+   // We need to send StdOut from ApsimToSim to a unique filename. Create that filename now.
+   string uniqueFileName = simulationName;
+   replaceAll(uniqueFileName, "\"", "");
+   unsigned i = uniqueFileName.find_last_of("/");
+   if (i != string::npos)
+      uniqueFileName = uniqueFileName.substr(i+1);
+   uniqueFileName += ".tmp";
+   CommandLine += " 2> \"" + uniqueFileName + "\"";
    replaceAll(CommandLine, "%apsim%", getApsimDirectory());
 
    // exec ApsimToSim and read its stdout as the .sim file name.
    system(CommandLine.c_str());
-   ifstream in("apsim.tmp");
+   ifstream in(uniqueFileName);
    string simPath;
    getline(in, simPath);
    in.close();
@@ -52,7 +58,7 @@ string ConvertToSim(const string& apsimPath, string& simulationName)
       return "";
    else
       {
-      unlink("apsim.tmp");
+      unlink(uniqueFileName.c_str());
       replaceAll(simPath, "Written ", "");
       return simPath;
       }

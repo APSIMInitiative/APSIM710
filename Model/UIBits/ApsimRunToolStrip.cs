@@ -16,10 +16,10 @@ public class ApsimRunToolStrip
     private StringCollection _SelectedPaths;
     private System.Windows.Forms.Timer Timer;
     private static ApsimRunToolStrip Singleton = null;
-    private Apsim Apsim = null;
+    private RunApsim Apsim = new RunApsim();
     ToolStrip _Strip;
     public Boolean deleteSims = true;
-
+    
     public ApsimRunToolStrip()
     {
         // ----------------------------------------------------------
@@ -87,10 +87,7 @@ public class ApsimRunToolStrip
         _SelectedPaths = Controller.SelectedPaths;
         _Strip = Strip;
         _Strip.Visible = true;
-        if (Apsim != null)
-            Apsim.Stop();
-        else
-            Apsim = new Apsim();
+        Apsim.Stop();
 
         ToolStripButton RunButton = (ToolStripButton)_Strip.Items["RunButton"];
         ToolStripButton StopButton = (ToolStripButton)_Strip.Items["StopButton"];
@@ -155,13 +152,9 @@ public class ApsimRunToolStrip
             PercentLabel.Text = "";
             return;
         }
-        if (SimsToRun.Count == 1)
-            Apsim.StartAPSIM(_F, SimsToRun[0], false);
-        else if (SimsToRun.Count > 1)
-            Apsim.StartMultipleFromPaths(_F, SimsToRun);
-        else
-            Apsim.NumJobs = 0;
-            
+        if (SimsToRun.Count >= 1)
+            Apsim.Start(new string[] {_F.FileName}, SimsToRun.ToArray());
+        
         Timer.Enabled = true;
     }
 

@@ -129,6 +129,7 @@ class JobRunner
         // Kill all jobs.
         foreach (Job J in Jobs)
             J.Stop();
+
     }
 
     public static void SendPercentComplete(Dictionary<string, string> Macros, List<Job> Jobs, int NumFinishedJobs)
