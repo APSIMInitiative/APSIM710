@@ -219,7 +219,7 @@ public class DataProcessor
                             if (Data == null)
                                 Data = FileData;
                             else
-                                Data.Merge(FileData);
+                                Merge(FileData, Data);
                         }
                         if (File.Exists(CheckPointFile))
                         {
@@ -232,7 +232,7 @@ public class DataProcessor
                             if (Data == null)
                                 Data = FileData;
                             else
-                                Data.Merge(FileData);
+                                Merge(FileData, Data);
                         }
                     }
                 }
@@ -682,6 +682,43 @@ public class DataProcessor
     }
 
     #endregion
+
+    /// <summary>
+    /// Merge all columns and row from source into dest.
+    /// </summary>
+    private void Merge(DataTable Source, DataTable Dest)
+    {
+        // Can't use the DataTable.Merge method to do this because it can't cope with putting
+        // strings into ints. Get mismatch in datatype error messages.
+
+        if (Source.Rows.Count > 0)
+        {
+            foreach (DataColumn Col in Source.Columns)
+            {
+                if (!Dest.Columns.Contains(Col.ColumnName))
+                    Dest.Columns.Add(Col.ColumnName, Col.DataType);
+            }
+
+            foreach (DataRow Row in Source.Rows)
+            {
+                DataRow NewRow = Dest.NewRow();
+                Dest.Rows.Add(NewRow);
+                foreach (DataColumn Col in Source.Columns)
+                {
+                    try
+                    {
+                        NewRow[Col.ColumnName] = Row[Col];
+                    }
+                    catch (Exception err)
+                    {
+                        // Data type mistmatch
+                    }
+                }
+
+
+            }
+        }
+    }
 
 
 
