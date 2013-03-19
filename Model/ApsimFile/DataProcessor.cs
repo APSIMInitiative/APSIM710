@@ -253,12 +253,18 @@ public class DataProcessor
 
         DataTable NewData = new DataTable();
 
+        bool Exceedence = (XmlHelper.Value(Node, "exceedence").ToLower() == "yes");
+        string ProbabilityColumnName;
+        if (Exceedence)
+            ProbabilityColumnName = "Probability of being above";
+        else
+            ProbabilityColumnName = "Probability of being below";
+
         // copy fields from old datatable to new datatable and add new probability column.
-        NewData.Columns.Add("Probability", Type.GetType("System.Single"));
+        NewData.Columns.Add(ProbabilityColumnName, Type.GetType("System.Single"));
         foreach (DataColumn Col in Data.Columns)
             NewData.Columns.Add(Col.ColumnName, Col.DataType);
 
-        bool Exceedence = (XmlHelper.Value(Node, "exceedence").ToLower() == "yes");
 
         DataView View = new DataView();
         View.Table = Data;
