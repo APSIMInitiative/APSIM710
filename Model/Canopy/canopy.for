@@ -353,7 +353,7 @@ C VOS
 
       crop = 0
 2000  continue
-         call get_real_vars (crop+1, 'cover_tot', '(mm)'
+         call get_real_vars (crop+1, 'cover_tot', '()'
      :                              , temp, numvals
      :                              , 0.0, 1.0)
          if (numvals.ne.0) then
