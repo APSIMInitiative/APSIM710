@@ -19,8 +19,7 @@ public class ApsimBuildsDB
     /// </summary>
     public void Open()
     {
-        //string ConnectionString = "Data Source=www.apsim.info\\SQLEXPRESS;Initial Catalog=\"APSIM Builds\";Integrated Security=True";
-        string ConnectionString = "Data Source=www.apsim.info\\SQLEXPRESS;Database=\"APSIM Builds\";Persist Security Info=True;User ID=sv-login-external;Password=P@ssword123";
+      string ConnectionString = File.ReadAllText(@"C:\dbConnect.txt");
 
         // There are often network intermittent issues so try 5 times to make a connection.
         for (int i = 0; i < 5; i++)

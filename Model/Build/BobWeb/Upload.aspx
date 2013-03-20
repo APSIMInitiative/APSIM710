@@ -51,7 +51,7 @@
           Text="Upload patch" />
     </p>
     <asp:SqlDataSource ID="BugTrackerDataSource" runat="server" 
-       ConnectionString="<%$ ConnectionStrings:BugTrackerConnectionString %>" 
+       ConnectionString="<%$ Bob.bugConnect %>" 
        SelectCommand="SELECT CONVERT (VARCHAR, bg_id) + ' - ' + bg_short_desc AS Description, bg_id FROM bugs WHERE (bg_status &lt;&gt; @bg_status) ORDER BY bg_id DESC">
        <SelectParameters>
           <asp:Parameter DefaultValue="5" Name="bg_status" Type="Int32" />

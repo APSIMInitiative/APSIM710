@@ -13,6 +13,8 @@ namespace BobWeb
 {
     public partial class WebForm1 : System.Web.UI.Page
     {
+        public static string bugConnect = File.ReadAllText(@"C:\bugConnect.txt");
+
         protected void Page_Load(object sender, EventArgs e)
         {
             GridView.DataSource = null;
