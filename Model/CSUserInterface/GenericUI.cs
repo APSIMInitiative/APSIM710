@@ -110,7 +110,8 @@ namespace CSUserInterface
 				//Grid.Columns(Col).Width = Grid.Columns(Col).GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, True)
 				Grid.Columns[Col].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 			}
-			Grid.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Grid.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            Grid.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             Grid.AutoResizeRows(DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders);
 
 			IsDirty = false;

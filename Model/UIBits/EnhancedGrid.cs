@@ -178,10 +178,17 @@ namespace UIBits
         /// </summary>
         protected override bool ProcessDialogKey(Keys keyData)
         {
-            if (keyData == Keys.Tab)
+            try
+            {
+                if (keyData == Keys.Tab)
+                    return true;
+                else
+                    return base.ProcessDialogKey(keyData);
+            }
+            catch (Exception)
+            {
                 return true;
-            else
-                return base.ProcessDialogKey(keyData);
+            }
         }
 
         /// <summary>
