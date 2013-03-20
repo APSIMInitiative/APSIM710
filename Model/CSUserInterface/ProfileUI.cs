@@ -422,6 +422,7 @@ namespace CSUserInterface
             {
                 if (Grid.Columns[e.ColumnIndex].HeaderText.Contains("DUL"))
                 {
+                    Soil.Water.Thickness = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0));
                     Soil.Water.DUL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
 
                     // Update all PAWC columns.
@@ -433,18 +434,21 @@ namespace CSUserInterface
                 }
                 else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" LL"))
                 {
+                    Soil.Water.Thickness = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0));
                     string CropName = CropNameFromColumn(e.ColumnIndex);
                     Soil.Crop(CropName).LL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
                     UpdatePAWCColumn(Grid.Columns[e.ColumnIndex + 1]);
                 }
                 else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" KL"))
                 {
+                    Soil.Water.Thickness = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0));
                     string CropName = CropNameFromColumn(e.ColumnIndex);
                     Soil.Crop(CropName).KL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
                     UpdatePAWCColumn(Grid.Columns[e.ColumnIndex - 1]);
                 }
                 else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" XF"))
                 {
+                    Soil.Water.Thickness = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0));
                     string CropName = CropNameFromColumn(e.ColumnIndex);
                     Soil.Crop(CropName).XF = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
                     UpdatePAWCColumn(Grid.Columns[e.ColumnIndex - 2]);
@@ -492,7 +496,7 @@ namespace CSUserInterface
         private void UpdatePAWCColumn(DataGridViewColumn PAWC)
         {
             string CropName = CropNameFromColumn(PAWC.Index);
-            GridUtility.SetColumnValues(Grid, PAWC.Index, Soil.PAWmm(CropName));
+            GridUtility.SetColumnValues(Grid, PAWC.Index, Soil.PAWmmAtWaterThickness(CropName));
             UpdateTotal(PAWC);
         }
 

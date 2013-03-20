@@ -58,7 +58,10 @@ namespace ApsimFile
         /// </summary>
         private double[] SWFilledFromTop(double[] Thickness, double[] LL, double[] DUL, double[] XF)
         {
-            double[] SW = new double[LL.Length];
+            double[] SW = new double[Thickness.Length];
+            if (Thickness.Length != LL.Length ||
+                Thickness.Length != DUL.Length)
+                return SW;
             double[] PAWCmm = MathUtility.Multiply(MathUtility.Subtract(DUL, LL), Thickness);
 
             double AmountWater = MathUtility.Sum(PAWCmm) * FractionFull;

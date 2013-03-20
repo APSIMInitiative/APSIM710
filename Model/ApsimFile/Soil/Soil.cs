@@ -28,7 +28,7 @@ namespace ApsimFile
         public string ASCOrder { get; set; }
         [Description("Australian Soil Classification Sub-Order")]
         public string ASCSubOrder { get; set; }
-        [Description("Soil description")]
+        [Description("Soil texture or other descriptor")]
         public string SoilType { get; set; }
         [Description("Local name")]
         public string LocalName { get; set; }
@@ -1168,7 +1168,8 @@ namespace ApsimFile
 
             // Make sure all SW values below LastIndex don't go below CLL.
             for (int i = LastIndex + 1; i < Thicknesses.Length; i++)
-                Values[i] = Math.Max(Values[i], LowerBound[i]);
+                if (i < Values.Length && i < LowerBound.Length)
+                    Values[i] = Math.Max(Values[i], LowerBound[i]);
 
             return Map(Values, Thicknesses, ToThickness, MapType.Concentration);
         }
@@ -1185,6 +1186,8 @@ namespace ApsimFile
             if (Values == null) return null;
             double[] AirDry = AirDryMapped(ToThickness);
             double[] DUL = DULMapped(ToThickness);
+            if (AirDry == null || DUL == null)
+                return null;
             for (int i = 0; i < Values.Length; i++)
             {
                 Values[i] = Math.Max(Values[i], AirDry[i]);
@@ -1208,10 +1211,16 @@ namespace ApsimFile
         /// <summary>
         /// Map soil variables from one layer structure to another.
         /// </summary>
-        private double[] Map(double[] FromValues, double[] FromThickness,
+        private double[] Map(double[] FValues, double[] FThickness,
                              double[] ToThickness, MapType MapType,
                              double DefaultValueForBelowProfile = double.NaN)
         {
+            if (FValues == null || FThickness == null || FValues.Length != FThickness.Length)
+                return null;
+
+            double[] FromThickness = (double[]) FThickness.Clone();
+            double[] FromValues = (double[])FValues.Clone();
+
             if (FromValues == null)
                 return null;
 
@@ -1231,10 +1240,7 @@ namespace ApsimFile
                 return FromValues;
 
             if (FromValues.Length != FromThickness.Length)
-            {
-                throw new Exception("Cannot redistribute soil sample layer structure to soil layer structure. " +
-                                    "The number of values in the sample doesn't match the number of layers in the sample.");
-            }
+                return null;
 
             // Add the default value if it was specified.
             if (!double.IsNaN(DefaultValueForBelowProfile))

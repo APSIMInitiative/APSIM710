@@ -432,10 +432,7 @@ namespace UIBits
                         int Row = Cell.Y;
                         if (Row < Rows.Count - 1)
                         {
-                            if (Rows[Row].Cells[Col].Value.GetType() == typeof(string))
-                                Rows[Row].Cells[Col].Value = "";
-                            else
-                                Rows[Row].Cells[Col].Value = DBNull.Value;
+                            Rows[Row].Cells[Col].Value = null;
                             if (DataSourceTable != null)
                                 DataSourceTable.Rows[Row][Col] = Rows[Row].Cells[Col].Value;
                             if (!ColumnsChanged.Contains(Columns[Col].HeaderText))

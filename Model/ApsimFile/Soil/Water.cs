@@ -11,7 +11,18 @@ namespace ApsimFile
 {
     public class Water
     {
-        public double[] Thickness { get; set; }
+        private double[] _Thickness;
+        public double[] Thickness
+        {
+            get
+            {
+                return _Thickness;
+            }
+            set
+            {
+                _Thickness = value;
+            }
+        }
 
         [Units("g/cc")]
         public double[] BD { get; set; }
