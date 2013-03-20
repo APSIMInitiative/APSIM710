@@ -726,7 +726,7 @@ tav = tav + ([MaxtChange] + [MintChange]) / 2
             <class type="classes" description="Enter crop growth class : ">plant</class>
             <row_spacing type="text" description="Enter row spacing (mm) : ">250</row_spacing>
           </ui>
-          <script name="start_of_day">
+          <script>
             <text>
       if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
          if (date_within('[date1], [date2]') = 1) then
@@ -743,7 +743,7 @@ tav = tav + ([MaxtChange] + [MintChange]) / 2
             </text>
             <event>start_of_day</event>
           </script>
-          <script name="init">
+          <script>
             <text>
             nextcrop = 0
             fallowin = 0
@@ -761,7 +761,7 @@ tav = tav + ([MaxtChange] + [MintChange]) / 2
             <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">150</fert_amount_sow>
             <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
           </ui>
-          <script name="[modulename].[eventname]">
+          <script>
             <text>
         [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
             </text>
@@ -769,10 +769,14 @@ tav = tav + ([MaxtChange] + [MintChange]) / 2
           </script>
         </manager>
         <manager name="Harvesting rule">
+          <ui>
+            <category type="category" description="Harvesting criteria" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">wheat</crop>
+          </ui>
           <script>
             <text>
 
-           if [crop].StageName = 'harvest_ripe' or [crop].PlantStatus = 'dead' then
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
               [crop]  harvest
               [crop]  end_crop
            endif
@@ -780,10 +784,6 @@ tav = tav + ([MaxtChange] + [MintChange]) / 2
             </text>
             <event>end_of_day</event>
           </script>
-          <ui>
-            <category type="category" description="Harvesting criteria" />
-            <crop type="crop" description="Enter name of crop to harvest when ripe : ">wheat</crop>
-          </ui>
         </manager>
       </folder>
       <outputfile>
