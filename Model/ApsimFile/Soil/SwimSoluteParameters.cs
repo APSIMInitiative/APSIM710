@@ -26,6 +26,17 @@ namespace ApsimFile
         public double WaterTableNH4 { get; set; }
         [Description("Water Table Urea Concentration (ppm)")]
         public double WaterTableUrea { get; set; }
+        [Description("Water Table Tracer (ppm)")]
+        public double WaterTableTracer { get; set; }
+        [Description("Water Table Mineralisation Inhibitor (ppm)")]
+        public double WaterTableMineralisationInhibitor { get; set; }
+        [Description("Water Table Urease Inhibitor (ppm)")]
+        public double WaterTableUreaseInhibitor { get; set; }
+        [Description("Water Table Nitrification Inhibitor (ppm)")]
+        public double WaterTableNitrificationInhibitor { get; set; }
+        [Description("Water Table Denitrification Inhibitor (ppm)")]
+        public double WaterTableDenitrificationInhibitor { get; set; }
+
         public double[] Thickness { get; set; }
         public double[] NO3Exco { get; set; }
         public double[] NO3FIP { get; set; }
@@ -35,7 +46,16 @@ namespace ApsimFile
         public double[] UreaFIP { get; set; }
         public double[] ClExco { get; set; }
         public double[] ClFIP { get; set; }
-
+        public double[] TracerExco { get; set; }
+        public double[] TracerFIP { get; set; }
+        public double[] MineralisationInhibitorExco { get; set; }
+        public double[] MineralisationInhibitorFIP { get; set; }
+        public double[] UreaseInhibitorExco { get; set; }
+        public double[] UreaseInhibitorFIP { get; set; }
+        public double[] NitrificationInhibitorExco { get; set; }
+        public double[] NitrificationInhibitorFIP { get; set; }
+        public double[] DenitrificationInhibitorExco { get; set; }
+        public double[] DenitrificationInhibitorFIP { get; set; }
     }
 
 }

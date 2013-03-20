@@ -980,6 +980,111 @@ namespace ApsimFile
                 return Map(Swim.SwimSoluteParameters.ClFIP, Swim.SwimSoluteParameters.Thickness, Thickness, MapType.Concentration);
             }
         }
+
+        /// <summary>
+        /// Swim.SwimSoluteParameters.MineralisationInhibitorExco at standard thickness
+        /// </summary>
+        public double[] MineralisationInhibitorExco
+        {
+            get
+            {
+                if (Swim == null || Swim.SwimSoluteParameters == null)
+                    return null;
+                return Map(Swim.SwimSoluteParameters.MineralisationInhibitorExco, Swim.SwimSoluteParameters.Thickness, Thickness, MapType.Concentration);
+            }
+        }
+
+        /// <summary>
+        /// Swim.SwimSoluteParameters.MineralisationInhibitorFIP at standard thickness
+        /// </summary>
+        public double[] MineralisationInhibitorFIP
+        {
+            get
+            {
+                if (Swim == null || Swim.SwimSoluteParameters == null)
+                    return null;
+                return Map(Swim.SwimSoluteParameters.MineralisationInhibitorFIP, Swim.SwimSoluteParameters.Thickness, Thickness, MapType.Concentration);
+            }
+        }
+
+        /// <summary>
+        /// Swim.SwimSoluteParameters.UreaseInhibitorExco at standard thickness
+        /// </summary>
+        public double[] UreaseInhibitorExco
+        {
+            get
+            {
+                if (Swim == null || Swim.SwimSoluteParameters == null)
+                    return null;
+                return Map(Swim.SwimSoluteParameters.UreaseInhibitorExco, Swim.SwimSoluteParameters.Thickness, Thickness, MapType.Concentration);
+            }
+        }
+
+        /// <summary>
+        /// Swim.SwimSoluteParameters.UreaseInhibitorFIP at standard thickness
+        /// </summary>
+        public double[] UreaseInhibitorFIP
+        {
+            get
+            {
+                if (Swim == null || Swim.SwimSoluteParameters == null)
+                    return null;
+                return Map(Swim.SwimSoluteParameters.UreaseInhibitorFIP, Swim.SwimSoluteParameters.Thickness, Thickness, MapType.Concentration);
+            }
+        }
+
+        /// <summary>
+        /// Swim.SwimSoluteParameters.NitrificationInhibitorExco at standard thickness
+        /// </summary>
+        public double[] NitrificationInhibitorExco
+        {
+            get
+            {
+                if (Swim == null || Swim.SwimSoluteParameters == null)
+                    return null;
+                return Map(Swim.SwimSoluteParameters.NitrificationInhibitorExco, Swim.SwimSoluteParameters.Thickness, Thickness, MapType.Concentration);
+            }
+        }
+
+        /// <summary>
+        /// Swim.SwimSoluteParameters.NitrificationInhibitorFIP at standard thickness
+        /// </summary>
+        public double[] NitrificationInhibitorFIP
+        {
+            get
+            {
+                if (Swim == null || Swim.SwimSoluteParameters == null)
+                    return null;
+                return Map(Swim.SwimSoluteParameters.NitrificationInhibitorFIP, Swim.SwimSoluteParameters.Thickness, Thickness, MapType.Concentration);
+            }
+        }
+
+        /// <summary>
+        /// Swim.SwimSoluteParameters.DenitrificationInhibitorExco at standard thickness
+        /// </summary>
+        public double[] DenitrificationInhibitorExco
+        {
+            get
+            {
+                if (Swim == null || Swim.SwimSoluteParameters == null)
+                    return null;
+                return Map(Swim.SwimSoluteParameters.DenitrificationInhibitorExco, Swim.SwimSoluteParameters.Thickness, Thickness, MapType.Concentration);
+            }
+        }
+
+        /// <summary>
+        /// Swim.SwimSoluteParameters.DenitrificationInhibitorFIP at standard thickness
+        /// </summary>
+        public double[] DenitrificationInhibitorFIP
+        {
+            get
+            {
+                if (Swim == null || Swim.SwimSoluteParameters == null)
+                    return null;
+                return Map(Swim.SwimSoluteParameters.DenitrificationInhibitorFIP, Swim.SwimSoluteParameters.Thickness, Thickness, MapType.Concentration);
+            }
+        }
+
         #endregion
 
         #region Soil Temperature
