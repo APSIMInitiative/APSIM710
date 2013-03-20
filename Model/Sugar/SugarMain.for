@@ -232,6 +232,11 @@
 !     ================================================================
       Type SugarGlobals
       Sequence
+
+      !sv- CO2 changes the RUE & Transpiration Efficiency      
+      real    co2
+      integer    co2_exists    !if "get" returns a value for co2, 
+
       character  crop_status*5       ! status of crop
       character  crop_cultivar*20    ! cultivar name
       logical    plant_status_out_today
@@ -1767,7 +1772,7 @@
 *+  Constant Values
       character  my_name*(*)           ! name of procedure
       parameter (my_name  = 'sugar_init')
-
+      
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
@@ -1789,6 +1794,7 @@ cnh     :                 ' Initialising')
       call sugar_get_met_variables ()
       call sugar_get_soil_variables ()
 
+      
       call pop_routine (my_name)
       return
       end subroutine
@@ -2476,6 +2482,11 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
 
       call push_routine (my_name)
 
+      !sv- CO2 changes the RUE & Transpiration Efficiency
+        call get_real_var_optional (unknown_module, 'co2', '(ppm)'
+     :                                  , g%co2, g%co2_exists
+     :                                  , 0.0, 10000.0)
+      
 
       ! INPUT module
       ! ------------
@@ -4071,6 +4082,7 @@ cnh      c%crop_type = ' '
 
 *+  Local Variables
       integer    numvals               ! number of values returned
+      integer    stage      !sv- CO2 changes the RUE & Transpiration Efficiency
 
 *- Implementation Section ----------------------------------
 
@@ -4656,6 +4668,36 @@ cnh      c%crop_type = ' '
      :                   , c%lodge_redn_green_leaf, numvals
      :                   , 0.0, 1.0)
 
+     
+     
+      !sv- CO2 changes the RUE & Transpiration Efficiency
+      if (g%co2_exists.ne.0) then
+      write (*,*)  'co2: ', g%co2
+      write (*,*) 
+      write (*,*)  'From ini file:'
+      write (*,*)  '(for each growth stage)'
+      write (*,*)  'rue: ', c%rue
+      write (*,*)  'transp_eff_cf: ', c%transp_eff_cf      
+        do 100 stage = 1, max_stage
+
+            c%rue(stage) = c%rue(stage) 
+     :                          * (0.000142* g%co2 + 0.94995)
+            
+            c%transp_eff_cf(stage) = c%transp_eff_cf(stage)  
+     :                           * (0.0008 * g%co2 + (1-0.0008*350.0))
+
+  100 continue
+       write (*,*) 
+       write (*,*)  'After correction for co2:'
+       write (*,*)  '(for each growth stage)'
+       write (*,*)  'rue: ', c%rue          
+       write (*,*)  'transp_eff_cf: ', 
+     :                             c%transp_eff_cf
+       write (*,*) 
+       endif       
+     
+     
+     
       call pop_routine (my_name)
       return
       end subroutine
