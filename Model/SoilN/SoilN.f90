@@ -1637,6 +1637,16 @@ subroutine soiln2_send_my_variable (variable_name)
       call respond2get_real_array (variable_name,'(kg/ha)', g%N2O_atm, num_layers)
 
 
+   elseif (variable_name .eq. 'n2o_atm_nitrification') then
+   !                           ----
+      num_layers = count_of_real_vals (g%dlayer, max_layer)
+      call respond2get_real_array (variable_name,'(kg/ha)', g%dlt_nh4_dnit, num_layers)
+
+   elseif (variable_name .eq. 'n2o_atm_denitrification') then
+   !                           ----
+      num_layers = count_of_real_vals (g%dlayer, max_layer)
+      call respond2get_real_array (variable_name,'(kg/ha)', g%N2O_atm - g%dlt_nh4_dnit, num_layers)
+
    elseif (variable_name .eq. 'dlt_c_loss_in_sed') then
    !                           -------------
       call respond2get_real_var (variable_name,'(kg)', g%dlt_c_loss_sed)
@@ -5198,6 +5208,8 @@ subroutine doInit1()
    dummy = add_reg(respondToGetReg, 'dlt_no3_dnit', floatarrayTypeDDML, 'kg/ha', 'NO3 N denitrified')
    dummy = add_reg(respondToGetReg, 'dlt_nh4_dnit', floatarrayTypeDDML, 'kg/ha', 'NH4 N denitrified')
    dummy = add_reg(respondToGetReg, 'n2o_atm', floatarrayTypeDDML, 'kg/ha', 'Amount of N20 produced')
+   dummy = add_reg(respondToGetReg, 'n2o_atm_nitrification', floatarrayTypeDDML, 'kg/ha', 'Amount of N20 produced by nitrification')
+   dummy = add_reg(respondToGetReg, 'n2o_atm_denitrification', floatarrayTypeDDML, 'kg/ha', 'Amount of N20 produced by denitrification')
    dummy = add_reg(respondToGetReg, 'nit_tot', floatarrayTypeDDML, 'kg/ha', 'total N in soil')
    dummy = add_reg(respondToGetReg, 'dlt_n_min', floatarrayTypeDDML, 'kg/ha', 'Net N mineralized')
    dummy = add_reg(respondToGetReg, 'dlt_n_min_res', floatarrayTypeDDML, 'kg/ha', 'Net Residue N mineralisation')

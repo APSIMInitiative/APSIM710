@@ -1769,6 +1769,38 @@ using System.Xml.Serialization;
             }
         }
 
+        // amount of N2O produced by nitrification
+        [Output]
+        [Units("kg/ha")]
+        [Description("Amount of N2O produced by nitrification")]
+        double[] n2o_atm_nitrification
+        {
+            get
+            {
+                double[] result = new double[dlayer.Length];
+                for (int layer = 0; layer < dlayer.Length; ++layer)
+                    for (int k = 0; k < Patch.Count; k++)
+                        result[layer] += Patch[k].dlt_nh4_dnit[layer] * Patch[k].PatchArea;
+                return result;
+            }
+        }
+
+        // amount of N2O produced by denitrification
+        [Output]
+        [Units("kg/ha")]
+        [Description("Amount of N2O produced by dentrification")]
+        double[] n2o_atm_dentrification
+        {
+            get
+            {
+                double[] result = new double[dlayer.Length];
+                for (int layer = 0; layer < dlayer.Length; ++layer)
+                    for (int k = 0; k < Patch.Count; k++)
+                        result[layer] += (Patch[k].n2o_atm[layer] - Patch[k].dlt_nh4_dnit[layer]) * Patch[k].PatchArea;
+                return result;
+            }
+        }
+
         // amount of N2 produced
         [Output]
         [Units("kg/ha")]
