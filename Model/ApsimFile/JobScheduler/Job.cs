@@ -224,7 +224,7 @@ public class Job
            }
            if (StdOutFilename != "")
            {
-               StdOutStream = new StreamWriter(StdOutFilename);
+               StdOutStream = new StreamWriter(Path.Combine(WorkingDirectory, StdOutFilename));
                StdOutStream.AutoFlush = true;
            }
            else
