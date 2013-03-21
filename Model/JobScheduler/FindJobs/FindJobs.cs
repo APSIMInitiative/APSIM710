@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -104,10 +105,74 @@ class Program
                 }
             }
         }
+
+        //rearrange run jobs so that the longest run first.
+        List<Job> convertJobs = new List<Job>();
+        List<Job> runJobs = new List<Job>();
+
+        foreach (Job j in Target.Jobs)
+        {
+            if (j.CommandLine.Contains("ApsimToSim.exe"))
+                convertJobs.Add(j);
+            else
+                runJobs.Add(j);
+        }
+        Target.Jobs.Clear();
+        Target.Jobs.AddRange(convertJobs);
+
+        StreamReader dataFile = new StreamReader(@"Build\report.txt");
+        string line;
+        Dictionary<string, int> times = new Dictionary<string, int>();
+        while ((line = dataFile.ReadLine()) != null)
+        {
+            if (line.Contains("[Pass] C:"))
+            {
+                string[] split = line.Split(new char[] { '[' }, StringSplitOptions.RemoveEmptyEntries);
+                times.Add(split[1].Substring(6).Trim(), Convert.ToInt32(split[2].Replace("sec]", "")));
+            }
+        }
+
+        List<Job> runList = new List<Job>();
+
+        List<KeyValuePair<string, int>> jobList = times.ToList();
+        jobList.Sort((first, second) =>
+            {
+                return first.Value.CompareTo(second.Value);
+            });
+
+        jobList.Reverse();
+        //add jobs from longest to shortest
+        foreach (var kvp in jobList)
+        {
+            for (int i = runJobs.Count - 1;i>=0 ; i--)
+            {
+                if (runJobs[i].Name.ToLower().Contains(kvp.Key.ToLower()))
+                {
+                    runList.Add(runJobs[i]);
+                    runJobs.RemoveAt(i);
+                    break;
+                }
+            }
+        }
+
+        //add any jobs that were not in list
+        runList.Reverse();
+        runList.AddRange(runJobs);
+        runList.Reverse();
+
+        Target.Jobs.AddRange(runList);
+
         XmlSerializer x = new XmlSerializer(typeof(Target));
         StringWriter s = new StringWriter();
         x.Serialize(s, Target);
-
+        
+        //debug code
+        string st = s.ToString();
+        using (TextWriter writer = File.CreateText(@"c:\temp\list.txt"))
+        {
+            writer.Write(st);
+        }
+        
         Utility.SocketSend(Macros["Server"], Convert.ToInt32(Macros["Port"]),
                            "AddTarget~" + s.ToString());
         return (Target.Jobs.Count);

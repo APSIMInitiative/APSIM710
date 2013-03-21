@@ -869,11 +869,6 @@
          <WorkingDirectory>%APSIM%/Model/JobScheduler/FindJobs</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
-      <Job name="Find Examples">
-         <DependsOn>Compile FindJobs</DependsOn>
-         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-         <CommandLine>%APSIM%/Model/FindJobs.exe Filespec=%APSIM%/Examples/*.apsim? TargetName=Tests Server=%Server% Port=%Port%</CommandLine>
-      </Job>
       <Job name="Find .apsim Tests">
          <DependsOn>Compile FindJobs</DependsOn>
          <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
@@ -883,6 +878,11 @@
          <DependsOn>Compile FindJobs</DependsOn>
          <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
          <CommandLine>%APSIM%/Model/FindJobs.exe Filespec=%APSIM%/Tests/*.con TargetName=Tests Server=%Server% Port=%Port%</CommandLine>
+      </Job>	  
+      <Job name="Find Examples">
+         <DependsOn>Compile FindJobs</DependsOn>
+         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+         <CommandLine>%APSIM%/Model/FindJobs.exe Filespec=%APSIM%/Examples/*.apsim? TargetName=Tests Server=%Server% Port=%Port%</CommandLine>
       </Job>
       <Job name="Remove all .out and .sum files from Examples folder">
          <WorkingDirectory>%APSIM%/Examples</WorkingDirectory>

@@ -38,7 +38,7 @@ class Bob
        	 svnExe = "svn"; sevenZipExe = "unzip";
          }
 
-      string ConnectionString = "Data Source=www.apsim.info\\SQLEXPRESS;Database=\"APSIM Builds\";Trusted_Connection=False;User ID=sv-login-external;password=P@ssword123";
+      string ConnectionString = File.ReadAllText(@"C:\dbConnect.txt");
       SqlConnection Connection = new SqlConnection(ConnectionString);
 
       try
