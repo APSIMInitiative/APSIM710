@@ -1772,7 +1772,7 @@ public class AgPasture
         get
         {
             if (p_Live) return "alive";
-            else return "dead";
+            else return "out";
         }
     }
     [Output]
@@ -2204,10 +2204,14 @@ public class AgPasture
     public double HarvestN          //n_daily_harvest
     {
         get
-        { //return (float)p_harvestN; }
+        {
+            //return (float)p_harvestN; }
             double n = 0.0;
-            for (int s = 0; s < Nsp; s++)
-                n += SP[s].Ndefoliated;
+            if ( HarvestWt > 0.0)     
+            {
+                for (int s = 0; s < Nsp; s++)
+                    n += SP[s].Ndefoliated;
+            }
             return n;
         }
     }
