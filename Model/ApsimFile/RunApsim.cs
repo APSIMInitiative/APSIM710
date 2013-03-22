@@ -193,6 +193,7 @@ namespace ApsimFile
                     if (PosLastSlash != -1)
                         SumFileName = SumFileName.Substring(PosLastSlash + 1);
                     SumFileName += ".sum";
+                    SumFileName = Path.Combine(Path.GetDirectoryName(FileName), SumFileName);
 
                     Job J = CreateJob(FileName, SumFileName, SimulationPath);
                     ApsimJobs.Add(J);
