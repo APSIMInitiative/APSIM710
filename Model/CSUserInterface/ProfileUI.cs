@@ -536,8 +536,27 @@ namespace CSUserInterface
             ManageCropsForm F = new ManageCropsForm(Soil);
             if (F.ShowDialog() == DialogResult.OK)
             {
-                Soil.CropNames = F.CropNames;
-                OnRefresh();
+                List<string> dupes = new List<string>();
+                bool foundDuplicate=false;
+                foreach (string s in F.CropNames)
+                {
+                    if (dupes.Contains(s.ToLower()))
+                    {
+                        foundDuplicate = true;
+                        break;
+                    }
+                    dupes.Add(s.ToLower());
+                }
+
+                if (foundDuplicate)
+                {
+                    MessageBox.Show("Duplicate crop name found. Crops must be unique.");
+                }
+                else
+                {
+                    Soil.CropNames = F.CropNames;
+                    OnRefresh();
+                }
             }
         }
 
