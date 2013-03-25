@@ -175,21 +175,29 @@ namespace CSUserInterface
         /// </summary>
         private void SaveGrid()
         {
-            int Row = 0;
-            foreach (PropertyInfo Property in OurObject.GetType().GetProperties())
+            try
             {
-                bool Ignore = Property.IsDefined(typeof(ModelAttributes.UIIgnore), false);
-                if (!Ignore && Property.CanWrite &&
-                    (Property.PropertyType.Name == "String" ||
-                     Property.PropertyType.Name == "Double" ||
-                     Property.PropertyType.Name == "Boolean"))
+                int Row = 0;
+                foreach (PropertyInfo Property in OurObject.GetType().GetProperties())
                 {
-                    if (Property.PropertyType.Name == "Double")
-                        Property.SetValue(OurObject, Convert.ToDouble(Grid.Rows[Row].Cells[1].Value), null);
-                    else
-                        Property.SetValue(OurObject, Grid.Rows[Row].Cells[1].Value, null);
-                    Row++;
+
+                    bool Ignore = Property.IsDefined(typeof(ModelAttributes.UIIgnore), false);
+                    if (!Ignore && Property.CanWrite &&
+                        (Property.PropertyType.Name == "String" ||
+                         Property.PropertyType.Name == "Double" ||
+                         Property.PropertyType.Name == "Boolean"))
+                    {
+                        if (Property.PropertyType.Name == "Double")
+                            Property.SetValue(OurObject, Convert.ToDouble(Grid.Rows[Row].Cells[1].Value), null);
+                        else
+                            Property.SetValue(OurObject, Grid.Rows[Row].Cells[1].Value, null);
+                        Row++;
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
             }
         }
 
