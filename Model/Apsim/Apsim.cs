@@ -125,7 +125,11 @@ public class Apsim
             if (String.IsNullOrEmpty(dirName))
                 dirName = Directory.GetCurrentDirectory();
             if (Directory.Exists(dirName))
-                Files = Directory.GetFiles(dirName, Path.GetFileName(filename));
+            {
+                List<string> fileList = new List<string>();
+                Utility.FindFiles(dirName, Path.GetFileName(filename), ref fileList, true);
+                Files = fileList.ToArray();
+            }
         }
 		if (Files != null)
            for (int i = 0; i < Files.Length; ++i)

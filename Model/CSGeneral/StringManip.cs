@@ -84,7 +84,16 @@ namespace CSGeneral
 
         }
 
-
+        // ------------------------------------------------------- 
+        // A version of Array.Contains that is case insensitive. 
+        // ------------------------------------------------------- 
+        public static bool Contains(IEnumerable Values, string St)
+        {
+            foreach (string Value in Values)
+                if (Value.Equals(St, StringComparison.CurrentCultureIgnoreCase))
+                    return true; 
+            return false;
+        }
         // ------------------------------------------------------------------
         // This method complements the string function IndexOfAny by
         // providing a NOT version. Returns -1 if non of the specified

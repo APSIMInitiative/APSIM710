@@ -267,10 +267,11 @@ namespace ApsimFile
             Job J = new Job();
             J.CommandLine = Executable + " " + Arguments;
             J.WorkingDirectory = Path.GetDirectoryName(FileName);
+            J.Name = FileName + ":";
             if (SimulationPath == null)
-                J.Name = Path.GetFileNameWithoutExtension(SumFileName);
+                J.Name += Path.GetFileNameWithoutExtension(SumFileName);
             else
-                J.Name = SimulationPath;
+                J.Name += SimulationPath;
             J.IgnoreErrors = true;
             J.maxLines = MaxLinesInSummaryFile;
             J.StdOutFilename = SumFileName;

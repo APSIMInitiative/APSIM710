@@ -25,6 +25,7 @@ namespace ApsimFile
         public double[] CL { get; set; }
         [Units("%")]
         public double[] ESP { get; set; }
+        public double[] PH { get; set; }
 
         public Sample() {Name = "Sample"; }
 
@@ -136,6 +137,36 @@ namespace ApsimFile
             }
         }
 
+        // Support for PH units.
+        public enum PHSampleUnitsEnum { Water, CaCl2 }
+        public PHSampleUnitsEnum PHUnits { get; set; }
+        public string PHUnitsToString(PHSampleUnitsEnum Units)
+        {
+            if (Units == PHSampleUnitsEnum.CaCl2)
+                return "CaCl2";
+            return "1:5 water";
+        }
+        public void PHUnitsSet(PHSampleUnitsEnum ToUnits)
+        {
+            if (ToUnits != PHUnits)
+            {
+                // convert the numbers
+                if (ToUnits == PHSampleUnitsEnum.Water)
+                {
+                    // pH in water = (pH in CaCl X 1.1045) - 0.1375
+                    PH = MathUtility.Subtract_Value(MathUtility.Multiply_Value(PH, 1.1045), 0.1375);
+                }
+                else
+                {
+                    // pH in CaCl = (pH in water + 0.1375) / 1.1045
+                    PH = MathUtility.Divide_Value(MathUtility.Add_Value(PH, 0.1375), 1.1045);
+                }
+                PHUnits = ToUnits;
+            }
+
+
+        }
+
         /// <summary>
         /// Return NO3. Units: ppm.
         /// </summary>
@@ -238,6 +269,23 @@ namespace ApsimFile
                     return MathUtility.Multiply_Value(OC, 1.3);
                 else
                     return OC;
+            }
+        }
+
+        /// <summary>
+        /// PH. Units: (1:5 water)
+        /// </summary>
+        public double[] PHWater
+        {
+            get
+            {
+                if (PHUnits == PHSampleUnitsEnum.CaCl2)
+                {
+                    // pH in water = (pH in CaCl X 1.1045) - 0.1375
+                    return MathUtility.Subtract_Value(MathUtility.Multiply_Value(PH, 1.1045), 0.1375);
+                }
+                else
+                    return PH;
             }
         }
 

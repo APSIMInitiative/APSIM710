@@ -102,7 +102,15 @@ namespace ApsimFile
 
             StringWriter Out = new StringWriter();
             x.Serialize(Out, this, ns);
-            return Out.ToString();
+            string st = Out.ToString();
+            if (st.Length > 5 && st.Substring(0, 5) == "<?xml")
+            {
+                // remove the first line: <?xml version="1.0"?>/n
+                int posEol = st.IndexOf("\n");
+                if (posEol != -1)
+                    return st.Substring(posEol + 1);
+            }
+            return st;
         }
 
         #region Water
@@ -645,20 +653,6 @@ namespace ApsimFile
 
         #region Analysis
         /// <summary>
-        /// PH. Units: 1:5 water
-        /// </summary>
-        public double[] PH
-        {
-            get
-            {
-                if (Analysis.PH == null) return null;
-                return Map(Analysis.PHWater, 
-                           Analysis.Thickness, Thickness,
-                           MapType.Concentration, Analysis.PH.Last());
-            }
-        }
-
-        /// <summary>
         /// Rocks. Units: %
         /// </summary>
         public double[] Rocks { get { return Map(Analysis.Rocks, Analysis.Thickness, Thickness, MapType.Concentration); } }
@@ -811,6 +805,27 @@ namespace ApsimFile
                 // Try and find a sample with EC in it.
                 foreach (Sample Sample in Samples)
                     if (Sample.OverlaySampleOnTo(Sample.EC, Sample.Thickness, ref Values, ref Thicknesses))
+                        break;
+                if (Values != null)
+                    return Map(Values, Thicknesses, Thickness,
+                               MapType.Concentration, LastValue(Values));
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// PH from either a sample or from Analysis. Units: 1:5 Water
+        /// </summary>
+        public double[] PH
+        {
+            get
+            {
+                double[] Values = Analysis.PHWater;
+                double[] Thicknesses = Analysis.Thickness;
+
+                // Try and find a sample with PH in it.
+                foreach (Sample Sample in Samples)
+                    if (Sample.OverlaySampleOnTo(Sample.PHWater, Sample.Thickness, ref Values, ref Thicknesses))
                         break;
                 if (Values != null)
                     return Map(Values, Thicknesses, Thickness,
@@ -1217,7 +1232,7 @@ namespace ApsimFile
         /// <summary>
         /// AirDry - mapped to the specified layer structure. Units: mm/mm
         /// </summary>
-        internal double[] AirDryMapped(double[] ToThickness)
+        public double[] AirDryMapped(double[] ToThickness)
         {
             return Map(Water.AirDry, Water.Thickness, ToThickness, MapType.Concentration, Water.AirDry.Last());
         }
@@ -1225,7 +1240,7 @@ namespace ApsimFile
         /// <summary>
         /// Lower limit 15 bar - mapped to the specified layer structure. Units: mm/mm
         /// </summary>
-        internal double[] LL15Mapped(double[] ToThickness)
+        public double[] LL15Mapped(double[] ToThickness)
         {
             return Map(Water.LL15, Water.Thickness, ToThickness, MapType.Concentration, Water.LL15.Last());
         }
@@ -1233,7 +1248,7 @@ namespace ApsimFile
         /// <summary>
         /// Drained upper limit - mapped to the specified layer structure. Units: mm/mm
         /// </summary>
-        internal double[] DULMapped(double[] ToThickness)
+        public double[] DULMapped(double[] ToThickness)
         {
             return Map(Water.DUL, Water.Thickness, ToThickness, MapType.Concentration, Water.DUL.Last());
         }
@@ -1241,7 +1256,7 @@ namespace ApsimFile
         /// <summary>
         /// SW - mapped to the specified layer structure. Units: mm/mm
         /// </summary>
-        internal double[] SWMapped(double[] Values, double[] Thicknesses, double[] ToThickness)
+        public double[] SWMapped(double[] Values, double[] Thicknesses, double[] ToThickness)
         {
             if (Thicknesses == ToThickness)
                 return Values;
@@ -1528,7 +1543,7 @@ namespace ApsimFile
         /// <summary>
         /// Plant available water for the specified crop. Will throw if crop not found. Units: mm/mm
         /// </summary>
-        internal static double[] CalcPAWC(double[] Thickness, double[] LL, double[] DUL, double[] XF)
+        public static double[] CalcPAWC(double[] Thickness, double[] LL, double[] DUL, double[] XF)
         {
             double[] PAWC = new double[Thickness.Length];
             if (LL == null)
