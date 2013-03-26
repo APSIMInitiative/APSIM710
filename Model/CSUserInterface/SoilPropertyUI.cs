@@ -161,7 +161,7 @@ namespace CSUserInterface
                     Grid.Rows[Row].Cells[0].Value = Description + ":";
                     Grid.Rows[Row].Cells[1].Value = Property.GetValue(OurObject, null);
                     if (Grid.Rows[Row].Cells[1].Value != null &&
-                        (Grid.Rows[Row].Cells[1].Value.ToString() == "NaN" ||
+                        (Grid.Rows[Row].Cells[1].Value.ToString().StartsWith("NaN") ||
                          Grid.Rows[Row].Cells[1].Value.ToString() == ""))
                         Grid.Rows[Row].Cells[1].Value = null;
 
@@ -188,7 +188,10 @@ namespace CSUserInterface
                          Property.PropertyType.Name == "Boolean"))
                     {
                         if (Property.PropertyType.Name == "Double")
-                            Property.SetValue(OurObject, Convert.ToDouble(Grid.Rows[Row].Cells[1].Value), null);
+                            if (Grid.Rows[Row].Cells[1].Value == null || Convert.IsDBNull(Grid.Rows[Row].Cells[1].Value))
+                                Property.SetValue(OurObject, Double.NaN, null);
+                            else
+                                Property.SetValue(OurObject, Convert.ToDouble(Grid.Rows[Row].Cells[1].Value), null);
                         else
                             Property.SetValue(OurObject, Grid.Rows[Row].Cells[1].Value, null);
                         Row++;

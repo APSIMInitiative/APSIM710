@@ -115,7 +115,7 @@ namespace CSUserInterface
 			// Save the script box if it has changd.
 			// --------------------------------------
 			string Contents = "";
-			if (TabControl.TabPages[0].Text == "Properties") {
+			if (TabControl.TabPages.Count > 0 && TabControl.TabPages[0].Text == "Properties") {
 				GenericUI.OnSave();
 				Contents = GenericUI.GetData();
 			}

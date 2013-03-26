@@ -850,15 +850,15 @@ public partial class SurfaceOM
             
             NitrogenChangedType NitrogenChanges = new NitrogenChangedType();
             NitrogenChanges.Sender = "SurfaceOrganicMatter";
-            NitrogenChanges.DeltaUrea = new double[dlayer.Length];
-            NitrogenChanges.DeltaUrea = new double[dlayer.Length];
+            NitrogenChanges.DeltaNH4 = new double[dlayer.Length];
+            NitrogenChanges.DeltaNO3 = new double[dlayer.Length];
             NitrogenChanges.DeltaUrea = new double[dlayer.Length];
             NitrogenChanges.DeltaNH4[0] = (double)nh4_incorp[0];
             NitrogenChanges.DeltaNO3[0] = (double)no3_incorp[0];
 
             NitrogenChanged.Invoke(NitrogenChanges);
 
-            deepest_layer = count_of_real_vals(g.dlayer, max_layer);
+            // deepest_layer = count_of_real_vals(g.dlayer, max_layer);
 
             if (g.phosphorus_aware)
                 MyPaddock.Set("dlt_labile_p", po4_incorp);
