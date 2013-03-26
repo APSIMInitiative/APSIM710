@@ -31,22 +31,41 @@ using namespace protocol;
 string ConvertToSim(const string& apsimPath, string& simulationName)
    {
    // Create a command line to ApsimToSim
-   string CommandLine = "%APSIM%/Model/ApsimToSim.exe \"" + apsimPath + "\"";
-   if (simulationName != "")
-      {
-      CommandLine += " \"" + simulationName + "\"";
-      }
+#ifdef __WIN32__
+   string pathsep = "\\";
+#else 
+   string pathsep = "/";
+#endif
+   string CommandLine = "%APSIM%" + pathsep + "Model" + pathsep + "ApsimToSim.exe";
+   replaceAll(CommandLine, "%APSIM%", getApsimDirectory());
+   if (CommandLine.find_first_of(' ') != string::npos)
+	   CommandLine = "\"" + CommandLine + "\"";
 
-   // We need to send StdOut from ApsimToSim to a unique filename. Create that filename now.
+   if (apsimPath.find_first_of(' ') != string::npos)
+	   CommandLine += " \"" + apsimPath + "\"";
+   else    
+	   CommandLine += " " + apsimPath;
+
+   if (simulationName != "")
+      if (simulationName.find_first_of(' ') != string::npos)
+         CommandLine += " \"" + simulationName + "\"";
+	  else
+         CommandLine += " " + simulationName;
+
+   // We need to send StdErr from ApsimToSim to a unique filename. Create that filename now.
    string uniqueFileName = simulationName;
+   if (uniqueFileName  == "")
+	   uniqueFileName = fileTailNoExtension(apsimPath);
+
    replaceAll(uniqueFileName, "\"", "");
    unsigned i = uniqueFileName.find_last_of("/");
    if (i != string::npos)
       uniqueFileName = uniqueFileName.substr(i+1);
-   uniqueFileName += ".tmp";
-   CommandLine += " 2> \"" + uniqueFileName + "\"";
-   replaceAll(CommandLine, "%APSIM%", getApsimDirectory());
+   uniqueFileName += ".sims";
+   if (uniqueFileName.find_first_of(' ') != string::npos)
+	   uniqueFileName = "\"" + uniqueFileName + "\"";
 
+   CommandLine += " 2> " + uniqueFileName;
    // exec ApsimToSim and read its stdout as the .sim file name.
    system(CommandLine.c_str());
    ifstream in(uniqueFileName.c_str());
@@ -56,12 +75,10 @@ string ConvertToSim(const string& apsimPath, string& simulationName)
 
    if (simPath.find("Written ") == string::npos)
       return "";
-   else
-      {
-      unlink(uniqueFileName.c_str());
-      replaceAll(simPath, "Written ", "");
-      return simPath;
-      }
+
+   unlink(uniqueFileName.c_str());
+   replaceAll(simPath, "Written ", "");
+   return simPath;
    }
 
 //---------------------------------------------------------------------------
