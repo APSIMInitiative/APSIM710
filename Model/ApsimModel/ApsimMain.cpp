@@ -31,12 +31,12 @@ using namespace protocol;
 string ConvertToSim(const string& apsimPath, string& simulationName)
    {
    // Create a command line to ApsimToSim
-   string CommandLine = "%apsim%\\Model\\ApsimToSim.exe \"" + apsimPath + "\"";
+   string CommandLine = "%APSIM%/Model/ApsimToSim.exe \"" + apsimPath + "\"";
    if (simulationName != "")
       {
       CommandLine += " \"" + simulationName + "\"";
       }
-      
+
    // We need to send StdOut from ApsimToSim to a unique filename. Create that filename now.
    string uniqueFileName = simulationName;
    replaceAll(uniqueFileName, "\"", "");
@@ -45,11 +45,11 @@ string ConvertToSim(const string& apsimPath, string& simulationName)
       uniqueFileName = uniqueFileName.substr(i+1);
    uniqueFileName += ".tmp";
    CommandLine += " 2> \"" + uniqueFileName + "\"";
-   replaceAll(CommandLine, "%apsim%", getApsimDirectory());
+   replaceAll(CommandLine, "%APSIM%", getApsimDirectory());
 
    // exec ApsimToSim and read its stdout as the .sim file name.
    system(CommandLine.c_str());
-   ifstream in(uniqueFileName);
+   ifstream in(uniqueFileName.c_str());
    string simPath;
    getline(in, simPath);
    in.close();
