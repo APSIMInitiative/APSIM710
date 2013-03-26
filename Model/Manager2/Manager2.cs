@@ -167,8 +167,8 @@ public class Manager2
                     Errors += err.ErrorText + ". Line number: " + err.Line.ToString();
                 }
                 if (Errors != "" && 
-				    (Errors.Contains("No inputs specified. Line number: 0") ||
-					 Errors.Contains("could not be found. Line number: 0")))
+				    (Errors.Contains("No inputs specified.") ||
+					 Errors.Contains("could not be found.")))
                 {
                     // This can happen on condor execute nodes that don't have write access to the 
                     // temp directory.
