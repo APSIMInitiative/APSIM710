@@ -137,16 +137,14 @@ namespace CSGeneral
         }
 
         public static void FindFiles(string DirectoryName, string FileSpec, ref List<string> FileNames,
-                                     bool SearchHiddenFolders)
+                                     bool recursive = false, bool SearchHiddenFolders = false)
         {
             foreach (string FileName in Directory.GetFiles(DirectoryName, FileSpec))
                 FileNames.Add(FileName);
-
-            foreach (string ChildDirectoryName in Directory.GetDirectories(DirectoryName))
-            {
-                if (SearchHiddenFolders || (File.GetAttributes(ChildDirectoryName) & FileAttributes.Hidden) != FileAttributes.Hidden)
-                    FindFiles(ChildDirectoryName, FileSpec, ref FileNames, SearchHiddenFolders);
-            }
+            if (recursive) 
+               foreach (string ChildDirectoryName in Directory.GetDirectories(DirectoryName))
+                  if (SearchHiddenFolders || (File.GetAttributes(ChildDirectoryName) & FileAttributes.Hidden) != FileAttributes.Hidden)
+                     FindFiles(ChildDirectoryName, FileSpec, ref FileNames, recursive, SearchHiddenFolders);
         }
 
         /// <summary>

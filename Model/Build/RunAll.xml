@@ -1,56 +1,19 @@
 <?xml version="1.0"?>
-<?xml-stylesheet type="text/xsl" href="Build.xsl"?>
-<Folder name="RunAll">
+<Project>
+ <Target name="RunExamples" wait="yes">
+   	  <DependsOn>FindExamples</DependsOn>
+ </Target>
+ <Target name="FindExamples">
 	<Job name="FindExamples">
+        <DependsOn>Compile</DependsOn>
 		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-		<CommandLine>JobSchedulerFindJobs.exe "%APSIM%\Examples\*.apsim" "%JobPath%/../Examples"</CommandLine>
-		<CommandLineUnix>JobSchedulerFindJobs.exe "%APSIM%/Examples/*.apsim" "%JobPath%/../Examples"</CommandLineUnix>
+        <CommandLine>%APSIM%\Model\FindJobs.exe Filespec=%APSIM%/Examples/*.apsim TargetName=RunExamples Server=%Server% Port=%Port%</CommandLine>
 	</Job>
-	<Job name="FindXExamples">
-		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-		<CommandLine>JobSchedulerFindJobs.exe "%APSIM%\Examples\*.apsimx" "%JobPath%/../Examples"</CommandLine>
-		<CommandLineUnix>JobSchedulerFindJobs.exe "%APSIM%/Examples/*.apsimx" "%JobPath%/../Examples"</CommandLineUnix>
-	</Job>
-	<Job name="FindTests" >
-		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-		<CommandLine>JobSchedulerFindJobs.exe "%APSIM%\Tests\*.apsim" "%JobPath%/../Tests"</CommandLine>
-		<CommandLineUnix>JobSchedulerFindJobs.exe "%APSIM%/Tests/*.apsim" "%JobPath%/../Tests"</CommandLineUnix>
-	</Job>      
-	<Job name="FindXTests" >
-		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-		<CommandLine>JobSchedulerFindJobs.exe "%APSIM%\Tests\*.apsimx" "%JobPath%/../Tests"</CommandLine>
-		<CommandLineUnix>JobSchedulerFindJobs.exe "%APSIM%/Tests/*.apsimx" "%JobPath%/../Tests"</CommandLineUnix>
-	</Job>      
-	<Job name="FindControlFiles" >
-		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-		<CommandLine>JobSchedulerFindJobs.exe "%APSIM%\Tests\*.con" "%JobPath%/../Tests"</CommandLine>
-		<CommandLineUnix>JobSchedulerFindJobs.exe "%APSIM%/Tests/*.con" "%JobPath%/../Tests"</CommandLineUnix>
-	</Job>      
-	<Folder name="Examples" wait="yes">
-	  <Folder name="CreateSims"  />
-   	  <Folder name="RunApsim"  IgnoreErrors="yes" wait="yes"/>
-        </Folder>
-	<Folder name="Tests" wait="yes">
-	  <Folder name="CreateSims"  />
-   	  <Folder name="RunApsim"  IgnoreErrors="yes"/>
-    </Folder>
-     
-	<!--
-    Unit tests.
-	-->	
-	
-	<Job name="Unit tests" wait="yes" IgnoreErrors="yes">
-		<WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
-		<CommandLine>%APSIM%/Model/Build/RunAllUnitTests.bat</CommandLine>
-	</Job>     
-
-	<!--
-    Execute all post simulation batch files.
-	-->	
-	
-	<Job name="Find post simulation jobs" IgnoreErrors="yes">
-		<WorkingDirectory>%APSIM%</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\JobSchedulerFindJobs.exe "%APSIM%\Tests\PostRunAll.bat" "%JobPath%/../Jobs"</CommandLine>
-	</Job>
-	<Folder name="Jobs" wait="yes" IgnoreErrors="yes" />
-</Folder>
+ </Target>
+ <Target name="Compile">
+     <Job name="Compile">
+         <WorkingDirectory>%APSIM%/Model/JobScheduler/FindJobs</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+ </Target>
+</Project>

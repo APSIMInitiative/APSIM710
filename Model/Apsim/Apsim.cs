@@ -93,7 +93,7 @@ public class Apsim
 			    SimulationPaths.Add(Macros["Simulation"]);
 
             // Run
-            RunApsim Run = new RunApsim();
+            ApsimFile.RunApsim Run = new ApsimFile.RunApsim();
             Run.MaxLinesInSummaryFile = maxLines;
 			Run.Start(FileNames, SimulationPaths.ToArray());
             Run.WaitUntilFinished();
@@ -116,7 +116,7 @@ public class Apsim
         if (Directory.Exists(filename))  // we've been given a directory name, not a file name; find everything in it.
         {
             List<string> fileList = new List<string>();
-            Utility.FindFiles(filename, "*", ref fileList, true);
+            Utility.FindFiles(filename, "*", ref fileList);
             Files = fileList.ToArray();
         }
         else
@@ -127,7 +127,7 @@ public class Apsim
             if (Directory.Exists(dirName))
             {
                 List<string> fileList = new List<string>();
-                Utility.FindFiles(dirName, Path.GetFileName(filename), ref fileList, true);
+                Utility.FindFiles(dirName, Path.GetFileName(filename), ref fileList);
                 Files = fileList.ToArray();
             }
         }

@@ -50,7 +50,7 @@ class Program
         // 1. For each filename found, add a job for each simulation in each file.
         string FileSpec = Path.GetFileName(DirFileSpec);
         List<string> FileNames = new List<string>();
-        Utility.FindFiles(RootDirectory, FileSpec, ref FileNames, false);
+        Utility.FindFiles(RootDirectory, FileSpec, ref FileNames, true, false);
 
         Target Target = new Target();
         Target.Name = Macros["TargetName"];

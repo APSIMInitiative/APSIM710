@@ -101,7 +101,7 @@ class Program
         if (Lines.Length > 0)
         {
             List<string> Entries = new List<string>();
-            Utility.FindFiles(TempDirectory, "entries", ref Entries, true);
+            Utility.FindFiles(TempDirectory, "entries", ref Entries, true, true);
             foreach (string FileName in Entries)
                 ModifyEntriesFile(FileName);
 

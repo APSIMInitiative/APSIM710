@@ -53,19 +53,27 @@ string ConvertToSim(const string& apsimPath, string& simulationName)
          CommandLine += " " + simulationName;
 
    // We need to send StdErr from ApsimToSim to a unique filename. Create that filename now.
-   string uniqueFileName = simulationName;
-   if (uniqueFileName  == "")
-	   uniqueFileName = fileTailNoExtension(apsimPath);
+   string uniqueFileName; 
+   if (simulationName  == "")
+	   uniqueFileName = fileDirName(apsimPath) + pathsep + fileTailNoExtension(apsimPath);
+   else
+	   uniqueFileName = fileRoot(apsimPath);
 
    replaceAll(uniqueFileName, "\"", "");
    unsigned i = uniqueFileName.find_last_of("/");
    if (i != string::npos)
       uniqueFileName = uniqueFileName.substr(i+1);
    uniqueFileName += ".sims";
-   if (uniqueFileName.find_first_of(' ') != string::npos)
-	   uniqueFileName = "\"" + uniqueFileName + "\"";
 
-   CommandLine += " 2> " + uniqueFileName;
+   CommandLine += " 2> " + (uniqueFileName.find_first_of(' ') != string::npos ? 
+	                                   "\"" + uniqueFileName + "\"" : uniqueFileName);
+   // Hack for quoting under win32 - see quoting rules in "cmd /?". If we've installed apsim in a dir with spaces,
+   // then the executable will be quoted, and 
+#ifdef __WIN32__   
+   if (CommandLine[0] == '\"') 
+      CommandLine = "\"" +  CommandLine + "\"";
+#endif
+
    // exec ApsimToSim and read its stdout as the .sim file name.
    system(CommandLine.c_str());
    ifstream in(uniqueFileName.c_str());

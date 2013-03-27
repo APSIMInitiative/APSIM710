@@ -270,7 +270,7 @@ namespace Actions
 							FilesToRun.Add(Controller.ApsimData.FileName);
 						}
 					} else {
-						Utility.FindFiles(F.FolderOfFiles, "*.apsim", ref FilesToRun, false);
+						Utility.FindFiles(F.FolderOfFiles, "*.apsim", ref FilesToRun);
 					}
 					if ((FilesToRun.Count > 0)) {
 						ToowoombaCluster.RunOnCluster(FilesToRun, F.DropFolder, F.Version, F.archIsUnix, F.simsPerJobNumber, F.NiceUser, UpdateProgress);

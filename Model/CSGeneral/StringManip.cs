@@ -336,7 +336,12 @@ namespace CSGeneral
 
         public static string DQuote(string St)
         {
-            return "\"" + St + "\"";
+            if (St.IndexOfAny(new char[] { ' ', '&', '<', '>', '(', ')', 
+                                           '[', ']', '{', '}', '=', ';', 
+                                           '!', '\'', '+', ',', '^', 
+                                           '`', '~', '|','@' }) >= 0)
+              return "\"" + St + "\"";
+            return St;
         }
 
         public static Type DetermineType(string Value, string Units)
