@@ -8,6 +8,7 @@ using System.Data;
 using System.IO;
 using ModelAttributes;
 using System.Reflection;
+using System.Configuration;
 
 namespace ApsimFile
 {
@@ -20,6 +21,8 @@ namespace ApsimFile
     /// </summary>
     public class Soil
     {
+        private static bool PathFixed = false;
+
         [UIIgnore]
         [XmlAttribute("name")]
         public string Name { get; set; }
@@ -86,9 +89,45 @@ namespace ApsimFile
         /// </summary>
         public static Soil Create(string Xml)
         {
+            FixTempPathForSerializer();
             XmlSerializer x = new XmlSerializer(typeof(Soil));
             StringReader F = new StringReader(Xml);
             return x.Deserialize(F) as Soil;
+        }
+
+        
+
+        /// <summary>
+        /// The condor cluster execute nodes in Toowoomba (and elsewhere?) do not have permission 
+        /// to write in the temp folder (c:\windows\temp). XmlSerializer needs to create files in
+        /// the temp folder. The code below works around this. This code should be put somewhere
+        /// else - but where? YieldProphet uses a manager2 component to create a soil object so
+        /// the code needs to be in manager2, ApsimUI and ApsimToSim.
+        /// </summary>
+        private static void FixTempPathForSerializer()
+        {
+            if (!PathFixed)
+            {
+                PathFixed = true;
+                System.Configuration.Configuration Config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                foreach (System.Configuration.ConfigurationSectionGroup Group in Config.AppSettings.CurrentConfiguration.SectionGroups)
+                {
+                    foreach (ConfigurationSection Section in Group.Sections)
+                    {
+                        if (Section is System.Xml.Serialization.Configuration.XmlSerializerSection)
+                        {
+                            System.Xml.Serialization.Configuration.XmlSerializerSection XmlSection = (System.Xml.Serialization.Configuration.XmlSerializerSection)Section;
+                            if (XmlSection.TempFilesLocation == null || XmlSection.TempFilesLocation != Directory.GetCurrentDirectory())
+                            {
+                                XmlSection.TempFilesLocation = Directory.GetCurrentDirectory();
+                                //Config.Save(ConfigurationSaveMode.Modified);
+                                ConfigurationManager.RefreshSection("appSettings");
+                            }
+                        }
+                    }
+
+                }
+            }
         }
 
         /// <summary>
