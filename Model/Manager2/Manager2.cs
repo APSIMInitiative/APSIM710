@@ -154,7 +154,8 @@ public class Manager2
                     else
                         Params.ReferencedAssemblies.Add(Path.Combine(Path.GetDirectoryName(DllFileName), val));
                 }
-
+                Params.TempFiles = new TempFileCollection(".");
+                Params.TempFiles.KeepFiles = false;
                 string[] source = new string[1];
                 source[0] = Text;
                 CompilerResults results = Provider.CompileAssemblyFromSource(Params, source);
@@ -165,24 +166,6 @@ public class Manager2
                         Errors += "\r\n";
 
                     Errors += err.ErrorText + ". Line number: " + err.Line.ToString();
-                }
-                if (Errors != "" && 
-				    (Errors.Contains("No inputs specified.") ||
-					 Errors.Contains("could not be found.")))
-                {
-                    // This can happen on condor execute nodes that don't have write access to the 
-                    // temp directory.
-                    Params.TempFiles = new TempFileCollection(".");
-                    results = Provider.CompileAssemblyFromSource(Params, source);
-                    Errors = "";
-                    foreach (CompilerError err in results.Errors)
-                    {
-                        if (Errors != "")
-                            Errors += "\r\n";
-
-                        Errors += err.ErrorText + ". Line number: " + err.Line.ToString();
-                    }
-
                 }
                 if (Errors != "")
                     throw new Exception(Errors);

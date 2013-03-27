@@ -265,7 +265,7 @@ namespace ApsimFile
 
             // create job and return it.
             Job J = new Job();
-            J.CommandLine = Executable + " " + Arguments;
+            J.CommandLine = StringManip.DQuote(Executable) + " " + Arguments;
             J.WorkingDirectory = Path.GetDirectoryName(FileName);
             J.Name = FileName + ":";
             if (SimulationPath == null)
