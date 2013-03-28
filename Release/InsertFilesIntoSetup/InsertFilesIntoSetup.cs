@@ -388,7 +388,7 @@ class InsertFilesIntoSetup
         else
             NodeName = Node.Name;
 
-        Out.WriteLine(Indentation + StringManip.DQuote(NodeName));
+        Out.WriteLine(Indentation + "\"" + NodeName + "\"");
         Out.WriteLine(Indentation + "{");
         foreach (XmlNode Child in Node.ChildNodes)
         {
@@ -397,9 +397,9 @@ class InsertFilesIntoSetup
                 Child.ChildNodes[0].NodeType.ToString() == "CDATA"))
             {
                 // property.
-                Out.WriteLine(Indentation + StringManip.DQuote(Child.Name) +
+                Out.WriteLine(Indentation + "\"" + Child.Name + "\"" +
                               " = " +
-                              StringManip.DQuote(Child.InnerText));
+                              "\"" + Child.InnerText + "\"");
             }
             else
             {
