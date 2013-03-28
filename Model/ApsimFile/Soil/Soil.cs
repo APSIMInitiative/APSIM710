@@ -109,23 +109,23 @@ namespace ApsimFile
             if (!PathFixed)
             {
                 PathFixed = true;
-                System.Configuration.Configuration Config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                foreach (System.Configuration.ConfigurationSectionGroup Group in Config.AppSettings.CurrentConfiguration.SectionGroups)
+                try
                 {
-                    foreach (ConfigurationSection Section in Group.Sections)
-                    {
-                        if (Section is System.Xml.Serialization.Configuration.XmlSerializerSection)
-                        {
-                            System.Xml.Serialization.Configuration.XmlSerializerSection XmlSection = (System.Xml.Serialization.Configuration.XmlSerializerSection)Section;
-                            if (XmlSection.TempFilesLocation == null || XmlSection.TempFilesLocation != Directory.GetCurrentDirectory())
-                            {
-                                XmlSection.TempFilesLocation = Directory.GetCurrentDirectory();
-                                //Config.Save(ConfigurationSaveMode.Modified);
-                                ConfigurationManager.RefreshSection("appSettings");
-                            }
-                        }
-                    }
-
+                    Directory.GetFiles(Path.GetTempPath());
+                    /*string FileName = Path.GetTempFileName();
+                    Console.WriteLine(FileName);
+                    StreamWriter Out = new StreamWriter(FileName);
+                    Out.Write(1);
+                    Out.Close();
+                    if (File.Exists(FileName))
+                        File.Delete(FileName);
+                    else
+                        Environment.SetEnvironmentVariable("TEMP", Directory.GetCurrentDirectory());*/
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("asdf");
+                    Environment.SetEnvironmentVariable("TEMP", Directory.GetCurrentDirectory());
                 }
             }
         }
@@ -380,7 +380,13 @@ namespace ApsimFile
         public double[] XF(string CropName)
         {
             SoilCrop SoilCrop = Crop(CropName);
-            if (SoilCrop.XF == null) return null;
+            if (SoilCrop.XF == null)
+            {
+                double[] XF = new double[Thickness.Length];
+                for (int i = 0; i != XF.Length; i++)
+                    XF[i] = 1.0;
+                return XF;
+            }
             return Map(SoilCrop.XF, SoilCrop.Thickness, Thickness, MapType.Concentration, SoilCrop.XF.Last());
         }
 
