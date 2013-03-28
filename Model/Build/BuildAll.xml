@@ -773,19 +773,19 @@
       <Job name="Create Bootleg MSI">
          <DependsOn>Compile InsertFilesIntoSetup</DependsOn>
          <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-         <CommandLine>%Apsim%\Release\CreateMSI.bat %PatchFileNameShort%.Bootleg Bootleg</CommandLine>
+         <CommandLine>%APSIM%\Release\CreateMSI.bat %PatchFileNameShort%.Bootleg Bootleg</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
       <Job name="Create Release MSI">
          <DependsOn>Compile InsertFilesIntoSetup</DependsOn>
          <WorkingDirectory>%APSIM%\Release</WorkingDirectory>
-         <CommandLine>%Apsim%\Release\CreateMSI.bat %PatchFileNameShort%.ApsimSetup ApsimSetup /WithExclusions</CommandLine>
+         <CommandLine>%APSIM%\Release\CreateMSI.bat %PatchFileNameShort%.ApsimSetup ApsimSetup /WithExclusions</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
       <Job name="Create MSI Binaries">
          <DependsOn>Compile InsertFilesIntoSetup</DependsOn>
          <WorkingDirectory>%APSIM%\Release</WorkingDirectory>
-         <CommandLine>%Apsim%\Release\CreateMSIBinaries.bat %PatchFileNameShort%.binaries.Win32</CommandLine>
+         <CommandLine>%APSIM%\Release\CreateMSIBinaries.bat %PatchFileNameShort%.binaries.Win32</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
       <Job name="Update DB Setup Bootleg">
@@ -837,7 +837,7 @@
       </Job>
 		<Job name="Create Build Tree Zip">
 			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-			<CommandLine>"C:\Program Files\7-Zip\7z.exe" -xr!.svn a -mx=7 -mmt=on C:\inetpub\wwwroot\Files\%PatchFileNameShort%.buildtree.zip %Apsim%</CommandLine>
+			<CommandLine>"C:\Program Files\7-Zip\7z.exe" -xr!.svn a -mx=7 -mmt=on C:\inetpub\wwwroot\Files\%PatchFileNameShort%.buildtree.zip %APSIM%</CommandLine>
 			<CommandLineUnix>/bin/true</CommandLineUnix>
 		</Job>
 		<Job name="Update DB Build tree">
@@ -848,7 +848,7 @@
 		</Job>
 		<Job name="CreateBinariesZip">
 			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-			<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on C:\inetpub\wwwroot\Files\%PatchFileNameShort%.binaries.zip %Apsim%\Model\*.exe %Apsim%\Model\*.dll</CommandLine>
+			<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on C:\inetpub\wwwroot\Files\%PatchFileNameShort%.binaries.zip %APSIM%\Model\*.exe %APSIM%\Model\*.dll</CommandLine>
 			<CommandLineUnix>/bin/true</CommandLineUnix>
 		</Job>
 		<Job name="Update DB Binaries">
@@ -887,12 +887,12 @@
       </Job>
       <Job name="Remove all .out and .sum files from Examples folder">
          <WorkingDirectory>%APSIM%/Examples</WorkingDirectory>
-         <CommandLine>%Apsim%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>
+         <CommandLine>%APSIM%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>
          <CommandLineUnix>find . ( -name "*.out" -or -name "*.sum" ) -exec rm {} ;</CommandLineUnix>
       </Job>
       <Job name="Remove all .out and .sum files from Tests folder">
          <WorkingDirectory>%APSIM%/Tests</WorkingDirectory>
-         <CommandLine>%Apsim%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>
+         <CommandLine>%APSIM%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>
          <CommandLineUnix>find . ( -name "*.out" -or -name "*.sum" ) -exec rm {} ;</CommandLineUnix>
       </Job>
    </Target>
