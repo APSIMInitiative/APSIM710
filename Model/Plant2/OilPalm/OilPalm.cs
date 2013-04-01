@@ -80,6 +80,8 @@ public class OilPalm
     [Output]
     double FW = 0.0;
     [Output]
+    double Fn = 0.0;
+    [Output]
     double CumulativeFrondNumber = 0.0;
     [Output]
     double CumulativeBunchNumber = 0.0;
@@ -89,7 +91,13 @@ public class OilPalm
     double ReproductiveGrowthFraction = 0.0;
     [Output]
     double CarbonStress = 0.0;
-    
+    [Output]
+    double HarvestBunches = 0.0;
+    [Output]
+    double HarvestYield = 0.0;
+    [Output]
+    double HarvestBunchSize = 0.0;
+
     [Output]
     double Age = 0.0;
     double Population = 0.0;
@@ -153,6 +161,9 @@ public class OilPalm
     public Function RipeBunchWaterContent = null;
     [Link]
     public Function FrondCriticalNConcentration = null;
+    [Link]
+    public Function FrondMinimumNConcentration = null;
+
 
 
     public class RootType
@@ -164,10 +175,10 @@ public class OilPalm
 
     public class FrondType
     {
-        public double Mass;
-        public double N;
-        public double Area;
-        public double Age;
+        public double Mass; // g/frond
+        public double N;    // g/frond
+        public double Area; // m2/frond
+        public double Age;  //days
     }
     public class BunchType
     {
@@ -236,7 +247,11 @@ public class OilPalm
     [Event]
     public event NullTypeDelegate Sowing;
     [Event]
+    public event NullTypeDelegate Harvesting;
+    [Event]
     public event FOMLayerDelegate IncorpFOM;
+    [Event]
+    public event BiomassRemovedDelegate BiomassRemoved;
 
     [EventHandler]
     public void OnSow(SowPlant2Type Sow)
@@ -374,7 +389,7 @@ public class OilPalm
     }
     private void DoGrowth()
     {
-        DltDM = RUE.Value * Radn * cover_green*FW;
+        DltDM = RUE.Value * Fn * Radn * cover_green*FW;
         double DMAvailable = DltDM;
 
         RootGrowth = (DltDM * RootFraction.Value);
@@ -442,10 +457,30 @@ public class OilPalm
 
         if (Fronds[0].Age >= (40 * FrondAppRate.Value))
         {
+            HarvestBunches = Bunches[0].FemaleFraction;
+            HarvestYield = Bunches[0].Mass * Population / (1.0 - RipeBunchWaterContent.Value);
+            HarvestBunchSize = Bunches[0].Mass / (1.0 - RipeBunchWaterContent.Value);
+            if (Harvesting != null)
+                Harvesting.Invoke();
+            // Now rezero these outputs - they can only be output non-zero on harvesting event.
+            HarvestBunches = 0.0;
+            HarvestYield = 0.0;
+            HarvestBunchSize = 0.0;
+
+
             CumulativeBunchNumber += Bunches[0].FemaleFraction;
             CumulativeYield += Bunches[0].Mass * Population/(1.0-RipeBunchWaterContent.Value);
-            Fronds.RemoveAt(0);
             Bunches.RemoveAt(0);
+
+            BiomassRemovedType BiomassRemovedData = new BiomassRemovedType();
+            BiomassRemovedData.crop_type = Crop_Type;
+            BiomassRemovedData.dm_type = new string[1]{"frond"};
+            BiomassRemovedData.dlt_crop_dm = new float[1]{(float)(Fronds[0].Mass*Population*10)};
+            BiomassRemovedData.dlt_dm_n = new float[1] { (float)(Fronds[0].N*Population*10) };
+            BiomassRemovedData.dlt_dm_p = new float[1]{0};
+            BiomassRemovedData.fraction_to_residue = new float[1]{1};
+            Fronds.RemoveAt(0);
+            BiomassRemoved.Invoke(BiomassRemovedData);
         }
     }
     private void DoWaterBalance()
@@ -539,6 +574,12 @@ public class OilPalm
         double Uptake = MathUtility.Sum(NUptake) / 10.0;
         if (Math.Abs(Change-Uptake)>0.001)
             throw new Exception("Error in N Allocation");
+
+        double Nact = FrondNConc;
+        double Ncrit = FrondCriticalNConcentration.Value;
+        double Nmin = FrondMinimumNConcentration.Value;
+        Fn = Math.Min(Math.Max(0.0,(Nact - Nmin) / (Ncrit - Nmin)),1.0);
+
     }
 
 
@@ -571,7 +612,7 @@ public class OilPalm
             //   FrondArea = FrondArea + Frond[i].Area;
             foreach (FrondType F in Fronds)
                 FrondMass += F.Mass;
-            return FrondMass * SowingData.Population;
+            return FrondMass * Population;
         }
 
     }
