@@ -116,7 +116,8 @@ namespace CSUserInterface
             {
                 paths.Add(path);
             }
-            Controller.SelectedPaths = paths;
+            if(paths.Count > 0)
+               Controller.SelectedPaths = paths;
         }
     }
 }

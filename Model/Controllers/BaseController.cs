@@ -400,6 +400,10 @@ namespace Controllers
                 {
                     return MySelectedData[0];
                 }
+                else if (MySelectedData.Count == 0)
+                {
+                   return "";
+                }
                 else
                 {
                     throw new Exception("Too many nodes selected - expected 1");
