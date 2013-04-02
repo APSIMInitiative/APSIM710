@@ -149,8 +149,8 @@ namespace ExcelUtility
 
 				ExcelApp.DisplayAlerts = false;
 				ExcelApp.ActiveWorkbook.SaveAs(
-								FileName, 
-								XlFileFormat.xlExcel8, 
+								FileName,
+                                XlFileFormat.xlOpenXMLWorkbook, 
 								Type.Missing, 
 								Type.Missing, 
 								Type.Missing, 

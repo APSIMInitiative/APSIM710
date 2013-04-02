@@ -20,7 +20,7 @@ namespace ApsimFile
                                           "stylo", "sugar", "lablab", "millet", "triticale", "weed", "medic",
                                           "Lupins", "lentils", "oatenhay", "broccoli", "peas", "Vetch", "potatoes",
                                           "poppy", "butterflypea", "burgundybean", "desmanthus_v", "centro", "caatingastylo",
-                                          "brazilianstylo", "desmanthus_per", "rice"};
+                                          "brazilianstylo", "desmanthus_per", "rice", "mustard", "chickory"};
 
 
         /// <summary>
@@ -184,11 +184,14 @@ namespace ApsimFile
                             string CropName = NameBits[0];
                             SoilCrop NewCrop = new SoilCrop();
                             NewCrop.Name = CropName;
+                            NewCrop.Thickness = NewSoil.Water.Thickness;
                             NewCrop.LL = GetDoubleValues(Table, CropName + " ll (mm/mm)", NumLayers, StartRow);
                             NewCrop.LLMetadata = GetCodeValues(Table, CropName + " llCode", NumLayers, StartRow);
                             NewCrop.KL = GetDoubleValues(Table, CropName + " kl (/day)", NumLayers, StartRow);
                             NewCrop.XF = GetDoubleValues(Table, CropName + " xf (0-1)", NumLayers, StartRow);
-                            NewSoil.Water.Crops.Add(NewCrop);
+                            if (MathUtility.ValuesInArray(NewCrop.LL) ||
+                                MathUtility.ValuesInArray(NewCrop.KL))
+                                NewSoil.Water.Crops.Add(NewCrop);
                         }
                     }
 
@@ -307,8 +310,8 @@ namespace ApsimFile
             SetDoubleValue(Table, "SummerCona", Soil.SoilWater.SummerCona, StartRow, NumValues);
             SetDoubleValue(Table, "WinterU", Soil.SoilWater.WinterU, StartRow, NumValues);
             SetDoubleValue(Table, "WinterCona", Soil.SoilWater.WinterCona, StartRow, NumValues);
-            SetStringValue(Table, "SummerDate", Soil.SoilWater.SummerDate, StartRow, NumValues);
-            SetStringValue(Table, "WinterDate", Soil.SoilWater.WinterDate, StartRow, NumValues);
+            SetStringValue(Table, "SummerDate", "=\"" + Soil.SoilWater.SummerDate + "\"", StartRow, NumValues);
+            SetStringValue(Table, "WinterDate", "=\"" + Soil.SoilWater.WinterDate + "\"", StartRow, NumValues);
             SetDoubleValue(Table, "Salb", Soil.SoilWater.Salb, StartRow, NumValues);
             SetDoubleValue(Table, "DiffusConst", Soil.SoilWater.DiffusConst, StartRow, NumValues);
             SetDoubleValue(Table, "DiffusSlope", Soil.SoilWater.DiffusSlope, StartRow, NumValues);
@@ -331,7 +334,7 @@ namespace ApsimFile
             SetOCCodeValues(Table, Soil, StartRow);
             SetDoubleValues(Table, "EC (1:5 dS/m)", Soil.Analysis.EC, StartRow);
             SetCodeValues(Table, "ECCode", Soil.Analysis.ECMetadata, StartRow);
-            SetDoubleValues(Table, "PH", Soil.Analysis.EC, StartRow);
+            SetDoubleValues(Table, "PH", Soil.Analysis.PH, StartRow);
             SetPHCodeValues(Table, Soil, StartRow);
             SetDoubleValues(Table, "CL (mg/kg)", Soil.Analysis.CL, StartRow);
             SetCodeValues(Table, "CLCode", Soil.Analysis.CLMetadata, StartRow);
@@ -515,7 +518,17 @@ namespace ApsimFile
         private static double[] GetDoubleValues(DataTable Table, string VariableName, int NumRows, int StartRow)
         {
             if (Table.Columns.Contains(VariableName))
-                return DataTableUtility.GetColumnAsDoubles(Table, VariableName, NumRows, StartRow);
+            {
+                double[] Values = DataTableUtility.GetColumnAsDoubles(Table, VariableName, NumRows, StartRow);
+                if (MathUtility.ValuesInArray(Values))
+                {
+                    // Convert MissingValue for Nan
+                    for (int i = 0; i != Values.Length; i++)
+                        if (Values[i] == MathUtility.MissingValue)
+                            Values[i] = double.NaN;
+                    return Values;
+                }
+            }
             return null;
         }
 
@@ -525,7 +538,11 @@ namespace ApsimFile
         private static string[] GetStringValues(DataTable Table, string VariableName, int NumRows, int StartRow)
         {
             if (Table.Columns.Contains(VariableName))
-                return DataTableUtility.GetColumnAsStrings(Table, VariableName, NumRows, StartRow);
+            {
+                string[] Values = DataTableUtility.GetColumnAsStrings(Table, VariableName, NumRows, StartRow);
+                if (MathUtility.ValuesInArray(Values))
+                    return Values;
+            }
             return null;
         }
 
@@ -578,7 +595,7 @@ namespace ApsimFile
                 SetDoubleValues(Table, CropName + " kl (/day)", Soil.Crop(CropName).KL, StartRow);
                 SetDoubleValues(Table, CropName + " xf (0-1)", Soil.Crop(CropName).XF, StartRow);
             }
-            else
+            else if (!Table.Columns.Contains(CropName + " ll (mm/mm)"))
             {
                 Table.Columns.Add(CropName + " ll (mm/mm)", typeof(double));
                 Table.Columns.Add(CropName + " llCode", typeof(string));

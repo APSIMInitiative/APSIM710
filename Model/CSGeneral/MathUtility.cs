@@ -709,6 +709,7 @@ namespace CSGeneral
 
         static public double[] RemoveMissingValuesFromBottom(double[] Values)
         {
+            if (Values == null) return null;
             // Find the last non missing value.
             int i;
             for (i = Values.Length - 1; i >= 0; i--)

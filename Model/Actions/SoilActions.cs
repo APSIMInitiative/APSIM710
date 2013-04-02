@@ -149,10 +149,12 @@ namespace Actions
 		public static void ExportToSpreadsheet(BaseController Controller)
 		{
 			SaveFileDialog Dialog = new SaveFileDialog();
-			Dialog.Filter = "Spreadsheet files (*.xls)|*.xls|All files (*.*)|*.*";
+			Dialog.Filter = "Spreadsheet files (*.xlsx)|*.xlsx|All files (*.*)|*.*";
 			Dialog.Title = "Enter a spreadsheet file to export to";
-			Dialog.DefaultExt = "xls";
+			Dialog.DefaultExt = "xlsx";
+            Dialog.OverwritePrompt = true;
 			if (Dialog.ShowDialog() == DialogResult.OK) {
+                Cursor.Current = Cursors.WaitCursor;
 				XmlDocument Doc = new XmlDocument();
 				Doc.LoadXml(Controller.ApsimData.RootComponent.FullXML());
 				List<string> Paths = new List<string>();
@@ -161,7 +163,7 @@ namespace Actions
 				}
                 DataTable Table = SoilDataTable.SoilXMLToTable(Doc.DocumentElement, Paths);
 				ExcelHelper.SendDataToSheet(Dialog.FileName, "SoilData", Table);
-
+                Cursor.Current = Cursors.Default;
 				MessageBox.Show("Soils have been successfully exported to '" + Dialog.FileName + "'. It is suggested that you rename soils within the new file to avoid confusion.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 		}
