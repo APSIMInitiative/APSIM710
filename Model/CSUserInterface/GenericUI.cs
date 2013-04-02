@@ -112,6 +112,7 @@ namespace CSUserInterface
 			}
             Grid.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             Grid.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Grid.Columns[4].MinimumWidth = Grid.Columns[4].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
             Grid.AutoResizeRows(DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders);
 
 			IsDirty = false;
@@ -485,6 +486,7 @@ namespace CSUserInterface
 				Grid.Columns[Col].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 			}
 			Grid.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Grid.Columns[4].MinimumWidth = Grid.Columns[4].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
 
 			Grid.CurrentCell = Grid.Rows[CurrentRow].Cells[CurrentCol];
 			IsDirty = true;
