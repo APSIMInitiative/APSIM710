@@ -45,6 +45,10 @@ void GenericLeaf::readSpeciesParameters (protocol::Component *system, vector<str
                      , "x_temp_senescence", "(oc)", -20.0, 20.0
                      , "y_senescence_fac", "()", 0.0, 1.0);
 
+   cHeatSenescenceFac.read(scienceAPI
+                     , "x_maxt_senescence", "(oc)", 0.0, 55.0
+                     , "y_heatsenescence_fac", "()", 0.0, 1.0);
+					 
    cLeafSize.read(scienceAPI
                         , "x_node_no",  "()", 0.0, 100.0
                         , "y_leaf_size", "(mm2)", 0.0, 100000.0);
@@ -132,6 +136,8 @@ void GenericLeaf::onInit1(protocol::Component *system)
 
    system->addGettableVar("dlt_slai_frost", dltSLAI_frost, "m^2/m^2", "Change in lai via low temperature");
 
+   system->addGettableVar("dlt_slai_heat", dltSLAI_heat, "m^2/m^2", "Change in lai via high temperature");   
+   
    system->addGettableVar("leaves_per_node", gLeavesPerNode, "","");
 
 }
@@ -200,6 +206,7 @@ void GenericLeaf::zeroDeltas(void)
    dltSLAI_light = 0.0;
    dltSLAI_water = 0.0;
    dltSLAI_frost = 0.0;
+   dltSLAI_heat  = 0.0;
    dltLeafNo              = 0.0;
 //    g.dlt_node_no              = 0.0; JNGH - need to carry this through for site no next day.
    dltLeafNoPot = 0.0;
@@ -617,12 +624,17 @@ void GenericLeaf::leaf_area_sen(float swdef_photo)
                               plants,
                               cMinTPLA);
 
-    dltSLAI = max(max(max(dltSLAI_age, dltSLAI_light), dltSLAI_water), dltSLAI_frost);
+	float min_lai = cMinTPLA * plants * smm2sm;
+    //dltSLAI_heat = min(gLAI - min_lai,cHeatSenescenceFac.value(plant->environment().maxt()) * dltSLAI_age);
+    dltSLAI_heat = min(gLAI - min_lai,cHeatSenescenceFac.value(plant->environment().maxt()) * gLAI);	
+							  
+    dltSLAI = max(max(max(max(dltSLAI_age, dltSLAI_light), dltSLAI_water), dltSLAI_frost), dltSLAI_heat);
 
     Debug("Leaf.dltSLAI_age=%f", dltSLAI_age);
     Debug("Leaf.dltSLAI_light=%f", dltSLAI_light);
     Debug("Leaf.dltSLAI_water=%f", dltSLAI_water);
     Debug("Leaf.dltSLAI_frost=%f", dltSLAI_frost);
+	Debug("Leaf.dltSLAI_heat=%f", dltSLAI_heat);
     Debug("Leaf.dltSLAI=%f", dltSLAI);
 }
 

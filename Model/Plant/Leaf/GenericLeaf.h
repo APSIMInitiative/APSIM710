@@ -109,6 +109,7 @@ class GenericLeaf : public Leaf {
    interpolationFunction cSLAMax;
    interpolationFunction cLeafNoFrac;
    interpolationFunction cSenescenceFac;              // temperature senescence table (oC)
+   interpolationFunction cHeatSenescenceFac;              // temperature senescence table (oC)
 
    float dltLAI;                                      // area of leaf
    float dltSLAI;                                     // area of leaf that senesces from plant
@@ -120,7 +121,8 @@ class GenericLeaf : public Leaf {
    float dltSLAI_light;                               // senesced lai from light
    float dltSLAI_water;                               // senesced lai from water
    float dltSLAI_frost;                               // senesced lai from frost
-
+   float dltSLAI_heat;                                // senesced lai from heat
+   
    float dltLeafNoSen;                               // fraction of oldest green leaf senesced ()
    float dltLeafNo;                                // actual fraction of oldest leaf expanding ()
    float dltNodeNo;                                // actual fraction of oldest node expanding ()
