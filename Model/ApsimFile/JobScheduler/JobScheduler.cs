@@ -149,10 +149,7 @@ public class JobScheduler
         Console.WriteLine("");
 
         Stop();  // Halt the runner process
-        x = new XmlSerializer(typeof(Project));
-        StreamWriter s = new StreamWriter(JobFileName.Replace(".xml", "Output.xml"));
-        x.Serialize(s, Project);
-        s.Close();
+        SaveLogFile(JobFileName.Replace(".xml", "Output.xml"));
         return HasErrors;
     }
 
@@ -281,6 +278,11 @@ public class JobScheduler
     public bool HasErrors { get { return Project.AllTargetsFinished && !Project.AllTargetsPassed; } }
 
     /// <summary>
+    /// Return true jobs have finished.
+    /// </summary>
+    public bool HasFinished { get { return Project.AllTargetsFinished; } }
+
+    /// <summary>
     /// Return the number of jobs completed to caller (GUI)
     /// </summary>
     public int NumJobsCompleted
@@ -303,7 +305,13 @@ public class JobScheduler
         {
             foreach (Job J in Log.Targets[0].Jobs)
                 if (J.ExitCode != 0)
-                    return J.Name;
+                {
+                    int pos = J.Name.LastIndexOf(":");
+                    if (pos >= 0)
+                        return J.Name.Substring(pos + 1);
+                    else
+                        return J.Name;
+                }
             return "";
         }
     }
@@ -574,5 +582,16 @@ public class JobScheduler
        else
            Macros.Add(key, value);
 	}
+
+    /// <summary>
+    /// Save our logfile.
+    /// </summary>
+    public void SaveLogFile(string FileName)
+    {
+        XmlSerializer x = new XmlSerializer(typeof(Project));
+        StreamWriter s = new StreamWriter(FileName);
+        x.Serialize(s, Log);
+        s.Close();
+    }
 
 }

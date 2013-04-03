@@ -97,6 +97,9 @@ public class Apsim
             Run.MaxLinesInSummaryFile = maxLines;
 			Run.Start(FileNames, SimulationPaths.ToArray());
             Run.WaitUntilFinished();
+            if (Macros.ContainsKey("SaveProfileOutput"))
+                Run.SaveLogFile(Macros["SaveProfileOutput"]);
+
         }
         catch (Exception err)
         {

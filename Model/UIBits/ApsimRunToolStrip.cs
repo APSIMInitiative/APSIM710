@@ -175,7 +175,7 @@ public class ApsimRunToolStrip
         {
             ProgressBar.Value = Apsim.Progress;
             PercentLabel.Text = ProgressBar.Value.ToString() + "%";
-            if (Apsim.NumJobsCompleted == Apsim.NumJobs)
+            if (Apsim.HasFinished)
                 {
                 ProgressBar.Value = 100;
                 PercentLabel.Text = "100 %";
@@ -192,6 +192,7 @@ public class ApsimRunToolStrip
                     Player.Play();
                 }
                 Timer.Enabled = false;
+                //Apsim.SaveLogFile("xxx.log.xml");
             }
 
             ProgressBar.ToolTipText = "Running " + Apsim.NumJobs.ToString() + " simulations. "
