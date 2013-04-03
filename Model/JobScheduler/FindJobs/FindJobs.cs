@@ -100,6 +100,7 @@ class Program
                                       StringManip.DQuote(FileName) + " " +
                                       StringManip.DQuote("Simulation=" + SimulationName);
                     }
+                    J.IgnoreErrors = true;
                     J.WorkingDirectory = Path.GetDirectoryName(FileName);
                     Target.Jobs.Add(J);
                 }

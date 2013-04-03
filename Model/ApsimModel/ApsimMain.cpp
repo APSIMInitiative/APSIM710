@@ -94,7 +94,6 @@ string ConvertToSim(const string& apsimPath, string& simulationName)
 //---------------------------------------------------------------------------
 extern "C" int EXPORT STDCALL RunAPSIM(const char* sdml)
 {
-   int code = 0;
    try
       {
       const char* Banner  = "     ###     ######     #####   #   #     #   \n"
@@ -111,25 +110,27 @@ extern "C" int EXPORT STDCALL RunAPSIM(const char* sdml)
 
       Simulation simulation;
       simulation.go(sdml);
-      code = 0;
       }
-   catch (const exception& error)
+   catch (const std::exception& error)
       {
-      cout << "APSIM  Fatal  Error" << endl;
-      cout << "-----------------" << endl;
-      cout << error.what() << endl;
-      code = 1;
+      if (!Str_i_Eq(error.what(), "fatal")) 
+         {        
+         cout << "APSIM  Fatal  Error" << endl;
+         cout << "-----------------" << endl;
+         cout << error.what() << endl;
+         cout.flush();
+         }  
+      return(1);
       }
    catch (...)
       {
       cout << "APSIM  Fatal  Error" << endl;
       cout << "-----------------" << endl;
       cout << "An unknown exception has occurred in APSIM" << endl;
-      code = 1;
+      cout.flush();
+      return(1);
       }
-
-   cout.flush();
-   return code;
+   return(0);
 }
 
 
@@ -190,7 +191,7 @@ int main(int argc, char **argv)
       in.close();
       if (DeleteSim)
          unlink(simPath.c_str());
-      RunAPSIM(sdml.str().c_str());
+      return ( RunAPSIM(sdml.str().c_str()));
       }
 }
 

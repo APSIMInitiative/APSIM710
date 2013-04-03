@@ -199,6 +199,9 @@ bool Computation::loadComponent(const std::string& FileName,
 	}
 	else
 	{
+	    if (!fileExists(filename))
+			throw runtime_error(string("File \"" + filename + "\" does not exist"));
+			
 		CompilationMode dllMode = IsManaged(filename.c_str());
 
 		if (dllMode == Invalid)

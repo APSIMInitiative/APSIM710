@@ -297,11 +297,17 @@ try {
    }
 catch (const std::exception &e)
    {
-   this->error(string(e.what()), true);
+   if (!Str_i_Eq(e.what(), "fatal")) 
+      this->error(string(e.what()), true);
+   else 
+      throw e; // pass it up the chain
    }
 catch (const std::string& e)
    {
-   this->error(e, true);
+   if (e != "fatal") 
+      this->error(e, true);
+   else 
+      throw e;
    }
 
 }

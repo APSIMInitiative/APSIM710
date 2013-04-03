@@ -1046,7 +1046,7 @@ void Coordinator::onApsimGetQuery(unsigned int fromID, protocol::ApsimGetQueryDa
 void Coordinator::onError(protocol::ErrorData& errorData)
    {
    // ------------------------------------------------------------------
-   // A child has published an error - write it to stderr.
+   // A component has published an error - write it to stdout.
    // ------------------------------------------------------------------
    
    string message = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
@@ -1055,15 +1055,18 @@ void Coordinator::onError(protocol::ErrorData& errorData)
    else
       message += "                 APSIM Warning Error\n";
    message += "                 -------------------\n";
-
+   
    message += asString(errorData.errorMessage);
    message += "\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n";
-
+   
    writeStringToStream(message, cout, "");
    if (errorData.isFatal)
+      {
       terminateSimulation();
+      throw std::runtime_error("fatal"); // Hopefully, this will pass through all the ComponentInterfaces in our call stack, 
+                                         // and will be caught in main(). "fatal" is the keyword..
+      }   
    }
-
 //============================================================================
 // unQualifiedName
 /**
