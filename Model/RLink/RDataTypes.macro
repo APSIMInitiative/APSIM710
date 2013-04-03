@@ -109,7 +109,7 @@ void myApsim[type.name]Event(const std::string &handler, struct [type.name]Type 
 #ifdef __WIN32__
    typedef void (*EVT_HDLR)(const char*, R[type.name]Type *);
    EVT_HDLR onApsim[type.name]Event = (EVT_HDLR) dllProcAddress(RDLLHandle, "onApsim[type.name]Event");
-   if (onApsim[type.name]Event == NULL)  throw std::runtime_error(std::string("missing symbol onApsim[type.name]Event in REmbed"));   
+   if (onApsim[type.name]Event == NULL)  throw std::runtime_error(std::string("missing symbol onApsim[type.name]Event in REmbed"));
 #endif
    onApsim[type.name]Event(handler.c_str(), rdata );
    delete rdata;
@@ -334,7 +334,7 @@ extern "C" void DLLEXPORT onApsimNullEvent(const char *handler);
 [foreach types.type]
 extern "C" void DLLEXPORT onApsim[type.name]Event(const char *handler , R[type.name]Type *data);
 
-Rcpp::List addToList(Rcpp::List &, R[type.name]Type *);
+Rcpp::List convertToList(R[type.name]Type *);
 struct R[type.name]Type *make[type.name]Type(Rcpp::List data);
 [endfor]
 
@@ -364,8 +364,8 @@ extern void * myDllProcAddress(void *h, const char *sym);
 extern void *RLinkDLLHandle;
 
 [foreach types.type]
-Rcpp::List addToList(Rcpp::List &in, R[type.name]Type *data) {
- Rcpp::List result = in;
+Rcpp::List convertToList(R[type.name]Type *data) {
+ Rcpp::List result;
  [foreach type.field]
  [if [field.arrayandstring] = T]
    std::vector<std::string> [field.name](data->num[field.name]);
@@ -376,15 +376,15 @@ Rcpp::List addToList(Rcpp::List &in, R[type.name]Type *data) {
    }
    result["[field.name]"] = [field.name];
  [elseif [field.arrayofstructures] = T]
-   Rcpp::List [field.name];
    R[field.rawcpptype] *[field.name]Ptr = data->[field.name];
    for (int i = 0; i < data->num[field.name]; i++)  {
-      [field.name] = addToList([field.name], [field.name]Ptr);
+      std::ostringstream elemName; elemName << "[field.name]." <<  i+1;
+      result[elemName.str()] = convertToList([field.name]Ptr);
       [field.name]Ptr++;
    }
-   result["[field.name]"] = [field.name];
+   result["num[field.name]"] = data->num[field.name];
  [elseif [field.structure] = T]
-   result = addToList(result, &data->[field.name]);
+   result["[field.name]"] = convertToList(&data->[field.name]);
  [elseif [field.rawcpptype] = std::string]
    result["[field.name]"] = std::string(data->[field.name]);
  [elseif [field.array] = T]
@@ -405,91 +405,108 @@ struct R[type.name]Type *make[type.name]Type(Rcpp::List data) {
     if (data.size() > 0)
        names = data.names();
     [foreach type.field]
-    if (std::find(names.begin(), names.end(), "[field.name]") != names.end()) {
      [if [field.arrayofstructures] = T]
-      Rcpp::List [field.name]List = Rcpp::as<Rcpp::List>(data["[field.name]"]);
-      result->num[field.name] = [field.name]List.size();
-	    R[field.rawcpptype] *bufPtr = result->[field.name];
-	    for (int i = 0; i < result->num[field.name]; i++) {
-	     Rcpp::List [field.name]SubList = [field.name]List[i];
+      if (std::find(names.begin(), names.end(), "num[field.name]") != names.end()) {
+       result->num[field.name] = Rcpp::as<int>(data["num[field.name]"]);
+ 	   R[field.rawcpptype] *bufPtr = result->[field.name];
+	   for (int i = 0; i < result->num[field.name]; i++) {
+         std::ostringstream elemName; elemName << "[field.name]." <<  i+1;
+         Rcpp::List [field.name]SubList = Rcpp::as<Rcpp::List>(data[elemName.str()]);
          R[field.rawcpptype] *[field.name] = make[field.rawcpptype]([field.name]SubList);
          memcpy(bufPtr, [field.name], sizeof(R[field.rawcpptype]));
          delete [field.name];
-		   bufPtr++;
+         bufPtr++;
 	    }
+	   } else {
+        result->num[field.name] = 0;
+	   }
      [elseif [field.structure] = T]
-      Rcpp::List [field.name]List = Rcpp::as<Rcpp::List>(data["[field.name]"]);
-      R[field.rawcpptype] *[field.name] = make[field.rawcpptype]([field.name]List);
-      memcpy(&result->[field.name], [field.name], sizeof(R[field.rawcpptype]));
-      delete [field.name];
+      if (std::find(names.begin(), names.end(), "[field.name]") != names.end()) {
+        Rcpp::List [field.name]List = Rcpp::as<Rcpp::List>(data["[field.name]"]);
+        R[field.rawcpptype] *[field.name] = make[field.rawcpptype]([field.name]List);
+        memcpy(&result->[field.name], [field.name], sizeof(R[field.rawcpptype]));
+        delete [field.name];
+	   } else {
+        memset(&result->[field.name], 0, sizeof(R[field.rawcpptype]));
+	   }
      [elseif [field.cpptype] = std::vector<double>]
-      std::vector<double> [field.name] = Rcpp::as<std::vector<double> >(data["[field.name]"]);
-      result->num[field.name] = [field.name].size();
-      for (unsigned int i = 0; i < [field.name].size(); i++) {result->[field.name][i] = [field.name][i]; }
+      if (std::find(names.begin(), names.end(), "[field.name]") != names.end()) {
+        std::vector<double> [field.name] = Rcpp::as<std::vector<double> >(data["[field.name]"]);
+        result->num[field.name] = [field.name].size();
+        for (unsigned int i = 0; i < [field.name].size(); i++) {result->[field.name][i] = [field.name][i]; }
+	   } else {
+        result->num[field.name] = 0;
+	   }
      [elseif [field.cpptype] = double]
-      result->[field.name] = Rcpp::as<double>(data["[field.name]"]);
+      if (std::find(names.begin(), names.end(), "[field.name]") != names.end()) {
+        result->[field.name] = Rcpp::as<double>(data["[field.name]"]);
+	   } else {
+        result->[field.name] = 0.0;
+	   }
      [elseif [field.cpptype] = std::vector<float>]
-      std::vector<float> [field.name] = Rcpp::as<std::vector<float> >(data["[field.name]"]);
+       if (std::find(names.begin(), names.end(), "[field.name]") != names.end()) {
+        std::vector<float> [field.name] = Rcpp::as<std::vector<float> >(data["[field.name]"]);
 	    result->num[field.name] = [field.name].size();
 	    for (unsigned int i = 0; i < [field.name].size(); i++) {result->[field.name][i] = [field.name][i]; }
-	   [elseif [field.cpptype] = float]
-      result->[field.name] = Rcpp::as<float>(data["[field.name]"]);
+	   } else {
+        result->num[field.name] = 0;
+	   }
+     [elseif [field.cpptype] = float]
+       if (std::find(names.begin(), names.end(), "[field.name]") != names.end()) {
+         result->[field.name] = Rcpp::as<float>(data["[field.name]"]);
+	   } else {
+         result->[field.name] = 0.0;
+	   }
      [elseif [field.cpptype] = std::vector<int>]
-      std::vector<int> [field.name] = Rcpp::as<std::vector<int> >(data["[field.name]"]);
-      result->num[field.name] = [field.name].size();
-      for (unsigned int i = 0; i < [field.name].size(); i++) {result->[field.name][i] = [field.name][i]; }
+       if (std::find(names.begin(), names.end(), "[field.name]") != names.end()) {
+         std::vector<int> [field.name] = Rcpp::as<std::vector<int> >(data["[field.name]"]);
+         result->num[field.name] = [field.name].size();
+         for (unsigned int i = 0; i < [field.name].size(); i++) {result->[field.name][i] = [field.name][i]; }
+	   } else {
+         result->num[field.name] = 0;
+	   }
      [elseif [field.cpptype] = int]
-      result->[field.name] = Rcpp::as<int>(data["[field.name]"]);
+       if (std::find(names.begin(), names.end(), "[field.name]") != names.end()) {
+          result->[field.name] = Rcpp::as<int>(data["[field.name]"]);
+	   } else {
+         result->[field.name] = 0;
+	   }
      [elseif [field.cpptype] = std::vector<bool>]
-      std::vector<bool> [field.name] = Rcpp::as<std::vector<bool> >(data["[field.name]"]);
-      result->num[field.name] = [field.name].size();
-	    for (unsigned int i = 0; i < [field.name].size(); i++) {result->[field.name][i] = [field.name][i]; }
-	   [elseif [field.cpptype] = bool]
-      result->[field.name] = Rcpp::as<bool>(data["[field.name]"]);
+       if (std::find(names.begin(), names.end(), "[field.name]") != names.end()) {
+         std::vector<bool> [field.name] = Rcpp::as<std::vector<bool> >(data["[field.name]"]);
+         result->num[field.name] = [field.name].size();
+	     for (unsigned int i = 0; i < [field.name].size(); i++) {result->[field.name][i] = [field.name][i]; }
+	   } else {
+         result->num[field.name] = 0;
+	   }
+     [elseif [field.cpptype] = bool]
+       if (std::find(names.begin(), names.end(), "[field.name]") != names.end()) {
+         result->[field.name] = Rcpp::as<bool>(data["[field.name]"]);
+	   } else {
+         result->[field.name] = false;
+	   }
      [elseif [field.arrayandstring] = T]
-	    Rcpp::CharacterVector [field.name] = data["[field.name]"];
-	    result->num[field.name] = [field.name].size();
+       if (std::find(names.begin(), names.end(), "[field.name]") != names.end()) {
+          Rcpp::CharacterVector [field.name] = data["[field.name]"];
+	      result->num[field.name] = [field.name].size();
 		  char *bufPtr = result->[field.name];
-      for (int i = 0; i < result->num[field.name]; i++) {
-           strcpy(bufPtr, [field.name][i]);
-           bufPtr += strlen(bufPtr) + 1;
+          for (int i = 0; i < result->num[field.name]; i++) {
+             strcpy(bufPtr, [field.name][i]);
+             bufPtr += strlen(bufPtr) + 1;
 		  }
+	   } else {
+          result->num[field.name] = 0;
+	   }
      [elseif [field.rawcpptype] = std::string]
-       std::string [field.name] = data["[field.name]"];
-       strncpy(result->[field.name], [field.name].c_str(), max_array_size);
+       if (std::find(names.begin(), names.end(), "[field.name]") != names.end()) {
+          std::string [field.name] = data["[field.name]"];
+          strncpy(result->[field.name], [field.name].c_str(), max_array_size);
+	   } else {
+          result->[field.name][0] = '\0';
+	   }
      [else]
        /* unimplemented [field.cpptype] [field.name]*/
      [endif]
-    } else {
-     [if [field.arrayofstructures] = T]
-      result->num[field.name] = 0;
-     [elseif [field.structure] = T]
-      memset(&result->[field.name], 0, sizeof(R[field.rawcpptype]));
-     [elseif [field.cpptype] = std::vector<double>]
-      result->num[field.name] = 0;
-     [elseif [field.cpptype] = double]
-      result->[field.name] = 0.0;
-     [elseif [field.cpptype] = std::vector<float>]
-      result->num[field.name] = 0;
-     [elseif [field.cpptype] = float]
-      result->[field.name] = 0.0;
-     [elseif [field.cpptype] = std::vector<int>]
-      result->num[field.name] = 0;
-     [elseif [field.cpptype] = int]
-      result->[field.name] = 0;
-     [elseif [field.cpptype] = std::vector<bool>]
-      result->num[field.name] = 0;
-     [elseif [field.cpptype] = bool]
-        result->[field.name] = false;
-     [elseif [field.arrayandstring] = T]
-	    result->num[field.name] = 0;
-     [elseif [field.rawcpptype] = std::string]
-      result->[field.name][0] = '\0';
-     [else]
-      /* unimplemented [field.cpptype] [field.name]*/
-     [endif]
-
-     }
 	[endfor]
     return result;
 }
@@ -512,7 +529,7 @@ extern "C" void DLLEXPORT onApsim[type.name]Event(const char *handler , R[type.n
 
    Rcpp::List args = Rcpp::List::create();
    args["handler"] = handler;
-   args = addToList(args, data);
+   args = convertToList(data);
    Rcpp::Function f = Rcpp::Function(handler);
    try {
      f(args);
@@ -601,7 +618,7 @@ SEXP apsimGet( std::string variableName )
    for (unsigned int i = 0; i < matches.size(); i++)
       {
       int numGotten;
-      std::string type = getAttributeFromXML(matches[i].ddml, "type");
+      std::string type = getAttributeFromXML(matches[i].ddml, "typename");
       if (type == "" || type == "string") {
          char *dataReturned = NULL;
          apsimGetCharacter(matches[i].name.c_str(), &numGotten, &dataReturned);
@@ -637,7 +654,7 @@ SEXP apsimGet( std::string variableName )
          if (apsimGet[type.name] == NULL)  throw std::runtime_error(std::string("missing symbol apsimGet[type.name] in RLink"));
 #endif
          R[type.name]Type *gotten = (R[type.name]Type *) apsimGet[type.name](matches[i].name.c_str());
-         result = addToList(l, gotten);
+         result = convertToList(gotten);
 [endfor]
       } else {
          apsimFatalError("Dont know what to do with type " + type);
