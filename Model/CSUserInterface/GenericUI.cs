@@ -235,174 +235,173 @@ namespace CSUserInterface
 		/// <summary>
 		/// The grid is adding a new row. Format the row the way we want it.
 		/// </summary>
-		public void OnAddingNewRow(DataGridViewRow NewRow)
-		{
-			// Setup the Type combo box.
-			Grid.CreateComboInCell(NewRow.Cells[1], TypeComboItems);
+        public void OnAddingNewRow(DataGridViewRow NewRow)
+        {
+            // Setup the Type combo box.
+            Grid.CreateComboInCell(NewRow.Cells[1], TypeComboItems);
 
-			// Create a list items edit box that can handle lots of chars.
-			DataGridViewTextBoxCell ListItemTextBox = (DataGridViewTextBoxCell)NewRow.Cells[2];
-			ListItemTextBox.MaxInputLength = 5000;
+            // Create a list items edit box that can handle lots of chars.
+            DataGridViewTextBoxCell ListItemTextBox = (DataGridViewTextBoxCell)NewRow.Cells[2];
+            ListItemTextBox.MaxInputLength = 5000;
 
-			// Now create the correct type of cell in the value field for this row.
-			if (!Convert.IsDBNull(NewRow.Cells[1].Value)) {
-				switch ((string)NewRow.Cells[1].Value) {
+            // Now create the correct type of cell in the value field for this row.
+            switch (NewRow.Cells[1].Value.ToString())
+            {
 
-                    case "yesno":
+                case "yesno":
+                    {
+                        Grid.CreateComboInCell(NewRow.Cells[4], YesNoItems);
+
+                        break;
+                    }
+                case "list":
+                case "multilist":
+                    {
+                        if (!Convert.IsDBNull(NewRow.Cells[2].Value))
                         {
-                            Grid.CreateComboInCell(NewRow.Cells[4], YesNoItems);
-
-                            break;
+                            Grid.CreateComboInCell(NewRow.Cells[4], NewRow.Cells[2].Value.ToString().Split(new char[] { ',' }));
                         }
-                    case "list":
-                    case "multilist":
+
+                        break;
+                    }
+                case "multiedit":
+                    {
+                        DataGridViewTextBoxCell Text = (DataGridViewTextBoxCell)NewRow.Cells[4];
+                        Text.MaxInputLength = 5000;
+                        Text.Style.WrapMode = DataGridViewTriState.True;
+                        NewRow.Height = 80;
+
+                        break;
+                    }
+                case "filename":
+                    {
+                        Grid.CreateButtonInCell(NewRow.Cells[4]);
+
+                        break;
+                    }
+                case "category":
+                    {
+                        NewRow.Cells[3].ReadOnly = !EditModeItem.Checked;
+                        // Make listitems field readonly
+                        NewRow.Cells[4].ReadOnly = true;
+                        // Make description field readonly
+                        NewRow.DefaultCellStyle.BackColor = System.Drawing.Color.LightSteelBlue;
+
+                        break;
+                    }
+                case "modulename":
+                    {
+                        ApsimFile.Component Paddock = Controller.ApsimData.Find(NodePath).FindContainingPaddock();
+                        while ((Paddock != null) && (Paddock.Type.ToLower() == "folder"))
                         {
-                            if ((NewRow.Cells[2].Value != null))
+                            Paddock = Paddock.Parent;
+                        }
+                        if ((Paddock != null))
+                        {
+                            Grid.CreateComboInCell(NewRow.Cells[4], Paddock.ChildNames);
+                        }
+
+                        break;
+                    }
+                case "crop":
+                    {
+                        ApsimFile.Component Paddock = Controller.ApsimData.Find(NodePath).FindContainingPaddock();
+                        while ((Paddock != null) && (Paddock.Type.ToLower() == "folder"))
+                        {
+                            Paddock = Paddock.Parent;
+                        }
+                        if ((Paddock != null))
+                        {
+                            List<string> Crops = new List<string>();
+                            foreach (Component Child in Paddock.ChildNodes)
                             {
-                                Grid.CreateComboInCell(NewRow.Cells[4], NewRow.Cells[2].Value.ToString().Split(new char[] {','}));
-                            }
-
-                            break;
-                        }
-                    case "multiedit":
-                        {
-                            DataGridViewTextBoxCell Text = (DataGridViewTextBoxCell)NewRow.Cells[4];
-                            Text.MaxInputLength = 5000;
-                            Text.Style.WrapMode = DataGridViewTriState.True;
-                            NewRow.Height = 80;
-
-                            break;
-                        }
-                    case "filename":
-                        {
-                            Grid.CreateButtonInCell(NewRow.Cells[4]);
-
-                            break;
-                        }
-                    case "category":
-                        {
-                            NewRow.Cells[3].ReadOnly = !EditModeItem.Checked;
-                            // Make listitems field readonly
-                            NewRow.Cells[4].ReadOnly = true;
-                            // Make description field readonly
-                            NewRow.DefaultCellStyle.BackColor = System.Drawing.Color.LightSteelBlue;
-
-                            break;
-                        }
-                    case "modulename":
-                        {
-                            ApsimFile.Component Paddock = Controller.ApsimData.Find(NodePath).FindContainingPaddock();
-                            while ((Paddock != null) && (Paddock.Type.ToLower() == "folder"))
-                            {
-                                Paddock = Paddock.Parent;
-                            }
-                            if ((Paddock != null))
-                            {
-                                Grid.CreateComboInCell(NewRow.Cells[4], Paddock.ChildNames);
-                            }
-
-                            break;
-                        }
-                    case "crop":
-                        {
-                            ApsimFile.Component Paddock = Controller.ApsimData.Find(NodePath).FindContainingPaddock();
-                            while ((Paddock != null) && (Paddock.Type.ToLower() == "folder"))
-                            {
-                                Paddock = Paddock.Parent;
-                            }
-                            if ((Paddock != null))
-                            {
-                                List<string> Crops = new List<string>();
-                                foreach (Component Child in Paddock.ChildNodes)
+                                if (Types.Instance.MetaData(Child.Type, "IsCrop").ToLower() == "yes")
                                 {
-                                    if (Types.Instance.MetaData(Child.Type, "IsCrop").ToLower() == "yes")
-                                    {
-                                        Crops.Add(Child.Name);
-                                    }
-                                }
-                                string[] CropNames = new string[Crops.Count];
-                                Crops.CopyTo(CropNames);
-                                Grid.CreateComboInCell(NewRow.Cells[4], CropNames);
-                            }
-
-                            break;
-                        }
-                    case "cultivars":
-                        {
-                            // Try and locate a row with crop as the name.
-                            int CropRow = 0;
-                            for (CropRow = 0; CropRow <= Grid.RowCount - 1; CropRow++)
-                            {
-                                if ((Grid.Rows[CropRow].Cells[0].Value != null) && (((string)Grid.Rows[CropRow].Cells[0].Value).ToLower() == "crop"))
-                                {
-                                    break; // TODO: might not be correct. Was : Exit For
+                                    Crops.Add(Child.Name);
                                 }
                             }
-
-                            // If we found a crop row then go and get all cultivars for that crop.
-                            if (CropRow < Grid.RowCount && !Convert.IsDBNull(Grid.Rows[CropRow].Cells[4].Value))
-                            {
-                                string CropName = (string)Grid.Rows[CropRow].Cells[4].Value;
-                                Component CropComponent = Controller.ApsimData.Find(NodePath).FindComponentInPaddock(Controller.ApsimData.Find(NodePath), CropName);
-                                if ((CropComponent != null))
-                                {
-                                    CropName = CropComponent.Type;
-                                }
-                                string[] Cultivars = Types.Instance.Cultivars(CropName);
-                                Grid.CreateComboInCell(NewRow.Cells[4], Cultivars);
-                            }
-
-                            break;
+                            string[] CropNames = new string[Crops.Count];
+                            Crops.CopyTo(CropNames);
+                            Grid.CreateComboInCell(NewRow.Cells[4], CropNames);
                         }
-                    case "classes":
+
+                        break;
+                    }
+                case "cultivars":
+                    {
+                        // Try and locate a row with crop as the name.
+                        int CropRow = 0;
+                        for (CropRow = 0; CropRow <= Grid.RowCount - 1; CropRow++)
                         {
-                            // Try and locate a row with crop as the name.
-                            int CropRow = 0;
-                            for (CropRow = 0; CropRow <= Grid.RowCount - 1; CropRow++)
+                            if (Grid.Rows[CropRow].Cells[0].Value.ToString().ToLower() == "crop")
                             {
-                                if ((Grid.Rows[CropRow].Cells[0].Value != null) && ((string)Grid.Rows[CropRow].Cells[0].Value).ToLower() == "crop")
-                                {
-                                    break; // TODO: might not be correct. Was : Exit For
-                                }
+                                break; // TODO: might not be correct. Was : Exit For
                             }
-
-                            // If we found a crop row then go and get all cultivars for that crop.
-                            if (CropRow < Grid.RowCount && !Convert.IsDBNull(Grid.Rows[CropRow].Cells[4].Value))
-                            {
-                                string CropName = (string)Grid.Rows[CropRow].Cells[4].Value;
-                                Component CropComponent = Controller.ApsimData.Find(NodePath).FindComponentInPaddock(Controller.ApsimData.Find(NodePath), CropName);
-                                if ((CropComponent != null))
-                                {
-                                    CropName = CropComponent.Type;
-                                }
-                                string[] Classes = Types.Instance.Classes(CropName);
-                                Grid.CreateComboInCell(NewRow.Cells[4], Classes);
-                            }
-
-                            break;
                         }
-                    case "date":
+
+                        // If we found a crop row then go and get all cultivars for that crop.
+                        if (CropRow < Grid.RowCount && !Convert.IsDBNull(Grid.Rows[CropRow].Cells[4].Value))
                         {
-                            if (InRefresh && !Convert.IsDBNull(NewRow.Cells[4].Value) && !string.IsNullOrEmpty((string)NewRow.Cells[4].Value))
+                            string CropName = Grid.Rows[CropRow].Cells[4].Value.ToString();
+                            Component CropComponent = Controller.ApsimData.Find(NodePath).FindComponentInPaddock(Controller.ApsimData.Find(NodePath), CropName);
+                            if ((CropComponent != null))
                             {
-                                try
-                                {
-                                    DateTime Value = DateTime.ParseExact((string)NewRow.Cells[4].Value, "d/M/yyyy", null);
-                                    NewRow.Cells[4].Value = Value.ToShortDateString();
-                                }
-                                catch (Exception)
-                                {
-                                    NewRow.Cells[4].Value = "";
-                                }
-
+                                CropName = CropComponent.Type;
                             }
-                            DateTimeFormatInfo DateFormat = CultureInfo.CurrentCulture.DateTimeFormat;
-                            NewRow.Cells[4].ToolTipText = "Format: " + DateFormat.ShortDatePattern;
-                            break;
+                            string[] Cultivars = Types.Instance.Cultivars(CropName);
+                            Grid.CreateComboInCell(NewRow.Cells[4], Cultivars);
                         }
-				}
-			}
-		}
+
+                        break;
+                    }
+                case "classes":
+                    {
+                        // Try and locate a row with crop as the name.
+                        int CropRow = 0;
+                        for (CropRow = 0; CropRow <= Grid.RowCount - 1; CropRow++)
+                        {
+                            if (Grid.Rows[CropRow].Cells[0].Value.ToString().ToLower() == "crop")
+                            {
+                                break; // TODO: might not be correct. Was : Exit For
+                            }
+                        }
+
+                        // If we found a crop row then go and get all cultivars for that crop.
+                        if (CropRow < Grid.RowCount && !Convert.IsDBNull(Grid.Rows[CropRow].Cells[4].Value))
+                        {
+                            string CropName = Grid.Rows[CropRow].Cells[4].Value.ToString();
+                            Component CropComponent = Controller.ApsimData.Find(NodePath).FindComponentInPaddock(Controller.ApsimData.Find(NodePath), CropName);
+                            if ((CropComponent != null))
+                            {
+                                CropName = CropComponent.Type;
+                            }
+                            string[] Classes = Types.Instance.Classes(CropName);
+                            Grid.CreateComboInCell(NewRow.Cells[4], Classes);
+                        }
+
+                        break;
+                    }
+                case "date":
+                    {
+                        if (InRefresh && !string.IsNullOrEmpty(NewRow.Cells[4].Value.ToString()))
+                        {
+                            try
+                            {
+                                DateTime Value = DateTime.ParseExact(NewRow.Cells[4].Value.ToString(), "d/M/yyyy", null);
+                                NewRow.Cells[4].Value = Value.ToShortDateString();
+                            }
+                            catch (Exception)
+                            {
+                                NewRow.Cells[4].Value = "";
+                            }
+
+                        }
+                        DateTimeFormatInfo DateFormat = CultureInfo.CurrentCulture.DateTimeFormat;
+                        NewRow.Cells[4].ToolTipText = "Format: " + DateFormat.ShortDatePattern;
+                        break;
+                    }
+            }
+        }
 		private void GotoEditMode(bool EditMode)
 		{
 			// ------------------------------------------------------------
