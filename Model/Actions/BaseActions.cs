@@ -262,6 +262,8 @@ namespace Actions
 		{
 			Contr = Controller;
 
+            Application.DoEvents();
+
 			// go export all graphs that we can find.
 			ExportAllRecursively(Selection, ExportDirectory, ExportExtension);
 
@@ -289,8 +291,8 @@ namespace Actions
 			Directory.CreateDirectory(ExportDirectory);
 
 			Contr.SelectedPath = SelectedPath;
-			BaseView CurrentView = Contr.Explorer.CurrentView;
-			Rectangle r = new Rectangle(new Point(0, 0), CurrentView.Size);
+            Application.DoEvents();
+			Rectangle r = new Rectangle(0, 0, 800, 800);
 			Bitmap img = new Bitmap(r.Width, r.Height);
 
 			Graphics g = Graphics.FromImage(img);
