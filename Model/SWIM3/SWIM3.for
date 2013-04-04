@@ -7212,10 +7212,14 @@ cRC            Changes by RCichota, 30/Jan/2010
 	  
       do 100 counter = 1, numvals
 
-         if ((names(counter).eq.'no3').or.
-     :       (names(counter).eq.'nh4').or.
+         if ((names(counter).eq.'no3').or.(names(counter).eq.'nh4').or.
      :       (names(counter).eq.'urea').or.
-     :       (names(counter).eq.'cl')) then
+     :       (names(counter).eq.'cl').or.
+     :       (names(counter).eq.'nitrificationinhibitor').or.
+     :       (names(counter).eq.'denitrificationinhibitor').or.
+     :       (names(counter).eq.'mineralisationinhibitor').or.
+     :       (names(counter).eq.'ureaseinhibitor').or.     
+     :       (names(counter).eq.'tracer')) then
             p%num_solutes = p%num_solutes + 1
             p%solute_names(p%num_solutes) = names(counter)
             g%solute_owners(p%num_solutes) = sender

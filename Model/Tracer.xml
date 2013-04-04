@@ -1,0 +1,34 @@
+<Type name="Tracer">
+   <MetaData>
+      <UItype>CSUserInterface.GenericUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Documentation>%apsim%\Documentation\4 Module Reference\Solute.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\potion_green32.png</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\potion_green16.png</SmallIcon>
+      <dll>%apsim%/Model/Solute.%dllext%</dll>
+      <drops>
+         <drop>toolbox</drop>
+         <drop>area</drop>
+         <drop>simulation</drop>
+         <drop>folder</drop>
+         <drop>factor</drop>
+      </drops>
+      <ApsimToSim>
+         <component name="[Tracer.name]" executable="[dll]" class="Tracer.Tracer">
+            <executable name="[dll]" version="1.0"/>
+            <initdata>
+               [Model]
+               <solute_names>tracer</solute_names>
+               <d0_tracer>0.0</d0_tracer>
+               <tracer>[Tracer.layers]</tracer>
+            </initdata>
+         </component>
+      </ApsimToSim>
+   </MetaData>
+   <Model>
+      <ub_solute description="Upper bound for solutes">1000    </ub_solute>
+      <lb_solute description="Lower bound for solutes">0       </lb_solute>
+   </Model>
+
+</Type>

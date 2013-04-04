@@ -1042,6 +1042,35 @@ namespace ApsimFile
         }
 
         /// <summary>
+        /// Swim.SwimSoluteParameters.TracerExco at standard thickness
+        /// </summary>
+        public double[] TracerExco
+        {
+            get
+            {
+                if (Swim == null || Swim.SwimSoluteParameters == null)
+                    return null;
+                return Map(Swim.SwimSoluteParameters.TracerExco, Swim.SwimSoluteParameters.Thickness, Thickness, MapType.Concentration);
+            }
+        }
+
+        /// <summary>
+        /// Swim.SwimSoluteParameters.TracerFIP at standard thickness
+        /// </summary>
+        public double[] TracerFIP
+        {
+            get
+            {
+                if (Swim == null || Swim.SwimSoluteParameters == null)
+                    return null;
+                return Map(Swim.SwimSoluteParameters.TracerFIP, Swim.SwimSoluteParameters.Thickness, Thickness, MapType.Concentration);
+            }
+        }
+
+
+
+
+        /// <summary>
         /// Swim.SwimSoluteParameters.MineralisationInhibitorExco at standard thickness
         /// </summary>
         public double[] MineralisationInhibitorExco
