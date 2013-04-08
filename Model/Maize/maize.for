@@ -5811,7 +5811,7 @@ cpsc need to develop leaf senescence functions for crop
 
       if (Option .eq. 1) then
 
-        
+
         call cproc_transp_eff_co2 (
      :              c%svp_fract
      :            , c%transp_eff_cf !*g%temp_stress_photo
@@ -6308,18 +6308,20 @@ cpsc need to develop leaf senescence functions for crop
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID
       integer, intent(in) :: variant
+      type(HarvestType) harvest
 
 
-      if (eventID .eq. id%sow) then 
+      if (eventID .eq. id%sow) then
          !request and receive variables from owner-modules
          call Get_Other_Variables ()
 
          !start crop, read the sow information and do  more initialisations
          call Start_Crop (variant)
 
-      else if (eventID .eq. id%harvest) then 
-               ! harvest crop - report harvest information
-               call Crop_Harvest (
+      else if (eventID .eq. id%harvest) then
+         call unpack_Harvest(variant, harvest)
+         ! harvest crop - report harvest information
+         call Crop_Harvest (
      .          g%dm_green,
      .          g%dm_dead,
      .          c%grn_water_cont,
@@ -6340,9 +6342,11 @@ cpsc need to develop leaf senescence functions for crop
      .          g%cswd_expansion,
      .          g%cnd_photo,
      .          g%cnd_grain_conc,
-     .          c%stage_names)
-      endif         
-      
+     .          c%stage_names,
+     .          real(harvest%remove))
+
+      endif
+
       return
       end subroutine respondToEvent
 

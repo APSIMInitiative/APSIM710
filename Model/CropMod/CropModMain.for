@@ -73,9 +73,9 @@
      :                              nullTypeDDML, '')
       id%process = add_registration(respondToEventReg, 'process',
      :                              nullTypeDDML, '')
-      id%newcrop = add_registration(eventReg, 'newcrop', 
-     :              nullTypeDDML, '')	 
-	 
+      id%newcrop = add_registration(eventReg, 'newcrop',
+     :              nullTypeDDML, '')
+
       dummy = add_registration_with_units(respondToGetReg, 'crop_type',
      :                                    stringTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
@@ -767,17 +767,19 @@ c        if (TestTrue)   close (1)
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID
       integer, intent(in) :: variant
+      type(HarvestType) harvest
 
-      if (eventID .eq. id%sow) then 
+      if (eventID .eq. id%sow) then
          !request and receive variables from owner-modules
          call Get_Other_Variables ()
 
          !start crop, read the sow information and do  more initialisations
          call Start_Crop (variant)
 
-      else if (eventID .eq. id%harvest) then 
-               ! harvest crop - report harvest information
-               call Crop_Harvest (
+      else if (eventID .eq. id%harvest) then
+         call unpack_Harvest(variant, harvest)
+         ! harvest crop - report harvest information
+         call Crop_Harvest (
      .          g%dm_green,
      .          g%dm_dead,
      .          c%grn_water_cont,
@@ -798,9 +800,10 @@ c        if (TestTrue)   close (1)
      .          g%cswd_expansion,
      .          g%cnd_photo,
      .          g%cnd_grain_conc,
-     .          c%stage_names)
+     .          c%stage_names,
+     .          real(harvest%remove))
       endif
-      
+
       return
       end subroutine respondToEvent
 

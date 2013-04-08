@@ -38,7 +38,7 @@
      :                              nullTypeDDML, '')
       id%process = add_registration(respondToEventReg, 'process',
      :                              nullTypeDDML, '')
-      id%newcrop = add_registration(eventReg, 'newcrop', 
+      id%newcrop = add_registration(eventReg, 'newcrop',
      :              nullTypeDDML, '')
 
       dummy = add_registration_with_units(respondToGetReg, 'crop_type',

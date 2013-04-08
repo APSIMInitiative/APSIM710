@@ -19,7 +19,7 @@
 *+  Calls
 
       type(NewCropType) :: new_crop
-	  
+
 *+  Constant Values
       character  my_name*(*)       ! name of procedure
       parameter (my_name  = 'CropMod_Initialisation')
@@ -41,7 +41,7 @@
 
        call Crop_Read_Constants()
 
- 
+
       g%current_stage = real (plant_end)
       g%plant_status = status_out
 
@@ -50,7 +50,7 @@
 
       call get_name(new_crop%sender)
       new_crop%crop_type = c%crop_type
-      call publish_NewCrop(id%newcrop, new_crop)	  
+      call publish_NewCrop(id%newcrop, new_crop)
 
       call pop_routine (my_name)
       return
@@ -90,7 +90,7 @@
       call print_routine (my_name)
 
       call unpack_Sow(variant, Sow)
-      
+
       if (g%plant_status.eq.status_out) then
          if (.not. g%plant_status_out_today) then
 
@@ -137,12 +137,12 @@
 
             !scc added FTN 11/10/95
          if (Sow%tiller_no_fertile .ne. ' ') then
-            call String_to_real_var(Sow%tiller_no_fertile, 
+            call String_to_real_var(Sow%tiller_no_fertile,
      :                              g%tiller_no_fertile, numvals)
          else
             g%tiller_no_fertile = 0.0
          endif
-         
+
         call publish_null(id%sowing)
       !-----------------------------------------------------------
       !Report sowing information
@@ -287,9 +287,9 @@ cjh      endif
      :                           , 1.0)
       if (numvals.gt.0) then
          p%uptake_source = 'swim3'
-      endif      
-      
-      
+      endif
+
+
          !       cproc_sw_demand_bound
 
       call read_real_var_optional (section_name
@@ -1671,7 +1671,7 @@ c      end if
      :                  - sum_real_array (g%dlt_NH4gsm, deepest_layer)
          if (reals_are_equal(N_uptake_sum, 0.0)) then
             N_uptake_sum = 0.0
-         endif     
+         endif
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , N_uptake_sum)
@@ -1687,7 +1687,7 @@ c      end if
      :                                            deepest_layer)
          if (reals_are_equal(N_uptake_sum, 0.0)) then
             N_uptake_sum = 0.0
-         endif         
+         endif
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , N_uptake_sum)
@@ -2554,26 +2554,26 @@ c         g%co2level = c%co2level
 
 	  if (c%co2switch .ne. 0 .and. numvals .eq. 0) then
 	      g%co2level = c%co2level
-      end if 
-	  if (c%co2switch .ne. 0 .and. 
+      end if
+	  if (c%co2switch .ne. 0 .and.
      :    abs(g%co2level - c%co2level) .gt. 0.1 .and.
      :    c%num_co2_level_te .eq. 0) then
-         write (msg, '(a,f4.0,a,f4.0,a)') 'CO2 of ', g%co2level, 
-     :                       ' ppm is not the default ', c%co2level, 
+         write (msg, '(a,f4.0,a,f4.0,a)') 'CO2 of ', g%co2level,
+     :                       ' ppm is not the default ', c%co2level,
      :	                     ' ppm, but the crop '//
      :                       'is not parameterised for CO2 x TE.'
-         call fatal_error(err_user, msg)  
-      end if 
+         call fatal_error(err_user, msg)
+      end if
 
-      if (c%co2switch .ne. 0 .and. 
+      if (c%co2switch .ne. 0 .and.
      :    abs(g%co2level - c%co2level) .gt. 0.1 .and.
      :    c%num_co2_level_nconc .eq. 0) then
-         write (msg, '(a,f4.0,a,f4.0,a)') 'CO2 of ', g%co2level, 
-     :                       ' ppm is not the default ', c%co2level, 
+         write (msg, '(a,f4.0,a,f4.0,a)') 'CO2 of ', g%co2level,
+     :                       ' ppm is not the default ', c%co2level,
      :	                     ' ppm, but the crop '//
      :                       'is not parameterised for CO2 x nConc.'
-         call fatal_error(err_user, msg)  
-      end if 
+         call fatal_error(err_user, msg)
+      end if
 
       !use the observed or calculated grain number from other module
       call get_real_var_optional(unknown_module,'obs_grainno_psm', '()'
@@ -3111,8 +3111,6 @@ c        end if
       return
       end subroutine
 
-
-
 *     ===========================================================
       subroutine Crop_Harvest (
      .          g_dm_green,
@@ -3135,7 +3133,8 @@ c        end if
      .          g_cswd_expansion,
      .          g_cnd_photo,
      .          g_cnd_grain_conc,
-     .          c_stage_names)
+     .          c_stage_names,
+     .          remove_fr)
 *     ===========================================================
 
       implicit none
@@ -3162,6 +3161,7 @@ c        end if
        real g_cnd_photo(*)
        real g_cnd_grain_conc(*)
        character c_stage_names(*)*(*)
+       real remove_fr    ! Fraction of crop biomass removed from system.
 
 *+  Purpose
 *       Report occurence of harvest and the current status of specific
@@ -3210,13 +3210,16 @@ c        end if
       real       dm_removed_root
       real       n_removed_tops
       real       n_removed_root
+      real       p_removed_tops
+      real       p_removed_root
 
       real       dlt_dm_crop(max_part) ! change in dry matter of crop (kg/ha)
       real       dlt_dm_N(max_part)    ! N content of changeed dry matter (kg/ha)
       real       dlt_dm_P(max_part)    ! P content of changeed dry matter (kg/ha)
       real       incorp_fr(max_part)   ! fraction of each pool to incorporate(0-1)
       real       P_residue             ! P added to residue (kg/ha)
-  
+      real       greenfr, deadfr, senfr ! fractions of pools
+      integer    part
 
 *- Implementation Section ----------------------------------
 
@@ -3380,13 +3383,50 @@ c        end if
 
       call write_string (new_line//'Crop harvested.')
 
-      dm_removed_tops = (g_dm_green(grain) + g_dm_dead(grain))
-     :                * gm2kg/sm2ha
-      dm_removed_root = 0.0
+      fraction_to_residue(:) = 0.0
 
-      n_removed_tops = (g_N_green(grain) + g_N_dead(grain))
-     :               * gm2kg/sm2ha
-      n_removed_root = 0.0
+      chop_fr(:) = remove_fr
+      chop_fr(grain) = 1.0
+      chop_fr(root) = 0.0
+      dm_removed_tops = 0.0
+      dm_removed_root = 0.0
+      n_removed_tops  = 0.0
+      n_removed_root  = 0.0
+      p_removed_tops  = 0.0
+      p_removed_root  = 0.0
+
+      dlt_dm_crop(:) = 0.0
+      dlt_dm_N (:) = 0.0
+      dlt_dm_P (:) = 0.0
+      do part = 1, max_part
+         dlt_dm_crop(part) = (g%dm_green(part)
+     :                  + g%dm_senesced(part)
+     :                  + g%dm_dead(part))
+     :                  * gm2kg/sm2ha * chop_fr(part)
+
+         dlt_dm_N   (part) = (g%N_green(part)
+     :                  + g%N_senesced(part)
+     :                  + g%N_dead(part))
+     :                  * gm2kg/sm2ha * chop_fr(part)
+         if (g%phosphorus_aware) then
+           dlt_dm_P (part) = (g%part_p_green(part)
+     :                  + g%part_p_sen(part)
+     :                  + g%part_p_dead(part))
+     :                  * gm2kg/sm2ha * chop_fr(part)
+         else
+           dlt_dm_P (part) = 0.0
+         end if
+           
+         if (part .ne. root .and. part .ne. energy) then
+            dm_removed_tops =  dm_removed_tops + dlt_dm_crop(part)
+            n_removed_tops =  n_removed_tops + dlt_dm_n(part)
+            p_removed_tops =  p_removed_tops + dlt_dm_p(part)
+         else
+            dm_removed_root = dm_removed_root + dlt_dm_crop(part)
+            n_removed_root =  n_removed_root + dlt_dm_n(part)
+            p_removed_root =  p_removed_root + dlt_dm_p(part)
+         endif
+      end do
 
       call write_string ('    Organic matter removed from system:-'
      :                 //'      From Tops               From Roots')
@@ -3400,38 +3440,16 @@ c        end if
      :              'N  (kg/ha) =               '
      :              , n_removed_tops, n_removed_root
       call write_string ( string)
+
+      if (p_removed_tops .gt. 0.0) then
+        write (string,'(a48, f7.2, f24.2)')
+     :              'P  (kg/ha) =               '
+     :              , p_removed_tops, p_removed_root
+        call write_string ( string)
+      end if  
       call write_string (' ')
 
-         dlt_dm_crop(:) = 0.0
-         dlt_dm_N (:) = 0.0
-
-         dlt_dm_crop(grain) = (g%dm_green(grain)
-     :                  + g%dm_senesced(grain)
-     :                  + g%dm_dead(grain))
-     :                  * gm2kg/sm2ha
-
-         dlt_dm_N   (grain) = (g%N_green(grain)
-     :                  + g%N_senesced(grain)
-     :                  + g%N_dead(grain))
-     :                  * gm2kg/sm2ha
-
-
-         fraction_to_residue(:)    = 1.0
-         chop_fr(:) = 0.0
-         chop_fr(grain) = 1.0
-!         chop_fr(root) = 0.0
-
-         call PlantP_residue_chopped (chop_fr  ! green
-     :                           , chop_fr  ! senesced
-     :                           , chop_fr  ! dead
-     :                           , fraction_to_residue
-     :                           , P_residue
-     :                           , dlt_dm_P
-     :                           )
-
-         fraction_to_residue(:)    = 0.0
-
-         if (sum(dlt_dm_crop(leaf:)) .gt. 0.0) then
+         if (sum(dlt_dm_crop(:)) .gt. 0.0) then
 
             call Send_Crop_Chopped_Event_N_P
      :                (c%crop_type
@@ -3446,11 +3464,70 @@ c        end if
             ! no surface residue
          endif
 
-      g%dm_green(grain) = 0.0
-      g%N_green(grain) = 0.0
+        do part = 1, max_part
+           ! green fraction of total
+           greenfr = divide(g%dm_green(part), g%dm_green(part)
+     :                                    + g%dm_senesced(part)
+     :                                    + g%dm_dead(part), 0.0)
+           senfr = divide(g%dm_senesced(part), g%dm_green(part)
+     :                                    + g%dm_senesced(part)
+     :                                    + g%dm_dead(part), 0.0)
+           deadfr = divide(g%dm_dead(part), g%dm_green(part)
+     :                                    + g%dm_senesced(part)
+     :                                    + g%dm_dead(part), 0.0)
 
-      g%dm_dead(grain) = 0.0
-      g%N_dead(grain) = 0.0
+           g%dm_green(part) = g%dm_green(part) -
+     :            g%dm_green(part) * greenfr * chop_fr(part)
+
+           g%dm_senesced(part) = g%dm_senesced(part) -
+     :            g%dm_senesced(part) * senfr * chop_fr(part)
+
+           g%dm_dead(part) = g%dm_dead(part) -
+     :            g%dm_dead(part) * deadfr * chop_fr(part)
+
+           greenfr = divide(g%N_green(part), g%N_green(part)
+     :                                    + g%N_senesced(part)
+     :                                    + g%N_dead(part), 0.0)
+           senfr = divide(g%N_senesced(part), g%N_green(part)
+     :                                    + g%N_senesced(part)
+     :                                    + g%N_dead(part), 0.0)
+           deadfr = divide(g%N_dead(part), g%N_green(part)
+     :                                    + g%N_senesced(part)
+     :                                    + g%N_dead(part), 0.0)
+
+           g%N_green(part) = g%N_green(part) -
+     :            g%N_green(part) * greenfr * chop_fr(part)
+
+           g%N_senesced(part) = g%N_senesced(part) -
+     :            g%N_senesced(part) * senfr * chop_fr(part)
+
+           g%N_dead(part) = g%N_dead(part) -
+     :            g%N_dead(part) * deadfr * chop_fr(part)
+
+         if (g%phosphorus_aware) then
+           greenfr = divide(g%part_p_green(part), 
+     :                         g%part_p_green(part)
+     :                        + g%part_p_sen(part)
+     :                        + g%part_p_dead(part), 0.0)
+           senfr = divide(g%part_p_sen(part), 
+     :                         g%part_p_green(part)
+     :                        + g%part_p_sen(part)
+     :                        + g%part_p_dead(part), 0.0)
+           deadfr = divide(g%part_p_dead(part), 
+     :                         g%part_p_green(part)
+     :                        + g%part_p_sen(part)
+     :                        + g%part_p_dead(part), 0.0)
+
+           g%part_p_green(part) = g%part_p_green(part) -
+     :            g%part_p_green(part) * greenfr * chop_fr(part)
+
+           g%part_p_sen(part) = g%part_p_sen(part) -
+     :            g%part_p_sen(part) * senfr * chop_fr(part)
+
+           g%part_p_dead(part) = g%part_p_dead(part) -
+     :            g%part_p_dead(part) * deadfr * chop_fr(part)
+          end if
+        end do
 
       call pop_routine (my_name)
       return
@@ -4237,7 +4314,7 @@ c         if (istage.lt.emerg) then
 
 
 
-      if (c%co2switch .ne. 0 .and. 
+      if (c%co2switch .ne. 0 .and.
      :    c%num_co2_level_nconc .gt. 0) then
 
 
