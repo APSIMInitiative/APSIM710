@@ -600,6 +600,14 @@ struct QueryMatch
    std::string ddml;
    };
 
+bool isNumeric(const char *s) {
+   char *term;
+   double junk = strtod(s, &term);
+   return (*term == '\0');
+}
+double asNumeric(const char *s) {
+   return (strtod(s, NULL));
+}
 SEXP apsimGet( std::string variableName )
 {
    SEXP result = Rcpp::wrap(NA_STRING);
@@ -621,15 +629,33 @@ SEXP apsimGet( std::string variableName )
       std::string type = getAttributeFromXML(matches[i].ddml, "typename");
       if (type == "" || type == "string") {
          char *dataReturned = NULL;
+         // Not all apsim modules will return numeric types, some will return a string
+         // version of the same. Try to promote numeric types where possible.
          apsimGetCharacter(matches[i].name.c_str(), &numGotten, &dataReturned);
          if (numGotten == 1) {
             std::string s = dataReturned;
-            result = Rcpp::wrap(s);
+            if (isNumeric(s.c_str()))
+              result = Rcpp::wrap(asNumeric(s.c_str()));
+            else
+              result = Rcpp::wrap(s);
          } else if (numGotten > 1 ) {
-            std::vector<std::string> v;
+            bool allNumeric = true;
             char *p = dataReturned;
-            for (int i = 0; i < numGotten; i++) { v.push_back(p); p += strlen(p); }
-            result = Rcpp::wrap(v);
+            for (int i = 0; i < numGotten; i++) { if(!isNumeric(p)) {allNumeric = false;} ; p += strlen(p); }
+            if (allNumeric) 
+            {
+               std::vector<double> v(numGotten);
+               p = dataReturned;
+               for (int i = 0; i < numGotten; i++) { v[i] = asNumeric(p); p += strlen(p); }
+               result = Rcpp::wrap(v);
+            }
+            else
+            {
+               std::vector<std::string> v(numGotten);
+               p = dataReturned;
+               for (int i = 0; i < numGotten; i++) { v[i] = p; p += strlen(p); }
+               result = Rcpp::wrap(v);
+            }
          }
          if (dataReturned) {apsimFree(dataReturned);}
       } else if (type == "boolean" || type == "integer4" || type == "single" || type == "double") {
