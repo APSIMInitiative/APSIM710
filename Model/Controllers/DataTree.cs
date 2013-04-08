@@ -555,7 +555,17 @@ namespace Controllers
 							e.Effect = DragDropEffects.Move;
 							//these DragDropEffects are just the changes to the mouse icon when you hover over a node whilst dragging
 						} else if ((PathsBeingDragged != null) && (PathsBeingDragged.Count > 0) && (Control.ModifierKeys & Keys.Alt) == Keys.Alt) {
-							e.Effect = DragDropEffects.Link;
+                            bool isOk = true;
+                            foreach (string DraggedPath in PathsBeingDragged)
+                            {
+                                ApsimFile.Component Comp = Controller.ApsimData.Find(DraggedPath);
+                                if ((Comp != null) && Comp.IsAncestorOf(DropComp))
+                                    isOk = false;
+                            }
+                            if (isOk)
+							    e.Effect = DragDropEffects.Link;
+                            else
+                                e.Effect = DragDropEffects.None;
 						} else {
 							e.Effect = DragDropEffects.Copy;
 						}
@@ -705,7 +715,7 @@ namespace Controllers
 				//add all the dragged node as a link to the destination node
 				foreach (string DraggedPath in PathsBeingDragged) {
 					ApsimFile.Component Comp = Controller.ApsimData.Find(DraggedPath);
-					if ((Comp != null)) {
+					if ((Comp != null) && !Comp.IsAncestorOf(Controller.Selection)) {
 						Controller.Selection.AddShortCut(Comp);
 						//add one of the dragged nodes as a link to the destination node (destination node is stored as the current selection in the controller)
 					}

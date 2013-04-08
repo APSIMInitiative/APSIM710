@@ -741,5 +741,19 @@ namespace ApsimFile
             foreach (Component Child in ChildNodes)
                 Child.CheckOutputFileNode();
         }
+
+        
+        public bool IsAncestorOf(Component comp)
+        // Returns true if comp is this component, or one of its ancestors
+        {
+            Component ancestor = comp; 
+            while (ancestor != null)
+            {
+                if (ancestor == this)
+                    return true;
+                ancestor = ancestor.Parent;
+            }
+            return false;
+        }
     }
 }
