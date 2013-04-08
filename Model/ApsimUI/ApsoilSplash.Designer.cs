@@ -62,12 +62,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(632, 602);
+            this.ControlBox = false;
             this.Controls.Add(this.OkButton);
             this.Controls.Add(this.PictureBoxTop);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "ApsoilSplash";
-            this.Text = "ApsoilSplash";
             ((System.ComponentModel.ISupportInitialize)(this.PictureBoxTop)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

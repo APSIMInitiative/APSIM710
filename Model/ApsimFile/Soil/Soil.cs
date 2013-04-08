@@ -27,6 +27,8 @@ namespace ApsimFile
         [XmlAttribute("name")]
         public string Name { get; set; }
 
+        [Description("Record number")]
+        public int RecordNumber { get; set; }
         [Description("Australian Soil Classification Order")]
         public string ASCOrder { get; set; }
         [Description("Australian Soil Classification Sub-Order")]

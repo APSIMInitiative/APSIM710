@@ -86,6 +86,7 @@ namespace ApsimFile
                 NewSoil.DataSource = GetStringValue(Table, StartRow, "DataSource");
                 NewSoil.Comments = GetStringValue(Table, StartRow, "Comments");
                 NewSoil.NaturalVegetation = GetStringValue(Table, StartRow, "NaturalVegetation");
+                NewSoil.RecordNumber = GetIntegerValue(Table, StartRow, "RecordNo");
                 NewSoil.Analysis.MunsellColour = GetStringValues(Table, "MunsellColour", NumRows, StartRow);
                 NewSoil.Analysis.MunsellMetadata = GetCodeValues(Table, "MunsellColourCode", NumRows, StartRow);
 
@@ -240,12 +241,10 @@ namespace ApsimFile
                 }
             }
 
-            int SoilNumber = 1;
             foreach (XmlNode SoilNode in SoilNodes)
             {
                 Soil Soil = Soil.Create(SoilNode.OuterXml);
-                SoilToTable(Soil, Table, SoilNumber);
-                SoilNumber++;
+                SoilToTable(Soil, Table);
             }
 
             return Table;
@@ -254,7 +253,7 @@ namespace ApsimFile
         /// <summary>
         /// Fill the specified table with data from the specified soil.
         /// </summary>
-        public static void SoilToTable(Soil Soil, DataTable Table, int SoilNumber)
+        public static void SoilToTable(Soil Soil, DataTable Table)
         {
             int StartRow = Table.Rows.Count;
             int NumValues = Math.Max(Soil.Water.Thickness.Length, Soil.Analysis.Thickness.Length);
@@ -264,7 +263,7 @@ namespace ApsimFile
                 LayerNo[i - 1] = i;
 
             SetStringValue(Table, "Name", Soil.Name, StartRow, NumValues);
-            SetDoubleValue(Table, "Record No", SoilNumber, StartRow, NumValues);
+            SetDoubleValue(Table, "RecordNo", Soil.RecordNumber, StartRow, NumValues);
             SetStringValue(Table, "Country", Soil.Country, StartRow, NumValues);
             SetStringValue(Table, "State", Soil.State, StartRow, NumValues);
             SetStringValue(Table, "Region", Soil.Region, StartRow, NumValues);
@@ -500,6 +499,17 @@ namespace ApsimFile
                 Table.Rows[Row][VariableName] == DBNull.Value)
                 return double.NaN;
             return Convert.ToDouble(Table.Rows[Row][VariableName]);
+        }
+
+        /// <summary>
+        /// Return a single integer value from the specified table and row.
+        /// </summary>
+        private static int GetIntegerValue(DataTable Table, int Row, string VariableName)
+        {
+            if (!Table.Columns.Contains(VariableName) ||
+                Table.Rows[Row][VariableName] == DBNull.Value)
+                return 0;
+            return Convert.ToInt32(Table.Rows[Row][VariableName]);
         }
 
         /// <summary>

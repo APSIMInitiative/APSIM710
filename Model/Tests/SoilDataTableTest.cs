@@ -101,7 +101,7 @@ namespace APSIM.Tests
             Soil.Analysis.EC = new double[] { 1.7, double.NaN, double.NaN };
 
             DataTable Table = new DataTable();
-            SoilDataTable.SoilToTable(Soil, Table, 1);
+            SoilDataTable.SoilToTable(Soil, Table);
             Assert.AreEqual(DataTableUtility.GetColumnAsDoubles(Table, "Thickness (mm)"),
                             Soil.Water.Thickness, 1);
             Assert.AreEqual(DataTableUtility.GetColumnAsDoubles(Table, "BD (g/cc)"),

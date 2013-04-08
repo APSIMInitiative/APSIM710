@@ -138,6 +138,7 @@ namespace CSUserInterface
                 if (!Ignore && Property.CanWrite && 
                     (Property.PropertyType.Name == "String" || 
                      Property.PropertyType.Name == "Double" ||
+                     Property.PropertyType.Name == "Int32" ||
                      Property.PropertyType.Name == "Boolean"))
                 {
                     string Description = ProfileUI.GetAttribute(Property, "Description");
@@ -185,13 +186,19 @@ namespace CSUserInterface
                     if (!Ignore && Property.CanWrite &&
                         (Property.PropertyType.Name == "String" ||
                          Property.PropertyType.Name == "Double" ||
-                         Property.PropertyType.Name == "Boolean"))
+                         Property.PropertyType.Name == "Boolean" ||
+                         Property.PropertyType.Name == "Int32"))
                     {
                         if (Property.PropertyType.Name == "Double")
                             if (Grid.Rows[Row].Cells[1].Value == null || Convert.IsDBNull(Grid.Rows[Row].Cells[1].Value))
                                 Property.SetValue(OurObject, Double.NaN, null);
                             else
                                 Property.SetValue(OurObject, Convert.ToDouble(Grid.Rows[Row].Cells[1].Value), null);
+                        else if (Property.PropertyType.Name == "Int32")
+                            if (Grid.Rows[Row].Cells[1].Value == null || Convert.IsDBNull(Grid.Rows[Row].Cells[1].Value))
+                                Property.SetValue(OurObject, 0, null);
+                            else
+                                Property.SetValue(OurObject, Convert.ToInt32(Grid.Rows[Row].Cells[1].Value), null);
                         else
                             Property.SetValue(OurObject, Grid.Rows[Row].Cells[1].Value, null);
                         Row++;
