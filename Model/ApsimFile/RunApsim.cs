@@ -216,8 +216,9 @@ namespace ApsimFile
             }
 
             // Look for factorials.
-            if (AFile.FactorComponent != null)
-                FillProjectWithFactorialJobs(AFile, SimulationPaths, ref ApsimJobs);
+            if (AFile.FactorComponent != null && FillProjectWithFactorialJobs(AFile, SimulationPaths, ref ApsimJobs) > 0)
+            { }  // If there were factorial jobs, we are done, but if the factor component had no jobs to run, we'll want
+                 // to process the simulation normally (I think)
 
             else if (SimulationPaths.Length == 1)
             {
@@ -247,7 +248,7 @@ namespace ApsimFile
                     ApsimToSim.GetSimDoc(df.Find(SimulationPath), Configuration.getArchitecture()).Save(fp);
                     fp.Close();
 
-                    Job J = CreateJob(simFileName, 
+                    Job J = CreateJob(simFileName,
                                       Path.Combine(Path.GetDirectoryName(FileName), simName + ".sum"), null);
                     J.IgnoreErrors = false;
                     ApsimJobs.Add(J);
@@ -300,7 +301,7 @@ namespace ApsimFile
         /// <summary>
         /// The specified ApsimFile has a factorial in it. Create a series of jobs and add to ApsimJobs.
         /// </summary>
-        private void FillProjectWithFactorialJobs(ApsimFile AFile, string[] SimulationPaths, ref List<Job> ApsimJobs)
+        private int FillProjectWithFactorialJobs(ApsimFile AFile, string[] SimulationPaths, ref List<Job> ApsimJobs)
         {
             List<SimFactorItem> SimFiles = Factor.CreateSimFiles(AFile, SimulationPaths);
             foreach (SimFactorItem item in SimFiles)
@@ -310,6 +311,7 @@ namespace ApsimFile
                 J = CleanupJob(item.SimFileName, J.Name);
                 ApsimJobs.Add(J);
             }
+            return ApsimJobs.Count;
         }
 
         /// <summary>
