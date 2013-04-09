@@ -312,7 +312,7 @@ Paddock:
         if ((crop_in = 0 or 'no' = 'yes') and (ready_to_till_pre_sow = 1)) then
          if (crop_current = 'weed' or crop_current1 = 'weed' or crop_current2 = 'weed') then
            if (weed.plant_status <> 'out') then
-                 weed harvest, remove=0
+                 weed harvest  remove=0
                  weed kill_crop
                  weed end_crop
                  days_after_weed_kill = 0
@@ -509,7 +509,7 @@ Paddock:
         if ((crop_in = 0 or 'no' = 'yes') and (ready_to_till_pre_sow = 1)) then
          if (crop_current = 'weed' or crop_current1 = 'weed' or crop_current2 = 'weed') then
            if (weed.plant_status <> 'out') then
-                 weed harvest, remove=0
+                 weed harvest remove=0
                  weed kill_crop
                  weed end_crop
                  days_after_weed_kill = 0
@@ -701,7 +701,7 @@ Paddock:
               endif
               if ((crop_in = 0 or 'no' = 'yes') and (ready_to_till_pre_sow = 1)) then
                  if (weed.plant_status <> 'out') then
-                    weed harvest, remove=0
+                    weed harvest  remove=0
                     weed kill_crop
                     weed end_crop
                     crop_in = crop_in - 1
@@ -755,7 +755,7 @@ Paddock:
      
      SECTION:- end_of_day
               if (maize_to_harvest = 1) then
-     maize harvest, remove=0.95
+     maize harvest remove=0.95
      maize kill_crop
      maize end_crop
            crop_in = crop_in - 1
@@ -788,7 +788,7 @@ Paddock:
      
      SECTION:- end_of_day
               if (peanut_to_harvest = 1) then
-     peanut harvest, remove=0.95
+     peanut harvest remove=0.95
      peanut kill_crop
      peanut end_crop
            crop_in = crop_in - 1
@@ -832,7 +832,7 @@ Paddock:
            elseif (crop_in = 1) then
               weed_count_out = weed_count_out + 1
            endif
-           weed harvest, remove = 0
+           weed harvest  remove = 0
            weed kill_crop plants_kill_fraction = 1
            if (1 = 1.0) then
               weed end_crop
@@ -1351,15 +1351,49 @@ Paddock:
         27.00 of ammonium nitrate (nh4no3)
                                          added at depth   50.00 (layer   1)
 15 January 1981(Day of year=15), Weeding at threshold weed biomass or maximum days: 
-     Manager sending message :- weed harvest,  remove = 0
-     Manager sending message :- weed kill_crop  plants_kill_fraction = 1
+     Manager sending message :- weed harvest  remove = 0
 15 January 1981(Day of year=15), weed: 
+     
+      flowering day          =    0                           stover (kg/ha)         =      314.3
+      maturity day           =    0                           grain yield (kg/ha)    =        0.0
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=        0.0
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      0.404
+      total above ground biomass (kg/ha)    =      314.3
+      live above ground biomass (kg/ha)     =      314.3
+      green above ground biomass (kg/ha)    =      314.3
+      senesced above ground biomass (kg/ha) =        0.0
+      number of leaves       =     10.6
+      DM Root:Shoot ratio    =     0.36                       Harvest Index          =       0.00
+      Stover C:N ratio       =    14.56                       Root C:N ratio         =      46.18
+      grain N percent        =     0.00                       total N content (kg/ha)=       8.64
+      grain N uptake (kg/ha) =     0.00                       senesced N content (kg/ha)=    0.00
+      green N content (kg/ha)=     8.64
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.128
+         emergence            to end_of_juvenile         0.000        0.000        0.219        0.388
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                 294.6                     0.0
+                          N  (kg/ha) =                   8.02                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                   0.0                     0.0
+                          N  (kg/ha) =                   0.00                    0.00
+     
+      stage 3.0 emergence
+                     biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   45.97 (mm)
+     Manager sending message :- weed kill_crop  plants_kill_fraction = 1
      Plant kill. 100.00% crop killed because of external action.
      Manager sending message :- weed end_crop
      Crop ended. Yield (dw) =     0.0  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                 314.3                   114.5
-                          N  (kg/ha) =                   8.64                    0.99
+                          DM (kg/ha) =                   3.0                    15.0
+                          N  (kg/ha) =                   0.18                    0.14
      
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.1, tillage_depth = 25
 15 January 1981(Day of year=15), SurfaceOrganicMatter: 
@@ -1439,65 +1473,131 @@ Paddock:
      
 6 February 1981(Day of year=37), maize: 
       stage    6.0 flag_leaf
-                          biomass =           153.0571       lai =    0.7715585
-                          stover N conc =    1.453759       extractable sw =    22.67599
+                          biomass =           153.1973       lai =    0.7663204
+                          stover N conc =    1.469902       extractable sw =    22.63845
 7 February 1981(Day of year=38), weed: 
       stage 2.0 germination
 7 February 1981(Day of year=38), maize: 
       stage    7.0 flowering
-                          biomass =           159.6537       lai =    0.7715585
-                          stover N conc =    1.434156       extractable sw =    23.90335
+                          biomass =           159.8605       lai =    0.7663204
+                          stover N conc =    1.450294       extractable sw =    23.84112
 9 February 1981(Day of year=40), weed: 
       stage 3.0 emergence
                      biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
-                     stover N conc =     6.00 (%)    extractable sw =    9.45 (mm)
+                     stover N conc =     6.00 (%)    extractable sw =    9.38 (mm)
 15 February 1981(Day of year=46), maize: 
       stage    8.0 start_grain_fill
-                          biomass =           190.4590       lai =    0.6339058
-                          stover N conc =    1.317997       extractable sw =    9.243021
+                          biomass =           190.5515       lai =    0.6276349
+                          stover N conc =    1.336672       extractable sw =    9.215202
 3 March 1981(Day of year=62), weed: 
       stage 4.0 end_of_juvenile
-                     biomass =           6.94 (g/m^2)   lai          =   0.126 (m^2/m^2)
-                     stover N conc =     1.88 (%)    extractable sw =   26.21 (mm)
+                     biomass =           7.00 (g/m^2)   lai          =   0.126 (m^2/m^2)
+                     stover N conc =     1.88 (%)    extractable sw =   25.98 (mm)
 18 March 1981(Day of year=77), maize: 
       stage    9.0 end_grain_fill
-                          biomass =           325.5347       lai =    0.2548549
-                          stover N conc =   0.9553347       extractable sw =    12.68894
+                          biomass =           327.7304       lai =    0.2511935
+                          stover N conc =   0.9629022       extractable sw =    12.23892
 19 March 1981(Day of year=78), maize: 
       stage   10.0 maturity
-                          biomass =           327.7132       lai =    0.2360872
-                          stover N conc =   0.9505924       extractable sw =    12.12724
+                          biomass =           329.9367       lai =    0.2324371
+                          stover N conc =   0.9580363       extractable sw =    11.67140
 20 March 1981(Day of year=79), maize: 
       stage   11.0 harvest_ripe
-                          biomass =           327.7132       lai =    0.8359253E-03
-                          stover N conc =   0.9620962       extractable sw =    11.37905
+                          biomass =           329.9367       lai =    0.8361936E-03
+                          stover N conc =   0.9694301       extractable sw =    10.91980
 21 March 1981(Day of year=80), maize: 
       stage   11.0 harvest_ripe
-                          biomass =           327.7132       lai =    0.8359253E-03
-                          stover N conc =   0.9620962       extractable sw =    10.94201
+                          biomass =           329.9367       lai =    0.8361936E-03
+                          stover N conc =   0.9694301       extractable sw =    10.49009
 21 March 1981(Day of year=80), Harvesting rule for intercropping: 
-     Manager sending message :- maize harvest,  remove = 0.95
+     Manager sending message :- maize harvest  remove = 0.95
+     
+     
+     
+     flowering (DAS) =   63                                maturity (DAS)  =     103
+      flowering day  =   38                                 stover (kg/ha) =    2429.6
+      maturity day        =   78                            grain yield (kg/ha) =     869.8
+      grain % water content   =   15.5                      grain yield wet (kg/ha) =    1029.3
+      grain wt (g) =     0.258                              grains/m^2   =   337.334
+      grains/head = 153.3                                   maximum lai = 0.840
+      total above ground biomass (kg/ha) =    3299.4
+      live above ground biomass (kg/ha) =    3299.4
+      green above ground biomass (kg/ha) =    2980.1
+      senesced above ground biomass (kg/ha) =     319.2
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  20.3
+      grain N percent =      1.61                           total N content (kg/ha) =     30.49
+      grain N uptake (kg/ha) =     13.97                    senesced N content (kg/ha) =      1.60
+      green N content (kg/ha) =     14.92                   dead N content (kg/ha) =      0.00
+     
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence           to end_of_juvenile         0.000        0.000        0.000        0.150
+         end_of_juvenile     to floral_initiation       0.000        0.000        0.000        0.161
+         floral_initiation   to flag_leaf               0.120        0.246        0.089        0.239
+         flag_leaf           to flowering               0.000        0.000        0.260        0.408
+         flowering           to start_grain_fill        0.455        0.787        0.244        0.395
+         start_grain_fill    to end_grain_fill          0.026        0.038        0.238        0.390
+     
+     Crop harvested.
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =               3177.89                    0.00
+                          N  (kg/ha) =                 29.66                    0.00
+     
      Manager sending message :- maize kill_crop
-         kill. Standing above-ground dm =  3277.1 (kg/ha)
+         kill. Standing above-ground dm =   122.0 (kg/ha)
      Manager sending message :- maize end_crop
-         Crop ended. Yield (dw) =   871.2
+         Crop ended. Yield (dw) =     0.0
          Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
-                          DM (kg/ha) =               3277.13                  486.47
-                          N  (kg/ha) =                 30.05                    4.00
+                          DM (kg/ha) =                121.99                  486.86
+                          N  (kg/ha) =                  2.22                    4.05
                           P  (kg/ha) =                  0.00                    0.00
      
      Manager creating a new local real variable : fert_tot = 0.00000
      Manager creating a new local real variable : sow_year = 0.00000
 22 March 1981(Day of year=81), Weeding at threshold weed biomass or maximum days: 
-     Manager sending message :- weed harvest,  remove = 0
-     Manager sending message :- weed kill_crop  plants_kill_fraction = 1
+     Manager sending message :- weed harvest  remove = 0
 22 March 1981(Day of year=81), weed: 
+     
+      flowering day          =    0                           stover (kg/ha)         =      201.4
+      maturity day           =    0                           grain yield (kg/ha)    =        0.0
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=        0.0
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      0.360
+      total above ground biomass (kg/ha)    =      201.4
+      live above ground biomass (kg/ha)     =      201.4
+      green above ground biomass (kg/ha)    =      201.4
+      senesced above ground biomass (kg/ha) =        0.0
+      number of leaves       =     15.5
+      DM Root:Shoot ratio    =     0.36                       Harvest Index          =       0.00
+      Stover C:N ratio       =    35.71                       Root C:N ratio         =     102.01
+      grain N percent        =     0.00                       total N content (kg/ha)=       2.26
+      grain N uptake (kg/ha) =     0.00                       senesced N content (kg/ha)=    0.00
+      green N content (kg/ha)=     2.26
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.034        0.161
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                 188.0                     0.0
+                          N  (kg/ha) =                   2.00                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                   0.0                     0.0
+                          N  (kg/ha) =                   0.00                    0.00
+     
+      stage 3.0 emergence
+                     biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =    9.33 (mm)
+     Manager sending message :- weed kill_crop  plants_kill_fraction = 1
      Plant kill. 100.00% crop killed because of external action.
      Manager sending message :- weed end_crop
      Crop ended. Yield (dw) =     0.0  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                 201.4                    72.1
-                          N  (kg/ha) =                   2.26                    0.28
+                          DM (kg/ha) =                   3.0                    10.5
+                          N  (kg/ha) =                   0.18                    0.11
      
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.1, tillage_depth = 25
 22 March 1981(Day of year=81), SurfaceOrganicMatter: 
@@ -1580,7 +1680,7 @@ Paddock:
 7 April 1981(Day of year=97), weed: 
       stage 3.0 emergence
                      biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
-                     stover N conc =     6.00 (%)    extractable sw =   12.27 (mm)
+                     stover N conc =     6.00 (%)    extractable sw =   11.04 (mm)
 8 May 1981(Day of year=128), Remove all residues on a fixed date: 
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
 8 May 1981(Day of year=128), SurfaceOrganicMatter: 
@@ -1589,11 +1689,11 @@ Paddock:
                                              Incorporated Depth    =     0.00
 19 May 1981(Day of year=139), weed: 
       stage 4.0 end_of_juvenile
-                     biomass =          10.75 (g/m^2)   lai          =   0.059 (m^2/m^2)
-                     stover N conc =     1.84 (%)    extractable sw =   10.24 (mm)
+                     biomass =          12.68 (g/m^2)   lai          =   0.063 (m^2/m^2)
+                     stover N conc =     1.82 (%)    extractable sw =    8.76 (mm)
 13 July 1981(Day of year=194), weed: 
      Crop failure because of total leaf senescence.
-     Plant death. standing above-ground dm = 181.60 (kg/ha)
+     Plant death. standing above-ground dm = 217.95 (kg/ha)
 4 November 1981(Day of year=308), Sow using a variable rule with intercropping{2}: 
      Manager sending message :- peanut sow  cultivar = early_bunch, plants = 11.1 (plants/m2), sowing_depth = 100, row_spacing = 450
 4 November 1981(Day of year=308), peanut: 
@@ -1676,15 +1776,48 @@ Paddock:
                                              CN reduction =     0.00
                                              Acc rain     =     0.00
 4 November 1981(Day of year=308), Weeding at threshold weed biomass or maximum days: 
-     Manager sending message :- weed harvest,  remove = 0
-     Manager sending message :- weed kill_crop  plants_kill_fraction = 1
+     Manager sending message :- weed harvest  remove = 0
 4 November 1981(Day of year=308), weed: 
+     
+      flowering day          =    0                           stover (kg/ha)         =      218.0
+      maturity day           =    0                           grain yield (kg/ha)    =        0.0
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=        0.0
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      0.181
+      total above ground biomass (kg/ha)    =      218.0
+      live above ground biomass (kg/ha)     =      218.0
+      green above ground biomass (kg/ha)    =        0.0
+      senesced above ground biomass (kg/ha) =      218.0
+      number of leaves       =     12.0
+      DM Root:Shoot ratio    =     0.00                       Harvest Index          =       0.00
+      Stover C:N ratio       =    17.20                       Root C:N ratio         =       0.00
+      grain N percent        =     0.00                       total N content (kg/ha)=       5.07
+      grain N uptake (kg/ha) =     0.00                       senesced N content (kg/ha)=    5.07
+      green N content (kg/ha)=     0.00
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.221        0.389
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                 205.9                     0.0
+                          N  (kg/ha) =                   4.21                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                   0.0                     0.0
+                          N  (kg/ha) =                   0.00                    0.00
+     
+      stage 3.0 emergence
+                     biomass =           1.20 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.00 (%)    extractable sw =  122.79 (mm)
+     Manager sending message :- weed kill_crop  plants_kill_fraction = 1
      Plant kill. 100.00% crop killed because of external action.
      Manager sending message :- weed end_crop
      Crop ended. Yield (dw) =     0.0  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                 181.6                     0.0
-                          N  (kg/ha) =                   3.76                    0.00
+                          DM (kg/ha) =                  12.0                     0.0
+                          N  (kg/ha) =                   0.86                    0.00
      
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.1, tillage_depth = 25
      Residue removed using user_defined
@@ -1768,94 +1901,162 @@ Paddock:
 10 November 1981(Day of year=314), weed: 
       stage 3.0 emergence
                      biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
-                     stover N conc =     6.00 (%)    extractable sw =   17.13 (mm)
+                     stover N conc =     6.00 (%)    extractable sw =   16.14 (mm)
 17 November 1981(Day of year=321), peanut: 
       stage 3.0 emergence
                      biomass =           0.50 (g/m^2)   lai          =   0.007 (m^2/m^2)
-                     stover N conc =     4.60 (%)    extractable sw =   26.67 (mm)
+                     stover N conc =     4.60 (%)    extractable sw =   25.63 (mm)
 18 November 1981(Day of year=322), peanut: 
       stage 4.0 end_of_juvenile
                      biomass =           0.56 (g/m^2)   lai          =   0.008 (m^2/m^2)
-                     stover N conc =     4.29 (%)    extractable sw =   46.83 (mm)
+                     stover N conc =     4.29 (%)    extractable sw =   45.84 (mm)
 19 November 1981(Day of year=323), peanut: 
       stage 5.0 floral_initiation
                      biomass =           0.60 (g/m^2)   lai          =   0.009 (m^2/m^2)
-                     stover N conc =     4.17 (%)    extractable sw =   46.69 (mm)
+                     stover N conc =     4.17 (%)    extractable sw =   45.70 (mm)
 9 December 1981(Day of year=343), weed: 
       stage 4.0 end_of_juvenile
                      biomass =          25.55 (g/m^2)   lai          =   0.220 (m^2/m^2)
-                     stover N conc =     2.94 (%)    extractable sw =   46.89 (mm)
+                     stover N conc =     2.94 (%)    extractable sw =   46.94 (mm)
 18 December 1981(Day of year=352), peanut: 
       stage 6.0 flowering
-                     biomass =          84.23 (g/m^2)   lai          =   1.186 (m^2/m^2)
-                     stover N conc =     2.31 (%)    extractable sw =  126.43 (mm)
+                     biomass =          84.30 (g/m^2)   lai          =   1.187 (m^2/m^2)
+                     stover N conc =     2.34 (%)    extractable sw =  128.25 (mm)
 8 January 1982(Day of year=8), weed: 
       stage 5.0 floral_initiation
-                     biomass =         135.31 (g/m^2)   lai          =   1.142 (m^2/m^2)
-                     stover N conc =     1.05 (%)    extractable sw =   15.28 (mm)
+                     biomass =         136.39 (g/m^2)   lai          =   1.148 (m^2/m^2)
+                     stover N conc =     1.05 (%)    extractable sw =   15.23 (mm)
 10 January 1982(Day of year=10), peanut: 
       stage 7.0 start_grain_fill
-                     biomass =         221.10 (g/m^2)   lai          =   2.161 (m^2/m^2)
-                     stover N conc =     2.29 (%)    extractable sw =   42.54 (mm)
+                     biomass =         222.49 (g/m^2)   lai          =   2.172 (m^2/m^2)
+                     stover N conc =     2.31 (%)    extractable sw =   43.90 (mm)
 11 January 1982(Day of year=11), weed: 
       stage 6.0 flowering
-                     biomass =         143.08 (g/m^2)   lai          =   1.180 (m^2/m^2)
-                     stover N conc =     1.00 (%)    extractable sw =   17.50 (mm)
+                     biomass =         144.17 (g/m^2)   lai          =   1.185 (m^2/m^2)
+                     stover N conc =     1.00 (%)    extractable sw =   17.63 (mm)
 18 January 1982(Day of year=18), weed: 
       stage 7.0 start_grain_fill
-                     biomass =         161.17 (g/m^2)   lai          =   1.180 (m^2/m^2)
-                     stover N conc =     0.91 (%)    extractable sw =   28.81 (mm)
+                     biomass =         162.29 (g/m^2)   lai          =   1.185 (m^2/m^2)
+                     stover N conc =     0.92 (%)    extractable sw =   28.92 (mm)
 10 February 1982(Day of year=41), weed: 
       stage 8.0 end_grain_fill
-                     biomass =         218.76 (g/m^2)   lai          =   0.134 (m^2/m^2)
-                     stover N conc =     0.65 (%)    extractable sw =    8.26 (mm)
+                     biomass =         219.79 (g/m^2)   lai          =   0.134 (m^2/m^2)
+                     stover N conc =     0.65 (%)    extractable sw =    8.52 (mm)
 13 February 1982(Day of year=44), weed: 
       stage 9.0 maturity
-                     biomass =         220.53 (g/m^2)   lai          =   0.048 (m^2/m^2)
-                     stover N conc =     0.65 (%)    extractable sw =    6.79 (mm)
+                     biomass =         221.56 (g/m^2)   lai          =   0.048 (m^2/m^2)
+                     stover N conc =     0.65 (%)    extractable sw =    7.03 (mm)
 14 February 1982(Day of year=45), weed: 
       stage 10.0 harvest_ripe
-                     biomass =         220.91 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     0.65 (%)    extractable sw =    6.47 (mm)
+                     biomass =         221.93 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.65 (%)    extractable sw =    6.70 (mm)
 15 February 1982(Day of year=46), weed: 
       stage 11.0 end_crop
-6 April 1982(Day of year=96), peanut: 
+5 April 1982(Day of year=95), peanut: 
       stage 8.0 end_grain_fill
-                     biomass =         406.30 (g/m^2)   lai          =   0.729 (m^2/m^2)
-                     stover N conc =     1.81 (%)    extractable sw =  140.28 (mm)
-11 April 1982(Day of year=101), peanut: 
+                     biomass =         409.36 (g/m^2)   lai          =   0.759 (m^2/m^2)
+                     stover N conc =     1.82 (%)    extractable sw =  135.92 (mm)
+10 April 1982(Day of year=100), peanut: 
       stage 9.0 maturity
-                     biomass =         407.68 (g/m^2)   lai          =   0.619 (m^2/m^2)
-                     stover N conc =     1.80 (%)    extractable sw =  131.21 (mm)
-12 April 1982(Day of year=102), peanut: 
+                     biomass =         410.76 (g/m^2)   lai          =   0.644 (m^2/m^2)
+                     stover N conc =     1.80 (%)    extractable sw =  132.75 (mm)
+11 April 1982(Day of year=101), peanut: 
       stage 10.0 harvest_ripe
-                     biomass =         407.68 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     1.93 (%)    extractable sw =  129.45 (mm)
-13 April 1982(Day of year=103), peanut: 
+                     biomass =         410.76 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.94 (%)    extractable sw =  130.91 (mm)
+12 April 1982(Day of year=102), peanut: 
       stage 11.0 end_crop
-13 April 1982(Day of year=103), Harvesting rule for intercropping{2}: 
-     Manager sending message :- peanut harvest,  remove = 0.95
+12 April 1982(Day of year=102), Harvesting rule for intercropping{2}: 
+     Manager sending message :- peanut harvest  remove = 0.95
+     
+      flowering day          =    0                           stover (kg/ha)         =     2274.4
+      maturity day           =    0                           grain yield (kg/ha)    =     1833.2
+      grain % water content  =   13.0                         grain yield wet (kg/ha)=     2107.1
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      2.320
+      total above ground biomass (kg/ha)    =     4107.6
+      live above ground biomass (kg/ha)     =     4107.6
+      green above ground biomass (kg/ha)    =     3208.9
+      senesced above ground biomass (kg/ha) =      898.7
+      number of leaves       =    390.4
+      DM Root:Shoot ratio    =     0.15                       Harvest Index          =       0.45
+      Stover C:N ratio       =    25.54                       Root C:N ratio         =      19.51
+      grain N percent        =     5.00                       total N content (kg/ha)=     127.29
+      grain N uptake (kg/ha) =    91.66                       senesced N content (kg/ha)=    8.99
+      green N content (kg/ha)=    26.64
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.013        0.020        0.000        0.079
+         flowering            to start_grain_fill        0.320        0.392        0.046        0.205
+         start_grain_fill     to end_grain_fill          0.329        0.367        0.000        0.001
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                 113.7                     0.0
+                          N  (kg/ha) =                   1.78                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                3993.9                     0.0
+                          N  (kg/ha) =                 125.50                    0.00
+     
      Manager sending message :- peanut kill_crop
      Plant kill. 100.00% crop killed because of external action.
      Manager sending message :- peanut end_crop
-     Crop ended. Yield (dw) =  1817.3  (kg/ha)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                4076.8                   619.1
-                          N  (kg/ha) =                 126.12                   12.70
+                          DM (kg/ha) =                   0.0                   626.5
+                          N  (kg/ha) =                   0.00                   12.84
      
-14 April 1982(Day of year=104), Weeding at threshold weed biomass or maximum days: 
-     Manager sending message :- weed harvest,  remove = 0
+13 April 1982(Day of year=103), Weeding at threshold weed biomass or maximum days: 
+     Manager sending message :- weed harvest  remove = 0
+13 April 1982(Day of year=103), weed: 
+     
+      flowering day          =    0                           stover (kg/ha)         =     1887.7
+      maturity day           =    0                           grain yield (kg/ha)    =      331.6
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=      376.9
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      1.192
+      total above ground biomass (kg/ha)    =     2219.3
+      live above ground biomass (kg/ha)     =     2219.3
+      green above ground biomass (kg/ha)    =     1196.8
+      senesced above ground biomass (kg/ha) =     1022.6
+      number of leaves       =     45.6
+      DM Root:Shoot ratio    =     0.21                       Harvest Index          =       0.15
+      Stover C:N ratio       =    53.33                       Root C:N ratio         =      79.70
+      grain N percent        =     1.38                       total N content (kg/ha)=      18.73
+      grain N uptake (kg/ha) =     4.57                       senesced N content (kg/ha)=    5.11
+      green N content (kg/ha)=     9.05
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.127
+         end_of_juvenile      to floral_initiation       0.002        0.006        0.546        0.683
+         floral_initiation    to flowering               0.172        0.238        0.807        0.871
+         flowering            to start_grain_fill        0.178        0.221        0.675        0.783
+         start_grain_fill     to end_grain_fill          0.000        0.001        0.711        0.808
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                1722.8                     0.0
+                          N  (kg/ha) =                  12.40                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                 331.6                     0.0
+                          N  (kg/ha) =                   4.57                    0.00
+     
      Manager sending message :- weed kill_crop  plants_kill_fraction = 1
-14 April 1982(Day of year=104), weed: 
      Plant kill. 100.00% crop killed because of external action.
      Manager sending message :- weed end_crop
-     Crop ended. Yield (dw) =   330.1  (kg/ha)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                2209.1                   451.4
-                          N  (kg/ha) =                  19.01                    2.39
+                          DM (kg/ha) =                 164.9                   455.6
+                          N  (kg/ha) =                   1.76                    2.29
      
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.1, tillage_depth = 25
-14 April 1982(Day of year=104), SurfaceOrganicMatter: 
+13 April 1982(Day of year=103), SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    25.00
@@ -1944,8 +2145,8 @@ Paddock:
                      stover N conc =     6.00 (%)    extractable sw =   16.84 (mm)
 17 November 1982(Day of year=321), weed: 
       stage 4.0 end_of_juvenile
-                     biomass =          31.14 (g/m^2)   lai          =   0.224 (m^2/m^2)
-                     stover N conc =     3.04 (%)    extractable sw =   58.91 (mm)
+                     biomass =          30.62 (g/m^2)   lai          =   0.221 (m^2/m^2)
+                     stover N conc =     3.02 (%)    extractable sw =   58.90 (mm)
 3 December 1982(Day of year=337), Sow using a variable rule with intercropping: 
      Manager sending message :- maize sow  cultivar = sc401, plants = 2.2 (plants/m2), sowing_depth = 100, row_spacing = 0.9
 3 December 1982(Day of year=337), maize: 
@@ -2013,8 +2214,8 @@ Paddock:
      Manager sending message :- weed end_crop
      Crop ended. Yield (dw) =     0.0  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                1396.6                   482.1
-                          N  (kg/ha) =                  37.43                    4.28
+                          DM (kg/ha) =                1368.0                   472.2
+                          N  (kg/ha) =                  26.56                    3.01
      
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1, tillage_depth = 150
 3 December 1982(Day of year=337), SurfaceOrganicMatter: 
@@ -2104,23 +2305,23 @@ Paddock:
 7 December 1982(Day of year=341), maize: 
       stage    3.0 emergence
                           biomass =          0.4400000E-01   lai =    0.8360000E-03
-                          stover N conc =    4.400000       extractable sw =    16.12474
+                          stover N conc =    4.400000       extractable sw =    16.13292
 7 December 1982(Day of year=341), weed: 
       stage 3.0 emergence
                      biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
-                     stover N conc =     6.00 (%)    extractable sw =   16.12 (mm)
+                     stover N conc =     6.00 (%)    extractable sw =   16.13 (mm)
 21 December 1982(Day of year=355), maize: 
       stage    4.0 end_of_juvenile
-                          biomass =          0.8715041       lai =    0.1234730E-01
-                          stover N conc =    3.336823       extractable sw =    35.95643
+                          biomass =          0.8558152       lai =    0.1205935E-01
+                          stover N conc =    3.281237       extractable sw =    36.11961
 24 December 1982(Day of year=358), maize: 
       stage    5.0 floral_initiation
-                          biomass =           1.637738       lai =    0.2122607E-01
-                          stover N conc =    3.145119       extractable sw =    33.92628
+                          biomass =           1.605318       lai =    0.2077933E-01
+                          stover N conc =    3.089635       extractable sw =    34.10416
 1 January 1983(Day of year=1), weed: 
       stage 4.0 end_of_juvenile
-                     biomass =          21.42 (g/m^2)   lai          =   0.220 (m^2/m^2)
-                     stover N conc =     2.99 (%)    extractable sw =   30.08 (mm)
+                     biomass =          20.88 (g/m^2)   lai          =   0.208 (m^2/m^2)
+                     stover N conc =     2.61 (%)    extractable sw =   30.27 (mm)
 7 January 1983(Day of year=7), Sow using a variable rule with intercropping: 
      Manager sending message :- fertiliser apply  amount = 27 (kg/ha), depth = 50 (mm), type = nh4no3
 7 January 1983(Day of year=7), fertiliser: 
@@ -2129,15 +2330,49 @@ Paddock:
         27.00 of ammonium nitrate (nh4no3)
                                          added at depth   50.00 (layer   1)
 10 January 1983(Day of year=10), Weeding at threshold weed biomass or maximum days: 
-     Manager sending message :- weed harvest,  remove = 0
-     Manager sending message :- weed kill_crop  plants_kill_fraction = 1
+     Manager sending message :- weed harvest  remove = 0
 10 January 1983(Day of year=10), weed: 
+     
+      flowering day          =    0                           stover (kg/ha)         =      610.1
+      maturity day           =    0                           grain yield (kg/ha)    =        0.0
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=        0.0
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      0.613
+      total above ground biomass (kg/ha)    =      610.1
+      live above ground biomass (kg/ha)     =      610.1
+      green above ground biomass (kg/ha)    =      610.1
+      senesced above ground biomass (kg/ha) =        0.0
+      number of leaves       =     11.3
+      DM Root:Shoot ratio    =     0.37                       Harvest Index          =       0.00
+      Stover C:N ratio       =    13.97                       Root C:N ratio         =      44.37
+      grain N percent        =     0.00                       total N content (kg/ha)=      17.47
+      grain N uptake (kg/ha) =     0.00                       senesced N content (kg/ha)=    0.00
+      green N content (kg/ha)=    17.47
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.121
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.154
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                 574.6                     0.0
+                          N  (kg/ha) =                  16.39                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                   0.0                     0.0
+                          N  (kg/ha) =                   0.00                    0.00
+     
+      stage 3.0 emergence
+                     biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   40.51 (mm)
+     Manager sending message :- weed kill_crop  plants_kill_fraction = 1
      Plant kill. 100.00% crop killed because of external action.
      Manager sending message :- weed end_crop
      Crop ended. Yield (dw) =     0.0  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                 761.4                   273.2
-                          N  (kg/ha) =                  22.70                    2.56
+                          DM (kg/ha) =                   3.0                    26.4
+                          N  (kg/ha) =                   0.18                    0.23
      
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.1, tillage_depth = 25
 10 January 1983(Day of year=10), SurfaceOrganicMatter: 
@@ -2220,60 +2455,126 @@ Paddock:
 30 January 1983(Day of year=30), weed: 
       stage 3.0 emergence
                      biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
-                     stover N conc =     6.00 (%)    extractable sw =   14.43 (mm)
+                     stover N conc =     6.00 (%)    extractable sw =   14.89 (mm)
 3 February 1983(Day of year=34), maize: 
       stage    6.0 flag_leaf
-                          biomass =           225.1855       lai =    0.9812489
-                          stover N conc =    1.674585       extractable sw =    85.62090
+                          biomass =           218.5240       lai =     1.127657
+                          stover N conc =    1.365070       extractable sw =    90.99969
 4 February 1983(Day of year=35), maize: 
       stage    7.0 flowering
-                          biomass =           234.4379       lai =    0.9812489
-                          stover N conc =    1.664481       extractable sw =    94.39998
+                          biomass =           226.2874       lai =     1.119324
+                          stover N conc =    1.361752       extractable sw =    100.3135
 12 February 1983(Day of year=43), maize: 
       stage    8.0 start_grain_fill
-                          biomass =           312.4000       lai =    0.8961924
-                          stover N conc =    1.438490       extractable sw =    61.69365
+                          biomass =           298.0634       lai =     1.036350
+                          stover N conc =    1.202708       extractable sw =    68.84467
 22 February 1983(Day of year=53), weed: 
       stage 4.0 end_of_juvenile
-                     biomass =           5.22 (g/m^2)   lai          =   0.096 (m^2/m^2)
-                     stover N conc =     1.52 (%)    extractable sw =    5.28 (mm)
+                     biomass =           5.16 (g/m^2)   lai          =   0.101 (m^2/m^2)
+                     stover N conc =     1.59 (%)    extractable sw =    7.05 (mm)
 14 March 1983(Day of year=73), maize: 
       stage    9.0 end_grain_fill
-                          biomass =           437.7455       lai =    0.4145751
-                          stover N conc =    1.105515       extractable sw =    27.36309
+                          biomass =           435.8506       lai =    0.5226723
+                          stover N conc =   0.9006883       extractable sw =    29.67379
 15 March 1983(Day of year=74), maize: 
       stage   10.0 maturity
-                          biomass =           439.5670       lai =    0.4024928
-                          stover N conc =    1.101428       extractable sw =    26.87856
+                          biomass =           437.9579       lai =    0.5068181
+                          stover N conc =   0.8970714       extractable sw =    29.11322
 16 March 1983(Day of year=75), maize: 
       stage   11.0 harvest_ripe
-                          biomass =           439.5670       lai =    0.8359253E-03
-                          stover N conc =    1.123858       extractable sw =    26.40413
+                          biomass =           437.9579       lai =    0.8360147E-03
+                          stover N conc =   0.9141539       extractable sw =    28.54582
 17 March 1983(Day of year=76), maize: 
       stage   11.0 harvest_ripe
-                          biomass =           439.5670       lai =    0.8359253E-03
-                          stover N conc =    1.123858       extractable sw =    27.32345
+                          biomass =           437.9579       lai =    0.8360147E-03
+                          stover N conc =   0.9141539       extractable sw =    30.68887
 17 March 1983(Day of year=76), Harvesting rule for intercropping: 
-     Manager sending message :- maize harvest,  remove = 0.95
+     Manager sending message :- maize harvest  remove = 0.95
+     
+     
+     
+     flowering (DAS) =   64                                maturity (DAS)  =     103
+      flowering day  =   35                                 stover (kg/ha) =    2825.2
+      maturity day        =   74                            grain yield (kg/ha) =    1554.4
+      grain % water content   =   15.5                      grain yield wet (kg/ha) =    1839.5
+      grain wt (g) =     0.234                              grains/m^2   =   663.343
+      grains/head = 301.5                                   maximum lai = 1.140
+      total above ground biomass (kg/ha) =    4379.6
+      live above ground biomass (kg/ha) =    4379.6
+      green above ground biomass (kg/ha) =    3959.9
+      senesced above ground biomass (kg/ha) =     419.7
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  20.4
+      grain N percent =      1.26                           total N content (kg/ha) =     38.30
+      grain N uptake (kg/ha) =     19.54                    senesced N content (kg/ha) =      2.10
+      green N content (kg/ha) =     16.66                   dead N content (kg/ha) =      0.00
+     
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence           to end_of_juvenile         0.000        0.000        0.000        0.144
+         end_of_juvenile     to floral_initiation       0.000        0.000        0.000        0.156
+         floral_initiation   to flag_leaf               0.043        0.113        0.132        0.271
+         flag_leaf           to flowering               0.000        0.000        0.333        0.466
+         flowering           to start_grain_fill        0.027        0.082        0.331        0.465
+         start_grain_fill    to end_grain_fill          0.172        0.390        0.388        0.510
+     
+     Crop harvested.
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =               4238.32                    0.00
+                          N  (kg/ha) =                 37.36                    0.00
+     
      Manager sending message :- maize kill_crop
-         kill. Standing above-ground dm =  4395.7 (kg/ha)
+         kill. Standing above-ground dm =   141.8 (kg/ha)
      Manager sending message :- maize end_crop
-         Crop ended. Yield (dw) =  1435.0
+         Crop ended. Yield (dw) =     0.0
          Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
-                          DM (kg/ha) =               4395.67                  740.61
-                          N  (kg/ha) =                 46.85                    6.43
+                          DM (kg/ha) =                141.79                  714.32
+                          N  (kg/ha) =                  2.47                    5.12
                           P  (kg/ha) =                  0.00                    0.00
      
 18 March 1983(Day of year=77), Weeding at threshold weed biomass or maximum days: 
-     Manager sending message :- weed harvest,  remove = 0
-     Manager sending message :- weed kill_crop  plants_kill_fraction = 1
+     Manager sending message :- weed harvest  remove = 0
 18 March 1983(Day of year=77), weed: 
+     
+      flowering day          =    0                           stover (kg/ha)         =      103.3
+      maturity day           =    0                           grain yield (kg/ha)    =        0.0
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=        0.0
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      0.184
+      total above ground biomass (kg/ha)    =      103.3
+      live above ground biomass (kg/ha)     =      103.3
+      green above ground biomass (kg/ha)    =       97.4
+      senesced above ground biomass (kg/ha) =        5.9
+      number of leaves       =     20.0
+      DM Root:Shoot ratio    =     0.37                       Harvest Index          =       0.00
+      Stover C:N ratio       =    25.58                       Root C:N ratio         =      73.61
+      grain N percent        =     0.00                       total N content (kg/ha)=       1.62
+      grain N uptake (kg/ha) =     0.00                       senesced N content (kg/ha)=    0.03
+      green N content (kg/ha)=     1.59
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.099        0.212
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                  95.6                     0.0
+                          N  (kg/ha) =                   1.38                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                   0.0                     0.0
+                          N  (kg/ha) =                   0.00                    0.00
+     
+      stage 3.0 emergence
+                     biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   23.99 (mm)
+     Manager sending message :- weed kill_crop  plants_kill_fraction = 1
      Plant kill. 100.00% crop killed because of external action.
      Manager sending message :- weed end_crop
      Crop ended. Yield (dw) =     0.0  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                  91.8                    35.1
-                          N  (kg/ha) =                   1.57                    0.22
+                          DM (kg/ha) =                   3.0                     7.0
+                          N  (kg/ha) =                   0.18                    0.08
      
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.1, tillage_depth = 25
 18 March 1983(Day of year=77), SurfaceOrganicMatter: 
@@ -2356,11 +2657,11 @@ Paddock:
 24 March 1983(Day of year=83), weed: 
       stage 3.0 emergence
                      biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
-                     stover N conc =     6.00 (%)    extractable sw =   18.63 (mm)
+                     stover N conc =     6.00 (%)    extractable sw =   16.51 (mm)
 3 May 1983(Day of year=123), weed: 
       stage 4.0 end_of_juvenile
-                     biomass =          14.92 (g/m^2)   lai          =   0.190 (m^2/m^2)
-                     stover N conc =     2.74 (%)    extractable sw =  145.81 (mm)
+                     biomass =          15.03 (g/m^2)   lai          =   0.196 (m^2/m^2)
+                     stover N conc =     3.12 (%)    extractable sw =  118.09 (mm)
 8 May 1983(Day of year=128), Remove all residues on a fixed date: 
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
 8 May 1983(Day of year=128), SurfaceOrganicMatter: 
@@ -2369,7 +2670,7 @@ Paddock:
                                              Incorporated Depth    =     0.00
 22 July 1983(Day of year=203), weed: 
      Crop failure because of total leaf senescence.
-     Plant death. standing above-ground dm = 627.02 (kg/ha)
+     Plant death. standing above-ground dm = 912.78 (kg/ha)
 22 November 1983(Day of year=326), Sow using a variable rule with intercropping{2}: 
      Manager sending message :- peanut sow  cultivar = early_bunch, plants = 11.1 (plants/m2), sowing_depth = 100, row_spacing = 450
 22 November 1983(Day of year=326), peanut: 
@@ -2452,15 +2753,48 @@ Paddock:
                                              CN reduction =     0.00
                                              Acc rain     =     0.00
 22 November 1983(Day of year=326), Weeding at threshold weed biomass or maximum days: 
-     Manager sending message :- weed harvest,  remove = 0
-     Manager sending message :- weed kill_crop  plants_kill_fraction = 1
+     Manager sending message :- weed harvest  remove = 0
 22 November 1983(Day of year=326), weed: 
+     
+      flowering day          =    0                           stover (kg/ha)         =      912.8
+      maturity day           =    0                           grain yield (kg/ha)    =        0.0
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=        0.0
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      0.751
+      total above ground biomass (kg/ha)    =      912.8
+      live above ground biomass (kg/ha)     =      912.8
+      green above ground biomass (kg/ha)    =        0.0
+      senesced above ground biomass (kg/ha) =      912.8
+      number of leaves       =     18.2
+      DM Root:Shoot ratio    =     0.00                       Harvest Index          =       0.00
+      Stover C:N ratio       =    24.94                       Root C:N ratio         =       0.00
+      grain N percent        =     0.00                       total N content (kg/ha)=      14.64
+      grain N uptake (kg/ha) =     0.00                       senesced N content (kg/ha)=   14.64
+      green N content (kg/ha)=     0.00
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.094
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                 855.4                     0.0
+                          N  (kg/ha) =                  12.34                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                   0.0                     0.0
+                          N  (kg/ha) =                   0.00                    0.00
+     
+      stage 3.0 emergence
+                     biomass =           5.73 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.00 (%)    extractable sw =  217.08 (mm)
+     Manager sending message :- weed kill_crop  plants_kill_fraction = 1
      Plant kill. 100.00% crop killed because of external action.
      Manager sending message :- weed end_crop
      Crop ended. Yield (dw) =     0.0  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                 627.0                     0.0
-                          N  (kg/ha) =                   9.82                    0.00
+                          DM (kg/ha) =                  57.3                     0.0
+                          N  (kg/ha) =                   2.30                    0.00
      
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.1, tillage_depth = 25
      Residue removed using user_defined
@@ -2544,100 +2878,168 @@ Paddock:
 29 November 1983(Day of year=333), weed: 
       stage 3.0 emergence
                      biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
-                     stover N conc =     6.00 (%)    extractable sw =   23.68 (mm)
+                     stover N conc =     6.00 (%)    extractable sw =   23.83 (mm)
 5 December 1983(Day of year=339), peanut: 
       stage 3.0 emergence
                      biomass =           0.50 (g/m^2)   lai          =   0.007 (m^2/m^2)
-                     stover N conc =     4.60 (%)    extractable sw =   35.97 (mm)
+                     stover N conc =     4.60 (%)    extractable sw =   36.08 (mm)
 6 December 1983(Day of year=340), peanut: 
       stage 4.0 end_of_juvenile
                      biomass =           0.58 (g/m^2)   lai          =   0.008 (m^2/m^2)
-                     stover N conc =     4.21 (%)    extractable sw =   55.13 (mm)
+                     stover N conc =     4.20 (%)    extractable sw =   55.25 (mm)
 7 December 1983(Day of year=341), peanut: 
       stage 5.0 floral_initiation
                      biomass =           0.69 (g/m^2)   lai          =   0.011 (m^2/m^2)
-                     stover N conc =     3.89 (%)    extractable sw =   51.82 (mm)
+                     stover N conc =     3.88 (%)    extractable sw =   51.86 (mm)
 27 December 1983(Day of year=361), weed: 
       stage 4.0 end_of_juvenile
-                     biomass =          24.91 (g/m^2)   lai          =   0.209 (m^2/m^2)
-                     stover N conc =     2.97 (%)    extractable sw =   45.54 (mm)
+                     biomass =          24.69 (g/m^2)   lai          =   0.206 (m^2/m^2)
+                     stover N conc =     2.94 (%)    extractable sw =   45.60 (mm)
 3 January 1984(Day of year=3), peanut: 
       stage 6.0 flowering
-                     biomass =          94.02 (g/m^2)   lai          =   1.322 (m^2/m^2)
-                     stover N conc =     2.65 (%)    extractable sw =  101.27 (mm)
+                     biomass =          94.49 (g/m^2)   lai          =   1.327 (m^2/m^2)
+                     stover N conc =     2.49 (%)    extractable sw =  101.36 (mm)
 23 January 1984(Day of year=23), peanut: 
       stage 7.0 start_grain_fill
-                     biomass =         253.79 (g/m^2)   lai          =   2.472 (m^2/m^2)
-                     stover N conc =     2.39 (%)    extractable sw =   94.90 (mm)
+                     biomass =         270.44 (g/m^2)   lai          =   2.595 (m^2/m^2)
+                     stover N conc =     2.16 (%)    extractable sw =   98.17 (mm)
 30 January 1984(Day of year=30), weed: 
       stage 5.0 floral_initiation
-                     biomass =         188.00 (g/m^2)   lai          =   1.505 (m^2/m^2)
-                     stover N conc =     1.16 (%)    extractable sw =  118.75 (mm)
+                     biomass =         132.18 (g/m^2)   lai          =   1.177 (m^2/m^2)
+                     stover N conc =     1.10 (%)    extractable sw =  121.02 (mm)
 3 February 1984(Day of year=34), weed: 
       stage 6.0 flowering
-                     biomass =         206.27 (g/m^2)   lai          =   1.620 (m^2/m^2)
-                     stover N conc =     1.08 (%)    extractable sw =  103.66 (mm)
+                     biomass =         145.32 (g/m^2)   lai          =   1.274 (m^2/m^2)
+                     stover N conc =     1.03 (%)    extractable sw =  105.00 (mm)
 10 February 1984(Day of year=41), weed: 
       stage 7.0 start_grain_fill
-                     biomass =         250.24 (g/m^2)   lai          =   1.767 (m^2/m^2)
-                     stover N conc =     0.94 (%)    extractable sw =   72.36 (mm)
+                     biomass =         178.40 (g/m^2)   lai          =   1.372 (m^2/m^2)
+                     stover N conc =     0.89 (%)    extractable sw =   71.57 (mm)
 7 March 1984(Day of year=67), weed: 
       stage 8.0 end_grain_fill
-                     biomass =         336.79 (g/m^2)   lai          =   0.315 (m^2/m^2)
-                     stover N conc =     0.80 (%)    extractable sw =   74.80 (mm)
+                     biomass =         241.27 (g/m^2)   lai          =   0.244 (m^2/m^2)
+                     stover N conc =     0.75 (%)    extractable sw =   67.13 (mm)
 10 March 1984(Day of year=70), weed: 
       stage 9.0 maturity
-                     biomass =         341.97 (g/m^2)   lai          =   0.153 (m^2/m^2)
-                     stover N conc =     0.81 (%)    extractable sw =   63.70 (mm)
+                     biomass =         244.90 (g/m^2)   lai          =   0.115 (m^2/m^2)
+                     stover N conc =     0.76 (%)    extractable sw =   58.46 (mm)
 11 March 1984(Day of year=71), weed: 
       stage 10.0 harvest_ripe
-                     biomass =         343.19 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     0.83 (%)    extractable sw =   60.91 (mm)
+                     biomass =         245.75 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.78 (%)    extractable sw =   56.07 (mm)
 12 March 1984(Day of year=72), weed: 
       stage 11.0 end_crop
-12 April 1984(Day of year=103), peanut: 
+13 April 1984(Day of year=104), peanut: 
       stage 8.0 end_grain_fill
-                     biomass =         558.63 (g/m^2)   lai          =   1.669 (m^2/m^2)
-                     stover N conc =     1.98 (%)    extractable sw =   93.61 (mm)
-18 April 1984(Day of year=109), peanut: 
-      stage 9.0 maturity
-                     biomass =         561.30 (g/m^2)   lai          =   1.570 (m^2/m^2)
-                     stover N conc =     1.95 (%)    extractable sw =   88.58 (mm)
+                     biomass =         614.36 (g/m^2)   lai          =   1.994 (m^2/m^2)
+                     stover N conc =     2.02 (%)    extractable sw =   89.11 (mm)
 19 April 1984(Day of year=110), peanut: 
-      stage 10.0 harvest_ripe
-                     biomass =         561.30 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     2.21 (%)    extractable sw =   87.14 (mm)
+      stage 9.0 maturity
+                     biomass =         617.77 (g/m^2)   lai          =   1.884 (m^2/m^2)
+                     stover N conc =     1.99 (%)    extractable sw =   81.95 (mm)
 20 April 1984(Day of year=111), peanut: 
+      stage 10.0 harvest_ripe
+                     biomass =         617.77 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     2.26 (%)    extractable sw =   79.53 (mm)
+21 April 1984(Day of year=112), peanut: 
       stage 11.0 end_crop
-20 April 1984(Day of year=111), Harvesting rule for intercropping{2}: 
-     Manager sending message :- peanut harvest,  remove = 0.95
+21 April 1984(Day of year=112), Harvesting rule for intercropping{2}: 
+     Manager sending message :- peanut harvest  remove = 0.95
+     
+      flowering day          =    0                           stover (kg/ha)         =     3397.7
+      maturity day           =    0                           grain yield (kg/ha)    =     2780.0
+      grain % water content  =   13.0                         grain yield wet (kg/ha)=     3195.4
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      3.230
+      total above ground biomass (kg/ha)    =     6177.7
+      live above ground biomass (kg/ha)     =     6177.7
+      green above ground biomass (kg/ha)    =     4891.4
+      senesced above ground biomass (kg/ha) =     1286.3
+      number of leaves       =    365.7
+      DM Root:Shoot ratio    =     0.14                       Harvest Index          =       0.45
+      Stover C:N ratio       =    22.40                       Root C:N ratio         =      19.24
+      grain N percent        =     5.00                       total N content (kg/ha)=     199.68
+      grain N uptake (kg/ha) =   139.00                       senesced N content (kg/ha)=   12.86
+      green N content (kg/ha)=    47.81
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.000        0.001        0.000        0.071
+         flowering            to start_grain_fill        0.062        0.104        0.005        0.174
+         start_grain_fill     to end_grain_fill          0.261        0.314        0.000        0.004
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                 169.9                     0.0
+                          N  (kg/ha) =                   3.03                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                6007.8                     0.0
+                          N  (kg/ha) =                 196.64                    0.00
+     
      Manager sending message :- peanut kill_crop
      Plant kill. 100.00% crop killed because of external action.
      Manager sending message :- peanut end_crop
-     Crop ended. Yield (dw) =  2525.9  (kg/ha)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                5613.0                   797.7
-                          N  (kg/ha) =                 180.08                   16.59
+                          DM (kg/ha) =                   0.0                   860.9
+                          N  (kg/ha) =                   0.00                   17.90
      
-21 April 1984(Day of year=112), Weeding at threshold weed biomass or maximum days: 
-     Manager sending message :- weed harvest,  remove = 0
+22 April 1984(Day of year=113), Weeding at threshold weed biomass or maximum days: 
+     Manager sending message :- weed harvest  remove = 0
+22 April 1984(Day of year=113), weed: 
+     
+      flowering day          =    0                           stover (kg/ha)         =     2091.7
+      maturity day           =    0                           grain yield (kg/ha)    =      365.7
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=      415.6
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      1.395
+      total above ground biomass (kg/ha)    =     2457.5
+      live above ground biomass (kg/ha)     =     2457.5
+      green above ground biomass (kg/ha)    =     1420.2
+      senesced above ground biomass (kg/ha) =     1037.3
+      number of leaves       =     45.2
+      DM Root:Shoot ratio    =     0.22                       Harvest Index          =       0.15
+      Stover C:N ratio       =    54.50                       Root C:N ratio         =      94.50
+      grain N percent        =     1.38                       total N content (kg/ha)=      20.42
+      grain N uptake (kg/ha) =     5.06                       senesced N content (kg/ha)=    5.19
+      green N content (kg/ha)=    10.17
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.132
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.542        0.681
+         floral_initiation    to flowering               0.000        0.000        0.759        0.839
+         flowering            to start_grain_fill        0.000        0.000        0.684        0.789
+         start_grain_fill     to end_grain_fill          0.000        0.000        0.680        0.787
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                1892.2                     0.0
+                          N  (kg/ha) =                  13.38                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                 365.7                     0.0
+                          N  (kg/ha) =                   5.06                    0.00
+     
      Manager sending message :- weed kill_crop  plants_kill_fraction = 1
-21 April 1984(Day of year=112), weed: 
      Plant kill. 100.00% crop killed because of external action.
      Manager sending message :- weed end_crop
-     Crop ended. Yield (dw) =   510.6  (kg/ha)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                3431.9                   738.5
-                          N  (kg/ha) =                  29.03                    3.03
+                          DM (kg/ha) =                 199.6                   530.4
+                          N  (kg/ha) =                   1.97                    2.24
      
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.1, tillage_depth = 25
-21 April 1984(Day of year=112), SurfaceOrganicMatter: 
+22 April 1984(Day of year=113), SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    25.00
-23 April 1984(Day of year=114), Sow WEEDS using a variable rule with intercropping: 
+24 April 1984(Day of year=115), Sow WEEDS using a variable rule with intercropping: 
      Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
-23 April 1984(Day of year=114), weed: 
+24 April 1984(Day of year=115), weed: 
      Crop Sow
         ------------------------------------------------
         cultivar                   = early
@@ -2703,15 +3105,15 @@ Paddock:
          Sowing  Depth Plants Spacing Skip  Skip  Cultivar
          Day no   mm     m^2     mm   row   plant name
          ------------------------------------------------
-            114   15.0    5.0  350.0   0.0   0.0 early
+            115   15.0    5.0  350.0   0.0   0.0 early
          ------------------------------------------------
      
-24 April 1984(Day of year=115), weed: 
+25 April 1984(Day of year=116), weed: 
       stage 2.0 germination
-30 April 1984(Day of year=121), weed: 
+1 May 1984(Day of year=122), weed: 
       stage 3.0 emergence
                      biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
-                     stover N conc =     6.00 (%)    extractable sw =   16.67 (mm)
+                     stover N conc =     6.00 (%)    extractable sw =   14.86 (mm)
 8 May 1984(Day of year=129), Remove all residues on a fixed date: 
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
 8 May 1984(Day of year=129), SurfaceOrganicMatter: 
@@ -2720,7 +3122,7 @@ Paddock:
                                              Incorporated Depth    =     0.00
 22 July 1984(Day of year=204), weed: 
      Crop failure because of total leaf senescence.
-     Plant death. standing above-ground dm = 51.67 (kg/ha)
+     Plant death. standing above-ground dm = 46.02 (kg/ha)
 1 November 1984(Day of year=306), Sow using a variable rule with intercropping: 
      Manager sending message :- maize sow  cultivar = sc401, plants = 2.2 (plants/m2), sowing_depth = 100, row_spacing = 0.9
 1 November 1984(Day of year=306), maize: 
@@ -2793,15 +3195,44 @@ Paddock:
                                              CN reduction =     0.00
                                              Acc rain     =     0.00
 1 November 1984(Day of year=306), Weeding at threshold weed biomass or maximum days: 
-     Manager sending message :- weed harvest,  remove = 0
-     Manager sending message :- weed kill_crop  plants_kill_fraction = 1
+     Manager sending message :- weed harvest  remove = 0
 1 November 1984(Day of year=306), weed: 
+     
+      flowering day          =    0                           stover (kg/ha)         =       46.0
+      maturity day           =    0                           grain yield (kg/ha)    =        0.0
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=        0.0
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      0.050
+      total above ground biomass (kg/ha)    =       46.0
+      live above ground biomass (kg/ha)     =       46.0
+      green above ground biomass (kg/ha)    =        0.0
+      senesced above ground biomass (kg/ha) =       46.0
+      number of leaves       =      5.9
+      DM Root:Shoot ratio    =     0.00                       Harvest Index          =       0.00
+      Stover C:N ratio       =    13.86                       Root C:N ratio         =       0.00
+      grain N percent        =     0.00                       total N content (kg/ha)=       1.33
+      grain N uptake (kg/ha) =     0.00                       senesced N content (kg/ha)=    1.33
+      green N content (kg/ha)=     0.00
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                  44.2                     0.0
+                          N  (kg/ha) =                   1.10                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                   0.0                     0.0
+                          N  (kg/ha) =                   0.00                    0.00
+     
+     Manager sending message :- weed kill_crop  plants_kill_fraction = 1
      Plant kill. 100.00% crop killed because of external action.
      Manager sending message :- weed end_crop
      Crop ended. Yield (dw) =     0.0  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                  51.7                     0.0
-                          N  (kg/ha) =                   1.49                    0.00
+                          DM (kg/ha) =                   1.8                     0.0
+                          N  (kg/ha) =                   0.23                    0.00
      
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.1, tillage_depth = 25
      Residue removed using user_defined
@@ -2885,19 +3316,19 @@ Paddock:
 7 November 1984(Day of year=312), maize: 
       stage    3.0 emergence
                           biomass =          0.4400000E-01   lai =    0.8360000E-03
-                          stover N conc =    4.400000       extractable sw =    18.15708
+                          stover N conc =    4.400000       extractable sw =    18.15987
 7 November 1984(Day of year=312), weed: 
       stage 3.0 emergence
                      biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
                      stover N conc =     6.00 (%)    extractable sw =   18.16 (mm)
 21 November 1984(Day of year=326), maize: 
       stage    4.0 end_of_juvenile
-                          biomass =          0.9686414       lai =    0.1140336E-01
-                          stover N conc =    3.508877       extractable sw =    47.24227
+                          biomass =          0.9493865       lai =    0.1116077E-01
+                          stover N conc =    3.437265       extractable sw =    47.25347
 25 November 1984(Day of year=330), maize: 
       stage    5.0 floral_initiation
-                          biomass =           1.971285       lai =    0.2079476E-01
-                          stover N conc =    3.237463       extractable sw =    46.08476
+                          biomass =           1.930247       lai =    0.2035269E-01
+                          stover N conc =    3.191442       extractable sw =    46.10833
 6 December 1984(Day of year=341), Sow using a variable rule with intercropping: 
      Manager sending message :- fertiliser apply  amount = 27 (kg/ha), depth = 50 (mm), type = nh4no3
 6 December 1984(Day of year=341), fertiliser: 
@@ -2907,83 +3338,150 @@ Paddock:
                                          added at depth   50.00 (layer   1)
 6 December 1984(Day of year=341), weed: 
       stage 4.0 end_of_juvenile
-                     biomass =          29.12 (g/m^2)   lai          =   0.211 (m^2/m^2)
-                     stover N conc =     3.05 (%)    extractable sw =   57.95 (mm)
+                     biomass =          28.60 (g/m^2)   lai          =   0.207 (m^2/m^2)
+                     stover N conc =     3.01 (%)    extractable sw =   57.93 (mm)
 6 January 1985(Day of year=6), maize: 
       stage    6.0 flag_leaf
-                          biomass =           162.5552       lai =     1.040685
-                          stover N conc =    1.781215       extractable sw =    81.26876
+                          biomass =           157.1683       lai =     1.056790
+                          stover N conc =    1.456414       extractable sw =    77.37019
 6 January 1985(Day of year=6), weed: 
       stage 5.0 floral_initiation
-                     biomass =         274.87 (g/m^2)   lai          =   1.356 (m^2/m^2)
-                     stover N conc =     2.70 (%)    extractable sw =   23.07 (mm)
+                     biomass =         267.64 (g/m^2)   lai          =   1.493 (m^2/m^2)
+                     stover N conc =     1.82 (%)    extractable sw =   21.84 (mm)
 7 January 1985(Day of year=7), maize: 
       stage    7.0 flowering
-                          biomass =           167.3913       lai =     1.005256
-                          stover N conc =    1.745223       extractable sw =    78.56853
+                          biomass =           161.7831       lai =     1.025067
+                          stover N conc =    1.425348       extractable sw =    74.78777
 9 January 1985(Day of year=9), weed: 
       stage 6.0 flowering
-                     biomass =         282.20 (g/m^2)   lai          =   1.248 (m^2/m^2)
-                     stover N conc =     2.77 (%)    extractable sw =   18.24 (mm)
+                     biomass =         274.61 (g/m^2)   lai          =   1.389 (m^2/m^2)
+                     stover N conc =     1.85 (%)    extractable sw =   17.20 (mm)
 16 January 1985(Day of year=16), maize: 
       stage    8.0 start_grain_fill
-                          biomass =           205.9372       lai =    0.7425007
-                          stover N conc =    1.478201       extractable sw =    60.56911
+                          biomass =           198.4174       lai =    0.7853209
+                          stover N conc =    1.204012       extractable sw =    57.67032
 16 January 1985(Day of year=16), weed: 
       stage 7.0 start_grain_fill
-                     biomass =         295.31 (g/m^2)   lai          =   0.979 (m^2/m^2)
-                     stover N conc =     2.96 (%)    extractable sw =   10.79 (mm)
+                     biomass =         286.94 (g/m^2)   lai          =   1.070 (m^2/m^2)
+                     stover N conc =     1.97 (%)    extractable sw =   10.08 (mm)
 7 February 1985(Day of year=38), weed: 
       stage 8.0 end_grain_fill
-                     biomass =         325.76 (g/m^2)   lai          =   0.123 (m^2/m^2)
-                     stover N conc =     4.72 (%)    extractable sw =    9.77 (mm)
+                     biomass =         315.37 (g/m^2)   lai          =   0.139 (m^2/m^2)
+                     stover N conc =     2.83 (%)    extractable sw =    9.19 (mm)
 11 February 1985(Day of year=42), weed: 
       stage 9.0 maturity
-                     biomass =         331.46 (g/m^2)   lai          =   0.036 (m^2/m^2)
-                     stover N conc =     4.81 (%)    extractable sw =   19.74 (mm)
+                     biomass =         320.92 (g/m^2)   lai          =   0.031 (m^2/m^2)
+                     stover N conc =     2.91 (%)    extractable sw =   18.79 (mm)
 12 February 1985(Day of year=43), weed: 
       stage 10.0 harvest_ripe
-                     biomass =         332.36 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     4.92 (%)    extractable sw =   19.18 (mm)
+                     biomass =         321.72 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     2.96 (%)    extractable sw =   18.28 (mm)
 13 February 1985(Day of year=44), weed: 
       stage 11.0 end_crop
 15 February 1985(Day of year=46), maize: 
       stage    9.0 end_grain_fill
-                          biomass =           282.2724       lai =    0.2984529
-                          stover N conc =    1.101761       extractable sw =    31.48902
+                          biomass =           270.9197       lai =    0.3489863
+                          stover N conc =   0.8999954       extractable sw =    30.17647
 16 February 1985(Day of year=47), maize: 
       stage   10.0 maturity
-                          biomass =           283.4052       lai =    0.2878127
-                          stover N conc =    1.097778       extractable sw =    31.08256
+                          biomass =           271.9991       lai =    0.3361989
+                          stover N conc =   0.8968737       extractable sw =    29.78979
 17 February 1985(Day of year=48), maize: 
       stage   11.0 harvest_ripe
-                          biomass =           283.4052       lai =    0.8358955E-03
-                          stover N conc =    1.117026       extractable sw =    30.68314
+                          biomass =           271.9991       lai =    0.8359551E-03
+                          stover N conc =   0.9125068       extractable sw =    29.40910
 18 February 1985(Day of year=49), maize: 
       stage   11.0 harvest_ripe
-                          biomass =           283.4052       lai =    0.8358955E-03
-                          stover N conc =    1.117026       extractable sw =    30.68086
+                          biomass =           271.9991       lai =    0.8359551E-03
+                          stover N conc =   0.9125068       extractable sw =    29.40684
 18 February 1985(Day of year=49), Harvesting rule for intercropping: 
-     Manager sending message :- maize harvest,  remove = 0.95
+     Manager sending message :- maize harvest  remove = 0.95
+     
+     
+     
+     flowering (DAS) =   68                                maturity (DAS)  =     108
+      flowering day  =    7                                 stover (kg/ha) =    2132.9
+      maturity day        =   47                            grain yield (kg/ha) =     587.1
+      grain % water content   =   15.5                      grain yield wet (kg/ha) =     694.7
+      grain wt (g) =     0.181                              grains/m^2   =   324.110
+      grains/head = 147.3                                   maximum lai = 1.166
+      total above ground biomass (kg/ha) =    2720.0
+      live above ground biomass (kg/ha) =    2720.0
+      green above ground biomass (kg/ha) =    2364.8
+      senesced above ground biomass (kg/ha) =     355.2
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  20.0
+      grain N percent =      1.43                           total N content (kg/ha) =     23.35
+      grain N uptake (kg/ha) =      8.40                    senesced N content (kg/ha) =      1.78
+      green N content (kg/ha) =     13.18                   dead N content (kg/ha) =      0.00
+     
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence           to end_of_juvenile         0.000        0.000        0.000        0.132
+         end_of_juvenile     to floral_initiation       0.000        0.000        0.000        0.125
+         floral_initiation   to flag_leaf               0.047        0.088        0.034        0.153
+         flag_leaf           to flowering               0.600        1.000        0.268        0.414
+         flowering           to start_grain_fill        0.582        1.000        0.294        0.435
+         start_grain_fill    to end_grain_fill          0.530        0.951        0.280        0.424
+     
+     Crop harvested.
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =               2613.34                    0.00
+                          N  (kg/ha) =                 22.61                    0.00
+     
      Manager sending message :- maize kill_crop
-         kill. Standing above-ground dm =  2834.1 (kg/ha)
+         kill. Standing above-ground dm =   107.1 (kg/ha)
      Manager sending message :- maize end_crop
-         Crop ended. Yield (dw) =   596.2
+         Crop ended. Yield (dw) =     0.0
          Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
-                          DM (kg/ha) =               2834.05                  521.10
-                          N  (kg/ha) =                 29.45                    3.95
+                          DM (kg/ha) =                107.09                  503.14
+                          N  (kg/ha) =                  2.62                    3.00
                           P  (kg/ha) =                  0.00                    0.00
      
 15 March 1985(Day of year=74), Weeding at threshold weed biomass or maximum days: 
-     Manager sending message :- weed harvest,  remove = 0
-     Manager sending message :- weed kill_crop  plants_kill_fraction = 1
+     Manager sending message :- weed harvest  remove = 0
 15 March 1985(Day of year=74), weed: 
+     
+      flowering day          =    0                           stover (kg/ha)         =     2737.3
+      maturity day           =    0                           grain yield (kg/ha)    =      479.9
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=      545.3
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      1.544
+      total above ground biomass (kg/ha)    =     3217.2
+      live above ground biomass (kg/ha)     =     3217.2
+      green above ground biomass (kg/ha)    =     1306.8
+      senesced above ground biomass (kg/ha) =     1910.3
+      number of leaves       =     46.0
+      DM Root:Shoot ratio    =     0.22                       Harvest Index          =       0.15
+      Stover C:N ratio       =    31.50                       Root C:N ratio         =      45.29
+      grain N percent        =     1.60                       total N content (kg/ha)=      42.43
+      grain N uptake (kg/ha) =     7.68                       senesced N content (kg/ha)=    9.55
+      green N content (kg/ha)=    25.20
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.130
+         end_of_juvenile      to floral_initiation       0.275        0.337        0.130        0.323
+         floral_initiation    to flowering               0.767        0.867        0.238        0.492
+         flowering            to start_grain_fill        0.848        0.948        0.029        0.321
+         start_grain_fill     to end_grain_fill          0.789        0.889        0.000        0.059
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                2582.2                     0.0
+                          N  (kg/ha) =                  29.86                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                 479.9                     0.0
+                          N  (kg/ha) =                   7.68                    0.00
+     
+     Manager sending message :- weed kill_crop  plants_kill_fraction = 1
      Plant kill. 100.00% crop killed because of external action.
      Manager sending message :- weed end_crop
-     Crop ended. Yield (dw) =   495.5  (kg/ha)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                3323.6                   740.9
-                          N  (kg/ha) =                  61.31                    7.19
+                          DM (kg/ha) =                 155.1                   716.7
+                          N  (kg/ha) =                   4.89                    6.33
      
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.1, tillage_depth = 25
 15 March 1985(Day of year=74), SurfaceOrganicMatter: 
@@ -3066,7 +3564,7 @@ Paddock:
 29 April 1985(Day of year=119), weed: 
       stage 3.0 emergence
                      biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
-                     stover N conc =     6.00 (%)    extractable sw =   18.66 (mm)
+                     stover N conc =     6.00 (%)    extractable sw =   17.81 (mm)
 1 May 1985(Day of year=121), clock: 
      Simulation is terminating due to end criteria being met.
 

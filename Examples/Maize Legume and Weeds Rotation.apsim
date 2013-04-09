@@ -1017,7 +1017,7 @@
                   ! tillage
                 if (crop_current = 'weed' or crop_current1 = 'weed' or crop_current2 = 'weed') then
                   if (weed.plant_status <> 'out') then
-                        weed harvest, remove=[fraction]
+                        weed harvest  remove=[fraction]
                         weed kill_crop
                         weed end_crop
                         days_after_weed_kill = 0
@@ -1314,7 +1314,7 @@
                   ! tillage
                 if (crop_current = 'weed' or crop_current1 = 'weed' or crop_current2 = 'weed') then
                   if (weed.plant_status <> 'out') then
-                        weed harvest, remove=[fraction]
+                        weed harvest remove=[fraction]
                         weed kill_crop
                         weed end_crop
                         days_after_weed_kill = 0
@@ -1570,7 +1570,7 @@
                      if ((crop_in = 0 OR '[must_till]' = 'yes') AND (ready_to_till_pre_sow = 1)) then
                         ! tillage
                         if (weed.plant_status <> 'out') then
-                           weed harvest, remove=[fraction]
+                           weed harvest  remove=[fraction]
                            weed kill_crop
                            weed end_crop
                            crop_in = crop_in - 1
@@ -1645,7 +1645,7 @@
           <script name="end_of_day">
             <text>
          if ([crop]_to_harvest = 1) then
-            [crop] harvest, remove=[fraction_to_remove]
+            [crop] harvest remove=[fraction_to_remove]
             [crop] kill_crop
             [crop] end_crop
                   crop_in = crop_in - 1
@@ -1686,7 +1686,7 @@
           <script name="end_of_day">
             <text>
          if ([crop]_to_harvest = 1) then
-            [crop] harvest, remove=[fraction_to_remove]
+            [crop] harvest remove=[fraction_to_remove]
             [crop] kill_crop
             [crop] end_crop
                   crop_in = crop_in - 1
@@ -1747,7 +1747,7 @@
                   elseif (crop_in = 1) then
                      weed_count_out = weed_count_out + 1
                   endif
-                  weed harvest, remove = [fraction]
+                  weed harvest  remove = [fraction]
                   weed kill_crop plants_kill_fraction = [thin_fraction]
                   if ([thin_fraction] = 1.0) then
                      weed end_crop

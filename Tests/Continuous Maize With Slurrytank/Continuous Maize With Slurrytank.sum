@@ -176,7 +176,7 @@ Paddock:
         if ((crop_in = 0 or 'no' = 'yes') and (ready_to_till_pre_sow = 1)) then
          if (crop_current = 'weed' or crop_current1 = 'weed' or crop_current2 = 'weed') then
            if (weed.plant_status <> 'out') then
-                 weed harvest, remove=0
+                 weed harvest  remove=0
                  weed kill_crop
                  weed end_crop
                  days_after_weed_kill = 0
@@ -326,7 +326,7 @@ Paddock:
      
      SECTION:- end_of_day
               if (maize_to_harvest = 1) then
-     maize harvest, remove=0.95
+     maize harvest  remove=0.95
      maize kill_crop
      maize end_crop
            crop_in = crop_in - 1
@@ -658,14 +658,47 @@ at day 82
                           biomass =           285.2464       lai =    0.8360147E-03
                           stover N conc =    1.468740       extractable sw =    5.727332
 21 February 1986(Day of year=52), Harvesting rule for intercropping: 
-     Manager sending message :- maize harvest,  remove = 0.95
+     Manager sending message :- maize harvest  remove = 0.95
+     
+     
+     
+     flowering (DAS) =   69                                maturity (DAS)  =     111
+      flowering day  =    8                                 stover (kg/ha) =    2627.9
+      maturity day        =   50                            grain yield (kg/ha) =     224.5
+      grain % water content   =   15.5                      grain yield wet (kg/ha) =     265.7
+      grain wt (g) =     0.245                              grains/m^2   =    91.824
+      grains/head =  41.7                                   maximum lai = 0.690
+      total above ground biomass (kg/ha) =    2852.5
+      live above ground biomass (kg/ha) =    2852.5
+      green above ground biomass (kg/ha) =    2538.7
+      senesced above ground biomass (kg/ha) =     313.8
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  20.0
+      grain N percent =      1.84                           total N content (kg/ha) =     38.86
+      grain N uptake (kg/ha) =      4.12                    senesced N content (kg/ha) =      1.57
+      green N content (kg/ha) =     33.17                   dead N content (kg/ha) =      0.00
+     
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence           to end_of_juvenile         0.000        0.000        0.000        0.033
+         end_of_juvenile     to floral_initiation       0.000        0.000        0.000        0.070
+         floral_initiation   to flag_leaf               0.184        0.333        0.000        0.032
+         flag_leaf           to flowering               0.652        1.000        0.000        0.000
+         flowering           to start_grain_fill        0.690        0.913        0.000        0.000
+         start_grain_fill    to end_grain_fill          0.196        0.302        0.000        0.000
+     
+     Crop harvested.
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =               2721.07                    0.00
+                          N  (kg/ha) =                 37.12                    0.00
+     
      Manager sending message :- maize kill_crop
-         kill. Standing above-ground dm =  2852.5 (kg/ha)
+         kill. Standing above-ground dm =   132.0 (kg/ha)
      Manager sending message :- maize end_crop
-         Crop ended. Yield (dw) =   224.5
+         Crop ended. Yield (dw) =     0.0
          Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
-                          DM (kg/ha) =               2852.46                  501.51
-                          N  (kg/ha) =                 38.86                    5.39
+                          DM (kg/ha) =                131.97                  501.51
+                          N  (kg/ha) =                  3.97                    5.39
                           P  (kg/ha) =                  0.00                    0.00
      
      Manager creating a new local real variable : fert_tot = 0.00000

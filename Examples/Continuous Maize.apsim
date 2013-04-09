@@ -782,7 +782,7 @@
                   ! tillage
                 if (crop_current = 'weed' or crop_current1 = 'weed' or crop_current2 = 'weed') then
                   if (weed.plant_status <> 'out') then
-                        weed harvest, remove=[fraction]
+                        weed harvest  remove=[fraction]
                         weed kill_crop
                         weed end_crop
                         days_after_weed_kill = 0
@@ -927,7 +927,7 @@
           <ui>
             <category description="Harvesting criteria" type="category" />
             <crop type="crop" description="Enter name of crop to harvest when ripe : ">maize</crop>
-            <fraction_to_remove type="text" description="Enter fraction of stover to remove (not for maize): ">0.95</fraction_to_remove>
+            <fraction_to_remove type="text" description="Enter fraction of stover to remove: ">0.0</fraction_to_remove>
           </ui>
           <script name="init">
             <text>
@@ -938,7 +938,7 @@
           <script name="end_of_day">
             <text>
          if ([crop]_to_harvest = 1) then
-            [crop] harvest, remove=[fraction_to_remove]
+            [crop] harvest remove=[fraction_to_remove]
             [crop] kill_crop
             [crop] end_crop
                   crop_in = crop_in - 1
