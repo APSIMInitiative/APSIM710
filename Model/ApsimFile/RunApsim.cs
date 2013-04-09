@@ -16,6 +16,7 @@ namespace ApsimFile
         private List<Job> ApsimJobs = new List<Job>();
         private JobScheduler Scheduler = null;
         public int MaxLinesInSummaryFile {get; set; }
+        private int NumApsimRuns = 0;
 
         /// <summary>
         /// constructor
@@ -33,6 +34,7 @@ namespace ApsimFile
         public void Start(string[] FileNames, string[] SimulationPaths)
         {
             ApsimJobs.Clear();
+            NumApsimRuns = 0;
             foreach (string FileName in FileNames)
             {
                 if (Path.GetExtension(FileName).ToLower() == ".apsim")
@@ -138,7 +140,7 @@ namespace ApsimFile
         {
             get
             {
-                return ApsimJobs.Count;
+                return NumApsimRuns;
             }
         }
 
@@ -334,6 +336,8 @@ namespace ApsimFile
         /// </summary>
         private Job CreateJob(string FileName, string SumFileName, string SimulationPath = null)
         {
+            NumApsimRuns++;
+
             string Executable = Path.Combine(Configuration.ApsimBinDirectory(), "ApsimModel.exe");
 
             // Create arguments

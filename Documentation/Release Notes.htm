@@ -1,47 +1,96 @@
 <html>
    <head>
-      <title>APSIM 7.4 Release Notes</title>
+      <title>APSIM 7.5 Release Notes</title>
       <link href="ApsimWebStyle.css" rel="stylesheet" type="text/css">
    </head>
    <body>
-      <h1>APSIM 7.4 release notes</h1>
-      <p>10th February 2012</p>
-
-      <p>This release of APSIM is a maintenance release with many defects fixed and some new functionality added. 
+      <h1>APSIM 7.5 release notes</h1>
+      <p>12th April 2013</p>
+         
+      <h2>New soil XML format</h2>
+      <p>The XML format (inside of .apsim and .soils files) has changed between APSIM 7.4 and 7.5. This change was 
+         necessary for the migration to ApsimX. All APSIM 7.4 files (.apsim) will be converted to the new format
+         automatically.<b>Note though that an APSIM 7.5 file cannot be opened in earlier versions of APSIM.</b></p>
+      <p>This change has also meant that soil crop parameterisations are now part of the Water node under the soil
+         node. Previously they were separates nodes under Water.</p>
+      
+      
+      <h2>Runoff from irrigation</h2>
+      <p>The irrigation / soil water module can now be told to calculate runoff from irrigation applications. 
+         To turn this on, a new parameter can be set to true when applying irrigation.</p>
+      <b>Old Maanager</b>
+      <p>irrigation apply amount = 31 (mm), will_runoff = 1</p>
+      <b>New Maanager</b>
+      <p>
+      IrrigationApplicationType data = new IrrigationApplicationType();<br>
+      data.Amount = 31;<br>
+      data.will_runoff = true;<br>
+      Irrigation.Apply(data);<br>
       </p>
-     <h3><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=25">The complete list of defects can be found here</a></h3>
-
-      <h2>Manager .NET</h2>
-      <p>A new Manager module has been developed that allows users to write C# or VB.NET as a scripting language. This 
-         module is released along with the existing Manager module. Samples of the script can be found in the standard toolbox.
-         <a href="http://www.apsim.info/Wiki/Script.ashx">Documentation can be found here</a>
+      
+      
+      <h2>Sub-surface trickle irrigation</h2>
+      <p>Sub-surface trickle irrigation can now be specified via the apply command for the irrigation module.</p>
+      <b>Old Maanager</b>
+      <p>irrigation apply amount = 31 (mm), depth = 100 (mm)</p>
+      <b>New Maanager</b>
+      <p>
+      IrrigationApplicationType data = new IrrigationApplicationType();<br>
+      data.Amount = 31;<br>
+      data.Depth = 100;<br>
+      Irrigation.Apply(data);<br>
+      </p>      
+      
+      
+      <h2>N2O from nitrification and denitrification</h2>
+      <p>Two new output variables "n2o_atm_nitrification" and "n2o_atm_denitrification" have been added to SoilN
+         and SoilNitrogen. These report the amount of n2o from nitirification and denitrification.
       </p>
-      <h2>Factorial Designs</h2>
-      <p>The APSIM User Interface now has a Factorial button that allows the user to quickly specify multiple 
-         variations on a base simulation. For example a sowing x variety experiment could be easily configured using 
-         this system. <a href="http://www.apsim.info/Wiki/Factorial.ashx">Documentation can be found here.</a></p>
-      <h2>Oryza, Rice Management Toolbox</h2>
-	   <ul>
-	    <li>IRRI has made major changes to their rice model that improve on the 2004 version currently in APSIM. A newer version has been developed that allows the rice "biology" to be shared between the standalone version of Oryza, <a href="http://www.icasa.net/dssat">DSSAT</a>, and APSIM. Full details of the rice biology changes are described on the <a href="http://www.knowledgebank.irri.org/oryzabeta"> IRRI website </a>. This release of APSIM contains both the old (rice) 2004 version, and the newer version "Oryza2" in the developers toolbox.
-	    <li> The toolbox used in the <a href="http://www.apsim.info/Wiki/Training-Manual-SAsia.ashx">South Asia Training Manual</a> is included in the standard release. 
-       </ul>  
-      <h2>Windows 7 issues</h2>
-      <p>Several Windows 7 installation issues have been resolved, particularly on computers where the user isn't
-         an "administrator" of their computer.</p>
-      <h2>Foreign Locales </h2>
-      <p>Several defects have been repaired relating to foreign locales (date and number formats), in particular the
-         French locale.</p> 
+      
+      
+      <h2>New Manager2 module now runs on Condor clusters</h2>
+      <p>There was a bug in APSIM 7.4 that stopped the Manager2 component from running on condor execute machines due
+         to them not having write access to the TEMP folder. A workaround has been implemented in APSIM 7.5.</p>
+
+
+      <h2>SoilTemp module now under the Soil node</h2>
+      <p>The SoilTemp and SoilTemp2 modules are now under the Soil node rather than the paddock node. This allows them
+         to use the soil thickness and ParticleSizeClay values. APSIM will automatically move these modules to the soil node
+         when converting a .apsim file from APSIM 7.4 to 7.5.</p>
+        
+         
+      <h2>APSIM.exe can now run a .apsim file from command line</h2>
+      <p>APSIM.exe can now be passed a .apsim, .con or .sim file on the command line. To specify a specific
+         simulation in a .apsim or .con file, the command line argument Simulation=xxx can be used.</p> 
+      <p>To debug from Visual Studio, execute ApsimModel.exe passing a .apsim file or .sim file as the argument.</p>
 	  
-	  <h2>Behaviour of default CO2 response</h2>
-	  <p>The default crop CO2 response has changed. If a simulation defines CO2 to a non-standard value (ie. other than 350ppm),	crops for which a CO2 response is not defined will throw an error.
-        NB Wheat, Oats and Barley are the only APSIM crop modules that are responsive to CO2.
-	  </p>
-      <h2>User Interface Enhancements</h2>
-      <ul>
-      <li>The graphing capability of the User Interface has been improved, particularly the series colour matching and 
-         legend positioning.</li>
-      <li>The &quot;Run on Cluster &quot; Button has been overhauled. Details are on the <a href="http://www.apsim.info/Wiki/Running-Jobs-On-Cluster.ashx">APSIM wiki</a>.
-      </li>
-      </ul>
+      
+	  <h2>APSIM User Inteface can now combine multiple .apsim files</h2>
+	  <p>The user interface now has an option under the Open button to combine multiple .apsim files in to a single .apsim file.</p>
+     
+     
+ 	  <h2>The ORYZA module now shows its output variables in the APSIM User Interface</h2>
+	  <p>A bug in APSIM 7.4 stopped the ORYZA rice module from showing its output variables to the user in the 
+        user interface. This has now been fixed.</p>
+     
+     
+ 	  <h2>The Cotton module has been ported to C#</h2>
+	  <p>The OZCot cotton module has been ported to the C# programming language. While no new science
+        has been incorporated, the new language allows for much easier future development. 
+        <a href="http://www.apsim.info/BugTracker/edit_bug.aspx?id=1485">For more detail, click here.</a></p>
+  
+  
+     <h2>The Sugar module is now responsive to CO2</h2>
+	  <p>The source code and XML file for the Sugar module has been changed to allow CO2 levels to affect 
+        the growth of sugarcane.</p>
+     <p>Biggs, J.S., P.J. Thorburn, S. Crimp, B. Masters, and S.J. Attard. 2012. 
+        “Interactions between climate change and sugarcane management systems for improving water quality leaving 
+        farms in the Mackay Whitsunday region, Australia.” 
+        Agriculture, Ecosystems & Environment.</p>
+        
+     
+     
+	  
+     <h3><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=25">The complete list of defects can be found here</a></h3>
    </body>
 </html>
