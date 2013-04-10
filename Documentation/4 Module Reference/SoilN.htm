@@ -1,0 +1,498 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>The APSIM SoilN Module</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="../ApsimWebStyle.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<p class="Title1">The APSIM SoilN Module </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Description</p>
+<p class="Normal">The SoilN module describes the dynamics of both carbon and nitrogen in soil. The transformations considered in each layer are shown diagramatically in Figure 1. The major difference from the CERES model is that the soil organic matter is divided into two pools ( <strong>biom </strong> and <strong>hum </strong>), the <strong>biom </strong> pool notionally representing the more labile, soil microbial biomass and microbial products, whilst <strong>hum </strong> comprises the rest of the soil organic matter. The flows between the different pools are calculated in terms of carbon, the corresponding nitrogen flows depending on the C:N ratio of the receiving pool. The C:N ratios of the various pools are assumed to be constant through time; C:N for <strong>biom </strong> is specified in the ini file, whilst the C:N of <strong>hum </strong> is derived from the C:N ratio of the soil which is an input. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><img width="549" height="274" src="SoilN/soiln2_science_clip_image002.gif"></p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Figure 1. Diagram of transformations occuring in each soil layer</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Decomposition of <strong>biom </strong> and <strong>hum </strong> pools are calculated as first-order processes with the rate constants being modified by factors involving soil temperature and moisture in the layer. The fresh organic matter pool ( <strong>fom) </strong> is treated as in CERES-Maize (Jones and Kiniry, 1986), and its rate of decomposition also depends on a C:N ratio factor. Mineralisation or immobilisation of mineral-N is determined as the balance between the release of nitrogen during decomposition and immobilisation during microbial synthesis and humification. An inadequate supply of mineral-N to satisfy the immobilisation demand results in a slowing of the decomposition. Both ammonium- and nitrate-N are available for immmobilisation, though ammonium-N is used preferentially. Decomposition of any organic matter pool results in evolution of carbon dioxide to the atmosphere and transfers of carbon to the <strong>biom </strong>and <strong>hum </strong> pools. The flows are defined in terms of efficiency coefficients, representing the proportion of carbon retained in the system, and the fraction of the retained carbon that is synthesised into the <strong>biom </strong> pool (see Table 1 for parameter definitions and values). When <strong>biom </strong> decomposes there is an internal cycling of carbon (microbes feeding on microbial products). </p>
+<p class="Normal">At initialisation, the amounts of <strong>hum </strong> and <strong>biom </strong> in each layer are calculated from inputs (oc, finert, fbiom). To allow for slower rates of decomposition of soil organic matter in the deeper soil layers, part of the <strong>hum </strong> pool is considered to be non-susceptible to decomposition; this is specified as finert, which typically will increase with depth. Fbiom specifies the <strong>biom </strong> pool carbon as a fraction of the <strong>hum </strong> carbon that is subject to decomposition, i.e. fbiom = <strong>biom </strong>/(hum - inert_c) </p>
+<p align="center" class="Normal">&nbsp;</p>
+<p align="center" class="Normal">Table 1. Model parameters determining the flows of carbon during the decomposition of the soil organic matter pools and surface residues </p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="92" valign="top"><p class="Normal">Parameter </p></td>
+    <td width="101" valign="top"><p align="center" class="Normal">Value </p></td>
+    <td width="438" valign="top"><p class="Normal">Definition </p></td>
+  </tr>
+  <tr>
+    <td width="92" valign="top"><p class="Normal"><em>mcn </em></p></td>
+    <td width="101" valign="top"><p align="center" class="Normal">8.0 </p></td>
+    <td width="438" valign="top"><p class="Normal">C:N ratio of <strong>biom </strong> pool </p></td>
+  </tr>
+  <tr>
+    <td width="92" valign="top"><p class="Normal"><em>ef_fom </em></p></td>
+    <td width="101" valign="top"><p align="center" class="Normal">0.4 </p></td>
+    <td width="438" valign="top"><p class="Normal">efficiency of carbon retention when <strong>fom </strong> decomposes </p></td>
+  </tr>
+  <tr>
+    <td width="92" valign="top"><p class="Normal"><em>fr_fom_biom </em></p></td>
+    <td width="101" valign="top"><p align="center" class="Normal">0.9 </p></td>
+    <td width="438" valign="top"><p class="Normal">proportion of retained carbon from <strong>fom </strong> synthesised into <strong>biom </strong></p></td>
+  </tr>
+  <tr>
+    <td width="92" valign="top"><p class="Normal"><em>ef_biom </em></p></td>
+    <td width="101" valign="top"><p align="center" class="Normal">0.4 </p></td>
+    <td width="438" valign="top"><p class="Normal">efficiency of carbon retention when <strong>biom </strong> decomposes </p></td>
+  </tr>
+  <tr>
+    <td width="92" valign="top"><p class="Normal"><em>fr_biom_biom </em></p></td>
+    <td width="101" valign="top"><p align="center" class="Normal">0.6 </p></td>
+    <td width="438" valign="top"><p class="Normal">proportion of retained carbon from <strong>biom </strong> resynthesised into <strong>biom </strong></p></td>
+  </tr>
+  <tr>
+    <td width="92" valign="top"><p class="Normal"><em>ef_hum </em></p></td>
+    <td width="101" valign="top"><p align="center" class="Normal">0.4 </p></td>
+    <td width="438" valign="top"><p class="Normal">efficiency of carbon retention when <strong>hum </strong> decomposes </p></td>
+  </tr>
+  <tr>
+    <td width="92" valign="top"><p class="Normal"><em>ef_res </em></p></td>
+    <td width="101" valign="top"><p align="center" class="Normal">0.4 </p></td>
+    <td width="438" valign="top"><p class="Normal">efficiency of carbon retention when residues decompose </p></td>
+  </tr>
+  <tr>
+    <td width="92" valign="top"><p class="Normal"><em>fr_res_biom </em></p></td>
+    <td width="101" valign="top"><p align="center" class="Normal">0.9 </p></td>
+    <td width="438" valign="top"><p class="Normal">proportion of retained carbon from residues synthesised into <strong>biom </strong></p></td>
+  </tr>
+  <tr>
+    <td width="92" valign="top"><p class="Normal"><em>rd_carb </em></p></td>
+    <td width="101" valign="top"><p align="center" class="Normal">0.2 day -1 </p></td>
+    <td width="438" valign="top"><p class="Normal">maximum decomposition rate for carbohydrate-like C in <strong>fom </strong>. </p></td>
+  </tr>
+  <tr>
+    <td width="92" valign="top"><p class="Normal"><em>rd_cell </em></p></td>
+    <td width="101" valign="top"><p align="center" class="Normal">0.05 day -1 </p></td>
+    <td width="438" valign="top"><p class="Normal">maximum decomposition rate for cellulose-like C in <strong>fom </strong></p></td>
+  </tr>
+  <tr>
+    <td width="92" valign="top"><p class="Normal"><em>rd_lign </em></p></td>
+    <td width="101" valign="top"><p align="center" class="Normal">0.0095 day -1 </p></td>
+    <td width="438" valign="top"><p class="Normal">maximum decomposition rate for lignin-like C in <strong>fom </strong></p></td>
+  </tr>
+  <tr>
+    <td width="92" valign="top"><p class="Normal"><em>rdbiom </em></p></td>
+    <td width="101" valign="top"><p align="center" class="Normal">0.0081 day -1 </p></td>
+    <td width="438" valign="top"><p class="Normal">maximum decomposition rate for <strong>biom </strong></p></td>
+  </tr>
+  <tr>
+    <td width="92" valign="top"><p class="Normal"><em>rdhum </em></p></td>
+    <td width="101" valign="top"><p align="center" class="Normal">0.00015 day -1 </p></td>
+    <td width="438" valign="top"><p class="Normal">maximum decomposition rate for <strong>hum </strong></p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Decomposition of Soil Organic Matter Pools</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong>fom </strong> decomposition = Fpool (carbohydrate,cellulose or lignin fraction) </p>
+<p class="Normal">X decay rate for a given fraction (rd_carb, rd_cell, rd_lign) </p>
+<p class="Normal">X Soil water factor </p>
+<p class="Normal">X Soil temperature factor </p>
+<p class="Normal">X C:N ratio factor</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong>biom </strong> decomposition = <strong>biom </strong></p>
+<p class="Normal">X rd_biom </p>
+<p class="Normal">X Soil water factor </p>
+<p class="Normal">X Soil temperature factor</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong>hum </strong> decomposition = ( <strong>hum </strong> - inert_C) </p>
+<p class="Normal">X rd_hum </p>
+<p class="Normal">X Soil water factor </p>
+<p class="Normal">X Soil temperature factor</p>
+<p class="Normal">&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top" align="left"><p class="Normal"><img width="281" height="201" src="SoilN/soiln2_science_clip_image004.gif"></p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The factors affecting the individual decay rates are as follows: </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">(i) Soil Water. </p>
+<p class="Normal">Figure 2. Water factor affecting mineralisation rates of the various soil organic matter pools.</p>
+<p class="Normal">&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top" align="left"><p class="Normal"><img width="315" height="239" src="SoilN/soiln2_science_clip_image006.gif"></p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">(ii) Soil Temperature </p>
+<p class="Normal">Figure 3. Temperature factor affecting mineralisation rates of the various soil organic matter pools. </p>
+<p class="Normal">&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top" align="left"><p class="Normal"><img width="312" height="258" src="SoilN/soiln2_science_clip_image008.gif"></p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">&#149;&nbsp; C:N ratio </p>
+<p class="Normal">Figure 4. C:N ratio factor affecting mineralisation rate of soil FOM pools is calculated using a modified C:N ratio that includes the mineral nitrogen in the soil layer. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">CNR = fom_C / (fom_N + min_N) </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p class="Title2">Nitrification</p>
+<p class="Normal">Nitrification is assumed to follow Michaelis-Menton kinetics (See Godwin and Jones 1991, though there is error in their equation 14).</p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">potential rate = nitrification_pot x NH4 ppm / (NH4 ppm + NH4_at_half_pot)</p>
+<p align="left" class="Normal">&nbsp;</p>
+<p class="Normal">where nitrification_pot (mg N/kg soil/ day) and NH4_at_half_pot (ppm) are specified in the SOILN ini file. Actual daily nitrification is reduced to allow for sub-optimal water, temperature and pH conditions. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">nitrification rate = potential rate x min (water factor, temperature factor, pH factor)</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">(Unlike CERES, there is no provision for the potential rate of nitrification to change with time to represent a changing microbial population)</p>
+<p class="Normal">&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top" align="left"><p class="Normal"><img width="230" height="173" src="SoilN/soiln2_science_clip_image010.gif"></p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">(i) Soil Water </p>
+<p class="Normal">Figure 5. Water factor affecting the nitrification rate of ammonium in each soil layer. </p>
+<p class="Normal">&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top" align="left"><p class="Normal"><img width="248" height="182" src="SoilN/soiln2_science_clip_image012.gif"></p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">(ii) Soil Temperature </p>
+<p class="Normal">Figure 6. Temperature factor affecting the nitrification rate of ammonium in each soil layer. </p>
+<p>&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top" align="left"><p class="Normal"><img width="236" height="179" src="SoilN/soiln2_science_clip_image014.gif"></p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Figure 7. pH factor affecting the nitrification rate of ammonium in each soil layer. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Denitrification</p>
+<p class="Normal">The code comes from CERES-Maize V1 and has not been modified to allow for biom_c. Under most situations, simulated denitrification rates are small. The sensibleness of the simulations where significant amounts of denitrification occur has not been verified. </p>
+<p class="Normal">denitrification rate = 0.0006 </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x NO 3 </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x active carbon ppm </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x water factor </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x temperature facto</p>
+<p class="Normal">r</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top" align="left"><p class="Normal"><img width="282" height="210" src="SoilN/soiln2_science_clip_image016.gif"></p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">where active carbon ppm = 0.0031 x (hum_C ppm + FOM_C ppm ) + 24.5 </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">(i) Soil Water </p>
+<p class="Normal">Figure 8. Water factor affecting the denitrification of nitrate in each soil layer. </p>
+<p class="Normal">&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top" align="left"><p class="Normal"><img width="283" height="224" src="SoilN/soiln2_science_clip_image018.gif"></p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">(ii) Soil Temperature </p>
+<p class="Normal">Figure 9. Temperature factor affecting the denitrification of nitrate in each soil layer. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Urea hydrolysis</p>
+<p class="Normal">potential hydrolysis fraction = -1.12 + 1.31xOC + 0.203xpH - 0.155xOCxpH</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">This fraction is bound between 0 and 1. For OC=1% and pH=7 the fraction=0.526</p>
+<p class="Normal">&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top" align="left"><p class="Normal"><img width="318" height="225" src="SoilN/soiln2_science_clip_image020.gif"></p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">hydrolysis rate = Urea x potential hydrolysis fraction x min (temperature factor, water factor) </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">(i) Soil Water </p>
+<p class="Normal">Figure 10. Water factor affecting the hydrolysis of urea in each soil layer. </p>
+<p class="Normal">&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top" align="left"><p class="Normal"><img width="312" height="236" src="SoilN/soiln2_science_clip_image022.gif"></p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">(ii) Soil Temperature </p>
+<p class="Normal">Figure 11. Temperature factor affecting hydrolysis of urea in each soil layer. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Soil Temperature</p>
+<p class="Normal">Daily average soil temperature of each soil layer is calculated based on the soil temperature model of EPIC (Williams et al., 1984). A sinusoidal function of day of year is assumed, with subsurface temperature changes lagging behind those at the soil surface. The sinusoidal function is based on mean annual air temperature (tav), annual amplitude in mean monthly air temperature (amp) and latitude (included in met file). The actual surface temperature is calculated from maximum and minimum temperatures, solar radiation and soil albedo. Changes with depth are obtained from an exponential function of the ratio of depth and a temperature damping depth. This damping depth is a function of the average bulk density of the soil and the amount of water above the lower limit.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Parameter File Settings </p>
+<p class="Normal">&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="102" valign="top"><p class="Normal"><strong>Name </strong></p></td>
+    <td width="130" valign="top"><p class="Normal"><strong>Units </strong></p></td>
+    <td width="336" valign="top"><p class="Normal"><strong>Description </strong></p></td>
+  </tr>
+  <tr>
+    <td width="102" valign="top"><p class="Normal">oc </p></td>
+    <td width="130" valign="top"><p class="Normal">% </p></td>
+    <td width="336" valign="top"><p class="Normal">organic carbon (%) </p></td>
+  </tr>
+  <tr>
+    <td width="102" valign="top"><p class="Normal">ph </p></td>
+    <td width="130" valign="top"><p>&nbsp; </p></td>
+    <td width="336" valign="top"><p class="Normal">soil pH </p></td>
+  </tr>
+  <tr>
+    <td width="102" valign="top"><p class="Normal">nh4 </p></td>
+    <td width="130" valign="top"><p class="Normal">ppm </p></td>
+    <td width="336" valign="top"><p class="Normal">initial ammonium-N (mg/kg) </p></td>
+  </tr>
+  <tr>
+    <td width="102" valign="top"><p class="Normal">no3 </p></td>
+    <td width="130" valign="top"><p class="Normal">ppm </p></td>
+    <td width="336" valign="top"><p class="Normal">initial nitrate-N (mg/kg) </p></td>
+  </tr>
+  <tr>
+    <td width="102" valign="top"><p class="Normal">finert </p></td>
+    <td width="130" valign="top"><p class="Normal">0-1 fraction </p></td>
+    <td width="336" valign="top"><p class="Normal">proportion of initial organic C assumed to be inert </p></td>
+  </tr>
+  <tr>
+    <td width="102" valign="top"><p class="Normal">fbiom </p></td>
+    <td width="130" valign="top"><p class="Normal">0-1 fraction </p></td>
+    <td width="336" valign="top"><p class="Normal">initial BIOM as proportion of non-inert C </p></td>
+  </tr>
+  <tr>
+    <td width="102" valign="top"><p class="Normal">amp </p></td>
+    <td width="130" valign="top"><p class="Normal">o C </p></td>
+    <td width="336" valign="top"><p class="Normal">temperature amplitude - difference between highest and lowest mean monthly air temperatures
+    <i>&nbsp;(Optional - often supplied by Met module)</i></p></td>
+  </tr>
+  <tr>
+    <td width="102" valign="top"><p class="Normal">tav </p></td>
+    <td width="130" valign="top"><p class="Normal">o C </p></td>
+    <td width="336" valign="top"><p class="Normal">mean annual air temperature
+    <i>&nbsp;(Optional - often supplied by Met module)</i> </p></td>
+  </tr>
+  <tr>
+    <td width="102" valign="top"><p class="Normal">soil_cn </p></td>
+    <td width="130" valign="top"><p>&nbsp; </p></td>
+    <td width="336" valign="top"><p class="Normal">C:N ratio of the soil </p></td>
+  </tr>
+  <tr>
+    <td width="102" valign="top"><p class="Normal">root_wt * </p></td>
+    <td width="130" valign="top"><p class="Normal">kg/ha </p></td>
+    <td width="336" valign="top"><p class="Normal">initial weight of root FOM in soil profile </p></td>
+  </tr>
+  <tr>
+    <td width="102" valign="top"><p class="Normal">root_cnr </p></td>
+    <td width="130" valign="top"><p>&nbsp; </p></td>
+    <td width="336" valign="top"><p class="Normal">C:N ratio of initial root residues </p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">* Note that the depth to which the initial roots are distributed (in mm) can be specified using an optional parameter called ‘root_depth'. If this parameter is not supplied, then it is assumed the initial ‘root_wt' is distributed exponentially throughout the whole profile.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">SoilN module outputs </p>
+<p class="Normal">&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="138" valign="top"><p class="Normal">Name </p></td>
+    <td width="63" valign="top"><p class="Normal">Units </p></td>
+    <td width="390" valign="top"><p class="Normal">Description </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">no3 </p></td>
+    <td width="63" valign="top"><p class="Normal">kg/ha </p></td>
+    <td width="390" valign="top"><p class="Normal">amount of NO3 in each layer </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">no3ppm </p></td>
+    <td width="63" valign="top"><p class="Normal">ppm </p></td>
+    <td width="390" valign="top"><p class="Normal">concentration of NO3 in each layer </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">no3_min </p></td>
+    <td width="63" valign="top"><p class="Normal">ppm </p></td>
+    <td width="390" valign="top"><p class="Normal">minimum amount of NO3 allowed in each layer </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">nh4 </p></td>
+    <td width="63" valign="top"><p class="Normal">kg/ha </p></td>
+    <td width="390" valign="top"><p class="Normal">amount of NH4 in each layer </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">nh4ppm </p></td>
+    <td width="63" valign="top"><p class="Normal">ppm </p></td>
+    <td width="390" valign="top"><p class="Normal">concentration of NH4 in each layer </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">nh4_min </p></td>
+    <td width="63" valign="top"><p class="Normal">ppm </p></td>
+    <td width="390" valign="top"><p class="Normal">minimum amount of NH4 allowed in each layer </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">urea </p></td>
+    <td width="63" valign="top"><p class="Normal">kg/ha </p></td>
+    <td width="390" valign="top"><p class="Normal">amount of urea in each layer </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">fom_n </p></td>
+    <td width="63" valign="top"><p class="Normal">kg/ha </p></td>
+    <td width="390" valign="top"><p class="Normal">amount of N in FOM in each layer </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">hum_n </p></td>
+    <td width="63" valign="top"><p class="Normal">kg/ha </p></td>
+    <td width="390" valign="top"><p class="Normal">amount of humic N in each layer </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">biom_n </p></td>
+    <td width="63" valign="top"><p class="Normal">kg/ha </p></td>
+    <td width="390" valign="top"><p class="Normal">amount of biomass N in each layer </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">fom_c </p></td>
+    <td width="63" valign="top"><p class="Normal">kg/ha </p></td>
+    <td width="390" valign="top"><p class="Normal">amount of C in FOM in each layer </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">hum_c </p></td>
+    <td width="63" valign="top"><p class="Normal">kg/ha </p></td>
+    <td width="390" valign="top"><p class="Normal">amount of humic C in each layer </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">biom_c </p></td>
+    <td width="63" valign="top"><p class="Normal">kg/ha </p></td>
+    <td width="390" valign="top"><p class="Normal">amount of biomass C in each layer </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">carbon_tot </p></td>
+    <td width="63" valign="top"><p class="Normal">kg/ha </p></td>
+    <td width="390" valign="top"><p class="Normal">Total amount of C in each layer </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">nit_tot </p></td>
+    <td width="63" valign="top"><p class="Normal">kg/ha </p></td>
+    <td width="390" valign="top"><p class="Normal">Total amount of N in each layer </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">dlt_n_min </p></td>
+    <td width="63" valign="top"><p class="Normal">kg/ha </p></td>
+    <td width="390" valign="top"><p class="Normal">Today's net N mineralisation in each layer from soil organic matter pools </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">dlt_n_min_res </p></td>
+    <td width="63" valign="top"><p class="Normal">kg/ha </p></td>
+    <td width="390" valign="top"><p class="Normal">Today's net N mineralisation in each layer from surface residues </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">dlt_n_min_tot </p></td>
+    <td width="63" valign="top"><p class="Normal">kg/ha </p></td>
+    <td width="390" valign="top"><p class="Normal">Today's net N mineralisation in each layer from soil organic matter pools and surface residues. </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">dnit </p></td>
+    <td width="63" valign="top"><p class="Normal">kg/ha </p></td>
+    <td width="390" valign="top"><p class="Normal">Today's denitrification loss for each layer </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">dlt_c_loss_in_sed </p></td>
+    <td width="63" valign="top"><p class="Normal">kg/ha </p></td>
+    <td width="390" valign="top"><p class="Normal">Loss of C in sediment due to erosion </p></td>
+  </tr>
+  <tr>
+    <td width="138" valign="top"><p class="Normal">dlt_n_loss_in_sed </p></td>
+    <td width="63" valign="top"><p class="Normal">kg/ha </p></td>
+    <td width="390" valign="top"><p class="Normal">Loss of N in sediment due to erosion </p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">SoilN module actions</p>
+<p class="Title2">&nbsp;</p>
+<p class="Normal"><strong>Reset </strong></p>
+<p class="Normal">The reset action can be invoked to reset the module to the state specified within the module's input data, which includes the soil's organic carbon components (biom and hum), nitrate, ammonium and urea N, and FOM (specified as root weight). The Reset action is identical to the initialise action used by the simulation engine at the start of the simulation except that a description of the reinitialised state is not printed in the simulation summary file. Where only mineral N concentrations need to be reinitialised the 'set' action is used (See below).</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><em>APSIM Manager Example: </em></p>
+<p class="Normal">&nbsp;</p>
+<p class="Code">[sample.manager.start_of_day]</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">! reinitialise soil nitrogen at the beginning of each sowing window </p>
+<p class="Code">&nbsp;</p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;If day = 100 then </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;soiln2 reset </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;endif</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong>Initialise </strong></p>
+<p class="Normal">The initialise action has been replaced by the reset action (see above).</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong>Set </strong></p>
+<p class="Normal">The set action is used to reinitialise single mineral N pools within the module (Nitrate, Ammonium or Urea). Only the particular mineral pools are reset.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><em>APSIM Manager Example:</em></p>
+<p class="Normal">&nbsp;</p>
+<p class="Code">[sample.manager.start_of_day]</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">! reinitialise soil mineral nitrogen at given date</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;If day = 100 then </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;soiln2 set no3 = 10 5 1 (kg/ha) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;soiln2 set nh4 = 10 5 1 (kg/ha) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;endif</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">or in terms of concentration</p>
+<p class="Normal">&nbsp;</p>
+<p class="Code">[sample.manager.start_of_day]</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;If day = 100 then </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;soiln2 set no3ppm = 1.0 1.0 1.0 (ppm) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;soiln2 set nh4ppm = 1.0 1.0 1.0 (ppm) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;endif </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong>Summary Report </strong></p>
+<p class="Normal">At initialisation, at series of tables and useful information is printed to the simulation summary file for perusal by the user. These tables can be printed to the summary file at any point during the simulation as a detailed record of the system state at a particular time.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><em>APSIM Manager Example:</em></p>
+<p class="Normal">&nbsp;</p>
+<p class="Code">[sample.manager.start_of_day]</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">! Print out a summary of module state to the summary file</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;If day = 100 then </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;soiln2 sum_report </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;endif</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong>Incorporate FOM </strong></p>
+<p class="Normal">Fresh organic matter can be incorporated into the soil using the incorp_fom action. The amounts of FOM and FON are specified on a layered basis . An optional FOM type can be specified to use any preset fractionations of FOM as specified in the module ini file. A default fractionation is used if type is not specified. FON content can be specified as either an amount or a C:N ratio.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><em>APSIM Manager Example:</em></p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong><em>NOTE: actions must be specified as a single line in the manager file rather than as shown below.</em></strong></p>
+<p class="Normal">&nbsp;</p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;If day = 100 then </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;soiln2 incorp_fom dlt_fom_type = manure </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;, dlt_fom_wt = 100 50 0 (kg/ha) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;, dlt_fom_n = 4 2 0 (kg/ha) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;endif</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">or assuming that FOM is 40% carbon we can use a C:N ratio.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;If day = 100 then </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;soiln2 incorp_fom dlt_fom_type = manure </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;, dlt_fom_wt = 100 50 0 (kg/ha) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;, dlt_fom_cnr = 10 10 0 (kg/ha) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;endif </p>
+</body>
+</html>

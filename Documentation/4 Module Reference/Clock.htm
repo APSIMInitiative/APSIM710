@@ -1,0 +1,326 @@
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<title>The APSIM Time Clock Module (Clock)</title>
+<link href="../ApsimWebStyle.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<a name="top"></a><p class="Title1">The APSIM Time Clock Module (Clock)</p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Description</p>
+<p class="Normal">&nbsp;</p>
+
+<p class="Normal">The APSIM Clock module has been developed to replace the functionality of progressing
+  through time that was previously contained in the simulation engine and weather file. Encapsulation 
+  of this important simulation concept will allow future flexibility in the specification of time and 
+  progress through it.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><a href="#top"><b>Back To Top</b></a></p>
+<p class="Normal">&nbsp;</p>
+
+<p class="Title2">Operation</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The APSIM Time Clock module is operated in a way similar to other APSIM modules.</p>
+<p class="Normal">The specification of this module in the simulation control file, and its parameters in 
+  the parameter files follow normal APSIM module protocols.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><a href="#top"><b>Back To Top</b></a></p>
+<p class="Normal">&nbsp;</p>
+
+<p class="Title2">Parameter file settings</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The APSIM Clock Module requires parameters to specify the time frame of the required 
+  simulation. The user must specify the beginning and the ending of the period of time that is to be 
+  simulated.</p>
+<p class="Normal">The settings available to the user are as follows:-</p>
+<p class="Normal">&nbsp;</p>
+
+<table border=1 cellspacing=0 cellpadding=0>
+ <tr>
+  <td width=250 valign=top><p class="Normal" align="center"><b>Keyword = Setting</b></p></td>
+  <td width=350 valign=top><p class="Normal" align="center"><b>Description</b></p></td>
+ </tr>
+ <tr>
+  <td width=250 valign=top><p class="Normal">&nbsp;start_date</p></td>
+  <td width=350 valign=top><p class="Normal">&nbsp;(Optional) Date (in dd/mm/yyyy) format for the</P>
+  						   <p class="Normal">&nbsp;commencement of the current simulation.</p></td>
+ </tr>
+ <tr>
+  <td width=250 valign=top><p class="Normal">&nbsp;end_date</p></td>
+  <td width=350 valign=top><p class="Normal">&nbsp;(Optional) Date (in dd/mm/yyyy) format for the end of the</p>
+  						   <p class="Normal">&nbsp;current simulation.</p></td>
+ </tr>
+ <tr>
+  <td width=250 valign=top><p class="Normal">&nbsp;start_{day,month,year} and</p>
+  						   <p class="Normal">&nbsp;end_{day,month,year}</p></td>
+  <td width=350 valign=top><p class="Normal">&nbsp;(Optional) Day, month and year the start and end of the</p>
+  						   <p class="Normal">&nbsp;current simulation.</p></td>
+ </tr>
+ <tr>
+  <td width=250 valign=top><p class="Normal">&nbsp;met_start_date</p></td>
+  <td width=350 valign=top><p class="Normal">&nbsp;(Optional) Date in number format (days since start of</p>
+  						   <p class="Normal">&nbsp;Gregorian calendar) for the commencement of the current</p>
+						   <p class="Normal">&nbsp;simulation.</p></td>
+ </tr>
+ <tr>
+  <td width=250 valign=top><p class="Normal">&nbsp;met_end_date</p></td>
+  <td width=350 valign=top><p class="Normal">&nbsp;(Optional) Date in number format (days since start of</p>
+  						   <p class="Normal">&nbsp;Gregorian calendar) for the end of the current simulation.</p></td>
+ </tr>
+ <tr>
+  <td width=250 valign=top><p class="Normal">&nbsp;Timestep</p></td>
+  <td width=350 valign=top><p class="Normal">&nbsp;(Optional) See section on sub-daily timesteps below.</p></td>
+ </tr>
+</table>
+
+<p class="Normal">&nbsp;</p>
+
+<p class="Normal">Note that if no simulation start or end date is specified, the entire period of the met file will 
+  be simulated.</p>
+<p class="Normal">The number implementation is only valid for dates in the Gregorian calender (after 15 October 1582), 
+  based on the algorithm by Fliegel &amp; van Flandern in C.ACM vol.11 (oct,1968) P.657</p>
+<p class="Normal">&nbsp;</p>
+
+<p class="Normal">AN EXAMPLE</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The control file would require a specification such as</p>
+<p class="Normal">&nbsp;</p>
+
+<p class="Code">[apsim.sample simulation]</p>
+<p class="Code">module = clock sample.par[all_treatments] %apsuite\apsim\clock\clock.ini[standard]</p>
+<p class="Code">module = report sample.par[all_treatments]</p>
+<p class="Code">.</p>
+<p class="Code">.</p>
+<p class="Normal">&nbsp;</p>
+
+<p class="Normal">The file “sample.par” could then have the following sections:-</p>
+<p class="Code">[all_treatments.clock.parameters]</p>
+<p class="Code">start_date = 1/1/1988</p>
+<p class="Code">end_date = 31/12/1988</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><a href="#top"><b>Back To Top</b></a></p>
+<p class="Normal">&nbsp;</p>
+
+<p class="Title2">Module Output Variables</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The APSIM Time Clock Module can provide the values of several state variables for</p>
+<p class="Normal">reporting to an output file or use by other modules.</p>
+<p class="Normal">&nbsp;</p>
+
+<table border=1 cellspacing=0 cellpadding=0 width=613>
+ <tr>
+  <td width=163 valign=top><p class="Normal" align="center"><b>Name</b></p></td>
+  <td width=126 valign=top><p class="Normal" align="center"><b>Units</b></p></td>
+  <td width=324 valign=top><p class="Normal" align="center"><b>Description</b></p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;Day</p></td>
+  <td width=126 valign=top><p>&nbsp;</p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Day of Year (0-366)</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;Year</p></td>
+  <td width=126 valign=top><p>&nbsp;</p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Year</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;Day_of_month</p></td>
+  <td width=126 valign=top><p>&nbsp;</p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Day of Month (0-31)</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;Month</p></td>
+  <td width=126 valign=top><p>&nbsp;</p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Month (1-12)</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;Start_week</p></td>
+  <td width=126 valign=top><p class="Normal">&nbsp;True/False </p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Flag for start of week†</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;End_week</p></td>
+  <td width=126 valign=top><p class="Normal">&nbsp;True/False</p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Flag for end of week†</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;Start_month</p></td>
+  <td width=126 valign=top><p class="Normal">&nbsp;True/False </p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Flag for the start of each month</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;End_month</p></td>
+  <td width=126 valign=top><p class="Normal">&nbsp;True/False </p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Flag for the end of each month</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;end_year </p></td>
+  <td width=126 valign=top><p class="Normal">&nbsp;True/False </p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Flag for the end of year</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;today </p></td>
+  <td width=126 valign=top><p class="Normal">&nbsp;&nbsp;</p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Today’s Julian Date</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;day_of_year </p></td>
+  <td width=126 valign=top><p class="Normal">&nbsp;&nbsp;</p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Today’s day of year (same as ‘day’)</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;month_str </p></td>
+  <td width=126 valign=top><p>&nbsp;</p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Today’s month name (eg ‘Jan’)</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;dd/mm </p></td>
+  <td width=126 valign=top><p class="Normal">&nbsp;dd/mm </p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Today’s Date (eg ‘10/12)</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;dd/mm/yyyy </p></td>
+  <td width=126 valign=top><p class="Normal">&nbsp;dd/mm/yyyy </p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Today’s Date (eg ‘10/12/1990’)</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;dd_mmm </p></td>
+  <td width=126 valign=top><p class="Normal">&nbsp;dd_mmm </p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Today’s Date (eg ‘10_dec’)</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;dd_mmm_yyyy </p></td>
+  <td width=126 valign=top><p class="Normal">&nbsp;dd_mmm_yyyy</p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Today’s Date (eg ‘10_dec_1990’)</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;mm/dd/yyyy</p></td>
+  <td width=126 valign=top><p>&nbsp;</p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Today’s Date (eg ‘12/15/1990’)</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;mmm/dd/yyyy</p></td>
+  <td width=126 valign=top><p>&nbsp;</p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Today’s Date (eg ‘Dec/15/1990’)</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;time</p></td>
+  <td width=126 valign=top><p class="Normal">&nbsp;hh:mm</p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Daily Time in 24 hour format</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;Simulation_start_day</p></td>
+  <td width=126 valign=top><p class="Normal">&nbsp;Day of year</p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Day of year of simulation commencement</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;Simulation_start_year</p></td>
+  <td width=126 valign=top><p class="Normal">&nbsp;Year</p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Year of simulation commencement</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;Simulation_end_day</p></td>
+  <td width=126 valign=top><p class="Normal">&nbsp;Day of year</p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Day of year of simulation finish</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;Simulation_end_year</p></td>
+  <td width=126 valign=top><p class="Normal">&nbsp;Year</p></td>
+  <td width=324 valign=top><p class="Normal">&nbsp;Year of simulation finish</p></td>
+ </tr>
+</table>
+
+<p class="Normal">&nbsp;</p>
+<p class="Normal">† This assumes a 52 week year with the duration of each week is adjusted so that the first</p>
+<p class="Normal">week starts on 1 st of January and the last week ends on the 31st of December.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><a href="#top"><b>Back To Top</b></a></p>
+<p class="Normal">&nbsp;</p>
+
+<p class="Title2">Using Sub-Daily Timesteps</p>
+<p class="Normal">&nbsp;</p>
+
+<p class="Normal">It is possible to use timesteps to one minute in resolution within the current APSIM framework 
+  with the following constraints.</p>
+
+<ol>
+  <li class="Normal">The timestep is constant throughout the simulation</li>
+  <li class="Normal">The timestep is a factor of 1440 mins/day (rational fraction of one day)</li>
+  <li class="Normal">The met file contains data at the same timestep resolution for all days within the simulation period</li>
+  <li class="Normal">The simulation will start at the beginning of a day and finish at the end of a day</li>
+  <li class="Normal">It is the user's responsibility to ensure that all modules with the simulation are both capable and appropriately 
+    configured to operate on these timesteps.</li>
+</ol>
+<p class="Normal">&nbsp;</p>
+
+<p class="code">[all_treatments.clock.parameters]</p>
+<p class="code">start_date = 1/1/1988       ! simulation starting date</p>
+<p class="code">end_date = 31/12/1988  &nbsp;&nbsp;&nbsp;&nbsp;  ! simulation ending date</p>
+<p class="Normal">&nbsp;</p>
+
+<p class="code">timestep = 60 (min)  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    ! simulation timestep</p>
+
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The example above will specify the clock to step through the simulation essentially with 24 tick cycles per day. There 
+  is no thorough testing for synchrony of modules though some modules will give error messages if they perceive possible timestep errors.</p>
+<p class="Normal">If the timestep parameter is not specified the clock module will default to a timestep of 1 day (1440 mins), that is, one 
+  tick cycle per day.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><a href="#top"><b>Back To Top</b></a></p>
+<p class="Normal">&nbsp;</p>
+
+<p class="Title2">Events</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The clock module produces several events that can be useful, particularly when using the TRACKER module.</p>
+<p class="Normal">&nbsp;</p>
+
+<table border=1 cellspacing=0 cellpadding=0 width=595>
+ <tr>
+  <td width=163 valign=top><p class="Normal" align="center"><b>Name</b></p></td>
+  <td width=432 valign=top><p class="Normal" align="center"><b>Description</b></p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;Start_simulation</p></td>
+  <td width=432 valign=top><p class="Normal">&nbsp;Published once at the start of every simulation</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;Tick</p></td>
+  <td width=432 valign=top><p class="Normal">&nbsp;Published at the start of every day</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;End_day</p></td>
+  <td width=432 valign=top><p class="Normal">&nbsp;Published at the end of every day</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;Start_week</p></td>
+  <td width=432 valign=top><p class="Normal">&nbsp;Published at the start of every week</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;Start_month</p></td>
+  <td width=432 valign=top><p class="Normal">&nbsp;Published at the start of every month</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;Start_year</p></td>
+  <td width=432 valign=top><p class="Normal">&nbsp;Published at the start of every year</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;End_week</p></td>
+  <td width=432 valign=top><p class="Normal">&nbsp;Published at the end of every week</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;End_month</p></td>
+  <td width=432 valign=top><p class="Normal">&nbsp;Published at the end of every month</p></td>
+ </tr>
+ <tr>
+  <td width=163 valign=top><p class="Normal">&nbsp;End_year</p></td>
+  <td width=432 valign=top><p class="Normal">&nbsp;Published at the end of every year</p></td>
+ </tr>
+</table>
+
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><a href="#top"><b>Back To Top</b></a></p>
+<p class="Normal">&nbsp;</p>
+
+</body>
+</html>

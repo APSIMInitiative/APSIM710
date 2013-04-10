@@ -1,0 +1,60 @@
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<title>The APSIM Canopy Module (CANOPY)</title>
+<link href="../ApsimWebStyle.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<p class="Title1">The APSIM Canopy Module (CANOPY)</p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Operation</p>
+
+<p class="Normal">When a simulation is conducted in APSIM involving light and water competition between crops, the user must plug in the CANOPY 
+module.</p>
+<p class="Normal">The CANOPY module arbitrates the competition for intercepted radiation.  On a daily basis, the module finds the number of crops 
+  in the simulation and their canopy heights.  Canopy layers are then defined, with the layer boundaries being defined by the top 
+of each canopy. Thus there are as many layers as canopies. </p>
+<p class="Normal">Then each layer in turn is taken from the top, in the combined canopy, to get the combined  extinct_coeff*lai value (green + 
+  dead) of the canopies present in that layer. The fraction of light transmitted out of the bottom of that layer can be calculated, which is in 
+turn the fraction entering the next layer below.</p>
+<p class="Normal">The total radiation intercepted in a layer is divided amongst the canopies occupying the layer, being done on the basis of 
+  extinct_coeff * LAI of each canopy.  This approach ignores the possibility of different LAI distributions within a layer.  LAI is distributed 
+  with height in the canopy using normalized height and integration of a function to the power of 5.  This results in 47% of the leaf area in the
+top 10% of height, 27% in the next 10%, 15% in the next 10%, and so on.</p>
+<p class="Normal">Arbitration for water and nitrogen uptake is done on the basis of APSIM changing the order each day (on a rotational basis) in 
+which the competing species are given the opportunity to capture soil resources. </p>
+<p class="Normal">&nbsp;</p>
+
+<p class="Title2">Parameter file settings</p>
+<p class="Normal">The APSIM Canopy Module requires parameters to specify the crops that are to be intercropped</p>
+<p class="Normal">&nbsp;</p>
+
+<p class="Code">[sample.canopy.parameters]</p>
+<p class="Code">intercrop = maize cowpea</p>
+
+<p class="Normal">&nbsp;</p>
+<p class="Normal">A maximum of ten crops can be specified for intercropping. </p>
+<p class="Normal">&nbsp;</p>
+
+<p class="Title2">Control file settings</p>
+<p class="Normal">An example control file for the above parameter settings may look like this;</p>
+<p class="Normal">&nbsp;</p>
+<p class="Code">[apsim.sample_canopy]</p>
+<p class="Code">  Module = clock    canopy.par [sample] </p>
+<p class="Code">  Module = report   canopy.par [sample] </p>
+<p class="Code">  Module = met      DALBY.MET  [weather]</p>
+<p class="Code">  Module = maize    canopy.par [sample] &nbsp;maize.ini[standard]</p>
+<p class="Code">  Module = cowpea   canopy.par [sample] &nbsp;cowpea.ini[standard]  </p>
+<p class="Code">  Module = manager  canopy.par [sample]      </p>
+<p class="Code">  Module = canopy   canopy.par [sample]  </p>
+<p class="Normal">&nbsp;</p>
+
+<p class="Normal">For a working sample of the Canopy module look to the sample provided in the sample directory under Canopy.</p>
+<p class="Normal">&nbsp;</p>
+
+<p class="Title2">References</p>
+
+<p class="Normal">Charles-Edwards, D. …</p>
+</body>
+</html>

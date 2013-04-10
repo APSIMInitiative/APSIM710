@@ -1,0 +1,286 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>The APSIM Weed Module - (Weed)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="../ApsimWebStyle.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<p class="Title1">The APSIM Weed Module - (Weed)</p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">WEED Module Scope</p>
+<p class="Normal">The <strong>weed </strong>module simulates the growth of a weed crop in a daily time-step (on an area basis not single plant). Weed growth in this model responds to climate (temperature, rainfall and radiation from the <strong>input </strong>module), soil water supply (from the <strong>soilwat </strong> module) and soil nitrogen (from the <strong>soiln </strong> module). The <strong>weed </strong> module returns information on its soil water and nitrogen uptake to the <strong>soilwat </strong> and <strong>soiln </strong> modules on a daily basis for reset of these systems. Information on crop cover is also provided to the <strong>soilwat </strong> module for calculation of evaporation rates and runoff. Weed stover and root residues are ‘passed' from <strong>weed </strong> to the <strong> residue </strong> and <strong>soiln </strong> module respectively at harvest of the weed crop. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The module predicts leaf area development, N% and biomass of stover; depth, N% and biomass of roots; grain N% and biomass; grain yield and N%, grain size and grain number all on a daily basis. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Weed Module History</p>
+<p class="Normal">There are a range of APSIM applications that have an emerging need for a simulation capability for weeds. For example: </p>
+<ul>
+  <li class="Normal">Weed competition is becoming recognised as an important part of the low-input cropping systems of smallholder agriculture, and must be simulated when, for instance, accounting for responses to fertility inputs </li>
+  <li class="Normal"> Examining the risks of releasing herbicide-tolerant crop cultivars and associated spread of herbicide tolerant weeds </li>
+  <li class="Normal"> In studies of soil water balance accounting for water use by fallow-growing weeds has been crucial in some circumstances </li>
+  <li class="Normal"> The weedy component of some vegetation types we simulate can be significant at some situations (eg annual ryegrass in lucerne stands) </li>
+</ul>
+<p class="Normal">Across the spectrum of applications there is a need to be able to specify the weed component to various levels of detail. In some circumstances it is necessary to specify the weed's biology and lifecycle, and for a selection of well-studied weeds this ought to be possible. In other circumstances all that may be required is something to use water and nitrogen in about the “right” amounts. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Currently, where weeds are being simulated users are using an existing crop module that is most like the dominant weed in the system. While this has proved satisfactory for those cases, it is not a sustainable situation. In particular, for users of APSFRONT, who do not have the capability to engineer a weed on the run, there is a need to provide a ready-made weeds capability. APSIM_Weed provides that capability. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">APSIM_Weed is based upon APSIM-Plant. APSIM-Plant was used because of a number of features: </p>
+<ul>
+  <li class="Normal">Its documented ability to simulate a range of vegetation types, from cool-season to warm-season adaptation, annuals and perennials, broadleaf and gramineacious crops. </li>
+  <li class="Normal">The ‘crop_class” feature coupled with the inheritance capability of APSIM crop modules means that a range of weed types can be configured ready-made for users, as well as set up easily on the run by more experienced users. The inheritance feature means that only those parameters known to differ from the base class parameters set need to be specified. </li>
+</ul>
+<p class="Title2">Weed Module Science </p>
+<p class="Normal">As the Weed module is an instantiation of the plant module the science is identical. Users are referred to APSIM-Plant documentation for details on science. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Weed types </p>
+<p class="Normal">At present four generic types of weeds can be grown in the module, as different crop_classes. They are listed below with their distinguishing characteristics. </p>
+<ul>
+  <li> <span class="Normal">A grassy, C 3 annual weed designed to represent annual ryegrass. Parameters have been taken from the wheat module, with some additions from the literature on ryegrass. </span></li>
+  <li class="Normal"> A grassy, C 4 annual weed designed to represent Johnson grass. Parameters have largely been taken from the sorghum module. </li>
+  <li class="Normal">A broadleaf, C 3 annual weed designed to represent wild radish. Parameters have been taken from the canola module. </li>
+  <li class="Normal"> A broadleaf, C 3 N-fixing perennial weed designed to represent volunteer lucerne or similar legume. </li>
+</ul>
+<p class="Normal">Table 1: Functionalities possible for the weed types in APSIM-Weed and how these are operationalised through parameters. </p>
+<p class="Normal">&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="188" valign="top"><p class="Normal"><strong>Desired functionality </strong></p></td>
+    <td width="254" valign="top"><p class="Normal"><strong>How this is achieved operationally in APSIM-Weed </strong></p></td>
+    <td width="177" valign="top"><p class="Normal"><strong>Parameters </strong></p></td>
+  </tr>
+  <tr>
+    <td width="188" valign="top"><p class="Normal">Perenniality </p></td>
+    <td width="254" valign="top"><p class="Normal">The crop either dies or regrows after a harvest operation or complete leaf senescence </p></td>
+    <td width="177" valign="top"><h2 class="Normal">Min_tpla </h2></td>
+  </tr>
+  <tr>
+    <td width="188" valign="top"><p class="Normal">Temperature sensitivity (cool-season vs warm-season adaptation) </p></td>
+    <td width="254" valign="top"><p class="Normal">Tolerance to low/high temperature through </p>
+        <p class="Normal">&#149;&nbsp; thermal time vs temperature relationship </p>
+        <p class="Normal">&#149;&nbsp; rue vs temperature </p>
+        <p class="Normal">&#149;&nbsp; leaf senescence vs minimum temperature </p></td>
+    <td width="177" valign="top"><p class="Normal"><em>y_tt vs x_temp </em></p>
+        <p>&nbsp;</p>
+        <p class="Normal"><em>y_rue vs x_temp </em></p>
+        <p class="Normal"><em>x_temp_senescence vs </em></p>
+        <p class="Normal"><em>y_senescence_fac </em></p></td>
+  </tr>
+  <tr>
+    <td width="188" valign="top"><p class="Normal">Broadleaf versus grass-type </p></td>
+    <td width="254" valign="top"><p class="Normal">Crop has small/large individual leaf sizes </p></td>
+    <td width="177" valign="top"><h2 class="Normal">Leaf_size </h2></td>
+  </tr>
+  <tr>
+    <td width="188" valign="top"><p class="Normal">Nitrogen requirements </p></td>
+    <td width="254" valign="top"><p class="Normal">Critical N requirements </p></td>
+    <td width="177" valign="top"><p class="Normal"><em>n_conc_crit_leaf, stem etc </em></p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Table 2: The four weed crop_classes (i.e. types) and their differing characteristics. </p>
+<p class="Normal">&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="149" valign="top"><p class="Normal"><strong>Parameter </strong></p></td>
+    <td width="118" valign="top"></td>
+    <td width="118" valign="top"><p class="Normal"><strong>Winter_dicot </strong></p></td>
+    <td width="118" valign="top"><p class="Normal"><strong>Summer_grass </strong></p></td>
+    <td width="129" valign="top"><p class="Normal"><strong>Perennial_legume </strong></p></td>
+  </tr>
+  <tr>
+    <td width="149" valign="top"><h1 class="Normal">Perenniality </h1></td>
+    <td width="118" valign="top"></td>
+    <td width="118" valign="top"></td>
+    <td width="118" valign="top"></td>
+    <td width="129" valign="top"></td>
+  </tr>
+  <tr>
+    <td width="149" valign="top"><p class="Normal">min_tpla </p></td>
+    <td width="118" valign="top"><p class="Normal">0 </p></td>
+    <td width="118" valign="top"><p class="Normal">0 </p></td>
+    <td width="118" valign="top"><p class="Normal">0 </p></td>
+    <td width="129" valign="top"><p class="Normal">50 </p></td>
+  </tr>
+  <tr>
+    <td width="149" valign="top"><p class="Normal">ratio_root_shoot </p></td>
+    <td width="118" valign="top"><p class="Normal">0.50 to 0.33 </p></td>
+    <td width="118" valign="top"><p class="Normal">0.50 to 0.33 </p></td>
+    <td width="118" valign="top"><p class="Normal">0.50 to 0.33 </p></td>
+    <td width="129" valign="top"><p class="Normal">1.0 to 0.53 </p></td>
+  </tr>
+  <tr>
+    <td width="149" valign="top"><h1 class="Normal">Determinacy </h1></td>
+    <td width="118" valign="top"></td>
+    <td width="118" valign="top"></td>
+    <td width="118" valign="top"></td>
+    <td width="129" valign="top"></td>
+  </tr>
+  <tr>
+    <td width="149" valign="top"><p class="Normal">frac_leaf_post_flower </p></td>
+    <td width="118" valign="top"><p class="Normal">0 </p></td>
+    <td width="118" valign="top"><p class="Normal">0 </p></td>
+    <td width="118" valign="top"><p class="Normal">0 </p></td>
+    <td width="129" valign="top"><p class="Normal">0.2 </p></td>
+  </tr>
+  <tr>
+    <td width="149" valign="top"><p class="Normal">frac_leaf_grain_fill </p></td>
+    <td width="118" valign="top"><p class="Normal">0 </p></td>
+    <td width="118" valign="top"><p class="Normal">0 </p></td>
+    <td width="118" valign="top"><p class="Normal">0 </p></td>
+    <td width="129" valign="top"><p class="Normal">0.2 </p></td>
+  </tr>
+  <tr>
+    <td width="149" valign="top"><p class="Normal">C 3 vs C 4 </p></td>
+    <td width="118" valign="top"></td>
+    <td width="118" valign="top"></td>
+    <td width="118" valign="top"></td>
+    <td width="129" valign="top"></td>
+  </tr>
+  <tr>
+    <td width="149" valign="top"><p class="Normal">transp_eff_cf </p></td>
+    <td width="118" valign="top"><p class="Normal">0.005 </p></td>
+    <td width="118" valign="top"><p class="Normal">0.005 </p></td>
+    <td width="118" valign="top"><p class="Normal">0.009 </p></td>
+    <td width="129" valign="top"><p class="Normal">0.005 </p></td>
+  </tr>
+  <tr>
+    <td width="149" valign="top"><p class="Normal">Legume vs non-legume </p></td>
+    <td width="118" valign="top"></td>
+    <td width="118" valign="top"></td>
+    <td width="118" valign="top"></td>
+    <td width="129" valign="top"></td>
+  </tr>
+  <tr>
+    <td width="149" valign="top"><p class="Normal">N_fix_rate </p></td>
+    <td width="118" valign="top"><p class="Normal">0 </p></td>
+    <td width="118" valign="top"><p class="Normal">0 </p></td>
+    <td width="118" valign="top"><p class="Normal">0 </p></td>
+    <td width="129" valign="top"><p class="Normal">0.002 </p></td>
+  </tr>
+  <tr>
+    <td width="149" valign="top"><p class="Normal">n_conc_crit_leaf </p></td>
+    <td width="118" valign="top"><p class="Normal">0.039 to 0.018 </p></td>
+    <td width="118" valign="top"><p class="Normal">0.039 to 0.018 </p></td>
+    <td width="118" valign="top"><p class="Normal">0.039 to 0.018 </p></td>
+    <td width="129" valign="top"><p class="Normal">0.060 to 0.020 </p></td>
+  </tr>
+  <tr>
+    <td width="149" valign="top"><p class="Normal">n_init_conc (root, leaf, stem) </p></td>
+    <td width="118" valign="top"><p class="Normal">0.018 0.06 0.060 </p></td>
+    <td width="118" valign="top"></td>
+    <td width="118" valign="top"></td>
+    <td width="129" valign="top"><p class="Normal">0.025 0.060 0.060 </p></td>
+  </tr>
+  <tr>
+    <td width="149" valign="top"><p class="Normal">leaf_size </p></td>
+    <td width="118" valign="top"><p class="Normal">1400 to 6000 </p></td>
+    <td width="118" valign="top"><p class="Normal">1000 to 20000 </p></td>
+    <td width="118" valign="top"><p class="Normal">1000 to 60000 </p></td>
+    <td width="129" valign="top"><p class="Normal">400 to 1200 </p></td>
+  </tr>
+  <tr>
+    <td width="149" valign="top"><p class="Normal">Temperature sensitivity </p></td>
+    <td width="118" valign="top"></td>
+    <td width="118" valign="top"></td>
+    <td width="118" valign="top"></td>
+    <td width="129" valign="top"></td>
+  </tr>
+  <tr>
+    <td width="149" valign="top"><p class="Normal">ave_temp vs stress_photo </p></td>
+    <td width="118" valign="top"><p class="Normal">&#149;&nbsp; 15.0 30.0 40.0 </p>
+        <p class="Normal">0.0 1.0 1.0 0.0 </p></td>
+    <td width="118" valign="top"><p class="Normal">&#149;&nbsp; 15.0 30.0 40.0 </p>
+        <p class="Normal">0.0 1.0 1.0 0.0 </p></td>
+    <td width="118" valign="top"><p class="Normal">8.0 25.0 35.0 40.0 </p>
+        <p class="Normal">0.0 1.0 1.0 0.0 </p></td>
+    <td width="129" valign="top"><p class="Normal">&#149;&nbsp; 15.0 30.0 40.0 </p>
+        <p class="Normal">0.0 1.0 1.0 0.0 </p></td>
+  </tr>
+  <tr>
+    <td width="149" valign="top"><p class="Normal">Cardinal temps for tt </p></td>
+    <td width="118" valign="top"><p class="Normal">0.0 30.0 40.0 </p></td>
+    <td width="118" valign="top"><p class="Normal">0.0 30.0 40.0 </p></td>
+    <td width="118" valign="top"><p class="Normal">10.0 35.0 45.0 </p></td>
+    <td width="129" valign="top"><p class="Normal">0.0 30.0 40.0 </p></td>
+  </tr>
+  <tr>
+    <td width="149" valign="top"><p class="Normal">Minimum temps for leaf senescence </p></td>
+    <td width="118" valign="top"><p class="Normal">-5 to -15 o C </p></td>
+    <td width="118" valign="top"><p class="Normal">-5 to –15 o C </p></td>
+    <td width="118" valign="top"><p class="Normal">6 to 0 o C </p></td>
+    <td width="129" valign="top"><p class="Normal">-5 to -15 o C </p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Issues that users should be aware of </p>
+<ul>
+  <li> <span class="Normal">Due to the way that crop residues are handles in APSIM, it is possible to only pass one fixed value for residue <em>specific_areas </em> regardless of the weed type being simulated. </span></li>
+  <li class="Normal">Cultivars would differ in terms of height (and hence competitive ability) and short/long season. </li>
+  <li class="Normal">Using the module parameter inheritance characteristics of APSIM-Legume, it is possible to create other permutations eg a warm-season dicot. </li>
+</ul>
+<p class="Title2">Weed Module Parameterisation</p>
+<p class="Normal">As with APSIM-Legume, crop lower limit (LL) and water extraction coefficients (KL) and root exploration factors (XF) values are need for each soil layer. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">[test.weed.parameters] </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">ll = 0.200 0.200 0.200 0.220 0.250 () ! crop lower limit </p>
+<p class="Normal">kl = 012 0.08 0.06 0.04 0.02 () ! kl need calibrating for each crop and soil type </p>
+<p class="Normal">xf = 1 1 1 1 0.5 () ! root exploration factor </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Phenology, grainfilling and crop height parameters are needed for each cultivar. An example is given below of those for the early culltivar. At present the module contains two cultivars only – early and late. </p>
+<p class="Normal">[standard.weed.early] </p>
+<p class="Normal">hi_incr = 0.010 (1/days) </p>
+<p class="Normal">x_hi_max_pot_stress = 0.00 1.00 () </p>
+<p class="Normal">y_hi_max_pot = 0.15 0.15 () </p>
+<p class="Normal">cum_vernal_days = 0 100 </p>
+<p class="Normal">tt_emerg_to_endjuv = 400 700 </p>
+<p class="Normal">est_days_emerg_to_init = 83.0 (d) </p>
+<p class="Normal">photoperiod = 1 24 </p>
+<p class="Normal">phase_tt_init = 500 500 </p>
+<p class="Normal">tt_flower_to_maturity = 500.0 (oCd) </p>
+<p class="Normal">tt_init_to_flower = 50.0 (oCd) </p>
+<p class="Normal">tt_flower_to_start_grain = 120.0 (oCd) </p>
+<p class="Normal">tt_maturity_to_ripe = 1.0 (oCd) </p>
+<p class="Normal">x_stem_wt = 0 300 (g/m2) </p>
+<p class="Normal">y_height = 0 800 (mm) </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Module Dependencies</p>
+<p class="Normal">The minimum module configuration required to run <strong>weed </strong>in APSIM is the inclusion of the report, input, manager, soilwat2, soiln2, residue2 and weed modules. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Within the manager file the following syntax is used for harvest and planting the weed crop: </p>
+<p class="Normal">&nbsp;</p>
+<p class="Code">if (weed.stage_name = 'harvest_ripe' and weed.plant_status = 'alive') then </p>
+<p class="Code">&nbsp;&nbsp;weed harvest </p>
+<p class="Code">&nbsp;&nbsp;weed kill_crop </p>
+<p class="Code">&nbsp;&nbsp;weed end_crop </p>
+<p class="Code">endif </p>
+<p class="Code">&nbsp;</p>
+<p class="Code">if (weed.plant_status = 'dead') then </p>
+<p class="Code">&nbsp;&nbsp;report do_output </p>
+<p class="Code">&nbsp;&nbsp;weed harvest </p>
+<p class="Code">&nbsp;&nbsp;weed end_crop </p>
+<p class="Code">endif </p>
+<p class="Code">&nbsp;</p>
+<p class="Code">if (day &gt; 120 and day &lt; 240 and weed.plant_status = 'out' ) then </p>
+<p class="Code">&nbsp;&nbsp;weed sow plants = 15 (p/m2), crop_class=winter_grass, sowing_depth = 50 (mm), row_spacing = 0.35 (m), cultivar = late </p>
+<p class="Code">endif </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">(note: row_spacing in sowing command is optional) </p>
+<p class="Normal">
+As with any of the PLANT crop modules it is possible to kill a fraction of plants upon a manager action, for instance killing by herbicide.  The following line in the manager module:</p>
+<p class="Code">
+weed kill_crop, kill_fr = 0.6</p>
+<p class="Normal">
+would kill 60% of plants
+</p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Module Instantiation </p>
+<p class="Normal">This is an instantiable module, that is, it can be used in several contexts within the one simulation. For example, this module may be used to simulate one weed, while another <strong>instance </strong> of this module (configured differently) is used simultaneously to represent another growing with the first weed. There are certain protocols and procedures which must be followed in order to instantiate modules, and these are described in more detail in the document <strong>“Module Instantiation” </strong>, found in C:\apsuite\docs. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">WEED MOULE WORKING GROUP </p>
+<p class="Normal">Michael Robertson </p>
+</body>
+</html>

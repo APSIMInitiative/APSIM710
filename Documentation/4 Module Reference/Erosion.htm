@@ -1,0 +1,571 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+
+<title>Erosion Module</title><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="../ApsimWebStyle.css" rel="stylesheet" type="text/css"></head>
+
+<body>
+<p class="Title1">Erosion Module</p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Description:</p>
+<p class="Normal">Simulates daily soil erosion, and (optionally) the effect of soil loss on the soil 
+profile. Code and this document derived from PERFECT.</p>
+<p class="Normal">&nbsp;</p>
+
+<p class="Title2">Methods</p>
+<p class="Normal">The calculation of daily soil loss is performed by one of two submodels:</p>
+<ul>
+  <li class="Normal">A modified MUSLE (Freebairn and Wockner) cover concentration function determined from 
+    QDPI field data to predict soil movement from the inter-contour bank area for clay soils in situations 
+	where peak discharge cannot be adequately predicted. It accounts for variation in soil loss with cover 
+	and runoff volume (the main factors that can be managed), and uses the MUSLE slope-length, erodibility 
+	and practise factors to provide generality. The model has the following form:<br>
+    <img src="Erosion/erosion_clip_image002_0000.gif" height="70" width="427"><br>
+    Where<br>
+    <span class="Formula">E</span> Event soil loss (t/ha) <br>
+    <span class="Formula">COV</span> Cover (%) <br>
+    <span class="Formula">Q</span> Event runoff (mm) <br>
+    <span class="Formula">K</span> Soil erodibility factor (t/ha/EI 30 ) <br>
+    <span class="Formula">LS</span> Slope length and steepness factor <br>
+  <span class="Formula">P</span> Supporting practice factor <br>
+  <br>
+    The <span class="Formula">LS</span> factor from Wishmeier and Smith (1978) is related to catchment 
+	  slope and length by: <br>
+    <img src="Erosion/erosion_clip_image004_0000.gif" height="42" width="302"><br>
+    Where <br>
+    <span class="Formula">LS</span> Slope length and steepness factor <br>
+    <span class="Formula">S</span> Sine of slope angle <br>
+    <span class="Formula">L</span> Length of catchment (m) 
+  </li>
+  <li class="Normal">A simplified version of the sediment concentration function contained in GUESS 
+   (Carroll). The equation is given as: <br>
+    <img src="Erosion/erosion_clip_image006.gif" height="33" width="202"><br>
+    Where<br>
+    <span class="Formula">E</span> Event soil loss (t/ha) <br>
+    <span class="Formula">S</span> Sine of slope angle <br>
+    <span class="Formula">cover</span> Fractional surface cover (0-1) <br>
+    <span class="Formula">Q</span> Event runoff (mm) <br>
+    <img src="Erosion/erosion_clip_image008.gif" height="11" width="8">Factor approximating efficiency of 
+    entrainment <br>
+  <br>
+  The cover term <em class="Formula">cover </em> in the rose equation does not fully account for the 
+    effect of cover. Therefore, the efficiency of entrainment
+	<img src="Erosion/erosion_clip_image008_0000.gif" height="11" width="8">
+	is further modified by cover by Rose (1985):
+    <img src="Erosion/erosion_clip_image011.gif" height="18" width="105"><br>
+    <br>
+    Where<br>
+    <img src="Erosion/erosion_clip_image008_0001.gif" height="11" width="8"><br>
+	Factor approximating efficiency of entrainment<br>
+    <img src="Erosion/erosion_clip_image014.gif" height="15" width="27"><br>
+	Efficiency of entrainment (bare surface)<br>
+    <span class="Formula">COV</span> Surface cover (%)<br><br>
+    The submodels parameters are
+	<img src="Erosion/erosion_clip_image014_0000.gif" height="15" width="27">
+  (rose_lambda), and the &#8216;-0.15' exponential term (rose_b2).</li>
+</ul>
+<p class="Title2">Feedback from erosion on the soil profile </p>
+<p class="Normal">The module is capable of eroding the soil profile as soil loss occurs (see 
+  profile_reduction). The module remains ignorant of what other modules may be doing through the profile, 
+  all it does is send a delta to whichever module owns dlayer - typically soilwat2. It is the 
+responsibility of other modules to ensure they remain consistent with this new profile.</p>
+<p class="Normal">The calculation of "dlt_depth_mm" describing the change in each profile layer 
+for the given amount of soil loss is given by: </p>
+<p class="Normal">&nbsp;</p>
+<p class="Code">dlt_depth_mm(i) = (100.0*soil_loss) / (1000.0*bd(i)) </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Where </p>
+<table border="0" cellpadding="0" cellspacing="0" width="460">
+  <tbody><tr>
+    <td width="115"><span class="Normal"><span class="Code">soil_loss</span></span></td>
+    <td width="345"><span class="Normal">Event soil loss (t/ha) </span></td>
+  </tr>
+  <tr>
+    <td><span class="Code">bd</span></td>
+    <td><span class="Normal">Bulk density of the respective profile layer (g/cc) </span></td>
+  </tr>
+</tbody></table>
+<p class="Normal">&nbsp; </p>
+<p class="Normal">The bulk density for each layer is used to maintain mass balance of soil movement up 
+through the (constant) soil layer thicknesses. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Erosion continues replacing the lowest profile layer with &#8220;imaginary&#8221; material of the 
+  same properties until a limit (see bed_depth) is reached. Once the lowest profile layer rests against 
+    bedrock, further soil erosion reduces the thickness of this layer until it is a fraction (see 
+	profile_layer_merge) of its original thickness. Once this fraction is reached, the layer is merged 
+	into the next highest layer. (Currently, many apsim modules cannot sensibly deal with the last 
+scenario.) </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">This process continues until the parameter minimum_depth is reached, at which the 
+simulation stops with a fatal error. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Splitting soil loss into suspended and bed loads. </p>
+<p class="Normal">There is provision to split soil loss into two components: suspended and bed loads. This 
+  reflects how soil loss is measured. Each soil loss submodel is performed twice: once for suspended 
+ediment, and once for heavy particles. </p>
+<p class="Normal">For the modified MUSLE model, the parameter K is replaced by K_bed and K_susp 
+  ( <strong>NB. </strong> It's important to remove or comment out the original K parameter, otherwise the 
+module assumes you are still trying to use a single soil loss equation) </p>
+<p class="Normal">For the rose model, parameters lambda and b2 are replaced by lambda_bed, lambda_susp, 
+b2_bed and b2_susp. Once again, you must remove the original definitions of lambda and b2. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Reporting the separate losses is through soil_loss_bed, soil_loss_susp, both in units of 
+  t/ha, and sed_conc_bed, sed_conc_susp (g/l). soil_loss returns total soil loss, and sed_conc returns 
+total sediment concentration. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Communicating with water balance modules </p>
+<p class="Normal">As the erosion module was derived substantially from PERFECT (ie. a daily timestep), it 
+  does not use the advanced features of APSIM's apswim and surface modules (eg. hydrographs or peak runoff 
+  rate). SWIM users should be aware that peak runoff rate is not used in calculation of soil erosion at 
+  this time. Surface users should be aware that surface roughness factors do not enter erosion or 
+runoff.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The calculation of cover used in the soil loss equation should be the same cover as used 
+  in runoff prediction. When soilwat provides water balance, this cover is exported to the system (and 
+  thus erosion) as &#8220;total_cover&#8221;. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">However, SWIM does not provide this variable. If the surface module is active, it will 
+  provide a variable &#8220;surf_cover&#8221;, which is the combined crop and residue covers on the soil surface. To 
+use this cover as the cover term in the soil loss equation, add the following to the manager's rules:</p>
+<p class="Code">[xxx.manager.init] </p>
+<p class="Code">total_cover = 0.0 </p>
+<p class="Code">[xxx.manager.start_of_day] </p>
+<p class="Code">total_cover = surface.surf_cover </p>
+<p class="Normal">&nbsp; </p>
+<p class="Normal">To use erosion with apswim, add the following rules: </p>
+<p class="Code">[xxx.manager.init] </p>
+<p class="Code">total_cover = 0.0 </p>
+<p class="Code">[xxx.manager.start_of_day] </p>
+<p class="Code">total_cover = 1.0 &#8211; (1.0 - crop1.cover_tot) * (1.0 &#8211; crop2.cover_tot) * &#8230; * (1.0 - residue2.residue_cover)</p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Procedures: </p>
+<p class="Normal">The module follows these steps at initialisation: </p>
+<ul>
+  <li class="Normal">All variables are set to zero. </li>
+  <li class="Normal">The parameter file is read, if necessary, ls factor is calculated for the freebairn model. </li>
+  <li class="Normal">The static parameters are written to the summary file. </li>
+</ul>
+
+<p class="Normal">During daily processing, the following procedures occur: </p>
+<ul>
+  <li class="Normal">The daily state variables are reset. </li>
+  <li class="Normal">Today's inputs are requested from the system. </li>
+  <li class="Normal">Soil loss is calculated as a function of cover and runoff. </li>
+  <li class="Normal">If there is soil loss, the profile is changed and sent back to its owner. </li>
+  <li class="Normal"> The new depth to bedrock is calculated. </li>
+  <li class="Normal">Control returns to the system. </li>
+</ul>
+<p class="Title2">System interface names</p>
+<p class="Normal">Parameter file: </p>
+<p class="Normal">&nbsp;</p>
+<table class="TableBorder" cellpadding="0" cellspacing="0">
+  <tbody><tr class="TableTitle">
+    <td valign="top" width="189"><p>Name </p></td>
+    <td valign="top" width="378"><p>Description </p></td>
+  </tr>
+  <tr class="TableOdd">
+    <td valign="top" width="189"><p>model </p></td>
+    <td valign="top" width="378"><p>Either &#8220;rose&#8221; or &#8220;freebairn&#8221; </p></td>
+  </tr>
+  <tr class="TableEven">
+    <td valign="top" width="189"><p>profile_reduction </p></td>
+    <td valign="top" width="378"><p>Either &#8220;on&#8221; or &#8220;off&#8221; </p></td>
+  </tr>
+  <tr class="TableOdd">
+    <td valign="top" width="189"><p>profile_layer_merge </p></td>
+    <td valign="top" width="378"><p>Fraction of original size below which the lowest layer is merged into the layer above (0-1) </p></td>
+  </tr>
+  <tr class="TableEven">
+    <td valign="top" width="189"><p>minimum_depth </p></td>
+    <td valign="top" width="378"><p>If the profile erodes to this depth, the simulation is stopped (mm) </p></td>
+  </tr>
+  <tr class="TableOdd">
+    <td valign="top" width="189"><p>slope </p></td>
+    <td valign="top" width="378"><p>Slope of plot in percent (%) </p></td>
+  </tr>
+  <tr class="TableEven">
+    <td valign="top" width="189"><p>slope_length </p></td>
+    <td valign="top" width="378"><p>Length of plot (m) </p></td>
+  </tr>
+  <tr class="TableOdd">
+    <td valign="top" width="189"><p>bed_depth </p></td>
+    <td valign="top" width="378"><p>depth to bedrock (mm) </p></td>
+  </tr>
+  <tr class="TableEven">
+    <td valign="top" width="189"><p>cover_extra (optional) </p></td>
+    <td valign="top" width="378"><p>fudge factor added to total_cover (-1.0 -1.0) </p></td>
+  </tr>
+</tbody></table>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Freebairn specific parameters </p>
+<p class="Normal">&nbsp;</p>
+<table class="TableBorder" cellpadding="0" cellspacing="0">
+  <tbody><tr class="TableOdd">
+    <td valign="top" width="73"></td>
+    <td valign="top" width="224"><p>p_factor </p></td>
+    <td valign="top" width="457"><p>Supporting practise factor (unitless) </p></td>
+  </tr>
+  <tr class="TableEven">
+    <td valign="top" width="73"><p>Either </p></td>
+    <td valign="top" width="224"><p>k_factor </p></td>
+    <td valign="top" width="457"><p>Soil erodibility factor (t/ha/EI 30 ) </p></td>
+  </tr>
+  <tr class="TableOdd">
+    <td width="73"><p>or </p></td>
+    <td valign="top" width="224"><p>k_factor_bed </p></td>
+    <td valign="top" width="457"><p>Soil erodibility factor for bed load (t/ha/EI 30 ) </p></td>
+  </tr>
+  <tr class="TableEven">
+    <td valign="top" width="224"><p>k_factor_susp </p></td>
+    <td valign="top" width="457"><p>Soil erodibility factor for suspended load (t/ha/EI 30 ) </p></td>
+	<td>&nbsp;</td>
+  </tr>
+</tbody></table>
+<p class="Normal">&nbsp;</p>   
+<p class="Normal">Rose specific parameters </p>
+<p class="Normal">&nbsp;</p>
+<table class="TableBorder" cellpadding="0" cellspacing="0">
+  <tbody><tr class="TableOdd">
+    <td valign="top" width="73"><p>Either </p></td>
+    <td valign="top" width="224"><p>entrain_eff </p></td>
+    <td valign="top" width="457"><p>Efficiency of entrainment - bare surface () </p></td>
+  </tr>
+  <tr class="TableEven">
+    <td width="73"><p>or </p></td>
+    <td valign="top" width="224"><p>entrain_eff _bed </p></td>
+    <td valign="top" width="457"><p>Efficiency of entrainment - bare surface - bed load () </p></td>
+  </tr>
+  <tr class="TableOdd">
+    <td valign="top" width="224"><p>entrain_eff _susp </p></td>
+    <td valign="top" width="457"><p>Efficiency of entrainment - bare surface - suspended load () </p></td>
+	<td></td>
+  </tr>
+  <tr class="TableEven">
+    <td valign="top" width="73"><p>Either </p></td>
+    <td valign="top" width="224"><p>eros_rose_b2 </p></td>
+    <td valign="top" width="457"><p>?? </p></td>
+  </tr>
+  <tr class="TableOdd">
+    <td width="73"><p class="TableOdd">or </p></td>
+    <td valign="top" width="224"><p>eros_rose_b2_bed </p></td>
+    <td valign="top" width="457"><p>?? </p></td>
+  </tr>
+  <tr class="TableEven">
+    <td valign="top" width="224"><p>eros_rose_b2_susp </p></td>
+    <td valign="top" width="457"><p>?? </p></td>
+	<td></td>
+  </tr>
+</tbody></table>
+<p class="Normal">&nbsp; </p>
+<p class="Normal">Inputs from other modules on a daily timestep: </p>
+<p class="Normal">&nbsp;</p>
+<table class="TableBorder" cellpadding="0" cellspacing="0">
+  <tbody><tr class="TableOdd">
+    <td valign="top" width="95"><p>day </p></td>
+    <td valign="top" width="309"></td>
+  </tr>
+  <tr class="TableEven">
+    <td valign="top" width="95"><p>year </p></td>
+    <td valign="top" width="309"></td>
+  </tr>
+  <tr class="TableOdd">
+    <td valign="top" width="95"><p>runoff </p></td>
+    <td valign="top" width="309"><p>daily runoff (mm) </p></td>
+  </tr>
+  <tr class="TableEven">
+    <td valign="top" width="95"><p>total_cover </p></td>
+    <td valign="top" width="309"><p>combined crop and residue cover (0 - 1) </p></td>
+  </tr>
+  <tr class="TableOdd">
+    <td valign="top" width="95"><p>bd(mxlayr) </p></td>
+    <td valign="top" width="309"><p>moist bulk density of soil (g/cm^3) </p></td>
+  </tr>
+  <tr class="TableEven">
+    <td valign="top" width="95"><p>dlayer(mxlayr) </p></td>
+    <td valign="top" width="309"><p>thickness of soil layer i (mm) </p></td>
+  </tr>
+</tbody></table>
+<p class="Normal">&nbsp; </p>
+<p class="Normal">Outputs to other modules as requested: </p>
+<p class="Normal">&nbsp;</p>
+<table class="TableBorder" cellpadding="0" cellspacing="0">
+  <tbody><tr class="TableOdd">
+    <td valign="top" width="96"><p>soil_loss </p></td>
+    <td valign="top" width="306"><p>todays soil loss (t/ha) </p></td>
+  </tr>
+  <tr class="TableEven">
+    <td valign="top" width="96"><p>soil_loss_bed </p></td>
+    <td valign="top" width="306"><p>todays soil loss in bedload (t/ha) </p></td>
+  </tr>
+  <tr class="TableOdd">
+    <td valign="top" width="96"><p>soil_loss_susp </p></td>
+    <td valign="top" width="306"><p>todays soil loss in suspension (t/ha) </p></td>
+  </tr>
+  <tr class="TableEven">
+    <td valign="top" width="96"><p>soil_loss_mm </p></td>
+    <td valign="top" width="306"><p>todays soil loss from the topmost profile layer (mm) </p></td>
+  </tr>
+  <tr class="TableOdd">
+    <td valign="top" width="96"><p>sed_conc </p></td>
+    <td valign="top" width="306"><p>todays sediment concentration (g/l) </p></td>
+  </tr>
+  <tr class="TableEven">
+    <td valign="top" width="96"><p>sed_conc_bed </p></td>
+    <td valign="top" width="306"><p>todays sediment concentration in bedload (g/l) </p></td>
+  </tr>
+  <tr class="TableOdd">
+    <td valign="top" width="96"><p>sed_conc_susp </p></td>
+    <td valign="top" width="306"><p>todays sediment concentration in suspended load (g/l) </p></td>
+  </tr>
+  <tr class="TableEven">
+    <td valign="top" width="96"><p>bed_depth </p></td>
+    <td valign="top" width="306"><p>todays depth to bedrock (mm) </p></td>
+  </tr>
+  <tr class="TableOdd">
+    <td valign="top" width="96"><p>erosion_cover </p></td>
+    <td valign="top" width="306"><p>todays cover used to drive soil loss equations (0 - 1) </p></td>
+  </tr>
+</tbody></table>
+<p class="Normal">&nbsp; </p>
+<p class="Normal">Resets to other modules:</p>
+<p class="Normal">&nbsp;</p>
+<table class="TableBorder" cellpadding="0" cellspacing="0">
+  <tbody><tr class="TableOdd">
+    <td valign="top" width="92"><p>dlt_dlayr() </p></td>
+    <td valign="top" width="312"><p>thickness of soil layer i (mm) </p></td>
+  </tr>
+</tbody></table>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Typical, sample parameters </p>
+<p class="Normal">&nbsp;</p>
+<table class="TableBorder" cellpadding="0" cellspacing="0">
+  <tbody><tr class="TableTitle">
+    <td valign="top" width="121"><p>Dataset </p></td>
+    <td valign="top" width="57"><p>slope </p></td>
+    <td valign="top" width="66"><p>Slope length </p></td>
+    <td valign="top" width="76"><p>P factor </p></td>
+    <td valign="top" width="76"><p>soil erodibility K </p></td>
+    <td valign="top" width="95"><p>Lambda_bare </p></td>
+    <td valign="top" width="76"><p>b2 </p></td>
+  </tr>
+  <tr class="TableOdd">
+    <td valign="top" width="121"></td>
+    <td valign="top" width="57"><p>% </p></td>
+    <td valign="top" width="66"><p>M </p></td>
+    <td valign="top" width="76"></td>
+    <td valign="top" width="76"><p>(t/ha/EI30) </p></td>
+    <td valign="top" width="95"></td>
+    <td valign="top" width="76"></td>
+  </tr>
+  <tr class="TableEven">
+    <td valign="top" width="121"><p>Greenmount </p></td>
+    <td valign="top" width="57"><p>6.5 </p></td>
+    <td valign="top" width="66"><p>60 </p></td>
+    <td valign="top" width="76"><p>1.0 </p></td>
+    <td valign="top" width="76"><p>0.38 (1) </p></td>
+    <td valign="top" width="95"><p>0.77 (2) </p></td>
+    <td valign="top" width="76"><p>15 (3) </p></td>
+  </tr>
+  <tr class="TableOdd">
+    <td valign="top" width="121"><p>Greenwood </p></td>
+    <td valign="top" width="57"><p>4.5 </p></td>
+    <td valign="top" width="66"><p>37 </p></td>
+    <td valign="top" width="76"><p>1.0 </p></td>
+    <td valign="top" width="76"><p>0.38 (1) </p></td>
+    <td valign="top" width="95"><p>0.70 (3) </p></td>
+    <td valign="top" width="76"><p>15 (3) </p></td>
+  </tr>
+</tbody></table>
+
+<p class="Normal">&nbsp;</p>
+<p class="Code">[gmtf.erosion.parameters] </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;model = freebairn (1) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;slope = 6.5 (%) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;slope_length = 60.0 (m) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;bed_depth = 1500. (mm) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;profile_reduction = off </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;profile_layer_merge = 0.05 () </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;minimum_depth = 100.0 (mm) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;k_factor = 0.38 () </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;p_factor = 1.0 () </p>
+<p class="Normal">&nbsp; </p>
+<p class="Code">[gmtr.erosion.parameters] </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;model = rose (2) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;slope = 6.5 (%) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;slope_length = 60.0 (m) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;bed_depth = 1500. (mm) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;profile_reduction = off </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;profile_layer_merge = 0.05 () </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;minimum_depth = 100.0(mm) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;entrain_eff = 0.77 () </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;eros_rose_b2 = 0.15 () </p>
+<p class="Normal">&nbsp; </p>
+<p class="Code">[gwd.erosion.parameters] </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;model = rose (3) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;slope = 4.5 (%) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;slope_length = 37.0 (m) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;bed_depth = 1500. (mm) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;profile_reduction = off </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;profile_layer_merge = 0.05 () </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;minimum_depth = 100.0(mm) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;entrain_eff = 0.7 () </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;eros_rose_b2 = 0.15 () </p>
+<p class="Normal">&nbsp; </p>
+<p class="Normal">(1) Freebairn, Silburn &amp; Loch (1989). Aust.J.Soil Res. 27: 199-211 </p>
+<p class="Normal">(2) Silburn &amp; Loch (1992) 5th Aust. Soil con. Conf. </p>
+<p class="Normal">(3) Rose (1985) Adv. in Soil Science Vol 2 </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Known bugs and defects </p>
+<p class="Normal">Cover isn't resolved. Currently, erosion gets its
+cover from &#8220;total_cover&#8221;, which soilwat calculates as the total crop
+and residue cover. This should be runoff_cover, which soilwat doesnt
+export at the moment. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Bibliography </p>
+<p class="Normal">Carroll, C., Rose, C.W. and Crawford, S.J. (1986).
+GUESS - Theory Manual. School of Australian Environmental Studies,
+Griffith University , Queensland , </p>
+<p class="Normal">Freebairn, D.F. and Wockner, G.H. (1986). A study of soil erosion on Vertisols of the Eastern Darling Downs, <em>Australian Journal of Soil Research </em>, <strong>19 </strong>, 133-46 </p>
+<p class="Normal">Littleboy, M., Silburn, D.M., Freebairn, D.M.,
+Woodruff, D.R., and Hammer, G.L. (1989) PERFECT - A computer simulation
+model of Productivity Erosion Runoff Functions to Evaluate Conservation
+Techniques. QDPI, Brisbane. </p>
+<p class="Normal">Rose, C.W. (1985). Developments in soil erosion and deposition models. <em>Advances in Soil Science </em>, Volume <strong>2 </strong>, 1-63. </p>
+<p class="Normal">Wischmeier, W.H. and Smith, D.D. (1978). Predicting rainfall erosion losses, a guide to conservation planning. <em>Agricultural Handbook number </em><strong>537 </strong>, USDA, 58pp.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Programmers notes </p>
+<p class="Normal">The calculation of soil loss ends up in two
+variables, soil_loss_bed and soil_loss_susp. When the user describes a
+single soil loss equation, the result is left in soil_loss_bed, with
+soil_loss_susp left at 0. All reporting is done as the sum of these two
+variables. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Related Material</p>
+<p class="Normal"><strong>Nutrient reduction:</strong></p>
+<p class="Normal">Nutrient reduction is represented by "moving" the
+soil layers downwards through the soil profile (the same as moving the
+nutrient pools of the soil layers upwards through the soil). Layers
+take on the nutrient characteristics of the layer below in proportion
+to the depth increment gained from that layer. If there is no
+"bedrock", all layers would eventually all end up with the nutrient
+properties of the subsoil (bottom layer). If the accumulated depth loss
+due to erosion exceeds the depth between the bottom of the profile and
+the depth to bedrock (and profile reduction is on), the bottom layer
+does not contain nutrients from below and its nutrient content will
+diminish (as nutrients are exported upwards through the soil) </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The algorithm for "top down" removal is: </p>
+<p class="Normal">1. determine the loss for each layer. For the top layer, this is </p>
+<p class="Normal">given by </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>conc_kg_kg = variable(1)/(1000.0*bd(1)*dlayr(1)*10.0) </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>loss_kg_ha = soil_loss * 1000.0* enr * conc_kg_kg </p>
+<p class="Normal">where </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>conc_kg_kg = kg of nutrient per kg of soil (kg/kg) </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>variable = content of particular nutrient (kg/ha), </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>bd = bulk density in (g/cm^3) </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>dlayr = depth of layer in (mm) </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>soil_loss = soil loss (t/ha) </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>enr = enrichment ratio.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">"enr" is calculated from </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>enr = enr_a_coeff * (1000.0 * soil_loss)**(-1.0 * enr_b_coeff) </p>
+<p class="Normal">and is bounded to (1.0 &lt; enr &lt; enr_a_coeff): </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>enr = amin1(enr_a_coeff, enr) </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>enr = amax1(enr, 1.0)</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">For the remaining layers, the loss from each layer is that which moved into the layer above;</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>layer_loss = variable(i) * </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>layer_divide(dlt_depth_mm(i), dlayr(i))</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">where i is the index of the layer we are working on,
+and layer_divide(a,b) bounds the result of (a/b) to 0.0 -&gt; 1.0. This
+prevents taking away more than is present in the layer.
+"dlt_depth_mm(i)" is an array of deltas describing the change in each
+profile depth for the given amount of soil loss, given by:</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>dlt_depth_mm(i) = (100.0*soil_loss) / (1000.0*bd(i))</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The bulk density for each layer is used to maintain
+mass balance of soil movement up through the (constant) soil layer
+thicknesses.</p>
+<p class="Normal">The gain to each layer is found in a similar manner, ie, the fraction of the layer below that moves into this layer:</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>layer_gain = variable(i+1) * </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>layer_divide(dlt_depth_mm(i+1), dlayr(i+1))</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Obviously, the lowest layer cannot use this formula,
+as there is no layer beneath, and we have to cater for bedrock. The
+procedure is to assume that the lowest layer gains a fraction of
+itself, so long as it is not resting on bedrock:</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>layer_gain = variable(i) * </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>layer_divide(dlt_depth_mm(i), dlayr(i))</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>! check we're not going into bedrock </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>if (suml(dlayr, mxlayr) + </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>dlt_depth_mm(n_layrs) .gt. bed_depth .and. </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>profile_reduction .eq. on ) then </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>layer_gain = 0.0</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">At this point, we find the new value of the variable for this layer in the new profile:</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>variable(i) = variable(i) + layer_gain - layer_loss</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Two more steps follow,:-</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">1. If profile reduction is on, check to see if the bottom layer is too thin, and merge it into the next layer up if so.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">2. Perform a mass balance check: </p>
+<p class="Normal">\Sum{yesterdays variable} + loss from layer 1 - gain to lowest layer </p>
+<p class="Normal">= \Sum{Todays variable} </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">This procedure is repeated for all the nitrogen / carbon variables: </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>snh4(mxlayr) </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>inert_c(mxlayr) </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>biom_c(mxlayr) </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>biom_n(mxlayr) </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>hum_c(mxlayr) </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>hum_n(mxlayr) </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>fom_n(mxlayr) </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>fpool1(mxlayr) </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>fpool2(mxlayr) </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>fpool3(mxlayr)</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The total amounts of N and C lost on eroded soil is calculated by summing losses from the relevant N and C pools: </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>n_loss_in_sed = snh4_loss + biom_n_loss + </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>hum_n_loss + fom_n_loss </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>c_loss_in_sed = biom_c_loss + hum_c_loss + </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>fpool1_loss + fpool2_loss + fpool3_loss</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">--------------------</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Finally, reducing the profile layer depth (dlayr)
+takes place following a similar method to before; by reducing from the
+bottom until the profile rests against bedrock:</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>tot_depth = suml(dlayr, n_layrs) + dlt_depth_mm(n_layrs)</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>if (tot_depth .gt. bed_depth ) then </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>overrun = tot_depth - bed_depth </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>do 2000 i = n_layrs, 1, -1 </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>if (overrun .gt. 0.0) then</p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>if(overrun .le. dlayr(i)) then </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;&nbsp;&nbsp;</span>dlayr(i) = dlayr(i) - overrun </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;&nbsp;&nbsp;</span>overrun = 0.0 </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>else </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>overrun = overrun - dlayr(i) </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;&nbsp;&nbsp;</span>dlayr(i) = 0.0 </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>endif</p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>endif </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>2000 continue </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>endif</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">and the lowest profile layer is merged if necessary.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The threshold for merging layers is specified in the
+parameter file as a proportion of the original layer, so after a merge,
+this threshold must be recalculated as a proportion of the next upper
+layer. </p>
+</body></html>

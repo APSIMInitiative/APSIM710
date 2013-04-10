@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Farm Manager</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="../ApsimWebStyle.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<p class="Title1">Farm Manager </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Description </p>
+<p class="Normal"> Within APSIM, the problem of managing farms is a different problem 
+to managing its traditional domain of paddocks. The questions in 'farm' management are of a different
+order; typically addressing resource allocation issues ahead of operational issues.
+</p>
+
+<p class="Normal"> The APSFARM project is addressing these issues by developing complex 
+tools devoted to managing diverse lists of rules, instead of the current practise of rules embedded 
+in if/then/else logic. These rules, and the data structures that implement them are 
+under active development. 
+</p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Representation </p>
+<p class="Normal"> 
+The farming system as a whole is represented as a directed graph: a paddock's state is represented by a node on this graph, and the system moves between states by following vertices between each node. These vertices have rules (or conditions) that allow the system to change state from one to the next. Each day the system attempts to move from one state to another by finding all paths leading away from the current state, and evaluating the rules for each path. The path with the highest (non-zero) score 
+</p><p class="Normal"> 
+<center><img src="FarmManager/states.gif" alt="Paddock System States"></center>
+</p><p class="Normal"> 
+To move from "sorghum" to "fallow" is simple - it requires that the crop was harvested on that day. However to move from "fallow" to "sorghum" may require several rules to be satisfied, for example:
+</p>
+<ul>
+<li class="Normal"> Date within a range
+<li class="Normal"> Soil water criteria met
+<li class="Normal"> More than 30 days since last harvest
+<li class="Normal"> No more than 3 sorghum crops in a row
+<li class="Normal"> No more than 70% of farm planted to a sorghum crop
+</ul>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Operation </p>
+<p class="Normal">
+The dynamic nature of these rule types requires a flexible method of interrogating simulations. At this initial stage, a standalone application to display log files is being used, after consultation with users another application may be developed.
+</p>
+<p class="Normal"> 
+<center><img src="FarmManager/diags.png" alt="Diagnostics"></center>
+</p><p class="Normal"> 
+</p>
+
+</body>
+</html>

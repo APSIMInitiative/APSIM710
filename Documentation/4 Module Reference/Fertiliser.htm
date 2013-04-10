@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>The APSIM Fertilizer Module (FERTILIZ)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="../ApsimWebStyle.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<p class="Title1">The APSIM Fertilizer Module (FERTILIZ </a>)</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The APSIM fertiliz module allows the user to specify the application of solid fertilizer to an APSIM “system” using a schedule spanning multiple years. There is also total flexibility for user specification of fertilizer components.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Parameter File Settings</p>
+<p class="Normal">The user has the option of specifying a fixed fertilizer schedule via the fertiliz module's parameter file .</p>
+<p class="Normal">&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="340" valign="top"><p class="Normal">Keyword = Setting </p></td>
+    <td width="340" valign="top"><p class="Normal">Description </p></td>
+  </tr>
+  <tr>
+    <td width="340" valign="top"><p class="Normal">day = day1, day2, ... , dayn </p></td>
+    <td width="340" valign="top"><p class="Normal">Day of year of application </p></td>
+  </tr>
+  <tr>
+    <td width="340" valign="top"><p class="Normal">year = year1, year2, ... , yearn </p></td>
+    <td width="340" valign="top"><p class="Normal">Year of application </p></td>
+  </tr>
+  <tr>
+    <td width="340" valign="top"><p class="Normal">amount = amount1, amount2, ... , amountn </p></td>
+    <td width="340" valign="top"><p class="Normal">Amount of fertilizer applied in kg/ha </p></td>
+  </tr>
+  <tr>
+    <td width="340" valign="top"><p class="Normal">type = type1, type2, ... , typen </p></td>
+    <td width="340" valign="top"><p class="Normal">Type of Fertilizer applied </p></td>
+  </tr>
+  <tr>
+    <td width="340" valign="top"><p class="Normal">depth = depth1, depth2, ... , depthn </p></td>
+    <td width="340" valign="top"><p class="Normal">depth of application in mm </p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">An example of the required initialisation data follows:-</p>
+<p class="Normal">&nbsp;</p>
+<p class="Code">[user_data_group.fertiliz .parameters] </p>
+<p class="Code">&nbsp;&nbsp;day = 100 120 () &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;! day of year of application </p>
+<p class="Code">&nbsp;&nbsp;year = 1994 1994 () &nbsp;&nbsp;&nbsp;! year of application </p>
+<p class="Code">&nbsp;&nbsp;amount = 50 30 (kg/ha) ! amount of fertilizer (kg/ha) </p>
+<p class="Code">&nbsp;&nbsp;type = urea urea () &nbsp;&nbsp;&nbsp;! code for fertilizer type </p>
+<p class="Code">&nbsp;&nbsp;depth = 5 10 (mm) ! depth of application (mm)</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Note:- This schedule specification is totally optional and can be ignored if scheduling is to be achieved via the manager or another module.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Requesting fertilizer application from other modules</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Any module can request fertilizer application using standard APSIM messages. The only data required to specify the operation is amount of fertilizer to apply, the type of fertilizer, and the depth at which it is applied. The format of a message to apply 50 kg/ha of urea at a depth of 50 mm would be as follows.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">fertiliz apply amount = 50(kg/ha), depth = 50 (mm), type = urea()</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">In this case “fertiliz ” is the name of the module and “apply” is the action that it responds to. The action “fertilize” can be used in place of the action “apply”.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">An alternate approach is to use a keyword naming convention to “set” a fertilizer application property in the fertilizer module. The fertilizer module will interpret any set command variable name starting with “fert_” as a fertilizer command and will use this information to apply fertilizer to the surface layer.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Code">if das = 1 then </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;soilno3 = no3(1) + no3(2) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;if (soilno3 &lt; 50) then </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fertiliz.fert_no3_n = 50 – soilno3 </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;endif </p>
+<p class="Code">endif</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">In this example manager logic the fertilizer module will apply adequate nitrate nitrogen to bring the total nitrogen content of the top 2 surface layers to 50 kg/ha on the day of sowing.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Specifying Fertilizer Constituents</p>
+<p class="Normal">The user has the total flexibility to configure (or describe) within the module's constants (.ini) file what a certain fertilizer contains. To do this the user specifies the fractional (on weight basis) component of the fertilizer for any substance known by the system. A full name can also be specified for use in model outputs.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">For example:- </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;[standard.fertiliz .NO3_N] </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;full_name = Nitrogen as Nitrate </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;components = no3 </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fraction = 1.0</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">This tells us that the fertilizer ‘NO3_N' is made up of one substance called no3. More complex examples may be:-</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">To specify Urea in terms of N per unit area:- </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;[standard.fertiliz .Urea_N] </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;full_name = Nitrogen as Urea </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;components = urea </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fraction = 1.0</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">To specify Urea in terms of weight of fertilizer:- </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;[standard.fertiliz .Urea] </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;full_name = Urea </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;components = urea </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fraction = 0.46</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">(the component called urea is described in APSIM in terms of weight of nitrogen and so the fraction must represent the fractional weight of nitrogen in urea)</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">To specify the relevant components of a compost:- </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;[standard.fertiliz .compost] </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fullname = Organic Matter (Compost) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;components = no3 nh4 org_n org_c_pool3 </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fraction = .05 .05 .10 .50</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Where org_c_pool3 is the carbon pool least susceptible to decomposition and org_n is the nitrogen content of fresh organic matter. See the SoilN2 documentation for further details.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Once you have specified the composition of a fertilizer the module will find any module that owns each of the components and will send an increment to them respectively. There is a current limit of twenty components per specification. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Fertiliz Module Outputs</p>
+<p class="Normal">The Fertilz module has one output, fertilizer, which is the total amount of fertilizer added on any day (kg/ha).</p>
+</body>
+</html>

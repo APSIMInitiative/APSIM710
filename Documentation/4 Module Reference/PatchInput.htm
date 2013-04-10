@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>PatchInput module </title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="../ApsimWebStyle.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<p class="Title1">PatchInput module </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Introduction </p>
+<p class="Normal">Some simulations require weather data (or other types of data) to be patched on certain days. For example, to simulate a grower's paddock for a particular season, it is necessary to patch the nearby weather stations rainfall data with the actual grower's rainfall and temperature data. The PatchInput module does this patching automatically, without the need for running external patching tools. </p>
+<p class="Normal">An example of where this functionality is used is in the Yield Prophet project. In this project, a grower does a soil sample on a pre-sowing date e.g. 1 April 2004 . During the wheat season, the grower enters their rainfall (from their rain guage) from the 1 April 2004 to the present day. The Yield Prophet project then: </p>
+<ul>
+  <li class="Normal">Runs APSIM for the last 100 years. They reset the soil status to the measured value on 1 April every year. </li>
+  <li class="Normal">They then use the PatchInput module to patch the current year (2004) rainfall (from rain guage) and maxt, mint and radn (from the nearest weather station) values over the last 100 years for dates between 1 April and the present date. </li>
+  <li class="Normal">All climate data after the present day are not patched but left at the historical values. </li>
+  <li class="Normal">This then gives provides a yield distribution for what could happen on their paddock for the remainder of the season. </li>
+</ul>
+<p class="Title2">Details </p>
+<p class="Normal">The PatchInput module is a derivative of the Input module and thus reads its own data file in exactly the same way as Input. It is specified in the control file like any other module: </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;module = PatchInput(patch) patch.dat [test] </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The data file looks similar to any other APSIM data file: </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;[test.patch.data] </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;allow_sparse_data = true </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;patch_all_years = false </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;date patch_rain </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;() (mm) </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;1988/1/10 55 </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;1988/1/15 66 </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;1988/1/20 77 </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;1988/1/25 88 </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">All variables in the data file (except year,day and date) should be prefixed with ‘patch_'. This indicates that the corresponding variable in the Input module will be overwritten with the value in the patch file. In the above example the Input module's variable called ‘rain' will be overwritten with the values from the patch data file. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">If a patch data file has a constant of patch_all_years = true, then the data will be overwritten on the specified days for all years. If patch_all_years = false, then the data will only be patched in the specific year mentioned. Sparse data, like in the above example, is supported. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Another optional parameter exists to patch other met variables for all years. Eg</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;[test.patch.data] </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;allow_sparse_data = true </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;patch_all_years = true </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;patch_variables_long_term = maxt mint radn</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;date patch_rain </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;() (mm) </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;1988-12-30 55 </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;1988-12-31 66 </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;1989-1-1 77 </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;1989-1-2 88</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">In this example rainfall will be overwritten on the days 30 Dec through to 2 Jan for all years. In addition, because of the ‘patch_variables_long_term' parameter, the values of maxt, mint and radn will be read from the dates 30/12/1988 through to 2/1/1989 and patched over all other years of the climate record. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Examples </p>
+<p class="Normal">An example of how to use the PatchInput module can be found in the sample directory. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Output variables</p>
+<p class="Normal">PatchInput provides unpatched versions of any variables it patches. They are prefixed with 'unpatched_'. For example outputting the variable 'unpatched_rain' will give the value of rain before it is patched by this module.</p>
+</body>
+</html>

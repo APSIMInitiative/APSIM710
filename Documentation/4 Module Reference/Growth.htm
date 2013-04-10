@@ -1,0 +1,1614 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<meta name=Generator content="Microsoft Word 11 (filtered)">
+<title>The APSIM Growth Module </title>
+
+<link rel=Stylesheet type="text/css" media=all
+href="../ApsimWebStyle.css">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Courier;
+	panose-1:2 7 4 9 2 2 5 2 4 4;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+@font-face
+	{font-family:"Arial Narrow";
+	panose-1:2 11 5 6 2 2 2 3 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+p.MsoCommentText, li.MsoCommentText, div.MsoCommentText
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:none none;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:blue;
+	text-decoration:none none;}
+p.MsoAcetate, li.MsoAcetate, div.MsoAcetate
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:8.0pt;
+	font-family:Tahoma;}
+p.title1, li.title1, div.title1
+	{font-size:18.0pt;}
+p.title2, li.title2, div.title2
+	{font-size:12.0pt;}
+p.normal, li.normal, div.normal
+	{font-size:12.0pt;}
+p.code, li.code, div.code
+	{font-size:8.0pt;}
+p.formula, li.formula, div.formula
+	{font-size:14.0pt;}
+p.formula2, li.formula2, div.formula2
+	{font-size:14.0pt;}
+p.formulasym, li.formulasym, div.formulasym
+	{font-size:16.0pt;}
+p.tabletitle, li.tabletitle, div.tabletitle
+	{margin-right:0cm;
+	margin-left:0cm;
+	font-size:14.0pt;}
+p.tableborder, li.tableborder, div.tableborder
+	{margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+p.tableodd, li.tableodd, div.tableodd
+	{margin-right:0cm;
+	margin-left:0cm;
+	font-size:10.0pt;}
+p.tableeven, li.tableeven, div.tableeven
+	{margin-right:0cm;
+	margin-left:0cm;
+	font-size:10.0pt;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:72.0pt 90.0pt 72.0pt 90.0pt;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+-->
+</style>
+
+</head>
+
+<body bgcolor="#F3F3F3" lang=EN-AU link=blue vlink=blue>
+
+<div class=Section1>
+
+<p class=title1>The APSIM Growth Module</p>
+
+<p class=normal>&nbsp;</p>
+
+<p class=title2>Introduction</p>
+
+<p class=normal>The growth module is a simplified plant growth module developed
+for simulating pasture and forestry systems module. Whilst simplified in many respects,
+the major processes relating to growth, resource (water and nitrogen) use and
+responses to climate and resource supply, partitioning of photosynthate and
+links to the wider carbon and nitrogen balance are captured within the module.
+This document summarises the functional components of the module. </p>
+
+<p class=normal>&nbsp;</p>
+
+<p class=title2>Notable features of APSIM-Growth</p>
+
+<p class=normal style='margin-left:36.0pt;text-indent:-18.0pt'><span
+style='font-size:10.0pt;font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>A flexible method of assimilate partitioning is that is able to
+maintain structural (stem, branch, large roots, etc) and growth (foliage and
+fine root) pools. </p>
+
+<p class=normal style='margin-left:36.0pt;text-indent:-18.0pt'><span
+style='font-size:10.0pt;font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>A whole plant light use efficiency is used. </p>
+
+<p class=normal style='margin-left:36.0pt;text-indent:-18.0pt'><span
+style='font-size:10.0pt;font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Soil water demand is provided by the micromet module using a
+Penman-Monteith formulation. </p>
+
+<p class=normal style='margin-left:36.0pt;text-indent:-18.0pt'><span
+style='font-size:10.0pt;font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Germination processes are not modelled, swards or plantations are
+established. </p>
+
+<p class=normal style='margin-left:36.0pt;text-indent:-18.0pt'><span
+style='font-size:10.0pt;font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Responses to nitrogen supply can be modelled in a simplistic
+fashion by a single ‘site index' parameter or via a full nitrogen balance and
+cycle. </p>
+
+<p class=normal style='margin-left:36.0pt;text-indent:-18.0pt'><span
+style='font-size:10.0pt;font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>No ‘phenology' is modelled, although, changes in partitioning
+rules for photosynthate can change with plant development (i.e. size). </p>
+
+<p class=title2>Example Manager Syntax </p>
+
+<p class=normal><em><span style='font-family:"Arial Narrow"'>Module_name </span></em>establish
+plants = <em><span style='font-family:"Arial Narrow"'>ppp </span></em>(/ha),
+init_section = <em><span style='font-family:"Arial Narrow"'>ssssss</span></em></p>
+
+<p class=normal>This statement will establish the sward/plantation where <em><span
+style='font-family:"Arial Narrow"'>Module_name </span></em>is the name of the
+instance of the growth module within the simulation (e.g. Bambatsi or
+Egrandis), <em><span style='font-family:"Arial Narrow"'>ppp </span></em>is the
+plant population and <em><span style='font-family:"Arial Narrow"'>ssssss </span></em>is
+the name of the data section used to initialise the new population of plants.</p>
+
+<p class=normal>&nbsp;</p>
+
+<p class=normal><em><span style='font-family:"Arial Narrow"'>Module_name </span></em>cut
+foliage_remove_fr = 0.7, adm_remove_fr = 0.5</p>
+
+<p class=normal>This statement will remove 70% of leaves and 50% of stem (adm =
+above-ground dry matter, refers to structural pools). Biomass is removed from
+the system.</p>
+
+<p class=normal>&nbsp;</p>
+
+<p class=normal><em><span style='font-family:"Arial Narrow"'>Module_name </span></em>thin
+plants_fraction = 0.1, biomass_fraction = 0.05</p>
+
+<p class=normal>This statement will remove 10% of population and but only 5% of
+all above-ground biomass pools (i.e. thinning out of smaller than average sized
+individuals). Biomass is removed from the system.</p>
+
+<p class=normal>&nbsp;</p>
+
+<p class=normal><em><span style='font-family:"Arial Narrow"'>Module_name </span></em>kill</p>
+
+<p class=normal>This statement will kill the model, sending any remaining
+biomass to the residue module.</p>
+
+<p class=normal>&nbsp;</p>
+
+<p class=title2>Model Components </p>
+
+<p class=normal>The APSIM Growth module is based on the lessons learned from
+other APSIM crop (Keating et al, 2003, Robertson et al, 2002, Wang et al, 2002)
+and forest (Huth et al, 2001, 2002) productivity models as well as other
+pasture models such as GRASP (McKeon et al). A range of APSIM modules provide
+daily data for meteorological conditions and uptake of water and nitrogen and
+so that time step is used for all growth calculations.</p>
+
+<p class=normal>The APSIM Growth module contains two major classes of biomass
+pools: growth and structural pools. Growth pools are responsible for most
+growth processes (i.e. leaves intercepting radiation) and water uptake (fine
+roots). Structural pools are provide sinks for assimilate and nutrients and are
+used to describe plant properties such as plant height. Structural pools are
+either above or below ground. The number of structural pools for a given plant
+model can be user-defined but a standard configuration may only contain stem
+above ground and a tap root below ground. </p>
+
+<p class=normal>&nbsp;</p>
+
+<p class=normal>Growth is calculated as,</p>
+
+<p class=normal>&nbsp;</p>
+
+<p class=normal><img width=244 height=21 src="Growth/Growth_science_clip_image002.gif">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(1)</p>
+
+<p class=normal>&nbsp;</p>
+
+<p class=normal>Where ?G is daily growth, R int is daily intercepted solar
+radiation (MJ/m 2 ), e is the light use efficiency (g/MJ) and F t , F n , F vpd
+and F w are growth modifiers for temperature, nitrogen, vapour pressure deficit
+and soil water supply respectively. R int is calculated using crown cover, leaf
+area, and an assumption of exponential light extinction. F t and F vpd are based
+on average daily temperature and vapour pressure deficit. Fn is based on leaf
+nitrogen concentration. Fw is calculated as the ratio of soil water demand and
+supply.</p>
+
+<p class=normal>&nbsp;</p>
+
+<p class=title2>Partitioning of daily Growth</p>
+
+<p class=normal>Unlike other APSIM modules, e is a whole plant (above and below
+ground) light use efficiency. As a result, the daily growh has to be
+partitioned into foliage, roots, above-ground structure and below-ground
+structure. The rules for partitioning are described via two main mechanisms:
+variation in root:shoot ratio and structural fraction of above-ground growth.</p>
+
+<p class=normal>Stresses due to deficiency in below ground resources such as
+water and nutrients is often found to increase the root:shoot ratio. In this
+module the user can define how increasing severity of stress can increase the
+proportion of daily growth going into below-ground growth. This extra rooting
+growth can then assist the plant in accessing scarce resources, depending on
+the way in which APSIM is configured (e.g. use of the APSIM-SWIM water balance
+where root length density impacts on root water uptake). Currently, soil water
+supply, soil water content and plant nitrogen status can all be used to alter
+the root:shoot ratio of the plants.</p>
+
+<p class=normal>The partitioning of above-ground growth changes throughout the
+growth cycle of plants. The result is the often consistent allometry observed
+in plants. The Growth module will allow the user to specify how the fraction of
+above-ground growth going into structure changes with mean plant size. For
+example, small plants may put proportionally more photosynthate into foliage
+than larger plants relfecting their need to establish a canopy as against
+compete with other plants via increased structural/height growth.</p>
+
+<p class=normal>On a daily basis, the above two partitioning rules are
+evaluated. The model will then back-calculate the partitioning into leaf, roots
+and structure such that root:shoot ratios and growth:structure ratio are
+conserved..</p>
+
+<p class=normal>Leaf Area growth is calculated from leaf growth and a specific
+leaf area. Similarly, root length calculations utilise a specific root length,
+with root length partitioned spatially according to supplies and demands for
+both water and nitrogen.</p>
+
+<p class=normal>&nbsp;</p>
+
+<p class=title2>Senescence and Detachment of biomass</p>
+
+<p class=normal>Each biomass pool undergoes continual senescence and the
+resultant senesced material is continually detached from the plant.</p>
+
+<p class=normal>Senescence of growth pools (foliage and roots) is calculated
+using simple first order decay. The user specifies a mean residence time ( in
+days) which is inverted within the model to provide a decay coefficient. Senescence
+of foliage is often observed to also show a certain seasonality. This is
+achieved within the model via use of the daily temperature stress factor and
+the annual sinusoidal temperature curve such that the annual average mean
+residence time will equate to that provided by the user but that the daily
+value will vary around that throughout the year.</p>
+
+<p class=normal>Other processes can be responsible for leaf death. Senescence
+of foliage can also be triggered by low temperatures (i.e. frosting). In this
+case, low nightly minimum temperatures can specified to fractionally decrease
+green leaf area. Alternatively, mutual shading of leaves in dense canopies can
+be specified to decrease leaf area. If total leaf senescence occurs, a small
+initial leaf area is maintained on the plant in order to initiate further
+regrowth when conditions are favourable.</p>
+
+<p class=normal>Senescence of structural pools is said to follow the patterns
+in the growth pools. This is achieved by relating the senescence rate of
+above-ground pools to the senescence rate of foliage and by relating the
+senescence rate of below-ground pools to the senescence rate of roots. For
+example, a 1% loss of green leaf may result in a 0.5% loss in live stem mass.</p>
+
+<p class=normal>All senesced pools (growth or structural, above or below
+ground) detach via a first order decay function. Above-ground biomass is added
+to the surface residues. Below-ground biomass is added to soil organic matter.</p>
+
+<p class=normal>&nbsp;</p>
+
+<p class=title2>Plant water use</p>
+
+<p class=normal>Plant water demand is calculated using the Micromet module
+which is developed from the work of Snow et al. [1999] and Kelliher et al.
+[1995], while plant water supply is calculated using one of the two soil water
+modules available in APSIM. Please refer to these modules for further
+information.</p>
+
+<p class=normal>Plant water uptake is calculated within the Growth module using
+the assumption that uptake of water from soil follows a simple first order
+decay with soil drying.</p>
+
+<p class=normal>&nbsp;</p>
+
+<p class=normal><img width=129 height=41 src="Growth/Growth_science_clip_image004.gif">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(2)
+</p>
+
+<p class=normal>&nbsp;</p>
+
+<p class=title2>Plant nitrogen</p>
+
+<p class=normal>Plant nitrogen demand is based upon the size of the biomass
+pools and a target nitrogen concentration for each pool. When nitrogen supply
+is insufficient to meet all this demand, nitrogen is partitioned according to
+the sink strength in each pool. If this results in a decrease in leaf nitrogen
+concentration the plant may experience nitrogen stress.</p>
+
+<p class=normal>In extreme nutritional conditions, or in cases where fertility
+information is unknown, it is possible to constrain the Growth module via use
+of a site index. In this case, Fn is maintained at a constant value.</p>
+
+<p class=normal>&nbsp;</p>
+
+<p class=title2>Uptake of nitrogen</p>
+
+<p class=normal>Nitrate-nitrogen can be taken up by the plant via the uptake of
+water from the soil. If this is insufficient to meet daily demand a set fraction
+of the unmet demand can be taken up via active uptake processes. This active
+process is further discounted when soil water content is low.</p>
+
+<p class=normal>&nbsp;</p>
+
+<p class=title2>Output Variables</p>
+
+<table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+ style='border-collapse:collapse;border:none'>
+ <thead>
+  <tr>
+   <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+   padding:0cm 5.4pt 0cm 5.4pt'>
+   <p class=MsoNormal style='text-autospace:none'><b><span style='font-size:
+   10.0pt;font-family:"Courier New"'>Variable Name</span></b></p>
+   </td>
+   <td width=96 valign=top style='width:72.0pt;border:solid windowtext 1.0pt;
+   border-left:none;padding:0cm 5.4pt 0cm 5.4pt'>
+   <p class=MsoNormal style='text-autospace:none'><b><span style='font-size:
+   10.0pt;font-family:"Courier New"'>Units</span></b></p>
+   </td>
+   <td width=676 valign=top style='width:507.2pt;border:solid windowtext 1.0pt;
+   border-left:none;padding:0cm 5.4pt 0cm 5.4pt'>
+   <p class=MsoNormal style='text-autospace:none'><b><span style='font-size:
+   10.0pt;font-family:"Courier New"'>Description</span></b></p>
+   </td>
+  </tr>
+ </thead>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>adm_dead(num_above<sup>*</sup>)</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Dry matter in each of the above ground part of
+  dead plants</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>adm_green(num_above)</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Dry matter in each of the above ground part of
+  live plants</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>adm_sen(num_above)</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Senesced dry matter in each of the above ground
+  part of live plants</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Age</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>years</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Age of the plants</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>an_green(num_above)</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>N in each of the green above ground parts of live
+  plants</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>bdm_dead(num_below<sup>**</sup>)</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Dry matter in each of the below ground parts of
+  dead plants</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>bdm_green(num_below)</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Green matter in each of the below ground parts of
+  live plants</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>bdm_sen(num_below)</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Senesced matter in each of the below ground parts
+  of live plants</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Biomass</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Total above ground dry matter</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>bn_green(num_below)</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg N /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>N in each of the green below ground parts of live
+  plants</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>cover or cover_green</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>0-1</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Fractional ground cover from green material</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>cover_tot</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>0-1</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Fractional ground cover from all material</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>crop_type</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Text</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Crop type for looking up properties</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>dlt_adm_green(num_above)</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Change
+  in adm_green today due to photosynthesis</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>dlt_an_green(num_above)</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg N /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Change
+  in an_green today due to N uptake from soil</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>dlt_bn_green(num_below)</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg N /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Change
+  in bn_green today due to N uptake from soil</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>dlt_dm</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Change
+  in total dry matter today</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>dlt_foliage_mass</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Change
+  in foliage_mass today due to photosynthesis</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>dlt_foliage_mass_detached</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Change
+  in foliage_mass_detached today from senesced foliage</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>dlt_foliage_mass_sen</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Change
+  in foliage_mass_sen today due to senescence of live foliage</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>dlt_foliage_n</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg N /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Change
+  in foliage_n today due to N uptake from soil</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>dlt_foliage_n_detached</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg N /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Change
+  in foliage_n today from senesced foliage.</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>dlt_lai_sen</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Change
+  in lai_sen today due to senescence of live foliage</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>dlt_lai_sen_age</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Change
+  in lai_sen today due to age driven senescence of live foliage</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>dlt_lai_sen_frost</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Change
+  in lai_sen today due to frosting of live foliage</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>dlt_lai_sen_light</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Change
+  in lai_sen today due to shading of live foliage</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>dlt_no3(num_layers<sup>***</sup>)</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg N /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Change
+  in no3 today (i.e. uptake of NO3 from each layer by the plant)</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>dlt_root_mass</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Change
+  in root_mass today due to photosynthesis</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>dlt_root_mass_sen</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Change
+  in root_mass_sen today due to senescence of live fine roots</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>dlt_root_n</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg N /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Change
+  in root_n today due to uptake of N from soil.</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>dlt_root_n_sen</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg N /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Change
+  in root_n_sen today due to senescence of live fine roots</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Ep</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Mm</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Actual water uptake summed across all soil layers</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Fage</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>0-1</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Stress factor for age &#8211; generic factor used
+  to capture loss of productivity as plant stands mature.</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Fasw</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>0-1</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Fraction of plant available soil water</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Fdl</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>0-1</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Stress factor for daylength &#8211; used to
+  capture increased partitioning to roots prior to winter.</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Ff</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>0-1</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Stress factor for frost</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Ffasw</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>0-1</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Stress factor for fasw &#8211; used to capture
+  increased partitioning to roots in dry conditions.????</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Fn</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>0-1</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Stress factor for nitrogen</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>foliage_mass</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Mass of foliage </span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>foliage_n</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg N /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>N in the foliage</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Frgr</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>0-1</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Relative growth rate factor for photosynthesis =
+  min(Ft, Fn, Fvpd, Fage)</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Ft</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>0-1</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Stress factor for temperature</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Fvpd</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>0-1</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Stress factor for vapour pressure deficit</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Fw</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>0-1</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Stress factor for water supply (= supply/demand)</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Height</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Mm</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Height of the plants </span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Lai</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>m/m2</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Leaf area index</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>n_demand</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg N /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Nitrogen demand</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>no3_demand</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg N /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Nitrate Nitrogen demand</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>plant_status</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Text</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>&#8220;in&#8221;, &#8220;out&#8221;,
+  &#8220;dead&#8221; etc</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Plants</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>#/ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Number of plants per ha</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>rld (num_layers)</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>mm/mm3</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Root length density</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>rlv(num_layers)</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>mm/mm3</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Root length density corrected for aeration stress</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>rlv_Growth(num_layers)</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>cm/cm3</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Same as rlv but with different units </span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>root_depth</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>mm</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Depth of the root system</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>root_length(num_layers)</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>mm/mm2</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Root length for each layer (area basis)</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>root_mass</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg DM /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Mass of live fine roots</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>root_n</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg N /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>N in the live fine root system</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>rue_actual</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>g/MJ</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Radiation use efficiency = RUE * Frgr</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>SLA_senescing</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>mm/g</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Specific leaf area of the senescing leaves</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Slai</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>m/m2</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Senesced leaf area index</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>sw_demand</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Mm</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Soil water demand</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=223 valign=top style='width:167.4pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>total_n</span></p>
+  </td>
+  <td width=96 valign=top style='width:72.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>kg N /ha</span></p>
+  </td>
+  <td width=676 valign=top style='width:507.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Total in the plants, above and below</span></p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal><span lang=EN-NZ>&nbsp;</span></p>
+
+<p class=MsoNormal><sup><span style='font-size:10.0pt;font-family:"Courier New"'>* 
+</span></sup>num_above &#8211; number of above ground parts</p>
+
+<p class=MsoNormal><sup><span style='font-size:10.0pt;font-family:"Courier New"'>**
+</span></sup>num_below &#8211; number of below ground parts</p>
+
+<p class=MsoNormal><sup><span style='font-size:10.0pt;font-family:"Courier New"'>***</span></sup><span
+style='font-size:10.0pt;font-family:"Courier New"'>num_layers &#8211; number of
+soil layers</span></p>
+
+<p class=normal>&nbsp;</p>
+
+<p class=normal>&nbsp;</p>
+
+<p class=title2>References</p>
+
+<p class=normal>Huth, N.I., Snow, V.O. and Keating, B.A. 2001. Integrating a
+forest modelling capability into an Agric. production systems modelling
+environment - current applications and future possibilities. Proceedings of the
+International Congress on Modelling and Simulation, Aust. National University , Dec. 2001. pp. 1895-1900. </p>
+
+<p class=normal>N. I. Huth, P. S. Carberry, P. L. Poulton, L. E. Brennan, and
+Brian A. Keating. &quot;A framework for simulation of agroforestry options for
+the low rainfall areas of Australia using APSIM.&quot; <em><span
+style='font-family:"Arial Narrow"'>European Journal of Agronomy </span></em>18
+(2002): 171-185.</p>
+
+<p class=normal>Keating, Brian A., P. S. Carberry, G. L. Hammer, Mervyn E.
+Probert, M. J. Robertson, D. Holzworth, N. I. Huth, J. N. G. Hargreaves, H.
+Meinke, Z. Hochman, G. McLean, K. Verburg, V. O. Snow, J. P. Dimes, M. Silburn,
+E. Wang, Stuart Brown, K. L. Bristow, S. Asseng, S. C. Chapman, R. L. McCown,
+D. M. Freebairn, and C. J. Smith. &quot;An overview of APSIM, a model designed
+for farming systems simulation.&quot; <em><span style='font-family:"Arial Narrow"'>European
+Journal of Agronomy </span></em>18 (2002): 267-288.</p>
+
+<p class=normal>Kelliher, F. M., R. Leuning, M. R. Raupach, and E. D. Schulze.
+1995. Maximum conductances for evaporation from global vegetation types.
+Agricultural and Forest Meteorology 73: 1-16.</p>
+
+<p class=normal>Robertson, M. J., Carberry, P. S., Huth, N. I., Turpin, J. E.,
+Probert, M. E., Poulton, P. L., Bell, M., Wright, G. C., Yeates, S. J. and
+Brinsmead, R.B. 2002. Simulation of growth and development of diverse legume
+species in APSIM. Aust. J. Agric. Res. 53, 429-446.</p>
+
+<p class=normal><span lang=EN-US>Paydar, Z., Huth N. I., and Snow V. O. 2005.
+Modelling irrigated <i>Eucalyptus</i> for salinity control on shallow
+watertables. <i>Australian Journal of Soil Research   </i>43: 587-97.</span></p>
+
+<p class=normal>Snow, V. O., W. J. Bond, B. J. Myers, S. Theiveyanathan , C. J.
+Smith, and R. G. Benyon. 1999. Modelling the water balance of
+effluent-irrigated trees. Agricultural Water Management 39: 47-67.</p>
+
+<p class=normal>Wang, E., Robertson, M. J., Hammer, G. L., Carberry, P. S.,
+Holzworth, D. P., Meinke, H., Chapman, S. C., Hargreaves, J. N. G., Huth, N.
+I., and McLean, G. Development of a generic crop module template in the
+cropping system model APSIM. European Journal of Agronomy. 18 (2002):121-140. </p>
+
+</div>
+
+</body>
+
+</html>

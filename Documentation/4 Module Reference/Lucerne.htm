@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>The APSIM Lucerne Module - (lucerne)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="../ApsimWebStyle.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<p class="Title1">The APSIM Lucerne Module - (lucerne) </p>
+<p class="Title1">&nbsp;</p>
+<p class="Normal">For detailed information on module development and science please consult the <a href="../../Plant/docs/plant_science.htm">PLANT module science </a> document. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Introduction</p>
+<p class="Normal">The lucerne module was developed by Peter Carberry, Perry Poulton, Merv Probert and Michael Robertson . The module is described in the paper by Robertson et al. (2002). The reader is referred to the science document for the plant module for a comprehensive description of the processes simulated by APSIM-Lucerne. This document outlines some lucerne-specific issues that are not covered by the plant science document. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Notable features of APSIM-LUCERNE</p>
+<ul>
+  <li>
+    <p class="Normal">The phenology of only one of the lucerne cultivars is responsive to photoperiod (see Moot et al. 2001), however it is likely that the other cultivars respond to photoperiod as well. Lack of data precludes parameterising this, though. </p>
+  </li>
+  <li>
+    <p class="Normal">The module does not simulate the well-known decline in biomass production in the autumn (influence of photoperiod on increase partitioning of assimilate below ground). There is module development going on to overcome this deficiency. In the meantime users are suggested to contact Michael Robertson or John Hargreaves at APSRU for a known work-around.</p></li>
+
+<li><p class="Normal">The module does not simulate different degrees of winter dormancy in cultivars.  Please see Michael Robertson at APSRU on advice on how to parameterise an unknown cultivar.</p></li>
+
+<li><p class="Normal">The module operates on the basis of the stem as the unit, rather than the plant.  As a rough guide if plant numbers are all that is known then work on 5-10 stems per plant depending upon stand age.</p></li>
+  <li>
+    <p class="Normal">APSIM-Lucerne is not phosphorus-responsive, this is currently under development. </p>
+  </li>
+  <li>
+    <p class="Normal">Crop growth is not sensitive to waterlogging. </p>
+  </li>
+</ul>
+<p class="Title2">Example Syntax </p>
+<p class="Normal">Sowing: </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lucerne sow cultivar = trifecta, plants = 200 (/m2), sowing_depth = 40 (mm)</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Harvest (end crop): </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lucerne harvest </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lucerne kill_crop </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lucerne end_crop</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Harvest (with regrowth): </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lucerne harvest plants = 150 (/m2), height = 50 (mm), remove = 0.95</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The above harvest statement will cut the lucerne plant at 50 mm and remove 95% of the biomass. The plant density will also be reduced to 150 plants per sq metre from the previous 200 plants per sq metre.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Cultivars and crop classes</p>
+<p class="Normal">There are two crop classes, representing crops growing from seed (plant) and crops growing after cutting. Crops change automatically from plant to regrowth classes at the first cut after sowing.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">There are a number of cultivars able to be simulated: Kaituna, Trifecta, Hunter_River, Sceptre, Aquarius. Northern China cultivars Longdong and Dingxi are also included. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Validation</p>
+<p class="Normal">APSIM-Lucerne has received testing in northern Australia (Probert et al. 1998) and New Zealand (Moot et al., 2001), Western Australia (Dolling et al 2004, Robertson et al 2004), New South Wales (Robertson et al 2004, Verberg and Bond 2003) and China (Chen et al 2003) with factors such as cultivar, irrigation, and soil type varying. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">IN WHICH ENVIRONMENTS THIS MODULE SHOULD BE USED WITH CONFIDENCE?</p>
+<p class="Normal">APSIM-Lucerne can be used with most confidence throughout the wheat belt of Australia and in cool temperate environments such as New Zealand and northern China.  When using the model in these environments, users should consult the module development team on how to simulate their particular cultivar.</p>
+
+<p class="Normal">&nbsp;</p>
+<p class="Title2">References</p>
+<p class="Normal">Chen W,  Yu Ying Shen, Michael Robertson, Merv Probert, Bill Bellotti, Zhi Biao Nan. Simulation of Crop Growth and Soil Water for Different Cropping Systems in the Gansu Loess Plateau, China using APSIM. In: "New directions for a diverse planet". Proc. 4th International Crop Science Congress, Brisbane, CDROM ISBN 1 920842 217. Web site www.cropscience.org.au</p>
+<p class="Normal">Dolling P.J., Robertson M.J., Asseng S., Ward, P.R., Latta, R.A. (2004) Simulating lucerne growth and water on diverse soil types in a Mediterranean-type environment. Australian Journal of Agricultural Research (submitted).</p>
+<p class="Normal">Moot, D., Robertson, M.J. and Pollock, K. (2001). Validation of the APSIM-Lucerne model for phenological development in a cool-temperate climate. 10th Australian Agronomy Conference, Hobart , Tasmania . </p>
+<p class="Normal">Probert, M. E.; Robertson, M. J.; Poulton, P. L.; Carberry, P. S.; Weston, E. J., and Lehane, K. J. (1998). Modelling lucerne growth using APSIM. Proceedings of the 9th Australian Agronomy Conference, Wagga Wagga 1998:247-250. </p>
+<p class="Normal">Robertson, M.J., Carberry, P.S., Huth, N.I., Turpin, J.E., Probert, M.E., Poulton, P.L., Bell, M., Wright, G.C., Yeates, S.J., and Brinsmead, R.B. (2002). Simulation of growth and development of diverse legume species in APSIM, Australian Journal of Agricultural Research 53:429-446.</p>
+<p class="Normal">Robertson M, Gaydon D, Latta R, Peoples M and Swan A (2004) Simulating lucerne/crop companion farming systems in Australia. In: "New directions for a diverse planet". Proc. 4th International Crop Science Congress, Brisbane, CDROM ISBN 1 920842 217. Web site www.cropscience.org.au</p>
+<p class="Normal">Verburg K, Bond WJ (2003) Use of APSIM to simulate water balances of dryland farming systems in south eastern Australia. CSIRO Technical Report 50/03, CSIRO, Canberra, Australia.</p>
+</body>
+</html>

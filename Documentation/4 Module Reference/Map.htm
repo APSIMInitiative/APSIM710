@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>How to Use Map</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="../ApsimWebStyle.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<p align="left" class="Title1"><strong>How to Use Map </strong></p>
+<p class="Normal"><strong>&nbsp; </strong></p>
+<p class="Normal">The <em>Map </em> module maps simulation soil layers onto output layers. Numerical simulation of water and solute is likely to require many more layers than the user either wants to know about in the outputs or has data to compare against. <em>Map </em> groups simulation layers into more useful output layers using an array of coefficients. Output arrays may either be expressed as sums, averages, or concentrations of the contributing simulation layers. <em>Map </em> can map the same array in several different ways (eg. Below nitrate, no3n, is converted to a sum, a concentration, and a concentration in the soil water) but there can be only one layer structure.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Example: </p>
+<p class="Code">[test.map.parameters] </p>
+<p class="Code">arrays2sum_names = no3n nh4n dlayer </p>
+<p class="Code">arrays2ave_names = soil_temp </p>
+<p class="Code">arrays2conc_names = no3n </p>
+<p class="Code">arrays2concsw_names = no3n </p>
+<p class="Code">arrays2satpaste_names = </p>
+<p class="Code">core_start = &nbsp;&nbsp;&nbsp;&nbsp;0 &nbsp;&nbsp;&nbsp;&nbsp;200 &nbsp;&nbsp;&nbsp;&nbsp;400 &nbsp;&nbsp;&nbsp;&nbsp;600 &nbsp;&nbsp;&nbsp;&nbsp;800 </p>
+<p class="Code">core_end = &nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;200&nbsp;&nbsp;&nbsp;400  &nbsp;&nbsp;&nbsp;&nbsp;600  &nbsp;&nbsp;&nbsp;&nbsp;800  &nbsp;&nbsp;&nbsp;&nbsp;900</p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">To use, supply: </p>
+<p class="Normal">arrays2sum A list of array names owned by other modules whose elements are to be summed into a more useful output range. The name of the mapped array will be that of the original array but preceded by ‘map_'. Currently a maximum of 10 arrays can be summed. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong>arrays2ave</strong> A list of array names owned by other modules whose elements are to be averaged into a more useful output range. The name of the mapped array will be that of the original array but preceded by ‘map_'. Currently a maximum of 10 arrays can be averaged. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong>arrays2conc</strong> A list of array names owned by other modules whose elements are to be converted into concentrations in the soil volume. The name of the mapped array will be that of theoriginal array but preceded by ‘conc_'. Currently a maximum of 10 arrays can be converted to concentrations. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong>arrays2concsw</strong> As above except the concentrations will be expressed as the concentration in the soil water. The name of the mapped array will be that of the original array but preceded by ‘concsw_'. Currently a maximum of 10 arrays can be converted to concentrations. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong>arrays2satpaste</strong> As above except the concentrations will be expressed as the concentration in a saturation paste. Because there is no standard method of estimating the saturation paste water content from the soil's hydraulic properties the user must supply that water content. Map will look for an array, satpaste_wc – the saturation paste gravimetric water content – units of g /g, to be provided from another module (e.g. Manager, Input). The name of the mapped array will be that of the original array but preceeded by ‘satpaste_'. Currently a maximum of 10 arrays can be converted to saturation paste concentrations. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong>core_start/core_end</strong> A list of the start and end depths (in mm) for each layer for which you want values reported. There can be only one if you want - this is a simple way of finding the total amount of a substance to some depth which is not the simulation depth. The depths do not have to be contiguous, there can be gaps on the layers, the layers do not have to be in increasing depth order, point depths (core_start = core_end) are acceptable (and in this case all Map does is to find the appropriate layer). The only requirements are that there are pairs of core_start and core_end and that for any pair core_start &lt;= core_end. </p>
+</body>
+</html>

@@ -1,0 +1,850 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./WaterSupply_science_files/filelist.xml">
+<link rel=Edit-Time-Data href="./WaterSupply_science_files/editdata.mso">
+<!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]-->
+<title>The APSIM WaterSupply Module </title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>gay022</o:Author>
+  <o:LastAuthor>gay022</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>31</o:TotalTime>
+  <o:Created>2004-12-06T05:40:00Z</o:Created>
+  <o:LastSaved>2004-12-06T06:11:00Z</o:LastSaved>
+  <o:Pages>5</o:Pages>
+  <o:Words>1960</o:Words>
+  <o:Characters>11177</o:Characters>
+  <o:Company>CSIRO</o:Company>
+  <o:Lines>93</o:Lines>
+  <o:Paragraphs>22</o:Paragraphs>
+  <o:CharactersWithSpaces>13726</o:CharactersWithSpaces>
+  <o:Version>9.6926</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<link rel=Stylesheet type="text/css" media=all
+href="../ApsimWebStyle.css">
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:Courier;
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:0;
+	mso-generic-font-family:modern;
+	mso-font-format:other;
+	mso-font-pitch:fixed;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:"Arial Narrow";
+	panose-1:2 11 5 6 2 2 2 3 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:647 0 0 0 159 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	font-size:12.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+h1
+	{mso-style-next:Normal;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:12.0pt;
+	font-family:"Arial Narrow";
+	mso-font-kerning:0pt;
+	font-weight:bold;}
+p
+	{font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.title1, li.title1, div.title1
+	{mso-style-name:title1;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:18.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	color:#FF9900;}
+p.title2, li.title2, div.title2
+	{mso-style-name:title2;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	color:blue;
+	font-weight:bold;
+	font-style:italic;}
+p.code, li.code, div.code
+	{mso-style-name:code;
+	font-size:8.0pt;
+	font-family:Courier;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.formula, li.formula, div.formula
+	{mso-style-name:formula;
+	font-size:14.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.formula2, li.formula2, div.formula2
+	{mso-style-name:formula2;
+	font-size:14.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.formulasym, li.formulasym, div.formulasym
+	{mso-style-name:formulasym;
+	font-size:16.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";}
+p.tabletitle, li.tabletitle, div.tabletitle
+	{mso-style-name:tabletitle;
+	font-size:14.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.tableborder, li.tableborder, div.tableborder
+	{mso-style-name:tableborder;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.tableodd, li.tableodd, div.tableodd
+	{mso-style-name:tableodd;
+	font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.tableeven, li.tableeven, div.tableeven
+	{mso-style-name:tableeven;
+	font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+span.code1
+	{mso-style-name:code1;
+	mso-ansi-font-size:8.0pt;
+	mso-bidi-font-size:8.0pt;
+	mso-ascii-font-family:Courier;
+	mso-hansi-font-family:Courier;
+	color:black;
+	mso-font-width:0%;}
+span.normal1
+	{mso-style-name:normal1;
+	mso-ansi-font-size:12.0pt;
+	mso-bidi-font-size:12.0pt;
+	mso-ascii-font-family:"Arial Narrow";
+	mso-hansi-font-family:"Arial Narrow";
+	color:black;
+	mso-font-width:0%;}
+span.title21
+	{mso-style-name:title21;
+	mso-ansi-font-size:12.0pt;
+	mso-bidi-font-size:12.0pt;
+	mso-ascii-font-family:Arial;
+	mso-hansi-font-family:Arial;
+	mso-bidi-font-family:Arial;
+	color:blue;
+	mso-font-width:0%;
+	font-weight:bold;
+	font-style:italic;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:72.0pt 90.0pt 72.0pt 90.0pt;
+	mso-header-margin:35.4pt;
+	mso-footer-margin:35.4pt;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="1027"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body bgcolor="#f3f3f3" lang=EN-AU link=blue vlink=blue style='tab-interval:
+36.0pt'>
+
+<div class=Section1>
+
+<p class=title1>The APSIM WaterSupply Module </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=title2>Description</p>
+
+<p class=MsoNormal>APSIM WaterSupply is an instantiable module, capable of
+performing the role of water-source for the APSIM Irrigate module. The module
+can be configured to simulate a dam, sump, river, bore or effluent source. In
+any given APSIM simulation, different instances of WaterSupply can be
+configured to represent one or more of these water sources, at the same time.
+For example:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=code>version = 3.1<br>
+[apsim.sample_soilwat2] </p>
+
+<p class=code>&nbsp;</p>
+
+<p class=code>title=Soilwat2 Sample Simulation<br>
+module = clock soilwat2.par [sample]<br>
+module = report soilwat2.par [sample]<br>
+module = Input(Met) %apsuite\apsim\met\sample\dalby.met[weather]<br>
+module = manager soilwat2.par [sample]<br>
+module = soilwat2 soilwat2.par [black_earth] soilwat2.ini [standard]<br>
+module = soiln2 soilwat2.par [black_earth] soiln2.ini [standard]<br>
+module = solute soilwat2.par [sample] solute.ini [standard]<br>
+module = Screen soilwat2.par[sample]<br>
+module = SummaryFile soilwat2.par[sample]<br>
+module = WaterSupply(dam) soilwat2.par[sample] dam.ini [standard]<br>
+module = WaterSupply(bore) soilwat2.par[sample] bore.ini [standard]<br>
+module = WaterSupply(sump) soilwat2.par[sample] sump.ini [standard]<br>
+module = irrigate</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>In the above simulation, WaterSupply is being instantiated
+to simulate a dam, a bore, and a sump.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Each instance of this module is capable of maintaining an
+available pool of water, with a dynamic solute composition, able to provide
+water or receive water as required. Transfers of water between WaterSupply and
+Irrigate, or between WaterSupply and other instances of itself (eg dam and
+sump), are driven by commands from the APSIM Manager module. </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>The WaterSupply module is subject to various internal daily
+processes which produce a dynamic balance of both water and solutes in storage.
+Depending on type of storage (eg dam or bore), these processes include direct
+capture of rainfall, capture of surface runoff (both local and catchment),
+evaporation and seepage losses, and renewal of allocations. </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=title2>WaterSupply Parameterisation</p>
+
+<p class=MsoNormal>The first and most critical piece of information required by
+the APSIM WaterSupply module during configuration is a parameter called
+&#8216;storage_type&#8217;. There are six discrete categories available, and each instance
+of this module must be configured as one of these:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span class=code1><span style='font-size:8.0pt;font-family:
+Courier;color:windowtext;mso-font-width:100%'>dam_gully</span></span> - a open
+surface storage formed by damming a watercourse<br>
+<span class=code1><span style='font-size:8.0pt;font-family:Courier;color:windowtext;
+mso-font-width:100%'>dam_ring</span></span> - a open-surface ring-tank into
+which water is pumped for storage<br>
+<span class=code1><span style='font-size:8.0pt;font-family:Courier;color:windowtext;
+mso-font-width:100%'>dam_exc</span></span> - an open-surface excavated storage<br>
+<span class=code1><span style='font-size:8.0pt;font-family:Courier;color:windowtext;
+mso-font-width:100%'>sump</span></span> - an open sump which generally collects
+local and/or catchment runoff<br>
+<span class=code1><span style='font-size:8.0pt;font-family:Courier;color:windowtext;
+mso-font-width:100%'>river</span></span> &#8211; a watercourse from which an annual
+pumping allocation is granted<br>
+<span class=code1><span style='font-size:8.0pt;font-family:Courier;color:windowtext;
+mso-font-width:100%'>bore</span></span> &#8211; a underground water-source from which
+similar allocation is granted</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>An Effluent Source would best be configured as type &#8216;bore&#8217;,
+since it will not be subject to daily processes such as evaporation, seepage
+etc. (see later). Depending on which &#8216;storage_type&#8217; is configured, the
+following parameters are required by APSIM WaterSupply:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><strong>For Dams and sumps</strong></p>
+
+<p class=MsoNormal>&nbsp;<span class=code1><span style='font-size:8.0pt;
+font-family:Courier;color:windowtext;mso-font-width:100%'>[sample.watersupply.parameters]</span></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>source_type
+= dam_ring
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!
+type of water source</span></span><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>receive_catchment_runoff
+= yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;! use &#8216;yes&#8217; if dam collects runoff
+from larger catchment area<o:p></o:p></span></span></span></p>
+
+<p class=MsoNormal><span class=code1><span style='font-size:8.0pt;font-family:
+Courier;color:windowtext;mso-font-width:100%'>catchment_area = 120.0<span
+style="mso-spacerun:
+yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>! catchment area (ha) (required only if &#8216;receive_catchment_runoff&#8217;
+equals &#8216;yes&#8217;)<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span class=code1><span style='font-size:8.0pt;font-family:
+Courier;color:windowtext;mso-font-width:100%'>catchment_runoff_factor =
+0.5<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>! multiplier for soilwat2.runoff, applied to catchment area (required
+only if &#8216;receive_catchment_runoff&#8217; equals &#8216;yes&#8217;)<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span class=code1><span style='font-size:8.0pt;font-family:
+Courier;color:windowtext;mso-font-width:100%'>receive_crop_runoff = yes<span
+style="mso-spacerun:
+yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>! use &#8216;yes&#8217;
+if dam collects runoff from simulated crop area</span></span><span
+style='font-size:8.0pt;font-family:Courier'><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>max_available_water
+= 150.0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;! capacity (ML)</span></span><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>max_area =
+20
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!
+storage water surface area at capacity (ha)</span></span><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>init_available_water
+= 144.0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;! supply volume available at
+start of simulation (ML)</span></span><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>max_pump =
+20.0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!
+maximum pump delivery volume per day (ML/day)</span></span><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>min_volume
+= 5.0
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!
+minimum volume in storage below which pump cannot access</span></span><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>permeability
+= 0.00007
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!
+permeability of sealing layer (m/day)</span></span><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>seal_thickness
+= 0.5
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!
+thickness of low permeability seal (m)</span></span><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>init_br_conc
+= 100.0
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!
+initial bromide concentration (ppm)</span></span></span></p>
+
+<p class=MsoNormal><strong><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></strong></p>
+
+<p class=MsoNormal><strong>For Bores and Rivers</strong></p>
+
+<p class=MsoNormal><span class=code1><span style='font-size:8.0pt;font-family:
+Courier;color:windowtext;mso-font-width:100%'><span style="mso-spacerun:
+yes">&nbsp;</span>[sample.watersupply.parameters]</span></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>source_type
+= bore
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+! type of water supply</span></span><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>max_available_water
+= 400.0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;! maximum allocation
+including carry-overs (ML)</span></span><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>init_available_water
+= 200.0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;! volume available at start
+of simulation (ML)</span></span><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>max_pump =
+20.0
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!
+maximum pump delivery volume per day (ML/day)</span></span><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>min_volume
+= 0.0
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!
+minimum volume in storage below which pump cannot access</span></span><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>annual_allocation
+= 200.0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;! Annual
+Allocation in ML</span></span><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>allocation_renewal_day
+= 270 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;! Day of year on which
+allocation is granted</span></span><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>init_br_conc
+= 100.0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!
+initial bromide concentration (ppm)</span></span><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>init_cl_conc
+= 8.0
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!
+initial chloride concentration (ppm)</span></span></span></p>
+
+<p class=MsoNormal><strong><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></strong></p>
+
+<p class=MsoNormal><strong>Parameterising Solutes</strong></p>
+
+<p class=MsoNormal>As can be seen in of the above examples, initial
+concentrations of solutes in the storage water can be specified using the
+parameter &#8216;init_xxx_conc&#8217; in parts-per-million, where &#8216;xxx&#8217; is the name of the
+solute. All solutes used in the system must also be initialized in the APSIM
+Solute module and given an initial distribution in the soil layers, even if
+this is zero in all layers. As water is transferred between various elements in
+the simulation (sumps, dams, bores, irrigation, soil), solutes will be
+transferred accordingly.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=title2>WaterSupply Processes</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><strong>Rainfall Capture </strong><br>
+For open surface dams and sumps, rainfall results in a storage gain, expressed
+by:</p>
+
+<p class=MsoNormal>rain_capture = (area* rain)/100 (1)</p>
+
+<p class=MsoNormal>where<br>
+rain_capture = storage gain from rainfall event (Ml)<br>
+area = capture surface area of dam (ha)<br>
+rain = precipitation (mm)</p>
+
+<p class=MsoNormal>Bore and river allocations are not affected by precipitation.<br>
+<br>
+<strong>Runoff Capture</strong><br>
+For open dams and sumps, if the input parameter &#8216;receive_crop_runoff&#8217; = &#8216;yes&#8217;,
+then local runoff (soilwat2.runoff) will be added to the storage water. &#8216;Soilwat2.runoff&#8217;
+is calculated in mm, hence &#8216;crop_area&#8217; (ha) must be provided as a manager
+variable whenever WaterSupply is being used, to convert to Ml. <span
+style="mso-spacerun: yes">&nbsp;&nbsp;</span>If the input parameter &#8216;receive_catchment_runoff&#8217;
+= &#8216;yes&#8217; then the user must also supply two further parameters &#8216;catchment_area&#8217;
+(ha) and &#8216;catchment_runoff_factor&#8217; (0-1).<span style="mso-spacerun: yes">&nbsp;
+</span>The latter of these two subsequent inputs is a multiplier to the
+soilwat2.runoff parameter, effectively describing the water-shedding potential
+of the catchment in comparison to the cropped area.<span style="mso-spacerun:
+yes">&nbsp; </span><span style="mso-spacerun: yes">&nbsp;</span>If none of the
+instances of WaterSupply in a given simulation are configured to receive runoff,
+then runoff is lost from the system. Runoff capture is calculated on a daily
+basis.</p>
+
+<p class=MsoNormal><strong><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></strong></p>
+
+<p class=MsoNormal><strong>Evaporation</strong><br>
+For open dams and sumps, loss of water to the atmosphere through evaporation is
+a daily occurrence. Evaporation is calculated in a two stage process as
+follows:</p>
+
+<p class=MsoNormal>&nbsp; </p>
+
+<p class=MsoNormal>From CERES maize soil evaporation <span style="mso-spacerun:
+yes">&nbsp;</span></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;soil_evaporation =
+radn*23.8846*(0.000204-(0.000183*0.1)) (2)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*(29+(0.6*
+maxt+0.4* mint))<br>
+where<br>
+&nbsp;&nbsp;&nbsp;&nbsp;radn = incident solar radiation (Mj/m2)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;maxt = maximum daily temperature (oC)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;mint = minimum daily temperature (oC)</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>The evaporation from the surface of the dam/sump is then
+calculated according to:</p>
+
+<p class=MsoNormal>&nbsp; </p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;evaporation =
+vol-(area*((d-(0.7*se/1000))** b)) (3)<br>
+where<br>
+&nbsp;&nbsp;&nbsp;&nbsp;vol = current storage volume (Ml)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;area = dam surface area at capacity (ha)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;d = current storage depth (m)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;se = soil evaporation (as calculated above)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;b = geometry factor for dam type (from ini file)</p>
+
+<p class=MsoNormal><strong><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></strong></p>
+
+<p class=MsoNormal><strong>Seepage</strong><br>
+For open dams and sumps, loss of water through seepage out the base and sides
+is also a daily occurrence. Seepage is calculated as follows:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;seepage =
+vol-(area*((d-(k*(d/st)/365.0))** b)) (4)<br>
+where<br>
+&nbsp;&nbsp;&nbsp;&nbsp;vol = current storage volume (Ml)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;area = dam surface area at capacity (ha)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;d = current storage depth (m)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;k = permeability of base (m/day)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;st = seal thickness (m)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;b = geometry factor for dam type (from ini file)</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><strong>Overflow</strong><br>
+For open dams and sumps, incoming water which takes the storage volume above
+capacity is reported daily as &#8216;overflow&#8217; (ML).</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h1>Allocation Renewal</h1>
+
+<p class=MsoNormal>For bores and rivers, an allocation renewal check is made
+every day, and on the day specified as &#8216;renewal day&#8217; in the input parameters,
+the &#8216;annual_allocation&#8217; is credited to the available storage volume. The amount
+of carry-over allowed is specified by the user in setting &#8216;max_available
+water&#8217;.</p>
+
+<p class=MsoNormal><br>
+<span class=title21><span style='font-family:Arial;mso-font-width:100%'>Using
+WaterSupply with APSIM Irrigate</span></span></p>
+
+<p class=MsoNormal>APSIM Irrigate works on a &#8216;mm&#8217; basis, whereas APSIM
+WaterSupply works on real volumes (Ml). Hence, when an irrigation application
+is specified in mm, an &#8216;area of application&#8217; must be provided in order to
+calculate the required volume of water from the specified source instance of
+WaterSupply. As mentioned previously, whenever WaterSupply is used in a
+simulation for supply of irrigation water, a variable called &#8216;crop_area&#8217; (ha)
+must be specified in the manager logic.</p>
+
+<p class=MsoNormal>Irrigations using water from WaterSupply can only be
+initiated by using the &#8216;irrigate apply&#8217; action in manager. A new optional
+argument called &#8216;source&#8217; is added to the &#8216;apply&#8217; command line to trigger the
+use of water from WaterSupply. The required syntax is as follows:</p>
+
+<p class=MsoNormal><span class=code1><span style='font-size:8.0pt;font-family:
+Courier;color:windowtext;mso-font-width:100%'>[sample.manager.start_of_day]</span></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>if day =
+10 then</span></span><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>&nbsp;&nbsp;irrigate
+apply amount=10 (mm), source = dam bore dam2 ()</span></span><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>endif </span></span></span></p>
+
+<p class=MsoNormal>The argument &#8216;source&#8217; specifies the sources from which to
+obtain the irrigation water, in preferential order. In other words, in the
+above example, if the dam cannot fully supply the required water, the balance
+will be taken from the bore. If there is still a shortage of water, then dam2
+will be asked next to supply water. There is no limit to the number of sources
+which can be specified. </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>When the irrigation water is applied to the soil, it will
+carry the solutes makeup of the water source being used. </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=title2>Transfering Water between Instances of WaterSupply</p>
+
+<p class=MsoNormal>In the general operation of an irrigation and water-storage
+system, there may be numerous occasions where the farmer wishes to transfer
+water between a sump and the dam, or to pump water from a bore or river into a
+dam. This is easily achieved in APSIM WaterSupply by employing the &#8216;TOP_UP&#8217;
+command from manager:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>To transfer 5 megalitres of water from a sump to a dam, for
+example:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=code>[sample.manager.start_of_day]</p>
+
+<p class=code>if day = 15 then<br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>&nbsp;&nbsp;</span></span>dam
+top_up amount=5 (Ml), source= sump <br>
+endif </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Or else, the dam (say, capacity =150 Ml) may need to be
+filled from the bore, without knowing the exact amount required:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span class=code1><span style='font-size:8.0pt;font-family:
+Courier;color:windowtext;mso-font-width:100%'>[sample.manager.start_of_day]</span></span></p>
+
+<p class=MsoNormal><span class=code1><span style='font-size:8.0pt;font-family:
+Courier;color:windowtext;mso-font-width:100%'>dam_deficit =
+150-dam.available_water</span></span></p>
+
+<p class=MsoNormal><span class=code1><span style='font-size:8.0pt;font-family:
+Courier;color:windowtext;mso-font-width:100%'>if day = 15 then</span></span><span
+style='font-size:8.0pt;font-family:Courier'><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>&nbsp;&nbsp;dam
+top_up amount=dam_deficit, source= bore</span></span><br>
+<span class=code1><span style='color:windowtext;mso-font-width:100%'>endif </span></span></span><br>
+<br>
+Or else, the farmer may wish to pump to the dam whenever the sump is full :</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=code>[sample.manager.start_of_day]</p>
+
+<p class=code>sump_volume = sump.available_water<br>
+sump_deficit = sump.max_available_water -<br>
+sump_volume</p>
+
+<p class=code>if sump_deficit = 0 then<br>
+&nbsp;&nbsp;dam top_up amount=sump_volume, source= sump<br>
+endif </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>The preferential ordering of sources is available with the
+&#8216;top_up&#8217; command, as for the Irrigate &#8216;apply&#8217; command. In all of these
+examples, the &#8216;top_up&#8217; command will transfer the specified water from the
+source to the destination and calculate the new solute figures in the
+destination pool. </p>
+
+<p class=MsoNormal>WaterSupply Actions and Events<br>
+<br>
+Figure 1: UML diagram for an Irrigate &#8216;apply&#8217; action (specifying &#8216;source =
+dam&#8217;) showing responses from modules concerned.<br>
+<img width=554 height=300 id="_x0000_i1025"
+src="WaterSupply_science_clip_image002_0000.gif"></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Figure 2: UML diagram for a WaterSupply (dam) &#8216;top_up&#8217;
+action (specifying &#8216;source = bore&#8217;) showing responses from modules concerned.<img
+width=553 height=282 id="_x0000_i1026"
+src="WaterSupply_science_clip_image002_0001.gif"><span class=normal1><span
+style='color:windowtext;mso-font-width:100%'> </span></span><br>
+<br>
+<span class=normal1><span style='color:windowtext;mso-font-width:100%'>Figure
+3: UML diagram for a WaterSupply (dam) &#8216;top_up&#8217; action (specifying &#8216;source =
+sump bore&#8217;) in the situation where the first specified source is not capable of
+supplying all of the water required. In this case supplementary water is
+required from the second specified source.</span></span></p>
+
+<p><span style='font-family:"Arial Narrow"'><img width=575 height=310
+id="_x0000_i1027" src="WaterSupply/WaterSupply_science_clip_image002_0002.gif"></span></p>
+
+<p class=title2>WaterSupply Module Outputs</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<table border=0 cellspacing=0 cellpadding=0 style='mso-cellspacing:0cm;
+ mso-padding-alt:0cm 0cm 0cm 0cm'>
+ <tr>
+  <td width=175 valign=top style='width:131.25pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal><strong>Name </strong></p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal><strong>Units </strong></p>
+  </td>
+  <td width=349 valign=top style='width:261.75pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal><strong>Description </strong></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=175 valign=top style='width:131.25pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>available_water </p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Ml </p>
+  </td>
+  <td width=349 valign=top style='width:261.75pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Current storage volume </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=175 valign=top style='width:131.25pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>available_depth </p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>m </p>
+  </td>
+  <td width=349 valign=top style='width:261.75pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Current storage depth </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=175 valign=top style='width:131.25pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>max_available_water </p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Ml </p>
+  </td>
+  <td width=349 valign=top style='width:261.75pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Storage capacity or max allocation carry-over </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=175 valign=top style='width:131.25pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>min_volume </p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Ml </p>
+  </td>
+  <td width=349 valign=top style='width:261.75pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Storage volume below which pumping not allowed </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=175 valign=top style='width:131.25pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>max_pump </p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Ml/day </p>
+  </td>
+  <td width=349 valign=top style='width:261.75pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Maximum daily pump delivery </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=175 valign=top style='width:131.25pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>annual_allocation </p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Ml </p>
+  </td>
+  <td width=349 valign=top style='width:261.75pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Annual water allocation (bores, rivers) </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=175 valign=top style='width:131.25pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>allocation_renewal_day </p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>doy </p>
+  </td>
+  <td width=349 valign=top style='width:261.75pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Day of year for renewal of allocation (bores, rivers) </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=175 valign=top style='width:131.25pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>rain_capture </p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Ml </p>
+  </td>
+  <td width=349 valign=top style='width:261.75pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Rainfall captured by dam area </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=175 valign=top style='width:131.25pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>evaporation </p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Ml </p>
+  </td>
+  <td width=349 valign=top style='width:261.75pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Daily water loss to atmosphere </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=175 valign=top style='width:131.25pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>seepage </p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Ml </p>
+  </td>
+  <td width=349 valign=top style='width:261.75pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Dam seepage loss through base and sides </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=175 valign=top style='width:131.25pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>overflow </p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Ml </p>
+  </td>
+  <td width=349 valign=top style='width:261.75pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Input water above storage capacity </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=175 valign=top style='width:131.25pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>runoff_input </p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Ml </p>
+  </td>
+  <td width=349 valign=top style='width:261.75pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Daily runoff added to storage </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=175 valign=top style='width:131.25pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>storage_xxx </p>
+  <p class=MsoNormal>irrigation_water_supplied</p>
+  <p class=MsoNormal>full</p>
+  <p class=MsoNormal>filling_event</p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>ppm</p>
+  <p class=MsoNormal>ML</p>
+  <p class=MsoNormal>(0-1)</p>
+  <p class=MsoNormal>(0-1)</p>
+  </td>
+  <td width=349 valign=top style='width:261.75pt;padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal>Storage concentration of solute &#8216;xxx', eg storage_cl </p>
+  <p class=MsoNormal>Water supplied from storage at request of APSIM Irrigate</p>
+  <p class=MsoNormal>Flag indicating whether a storage is full (1) or not full
+  (0)</p>
+  <p class=MsoNormal>Flag indicating whether a filling event occurred today </p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=title2>References</p>
+
+<p class=MsoNormal>Jones, C.A., and J.R. Kiniry. 1986. CERES-Maize: A
+simulation model of maize growth and development. Texas A&amp;M University
+Press, College Station, Texas.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Don Gaydon<br>
+Module Developer<br>
+CSIRO Sustainable Ecosystems<br>
+306 Carmody Road <br>
+ST LUCIA Q 4067</p>
+
+<p class=MsoNormal>Email: don.gaydon@csiro.au<br>
+Phone: +61 (0)7 3214 2230</p>
+
+</div>
+
+</body>
+
+</html>
