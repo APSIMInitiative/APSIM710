@@ -354,7 +354,7 @@ namespace CSUserInterface
                                                       Soil.Water.Thickness);
 
                 DataGridViewColumn LL = GridUtility.AddColumn(Grid, CropName + " LL\r\n(mm/mm)", Crop.LL, "f3", CropColour, ForeColour, ToolTips: Crop.LLMetadata, ReadOnly: IsReadonly);
-                DataGridViewColumn PAWC = GridUtility.AddColumn(Grid, CropName + " PAWC\r\n(mm)", PAWCmm, "f1", CropColour, ForeColour);
+                DataGridViewColumn PAWC = GridUtility.AddColumn(Grid, CropName + " PAWC\r\n", PAWCmm, "f1", CropColour, ForeColour);
                 DataGridViewColumn KL = GridUtility.AddColumn(Grid, CropName + " KL\r\n(/day)", Crop.KL, "f2", CropColour, ForeColour, ToolTips: Crop.KLMetadata, ReadOnly: IsReadonly);
                 DataGridViewColumn XF = GridUtility.AddColumn(Grid, CropName + " XF\r\n(0-1)", Crop.XF, "f1", CropColour, ForeColour, ToolTips: Crop.XFMetadata, ReadOnly: IsReadonly);
 
@@ -509,16 +509,11 @@ namespace CSUserInterface
         {
             double Total = MathUtility.Sum(GridUtility.GetColumnAsDoubles(Grid, Col.Index));
 
-            string BaseText;
-            if (Col.HeaderText.Contains("\r\nTotal:"))
+            if (Col.HeaderText.Contains("PAWC\r\n"))
             {
-                int Pos = Col.HeaderText.IndexOf("\r\nTotal:");
-                BaseText = Col.HeaderText.Substring(0, Pos);
+                int Pos = Col.HeaderText.IndexOf("\n");
+                Col.HeaderText = Col.HeaderText.Substring(0, Pos+1) + Total.ToString("f0") + " mm";
             }
-            else
-                BaseText = Col.HeaderText;
-            Col.HeaderText = BaseText + "\r\n" + Total.ToString("f0") + "mm";
-
         }
 
         /// <summary>
