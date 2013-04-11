@@ -137,8 +137,15 @@ namespace Controllers
 					Comp = Controller.FindFactorialComponent(View.NodePath);
 				}
 				if ((Comp != null)) {
-					View.OnSave();
-					Comp.Contents = View.GetData();
+                    if (View.ToString() == "CSUserInterface.Factorial" && !Comp.FullPath.Contains("/Factorials"))
+                    {
+                        // Hack to workaround Bug 1516.
+                    }
+                    else
+                    {
+                        View.OnSave();
+                        Comp.Contents = View.GetData();
+                    }
 				}
 			}
 		}
