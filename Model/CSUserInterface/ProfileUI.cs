@@ -497,7 +497,9 @@ namespace CSUserInterface
         private void UpdatePAWCColumn(DataGridViewColumn PAWC)
         {
             string CropName = CropNameFromColumn(PAWC.Index);
-            GridUtility.SetColumnValues(Grid, PAWC.Index, Soil.PAWmmAtWaterThickness(CropName));
+            double[] PAWCmm = MathUtility.Multiply(Soil.PAWCCropAtWaterThickness(CropName),
+                                                   Soil.Water.Thickness);
+            GridUtility.SetColumnValues(Grid, PAWC.Index, PAWCmm);
             UpdateTotal(PAWC);
         }
 
