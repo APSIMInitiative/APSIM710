@@ -77,10 +77,12 @@ public class OilPalm
     double EP = 0.0;
     [Output]
     double DltDM = 0.0;
+    [Output("ExcessDM")]
+    double Excess = 0.0;
     [Output]
     double FW = 0.0;
     [Output]
-    double Fn = 0.0;
+    double Fn = 1.0;
     [Output]
     double CumulativeFrondNumber = 0.0;
     [Output]
@@ -144,7 +146,9 @@ public class OilPalm
     [Link]
     public Function FemaleFlowerFraction = null;
     [Link]
-    public Function StemPartitionFraction = null;
+    public Function FFFStressImpact = null;
+    [Link]
+    public Function StemToFrondFraction = null;
     [Link]
     public Function FlowerAbortionFraction = null;
     [Link]
@@ -159,6 +163,10 @@ public class OilPalm
     public Function BunchOilConversionFactor = null;
     [Link]
     public Function RipeBunchWaterContent = null;
+    [Link]
+    public Function HarvestFrondNumber = null;
+    [Link]
+    public Function FrondMaximumNConcentration = null;
     [Link]
     public Function FrondCriticalNConcentration = null;
     [Link]
@@ -230,7 +238,7 @@ public class OilPalm
             Fronds.Add(F);
             CumulativeFrondNumber += 1;
         }
-        for (int i = 0; i < (int)InitialFrondNumber.Value + 50; i++)
+        for (int i = 0; i < (int)InitialFrondNumber.Value + 60; i++)
         {
             BunchType B = new BunchType();
             B.FemaleFraction = FemaleFlowerFraction.Value;
@@ -290,14 +298,40 @@ public class OilPalm
         DoNBalance();
         DoDevelopment();
         DoFlowerAbortion();
+        DoGenderDetermination();
 
     }
 
     private void DoFlowerAbortion()
     {
-        Bunches[30].FemaleFraction *= (1.0 - FlowerAbortionFraction.Value);
+        // Main abortion stage occurs around frond 11 over 3 plastochrons
+        
+        int B = Fronds.Count - 11;
+        if (B > 0)
+        {
+            Bunches[B - 1].FemaleFraction *= (1.0 - FlowerAbortionFraction.Value);
+            Bunches[B].FemaleFraction *= (1.0 - FlowerAbortionFraction.Value);
+            Bunches[B + 1].FemaleFraction *= (1.0 - FlowerAbortionFraction.Value);
+        }
+
     }
 
+    private void DoGenderDetermination()
+    {
+        // Main abortion stage occurs 25 plastochroons before spear leaf over 9 plastochrons
+        int B = Fronds.Count + 25;
+        Bunches[B-4].FemaleFraction *= (1.0 - FFFStressImpact.Value);
+        Bunches[B-3].FemaleFraction *= (1.0 - FFFStressImpact.Value);
+        Bunches[B-2].FemaleFraction *= (1.0 - FFFStressImpact.Value);
+        Bunches[B-1].FemaleFraction *= (1.0 - FFFStressImpact.Value);
+        Bunches[B].FemaleFraction *= (1.0 - FFFStressImpact.Value);
+        Bunches[B+1].FemaleFraction *= (1.0 - FFFStressImpact.Value);
+        Bunches[B+2].FemaleFraction *= (1.0 - FFFStressImpact.Value);
+        Bunches[B+3].FemaleFraction *= (1.0 - FFFStressImpact.Value);
+        Bunches[B+4].FemaleFraction *= (1.0 - FFFStressImpact.Value);
+
+
+    }
     private void DoRootGrowth(double Allocation)
     {
       int RootLayer = LayerIndex(RootDepth);
@@ -397,23 +431,28 @@ public class OilPalm
         DoRootGrowth(RootGrowth);
 
         double[] BunchDMD = new double[Bunches.Count];
-        for (int i = 0; i < 10; i++)
-            BunchDMD[i] = BunchSizeMax.Value/(10*FrondAppRate.Value) * Population*Bunches[i].FemaleFraction*BunchOilConversionFactor.Value;
+        for (int i = 0; i < 2; i++)
+            BunchDMD[i] = BunchSizeMax.Value/(2*FrondAppRate.Value/DeltaT)*Fn * Population*Bunches[i].FemaleFraction*BunchOilConversionFactor.Value;
         double TotBunchDMD = MathUtility.Sum(BunchDMD);
 
         double[] FrondDMD = new double[Fronds.Count];
         for (int i = 0; i < Fronds.Count; i++)
-            FrondDMD[i] = (SizeFunction(Fronds[i].Age + 1) - SizeFunction(Fronds[i].Age)) / SpecificLeafArea.Value * Population;
+            FrondDMD[i] = (SizeFunction(Fronds[i].Age + DeltaT) - SizeFunction(Fronds[i].Age)) / SpecificLeafArea.Value * Population*Fn;
         double TotFrondDMD = MathUtility.Sum(FrondDMD);
 
-        double StemDMD = DMAvailable * StemPartitionFraction.Value;
+        //double StemDMD = DMAvailable * StemToFrondFraction.Value;
+        double StemDMD = TotFrondDMD * StemToFrondFraction.Value;
 
         double Fr = Math.Min(DMAvailable / (TotBunchDMD + TotFrondDMD + StemDMD), 1.0);
-        double Excess = 0.0;
+        Excess = 0.0;
         if (Fr > 1.0)
             Excess = DMAvailable - (TotBunchDMD+TotFrondDMD+StemDMD);
 
-        for (int i = 0; i < 10; i++)
+
+        if (Age > 10 && Fr < 1)
+        { }
+
+        for (int i = 0; i < 2; i++)
             Bunches[i].Mass += BunchDMD[i] * Fr / Population / BunchOilConversionFactor.Value;
         ReproductiveGrowthFraction = TotBunchDMD * Fr / DltDM;
 
@@ -422,7 +461,7 @@ public class OilPalm
             FrondGrowth = FrondDMD[i] * Fr / Population;
             Fronds[i].Mass += FrondGrowth;
             if (Fr >= SpecificLeafArea.Value / SpecificLeafAreaMax.Value)
-                Fronds[i].Area += (SizeFunction(Fronds[i].Age + 1) - SizeFunction(Fronds[i].Age));
+                Fronds[i].Area += (SizeFunction(Fronds[i].Age + DeltaT) - SizeFunction(Fronds[i].Age))*Fn;
             else
                 Fronds[i].Area += FrondGrowth * SpecificLeafAreaMax.Value;
             
@@ -441,7 +480,7 @@ public class OilPalm
         //    Frond[i].Age += 1;
         foreach (FrondType F in Fronds)
         {
-            F.Age += 1;
+            F.Age += DeltaT;
             //F.Area = SizeFunction(F.Age);
         }
         if (Fronds[Fronds.Count - 1].Age >= FrondAppRate.Value)
@@ -455,11 +494,12 @@ public class OilPalm
             Bunches.Add(B);
         }
 
-        if (Fronds[0].Age >= (40 * FrondAppRate.Value))
+        //if (Fronds[0].Age >= (40 * FrondAppRate.Value))
+        if (Fronds.Count>Math.Round(HarvestFrondNumber.Value))
         {
             HarvestBunches = Bunches[0].FemaleFraction;
-            HarvestYield = Bunches[0].Mass * Population / (1.0 - RipeBunchWaterContent.Value);
-            HarvestBunchSize = Bunches[0].Mass / (1.0 - RipeBunchWaterContent.Value);
+            HarvestYield = Bunches[0].Mass * Population / (1.0 - RipeBunchWaterContent.Value) ;
+            HarvestBunchSize = Bunches[0].Mass / (1.0 - RipeBunchWaterContent.Value) / Bunches[0].FemaleFraction;
             if (Harvesting != null)
                 Harvesting.Invoke();
             // Now rezero these outputs - they can only be output non-zero on harvesting event.
@@ -516,7 +556,7 @@ public class OilPalm
 
         double StemNDemand = StemGrowth * StemNConcentration.Value/100.0 * 10.0;  // factor of 10 to convert g/m2 to kg/ha
         double RootNDemand = Math.Max(0.0, (RootMass * RootNConcentration.Value / 100.0 - RootN)) * 10.0;  // kg/ha
-        double FrondNDemand = Math.Max(0.0, (FrondMass * FrondCriticalNConcentration.Value / 100.0 - FrondN)) * 10.0;  // kg/ha 
+        double FrondNDemand = Math.Max(0.0, (FrondMass * FrondMaximumNConcentration.Value / 100.0 - FrondN)) * 10.0;  // kg/ha 
         double BunchNDemand = Math.Max(0.0, (BunchMass * BunchNConcentration.Value / 100.0 - BunchN)) * 10.0;  // kg/ha 
 
         Ndemand = StemNDemand + FrondNDemand+RootNDemand+BunchNDemand;  //kg/ha
@@ -538,13 +578,23 @@ public class OilPalm
         {
             NUptake[j] = PotNUptake[j] * Fr;
             no3[j] = no3[j] - NUptake[j];
-
         }
         if (!MyPaddock.Set(".paddock.Soil Nitrogen.no3", no3))
             throw new Exception("Unable to set no3");
 
-        if (Ndemand > 0)
-            Fr = Math.Max(0.0, (MathUtility.Sum(NUptake) / Ndemand));
+        Fr = Math.Min(1.0,Math.Max(0,MathUtility.Sum(NUptake)/BunchNDemand));
+        double DeltaBunchN = BunchNDemand * Fr;
+
+        double Tot = 0;
+        foreach (BunchType B in Bunches)
+        {
+            Tot += Math.Max(0.0, B.Mass * BunchNConcentration.Value / 100.0 - B.N) * Fr / SowingData.Population;
+            B.N += Math.Max(0.0, B.Mass * BunchNConcentration.Value / 100.0 - B.N) * Fr;
+        }
+
+        // Calculate fraction of N demand for Vegetative Parts
+        if ((Ndemand-DeltaBunchN) > 0)
+            Fr = Math.Max(0.0, ((MathUtility.Sum(NUptake)-DeltaBunchN) / (Ndemand-DeltaBunchN)));
         else
             Fr = 0.0;
 
@@ -561,14 +611,8 @@ public class OilPalm
             Roots[j].N += RootNDemand/10 * Fr * RootNDef[j] / TotNDef;
 
         foreach (FrondType F in Fronds)
-                F.N += Math.Max(0.0,F.Mass*FrondCriticalNConcentration.Value/100.0-F.N)*Fr;
+                F.N += Math.Max(0.0,F.Mass*FrondMaximumNConcentration.Value/100.0-F.N)*Fr;
 
-        double Tot = 0;
-        foreach (BunchType B in Bunches)
-        {
-            Tot += Math.Max(0.0, B.Mass * BunchNConcentration.Value / 100.0 - B.N) * Fr/SowingData.Population;
-            B.N += Math.Max(0.0, B.Mass * BunchNConcentration.Value / 100.0 - B.N) * Fr;
-        }
         double EndN = PlantN;
         double Change = EndN - StartN;
         double Uptake = MathUtility.Sum(NUptake) / 10.0;
@@ -599,7 +643,19 @@ public class OilPalm
         }
 
     }
+    [Output]
+    public double FrondArea
+    {
+        get
+        {
+            double A = 0.0;
 
+            foreach (FrondType F in Fronds)
+                A += F.Area;
+            return A/Fronds.Count;
+        }
+
+    }
 
     [Output]
     public double FrondMass
@@ -744,6 +800,12 @@ public class OilPalm
     {
         get { return LAI * 10000.0 / FrondMass; }
     }
+    [Output]
+    public double FFF
+    {
+        get { return Bunches[0].FemaleFraction; }
+    }
+
     protected double SizeFunction(double Age)
     {
         double GrowthDuration = ExpandingFronds.Value * FrondAppRate.Value;
@@ -776,6 +838,14 @@ public class OilPalm
             if (CumDepth >= depth) { return i; }
         }
         throw new Exception("Depth deeper than bottom of soil profile");
+    }
+    private double DeltaT
+    {
+        get
+        {
+            //return Math.Min(Math.Pow(Fn,0.5),1.0);
+            return Math.Min(1.4*Fn, 1.0);
+        }
     }
 
 }
