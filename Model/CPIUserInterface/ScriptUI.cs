@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Runtime.InteropServices;
 
 using ApsimFile;
 using Controllers;
@@ -16,6 +17,8 @@ using CMPServices;
 
 namespace CPIUserInterface
 {
+    
+
     //=====================================================================
     /// <summary>
     /// This UI is used to support the CPI Manager component. It contains
@@ -232,23 +235,44 @@ namespace CPIUserInterface
         {
             if (richTextBox1.Lines.Length > 0)
             {
+                FILLING = true;
+
+                String buf = Clipboard.GetText(); //keep the clipboard contents
+                LockWindow(richTextBox1.Handle);
                 int cursorPos = richTextBox1.SelectionStart;
                 int startOfLine = richTextBox1.GetFirstCharIndexFromLine(lineNumber);
-                richTextBox1.SelectionStart = startOfLine;
                 String strLine = richTextBox1.Lines[lineNumber];
 
                 //now remove the text I am about to parse
-                FILLING = true;
                 richTextBox1.SelectionStart = startOfLine;
                 richTextBox1.SelectionLength = strLine.Length;
                 richTextBox1.Select();
                 richTextBox1.Cut();
-                FILLING = false;
 
-                ParseLine(strLine);
+                ParseLine(strLine); //redraws the text with highlighting
+                richTextBox1.SelectionLength = 0;
                 richTextBox1.SelectionStart = cursorPos;
+                LockWindow(IntPtr.Zero);
+                richTextBox1.Update();
+
+                Clipboard.SetText(buf); //restore what was in the clipboard
+
                 FILLING = false;
             }
+        }
+        [DllImport("user32.dll")]
+        public static extern bool LockWindowUpdate(IntPtr hWndLock);
+        /// <summary>
+        /// Stop the internal contents of the richtextbox from redrawing
+        /// </summary>
+        /// <param name="hWndLock"></param>
+        private void LockWindow(IntPtr hWndLock)
+        {
+            //mono-linux alternative to stopping the redrawing of the text - rather rough but stops the crashing
+            if (Path.VolumeSeparatorChar == '/')
+                richTextBox1.Visible = (hWndLock == IntPtr.Zero);
+            else
+                LockWindowUpdate(hWndLock);
         }
         //=======================================================================
         /// <summary>
