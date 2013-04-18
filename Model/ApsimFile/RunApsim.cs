@@ -354,6 +354,8 @@ namespace ApsimFile
             Job J = new Job();
             J.CommandLine = StringManip.DQuote(Executable) + " " + Arguments;
             J.WorkingDirectory = Path.GetDirectoryName(FileName);
+            if (J.WorkingDirectory.StartsWith("\\\\")) // a UNC Path won't work, so use the TEMP directory instead
+                J.WorkingDirectory = System.IO.Path.GetTempPath(); // although this might not work if the TEMP directory is itself a UNC path
             J.Name = FileName + ":";
             if (SimulationPath == null)
                 J.Name += Path.GetFileNameWithoutExtension(SumFileName);
