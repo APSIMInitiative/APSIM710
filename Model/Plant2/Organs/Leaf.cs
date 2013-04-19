@@ -55,6 +55,10 @@ public class Leaf : BaseOrgan, AboveGround
     public Function StructuralFraction = null;
     [Link(IsOptional = true)]
     public Function DMDemandFunction = null;
+    [Link(IsOptional = true)]
+    public Function DMReallocationFactor = null;
+
+ 
  #endregion
 
  #region Class Data Members
@@ -90,7 +94,7 @@ public class Leaf : BaseOrgan, AboveGround
     public double _ThermalTime = 0;
     public double FinalLeafFraction = 1;
     public bool FinalLeafAppeared = false;
-        
+    public double _DMReallocationFactor = 0;    
  #endregion
 
  #region Outputs
@@ -536,6 +540,12 @@ public class Leaf : BaseOrgan, AboveGround
     }
     public override void DoPotentialGrowth()
     {
+
+        _DMReallocationFactor = 0;
+        if (DMReallocationFactor != null) //Default of zero means no senescence
+            _DMReallocationFactor = DMReallocationFactor.Value;
+
+
         EP = 0;
         if ((AppearedCohortNo == (int)Structure.MainStemFinalNodeNo) && (AppearedCohortNo > 0.0) && (AppearedCohortNo < MaxNodeNo)) //If last interger leaf has appeared set the fraction of the final part leaf.
         {
@@ -698,10 +708,16 @@ public class Leaf : BaseOrgan, AboveGround
         get
         {
             double Retranslocation = 0;
-            foreach (LeafCohort L in Leaves)
-                Retranslocation += L.LeafStartDMRetranslocationSupply;
+            double Reallocation = 0;
 
-            return new DMSupplyType { Photosynthesis = Photosynthesis.Growth(RadIntTot), Retranslocation = Retranslocation };
+            foreach (LeafCohort L in Leaves)
+            {
+                Retranslocation += L.LeafStartDMRetranslocationSupply;
+                Reallocation += L.LeafStartDMReallocationSupply;
+            }
+
+
+            return new DMSupplyType { Photosynthesis = Photosynthesis.Growth(RadIntTot), Retranslocation = Retranslocation , Reallocation = Reallocation};
         }
     }
     public override double DMSinkCapacity

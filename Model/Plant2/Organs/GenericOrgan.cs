@@ -9,6 +9,8 @@ public class GenericOrgan : BaseOrgan
     [Link(IsOptional = true)]
     protected Function SenescenceRateFunction = null;
     [Link(IsOptional = true)]
+    protected Function DMReallocationFunction = null;
+    [Link(IsOptional = true)]
     protected Function NReallocationFactor = null;
     [Link(IsOptional = true)]
     protected Function NRetranslocationFactor = null;

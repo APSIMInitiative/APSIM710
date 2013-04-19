@@ -14,6 +14,7 @@ public class LeafCohort
     //Leaf coefficients
     public double Age = 0;
     private double NReallocationFactor = 0;
+    private double DMReallocationFactor = 0;
     private double NRetranslocationFactor = 0;
     private double DMRetranslocationFactor = 0;
     private double FunctionalNConc = 0;
@@ -48,6 +49,8 @@ public class LeafCohort
     public double LeafStartNRetranslocationSupply = 0;
     public double LeafStartNReallocationSupply = 0;
     public double LeafStartDMRetranslocationSupply = 0;
+    public double LeafStartDMReallocationSupply = 0;
+
     public double LeafStartArea = 0;
     public double LeafStartMetabolicNReallocationSupply = 0;
     public double LeafStartNonStructuralNReallocationSupply = 0;
@@ -119,6 +122,9 @@ public class LeafCohort
     public Function InitialNConcFunction;
     [Link(NamePath = "NReallocationFactor")]
     public Function NReallocationFactorFunction = null;
+    [Link(NamePath = "DMReallocationFactor",IsOptional = true)]
+//    [Link(NamePath = "DMReallocationFactor", IsOptional = false)]
+    public Function DMReallocationFactorFunction = null;
     [Link(NamePath = "NRetranslocationFactor")]
     public Function NRetranslocationFactorFunction = null;
     [Link(NamePath = "ExpansionStress")]
@@ -443,6 +449,8 @@ public class LeafCohort
         Live.MetabolicN = Live.MetabolicWt * FunctionalNConc;
         Live.NonStructuralN = 0;
         NReallocationFactor = NReallocationFactorFunction.Value;
+        if (DMReallocationFactorFunction != null)
+          DMReallocationFactor = DMReallocationFactorFunction.Value;
         NRetranslocationFactor = NRetranslocationFactorFunction.Value;
         if (DMRetranslocationFactorFunction != null)
             DMRetranslocationFactor = DMRetranslocationFactorFunction.Value;
@@ -502,6 +510,11 @@ public class LeafCohort
             LeafStartNonStructuralNRetranslocationSupply = Math.Max(0.0, (LiveStart.NonStructuralN * NRetranslocationFactor) - LeafStartNonStructuralNReallocationSupply);
             LeafStartNReallocationSupply = NReallocationSupply;
             LeafStartNRetranslocationSupply = NRetranslocationSupply;
+
+            //If the model allows reallocation of senescent DM do it.
+            LeafStartDMReallocationSupply = SenescedFrac * LiveStart.Wt * DMReallocationFactor;
+   
+
             //zero locals variables
             StructuralDMDemand = 0;
             MetabolicDMDemand = 0;

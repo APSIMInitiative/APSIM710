@@ -17,12 +17,18 @@ public class DMSupplyType
 {
     public double Photosynthesis;
     public double Retranslocation;
+    public double Reallocation;
 }
 public class DMAllocationType
 {
     public double Allocation;
     public double ExcessAllocation;
     public double Retranslocation;
+    /*
+     * Rallocation added for when material is shifted from one organ to another
+     * designed primararily for senescent material- may not be exclusive
+     **/
+    public double Reallocation;
     public double Respired; 
 }
 public class NAllocationType

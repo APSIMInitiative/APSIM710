@@ -40,6 +40,7 @@ public class Arbitrator
     double[] DMDemand = null;
     double[] DMSinkCapacity = null;
     double[] DMAllocation = null;
+    double[] DMReallocation = null; 
     double[] DMExcessAllocation = null;
     double[] DMRetranslocation = null;
     
@@ -157,6 +158,7 @@ public class Arbitrator
         DMAllocation = new double[Organs.Count];
         DMExcessAllocation = new double[Organs.Count];
         DMRetranslocation = new double[Organs.Count];
+        DMReallocation = new double[Organs.Count];
 
         //Tag priority organs
         if (PriorityOrgan != null)
@@ -176,6 +178,9 @@ public class Arbitrator
             DMSupplyType DM = Organs[i].DMSupply;
             DMFreshSupplyOrgan[i] = DM.Photosynthesis;
             DMStoreSupplyOrgan[i] = DM.Retranslocation;
+
+            //RFZ
+            DMFreshSupplyOrgan[i] += DM.Reallocation;
         }
         TotalFreshDMSupply = MathUtility.Sum(DMFreshSupplyOrgan);
         TotalStoreDMSupply = MathUtility.Sum(DMStoreSupplyOrgan);
@@ -495,6 +500,7 @@ public class Arbitrator
                 Allocation = DMAllocation[i],
                 ExcessAllocation = DMExcessAllocation[i],
                 Respired = FixationWtLoss[i],
+                Reallocation = DMReallocation[i],
                 Retranslocation = DMRetranslocation[i]
             };
         }
