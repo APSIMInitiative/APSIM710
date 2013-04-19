@@ -209,7 +209,11 @@ namespace ApsimFile
 
          SetDirty(originalText != doc.DocumentElement.InnerXml);   // see if the upgrader changed anything
          if (IsDirty)
-             System.IO.File.Copy(FileName, FileName + ".old", true);
+             try
+             {
+                 System.IO.File.Copy(FileName, FileName + ".old", true);
+             }
+             catch (Exception e) { }
 
          string[] ReadOnlyFileNames = Configuration.Instance.Settings("ReadOnlyFiles").ToArray();
          ReadOnly = (CSGeneral.StringManip.IndexOfCaseInsensitive(ReadOnlyFileNames, Path.GetFileName(FileName)) != -1);
