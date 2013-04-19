@@ -403,7 +403,7 @@ public class OilPalm
           FOMType fom = new FOMType();
           fom.amount = (float)DM;
           fom.N = (float)N;
-          fom.C = (float)(0.40 * DM);
+          fom.C = (float)(0.44 * DM);
           fom.P = 0;
           fom.AshAlk = 0;
 
@@ -495,7 +495,7 @@ public class OilPalm
         }
 
         //if (Fronds[0].Age >= (40 * FrondAppRate.Value))
-        if (Fronds.Count>Math.Round(HarvestFrondNumber.Value))
+        if (FrondNumber>Math.Round(HarvestFrondNumber.Value))
         {
             HarvestBunches = Bunches[0].FemaleFraction;
             HarvestYield = Bunches[0].Mass * Population / (1.0 - RipeBunchWaterContent.Value) ;
@@ -779,11 +779,19 @@ public class OilPalm
         }
     }
     [Output]
-    public double FrondNumber
+    public double TotalFrondNumber
     {
         get
         {
             return Fronds.Count;
+        }
+    }
+    [Output]
+    public double FrondNumber
+    {
+        get
+        {
+            return Math.Max(Fronds.Count-ExpandingFronds.Value,0.0);
         }
     }
 
