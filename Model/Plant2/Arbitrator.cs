@@ -341,6 +341,8 @@ public class Arbitrator
         for (int i = 0; i < Organs.Count; i++)
             RelativeNDemand[i] = NDemandOrgan[i] / TotalNDemand; 
     }
+   
+    
     virtual public void DoNutrientReAllocation(List<Organ> Organs) 
     {
         NReallocationAllocated = 0;

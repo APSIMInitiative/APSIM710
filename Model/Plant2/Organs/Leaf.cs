@@ -55,9 +55,7 @@ public class Leaf : BaseOrgan, AboveGround
     public Function StructuralFraction = null;
     [Link(IsOptional = true)]
     public Function DMDemandFunction = null;
-    [Link(IsOptional = true)]
-    public Function DMReallocationFactor = null;
-
+  
  
  #endregion
 
@@ -94,7 +92,6 @@ public class Leaf : BaseOrgan, AboveGround
     public double _ThermalTime = 0;
     public double FinalLeafFraction = 1;
     public bool FinalLeafAppeared = false;
-    public double _DMReallocationFactor = 0;    
  #endregion
 
  #region Outputs
@@ -541,12 +538,7 @@ public class Leaf : BaseOrgan, AboveGround
     public override void DoPotentialGrowth()
     {
 
-        _DMReallocationFactor = 0;
-        if (DMReallocationFactor != null) //Default of zero means no senescence
-            _DMReallocationFactor = DMReallocationFactor.Value;
-
-
-        EP = 0;
+          EP = 0;
         if ((AppearedCohortNo == (int)Structure.MainStemFinalNodeNo) && (AppearedCohortNo > 0.0) && (AppearedCohortNo < MaxNodeNo)) //If last interger leaf has appeared set the fraction of the final part leaf.
         {
             FinalLeafFraction = Structure.MainStemFinalNodeNo - AppearedCohortNo;
@@ -828,6 +820,24 @@ public class Leaf : BaseOrgan, AboveGround
                 }
                 if (remainder > 0.0000000001)
                     throw new Exception(Name + " DM Retranslocation demand left over after processing.");
+            }
+
+            // Reallocation
+            if (value.Reallocation - DMSupply.Reallocation > 0.000000001)
+                throw new Exception(Name + " cannot supply that amount for DM Reallocation");
+            if (value.Reallocation < -0.000000001)
+                throw new Exception(Name + " recieved -ve DM reallocation");
+            if (value.Reallocation > 0)
+            {
+                double remainder = value.Reallocation;
+                foreach (LeafCohort L in Leaves)
+                {
+                    double ReAlloc = Math.Min(remainder, L.LeafStartDMReallocationSupply);
+                    L.DMReallocation = ReAlloc;
+                    remainder = Math.Max(0.0, remainder - ReAlloc);
+                }
+                if (!MathUtility.FloatsAreEqual(remainder, 0.0))
+                    throw new Exception(Name + " DM Reallocation demand left over after processing.");
             }
         }
     }

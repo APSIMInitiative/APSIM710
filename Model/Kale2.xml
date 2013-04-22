@@ -34,7 +34,7 @@
       </StageBasedInterpolation>
       <Population />
       <Arbitrator>
-        <ArbitrationOption type="text" description="ArbitrationOption">PriorityThenRelativeAllocation</ArbitrationOption>
+        <ArbitrationOption type="text" description="ArbitrationOption">RelativeAllocation</ArbitrationOption>
         <Constant name="RetransWtNRatio">
           <Value type="text" description="Value">0</Value>
         </Constant>
@@ -94,7 +94,7 @@
           <Start type="text" description="Start stage name">Emergence</Start>
           <End type="text" description="End stage name">Vegetative</End>
           <Constant name="Target">
-            <Value type="text" description="Value">200</Value>
+            <Value type="text" description="Value">250</Value>
           </Constant>
           <AirTemperatureFunction name="ThermalTime" shortcut="/Kale2/Model/Plant/Phenology/Germinating/ThermalTime">
             <XYPairs shortcut="/Kale2/Model/Plant/Phenology/Germinating/ThermalTime/XYPairs" />
@@ -200,14 +200,6 @@
             <XY>35 1</XY>
           </XYPairs>
         </AirTemperatureFunction>
-        <Constant name="xMaxDailyNUptake">
-          <Value type="text" description="Value">10</Value>
-          <Memo>I the maximum amount of N that the root system can take up each day (kg/ha)</Memo>
-          <Constant name="MaxDailyNUptake">
-            <Value type="text" description="Value">10</Value>
-            <Memo>I the maximum amount of N that the root system can take up each day (kg/ha)</Memo>
-          </Constant>
-        </Constant>
         <PhaseLookup name="RootFrontVelocity">
           <PhaseLookupValue>
             <Start type="text" description="Start">Germination</Start>
@@ -229,7 +221,7 @@
             <Start type="text" description="Start">Vegetative</Start>
             <End type="text" description="End">Maturity</End>
             <Constant name="Function">
-              <Value type="text" description="Value">.05</Value>
+              <Value type="text" description="Value">.1</Value>
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
@@ -314,12 +306,12 @@
           </LinearInterpolationFunction>
         </MultiplyFunction>
         <Constant name="StructuralFraction">
-          <Value type="text" description="Value">.5</Value>
+          <Value type="text" description="Value">.1</Value>
           <Memo>StructuralFraction sets the size of the metabolic pool with Metabolic DM demand calculated as: 
 (StructuralDMDemand * (1 / StructuralFraction)) - StructuralDMDemand such that the actual SLA of leaves will normally be less than SpecificLeafAreaMax.  If the leaf cohort is not partitioned sufficient biomass to meet both structural and metabolic N demands it will reduce the growth of both proportinatly.  With moderate DM limitations leaves will get less dense but when they reach SpecificLeafAreaMax and then leaf size will become constrained.</Memo>
         </Constant>
         <Constant name="SpecificLeafAreaMin">
-          <Value type="text" description="Value">14000</Value>
+          <Value type="text" description="Value">12000</Value>
           <Memo>sets the maximum density that leaves can obtain and sets up the potential size of the Non-Structural pool.  If leaf is partitioned enough DM to meet Structural and Metabolic Demands its SLA will be (DeltaStructuralWt * SpecificLeafAreaMax)/(DeltaStructuralWt* 1/StructuralFraction).  However, if there is surpless DM after all organs are allocated their DM demands it will be partitioned back to the leaf (assuming this would actually be stored as sugar of starch in such a situation) and the leaves can become more dense until they reach SpecificLeafAreaMin.  If leaf area expansion is constrained by water stress leaves will also get more dense until they reach SpecificLeafAreaMin.  Once leaves reach SpecificLeafAreaMin they can not absorb any further excess DM and if there are no other DM sinks available the leaf will discard potential biomass production, assuming that in this situation the leaf would down regulate photosynthesis due to source limitation.</Memo>
         </Constant>
         <Constant name="SpecificLeafAreaMax">
@@ -343,13 +335,13 @@
           </LinearInterpolationFunction>
         </LinearInterpolationFunction>
         <Constant name="MinimumNConc">
-          <Value type="text" description="Value">.03</Value>
+          <Value type="text" description="Value">.04</Value>
         </Constant>
         <Constant name="CriticalNConc">
-          <Value type="text" description="Value">.05</Value>
+          <Value type="text" description="Value">.03</Value>
         </Constant>
         <Constant name="MaximumNConc">
-          <Value type="text" description="Value">.07</Value>
+          <Value type="text" description="Value">.075</Value>
           <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the CriticalNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - CriticalNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation.</Memo>
         </Constant>
         <Constant name="NReallocationFactor">
@@ -365,7 +357,7 @@
           <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
         </Constant>
         <Constant name="DMReallocationFactor">
-          <Value type="text" description="Value">.95</Value>
+          <Value type="text" description="Value">0.95</Value>
           <Memo>This sets the proportion of Leaf Wt senesced that is reallocated each day.</Memo>
         </Constant>
         <LinearInterpolationFunction name="FrostFraction">
@@ -423,10 +415,11 @@ Initial ages and initial areas are array fields so the size and age of multiple 
           <WeightedTemperatureFunction name="FT">
             <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
             <XYPairs>
-              <XY>2 0</XY>
-              <XY>12 1</XY>
-              <XY>24 1</XY>
-              <XY>34 0</XY>
+              <XY>0 0.2</XY>
+              <XY>10 1</XY>
+              <XY>18 1</XY>
+              <XY>26 1</XY>
+              <XY>38 0</XY>
             </XYPairs>
           </WeightedTemperatureFunction>
           <LinearInterpolationFunction name="FVPD">
@@ -509,7 +502,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         <PartitionFractionDemandFunction name="DMDemandFunction">
           <StageBasedInterpolation name="PartitionFraction">
             <Stages type="text" description="Stages">Sowing Germination Emergence Vegetative Maturity</Stages>
-            <Values type="text" description="Values">    0.0       0.0      0.1          .4   .4 </Values>
+            <Values type="text" description="Values">    0.0       0.0      0.1          .4   .7</Values>
           </StageBasedInterpolation>
           <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
 		This function returns the specified proportion of totol DM supply.  The organ may not get this proportion if the sum of demands from other organs exceeds DM supply
@@ -524,10 +517,10 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         <Property>Stem.Dead</Property>
       </CompositeBiomass>
       <CompositeBiomass name="BelowGround">
-        <Property>Tuber.Live</Property>
-        <Property>Tuber.Dead</Property>
-        <Property>Root.Live</Property>
-        <Property>Root.Dead</Property>
+        <Property type="text" description="Property" />
+        <Property type="text" description="Property" />
+        <Property type="text" description="Property">Root.Live</Property>
+        <Property type="text" description="Property">Root.Dead</Property>
       </CompositeBiomass>
       <CompositeBiomass name="Total">
         <Property>Organs[].Live</Property>

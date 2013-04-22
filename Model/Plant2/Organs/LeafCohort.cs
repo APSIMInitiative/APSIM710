@@ -56,6 +56,14 @@ public class LeafCohort
     public double LeafStartNonStructuralNReallocationSupply = 0;
     public double LeafStartMetabolicNRetranslocationSupply = 0;
     public double LeafStartNonStructuralNRetranslocationSupply = 0;
+    
+    public double LeafStartMetabolicDMReallocationSupply = 0;
+    public double LeafStartNonStructuralDMReallocationSupply = 0;
+    public double LeafStartMetabolicDMRetranslocationSupply = 0;
+    public double LeafStartNonStructuralDMRetranslocationSupply = 0;
+    
+    
+    
     //variables used in calculating daily supplies and deltas
     public double DeltaWt = 0;
     public double StructuralNDemand = 0;
@@ -69,7 +77,9 @@ public class LeafCohort
     private double PotentialStructuralDMAllocation = 0;
     private double PotentialMetabolicDMAllocation = 0;
     private double MetabolicNReallocated = 0;
+    private double MetabolicWtReallocated = 0;
     private double NonStructuralNReallocated = 0;
+    private double NonStructuralWtReallocated = 0;
     private double MetabolicNRetranslocated = 0;
     private double NonStructuralNRetrasnlocated = 0;
     private double DMRetranslocated = 0;
@@ -325,6 +335,24 @@ public class LeafCohort
             }
         }
     }
+   
+    public double DMReallocation
+    {
+        set
+        {
+            if (value - (LeafStartMetabolicDMReallocationSupply + LeafStartNonStructuralDMReallocationSupply) > 0.00000000001)
+                throw new Exception("A leaf cohort cannot supply that amount for DM Reallocation");
+            if (value < -0.0000000001)
+                throw new Exception("Leaf cohort given negative DM Reallocation");
+            if (value > 0.0)
+            {
+                NonStructuralWtReallocated = Math.Min(LeafStartNonStructuralDMReallocationSupply, value); //Reallocate nonstructural first
+                MetabolicWtReallocated = Math.Max(0.0, value - LeafStartNonStructuralDMReallocationSupply); //Then reallocate metabolic DM
+                Live.NonStructuralWt -= NonStructuralWtReallocated;
+                Live.MetabolicWt -= MetabolicWtReallocated;
+            }
+        }
+    }
 
  #endregion
 
@@ -512,8 +540,18 @@ public class LeafCohort
             LeafStartNRetranslocationSupply = NRetranslocationSupply;
 
             //If the model allows reallocation of senescent DM do it.
-            LeafStartDMReallocationSupply = SenescedFrac * LiveStart.Wt * DMReallocationFactor;
-   
+            //  LeafStartDMReallocationSupply = SenescedFrac * LiveStart.Wt * DMReallocationFactor;
+            
+            if (DMReallocationFactor > 0)
+            { 
+             // DM to reallocate.
+                double ReallocateWt = 0;
+                ReallocateWt += LiveStart.MetabolicWt;
+                ReallocateWt += LiveStart.NonStructuralWt;
+                LeafStartDMReallocationSupply = SenescedFrac * ReallocateWt;
+            
+            }
+            
 
             //zero locals variables
             StructuralDMDemand = 0;
@@ -526,6 +564,8 @@ public class LeafCohort
             DMRetranslocated = 0;
             MetabolicNReallocated = 0;
             NonStructuralNReallocated = 0;
+            MetabolicWtReallocated = 0;
+            NonStructuralWtReallocated = 0;
             MetabolicNRetranslocated = 0;
             NonStructuralNRetrasnlocated = 0;
             StructuralNAllocation = 0;
@@ -578,6 +618,10 @@ public class LeafCohort
 
             Live.MetabolicWt -= (MetabolicWtSenescing);
             Dead.MetabolicWt += (MetabolicWtSenescing);
+            //RFZ
+            //Live.MetabolicWt -= Math.Max(0.0,MetabolicWtSenescing - MetabolicWtReallocated);
+            //Dead.MetabolicWt += Math.Max(0.0, MetabolicWtSenescing - MetabolicWtReallocated);
+
 
             Live.MetabolicN -= Math.Max(0.0, (MetabolicNSenescing - MetabolicNReallocated - MetabolicNRetranslocated));  //Don't Seness todays N if it has been taken for reallocation
             Dead.MetabolicN += Math.Max(0.0, (MetabolicNSenescing - MetabolicNReallocated - MetabolicNRetranslocated));
@@ -587,6 +631,12 @@ public class LeafCohort
 
             Live.NonStructuralWt -= Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated);
             Dead.NonStructuralWt += Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated);
+
+            //RFZ
+            //Live.NonStructuralWt -= Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated - NonStructuralWtReallocated);
+            //Dead.NonStructuralWt += Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated - NonStructuralWtReallocated);
+
+
 
             Age = Age + _ThermalTime;
 
