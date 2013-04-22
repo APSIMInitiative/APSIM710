@@ -4,6 +4,7 @@
 
 #ifdef __WIN32__
 #include <windows.h>
+#include <ShlObj.h>
 #endif
 
 #include <General/platform.h>
@@ -199,71 +200,73 @@ bool GetStringRegKey(const std::string &strKeyName,const std::string &strValueNa
 }
 #endif
 
+
+
 void RComponent::oneTimeInit(void)
-   {
-   apsimAPI.write("RLink Initialisation\n");
+{
+    apsimAPI.write("RLink Initialisation\n");
 
 #ifdef __WIN32__
-   string installPath, userlibs;
-   // Load R.dll first so that the embedder dll resolves to the loaded version and not something unknown
-   string versionString;
-   if (!GetStringRegKey("Software\\R-core\\R", "Current Version", versionString))
-     if (!GetStringRegKey("Software\\R-core\\R32", "Current Version", versionString))
-         throw std::runtime_error("No R version info");
+    string installPath, userlibs;
+    // Load R.dll first so that the embedder dll resolves to the loaded version and not something unknown
+    string versionString;
+    if (!GetStringRegKey("Software\\R-core\\R", "Current Version", versionString))
+        if (!GetStringRegKey("Software\\R-core\\R32", "Current Version", versionString))
+            throw std::runtime_error("No R version info");
 
-   string installPathKey = "Software\\R-core\\R\\" + versionString ;
-   if (!GetStringRegKey(installPathKey, "InstallPath", installPath))
-     {
-	 installPathKey = "Software\\R-core\\R32\\" + versionString ;
-      if (!GetStringRegKey(installPathKey, "InstallPath", installPath))
-         throw std::runtime_error("No R install info in " + installPathKey);
-     }
+    string installPathKey = "Software\\R-core\\R\\" + versionString ;
+    if (!GetStringRegKey(installPathKey, "InstallPath", installPath))
+    {
+        installPathKey = "Software\\R-core\\R32\\" + versionString ;
+        if (!GetStringRegKey(installPathKey, "InstallPath", installPath))
+            throw std::runtime_error("No R install info in " + installPathKey);
+    }
 
-   replace(installPath.begin(), installPath.end(), '\\', '/');
-   apsimAPI.write("Loading R from " + installPath + "\n");
-   string Rdll = installPath + "/bin/i386/R.dll";
-   if (loadDLL(Rdll) == NULL) throw std::runtime_error("Can't load R DLL " + Rdll);
+    replace(installPath.begin(), installPath.end(), '\\', '/');
+    apsimAPI.write("Loading R from " + installPath + "\n");
+    string Rdll = installPath + "/bin/i386/R.dll";
+    if (loadDLL(Rdll) == NULL) throw std::runtime_error("Can't load R DLL " + Rdll);
 
-   string apsimDLL = apsimAPI.getExecutableFileName();
-   replaceAll(apsimDLL, "\\", "/");
-   string EXE = fileDirName(apsimDLL) + "/REmbed.dll";
+    string apsimDLL = apsimAPI.getExecutableFileName();
+    replaceAll(apsimDLL, "\\", "/");
+    string EXE = fileDirName(apsimDLL) + "/REmbed.dll";
 
-   char *p = getenv("USERPROFILE");
-   if (p != NULL) {
-	  userlibs = p;
-      replace(userlibs.begin(), userlibs.end(), '\\', '/');
-	  string testDir = userlibs + "/My Documents/R/win-library/";
-      if (DirectoryExists(testDir)) {
-         userlibs = testDir;
-      } else {
-         testDir = userlibs + "/Documents/R/win-library/";
-         if (DirectoryExists(testDir)) {
-           userlibs = testDir;
-         }
-      }
-      if (DirectoryExists(testDir)) {
-        vector<string> vnums;
-        split(versionString, ".", vnums);
-        userlibs += vnums[0];
-        userlibs += ".";
-        userlibs += vnums[1];
-        apsimAPI.write("Userlibs = " + userlibs + "\n");
-      }
-   }
+    // We need to find the user's "My Docments" directory
+    // Microsoft hasn't made this simple, and the rules change with different versions of Windows
+    // The function used here has been superseded, but still works and is simpler than the
+    // more recent alternatives.
+    // For an alternative approach, see https://forums.embarcadero.com/thread.jspa?threadID=69238
+    char docPath[MAX_PATH + 1];
+    if (SHGetSpecialFolderPath(0, docPath, CSIDL_PERSONAL, false))
+    {
+        userlibs = docPath;
+        // Now see if the user has an R win-library directory
+        replace(userlibs.begin(), userlibs.end(), '\\', '/');
+        string testDir = userlibs + "/R/win-library/";
+        if (DirectoryExists(testDir)) {
+            userlibs = testDir;
+            vector<string> vnums;
+            split(versionString, ".", vnums);
+            userlibs += vnums[0];
+            userlibs += ".";
+            userlibs += vnums[1];
+            apsimAPI.write("Userlibs = " + userlibs + "\n");
+        }
+    }
 
-   if (!StartR(installPath.c_str(),
-               userlibs.c_str(),
-		       EXE.c_str()))
-		throw std::runtime_error("Cant Start R");
+    if (!StartR(installPath.c_str(),
+        userlibs.c_str(),
+        EXE.c_str()))
+        throw std::runtime_error("Cant Start R");
 #else
-   StartR(NULL, NULL, NULL);
+    StartR(NULL, NULL, NULL);
 #endif
 
-   // write copyright notice(s).
-   apsimAPI.write(SimpleREval("R.version.string") + "\n");
-   apsimAPI.write("Copyright (C) 2011 The R Foundation for Statistical Computing\n");
-   hasStartedR = true;
-   }
+    // write copyright notice(s).
+    apsimAPI.write(SimpleREval("R.version.string") + "\n");
+    apsimAPI.write("Copyright (C) 2011 The R Foundation for Statistical Computing\n");
+    hasStartedR = true;
+}
 
 void RComponent::onInit2(void)
    {
