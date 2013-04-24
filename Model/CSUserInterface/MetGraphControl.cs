@@ -49,7 +49,10 @@ namespace CSUserInterface
                 MetData.TableName = "Met";
 
                 // Get latitude for later on.
-                Latitude = Convert.ToDouble(Metfile.Constant("latitude").Value, new System.Globalization.CultureInfo("en-US"));
+                if (Metfile.Constant("latitude") != null)
+                  Latitude = Convert.ToDouble(Metfile.Constant("latitude").Value, new System.Globalization.CultureInfo("en-US"));
+                else
+                  MessageBox.Show("A value for latitude was expected, but could not be found in this file.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
                 StartDate = DataTableUtility.GetDateFromRow(MetData.Rows[0]);
                 EndDate = DataTableUtility.GetDateFromRow(MetData.Rows[MetData.Rows.Count - 1]);
