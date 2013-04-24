@@ -49,10 +49,13 @@ namespace CSUserInterface
                 MetData.TableName = "Met";
 
                 // Get latitude for later on.
-                if (Metfile.Constant("latitude") != null)
-                  Latitude = Convert.ToDouble(Metfile.Constant("latitude").Value, new System.Globalization.CultureInfo("en-US"));
+                if (Metfile.Constant("latitude") == null)
+                {
+                    MessageBox.Show("A value for latitude was expected, but could not be found in this file.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    Latitude = Double.NaN;
+                }
                 else
-                  MessageBox.Show("A value for latitude was expected, but could not be found in this file.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    Latitude = Convert.ToDouble(Metfile.Constant("latitude").Value, new System.Globalization.CultureInfo("en-US"));
 
                 StartDate = DataTableUtility.GetDateFromRow(MetData.Rows[0]);
                 EndDate = DataTableUtility.GetDateFromRow(MetData.Rows[MetData.Rows.Count - 1]);
@@ -152,7 +155,13 @@ namespace CSUserInterface
                 PopulateSeries(MaximumTemperatureLine, YearlyData, "MaxT");
                 PopulateSeries(MinimumTemperatureLine, YearlyData, "MinT");
                 PopulateSeries(RadiationLine, YearlyData, "Radn");
-                PopulateSeries(MaximumRadiationLine, YearlyData, "QMax");
+                if (MetData.Columns["QMax"] == null)
+                    MaximumRadiationLine.Visible = false;
+                else
+                {
+                    PopulateSeries(MaximumRadiationLine, YearlyData, "QMax");
+                    MaximumRadiationLine.Visible = true;
+                }
                 PopulateSeries(MonthlyRainfallBar, MonthlyData, "Rain");
                 if (MonthlyData.Columns.IndexOf("pan") != -1)
                 {
@@ -195,30 +204,33 @@ namespace CSUserInterface
 
         private void CalcQmax(float firstDay)
         {
-            // ----------------------------------------------------------------------------------
-            // Add a calculated QMax column to the daily data.
-            // ----------------------------------------------------------------------------------
-            if (((MetData.Columns["Qmax"] == null)))
+            if (!Double.IsNaN(Latitude))
             {
-                MetData.Columns.Add("Qmax");
-            }
-
-            // Do we have a VP column?
-            bool HaveVPColumn = (MetData.Columns["VP"] != null);
-
-            
-            // Loop through all rows and calculate a QMax
-            int doy = Convert.ToInt32(firstDay);
-            for (int Row = 0; Row <= YearlyData.Count - 1; Row++)
-            {
-                doy = doy + 1;
-                if (HaveVPColumn && !Convert.IsDBNull(YearlyData[Row]["vp"]))
+                // ----------------------------------------------------------------------------------
+                // Add a calculated QMax column to the daily data.
+                // ----------------------------------------------------------------------------------
+                if (((MetData.Columns["Qmax"] == null)))
                 {
-                    YearlyData[Row]["Qmax"] = MetUtility.QMax(doy + 1, Latitude, MetUtility.Taz, MetUtility.Alpha, (float)YearlyData[Row]["vp"]);
+                    MetData.Columns.Add("Qmax");
                 }
-                else
+
+                // Do we have a VP column?
+                bool HaveVPColumn = (MetData.Columns["VP"] != null);
+
+
+                // Loop through all rows and calculate a QMax
+                int doy = Convert.ToInt32(firstDay);
+                for (int Row = 0; Row <= YearlyData.Count - 1; Row++)
                 {
-                    YearlyData[Row]["Qmax"] = MetUtility.QMax(doy + 1, Latitude, MetUtility.Taz, MetUtility.Alpha, MetUtility.svp((float)YearlyData[Row]["mint"]));
+                    doy = doy + 1;
+                    if (HaveVPColumn && !Convert.IsDBNull(YearlyData[Row]["vp"]))
+                    {
+                        YearlyData[Row]["Qmax"] = MetUtility.QMax(doy + 1, Latitude, MetUtility.Taz, MetUtility.Alpha, (float)YearlyData[Row]["vp"]);
+                    }
+                    else
+                    {
+                        YearlyData[Row]["Qmax"] = MetUtility.QMax(doy + 1, Latitude, MetUtility.Taz, MetUtility.Alpha, MetUtility.svp((float)YearlyData[Row]["mint"]));
+                    }
                 }
             }
 
