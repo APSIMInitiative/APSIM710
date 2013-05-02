@@ -123,6 +123,9 @@ public partial class MainForm : Form
                                     item1.SubItems.Add(Path.GetExtension(FileName));
                                     item1.SubItems.Add(Status);
                                     item1.SubItems.Add(Revision);
+                                    DateTime ModifiedAt = File.GetLastWriteTime(FileName);
+                                    String ModifiedStr = ModifiedAt.ToShortDateString() + " " + ModifiedAt.ToShortTimeString(); 
+                                    item1.SubItems.Add(ModifiedStr);
                                     if (Status == "OutOfDate")
                                         item1.ForeColor = Color.Red;
                                     ListView.Items.Add(item1);
@@ -165,6 +168,7 @@ public partial class MainForm : Form
             MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         Cursor.Current = Cursors.Default;
+        DoColumnSort(1);
     }
 
     /// <summary>
@@ -271,14 +275,20 @@ public partial class MainForm : Form
 
     private void ListView_ColumnClick(object sender, ColumnClickEventArgs e)
     {
+        DoColumnSort(e.Column);
+    }
+
+    private void DoColumnSort(int ColumnNo)
+    {
         Sorting = true;
         ListViewSorter Sorter = new ListViewSorter();
+        Sorter.DateCols.Add(5);     //ensure this column is treated as a date
         ListView.ListViewItemSorter = Sorter;
         if (!(ListView.ListViewItemSorter is ListViewSorter))
             return;
         Sorter = (ListViewSorter)ListView.ListViewItemSorter;
 
-        if (Sorter.LastSort == e.Column)
+        if (LastSort == ColumnNo)
         {
             if (ListView.Sorting == SortOrder.Ascending)
                 ListView.Sorting = SortOrder.Descending;
@@ -289,10 +299,11 @@ public partial class MainForm : Form
         {
             ListView.Sorting = SortOrder.Descending;
         }
-        Sorter.ByColumn = e.Column;
+        Sorter.ByColumn = ColumnNo;
 
         ListView.Sort();
-        Sorting = false; 
+        LastSort = ColumnNo;
+        Sorting = false;
     }
     /// <summary>
     /// Report the number of items checked
@@ -307,11 +318,18 @@ public partial class MainForm : Form
                 labelChecked.Text = ListView.CheckedItems.Count.ToString() + " items selected";
         }
     }
+    public int LastSort
+    {
+        get { return LastColumn; }
+        set { LastColumn = value; }
+    }
+    int LastColumn = 0; //remember the last sorted column
 }
 
 public class ListViewSorter : System.Collections.IComparer
 {
     int Column = 0;
+    public ArrayList DateCols = new ArrayList();
 
     public int Compare(object o1, object o2)
     {
@@ -320,22 +338,35 @@ public class ListViewSorter : System.Collections.IComparer
         if (!(o2 is ListViewItem))
             return (0);
 
+        int result;
+
         ListViewItem lvi1 = (ListViewItem)o2;
         string str1 = lvi1.SubItems[ByColumn].Text;
         ListViewItem lvi2 = (ListViewItem)o1;
         string str2 = lvi2.SubItems[ByColumn].Text;
 
-        int result;
-        if (lvi1.ListView.Sorting == SortOrder.Ascending)
-            result = String.Compare(str1, str2);
+        // Determine whether the type being compared is a date type.  
+        if (DateCols.Contains(Column))
+        {
+            // Parse the two objects passed as a parameter as a DateTime.  
+            System.DateTime firstDate =
+                    DateTime.Parse(str1);
+            System.DateTime secondDate =
+                    DateTime.Parse(str2);
+            // Compare the two dates.  
+            result = DateTime.Compare(firstDate, secondDate);
+        }
+        // If neither compared object has a valid date format, compare  
+        // as a string.  
         else
-            result = String.Compare(str2, str1);
-
-        LastSort = ByColumn;
-
+        {
+            result = String.Compare(str1, str2);
+        }
+        // Determine whether the sort order is descending.  
+        if (lvi1.ListView.Sorting == SortOrder.Descending)  // Invert the value returned by Compare.  
+            result *= -1;
         return (result);
     }
-
 
     public int ByColumn
     {
@@ -343,10 +374,5 @@ public class ListViewSorter : System.Collections.IComparer
         set { Column = value; }
     }
 
-    public int LastSort
-    {
-        get { return LastColumn; }
-        set { LastColumn = value; }
-    }
-    int LastColumn = 0;
+
 }

@@ -34,6 +34,7 @@ partial class MainForm
             this.columnType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnStatus = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnRevision = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnModified = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SelectCheckBox = new System.Windows.Forms.CheckBox();
             this.OKButton = new System.Windows.Forms.Button();
             this.CanclButton = new System.Windows.Forms.Button();
@@ -53,11 +54,12 @@ partial class MainForm
             this.columnPath,
             this.columnType,
             this.columnStatus,
-            this.columnRevision});
+            this.columnRevision,
+            this.columnModified});
             this.ListView.Location = new System.Drawing.Point(13, 27);
             this.ListView.Name = "ListView";
             this.ListView.ShowGroups = false;
-            this.ListView.Size = new System.Drawing.Size(748, 476);
+            this.ListView.Size = new System.Drawing.Size(874, 476);
             this.ListView.TabIndex = 0;
             this.ListView.UseCompatibleStateImageBehavior = false;
             this.ListView.View = System.Windows.Forms.View.Details;
@@ -88,6 +90,11 @@ partial class MainForm
             // 
             this.columnRevision.Text = "Revision";
             // 
+            // columnModified
+            // 
+            this.columnModified.Text = "Modified";
+            this.columnModified.Width = 107;
+            // 
             // SelectCheckBox
             // 
             this.SelectCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -104,7 +111,7 @@ partial class MainForm
             // 
             this.OKButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.OKButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OKButton.Location = new System.Drawing.Point(596, 522);
+            this.OKButton.Location = new System.Drawing.Point(722, 522);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(75, 23);
             this.OKButton.TabIndex = 2;
@@ -116,7 +123,7 @@ partial class MainForm
             // 
             this.CanclButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CanclButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CanclButton.Location = new System.Drawing.Point(686, 522);
+            this.CanclButton.Location = new System.Drawing.Point(812, 522);
             this.CanclButton.Name = "CanclButton";
             this.CanclButton.Size = new System.Drawing.Size(75, 23);
             this.CanclButton.TabIndex = 3;
@@ -153,7 +160,7 @@ partial class MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(773, 554);
+            this.ClientSize = new System.Drawing.Size(899, 554);
             this.Controls.Add(this.DirectoryLabel);
             this.Controls.Add(this.labelChecked);
             this.Controls.Add(this.CanclButton);
@@ -183,6 +190,7 @@ partial class MainForm
     private System.Windows.Forms.Label labelChecked;
     private System.Windows.Forms.ColumnHeader columnRevision;
     private System.Windows.Forms.Label DirectoryLabel;
+    private System.Windows.Forms.ColumnHeader columnModified;
 }
 
 
