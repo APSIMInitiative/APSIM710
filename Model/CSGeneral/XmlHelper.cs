@@ -479,7 +479,8 @@ namespace CSGeneral
             int NumChildrenToAdd = NumChildren - ChildrenNames.Length;
             int NumChildrenToDelete = ChildrenNames.Length - NumChildren;
             for (int i = 1; i <= NumChildrenToAdd; i++)
-                Node.AppendChild(CreateNode(Node.OwnerDocument, ChildType, ChildName));
+                if (Node!= null)
+                    Node.AppendChild(CreateNode(Node.OwnerDocument, ChildType, ChildName));
 
             if (NumChildrenToDelete > 0)
             {
