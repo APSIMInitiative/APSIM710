@@ -83,8 +83,11 @@ public class TAPSIMHost : TBaseComp
     //=========================================================================
     public void queryEntityInfo(String searchPattern, uint findKind, ref List<TIDSpec> entityList)
     {
-        entityInfoList.Add(searchPattern, entityList);  //keep track of the entity list
-        sendQueryInfo(searchPattern, findKind, 0);
+        if (searchPattern.Length > 0)
+        {
+            entityInfoList.Add(searchPattern, entityList);  //keep track of the entity list
+            sendQueryInfo(searchPattern, findKind, 0);
+        }
     }
     //=========================================================================
     /// <summary>
@@ -96,8 +99,11 @@ public class TAPSIMHost : TBaseComp
     //=========================================================================
     public void queryCompInfo(String searchPattern, uint findKind, ref List<TComp> componentList)
     {
-        compInfoList.Add(searchPattern, componentList);    //keep track of the component list
-        sendQueryInfo(searchPattern, findKind, 0);
+        if (searchPattern.Length > 0)
+        {
+            compInfoList.Add(searchPattern, componentList);    //keep track of the component list
+            sendQueryInfo(searchPattern, findKind, 0);
+        }
     }
     //=========================================================================
     /// <summary>

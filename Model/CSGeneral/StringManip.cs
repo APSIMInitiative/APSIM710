@@ -13,7 +13,6 @@ namespace CSGeneral
 
         public const int MaxStringLength = 50000;
 
-
         // This function converts a C string to a vb string by returning everything 
         // up to the null character 
         public static string CStringToVBString(string Cstring)
@@ -421,15 +420,20 @@ namespace CSGeneral
         /// <summary>
         /// A helper function for getting the parent name from the specified
         /// fully qualified name passed in. Assumes delimiter of '.'.
-        /// e.g. if Name = .Paddock.ModelB
-        ///      then returns .Paddock
+        /// e.g. if Name = Paddock.ModelB
+        ///      then returns Paddock
         /// </summary>
         public static string ParentName(string Name)
         {
-            int PosLastPeriod = Name.LastIndexOf('.');
-            string ReturnName = Name.Substring(0, PosLastPeriod);
-            if (ReturnName == "")
-                ReturnName = ".";
+            string ReturnName = "";
+            if (Name.Length > 0)
+            {
+                int PosLastPeriod = Name.LastIndexOf('.');
+                if (PosLastPeriod >= 0)
+                    ReturnName = Name.Substring(0, PosLastPeriod);
+                //if (ReturnName == "")
+                //    ReturnName = ".";
+            }
             return ReturnName;
         }
 

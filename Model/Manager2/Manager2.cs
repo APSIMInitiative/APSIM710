@@ -22,7 +22,7 @@ public class Manager2
     public XmlNode Manager2Xml = null;
 
     [Link]
-    public Paddock MyPaddock = null;
+    public SystemComponent MySystem = null;
 
     string DllFileName;
 
@@ -79,7 +79,7 @@ public class Manager2
                     if (Child.Name != "ui" && Child.Name != "Reference" && Child.Name != "text")
                         ScriptNode.AppendChild(ScriptNode.OwnerDocument.ImportNode(Child, true));
                 }
-                MyPaddock.AddModel(ScriptNode, CompiledAssembly);
+                MySystem.AddModel(ScriptNode, CompiledAssembly);
 
 
             #else
@@ -94,7 +94,7 @@ public class Manager2
                         }
                     }
                 }
-                MyPaddock.Add(Model);
+                MySystem.Add(Model);
 #endif
 
         }
@@ -176,4 +176,3 @@ public class Manager2
         throw new Exception("Cannot compile manager script to an assembly");
     }
 }
-

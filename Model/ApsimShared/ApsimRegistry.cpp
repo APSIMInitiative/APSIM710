@@ -538,49 +538,52 @@ bool ApsimRegistry::isForeign(int id)
 }
 
 
-// ".paddock1.wheat.esw"
-// "wheat.esw"
-// "*.esw"
-// "esw"
-// etc
+//=============================================================================
+// "paddock1.wheat.esw"     (fqn)
+// "wheat.esw"              (partly qualified)?? 
+// "esw"                    (uqn of property)
+// 
+// Return the id of the owning component.
+// Return the unqualified name of the entity.
+//=============================================================================
 void ApsimRegistry::unCrackPath(int fromID,                 // IN: id of module asking
                                 const std::string &fqName,  // IN: [module.]name string
-                                std::vector<int> &ids,       // out
-                                std::string &name)          // out
+                                std::vector<int> &ids,      // out: id of the owning component
+                                std::string &name)          // out: uqn of the entity
 {
    size_t pos = fqName.rfind(".");
-   if (pos != string::npos)
-      {
-      name = fqName.substr(pos+1);
-      string componentName = fqName.substr(0,pos);
+   if (pos != string::npos)                                 //if this entity has some path specified
+   {
+      name = fqName.substr(pos+1);                          //get the entity name
+      string componentName = fqName.substr(0,pos);          //get the owner name (may be short path)
       if (strchr(componentName.c_str(), '*') == NULL && 
           strchr(componentName.c_str(), '?') == NULL) 
-         {
+      {
          // It's not a RE. It's either an absolute
          // or relative path.
-         if (componentName[0] == '.') 
-           {
-           int id = componentByName(componentName);
-           if (id <= 0) {throw std::runtime_error("Unknown module name " + componentName);}
+         int id = componentByName(componentName);           //is it a fqn ?
+         if (id > 0)  //if comp is found
+         {
            ids.push_back(id);
-           }
+         }
          else 
-           {
+         {
+           string container;
            // prepend container name of sending component
-           string container = componentByID(fromID) ;
+           container = componentByID(fromID) ;
            size_t cpos = container.rfind(".");
            if (cpos != string::npos) 
               container = container.substr(0,cpos);
          
            componentName = container + "." + componentName;
          
-           int id = componentByName(componentName);
-           if (id <= 0) {throw std::runtime_error("Unknown module name " + componentName);}
+           id = componentByName(componentName);
+           if (id <= 0) {throw std::runtime_error("Unknown module name " + componentName + " fqName:" + fqName + " name:" + name);}
            ids.push_back(id);
-           }
          }
+      }
       else
-         {
+      {
 //cout << "Testing RE: variable=\""<<name<<"\", re=\"" << componentName << "\"\n";
          // It's an RE. Test against all the component names we know about.
          //boost::regex e(componentName);
@@ -589,14 +592,14 @@ void ApsimRegistry::unCrackPath(int fromID,                 // IN: id of module 
          //  if (regex_match(components[i].Name,e)) 
          //    ids.push_back(components[i].ID);
          ids.push_back(0);
-         }
-      }  
+      }
+   }  
    else
-      {
+   {
       // No component name.
       ids.push_back(0);
       name = fqName;
-      }
+   }
 }
 
 void ApsimRegistry::unCrackPath(int fromID,                 // IN: id of module asking
@@ -679,7 +682,7 @@ std::string ApsimRegistry::getDescription(int componentID)
             st += reg->getNameProperCase() + "\"";
             if (typeName != "")
                st += " typename=\"" + typeName + "\"";
-            
+
             st += " kind=\"published\">";
             st += doc->documentElement().innerXML();
             delete doc;

@@ -1,0 +1,215 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.5
+Title                  = Slurp
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                       "report" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                      "manager" = %apsim%\Model\Manager.dll
+   Component                     "MicroMet" = %apsim%\Model\MicroMet.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "slurp" = %apsim%\Model\Plant2.dll
+   Component                    "slurproot" = %apsim%\Model\Root.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/07/1988
+     Simulation end date   = 30/07/1988
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\DALBY.MET
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        day
+        year
+        slurp.crop_type
+        slurp.leafwaterdemand
+        slurp.rootwateruptake
+        micromet.peta
+        micromet.petr
+        slurp.cover_tot
+        slurp.cover_green
+        slurp.height
+        sw_dep
+
+     Output file = Slurp report.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if (day = 183 and year = 1988) then
+        slurp sow cultivar=slurpcultivar
+     endif
+     slurp.leaflai = slurp.leaflai - 0.1
+     slurp.leaflaidead = slurp.leaflaidead + 0.1
+     slurp.height = slurp.height + 10.
+     
+     SECTION:- end_of_day
+     report do_output
+     END of rules
+     
+
+------- MicroMet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.100  0.230  0.450  0.500  0.450  1.300  0.762  0.200
+          150.-  300.  0.200  0.240  0.459  0.509  0.459  1.300  0.190  0.200
+          300.-  600.  0.200  0.240  0.450  0.510  0.450  1.290  0.048  0.200
+          600.-  900.  0.200  0.250  0.440  0.505  0.440  1.310  0.000  0.200
+          900.- 1200.  0.200  0.260  0.420  0.490  0.420  1.350  0.000  0.200
+         1200.- 1500.  0.200  0.270  0.420  0.480  0.420  1.360  0.000  0.200
+         1500.- 1800.  0.200  0.280  0.410  0.480  0.410  1.360  0.000  0.200
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      34.50      33.00      33.00       7.50
+          150.-  300.      36.00      32.85      32.85       7.50
+          300.-  600.      72.00      63.00      63.00      18.00
+          600.-  900.      75.00      57.00      57.00      19.50
+          900.- 1200.      78.00      48.00      48.00      21.00
+         1200.- 1500.      81.00      45.00      45.00      18.00
+         1500.- 1800.      84.00      39.00      39.00      21.00
+          ---------------------------------------------------------
+               Totals     460.50     317.85     317.85     112.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.40  1.04   12.68    1.17    0.00
+             2     8.80  0.89    4.10    0.19    0.00
+             3     9.00  0.89    8.13    0.39    0.00
+             4     9.20  0.89    6.68    0.39    0.00
+             5     9.20  0.77    6.89    0.41    0.00
+             6     9.10  0.45    6.94    0.41    0.00
+             7     9.00  0.27    6.94    0.41    0.00
+          ------------------------------------------------
+           Totals               52.36    3.36    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      19983.2  1598.7   296.8    37.1    27.8     0.7
+             2      17218.9  1377.5   136.1    17.0    21.6     0.5
+             3      34341.2  2747.3   101.8    12.7    13.1     0.3
+             4      34942.4  2795.4    34.6     4.3     8.0     0.2
+             5      31169.6  2493.6    15.4     1.9     4.8     0.1
+             6      18350.9  1468.1     9.1     1.1     2.9     0.1
+             7      11010.5   880.8     5.5     0.7     1.8     0.0
+          ---------------------------------------------------------
+           Totals  167016.7 13361.3   599.3    74.9    80.0     2.0
+          ---------------------------------------------------------
+
+------- slurproot Initialisation ----------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager sending message :- slurp sow  cultivar = slurpcultivar
+30 July 1988(Day of year=212), clock: 
+     Simulation is terminating due to end criteria being met.
+

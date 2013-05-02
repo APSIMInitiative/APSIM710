@@ -12,26 +12,27 @@
 Version                = 7.5
 Title                  = Root Test2
    Component                        "clock" = %apsim%\Model\Clock.dll
-   Component                   "outputfile" = %apsim%\Model\Report.dll
    Component                          "met" = %apsim%\Model\Input.dll
    Component                      "Manager" = %apsim%\Model\Manager.dll
-   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
-   Component                        "slurp" = %apsim%\Model\Plant2.dll
 Paddock:
    Component                   "outputfile" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "slurp" = %apsim%\Model\Plant2.dll
    Component                    "slurproot" = %apsim%\Model\Root.dll
 Paddock:
    Component                   "outputfile" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "slurp" = %apsim%\Model\Plant2.dll
    Component                    "slurproot" = %apsim%\Model\Root.dll
 
 ------- clock Initialisation --------------------------------------------------
@@ -50,23 +51,6 @@ Paddock:
      Simulation end date   = 31/01/1940
      Time step =           = 1440 (mins)
 
-------- outputfile Initialisation ---------------------------------------------
-     Output frequency:
-        post
-     Output variables:
-        dd/mm/yyyy as Date
-        esw
-        es
-        LeafLAI
-        LeafLAIdead
-        LeafTranspiration
-        LeafWaterDemand
-        LeafFw
-        Cover_green
-
-     Output file = Root Test2.out
-     Format = normal
-
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
      INPUT File name: %apsim%\Examples\MetFiles\Goond.met
@@ -78,22 +62,19 @@ Paddock:
      
      SECTION:- start_of_day
      if (day = 1) then
-        slurp sow cultivar=slurpcultivar
-        slurp.leaflai = 5.0
-        slurp.leaflaidead = 0.0
-        slurp.height = 1000.
+        paddock1.slurp sow cultivar=slurpcultivar
+        paddock1.slurp.leaflai = 5.0
+        paddock1.slurp.leaflaidead = 0.0
+        paddock1.slurp.height = 1000.
+        paddock2.slurp sow cultivar=slurpcultivar
+        paddock2.slurp.leaflai = 5.0
+        paddock2.slurp.leaflaidead = 0.0
+        paddock2.slurp.height = 1000.
      endif
      
      SECTION:- end_of_day
      END of rules
      
-
-------- Micromet Initialisation -----------------------------------------------
-     Initialising
-     
-        - Reading Constants
-     
-        - Reading Parameters
 
 ------- outputfile Initialisation ---------------------------------------------
      Output frequency:
@@ -114,6 +95,13 @@ Paddock:
 
 ------- accum Initialisation --------------------------------------------------
      Initialising
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
 
 ------- Soil Water Initialisation ---------------------------------------------
      
@@ -294,6 +282,13 @@ Paddock:
 ------- accum Initialisation --------------------------------------------------
      Initialising
 
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
 ------- Soil Water Initialisation ---------------------------------------------
      
          - Reading constants
@@ -453,7 +448,8 @@ Paddock:
 
 ------- slurproot Initialisation ----------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager sending message :- slurp sow  cultivar = slurpcultivar
+     Manager sending message :- paddock1.slurp sow  cultivar = slurpcultivar
+     Manager sending message :- paddock2.slurp sow  cultivar = slurpcultivar
 31 January 1940(Day of year=31), clock: 
      Simulation is terminating due to end criteria being met.
 

@@ -25,7 +25,7 @@ class EXPORT ApsimRegistry
       ApsimRegistry(void)
          {
          paddocks.item.ID = 1;
-         paddocks.item.Name = ".MasterPM";
+         paddocks.item.Name = ""; //".MasterPM";
          paddocks.parent = &paddocks;
          };
 	  ~ApsimRegistry();

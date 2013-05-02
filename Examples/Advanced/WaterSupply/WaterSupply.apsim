@@ -881,18 +881,18 @@ outputfile do_output</text>
       <variables name="Variables">
         <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
         <variable>reportKey</variable>
-        <variable array="?" description="Biomass">.masterpm.paddock1.wheat.biomass as p1bio</variable>
-        <variable array="?" description="Yield">.masterpm.paddock1.wheat.yield as p1yld</variable>
-        <variable>.masterpm.paddock2.wheat.biomass as p2bio</variable>
-        <variable>.masterpm.paddock2.wheat.yield as p2yld</variable>
-        <variable array="?" description="Extractable Soil Water (mm)">.masterpm.paddock1.Soil Water.sw_dep() as p1esw</variable>
-        <variable>.masterpm.paddock2.Soil Water.esw as p2esw</variable>
+        <variable array="?" description="Biomass">paddock1.wheat.biomass as p1bio</variable>
+        <variable array="?" description="Yield">paddock1.wheat.yield as p1yld</variable>
+        <variable>paddock2.wheat.biomass as p2bio</variable>
+        <variable>paddock2.wheat.yield as p2yld</variable>
+        <variable array="?" description="Extractable Soil Water (mm)">paddock1.Soil Water.sw_dep() as p1esw</variable>
+        <variable>paddock2.Soil Water.esw as p2esw</variable>
       </variables>
       <events name="Reporting Frequency" />
     </outputfile>
     <folder name="Manager folder">
       <manager name="scratch manager">
-        <script name="init">
+        <script>
           <text>reportKey = 'none'</text>
           <event>init</event>
         </script>
@@ -900,7 +900,7 @@ outputfile do_output</text>
       <manager name="P1 Wheat Sowing rule">
         <ui>
           <category description="Paddock" type="category" />
-          <paddock type="text" description="Apsim Name of paddock for this crop: ">.MasterPM.paddock1</paddock>
+          <paddock type="text" description="Apsim Name of paddock for this crop: ">paddock1</paddock>
           <paddockName type="text" description="Text Name of paddock for this crop: ">P1</paddockName>
           <category description="Sowing criteria" type="category" />
           <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">15-mar</date1>
@@ -917,12 +917,12 @@ outputfile do_output</text>
           <row_spacing type="text" description="Enter row spacing (mm) : ">250</row_spacing>
           <skiprow type="list" listvalues="solid, single, double" description="Skip row : ">solid</skiprow>
         </ui>
-        <script name="start_of_day">
-          <text><![CDATA[
-      if ([paddockName]InCrop <> 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
+        <script>
+          <text>
+      if ([paddockName]InCrop &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
          if (date_within('[date1], [date2]') = 1) then
-!            if (rain[[rainnumdays]] >= [raincrit] AND '[paddock].Soil Water.esw' >= [esw_amount]) OR
-            if ('[paddock].Soil Water.esw' >= [esw_amount]) OR
+!            if (rain[[rainnumdays]] &gt;= [raincrit] AND '[paddock].Soil Water.esw' &gt;= [esw_amount]) OR
+            if ('[paddock].Soil Water.esw' &gt;= [esw_amount]) OR
                 ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
               [paddockName]InCrop = 'yes'
                '[paddock].[crop]' sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [skiprow]
@@ -932,10 +932,10 @@ outputfile do_output</text>
             endif
          endif
       endif
-            ]]></text>
+            </text>
           <event>start_of_day</event>
         </script>
-        <script name="init">
+        <script>
           <text>
             nextcrop = 0
             fallowin = 0
@@ -946,7 +946,7 @@ outputfile do_output</text>
       <manager name="P1 Harvesting rule">
         <ui>
           <category description="Paddock" type="category" />
-          <paddock type="text" description="Name of paddock for this crop: ">.MasterPM.paddock1</paddock>
+          <paddock type="text" description="Name of paddock for this crop: ">paddock1</paddock>
           <paddockName type="text" description="Text Name of paddock for this crop: ">P1</paddockName>
           <category description="Harvesting criteria" type="category" />
           <crop type="crop" description="Enter name of crop to harvest when ripe : ">Wheat</crop>
@@ -956,7 +956,7 @@ outputfile do_output</text>
 
            if [paddock].[crop].StageName = 'harvest_ripe' or [paddock].[crop].plant_status = 'dead' then
               reportKey = '[paddockName]'
-              .masterpm.outputfile do_output
+              outputfile do_output
               [paddock].[crop]  harvest
               [paddock].[crop]  end_crop
 
@@ -971,7 +971,7 @@ outputfile do_output</text>
       <manager name="P1 Sowing fertiliser">
         <ui>
           <category description="Paddock" type="category" />
-          <paddock type="text" description="Name of paddock for this crop: ">.MasterPM.paddock1</paddock>
+          <paddock type="text" description="Name of paddock for this crop: ">paddock1</paddock>
           <category description="When should fertiliser be applied" type="category" />
           <modulename type="modulename" description="On which module should the event come from : ">Wheat</modulename>
           <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
@@ -980,7 +980,7 @@ outputfile do_output</text>
           <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">150</fert_amount_sow>
           <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
         </ui>
-        <script name="[paddock].[modulename].[eventname]">
+        <script>
           <text>
         [paddock].[fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
             </text>
@@ -990,7 +990,7 @@ outputfile do_output</text>
       <manager name="P2 Wheat Sowing rule">
         <ui>
           <category description="Paddock" type="category" />
-          <paddock type="text" description="Name of paddock for this crop: ">.MasterPM.paddock2</paddock>
+          <paddock type="text" description="Name of paddock for this crop: ">paddock2</paddock>
           <paddockName type="text" description="Text Name of paddock for this crop: ">P2</paddockName>
           <category description="Sowing criteria" type="category" />
           <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">15-apr</date1>
@@ -1007,12 +1007,12 @@ outputfile do_output</text>
           <row_spacing type="text" description="Enter row spacing (mm) : ">250</row_spacing>
           <skiprow type="list" listvalues="solid, single, double" description="Skip row : ">solid</skiprow>
         </ui>
-        <script name="start_of_day">
-          <text><![CDATA[
-      if ([paddockName]InCrop <> 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
+        <script>
+          <text>
+      if ([paddockName]InCrop &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
          if (date_within('[date1], [date2]') = 1) then
-!            if (rain[[rainnumdays]] >= [raincrit] AND '[paddock].Soil Water.esw' >= [esw_amount]) OR
-            if ('[paddock].Soil Water.esw' >= [esw_amount]) OR
+!            if (rain[[rainnumdays]] &gt;= [raincrit] AND '[paddock].Soil Water.esw' &gt;= [esw_amount]) OR
+            if ('[paddock].Soil Water.esw' &gt;= [esw_amount]) OR
                 ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
               [paddockName]InCrop = 'yes'
                '[paddock].[crop]' sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [skiprow]
@@ -1022,10 +1022,10 @@ outputfile do_output</text>
             endif
          endif
       endif
-            ]]></text>
+            </text>
           <event>start_of_day</event>
         </script>
-        <script name="init">
+        <script>
           <text>
             nextcrop = 0
             fallowin = 0
@@ -1036,7 +1036,7 @@ outputfile do_output</text>
       <manager name="P2 Harvesting rule">
         <ui>
           <category description="Paddock" type="category" />
-          <paddock type="text" description="Name of paddock for this crop: ">.MasterPM.paddock2</paddock>
+          <paddock type="text" description="Name of paddock for this crop: ">paddock2</paddock>
           <paddockName type="text" description="Text Name of paddock for this crop: ">P2</paddockName>
           <category description="Harvesting criteria" type="category" />
           <crop type="crop" description="Enter name of crop to harvest when ripe : ">Wheat</crop>
@@ -1046,7 +1046,7 @@ outputfile do_output</text>
 
            if [paddock].[crop].StageName = 'harvest_ripe' or [paddock].[crop].plant_status = 'dead' then
                reportKey = '[paddockName]'
-              .masterpm.outputfile do_output
+              outputfile do_output
               [paddock].[crop]  harvest
               [paddock].[crop]  end_crop
 
@@ -1061,7 +1061,7 @@ outputfile do_output</text>
       <manager name="P2 Sowing fertiliser">
         <ui>
           <category description="Paddock" type="category" />
-          <paddock type="text" description="Name of paddock for this crop: ">.MasterPM.paddock2</paddock>
+          <paddock type="text" description="Name of paddock for this crop: ">paddock2</paddock>
           <category description="When should fertiliser be applied" type="category" />
           <modulename type="modulename" description="On which module should the event come from : ">Wheat</modulename>
           <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
@@ -1070,7 +1070,7 @@ outputfile do_output</text>
           <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">150</fert_amount_sow>
           <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
         </ui>
-        <script name="[paddock].[modulename].[eventname]">
+        <script>
           <text>
         [paddock].[fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
             </text>
@@ -1079,72 +1079,72 @@ outputfile do_output</text>
       </manager>
       <tclmanager name="Irrigation management">
         <ui>
-          <paddock type="text" description="Apsim Name of paddock: ">.MasterPM.paddock1</paddock>
+          <paddock type="text" description="Apsim Name of paddock: ">paddock1</paddock>
           <paddockName type="text" description="Text Name of paddock: ">P1</paddockName>
-          <waterBalanceModule type="text" description="Name of water balance for this paddock: ">.MasterPM.paddock1.Soil Water</waterBalanceModule>
+          <waterBalanceModule type="text" description="Name of water balance for this paddock: ">paddock1.Soil Water</waterBalanceModule>
           <paddockArea type="text" description="Area of paddock: ">20.0</paddockArea>
           <category description="Irrigation application details" type="category" />
-          <irrigate_module type="modulename" description="Module used to apply the irrigation : ">.masterpm.paddock1.Irrigation1</irrigate_module>
+          <irrigate_module type="modulename" description="Module used to apply the irrigation : ">paddock1.Irrigation1</irrigate_module>
           <irrigate_threshold type="text" description="SW deficit for irrigation to apply (mm) : ">50</irrigate_threshold>
           <irrigate_efficiency type="text" description="Irrigation efficiency (0-1) : ">1</irrigate_efficiency>
         </ui>
         <rule name="P1 Logic">
-          <script name="init">
+          <script>
             <text>
-set paddock              ".MasterPM.paddock1"
+set paddock              "paddock1"
 set paddockName          "P1"
-set waterBalanceModule   ".MasterPM.paddock1.Soil Water"
+set waterBalanceModule   "paddock1.Soil Water"
 set paddockArea          "20.0"
-set dam_module           ".masterpm.dam"
-set irrigate_module      ".masterpm.paddock1.Irrigation1"
+set dam_module           "dam"
+set irrigate_module      "paddock1.Irrigation1"
 set irrigate_threshold   "30"
 set irrigate_efficiency  "0.8"
             </text>
             <event>init</event>
           </script>
-          <script name="prepare">
-            <text><![CDATA[
+          <script>
+            <text>
 
 if {[apsimGet ${paddockName}InCrop] == "yes" } {
    set dul [apsimGet ${waterBalanceModule}.dul_dep()]
    set sw  [apsimGet ${waterBalanceModule}.sw_dep()]
    set capacity [expr $dul - $sw]
-   if {($capacity - $irrigate_threshold) > 0} {
+   if {($capacity - $irrigate_threshold) &gt; 0} {
       apsimSet ${irrigate_module}.irrigation_efficiency $irrigate_efficiency
       apsimSendMessage $irrigate_module apply "amount $capacity" "source $dam_module" "crop_area $paddockArea"
    }
 }
-          ]]></text>
+          </text>
             <event>prepare</event>
           </script>
         </rule>
         <rule name="P2 Logic">
-          <script name="init">
+          <script>
             <text>
-set paddock              ".MasterPM.paddock2"
+set paddock              "paddock2"
 set paddockName          "P2"
-set waterBalanceModule   ".MasterPM.paddock2.Soil Water"
+set waterBalanceModule   "paddock2.Soil Water"
 set paddockArea          "50.0"
-set dam_module           ".masterpm.dam"
-set irrigate_module      ".masterpm.paddock2.Irrigation2"
+set dam_module           "dam"
+set irrigate_module      "paddock2.Irrigation2"
 set irrigate_threshold   "50"
 set irrigate_efficiency  "0.6"
             </text>
             <event>init</event>
           </script>
-          <script name="prepare">
-            <text><![CDATA[
+          <script>
+            <text>
 
 if {[apsimGet ${paddockName}InCrop] == "yes" } {
    set dul [apsimGet ${waterBalanceModule}.dul_dep()]
    set sw  [apsimGet ${waterBalanceModule}.sw_dep()]
    set capacity [expr $dul - $sw]
-   if {($capacity - $irrigate_threshold) > 0} {
+   if {($capacity - $irrigate_threshold) &gt; 0} {
       apsimSet ${irrigate_module}.irrigation_efficiency $irrigate_efficiency
       apsimSendMessage $irrigate_module apply "amount $capacity" "source $dam_module" "crop_area $paddockArea"
    }
 }
-          ]]></text>
+          </text>
             <event>prepare</event>
           </script>
         </rule>
@@ -1167,7 +1167,7 @@ if {[apsimGet ${paddockName}InCrop] == "yes" } {
       <catchment_area type="text" description="Catchment area (ha)">50</catchment_area>
       <catchment_runoff_factor type="text" description="soilwat2.runoff multiplier">0.5</catchment_runoff_factor>
       <category description="Cropped runoff" />
-      <receive_crop_runoff type="list" listvalues="no,yes" description="Dam collects runoff from simulated crop area">'.masterpm.paddock1.soil water' '.masterpm.paddock2.soil water'</receive_crop_runoff>
+      <receive_crop_runoff type="list" listvalues="no,yes" description="Dam collects runoff from simulated crop area">'paddock1.soil water' 'paddock2.soil water'</receive_crop_runoff>
       <crop_area type="text" description="Area of each paddock">20 50</crop_area>
       <category description="Solutes" />
       <init_salt_conc type="text" description="Initial chloride concentration (ppm)">704</init_salt_conc>

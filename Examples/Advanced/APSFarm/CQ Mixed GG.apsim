@@ -1,5 +1,5 @@
 <folder version="36" name="Grazing simulations">
-  <memo name="notes for CQ Mixed GG simulations"><![CDATA[* 4000 ha property size
+  <memo name="notes for CQ Mixed GG simulations">* 4000 ha property size
 * cattle numbers: 1100 to 1500
 * all cattle are on adjistment
 * one class of stock on each pasture type
@@ -29,20 +29,20 @@ forage sorghum = summer
 rules for moving animals around:
 -----------------------------------------------
 buffel: cattle always grazing buffel all year around.
-            if biomass < 800 kg/ha, then move stock out to leucaena paddock
+            if biomass &lt; 800 kg/ha, then move stock out to leucaena paddock
 
 
-oats : if biomass > 1500 kg/ha, then ready for grazing
-            if biomass < 1000 kg/ha, then move stock out
+oats : if biomass &gt; 1500 kg/ha, then ready for grazing
+            if biomass &lt; 1000 kg/ha, then move stock out
 
 
-sorghum : if biomass > 2500 kg/ha, then ready for grazing
-            if biomass < 1000 kg/ha, then move stock out
+sorghum : if biomass &gt; 2500 kg/ha, then ready for grazing
+            if biomass &lt; 1000 kg/ha, then move stock out
 
 
-sell rule - sell in lotsof 120 when weight > 400kg.
+sell rule - sell in lotsof 120 when weight &gt; 400kg.
 ------
-]]></memo>
+</memo>
   <folder name="common stuff">
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">1/1/1980</start_date>
@@ -871,15 +871,15 @@ set config(p1,area)                 200.0
         </script>
       </rule>
       <rule name="Rugplot stuff">
-        <script name="init">
-          <text><![CDATA[
+        <script>
+          <text>
 # Rug plotting facility
 
 # 2 areas of interest:
 # - logState - called when a graph is changing state, called just after the "actions" have been evaluated
 
 # a logfile is used to generate the rugplots of farm activities. There are 2 parts:
-# an xml of paddocks, states & times,
+# an xml of paddocks, states &amp; times,
 # a binary of decision rules on each evaluation cycle
 proc log {msg} {
    #puts $msg
@@ -895,7 +895,7 @@ proc setupLogging {} {
    set config(graphs) {}
    foreach paddock $config(paddocks) {
      foreach graph $config($paddock,graphNames) {
-        if {[lsearch $config(graphs) $graph] < 0} {
+        if {[lsearch $config(graphs) $graph] &lt; 0} {
            lappend config(graphs) $graph
         }
      }
@@ -918,7 +918,7 @@ proc logRules {paddock graph rules values } {
    global config history
 
    set data {}
-   for {set i 0} {$i < [llength $rules]} {incr i} {
+   for {set i 0} {$i &lt; [llength $rules]} {incr i} {
       lappend data [lindex $rules $i] [lindex $values $i]
    }
 
@@ -926,7 +926,7 @@ proc logRules {paddock graph rules values } {
 
    lappend history($paddock,$graph,$today) $data
 
-   if {[lsearch $config(historyDays) $today] < 0} {
+   if {[lsearch $config(historyDays) $today] &lt; 0} {
        lappend config(historyDays) $today
        set config($today,ddmmyyyy) [apsimGet clock.dd/mm/yyyy]
    }
@@ -937,7 +937,7 @@ proc logState {graph paddock state} {
    global config
    set today [apsimGet today]
    lappend config(history,$paddock,$graph) $today $state
-   if {[lsearch $config(states) $state] < 0} {lappend config(states) $state}
+   if {[lsearch $config(states) $state] &lt; 0} {lappend config(states) $state}
 }
 
 # Write the files. 
@@ -993,7 +993,7 @@ proc closeLogging {} {
       }
 
 	    #Positions
-      for {set i 0} {$i < [llength $config(historyDays)]} {incr i} {
+      for {set i 0} {$i &lt; [llength $config(historyDays)]} {incr i} {
          set day [lindex $config(historyDays) $i]
          set f 0
          foreach paddock $config(paddocks) {
@@ -1008,35 +1008,35 @@ proc closeLogging {} {
          }   
       }
       
-      for {set j 0} {$j < [llength $config(historyDays)]} {incr j} {
+      for {set j 0} {$j &lt; [llength $config(historyDays)]} {incr j} {
          ncdfvar $ncfp put daynum $j [lindex $config(historyDays) $j]
       }   
 
       ncdf close $ncfp
 
       set fp [open $simName.$graph.xml w]
-      puts $fp "<?xml version=\"1.0\" encoding=\"UTF-8\"?><simulation>"
+      puts $fp "&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;&lt;simulation&gt;"
       set id 0
       foreach paddock $config(paddocks) {
-         puts $fp "<history id=\"$id\" name=\"$paddock\">"
+         puts $fp "&lt;history id=\"$id\" name=\"$paddock\"&gt;"
          foreach {day state} $config(history,$paddock,$graph) {
             if {[info exists pos($paddock,$day)]} {
-               puts $fp "<transition day=\"$day\" to=\"$state\" position=\"$pos($paddock,$day)\" />"
+               puts $fp "&lt;transition day=\"$day\" to=\"$state\" position=\"$pos($paddock,$day)\" /&gt;"
             } 
          }
-         puts $fp "</history>"
+         puts $fp "&lt;/history&gt;"
          incr id
       }
 
       foreach paddock $config(paddocks) {
-         puts $fp "<paddock id=\"$pid($paddock)\" name=\"$paddock\" />"
+         puts $fp "&lt;paddock id=\"$pid($paddock)\" name=\"$paddock\" /&gt;"
       }   
       set id 0
       foreach rule $config(rules) {
-         set rule [string map {\< "&lt;"  \> "&gt;"     
-                               \& "&amp;" \" "&quot;"  
-                               \[ "&#91;" \] "&#93;"    } $rule]
-         puts $fp "<rule id=\"$id\" name=\"$rule\" />"
+         set rule [string map {\&lt; "&amp;lt;"  \&gt; "&amp;gt;"     
+                               \&amp; "&amp;amp;" \" "&amp;quot;"  
+                               \[ "&amp;#91;" \] "&amp;#93;"    } $rule]
+         puts $fp "&lt;rule id=\"$id\" name=\"$rule\" /&gt;"
          incr id
       }
 
@@ -1044,15 +1044,15 @@ proc closeLogging {} {
       foreach node [$config(docroot) selectNodes //node] {
           set state [getValue $node "name"]
           set colour [getValue $node "fill"]
-          puts $fp "<state name=\"$state\" colour=\"$colour\" />"
+          puts $fp "&lt;state name=\"$state\" colour=\"$colour\" /&gt;"
       }
 
       set day [lindex $config(historyDays) 0]
-      puts $fp "<startdate ddmmyyyy=\"$config($day,ddmmyyyy)\" day=\"$day\" />"
+      puts $fp "&lt;startdate ddmmyyyy=\"$config($day,ddmmyyyy)\" day=\"$day\" /&gt;"
       set day [lindex $config(historyDays) end]
-      puts $fp "<enddate ddmmyyyy=\"$config($day,ddmmyyyy)\" day=\"$day\" />"
+      puts $fp "&lt;enddate ddmmyyyy=\"$config($day,ddmmyyyy)\" day=\"$day\" /&gt;"
 
-      puts $fp "</simulation>"
+      puts $fp "&lt;/simulation&gt;"
       close $fp
    }  
    # $config(xmldoc) delete
@@ -1074,9 +1074,9 @@ proc checkRules {thisPaddock} {
            lappend rules [enCodeRule $target $rule]
         }
         logRules $thisPaddock $graph $rules $values
-        if {[llength $values] > 0} {
+        if {[llength $values] &gt; 0} {
            set score [expr [join $values "*"]]
-           if {$score > $bestScore} {
+           if {$score &gt; $bestScore} {
               set bestScore  $score
               set bestTarget $target
               set bestArc    $arc
@@ -1092,7 +1092,7 @@ proc enCodeRule {target ruleText} {
   global config
   regsub -all "\," $ruleText "\-" ruleText
 
-  for {set i 0} {$i < [llength $config(rules)]} {incr i} {
+  for {set i 0} {$i &lt; [llength $config(rules)]} {incr i} {
      set rule [lindex $config(rules) $i]
      if {[string equal $rule "$target,$ruleText"]} {
         return $i
@@ -1113,10 +1113,10 @@ proc getValue {id thing} {
    return ""
 }
 
-]]></text>
+</text>
           <event>init</event>
         </script>
-        <script name="start_simulation">
+        <script>
           <text>
 setupLogging
 
@@ -1126,7 +1126,7 @@ foreach paddock $config(paddocks) {
 </text>
           <event>start_simulation</event>
         </script>
-        <script name="end_simulation">
+        <script>
           <text>
 closeLogging
 </text>
@@ -1134,8 +1134,8 @@ closeLogging
         </script>
       </rule>
       <RotPlot name="Rotation Management">
-        <canvas_height>509</canvas_height>
-        <rules_height>295</rules_height>
+        <canvas_height>339</canvas_height>
+        <rules_height>189</rules_height>
         <graph_name>GrainCrops</graph_name>
         <node>
           <name>Chickpea</name>
@@ -1559,8 +1559,8 @@ set config(p5,initialState) "Fallow"
 ]]></rule>
       </RotPlot>
       <rule name="Farm logic">
-        <script name="init">
-          <text><![CDATA[
+        <script>
+          <text>
 # Defaults for a lot of things.
 # we use this table to build a list of "name/value" pairs that get fed into
 # sow/fertiliser commands etc.
@@ -1588,8 +1588,8 @@ set config(p5,initialState) "Fallow"
 ####################
 ########### Support procedures
 
-proc max {a b} { return [expr {($a > $b) ? $a : $b}] }
-proc min {a b} { return [expr {($a > $b) ? $b : $a}] }
+proc max {a b} { return [expr {($a &gt; $b) ? $a : $b}] }
+proc min {a b} { return [expr {($a &gt; $b) ? $b : $a}] }
 
 # Return the current state of the system
 proc currentState {paddock} {
@@ -1638,16 +1638,16 @@ proc lsum {list} {
 proc linint {x_coords y_coords value} {
    set y  0.0
 
-   if {[llength $x_coords] <= 0 || [llength $y_coords] <= 0 || [llength $x_coords] != [llength $y_coords]} {
+   if {[llength $x_coords] &lt;= 0 || [llength $y_coords] &lt;= 0 || [llength $x_coords] != [llength $y_coords]} {
       error "bad coordinates in linear_interp_real"
    }
 
-   for {set indx 0} {$indx < [llength $x_coords]} {incr indx} {
-      if {$value <= [lindex $x_coords $indx]} {
+   for {set indx 0} {$indx &lt; [llength $x_coords]} {incr indx} {
+      if {$value &lt;= [lindex $x_coords $indx]} {
          if {$indx == 0} {
             set y [lindex $y_coords $indx]
          } else {
-            if {abs($value - [lindex $x_coords $indx]) < 1.0E-4} {
+            if {abs($value - [lindex $x_coords $indx]) &lt; 1.0E-4} {
                set y [lindex $y_coords $indx]
             } else  {
                set y_part [expr [lindex $y_coords $indx] - [lindex $y_coords [expr $indx-1]] ]
@@ -1678,10 +1678,10 @@ proc dateIs {t} {
 
 proc dayWithin {t0 t1} {
    set t [apsimGet day]
-   if {$t0 > $t1} {
-      return [expr $t >= $t0 || $t <= $t1]
+   if {$t0 &gt; $t1} {
+      return [expr $t &gt;= $t0 || $t &lt;= $t1]
    } else {
-      return [expr $t >= $t0 && $t <= $t1]
+      return [expr $t &gt;= $t0 &amp;&amp; $t &lt;= $t1]
    }
    # notreached
 }
@@ -1732,9 +1732,9 @@ proc checkRules {thisPaddock} {
            lappend expr $value
            if {$value == 0} {break} ;# no need to continue evaluating subsequent rules
         }
-        if {[llength $expr] > 0} {
+        if {[llength $expr] &gt; 0} {
            set score [expr [join $expr "*"]]
-           if {$score > $bestScore} {
+           if {$score &gt; $bestScore} {
               set bestScore  $score
               set bestTarget $target
               set bestArc    $arc
@@ -1771,11 +1771,11 @@ proc doProcess {} {
       set bestPaddock {}; set bestScore -1.0
       foreach paddock $config(paddocks) {
          foreach {score graph target arc} [checkRules $paddock] {break}
-         if {$score > $bestScore} {
+         if {$score &gt; $bestScore} {
             set bestPaddock $paddock; set bestScore $score; set bestGraph $graph; set bestTarget $target; set bestArc $arc
          }
       }
-      if {$bestScore > 0.0} {
+      if {$bestScore &gt; 0.0} {
          changeState $bestPaddock $bestGraph $bestArc
          set more 1
       }
@@ -1791,10 +1791,10 @@ proc reportEvent {from what} {
    foreach {event args} [split $what "-"] {break}
 }
 
-]]></text>
+</text>
           <event>init</event>
         </script>
-        <script name="process">
+        <script>
           <text>
 # Housekeeping
 if {[catch {doProcess } msg]} {
@@ -1805,12 +1805,12 @@ if {[catch {doProcess } msg]} {
 </text>
           <event>process</event>
         </script>
-        <script name="end_simulation">
+        <script>
           <text>
           </text>
           <event>end_simulation</event>
         </script>
-        <script name="start_simulation">
+        <script>
           <text>
 foreach paddock $config(paddocks) {
   set state($paddock)         $config($paddock,initialState) ;# Should get this from xml
@@ -1820,8 +1820,8 @@ foreach paddock $config(paddocks) {
 
 # All our sols are called "Soil.." 
 foreach paddock $config(paddocks) {
-   set config($paddock,watBal)   ".masterpm.$paddock.Soil Water"
-   set config($paddock,nModule)  ".masterpm.$paddock.Soil Nitrogen"
+   set config($paddock,watBal)   "$paddock.Soil Water"
+   set config($paddock,nModule)  "$paddock.Soil Nitrogen"
 }
 
 
@@ -1857,16 +1857,16 @@ foreach p $config(cropPaddocks) {
 set accRain 0.0
 
 foreach p {p1 p2} {
-  set config($p,watBal)   ".masterpm.$p.Moongoo low Water"
-  set config($p,nModule)   ".masterpm.$p.Moongoo low Nitrogen"
+  set config($p,watBal)   "$p.Moongoo low Water"
+  set config($p,nModule)   "$p.Moongoo low Nitrogen"
 }
 foreach p {p3 p4 p5 p6 p7} {
-  set config($p,watBal)   ".masterpm.$p.Moongoo medium Water"
-  set config($p,nModule)   ".masterpm.$p.Moongoo medium Nitrogen"
+  set config($p,watBal)   "$p.Moongoo medium Water"
+  set config($p,nModule)   "$p.Moongoo medium Nitrogen"
 }
 foreach p {p8 p9 p10} {
-  set config($p,watBal)   ".masterpm.$p.Moongoo high Water"
-  set config($p,nModule)   ".masterpm.$p.Moongoo high Nitrogen"
+  set config($p,watBal)   "$p.Moongoo high Water"
+  set config($p,nModule)   "$p.Moongoo high Nitrogen"
 }
 
 # Initialisation for Moongoo
@@ -2126,7 +2126,7 @@ if {[catch {checkWeeds; doProcess} msg]} {
    foreach {accumulator} {soil_loss} {
       foreach paddock $paddocks {
          if {$paddock != "toplevel"} {
-            set $paddock.$accumulator [expr [set $paddock.$accumulator] + [apsimGet .masterpm.$paddock.erosion.$accumulator]]
+            set $paddock.$accumulator [expr [set $paddock.$accumulator] + [apsimGet $paddock.erosion.$accumulator]]
          }
       }   
    }
@@ -2163,17 +2163,17 @@ close_ef_stuff
         </script>
       </rule>
       <rule name="Weeds">
-        <script name="init">
-          <text><![CDATA[
-# Newer version of weed germination - spray 2 weeks after a {germination event & swCrit & temp}.
+        <script>
+          <text>
+# Newer version of weed germination - spray 2 weeks after a {germination event &amp; swCrit &amp; temp}.
 proc checkWeeds {} {
    global daysSinceLastHarvest weeds  config
 
    foreach paddock $config(cropPaddocks) {
-      if {[string match -nocase *fallow* [currentState $paddock]] && 
-          $daysSinceLastHarvest($paddock) > 30} {
+      if {[string match -nocase *fallow* [currentState $paddock]] &amp;&amp; 
+          $daysSinceLastHarvest($paddock) &gt; 30} {
 
-         if {$weeds($paddock,GermDay) == {} && [sumLastRain 4] >= 25} {
+         if {$weeds($paddock,GermDay) == {} &amp;&amp; [sumLastRain 4] &gt;= 25} {
             set weeds($paddock,GermDay) [apsimGet day]
             set weeds($paddock,tt) 0.0
             apsimWriteToSummaryFile "Weeds germinating in $paddock"
@@ -2188,12 +2188,12 @@ proc checkWeeds {} {
             set dul [lindex [apsimGet $config($paddock,watBal).dul] 0]
             set swf [expr (($sw-$ll)/($dul-$ll))]
          
-            if {$swf < 0.5} {
+            if {$swf &lt; 0.5} {
                # kill off weeds
                set weeds($paddock,GermDay) {}
                apsimWriteToSummaryFile "Weeds die in $paddock"
          
-            } elseif {$weeds($paddock,tt) > 250.0} {
+            } elseif {$weeds($paddock,tt) &gt; 250.0} {
                # Weeds are mature - spray them
                incr weeds($paddock,Events)
 
@@ -2211,15 +2211,15 @@ proc checkWeeds {} {
       }   
    }
 }
-]]></text>
+</text>
           <event>init</event>
         </script>
-        <script name="process">
+        <script>
           <text>
 checkWeeds</text>
           <event>process</event>
         </script>
-        <script name="start_simulation">
+        <script>
           <text>
 foreach paddock $config(cropPaddocks) {
    set weeds($paddock,GermDay) {}
@@ -2364,18 +2364,18 @@ proc harvestAndEndCrop {paddock crop} {
       set realCrop $crop
    }
 
-   if {[apsimGet .masterpm.$paddock.$realCrop.plant_status] != "dead"} {
+   if {[apsimGet $paddock.$realCrop.plant_status] != "dead"} {
       if {$realCrop == "wheat"} {
          apsimSendMessage economics income {category cropprice} "name $realCrop"  \
-                          "yield [expr [apsimGet .masterpm.$paddock.$realCrop.yield]/1000.0]" \
-                          "protein [apsimGet .masterpm.$paddock.$realCrop.grain_protein]" \
+                          "yield [expr [apsimGet $paddock.$realCrop.yield]/1000.0]" \
+                          "protein [apsimGet $paddock.$realCrop.grain_protein]" \
                           "area $config($paddock,area)" "paddock $paddock" "crop $realCrop" \
                           "SW_state [apsimGet $config($paddock,watBal).esw]" \
                           "NO3_state [apsimGet $config($paddock,nModule).no3()]" 
                           
       } else {
          apsimSendMessage economics income {category cropprice} "name $realCrop"  \
-                          "yield [expr [apsimGet .masterpm.$paddock.$realCrop.yield]/1000.0]" \
+                          "yield [expr [apsimGet $paddock.$realCrop.yield]/1000.0]" \
                           "area $config($paddock,area)" "paddock $paddock" "crop $realCrop" \
                           "SW_state [apsimGet $config($paddock,watBal).esw]" \
                           "NO3_state [apsimGet $config($paddock,nModule).no3()]" 
@@ -2393,13 +2393,13 @@ proc harvestAndEndCrop {paddock crop} {
          }
       }
 
-      lappend ef([currentState $paddock],yield) "[apsimGet year],$paddock,[expr [apsimGet .masterpm.$paddock.$realCrop.yield]/1000.0]"
+      lappend ef([currentState $paddock],yield) "[apsimGet year],$paddock,[expr [apsimGet $paddock.$realCrop.yield]/1000.0]"
       reportEvent $paddock "harvest-crop=$crop"
    } else {
       reportEvent $paddock "fail-crop=$crop"
    }
-   apsimSendMessage .masterpm.$paddock.$realCrop harvest
-   apsimSendMessage .masterpm.$paddock.$realCrop end_crop
+   apsimSendMessage $paddock.$realCrop harvest
+   apsimSendMessage $paddock.$realCrop end_crop
    set daysSinceLastHarvest($paddock) 0
 }
 
@@ -2434,7 +2434,7 @@ close_ef_stuff
    foreach {accumulator} {soil_loss} {
       foreach paddock $paddocks {
          if {$paddock != "toplevel"} {
-            set ef($paddock,$accumulator) [expr $ef($paddock,$accumulator) + [apsimGet .masterpm.$paddock.erosion.$accumulator]]
+            set ef($paddock,$accumulator) [expr $ef($paddock,$accumulator) + [apsimGet $paddock.erosion.$accumulator]]
          }
       }   
    }
@@ -2448,7 +2448,7 @@ close_ef_stuff
         </script>
       </rule>
       <rule name="Rain Accumulator">
-        <script name="init">
+        <script>
           <text>
 # The rainfall accumulator - set this list to 
 #   the 10 days of rain prior to start of simulation
@@ -2469,7 +2469,7 @@ proc accumRain {} {
 </text>
           <event>init</event>
         </script>
-        <script name="prepare">
+        <script>
           <text>
 accumRain
 </text>
@@ -2477,7 +2477,7 @@ accumRain
         </script>
       </rule>
       <rule name="Economic reporting">
-        <script name="init">
+        <script>
           <text>
 # Set up an "economic event" based report file
 
@@ -2500,9 +2500,9 @@ proc reportEcon {from evt args} {
    
    if {$crop != ""} {
      append line ",$crop"
-     if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.yield]"} else {append line ","}
-     if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.biomass]"} else {append line ","}
-     if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.grain_protein]"} else {append line ","}
+     if {$evt == "harvest"} {append line ",[apsimGetOptional $from.$crop.yield]"} else {append line ","}
+     if {$evt == "harvest"} {append line ",[apsimGetOptional $from.$crop.biomass]"} else {append line ","}
+     if {$evt == "harvest"} {append line ",[apsimGetOptional $from.$crop.grain_protein]"} else {append line ","}
    } else {
      append line ",,,,"
    }  
@@ -2520,7 +2520,7 @@ proc reportEvent [info args reportEvent_OLDECON] "[info body reportEvent_OLDECON
 </text>
           <event>init</event>
         </script>
-        <script name="post">
+        <script>
           <text>
    foreach x [array names event  *,daysSinceEcon] {
       incr event($x)
@@ -2529,7 +2529,7 @@ proc reportEvent [info args reportEvent_OLDECON] "[info body reportEvent_OLDECON
    </text>
           <event>post</event>
         </script>
-        <script name="end_simulation">
+        <script>
           <text>
 set fp [open $simName.economics.csv w]
 
@@ -2545,7 +2545,7 @@ close $fp
    </text>
           <event>end_simulation</event>
         </script>
-        <script name="start_simulation">
+        <script>
           <text>
 catch {file delete $simName.economics.csv}
 
@@ -2558,8 +2558,8 @@ foreach paddock $config(paddocks) {
         </script>
       </rule>
       <rule name="Annual Reports">
-        <script name="init">
-          <text><![CDATA[
+        <script>
+          <text>
 # Annual summary of whole farm averages
 
 proc open_annual_stuff {} {
@@ -2654,7 +2654,7 @@ proc logState {graph paddock state} {
    global config annual
    set today [apsimGet today]
    lappend config(history,$paddock,$graph) $today $state
-   if {[lsearch $config(states) $state] < 0} {lappend config(states) $state}
+   if {[lsearch $config(states) $state] &lt; 0} {lappend config(states) $state}
 
    set day [apsimGet day]
    set year [apsimGet year]
@@ -2664,15 +2664,15 @@ proc logState {graph paddock state} {
    } else {
      incr annual($year,$state)
    }
-   if {[lsearch $annual(states) $state] < 0} {lappend annual(states) $state}
+   if {[lsearch $annual(states) $state] &lt; 0} {lappend annual(states) $state}
 }
 
 
 
-]]></text>
+</text>
           <event>init</event>
         </script>
-        <script name="start_simulation">
+        <script>
           <text>
 catch {file delete $simName.annual.csv}
 
@@ -2681,14 +2681,14 @@ open_annual_stuff
 </text>
           <event>start_simulation</event>
         </script>
-        <script name="end_simulation">
+        <script>
           <text>
 close_annual_stuff
 
 </text>
           <event>end_simulation</event>
         </script>
-        <script name="post">
+        <script>
           <text>
    set annual(accRain) [expr $annual(accRain) + [apsimGet rain]]
    
@@ -2702,14 +2702,14 @@ close_annual_stuff
    foreach {accumulator} {soil_loss} {
       foreach paddock $config(paddocks) {
          if {$paddock != "toplevel"} {
-            set annual($paddock,$accumulator) [expr $annual($paddock,$accumulator) + [apsimGet .masterpm.$paddock.erosion.$accumulator]]
+            set annual($paddock,$accumulator) [expr $annual($paddock,$accumulator) + [apsimGet $paddock.erosion.$accumulator]]
          }
       }   
    }
    </text>
           <event>post</event>
         </script>
-        <script name="end_year">
+        <script>
           <text>
 do_end_year</text>
           <event>end_year</event>
@@ -2752,12 +2752,12 @@ set animals(inCost)            0.0  ;# $/head handling cost
 set animals(outCost)          0.15  ;# $/head stock handling cost at CQ Mixed GG
 
 proc OatsAreReady {} {
-   set status [apsimGetOptional ".masterpm.OatsPaddock.oats.plant_status"]
+   set status [apsimGetOptional "OatsPaddock.oats.plant_status"]
    return [string match $status "alive"]
 }
 
 proc SorghumIsReady {} {
-   set status [apsimGetOptional ".masterpm.SorghumPaddock.SweetSorghum.plant_status"]
+   set status [apsimGetOptional "SorghumPaddock.SweetSorghum.plant_status"]
    return [string match $status "alive"]
 }
 
@@ -2896,8 +2896,8 @@ closeAnimals
         </script>
         <script name="start_simulation">
           <text>
-apsimSendMessage ".masterpm.BuffelPaddock.buffel" establish {init_section establishment}
-apsimSendMessage ".masterpm.LeucaenaGrassPaddock.leucaena" establish {init_section establishment}
+apsimSendMessage "BuffelPaddock.buffel" establish {init_section establishment}
+apsimSendMessage "LeucaenaGrassPaddock.leucaena" establish {init_section establishment}
 
 setupAnimals
 
@@ -2929,12 +2929,12 @@ apsimWriteToSummaryFile "Done Start sim"
 ###############Animal management
 
 proc OatsAreReady {} {
-   set status [apsimGetOptional ".masterpm.OatsPaddock.oats.plant_status"]
+   set status [apsimGetOptional "OatsPaddock.oats.plant_status"]
    return [string match $status "alive"]
 }
 
 proc SorghumIsReady {} {
-   set status [apsimGetOptional ".masterpm.SorghumPaddock.SweetSorghum.plant_status"]
+   set status [apsimGetOptional "SorghumPaddock.SweetSorghum.plant_status"]
    return [string match $status "alive"]
 }
 
@@ -2955,10 +2955,10 @@ proc setupAnimals {nMobs} {
       set animals(mob$mob,paddock)  {}
       set animals(mob$mob,crop)   {}
       set animals(mob$mob,supplemented) 0
-      set animals(mob$mob,id) ".masterpm.mob${mob}"
+      set animals(mob$mob,id) "mob${mob}"
       apsimSet $animals(mob$mob,id).stocking_rate 0.0
       apsimSet $animals(mob$mob,id).alw 0.0
-      apsimSet $animals(mob$mob,id).pasture_source ".masterpm.farm manager"
+      apsimSet $animals(mob$mob,id).pasture_source "farm manager"
       apsimSet $animals(mob$mob,id).allow_supplements 0
    }
 }
@@ -3037,7 +3037,7 @@ proc animalsOut { mob number } {
       set animals(${mob},paddock)  {}
       set animals(${mob},crop)   {}
       set animals($mob,supplemented) 0
-      apsimSet $animals($mob,id).pasture_source ".masterpm.farm manager"
+      apsimSet $animals($mob,id).pasture_source "farm manager"
       apsimSet $animals($mob,id).stocking_rate  0.0
       apsimSet $animals($mob,id).alw            0.0
       apsimSet $animals($mob,id).allow_supplements 0
@@ -3098,11 +3098,11 @@ proc moveStockTo {mob paddock crop} {
 
    set from "$animals($mob,paddock).$animals($mob,crop)"
    if {$crop == "feedlot"} {
-      apsimSet $animals($mob,id).pasture_source ".masterpm.farm manager"
+      apsimSet $animals($mob,id).pasture_source "farm manager"
    } elseif {$crop == "stubble" || $crop == "Stubble"} {
-      apsimSet $animals($mob,id).pasture_source ".masterpm.farm manager"
+      apsimSet $animals($mob,id).pasture_source "farm manager"
    } else {
-      apsimSet $animals($mob,id).pasture_source ".masterpm.$paddock.$crop"
+      apsimSet $animals($mob,id).pasture_source "$paddock.$crop"
       set newSr [expr $animals($mob,number) / $config($paddock,area)]
 
       ##?? need to convert animal equivalents here
@@ -3440,11 +3440,11 @@ closeAnimals
         </script>
       </rule>
       <rule name="Crop Management Routines">
-        <script name="init">
-          <text><![CDATA[
+        <script>
+          <text>
 #############################
 # Generic sowing/harvesting procedures. These rely on a "defaults" array for crop specifics
-# There are NO ECONOMICS in this - just event based reporting (sow,harvest & spray)
+# There are NO ECONOMICS in this - just event based reporting (sow,harvest &amp; spray)
 #############################
 # Change to a new state (utility procedure). Sows crop and fertilises it
 proc sowCrop {paddock crop} {
@@ -3458,7 +3458,7 @@ proc sowCrop {paddock crop} {
    }
    array set sow [gatherArgs sow $crop]
 
-   eval apsimSendMessage .masterpm.$paddock.$realCrop sow [mash [array get sow]]
+   eval apsimSendMessage $paddock.$realCrop sow [mash [array get sow]]
 
    # machinery operation
    eval apsimSendMessage machinery operate \
@@ -3468,15 +3468,15 @@ proc sowCrop {paddock crop} {
    # Work out what to do with fertiliser stuff
    array set fert [gatherArgs fertiliser $crop]
    if {$fert(calcMethod) == "constant_rate"} {
-      eval apsimSendMessage .masterpm.$paddock.fertiliser apply [mash [array get fert]]
+      eval apsimSendMessage $paddock.fertiliser apply [mash [array get fert]]
       reportEvent $paddock "fertilise-type=$fert(type),amount=$fert(amount)"
  
    } elseif {$fert(calcMethod) == "targetN"} {
       set n [apsimGet $config($paddock,nModule).no3()]
       set deficit [expr $fert(amount) - $n]
-      if {$deficit > 0.0} {
+      if {$deficit &gt; 0.0} {
          set fert(amount) $deficit
-         eval apsimSendMessage .masterpm.$paddock.fertiliser apply [mash [array get fert]]
+         eval apsimSendMessage $paddock.fertiliser apply [mash [array get fert]]
          reportEvent $paddock "fertilise-type=$fert(type),amount=$fert(amount)"
 
       }                                 
@@ -3484,7 +3484,7 @@ proc sowCrop {paddock crop} {
       set N  [apsimGet $config($paddock,nModule).no3()]      
       set sw [apsimGet esw]             
       set deficit [expr $sw - $N]
-      if {$deficit > 0.0} {
+      if {$deficit &gt; 0.0} {
          set fert(amount) $deficit
          eval apsimSendMessage $paddock.fertiliser apply [mash [array get fert]]
          reportEvent $paddock "fertilise-type=$fert(type),amount=$fert(amount)"
@@ -3529,13 +3529,13 @@ proc harvestAndEndCrop {paddock crop} {
       set realCrop $crop
    }
 
-   if {[apsimGet .masterpm.$paddock.$realCrop.plant_status] != "dead"} {
+   if {[apsimGet $paddock.$realCrop.plant_status] != "dead"} {
       reportEvent $paddock "harvest-crop=$crop"
    } else {
       reportEvent $paddock "fail-crop=$crop"
    }
-   apsimSendMessage .masterpm.$paddock.$realCrop harvest
-   apsimSendMessage .masterpm.$paddock.$realCrop end_crop
+   apsimSendMessage $paddock.$realCrop harvest
+   apsimSendMessage $paddock.$realCrop end_crop
    set daysSinceLastHarvest($paddock) 0
 }
 
@@ -3561,10 +3561,10 @@ proc sprayChickpeas {paddock} {
    reportEvent $paddock "spray-type=insecticide,amount=0.3"
 }
 
-]]></text>
+</text>
           <event>init</event>
         </script>
-        <script name="start_simulation">
+        <script>
           <text>
 foreach paddock $config(cropPaddocks) {
 #   set config($paddock,pawc)        [calcPAWC $paddock]
@@ -3576,7 +3576,7 @@ foreach paddock $config(cropPaddocks) {
         </script>
       </rule>
       <rule name="Event reporting old">
-        <script name="init">
+        <script>
           <text>
 # An event based report file - "agronomic" style
 
@@ -3597,9 +3597,9 @@ proc reportCSV {from evt args} {
    set event($from,daysSinceEvent) 0
    
    append line ",$crop"
-   if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.yield]"} else {append line ","}
-   if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.biomass]"} else {append line ","}
-   if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.grain_protein]"} else {append line ","}
+   if {$evt == "harvest"} {append line ",[apsimGetOptional $from.$crop.yield]"} else {append line ","}
+   if {$evt == "harvest"} {append line ",[apsimGetOptional $from.$crop.biomass]"} else {append line ","}
+   if {$evt == "harvest"} {append line ",[apsimGetOptional $from.$crop.grain_protein]"} else {append line ","}
    append line ",$event($from,ep)"; set event($from,ep) 0.0
    append line ",[apsimGet $config($from,watBal).esw]"
    append line ",[apsimGet $config($from,nModule).no3()]"
@@ -3626,7 +3626,7 @@ proc reportEvent [info args reportEvent_OLD] "[info body reportEvent_OLD]; repor
 </text>
           <event>init</event>
         </script>
-        <script name="post">
+        <script>
           <text>
    foreach x [array names event  *,daysSinceEvent] {
       incr event($x)
@@ -3642,7 +3642,7 @@ foreach paddock $config(cropPaddocks) {
 }</text>
           <event>post</event>
         </script>
-        <script name="end_simulation">
+        <script>
           <text>
 set fp [open $simName.event.csv w]
 
@@ -3661,7 +3661,7 @@ close $fp
 </text>
           <event>end_simulation</event>
         </script>
-        <script name="start_simulation">
+        <script>
           <text>
 catch {file delete $simName.event.csv}
 
@@ -3710,9 +3710,9 @@ proc reportCSV {from evt args} {
    set event($from,daysSinceEvent) 0
    
    append line ",$crop"
-   if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.yield]"} else {append line ","}
-   if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.biomass]"} else {append line ","}
-   if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.grain_protein]"} else {append line ","}
+   if {$evt == "harvest"} {append line ",[apsimGetOptional $from.$crop.yield]"} else {append line ","}
+   if {$evt == "harvest"} {append line ",[apsimGetOptional $from.$crop.biomass]"} else {append line ","}
+   if {$evt == "harvest"} {append line ",[apsimGetOptional $from.$crop.grain_protein]"} else {append line ","}
    append line ",$event($from,ep)"; set event($from,ep) 0.0
 
    append line ",[apsimGet $config($from,watBal).esw]"
@@ -4296,7 +4296,7 @@ set config(machinery,fuelcost) "[fuelcost]"
     <summaryfile />
     <tclmanager name="Farm Manager">
       <rule name="Initialisation logic">
-        <script name="init">
+        <script>
           <text>
 set simName "CQ Mixed GG"
 
@@ -4317,7 +4317,7 @@ set config(paddocks)  [list "BuffelPaddock" \
         </script>
       </rule>
       <rule name="Crop Management Initialisation">
-        <script name="init">
+        <script>
           <text>
 set config(cropPaddocks)    [list "CropPaddock1" \
                             "CropPaddock2" \
@@ -4350,7 +4350,7 @@ foreach paddock $config(cropPaddocks) {
         </script>
       </rule>
       <rule name="Pasture Management Initialisation">
-        <script name="init">
+        <script>
           <text>
 set config(foragePaddocks)  [list "OatsPaddock" "SorghumPaddock" ]
 set config(pasturePaddocks) [list "BuffelPaddock" "LeucaenaGrassPaddock" ]
@@ -4377,17 +4377,17 @@ foreach paddock [concat $config(foragePaddocks) $config(pasturePaddocks)] {
 </text>
           <event>init</event>
         </script>
-        <script name="start_simulation">
+        <script>
           <text>
-apsimSendMessage ".masterpm.BuffelPaddock.buffel" establish {init_section establishment}
-apsimSendMessage ".masterpm.LeucaenaGrassPaddock.leucaena" establish {init_section establishment}
+apsimSendMessage "BuffelPaddock.buffel" establish {init_section establishment}
+apsimSendMessage "LeucaenaGrassPaddock.leucaena" establish {init_section establishment}
 
 </text>
           <event>start_simulation</event>
         </script>
       </rule>
       <rule name="Animal Management Initialisation">
-        <script name="init">
+        <script>
           <text>
 ############ Forage and pasture initialisation data
 #  Maximum number of animals allowed in each paddock
@@ -4423,7 +4423,7 @@ set config(leucaena,spring_lwg)  30
 </text>
           <event>init</event>
         </script>
-        <script name="start_simulation">
+        <script>
           <text>
 setupAnimals 10
 

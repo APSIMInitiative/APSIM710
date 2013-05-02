@@ -78,7 +78,7 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
         {
             CurrentPaddockName = MyPaddock.FullName;
             OurName = CurrentPaddockName;
-            if (OurName != ".")
+            if (OurName.Length > 0)
                 OurName += ".";
             OurName += Plant.Name;
 

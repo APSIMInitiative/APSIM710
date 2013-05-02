@@ -274,8 +274,12 @@ void Coordinator::addComponent(const string& compName,
 
       // Tell the registry about this component.
       ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
-      string fqn = getFQName();
-      fqn += ".";
+      string fqn = "";
+      if (getId() != 1) //if not at the root masterpm
+      {
+        fqn = getFQName();
+        fqn += ".";
+      }
       fqn += compName;
 
       // assume it's foreign until we know more about it..
@@ -354,7 +358,7 @@ void Coordinator::onRequestComponentIDMessage(unsigned int fromID,
 // ------------------------------------------------------------------
 void Coordinator::onRegisterMessage(unsigned int fromID,
                                     protocol::RegisterData& registerData)
-   {
+{
    // A Component is registering an ID with the system. An "apsim"
    // component will have already created a global registry entry,
    // and we can safely ignore this message.
@@ -369,31 +373,40 @@ void Coordinator::onRegisterMessage(unsigned int fromID,
    size_t pos = regName.rfind(".");
 
    if (pos != string::npos)
-      {
+   {
       // strip off any module name at the start, convert it to an ID
       string comp = regName.substr(0,pos);
-      if (comp[0] != '.') comp = getFQName() + "." + comp;
-
       int id = -1;
-      componentNameToID(comp, id);
+      componentNameToID(comp, id);  //look for this component - fqn?
 
-      if (id <= 0)
-         throw std::runtime_error(string ("Unknown module \"") + comp + "\"");
+      if ( (comp.find('.') == string::npos) && (id <= 0) )  //if relative/short path
+      {
+          comp = getFQName() + "." + comp;  //append this owning protocol manager name to the comp
+          componentNameToID(comp, id);
+      }
+      
+      if (id > 0)
+      {
+        if (id <= 0)
+            throw std::runtime_error(string ("Unknown module \"") + comp + "\"");
 
-      if (registerData.destID > 0 && id != registerData.destID)
+        if (registerData.destID > 0 && id != registerData.destID)
         {
-        throw std::runtime_error(string ("Mismatched destID in Coordinator::onRegisterMessage (") +
+            throw std::runtime_error(string ("Mismatched destID in Coordinator::onRegisterMessage (") +
                                          regName +
                                          " from " +
                                          registry.componentByID(fromID) +
                                          ")") ;
         }
-      registerData.destID = id;
-      regName = regName.substr(pos+1);
+        registerData.destID = id;
+        regName = regName.substr(pos+1);
       }
+      else
+        return;
+   }
 
    if (registry.find((EventTypeCode)registerData.kind, fromID, registerData.ID) == NULL)
-      {
+   {
       ApsimRegistration *newReg = registry.createForeignRegistration(
                             (EventTypeCode)registerData.kind,
                              regName,
@@ -402,12 +415,13 @@ void Coordinator::onRegisterMessage(unsigned int fromID,
                              fromID,
                              registerData.ID);
       registry.add(newReg);
-      }
-    else
-      {
-      /* nothing to do */
-      }
    }
+   else
+   {
+      /* nothing to do */
+   }
+   
+}
 
 // ------------------------------------------------------------------
 //  Short description:
@@ -659,7 +673,7 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
 		    {
 				vector<int> children;
                 int parentID = getId();
-                if ((ownerName.length() > 0) && (ownerName == ".MasterPM"))
+                if ((ownerName.length() == 0) && (searchName == "*"))
                     parentID = 1;
                 else
                     if (ownerName.length() > 0 && searchName == "*")  //expecting comp.*

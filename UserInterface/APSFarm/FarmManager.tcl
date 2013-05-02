@@ -93,7 +93,7 @@ proc sowCrop {paddock crop} {
    }
    array set sow [gatherArgs sow $crop]
 
-   eval apsimSendMessage .masterpm.$paddock.$realCrop sow [mash [array get sow]]
+   eval apsimSendMessage $paddock.$realCrop sow [mash [array get sow]]
 
    # machinery operation
    eval apsimSendMessage economics operate \
@@ -115,7 +115,7 @@ proc sowCrop {paddock crop} {
    # Work out what to do with fertiliser stuff
    array set fert [gatherArgs fertiliser $crop]
    if {$fert(calcMethod) == "constant_rate"} {
-      eval apsimSendMessage .masterpm.$paddock.fertiliser apply [mash [array get fert]]
+      eval apsimSendMessage $paddock.fertiliser apply [mash [array get fert]]
       apsimSendMessage economics expenditure {category fertilisercost} "name  $fert(type)" \
                "rate $fert(amount)" "area $config($paddock,area)"  "paddock $paddock" "fertiliser_type $fert(type)" \
                "fertiliser_rate $fert(amount)" {incrop_cost {}} "crop $crop" \
@@ -128,7 +128,7 @@ proc sowCrop {paddock crop} {
       set deficit [expr $fert(amount) - $n]
       if {$deficit > 0.0} {
          set fert(amount) $deficit
-         eval apsimSendMessage .masterpm.$paddock.fertiliser apply [mash [array get fert]]
+         eval apsimSendMessage $paddock.fertiliser apply [mash [array get fert]]
          apsimSendMessage economics expenditure {category fertilisercost} "name  $fert(type)" \
                        "rate $fert(amount)" "area $config($paddock,area)"  "paddock $paddock"  "crop $crop" \
                        "fertiliser_type $fert(type)" "fertiliser_rate $fert(amount)" \
@@ -190,18 +190,18 @@ proc harvestAndEndCrop {paddock crop} {
       set realCrop $crop
    }
 
-   if {[apsimGet .masterpm.$paddock.$realCrop.plant_status] != "dead"} {
+   if {[apsimGet $paddock.$realCrop.plant_status] != "dead"} {
       if {$realCrop == "wheat"} {
          apsimSendMessage economics income {category cropprice} "name $realCrop"  \
-                          "yield [expr [apsimGet .masterpm.$paddock.$realCrop.yield]/1000.0]" \
-                          "protein [apsimGet .masterpm.$paddock.$realCrop.grain_protein]" \
+                          "yield [expr [apsimGet $paddock.$realCrop.yield]/1000.0]" \
+                          "protein [apsimGet $paddock.$realCrop.grain_protein]" \
                           "area $config($paddock,area)" "paddock $paddock" "crop $realCrop" \
                           "SW_state [apsimGet $config($paddock,watBal).esw]" \
                           "NO3_state [apsimGet $config($paddock,nModule).no3()]" 
                           
       } else {
          apsimSendMessage economics income {category cropprice} "name $realCrop"  \
-                          "yield [expr [apsimGet .masterpm.$paddock.$realCrop.yield]/1000.0]" \
+                          "yield [expr [apsimGet $paddock.$realCrop.yield]/1000.0]" \
                           "area $config($paddock,area)" "paddock $paddock" "crop $realCrop" \
                           "SW_state [apsimGet $config($paddock,watBal).esw]" \
                           "NO3_state [apsimGet $config($paddock,nModule).no3()]" 
@@ -223,9 +223,9 @@ proc harvestAndEndCrop {paddock crop} {
    } else {
       reportEvent $paddock "fail-crop=$crop"
    }
-   apsimSendMessage .masterpm.$paddock.$realCrop harvest
-   apsimSendMessage .masterpm.$paddock.$realCrop kill_crop
-   apsimSendMessage .masterpm.$paddock.$realCrop end_crop
+   apsimSendMessage $paddock.$realCrop harvest
+   apsimSendMessage $paddock.$realCrop kill_crop
+   apsimSendMessage $paddock.$realCrop end_crop
    set daysSinceLastHarvest($paddock) 0
 }
 
@@ -380,7 +380,7 @@ proc reportCSV {from event args} {
          foreach crop2 $crops {
             set value ""
             if {$paddock == $from && $crop == $crop2 && $event == "harvest"} {
-              set value [apsimGetOptional .masterpm.$paddock.$crop2.yield]
+              set value [apsimGetOptional $paddock.$crop2.yield]
             }
             append line ",$value"
          }

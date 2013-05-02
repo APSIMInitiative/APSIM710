@@ -76,7 +76,8 @@ namespace ModelFramework
         {
             ParentCompName = "";
             FQN = _FQN;
-            NamePrefix = FQN + ".";
+            if (FQN.Length > 0)
+                NamePrefix = FQN + ".";
             if (FQN.LastIndexOf('.') > -1)
                 ParentCompName = FQN.Substring(0, FQN.LastIndexOf('.')); //e.g. Paddock
 
@@ -117,10 +118,7 @@ namespace ModelFramework
             
             HostComponent = component as ApsimComponent;
             //set the type for this component
-            if (_FullName != ".MasterPM")
-                FTypeName = CompClass;
-            else
-                FTypeName = this.GetType().Name;
+            FTypeName = CompClass;
         }
         // --------------------------------------------------------------------
         /// <summary>
@@ -136,8 +134,7 @@ namespace ModelFramework
             HostComponent = component as ApsimComponent;
             //get the type for this component
             List<TComp> comps = new List<TComp>();
-            if (_FullName != ".MasterPM")
-                HostComponent.Host.queryCompInfo(FQN, TypeSpec.KIND_COMPONENT, ref comps);
+            HostComponent.Host.queryCompInfo(FQN, TypeSpec.KIND_COMPONENT, ref comps);
             if (comps.Count > 0)
                 FTypeName = comps[0].CompClass;
             else
@@ -177,7 +174,29 @@ namespace ModelFramework
                 return Children;
             }
         }
+        // --------------------------------------------------------------------
+        /// <summary>
+        /// Go looking for child components of this component.
+        /// </summary>
+        // --------------------------------------------------------------------
+        protected virtual void queryChildComponents()
+        {
+            if (ChildComponents == null)
+            {
+                ChildComponents = new Dictionary<uint, TComp>();
 
+                String sSearchName = FQN + ".*";    //search comp.*
+
+                List<TComp> comps = new List<TComp>();
+                HostComponent.Host.queryCompInfo(sSearchName, TypeSpec.KIND_COMPONENT, ref comps);
+                ChildComponents.Clear();
+                for (int i = 0; i < comps.Count; i++)
+                {
+                    ChildComponents.Add(comps[i].compID, comps[i]);
+                }
+
+            }
+        }
         // --------------------------------------------------------------------
         /// <summary>
         /// Return a list of all child paddock components to caller.
@@ -279,7 +298,7 @@ namespace ModelFramework
         }
         // --------------------------------------------------------------------
         /// <summary>
-        /// Fully qualified name of component eg. .MasterPM.paddock1.wheat
+        /// Fully qualified name of component eg. paddock1.wheat
         /// </summary>
         // --------------------------------------------------------------------
         public String FullName
@@ -360,7 +379,7 @@ namespace ModelFramework
                 else
                 {
                     Object foundObject = LinkField.FindApsimObject(null,
-                                                     AddMasterPM(NameToFind),
+                                                     NameToFind,
                                                      StringManip.ParentName(HostComponent.InstanceName),
                                                      HostComponent);
                     ApsimObjectsByName.Add(NameToFind, foundObject);  //keep this object for later searches
@@ -648,13 +667,15 @@ namespace ModelFramework
         /// Go looking for child components of this component.
         /// </summary>
         // --------------------------------------------------------------------
-        protected void queryChildComponents()
+/*        protected void queryChildComponents()
         {
             if (ChildComponents == null)
             {
                 ChildComponents = new Dictionary<uint, TComp>();
 
-                String sSearchName = FQN + ".*";    //search comp.*
+                String sSearchName = "*";
+                if (FQN.Length > 0)
+                    sSearchName = FQN + ".*";    //search comp.*
 
                 List<TComp> comps = new List<TComp>();
                 HostComponent.Host.queryCompInfo(sSearchName, TypeSpec.KIND_COMPONENT, ref comps);
@@ -666,69 +687,46 @@ namespace ModelFramework
 
             }
         }
-
+        */
         /// <summary>
         /// Locate a variable that matches the specified path and return its value. Returns null
         /// if not found. e.g. NamePath:
         ///     "Plant"   - no path specified so look in scope
         ///     "Phenology.CurrentPhase" - relative path specified so look for matching child
-        ///     ".met.maxt" - absolute path specified so look for exact variable.
+        ///     "met.maxt" - absolute path specified so look for exact variable.
         /// </summary>    
         private bool GetInternal<T>(string NamePath, WrapBuiltInVariable<T> Data)
         {
-            NamePath = AddMasterPM(NamePath);
-            if (NamePath.Length > 0 && NamePath[0] == '.')
+            // relative path.
+            // assume internal entity.
+            object E = FindInternalEntity(NamePath);
+            if (E != null && E is Entity)
             {
-                // absolute path.
-                {
-                    bool ok = HostComponent.Get(NamePath, Data, true);
-                    return Data.Value != null;
-                }
+                Data.setValue((E as Entity).Get());
+                return true;
             }
-            else if (NamePath.Contains("."))
+            else
             {
-                // relative path.
-                // assume internal entity.
-                object E = FindInternalEntity(NamePath);
-                if (E != null && E is Entity)
+                String GetterName = NamePath;
+                // external variable
+                if (!NamePath.Contains("."))
                 {
-                    Data.setValue((E as Entity).Get());
-                    return true;
+                    GetterName = NamePrefix + NamePath;
                 }
-                else
+                return HostComponent.Get(GetterName, Data, true);
+            }
+
+                // try a full address first. If that doesn't work then try relative address.
+            /*    if (!HostComponent.Get(NamePrefix + NamePath, Data, true))
                 {
-                    // NamePath might be Leaf.MinT (which doesn't exist anywhere in the simulation
-                    // If we pass this to HostComponent.Get, it will throw - we don't want that.
-                    bool isAusFarm = FullName[0] != '.';
-                    if (isAusFarm || IsComponentASibling(StringManip.ParentName(NamePath)))
+                    if (this is Paddock)
                         return HostComponent.Get(NamePath, Data, true);
                     else
                         return false;
                 }
-            }
-            else
-            {
-                // no path
-                // First look for an internal entity.
-                object E = FindInternalEntity(NamePath);
-                if (E != null && E is Entity)
-                {
-                    Data.setValue((E as Entity).Get());
-                    return true;
-                }
                 else
-                {
-                    // external variable
-                    // try a full address first. If that doesn't work then try relative address.
-                    if (!HostComponent.Get(NamePrefix + NamePath, Data, true))
-                        if (this is Paddock)
-                            return HostComponent.Get(NamePath, Data, true);
-                        else
-                            return false;
-                    else
-                        return true;
-                }
-            }
+                    return true;
+            }*/
         }
 
         /// <summary>
@@ -736,43 +734,23 @@ namespace ModelFramework
         /// </summary>
         private bool SetInternal<T>(string NamePath, T Value)
         {
-            NamePath = AddMasterPM(NamePath);
             WrapBuiltInVariable<T> Data = new WrapBuiltInVariable<T>();
             Data.Value = Value;
-            if (NamePath.Length > 0 && NamePath[0] == '.')
-            {
-                // absolute path.
-                HostComponent.Set(NamePath, Data);
-                return true;
-            }
-            else if (NamePath.Contains("."))
-            {
-                // relative path.
-                object E = FindInternalEntity(NamePath);
-                if (E != null && E is Entity)
-                    return (E as Entity).Set(Data);
-                else
-                    return false;
-            }
+
+            object E = FindInternalEntity(NamePath);
+            if (E != null && E is Entity)
+                return (E as Entity).Set(Data);
             else
             {
-                // no path
-                // First look for an internal entity.
-                object E = FindInternalEntity(NamePath);
-                if (E != null && E is Entity)
+                String SetterName = NamePath;
+                if (!NamePath.Contains("."))
                 {
-                    Data.setValue((E as Entity).Get());
-                    return true;
+                    SetterName = NamePrefix + NamePath;
                 }
-                else
-                {
-                    // not an internal entity so look for an external one.
-                    HostComponent.Set(NamePrefix + NamePath, Data);
-                    return true;
-                }
-
+                // not an internal entity so look for an external one.
+                HostComponent.Set(SetterName, Data);
+                return true; //not officially correct but the infrastructure doesn't return the correct value
             }
-
         }
 
 
@@ -819,7 +797,6 @@ namespace ModelFramework
         /// </summary>
         private object FindInternalEntity(string NamePath)
         {
-            NamePath = AddMasterPM(NamePath);
             Instance RelativeTo = In;
             if (In == null)
                 RelativeTo = HostComponent.ModelInstance;
@@ -901,19 +878,6 @@ namespace ModelFramework
                     return true;
             }
             return false;
-        }
-
-        /// <summary>
-        /// Add in .MasterPM to the front of the specified St
-        /// </summary>
-        protected static string AddMasterPM(string St)
-        {
-            if (St == ".")
-                return ".MasterPM";
-            else if (St.Length > 0 && St[0] == '.' && !St.Contains(".MasterPM"))
-                return ".MasterPM" + St;
-            else
-                return St;
         }
 
         /// <summary>

@@ -15,12 +15,12 @@ Imports ModelFramework
 
 Public Class Script
    
-   &lt;Link()&gt; Dim MyPaddock As Paddock
+   &lt;Link()&gt; Dim MySimulation As Simulation
    
    &lt;EventHandler()&gt; Public Sub OnPost()
 
       ' Loop through all child paddocks and change the soil water in each.
-      For Each SubPaddock As Paddock In MyPaddock.ChildPaddocks
+      For Each SubPaddock As Paddock In MySimulation.ChildPaddocks
          Dim SoilWater As SoilWat = SubPaddock.LinkByType("SoilWat")
          Dim sw As Single() = SoilWater.sw
          Console.WriteLine(SubPaddock.FullName + "-" + sw(0).ToString())
@@ -28,7 +28,7 @@ Public Class Script
       Next
 
       ' Loop through all child paddocks and write the names and LAIs of all crops.
-      For Each SubPaddock As Paddock In MyPaddock.ChildPaddocks
+      For Each SubPaddock As Paddock In MySimulation.ChildPaddocks
          For Each Crop As Component In SubPaddock.Crops
             Console.WriteLine(Crop.Name)
          Next
@@ -36,7 +36,7 @@ Public Class Script
 
       ' Loop through all child paddocks and apply fertilier
       ' And irrigation to each paddock.
-      For Each SubPaddock As Paddock In MyPaddock.ChildPaddocks
+      For Each SubPaddock As Paddock In MySimulation.ChildPaddocks
          Dim Fertiliser As Fertiliser = SubPaddock.LinkByType("Fertiliser")
          Dim Irrigation As Irrigation = SubPaddock.LinkByType("Irrigation")
          Dim fert As FertiliserApplicationType = New FertiliserApplicationType()

@@ -190,7 +190,7 @@ class EXPORT Component
       virtual std::string getType(void) {return fileTailNoExtension(dllName);};
       std::string getName(void) {return name;};
       std::string getClassType(void) {return type;};
-      std::string getFQName(void) {return (pathName + "." + name);};
+      std::string getFQName(void);// {return (pathName + "." + name);};
       std::string getFQContainerName(void) {return (pathName);};
       std::string getDllName(void) {return dllName;};
       unsigned int getId(void) {return componentID;};

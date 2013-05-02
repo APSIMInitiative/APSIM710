@@ -195,7 +195,7 @@ class LinkField
     //----------------------------------------------------------------------
     protected bool IsAPSIMType(String TypeToFind)
     {
-        if (TypeToFind == "Paddock" || TypeToFind == "Component")
+        if (TypeToFind == "Paddock" || TypeToFind == "Component" || TypeToFind == "Simulation" || TypeToFind == "SystemComponent")
             return true;
         else
             return ProbeInfo.GetType("ModelFramework." + TypeToFind) != null;  
@@ -214,7 +214,7 @@ class LinkField
         if (TypeToFind == "ProtocolManager")
             TypeToFind = "Paddock";
 
-        if (TypeToFind == "Paddock" || TypeToFind == "Component")
+        if (TypeToFind == "Paddock" || TypeToFind == "Component" || TypeToFind == "Simulation" || TypeToFind == "SystemComponent")
             ProxyType = Assembly.GetExecutingAssembly().GetType("ModelFramework." + TypeToFind);
         else
             ProxyType = ProbeInfo.GetType("ModelFramework." + TypeToFind);
@@ -237,13 +237,19 @@ class LinkField
     //----------------------------------------------------------------------
     internal static Object FindApsimComponent(String NameToFind, String TypeToFind, string SystemName, ApsimComponent Comp)
     {
+        if ((TypeToFind == "Simulation") && (NameToFind == null) && (SystemName.Length == 0)) //if the parent is the simulation
+            return CreateDotNetProxy(TypeToFind, SystemName, Comp);
         if ((TypeToFind == "Paddock") && (NameToFind == null) && (SystemName.Length > 0)) //if the parent is a paddock/system
+            return CreateDotNetProxy(TypeToFind, SystemName, Comp);
+        if ((TypeToFind == "SystemComponent") && (NameToFind == null))                    //if the parent is a systemcomponent
             return CreateDotNetProxy(TypeToFind, SystemName, Comp);
         if (TypeToFind == "Component" && NameToFind == null)
             return CreateDotNetProxy(TypeToFind, Comp.Name, Comp);
 
         //Get a list of siblings.
-        String sSearchName = SystemName + ".*";    //search parent.*
+        String sSearchName = "*";
+        if (SystemName.Length > 0)
+            sSearchName = SystemName + ".*";    //search parent.*
         if (NameToFind != null && NameToFind.Contains("*"))
             sSearchName = NameToFind;
         List<TComp> comps = new List<TComp>();
@@ -318,11 +324,12 @@ class LinkField
                 }
             }
         }
-
         // If we get this far then we didn't find the APSIM component. Try our parent system.
+        string ParentSystem = "";
         int lastDot = SystemName.LastIndexOf(".");
-        string ParentSystem = SystemName.Substring(0, lastDot);
-        if (ParentSystem != "")
+        if (lastDot >= 0)
+            ParentSystem = SystemName.Substring(0, lastDot);
+        if (!((ParentSystem == "") && (SystemName == "")) )
             return FindApsimComponent(NameToFind, TypeToFind, ParentSystem, Comp);
         else
             return null;
@@ -347,9 +354,8 @@ class LinkField
     //----------------------------------------------------------------------
     protected static Object GetSpecificApsimComponent(String NameToFind, string TypeToFind, ApsimComponent Comp)
     {
-        if (NameToFind.Contains(".MasterPM."))
-            return CreateDotNetProxy(TypeToFind, NameToFind, Comp);   // absolute reference.
-        else
+        Object comp = CreateDotNetProxy(TypeToFind, NameToFind, Comp);   // absolute reference.
+        if (comp == null)
         {
             // relative reference.
             String OurName = Comp.GetName();
@@ -358,8 +364,9 @@ class LinkField
             if (PosLastPeriod == -1)
                 throw new Exception("Invalid component name found: " + OurName);
             ParentName = OurName.Substring(0, PosLastPeriod);
-            return CreateDotNetProxy(NameToFind, ParentName + "." + NameToFind, Comp);
+            comp = CreateDotNetProxy(NameToFind, ParentName + "." + NameToFind, Comp);
         }
+        return comp;
     }
     #endregion
 }

@@ -8,63 +8,11 @@ using System.Collections;
 
 namespace ModelFramework
 {
-    public class Simulation : Paddock
-    {
-        public event NullTypeDelegate Commence;
-
-        /// <summary>
-        /// Run the simulation
-        /// </summary>
-        public void Run()
-        {
-            // Write summary to summary file.
-            WriteSummary();
-
-            // Go satisfy all [Link]
-            ResolveLinksAndInitialise(this);
-
-            // Raise a commence event.
-            Console.WriteLine("------- Start of simulation --------------------------------------------------");
-
-            if (Commence != null)
-                Commence.Invoke();
-        }
-
-        private void WriteSummary()
-        {
-
-            Console.WriteLine(@"              _____   _____ _____ __  __ ");
-            Console.WriteLine(@"        /\   |  __ \ / ____|_   _|  \/  |");
-            Console.WriteLine(@"       /  \  | |__) | (___   | | | \  / |");
-            Console.WriteLine(@"      / /\ \ |  ___/ \___ \  | | | |\/| |");
-            Console.WriteLine(@"     / ____ \| |     ____) |_| |_| |  | |");
-            Console.WriteLine(@"    /_/    \_\_|    |_____/|_____|_|  |_|");
-            Console.WriteLine();
-            Console.WriteLine("The Agricultural Production Systems Simulator");
-            Console.WriteLine("Copyright(c) APSRU");
-            Console.WriteLine();
-            Console.WriteLine("Version: " + ApsimFile.Configuration.Instance.ApsimVersion() + "x");
-            Console.WriteLine();
-            Console.WriteLine("Simulation " + Name);
-            foreach (object Child in Children)
-            {
-                Console.WriteLine(" |- " + Child.GetType().Name);
-                if (Child is Paddock)
-                {
-                    Paddock Area = Child as Paddock;
-                    foreach (object AreaChild in Area.Children)
-                        Console.WriteLine("    |- " + AreaChild.GetType().Name);
-                }
-
-            }
-            Console.WriteLine();
-        }
-    }
-
-
-
-    [XmlType("area")]
-    public class Paddock
+    //=========================================================================
+    /// <summary>
+    /// A generic system that can have children
+    /// </summary>
+    public class SystemComponent
     {
         private Simulation Simulation = null;
 
@@ -117,8 +65,10 @@ namespace ModelFramework
                     }
                     else if (Field.FieldType == typeof(Simulation))
                         Field.SetValue(Obj, Simulation);
+                    else if (Field.FieldType == typeof(SystemComponent))
+                        Field.SetValue(Obj, this); 
                     else if (Field.FieldType == typeof(Paddock))
-                        Field.SetValue(Obj, this);
+                        Field.SetValue(Obj, this);  //not sure about this ?
                     else
                     {
                         object LinkedObject = FindObject(Field.FieldType);
@@ -193,6 +143,69 @@ namespace ModelFramework
             Children.Add(Model);
         }
 
+    }
+
+    //=========================================================================
+    public class Simulation : SystemComponent
+    {
+        public event NullTypeDelegate Commence;
+
+        /// <summary>
+        /// Run the simulation
+        /// </summary>
+        public void Run()
+        {
+            // Write summary to summary file.
+            WriteSummary();
+
+            // Go satisfy all [Link]
+            ResolveLinksAndInitialise(this);
+
+            // Raise a commence event.
+            Console.WriteLine("------- Start of simulation --------------------------------------------------");
+
+            if (Commence != null)
+                Commence.Invoke();
+        }
+
+        private void WriteSummary()
+        {
+
+            Console.WriteLine(@"              _____   _____ _____ __  __ ");
+            Console.WriteLine(@"        /\   |  __ \ / ____|_   _|  \/  |");
+            Console.WriteLine(@"       /  \  | |__) | (___   | | | \  / |");
+            Console.WriteLine(@"      / /\ \ |  ___/ \___ \  | | | |\/| |");
+            Console.WriteLine(@"     / ____ \| |     ____) |_| |_| |  | |");
+            Console.WriteLine(@"    /_/    \_\_|    |_____/|_____|_|  |_|");
+            Console.WriteLine();
+            Console.WriteLine("The Agricultural Production Systems Simulator");
+            Console.WriteLine("Copyright(c) APSRU");
+            Console.WriteLine();
+            Console.WriteLine("Version: " + ApsimFile.Configuration.Instance.ApsimVersion() + "x");
+            Console.WriteLine();
+            Console.WriteLine("Simulation " + Name);
+            foreach (object Child in Children)
+            {
+                Console.WriteLine(" |- " + Child.GetType().Name);
+                if (Child is Paddock)
+                {
+                    Paddock Area = Child as Paddock;
+                    foreach (object AreaChild in Area.Children)
+                        Console.WriteLine("    |- " + AreaChild.GetType().Name);
+                }
+
+            }
+            Console.WriteLine();
+        }
+    }
+
+    //=========================================================================
+    /// <summary>
+    /// Paddock objects can have crop children
+    /// </summary>
+    [XmlType("area")]
+    public class Paddock : SystemComponent
+    {
         [XmlIgnore]
         public Crop[] Crops
         {
@@ -201,7 +214,6 @@ namespace ModelFramework
                 return new Crop[0];
             }
         }
-
     }
 
     [XmlType("summaryfile")]

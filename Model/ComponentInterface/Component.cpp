@@ -78,6 +78,14 @@ Component::~Component(void)
    delete api;
    }
 
+std::string Component::getFQName(void) 
+{
+    if (pathName.length() < 1)
+        return (name);
+    else
+        return (pathName + "." + name);
+};
+
 // -----------------------------------------------------------------
 //  Short description:
 //     clear all return infos
@@ -151,7 +159,7 @@ void Component::setup(const char *dllname,
 // ------------------------------------------------------------------
 void Component::messageToLogic(/*const*/ Message* message)
    {
-   // We need to keep track of bits of the message because the FARMWI$E infrastructure
+   // We need to keep track of bits of the message because the AusFarm infrastructure
    // doesn't guarantee that a message is still valid at the end of this method.
    // eg. it deletes the Init1 message before we get to test the ack flag at the bottom.
    bool ack = message->toAcknowledge != 0;
@@ -363,7 +371,7 @@ void Component::doInit1(const Init1Data& init1Data)
    if (posPeriod == string::npos)
 	  {
 	  name = fqn;
-	  pathName = ".";
+	  //pathName = ".";
 	  }
    else
       {
@@ -705,10 +713,16 @@ bool Component::componentNameToID(const std::string& name, int &compID)
    {
    ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
    string fqName = name;
-   if (fqName[0] != '.')
-     fqName = pathName + string(".") + fqName;
 
-   compID = registry.componentByName(fqName);
+   compID = registry.componentByName(fqName); 
+   //if comp not found then try to build a full path name
+   if (compID <= 0)
+   {
+     if ( (fqName.find('.') == string::npos) && (pathName.length() > 0) )
+       fqName = pathName + string(".") + fqName;
+     compID = registry.componentByName(fqName);
+   }
+   
    return compID > 0;
    }
 // ------------------------------------------------------------------

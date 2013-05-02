@@ -918,7 +918,7 @@ proc sowCrop {paddock crop} {
    }
    array set sow [gatherArgs sow $crop]
 
-   eval apsimSendMessage .masterpm.$paddock.$realCrop sow [mash [array get sow]]
+   eval apsimSendMessage $paddock.$realCrop sow [mash [array get sow]]
 
    # machinery operation
    eval apsimSendMessage machinery operate \
@@ -928,7 +928,7 @@ proc sowCrop {paddock crop} {
    # Work out what to do with fertiliser stuff
    array set fert [gatherArgs fertiliser $crop]
    if {$fert(calcMethod) == "constant_rate"} {
-      eval apsimSendMessage .masterpm.$paddock.fertiliser apply [mash [array get fert]]
+      eval apsimSendMessage $paddock.fertiliser apply [mash [array get fert]]
       reportEvent $paddock "fertilise-type=$fert(type),amount=$fert(amount)"
  
    } elseif {$fert(calcMethod) == "targetN"} {
@@ -936,7 +936,7 @@ proc sowCrop {paddock crop} {
       set deficit [expr $fert(amount) - $n]
       if {$deficit > 0.0} {
          set fert(amount) $deficit
-         eval apsimSendMessage .masterpm.$paddock.fertiliser apply [mash [array get fert]]
+         eval apsimSendMessage $paddock.fertiliser apply [mash [array get fert]]
          reportEvent $paddock "fertilise-type=$fert(type),amount=$fert(amount)"
 
       }                                 
@@ -989,13 +989,13 @@ proc harvestAndEndCrop {paddock crop} {
       set realCrop $crop
    }
 
-   if {[apsimGet .masterpm.$paddock.$realCrop.plant_status] != "dead"} {
+   if {[apsimGet $paddock.$realCrop.plant_status] != "dead"} {
       reportEvent $paddock "harvest-crop=$crop"
    } else {
       reportEvent $paddock "fail-crop=$crop"
    }
-   apsimSendMessage .masterpm.$paddock.$realCrop harvest
-   apsimSendMessage .masterpm.$paddock.$realCrop end_crop
+   apsimSendMessage $paddock.$realCrop harvest
+   apsimSendMessage $paddock.$realCrop end_crop
    set daysSinceLastHarvest($paddock) 0
 }
 
@@ -1025,12 +1025,12 @@ proc sprayChickpeas {paddock} {
 ###############Animal management
 
 proc OatsAreReady {} {
-   set status [apsimGetOptional ".masterpm.OatsPaddock.oats.plant_status"]
+   set status [apsimGetOptional "OatsPaddock.oats.plant_status"]
    return [string match $status "alive"]
 }
 
 proc SorghumIsReady {} {
-   set status [apsimGetOptional ".masterpm.SorghumPaddock.SweetSorghum.plant_status"]
+   set status [apsimGetOptional "SorghumPaddock.SweetSorghum.plant_status"]
    return [string match $status "alive"]
 }
 
@@ -1051,10 +1051,10 @@ proc setupAnimals {nMobs} {
       set animals(mob$mob,paddock)  {}
       set animals(mob$mob,crop)   {}
       set animals(mob$mob,supplemented) 0
-      set animals(mob$mob,id) ".masterpm.mob${mob}"
+      set animals(mob$mob,id) "mob${mob}"
       apsimSet $animals(mob$mob,id).stocking_rate 0.0
       apsimSet $animals(mob$mob,id).alw 0.0
-      apsimSet $animals(mob$mob,id).pasture_source ".masterpm.farm manager"
+      apsimSet $animals(mob$mob,id).pasture_source "farm manager"
       apsimSet $animals(mob$mob,id).allow_supplements 0
    }
 }
@@ -1133,7 +1133,7 @@ proc animalsOut { mob number } {
       set animals(${mob},paddock)  {}
       set animals(${mob},crop)   {}
       set animals($mob,supplemented) 0
-      apsimSet $animals($mob,id).pasture_source ".masterpm.farm manager"
+      apsimSet $animals($mob,id).pasture_source "farm manager"
       apsimSet $animals($mob,id).stocking_rate  0.0
       apsimSet $animals($mob,id).alw            0.0
       apsimSet $animals($mob,id).allow_supplements 0
@@ -1194,11 +1194,11 @@ proc moveStockTo {mob paddock crop} {
 
    set from "$animals($mob,paddock).$animals($mob,crop)"
    if {$crop == "feedlot"} {
-      apsimSet $animals($mob,id).pasture_source ".masterpm.farm manager"
+      apsimSet $animals($mob,id).pasture_source "farm manager"
    } elseif {$crop == "stubble" || $crop == "Stubble"} {
-      apsimSet $animals($mob,id).pasture_source ".masterpm.farm manager"
+      apsimSet $animals($mob,id).pasture_source "farm manager"
    } else {
-      apsimSet $animals($mob,id).pasture_source ".masterpm.$paddock.$crop"
+      apsimSet $animals($mob,id).pasture_source "$paddock.$crop"
       set newSr [expr $animals($mob,number) / $config($paddock,area)]
 
       ##?? need to convert animal equivalents here
@@ -1493,9 +1493,9 @@ proc reportCSV {from evt args} {
    set event($from,daysSinceEvent) 0
    
    append line ",$crop"
-   if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.yield]"} else {append line ","}
-   if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.biomass]"} else {append line ","}
-   if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.grain_protein]"} else {append line ","}
+   if {$evt == "harvest"} {append line ",[apsimGetOptional $from.$crop.yield]"} else {append line ","}
+   if {$evt == "harvest"} {append line ",[apsimGetOptional $from.$crop.biomass]"} else {append line ","}
+   if {$evt == "harvest"} {append line ",[apsimGetOptional $from.$crop.grain_protein]"} else {append line ","}
    append line ",$event($from,ep)"; set event($from,ep) 0.0
    append line ",[apsimGet $config($from,watBal).esw]"
    append line ",[apsimGet $config($from,nModule).no3()]"
@@ -1541,9 +1541,9 @@ proc reportEcon {from evt args} {
    
    if {$crop != ""} {
      append line ",$crop"
-     if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.yield]"} else {append line ","}
-     if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.biomass]"} else {append line ","}
-     if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.grain_protein]"} else {append line ","}
+     if {$evt == "harvest"} {append line ",[apsimGetOptional $from.$crop.yield]"} else {append line ","}
+     if {$evt == "harvest"} {append line ",[apsimGetOptional $from.$crop.biomass]"} else {append line ","}
+     if {$evt == "harvest"} {append line ",[apsimGetOptional $from.$crop.grain_protein]"} else {append line ","}
    } else {
      append line ",,,,"
    }  
@@ -1701,7 +1701,7 @@ foreach paddock $config(cropPaddocks) {
    foreach {accumulator} {soil_loss} {
       foreach paddock $config(paddocks) {
          if {$paddock != "toplevel"} {
-            set annual($paddock,$accumulator) [expr $annual($paddock,$accumulator) + [apsimGet .masterpm.$paddock.erosion.$accumulator]]
+            set annual($paddock,$accumulator) [expr $annual($paddock,$accumulator) + [apsimGet $paddock.erosion.$accumulator]]
          }
       }   
    }
@@ -1812,8 +1812,8 @@ if {[catch {doProcess } msg]} {
 checkWeeds
      --->Section: start_simulation
 
-apsimSendMessage ".masterpm.BuffelPaddock.buffel" establish {init_section establishment}
-apsimSendMessage ".masterpm.LeucaenaGrassPaddock.leucaena" establish {init_section establishment}
+apsimSendMessage "BuffelPaddock.buffel" establish {init_section establishment}
+apsimSendMessage "LeucaenaGrassPaddock.leucaena" establish {init_section establishment}
 
 
 setupAnimals 10
@@ -1842,8 +1842,8 @@ foreach paddock $config(paddocks) {
 
 # All our sols are called "Soil.." 
 foreach paddock $config(paddocks) {
-   set config($paddock,watBal)   ".masterpm.$paddock.Soil Water"
-   set config($paddock,nModule)  ".masterpm.$paddock.Soil Nitrogen"
+   set config($paddock,watBal)   "$paddock.Soil Water"
+   set config($paddock,nModule)  "$paddock.Soil Nitrogen"
 }
 
 

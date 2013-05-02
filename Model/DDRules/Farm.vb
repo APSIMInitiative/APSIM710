@@ -47,7 +47,7 @@ Public Class Farm
         myPaddocks2 = New Dictionary(Of String, PaddockWrapper)
     End Sub
 
-    Public Sub Init(ByVal MasterPM As Paddock, ByVal Year As Integer, ByVal Month As Integer, ByVal FarmArea As Double)
+    Public Sub Init(ByVal MasterPM As Simulation, ByVal Year As Integer, ByVal Month As Integer, ByVal FarmArea As Double)
         If (DebugLevel > 0) Then
             Console.WriteLine("DDRules.Farm.Init()")
             Console.WriteLine("   MasterPM = " + MasterPM.ToString())

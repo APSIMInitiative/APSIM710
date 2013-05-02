@@ -403,8 +403,8 @@ proc harvest_maize {paddock} {
                    "area $config($paddock,area)" \
                    "paddock $paddock" "costtype incrop_cost"    
 
-   set yield [expr [apsimGet .masterpm.$paddock.maize.yield]/1000.0]
-   set biomass [apsimGet .masterpm.$paddock.maize.biomass]
+   set yield [expr [apsimGet $paddock.maize.yield]/1000.0]
+   set biomass [apsimGet $paddock.maize.biomass]
 
    apsimSendMessage economics income {category cropprice} "name maize"  \
                           "yield $yield" \
@@ -452,8 +452,8 @@ proc harvest_bean {paddock} {
                    "area $config($paddock,area)" \
                    "paddock $paddock" "costtype incrop_cost"    
 
-   set yield [expr [apsimGet .masterpm.$paddock.bean.yield]/1000.0]
-   set biomass [apsimGet .masterpm.$paddock.bean.biomass]
+   set yield [expr [apsimGet $paddock.bean.yield]/1000.0]
+   set biomass [apsimGet $paddock.bean.biomass]
 
    apsimSendMessage economics income {category cropprice} "name bean"  \
                           "yield $yield" \
@@ -932,7 +932,7 @@ foreach paddock $config(paddocks) {
    foreach {accumulator} {soil_loss} {
       foreach paddock $config(paddocks) {
          if {$paddock != "toplevel"} {
-            set annual($paddock,$accumulator) [expr $annual($paddock,$accumulator) + [apsimGet .masterpm.$paddock.erosion.$accumulator]]
+            set annual($paddock,$accumulator) [expr $annual($paddock,$accumulator) + [apsimGet $paddock.erosion.$accumulator]]
          }
       }   
    }
@@ -963,8 +963,8 @@ foreach paddock $config(paddocks) {
 
 # All our soils are called "Soil.." 
 foreach paddock $config(paddocks) {
-   set config($paddock,watBal)   ".masterpm.$paddock.Soil Water"
-   set config($paddock,nModule)  ".masterpm.$paddock.Soil Nitrogen"
+   set config($paddock,watBal)   "$paddock.Soil Water"
+   set config($paddock,nModule)  "$paddock.Soil Nitrogen"
 }
 
 set config(states) {}

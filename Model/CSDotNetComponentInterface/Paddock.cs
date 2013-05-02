@@ -9,11 +9,13 @@ using CSGeneral;
 
 namespace ModelFramework
 {
-
-    public class Paddock : Component
+    //=========================================================================
+    /// <summary>
+    /// Generic system component that is a base class for Paddock and Simulation
+    /// </summary>
+    public class SystemComponent : Component
     {
-        ApsimComponent HostComponent;
-        protected Dictionary<String, Boolean> ChildCrops;   //cache the .cover_green response for child components
+        internal ApsimComponent HostComponent;
 
         // --------------------------------------------------------------------
         /// <summary>
@@ -22,12 +24,11 @@ namespace ModelFramework
         /// <param name="Nam">Name of the paddock or system</param>
         /// <param name="component">The hosting component</param>
         // --------------------------------------------------------------------
-        public Paddock(String Nam, object component)
+        public SystemComponent(String Nam, object component)
             : base(Nam, component)
         {
-            NamePrefix = "";
+            //NamePrefix = "";
             HostComponent = component as ApsimComponent;
-            ChildCrops = new Dictionary<string, bool>();
         }
         // --------------------------------------------------------------------
         /// <summary>
@@ -37,12 +38,11 @@ namespace ModelFramework
         /// <param name="Nam">Name of the paddock or system</param>
         /// <param name="CompClass"></param>
         /// <param name="component">The hosting component</param>
-        public Paddock(String Nam, String CompClass, object component)
+        public SystemComponent(String Nam, String CompClass, object component)
             : base(Nam, CompClass, component)
         {
-            NamePrefix = "";
+            //NamePrefix = "";
             HostComponent = component as ApsimComponent;
-            ChildCrops = new Dictionary<string, bool>();
         }
         // --------------------------------------------------------------------
         /// <summary>
@@ -50,12 +50,11 @@ namespace ModelFramework
         /// </summary>
         /// <param name="In">Instance of a root/leaf/shoot/phenology</param>
         // --------------------------------------------------------------------
-        internal Paddock(Instance In)
+        internal SystemComponent(Instance In)
             : base(In)
         {
-            NamePrefix = "";
+            //NamePrefix = "";
             HostComponent = In.ParentComponent();
-            ChildCrops = new Dictionary<string, bool>();
         }
 
         // --------------------------------------------------------------------
@@ -63,12 +62,12 @@ namespace ModelFramework
         /// Return the parent paddock of this paddock or null if no parent found.
         /// </summary>
         // --------------------------------------------------------------------
-        public Paddock Parent
+        public SystemComponent Parent
         {
             get
             {
-                string ParentName = AddMasterPM(StringManip.ParentName(FullName));
-                return new Paddock(ParentName, HostComponent);
+                string ParentName = StringManip.ParentName(FullName);
+                return new SystemComponent(ParentName, HostComponent);
             }
         }
 
@@ -102,7 +101,7 @@ namespace ModelFramework
         /// Return a list of all child paddock components to caller.
         /// </summary>
         // --------------------------------------------------------------------
-        public override List<Component> Children
+        public List<Component> Children
         {
             get
             {
@@ -115,8 +114,7 @@ namespace ModelFramework
                 }
                 return Children;
             }
-        }
-
+        } 
         // --------------------------------------------------------------------
         /// <summary>
         /// Return the fully-qualified name of a component, given its ID
@@ -133,7 +131,34 @@ namespace ModelFramework
             else
                 return "";
         }
+    }
 
+    //=========================================================================
+    /// <summary>
+    /// Paddock class is a specialised system that can have crop type children.
+    /// </summary>
+    public class Paddock : SystemComponent
+    {
+        protected Dictionary<String, Boolean> ChildCrops;   //cache the .cover_green response for child components
+
+        public Paddock(String Nam, object component)
+            : base(Nam, component)
+        {
+            NamePrefix = "";
+            ChildCrops = new Dictionary<string, bool>();
+        }
+        public Paddock(String Nam, String CompClass, object component)
+            : base(Nam, CompClass, component)
+        {
+            NamePrefix = "";
+            ChildCrops = new Dictionary<string, bool>();
+        }
+        internal Paddock(Instance In)
+            : base(In)
+        {
+            NamePrefix = "";
+            ChildCrops = new Dictionary<string, bool>();
+        }
         // --------------------------------------------------------------------
         /// <summary>
         /// Return a list of all child crops to caller.
@@ -157,7 +182,7 @@ namespace ModelFramework
                     // It shouldn't be, if we're looking only at children, and not descendants further down the tree
                     for (int pass = 0; pass <= 1; ++pass)
                     {
-                        String sSearchName = AddMasterPM(ChildComponent.FullName) + (pass == 0 ? ".CoverLive" : ".cover_green");
+                        String sSearchName = ChildComponent.FullName + (pass == 0 ? ".CoverLive" : ".cover_green");
                         if (ChildCrops.ContainsKey(sSearchName))
                         {
                             if (ChildCrops[sSearchName])
@@ -184,6 +209,55 @@ namespace ModelFramework
                 return Children;
             }
         }
+    } //paddock
+
+    //=========================================================================
+    /// <summary>
+    /// Simulation that can have child paddocks (no crops)
+    /// It also treats it's name differently to a paddock as it's
+    /// name does not appear in a FQN path.
+    /// </summary>
+    public class Simulation : SystemComponent
+    {
+        public Simulation(String Nam, object component)
+            : base(Nam, component)
+        {
+            NamePrefix = "";
+        }
+        public Simulation(String Nam, String CompClass, object component)
+            : base(Nam, CompClass, component)
+        {
+            NamePrefix = "";
+        }
+        internal Simulation(Instance In)
+            : base(In)
+        {
+            NamePrefix = "";
+        }
+        // --------------------------------------------------------------------
+        /// <summary>
+        /// Go looking for child components of this simulation.
+        /// </summary>
+        // --------------------------------------------------------------------
+        protected override void queryChildComponents()
+        {
+            if (ChildComponents == null)
+            {
+                ChildComponents = new Dictionary<uint, TComp>();
+
+                String sSearchName = "*";
+
+                List<TComp> comps = new List<TComp>();
+                HostComponent.Host.queryCompInfo(sSearchName, TypeSpec.KIND_COMPONENT, ref comps);
+                ChildComponents.Clear();
+                for (int i = 0; i < comps.Count; i++)
+                {
+                    ChildComponents.Add(comps[i].compID, comps[i]);
+                }
+
+            }
+        }
     }
 
 }
+

@@ -541,7 +541,7 @@ public class OilPalm
             sw_dep[j] = sw_dep[j] - SWUptake[j];
 
         }
-        if (!MyPaddock.Set(".paddock.Soil Water.sw_dep", sw_dep))
+        if (!MyPaddock.Set("Soil Water.sw_dep", sw_dep))
             throw new Exception("Unable to set sw_dep");
         if (PEP > 0.0)
             FW = EP / PEP;
@@ -579,7 +579,7 @@ public class OilPalm
             NUptake[j] = PotNUptake[j] * Fr;
             no3[j] = no3[j] - NUptake[j];
         }
-        if (!MyPaddock.Set(".paddock.Soil Nitrogen.no3", no3))
+        if (!MyPaddock.Set("Soil Nitrogen.no3", no3))
             throw new Exception("Unable to set no3");
 
         Fr = Math.Min(1.0,Math.Max(0,MathUtility.Sum(NUptake)/BunchNDemand));

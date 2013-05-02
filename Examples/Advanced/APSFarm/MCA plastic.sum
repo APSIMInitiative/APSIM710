@@ -1016,8 +1016,8 @@ foreach p $config(cropPaddocks) {
 set accRain 0.0
 
 foreach p $paddocks {
-  set config($p,watBal)   ".masterpm.$p.Soil Water"
-  set config($p,nModule)  ".masterpm.$p.Soil Nitrogen"
+  set config($p,watBal)   "$p.Soil Water"
+  set config($p,nModule)  "$p.Soil Nitrogen"
 }
 
 
@@ -1845,7 +1845,7 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
    foreach {accumulator} {soil_loss} {
       foreach paddock $paddocks {
          if {$paddock != "toplevel"} {
-            set $paddock.$accumulator [expr [set $paddock.$accumulator] + [apsimGet .masterpm.$paddock.erosion.$accumulator]]
+            set $paddock.$accumulator [expr [set $paddock.$accumulator] + [apsimGet $paddock.erosion.$accumulator]]
          }
       }   
    }

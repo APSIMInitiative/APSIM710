@@ -1,26 +1,4 @@
-<folder version="32" name="CPI Components">
-  <CPIGeneric>
-    <initsection>
-      <init name="published_events" array="T" />
-      <init name="subscribed_events" array="T" />
-      <init name="driver_connections" array="T" />
-      <init name="state_vars" array="T" />
-      <init name="other_vars" array="T" />
-      <init name="equations" kind="string" array="T" />
-      <init name="published_events" array="T" />
-      <init name="subscribed_events" array="T" />
-      <init name="driver_connections" array="T" />
-      <init name="state_vars" array="T" />
-      <init name="other_vars" array="T" />
-      <init name="equations" kind="string" array="T" />
-      <init name="published_events" array="T" />
-      <init name="subscribed_events" array="T" />
-      <init name="driver_connections" array="T" />
-      <init name="state_vars" array="T" />
-      <init name="other_vars" array="T" />
-      <init name="equations" kind="string" array="T" />
-    </initsection>
-  </CPIGeneric>
+<folder version="36" name="CPI Components">
   <CPISupplement>
     <initsection>
       <init name="published_events" array="T" />
@@ -29,56 +7,55 @@
       <init name="spoilage_time" kind="double" unit="d">
         <val>0</val>
       </init>
-      <init name="stores" array="T" />
-      <init name="paddock_list" kind="string" array="T" />
-      <init name="published_events" array="T" />
-      <init name="subscribed_events" array="T" />
-      <init name="driver_connections" array="T" />
-      <init name="spoilage_time" kind="double" unit="d">
-        <val>0</val>
+      <init name="stores" array="T">
+        <element>
+          <field name="name" kind="string">
+            <val />
+          </field>
+          <field name="stored" kind="double" unit="kg">
+            <val>0</val>
+          </field>
+          <field name="roughage" kind="boolean">
+            <val>false</val>
+          </field>
+          <field name="dm_content" kind="double" unit="kg/kg">
+            <val>0</val>
+          </field>
+          <field name="dmd" kind="double">
+            <val>0</val>
+          </field>
+          <field name="me_content" kind="double" unit="MJ/kg">
+            <val>0</val>
+          </field>
+          <field name="cp_conc" kind="double" unit="kg/kg">
+            <val>0</val>
+          </field>
+          <field name="prot_dg" kind="double" unit="kg/kg">
+            <val>0</val>
+          </field>
+          <field name="p_conc" kind="double" unit="kg/kg">
+            <val>0</val>
+          </field>
+          <field name="s_conc" kind="double" unit="kg/kg">
+            <val>0</val>
+          </field>
+          <field name="ee_conc" kind="double" unit="kg/kg">
+            <val>0</val>
+          </field>
+          <field name="adip2cp" kind="double" unit="kg/kg">
+            <val>0</val>
+          </field>
+          <field name="ash_alk" kind="double" unit="mol/kg">
+            <val>0</val>
+          </field>
+          <field name="max_passage" kind="double" unit="kg/kg">
+            <val>0</val>
+          </field>
+        </element>
       </init>
-      <init name="stores" array="T" />
-      <init name="paddock_list" kind="string" array="T" />
-      <init name="published_events" array="T" />
-      <init name="subscribed_events" array="T" />
-      <init name="driver_connections" array="T" />
-      <init name="spoilage_time" kind="double" unit="d">
-        <val>0</val>
-      </init>
-      <init name="stores" array="T" />
       <init name="paddock_list" kind="string" array="T" />
     </initsection>
   </CPISupplement>
-  <TextOutput>
-    <initsection>
-      <init name="published_events" array="T" />
-      <init name="subscribed_events" array="T" />
-      <init name="driver_connections" array="T" />
-      <init name="filename" kind="string">
-        <val>CPI Components_TextOutput.out</val>
-      </init>
-      <init name="interval" kind="integer4">
-        <val>1</val>
-      </init>
-      <init name="intervalunit" kind="string">
-        <val>day</val>
-      </init>
-      <init name="outputs" array="T" />
-      <init name="summary_file" kind="string">
-        <val />
-      </init>
-      <init name="apsim_format" kind="boolean">
-        <val>true</val>
-      </init>
-      <init name="title" kind="string">
-        <val>ApsimVersion = 7.4
-Title = CPI Components_TextOutput.out</val>
-      </init>
-      <init name="outputfrequency" kind="string" array="T">
-        <val>post</val>
-      </init>
-    </initsection>
-  </TextOutput>
   <CPIPaddock>
     <initsection>
       <init name="published_events" array="T" />
@@ -95,6 +72,502 @@ Title = CPI Components_TextOutput.out</val>
       </init>
     </initsection>
   </CPIPaddock>
+  <CPIDymex>
+    <initsection>
+      <init name="published_events" array="T" />
+      <init name="subscribed_events" array="T" />
+      <init name="driver_connections" array="T" />
+      <init name="Location_Data">
+        <field name="Latitude" kind="double">
+          <val>31.5</val>
+        </field>
+      </init>
+      <init name="Economic_Constants">
+        <field name="Return_from_Crop" kind="double">
+          <val>1.5</val>
+        </field>
+        <field name="Cost_of_Insecticide_($/ha)" kind="double">
+          <val>200</val>
+        </field>
+      </init>
+      <init name="Soil_Moisture_Model">
+        <field name="Soil_Moisture_Capacity" kind="double">
+          <val>150</val>
+        </field>
+        <field name="Evapotranspiration_Coefficient" kind="double">
+          <val>0.8</val>
+        </field>
+        <field name="Drainage_Rate" kind="double">
+          <val>0</val>
+        </field>
+      </init>
+      <init name="Parasite_Abundance">
+        <field name="Egg_Parasite_Abundance" kind="double">
+          <val>0.5</val>
+        </field>
+        <field name="Larval_Parasite_Abundance" kind="double">
+          <val>0.05</val>
+        </field>
+      </init>
+      <init name="Insecticide_Application">
+        <field name="Response_for_Tick_Eggs">
+          <field name="Start_of_Effect" kind="double">
+            <val>10</val>
+          </field>
+          <field name="First_Maximum_Effect" kind="double">
+            <val>17</val>
+          </field>
+          <field name="Last_Maximum_Effect" kind="double">
+            <val>25</val>
+          </field>
+          <field name="End_of_Effect" kind="double">
+            <val>35</val>
+          </field>
+          <field name="Maximum_Effect" kind="double">
+            <val>1</val>
+          </field>
+        </field>
+      </init>
+      <init name="Beetle_Lifecycle">
+        <field name="Egg">
+          <field name="Development">
+            <field name="Egg_Development_Process">
+              <field name="Egg_Development_Threshold" kind="double">
+                <val>6.4</val>
+              </field>
+              <field name="Egg_Development_Slope" kind="double">
+                <val>0.00646</val>
+              </field>
+            </field>
+          </field>
+          <field name="Proportion_Unparasitized_Eggs">
+            <field name="Egg_Attractiveness_(for_parasites)">
+              <field name="Attractiveness_Threshold" kind="double">
+                <val>0.5</val>
+              </field>
+            </field>
+            <field name="Parasite_Pressure">
+              <field name="Effect_of_Parasite_Abundance" kind="double">
+                <val>0.5</val>
+              </field>
+            </field>
+          </field>
+          <field name="Egg_-_Transfer">
+            <field name="Physiological_Age">
+              <field name="Age_at_first_Hatch" kind="double">
+                <val>0.95</val>
+              </field>
+              <field name="Slope_of_Hatching_Function" kind="double">
+                <val>10</val>
+              </field>
+            </field>
+          </field>
+        </field>
+        <field name="Larva_-_1">
+          <field name="Continuous_Mortality">
+            <field name="Soil_Moisture">
+              <field name="Dryness_Mortality_Threshold" kind="double">
+                <val>0.75</val>
+              </field>
+              <field name="Dryness_Mortality_Slope" kind="double">
+                <val>-0.6</val>
+              </field>
+            </field>
+            <field name="Density_Dependent_Mortality">
+              <field name="Threshold_Density" kind="double">
+                <val>10000</val>
+              </field>
+              <field name="Slope_of_Density_relationship" kind="double">
+                <val>1E-05</val>
+              </field>
+            </field>
+            <field name="Minimum_Temperature">
+              <field name="L1_Cold_Threshold" kind="double">
+                <val>10</val>
+              </field>
+              <field name="L1_Cold_Slope" kind="double">
+                <val>-0.01</val>
+              </field>
+            </field>
+            <field name="Insecticide_Spray_Effect">
+              <field name="Y-axis_intercept" kind="double">
+                <val>0</val>
+              </field>
+              <field name="Insecticide_sensitivity" kind="double">
+                <val>0.95</val>
+              </field>
+            </field>
+          </field>
+          <field name="Development">
+            <field name="1st_Instar_Larva_Development_Process">
+              <field name="L1_Development_Threshold" kind="double">
+                <val>4.3</val>
+              </field>
+              <field name="L1_Development_Slope_1" kind="double">
+                <val>0.0133</val>
+              </field>
+              <field name="L1_-_Ideal_Development_Temperature" kind="double">
+                <val>21</val>
+              </field>
+              <field name="L1_Development_Slope_2" kind="double">
+                <val>-0.012</val>
+              </field>
+            </field>
+          </field>
+          <field name="Larva_-_1_-_Transfer">
+            <field name="1st_Instar_Moulting_Process">
+              <field name="Age_at_Moult" kind="double">
+                <val>1</val>
+              </field>
+              <field name="Moulting_Rate" kind="double">
+                <val>1</val>
+              </field>
+            </field>
+          </field>
+        </field>
+        <field name="Larva_-_2">
+          <field name="Continuous_Mortality">
+            <field name="Minimum_Temperature">
+              <field name="L2_Cold_Threshold" kind="double">
+                <val>10</val>
+              </field>
+              <field name="L2_Cold_Slope" kind="double">
+                <val>-0.01</val>
+              </field>
+            </field>
+            <field name="Insecticide_Spray_Effect">
+              <field name="Y-axis_intercept" kind="double">
+                <val>0</val>
+              </field>
+              <field name="Insecticide_sensitivity" kind="double">
+                <val>0.9</val>
+              </field>
+            </field>
+          </field>
+          <field name="Development">
+            <field name="2nd_instar_Larva_Development_Process">
+              <field name="L2_Development_Threshold" kind="double">
+                <val>8</val>
+              </field>
+              <field name="L2_Development_Slope_1" kind="double">
+                <val>0.021</val>
+              </field>
+              <field name="L2_-_Ideal_Development_Temperature" kind="double">
+                <val>24</val>
+              </field>
+              <field name="L2_Development_Slope_2" kind="double">
+                <val>-0.007</val>
+              </field>
+            </field>
+          </field>
+          <field name="Larva_-_2_-_Transfer">
+            <field name="2nd_Instar_Moulting_Process">
+              <field name="Age_at_Moult" kind="double">
+                <val>1</val>
+              </field>
+              <field name="Proportion_Moulting" kind="double">
+                <val>1</val>
+              </field>
+            </field>
+          </field>
+        </field>
+        <field name="Larva_-_3">
+          <field name="Larval_Mortality">
+            <field name="Larval_Cold_Mortality">
+              <field name="Cold_Mortality_Threshold" kind="double">
+                <val>5</val>
+              </field>
+              <field name="Cold_Mortality_Slope" kind="double">
+                <val>-0.05</val>
+              </field>
+            </field>
+            <field name="Insecticide_Spray_Effect">
+              <field name="Y-axis_intercept" kind="double">
+                <val>0</val>
+              </field>
+              <field name="Insecticide_sensitivity" kind="double">
+                <val>0.8</val>
+              </field>
+            </field>
+          </field>
+          <field name="Development">
+            <field name="3rd_instar_Larva_Development_Process">
+              <field name="L3_Development_Threshold" kind="double">
+                <val>8</val>
+              </field>
+              <field name="L3_Development_Slope_1" kind="double">
+                <val>0.022</val>
+              </field>
+              <field name="L3_-_Ideal_Development_Temperature" kind="double">
+                <val>21.1</val>
+              </field>
+              <field name="L3_Development_Slope_2" kind="double">
+                <val>-0.0093</val>
+              </field>
+            </field>
+          </field>
+          <field name="Larva_-_3_-_Transfer">
+            <field name="3rd_Instar_Moulting_Process">
+              <field name="Age_at_Moult" kind="double">
+                <val>1</val>
+              </field>
+              <field name="Proportion_Moulting" kind="double">
+                <val>1</val>
+              </field>
+            </field>
+          </field>
+        </field>
+        <field name="Larva_-_4">
+          <field name="Larval_Mortality">
+            <field name="Non-diapause_Cold_Mortality">
+              <field name="Cold_Mortality_Threshold" kind="double">
+                <val>5</val>
+              </field>
+              <field name="Cold_Mortality_Slope" kind="double">
+                <val>-0.05</val>
+              </field>
+            </field>
+            <field name="Insecticide_Spray_Effect">
+              <field name="Y-axis_intercept" kind="double">
+                <val>0</val>
+              </field>
+              <field name="Insecticide_sensitivity" kind="double">
+                <val>0.8</val>
+              </field>
+            </field>
+          </field>
+          <field name="Development">
+            <field name="4th_Instar_Larva_Development_Process">
+              <field name="L4_Development_Threshold" kind="double">
+                <val>10</val>
+              </field>
+              <field name="L4_Development_Slope_1" kind="double">
+                <val>0.019</val>
+              </field>
+              <field name="L4_-_Ideal_Development_Temperature" kind="double">
+                <val>24.4</val>
+              </field>
+              <field name="L4_Development_Slope_2" kind="double">
+                <val>-0.027</val>
+              </field>
+            </field>
+          </field>
+          <field name="Larva_-_4_-_Transfer">
+            <field name="4th_instar_Moulting_Process">
+              <field name="Age_at_Moult" kind="double">
+                <val>1</val>
+              </field>
+              <field name="Proportion_moulting" kind="double">
+                <val>1</val>
+              </field>
+            </field>
+          </field>
+          <field name="Diapause_Induction">
+            <field name="Diapause_Trigger">
+              <field name="Diapause_Trigger_Threshold" kind="double">
+                <val>1</val>
+              </field>
+              <field name="Proportion_entering_Diapause/day" kind="double">
+                <val>0.8</val>
+              </field>
+            </field>
+            <field name="Physiological_Age">
+              <field name="Threshold" kind="double">
+                <val>0.75</val>
+              </field>
+              <field name="Step_Height" kind="double">
+                <val>1</val>
+              </field>
+            </field>
+          </field>
+        </field>
+        <field name="Diapausing_Larva">
+          <field name="Diapause_mortality">
+            <field name="Diapause_Mortality" kind="double">
+              <val>0.01</val>
+            </field>
+          </field>
+          <field name="Diapause_Termination">
+            <field name="Av_Daily_Temperature_(7-day_mean)">
+              <field name="Diapause_Exit_Threshold" kind="double">
+                <val>18</val>
+              </field>
+              <field name="Diapause_Exit_Slope" kind="double">
+                <val>0.2</val>
+              </field>
+            </field>
+            <field name="Chronological_Age">
+              <field name="Minimum_Diapause_Duration" kind="double">
+                <val>50</val>
+              </field>
+              <field name="Step_Height" kind="double">
+                <val>1</val>
+              </field>
+            </field>
+          </field>
+        </field>
+        <field name="Pupa">
+          <field name="Pupal_Mortality">
+            <field name="Minimum_Temperature">
+              <field name="Cold_Mortality_Threshold" kind="double">
+                <val>8</val>
+              </field>
+              <field name="Cold_Mortality_Slope" kind="double">
+                <val>-0.05</val>
+              </field>
+            </field>
+            <field name="Soil_Moisture">
+              <field name="Drowning_Threshold" kind="double">
+                <val>0.75</val>
+              </field>
+              <field name="Drowning_Slope" kind="double">
+                <val>1.25</val>
+              </field>
+            </field>
+          </field>
+          <field name="Development">
+            <field name="Pupal_Development_Process">
+              <field name="Pupal_Development_Threshold" kind="double">
+                <val>7.4</val>
+              </field>
+              <field name="Pre-pupal_Development_Slope" kind="double">
+                <val>0.007</val>
+              </field>
+            </field>
+          </field>
+          <field name="Pupa_-_Transfer">
+            <field name="Pupal_Moulting_Process">
+              <field name="Age_at_Moult" kind="double">
+                <val>1</val>
+              </field>
+              <field name="Proportion_Moulting" kind="double">
+                <val>1</val>
+              </field>
+            </field>
+          </field>
+        </field>
+        <field name="Adult">
+          <field name="Immigration">
+            <field name="Av_Daily_Temperature_(7-day_mean)">
+              <field name="Immigration_Threshold" kind="double">
+                <val>20</val>
+              </field>
+              <field name="Immigration_rate" kind="double">
+                <val>5</val>
+              </field>
+            </field>
+          </field>
+          <field name="Continuous_Mortality">
+            <field name="Cold_Mortality">
+              <field name="Cold_Mortality_Threshold" kind="double">
+                <val>5</val>
+              </field>
+              <field name="Cold_Mortality_Slope" kind="double">
+                <val>-0.02</val>
+              </field>
+            </field>
+            <field name="Mortality_Constant" kind="double">
+              <val>0.04</val>
+            </field>
+            <field name="Maximum_Temperature">
+              <field name="Heat_Mortality_Threshold" kind="double">
+                <val>32</val>
+              </field>
+              <field name="Heat_Mortality_Slope" kind="double">
+                <val>0.05</val>
+              </field>
+            </field>
+            <field name="Insecticide_Spray_Effect">
+              <field name="Y-axis_intercept" kind="double">
+                <val>0</val>
+              </field>
+              <field name="Insecticide_sensitivity" kind="double">
+                <val>0.5</val>
+              </field>
+            </field>
+          </field>
+          <field name="Development">
+            <field name="Adult_Development_Process">
+              <field name="Development_Threshold_Temperature" kind="double">
+                <val>12</val>
+              </field>
+              <field name="Slope_of_Development_Function" kind="double">
+                <val>0.002</val>
+              </field>
+            </field>
+          </field>
+          <field name="Adult_-_Ovary_Maturity">
+            <field name="Egg_Maturation_with_Temperature">
+              <field name="Egg_Maturation_Threshold" kind="double">
+                <val>0.8</val>
+              </field>
+              <field name="Egg_Maturation_Slope" kind="double">
+                <val>0.002</val>
+              </field>
+            </field>
+            <field name="Egg_Maturation_Reset">
+              <field name="Egg_Maturation_Reset_Threshold" kind="double">
+                <val>1</val>
+              </field>
+              <field name="Egg_Maturation_Adjustment_(pre-laying)" kind="double">
+                <val>0</val>
+              </field>
+              <field name="Egg_Maturation_Adjustment_(post-laying)" kind="double">
+                <val>-0.25</val>
+              </field>
+            </field>
+          </field>
+          <field name="Adult_-_Fecundity">
+            <field name="Potential_eggs/beetle" kind="double">
+              <val>320</val>
+            </field>
+          </field>
+          <field name="Progeny_Production">
+            <field name="Egg_Production_Process">
+              <field name="Egg_Laying_Threshold" kind="double">
+                <val>1</val>
+              </field>
+              <field name="Batch_Size" kind="double">
+                <val>31</val>
+              </field>
+            </field>
+            <field name="Low_Temp_effect_on_Batch_Size">
+              <field name="Low-temp_Egg_Production_Threshold" kind="double">
+                <val>10</val>
+              </field>
+              <field name="Low-temp_Egg_Production_Slope" kind="double">
+                <val>0.2</val>
+              </field>
+              <field name="Lower_Limit" kind="double">
+                <val>-1</val>
+              </field>
+            </field>
+          </field>
+        </field>
+      </init>
+      <init name="Damage">
+        <field name="Damage_by_3rd_instar_larva" kind="double">
+          <val>0.0001</val>
+        </field>
+        <field name="Damage_by_4th_instar_larva" kind="double">
+          <val>0.0003</val>
+        </field>
+        <field name="Damage_by_adults" kind="double">
+          <val>0.0002</val>
+        </field>
+      </init>
+    </initsection>
+  </CPIDymex>
+  <CPIGeneric>
+    <initsection>
+      <init name="published_events" array="T" />
+      <init name="subscribed_events" array="T" />
+      <init name="driver_connections" array="T" />
+      <init name="state_vars" array="T" />
+      <init name="other_vars" array="T" />
+      <init name="equations" kind="string" array="T" />
+    </initsection>
+  </CPIGeneric>
   <CPIStock>
     <initsection>
       <init name="published_events" array="T" />
@@ -113,67 +586,6 @@ Title = CPI Components_TextOutput.out</val>
       <init name="enterprise_list" array="T" />
     </initsection>
   </CPIStock>
-  <CPIPasture>
-    <initsection>
-      <init name="published_events" array="T" />
-      <init name="subscribed_events" array="T" />
-      <init name="driver_connections" array="T" />
-      <init name="param_file" kind="string">
-        <val />
-      </init>
-      <init name="species" kind="string">
-        <val />
-      </init>
-      <init name="nutrients" kind="string">
-        <val />
-      </init>
-      <init name="fertility" kind="double">
-        <val>0</val>
-      </init>
-      <init name="layers" kind="double" array="T" unit="mm" />
-      <init name="max_rtdep" kind="double" unit="mm">
-        <val>1</val>
-      </init>
-      <init name="lagged_day_t" kind="double" unit="oC">
-        <val>-999.9</val>
-      </init>
-      <init name="phenology" kind="double">
-        <val>1</val>
-      </init>
-      <init name="flower_len" kind="double" unit="d">
-        <val>0</val>
-      </init>
-      <init name="flower_time" kind="double" unit="d">
-        <val>0</val>
-      </init>
-      <init name="senc_index" kind="double" unit="d">
-        <val>0</val>
-      </init>
-      <init name="dorm_index" kind="double" unit="d">
-        <val>0</val>
-      </init>
-      <init name="dorm_t" kind="double" unit="oC">
-        <val>-999.9</val>
-      </init>
-      <init name="extinct_coeff" kind="double" array="T" />
-      <init name="green" array="T" />
-      <init name="dry" array="T" />
-      <init name="seeds">
-        <field name="soft_unripe" kind="double" array="T" unit="kg/ha" />
-        <field name="soft_ripe" kind="double" array="T" unit="kg/ha" />
-        <field name="hard_unripe" kind="double" array="T" unit="kg/ha" />
-        <field name="hard_ripe" kind="double" array="T" unit="kg/ha" />
-      </init>
-      <init name="seed_dorm_time" kind="double" unit="d">
-        <val>0</val>
-      </init>
-      <init name="germ_index" kind="double" unit="d">
-        <val>0</val>
-      </init>
-      <init name="kl" kind="single" array="T" unit="/d" />
-      <init name="ll" kind="single" array="T" unit="mm/mm" />
-    </initsection>
-  </CPIPasture>
   <CPIManager>
     <initsection>
       <init name="published_events" array="T" />
@@ -221,4 +633,294 @@ Title = CPI Components_TextOutput.out</val>
       </init>
     </initsection>
   </CPIManager>
+  <CPIPasture>
+    <initsection>
+      <init name="published_events" array="T" />
+      <init name="subscribed_events" array="T" />
+      <init name="driver_connections" array="T" />
+      <init name="param_file" kind="string">
+        <val />
+      </init>
+      <init name="species" kind="string">
+        <val>Perennial Ryegrass</val>
+      </init>
+      <init name="nutrients" kind="string">
+        <val />
+      </init>
+      <init name="fertility" kind="double">
+        <val>1</val>
+      </init>
+      <init name="layers" kind="double" array="T" unit="mm">
+        <val>100</val>
+      </init>
+      <init name="max_rtdep" kind="double" unit="mm">
+        <val>1000</val>
+      </init>
+      <init name="lagged_day_t" kind="double" unit="oC">
+        <val>-999.9</val>
+      </init>
+      <init name="phenology" kind="double">
+        <val>1</val>
+      </init>
+      <init name="flower_len" kind="double" unit="d">
+        <val>0</val>
+      </init>
+      <init name="flower_time" kind="double" unit="d">
+        <val>0</val>
+      </init>
+      <init name="senc_index" kind="double" unit="d">
+        <val>0</val>
+      </init>
+      <init name="dorm_index" kind="double" unit="d">
+        <val>0</val>
+      </init>
+      <init name="dorm_t" kind="double" unit="oC">
+        <val>-999.9</val>
+      </init>
+      <init name="extinct_coeff" kind="double" array="T" />
+      <init name="green" array="T" />
+      <init name="dry" array="T" />
+      <init name="seeds">
+        <field name="soft_unripe" kind="double" array="T" unit="kg/ha" />
+        <field name="soft_ripe" kind="double" array="T" unit="kg/ha" />
+        <field name="hard_unripe" kind="double" array="T" unit="kg/ha" />
+        <field name="hard_ripe" kind="double" array="T" unit="kg/ha" />
+      </init>
+      <init name="seed_dorm_time" kind="double" unit="d">
+        <val>0</val>
+      </init>
+      <init name="germ_index" kind="double" unit="d">
+        <val>0</val>
+      </init>
+      <init name="kl" kind="single" array="T" unit="/d">
+        <val>1</val>
+      </init>
+      <init name="ll" kind="single" array="T" unit="mm/mm">
+        <val>1</val>
+      </init>
+    </initsection>
+  </CPIPasture>
+  <TextOutput>
+    <initsection>
+      <init name="published_events" array="T" />
+      <init name="subscribed_events" array="T" />
+      <init name="driver_connections" array="T" />
+      <init name="filename" kind="string">
+        <val>CPI Components_TextOutput.out</val>
+      </init>
+      <init name="interval" kind="integer4">
+        <val>1</val>
+      </init>
+      <init name="intervalunit" kind="string">
+        <val>day</val>
+      </init>
+      <init name="outputs" array="T" />
+      <init name="summary_file" kind="string">
+        <val />
+      </init>
+      <init name="apsim_format" kind="boolean">
+        <val>true</val>
+      </init>
+      <init name="title" kind="string">
+        <val>ApsimVersion = 7.5
+Title = CPI Components_TextOutput.out</val>
+      </init>
+      <init name="outputfrequency" kind="string" array="T">
+        <val>post</val>
+      </init>
+      <init name="dateformat" kind="string">
+        <val>dd/MM/yyyy</val>
+      </init>
+    </initsection>
+  </TextOutput>
+  <Graph name="XY">
+    <Legend>
+      <CheckedTitles> Dymex Simulation paddock_TextOutput.out</CheckedTitles>
+    </Legend>
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>Circle</PointType>
+      <colour>
+      </colour>
+      <X>Date</X>
+      <Y>dymex_Total_Number__Adult_</Y>
+      <GDApsimFileReader name="ApsimFileReader">
+        <FileName>%apsim%\Examples\Dymex Simulation paddock_TextOutput.out</FileName>
+      </GDApsimFileReader>
+    </Plot>
+  </Graph>
+  <manager2 name="Buy stock Script(C#)">
+    <ui>
+      <A type="text" description="Param A">Parameter value</A>
+    </ui>
+    <text>
+using System;
+using ModelFramework;
+
+public class Script 
+{  
+   [Link] Stock stock;
+   [Link] Paddock MyPaddock; // Can be used to dynamically get access to simulation structure and variables
+   [Input] DateTime Today;   // Equates to the value of the current simulation date - value comes from CLOCK
+   [Param] string A;         // The value for this will come from the Properties page.
+   [Output] double B;        // An example of how to make a variable available to other APSIM modules
+
+   
+   // The following event handler will be called once at the beginning of the simulation
+   [EventHandler] public void OnInitialised()
+   {
+
+   }
+      
+   // The following event handler will be called each day at the beginning of the day
+   [EventHandler] public void OnPrepare()
+   {
+      
+   }
+   
+   [EventHandler] public void OnPost()
+   {
+      if (Today == new DateTime(1940,8,1) )
+         stock.Buy("Small Merino", 10, "wethers", 12.0, 40, 2, 2.5, "Small Merino", 0, 0, 0, 0, 0);
+
+   }
+}
+       </text>
+  </manager2>
+  <CPIStock name="CPIStock1">
+    <initsection>
+      <init name="published_events" array="T" />
+      <init name="subscribed_events" array="T" />
+      <init name="driver_connections" array="T" />
+      <init name="param_file" kind="string">
+        <val />
+      </init>
+      <init name="rand_seed" kind="integer4">
+        <val>0</val>
+      </init>
+      <init name="genotypes" array="T">
+        <element>
+          <field name="name" kind="string">
+            <val>Small Merino</val>
+          </field>
+          <field name="dam_breed" kind="string">
+            <val />
+          </field>
+          <field name="sire_breed" kind="string">
+            <val />
+          </field>
+          <field name="generation" kind="integer4">
+            <val>0</val>
+          </field>
+          <field name="srw" kind="double" unit="kg">
+            <val>40</val>
+          </field>
+          <field name="conception" kind="double" array="T">
+            <val>0.539999961853027</val>
+            <val>0.409999996423721</val>
+          </field>
+          <field name="death_rate" kind="double" unit="/y">
+            <val>0.0200000014156103</val>
+          </field>
+          <field name="ref_fleece_wt" kind="double" unit="kg">
+            <val>3.60000014305115</val>
+          </field>
+          <field name="max_fibre_diam" kind="double" unit="um">
+            <val>19</val>
+          </field>
+          <field name="fleece_yield" kind="double" unit="kg/kg">
+            <val>0.699999988079071</val>
+          </field>
+          <field name="peak_milk" kind="double" unit="kg">
+            <val>0</val>
+          </field>
+          <field name="wnr_death_rate" kind="double" unit="/y">
+            <val>0.0200000014156103</val>
+          </field>
+        </element>
+      </init>
+      <init name="sheep" array="T">
+        <element>
+          <field name="genotype" kind="string">
+            <val>Small Merino</val>
+          </field>
+          <field name="number" kind="integer4">
+            <val>300</val>
+          </field>
+          <field name="sex" kind="string">
+            <val>wether</val>
+          </field>
+          <field name="age" kind="double" unit="d">
+            <val>365</val>
+          </field>
+          <field name="weight" kind="double" unit="kg">
+            <val>45</val>
+          </field>
+          <field name="max_prev_wt" kind="double" unit="kg">
+            <val>45</val>
+          </field>
+          <field name="fleece_wt" kind="double" unit="kg">
+            <val>3</val>
+          </field>
+          <field name="fibre_diam" kind="double" unit="um">
+            <val>20</val>
+          </field>
+          <field name="mated_to" kind="string">
+            <val />
+          </field>
+          <field name="pregnant" kind="integer4" unit="d">
+            <val>0</val>
+          </field>
+          <field name="lactating" kind="integer4" unit="d">
+            <val>0</val>
+          </field>
+          <field name="no_young" kind="integer4">
+            <val>0</val>
+          </field>
+          <field name="birth_cs" kind="double">
+            <val>0</val>
+          </field>
+          <field name="lamb_wt" kind="double" unit="kg">
+            <val>0</val>
+          </field>
+          <field name="lamb_fleece_wt" kind="double" unit="kg">
+            <val>0</val>
+          </field>
+          <field name="paddock" kind="string">
+            <val>paddock</val>
+          </field>
+          <field name="tag" kind="integer4">
+            <val>1</val>
+          </field>
+          <field name="priority" kind="integer4">
+            <val>0</val>
+          </field>
+        </element>
+      </init>
+      <init name="cattle" array="T" />
+      <init name="paddock_list" array="T">
+        <element>
+          <field name="name" kind="string">
+            <val>paddock</val>
+          </field>
+          <field name="area" kind="double" unit="ha">
+            <val>100</val>
+          </field>
+          <field name="slope" kind="double" unit="deg">
+            <val>0</val>
+          </field>
+          <field name="forages" kind="string" array="T">
+            <val>paddock.wheat</val>
+          </field>
+          <field name="excretion" kind="string">
+            <val />
+          </field>
+          <field name="urine" kind="string">
+            <val />
+          </field>
+        </element>
+      </init>
+      <init name="enterprise_list" array="T" />
+    </initsection>
+  </CPIStock>
 </folder>

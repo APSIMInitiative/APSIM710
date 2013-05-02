@@ -41,7 +41,7 @@ namespace ModelFramework
     /// This is the main host for an Apsim component such as Plant2.
     /// </summary>
     // --------------------------------------------------------------------
-    class ApsimComponent : Instance
+    internal class ApsimComponent : Instance
     {
         private bool IsScript;
         private bool IsPlant;
@@ -313,14 +313,19 @@ namespace ModelFramework
                     GetAllInputs();
                     if (!IsPlant)                   //plant will do this at sow time in BuildObjects()
                         Fact.Initialise();
-                    for (int i = 0; i != Fact.EventHandlers.Count; i++)
+                    //now execute the init2 event
+                    int i = 0;
+                    EvntHandler Event;
+                    while (i < Fact.EventHandlers.Count)
                     {
-                        EvntHandler Event = Fact.EventHandlers[i];
+                        Event = Fact.EventHandlers[i];
                         if (String.Compare(Event.EventName, "Init2", true) == 0)
                         {
                             GetAllInputs();
                             Event.Invoke(messageData);
+                            i = Fact.EventHandlers.Count; //terminate loop
                         }
+                        i++;
                     }
                 }
                 else if (RegistrationIndex == SOWINDEX)

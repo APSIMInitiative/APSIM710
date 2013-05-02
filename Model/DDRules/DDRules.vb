@@ -45,7 +45,7 @@ Imports ModelFramework
 
 Public Class DDRules
     Public myDebugLevel As Integer = 0
-    <Link()> Public MySimulation As Paddock
+    <Link()> Public MySimulation As Simulation
     <Link()> Public MyClock As Clock
     <Input()> Public is_end_week As Boolean
     <Input()> Public is_start_week As Boolean
@@ -371,8 +371,8 @@ Public Class DDRules
         End Set
     End Property
 
-    Sub SetupFarmSim(ByVal MyPaddock As Paddock)
-        Dim FarmSim As Component = CType(MyPaddock.LinkByType("FarmSimGraze"), Component)
+    Sub SetupFarmSim(ByVal MySystem As Simulation)
+        Dim FarmSim As Component = CType(MySystem.LinkByType("FarmSimGraze"), Component)
         If FarmSim Is Nothing Then
             Return
         End If

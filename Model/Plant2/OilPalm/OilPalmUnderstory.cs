@@ -118,7 +118,7 @@ public class OilPalmUnderstory
     private void DoGrowth()
     {
         double OPCover = 0;
-        if (!MyPaddock.Get(".paddock.OilPalm.cover_green", out OPCover))
+        if (!MyPaddock.Get("OilPalm.cover_green", out OPCover))
             OPCover = 0.0;
         double RUE = 1.3;
         DltDM = RUE * Radn * cover_green * (1 - OPCover) * FW;
@@ -128,7 +128,7 @@ public class OilPalmUnderstory
     private void DoWaterBalance()
     {
         double OPCover = 0;
-        if (!MyPaddock.Get(".paddock.OilPalm.cover_green", out OPCover))
+        if (!MyPaddock.Get("OilPalm.cover_green", out OPCover))
             OPCover = 0.0;
 
         cover_green = 0.40 *(1-OPCover);
@@ -148,7 +148,7 @@ public class OilPalmUnderstory
             sw_dep[j] = sw_dep[j] - SWUptake[j];
 
         }
-        if (!MyPaddock.Set(".paddock.Soil Water.sw_dep", sw_dep))
+        if (!MyPaddock.Set("Soil Water.sw_dep", sw_dep))
             throw new Exception("Unable to set sw_dep");
         if (PEP > 0.0)
             FW = EP / PEP;
@@ -176,7 +176,7 @@ public class OilPalmUnderstory
             no3[j] = no3[j] - NUptake[j];
 
         }
-        if (!MyPaddock.Set(".paddock.Soil Nitrogen.no3", no3))
+        if (!MyPaddock.Set("Soil Nitrogen.no3", no3))
             throw new Exception("Unable to set no3");
 
         //NFixation = Math.Max(0.0, Ndemand - MathUtility.Sum(NUptake));

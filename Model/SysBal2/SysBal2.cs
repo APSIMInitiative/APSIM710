@@ -56,13 +56,14 @@ public class SysBal2
 
         foreach (Component Child in Paddock.Children)
         {
-            string ChildName = Child.FullName;
+           /* string ChildName = Child.FullName;
             double ChildCarbonBalance;
+          ->  This loop is wrong. It retrieves soilN and surfaceOM and itself!
             if (Paddock.Get(ChildName + ".CarbonBalance", out ChildCarbonBalance))
             {
                 CarbonBalance += ChildCarbonBalance;
             }
-
+            */
             double EP;
             if (Paddock.Get("ep", out EP))   //does not work with Plant2 modules
                 cropTotal += EP;  

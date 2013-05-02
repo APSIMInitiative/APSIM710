@@ -95,9 +95,9 @@ void Simulation::init(const string& sdml)
    replaceAll(dllFilename, "%ausfarm%", getAusFarmDirectory());
 
    // create a Master PM and give it to the transport layer.
-   string pmName = ".MasterPM";
+   string pmName = "";//".MasterPM";
    masterPM = new Computation(pmName, dllFilename, "", parentID, masterPMID);
-   Transport::getTransport().addComponent(masterPMID, ".MasterPM", masterPM);
+   Transport::getTransport().addComponent(masterPMID, pmName, masterPM);
 
    // resolve any includes.
    string sdmlContents = sdml;
