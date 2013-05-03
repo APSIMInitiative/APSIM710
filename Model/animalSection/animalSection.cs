@@ -10,7 +10,7 @@ public class animalSection
     [Input]
     ManureType WHEATSTRAW;
     [Link]
-    private Component My;
+    private SystemComponent My;
     [Param]
     double NrOfAnimals = 1;
     [Param]

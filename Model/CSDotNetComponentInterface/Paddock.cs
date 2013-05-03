@@ -16,6 +16,7 @@ namespace ModelFramework
     public class SystemComponent : Component
     {
         internal ApsimComponent HostComponent;
+        protected Dictionary<uint, TComp> ChildComponents = null;
 
         // --------------------------------------------------------------------
         /// <summary>
@@ -70,8 +71,6 @@ namespace ModelFramework
                 return new SystemComponent(ParentName, HostComponent);
             }
         }
-
-
         // --------------------------------------------------------------------
         /// <summary>
         /// Return a list of all child paddock components to caller.
@@ -94,11 +93,9 @@ namespace ModelFramework
                 return Children;
             }
         }
-
-
         // --------------------------------------------------------------------
         /// <summary>
-        /// Return a list of all child paddock components to caller.
+        /// Return a list of all child components to caller.
         /// </summary>
         // --------------------------------------------------------------------
         public List<Component> Children
@@ -130,6 +127,36 @@ namespace ModelFramework
                 return aComp.name;
             else
                 return "";
+        }
+        // --------------------------------------------------------------------
+        /// <summary>
+        /// Go looking for child components of this system.
+        /// </summary>
+        // --------------------------------------------------------------------
+        protected virtual void queryChildComponents()
+        {
+            SearchForChildComponents(FQN + ".*"); //search comp.*
+        }
+        // --------------------------------------------------------------------
+        /// <summary>
+        /// Search for child components based on the search string.
+        /// </summary>
+        /// <param name="searchName">The search term for queryInfo</param>
+        // --------------------------------------------------------------------
+        protected void SearchForChildComponents(String searchName)
+        {
+            if (ChildComponents == null)
+            {
+                ChildComponents = new Dictionary<uint, TComp>();
+
+                List<TComp> comps = new List<TComp>();
+                HostComponent.Host.queryCompInfo(searchName, TypeSpec.KIND_COMPONENT, ref comps);
+                ChildComponents.Clear();
+                for (int i = 0; i < comps.Count; i++)
+                {
+                    ChildComponents.Add(comps[i].compID, comps[i]);
+                }
+            }
         }
     }
 
@@ -241,21 +268,7 @@ namespace ModelFramework
         // --------------------------------------------------------------------
         protected override void queryChildComponents()
         {
-            if (ChildComponents == null)
-            {
-                ChildComponents = new Dictionary<uint, TComp>();
-
-                String sSearchName = "*";
-
-                List<TComp> comps = new List<TComp>();
-                HostComponent.Host.queryCompInfo(sSearchName, TypeSpec.KIND_COMPONENT, ref comps);
-                ChildComponents.Clear();
-                for (int i = 0; i < comps.Count; i++)
-                {
-                    ChildComponents.Add(comps[i].compID, comps[i]);
-                }
-
-            }
+            SearchForChildComponents("*"); 
         }
     }
 

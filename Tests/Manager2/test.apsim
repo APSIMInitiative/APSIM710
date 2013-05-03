@@ -430,11 +430,14 @@ public class Script
    [Output][Units("oC")] 
    public double C = 0;
    
+   [Link] 
+   public Simulation MySimulation;
+   
    [Link]
    public Paddock MyPaddock;
    
    [Link]
-   public Component My;
+   public Component MySelf;
 
    [Link]
    public Outputfile Report;
@@ -446,8 +449,8 @@ public class Script
    public void OnInitialised()
    {
       // Write out our name and our full name.
-      Console.WriteLine("Name: " + My.Name);
-      Console.WriteLine("Full name: " + My.FullName);
+      Console.WriteLine("Name: " + MySelf.Name);
+      Console.WriteLine("Full name: " + MySelf.FullName);
       
    }
    
@@ -467,29 +470,40 @@ public class Script
       C = 1234;
       
       // ========================================================================
+      // Rrom root Simulation
+      // ========================================================================
+      Console.WriteLine("Simulation children:");
+      foreach (Component Child in MySimulation.Children)
+         Console.WriteLine("   " + Child.FullName);
+      
+      Console.WriteLine("Simulation paddocks:");
+      foreach (Component Child in MySimulation.ChildPaddocks)
+         Console.WriteLine("   " + Child.FullName);
+
+      // ========================================================================
       // Children method
       // ========================================================================
       Console.WriteLine("Script children:");
-      foreach (Component Child in My.Children)
-         Console.WriteLine("   " + Child.FullName);
+      foreach (Object Child in MySelf.ChildrenAsObjects)
+         Console.WriteLine("   " + Child.ToString());
       
       Console.WriteLine("Paddock children:");
       foreach (Component Child in MyPaddock.Children)
          Console.WriteLine("   " + Child.FullName);
      
-      Console.WriteLine("Simulation children:");
+      Console.WriteLine("My Paddock Parent's children:");
       foreach (Component Child in MyPaddock.Parent.Children)
          Console.WriteLine("   " + Child.FullName);
     
       // ========================================================================
       // ChildrenAsObjects method
       // ========================================================================
-      if (My.ChildrenAsObjects[0] is ScriptChild)
+      if (MySelf.ChildrenAsObjects[0] is ScriptChild)
       {
          // All is good.
       }
       else
-         throw new Exception("My.ChildrenAsObjects failed");
+         throw new Exception("MySelf.ChildrenAsObjects failed");
 
       // ========================================================================
       // Paddock.Crops
@@ -504,6 +518,11 @@ public class Script
       ScriptChild ScriptChild = MyPaddock.LinkByName("ScriptChild") as ScriptChild;
       if (ScriptChild == null)
          throw new Exception("Cannot find ScriptChild");
+      else
+      {
+         Console.WriteLine("ScriptChild: " + ScriptChild.ToString());
+         Console.WriteLine("ScriptChild.A: " + ScriptChild.A.ToString());
+      }
 
       ScriptChild ScriptChild2 = MyPaddock.LinkByName("paddock.Script.ScriptChild") as ScriptChild;
       if (ScriptChild2 == null)
@@ -560,6 +579,11 @@ public class Script
       if (Yield != 0)
          throw new Exception("Cannot find yield");
       
+      double _value;
+      MyPaddock.Get("paddock.Soil Water.cn_cov", out _value);
+      Console.WriteLine("paddock.Soil Water.cn_cov = " + _value.ToString());
+      MyPaddock.Get("Soil Water.cn_cov", out _value);
+      Console.WriteLine("        Soil Water.cn_cov = " + _value.ToString());
       
       // ========================================================================
       // Paddock.Set

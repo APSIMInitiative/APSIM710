@@ -22,7 +22,6 @@ namespace ModelFramework
         protected String ParentCompName;            //Name of the parent component in the simulation
         protected String FQN;                       //Name of the actual component
         internal Instance In;
-        protected Dictionary<uint, TComp> ChildComponents = null;
         protected Dictionary<String, Object> ApsimIntObjectsByName = null;  //cache a list of internal objects searched for in LinkByName()
         protected Dictionary<String, Object> ApsimObjectsByName = null;  //cache a list of objects searched for in LinkByName()
         protected Dictionary<String, Object> ApsimObjectsByType = null;  //cache a list of objects searched for in LinkByType()
@@ -142,60 +141,6 @@ namespace ModelFramework
             ApsimIntObjectsByName = new Dictionary<string, object>();
             ApsimObjectsByName = new Dictionary<string, object>();
             ApsimObjectsByType = new Dictionary<string, object>();
-        }
-
-        // --------------------------------------------------------------------
-        /// <summary>
-        /// Return a list of all child paddock components to caller.
-        /// </summary>
-        // --------------------------------------------------------------------
-        public virtual List<Component> Children
-        {
-            get
-            {
-                List<Component> Children = new List<Component>();
-                Instance Inst = In;
-                if (Inst == null)
-                    Inst = HostComponent.ModelInstance;
-                if (Inst == null)
-                {
-                    queryChildComponents();
-                    foreach (KeyValuePair<uint, TComp> pair in ChildComponents)
-                    {
-                        Paddock C = new Paddock(pair.Value.name, pair.Value.CompClass, HostComponent);
-                        Children.Add(C);
-                    }
-                }
-                else
-                {
-                    foreach (Instance Child in Inst.Children)
-                        Children.Add(new Component(Child));
-                }
-                return Children;
-            }
-        }
-        // --------------------------------------------------------------------
-        /// <summary>
-        /// Go looking for child components of this component.
-        /// </summary>
-        // --------------------------------------------------------------------
-        protected virtual void queryChildComponents()
-        {
-            if (ChildComponents == null)
-            {
-                ChildComponents = new Dictionary<uint, TComp>();
-
-                String sSearchName = FQN + ".*";    //search comp.*
-
-                List<TComp> comps = new List<TComp>();
-                HostComponent.Host.queryCompInfo(sSearchName, TypeSpec.KIND_COMPONENT, ref comps);
-                ChildComponents.Clear();
-                for (int i = 0; i < comps.Count; i++)
-                {
-                    ChildComponents.Add(comps[i].compID, comps[i]);
-                }
-
-            }
         }
         // --------------------------------------------------------------------
         /// <summary>
@@ -662,32 +607,6 @@ namespace ModelFramework
         #endregion
 
         #region Private methods
-        // --------------------------------------------------------------------
-        /// <summary>
-        /// Go looking for child components of this component.
-        /// </summary>
-        // --------------------------------------------------------------------
-/*        protected void queryChildComponents()
-        {
-            if (ChildComponents == null)
-            {
-                ChildComponents = new Dictionary<uint, TComp>();
-
-                String sSearchName = "*";
-                if (FQN.Length > 0)
-                    sSearchName = FQN + ".*";    //search comp.*
-
-                List<TComp> comps = new List<TComp>();
-                HostComponent.Host.queryCompInfo(sSearchName, TypeSpec.KIND_COMPONENT, ref comps);
-                ChildComponents.Clear();
-                for (int i = 0; i < comps.Count; i++)
-                {
-                    ChildComponents.Add(comps[i].compID, comps[i]);
-                }
-
-            }
-        }
-        */
         /// <summary>
         /// Locate a variable that matches the specified path and return its value. Returns null
         /// if not found. e.g. NamePath:
@@ -715,18 +634,6 @@ namespace ModelFramework
                 }
                 return HostComponent.Get(GetterName, Data, true);
             }
-
-                // try a full address first. If that doesn't work then try relative address.
-            /*    if (!HostComponent.Get(NamePrefix + NamePath, Data, true))
-                {
-                    if (this is Paddock)
-                        return HostComponent.Get(NamePath, Data, true);
-                    else
-                        return false;
-                }
-                else
-                    return true;
-            }*/
         }
 
         /// <summary>

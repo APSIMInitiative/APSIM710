@@ -6,7 +6,7 @@ using ModelFramework;
 public class PigHousing
 {
     [Link]
-    private Component My;
+    private SystemComponent My; //is this component really a system with system children?
     [EventHandler]
     public void OnInitialised()
     {
@@ -27,9 +27,9 @@ public class PigHousing
         {
             Console.WriteLine(My.Children[i].Name+"'s section name in pighousing");
 
-            for (int j = 0; j < My.Children[i].Children.Count(); j++)
+            for (int j = 0; j < ((SystemComponent)My.Children[i]).Children.Count(); j++)
             {
-                Console.WriteLine(My.Children[i].Children[j].Name+" floor name in pighousing");
+                Console.WriteLine(((SystemComponent)My.Children[i]).Children[j].Name+" floor name in pighousing");
             }
         }
 

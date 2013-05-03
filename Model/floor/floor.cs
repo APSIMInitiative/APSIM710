@@ -7,9 +7,9 @@ using ModelFramework;
 public class floor
 {
     [Link]
-    Component Me;
+    SystemComponent Me;
     [Link]
-    private Component My;
+    private SystemComponent My;
     store Solid=new store();
     store liquid=new store();
     [Param]
