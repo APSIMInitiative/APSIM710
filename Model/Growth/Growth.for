@@ -1234,6 +1234,13 @@ cnh         cover = 1.0 - exp (-g%extinction_coef*g%lai)
      :              ,'(0-1)'              ! variable units
      :              ,g%Fd) ! variable
 
+      elseif (variable_name .eq. 'foliage_n_conc') then
+
+         call respond2get_real_var (
+     :               variable_name       ! variable name
+     :              ,'g/g'              ! variable units
+     :              ,p%foliage_n_conc) ! variable
+	 
       elseif (variable_name .eq. 'retranslocation_fract') then
 
          call respond2get_real_var (
