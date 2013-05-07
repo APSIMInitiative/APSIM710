@@ -221,7 +221,10 @@ try {
 								 messageData >> querySetData;
 								 onQuerySetValueMessage(message->from, querySetData, msgID);
 								 break;}
-	  case ReplySetValueSuccess:
+	  case ReplySetValueSuccess: {ReplySetValueSuccessData replySetData;
+                                 messageData >> replySetData;
+                                 onReplySetValueSuccess(message->from, replySetData, msgID);
+                                 break;}
 	  case NotifySetValueSuccess:{NotifySetValueSuccessData notifySetValueSuccess;
                                  messageData >> notifySetValueSuccess;
                                  setVariableSuccess = notifySetValueSuccess.success;

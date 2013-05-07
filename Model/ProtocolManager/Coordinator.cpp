@@ -584,6 +584,52 @@ void Coordinator::onReplyValueMessage(unsigned fromID, protocol::ReplyValueData 
       }
    }
 
+void Coordinator::sendApsimSetQueryMessage(unsigned int from, unsigned int to, const FString& regName, unsigned replyToID, unsigned replyID, protocol::Variant& variant)
+{
+    sendMessage(protocol::newApsimSetQueryMessage(componentID, to, regName, replyToID, replyID, variant));
+}
+
+// ------------------------------------------------------------------
+// Send queryValue messages to the component.
+// fromID: the source of the original requestSetValue
+// ------------------------------------------------------------------
+void Coordinator::sendQuerySetValueMessage(unsigned int fromID, unsigned int setterID, unsigned int toID, unsigned int propID, protocol::RequestSetValueData& data)
+{
+    //track the source
+    previousSetValueCompID.push(fromID);
+    previousSetValueRegID.push(setterID);
+                                                 
+    sendMessage(protocol::newQuerySetValueMessage(componentID, toID, propID, data.variant));
+
+    //already routed the replySetValue message back to the caller in onReplySetValueSuccess() so clear up
+    previousSetValueCompID.pop();
+    previousSetValueRegID.pop();
+}
+
+//-------------------------------------------------------------------
+// Handle onReplySetValueSuccess
+// Send a NotifySetValueSuccess back to the originator 
+// component of the requestSetValue.
+//-------------------------------------------------------------------
+void Coordinator::onReplySetValueSuccess(unsigned fromID, protocol::ReplySetValueSuccessData& replySetData, unsigned msgID)
+{
+    //determine the destination for the NotifySetValueSuccess message
+    int toID = previousSetValueCompID.top();
+    int setterID = previousSetValueRegID.top();
+
+    //construct and send the message
+    if (toID == parentID || (components.find(toID) != components.end() && components[toID]->isSystem()))
+    {
+        //relay the reply
+        sendMessage(protocol::newReplySetValueSuccessMessage(componentID, toID, replySetData.ID, replySetData.success));
+    }
+    else
+    {
+        //send notify msg to originator
+        sendMessage(protocol::newNotifySetValueSuccessMessage(componentID, toID, setterID, replySetData.success));
+    }
+}
+
 // ------------------------------------------------------------------
 //  Short description:
 //    handle the incoming query info message.
@@ -820,22 +866,23 @@ void Coordinator::onRequestSetValueMessage(unsigned int fromID,
 
    if (subs.size() == 0)
       {
-      string msg = "No module allows a set of the variable " +
-           reg->getName();
-      error(msg, true);
+      string msg = "No module allows a set of the variable: " + reg->getName();
+      error(msg, false);    //just a warning
+      protocol::Message *msgSet = protocol::newNotifySetValueSuccessMessage(componentID, fromID, setValueData.ID, false);
+      sendMessage(msgSet);
       }
    else if (subs.size() == 1)
       {
-//      cout <<  "sending newQuerySetValueMessage, n="<<reg->getName() << ", to " << registry.componentByID(subs[0]->getComponentID()) <<"\n";
-      sendMessage(newQuerySetValueMessage(fromID,
-                                          subs[0]->getComponentID(),
-                                          subs[0]->getRegID(),
-                                          setValueData.variant));
+      /*cout <<  "sending newQuerySetValueMessage, n="<<reg->getName() 
+           << " setterID " << setValueData.ID 
+           << " from " << fromID 
+           << " propID " << subs[0]->getRegID() 
+           << ", to " << registry.componentByID(subs[0]->getComponentID()) <<"\n"; */
+      sendQuerySetValueMessage(fromID, setValueData.ID, subs[0]->getComponentID(), subs[0]->getRegID(), setValueData);
       }
    else if (subs.size() > 1)
       {
-      string msg =  "Too many modules allow a set of the variable "+
-              reg->getName();
+      string msg =  "Too many modules allow a set of the variable: "+ reg->getName();
       error(msg, true);
       }
    }

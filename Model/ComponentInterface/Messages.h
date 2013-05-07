@@ -222,6 +222,17 @@ inline Message* newNotifySetValueSuccessMessage(unsigned int from,
    messageData << ID << success;
    return msg;
    }
+// ---------------- ReplySetValueSuccess ---------------
+struct ReplySetValueSuccessData
+   {
+   unsigned int ID;
+   bool success;
+   };
+inline MessageData& operator>> (MessageData& messageData, ReplySetValueSuccessData& data)
+   {
+   messageData >> data.ID >> data.success;
+   return messageData;
+   }
 inline Message* newReplySetValueSuccessMessage(unsigned int from,
                                                 unsigned int to,
                                                 unsigned int ID,

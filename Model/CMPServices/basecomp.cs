@@ -992,14 +992,23 @@ namespace CMPServices
                         }
                         resetDict.Add(dictKey, resetValue);
                     }
-                    resetValue.setData(valPtr, (int)valSize, 0);               //Now carry out the reset
+                    
+                    if (!resetValue.setData(valPtr, (int)valSize, 0))       //now atempt the reset
+                    {
+                        TDDMLValue tmpReset = new TDDMLValue(sDDML, "");    //setData failed so create a new var of the correct type
+                        tmpReset.setData(valPtr, (int)valSize, 0);
+                        resetValue.setValue(tmpReset);                      //setValue will accomodate for compatible types
+                    }
                     result = writeProperty((int)propertyID, resetValue);
-                    sendReplySetValueSuccess(msgID, replyTo, result);     //sends the success? msg
+                    sendReplySetValueSuccess(msgID, replyTo, result);       //sends the success? msg
                 }
             }
             catch (Exception e)
             {
-                string errorMsg = string.Format(FName + " doResetProperty(): {0} ", e.Message);
+                String propName = "";
+                if (propertyList[(int)propertyID] != null)
+                    propName = propertyList[(int)propertyID].Name;
+                string errorMsg = string.Format(FName + "." + propName + " doResetProperty(): {0} ", e.Message);
                 sendError(errorMsg, true);
             }
         }

@@ -41,6 +41,8 @@ class Coordinator : public protocol::Component
       std::string parentName;
       std::stack<int> previousGetValueCompID;
       std::stack<int> previousGetValueRegID;
+      std::stack<int> previousSetValueCompID;             //keep track of the requestSetValue caller  
+      std::stack<int> previousSetValueRegID;
       std::set<std::string> variablesBeenPolledForSets;
       std::set<std::string> variablesBeenPolledForGets;
 
@@ -60,6 +62,7 @@ class Coordinator : public protocol::Component
       virtual void onRequestSetValueMessage(unsigned int fromID, protocol::RequestSetValueData& setValueData);
       virtual void onApsimChangeOrderData(unsigned int fromID, protocol::MessageData& messageData);
 	  virtual void onQuerySetValueMessage(unsigned fromID, protocol::QuerySetValueData& querySetData, unsigned msgID);
+      virtual void onReplySetValueSuccess(unsigned fromID, protocol::ReplySetValueSuccessData& replySetData, unsigned msgID);
 	  
       virtual void respondToEvent(unsigned int& fromID, unsigned int& eventID, protocol::Variant& variant);
       virtual void respondToGet(unsigned int& fromID, protocol::QueryValueData& queryData);
@@ -76,7 +79,11 @@ class Coordinator : public protocol::Component
       // Send queryValue messages to all subscribed components.
       // ------------------------------------------------------------------
       void sendQueryValueMessage(unsigned fromID, unsigned regID);
-      
+
+      //send the querySetValue message
+      void sendQuerySetValueMessage(unsigned int from, unsigned int setterID, unsigned int to, unsigned int ID, protocol::RequestSetValueData& data);
+      void sendApsimSetQueryMessage(unsigned int from, unsigned int to, const FString& regName, unsigned replyToID, unsigned replyID, protocol::Variant& variant);
+
       void reorderSubscriptions(vector<ApsimRegistration *>& subs);
       void readAllRegistrations(void);
 

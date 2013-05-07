@@ -655,8 +655,7 @@ namespace ModelFramework
                     SetterName = NamePrefix + NamePath;
                 }
                 // not an internal entity so look for an external one.
-                HostComponent.Set(SetterName, Data);
-                return true; //not officially correct but the infrastructure doesn't return the correct value
+                return HostComponent.Set(SetterName, Data); //not officially correct but the infrastructure doesn't return the correct value when setting readonly property
             }
         }
 

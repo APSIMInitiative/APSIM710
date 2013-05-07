@@ -2234,8 +2234,10 @@ namespace CMPServices
         /// <param name="startIndex">Start at this index in the byte array.</param>
         // N.Herrmann Apr 2002
         //============================================================================
-        public void copyDataBlock(Byte[] newData, uint startIndex)
+        public Boolean copyDataBlock(Byte[] newData, uint startIndex)
         {
+            Boolean copyOK = true;
+
             if ((FBaseType >= TBaseType.ITYPE_EMPTY) && (FBaseType <= TBaseType.ITYPE_WCHAR))
                 FDataSize = typeSize[(int)FBaseType];
             else if (FBaseType == TBaseType.ITYPE_STR)
@@ -2249,8 +2251,16 @@ namespace CMPServices
                 FDataSize = INTSIZE + 2 * noChars;//size in bytes
             }
 
-            FData = new Byte[FDataSize];
-            Array.Copy(newData, startIndex, FData, 0, FDataSize);
+            if ((startIndex + FDataSize) <= newData.Length) //if there are enough bytes to copy
+            {
+                FData = new Byte[FDataSize];
+                Array.Copy(newData, startIndex, FData, 0, FDataSize);
+            }
+            else
+            {
+                copyOK = false;
+            }
+            return copyOK;
         }
         //============================================================================
         /// <summary>
@@ -2291,20 +2301,21 @@ namespace CMPServices
         /// <param name="startIndex">Start at this index in the byte array.</param>
         // N.Herrmann Apr 2002
         //============================================================================
-        public void setData(Byte[] newData, int iNewSize, uint startIndex)
+        public Boolean setData(Byte[] newData, int iNewSize, uint startIndex)
         {
             uint dim;
             int i;
             int bytesRemain;
             TTypedValue value;
             uint childSize;
+            Boolean success = true;
 
             bytesRemain = 0;
             if ((iNewSize > 0) && (newData != null))
             {         //if the incoming block has data
                 if (FIsScalar)
                 {
-                    copyDataBlock(newData, startIndex); //copies scalars (including strings)
+                    success = copyDataBlock(newData, startIndex); //copies scalars (including strings)
                 }
                 else
                 {
@@ -2320,13 +2331,18 @@ namespace CMPServices
                     }
                     //now copy the children. All children exist now
                     //go through each child and set the data block
-                    for (i = 0; i < FMembers.Count; i++)
+                    i = 0;
+                    while (success && (i < FMembers.Count))
                     {             //for each field
                         value = FMembers[i];
-                        value.setData(newData, bytesRemain, startIndex);             //store the datablock
-                        childSize = value.sizeBytes();
-                        bytesRemain = bytesRemain - (int)childSize;
-                        startIndex += childSize;                      //inc ptr along this dataBlock
+                        success = value.setData(newData, bytesRemain, startIndex);             //store the datablock
+                        if (success)
+                        {
+                            childSize = value.sizeBytes();
+                            bytesRemain = bytesRemain - (int)childSize;
+                            startIndex += childSize;                      //inc ptr along this dataBlock
+                        }
+                        i++;
                     }
                     //store the size in bytes for this type
                     //FDataSize = (uint)(iNewSize - Math.Max(0, bytesRemain));   //bytesRemain should = 0
@@ -2339,6 +2355,7 @@ namespace CMPServices
             //   if bytesRemain <> 0 then
             //      raise Exception.Create( 'Input data inconsistent with type of value in setData()' + Name );
 
+            return success;
         }
 
 

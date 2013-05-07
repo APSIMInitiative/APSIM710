@@ -590,15 +590,15 @@ public class Script
       // ========================================================================
       // Test using scoping to set a variable. These values should be in output file
       if (!MyPaddock.Set("cn2_bare", 90))
-         throw new Exception("Cannot set cn2_bare");
+         Console.WriteLine("Cannot set cn2_bare");
 
       // Test using scoping to set a variable. These values should be in output file
       if (!MyPaddock.Set("paddock.Soil Water.cn_cov", 0.888))
-         throw new Exception("Cannot set paddock.Soil Water.cn_cov");
+         Console.WriteLine("Cannot set paddock.Soil Water.cn_cov");
 
       // Test that "set" returns false when trying to set an invalid variable.
-      //if (!MyPaddock.Set("asdf", 89))
-         //throw new Exception("Cannot set asdf");
+      if (!MyPaddock.Set("asdf", 89))
+         Console.WriteLine("Cannot set asdf");
 
       // ========================================================================
       // Paddock.Warning
