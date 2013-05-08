@@ -221,7 +221,7 @@
             <Start type="text" description="Start">Vegetative</Start>
             <End type="text" description="End">Maturity</End>
             <Constant name="Function">
-              <Value type="text" description="Value">.1</Value>
+              <Value type="text" description="Value">.3</Value>
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
@@ -230,7 +230,7 @@
           <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the MinimumNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - MinimumNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation -</Memo>
         </Constant>
         <Constant name="MinimumNConc">
-          <Value>0.01</Value>
+          <Value type="text" description="Value">0.005</Value>
           <Memo>The MinimumNconc determins the organs essential N demand.  Essential N Demand is N is set by Live.Wt * MinimumNConc and is N the organ must take up to achieve its potential growth.  If the organ is not supplied with sufficient N to maintain MinimunNConc its growth will be constrained by the arbitrator.  All N taken up to MinimunNConc is placed in the StructuralPool and is not mobile</Memo>
         </Constant>
         <PhaseBasedSwitch name="NitrogenDemandSwitch">
@@ -243,7 +243,7 @@
           <XProperty type="text" description="XProperty">Leaf.FractionDied</XProperty>
           <XYPairs>
             <XY>0 0</XY>
-            <XY>1 0.1</XY>
+            <XY>1 0.001</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <CompositeBiomass name="Live">
@@ -258,8 +258,16 @@
 2.  NitrogenDemandSwitch.  Default value is 1 which means the organ always has a N demand if its N content is below maximum N conc.  If N demand needs to be switched off place a function on the organ named NitrogenDemandSwitch which returns a value of 1 when no demand is expressed.
 </Memo>
         <Constant name="MaxDailyNUptake">
-          <Value type="text" description="Value">15</Value>
+          <Value type="text" description="Value">7.5</Value>
           <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the MinimumNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - MinimumNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation -</Memo>
+        </Constant>
+        <Constant name="StructuralFraction">
+          <Value type="text" description="Value">0.5</Value>
+          <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
+          <Constant name="StructuralFraction">
+            <Value type="text" description="Value">1</Value>
+            <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
+          </Constant>
         </Constant>
       </Root>
       <Leaf>
@@ -335,13 +343,13 @@
           </LinearInterpolationFunction>
         </LinearInterpolationFunction>
         <Constant name="MinimumNConc">
-          <Value type="text" description="Value">.04</Value>
+          <Value type="text" description="Value">.015</Value>
         </Constant>
         <Constant name="CriticalNConc">
-          <Value type="text" description="Value">.03</Value>
+          <Value type="text" description="Value">.015</Value>
         </Constant>
         <Constant name="MaximumNConc">
-          <Value type="text" description="Value">.075</Value>
+          <Value type="text" description="Value">.052</Value>
           <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the CriticalNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - CriticalNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation.</Memo>
         </Constant>
         <Constant name="NReallocationFactor">
@@ -353,7 +361,7 @@
           <Memo>sets the proportion of Metabolic N that may be Remobilised to meet the demand of other organs each day.  A value of zero means the crop will favor maintaining the N concentration and photosynthetic capacity of its current leaf area (behaviour of crops such as potato and wheat).  Increasing this will enable the crop to grow and increased leaf area with diluted N concentration, favoring larger leaf area over the higher N concentration and photosynthetic capacity of leaves (behaviour of crops such as maize) </Memo>
         </Constant>
         <Constant name="DMRetranslocationFactor">
-          <Value type="text" description="Value">.5</Value>
+          <Value type="text" description="Value">.95</Value>
           <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
         </Constant>
         <Constant name="DMReallocationFactor">
@@ -410,7 +418,7 @@ Initial ages and initial areas are array fields so the size and age of multiple 
         </ArrayBiomass>
         <RUEModel name="Photosynthesis">
           <Constant name="RUE">
-            <Value type="text" description="Value">2</Value>
+            <Value type="text" description="Value">1.4</Value>
           </Constant>
           <WeightedTemperatureFunction name="FT">
             <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
@@ -452,18 +460,26 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
             <PhotosyntheticPathway>C3</PhotosyntheticPathway>
           </RUECO2Function>
         </RUEModel>
+        <Constant name="DMSinkCapacity">
+          <Value type="text" description="Value">0</Value>
+          <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
+        </Constant>
       </Leaf>
       <GenericAboveGroundOrgan name="Stem">
         <Constant name="StructuralFraction">
-          <Value type="text" description="Value">0.1</Value>
+          <Value type="text" description="Value">0.5</Value>
           <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
+          <Constant name="StructuralFraction">
+            <Value type="text" description="Value">0.5</Value>
+            <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
+          </Constant>
         </Constant>
         <LinearInterpolationFunction name="MaximumNConc">
           <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
           <XYPairs>
             <XY>3 0.06</XY>
-            <XY>4 0.05</XY>
-            <XY>5.3 0.025</XY>
+            <XY>4 0.03</XY>
+            <XY>5.3 0.015</XY>
           </XYPairs>
           <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the CriticalNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - CriticalNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation.</Memo>
         </LinearInterpolationFunction>
@@ -478,7 +494,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         </Memo>
         </PhaseBasedSwitch>
         <Constant name="NReallocationFactor">
-          <Value type="text" description="Value">0</Value>
+          <Value type="text" description="Value">.05</Value>
           <Memo>Controls the proportion of Non-Structural and senesing Metabolic N that may be Reallocated to other organs each day.  </Memo>
         </Constant>
         <Constant name="NRetranslocationFactor">
@@ -502,12 +518,16 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         <PartitionFractionDemandFunction name="DMDemandFunction">
           <StageBasedInterpolation name="PartitionFraction">
             <Stages type="text" description="Stages">Sowing Germination Emergence Vegetative Maturity</Stages>
-            <Values type="text" description="Values">    0.0       0.0      0.1          .4   .7</Values>
+            <Values type="text" description="Values">    0.0       0.0      0.1          .8  .8</Values>
           </StageBasedInterpolation>
           <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
 		This function returns the specified proportion of totol DM supply.  The organ may not get this proportion if the sum of demands from other organs exceeds DM supply
 		</Memo>
         </PartitionFractionDemandFunction>
+        <Constant name="DMSinkCapacity">
+          <Value type="text" description="Value">1</Value>
+          <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
+        </Constant>
       </GenericAboveGroundOrgan>
       <Summary />
       <CompositeBiomass name="AboveGround">

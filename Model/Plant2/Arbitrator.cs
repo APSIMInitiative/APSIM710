@@ -40,6 +40,7 @@ public class Arbitrator
     double[] DMDemand = null;
     double[] DMSinkCapacity = null;
     double[] DMAllocation = null;
+    double[] DMReallocationSupply = null;
     double[] DMReallocation = null; 
     double[] DMExcessAllocation = null;
     double[] DMRetranslocation = null;
@@ -104,6 +105,7 @@ public class Arbitrator
     private double TotalStoreDMRetranslocated = 0;
     private double StartingN = 0;
     private double TotalNReallocationSupply = 0;
+    private double TotalDMReallocationSupply = 0;
     private double TotalNUptakeSupply = 0;
     private double TotalNFixationSupply = 0;
     private double TotalNRetranslocationSupply = 0;
@@ -123,6 +125,7 @@ public class Arbitrator
     {
         //Work out how much each organ would grow in the absence of nutirent limitaiton
         DoDMSetup(Organs);
+        DoDMReallocation(Organs);
         DoPotentialDMAllocation(Organs);
         //Work out how much nutrient can be allocated to each organ
         DoNutrientSetup(Organs);
@@ -159,7 +162,9 @@ public class Arbitrator
         DMExcessAllocation = new double[Organs.Count];
         DMRetranslocation = new double[Organs.Count];
         DMReallocation = new double[Organs.Count];
+        DMReallocationSupply = new double[Organs.Count];
 
+ 
         //Tag priority organs
         if (PriorityOrgan != null)
         {
@@ -181,9 +186,13 @@ public class Arbitrator
 
             //RFZ
             DMFreshSupplyOrgan[i] += DM.Reallocation;
+
+            //Also store in Reallocation supply so we can remove from dead.
+            DMReallocationSupply[i] += DM.Reallocation;
         }
         TotalFreshDMSupply = MathUtility.Sum(DMFreshSupplyOrgan);
         TotalStoreDMSupply = MathUtility.Sum(DMStoreSupplyOrgan);
+        TotalDMReallocationSupply = MathUtility.Sum(DMReallocationSupply);
 
         // SET OTHER ORGAN VARIABLES AND CALCULATE TOTALS
         for (int i = 0; i < Organs.Count; i++)
@@ -191,6 +200,7 @@ public class Arbitrator
             DMDemand[i] = Organs[i].DMDemand;
             DMSinkCapacity[i] = Organs[i].DMSinkCapacity;
             DMAllocation[i] = 0;
+            DMReallocation[i] = 0;
             DMRetranslocation[i] = 0;
         }
         TotalPriorityDMDemand = 0;
@@ -220,6 +230,7 @@ public class Arbitrator
                 double proportion = DMDemand[i] / TotalPriorityDMDemand;
                 double DMAllocated = Math.Min(TotalFreshDMSupply * proportion, DMDemand[i]);
                 DMAllocation[i] = DMAllocated;
+                DMReallocation[i] = 0;
                 TotalWtAllocated += DMAllocated;
             }
         }
@@ -291,6 +302,32 @@ public class Arbitrator
             Organs[i].DMPotentialAllocation = DMAllocation[i];
         }
     }
+
+
+
+    virtual public void DoDMReallocation(List<Organ> Organs)
+    {
+        /*
+         * All reallocation is handle in supply pool
+         * However need to know how much each organ suplied for so not added to dead pool.
+         * More complicated (steps) than needed for current usage
+         */
+
+        if (TotalDMReallocationSupply > 0.00000000001)
+        {
+            for (int i = 0; i < Organs.Count; i++)
+            {
+                if (DMReallocationSupply[i] > 0)
+                {
+                    DMReallocation[i] = DMReallocationSupply[i];
+                }
+                else
+                    DMReallocation[i] = 0;
+            }
+        }
+
+    }
+
     //To introduce Arbitration for other nutrients we need to add additional members to biomass object for each new type and then repeat eaco of the 4 allocation functions below for each nutrient type
     virtual public void DoNutrientSetup(List<Organ> Organs)
     {

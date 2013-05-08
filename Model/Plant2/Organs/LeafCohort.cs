@@ -9,7 +9,7 @@ public class LeafCohort
  #region Class Data Members
     public Biomass Live = new Biomass();
     public Biomass Dead = new Biomass();
-    private Biomass LiveStart = new Biomass();
+    private Biomass LiveStart = null;
 
     //Leaf coefficients
     public double Age = 0;
@@ -87,6 +87,7 @@ public class LeafCohort
     private double MetabolicNAllocation = 0;
     private double StructuralDMAllocation = 0;
     private double MetabolicDMAllocation = 0;
+  
 #endregion
 
  #region Class Parameters and Functions
@@ -258,6 +259,9 @@ public class LeafCohort
             return LeafStartNonStructuralNRetranslocationSupply + LeafStartMetabolicNRetranslocationSupply;
         }
     }
+ 
+    
+    
     virtual public double NRetranslocation
     {
         set
@@ -289,6 +293,16 @@ public class LeafCohort
             return LeafStartNonStructuralNReallocationSupply + LeafStartMetabolicNReallocationSupply;
         }
     }
+
+    public double DMReallocationSupply
+    {
+        get
+        {
+            return LeafStartNonStructuralDMReallocationSupply + LeafStartMetabolicDMReallocationSupply;
+        }
+    }
+
+
     //Set Methods to change Cohort Status
     public double DMPotentialAllocation
     {
@@ -305,6 +319,8 @@ public class LeafCohort
                 PotentialMetabolicDMAllocation = value * (1 - StructuralDMDemandFrac);
             }
         }
+
+  
     }
     public double DMRetranslocation
     {
@@ -523,35 +539,50 @@ public class LeafCohort
             CoverAbove = Leaf.CoverAboveCohort(Rank); // Calculate cover above leaf cohort (unit??? FIXME-EIT)
             ShadeInducedSenRate = ShadeInducedSenescenceRateFunction.Value;
             SenescedFrac = FractionSenescing(_ThermalTime, FractionStemMortality);
-
+  
             // Doing leaf mass growth in the cohort
+            Biomass LiveBiomass = new Biomass(Live);
 
             //Set initial leaf status values
             LeafStartArea = LiveArea;
-            LiveStart = Live;
-            LeafStartDMRetranslocationSupply = LiveStart.NonStructuralWt * DMRetranslocationFactor;
+           
+            //RFZ I think here Hamish wants a copy of the initial values at start, however all this is doing is assigning a reference
+            //LiveStart = Live;
+            LiveStart = new Biomass(Live);
+
+
+            //If the model allows reallocation of senescent DM do it.
+            if ((DMReallocationFactor > 0) && (SenescedFrac > 0))
+            {
+                // DM to reallocate.
+
+                LeafStartMetabolicDMReallocationSupply = LiveStart.MetabolicWt * SenescedFrac * DMReallocationFactor;
+                LeafStartNonStructuralDMReallocationSupply = LiveStart.NonStructuralWt * SenescedFrac * DMReallocationFactor;
+
+                LeafStartDMReallocationSupply = LeafStartMetabolicDMReallocationSupply + LeafStartNonStructuralDMReallocationSupply;
+                LiveBiomass.MetabolicWt -= LeafStartMetabolicDMReallocationSupply;
+                LiveBiomass.NonStructuralWt -= LeafStartNonStructuralDMReallocationSupply;
+
+            }
+            else
+            {
+                LeafStartMetabolicDMReallocationSupply = LeafStartNonStructuralDMReallocationSupply = LeafStartDMReallocationSupply = 0;
+            }
+
+
+
+
+            LeafStartDMRetranslocationSupply = LiveBiomass.NonStructuralWt * DMRetranslocationFactor;
             //Nretranslocation is that which occurs before uptake (senessed metabolic N and all non-structuralN)
-            LeafStartMetabolicNReallocationSupply = SenescedFrac * LiveStart.MetabolicN * NReallocationFactor;
-            LeafStartNonStructuralNReallocationSupply = SenescedFrac * LiveStart.NonStructuralN * NReallocationFactor;
+            LeafStartMetabolicNReallocationSupply = SenescedFrac * LiveBiomass.MetabolicN * NReallocationFactor;
+            LeafStartNonStructuralNReallocationSupply = SenescedFrac * LiveBiomass.NonStructuralN * NReallocationFactor;
             //Retranslocated N is only that which occurs after N uptake. Both Non-structural and metabolic N are able to be retranslocated but metabolic N will only be moved if remobilisation of non-structural N does not meet demands
-            LeafStartMetabolicNRetranslocationSupply = Math.Max(0.0, (LiveStart.MetabolicN * NRetranslocationFactor) - LeafStartMetabolicNReallocationSupply);
-            LeafStartNonStructuralNRetranslocationSupply = Math.Max(0.0, (LiveStart.NonStructuralN * NRetranslocationFactor) - LeafStartNonStructuralNReallocationSupply);
+            LeafStartMetabolicNRetranslocationSupply = Math.Max(0.0, (LiveBiomass.MetabolicN * NRetranslocationFactor) - LeafStartMetabolicNReallocationSupply);
+            LeafStartNonStructuralNRetranslocationSupply = Math.Max(0.0, (LiveBiomass.NonStructuralN * NRetranslocationFactor) - LeafStartNonStructuralNReallocationSupply);
             LeafStartNReallocationSupply = NReallocationSupply;
             LeafStartNRetranslocationSupply = NRetranslocationSupply;
 
-            //If the model allows reallocation of senescent DM do it.
-            //  LeafStartDMReallocationSupply = SenescedFrac * LiveStart.Wt * DMReallocationFactor;
-            
-            if (DMReallocationFactor > 0)
-            { 
-             // DM to reallocate.
-                double ReallocateWt = 0;
-                ReallocateWt += LiveStart.MetabolicWt;
-                ReallocateWt += LiveStart.NonStructuralWt;
-                LeafStartDMReallocationSupply = SenescedFrac * ReallocateWt;
-            
-            }
-            
+        
 
             //zero locals variables
             StructuralDMDemand = 0;
@@ -593,20 +624,31 @@ public class LeafCohort
             //Senessing leaf area
             double AreaSenescing = LiveArea * SenescedFrac;
             double AreaSenescingN = 0;
-            if ((Live.MetabolicNConc <= MinimumNConc) & ((MetabolicNRetranslocated - MetabolicNAllocation) > 0.0))
-                AreaSenescingN = LeafStartArea * (MetabolicNRetranslocated - MetabolicNAllocation) / LiveStart.MetabolicN;
+           if ((Live.MetabolicNConc <= MinimumNConc) & ((MetabolicNRetranslocated - MetabolicNAllocation) > 0.0))
+               AreaSenescingN = LeafStartArea * (MetabolicNRetranslocated - MetabolicNAllocation) / LiveStart.MetabolicN;
 
             double LeafAreaLoss = Math.Max(AreaSenescing, AreaSenescingN);
             if (LeafAreaLoss > 0)
                 SenescedFrac = Math.Min(1.0, LeafAreaLoss / LeafStartArea);
 
+
+            /* RFZ why variation between using LiveStart and Live
             double StructuralWtSenescing = SenescedFrac * Live.StructuralWt;
             double StructuralNSenescing = SenescedFrac * Live.StructuralN;
             double MetabolicWtSenescing = SenescedFrac * Live.MetabolicWt;
             double MetabolicNSenescing = SenescedFrac * LiveStart.MetabolicN;
             double NonStructuralWtSenescing = SenescedFrac * Live.NonStructuralWt;
             double NonStructuralNSenescing = SenescedFrac * LiveStart.NonStructuralN;
+            */
 
+
+            double StructuralWtSenescing = SenescedFrac * LiveStart.StructuralWt;
+            double StructuralNSenescing = SenescedFrac * LiveStart.StructuralN;
+            double MetabolicWtSenescing = SenescedFrac * LiveStart.MetabolicWt;
+            double MetabolicNSenescing = SenescedFrac * LiveStart.MetabolicN;
+            double NonStructuralWtSenescing = SenescedFrac * LiveStart.NonStructuralWt;
+            double NonStructuralNSenescing = SenescedFrac * LiveStart.NonStructuralN;
+         
             DeadArea = DeadArea + LeafAreaLoss;
             LiveArea = LiveArea - LeafAreaLoss; // Final leaf area of cohort that will be integrated in Leaf.cs? (FIXME-EIT)
 
@@ -616,11 +658,20 @@ public class LeafCohort
             Live.StructuralN -= StructuralNSenescing;
             Dead.StructuralN += StructuralNSenescing;
 
+
+            /*
+             * If the leaf decreased during the day then it is possible for the senesing material to be larger than the leaf
+             * RFZ
+             */ 
+
+
+
             Live.MetabolicWt -= (MetabolicWtSenescing);
-            Dead.MetabolicWt += (MetabolicWtSenescing);
+            Live.MetabolicWt = Math.Max(0.0, Live.MetabolicWt);
+            //Dead.MetabolicWt += (MetabolicWtSenescing);
             //RFZ
             //Live.MetabolicWt -= Math.Max(0.0,MetabolicWtSenescing - MetabolicWtReallocated);
-            //Dead.MetabolicWt += Math.Max(0.0, MetabolicWtSenescing - MetabolicWtReallocated);
+            Dead.MetabolicWt += Math.Max(0.0, MetabolicWtSenescing - MetabolicWtReallocated);
 
 
             Live.MetabolicN -= Math.Max(0.0, (MetabolicNSenescing - MetabolicNReallocated - MetabolicNRetranslocated));  //Don't Seness todays N if it has been taken for reallocation
@@ -630,11 +681,12 @@ public class LeafCohort
             Dead.NonStructuralN += Math.Max(0.0, NonStructuralNSenescing - NonStructuralNReallocated - NonStructuralNRetrasnlocated);
 
             Live.NonStructuralWt -= Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated);
-            Dead.NonStructuralWt += Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated);
-
+            //Dead.NonStructuralWt += Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated);
+            Live.NonStructuralWt = Math.Max(0.0, Live.NonStructuralWt);
+  
             //RFZ
-            //Live.NonStructuralWt -= Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated - NonStructuralWtReallocated);
-            //Dead.NonStructuralWt += Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated - NonStructuralWtReallocated);
+            //Reallocated gos to to reallocation pool but not into dead pool. 
+            Dead.NonStructuralWt += Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated - NonStructuralWtReallocated);
 
 
 

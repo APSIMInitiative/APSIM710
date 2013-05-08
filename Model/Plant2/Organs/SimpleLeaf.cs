@@ -53,7 +53,7 @@ class SimpleLeaf : BaseOrgan
     }
     public override DMSupplyType DMSupply
     {
-          get { return new DMSupplyType { Photosynthesis = DeltaBiomass, Retranslocation = 0 } ; }
+          get { return new DMSupplyType { Photosynthesis = DeltaBiomass, Retranslocation = 0,Reallocation = 0 } ; }
     }
     public override DMAllocationType DMAllocation
     {

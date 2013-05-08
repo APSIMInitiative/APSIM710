@@ -106,6 +106,8 @@ public class GenericOrgan : BaseOrgan
     #endregion
 
     #region Arbitrator methods
+    [Output]
+    [Units("g/m^2")]
     public override double DMDemand
     {
         get
@@ -142,7 +144,8 @@ public class GenericOrgan : BaseOrgan
             if (DMRetranslocationFactor != null) //Default of 0 means retranslocation is always truned off!!!!
                 _DMRetranslocationFactor = DMRetranslocationFactor.Value;
             return new DMSupplyType { Photosynthesis = 0, 
-                                      Retranslocation = StartLive.NonStructuralWt * _DMRetranslocationFactor };
+                                      Retranslocation = StartLive.NonStructuralWt * _DMRetranslocationFactor,
+            Reallocation = 0};
         }
     }
     public override double NDemand
