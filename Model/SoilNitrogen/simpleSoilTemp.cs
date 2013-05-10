@@ -125,8 +125,6 @@ public class simpleSoilTemp
             surf_temp[day] = ave_temp;
     }
 
-    double[] teste = new double[40];
-
     /// <summary>
     /// Calculate today's temperature for each layer in the soil
     /// </summary>
