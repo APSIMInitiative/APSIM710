@@ -524,7 +524,7 @@ public class Script
          Console.WriteLine("ScriptChild.A: " + ScriptChild.A.ToString());
       }
 
-      ScriptChild ScriptChild2 = MyPaddock.LinkByName("paddock.Script.ScriptChild") as ScriptChild;
+      ScriptChild ScriptChild2 = MyPaddock.LinkByName(".paddock.Script.ScriptChild") as ScriptChild;
       if (ScriptChild2 == null)
          throw new Exception("Cannot find paddock.Script.ScriptChild");
       
@@ -532,17 +532,17 @@ public class Script
       if (SoilWat == null)
          throw new Exception("Cannot find Soil Water");
       
-      SoilWat SoilWat2 = MyPaddock.LinkByName("paddock.Soil Water") as SoilWat;
+      SoilWat SoilWat2 = MyPaddock.LinkByName(".paddock.Soil Water") as SoilWat;
       if (SoilWat2 == null)
-         throw new Exception("Cannot find paddock.Soil Water");
+         throw new Exception("Cannot find .paddock.Soil Water");
 
       SoilWat SoilWat3 = MyPaddock.LinkByType("SoilWat") as SoilWat;
       if (SoilWat3 == null)
          throw new Exception("Cannot find a SoilWat type");
       
-      SoilWat SoilWat4 = MyPaddock.LinkByName("paddock2.Soil Water") as SoilWat;
+      SoilWat SoilWat4 = MyPaddock.LinkByName(".paddock2.Soil Water") as SoilWat;
       if (SoilWat4 == null)
-         throw new Exception("Cannot find paddock2.Soil Water");      
+         throw new Exception("Cannot find .paddock2.Soil Water");      
       
 
       // ========================================================================
@@ -550,18 +550,18 @@ public class Script
       // ========================================================================
       // Test using scoping to find a variable in top level simulation.
       double Latitude;
-      MyPaddock.Get("Latitude", out Latitude);
+      MyPaddock.Get(".Met.Latitude", out Latitude);
       if (!MathUtility.FloatsAreEqual(Latitude, -28.33))
          throw new Exception("Incorrect latitude: " + Latitude.ToString());
       
       // Test using a full address to variable.
-      MyPaddock.Get("Met.Latitude", out Latitude);
+      MyPaddock.Get(".Met.Latitude", out Latitude);
       if (!MathUtility.FloatsAreEqual(Latitude, -28.33))
          throw new Exception("Incorrect latitude2: " + Latitude.ToString());      
       
       // Test getting a double array from current paddock
       double[] dlayer;
-      MyPaddock.Get("dlayer", out dlayer);
+      MyPaddock.Get("Soil Water.dlayer", out dlayer);
       if (!MathUtility.AreEqual(dlayer, new double[] {100, 100, 250, 250, 350, 450}))
          throw new Exception("Incorrect dlayer: " + StringManip.BuildString(dlayer, "f2"));      
 
@@ -573,14 +573,14 @@ public class Script
       if (ChildVariable != 12345)
          throw new Exception("Incorrect child variable value: " + ChildVariable.ToString());
 
-      // Test using a paddocj relative address to variable.
+      // Test using a paddock relative address to variable.
       double Yield;
       MyPaddock.Get("wheat.yield", out Yield);
       if (Yield != 0)
          throw new Exception("Cannot find yield");
       
       double _value;
-      MyPaddock.Get("paddock.Soil Water.cn_cov", out _value);
+      MyPaddock.Get(".paddock.Soil Water.cn_cov", out _value);
       Console.WriteLine("paddock.Soil Water.cn_cov = " + _value.ToString());
       MyPaddock.Get("Soil Water.cn_cov", out _value);
       Console.WriteLine("        Soil Water.cn_cov = " + _value.ToString());
@@ -589,11 +589,11 @@ public class Script
       // Paddock.Set
       // ========================================================================
       // Test using scoping to set a variable. These values should be in output file
-      if (!MyPaddock.Set("cn2_bare", 90))
+      if (!MyPaddock.Set("Soil Water.cn2_bare", 90))
          Console.WriteLine("Cannot set cn2_bare");
 
       // Test using scoping to set a variable. These values should be in output file
-      if (!MyPaddock.Set("paddock.Soil Water.cn_cov", 0.888))
+      if (!MyPaddock.Set(".paddock.Soil Water.cn_cov", 0.888))
          Console.WriteLine("Cannot set paddock.Soil Water.cn_cov");
 
       // Test that "set" returns false when trying to set an invalid variable.

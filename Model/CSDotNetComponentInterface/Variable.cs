@@ -98,66 +98,66 @@ namespace ModelFramework
             return Data.Value;
         }
 
-        public void Set(bool Value)
+        public Boolean Set(bool Value)
         {
             WrapBuiltInVariable<bool> Data = new WrapBuiltInVariable<bool>();
             Data.Value = Value;
-            Component.Set(Name, Data);
+            return Component.Set(Name, Data);
         }
-        public void Set(int Value)
+        public Boolean Set(int Value)
         {
             WrapBuiltInVariable<int> Data = new WrapBuiltInVariable<int>();
             Data.Value = Value;
-            Component.Set(Name, Data);
+            return Component.Set(Name, Data);
         }
-        public void Set(float Value)
+        public Boolean Set(float Value)
         {
             WrapBuiltInVariable<float> Data = new WrapBuiltInVariable<float>();
             Data.Value = Value;
-            Component.Set(Name, Data);
+            return Component.Set(Name, Data);
         }
-        public void Set(double Value)
+        public Boolean Set(double Value)
         {
             WrapBuiltInVariable<double> Data = new WrapBuiltInVariable<double>();
             Data.Value = Value;
-            Component.Set(Name, Data);
+            return Component.Set(Name, Data);
         }
-        public void Set(String Value)
+        public Boolean Set(String Value)
         {
             WrapBuiltInVariable<String> Data = new WrapBuiltInVariable<String>();
             Data.Value = Value;
-            Component.Set(Name, Data);
+            return Component.Set(Name, Data);
         }
 
-        public void Set(bool[] Values)
+        public Boolean Set(bool[] Values)
         {
             WrapBuiltInVariable<bool[]> Data = new WrapBuiltInVariable<bool[]>();
             Data.Value = Values;
-            Component.Set(Name, Data);
+            return Component.Set(Name, Data);
         }
-        public void Set(int[] Values)
+        public Boolean Set(int[] Values)
         {
             WrapBuiltInVariable<int[]> Data = new WrapBuiltInVariable<int[]>();
             Data.Value = Values;
-            Component.Set(Name, Data);
+            return Component.Set(Name, Data);
         }
-        public void Set(float[] Values)
+        public Boolean Set(float[] Values)
         {
             WrapBuiltInVariable<float[]> Data = new WrapBuiltInVariable<float[]>();
             Data.Value = Values;
-            Component.Set(Name, Data);
+            return Component.Set(Name, Data);
         }
-        public void Set(double[] Values)
+        public Boolean Set(double[] Values)
         {
             WrapBuiltInVariable<double[]> Data = new WrapBuiltInVariable<double[]>();
             Data.Value = Values;
-            Component.Set(Name, Data);
+            return Component.Set(Name, Data);
         }
-        public void Set(String[] Values)
+        public Boolean Set(String[] Values)
         {
             WrapBuiltInVariable<String[]> Data = new WrapBuiltInVariable<String[]>();
             Data.Value = Values;
-            Component.Set(Name, Data);
+            return Component.Set(Name, Data);
         }
     }
 

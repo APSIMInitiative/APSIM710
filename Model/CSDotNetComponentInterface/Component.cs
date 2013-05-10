@@ -21,7 +21,7 @@ namespace ModelFramework
         protected String FTypeName;
         protected String ParentCompName;            //Name of the parent component in the simulation
         protected String FQN;                       //Name of the actual component
-        internal Instance In;
+        internal Instance In;                       //Internal instance of this component
         protected Dictionary<String, Object> ApsimIntObjectsByName = null;  //cache a list of internal objects searched for in LinkByName()
         protected Dictionary<String, Object> ApsimObjectsByName = null;  //cache a list of objects searched for in LinkByName()
         protected Dictionary<String, Object> ApsimObjectsByType = null;  //cache a list of objects searched for in LinkByType()
@@ -99,9 +99,6 @@ namespace ModelFramework
             //get the name of the host component for the calling object
             HostComponent = In.ParentComponent();   //e.g. Plant2
             FTypeName = HostComponent.CompClass;     //type of Plant2
-            ApsimIntObjectsByName = new Dictionary<string, object>();
-            ApsimObjectsByName = new Dictionary<string, object>();
-            ApsimObjectsByType = new Dictionary<string, object>();
         }
         // --------------------------------------------------------------------
         /// <summary>
@@ -138,9 +135,6 @@ namespace ModelFramework
                 FTypeName = comps[0].CompClass;
             else
                 FTypeName = this.GetType().Name;
-            ApsimIntObjectsByName = new Dictionary<string, object>();
-            ApsimObjectsByName = new Dictionary<string, object>();
-            ApsimObjectsByType = new Dictionary<string, object>();
         }
         // --------------------------------------------------------------------
         /// <summary>
@@ -282,10 +276,11 @@ namespace ModelFramework
         }
         //=========================================================================
         /// <summary>
-        /// Return a child component of the paddock by unqualified name.
+        /// Return a child component of the system by unqualified name.
         /// </summary>
-        /// <param name="NameToFind">Unqualified name</param>
-        /// <returns></returns>
+        /// <param name="NameToFind">Unqualified name. Always relative to this component class. 
+        /// (if preceded by '.' then treat as in the root - for backwards compatability)</param>
+        /// <returns>The object from the simulation - Either component or internal object</returns>
         //=========================================================================
         public object LinkByName(String NameToFind)
         {
@@ -323,9 +318,28 @@ namespace ModelFramework
                 }
                 else
                 {
+                    //ensure that the name triggers the search from the correct system
+                    String searchName = NameToFind;
+                    String sysName = FullName;
+                    if (searchName[0] == '.')
+                    {
+                        sysName = "";           //causes a search from the root (for backwards compatability)
+                        searchName = searchName.Remove(0, 1);
+                        if (searchName.LastIndexOf('.') > -1)   //if this is a FQN search
+                            sysName = searchName.Substring(0, searchName.LastIndexOf('.')); //search from the system in the name
+                    }
+                    else //relative to this component
+                    {
+                        if (searchName.LastIndexOf('.') > -1)   //if this name has any path preceding it
+                        {
+                            if (sysName.Length > 0)
+                                sysName = sysName + '.';
+                            sysName = sysName + searchName.Substring(0, searchName.LastIndexOf('.')); //search from the system in the name
+                        }
+                    }
                     Object foundObject = LinkField.FindApsimObject(null,
-                                                     NameToFind,
-                                                     StringManip.ParentName(HostComponent.InstanceName),
+                                                     searchName,      
+                                                     sysName,
                                                      HostComponent);
                     ApsimObjectsByName.Add(NameToFind, foundObject);  //keep this object for later searches
                     return foundObject;
@@ -609,10 +623,12 @@ namespace ModelFramework
         #region Private methods
         /// <summary>
         /// Locate a variable that matches the specified path and return its value. Returns null
-        /// if not found. e.g. NamePath:
-        ///     "Plant"   - no path specified so look in scope
+        /// if not found. 
+        /// Every name is relative to this component (unless preceded by '.' for backward compatiblity)
+        /// e.g. NamePath:
+        ///     "Plant"   - no path specified so look in this system
         ///     "Phenology.CurrentPhase" - relative path specified so look for matching child
-        ///     "met.maxt" - absolute path specified so look for exact variable.
+        ///     ".met.maxt" - absolute path specified so look for exact variable.
         /// </summary>    
         private bool GetInternal<T>(string NamePath, WrapBuiltInVariable<T> Data)
         {
@@ -628,9 +644,16 @@ namespace ModelFramework
             {
                 String GetterName = NamePath;
                 // external variable
-                if (!NamePath.Contains("."))
+                if (NamePath[0] == '.')             //this is a FQN
                 {
-                    GetterName = NamePrefix + NamePath;
+                     GetterName = NamePath.Remove(0, 1);
+                }
+                else
+                {
+                    if (!NamePath.Contains("."))    //if it is qualified then it is relative to this component
+                    {
+                        GetterName = NamePrefix + NamePath;
+                    }
                 }
                 return HostComponent.Get(GetterName, Data, true);
             }
@@ -638,6 +661,7 @@ namespace ModelFramework
 
         /// <summary>
         /// Set the value of a variable.
+        /// Every name is relative to this component (unless preceded by '.' for backward compatiblity)
         /// </summary>
         private bool SetInternal<T>(string NamePath, T Value)
         {
@@ -650,9 +674,17 @@ namespace ModelFramework
             else
             {
                 String SetterName = NamePath;
-                if (!NamePath.Contains("."))
+                // external variable
+                if (NamePath[0] == '.')             //this is a FQN
                 {
-                    SetterName = NamePrefix + NamePath;
+                    SetterName = NamePath.Remove(0, 1);
+                }
+                else
+                {
+                    if (!NamePath.Contains("."))    //if it is qualified then it is relative to this component
+                    {
+                        SetterName = NamePrefix + NamePath;
+                    }
                 }
                 // not an internal entity so look for an external one.
                 return HostComponent.Set(SetterName, Data); //not officially correct but the infrastructure doesn't return the correct value when setting readonly property
