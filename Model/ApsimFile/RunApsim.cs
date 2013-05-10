@@ -355,12 +355,13 @@ namespace ApsimFile
             J.CommandLine = StringManip.DQuote(Executable) + " " + Arguments;
             J.WorkingDirectory = Path.GetDirectoryName(FileName);
             // A UNC Path cannot be used as the working directory, 
-            // so test for this and use the MyDocuments folder instead.
-            // I suppose this might not work if the MyDocuments directory points to a UNC path - can that ever happen?
+            // so test for this and use the LocalApplicationData folder instead.
+            // This folder is reasonably likely to have a non-UNC path, since it is
+            // intended to be "local".
             Uri URI = null;
             bool isUNC = Uri.TryCreate(J.WorkingDirectory, UriKind.Absolute, out URI) && URI.IsUnc;
             if (isUNC) 
-                J.WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments); 
+                J.WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData); 
             J.Name = FileName + ":";
             if (SimulationPath == null)
                 J.Name += Path.GetFileNameWithoutExtension(SumFileName);
