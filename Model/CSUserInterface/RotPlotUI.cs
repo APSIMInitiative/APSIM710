@@ -19,7 +19,7 @@ namespace CSUserInterface
         public string GraphName;
         public List<GDPaddock> ManagedPaddocks = new List<GDPaddock>();
         public List<GDPaddock> AvailablePaddocks = new List<GDPaddock>();
-
+        private string language = "TCL";
         public RotPlotUI()
         {
             InitializeComponent();
@@ -40,6 +40,14 @@ namespace CSUserInterface
             XmlNodeList nodes = Data.SelectNodes("//rotnode");
             m_OldVersion = nodes.Count > 0;
             BuildGraphDisplay();
+
+            nodes = Data.SelectNodes("//language");
+            if (nodes.Count == 0)
+                language = "TCL";
+            else
+                language = nodes[0].InnerText;  //XmlHelper.Value(nodes[0]);
+            if (language != "TCL" && language != "C#")
+                throw new Exception("Language " + language + " is unknown");
 
             GraphDisplay.Height = GraphDisplay.MaxHeight;
             GraphDisplay.Width = GraphDisplay.MaxWidth;
@@ -64,7 +72,12 @@ namespace CSUserInterface
                 ps.cboState.Text = paddock.InitialState;
                 pnlFlowLayout.Controls.Add(ps);
             }
-            GraphDisplay.SelectedObject = null; 
+            GraphDisplay.SelectedObject = null;
+            if (language == "C#")
+            {
+                label2.Text = "Rules (get from system)";
+                label3.Text = "Actions (publish to system)";
+            }
             GraphDisplay.Refresh();
         }
         public override void OnSave()
@@ -79,7 +92,7 @@ namespace CSUserInterface
             WritePaddocks();
             WriteGraphRule();
         }
-        public string BuildRule()
+        public string BuildRuleTCL()
         {
             string sRule = "package require struct\n";
             sRule += "::struct::graph " + GraphName + "\n";
@@ -128,16 +141,164 @@ namespace CSUserInterface
             }
             return sRule;
         }
+        public string BuildRuleCSharp()
+        {
+            string sRule = "using System;\n";
+            sRule += "using System.Collections.Generic;\n";
+            sRule += "using System.Text;\n";
+            sRule += "using ModelFramework;\n";
+            sRule += "using CSGeneral;\n";
+
+            sRule += "public class Script {\n";
+            sRule += "[Link()]  public Paddock MyPaddock;\n";
+
+            sRule += "private Graph g = new Graph();\n";
+            sRule += "[Output()] public string currentState;\n";
+
+            sRule += "[EventHandler] public void OnInitialised()\n";
+            sRule += "{\n";
+            sRule += "g = new Graph();\n";
+
+            foreach (GDNode node in GraphDisplay.Nodes)
+                sRule += "g.AddNode(\"" + node.Name + "\");\n";
+
+            foreach (GDArc arc in GraphDisplay.Arcs)
+            {
+                string rName = arc.Name;
+                sRule += "ruleAction " + rName + " = new ruleAction();\n";
+                if (arc.Rules.Count > 0)
+                {
+                    sRule += rName + ".testCondition = ";
+                    foreach (string rule in arc.Rules)
+                        sRule += "\"" + rule + "\"";
+                    sRule += ";\n";
+                }
+                if (arc.Actions.Count > 0)
+                {
+                    sRule += rName + ".action = ";
+                    foreach (string action in arc.Actions)
+                        sRule += "\"" + action + "\"";
+                    sRule += ";\n";
+                }
+                sRule += "   g.AddDirectedEdge(\"" + arc.SourceNode.Name + "\",\"" + arc.TargetNode.Name + "\"," + rName + ");\n";
+
+            }
+            sRule += "   currentState = \"Fallow\";\n"; // FIXME
+            sRule += "   }\n";
+            sRule += "[EventHandler] public void OnProcess()\n";
+            sRule += "{\n";
+            sRule += "   bool more = true;\n";
+            sRule += "   while (more) {\n";
+            sRule += "      more = false;\n";
+            sRule += "      Node s = g.FindNode(currentState);\n";
+            sRule += "      //Console.WriteLine(\" state=\" + s.Name);\n";
+            sRule += "      int bestScore = -1; string bestTarget = \"\";\n";
+            sRule += "      foreach (string target in s.neighbors.Keys) {\n";
+            sRule += "         int score = -1;\n";
+            sRule += "         if (s.neighbors[target].testCondition == null)\n";
+            sRule += "            score = 1;\n";
+            sRule += "         else\n";
+            sRule += "            MyPaddock.Get(s.neighbors[target].testCondition, out score);\n";
+            sRule += "         //Console.WriteLine(\" t=\" + target + \" score=\" + score);\n";
+            sRule += "         if (score > bestScore) {\n";
+            sRule += "            bestScore = score;\n";
+            sRule += "            bestTarget = target;\n";
+            sRule += "         }\n";
+            sRule += "      }\n";
+            sRule += "      if (bestScore > 0) {\n";
+            sRule += "          //Console.WriteLine(\" best=\" + bestTarget + \" action=\" + s.neighbors[bestTarget].action);\n";
+            sRule += "          if (s.neighbors[bestTarget].action != null)\n";
+            sRule += "             MyPaddock.Publish(s.neighbors[bestTarget].action);\n";
+            sRule += "          currentState = bestTarget;\n";
+            sRule += "          more = true;\n";
+            sRule += "      }\n";
+            sRule += "   }\n";
+            sRule += "}\n";
+
+            sRule += "  public class ruleAction\n";
+            sRule += "  {\n";
+            sRule += "     public string testCondition;\n";
+            sRule += "      public string action;\n";
+            sRule += "  }\n";
+
+            sRule += "   public class Node : IEquatable<Node>\n";
+            sRule += "   {\n";
+            sRule += "      private string data /*, alias*/;\n";
+            sRule += "      public Node(string _data) { data = _data; }\n";
+            sRule += "      //public Node(string _data, string _alias) { data = _data; alias = _alias; }\n";
+            sRule += "      public Dictionary<string, ruleAction> neighbors = new Dictionary<string, ruleAction>();\n";
+            sRule += "      public bool Equals(Node other)\n";
+            sRule += "      {\n";
+            sRule += "         return ( this.data == other.data );\n";
+            sRule += "      }\n";
+            sRule += "      public string Name { get { return (data); } }\n";
+            sRule += "   }\n";
+            sRule += "\n";
+            sRule += "   class Graph\n";
+            sRule += "   {\n";
+            sRule += "      public List<Node> vertices;\n";
+
+            sRule += "      public void print() {\n";
+            sRule += "         foreach (Node n in vertices) {\n";
+            sRule += "            Console.WriteLine(n.Name + \":\"); \n";
+            sRule += "            foreach (string k in n.neighbors.Keys) {\n";
+            sRule += "               Console.WriteLine(\" \" + k + \":\" + n.neighbors[k]); \n";
+            sRule += "            }\n";
+            sRule += "         }\n";
+            sRule += "      }\n";
+            sRule += "      public Graph() { vertices = new List<Node>(); }\n";
+            sRule += "      public Node AddNode(Node node)\n";
+            sRule += "      {\n";
+            sRule += "         if (vertices.Find(delegate(Node n) { return (n.Equals(node)); }) == null)\n";
+            sRule += "            vertices.Add(node);\n";
+            sRule += "         return (vertices.Find(delegate(Node n) { return (n.Equals(node)); }));\n";
+            sRule += "      }\n";
+
+            sRule += "      public Node AddNode(string value)\n";
+            sRule += "      {\n";
+            sRule += "         return (AddNode(new Node(value)));\n";
+            sRule += "      }\n";
+            sRule += "      public Node FindNode(string value)\n";
+            sRule += "      {\n";
+            sRule += "         return (FindNode(AddNode(value)));\n";
+            sRule += "      }\n";
+            sRule += "      public Node FindNode(Node node)\n";
+            sRule += "      {\n";
+            sRule += "         return (vertices.Find(delegate(Node n) { return (n.Equals(node)); }));\n";
+            sRule += "      }\n";
+
+            sRule += "      public void AddDirectedEdge(string value1, string value2, ruleAction value3)\n";
+            sRule += "      {\n";
+            sRule += "         Node node1 = AddNode(value1);\n";
+            sRule += "         AddNode(value2);\n";
+            sRule += "         node1.neighbors.Add(value2, value3);\n";
+            sRule += "      }\n";
+            sRule += "   }\n";
+            sRule += "}\n";
+
+
+            return sRule;
+        }
         public void WriteGraphRule()
         {
-            //Data.RemoveAll();
-            XmlElement elem = Data.AppendChild(Data.OwnerDocument.CreateElement("rule")) as XmlElement;
-            XmlHelper.SetName(elem, GraphName + " Init rule");
-            elem.SetAttribute("invisible", "yes");
-            elem.SetAttribute("condition", "init");
-
-            string cdata = BuildRule();
-            elem.AppendChild(Data.OwnerDocument.CreateCDataSection(cdata));
+            if (language == "TCL")
+            {
+                XmlElement elem = Data.AppendChild(Data.OwnerDocument.CreateElement("rule")) as XmlElement;
+                XmlHelper.SetName(elem, GraphName + " Init rule");
+                elem.SetAttribute("invisible", "yes");
+                elem.SetAttribute("condition", "init");
+                elem.AppendChild(Data.OwnerDocument.CreateCDataSection(BuildRuleTCL()));
+            }
+            else if (language == "C#")
+            {
+                XmlNode node = Data.AppendChild(Data.OwnerDocument.CreateElement("component"));
+                XmlHelper.SetName(node, GraphName + " Initialisation");
+                XmlHelper.SetAttribute(node, "executable", "%apsim%/Model/Manager2.dll");
+                XmlHelper.SetValue(node, "executable", "%apsim%/Model/Manager2.dll");
+                node = node.AppendChild(Data.OwnerDocument.CreateElement("initdata"));
+                node = node.AppendChild(Data.OwnerDocument.CreateElement("text"));
+                node.AppendChild(Data.OwnerDocument.CreateCDataSection(BuildRuleCSharp()));
+            }
         }
         private void WriteSettings()
         {
@@ -147,6 +308,8 @@ namespace CSUserInterface
             node.InnerText = pnlHints.Height.ToString();
             node = Data.AppendChild(Data.OwnerDocument.CreateElement("graph_name"));
             node.InnerText = GraphName;
+            node = Data.AppendChild(Data.OwnerDocument.CreateElement("language"));
+            node.InnerText = language;
         }
         private void WriteNodes()
         {
