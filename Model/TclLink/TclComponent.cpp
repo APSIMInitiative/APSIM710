@@ -15,11 +15,6 @@
 #define USE_TCL_STUBS
 #include <tcl.h>
 
-#ifndef __WIN32__
-// will need to hunt for the tcl library on Linux platform
-#include <glob.h>
-#endif
-
 typedef Tcl_Interp *(*CREATEINTERPFN)();
 
 #include "TclComponent.h"
@@ -48,20 +43,20 @@ static Tcl_Interp *MainInterpreter = NULL;
 //--------------------------- Tcl DLL initialisation
 // Initialise the TCL dll. Call once.
 //   pointers from http://wiki.tcl.tk/2074
-void StartTcl (const std::string &exeName)
+void StartTcl (const std::string &libName, const std::string &exeName)
 {
-	void *hTcl = loadDLL(exeName);
+	void *hTcl = loadDLL(libName);
 	if (hTcl == NULL) 
-		throw std::runtime_error("Can't load DLL " + exeName);     
+		throw std::runtime_error("Can't load DLL " + libName);     
 
 	CREATEINTERPFN CreateInterpFn;
 	CreateInterpFn = (CREATEINTERPFN) dllProcAddress(hTcl, "Tcl_CreateInterp");
 	if (CreateInterpFn == NULL) 
-		throw std::runtime_error("Can't find Tcl_CreateInterp in " + exeName);     
+		throw std::runtime_error("Can't find Tcl_CreateInterp in " + libName);     
 
 	MainInterpreter = CreateInterpFn();
 	if (MainInterpreter == NULL) 
-		throw std::runtime_error("Tcl_CreateInterp failed in " + exeName);     
+		throw std::runtime_error("Tcl_CreateInterp failed in " + libName);     
 
 	Tcl_InitStubs(MainInterpreter, "8.5", 0);
 	Tcl_FindExecutable(exeName.c_str());
@@ -106,36 +101,6 @@ Tcl_Interp *NewInterp (ClientData cd, const std::string &interpName)
    return interp;
    }
 
-#ifndef __WIN32__
-// find tcl shared library (Linux only)
-static const char *tclSharedLibraryPathname()
-{
-  static glob_t glob_result;
-  static const char *path = NULL;
-
-  if (path == NULL) {
-    // library could be in /usr/lib or /usr/lib64,
-    // and who know's what version may be installed, so:
-    const char *glob_pattern = "/usr/lib*/libtcl?*.so";
-    // this allocates memory, but we only ever call it once
-    int rc = glob(glob_pattern,
-                  0,              // flags
-                  NULL,           // errorfunc,
-                  &glob_result);
-    if (rc == 0) {
-      // found one or more, choose the last, which will be the latest
-      path = glob_result.gl_pathv[glob_result.gl_pathc - 1];
-    } else if (rc == GLOB_NOMATCH) {
-      throw std::runtime_error("Can't glob TCL library " + string(glob_pattern));
-    } else {
-      // some other error
-      throw std::runtime_error("Glob TCL library failed");
-    }
-  }
-  return path;
-}
-#endif
-
 
 //---------------------------APSIM dll entrypoints
 extern "C" EXPORT TclComponent  * STDCALL createComponent(ScienceAPI2& scienceAPI)
@@ -143,11 +108,13 @@ extern "C" EXPORT TclComponent  * STDCALL createComponent(ScienceAPI2& scienceAP
    string apsimDLL = scienceAPI.getExecutableFileName();
    replaceAll(apsimDLL, "\\", "/"); 
 #ifdef __WIN32__
-   string tclEXE = fileDirName(apsimDLL) + "/TclLink/bin/tcl85.dll";
+   string tclLIB = fileDirName(apsimDLL) + "/TclLink/bin/tcl85.dll";
+   string tclEXE = fileDirName(apsimDLL) + "/TclLink/bin/tclsh85.exe";
 #else
-   string tclEXE = "libtcl8.5.so";
+   string tclLIB = "libtcl8.5.so";
+   string tclEXE = "/usr/bin/tclsh8.5";
 #endif
-   StartTcl(tclEXE);
+   StartTcl(tclLIB, tclEXE);
 
    return new TclComponent(scienceAPI);
    }
