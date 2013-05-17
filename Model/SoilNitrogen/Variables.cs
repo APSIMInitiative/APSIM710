@@ -78,10 +78,13 @@ public partial class SoilNitrogen
 	public string useMultiFactors4MinerFOM
 	{ set { useFactorsByFOMpool = value.ToLower().Contains("yes"); } }
 
+	[Param]
+	public string NPartitionApproach;
+
 	#endregion
 
 	//*Following parameters might be better merged into other regions but it is clear to have it separtately, FLi 
-	#region ALTERNATIVE Params for alternarive nitrification/denirification processes
+	#region ALTERNATIVE Params for alternarive nitrification/denitrification processes
 
 	// soil texture by layer: COARSE = 1.0;/MEDIUM = 2.0; FINE = 3.0; VERYFINE = 4.0;
 	double[] SoilTextureID;
@@ -1276,11 +1279,6 @@ public partial class SoilNitrogen
 	[Input(IsOptional = true)]
 	[Units("oC")]
 	private double[] ave_soil_temp;
-
-	/// <summary>
-	/// Soil temperature (oC), values actually used in the model
-	/// </summary>
-	private double[] Tsoil;
 
 	#endregion
 
@@ -3230,6 +3228,11 @@ public partial class SoilNitrogen
 			return result;
 		}
 	}
+	
+	/// <summary>
+	/// Soil temperature (oC), values actually used in the model
+	/// </summary>
+	private double[] Tsoil;
 
 	/// <summary>
 	/// SoilN's simple soil temperature
@@ -3237,7 +3240,16 @@ public partial class SoilNitrogen
 	[Output]
 	[Units("oC")]
 	[Description("Soil temperature")]
-	double[] st;
+	double[] st
+	{
+		get
+		{
+			double[] Result = new double[0];
+			if (!use_external_st)
+				Result = Tsoil;
+			return Result;
+		}
+	}
 
 	/// <summary>
 	/// Temperature factor for nitrification and mineralisation

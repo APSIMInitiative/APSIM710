@@ -132,6 +132,15 @@
       <PlugIn enabled="yes">%apsim%\Model\UrinePatch.xml</PlugIn>
       <PlugIn enabled="yes">%apsim%\Model\Soil with new nitrogen model.xml</PlugIn>
     </PlugIns>
+    <memo name="Info">
++++++++++++++++++++++  TEST init  +++++++++++++++++++++
+
+   These simulations are for testing the initialisation/creation 
+of patches within SoilNitrogen.  The patches do not vary, i.e.
+all patches are identical and thus their presence should make
+no difference to the simulation as compared to having no patches
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++</memo>
     <simulation name="Sim01-SoilCNPatch - Bare+NO3+NH4">
       <clock>
         <start_date type="date" description="start_date">01/01/2000</start_date>
@@ -144,7 +153,7 @@
 ++++++++++++++++++  TEST 01 ++++++++++++++++++
 
    Description:
-      - Stable climate;
+      - Stable, artificial climate;
       - A clayey slow draining soil;
       - Bare soil;
       - Initial mineral N = 60kg as NO3 + 60kg as NH4;
@@ -202,7 +211,7 @@ Public Class Script
          NewPatch.VolumePerUrination = 1.0      'make it higher than 0.0 to add new patch, instead of just adding urea evenly
       
          RaiseEvent AddUrine(NewPatch)
-   
+         
       End If
    End Sub
 

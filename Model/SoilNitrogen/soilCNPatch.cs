@@ -736,7 +736,6 @@ public partial class SoilNitrogen
 					case 1:
 						dlt_no3_dnit[layer] = Denitrification_NEMIS(layer);
 						//n2o_atm[layer] is calculated in Nitrification_NEMIS
-
 						break;
 					case 2:
 						dlt_no3_dnit[layer] = Denitrification_WNMM(layer);
@@ -1460,7 +1459,7 @@ public partial class SoilNitrogen
 				double swf = Math.Max(0.0, Math.Min(1.0, WF(layer, index) + 0.20));
 
 				// get the soil temperature factor
-				double stf = Math.Max(0.0, Math.Min(1.0, (g.st[layer] / 40.0) + 0.20));
+				double stf = Math.Max(0.0, Math.Min(1.0, (g.Tsoil[layer] / 40.0) + 0.20));
 
 				// note (jngh) oc & ph are not updated during simulation
 				//      mep    following equation would be better written using oc(layer) = (hum_C(layer) + biom_C(layer))
@@ -1503,7 +1502,7 @@ public partial class SoilNitrogen
 				swf = SoilMoistFactor(layer, index, g.MoistFactorData_UHydrol);
 
 			// get the soil temperature factor
-			double stf = Math.Max(0.0, Math.Min(1.0, (g.st[layer] / 40.0) + 0.20));
+			double stf = Math.Max(0.0, Math.Min(1.0, (g.Tsoil[layer] / 40.0) + 0.20));
 			if (g.useNewSTFFunction)
 				stf = SoilTempFactor(layer, index, g.TempFactorData_UHydrol);
 
@@ -1778,7 +1777,7 @@ public partial class SoilNitrogen
 			double swf = WFDenit(layer);
 
 			// get the soil temperature factor
-			double stf = Math.Max(0.0, Math.Min(1.0, 0.1 * Math.Exp(0.046 * g.st[layer])));
+			double stf = Math.Max(0.0, Math.Min(1.0, 0.1 * Math.Exp(0.046 * g.Tsoil[layer])));
 			// This is an empirical dimensionless function to account for the effect of temperature.
 			// The upper limit of 1.0 means that optimum denitrification temperature is 50 oC and above.  At 0 oC it is 0.1 of optimum, and at -20 oC is about 0.04.
 
@@ -1832,7 +1831,7 @@ public partial class SoilNitrogen
 				swf = SoilMoistFactor(layer, index, g.MoistFactorData_Denit);
 
 			// get the soil temperature factor
-			double stf = Math.Max(0.0, Math.Min(1.0, 0.1 * Math.Exp(0.046 * g.st[layer])));
+			double stf = Math.Max(0.0, Math.Min(1.0, 0.1 * Math.Exp(0.046 * g.Tsoil[layer])));
 			if (g.useNewSTFFunction)
 				stf = SoilTempFactor(layer, index, g.TempFactorData_Denit);
 
@@ -1919,7 +1918,7 @@ public partial class SoilNitrogen
 				wfd = (g.sw_dep[layer] - g.ll15_dep[layer]) / (sw25 - g.ll15_dep[layer]);
 
 			// soil temperature effects
-			tf = Math.Max(0.0, 0.41 * (g.st[layer] - 5.0) / 10.0);
+			tf = Math.Max(0.0, 0.41 * (g.Tsoil[layer] - 5.0) / 10.0);
 
 			// use a combined index to adjust rate of nitrification
 			pni = wfd * tf * phf;
@@ -1935,7 +1934,7 @@ public partial class SoilNitrogen
 			nRate = Math.Max(0.0, Math.Min(nh4_avail, nRate));
 
 			// n2o
-			double fTemp = 0.1 + 0.9 * (g.st[layer] / (g.st[layer] + Math.Exp(9.93 - 0.312 * g.st[layer])));
+			double fTemp = 0.1 + 0.9 * (g.Tsoil[layer] / (g.Tsoil[layer] + Math.Exp(9.93 - 0.312 * g.Tsoil[layer])));
 			dlt_nh4_dnit[layer] = g.wnmm_n_alpha * nRate * wfd * fTemp;        // alpha is 'dnit_nitrf_loss';
 			effective_nitrification[layer] = nRate - dlt_nh4_dnit[layer];
 			n2o_atm[layer] += dlt_nh4_dnit[layer];
@@ -2260,10 +2259,10 @@ public partial class SoilNitrogen
 
 			// soil temperature effects (0-1)       
 			tf = 1.0;
-			if (g.st[layer] < 11.0)
-				tf = Math.Exp(0.1 * (g.st[layer] - 11.0) * Math.Log(89, Math.E) - 9 * Math.Log(2.1, Math.E));
+			if (g.Tsoil[layer] < 11.0)
+				tf = Math.Exp(0.1 * (g.Tsoil[layer] - 11.0) * Math.Log(89, Math.E) - 9 * Math.Log(2.1, Math.E));
 			else //st >= 11
-				tf = Math.Exp(0.1 * (g.st[layer] - 20.0) * Math.Log(2.1, Math.E));
+				tf = Math.Exp(0.1 * (g.Tsoil[layer] - 20.0) * Math.Log(2.1, Math.E));
 
 			//pH effects
 			phf = 1.0;
@@ -2339,7 +2338,7 @@ public partial class SoilNitrogen
 			wf = Math.Exp(-23.77 + 23.77 * wfps);    // 
 
 			// soil temperature effects (0-1)       
-			tf = 0.1 + 0.9 * g.st[layer] / (g.st[layer] + Math.Exp(9.93 - 0.312 * g.st[layer]));
+			tf = 0.1 + 0.9 * g.Tsoil[layer] / (g.Tsoil[layer] + Math.Exp(9.93 - 0.312 * g.Tsoil[layer]));
 
 			//pH effects (No)
 
@@ -2827,8 +2826,8 @@ public partial class SoilNitrogen
 			// because tf is bound between 0 and 1, the effective temperature (soil_temp) lies between 5 to 35.
 			// alternative quadratic temperature function is preferred with optimum temperature (CM - used 32 deg)
 
-			if (g.st[layer] > 0.0)
-				return Math.Max(0.0, Math.Min(1.0, MathUtility.Divide(g.st[layer] * g.st[layer], g.opt_temp[index - 1] * g.opt_temp[index - 1], 0.0)));
+			if (g.Tsoil[layer] > 0.0)
+				return Math.Max(0.0, Math.Min(1.0, MathUtility.Divide(g.Tsoil[layer] * g.Tsoil[layer], g.opt_temp[index - 1] * g.opt_temp[index - 1], 0.0)));
 			else
 				return 0.0;     // soil is too cold for mineralisation
 		}
@@ -2838,7 +2837,7 @@ public partial class SoilNitrogen
 			// + Purpose
 			//     Calculate a temperature factor, based on the soil temperature of the layer, for nitrification and mineralisation
 
-			double t = Math.Min(g.st[layer], g.opt_temp[index - 1]);
+			double t = Math.Min(g.Tsoil[layer], g.opt_temp[index - 1]);
 			return 47.9 / (1.0 + Math.Exp(106.0 / (t + 18.3)));
 		}
 
@@ -2902,7 +2901,7 @@ public partial class SoilNitrogen
 			double Tzero = Toptimum * AuxV / (AuxV - 1);
 			double beta = 1 / (Toptimum - Tzero);
 
-			return Math.Min(1.0, Math.Pow(beta * Math.Max(0.0, g.st[layer] - Tzero), CurveN));
+			return Math.Min(1.0, Math.Pow(beta * Math.Max(0.0, g.Tsoil[layer] - Tzero), CurveN));
 		}
 
 		/// <summary>
@@ -3103,5 +3102,4 @@ public partial class SoilNitrogen
 		#endregion
 
 	}
-
 }
