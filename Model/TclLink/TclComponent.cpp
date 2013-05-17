@@ -145,7 +145,7 @@ extern "C" EXPORT TclComponent  * STDCALL createComponent(ScienceAPI2& scienceAP
 #ifdef __WIN32__
    string tclEXE = fileDirName(apsimDLL) + "/TclLink/bin/tcl85.dll";
 #else
-   string tclEXE = tclSharedLibraryPathname();
+   string tclEXE = "libtcl8.5.so";
 #endif
    StartTcl(tclEXE);
 
