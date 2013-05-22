@@ -40,14 +40,20 @@ namespace ApsimFile
                                         "Apsim.xml");
             if (!File.Exists(SettingsFile))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(SettingsFile));
-                File.Copy(OriginalSettingsFile, SettingsFile);
+				try 
+				{
+                   Directory.CreateDirectory(Path.GetDirectoryName(SettingsFile));
+                   File.Copy(OriginalSettingsFile, SettingsFile);
+				} catch (Exception) { /* hmmm. Probably a cluster environment with next to nothing around. */ };
             }
             
-            string ExecutableBuildDate = ApsimBuildDate();
+            if (File.Exists(SettingsFile))
+			{
+                SettingsDoc.Load(SettingsFile);
+                SettingsNode = SettingsDoc.DocumentElement;
+			}
+			string ExecutableBuildDate = ApsimBuildDate();
             string ExecutableBuildNumber = ApsimBuildNumber();
-            SettingsDoc.Load(SettingsFile);
-            SettingsNode = SettingsDoc.DocumentElement;
         }
         public static Configuration Instance
         {
@@ -66,8 +72,11 @@ namespace ApsimFile
         private void Save()
         {
             // The first time this runs on a machine, none of these dirs will exist.
-            makePathExist(Path.GetDirectoryName(SettingsFile));
-            SettingsNode.OwnerDocument.Save(SettingsFile);
+			try 
+			{
+               makePathExist(Path.GetDirectoryName(SettingsFile));
+               SettingsNode.OwnerDocument.Save(SettingsFile);
+			} catch (Exception) { /* nothing */ }
         }
         public static void makePathExist(string path)
         {
