@@ -4415,7 +4415,7 @@ c     :                    , 0.0, 365.0)
 
                                 ! Soil properties
       call fill_real_array (g%ll_dep, 0.0, max_layer)
-      numvals = ReadParam ( 'll',  '()', 0
+      numvals = ReadParam ( 'll',  '()', 1
      :                     , ll, num_layers, max_layer
      :                     , 0.0, c%ll_ub)
       g%out_numlayers = num_layers
