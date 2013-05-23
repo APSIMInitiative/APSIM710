@@ -18,7 +18,7 @@
 
 #include "ProtocolVector.h"
 #include "Component.h"
-#include "Variants.h"
+#include "Variants.h"nam
 #include "MessageTypes.h"
 
 #ifdef __WIN32__
@@ -570,7 +570,7 @@ void Component::getMultipleProperties(const std::string& sectionName,
 // ------------------------------------------------------------------
 void Component::error(const char *msg, bool isFatal)
    {
-   string message = string(msg) + "\nComponent name: " + name;
+   string message = string(msg) + "\nComponent name: " + getFQName(); 
 
    Message* errorMessage = newErrorMessage(componentID,
                                            parentID,

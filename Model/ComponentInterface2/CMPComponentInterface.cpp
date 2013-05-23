@@ -701,7 +701,7 @@ void CMPComponentInterface::error(const string& errorMessage, bool isFatal)
 	{
 	string msg;
 	msg += errorMessage + "\n";
-	msg += "Component name: " + name + "\n";
+	msg += "Component name: " + getFQName() + "\n";
 
    ErrorType errorData;
 	errorData.msg = msg;
@@ -869,7 +869,13 @@ void CMPComponentInterface::terminate(void)
    }
 
 std::string CMPComponentInterface::getName(void) {return name;}
-std::string CMPComponentInterface::getFQName(void) {return (pathName + "." + name);}
+std::string CMPComponentInterface::getFQName(void) 
+{
+    if (pathName.length() < 1)
+        return (name);
+    else
+        return (pathName + "." + name);
+}
 std::string CMPComponentInterface::getExecutableFileName(void) {return dllName; }
 
 // Fake a system registration (that we will publish an event later) so that
