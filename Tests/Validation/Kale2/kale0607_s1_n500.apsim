@@ -4,7 +4,7 @@
       <filename name="filename" input="yes">%apsim%\Tests\MicroMet\Lincoln.met</filename>
     </metfile>
     <clock>
-      <start_date type="date" description="Enter the start date of the simulation">06/10/2006</start_date>
+      <start_date type="date" description="Enter the start date of the simulation">30/09/2006</start_date>
       <end_date type="date" description="Enter the end date of the simulation">30/06/2007</end_date>
     </clock>
     <summaryfile />
@@ -35,7 +35,7 @@
         <manager name="Sow on a fixed date">
           <ui>
             <category type="category" description="Sowing criteria" />
-            <date type="text" description="Enter sowing date (dd-mmm) : ">15-oct</date>
+            <date type="text" description="Enter sowing date (dd-mmm) : ">6-oct</date>
             <category type="category" description="Sowing parameters" />
             <crop type="crop" description="Enter name of crop to sow : ">kale2</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">15</density>
@@ -183,7 +183,7 @@
           <variable>StemLiveN</variable>
           <variable>StemDeadN</variable>
           <variable>LeafDeadN</variable>
-          <variable>LeafLiveN2</variable>
+          <variable>LeafLiveN</variable>
           <variable>StemN</variable>
           <variable>LeafN</variable>
           <variable>TotalTopsN</variable>
@@ -197,6 +197,9 @@
         </events>
       </outputfile>
       <Soil name="Templeton_ABlock">
+        <RecordNumber>0</RecordNumber>
+        <Latitude>0</Latitude>
+        <Longitude>0</Longitude>
         <InitialWater name="Initial water">
           <FractionFull>1.00</FractionFull>
           <PercentMethod>EvenlyDistributed</PercentMethod>
@@ -579,8 +582,8 @@
       </micromet>
       <manager name="ModValues">
         <script>
-          <text>
-          </text>
+          <text>TotalTops = 0
+TotalTopsN = 0</text>
           <event>init</event>
         </script>
         <script>
@@ -590,9 +593,7 @@
         </script>
         <script>
           <text>TotalTops = Kale2.LeafLiveWt + Kale2.StemLiveWt
-StemN = Kale2.StemLiveN + Kale2.StemDeadN   
-LeafN = Kale2.LeafLiveN2 + Kale2.LeafDeadN
-TotalTopsN = StemN + LeafN   </text>
+TotalTopsN = Kale2.StemLiveN  + Kale2.LeafLiveN</text>
           <event>end_of_day</event>
         </script>
       </manager>
@@ -769,6 +770,43 @@ TotalTopsN = StemN + LeafN   </text>
         <X>dd/mmm/yyyy</X>
         <Y>LeafDeadWt</Y>
         <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="N Allocation1">
+      <Legend>
+        <CheckedTitles>Predicted, StemLiveN,kale0607_s1_N500</CheckedTitles>
+        <CheckedTitles>Predicted, LeafLiveN,kale0607_s1_N500</CheckedTitles>
+        <CheckedTitles>Observed, StemGreenN,Kale_1Oct06_500</CheckedTitles>
+        <CheckedTitles>Observed, LeafGreenN,Kale_1Oct06_500</CheckedTitles>
+      </Legend>
+      <Plot name="Predicted">
+        <colour>
+        </colour>
+        <X>dd/mmm/yyyy</X>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <Y>StemLiveN</Y>
+        <Y>LeafLiveN</Y>
+        <GDApsimFileReader name="Predicted">
+          <FileName>%apsim%\Tests\Validation\Kale2\kale0607_s1_N500.out</FileName>
+          <FileName>
+          </FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <colour>
+        </colour>
+        <PointType>Circle</PointType>
+        <X>dd/mm/yyyy</X>
+        <SeriesType>No line</SeriesType>
+        <Y>StemGreenN</Y>
+        <Y>LeafGreenN</Y>
+        <GDFilter name="Observed">
+          <Filter>Title = 'Kale_1Oct06_500'</Filter>
+          <GDApsimFileReader name="Observed">
+            <FileName>%apsim%\Tests\Validation\Kale2\Observed\kale_observed.txt</FileName>
+          </GDApsimFileReader>
+        </GDFilter>
       </Plot>
     </Graph>
   </simulation>

@@ -134,7 +134,6 @@ public class LeafCohort
     [Link(NamePath = "NReallocationFactor")]
     public Function NReallocationFactorFunction = null;
     [Link(NamePath = "DMReallocationFactor",IsOptional = true)]
-//    [Link(NamePath = "DMReallocationFactor", IsOptional = false)]
     public Function DMReallocationFactorFunction = null;
     [Link(NamePath = "NRetranslocationFactor")]
     public Function NRetranslocationFactorFunction = null;

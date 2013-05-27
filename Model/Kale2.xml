@@ -86,7 +86,7 @@
           <Start type="text" description="Start stage name">Germination</Start>
           <End type="text" description="End stage name">Emergence</End>
           <Constant name="Target">
-            <Value type="text" description="Value">300</Value>
+            <Value type="text" description="Value">400</Value>
           </Constant>
           <AirTemperatureFunction name="ThermalTime" shortcut="/Kale2/Model/Plant/Phenology/Germinating/ThermalTime">
             <XYPairs shortcut="/Kale2/Model/Plant/Phenology/Germinating/ThermalTime/XYPairs" />
@@ -96,7 +96,7 @@
           <Start type="text" description="Start stage name">Emergence</Start>
           <End type="text" description="End stage name">Expanding</End>
           <Constant name="Target">
-            <Value type="text" description="Value">250</Value>
+            <Value type="text" description="Value">350</Value>
           </Constant>
           <AirTemperatureFunction name="ThermalTime" shortcut="/Kale2/Model/Plant/Phenology/Germinating/ThermalTime">
             <XYPairs shortcut="/Kale2/Model/Plant/Phenology/Germinating/ThermalTime/XYPairs" />
@@ -106,7 +106,7 @@
           <Start type="text" description="Start stage name">Expanding</Start>
           <End type="text" description="End stage name">Vegetative</End>
           <Constant name="Target">
-            <Value type="text" description="Value">800</Value>
+            <Value type="text" description="Value">500</Value>
           </Constant>
           <AirTemperatureFunction name="ThermalTime" shortcut="/Kale2/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/Kale2/Model/Plant/Phenology/ThermalTime/XYPairs" />
@@ -286,15 +286,38 @@
         <AirTemperatureFunction name="ThermalTime" shortcut="/Kale2/Model/Plant/Phenology/ThermalTime">
           <XYPairs shortcut="/Kale2/Model/Plant/Phenology/ThermalTime/XYPairs" />
         </AirTemperatureFunction>
-        <Constant name="Growthduration">
-          <Value type="text" description="Value">140</Value>
-        </Constant>
+        <PhaseLookup name="GrowthDuration">
+          <Memo>Returns the value of the "PhaseLookupValue" functions child if phenology is between the specified start and end value.  Multiple "PhaseLookupValue" functions can be added to this function returning different values durring different phases.  Function returns 0 if none of the "PhaseLookupValue" are in phase </Memo>
+          <PhaseLookupValue name="Early">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">Expanding</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">120</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Maturity">
+            <Start type="text" description="Start">Expanding</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">120</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="PostMaturity">
+            <Start type="text" description="Start">Maturity</Start>
+            <End type="text" description="End">Unused</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">120</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
         <LinearInterpolationFunction name="MaxArea">
           <XProperty type="text" description="XProperty">Structure.PlantMainStemNodeNo</XProperty>
           <XYPairs>
             <XY>0 500</XY>
-            <XY>6 200000</XY>
-            <XY>12 320000</XY>
+            <XY>2 150000</XY>
+            <XY>4 200000</XY>
+            <XY>6 250000</XY>
+            <XY>8 300000</XY>
           </XYPairs>
           <Memo>Gives the size of individual leaves when they are fully expanded (mm2)</Memo>
         </LinearInterpolationFunction>
@@ -353,13 +376,13 @@
           </LinearInterpolationFunction>
         </LinearInterpolationFunction>
         <Constant name="MinimumNConc">
-          <Value type="text" description="Value">.015</Value>
+          <Value type="text" description="Value">0.015</Value>
         </Constant>
         <Constant name="CriticalNConc">
-          <Value type="text" description="Value">.015</Value>
+          <Value type="text" description="Value">0.02</Value>
         </Constant>
         <Constant name="MaximumNConc">
-          <Value type="text" description="Value">.052</Value>
+          <Value type="text" description="Value">0.055</Value>
           <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the CriticalNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - CriticalNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation.</Memo>
         </Constant>
         <Constant name="NReallocationFactor">
@@ -394,8 +417,8 @@
           <XYPairs>
             <XY>0 0</XY>
             <XY>0.5 0</XY>
-            <XY>0.8 0</XY>
-            <XY>1 0.03</XY>
+            <XY>0.95 0</XY>
+            <XY>1 0.1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <Constant name="InitialNConc">
@@ -588,6 +611,29 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
     </Plant>
     <Cultivar name="grunner">
       <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Kestral">
+      <Construct type="text" description="Construct">Plant</Construct>
+      <Override name="Leaf.DMReallocationFactor">
+        <Value type="text" description="Value">0.5</Value>
+      </Override>
+      <Override name="Leaf.NReallocationFactor">
+        <Value type="text" description="Value">0.95</Value>
+      </Override>
+      <Override name="Stem.NRetranslocationFactor">
+        <Value type="text" description="Value">0.1</Value>
+      </Override>
+      <Override name="Leaf.MaxArea">
+        <XYPairs>
+          <XY>0 500</XY>
+          <XY>1 80000</XY>
+          <XY>2 80000</XY>
+          <XY>4 100000</XY>
+          <XY>6 150000</XY>
+          <XY>8 250000</XY>
+          <XY>10 350000</XY>
+        </XYPairs>
+      </Override>
     </Cultivar>
   </Model>
 </Type>
