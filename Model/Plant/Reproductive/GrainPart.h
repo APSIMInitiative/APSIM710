@@ -109,6 +109,7 @@ protected:
 
    float gDlt_dm_grain_demand;
    float gN_grain_demand;
+   float Yesterdays_N_grain_demand;
    float gP_grain_demand;
 
    bool  gDelayGrnFill;
@@ -122,6 +123,7 @@ protected:
    stateObserver gDm_stress_max;                      // sum of maximum daily stress on dm production per phase
    float gDlt_dm_stress_max;                          // maximum daily stress on dm production (0-1)
 
+   float cn_retrans_option;
    float cSw_fac_max;
    float cTemp_fac_min;
    float cSfac_slope;

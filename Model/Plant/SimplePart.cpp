@@ -306,7 +306,7 @@ void SimplePart::readSpeciesParameters (protocol::Component *, vector<string> &)
         c.n_retrans_fraction = 1.0;
 
     if (!scienceAPI.readOptional("n_deficit_uptake_fraction", c.n_deficit_uptake_fraction, 0.0f, 1.0f))
-        c.n_deficit_uptake_fraction = 0.0;
+        c.n_deficit_uptake_fraction = 1.0;
 
     if (!c.MaintenanceCoefficient.readOptional(scienceAPI
                         , "MaintenanceCoefficientStage", "()", 0.0, 100.0
@@ -449,6 +449,8 @@ void SimplePart::update(void)
 
    Height += dlt.height;
    Width += dlt.width;
+
+   YesterdaysGrowth = Growth;
 
    Debug(string(name() + ".Green.Wt=%f").c_str(), Green.DM());
    Debug(string(name() + ".Green.N=%f").c_str(), Green.N());
@@ -605,9 +607,12 @@ void SimplePart::doNDemand1Pot(float dlt_dm             //  Whole plant the dail
    {
    // Estimate of dlt dm green
    Biomass OldGrowth = Growth;
-   Growth.SetStructuralDM(dlt_dm_pot_rue * divide (Green.DM(), plant->All().Green.DM(), 0.0));
+   //Growth.SetStructuralDM(dlt_dm_pot_rue * divide (Green.DM(), plant->All().Green.DM(), 0.0));
+   Growth = YesterdaysGrowth;
+  
    Debug(string(name() + ".Growth.StructuralWt=%f").c_str(), Growth.StructuralDM());
    doNDemand1(dlt_dm, dlt_dm_pot_rue);
+   Growth = OldGrowth;
    Growth.SetStructuralDM(0.0);
    Growth.SetNonStructuralDM(0.0);
    Debug(string(name() + ".NDemand=%f").c_str(), NDemand);
@@ -622,7 +627,7 @@ void SimplePart::doNDemand1(float dlt_dm               //   Whole plant the dail
    float part_fract = (float)divide (Growth.DM(), dlt_dm, 0.0);
    float dlt_dm_pot = dlt_dm_pot_rue * part_fract;         // potential dry weight increase (g/m^2)
    dlt_dm_pot = bound(dlt_dm_pot, 0.0, dlt_dm_pot_rue);
-
+  
    if (Green.DM() > 0.0)
      {
       // get N demands due to difference between
@@ -633,8 +638,13 @@ void SimplePart::doNDemand1(float dlt_dm               //   Whole plant the dail
       // retranslocation is -ve for outflows
       float N_demand_old = N_crit                       // demand for N by old biomass (g/m^2)
                          - (Green.N() + Retranslocation.N());
-      float N_max_old    = N_potential                  // N required by old biomass to reach  N_conc_max  (g/m^2)
+      if (N_demand_old > 0.0)                             // Don't allow demand to satisfy all deficit
+         N_demand_old *= c.n_deficit_uptake_fraction;
+
+	  float N_max_old    = N_potential                  // N required by old biomass to reach  N_conc_max  (g/m^2)
                          - (Green.N() + Retranslocation.N());
+      if (N_max_old>0.0)
+         N_max_old *= c.n_deficit_uptake_fraction;        // Don't allow demand to satisfy all deficit
 
       // get potential N demand (critical N) of potential growth
       float N_demand_new = dlt_dm_pot * g.n_conc_crit;     // demand for N by new growth (g/m^2)
@@ -673,7 +683,7 @@ void SimplePart::doNDemand2(float dlt_dm               // (INPUT)  Whole plant t
    float part_fract = (float)divide (Growth.DM(), dlt_dm, 0.0);
    float dlt_dm_pot = dlt_dm_pot_rue * part_fract;         // potential dry weight increase (g/m^2)
    dlt_dm_pot = bound(dlt_dm_pot, 0.0, dlt_dm_pot_rue);
-
+  
    if (Green.DM() > 0.0)
       {
       // get N demands due to difference between

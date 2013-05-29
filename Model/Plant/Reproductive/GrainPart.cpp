@@ -154,7 +154,7 @@ void fruitGrainPart::zeroAllGlobals(void)
    cN_conc_min_grain  = 0.0;
 
    cTwilight = 0.0;
-
+   Yesterdays_N_grain_demand = 0.0;
    pMinTempGrnFill = 0.0;
    pDaysDelayGrnFill = 0;
 
@@ -202,6 +202,7 @@ void fruitGrainPart::readConstants(protocol::Component *system, const string &se
 void fruitGrainPart::readSpeciesParameters(protocol::Component *system, vector<string> &sections)
    //===========================================================================
    {
+   scienceAPI.read("n_retrans_option", cn_retrans_option, 1, 2);
    scienceAPI.read("sw_fac_max", cSw_fac_max, 0.0f, 100.0f);
    scienceAPI.read("temp_fac_min", cTemp_fac_min, 0.0f, 100.0f);
    scienceAPI.read("sfac_slope", cSfac_slope, -10.0f, 0.0f);
@@ -225,6 +226,7 @@ void fruitGrainPart::update(void)
    CompositePart::update();
 
    if (plant->phenology().inPhase("hi_stress_sensitive")) gDm_stress_max.update();
+   Yesterdays_N_grain_demand = gN_grain_demand;
 }
 
 void fruitGrainPart::display(ostream &os)
@@ -416,6 +418,8 @@ void fruitGrainPart::doNDemand1(float /*dlt_dm*/             // (INPUT)  Whole p
    //============================================================================
    //     Return plant nitrogen demand for each plant component
 {
+	if (Yesterdays_N_grain_demand>0 && cn_retrans_option==2)
+		mealPart->doNDemand(Yesterdays_N_grain_demand);
 }
 
 void fruitGrainPart::doNDemand1Pot(float /*dlt_dm*/             // (INPUT)  Whole plant the daily biomass production (g/m^2)
@@ -423,6 +427,9 @@ void fruitGrainPart::doNDemand1Pot(float /*dlt_dm*/             // (INPUT)  Whol
    //============================================================================
    //     Return plant nitrogen demand for each plant component
 {
+	if (Yesterdays_N_grain_demand>0 && cn_retrans_option==2)
+		mealPart->doNDemand(Yesterdays_N_grain_demand);
+
 }
 
 void fruitGrainPart::doNDemand2(float /*dlt_dm*/             // (INPUT)  Whole plant the daily biomass production (g/m^2)

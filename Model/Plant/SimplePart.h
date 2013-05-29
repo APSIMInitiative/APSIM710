@@ -19,6 +19,7 @@ class SimplePart : public plantPart
       float n_conc_max;                   // maximum N concentration (g N/g biomass)
       float n_conc_min;                   // minimum N concentration (g N/g biomass)
    } g;
+   Biomass YesterdaysGrowth;  // yesterday's growth
 
    float Height;                     // The height of this part (mm)
    float Width;                      // The width of this part (mm)
