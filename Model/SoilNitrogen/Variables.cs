@@ -3147,6 +3147,24 @@ public partial class SoilNitrogen
 	}
 
 	/// <summary>
+	/// Amount of C in inert humic pool
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Soil humic inert C")]
+	double[] inert_c
+	{
+		get
+		{
+			double[] result = new double[dlayer.Length];
+			for (int layer = 0; layer < dlayer.Length; ++layer)
+				for (int k = 0; k < Patch.Count; k++)
+					result[layer] += Patch[k].inert_c[layer] * Patch[k].RelativeArea;
+			return result;
+		}
+	}
+	
+	/// <summary>
 	/// Amount of C in m. biomass pool
 	/// </summary>
 	[Output]

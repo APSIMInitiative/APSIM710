@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Xml;
+using System.Linq;
 using ModelFramework;
 using CSGeneral;
 
@@ -303,10 +304,6 @@ public partial class SoilNitrogen
 				Patch[k].fom_n_pool3[layer] = MathUtility.Divide(Patch[k].fom_c_pool3[layer], fomPoolsCNratio[2], 0.0);
 			}
 
-			//Initialise inhibitors
-			if (InhibitionFactor_Nitrification == null)
-			{ InhibitionFactor_Nitrification = new double[dlayer.Length]; }
-
 			// store today's values
 			for (int k = 0; k < Patch.Count; k++)
 				Patch[k].InitCalc();
@@ -315,6 +312,10 @@ public partial class SoilNitrogen
 		// Calculations for NEW sysbal component
 		dailyInitialC = SumDoubleArray(carbon_tot);
 		dailyInitialN = SumDoubleArray(nit_tot);
+
+		// Initialise the inhibitor factors
+		if (InhibitionFactor_Nitrification == null)
+			InhibitionFactor_Nitrification = new double[dlayer.Length];
 
 		initDone = true;
 	}
@@ -933,16 +934,16 @@ public partial class SoilNitrogen
 	/// <summary>
 	/// Conversion factor: kg/ha to ppm (mg/kg)
 	/// </summary>
-	/// <param name="layer">layer to calculate</param>
+	/// <param name="Layer">layer to calculate</param>
 	/// <returns>conversion factor</returns>
-	private double convFactor_kgha2ppm(int layer)
+	private double convFactor_kgha2ppm(int Layer)
 	{
 		if (bd == null || dlayer == null || bd.Length == 0 || dlayer.Length == 0)
 		{
 			return 0.0;
 			throw new Exception(" Error on computing convertion factor, kg/ha to ppm. Value for dlayer or bulk density not valid");
 		}
-		return MathUtility.Divide(100.0, bd[layer] * dlayer[layer], 0.0);
+		return MathUtility.Divide(100.0, bd[Layer] * dlayer[Layer], 0.0);
 	}
 
 	/// <summary>
