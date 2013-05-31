@@ -373,6 +373,8 @@ namespace ApsimFile
         public double[] KL(string CropName)
         {
             SoilCrop SoilCrop = Crop(CropName);
+            if (SoilCrop.KL == null)
+                return null;
             return Map(SoilCrop.KL, SoilCrop.Thickness, Thickness, MapType.Concentration, SoilCrop.KL.Last());
         }
 
@@ -1668,6 +1670,13 @@ namespace ApsimFile
             const double min_sw = 0.0;
             const double specific_bd = 2.65; // (g/cc)
             string Msg = "";
+
+            // Check the summer / winter dates.
+            DateTime Temp;
+            if (!DateTime.TryParse(SoilWater.SummerDate, out Temp))
+                Msg += "Invalid summer date of: " + SoilWater.SummerDate + "\r\n";
+            if (!DateTime.TryParse(SoilWater.WinterDate, out Temp))
+                Msg += "Invalid winter date of: " + SoilWater.WinterDate + "\r\n";
 
             foreach (string Crop in CropNames)
             {

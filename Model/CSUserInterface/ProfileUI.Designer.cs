@@ -30,14 +30,16 @@ namespace CSUserInterface
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProfileUI));
             this.TopPanel = new System.Windows.Forms.Panel();
             this.Grid = new UIBits.EnhancedGrid();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.CheckButton = new System.Windows.Forms.Button();
             this.ManageCropsButton = new System.Windows.Forms.Button();
             this.Label = new System.Windows.Forms.Label();
             this.Splitter = new System.Windows.Forms.Splitter();
-            this.Properties = new SoilPropertyUI();
+            this.Properties = new CSUserInterface.SoilPropertyUI();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.OCUnitsMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.walkleyBlackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,7 +60,6 @@ namespace CSUserInterface
             this.NH4UnitsMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.NH4ppm = new System.Windows.Forms.ToolStripMenuItem();
             this.NH4kgha = new System.Windows.Forms.ToolStripMenuItem();
-            this.CheckButton = new System.Windows.Forms.Button();
             this.TopPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Grid)).BeginInit();
             this.panel1.SuspendLayout();
@@ -89,16 +90,24 @@ namespace CSUserInterface
             this.Grid.AllowUserToDeleteRows = false;
             this.Grid.BackgroundColor = System.Drawing.SystemColors.Window;
             this.Grid.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.Grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.Grid.DataSourceTable = null;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.Grid.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.Grid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.Grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.Grid.DataSourceTable = null;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.Grid.DefaultCellStyle = dataGridViewCellStyle2;
             this.Grid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Grid.Location = new System.Drawing.Point(275, 71);
             this.Grid.Name = "Grid";
@@ -116,6 +125,18 @@ namespace CSUserInterface
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(380, 31);
             this.panel1.TabIndex = 28;
+            // 
+            // CheckButton
+            // 
+            this.CheckButton.Image = ((System.Drawing.Image)(resources.GetObject("CheckButton.Image")));
+            this.CheckButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.CheckButton.Location = new System.Drawing.Point(131, 4);
+            this.CheckButton.Name = "CheckButton";
+            this.CheckButton.Size = new System.Drawing.Size(119, 23);
+            this.CheckButton.TabIndex = 29;
+            this.CheckButton.Text = "Check soil";
+            this.CheckButton.UseVisualStyleBackColor = true;
+            this.CheckButton.Click += new System.EventHandler(this.CheckButtonClick);
             // 
             // ManageCropsButton
             // 
@@ -304,18 +325,6 @@ namespace CSUserInterface
             this.NH4kgha.Name = "NH4kgha";
             this.NH4kgha.Size = new System.Drawing.Size(105, 22);
             this.NH4kgha.Text = "kg/ha";
-            // 
-            // CheckButton
-            // 
-            this.CheckButton.Image = ((System.Drawing.Image)(resources.GetObject("CheckButton.Image")));
-            this.CheckButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.CheckButton.Location = new System.Drawing.Point(131, 4);
-            this.CheckButton.Name = "CheckButton";
-            this.CheckButton.Size = new System.Drawing.Size(119, 23);
-            this.CheckButton.TabIndex = 29;
-            this.CheckButton.Text = "Check soil";
-            this.CheckButton.UseVisualStyleBackColor = true;
-            this.CheckButton.Click += new System.EventHandler(this.CheckButtonClick);
             // 
             // ProfileUI
             // 

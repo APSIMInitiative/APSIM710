@@ -192,12 +192,11 @@ namespace Actions
 		private static void CheckSoils(ApsimFile.Component Data, ref string ErrorMessage)
 		{
 			if (Data.Type.ToLower() == "soil") {
-                throw new NotImplementedException();
-                //XmlNode ThisSoil = Soil.CreateFromXML(Data.FullXML());
-				//string Errors = Soil.CheckForErrors(ThisSoil, true);
-                //if (!string.IsNullOrEmpty(Errors)) {
-                //    ErrorMessage += Environment.NewLine + XmlHelper.Name(ThisSoil) + Environment.NewLine + StringManip.IndentText(Errors, 6);
-				//}
+                Soil ThisSoil = Soil.Create(Data.FullXML());
+				string Errors = ThisSoil.Check(true);
+                if (!string.IsNullOrEmpty(Errors)) {
+                    ErrorMessage += Environment.NewLine + Data.FullPath + Environment.NewLine + StringManip.IndentText(Errors, 6);
+				}
 			} else if (Data.Type.ToLower() == "folder") {
 				foreach (ApsimFile.Component Child in Data.ChildNodes) {
 					CheckSoils(Child, ref ErrorMessage);

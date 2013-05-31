@@ -510,11 +510,12 @@ namespace CSUserInterface
         private void UpdateTotal(DataGridViewColumn Col)
         {
             double Total = MathUtility.Sum(GridUtility.GetColumnAsDoubles(Grid, Col.Index));
-
+            Grid.EnableHeadersVisualStyles = false;
             if (Col.HeaderText.Contains("PAWC\r\n"))
             {
                 int Pos = Col.HeaderText.IndexOf("\n");
-                Col.HeaderText = Col.HeaderText.Substring(0, Pos+1) + Total.ToString("f0") + " mm";
+                Col.HeaderText = Col.HeaderText.Substring(0, Pos + 1) + Total.ToString("f1");// +" mm";
+                Col.HeaderCell.Style.ForeColor = Color.Red;
             }
         }
 
