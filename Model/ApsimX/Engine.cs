@@ -55,8 +55,14 @@ namespace ModelFramework
             Doc.Load(FileName);
             Doc.DocumentElement.SetAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
             Doc.DocumentElement.SetAttribute("xmlns:xsd", "http://www.w3.org/2001/XMLSchema");
-            PreProcessXml(Doc.DocumentElement);
-            XmlReader Reader = new XmlNodeReader(Doc.DocumentElement);
+
+            return Load(Doc.DocumentElement);
+        }
+
+        public static Simulation Load(XmlNode Node)
+        {
+            PreProcessXml(Node);
+            XmlReader Reader = new XmlNodeReader(Node);
 
             string DeserializerFileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                                                        "ApsimX.XmlSerializers.dll");

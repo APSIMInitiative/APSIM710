@@ -16,6 +16,9 @@ public class Report
     [Link]
     Clock Clock = null;
 
+    [XmlAttribute("name")]
+    public string Name { get; set; }
+
     [XmlElement("filename")]
     private string FileName = "";
 

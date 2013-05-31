@@ -48,8 +48,8 @@ namespace ApsimFile
         private ArrayList _Constants = new ArrayList();
         private bool CSV = false;
         private StreamReaderRandomAccess In;
-        private DateTime FirstDate;
-        private DateTime LastDate;
+        private DateTime _FirstDate;
+        private DateTime _LastDate;
         private int FirstLinePosition;
         private StringCollection Words = new StringCollection();
         private Type[] ColumnTypes;
@@ -82,7 +82,7 @@ namespace ApsimFile
 
             // Get first date.
             object[] Values = ConvertWordsToObjects(Words, ColumnTypes);
-            FirstDate = GetDateFromValues(Values);
+            _FirstDate = GetDateFromValues(Values);
 
             // Now we need to seek to the end of file and find the last full line in the file.
             In.Seek(0, SeekOrigin.End);
@@ -100,7 +100,7 @@ namespace ApsimFile
             if (Words.Count == 0)
                 throw new Exception("Cannot find last row of file: " + FileName);
             Values = ConvertWordsToObjects(Words, ColumnTypes);
-            LastDate = GetDateFromValues(Values);
+            _LastDate = GetDateFromValues(Values);
 
             In.Seek(FirstLinePosition, SeekOrigin.Begin);
         }
@@ -112,6 +112,9 @@ namespace ApsimFile
         {
             In.Close();
         }
+
+        public DateTime FirstDate { get { return _FirstDate; } }
+        public DateTime LastDate { get { return _LastDate; } }
 
         public ArrayList Constants
         {
@@ -449,7 +452,7 @@ namespace ApsimFile
         /// <param name="Date"></param>
         public void SeekToDate(DateTime Date)
         {
-            int NumRowsToSkip = (Date - FirstDate).Days;
+            int NumRowsToSkip = (Date - _FirstDate).Days;
 
             In.Seek(FirstLinePosition, SeekOrigin.Begin);
             while (!In.EndOfStream && NumRowsToSkip > 0)

@@ -17,10 +17,12 @@ namespace ModelFramework
         private Simulation Simulation = null;
 
         [XmlAttribute("name")]
-        public string Name;
+        public string Name { get; set;}
 
         [XmlElement("Component")]
-        [Link]
+        //public List<object> Children { get; set; }
+
+		[Link]
         public List<object> Children = null;
 
         /// <summary>

@@ -206,6 +206,24 @@ namespace CSGeneral
         }
 
         //-------------------------------------------------------------------------
+        // Average an array of doubles 
+        //-------------------------------------------------------------------------
+        public static double Average(IEnumerable Values)
+        {
+            double Sum = 0.0;
+            int Count = 0;
+            foreach (double Value in Values)
+            {
+                Sum += Value;
+                Count++;
+            }
+            if (Count > 0)
+                return Sum / Count;
+            else
+                return 0.0;
+        }
+
+        //-------------------------------------------------------------------------
         // Sum an array of numbers starting at startIndex up to (but not including) endIndex
         // beginning with an initial value
         //-------------------------------------------------------------------------

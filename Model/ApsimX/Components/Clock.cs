@@ -13,6 +13,9 @@ public class Clock
     [Link]
     public Simulation Simulation;
 
+    [XmlAttribute("name")]
+    public string Name { get; set; }
+
     public event TimeDelegate Tick;
     public event NullTypeDelegate Prepare;
     public event NullTypeDelegate Process;

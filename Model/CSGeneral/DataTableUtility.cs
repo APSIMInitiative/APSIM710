@@ -131,6 +131,20 @@ namespace CSGeneral
             }
             return Values;
         }
+        static public double[] GetColumnAsDoubles(DataView Table, string ColumnName)
+        {
+            int NumValues = Table.Count;
+            double[] Values = new double[NumValues];
+            for (int Row = 0; Row != Table.Count; Row++)
+            {
+                if (Table[Row][ColumnName].ToString() == "")
+                    Values[Row] = double.NaN;
+                else
+                    Values[Row] = Convert.ToDouble(Table[Row][ColumnName]);
+            }
+            return Values;
+        }        
+        
         static public double[] GetColumnAsDoubles(DataTable Table, string ColumnName, int NumValues, int StartRow)
         {
             double[] Values = new double[NumValues];
@@ -259,6 +273,7 @@ namespace CSGeneral
                                 "[a year, month and day column]");
         }
 
+        
         static public DataView FilterTableForYear(DataTable Table, int StartYear, int EndYear)
         {
             // ---------------------------------------------------------------------

@@ -25,6 +25,9 @@ public class MetFile
     [XmlElement("filename")]
     public string FileName = "";
 
+    [XmlAttribute("name")]
+    public string Name { get; set; }
+
     [Link]
     public Clock Clock;
 
