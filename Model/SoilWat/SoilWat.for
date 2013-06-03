@@ -2501,7 +2501,7 @@ cjh
                                        !   (mm water/mm soil)
       integer    num_layers            ! Number of soil layers.
       integer    i
-      
+
 *- Implementation Section ----------------------------------
       max_sw = 1.0 - divide (g%bd(layer), c%specific_bd, 0.0)
          ! ie Total Porosity
@@ -2596,24 +2596,24 @@ cjh
 
       else
       endif
-      
+
       num_layers = count_of_real_vals (p%dlayer, max_layer)
-      
-      if (c%Num_solute_flow .gt. 1 .and. 
+
+      if (c%Num_solute_flow .gt. 1 .and.
      :    c%Num_solute_flow .ne. num_layers) then
-         call fatal_error (err_internal, 
+         call fatal_error (err_internal,
      :       'The number of values specified for solute_flow_eff does '
      :       // new_line //
      :       'not match the number of soil layers.')
-      endif      
+      endif
 
-      if (c%Num_solute_flux .gt. 1 .and. 
+      if (c%Num_solute_flux .gt. 1 .and.
      :    c%Num_solute_flux .ne. num_layers) then
-         call fatal_error (err_internal, 
+         call fatal_error (err_internal,
      :       'The number of values specified for solute_flux_eff does '
      :       // new_line //
      :       'not match the number of soil layers.')
-      endif      
+      endif
 
       return
       end subroutine
@@ -2710,7 +2710,7 @@ cjh
        integer numvals                 ! number of values read from file
        character  evap_method*300
        character  st*500
-       
+
 *- Implementation Section ----------------------------------
       call push_routine (my_name)
 
@@ -2761,18 +2761,18 @@ cjh
       call read_char_var (section_name
      :                   , 'solute_flow_eff', '()'
      :                   , st, numvals)
-      call String_to_real_array(st, c%Solute_flow_eff, 
+      call String_to_real_array(st, c%Solute_flow_eff,
      :                          max_layer, c%Num_solute_flow)
-      call bound_check_real_array(c%Solute_flow_eff, 0.0, 1.0, 
+      call bound_check_real_array(c%Solute_flow_eff, 0.0, 1.0,
      :                            "solute_flow_eff", c%Num_solute_flow)
-     
+
       ! read in solute_flux_eff as an array of numbers, 1 for each layer.
       call read_char_var (section_name
      :                   , 'solute_flux_eff', '()'
-     :                   , st, numvals)     
-      call String_to_real_array(st, c%Solute_flux_eff, 
+     :                   , st, numvals)
+      call String_to_real_array(st, c%Solute_flux_eff,
      :                          max_layer, c%Num_solute_flux)
-      call bound_check_real_array(c%Solute_flux_eff, 0.0, 1.0, 
+      call bound_check_real_array(c%Solute_flux_eff, 0.0, 1.0,
      :                            "solute_flow_eff", c%Num_solute_flux)
 
       call read_real_var (section_name
@@ -4359,13 +4359,13 @@ c  dsg   070302  added runon
       subroutine soilwat2_check_set_array(variable_name,
      :      array_size)
 * ====================================================================
-* Checks the array lengths of variables being set in soilwat2_set_my_variable	
+* Checks the array lengths of variables being set in soilwat2_set_my_variable
 
       implicit none
       character variable_name*(*)
       integer array_size, nlayers
       character  string*300            ! output string
-	  
+
          nlayers = count_of_real_vals (p%dlayer, max_layer)
          if (array_size .gt. nlayers) then
             write (string, '(3a,i3,a,i3,3a)')
@@ -4384,7 +4384,7 @@ c  dsg   070302  added runon
      :      'A value of 0.0 will be used for the unspecified values.'
             call warning_error (err_user, string)
          endif
-      end subroutine	 
+      end subroutine
 
 * ====================================================================
       subroutine soilwat2_set_my_variable (variable_name)
@@ -4754,7 +4754,7 @@ c  dsg   070302  added runon
      :                             , g%eo_source, numvals)
          write (line, '(6x, a, a)') 'Eo source:             ',
      :        g%eo_source
-         call write_string (line)         
+         call write_string (line)
       else
          call Message_unused ()
 
@@ -4800,7 +4800,7 @@ c  dsg   070302  added runon
                                        ! changes in solute (kg/ha)
       type(RunoffEventType) :: r       ! structure holding runoff event
 
-      type(NitrogenChangedType) :: NchgData  ! structure holding 
+      type(NitrogenChangedType) :: NchgData  ! structure holding
                                              ! NitrogenChanged data
 
 *- Implementation Section ----------------------------------
@@ -4948,8 +4948,8 @@ c  dsg   070302  added runon
       else if (variable_name .eq. 'cover_surface_runoff') then
          call respond2get_real_var (variable_name, ''
      :                             , g%cover_surface_runoff)
-	 
-!sv- 2011-11-03 - I added cn2_bare, cn_red, cn_cov. 
+
+!sv- 2011-11-03 - I added cn2_bare, cn_red, cn_cov.
 !    Solves the problem of being able to set these but not report them to see if the set worked.
 !sv- you must have a space in the second parameter (for units). If you just put '' instead of ' '
 !	 you end up with all the variables in p% being listed as the units.
@@ -4958,14 +4958,14 @@ c  dsg   070302  added runon
 
       else if (variable_name .eq. 'cn_red') then
             call respond2get_real_var (variable_name, ' ', p%cn_red)
-			
+
       else if (variable_name .eq. 'cn_cov') then
             call respond2get_real_var (variable_name, '(0-1)', p%cn_cov)
 
-			
+
       else if (variable_name .eq. 'cn2_new') then
-            call respond2get_real_var (variable_name, ' ', g%cn2_new)			
-			
+            call respond2get_real_var (variable_name, ' ', g%cn2_new)
+
       else if (variable_name .eq. 'runoff') then
          call respond2get_real_var (variable_name, 'mm', g%runoff)
 
@@ -5262,7 +5262,7 @@ c         g%cover_surface_extra = 0.0          ! extra surface cover (0-1)
          g%drain = 0.0                        ! drainage rate from bottom layer (cm/d)
          g%infiltration = 0.0                 ! infiltration (mm)
          g%runoff = 0.0                       ! runoff (mm)
-		     g%runoff_pot = 0.0                   ! potential runoff with no pond(mm)  
+		     g%runoff_pot = 0.0                   ! potential runoff with no pond(mm)
          g%irrigation = 0.0                   ! irrigation (mm)
          g%obsrunoff = 0.0                    ! observed runoff (mm)
          g%tillage_cn_red = 0.0               ! reduction in CN due to tillage ()
@@ -5331,7 +5331,7 @@ c         g%crop_module(:) = ' '               ! list of modules
          p%mwcon (:) = 0.0                    ! layer permeability factor (zero or one)
          p%solute_conc_rain(:) = 0.0          ! solute concentrations in rainfall (optional parameter)
          p%winterdate = ' '
-         p%summerdate = ' '		 
+         p%summerdate = ' '
 * ====================================================================
 * Constants
          c%hydrol_effective_depth = 0.0       ! hydrologically effective depth for
@@ -5583,7 +5583,7 @@ c         g%crop_module(:) = ' '               ! list of modules
                solute_flux_eff = c%Solute_flux_eff(1)
             else
                solute_flux_eff = c%Solute_flux_eff(layer)
-            endif 
+            endif
 
 
          water = g%sw_dep(layer) + out_w
@@ -5717,8 +5717,8 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
                solute_flow_eff = c%Solute_flow_eff(1)
             else
                solute_flow_eff = c%Solute_flow_eff(layer)
-            endif 
-            
+            endif
+
             out_solute = solute_kg_layer
      :                 * divide (out_w, water, 0.0)
      :                 * solute_flow_eff
@@ -5780,8 +5780,8 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
                solute_flow_eff = c%Solute_flow_eff(1)
             else
                solute_flow_eff = c%Solute_flow_eff(layer)
-            endif 
-                 
+            endif
+
             out_solute = solute_kg_layer
      :            * divide (out_w, water, 0.0)
      :            * solute_flow_eff
@@ -6710,10 +6710,11 @@ c dsg 070302 added runon
 
 
 *     ===========================================================
-      subroutine soilwat2_tillage ()
+      subroutine soilwat2_ONTillage (variant)
 *     ===========================================================
 
       implicit none
+      integer, intent(in) :: variant
 
 *+  Purpose
 *     Set up for CN reduction after tillage operation
@@ -6736,41 +6737,29 @@ c dsg 070302 added runon
       parameter (tillage_section = 'tillage') ! lookup file
 
 *+  Local Variables
+      type(TillageType) :: tillage
       character string*300             ! message string
-      character type*30                ! name of implement used for tillage
       real      type_info(2)           ! Array containing information about
                                        ! a certain type (from table)
       integer   numvals                ! Number of values found in data string
-      integer   numvals_cnred, numvals_cnrain
 
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
 
-                              ! 1. Find which implement was used.
-      call collect_char_var ('type'
-     :                      ,'()'
-     :                      ,type
-     :                      ,numvals)
+      call unpack_tillage(variant, tillage)
+      g%tillage_cn_red = tillage%cn_red
+      g%tillage_cn_rain = tillage%cn_rain
 
-      call collect_real_var_optional ('cn_red'
-     :                      ,'()'
-     :                      ,g%tillage_cn_red
-     :                      ,numvals_cnred, 0.0, 100.0)
-
-      call collect_real_var_optional ('cn_rain'
-     :                      ,'()'
-     :                      ,g%tillage_cn_rain
-     :                      ,numvals_cnrain, 0.0, 1000.0)
-
-      if (numvals_cnred .le. 0 .or. numvals_cnrain .le. 0) then
+      if (tillage%type .ne. ' ' .and. 
+     :    tillage%type .ne. 'user_defined') then
 
         call write_string (
      :               new_line//'    - Reading tillage CN info')
 
         call read_real_array_optional (
      :           tillage_section      ! Section header
-     :         , type                 ! Keyword
+     :         , tillage%type         ! Keyword
      :         , 2                    ! size of array
      :         , '()'                 ! Units
      :         , type_info            ! Variable
@@ -6783,27 +6772,34 @@ c dsg 070302 added runon
             g%tillage_cn_red = 0.0
             g%tillage_cn_rain = 0.0
 
-            string = 'Cannot find info for tillage:- '//type
+            string = 'Cannot find info for tillage:- '//
+     :          trim(tillage%type)
             call FATAL_ERROR (ERR_user, string)
 
         else
-          if (numvals_cnred .le. 0) then
+            if (tillage%cn_red .ne. 0 .and. 
+     :           tillage%cn_red .ne. type_info(1)) then
+              string = ' tillage cn_red specified differs from default'
+              call WARNING_ERROR (ERR_user, string)
+            else
+            endif
             g%tillage_cn_red = type_info(1)
-          else
-          endif
 
-          if (numvals_cnrain .le. 0) then
+            if (tillage%cn_rain .ne. 0 .and. 
+     :          tillage%cn_rain .ne. type_info(1)) then
+              string = ' tillage cn_rain specified differs from default'
+              call WARNING_ERROR (ERR_user, string)
+            else
+            endif
             g%tillage_cn_rain = type_info(2)
-          else
-          endif
         endif
       endif
 
-      ! Ensure cn equation won't go silly
+          ! Ensure cn equation won't go silly
       g%tillage_cn_red = bound (g%tillage_cn_red, 0.0, p%cn2_bare)
 
       write (string, '(3a,40x,a,f8.2,a,40x,a, f8.2)' )
-     :      'Soil tilled using ', type, New_Line
+     :      'Soil tilled using ', trim(tillage%type), New_Line
      :     ,'CN reduction = ', g%tillage_cn_red, New_Line
      :     ,'Acc rain     = ', g%tillage_cn_rain
 
@@ -6910,10 +6906,10 @@ c dsg 070302 added runon
       call push_routine (my_name)
 
       call unpack_newsolute(variant, newsolute)
-	  
+
       sender = newsolute%sender_id
       numvals = newsolute%num_solutes
-      	  
+
       if (g%num_solutes+numvals.gt.max_solute) then
          call fatal_error (ERR_Internal
      :                    ,'Too many solutes for Soilwat2')
@@ -7178,7 +7174,7 @@ c
 
       do 100 layer = 1, num_layers
 
-          margin = error_margin(g%sat_dep(layer)) 
+          margin = error_margin(g%sat_dep(layer))
 
          if ((g%sat_dep(layer)- g%sw_dep(layer)) .le. margin) then
             sat_layer = layer
@@ -7489,9 +7485,6 @@ c
          call fatal_error (ERR_USER,
      :   '"ADD_WATER" message no longer available - use "irrigated"')
 
-      else if (action .eq. ACTION_till) then
-         call soilwat2_tillage ()
-
       else if (action.eq.ACTION_init) then
          ! Save State
          call soilwat2_save_state ()
@@ -7546,6 +7539,8 @@ c
          call soilwat2_ONtick(variant)
       else if (eventID .eq. id%newmet) then
          call soilwat2_ONnewmet(variant)
+      else if (eventID .eq. id%tillage) then
+         call soilwat2_ONTillage(variant)
       else if (eventID .eq. id%WaterChanged) then
          call OnWaterChanged(variant)
       else if (eventID .eq. id%New_Solute) then
@@ -7579,7 +7574,7 @@ c
 
       ! events subscribed to
       id%tillage = add_registration(respondToEventReg, 'tillage',
-     .                              ApsimVariantTypeDDML, '')
+     .                              TillageTypeDDML, '')
       id%reset = add_registration(respondToEventReg, 'reset',
      .                            nullTypeDDML, '')
       id%sum_report = add_registration(respondToEventReg, 'sum_report',
@@ -7608,13 +7603,13 @@ c
       dummy = add_reg(respondToGetReg, 'es',
      .                     floatTypeDDML, 'mm', 'Soil Evaporation')
       dummy = add_reg(respondToGetReg, 'pond_evap',
-     .                     floatTypeDDML, 'mm', 
+     .                     floatTypeDDML, 'mm',
      .                     'Evaporation from pond surface')
       dummy = add_reg(respondToGetReg, 't',
-     .                     floatTypeDDML, 'day', 
+     .                     floatTypeDDML, 'day',
      .                'time after 2nd-stage soil evaporation begins')
       dummy = add_reg(respondToGetReg, 'eo',
-     .                     floatTypeDDML, 'mm', 
+     .                     floatTypeDDML, 'mm',
      .               'Potential evapotranspiration via priestly-taylor')
       dummy = add_reg(respondToGetReg, 'eos',
      .                     floatTypeDDML, 'mm',
@@ -7650,7 +7645,7 @@ c
      .                floatTypeDDML, 'mm',
      .            'Extractible soil water relative to LL15')
       dummy = add_reg(respondToGetReg, 'flux',
-     .                floatarrayTypeDDML, 'mm', 
+     .                floatarrayTypeDDML, 'mm',
      .                'initially, water moving downward into ' //
      .                 'layer l, then water moving downward ' //
      .                 ' out of layer l ')

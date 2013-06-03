@@ -8,6 +8,7 @@ module PublishEventsModule
    ! ---------------------------------------------------------------
    use ConstantsModule
    use ComponentInterfaceModule
+   use StringModule
    use ErrorModule
    implicit none
 
@@ -25,13 +26,15 @@ module PublishEventsModule
       QualifiedEventName = trim(ModuleName) // '.' // EventName
    endif
 
-   if (EventName == 'kill_crop') then
+   if (strings_equal(EventName, 'kill_crop')) then
       call PublishKillCrop(QualifiedEventName, DataString)
-   elseif (EventName == 'incorpfom') then
+   elseif (strings_equal(EventName, 'incorpfom')) then
       call PublishIncorpFOM(QualifiedEventName, DataString)
+   elseif (strings_equal(EventName, 'tillage')) then
+      call PublishTillage(QualifiedEventName, DataString)
    else
       ! some other non protocol event - use the old postbox method.
-      if (ModuleName == 'publish') then
+      if (strings_equal(ModuleName, 'publish')) then
          ModuleNameID = -1  
       else
          ok = component_name_to_id(ModuleName, ModuleNameID);
@@ -149,7 +152,9 @@ module PublishEventsModule
 
    call SplitEventLine(DataString, KeyName, KeyUnits, KeyValues, NumValues)
 
-   if (NumValues == 1 .and. strings_equal(KeyName, 'plants_kill_fraction')) then
+   if (NumValues == 1 .and. strings_equal(KeyName, 'killfraction')) then
+      Kill%KillFraction = StringToReal(KeyValues(1))
+   elseif (NumValues == 1 .and. strings_equal(KeyName, 'plants_kill_fraction')) then
       Kill%KillFraction = StringToReal(KeyValues(1))
    else
       Kill%KillFraction = 1.0
@@ -234,5 +239,57 @@ module PublishEventsModule
 
    end subroutine
 
-end module PublishEventsModule
+   subroutine PublishTillage(QualifiedEventName, DataString)
+   ! ---------------------------------------------------------------
+   ! Publishes an tillage event using the data on the specified
+   ! DataString which should look like:
+   !    Type=planter, f_incorp=A, tillage_depth=B, cn_red=X, cn_rain=Y, 
+   ! ---------------------------------------------------------------
 
+   use ConstantsModule
+   use ErrorModule
+   use StringModule
+   use DataStrModule
+   use DataTypes
+   use ComponentInterfaceModule
+   use DataTypesInterface
+
+   implicit none
+
+   character DataString*(*)          ! (INPUT) Should be blank or have a plants_kill_fraction
+   character QualifiedEventName*(*)  ! (INPUT) Fully qualified event name (e.g. wheat.kill_crop)
+   character KeyName*(500)
+   character KeyValues(500)*(500)
+   character KeyUnits*500
+   integer NumValues
+   type(TillageType) :: tillage
+   integer TillageID
+
+   call SplitEventLine(DataString, KeyName, KeyUnits, KeyValues, NumValues)
+   tillage%type = ' '
+   tillage%f_incorp = 0.0
+   tillage%tillage_depth = 0.0
+   tillage%cn_red = 0.0
+   tillage%cn_rain = 0.0
+
+   do while (NumValues > 0)
+      if (strings_equal(KeyName, 'type')) then
+         tillage%Type = KeyValues(1)
+      elseif (strings_equal(KeyName, 'f_incorp')) then
+         tillage%f_incorp = StringToReal(KeyValues(1))
+      elseif (strings_equal(KeyName, 'tillage_depth')) then
+         tillage%tillage_depth = StringToReal(KeyValues(1))
+      elseif (strings_equal(KeyName, 'cn_red')) then
+         tillage%cn_red = StringToReal(KeyValues(1))
+      elseif (strings_equal(KeyName, 'cn_rain')) then
+         tillage%cn_rain = StringToReal(KeyValues(1))
+      endif
+
+      call SplitEventLine(DataString, KeyName, KeyUnits, KeyValues, NumValues)
+   end do
+   TillageID = add_registration(eventReg, QualifiedEventName, TillageTypeDDML, blank)
+   call publish_Tillage(TillageID, tillage)
+
+   end subroutine
+
+end module PublishEventsModule

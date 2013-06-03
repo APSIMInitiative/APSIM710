@@ -391,7 +391,7 @@ public partial class SurfaceOM
             read_real_var (section_name, "standing_extinct_coeff", "()", c.standing_extinct_coeff, numvals, 0.0, 1.0);
 
             pop_routine (my_name);
-			
+
          return;
          */
 
@@ -420,7 +420,7 @@ public partial class SurfaceOM
         string[] temp_name = ToArray<string>(PoolName);	                    //temporary array for residue names;
         string[] temp_type = ToArray<string>(type);	                        //temporary array for residue types;
         float[] temp_wt = ToArray<float>(mass);
-        float[] temp_residue_cnr = ToArray<float>(cnr);	                    //temporary residue_cnr array;			
+        float[] temp_residue_cnr = ToArray<float>(cnr);	                    //temporary residue_cnr array;
         float[] temp_residue_cpr = ToArray<float>(cpr);	                    //temporary residue_cpr array;
         float[] temp_standing_fraction = ToArray<float>(standing_fraction);
 
@@ -486,7 +486,7 @@ public partial class SurfaceOM
                     po4 = divide(c.po4ppm[i], 1000000.0f, 0.0f) * temp_wt[i],
 
                     PotDecompRate = pot_decomp_rate
-                    
+
                     //these are set in constructor automatically, just here for reference
                     //Standing = new OMFractionType[MaxFr],
                     //Lying = new OMFractionType[MaxFr]
@@ -561,10 +561,10 @@ public partial class SurfaceOM
 
         //  Local Variables;
 
-        float 
+        float
             mf = surfom_wf(),	    //moisture factor for decomp (0-1)
             tf = surfom_tf(),	    //temperature factor for decomp (0-1)
-            cf = surfom_cf();	    //manure/soil contact factor for decomp (0-1)	
+            cf = surfom_cf();	    //manure/soil contact factor for decomp (0-1)
 
         for (int residue = 0; residue < g.num_surfom; residue++)
         {
@@ -609,14 +609,14 @@ public partial class SurfaceOM
     /// <returns>temperature factor</returns>
     private float surfom_tf()
     {
-        float 
+        float
             ave_temp = divide((g.MetData.maxt + g.MetData.mint), 2.0f, 0.0f),	//today"s average air temp (oC)
             tf;	//temperature factor;
 
         if (ave_temp > 0.0)
             return bound(
-                (float)Math.Pow(divide(ave_temp, c.opt_temp, 0.0f), 2.0), 
-                0, 
+                (float)Math.Pow(divide(ave_temp, c.opt_temp, 0.0f), 2.0),
+                0,
                 1
                 );
         else
@@ -693,13 +693,13 @@ public partial class SurfaceOM
             float mf;	//moisture factor for decomp (0-1)
 
            if (g.pond_active=="yes") {
-   
+
               //mf will always be 0.5, to recognise that potential decomp is less under flooded conditions;
-	 
+
              return 0.5;
-	 
+
            }else{
-              //not flooded conditions  
+              //not flooded conditions
 
               //moisture factor decreases from 1. at start of g.cumeos and decreases;
               //linearly to zero at cum_eos_max;
@@ -728,7 +728,7 @@ public partial class SurfaceOM
 
         /*
          * Old way of doing it (:S not sure why this had to be so complicated)
-         * 
+         *
         float cover1 = 0;	//fraction of ground covered by residue (0-1)
         float cover2;	//fraction of ground covered by residue (0-1)
         float combined_cover = 0;	//effective combined cover from covers 1 & 2 (0-1)
@@ -847,7 +847,7 @@ public partial class SurfaceOM
 
             //MyPaddock.Set("dlt_no3", no3_incorp);
             //MyPaddock.Set("dlt_nh4", nh4_incorp);
-            
+
             NitrogenChangedType NitrogenChanges = new NitrogenChangedType();
             NitrogenChanges.Sender = "SurfaceOrganicMatter";
             NitrogenChanges.DeltaNH4 = new double[dlayer.Length];
@@ -890,9 +890,9 @@ public partial class SurfaceOM
             Pool = new SurfaceOrganicMatterDecompPoolType[g.num_surfom]
         };
 
-        float[] 
-            c_pot_decomp, 
-            n_pot_decomp, 
+        float[]
+            c_pot_decomp,
+            n_pot_decomp,
             p_pot_decomp;
 
         surfom_Pot_Decomp(out c_pot_decomp, out n_pot_decomp, out p_pot_decomp);
@@ -912,7 +912,7 @@ public partial class SurfaceOM
                     AshAlk = 0.0f
                 }
             };
-        
+
 
         //APSIM THING
         publish_SurfaceOrganicMatterDecomp(SOMDecomp);
@@ -1043,12 +1043,12 @@ public partial class SurfaceOM
                 g.SurfOM[SOMNo].po4 -= SOM.Pool[SOMNo].po4;
             }
 
-            float 
-                samount = SOM.Pool[SOMNo].StandingFraction.Sum<FOMType>(x => x.amount), 
-                sN = SOM.Pool[SOMNo].StandingFraction.Sum<FOMType>(x => x.N), 
-                sP = SOM.Pool[SOMNo].StandingFraction.Sum<FOMType>(x => x.P), 
-                lamount = SOM.Pool[SOMNo].LyingFraction.Sum<FOMType>(x => x.amount), 
-                lN = SOM.Pool[SOMNo].LyingFraction.Sum<FOMType>(x => x.N), 
+            float
+                samount = SOM.Pool[SOMNo].StandingFraction.Sum<FOMType>(x => x.amount),
+                sN = SOM.Pool[SOMNo].StandingFraction.Sum<FOMType>(x => x.N),
+                sP = SOM.Pool[SOMNo].StandingFraction.Sum<FOMType>(x => x.P),
+                lamount = SOM.Pool[SOMNo].LyingFraction.Sum<FOMType>(x => x.amount),
+                lN = SOM.Pool[SOMNo].LyingFraction.Sum<FOMType>(x => x.N),
                 lP = SOM.Pool[SOMNo].LyingFraction.Sum<FOMType>(x => x.P);
 
 
@@ -1058,7 +1058,7 @@ public partial class SurfaceOM
 @"Removed SurfaceOM
     SurfaceOM name  = {0}
     SurfaceOM Type  = {1}
-    
+
     Amount Removed (kg/ha):
         Lying:
             Amount = {2:0.0##}
@@ -1082,7 +1082,7 @@ public partial class SurfaceOM
                 sN + lN,
                 sP + lP
                );
-             
+
         }
 
     }
@@ -1252,7 +1252,7 @@ public partial class SurfaceOM
         //----------------------------------------------------------
         //             Now incorporate the residues;
         //----------------------------------------------------------
-			
+
         surfom_incorp(data.type, data.f_incorp, data.tillage_depth);
 
         Console.WriteLine(
@@ -1262,41 +1262,6 @@ public partial class SurfaceOM
              );
     }
 
-    private void surfom_tillage_single(Tillage_singleType data)
-    {
-        //----------------------------------------------------------
-        //   If no user defined characteristics then use the;
-        //     lookup table compiled from expert knowledge;
-        //----------------------------------------------------------
-        if (data.f_incorp == 0 && data.tillage_depth == 0)
-        {
-            Console.WriteLine("    - Reading default residue tillage info");
-
-            TillageType temp = SOMTillageType.GetTillageData(data.type);
-
-            //If we still have no values then stop
-            if (temp == null)
-                //We have an unspecified tillage type;
-                throw new Exception("Cannot find info for tillage:- " + data.type);
-            else
-            {
-                data.f_incorp = temp.f_incorp;
-                data.tillage_depth = temp.tillage_depth;
-            }
-        }
-
-        //----------------------------------------------------------
-        //             Now incorporate the residues;
-        //----------------------------------------------------------
-
-        surfom_incorp_single (data.name, data.type, data.f_incorp, data.tillage_depth);
-
-        Console.WriteLine(
-@"Residue removed using {0}
-    Fraction Incorporated = {1:0.0##}
-    Incorporated Depth    = {2:0.0##}", data.type, data.f_incorp, data.tillage_depth
-             );
-    }
 
     /// <summary>
     /// Calculate surfom incorporation as a result of tillage and update;
@@ -1336,7 +1301,7 @@ public partial class SurfaceOM
 
         for (int layer = 0; layer <= deepest_Layer; layer++)
         {
-            
+
             for (int residue = 0; residue < g.num_surfom; residue++)
             {
 
@@ -1613,7 +1578,7 @@ public partial class SurfaceOM
     private void surfom_add_surfom(Add_surfaceomType data)
     {
 
-        int 
+        int
             residue = 0,               //residue counter;
             SOMNo = 0;                 //specific system number for this residue name;
 
@@ -1621,7 +1586,7 @@ public partial class SurfaceOM
             surfom_name = data.name,
             surfom_type = data.type;
 
-        float 
+        float
             surfom_mass_added = bound(data.mass, -100000, 100000),  //Mass of new surfom added (kg/ha)
             surfom_c_added = 0,	                                    //C added in new material (kg/ha)
             surfom_n_added = bound(data.n, -10000, 10000),	        //N added in new material (kg/ha)
@@ -1711,7 +1676,7 @@ public partial class SurfaceOM
                 float
                     lying = g.SurfOM[SOMNo].Lying.Sum<OMFractionType>(x => x.amount),
                     standing = g.SurfOM[SOMNo].Standing.Sum<OMFractionType>(x => x.amount);
-          
+
                 tot_mass = lying + standing;
 
                 removed_from_standing = surfom_mass_added * (divide(standing, tot_mass, 0.0f));
@@ -1766,9 +1731,9 @@ public partial class SurfaceOM
     private void surfom_add_faeces(AddFaecesType data)
     {
         string Manure = "manure";
-        AddSurfaceOM((float)(data.OMWeight * fractionFaecesAdded), 
+        AddSurfaceOM((float)(data.OMWeight * fractionFaecesAdded),
                      (float)(data.OMN * fractionFaecesAdded),
-                     (float)(data.OMP * fractionFaecesAdded), 
+                     (float)(data.OMP * fractionFaecesAdded),
                      Manure);
 
         // We should also have added ash alkalinity, but AddSurfaceOM
@@ -1900,7 +1865,7 @@ public partial class SurfaceOM
             c.fr_pool_N[j, i] = thistype.fr_n[j];
             c.fr_pool_P[j, i] = thistype.fr_p[j];
         }
-        
+
 
     }
 
@@ -1928,7 +1893,7 @@ public partial class SurfaceOM
 
         float F_Cover;	            //Fraction of soil surface covered by residue (0-1)
         float Area_lying;	        //area of lying component;
-        float Area_standing;	    //effective area of standing component (the 0.5 extinction coefficient in area calculation 
+        float Area_standing;	    //effective area of standing component (the 0.5 extinction coefficient in area calculation
         //  provides a random distribution in degree to which standing stubble is "lying over"
 
         //calculate fraction of cover and check bounds (0-1).  Bounds checking;
@@ -2015,7 +1980,7 @@ public partial class SurfaceOM
     /// <param name="variant"></param>
     private void SurfOMOnBiomassRemoved(BiomassRemovedType BiomassRemoved)
     {
-        float 
+        float
             surfom_added = 0,	//amount of residue added (kg/ha)
             surfom_N_added = 0,	//amount of residue N added (kg/ha)
             surfom_P_added = 0;	//amount of residue N added (kg/ha)

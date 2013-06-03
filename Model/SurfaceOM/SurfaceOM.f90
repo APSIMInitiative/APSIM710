@@ -2,7 +2,7 @@ module SurfaceOMModule
    use ComponentInterfaceModule
    use Registrations
    use infrastructure
-  
+
 ! ====================================================================
 !     SurfaceOM constants
 ! ====================================================================
@@ -427,7 +427,7 @@ subroutine surfom_check_pond ()
    implicit none
 
 !+  Purpose
-! 
+!
 !+  Constant Values
    character*(*) my_name
    parameter (my_name = 'surfom_check_pond')
@@ -485,7 +485,7 @@ subroutine surfom_read_coeff ()
    call read_real_var (section_name, 'standing_extinct_coeff', '()', c%standing_extinct_coeff, numvals, 0.0, 1.0)
    call read_real_var_optional (section_name, 'fraction_faeces_added', '()', c%fraction_faeces_added, numvals, 0.0, 1.0)
    if (numvals.le.0) c%fraction_faeces_added = 0.5
-  
+
 
    call pop_routine (my_name)
    return
@@ -514,7 +514,7 @@ subroutine surfom_read_param ()
    integer   cnr_pool_flag                   ! flag indicating whether cnr fpool info is provided
    integer   cpr_pool_flag                   ! flag indicating whether cpr fpool info is provided
    integer   residue_number                  ! number of residue type in the c%fom_types array
-   integer   dummy                     
+   integer   dummy
    character temp_type(max_residues)*32      ! temporary array for residue types
    character temp_name(max_residues)*32      ! temporary array for resiude names
    real      temp_wt(max_residues)
@@ -614,7 +614,7 @@ subroutine surfom_read_param ()
       g%SurfOM(i)%Lying(1:MaxFr)%N  = tot_n(i) *  c%fr_pool_n(1:MaxFr,i) * (1 - p%standing_fraction(i))
       g%SurfOM(i)%Lying(1:MaxFr)%P  = tot_p(i) *  c%fr_pool_p(1:MaxFr,i) * (1 - p%standing_fraction(i))
       g%SurfOM(i)%Lying(1:MaxFr)%AshAlk = 0.0
-  
+
       dummy = add_reg(respondToGetReg, 'surfaceom_wt_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
       dummy = add_reg(respondToGetReg, 'surfaceom_c_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
       dummy = add_reg(respondToGetReg, 'surfaceom_n_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
@@ -643,7 +643,7 @@ subroutine surfom_read_param ()
 
    g%DailyInitialC = sum(tot_c)
    g%DailyInitialN = sum(tot_n)
-   
+
    call surfom_Sum_Report ()
 
    call pop_routine (my_name)
@@ -948,13 +948,13 @@ end function
    call push_routine (my_name)
 
    if (g%pond_active.eq.'yes') then
-   
+
      ! mf will always be 0.5, to recognise that potential decomp is less under flooded conditions
-     
+
      surfom_wf = 0.5
-     
+
    else
-     ! not flooded conditions  
+     ! not flooded conditions
 
      ! moisture factor decreases from 1. at start of g%cumeos and decreases
      ! linearly to zero at cum_eos_max
@@ -963,8 +963,8 @@ end function
 
      mf = bound(mf, 0.0, 1.0)
      surfom_wf = mf
-     
-   endif     
+
+   endif
 
 
    call pop_routine (my_name)
@@ -1334,7 +1334,7 @@ subroutine surfom_remove_surfom (variant)
             g%SurfOM(SOMNo)%Standing(pool)%N      = g%SurfOM(SOMNo)%Standing(pool)%N      - SOM%Pool(SOMNo)%StandingFraction(pool)%N
             g%SurfOM(SOMNo)%Standing(pool)%P      = g%SurfOM(SOMNo)%Standing(pool)%P      - SOM%Pool(SOMNo)%StandingFraction(pool)%P
             g%SurfOM(SOMNo)%Standing(pool)%AshAlk = g%SurfOM(SOMNo)%Standing(pool)%AshAlk - SOM%Pool(SOMNo)%StandingFraction(pool)%AshAlk
-            
+
          end do
 
 
@@ -1496,7 +1496,7 @@ subroutine surfom_decompose_surfom (variant)
 
       ! Do actual decomposing - update pools for C, N, and P
       call surfom_decomp (tot_c_decomp, tot_n_decomp, tot_p_decomp, residue_no)
-      
+
    end do
 
    call pop_routine (myname)
@@ -1558,65 +1558,66 @@ subroutine surfom_Decomp (C_decomp, N_decomp, P_decomp,residue)
 end subroutine
 
 !================================================================
-subroutine surfom_Tillage ()
+subroutine surfom_ONTillage (variant)
 !================================================================
 
    implicit none
+   integer, intent(in) :: variant
 
 !+  Purpose
 !   Calculates surfom incorporation as a result of tillage operations.
 
 !+  Constant Values
    character*(*) my_name             ! name of current procedure
-   parameter (my_name = 'surfom_tillage')
+   parameter (my_name = 'surfom_ontillage')
 !
    character*(*) Tillage_section    ! section name for tillage info in
    parameter (Tillage_section = 'tillage') ! lookup file
 
 !+  Local Variables
+   type(TillageType) :: tillage
    character String*300             ! message string
-   real      F_incorp               ! Fraction of residue incorporated
-                                    ! by tillage. (0-1)
-   character till_type*30                ! name of implement used for tillage
    real      type_info(2)           ! Array containing information about
                                     ! a certain type (from table)
    integer   Numvals                ! Number of values found in data string
-   integer   Numvals_F              ! Number of values found in data string
-   integer   Numvals_T              ! Number of values found in data string
-   real      Tillage_depth          ! depth of residue incorp (mm)
 
 !- Implementation Section ----------------------------------
    call push_routine (my_name)
 
+   call unpack_tillage(variant, tillage)
 
    ! ----------------------------------------------------------
    !       Get User defined tillage effects on residue
-   ! ----------------------------------------------------------
-   till_type = ' '
-   call collect_char_var ('type', '()', till_type, numvals)
-   call collect_real_var_optional ('f_incorp', '()', f_incorp, numvals_f, 0.0, 1.0)
-   call collect_real_var_optional ('tillage_depth', '()', tillage_depth, numvals_t, 0.0, 1000.0)
-
-   ! ----------------------------------------------------------
    !    If no user defined characteristics then use the
    !      lookup table compiled from expert knowledge
    ! ----------------------------------------------------------
-   If (Numvals_t  .eq. 0  .OR.  numvals_f .eq. 0) then
+   If (tillage%type .ne. ' ' .and. tillage%type .ne. 'user_defined') then
       call write_string (new_line//'    - Reading residue tillage info')
 
-      call read_real_array_optional (tillage_section, till_type, 2, '()', type_info, numvals, 0.0, 1000.0)
+      call read_real_array_optional (tillage_section, tillage%type, 2, '()', type_info, numvals, 0.0, 1000.0)
 
       ! If we still have no values then stop
       If (numvals.ne.2) then
          ! We have an unspecified tillage type
-         f_incorp = 0.0
-         tillage_depth = 0.0
-         string = 'Cannot find info for tillage:- '//till_type
+         tillage%f_incorp = 0.0
+         tillage%tillage_depth = 0.0
+         string = 'Cannot find info for tillage:- '//trim(tillage%type)
          call FATAL_ERROR (ERR_user, string)
 
       Else
-         F_incorp = type_info(1)
-         Tillage_depth = type_info(2)
+         if (.not. reals_are_equal(tillage%f_incorp, 0.0) .and. .not. reals_are_equal( tillage%f_incorp ,type_info(1))) then
+           write(string,*) ' Tillage f_incorp specified (',tillage%f_incorp,') differs from default',type_info(1)
+           call WARNING_ERROR (ERR_user, string)
+         else
+         endif
+         tillage%f_incorp = type_info(1)
+         
+         if (.not. reals_are_equal(tillage%tillage_depth, 0.0) .and. .not. reals_are_equal( tillage%tillage_depth ,type_info(2))) then
+           string = ' Tillage tillage_depth specified differs from default'
+           call WARNING_ERROR (ERR_user, string)
+         else
+         endif
+         tillage%tillage_depth = type_info(2)
 
       Endif
    Else
@@ -1625,12 +1626,12 @@ subroutine surfom_Tillage ()
    ! ----------------------------------------------------------
    !              Now incorporate the residues
    ! ----------------------------------------------------------
-   Call surfom_incorp (till_type, F_incorp, Tillage_Depth)
+   Call surfom_incorp (tillage%type, tillage%f_incorp, tillage%tillage_depth)
 
    Write (string, '(3a,40x,a,f8.2,a,40x,a, f8.2)' )   &
-         'Residue removed using ', till_type, New_Line   &
-        ,'Fraction Incorporated = ', F_incorp, New_Line   &
-        ,'Incorporated Depth    = ', Tillage_Depth
+         'Residue removed using ', tillage%type, New_Line   &
+        ,'Fraction Incorporated = ', tillage%f_incorp, New_Line   &
+        ,'Incorporated Depth    = ', tillage%tillage_depth
 
    call Write_string (string)
 
@@ -1638,94 +1639,6 @@ subroutine surfom_Tillage ()
    return
 end subroutine
 
-!================================================================
-subroutine surfom_Tillage_single ()
-!================================================================
-
-   implicit none
-
-!+  Purpose
-!   Calculates surfom incorporation as a result of tillage operations.
-
-!+  Constant Values
-   character*(*) my_name             ! name of current procedure
-   parameter (my_name = 'surfom_tillage_single')
-!
-   character*(*) Tillage_section    ! section name for tillage info in
-   parameter (Tillage_section = 'tillage') ! lookup file
-
-!+  Local Variables
-   character String*300             ! message string
-   real      F_incorp               ! Fraction of residue incorporated
-                                    ! by tillage. (0-1)
-   character surfom_name*50         ! name of single residue to be tilled in
-   character till_type*30           ! name of implement used for tillage
-   real      type_info(2)           ! Array containing information about
-                                    ! a certain type (from table)
-   integer   Numvals                ! Number of values found in data string
-   integer   Numvals_F              ! Number of values found in data string
-   integer   Numvals_T              ! Number of values found in data string
-   real      Tillage_depth          ! depth of residue incorp (mm)
-   character  Err_string*400      ! Event message string
-
-!- Implementation Section ----------------------------------
-   call push_routine (my_name)
-
-
-   ! ----------------------------------------------------------
-   !       Get User defined tillage effects on residue
-   ! ----------------------------------------------------------
-   call collect_char_var ('name', '()', surfom_name, numvals)
-   call collect_char_var ('type', '()', till_type, numvals)
-   call collect_real_var_optional ('f_incorp', '()', f_incorp, numvals_f, 0.0, 1.0)
-   call collect_real_var_optional ('tillage_depth', '()', tillage_depth, numvals_t, 0.0, 1000.0)
-
-              Write (Err_string,*)   ' OH BOY Im in tillage_single subroutine '
-         call Write_string (Err_string)
-
-   ! ----------------------------------------------------------
-   !    If no user defined characteristics then use the
-   !      lookup table compiled from expert knowledge
-   ! ----------------------------------------------------------
-   If (Numvals_t  .eq. 0  .OR.  numvals_f .eq. 0) then
-      call write_string (new_line//'    - Reading residue tillage info')
-
-      call read_real_array_optional (tillage_section, till_type, 2, '()', type_info, numvals, 0.0, 1000.0)
-
-      ! If we still have no values then stop
-      If (numvals.ne.2) then
-         ! We have an unspecified tillage type
-         f_incorp = 0.0
-         tillage_depth = 0.0
-         string = 'Cannot find info for tillage:- '//till_type
-         call FATAL_ERROR (ERR_user, string)
-
-      Else
-         F_incorp = type_info(1)
-         Tillage_depth = type_info(2)
-
-      Endif
-   Else
-   Endif
-
-   ! ----------------------------------------------------------
-   !              Now incorporate the residues
-   ! ----------------------------------------------------------
-   Call surfom_incorp_single (surfom_name, till_type, F_incorp, Tillage_Depth)
-
-   Write (string, * )'A SINGLE residue ',surfom_name,'tilled.'
-   call Write_string (string)
-
-   Write (string, '(3a,40x,a,f8.2,a,40x,a, f8.2)' )   &
-         'Residue removed using ', till_type, New_Line   &
-        ,'Fraction Incorporated = ', F_incorp, New_Line   &
-        ,'Incorporated Depth    = ', Tillage_Depth
-
-   call Write_string (string)
-
-   call pop_routine (my_name)
-   return
-end subroutine
 
 !================================================================
 subroutine surfom_incorp (action_type, F_incorp, Tillage_depth)
@@ -2261,7 +2174,7 @@ subroutine surfom_add_surfom ()
       massBalanceChange%SW = 0.0
 
       call surfom_ExternalMassFlow (massBalanceChange)
-      
+
    else
          ! nothing to add
    endif
@@ -2472,9 +2385,9 @@ subroutine surfom_Send_my_variable (Variable_name)
           total_wt = total_wt + sum(g%SurfOM(i)%Standing(1:MaxFr)%amount) + sum(g%SurfOM(i)%Lying(1:MaxFr)%amount)
       end do
       call respond2get_real_var (variable_name, '(kg/ha)', total_wt)
-   
+
    elseif (Variable_name .eq. 'carbonbalance') then
-      
+
       total_c = 0.0
       do i = 1,g%num_surfom
           total_c = total_c + sum(g%SurfOM(i)%Standing(1:MaxFr)%C) + sum(g%SurfOM(i)%Lying(1:MaxFr)%C)
@@ -2485,7 +2398,7 @@ subroutine surfom_Send_my_variable (Variable_name)
       call respond2get_real_var (variable_name, '(kg/ha)', carbonbalance)
 
    elseif (Variable_name .eq. 'nitrogenbalance') then
-      
+
       total_n = 0.0
       do i = 1,g%num_surfom
           total_n = total_n + sum(g%SurfOM(i)%Standing(1:MaxFr)%N) + sum(g%SurfOM(i)%Lying(1:MaxFr)%N)
@@ -2493,8 +2406,8 @@ subroutine surfom_Send_my_variable (Variable_name)
       NitrogenBalance = 0.0 &                      ! Inputs-Losses
                     - (total_n-g%DailyInitialN)  ! Delta Storage
 
-      call respond2get_real_var (variable_name, '(kg/ha)', Nitrogenbalance)  
-      
+      call respond2get_real_var (variable_name, '(kg/ha)', Nitrogenbalance)
+
    else if (Variable_name .eq. 'surfaceom_c') then
    !                       --------
       total_c = 0.0
@@ -3013,7 +2926,7 @@ subroutine SurfOMOnBiomassRemoved (variant)
    real       surfom_N_added        ! amount of residue N added (kg/ha)
    real       surfom_P_added       ! amount of residue N added (kg/ha)
    type(BiomassRemovedType) :: BiomassRemoved
-   
+
    ! For gfortran, ensure these arrays are initialised to 0
    BiomassRemoved%fraction_to_Residue(:) = 0.0
    BiomassRemoved%dlt_crop_dm(:) = 0.0
@@ -3056,7 +2969,7 @@ subroutine SurfOMOnAddFaeces (variant)
    integer, intent(in) :: variant
    type(AddFaecesType) :: FaecesAdded
    integer SOMNo
-   
+
    call unpack_AddFaeces(variant, FaecesAdded)
 
    call AddSurfaceOM(SNGL(FaecesAdded%OMWeight) * c%fraction_faeces_added , &
@@ -3073,7 +2986,7 @@ subroutine SurfOMOnAddFaeces (variant)
 
     if (SOMNo .GE. 0) then ! Should always be OK, following creation in surfom_add_surfom
        g%SurfOM(SOMNo)%Lying(1:MaxFr)%AshAlk  = &
-               g%SurfOM(SOMNo)%Lying(1:MaxFr)%AshAlk  + & 
+               g%SurfOM(SOMNo)%Lying(1:MaxFr)%AshAlk  + &
                SNGL(FaecesAdded%OMAshAlk) * c%fraction_faeces_added * c%fr_pool_p(1:MaxFr,SOMNo)
     endif
 
@@ -3371,7 +3284,7 @@ subroutine surfaceom_ONtick (variant)
    real total_c
    real total_n
    integer i
-   
+
 !+  Constant Values
    character*(*) myname               ! name of current procedure
    parameter (myname = 'surfaceom_ONtick')
@@ -3385,12 +3298,12 @@ subroutine surfaceom_ONtick (variant)
       total_c = 0.0
       do i = 1,g%num_surfom
           total_c = total_c + sum(g%SurfOM(i)%Standing(1:MaxFr)%C) + sum(g%SurfOM(i)%Lying(1:MaxFr)%C)
-      end do   
-  
+      end do
+
       total_n = 0.0
       do i = 1,g%num_surfom
           total_n = total_n + sum(g%SurfOM(i)%Standing(1:MaxFr)%N) + sum(g%SurfOM(i)%Lying(1:MaxFr)%N)
-      end do    
+      end do
    g%DailyInitialC = total_c
    g%DailyInitialN = total_n
 
@@ -3463,12 +3376,6 @@ subroutine Main (action, data_string)
    else if (Action .eq. ACTION_Process) then
       call surfom_get_other_variables ()
       call surfom_Process ()
-
-   else if (Action .eq. ACTION_Till) then
-      call surfom_tillage ()
-
-   else if (Action .eq. 'tillage_single') then
-      call surfom_tillage_single ()
 
    else if (Action .eq. 'add_surfaceom') then
       call surfom_Add_surfom ()
@@ -3549,6 +3456,8 @@ subroutine respondToEvent(fromID, eventID, variant)
       call SurfOMOnBiomassRemoved(variant)
    elseif (eventID  .eq. id%add_faeces) then
       call SurfOMOnAddFaeces(variant)
+   elseif (eventID  .eq. id%tillage) then
+      call SurfOM_OnTillage(variant)
    endif
    return
 end subroutine respondToEvent

@@ -20,26 +20,20 @@ public partial class SurfaceOM
     }
 
     [EventHandler]
-    public void OnTillage_single(Tillage_singleType data)
-    {
-        surfom_tillage_single(data);
-    }
-
-    [EventHandler]
     public void OnAdd_surfaceom(Add_surfaceomType data)
     {
         surfom_add_surfom(data);
     }
-    
+
     [EventHandler]
     public void OnInitialised() { OnReset(); }
-    
+
     [EventHandler]
     public void OnReset() { initialised = true; surfom_Reset(); }
-    
+
     [EventHandler]
     public void OnCreate() { }
-    
+
     [EventHandler]
     public void OnSum_report() { surfom_Sum_Report(); }
 
@@ -48,7 +42,7 @@ public partial class SurfaceOM
 
     [EventHandler]
     public void OnNewmet(NewMetType newmetdata) { g.MetData = newmetdata; }
-   
+
     [EventHandler]
     public void OnIrrigated(IrrigationApplicationType data) { surfom_ONirrigated(data); }
 
@@ -57,7 +51,7 @@ public partial class SurfaceOM
 
     [EventHandler]
     public void OnBiomassRemoved(BiomassRemovedType BiomassRemoved) { SurfOMOnBiomassRemoved(BiomassRemoved); }
-    
+
     [EventHandler]
     public void OnProcess()
     {
@@ -68,7 +62,7 @@ public partial class SurfaceOM
         if (Today.DayOfYear == 300)
             return;
     }
-   
+
     [EventHandler]
     public void OnPost() { }
 
