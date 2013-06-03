@@ -641,7 +641,7 @@ endif
         <category type="category" description="When should tillage be done" />
         <tillage_date type="ddmmmdate" description="Enter tillage date (dd-mmm) : ">dd-mmm</tillage_date>
         <category type="category" description="Tillage application details" />
-        <surfaceommodule type="modulename" description="Module used to apply the tillage : " />
+        <surfaceommodule type="modulename" description="Module used to apply the tillage : ">Surface Organic Matter</surfaceommodule>
         <tillage_type type="list" listvalues="user_defined, chisel, disc, planter, burn, burn_90, graze, scarifier, rip, blade, tine" description="Tillage type : ">disc</tillage_type>
         <tillage_depth description="User_defined depth of seedbed preparation (mm) : ">0</tillage_depth>
         <tillage_f_incorp description="User_defined fraction of surface residues to incorporate (0-1): ">0</tillage_f_incorp>
@@ -650,7 +650,11 @@ endif
     <manager name="Tillage on an event">
       <script>
         <text>
-            '[surfaceommodule]' tillage type = [tillage_type], f_incorp = [tillage_f_incorp] (), tillage_depth = [tillage_depth]
+            if ('[tillage_type]' = 'user_defined') then
+                '[surfaceommodule]' tillage type = [tillage_type], f_incorp = [tillage_f_incorp] (), tillage_depth = [tillage_depth]
+            else
+                '[surfaceommodule]' tillage type = [tillage_type]
+            endif
       </text>
         <event>[modulename].[eventname]</event>
       </script>
@@ -659,7 +663,7 @@ endif
         <modulename type="modulename" description="The module the event come from : ">ClockAllYears</modulename>
         <eventname type="text" description="On which event should tillage be done : ">sowing</eventname>
         <category type="category" description="Tillage details" />
-        <surfaceommodule type="modulename" description="Module used to apply the tillage : ">ClockAllYears</surfaceommodule>
+        <surfaceommodule type="modulename" description="Module used to apply the tillage : ">Surface Organic Matter</surfaceommodule>
         <tillage_type type="list" listvalues="user_defined, chisel, disc, planter, burn, burn_90, graze, scarifier, rip, blade, tine" description="Tillage type : ">disc</tillage_type>
         <tillage_depth description="User_defined depth of seedbed preparation (mm) : ">0</tillage_depth>
         <tillage_f_incorp description="User_defined fraction of surface residues to incorporate (0-1): ">0</tillage_f_incorp>
@@ -2755,9 +2759,13 @@ fallowin = 0</text>
                   if ([thin_fraction] = 1.0) then
                      weed end_crop
                      days_after_weed_kill = 0
-                 else
+                  else
                   endif
-                  '[surfaceommodule]' tillage type = [tillage_type], f_incorp = [f_incorp], tillage_depth = [tillage_depth]
+                  if ('[tillage_type]' = 'user_defined') then
+                    '[surfaceommodule]' tillage type = [tillage_type], f_incorp = [f_incorp], tillage_depth = [tillage_depth]
+                  else
+                    '[surfaceommodule]' tillage type = [tillage_type]
+                  endif
                   if ([thin_fraction] = 1.0) then
                     crop_in = crop_in - 1
                     if (crop_current = 'weed') then

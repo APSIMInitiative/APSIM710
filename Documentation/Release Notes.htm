@@ -5,96 +5,20 @@
    </head>
    <body>
       <h1>APSIM 7.5 release notes</h1>
-      <p>12th April 2013</p>
+      <p>XXXX 2013</p>
 
-      <h2>New soil XML format</h2>
-      <p>The XML format (inside of .apsim and .soils files) has changed between APSIM 7.4 and 7.5. This change was
-         necessary for the migration to ApsimX. All APSIM 7.4 files (.apsim) will be converted to the new format
-         automatically.<b>Note though that an APSIM 7.5 file cannot be opened in earlier versions of APSIM.</b></p>
-      <p>This change has also meant that soil crop parameterisations are now part of the Water node under the soil
-         node. Previously they were separates nodes under Water.</p>
-
-
-      <h2>Runoff from irrigation</h2>
-      <p>The irrigation / soil water module can now be told to calculate runoff from irrigation applications.
-         To turn this on, a new parameter can be set to true when applying irrigation.</p>
-      <b>Old Manager</b>
-      <p>irrigation apply amount = 31 (mm), will_runoff = 1</p>
-      <b>New Manager</b>
-      <p>
-      IrrigationApplicationType data = new IrrigationApplicationType();<br>
-      data.Amount = 31;<br>
-      data.will_runoff = true;<br>
-      Irrigation.Apply(data);<br>
-      </p>
-
-
-      <h2>Sub-surface trickle irrigation</h2>
-      <p>Sub-surface trickle irrigation can now be specified via the apply command for the irrigation module.</p>
-      <b>Old Manager</b>
-      <p>irrigation apply amount = 31 (mm), depth = 100 (mm)</p>
-      <b>New Manager</b>
-      <p>
-      IrrigationApplicationType data = new IrrigationApplicationType();<br>
-      data.Amount = 31;<br>
-      data.Depth = 100;<br>
-      Irrigation.Apply(data);<br>
-      </p>
-
-
-      <h2>N2O from nitrification and denitrification</h2>
-      <p>Two new output variables "n2o_atm_nitrification" and "n2o_atm_denitrification" have been added to SoilN
-         and SoilNitrogen. These report the amount of n2o from nitirification and denitrification.
-      </p>
-
-
-      <h2>New Manager2 module now runs on Condor clusters</h2>
-      <p>There was a bug in APSIM 7.4 that stopped the Manager2 component from running on condor execute machines due
-         to them not having write access to the TEMP folder. A workaround has been implemented in APSIM 7.5.</p>
-
-
-      <h2>SoilTemp module now under the Soil node</h2>
-      <p>The SoilTemp and SoilTemp2 modules are now under the Soil node rather than the paddock node. This allows them
-         to use the soil thickness and ParticleSizeClay values. APSIM will automatically move these modules to the soil node
-         when converting a .apsim file from APSIM 7.4 to 7.5.</p>
-
-
-      <h2>APSIM.exe can now run a .apsim file from command line</h2>
-      <p>APSIM.exe can now be passed a .apsim, .con or .sim file on the command line. To specify a specific
-         simulation in a .apsim or .con file, the command line argument Simulation=xxx can be used.</p>
-      <p>To debug from Visual Studio, execute ApsimModel.exe passing a .apsim file or .sim file as the argument.</p>
-
-
-	  <h2>APSIM User Inteface can now combine multiple .apsim files</h2>
-	  <p>The user interface now has an option under the Open button to combine multiple .apsim files in to a single .apsim file.</p>
-
-
- 	  <h2>The ORYZA module now shows its output variables in the APSIM User Interface</h2>
-	  <p>A bug in APSIM 7.4 stopped the ORYZA rice module from showing its output variables to the user in the
-        user interface. This has now been fixed.</p>
-
- 	  <h2>The Maize (and CropMod) module treats harvest events differently</h2>
-	  <p>The "remove" parameter to the harvest event is no longer ignored. If the remove fraction is non-zero, that fraction of
-	    the leaf &amp; stem is removed from the system - reflecting farmer practise to burn or store crop residues. A message will appear in the summary
-	    file. <b>NB.</b> Previous APSIM examples using maize and weeds used an incorrect syntax (an extraneous comma after the word 'harvest') to harvest
-	    the crop which resulted in the entire message going astray, with no summary information appearing in the summary file.</p>
-
- 	  <h2>The Cotton module has been ported to C#</h2>
-	  <p>The OZCot cotton module has been ported to the C# programming language. While no new science
-        has been incorporated, the new language allows for much easier future development.
-        <a href="http://www.apsim.info/BugTracker/edit_bug.aspx?id=1485">For more detail, click here.</a></p>
-
-
-     <h2>The Sugar module is now responsive to CO2</h2>
-	  <p>The source code and XML file for the Sugar module has been changed to allow CO2 levels to affect
-        the growth of sugarcane.</p>
-     <p>Biggs, J.S., P.J. Thorburn, S. Crimp, B. Masters, and S.J. Attard. 2012.
-        “Interactions between climate change and sugarcane management systems for improving water quality leaving
-        farms in the Mackay Whitsunday region, Australia.”
-        Agriculture, Ecosystems & Environment.</p>
-
-
-
+     <h2>Changes to "user_defined" tillage</h2>
+	  <p>The SurfaceOM and Soilwat modules treat arguments to the tillage event slightly differently. Both modules
+	    accept an optional "type" parameter that can be used as a key in a lookup table of tillage parameters. To now, 
+	    if this key was defined and had an entry in the table, then the optional parameters (f_incorp, cn_red etc)
+	    were used as overides if they were defined. Using structures in these events instead of 
+	    ApsimVariants loses the ability to define optional parameters. So now, if the key is defined, it must 
+	    specify a valid section in the table, or the special key "user_defined" which will skip reading the table, and 
+	    the module will use whatever parameters the user specifies. Any parameter that isnt defined it is either zero 
+	    or blank.</p>
+	  <p>.NET and CI2 modules that use structures (cf. ApsimVariant) to pass the message have no way to specify
+	    optional parameters, and are unaffected.
+	</p>
 
      <h3><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=25">The complete list of defects can be found here</a></h3>
    </body>
