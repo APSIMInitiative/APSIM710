@@ -623,7 +623,7 @@ public class SlurryTank
                         faeces.OMWeight = GetOM();
                         faeces.POXP = 0;
                         faeces.SO4S = S_S04;
-                        item.Publish("add_faeces", faeces);
+                        item.Publish("AddFaeces", faeces);
                     }
                 }
                 Water = 0;

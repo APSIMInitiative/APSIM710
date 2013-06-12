@@ -75,7 +75,7 @@ module Registrations
          id%process = add_registration(respondToEventReg, 'process', nullTypeDDML, '')
          id%post = add_registration(respondToEventReg, 'post', nullTypeDDML, '')
          id%actualresiduedecompositioncalculated = add_registration(respondToEventReg, 'actualresiduedecompositioncalculated', SurfaceOrganicMatterDecompTypeDDML, '')
-         id%add_faeces = add_registration(respondToEventReg, 'add_faeces', AddFaecesTypeDDML, '')
+         id%add_faeces = add_registration(respondToEventReg, 'AddFaeces', AddFaecesTypeDDML, '')
 
 	 end subroutine
 end module Registrations
