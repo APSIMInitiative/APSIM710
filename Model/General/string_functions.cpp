@@ -183,7 +183,7 @@ bool replaceAll(string& St, size_t position, const string& subString, const stri
    if (subString=="")
 	   throw std::runtime_error("Empty search string.");
    bool replacementMade = false;
-   char* pos = (char*)St.c_str();
+   const char* pos = (char*)St.c_str();
    pos += position;
    pos = stristr(pos, subString.c_str());
    while (pos != NULL)
@@ -206,7 +206,7 @@ bool replaceAll(string& St, const string& subString, const string& replacementSt
    if (subString=="")
 	   throw std::runtime_error("Empty search string.");
    bool replacementMade = false;
-   char* pos = stristr(St.c_str(), subString.c_str());
+   const char* pos = stristr(St.c_str(), subString.c_str());
    while (pos != NULL)
 	  {
 	  size_t Pos = pos - St.c_str();
@@ -378,7 +378,7 @@ size_t findSubString(const std::string& st, const std::string& subString)
    {
    if (subString=="")
        return string::npos;
-   char* posChar = stristr(st.c_str(), subString.c_str());
+   const char* posChar = stristr(st.c_str(), subString.c_str());
    if (posChar == NULL)
       return string::npos;
    else

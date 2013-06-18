@@ -254,7 +254,7 @@ void Macro::replaceGlobalCounter(string& contents) const
    int globalCounter = 1;
 
    static const char* GLOBAL_COUNTER_INC = "#global.counter inc";
-   char* posGlobalCounter = stristr(contents.c_str(), "global.counter");
+   const char* posGlobalCounter = stristr(contents.c_str(), "global.counter");
    while (posGlobalCounter != NULL)
       {
       ptrdiff_t posCounter = posGlobalCounter - contents.c_str();

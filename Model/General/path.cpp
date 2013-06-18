@@ -112,11 +112,11 @@ string Path::Get_extension(void)
       return "";
 #else
    // find the right-most '.' which is after the right-most dirDelim
-   char *lastDot=strrchr(Name.c_str(),'.');
+   const char *lastDot=strrchr(Name.c_str(),'.');
    if(lastDot==NULL)
       return("");
 
-   char *lastDirDelim=strrchr(Name.c_str(), (int)dirDelim());
+   const char *lastDirDelim=strrchr(Name.c_str(), (int)dirDelim());
 
    if(lastDot>lastDirDelim)
       return(lastDot+1);
@@ -411,8 +411,7 @@ void Path::Append_path (const char* path)
    // setup drive.
    Set_path(Full_path);
 #else
-   char* Full_path;
-   Full_path = basename(path);
+   const char* Full_path = basename(path);
    // restore current directory.
    chdir (Saved_directory);
    // setup drive.

@@ -25,18 +25,17 @@ using namespace std;
 
 // converts the relative file name into a fully qualified path name.
 std::string ExpandFileName(const char *s){
-   fs::path p(s, fs::native);
-   fs::path q = system_complete(p);
-   return(q.native_file_string());
+   fs::path p(s);
+   return fs::system_complete(p).string();
 }
 
 bool FileExists (const std::string &f) {
-   fs::path p(f, fs::native);
+   fs::path p(f);
    return (fs::exists(p));
 }
 
 bool DirectoryExists (const std::string &d) {
-   fs::path p(d, fs::native);
+   fs::path p(d);
    return (fs::exists(p) && fs::is_directory(p));
 }
 
@@ -45,12 +44,8 @@ bool DirectoryExists (const std::string &d) {
 //---------------------------------------------------------------------------
 void RemovePathAndExtension(std::string& fileName)
    {
-   boost::filesystem::path p(fileName, boost::filesystem::native);
-   std::string name = p.leaf();
-   size_t posExtension = name.find('.');
-   if (posExtension != std::string::npos)
-      name.erase(posExtension);
-   fileName = name;
+   boost::filesystem::path p(fileName);
+   fileName = p.stem().string();
    }
 //---------------------------------------------------------------------------
 // Return the temporary directory.
