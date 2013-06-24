@@ -77,7 +77,7 @@ namespace CSUserInterface
                 TopPanel.Height = Convert.ToInt32(SplitterPositionString);
 
             // add some extra items to the context menu.
-            if (Grid.ContextMenuStrip.Items.Count != 8)
+            if (Grid.ContextMenuStrip != null && Grid.ContextMenuStrip.Items.Count != 8)
             {
                 Grid.ContextMenuStrip.Items.Add(new ToolStripSeparator());
 
