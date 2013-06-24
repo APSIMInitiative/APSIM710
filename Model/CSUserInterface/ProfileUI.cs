@@ -598,7 +598,7 @@ namespace CSUserInterface
         private void CheckButtonClick(object sender, EventArgs e)
         {
             OnSave();
-            string Msg = Soil.Check(true);
+            string Msg = Soil.Check(Configuration.Instance.ApplicationName != "ApsimUI");
             if (Msg == "")
                 MessageBox.Show("No errors found", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             else
