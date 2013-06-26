@@ -81,7 +81,7 @@ ifeq ($(PROJECTTYPE),exe)
 
 RESOBJ = dllres.obj
 all: $(APSIM)/Model/$(PROJECT).exe 
-$(APSIM)/Model/$(PROJECT).exe: $(OBJS)
+$(APSIM)/Model/$(PROJECT).exe: $(OBJS) $(RESOBJ)
 	$(FC) -o ../$(PROJECT).exe $(F90FLAGS) $(LDFLAGS) $(OBJSNODIR) $(RESOBJ) $(DEF) $(STATICLIBS) $(LIBS) $(EXTRALIBS)
 
 $(RESOBJ): $(APSIM)/Model/Build/dll.rc
