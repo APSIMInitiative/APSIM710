@@ -78,11 +78,11 @@
 *- Implementation Section -----------------
 
 
-      call getcl (record)
-      num_words = word_count (record)
+      num_words = command_argument_count()
       if (num_words .eq. 2) then
-         read (record, *) infile, outfile
-         open (10, infile, status='old')
+         call get_command_argument(1, infile)
+         call get_command_argument(2, outfile)
+         open (10, file=infile, status='old')
 
       else
          print*, ' Incorrect number of arguments'
@@ -307,7 +307,7 @@
          print*, ' TAV = ', avet, ' AMP = ', amp
          print*
          print*, ' Writing data to file'
-         open (20, outfile)
+         open (20, file=outfile)
          do k = 1, nrec_headers-1
             write (20, '(a)') trim (recs(k))
          end do

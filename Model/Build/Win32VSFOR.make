@@ -77,7 +77,19 @@ $(PROJECT).lib: $(OBJS)
 #    cmd /C move /Y $(PROJECT).lib ..
 
 else
+ifeq ($(PROJECTTYPE),exe)
+
+RESOBJ = dllres.obj
+all: $(APSIM)/Model/$(PROJECT).exe 
+$(APSIM)/Model/$(PROJECT).exe: $(OBJS)
+	$(FC) -o ../$(PROJECT).exe $(F90FLAGS) $(LDFLAGS) $(OBJSNODIR) $(RESOBJ) $(DEF) $(STATICLIBS) $(LIBS) $(EXTRALIBS)
+
+$(RESOBJ): $(APSIM)/Model/Build/dll.rc
+	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) $< $@
+
+else
    echo "Error: target type $(PROJECTTYPE) unknown"
+endif
 endif
 endif
 
