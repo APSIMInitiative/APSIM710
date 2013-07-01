@@ -728,15 +728,20 @@ namespace ModelFramework
                 return true;
             }
         }
-
+        //=====================================================================
         /// <summary>
         /// Return the value (using Reflection) of the specified property on the specified object.
+        /// Executes the logic for finding internal objects when calling LinkByName(). The
+        /// internal objects must be members of 'this' object. 
         /// Returns null if not found.
         /// </summary>
+        /// <param name="NamePath">The path to the entity</param>
+        /// <returns>An internal object</returns>
         private object FindInternalEntity(string NamePath)
         {
             Instance RelativeTo = In;
-            if (In == null)
+            //test if we can use the Instance. Must match names of 'this' object to the Instance to be valid.
+            if ((In == null) && (String.Compare(Name, HostComponent.ModelInstance.InstanceName, true) == 0))
                 RelativeTo = HostComponent.ModelInstance;
 
             if (RelativeTo != null)
@@ -817,7 +822,6 @@ namespace ModelFramework
             }
             return false;
         }
-
         /// <summary>
         /// Remove .MasterPM from the front of the specified St
         /// </summary>

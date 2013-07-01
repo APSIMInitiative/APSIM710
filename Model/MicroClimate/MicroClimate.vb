@@ -35,7 +35,7 @@ Imports ModelFramework
 ''' to VB via the converter in SharpDevelop.
 ''' </summary>
 Partial Public Class MicroMet
-    <Link()> Dim MyPaddock As Paddock
+    <Link()> Dim MySimulation As Simulation
     <Link()> Dim My As Component
 
 #Region "Parameters used to initialise the model"
@@ -444,7 +444,7 @@ Partial Public Class MicroMet
         Console.WriteLine("        - Reading Constants")
         Console.WriteLine("     ")
         Console.WriteLine("        - Reading Parameters")
-        MyPaddock.Get("latitude", latitude)
+        MySimulation.Get("latitude", latitude)
     End Sub
 
 
@@ -836,7 +836,7 @@ Partial Public Class MicroMet
         If Not windspeed_checked Then
             Dim val As Double
             val = [Double].NaN ' Set to NaN so we can test for non-receipt of value
-            use_external_windspeed = MyPaddock.Get("windspeed", windspeed) AndAlso (Not [Double].IsNaN(windspeed))
+            use_external_windspeed = MySimulation.Get("windspeed", val) AndAlso (Not [Double].IsNaN(val))
             windspeed = val
             windspeed_checked = True
         End If

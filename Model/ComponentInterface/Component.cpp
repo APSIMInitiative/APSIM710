@@ -18,7 +18,7 @@
 
 #include "ProtocolVector.h"
 #include "Component.h"
-#include "Variants.h"nam
+#include "Variants.h"
 #include "MessageTypes.h"
 
 #ifdef __WIN32__

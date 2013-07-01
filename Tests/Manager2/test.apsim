@@ -515,7 +515,7 @@ public class Script
       // ========================================================================
       // Link method
       // ========================================================================
-      ScriptChild ScriptChild = MyPaddock.LinkByName("ScriptChild") as ScriptChild;
+      ScriptChild ScriptChild = MySelf.LinkByName("ScriptChild") as ScriptChild;
       if (ScriptChild == null)
          throw new Exception("Cannot find ScriptChild");
       else
@@ -524,9 +524,11 @@ public class Script
          Console.WriteLine("ScriptChild.A: " + ScriptChild.A.ToString());
       }
 
-      ScriptChild ScriptChild2 = MyPaddock.LinkByName(".paddock.Script.ScriptChild") as ScriptChild;
+      ScriptChild ScriptChild2 = MyPaddock.LinkByName("Script.ScriptChild") as ScriptChild;
       if (ScriptChild2 == null)
-         throw new Exception("Cannot find paddock.Script.ScriptChild");
+         Console.WriteLine("Correctly no access to Script.ScriptChild from MyPaddock");
+      else
+         Console.WriteLine("Incorrect resolution from MyPaddock to Script.ScriptChild");
       
       SoilWat SoilWat = MyPaddock.LinkByName("Soil Water") as SoilWat;
       if (SoilWat == null)
@@ -567,7 +569,7 @@ public class Script
 
       // Test getting a child variable value
       int ChildVariable;
-      bool ok = MyPaddock.Get("ScriptChild.A", out ChildVariable);
+      bool ok = MySelf.Get("ScriptChild.A", out ChildVariable);
       if (!ok)
          throw new Exception("Cannot find child variable");
       if (ChildVariable != 12345)
