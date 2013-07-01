@@ -23,6 +23,7 @@ namespace CSUserInterface
         {
             InitializeComponent();
         }
+
         public override void OnRefresh()
         {
             treeSims.Nodes.Clear();
@@ -91,6 +92,11 @@ namespace CSUserInterface
         public override void OnSave()
         {
             Data.RemoveAll();
+
+            //JKB 1/7/13
+            //When Run is pressed, Data hasn't been updated as OnLoad (where Data is refreshed from the text) is only called when it is made visible
+            //Therefore changes made to the xml to trigger 'active' for FactorialMode aren't reflected in Data properly
+            XmlHelper.SetValue(Data, "active", Controller.FactorialMode ? "1" : "0");
 
             XmlNode node = Data.AppendChild(Data.OwnerDocument.CreateElement("settings"));
             if (radDesc.Checked)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
 using CSGeneral;
@@ -217,9 +218,10 @@ namespace ApsimFile
 
             // Look for factorials.
             if (AFile.FactorComponent != null && FillProjectWithFactorialJobs(AFile, SimulationPaths, ref ApsimJobs) > 0)
-            { }  // If there were factorial jobs, we are done, but if the factor component had no jobs to run, we'll want
-                 // to process the simulation normally (I think)
-
+            {
+                // If there were factorial jobs, we are done, but if the factor component had no jobs to run, we'll want
+                // to process the simulation normally 
+            }
             else if (SimulationPaths.Length == 1)
             {
                 string SumFileName = SimulationPaths[0];
@@ -303,6 +305,8 @@ namespace ApsimFile
         /// </summary>
         private int FillProjectWithFactorialJobs(ApsimFile AFile, string[] SimulationPaths, ref List<Job> ApsimJobs)
         {
+            if(!FactorialIsActive(AFile))
+                return 0;
             List<SimFactorItem> SimFiles = Factor.CreateSimFiles(AFile, SimulationPaths);
             foreach (SimFactorItem item in SimFiles)
             {
@@ -312,6 +316,16 @@ namespace ApsimFile
                 ApsimJobs.Add(J);
             }
             return ApsimJobs.Count;
+        }
+
+        private bool FactorialIsActive(ApsimFile AFile)
+        {
+            //This test should only return true if "active" is present - running from the command line will run the entire set by default
+            XmlNode varNode = AFile.FactorComponent.ContentsAsXML.SelectSingleNode("//active");
+            string s = "";
+            if(varNode != null)
+                return XmlHelper.Value(AFile.FactorComponent.ContentsAsXML, "active") == "1";
+            return true;
         }
 
         /// <summary>

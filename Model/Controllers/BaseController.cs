@@ -141,9 +141,13 @@ namespace Controllers
                     ApsimData.CreateFactorComponent();
                     //should trigger an onRefresh to theinterface
                 }
+                //JKB 1/7/13
+                //Adding a flag to stop ApsimRun from running all of the factorials if it isn't active
+                //When a new file is loaded, it needs to add the current setting to the file - if it is active
+                //Running from the command line will be affected as their is no easy way to distinguish between running from the gui, or from the command line
+                ApsimData.FactorComponent.SetValue("active", MyFactorialMode ? "1" : "0");
 
                 MyExplorer.RefreshDisplayMode();
-
             }
         }
 

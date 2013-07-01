@@ -322,6 +322,11 @@ namespace APSIMUI
         {
             UpdateCaption();
             ApsimRunToolStrip.Instance.deleteSims = true;
+            
+            //JKB 1/7/13
+            //used to set the current FactorialMode status into the new ApsimFile 
+            //probably not necessary for a SaveAs, but easiest place to do it
+            SimulationController.FactorialMode = SimulationController.FactorialMode;
         }
         private void UpdateCaption()
         {
