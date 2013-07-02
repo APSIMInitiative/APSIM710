@@ -226,6 +226,17 @@ namespace CMPServices
                         handleReturnInfo(msg);
                     }
                     break;
+                case Msgs.MSG_REPLYSET:  
+                    {
+                        // Put here as a hack for APSIM not handling this as indicated in the spec.
+                        // According to the spec, this message should be received only by systems, not "normal"
+                        // components.
+                        interpreter.loadMessage(msg);    //take ownership of this msg
+                        iPropertyID = (uint)interpreter.getIntField(Msgs.MSG_REPLYSET_REQID);
+                        bSuccess = interpreter.getBoolField(Msgs.MSG_REPLYSET_OK);
+                        doSetSuccess(msgFrom, iPropertyID, bSuccess);  //send it to the component dll
+                    }
+                    break;
             }
         }
         //============================================================================
