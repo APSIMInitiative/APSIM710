@@ -17,8 +17,9 @@
 
 // Debugging trace function
 void XTrace(const char* lpszFormat, ...);
+
 #ifdef _DEBUG
 #define Debug XTrace
 #else
-#define Debug  
+#define Debug(s, ...) (void)0
 #endif
