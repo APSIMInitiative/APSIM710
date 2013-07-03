@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Xml;
 using System.Linq;
@@ -84,7 +85,7 @@ namespace ApsimFile
            }
         }
 
-        public virtual void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, string factorsList, ref int counter, int totalCount, Configuration.architecture arch)
+        public virtual void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, string factorsList, ref int counter, int totalCount, Configuration.architecture arch, string destFolder)
         {
             if (factorsList != "")
                 factorsList += ";";
@@ -108,12 +109,12 @@ namespace ApsimFile
                     if (NextItem != null)
                     {
                         //call next factor in the list
-                        NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount, arch);
+                        NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount, arch, destFolder);
                     }
                     else
                     {
                         ++counter;
-                        CreateJobFromSimulation(SimFiles, Simulation, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount, arch);
+                        CreateJobFromSimulation(SimFiles, Simulation, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount, arch, destFolder);
                     }
                 }
             }
@@ -122,12 +123,12 @@ namespace ApsimFile
                 if (NextItem != null)
                 {
                     //call next factor in the list
-                    NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + FactorComponent.Name + "=" + FolderLevel, ref counter, totalCount, arch);
+                    NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + FactorComponent.Name + "=" + FolderLevel, ref counter, totalCount, arch, destFolder);
                 }
                 else
                 {
                     ++counter;
-                    CreateJobFromSimulation(SimFiles, Simulation, factorsList + FactorComponent.Name + "=" + FolderLevel, ref counter, totalCount, arch);
+                    CreateJobFromSimulation(SimFiles, Simulation, factorsList + FactorComponent.Name + "=" + FolderLevel, ref counter, totalCount, arch, destFolder);
                 }
             }
         }
@@ -146,7 +147,7 @@ namespace ApsimFile
            }
         }
 
-        public void CreateJobFromSimulation(List<SimFactorItem> SimFiles, Component Simulation, string factorsList, ref int counter, int totalCount, Configuration.architecture arch)
+      public void CreateJobFromSimulation(List<SimFactorItem> SimFiles, Component Simulation, string factorsList, ref int counter, int totalCount, Configuration.architecture arch, string destFolder)
       {
          string sInitialName = Simulation.Name;
          if (Builder.SaveExtraInfoInFilename)
@@ -248,12 +249,16 @@ namespace ApsimFile
             }
             comp.Contents = compNode.OuterXml;
          }
-         string SimFileName;
-         SimFileName = ApsimToSim.WriteSimFile(Simulation, arch);
-         SimFactorItem itm = new SimFactorItem(Simulation.Name, SimFileName);
-         SimFiles.Add(itm);    
-          //return simulation name to it's original
-          Simulation.Name = sInitialName;
+        string currDirectory = Directory.GetCurrentDirectory();
+        if (destFolder != "" && Directory.Exists(destFolder))
+            Directory.SetCurrentDirectory(destFolder);
+
+        string SimFileName = ApsimToSim.WriteSimFile(Simulation, arch);
+        SimFactorItem itm = new SimFactorItem(Simulation.Name, SimFileName);
+        SimFiles.Add(itm);    
+        //return simulation name to it's original
+        Simulation.Name = sInitialName;
+        Directory.SetCurrentDirectory(currDirectory);
       }
       public void AddOutputFilesToList(Component node, List<Component> outputfiles)
       {
@@ -312,7 +317,7 @@ namespace ApsimFile
            }
         }
        
-        public override void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, string factorsList, ref int counter, int totalCount, Configuration.architecture arch)
+        public override void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, string factorsList, ref int counter, int totalCount, Configuration.architecture arch, string destFolder)
         {
             if (factorsList != "")
                 factorsList += ";";
@@ -352,12 +357,12 @@ namespace ApsimFile
                 if (NextItem != null)
                 {
                     //call next factor in the list
-                    NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + Variable.Name + "=" + par, ref counter, totalCount, arch);
+                    NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + Variable.Name + "=" + par, ref counter, totalCount, arch, destFolder);
                 }
                 else
                 {
                     ++counter;
-                    CreateJobFromSimulation(SimFiles, Simulation, factorsList + Variable.Name + "=" + par, ref counter, totalCount, arch);
+                    CreateJobFromSimulation(SimFiles, Simulation, factorsList + Variable.Name + "=" + par, ref counter, totalCount, arch, destFolder);
                 }
             }
         }
@@ -629,7 +634,7 @@ namespace ApsimFile
     }
     public class Factor
     {
-        public static void ProcessSimulationFactorials(List<SimFactorItem> SimFiles, ApsimFile copiedFile, Component FactorComponent, string SimulationPath)
+        public static void ProcessSimulationFactorials(List<SimFactorItem> SimFiles, ApsimFile copiedFile, Component FactorComponent, string SimulationPath, string destFolder = "")
         {
             if (FactorComponent == null)
                 throw new Exception("Error initialising Factorials");
@@ -650,7 +655,7 @@ namespace ApsimFile
                     {
                         string factorsList = "";
 
-                        item.Process(SimFiles, Simulation, SimulationPath, factorsList, ref counter, (int)totalCount, Configuration.getArchitecture());
+                        item.Process(SimFiles, Simulation, SimulationPath, factorsList, ref counter, (int)totalCount, Configuration.getArchitecture(), destFolder);
                     }
                 }
                 catch (Exception ex)
@@ -671,13 +676,13 @@ namespace ApsimFile
             tmpFile.New(doc.OuterXml);
             return tmpFile;
         }
-        public static List<SimFactorItem> CreateSimFiles(ApsimFile _F, string[] SimsToRun)
+        public static List<SimFactorItem> CreateSimFiles(ApsimFile _F, string[] SimsToRun, string destFolder = "")
         {
             List<SimFactorItem> SimFiles = new List<SimFactorItem>();
             //make a copy of the file - should avoid problems with changes being applied during the processing of the factorial nodes
             ApsimFile tmpFile = CreateCopy(_F);
             foreach (String SimulationPath in SimsToRun)
-                Factor.ProcessSimulationFactorials(SimFiles, tmpFile, tmpFile.FactorComponent, SimulationPath);
+                Factor.ProcessSimulationFactorials(SimFiles, tmpFile, tmpFile.FactorComponent, SimulationPath, destFolder);
             return SimFiles;
         }
 

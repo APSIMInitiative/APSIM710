@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -107,6 +108,44 @@ namespace CSUserInterface
             {
                 XmlHelper.SetAttribute(node, "tl", "1");
             }
+        }
+
+        private void btnGenerate_Click(object sender, EventArgs e)
+        {
+            MakeSims();
+        }
+        private void MakeSims()
+        {
+            System.Collections.Specialized.StringCollection PathsToConvert = Controller.SelectedPaths;
+            List<String> SimsToConvert = new List<String>();
+            foreach (String SimulationPath in PathsToConvert)
+                ApsimFile.ApsimFile.ExpandSimsToRun(Controller.ApsimData.Find(SimulationPath), ref SimsToConvert);
+            
+            String UserMsg = "No simulations selected!";
+            if (SimsToConvert.Count > 0)
+            {
+                FolderBrowserDialog FolderChooser = new FolderBrowserDialog();
+                FolderChooser.Description = "Select the directory in which to save the .sim files";
+                FolderChooser.SelectedPath = Directory.GetCurrentDirectory();
+                if (FolderChooser.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        List<SimFactorItem> SimFiles = ApsimFile.Factor.CreateSimFiles(Controller.ApsimData, SimsToConvert.ToArray(), FolderChooser.SelectedPath);
+                        if (SimFiles.Count == 1)
+                            UserMsg = "1 Simulation created.";
+                        else
+                        {
+                            UserMsg = SimFiles.Count + " Simulations created.";
+                        }
+                    }
+                    catch (Exception err)
+                    {
+                        MessageBox.Show("Unexpected Error while generating .sim files:\n " + err.Message, "Error generating .sim file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            MessageBox.Show(UserMsg, "Create .SIM", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 
