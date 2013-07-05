@@ -133,7 +133,7 @@ float SimplePart::n_conc_min(void)
 float SimplePart::dltNSenescedRetrans(void)
    //===========================================================================
 {
-   return dlt.n_senesced_retrans;
+   return abs(dlt.n_senesced_retrans > 10e-20) ? dlt.n_senesced_retrans : 0.0;
 }
 
 
@@ -436,7 +436,10 @@ void SimplePart::update(void)
    Senesced = Senesced - Detaching + Senescing;
    Green = Green + Retranslocation;
 
-   Green = Green + Biomass(0,dlt.n_senesced_retrans, 0,0);
+   double n_sen_retrans = 0;
+   if (abs(dlt.n_senesced_retrans) > 10e-20)
+       n_sen_retrans = dlt.n_senesced_retrans;
+   Green = Green + Biomass(0,n_sen_retrans, 0,0);
    relativeGrowthRate = (float)divide (Growth.DM(), plant->All().Growth.DM(), 0.0);
 
 

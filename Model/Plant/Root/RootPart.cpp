@@ -8,6 +8,7 @@
 #include "../Phenology/Phenology.h"
 #include "../Population.h"
 #include <numeric>
+#include <math.h>
 using namespace std;
 
 string IncorpFOMType = protocol::DDML(protocol::IncorpFomType());
@@ -426,8 +427,8 @@ void RootPart::root_dist(float root_sum, vector<float> &root_array)           //
    int deepest_layer = (*soil[0]).find_layer_no (root_depth);
    float root_length_sum = sum_real_array (root_length, deepest_layer+1);
    for (int layer = 0; layer <= deepest_layer; layer++)
-      root_array[layer] = root_sum *
-                           divide (root_length[layer], root_length_sum, 0.0);
+      root_array[layer] = (float)(root_sum *
+                           divide (root_length[layer], root_length_sum, 0.0));
    }
 
 void RootPart::root_dist_dead(float root_sum, vector<float> &root_array)      //(INPUT) Material to be distributed
@@ -439,8 +440,8 @@ void RootPart::root_dist_dead(float root_sum, vector<float> &root_array)      //
    int deepest_layer = (*soil[0]).find_layer_no (root_depth);
    float root_length_sum = sum_real_array (root_length_senesced, deepest_layer+1);
    for (int layer = 0; layer <= deepest_layer; layer++)
-      root_array[layer] = root_sum *
-                           divide (root_length_senesced[layer], root_length_sum, 0.0);
+      root_array[layer] = (float)(root_sum *
+                           divide (root_length_senesced[layer], root_length_sum, 0.0));
    }
 
 void RootPart::collectDetachedForResidue(vector<string> &//part_name
@@ -966,9 +967,13 @@ float RootPart::nUptake()
 //=======================================================================================
 //
    {
-   int deepest_layer = find_layer_no (root_depth, (*soil[0]).dlayer, max_layer);
-   float nUptakeSum = - sum_real_array ((*soil[0]).dlt_no3gsm, deepest_layer+1)
-                      - sum_real_array ((*soil[0]).dlt_nh4gsm, deepest_layer+1);
+   float nUptakeSum = 0.0;
+   if (soil.size() > 0)
+   {
+     int deepest_layer = find_layer_no (root_depth, (*soil[0]).dlayer, max_layer);
+     nUptakeSum = - sum_real_array ((*soil[0]).dlt_no3gsm, deepest_layer+1)
+                        - sum_real_array ((*soil[0]).dlt_nh4gsm, deepest_layer+1);
+   }
    return nUptakeSum;
    }
 
@@ -984,7 +989,7 @@ void RootPart::rootDist(float root_sum, vector<float>& rootArray)
    float root_length_sum = sum_real_array (root_length, deepest_layer+1);
 
    for (int layer = 0; layer <= deepest_layer; layer++)
-      rootArray.push_back(root_sum * divide (root_length[layer], root_length_sum, 0.0));
+      rootArray.push_back((float)(root_sum * divide (root_length[layer], root_length_sum, 0.0)));
    }
 
 

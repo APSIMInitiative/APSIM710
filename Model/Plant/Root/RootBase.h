@@ -69,7 +69,7 @@ class RootBase : public SimplePart
       virtual float NSupply(){return 0.0;};
       virtual float swAvailable(){return 0.0;};
       virtual float swAvailablePotential(){return 0.0;};
-      virtual float nUptake(){return 0;};
+      virtual float nUptake(){return 0.0;};
       virtual float fasw(int depth){return 0;};
       virtual void  get_AvailableToAnimal(protocol::AvailableToAnimalType &avail) {};
    };
