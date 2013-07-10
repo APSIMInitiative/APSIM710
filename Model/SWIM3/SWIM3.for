@@ -1564,6 +1564,20 @@ cnh added as per request by Dr Val Snow
      :         ('Bottom boundary condition now constant potential')
          endif
 
+      elseif (Variable_name .eq. 'bbc_seepage_potential') then
+         call collect_double_var (
+     :              Variable_name,
+     :              '(cm)',
+     :              p%bbc_value,
+     :              numvals,
+     :              -1d7,
+     :              1d7)
+         if (p%ibbc.ne.3) then
+            p%ibbc = 3
+            call Write_string
+     :         ('Bottom boundary condition now a seepage potential')
+         endif
+         
       elseif (Variable_name .eq. 'bbc_gradient') then
          call collect_double_var (
      :              Variable_name,
