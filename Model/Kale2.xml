@@ -32,7 +32,11 @@
         <Stages type="text" description="Stages">Sowing Germination Emergence Expanding Vegetative Maturity </Stages>
         <Values type="text" description="Values">1           2      3         4          5     6   </Values>
       </StageBasedInterpolation>
-      <Population />
+      <Population>
+        <Constant name="DensityFunction">
+          <Value type="text" description="Value">15</Value>
+        </Constant>
+      </Population>
       <Arbitrator>
         <ArbitrationOption type="text" description="ArbitrationOption">PriorityAllocation</ArbitrationOption>
         <PriorityOrgan type="text" description="Organs that recieve priority for biomass partitioning">Leaf</PriorityOrgan>
@@ -172,18 +176,42 @@
         <AirTemperatureFunction>
           <XYPairs shortcut="/Kale2/Model/Plant/Phenology/ThermalTime/XYPairs" />
         </AirTemperatureFunction>
-        <Constant name="BranchingRate">
-          <Value type="text" description="Value">0</Value>
-        </Constant>
-        <Constant name="ShadeInducedBranchMortality">
-          <Value type="text" description="Value">0</Value>
-        </Constant>
         <Constant name="MainStemFinalNodeNumber">
           <Value type="text" description="Value">401</Value>
         </Constant>
         <Constant name="DroughtInducedBranchMortality">
           <Value type="text" description="Value">0</Value>
         </Constant>
+        <MultiplyFunction name="BranchingRate">
+          <Memo>The branching rates sets the number of new branches initiated.  If we have a plant with one stem and branching rate is set as zero this plant will continue to have only one stem.  If this value increases to 1 for the appearance of 1 mainstem node and then reduces to zero again the plant will produce one branch on its mainstem that has the same properties as the mainstem.  The higher this number is and the longer is remains above 0 the more branches the plant will produce.
+For Potato the potential branching rate is the branching pattern that would be observed in wide spaced plantings.  There is a cover response factor to reduce branching rates in closer spacings.</Memo>
+          <LinearInterpolationFunction name="Potential_Branching_Rate">
+            <XProperty>Structure.MainStemNodeNo</XProperty>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>1 0</XY>
+              <XY>2 0</XY>
+              <XY>3 0</XY>
+              <XY>4 0</XY>
+              <XY>5 0</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="Cover_response">
+            <XProperty type="text" description="XProperty">leaf.CoverGreen</XProperty>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>1 0</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+        </MultiplyFunction>
+        <LinearInterpolationFunction name="ShadeInducedBranchMortality">
+          <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>4 0</XY>
+            <XY>10 0.01</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
       </Structure>
       <Root>
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
@@ -314,10 +342,10 @@
           <XProperty type="text" description="XProperty">Structure.PlantMainStemNodeNo</XProperty>
           <XYPairs>
             <XY>0 500</XY>
-            <XY>2 150000</XY>
-            <XY>4 200000</XY>
-            <XY>6 250000</XY>
-            <XY>8 300000</XY>
+            <XY>2 30000</XY>
+            <XY>4 60000</XY>
+            <XY>6 90000</XY>
+            <XY>8 120000</XY>
           </XYPairs>
           <Memo>Gives the size of individual leaves when they are fully expanded (mm2)</Memo>
         </LinearInterpolationFunction>
@@ -382,11 +410,11 @@
           <Value type="text" description="Value">0.02</Value>
         </Constant>
         <Constant name="MaximumNConc">
-          <Value type="text" description="Value">0.055</Value>
+          <Value type="text" description="Value">0.045</Value>
           <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the CriticalNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - CriticalNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation.</Memo>
         </Constant>
         <Constant name="NReallocationFactor">
-          <Value type="text" description="Value">1</Value>
+          <Value type="text" description="Value">0.95</Value>
           <Memo>Controls the proportion of Non-Structural and senesing Metabolic N that may be Reallocated to other organs each day.  </Memo>
         </Constant>
         <Constant name="NRetranslocationFactor">
@@ -398,7 +426,7 @@
           <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
         </Constant>
         <Constant name="DMReallocationFactor">
-          <Value type="text" description="Value">0.95</Value>
+          <Value type="text" description="Value">0.8</Value>
           <Memo>This sets the proportion of Leaf Wt senesced that is reallocated each day.</Memo>
         </Constant>
         <LinearInterpolationFunction name="FrostFraction">
@@ -512,7 +540,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           <XYPairs>
             <XY>3 0.06</XY>
             <XY>4 0.03</XY>
-            <XY>5.3 0.015</XY>
+            <XY>6 0.02</XY>
           </XYPairs>
           <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the CriticalNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - CriticalNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation.</Memo>
         </LinearInterpolationFunction>

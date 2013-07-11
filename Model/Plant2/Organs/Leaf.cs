@@ -576,14 +576,15 @@ public class Leaf : BaseOrgan, AboveGround
                 FinalLeafAppeared = true;
             int AppearingNode = (int)(Structure.MainStemNodeNo + (1 - FinalLeafFraction));
             double CohortAge = (Structure.MainStemNodeNo - AppearingNode) * Structure.MainStemNodeAppearanceRate.Value * FinalLeafFraction;
-            double BranchNumber = Population.Density * Structure.PrimaryBudNo;
+          //  double BranchNumber = Population.Density * Structure.PrimaryBudNo;
+            double BranchNumber = Structure.MainStemPopn;
             if (Leaves.Count > 0)
             {
                 int j = (int)AppearedCohortNo - 1;
                 BranchNumber = Leaves[j]._Population; //Retrive the branch number of the previous cohort so this can be appended with additional branching
             }
-            BranchNumber += Structure.BranchingRate * Population.Density * Structure.PrimaryBudNo;
-
+            //BranchNumber += Structure.BranchingRate * Population.Density * Structure.PrimaryBudNo;
+            BranchNumber += Structure.BranchingRate * Structure.MainStemPopn;
             //Set the properties of the appearing cohort so it begins growing 
             int i = AppearingNode -1;
             Leaves[i].Rank = AppearingNode;
@@ -612,6 +613,9 @@ public class Leaf : BaseOrgan, AboveGround
             }
         }
         _ExpandedNodeNo = ExpandedCohortNo + FractionNextleafExpanded;
+
+        //Population.Density = (1-Structure.ProportionStemMortality) * Structure.MainStemPopn;
+        //Population.Density = (1 - Structure.ProportionStemMortality) * Population.Density;  
     }
     
     public virtual void InitialiseCohorts() //This sets up cohorts on the day growth starts (eg at emergence)
@@ -623,7 +627,9 @@ public class Leaf : BaseOrgan, AboveGround
             CohortsInitialised = true;
             if (Leaf.Area > 0)//If initial cohorts have an area set the are considered to be appeared on day of emergence so we do appearance and count up the appeared nodes on the first day
             {
-                Leaf._Population = Population.Density * Structure.PrimaryBudNo;
+                //Leaf._Population = Population.Density * Structure.PrimaryBudNo;
+                Leaf._Population = Structure.MainStemPopn;
+
                 Leaf.DoInitialisation();
                 Structure.MainStemNodeNo += 1.0;
                 Leaf.DoAppearance(1.0);
@@ -1054,6 +1060,8 @@ public class Leaf : BaseOrgan, AboveGround
         MaxCover = Sow.MaxCover;
         Structure.PrimaryBudNo = Sow.BudNumber;
         MaxNodeNo = Structure.MaximumNodeNumber;
+        Population.Density = Sow.Population;
+
     }
     [EventHandler]
     public void OnCanopy_Water_Balance(CanopyWaterBalanceType CWB)

@@ -8,12 +8,24 @@ public class Population
 {
     [Link]
     Plant Plant = null;
-    
+
+
+    double _CurrentPopulation = 0;
     [Output("Population")]
     public double Density
     {
-        get { return Plant.SowingData.Population; }
+        get
+        {
+            return _CurrentPopulation;
+            //   Plant.SowingData.Population;
+        } 
+        set
+        {
+            _CurrentPopulation =value; 
+        }
+          
     }
 
+ 
 }
 

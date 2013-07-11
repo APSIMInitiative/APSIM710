@@ -45,6 +45,9 @@ public class Structure
     public Function ShadeInducedBranchMortality = null;
     [Link(NamePath = "DroughtInducedBranchMortality")]
     public Function DroughtInducedBranchMortality = null;
+    [Link(NamePath = "DensityFactor", IsOptional = true)]
+    public Function DensityFactor = null;
+
     #endregion
 
     #region Output Variables
@@ -53,7 +56,13 @@ public class Structure
     [Description("Number of mainstems per meter")]
     public double MainStemPopn
     {
-        get { return Population.Density * PrimaryBudNo; }
+        get {
+            double OrigPop = Population.Density * PrimaryBudNo;
+            if (DensityFactor == null)
+             return OrigPop;
+            else
+                return OrigPop *(1- DensityFactor.Value);
+        }
     }
     [Output]
     [Units("/m2")]
