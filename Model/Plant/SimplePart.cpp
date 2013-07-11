@@ -437,7 +437,7 @@ void SimplePart::update(void)
    Green = Green + Retranslocation;
 
    double n_sen_retrans = 0;
-   if (abs(dlt.n_senesced_retrans) > 10e-20)
+   if (fabs(dlt.n_senesced_retrans) > 10e-20)
        n_sen_retrans = dlt.n_senesced_retrans;
    Green = Green + Biomass(0,n_sen_retrans, 0,0);
    relativeGrowthRate = (float)divide (Growth.DM(), plant->All().Growth.DM(), 0.0);

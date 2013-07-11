@@ -12,8 +12,8 @@ class Biomass
       virtual float N()  const {return privateN;}
       virtual float P()  const {return privateP;}
 
-      virtual float StructuralDM() const {return (abs(privateStructuralDM) > 10e-20) ? privateStructuralDM : 0.0 ;}
-      virtual float NonStructuralDM() const {return (abs(privateNonStructuralDM) > 10e-20) ? privateNonStructuralDM : 0.0 ;}
+      virtual float StructuralDM() const {return (fabs(privateStructuralDM) > 10e-20) ? privateStructuralDM : 0.0 ;}
+      virtual float NonStructuralDM() const {return (fabs(privateNonStructuralDM) > 10e-20) ? privateNonStructuralDM : 0.0 ;}
 
 
       virtual void AddStructuralDM(float amount)  ;
