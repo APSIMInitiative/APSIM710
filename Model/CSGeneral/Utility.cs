@@ -527,7 +527,7 @@ namespace CSGeneral
             }
             finally
             {
-                if (Server != null) Server.Close();
+                if (Server != null) {Server.GetStream ().Close (); Server.Close();}
             }
             return Response;
         }
