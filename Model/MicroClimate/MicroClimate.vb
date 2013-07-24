@@ -34,7 +34,7 @@ Imports ModelFramework
 ''' Ported by Eric Zurcher Jun 2011, first to C#, then automatically
 ''' to VB via the converter in SharpDevelop.
 ''' </summary>
-Partial Public Class MicroMet
+Partial Public Class MicroClimate
     <Link()> Dim MySimulation As Simulation
     <Link()> Dim My As Component
 
@@ -329,7 +329,7 @@ Partial Public Class MicroMet
     End Sub
 
     <EventHandler()> _
-    Public Sub OnTick(time As TimeType)
+    Public Sub OnTick(ByVal time As TimeType)
         todayHeaderWritten = False
         day = today.DayOfYear
         year = today.Year
@@ -337,7 +337,7 @@ Partial Public Class MicroMet
     End Sub
 
     <EventHandler()> _
-    Public Sub OnChangeGSMax(ChangeGSMax As ChangeGSMaxType)
+    Public Sub OnChangeGSMax(ByVal ChangeGSMax As ChangeGSMaxType)
         Dim senderIdx As Integer = FindComponentIndex(ChangeGSMax.component)
         If senderIdx < 0 Then
             Throw New Exception("Unknown Canopy Component: " & Convert.ToString(ChangeGSMax.component))
@@ -351,7 +351,7 @@ Partial Public Class MicroMet
     ''' Obtain all relevant met data
     ''' </summary>
     <EventHandler()> _
-    Public Sub OnNewmet(NewMet As NewMetType)
+    Public Sub OnNewmet(ByVal NewMet As NewMetType)
         radn = NewMet.radn
         maxt = NewMet.maxt
         mint = NewMet.mint
@@ -382,7 +382,7 @@ Partial Public Class MicroMet
     ''' Register presence of a new crop
     ''' </summary>
     <EventHandler()> _
-    Public Sub OnNewCrop(newCrop As NewCropType)
+    Public Sub OnNewCrop(ByVal newCrop As NewCropType)
         Dim senderIdx As Integer = FindComponentIndex(newCrop.sender)
 
         ' If sender is unknown, add it to the list
@@ -412,7 +412,7 @@ Partial Public Class MicroMet
     End Sub
 
     <EventHandler()> _
-    Public Sub OnNew_Canopy(newCanopy As NewCanopyType)
+    Public Sub OnNew_Canopy(ByVal newCanopy As NewCanopyType)
         Dim senderIdx As Integer = FindComponentIndex(newCanopy.sender)
         If senderIdx < 0 Then
             Throw New Exception("Unknown Canopy Component: " & Convert.ToString(newCanopy.sender))
@@ -429,7 +429,7 @@ Partial Public Class MicroMet
     ''' Obtain updated information about a plant's growth capacity
     ''' </summary>
     <EventHandler()> _
-    Public Sub OnNewPotentialGrowth(newPotentialGrowth As NewPotentialGrowthType)
+    Public Sub OnNewPotentialGrowth(ByVal newPotentialGrowth As NewPotentialGrowthType)
         Dim senderIdx As Integer = FindComponentIndex(newPotentialGrowth.sender)
         If senderIdx < 0 Then
             Throw New Exception("Unknown Canopy Component: " & Convert.ToString(newPotentialGrowth.sender))
@@ -531,7 +531,7 @@ Partial Public Class MicroMet
 
 #End Region
 
-    Private Function FetchTableValue(field As String, compNo As Integer, layerNo As Integer) As Double
+    Private Function FetchTableValue(ByVal field As String, ByVal compNo As Integer, ByVal layerNo As Integer) As Double
         If field = "LAI" Then
             Return ComponentData(compNo).layerLAI(layerNo)
         ElseIf field = "Ftot" Then
@@ -559,7 +559,7 @@ Partial Public Class MicroMet
         End If
     End Function
 
-    Private Sub WriteTable(title As String)
+    Private Sub WriteTable(ByVal title As String)
         If Not todayHeaderWritten Then
             'Dim Today As New DateTime(year, 1, 1)
             'Today = Today.AddDays(day - 1)
@@ -612,7 +612,7 @@ Partial Public Class MicroMet
 
     End Sub
 
-    Private Function FindComponentIndex(name As String) As Integer
+    Private Function FindComponentIndex(ByVal name As String) As Integer
         For i As Integer = 0 To ComponentData.Length - 1
             If ComponentData(i).Name = name.ToLower() Then
                 Return i
@@ -622,7 +622,7 @@ Partial Public Class MicroMet
         Return -1
     End Function
 
-    Private Sub ComponentConstants(idx As Integer)
+    Private Sub ComponentConstants(ByVal idx As Integer)
         Dim targetType As String = ComponentData(idx).Type.ToLower()
 
         ' Apply the "default" values, then see whether they need to be overridden
