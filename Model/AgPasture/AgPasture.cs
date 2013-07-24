@@ -1091,7 +1091,7 @@ public class AgPasture
     {
         for (int i = 0; i < CWB.Canopy.Length; i++)
         {
-            if (CWB.Canopy[i].name == thisCropName)
+            if (CWB.Canopy[i].name.ToUpper() == thisCropName.ToUpper())
             {
                 p_waterDemand = (double)CWB.Canopy[i].PotentialEp;
             }
@@ -1107,7 +1107,7 @@ public class AgPasture
 
         for (int i = 0; i < canopiesNum; i++)
         {
-            if (LP.Interception[i].name == thisCropName)  //TO: species by species, and get the total?
+            if (LP.Interception[i].name.ToUpper() == thisCropName.ToUpper())  //TO: species by species, and get the total?
             {
                 IntRadn = 0;
                 for (int j = 0; j < LP.Interception[i].layer.Length; j++)
@@ -2782,9 +2782,8 @@ public class AgPasture
     {
         //Uptake from the root_zone
         NitrogenChangedType NUptake = new NitrogenChangedType();
-        NUptake.DeltaUrea = new double[dlayer.Length];
-        NUptake.DeltaNH4 = new double[dlayer.Length];
         NUptake.DeltaNO3 = new double[dlayer.Length];
+        NUptake.DeltaNH4 = new double[dlayer.Length];
 
         float Fraction = 0;
         if (p_soilNavailable > 0)
@@ -2886,7 +2885,6 @@ public class AgPasture
                 n_uptake += (no3[layer] + nh4[layer]) * Fraction;
                 SNUptake[layer] = (no3[layer] + nh4[layer]) * Fraction;
 
-                NUptake.Sender = "AgPasture";
                 NUptake.DeltaNO3[layer] = -no3[layer] * Fraction;
                 NUptake.DeltaNH4[layer] = -nh4[layer] * Fraction;
             }
