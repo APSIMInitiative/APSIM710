@@ -43,13 +43,14 @@ namespace CSUserInterface
 
 			PropertiesMenuItem.Checked = TabControl.TabPages.Count == 2;
 
-			TextBox.Text = XmlHelper.Value(Data, "text");
-			if (TextBox.Text.Contains("Imports ")) {
+            string scriptText = XmlHelper.Value(Data, "text");
+			if (scriptText.Contains("Imports ")) {
 				TextBox.Lexer = VbParser;
 			} else {
 				TextBox.Lexer = CsParser;
 			}
-			Assembly.LoadFile(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "CSDotNetComponentInterface.dll"));
+            TextBox.Text = scriptText;
+            Assembly.LoadFile(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "CSDotNetComponentInterface.dll"));
 			Assembly.LoadFile(Types.GetProbeInfoDLLFileName());
 
 			foreach (string @ref in XmlHelper.ValuesRecursive(Data, "reference")) {
