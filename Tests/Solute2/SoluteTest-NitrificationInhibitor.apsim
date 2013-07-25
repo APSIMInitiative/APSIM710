@@ -1,0 +1,979 @@
+<folder version="36" name="simulations">
+  <simulation name="SoluteTest-NitInhibitor">
+    <clock>
+      <start_date type="date" description="Enter the start date of the simulation">01/01/2000</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">31/01/2000</end_date>
+    </clock>
+    <metfile name="met">
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\MildTemperate.met</filename>
+    </metfile>
+    <summaryfile />
+    <memo name="Info">
+========================================================================
+      From RCichota  - generic tests for solute and inhibitor
+========================================================================
+
+
+  - Basic simulation description:
+    - Rotational grazing on mixed pasture
+    - Generic soil - Silt Loam
+    - Artificial constant weather
+    - 200kgN/ha in a year, in 10 applications
+    - Urine deposition of 500 kgN/ha
+
+
+   - This simulation uses a tracer solute:
+     . No interactions with soil, except leaching
+     . No transformation in the solute
+ </memo>
+    <area name="paddock">
+      <BrT name="brt">
+        <InitialContent type="text" description="Type initial content for dcd:">50  0  0</InitialContent>
+      </BrT>
+      <folder name="Manager folder">
+        <manager2 name="Cut rotation for AgPasture">
+          <ui>
+            <Dummy1 type="category" description="Setup cut rotation for AgPasture" />
+            <CutPasture_StartDate type="ddmmmdate" description="Enter date to start rotation (dd/mm/yyyy): ">01/01/1900</CutPasture_StartDate>
+            <CutPasture_EndDate type="ddmmmdate" description="Enter date to end rotation (dd/mm/yyyy): ">31/07/2012</CutPasture_EndDate>
+            <AgPasture_type type="list" listvalues="AgPasture,ryegrass_clover,ryegrass,clover" description="Enter pasture module:">AgPasture</AgPasture_type>
+            <CutTrigger_type type="list" listvalues="Fixed interval,Target interval,Target standing mass,Target mass above residual to cut,Target DM cover" description="Enter the cut trigger type: ">Target standing mass</CutTrigger_type>
+            <CutInterval type="text" description="   If trigger is interval between cuttings, enter its value (days):">1</CutInterval>
+            <UpperThreshold type="text" description="   If trigger is the sward standing mass, enter the amount (kgDM/ha):">2000</UpperThreshold>
+            <CoverTarget type="text" description="   If targeting a cover, enter the values over the year (kgDM/ha):">2750  2600  2250  1950  1700  1450  1250  1275  1450  1575  1875  2500  2750</CoverTarget>
+            <RemoveAmount_type type="list" listvalues="Set amount,Target amount,Down to residual DM,Set interval (for target cover only)" description="Enter how removed amount is computed:">Down to residual DM</RemoveAmount_type>
+            <Amount2Remove type="text" description="   If targeting amount or cover, enter the value to remove at each cut (kgDM/ha):">185</Amount2Remove>
+            <FractAboveTarget type="text" description="   If targeting cover, enter the fraction above target to trigger cut (0-1):">0.75</FractAboveTarget>
+            <LowerThreshold type="text" description="   If not targeting cover, enter the minimum residual after cut (kgDM/ha):">1250</LowerThreshold>
+            <Dummy2 type="category" description="Management of cut material" />
+            <ResidueTreatment_type type="list" listvalues="Return as residue,Return as dung &amp; urine" description="Enter the treatment type for the cut material:">Return as residue</ResidueTreatment_type>
+            <DMRemovalOption type="list" listvalues="Based on digestibility,type a fraction (0-1)" description="Enter fraction of DM that is removed from field (0-1):">1.00</DMRemovalOption>
+            <FracN2Remove type="text" description="Enter fraction of N that is removed from field (0-1):">1.00</FracN2Remove>
+            <Dummy3 type="category" description="   If returning as dung &amp; urine" />
+            <FracN2Dung type="text" description="   Enter proportion of N returned in dung (0-1):">0.0</FracN2Dung>
+          </ui>
+          <text>Imports System
+Imports ModelFramework
+
+'This manager sets up a cutting rotation for AgPasture. The rotation is bounded between two dates. Cuts happens in the first day,
+' if possible, and thereof can follow various rotation types. Cut is done on above ground stem and leaf DM (dead and green).
+' + Cut trigger types:
+'  - Fixed interval:
+'     Cut is allowed at given days only (set by start rotation date and then at regular intervals)
+'     Cut happens if amount to remove is set or if existing DM is greater than LowerTheshold
+'  - Target interval: 
+'     Cut is allowed from given days (begins at start rotation date and at regular intervals after last cut)
+'     Cut happens if amount to remove is set or if existing DM is greater than LowerTheshold
+'  - Target standing mass:
+'     Cut is allowed when existing DM reaches the target value (UpperThreshold)
+'     Cut always happens (unless UpperThreshold is bellow LowerTheshold
+'  - Target mass above residual to cut:
+'     Cut is allowed when existing DM is larger than the LowerTheshold plus the given amount to remove
+'     Cut allways happens, (this option is not only valid with remove amount option 'Set interval')
+'  - Target DM cover: Cut when DM is above target cover (trigger based on interval or amount)
+'     Cut is allowed:
+'        1) When existing DM is larger than the target cover DM plus a given amount to remove (times fraction above target)
+'        2) From given dates (begins at start rotation date and at regular intervals after last cut)
+'     Cut happens if existing DM is above target cover DM
+'
+' + Remove amount options:
+'  - Set amount: The amount to remove is fixed, if this amount is not available, no cut is performed
+'  - Target amount: The amount is the smallest of a given value and difference between existing DM and a target (LowerTheshold of CoverTarget)
+'  - Down to residual DM: Amount to remove is the difference between existing DM and LowerTheshold (option is not valid if CutTrigger is 'Target DM cover')
+'  - Set interval: Amount to remove is computed, any time DM is above target ([existing DM - target cover]/fraction above target)
+'     (option only valid if CutTrigger is 'Target DM cover'
+'
+' + Manage residues options:
+'  - 
+'  - Return as residue: A fraction of the DM cut is added as grass residue to the surfaceOM module;
+'  - Return as dung &amp; urine: A fraction of the amount cut is returned to the soil as evenly distributed urine and dung. 
+'     This is a very simplified approach where the fractions of DM (C) and N to be removed are set separately. Also,
+'      the partition of N between urine and dung is set by the user. 
+'     N urine is added as urea fertiliser (top 10cm) and teh rmaining DM and N are added to surfaceOM as dung (RuminantDung_PastureFed).
+
+
+'--&gt;  Last uptaded in: 7/Aug/2012 ..................
+
+
+Public Class Script 
+   
+   'Parameter variables:
+   &lt;param&gt; Private CutPasture_StartDate As String        'Date to start the cutting rotation
+   &lt;param&gt; Private CutPasture_EndDate As String          'Date to end cutting rotation
+   &lt;param&gt; Private AgPasture_type As String              'The pasture module
+
+   &lt;param&gt; Private CutTrigger_type As String             'The cut trigger type
+   &lt;param&gt; Private CutInterval As Integer                'The interval between cuts, if cut type is fixed intervals (days)
+   &lt;param&gt; Private UpperThreshold As Double              'The DM amount to trigger a cut, if cut type is target DM (kg/ha, DM above ground)
+   &lt;param&gt; Private CoverTarget As String                 'The target cover over the year (values will be interpolated using DoY)
+
+   &lt;param&gt; Private RemoveAmount_type As String           'The way to compute how much pasture is cut
+   &lt;param&gt; Private Amount2Remove As Double               'The amount of DM to be removed at each cut, limited to residual DM (LowerThreshold) (kg/ha, DM above ground)
+   &lt;param&gt; Private FractAboveTarget As Double                  'The fraction of the target amount to remove above the target cover that triggers a cut
+   &lt;param&gt; Private LowerThreshold As Double              'The residual DM amount left after cut  (kg/ha, DM above ground); cut only happens if DM is greater than this
+
+   &lt;param&gt; Private ResidueTreatment_type As String       'The treatment to the material cut
+   &lt;param&gt; Private DMRemovalOption As String             'The option to remove DM, based on digestibility of a fraction (0-1)
+   &lt;param&gt; Private FracN2Remove As Double                'Fraction of the N in the material cut that is removed from simulation (0-1)
+   &lt;param&gt; Private FracN2Dung As Double                  'The fraction of returned N that goes into dung, if return is as dung and urine (0-1)
+     
+         
+   'Links and events:
+   &lt;Link&gt; Private MyAgPasture As AgPasture
+   &lt;Link&gt; Private MySelf As Component
+   &lt;[Event]()&gt; Public Event Graze As GrazeDelegate
+   &lt;[Event]()&gt; Public Event BiomassRemoved As BiomassRemovedDelegate   
+   &lt;[Event]()&gt; Public Event FertiliserApplication As FertiliserApplicationDelegate
+
+   
+   'Variables read from other modules
+   &lt;Input&gt; Private today As DateTime                     'Today's date
+   &lt;Input&gt; Private day As Integer                        'Today's day of year
+   &lt;input&gt; Private StemWt As Double                      'The DM of stems (above ground DM)
+   &lt;input&gt; Private LeafWt As Double                      'The DM of leaves (above ground DM)
+   &lt;input&gt; Private StemN As Double                       'The N amount in stems (above ground N)
+   &lt;input&gt; Private LeafN As Double                       'The N amount in leaves (above ground N)
+   &lt;input&gt; Private HarvestWt As Double                   'The DM harvested (kg/ha)
+   &lt;input&gt; Private HarvestN As Double                    'The N amount harvested (kgN/ha)
+   &lt;input&gt; Private DefoliatedDigestibility As Double     'The pasture digestibility (0-1)
+   
+   'Outputs
+   &lt;output&gt;&lt;units("")&gt; Public Can_Cut As String                  'Whether todays is a cutting day
+   &lt;output&gt;&lt;units("")&gt; Public Has_Cut As String                  'Whether todays cut was done
+   &lt;output&gt;&lt;units("kg/ha")&gt; Public harvested_dm As Double        'Pasture DM harvested today (kg/ha)
+   &lt;output&gt;&lt;units("kgN/ha")&gt; Public harvested_n As Double        'N harvested today
+   &lt;output&gt;&lt;units("kg/ha")&gt; Public removed_dm As Double          'DM removed from the simulation
+   &lt;output&gt;&lt;units("kgN/ha")&gt; Public removed_n As Double          'N removed from the simulation
+   &lt;output&gt;&lt;units("kgN/ha")&gt; Public returned_dm As Double        'DM returned to the paddock
+   &lt;output&gt;&lt;units("kgN/ha")&gt; Public returned_n As Double         'N returned to the paddock
+   &lt;output&gt;&lt;units("kgN/ha")&gt; Public NReturn_asDung As Double     'N returned as dung (SurfOM)
+   &lt;output&gt;&lt;units("kgN/ha")&gt; Public NReturn_asUrine As Double    'N returned as urine (urea)
+   &lt;output&gt;&lt;units("kg/ha/day")&gt; Public GrowthRateCalc As Double  'Average growth rate for this cut
+   &lt;output&gt;&lt;units("%")&gt; Public Nconc_inRemoved As Double         'N concentration on the cut material
+   &lt;output&gt;&lt;units("days")&gt; Public DaysAfterCut As Integer        'Number of days after last cut
+   &lt;output&gt;&lt;units("kg/ha")&gt; Public TodaysCoverTarget As Double   'Todays cover target
+   &lt;output&gt;&lt;units("kg/ha")&gt; Public StandingWt As Double          'Total standing DM (Stem + Leaf)
+   &lt;output&gt;&lt;units("kg/ha")&gt; Public PostHarvestDM As Double       'Total standing DM (Stem + Leaf) after cut
+
+   'Internal variables
+   Private StartDate As DateTime             'The date when cutting starts (in date format)
+   Private EndDate As DateTime               'The date when cuttings finish (in date format)
+   Private FracDM2Remove As Double           'The fraction of DM to be removed from the simulation (0-1)
+   Private TargetCoverDays() As Integer
+   Private TargetCoverValues() As Double
+   Private Allow_Cut As String
+   
+   &lt;EventHandler()&gt; Public Sub OnInit2()
+
+      'Put the dates into date format:
+      StartDate = DateTime.Parse(CutPasture_StartDate &amp; " 06:00:00 am")
+      EndDate = DateTime.Parse(CutPasture_EndDate &amp; " 06:00:00 pm")
+      
+      'Verify that fractions are within limits
+      If FractAboveTarget &lt; 0 Or FractAboveTarget &gt; 1 Then
+         Throw New Exception("Fraction above target is out of bounds")
+      End If
+            
+      'Set the target cover arrays
+      TargetCoverValues = makeArray(CoverTarget)
+      TargetCoverDays = setDays(TargetCoverValues)
+      
+      'Reset variables
+      DaysAfterCut = CutInterval - 1
+      Allow_Cut = "no" 
+      Can_Cut = Allow_Cut
+      Has_Cut = "no"
+      TodaysCoverTarget = 0.0
+  
+      'The fraction of DM to remove
+      ' - DMRemovalOption can be a value (0-1 = FracDM2Remove) or a string, which tell us that FracDM2Remove is based on digestibility
+      If DMRemovalOption.ToLower = "based on digestibility" Then
+         FracDM2Remove = 1 - DefoliatedDigestibility
+      Else
+         Try
+            FracDM2Remove = DMRemovalOption
+            If (FracDM2Remove &lt; 0) Or FracDM2Remove &gt; 1 Then
+               Throw New Exception("Fraction of DM to remove is out of bounds")
+            End If
+         Catch
+            Throw New Exception("Fraction of DM to remove is not valid")
+         End Try
+      End If
+      If (FracN2Remove &lt; 0) Or FracN2Remove &gt; 1 Then
+         Throw New Exception("Fraction of N to remove is out of bounds")
+      End If
+      If ResidueTreatment_type.Contains("urine") And ((FracN2Dung &lt; 0) Or FracN2Dung &gt; 1) Then
+         Throw New Exception("Proportion of N to return as dung is out of bounds")
+      End If
+      
+      'Check whether choices are allowed and prepare messages     
+      Dim myMessage1 As String
+      Dim myMessage2 As String
+      Select Case CutTrigger_type.ToLower
+         Case "fixed interval"
+            If RemoveAmount_type.ToLower.Contains("interval") Then
+               Throw New Exception("Fixed interval trigger is not valid with Cut amount defined by 'set interval'")
+            ElseIf RemoveAmount_type.ToLower.Contains("amount") Then
+               myMessage2 = "   remove " &amp; RemoveAmount_type.ToLower &amp; " = " &amp; Amount2Remove.ToString("#0") &amp; " kg/ha"
+            Else
+               myMessage2 = "   remove " &amp; RemoveAmount_type.ToLower &amp; " = " &amp; LowerThreshold.ToString("#0") &amp; " kg/ha"
+            End If
+            myMessage1 = ", cut only every " &amp; CutInterval.ToString &amp; " days"
+         Case "target interval"
+            If RemoveAmount_type.ToLower.Contains("interval") Then
+               Throw New Exception("Target interval trigger is not valid with cut amount defined by 'set interval'")
+            ElseIf RemoveAmount_type.ToLower.Contains("amount") Then
+               myMessage2 = "   remove " &amp; RemoveAmount_type.ToLower &amp; " = " &amp; Amount2Remove.ToString("#0") &amp; " kg/ha"
+            Else
+               myMessage2 = "   remove " &amp; RemoveAmount_type.ToLower &amp; " = " &amp; LowerThreshold.ToString("#0") &amp; " kg/ha"
+            End If
+            myMessage1 = ", cut every " &amp; CutInterval.ToString &amp; " days, or when possible"
+         Case "target standing mass" 
+            If RemoveAmount_type.ToLower.Contains("interval") Then
+               Throw New Exception("Target standing mass trigger is not valid with cut amount defined by 'set interval'")
+            ElseIf RemoveAmount_type.ToLower.Contains("amount") Then
+               myMessage2 = "   remove " &amp; RemoveAmount_type.ToLower &amp; " = " &amp; Amount2Remove.ToString("#0") &amp; " kg/ha"
+            Else
+               myMessage2 = "   remove " &amp; RemoveAmount_type.ToLower &amp; " = " &amp; LowerThreshold.ToString("#0") &amp; " kg/ha"
+            End If
+            myMessage1 = ", cut when DM reaches " &amp; UpperThreshold.ToString("#0") &amp; " kgDM/ha"
+         Case "target mass above residual to cut"
+            If RemoveAmount_type.ToLower.Contains("interval") Then
+               Throw New Exception("Target cut mass trigger is only valid with a set interval")
+            End If
+            Dim myValue As Double = Amount2Remove + LowerThreshold
+            myMessage1 = ", cut whenever DM is higher than " &amp; myValue.ToString("#0") &amp; " kgDM/ha"
+            myMessage2 = "   remove " &amp; RemoveAmount_type.ToLower &amp; " ~ " &amp; Amount2Remove.ToString("#0") &amp; " kg/ha"
+         Case "target dm cover"
+            If RemoveAmount_type.ToLower.Contains("amount") Then
+               Dim myValue As Double = Amount2Remove * FractAboveTarget
+               myMessage1 = ", cut when standing DM is " &amp; myValue.ToString("#0") &amp; " kgDM/ha above the target cover"
+               myMessage2 = "   remove given amount (" &amp; Amount2Remove.ToString("#0") &amp; " kg/ha) at variable interval"
+            ElseIf RemoveAmount_type.ToLower.Contains("interval") Then
+               myMessage1 = ", cut every " &amp; CutInterval.ToString &amp; " days, if standing DM is above the target cover"
+               myMessage2 = "   remove variable amount at set interval"
+            Else
+               Throw New Exception("Target DM cover cannot be selected with amount to cut 'down to residual DM'")
+            End If
+         Case Else
+            Throw New Exception("Cut trigger type is not valid")
+      End Select
+      
+      'write messages on summary file
+      Console.WriteLine("")
+      Console.WriteLine("  Cut rotation for AgPasture initialised")
+      Console.WriteLine("   rotation rule valid between " &amp; StartDate.ToString("dd/MM/yyyy") &amp; " and " &amp; EndDate.ToString("dd/MM/yyyy"))
+      Console.WriteLine("   cut type: " &amp; CutTrigger_type &amp; myMessage1)
+      Console.WriteLine(myMessage2)
+      Dim myValue1 As Double = (1 - FracDM2Remove) * 100
+      Console.WriteLine("   fraction to " &amp; ResidueTreatment_type.ToLower &amp; ": " &amp; myValue1.ToString("#0.0") &amp; "%")
+      Console.WriteLine("")
+      
+   End Sub
+      
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+      
+      StandingWt = StemWt + LeafWt
+      Dim preharvest_dm As Double = StandingWt
+      Dim preharvest_n As Double = StemN + LeafN
+      Dim Amount2Cut As Double
+      Dim AmountCuttable As Double
+      
+      'Reset variables:
+      Has_Cut = "no"
+      harvested_dm = 0.0
+      harvested_n = 0.0
+      removed_dm = 0.0
+      removed_n = 0.0
+      returned_dm = 0.0
+      returned_n = 0.0
+      GrowthRateCalc = 0.0
+      Nconc_inRemoved = 0.0
+      NReturn_asDung = 0.0
+      NReturn_asUrine = 0.0
+      DaysAfterCut = DaysAfterCut + 1
+
+      'Decide whether cut is allowed:
+      If (Today.Date &gt;= StartDate.Date And Today.Date &lt;= EndDate.Date) Then
+         Select Case CutTrigger_type.ToLower
+            Case "fixed interval"
+               'Allways send an Allow_Cut if interval is right, it will be reset in the end of the day
+               If DaysAfterCut &gt;= CutInterval Then
+                  Allow_Cut = "yes"
+                  DaysAfterCut = 0  'always reset counter
+               Else
+                  Allow_Cut = "no"  'always reset allow_cut
+               End If
+            Case "target interval" 
+               'Allways send an Allow_Cut if interval is right, it will be reset only if cut actually happens (depends on amount type)
+               If DaysAfterCut &gt;= CutInterval Then
+                  Allow_Cut = "yes"
+               End If
+            Case "target standing mass"
+               'Send an Allow_Cut if DM amount is above the target (UpperThreshold), it will be reset if cut actually happens
+               If preharvest_dm &gt;= UpperThreshold Then
+                  Allow_Cut = "yes"
+               End If
+            Case "target mass above residual to cut"
+               'Send an Allow_Cut if mass above residual is higher than residual (LowerThreshold) plus target, will be reset after cut
+               If preharvest_dm &gt;= LowerThreshold + Amount2Remove Then
+                  Allow_Cut = "yes"
+               End If            
+            Case "target dm cover"
+               TodaysCoverTarget = InterpolateVals(day, TargetCoverDays, TargetCoverValues)
+               If RemoveAmount_type.ToLower.Contains("amount") Then
+                  'Send an Allow_Cut if mass above cover target is higher than a threshold, will be reset after cut
+                  If preharvest_dm &gt;= TodaysCoverTarget + Amount2Remove * FractAboveTarget Then
+                     Allow_Cut = "yes"
+                     LowerThreshold = preharvest_dm - Amount2Remove
+                  End If
+               Else
+                  'Send an Allow_Cut if interval between cuts is reached and standing mass is above cover target, will be reset after cut
+                  If DaysAfterCut &gt;= CutInterval And preharvest_dm &gt; TodaysCoverTarget Then 
+                     Allow_Cut = "yes"
+                  End If
+               End If
+         End Select
+
+         'The use of these avoid (or reduces) problems when two managers are used in the same simulation
+         Can_Cut = Allow_Cut
+         
+         'Decide how much to cut:
+         If Allow_Cut = "yes" Then
+            Select Case RemoveAmount_type.ToLower
+               Case "set amount"
+                  Amount2Cut = Amount2Remove
+                  If CutTrigger_type.ToLower = "fixed interval" Then
+                     AmountCuttable = preharvest_dm
+                  else
+                     AmountCuttable = math.Max(0, preharvest_dm - LowerThreshold)
+                  End If
+               Case "target amount"
+                  Amount2Cut = math.Min(math.Max(0, preharvest_dm - LowerThreshold), Amount2Remove)
+                  AmountCuttable = math.Max(0, preharvest_dm - LowerThreshold)
+               Case "down to residual dm"
+                  Amount2Cut = math.Max(0, preharvest_dm - LowerThreshold)
+                  AmountCuttable = math.Max(0, preharvest_dm - LowerThreshold)
+               Case "set interval (for target cover only)"
+                  Amount2Cut = (preharvest_dm - TodaysCoverTarget) / FractAboveTarget
+                  AmountCuttable = preharvest_dm
+               Case Else
+                  Throw New Exception("Option to compute DM amount to remove is not valid")
+            End Select  
+            
+
+            'Decide whether cut actually happens:
+            If (AmountCuttable &gt;= Amount2Cut) Then
+               Call CutPasture(Amount2Cut)
+               'reset cut variables
+               DaysAfterCut = 0
+               Has_Cut = "yes"
+               Allow_Cut = "no"
+               PostHarvestDM = MyAgPasture.StemWt + MyAgPasture.LeafWt
+            End If
+         Else
+            Amount2Cut = 0
+            AmountCuttable = 0
+         End If         
+      End If
+
+   End Sub 
+   
+  
+   Sub CutPasture(ByVal Amount2Cut As Double) 
+       
+      ' --------------------------------------------------------------------------------------------
+      ' Cutting pasture
+      ' --------------------------------------------------------------------------------------------
+            
+      Dim CutData As New GrazeType
+      CutData.sender = AgPasture_type
+      CutData.amount = Amount2Cut
+      Cutdata.type = "removal"
+      RaiseEvent Graze(CutData)
+      harvested_dm = MyAgPasture.HarvestWt
+      harvested_n = MyAgPasture.HarvestN
+
+      GrowthRateCalc = harvested_dm / DaysAfterCut
+      If harvested_dm &gt; 0 Then
+         Nconc_inRemoved = harvested_n * 100 / harvested_dm
+      End If
+                  
+      'Let user know (via summary) that a cut was made
+      Console.WriteLine(Today.ToString("dd MMMM yyyy") + " (Day of year=" + Today.DayOfYear.ToString + "), " &amp; MySelf.Name &amp; ":")
+      Console.WriteLine("     Removing " + harvested_dm.ToString("#0") + "kg DM/ha, with " &amp; harvested_n.ToString("#0.0") &amp; "kg N/ha")
+
+      ' -- Residue management -------------------------------------------------------------------------
+      If DMRemovalOption.ToLower = "based on digestibility" Then
+         FracDM2Remove = 1 - DefoliatedDigestibility
+      End If
+      removed_dm = harvested_dm * FracDM2Remove
+      removed_n = harvested_n * FracN2Remove
+      returned_dm = harvested_dm - removed_dm 
+      returned_n = harvested_n - removed_n 
+      
+      console.WriteLine("ResidueTreatment_type: " &amp; ResidueTreatment_type)
+      If ResidueTreatment_type.ToLower = "return as residue" Then
+         If FracDM2Remove &lt; 1 Then
+            Dim SOMData As New BiomassRemovedType
+            SOMData.crop_type = "grass"
+            SOMData.dm_type = New String() {"grass"}
+            SOMData.dlt_crop_dm = New Single() {returned_dm}
+            SOMData.dlt_dm_n = New Single() {returned_n}
+            SOMData.dlt_dm_p = New Single() {0.0}
+            SOMData.fraction_to_residue = New Single() {1.0}
+            RaiseEvent BiomassRemoved(SOMData)     'this works        
+         End If
+         
+      ElseIf ResidueTreatment_type.ToLower = "return as dung &amp; urine" Then
+         ' It is advised that dung and urine return should be done using another manager or modules, such as 'UrinePatch' 
+         
+         NReturn_asDung = returned_n * FracN2Dung
+         NReturn_asUrine = math.Max(0, returned_n - NReturn_asDung)
+         Dim SOMData As New BiomassRemovedType
+         SOMData.crop_type = "RuminantDung_PastureFed"
+         SOMData.dm_type = New String() {"dung"}
+         SOMData.dlt_crop_dm = New Single() {returned_dm}
+         SOMData.dlt_dm_n = New Single() {NReturn_asDung}
+         SOMData.dlt_dm_p = New Single() {0.0}
+         SOMData.fraction_to_residue = New Single() {1.0}
+         RaiseEvent BiomassRemoved(SOMData)
+         
+         If NReturn_asUrine &gt; 0 Then
+            Dim UrineData As New FertiliserApplicationType
+            UrineData.Amount = NReturn_asUrine
+            UrineData.Depth = 10
+            UrineData.Type = "urea"
+            RaiseEvent FertiliserApplication(UrineData)
+         End If
+         
+      Else
+         Throw New Exception("Residue management type is not valid")
+      End If
+      
+   End Sub
+ 
+   Function makeArray(ByVal ArrayString As String) As Double()
+      
+      'Get the string with values from the user interface and put the values in an numeric array
+      
+      Dim MyArray_string As String()
+      Dim MyArray_numeric As Double()
+      Dim Separator As Char() = " "
+      
+      '1-Split string into array
+      MyArray_string = ArrayString.Split(Separator, StringSplitOptions.RemoveEmptyEntries)
+      
+      '2-convert array into type single
+      ReDim MyArray_numeric(MyArray_string.Length - 1)      
+      For i As Integer = 0 To MyArray_numeric.length - 1
+         MyArray_numeric(i) = CDbl(MyArray_string(i))
+      Next
+      Return MyArray_numeric
+      
+   End Function
+   
+   Function setDays(ByVal yArray As Double()) As Integer()
+      
+      'Define the day of year for each value on yArray - first value, day=1; last value day = 365; dates in between spread evenly (rounded)
+      Dim NumDates = yArray.Length
+      Dim xArray(yArray.Length - 1) As Integer
+      xArray(0) = 1
+      If NumDates &lt; 366 Then
+         If yArray.Length &gt; 1 Then
+            xArray(yArray.Length - 1) = 365
+            If yArray.Length &gt; 2 Then
+               For i As Integer = 0 To yArray.Length - 1
+                  xArray(i) = 365 * i / (yArray.Length - 1)
+               Next
+            End If
+         End If
+      Else
+         Throw New Exception("Number of items on CoverTarget greater than maximum allowed (365)")
+      End If
+      Return xArray
+      
+   End Function
+
+   Function InterpolateVals(ByVal my_x As Integer, ByVal xArray As Integer(), ByVal yArray As Double()) As Double
+      
+      'Find out the value correspondig to my_x in the function described by the x and y arrays
+      Dim my_y As Double
+      If my_x &lt;= xArray(0) Then
+         'values below x(0) are set to y(0)
+         my_y = yArray(0)
+      ElseIf my_x &gt;= xArray(xArray.length - 1) Then
+         'value above x(n) are set to y(n)
+         my_y = yArray(yArray.length - 1)
+      Else
+         'find the nearest neighbours and interpolate (linear)
+         For i As Integer = 1 To xArray.length - 1
+            If my_x &lt;= xArray(i) Then
+               my_y = yArray(i - 1) + ((my_x - xArray(i - 1)) * (yArray(i) - yArray(i - 1)) / (xArray(i) - xArray(i - 1)))
+               i = xArray.length 
+            End If
+         Next
+      End If
+      Return my_y
+      
+   End Function
+
+End Class
+</text>
+        </manager2>
+        <manager2 name="Apply_NitrifInhibitor">
+          <ui>
+            <Dummy1 type="category" description="Date to start applications (dd/mm/yyyy):" />
+            <ApplyInhibitor_StartDate type="ddmmmdate" description="Date to start applications (dd/mm/yyyy):">06/01/2000</ApplyInhibitor_StartDate>
+            <ApplyInhibitor_EndDate type="ddmmmdate" description="Date to end applications (dd/mm/yyyy):">31/12/2100</ApplyInhibitor_EndDate>
+            <ApplyInhibitor_Interval type="text" description="Type the interval between applications (days):">1461</ApplyInhibitor_Interval>
+            <ApplyInhibitor_Amount2Add type="text" description="Type the amount of inhibitor to apply ((kg/ha):">10</ApplyInhibitor_Amount2Add>
+            <ApplyInhibitor_Depth type="text" description="Type the depth to apply inhibitor (mm):">1</ApplyInhibitor_Depth>
+          </ui>
+          <text>Imports System
+Imports ModelFramework
+
+'This manager applies a nitrification inhibitor at the amount and depth specified (it also can repeat the application periodically)
+' RCichota, last update: 23/Jul/2013
+
+Public Class Script
+   
+   'Parameter variables:
+   &lt;param&gt; Private ApplyInhibitor_StartDate As String
+   &lt;param&gt; Private ApplyInhibitor_EndDate As String
+   &lt;param&gt; Private ApplyInhibitor_Interval As Integer
+   &lt;param&gt; Private ApplyInhibitor_Amount2Add As Single
+   &lt;param&gt; Private ApplyInhibitor_Depth As Single
+   
+   &lt;[Event]()&gt; Public Event SoluteChanged As SoluteChangedDelegate
+
+   'Variables read from other modules
+   &lt;Input&gt; Private today As DateTime
+   &lt;Input&gt; Private dlayer As Single()
+
+   'Output variables
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public NitInhibitorAdded As Single       'The amount of inhibitor added
+
+   'Internal variables
+   Private StartDate As DateTime                   'The date when applications start (in date format)
+   Private EndDate As DateTime                     'The date when applications finish (in date format)
+   Private TimeAfterApplication As Integer         'Number of days after a urine application
+   Private SoilDepth As Single                     'The soil depth (mm)
+   Private Layer2Apply As Integer                  'The layer at which inhibitor will be applied
+
+   &lt;EventHandler()&gt; Public Sub OnInit2()
+
+      'Put the dates into date format:
+      StartDate = Date.Parse(ApplyInhibitor_StartDate)
+      EndDate = Date.Parse(ApplyInhibitor_EndDate)
+              
+      'Computes the layer at which NitInhibitor will be applied
+      Dim DepthFromSurface As Single = 0
+      For z As Integer = 0 To dlayer.length - 1
+         If DepthFromSurface &lt;= ApplyInhibitor_Depth Then Layer2Apply = z
+         DepthFromSurface = DepthFromSurface + dlayer(z)
+      Next
+      
+      console.WriteLine(" NitInhibitorAdded to be applied at " &amp; ApplyInhibitor_Depth.ToString() &amp; " mm depth, layer " &amp; (Layer2Apply + 1).ToString())
+
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+
+      Dim delta_solute As Double()
+      Dim canApplyInhibitor As Boolean = False
+      
+      'Re-set variables
+      ReDim delta_solute(dlayer.Length - 1)
+      NitInhibitorAdded = 0
+
+      'Decide whether it is time to apply inhibitor:
+      If today &gt;= StartDate And today &lt;= EndDate Then
+         If today = StartDate Then
+            canApplyInhibitor = True
+         Else
+            If TimeAfterApplication &gt;= ApplyInhibitor_Interval Then
+               canApplyInhibitor = True
+            Else
+               TimeAfterApplication = TimeAfterApplication + 1
+               NitInhibitorAdded = 0
+            End If
+         End If
+         
+         If canApplyInhibitor Then
+            
+            'fill the delta_solute array
+            For z As Integer=0 To dlayer.Length - 1
+               delta_solute(z) = 0.0
+            Next
+            delta_solute(Layer2Apply) = CDbl(ApplyInhibitor_Amount2Add)
+            NitInhibitorAdded += ApplyInhibitor_Amount2Add
+         
+            ' send delta_solute to apsim
+            Dim SoluteChanges As SoluteChangedType = New SoluteChangedType()
+            SoluteChanges.Sender = "Manager: Apply_NitrifInhibitor"
+            SoluteChanges.SoluteName = "NitrificationInhibitor"
+            SoluteChanges.SoluteUnits = "kg/ha"
+            SoluteChanges.DeltaSolute = delta_solute
+            RaiseEvent SoluteChanged(SoluteChanges)
+
+            TimeAfterApplication = 1
+
+            Console.WriteLine(today.ToString("dd MMMM yyyy") + " (Day of year=" + today.DayOfYear.ToString + "), Apply_NitrifInhibitor:")
+            Console.WriteLine("     NitInhibitor being applied. " + NitInhibitorAdded.ToString + "kg/ha added at depth " + ApplyInhibitor_Depth.ToString + "mm")
+            
+         End If         
+      End If                  
+   End Sub
+
+End Class
+    </text>
+        </manager2>
+        <operations name="Operations">
+          <operation condition="start_of_day">
+            <date>5-Jan</date>
+            <action>fertiliser apply amount = 50, depth = 1 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>5-Jan</date>
+            <action>fertiliser apply amount = 50, depth = 6 (mm), type = urea_n</action>
+          </operation>
+        </operations>
+      </folder>
+      <micromet name="Micromet">
+        <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
+        <a_interception type="text" description="a_interception">0</a_interception>
+        <b_interception type="text" description="b_interception">0</b_interception>
+        <c_interception type="text" description="c_interception">0</c_interception>
+        <d_interception type="text" description="d_interception">0</d_interception>
+      </micromet>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">off</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">0.8</irrigation_efficiency>
+        <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+        <allocation type="text" description="Allocation in ML">0</allocation>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+      </irrigation>
+      <fertiliser />
+      <NitrificationInhibitor2 name="NitrificationInhibitor">
+        <Dummy1 type="category" description="Initial content of NitrificationInhibitor in the soil" />
+        <InitialContent type="text" description="  Amount of NitrificationInhibitor for each layer (kg/ha):">0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0</InitialContent>
+        <Dummy2 type="category" description="NitrificationInhibitor effect function - Michaelis-Menten function" />
+        <sif_kMichaelisMenten type="text" description="The Michaelis-Menten factor - NitrificationInhibitor concentration for half inhibition effect (ppm):">1.275</sif_kMichaelisMenten>
+        <Dummy3 type="category" description="NitrificationInhibitor degradation functions" />
+        <PotentialDegradationRate type="text" description="Degradation rate for NitrificationInhibitor at optimum conditions (%/day):">7.5</PotentialDegradationRate>
+        <stf_TemperatureAtOptimum type="text" description="The value of temperature at optimum conditions (oC):">30</stf_TemperatureAtOptimum>
+        <stf_FactorValueAtZeroDegrees type="text" description="The value for temperature effect at zero degrees (0-1):">0.05</stf_FactorValueAtZeroDegrees>
+        <stf_ExponentValue type="text" description="The exponent value for the temperature effect function (approx. 1-5):">25</stf_ExponentValue>
+        <swf_xValues type="text" description="The values for the x-axis of the moisture effect - modified water content (0-3):">0.0  1.0  1.1  1.3  1.8  2.0  2.5  3.0</swf_xValues>
+        <swf_yValues type="text" description="The values for the y-axis for the moisture effect - relative effect (0-1):">0.0  0.0  0.3  1.0  1.0  0.4  0.1  0.1</swf_yValues>
+        <phf_xValues type="text" description="The values for the x-axis of the pH effect - soil pH:">0.0  3.5  5.5  8.0  9.0  14.0</phf_xValues>
+        <phf_yValues type="text" description="The values for the y-axis for the pH effect - relative effect (0-1):">0.0  0.0  1.0  1.0  0.0   0.0</phf_yValues>
+        <scf_kMichaelisMenten type="text" description="The Michaelis-Menten factor for carbon effect - Soil carbon content for half effect (%):">0.1</scf_kMichaelisMenten>
+      </NitrificationInhibitor2>
+      <surfaceom name="surface organic matter">
+        <PoolName type="text" description="Organic Matter pool name">grass</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">grass</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">200</mass>
+        <cnr type="text" description="C:N ratio of initial residue">20</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <SWIM2ui2>
+        <dummy1 type="category" description="SWIM boundary conditions:" />
+        <top_boundary_condition type="list" listvalues="0,1,2,3" description="Choose top boundary condition (0=inf conduct; 1=const potential; 2=limtd conduct):">0</top_boundary_condition>
+        <runoff type="list" listvalues="0,1,2" description="Choose runnof/pond condition (0=all runoff; 1=all pond; 2=calc runoff):">1</runoff>
+        <bottom_boundary_condition type="list" listvalues="0,1,2,3" description="Choose bottom boundary condition (0=set pot grad; 1=set potential; 2=impermeable;3=seepage):">0</bottom_boundary_condition>
+        <run_solutes type="text" description="Type list of solutes SWIM will move:">urea  nh4  no3  nitrificationinhibitor</run_solutes>
+        <max_water_increment type="text" description="Type base water increment value:">0.5</max_water_increment>
+        <dummy2 type="category" description="Description of soil profile" />
+        <x type="text" description="Enter the values of x for each layer:">0  10  20  30  50  70  90  110  140  160  190  210  250  270  330  370  430  470  530  570  650  710  790  860  940  1060  1140  1260  1340  1440  1500</x>
+        <soil_type type="text" description="Enter the tags for each layer:">A_ZL_mC  A_ZL_mC  A_ZL_mC  A_ZL_mC  A_ZL_mC  A_ZL_mC  A_ZL_mC  A_ZL_mC  A_ZL_mC  -  -  B1_ZL_mC  B1_ZL_mC  B1_ZL_mC  -  -  B2_SL_mC  B2_SL_mC  B2_SL_mC  B2_SL_mC  B2_SL_mC  B2_SL_mC  B2_SL_mC  -  -  BC_S_mC  BC_S_mC  BC_S_mC  BC_S_mC  BC_S_mC  BC_S_mC</soil_type>
+        <psi type="text" description="Enter the inital values of psi for each layer:">-100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100</psi>
+        <ini name="Ini_SWIM2">
+          <filename input="yes">ini_SWIMui2(GenericSiltLoam).xml</filename>
+        </ini>
+      </SWIM2ui2>
+      <SoilNitrogen>
+        <category type="category" description="Parameters to initialise soil organic matter" />
+        <root_wt type="text" description="Type the initial FOM amount in the soil (kgDM/ha):">1000</root_wt>
+        <root_cn type="text" description="Type the initial C:N ratio of FOM:">30</root_cn>
+        <soil_cn type="text" description="Type the C:N ratio of soil humus:">12.5</soil_cn>
+        <mcn type="text" description="Type the C:N ratio of soil microbial biomass:">8</mcn>
+        <category type="category" description="Enter the values for each layer" />
+        <ph type="text" description="Type the inital soil pH:">6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0</ph>
+        <oc type="text" description="Type the initial soil organic carbon content (%):">4.817  4.789  4.760  4.717  4.665  4.613  4.331  3.977  3.667  3.396  3.148  2.877  2.630  2.336  2.023  1.761  1.550  1.379  1.241  1.111  0.996  0.912  0.844  0.797  0.752  0.723  0.704  0.692  0.685  0.681  0.680</oc>
+        <fbiom type="text" description="Type the microbial biomass fraction of OC (0-1):">0.080  0.080  0.080  0.080  0.079  0.078  0.075  0.069  0.061  0.050  0.040  0.029  0.021  0.013  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008</fbiom>
+        <finert type="text" description="Type the inert fraction of soil humus (0-1):">0.454  0.461  0.468  0.474  0.487  0.515  0.571  0.626  0.678  0.718  0.755  0.786  0.819  0.843  0.876  0.895  0.915  0.927  0.940  0.947  0.958  0.964  0.971  0.976  0.980  0.985  0.988  0.990  0.992  0.993  0.994</finert>
+        <no3ppm type="text" description="Type the initial concentration of NO3 is the soil (ppm):">1.50   2.00   2.40   2.50   2.50   2.50   2.50   2.50   2.50   2.45   2.30   2.15   2.00   1.85   1.60   1.35   1.15   0.90   0.80   0.71   0.65   0.59   0.51   0.44   0.39   0.34   0.30   0.26   0.21   0.20   0.20</no3ppm>
+        <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">0.50   0.70   0.80   0.80   0.80   0.80   0.80   0.80   0.80   0.80   0.80   0.70   0.60   0.50   0.40   0.40   0.30   0.30   0.20   0.20   0.20   0.20   0.20   0.10   0.10   0.10   0.10   0.08   0.07   0.07   0.07</nh4ppm>
+        <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00</ureappm>
+      </SoilNitrogen>
+      <SoilTemperature2>
+        <MaxTTimeDefault>14</MaxTTimeDefault>
+        <BoundaryLayerConductanceSource>calc</BoundaryLayerConductanceSource>
+        <BoundaryLayerConductance>20</BoundaryLayerConductance>
+        <BoundaryLayerConductanceIterations>1</BoundaryLayerConductanceIterations>
+        <NetRadiationSource>calc</NetRadiationSource>
+        <DefaultWindSpeed>3</DefaultWindSpeed>
+        <DefaultAltitude>18</DefaultAltitude>
+        <DefaultInstrumentHeight>1.2</DefaultInstrumentHeight>
+        <BareSoilHeight>57</BareSoilHeight>
+        <Clay>15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0</Clay>
+      </SoilTemperature2>
+      <AgPasture>
+        <Nspecies type="text" description="Number of species">2</Nspecies>
+        <thisCropName type="text" description="Crop name shown as on the simulation tree">AgPasture</thisCropName>
+        <cropName type="text" description="Species names">ryegrass whiteclover paspalum</cropName>
+        <micrometType type="text" description="Crop type for MicroMet">grass     grass    grass</micrometType>
+        <isAnnual type="text" description="Annual species? no=0, yes=1">0           0          0</isAnnual>
+        <isLegume type="text" description="Legume species? no=0, yes=1">0           1          0</isLegume>
+        <photoPath type="text" description="C3 or C4 species? C3=3, C4=4">3           3          4</photoPath>
+        <rootDepth type="text" description="Root depth">750       350      1000</rootDepth>
+        <growthTmin type="text" description="Minimum temperature for growth">2           3          10</growthTmin>
+        <growthTmax type="text" description="Maximum temperature for growth">32        32         40</growthTmax>
+        <growthTopt type="text" description="Optimum temperature for growth">20        20         22</growthTopt>
+        <growthTq type="text" description="Curvature of growth response to temperature">1.75     1.75        2.0</growthTq>
+        <massFluxTmin type="text" description="Minimum temperature for mass flux">2           3          7.5  </massFluxTmin>
+        <massFluxTopt type="text" description="Optimum temperature for mass flux">20        20         22</massFluxTopt>
+        <massFluxW0 type="text" description="Scale factor for response of mass flux to soil moisture">2          2           2</massFluxW0>
+        <massFluxWopt type="text" description="Optimum soil moisture for mass flux">0.5       0.5        0.5</massFluxWopt>
+        <heatOnsetT type="text" description="Heat effects- Onset temperature">32.5     32.5      40</heatOnsetT>
+        <heatFullT type="text" description="Heat effects- Full temperature">100      100      100</heatFullT>
+        <heatSumT type="text" description="Heat effects- Temperature sum for recovery">30        30         50</heatSumT>
+        <coldOnsetT type="text" description="Cold effects- Onset temperature">0          0           8</coldOnsetT>
+        <coldFullT type="text" description="Cold effects- Full temperature">-3          -3         3</coldFullT>
+        <coldSumT type="text" description="Cold effects- Temperature sum for recovery">20         20        50</coldSumT>
+        <Pm type="text" description="Reference CO2 assimilation rate (mg CO2/m2.s)">1           1          1.2</Pm>
+        <maintRespiration type="text" description="Maintenance respiration coefficient (%)">3           3          3</maintRespiration>
+        <growthEfficiency type="text" description="Growth efficiency">0.75      0.75     0.75</growthEfficiency>
+        <SLA type="text" description="Specific leaf area">20        20         20</SLA>
+        <lightExtCoeff type="text" description="Light extinction coefficient">0.5       0.8        0.6</lightExtCoeff>
+        <stockParameter type="text" description="Stock influence parameter">0.05     0.05      0.05</stockParameter>
+        <maxRootFraction type="text" description="Maximum biomass fraction allocated to root">0.2       0.2        0.2</maxRootFraction>
+        <leafRate type="text" description="Reference leaf appearance rate without stress">3          3           3.5</leafRate>
+        <fLeaf type="text" description="Reference growth partition to leaves">0.7       0.7        0.7</fLeaf>
+        <fStolon type="text" description="Reference growth partition to stolon">0.0       0.2        0.0</fStolon>
+        <digestLive type="text" description="Digestibility of live plant material">0.6       0.6        0.6</digestLive>
+        <digestDead type="text" description="Digestibility of dead plant material">0.2       0.2        0.2</digestDead>
+        <dmtotal type="text" description="Initial shoot dry matter (kg/ha)">1150    575       150</dmtotal>
+        <dmlitter type="text" description="Initial litter dry matter (kg/ha)">250      50         10</dmlitter>
+        <dmgreenmin type="text" description="Minimum green dry matter (kg/ha)">350      100       25</dmgreenmin>
+        <NcleafOpt type="text" description="N concentration - leaf optimum">4.0       4.5        3.0</NcleafOpt>
+        <NcleafMax type="text" description="N concentration - leaf luxury">5.0       5.5        3.5</NcleafMax>
+        <NcleafMin type="text" description="N concentration - leaf scenescent">1.2       2.0        0.5</NcleafMin>
+        <NcstemFr type="text" description="Stem N concentration as fraction of leaf N concentration">0.5      0.5         0.5</NcstemFr>
+        <NcstolFr type="text" description="Stolon N concentration as fraction of leaf N concentration">0.0      0.5         0.0 </NcstolFr>
+        <NcrootFr type="text" description="Root N concentration as fraction of leaf N concentration">0.5      0.5         0.5</NcrootFr>
+        <NMinFix type="text" description="Minimum N fixation (when soil N is sufficient)">0.0      0.2         0.0</NMinFix>
+        <NMaxFix type="text" description="Maximum N fixation (when soil N is unavailable)">0.0      0.6         0.0</NMaxFix>
+        <CO2PmaxScale type="text" description="CO2 - Scale factor for CO2 effect on photosynthesis">700     700       150</CO2PmaxScale>
+        <CO2NScale type="text" description="CO2 - Scale factor for CO2 effects on plant N concentration">600     600       600</CO2NScale>
+        <CO2NMin type="text" description="CO2 - Minimum fraction that plant N concentration may reduce to uder elevated CO2">0.7      0.7        0.7</CO2NMin>
+        <CO2NCurvature type="text" description="CO2 - Curvature factor of CO2 effect on plant N concentration">2         2           2</CO2NCurvature>
+        <Frgr type="text" description="Relative growth factor">1         1           1</Frgr>
+        <waterStressFactor type="text" description="Scale factor of water stress on plant growth [0-1]">1         1           1</waterStressFactor>
+        <rlvp type="text" description="Root distribution of swards (relative to each soil layer)">0.107  0.112  0.112  0.110  0.106  0.097  0.085  0.070  0.055  0.042  0.032  0.023  0.017  0.012  0.007  0.004  0.003  0.002  0.001  0.001  0.001  0.001  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000</rlvp>
+        <WaterUptakeSource type="text" description="Water uptake done by AgPasture (calc) or by apsim?">apsim</WaterUptakeSource>
+      </AgPasture>
+      <outputfile name="Outputs">
+        <filename output="yes">SoluteTest-NitInhibitor Outputs.out</filename>
+        <title>SoluteTest-NitInhibitor Outputs</title>
+        <variables name="Variables">
+          <variable>dd/mmm/yyyy as Date</variable>
+          <variable>day as DoY</variable>
+          <variable>rain as Rain</variable>
+          <variable>drain as Drainage format 2</variable>
+          <variable>sw_dep() as SoilWaterContent format 2</variable>
+          <variable>NitrificationInhibitor() format 3</variable>
+          <variable>NitrificationInhibitor(1) format 3</variable>
+          <variable>NitrificationInhibitor(2) format 3</variable>
+          <variable>NitrificationInhibitor(3) format 3</variable>
+          <variable>NitrificationInhibitor(4) format 3</variable>
+          <variable>NitrificationInhibitor(5) format 3</variable>
+          <variable>Leach_NitrificationInhibitor format 3</variable>
+          <variable>Degradation_NitrificationInhibitor() format 3</variable>
+          <variable>fertiliser as FertiliserN format 2</variable>
+          <variable>NitInhibitorAdded as NitrificationInhibitorAdded</variable>
+          <variable>PlantFixedN as FixedN format 2</variable>
+          <variable>dlt_urea_hydrol() as HydrolisedN format 2</variable>
+          <variable>nitrification() as NitrifiedN format 2</variable>
+          <variable>dnit() as DenitrifiedN format 2</variable>
+          <variable>emission_nh3() as VolatilisedN format 2</variable>
+          <variable>leach_urea as LeachedUrea format 2</variable>
+          <variable>leach_nh4 as LeachedNH4 format 2</variable>
+          <variable>leach_no3 as LeachedNO3 format 2</variable>
+          <variable>removed_n as removedN format 2</variable>
+          <variable>n2o_atm() as N2Oemissions format 3</variable>
+          <variable>urea() as UreaTotal format 2</variable>
+          <variable>nh4() as NH4Total format 2</variable>
+          <variable>no3() as NO3Total format 2</variable>
+          <variable>surfaceom_n as SurfaceOM_N format 2</variable>
+          <variable>fom_n() as FOM_N format 2</variable>
+          <variable>biom_n() as Biom_N format 2</variable>
+          <variable>hum_n() as Hum_N format 2</variable>
+          <variable>TotalPlantN as PlantN format 2</variable>
+          <variable>removed_dm as RemovedDM</variable>
+          <variable>TotalPlantWt as PastureDM</variable>
+          <variable>CloverContent as CloverContent</variable>
+        </variables>
+        <events name="Reporting Frequency">
+          <event>end_day</event>
+        </events>
+        <Graph name="Rain-Drainage">
+          <Legend>
+            <CheckedTitles> Cumulative Rain</CheckedTitles>
+            <CheckedTitles> Cumulative Drainage</CheckedTitles>
+            <CheckedTitles> SoilWaterContent</CheckedTitles>
+          </Legend>
+          <Plot name="Predicted">
+            <colour>
+            </colour>
+            <X>Date</X>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <Y>Cumulative Rain</Y>
+            <Y>Cumulative Irrigation</Y>
+            <Y>Cumulative Drainage</Y>
+            <Y>SoilWaterContent</Y>
+            <Y>sat_dep()</Y>
+            <Y>dul_dep()</Y>
+            <Y>ll15_dep()</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="NInputs">
+          <Legend>
+            <CheckedTitles> FertiliserN</CheckedTitles>
+            <CheckedTitles> FixedN</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <colour>
+            </colour>
+            <X>Date</X>
+            <Y>FertiliserN</Y>
+            <Y>UrineN</Y>
+            <Y>FixedN</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Leach">
+          <Legend>
+            <CheckedTitles> Cumulative LeachedUrea</CheckedTitles>
+            <CheckedTitles> Cumulative LeachedNH4</CheckedTitles>
+            <CheckedTitles> Cumulative LeachedNO3</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <colour>
+            </colour>
+            <X>Date</X>
+            <Y>Cumulative LeachedUrea</Y>
+            <Y>Cumulative LeachedNH4</Y>
+            <Y>Cumulative LeachedNO3</Y>
+            <Y>Cumulative DCDleached</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Gaseous">
+          <Legend>
+            <CheckedTitles> SoluteTest-Tracer2 Outputs</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <colour>
+            </colour>
+            <X>Date</X>
+            <Y>Cumulative DenitrifiedN</Y>
+            <Y>Cumulative VolatilisedN</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="MineralN">
+          <Legend>
+            <CheckedTitles> UreaTotal</CheckedTitles>
+            <CheckedTitles> NH4Total</CheckedTitles>
+            <CheckedTitles> NO3Total</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <colour>
+            </colour>
+            <Y>UreaTotal</Y>
+            <Y>NH4Total</Y>
+            <Y>NO3Total</Y>
+            <X>Date</X>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="OrganicN">
+          <Legend>
+            <CheckedTitles> FOM_N</CheckedTitles>
+            <CheckedTitles> Biom_N</CheckedTitles>
+            <CheckedTitles> SurfaceOM_N</CheckedTitles>
+            <CheckedTitles> PlantN</CheckedTitles>
+            <CheckedTitles> Hum_N</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <colour>
+            </colour>
+            <Y>FOM_N</Y>
+            <Y>Biom_N</Y>
+            <Y>SurfaceOM_N</Y>
+            <YRight>Hum_N</YRight>
+            <Y>PlantN</Y>
+            <X>Date</X>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Yield">
+          <Legend>
+            <CheckedTitles> RemovedDM</CheckedTitles>
+            <CheckedTitles> Cumulative RemovedDM</CheckedTitles>
+          </Legend>
+          <Plot name="Predicted">
+            <colour>
+            </colour>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>RemovedDM</Y>
+            <YRight>Cumulative RemovedDM</YRight>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Solute">
+          <Legend>
+            <CheckedTitles> NitrificationInhibitor()</CheckedTitles>
+            <CheckedTitles> Cumulative Leach_NitrificationInhibitor</CheckedTitles>
+            <CheckedTitles> Cumulative Degradation_NitrificationInhibitor()</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <colour>
+            </colour>
+            <X>Date</X>
+            <Y>NitrificationInhibitor()</Y>
+            <Y>Cumulative Leach_NitrificationInhibitor</Y>
+            <Y>Cumulative Degradation_NitrificationInhibitor()</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+      </outputfile>
+    </area>
+  </simulation>
+</folder>

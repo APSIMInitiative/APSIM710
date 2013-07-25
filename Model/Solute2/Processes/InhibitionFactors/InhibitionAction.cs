@@ -19,7 +19,7 @@ public class InhibitionAction
 {
 	#region Parameters and Inputs
 
-	double UserDefinedValue;
+    double UserDefinedValue = 0.0;
 	/// <summary>
 	/// The value of the inhibition factor defined by user (a constant)
 	/// </summary>
@@ -76,9 +76,9 @@ public class InhibitionAction_LinearFunction : InhibitionAction
 }
 
 /// <summary>
-/// Class to compute the value of the inhibition factor based on RCichota brocken stick function
+/// Compute the value of the inhibition factor based on RCichota Broken stick function
 /// </summary>
-public class InhibitionAction_BrockenStickFunction : InhibitionAction
+public class InhibitionAction_BrokenStickFunction : InhibitionAction
 {
 	#region Parameters
 
@@ -114,7 +114,7 @@ public class InhibitionAction_BrockenStickFunction : InhibitionAction
 }
 
 /// <summary>
-/// Class to compute the value of the inhibition factor based on a Michaelis-Menten equation
+/// Compute the value of the inhibition factor based on a Michaelis-Menten equation
 /// </summary>
 public class InhibitionAction_MichaelisMentenFunction : InhibitionAction
 {
@@ -140,6 +140,37 @@ public class InhibitionAction_MichaelisMentenFunction : InhibitionAction
 		double TheFactor = SoluteAmount / (k_MichaelisMenten + SoluteAmount);
 		return Math.Max(0.0, Math.Min(1.0, TheFactor));
 	}
+}
+
+/// <summary>
+/// Compute the value of the inhibition factor based on a parabolic equation
+/// </summary>
+public class InhibitionAction_ParabolicFunction : InhibitionAction
+{
+    #region Parameters
+
+    private double k_parabolic;
+    /// <summary>
+    /// The parabolic coefficient for inhibition effect (solute content when effect is maximum)
+    /// </summary>
+    [Param()]
+    private double sif_kparabolic
+    { set { k_parabolic = value; } }
+
+    #endregion
+
+    /// <summary>
+    /// This method computes the inhibition factor using a parabolic equation
+    /// </summary>
+    /// <param name="SoluteAmount">The solute amount in the layer for which the calculation is made</param>
+    /// <returns>The inhibition factor (a value between 0.0 and 1.0)</returns>
+    public override double FactorValue(double SoluteAmount)
+    {
+        double TheFactor = 1.0;
+        if (SoluteAmount <= k_parabolic)
+            TheFactor = SoluteAmount * (-Math.Pow(k_parabolic, -2) * SoluteAmount + (2 / k_parabolic));
+        return Math.Max(0.0, Math.Min(1.0, TheFactor));
+    }
 }
 
 #endregion

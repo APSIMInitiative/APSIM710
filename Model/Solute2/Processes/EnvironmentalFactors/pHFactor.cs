@@ -17,11 +17,14 @@ public class pHLimitingFactor
 {
 	#region Parameters and Inputs
 
-	/// <summary>
+    double UserDefinedValue = 1.0;
+    /// <summary>
 	/// The value of the limiting factor defined by user (a constant)
 	/// </summary>
 	[Param(IsOptional = true)]
-	private double UserDefinedValue = 1.0;
+	private double phf_UserDefinedValue
+    { set { UserDefinedValue = value; } }
+
 
 	/// <summary>
 	/// The current values of the soil pH
@@ -68,9 +71,9 @@ public class pHLimitingFactor
 #region Derived methods for soil pH factor
 
 /// <summary>
-/// Compute the value of the limiting factor due to soil moisture based on RCichota brocken stick function
+/// Compute the value of the limiting factor due to soil moisture based on RCichota Broken stick function
 /// </summary>
-public class pHFactor_BrockenStickFunction : pHLimitingFactor
+public class pHFactor_BrokenStickFunction : pHLimitingFactor
 {
 	#region Parameters
 

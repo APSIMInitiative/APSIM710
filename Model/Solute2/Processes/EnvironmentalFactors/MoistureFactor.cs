@@ -17,11 +17,13 @@ public class MoistureLimitingFactor
 {
 	#region Parameters and Inputs
 
-	/// <summary>
+    double UserDefinedValue = 1.0;
+    /// <summary>
 	/// The value of the limiting factor defined by user (assumed constant)
 	/// </summary>
 	[Param(IsOptional = true)]
-	public double UserDefinedValue = 1.0;
+	public double swf_UserDefinedValue
+    { set { UserDefinedValue = value; } }
 
 	/// <summary>
 	/// The current values of the soil moisture
@@ -84,12 +86,12 @@ public class MoistureLimitingFactor
 #region Derived methods for moisture factor
 
 /// <summary>
-/// Compute the value of the limiting factor due to soil moisture based on RCichota brocken stick function
+/// Compute the value of the limiting factor due to soil moisture based on RCichota Broken stick function
 /// </summary>
 /// <remarks>
 /// It is assumed that the moisture is nomalised: 0=dry; 1=LL15, 2=DUL, 3=SAT
 /// </remarks>
-public class MoistFactor_BrockenStickFunction : MoistureLimitingFactor
+public class MoistFactor_BrokenStickFunction : MoistureLimitingFactor
 {
 	#region Parameters
 

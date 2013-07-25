@@ -13,16 +13,18 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <AllowedReferenceRelatedFileExtensions>-</AllowedReferenceRelatedFileExtensions>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>Solute.Doco.xml</DocumentationFile>
+    <DocumentationFile>Solute2.Doco.xml</DocumentationFile>
+    <AllowedReferenceRelatedFileExtensions>-</AllowedReferenceRelatedFileExtensions>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,7 +33,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>Solute.Doco.xml</DocumentationFile>
+    <DocumentationFile>Solute2.Doco.xml</DocumentationFile>
+    <AllowedReferenceRelatedFileExtensions>-</AllowedReferenceRelatedFileExtensions>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CMPServices">
@@ -67,9 +70,15 @@
     <Compile Include="Processes\InhibitionFactors\InhibitionEffect.cs" />
     <Compile Include="Solute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SoluteType.cs" />
+    <Compile Include="SoluteTypes\SoluteType.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\Cl2.xml">
+      <Link>SoluteTypes\Cl2.xml</Link>
+    </Content>
+    <Content Include="..\dcd1.xml">
+      <Link>SoluteTypes\dcd1.xml</Link>
+    </Content>
     <Content Include="..\dcd2.xml">
       <Link>SoluteTypes\dcd2.xml</Link>
       <SubType>Designer</SubType>
@@ -78,18 +87,21 @@
       <Link>SoluteTypes\dcd3.xml</Link>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="..\dcd4.xml">
-      <Link>SoluteTypes\dcd4.xml</Link>
-    </Content>
-    <Content Include="..\GenericSolute.xml">
-      <Link>SoluteTypes\GenericSolute.xml</Link>
+    <Content Include="..\NitrificationInhibitor2.xml">
+      <Link>SoluteTypes\NitrificationInhibitor2.xml</Link>
     </Content>
     <Content Include="..\Tracer2.xml">
       <Link>SoluteTypes\Tracer2.xml</Link>
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="..\UreaseInhibitor2.xml">
+      <Link>SoluteTypes\UreaseInhibitor2.xml</Link>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>del "$(TargetDir)Solute2.Doco.xml"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

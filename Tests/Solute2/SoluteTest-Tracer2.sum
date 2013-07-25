@@ -26,6 +26,7 @@ Paddock:
    Component                       "Tracer" = %apsim%\Model\Solute2.dll
    Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
    Component   "Cut rotation for AgPasture" = %apsim%\Model\Manager2.dll
+   Component                 "Apply_Tracer" = %apsim%\Model\Manager2.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -64,7 +65,7 @@ Paddock:
         Tracer(5) format 3
         Leach_tracer format 3
         fertiliser as FertiliserN format 2
-        Urine_N_added as UrineN format 2
+        TracerAdded format 2
         PlantFixedN as FixedN format 2
         dlt_urea_hydrol() as HydrolisedN format 2
         nitrification() as NitrifiedN format 2
@@ -376,8 +377,8 @@ Paddock:
            Layer        Amount
                     (ppm)   (kg/ha)
           --------------------------
-              1     100.0     5.20
-              2       0.0     0.00
+              1      10.0     0.52
+              2      10.0     1.04
               3       0.0     0.00
               4       0.0     0.00
               5       0.0     0.00
@@ -390,10 +391,10 @@ Paddock:
              12       0.0     0.00
              13       0.0     0.00
              14       0.0     0.00
-             15     100.0    66.23
+             15       0.0     0.00
              16       0.0     0.00
              17       0.0     0.00
-             18     100.0    71.45
+             18       0.0     0.00
              19       0.0     0.00
              20       0.0     0.00
              21       0.0     0.00
@@ -408,7 +409,7 @@ Paddock:
              30       0.0     0.00
              31       0.0     0.00
           --------------------------
-           Totals           142.88
+           Totals             1.56
           --------------------------
 
 
@@ -422,6 +423,9 @@ Paddock:
    remove down to residual dm = 1250 kg/ha
    fraction to return as residue: 0.0%
 
+
+------- Apply_Tracer Initialisation -------------------------------------------
+ TracerAdded to be applied at 1 mm depth, layer 1
 ------- Start of simulation  --------------------------------------------------
 4/01/2000 - Attempt to change nh4[4] in Patch[base] to a value below the lower limit
   The value -1.30529766162457E-09 will be reset to minimum value
@@ -521,6 +525,8 @@ ResidueTreatment_type: Return as residue
   The value -1.86631923804192E-09 will be reset to minimum value
 15/01/2000 - Attempt to change nh4[7] in Patch[base] to a value below the lower limit
   The value -1.4512353957441E-09 will be reset to minimum value
+16 January 2000 (Day of year=16), Apply_Tracer:
+     tracer being applied. 10kg/ha added at depth 1mm
 16/01/2000 - Attempt to change nh4[4] in Patch[base] to a value below the lower limit
   The value -1.920029885083E-09 will be reset to minimum value
 16/01/2000 - Attempt to change nh4[5] in Patch[base] to a value below the lower limit

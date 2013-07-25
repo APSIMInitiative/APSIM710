@@ -539,6 +539,114 @@ Public Class Script
 End Class
 </text>
         </manager2>
+        <manager2 name="Apply_Tracer">
+          <ui>
+            <Dummy1 type="category" description="Date to start applications (dd/mm/yyyy):" />
+            <ApplyTracer_StartDate type="ddmmmdate" description="Date to start applications (dd/mm/yyyy):">16/01/2000</ApplyTracer_StartDate>
+            <ApplyTracer_EndDate type="ddmmmdate" description="Date to end applications (dd/mm/yyyy):">31/12/2100</ApplyTracer_EndDate>
+            <ApplyTracer_Interval type="text" description="Type the interval between applications (days):">1461</ApplyTracer_Interval>
+            <ApplyTracer_Amount2Add type="text" description="Type the amount of inhibitor to apply ((kg/ha):">10</ApplyTracer_Amount2Add>
+            <ApplyTracer_Depth type="text" description="Type the depth to apply inhibitor (mm):">1</ApplyTracer_Depth>
+          </ui>
+          <text>Imports System
+Imports ModelFramework
+
+'This manager applies a tracer solute at the amount and depth specified (it also can repeat the application periodically)
+' RCichota, last update: 23/Jul/2013
+
+Public Class Script
+   
+   'Parameter variables:
+   &lt;param&gt; Private ApplyTracer_StartDate As String
+   &lt;param&gt; Private ApplyTracer_EndDate As String
+   &lt;param&gt; Private ApplyTracer_Interval As Integer
+   &lt;param&gt; Private ApplyTracer_Amount2Add As Single
+   &lt;param&gt; Private ApplyTracer_Depth As Single
+   
+   &lt;[Event]()&gt; Public Event SoluteChanged As SoluteChangedDelegate
+
+   'Variables read from other modules
+   &lt;Input&gt; Private today As DateTime
+   &lt;Input&gt; Private dlayer As Single()
+
+   'Output variables
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public TracerAdded As Single       'The amount of tracer added
+
+   'Internal variables
+   Private StartDate As DateTime                   'The date when applications start (in date format)
+   Private EndDate As DateTime                     'The date when applications finish (in date format)
+   Private TimeAfterApplication As Integer         'Number of days after a urine application
+   Private SoilDepth As Single                     'The soil depth (mm)
+   Private Layer2Apply As Integer                  'The layer at which tracer will be applied
+
+   &lt;EventHandler()&gt; Public Sub OnInit2()
+
+      'Put the dates into date format:
+      StartDate = Date.Parse(ApplyTracer_StartDate)
+      EndDate = Date.Parse(ApplyTracer_EndDate)
+              
+      'Computes the layer at which NitInhibitor will be applied
+      Dim DepthFromSurface As Single = 0
+      For z As Integer = 0 To dlayer.length - 1
+         If DepthFromSurface &lt;= ApplyTracer_Depth Then Layer2Apply = z
+         DepthFromSurface = DepthFromSurface + dlayer(z)
+      Next
+      
+      console.WriteLine(" TracerAdded to be applied at " &amp; ApplyTracer_Depth.ToString() &amp; " mm depth, layer " &amp; (Layer2Apply + 1).ToString())
+
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+
+      Dim delta_solute As Double()
+      Dim canApplyTracer As Boolean = False
+      
+      'Re-set variables
+      ReDim delta_solute(dlayer.Length - 1)
+      TracerAdded = 0
+
+      'Decide whether it is time to apply inhibitor:
+      If today &gt;= StartDate And today &lt;= EndDate Then
+         If today = StartDate Then
+            canApplyTracer = True
+         Else
+            If TimeAfterApplication &gt;= ApplyTracer_Interval Then
+               canApplyTracer = True
+            Else
+               TimeAfterApplication = TimeAfterApplication + 1
+               TracerAdded = 0
+            End If
+         End If
+         
+         If canApplyTracer Then
+            
+            'fill the delta_solute array
+            For z As Integer=0 To dlayer.Length - 1
+               delta_solute(z) = 0.0
+            Next
+            delta_solute(Layer2Apply) = CDbl(ApplyTracer_Amount2Add)
+            TracerAdded += ApplyTracer_Amount2Add
+         
+            ' send delta_solute to apsim
+            Dim SoluteChanges As SoluteChangedType = New SoluteChangedType()
+            SoluteChanges.Sender = "Manager: Apply_Tracer"
+            SoluteChanges.SoluteName = "Tracer"
+            SoluteChanges.SoluteUnits = "kg/ha"
+            SoluteChanges.DeltaSolute = delta_solute
+            RaiseEvent SoluteChanged(SoluteChanges)
+
+            TimeAfterApplication = 1
+
+            Console.WriteLine(today.ToString("dd MMMM yyyy") + " (Day of year=" + today.DayOfYear.ToString + "), Apply_Tracer:")
+            Console.WriteLine("     tracer being applied. " + TracerAdded.ToString + "kg/ha added at depth " + ApplyTracer_Depth.ToString + "mm")
+            
+         End If         
+      End If                  
+   End Sub
+
+End Class
+    </text>
+        </manager2>
       </folder>
       <micromet name="Micromet">
         <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
@@ -563,7 +671,8 @@ End Class
       </irrigation>
       <fertiliser />
       <tracer2 name="Tracer">
-        <InitialContent type="text" description="Type initial content for dcd:">100  0  0  0  0  0  0  0  0  0  0  0  0  0  100  0  0  100</InitialContent>
+        <Dummy1 type="category" description="Initial content of Tracer in the soil" />
+        <InitialContent type="text" description="  Amount of Tracer for each layer (kg/ha):">10  10  0  0  0  0  0  0  0  0</InitialContent>
       </tracer2>
       <surfaceom name="surface organic matter">
         <PoolName type="text" description="Organic Matter pool name">grass</PoolName>
@@ -577,7 +686,7 @@ End Class
         <top_boundary_condition type="list" listvalues="0,1,2,3" description="Choose top boundary condition (0=inf conduct; 1=const potential; 2=limtd conduct):">0</top_boundary_condition>
         <runoff type="list" listvalues="0,1,2" description="Choose runnof/pond condition (0=all runoff; 1=all pond; 2=calc runoff):">1</runoff>
         <bottom_boundary_condition type="list" listvalues="0,1,2,3" description="Choose bottom boundary condition (0=set pot grad; 1=set potential; 2=impermeable;3=seepage):">0</bottom_boundary_condition>
-        <run_solutes type="text" description="Type list of solutes SWIM will move:">urea  nh4  no3 tracer</run_solutes>
+        <run_solutes type="text" description="Type list of solutes SWIM will move:">urea  nh4  no3  tracer</run_solutes>
         <max_water_increment type="text" description="Type base water increment value:">0.5</max_water_increment>
         <dummy2 type="category" description="Description of soil profile" />
         <x type="text" description="Enter the values of x for each layer:">0  10  20  30  50  70  90  110  140  160  190  210  250  270  330  370  430  470  530  570  650  710  790  860  940  1060  1140  1260  1340  1440  1500</x>
@@ -686,7 +795,7 @@ End Class
           <variable>Tracer(5) format 3</variable>
           <variable>Leach_tracer format 3</variable>
           <variable>fertiliser as FertiliserN format 2</variable>
-          <variable>Urine_N_added as UrineN format 2</variable>
+          <variable>TracerAdded format 2</variable>
           <variable>PlantFixedN as FixedN format 2</variable>
           <variable>dlt_urea_hydrol() as HydrolisedN format 2</variable>
           <variable>nitrification() as NitrifiedN format 2</variable>
@@ -856,6 +965,7 @@ End Class
             <Y>Tracer()</Y>
             <YRight>Cumulative Leach_tracer</YRight>
             <Y>Tracer(1)</Y>
+            <Y>TracerAdded</Y>
             <GDApsimFileReader name="ApsimFileReader" />
           </Plot>
         </Graph>

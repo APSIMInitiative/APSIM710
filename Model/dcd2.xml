@@ -1,0 +1,107 @@
+<Type name ="dcd2">
+  <Metadata>
+    <UItype>CSUserInterface.GenericUI</UItype>
+    <ShowInMainTree>Yes</ShowInMainTree>
+    <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+    <Documentation></Documentation>
+    <LargeIcon>%apsim%\UserInterface\Images\Solute2-32.png</LargeIcon>
+    <SmallIcon>%apsim%\UserInterface\Images\Solute2-16.png</SmallIcon>
+    <dll>%apsim%\Model\Solute2.dll</dll>
+    <drops>
+      <drop>toolbox</drop>
+      <drop>area</drop>
+      <drop>simulation</drop>
+      <drop>folder</drop>
+      <drop>factor</drop>
+    </drops>
+    <ApsimToSim>
+      <component name= "[InstanceName]" executable= "[dll]">
+        <executable name="[dll]" version="1.0"/>
+        <initdata>
+          [Model]
+          [dcd2.innerxml]
+        </initdata>
+      </component>
+    </ApsimToSim>
+  </Metadata>
+  <Model>
+    <Solute>
+		<!-- This parameterisation defines a dcd-type solute, where the basic processes are set using broken stick functions -->
+      <Type_dcd name="SoluteType" description="Defines the outputs that will be given to APSIM"/>
+      <MolecularWeight description="The molecular weight of the solute (g/mol)">1.00</MolecularWeight>
+      <InitialContent description="The amount of solute at the beginning of the simulation (mg solute/kg soil)">
+        <double>0.0</double>
+        <double>0.0</double>
+        <double>0.0</double>
+      </InitialContent>
+      <UpperBound description="The maximum value for the solute amount (mol/kg)">1000.0</UpperBound>
+      <LowerBound description="The minimum value for the solute amount (mol/kg)">0.0</LowerBound>
+      <ToleranceValue description="The tolerance level for values above or below the bounds (mol/kg)">0.00001</ToleranceValue>
+      <SoluteDegradation name="SoluteDegradation" description="Specify the approach and parameters to compute solute degradation">
+        <PotentialDegradationRate description="The degradation rate at optimum conditions (%/day)">10.0</PotentialDegradationRate>
+        <TempFactor_BrokenStickFunction name="TemperatureLimitingFactor">
+          <stf_xValues>
+            <double>0.0</double>
+            <double>15.0</double>
+            <double>30.0</double>
+          </stf_xValues>
+          <stf_yValues>
+            <double>0.0</double>
+            <double>0.3</double>
+            <double>1.0</double>
+          </stf_yValues>
+        </TempFactor_BrokenStickFunction>
+        <MoistFactor_BrokenStickFunction name="MoistureLimitingFactor">
+          <swf_xValues>
+            <double>0.0</double>
+            <double>15.0</double>
+            <double>30.0</double>
+          </swf_xValues>
+          <swf_yValues>
+            <double>0.0</double>
+            <double>0.3</double>
+            <double>1.0</double>
+          </swf_yValues>
+        </MoistFactor_BrokenStickFunction>
+        <pHFactor_BrokenStickFunction name="pHLimitingFactor">
+          <phf_xValues>
+            <double>0.0</double>
+            <double>15.0</double>
+            <double>30.0</double>
+          </phf_xValues>
+          <phf_yValues>
+            <double>0.0</double>
+            <double>0.3</double>
+            <double>1.0</double>
+          </phf_yValues>
+        </pHFactor_BrokenStickFunction>
+        <CarbonFactor_BrokenStickFunction name="CarbonLimitingFactor">
+          <scf_xValues>
+            <double>0.0</double>
+            <double>15.0</double>
+            <double>30.0</double>
+          </scf_xValues>
+          <scf_yValues>
+            <double>0.0</double>
+            <double>0.3</double>
+            <double>1.0</double>
+          </scf_yValues>
+        </CarbonFactor_BrokenStickFunction>
+      </SoluteDegradation>
+      <SoluteInhibition>
+        <InhibitionAction_BrokenStickFunction name="InhibitionAction" description="Specify the approach and parameters to compute inhibition effect">
+          <sif_xValues>
+            <double>0.0</double>
+            <double>15.0</double>
+            <double>30.0</double>
+          </sif_xValues>
+          <sif_yValues>
+            <double>0.0</double>
+            <double>0.3</double>
+            <double>1.0</double>
+          </sif_yValues>
+        </InhibitionAction_BrokenStickFunction>
+      </SoluteInhibition>        
+    </Solute>
+  </Model>
+</Type>

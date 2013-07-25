@@ -17,11 +17,13 @@ public class CarbonLimitingFactor
 {
 	#region Parameters and Inputs
 
-	/// <summary>
+    double UserDefinedValue = 1.0;
+    /// <summary>
 	/// The value of the limiting factor defined by user (a constant)
 	/// </summary>
 	[Param(IsOptional = true)]
-	public double UserDefinedValue = 1.0;
+    public double scf_UserDefinedValue
+    { set { UserDefinedValue = value; } }
 
 	/// <summary>
 	/// The current values of the soil carbon, total
@@ -72,9 +74,9 @@ public class CarbonLimitingFactor
 #region Derived methods for carbon content factor
 
 /// <summary>
-/// Compute the value of the limiting factor due to soil carbon based on RCichota brocken stick function
+/// Compute the value of the limiting factor due to soil carbon based on RCichota Broken stick function
 /// </summary>
-public class CarbonFactor_BrockenStickFunction : CarbonLimitingFactor
+public class CarbonFactor_BrokenStickFunction : CarbonLimitingFactor
 {
 	#region Parameters
 
@@ -138,6 +140,38 @@ public class CarbonFactor_MichaelisMentenFunction : CarbonLimitingFactor
 		double TheFactor = DOC / (k_MichaelisMenten + DOC);
 		return Math.Max(0.0, Math.Min(1.0, TheFactor));
 	}
+}
+
+/// <summary>
+/// Compute the value of the limiting factor due to soil carbon using a parabolic equation
+/// </summary>
+public class CarbonFactor_parabolicFunction : CarbonLimitingFactor
+{
+    #region Parameters
+
+    private double k_parabolic;
+    /// <summary>
+    /// The parabolic coefficient for carbon effect (C content when effect is maximum)
+    /// </summary>
+    [Param()]
+    private double scf_kparabolic
+    { set { k_parabolic = value; } }
+
+    #endregion
+
+    /// <summary>
+    /// The computed limiting factor value. Calculations use the parabolic equation
+    /// </summary>
+    /// <param name="Layer">The layer which the factor is calculated for</param>
+    /// <returns>The available carbon limiting factor (a value between 0.0 and 1.0)</returns>
+    public override double FactorValue(int Layer)
+    {
+        double DOC = DissolvedOrganicCarbon(Layer);
+        double TheFactor = 1.0;
+        if (DOC <= k_parabolic)
+            TheFactor = DOC * (-Math.Pow(k_parabolic, -2) * DOC + (2 / k_parabolic));
+        return Math.Max(0.0, Math.Min(1.0, TheFactor));
+    }
 }
 
 #endregion

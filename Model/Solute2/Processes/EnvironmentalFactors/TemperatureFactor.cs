@@ -17,11 +17,14 @@ public class TemperatureLimitingFactor
 {
 	#region Parameters and Inputs
 
-	/// <summary>
+    double UserDefinedValue = 1.0;
+    /// <summary>
 	/// The value of the limiting factor defined by user (a constant)
 	/// </summary>
 	[Param(IsOptional = true)]
-	private double UserDefinedValue = 1.0;
+	private double stf_UserDefinedValue
+    { set { UserDefinedValue = value; } }
+
 
 	/// <summary>
 	/// The values of the soil temperature (for each layer) actually used by this method
@@ -69,9 +72,9 @@ public class TemperatureLimitingFactor
 #region Derived methods for temperature factor
 
 /// <summary>
-/// Compute the value of the limiting factor due to soil temperature based on RCichota brocken stick function
+/// Compute the value of the limiting factor due to soil temperature based on RCichota Broken stick function
 /// </summary>
-public class TempFactor_BrockenStickFunction : TemperatureLimitingFactor
+public class TempFactor_BrokenStickFunction : TemperatureLimitingFactor
 {
 	#region Parameters
 
@@ -109,7 +112,7 @@ public class TempFactor_BrockenStickFunction : TemperatureLimitingFactor
 /// <summary>
 /// Compute the value of the limiting factor due to soil temperature based on RCichota bending stick function
 /// </summary>
-public class TempFactor_BendingStickFunction : TemperatureLimitingFactor
+public class TempFactor_BentStickFunction : TemperatureLimitingFactor
 {
 	#region Parameters
 

@@ -300,7 +300,7 @@ public partial class Solute
 			SoluteType.NewDegradationAmount(DegradationAmount);
 
 			// effectivate the solute changes due to degradation
-			SoluteType.EffectivateSoluteDegradation();
+			SoluteType.MakeSoluteDegradationEffective();
 		}
 		if (SoluteInhibition != null)
 			SoluteType.NewInhibitionEffect(SoluteInhibition.InhibitionEffect(Amount_mgkg()));
