@@ -41,6 +41,12 @@ ifeq ($(PROJECTTYPE),lib)
 all: $(APSIM)/Model/$(PROJECT).a
 endif
 
+ifeq ($(PROJECTTYPE),exe)
+ LDFLAGS:= -Xlinker --export-dynamic $(LDFLAGS)
+all: $(APSIM)/Model/$(PROJECT).exe
+endif
+
+
 %.o: %.for
 	$(FC) -x f77-cpp-input -o $@ -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
 
@@ -60,6 +66,9 @@ $(APSIM)/Model/$(PROJECT).so: $(OBJS)
 $(APSIM)/Model/$(PROJECT).a: $(OBJS)
 	ar rv $@ $(OBJS)
 
+$(APSIM)/Model/$(PROJECT).exe: $(OBJS)
+	$(FC) -o $@ $(OBJS) $(LDFLAGS) $(LIBS) $(LDDEBUGFLAGS)
+
 clean:
-	rm -f *.mod $(OBJS) $(APSIM)/Model/$(PROJECT).so $(APSIM)/Model/$(PROJECT).a
+	rm -f *.mod $(OBJS) $(APSIM)/Model/$(PROJECT).so $(APSIM)/Model/$(PROJECT).a $(APSIM)/Model/$(PROJECT).exe
 
