@@ -234,6 +234,7 @@ namespace ApsimFile
             XmlDocument doc = new XmlDocument();
             XmlNode RootNode = doc.AppendChild(doc.CreateElement(RootComponent.Type));
             XmlHelper.SetAttribute(RootNode, "version", APSIMChangeTool.CurrentVersion.ToString());
+            XmlHelper.SetAttribute(RootNode, "creator", "Apsim " + Configuration.Instance.ApsimVersion() + "-" + Configuration.Instance.ApsimBuildNumber());
             RootComponent.Write(RootNode);
             try { doc.Save(FileName); } //Win 7 - do not allow saving to Program Files directory
             catch (Exception e) 
