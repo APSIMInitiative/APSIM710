@@ -27,7 +27,6 @@ Paddock:
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
    Component                      "OilPalm" = %apsim%\Model\Plant2.dll
-   Component            "OilPalmUnderstory" = %apsim%\Model\Plant2.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -42,7 +41,7 @@ Paddock:
         post
         end_step
      Simulation start date =  1/03/1996
-     Simulation end date   = 30/09/2010
+     Simulation end date   = 29/09/2010
      Time step =           = 1440 (mins)
 
 ------- met Initialisation ----------------------------------------------------
@@ -103,7 +102,7 @@ Paddock:
         no3()
         dnit()
         leach_no3
-        OilPalmUnderstory.NFixation
+        UnderstoryNFixation
         FrondArea
         ExcessDM
         FrondMaxAreaValue
@@ -177,8 +176,6 @@ Paddock:
      
      SECTION:- start_of_day
      ppsm = 135/10000
-     if (oilpalmunderstory.plant_status = 'out') then
-     oilpalmunderstory sow population = 0, depth = 0, cultivar = dummy, maxcover = 1.0, budnumber = 1, row_spacing = 0, crop_class = plant
      endif
      if today = date('01/03/1996') then
          oilpalm sow population = ppsm, depth = 200, cultivar = dami, maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant
@@ -421,7 +418,6 @@ fertiliser:
         42.00 of N as urea (urea_n)
                                          added at depth   10.00 (layer   1)
      Manager creating a new local real variable : ppsm = 0.01350
-     Manager sending message :- oilpalmunderstory sow  population = 0, depth = 0, cultivar = dummy, maxcover = 1.0, budnumber = 1, row_spacing = 0, crop_class = plant
      Manager sending message :- oilpalm sow  population = 0.01350, depth = 200, cultivar = dami, maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant
 1 September 1996(Day of year=245), operations: 
       Sending apply message to fertiliser
@@ -486,13 +482,6 @@ fertiliser:
    - Reading Fertiliser Type Parameters
         42.00 of N as urea (urea_n)
                                          added at depth   10.00 (layer   1)
-30 September 2010(Day of year=273): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Cannot find data in INPUT file for date 2010-Sep-30
-     Component name: met
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
+29 September 2010(Day of year=272), clock: 
+     Simulation is terminating due to end criteria being met.
 

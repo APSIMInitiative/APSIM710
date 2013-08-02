@@ -25,7 +25,6 @@ Paddock:
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
    Component                      "OilPalm" = %apsim%\Model\Plant2.dll
-   Component            "OilPalmUnderstory" = %apsim%\Model\Plant2.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -122,9 +121,6 @@ Paddock:
      
      SECTION:- start_of_day
      ppsm = 127/10000
-     if (oilpalmunderstory.plant_status = 'out') then
-     oilpalmunderstory sow population = 0, depth = 0, cultivar = dummy, maxcover = 1.0, budnumber = 1, row_spacing = 0, crop_class = plant
-     endif
      if today = date('01/03/1991') then
          oilpalm sow population = ppsm, depth = 200, cultivar = dami, maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant
      endif
@@ -349,7 +345,6 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
      Manager creating a new local real variable : ppsm = 0.01270
-     Manager sending message :- oilpalmunderstory sow  population = 0, depth = 0, cultivar = dummy, maxcover = 1.0, budnumber = 1, row_spacing = 0, crop_class = plant
      Manager sending message :- oilpalm sow  population = 0.01270, depth = 200, cultivar = dami, maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant
 1 January 1992(Day of year=1), operations: 
       Sending apply message to fertiliser

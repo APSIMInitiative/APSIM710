@@ -173,6 +173,29 @@ public class OilPalm
     public Function FrondMinimumNConcentration = null;
 
 
+    [Output]
+    public double UnderstoryCoverGreen = 0;
+    private double UnderstoryKL = 0.04;
+    [Output]
+    double[] UnderstoryPotSWUptake;
+    [Output]
+    double[] UnderstorySWUptake;
+    [Output]
+    double[] UnderstoryPotNUptake;
+    [Output]
+    double[] UnderstoryNUptake;
+    [Output]
+    public double UnderstoryRootDepth = 0;
+    [Output]
+    public double UnderstoryPEP = 0;
+    [Output]
+    public double UnderstoryEP = 0;
+    [Output]
+    public double UnderstoryFW = 0;
+    [Output]
+    public double UnderstoryDltDM = 0;
+    [Output]
+    public double UnderstoryNFixation = 0;
 
     public class RootType
     {
@@ -220,6 +243,12 @@ public class OilPalm
         SWUptake = new double[ll15_dep.Length];
         PotNUptake = new double[ll15_dep.Length];
         NUptake = new double[ll15_dep.Length];
+
+        UnderstoryPotSWUptake = new double[ll15_dep.Length];
+        UnderstorySWUptake = new double[ll15_dep.Length];
+        UnderstoryPotNUptake = new double[ll15_dep.Length];
+        UnderstoryNUptake = new double[ll15_dep.Length];
+
         for (int i = 0; i < ll15_dep.Length; i++)
         {
             RootType R = new RootType();
@@ -299,6 +328,7 @@ public class OilPalm
         DoDevelopment();
         DoFlowerAbortion();
         DoGenderDetermination();
+        DoUnderstory();
 
     }
 
@@ -854,6 +884,86 @@ public class OilPalm
             //return Math.Min(Math.Pow(Fn,0.5),1.0);
             return Math.Min(1.4*Fn, 1.0);
         }
+    }
+
+
+    private void DoUnderstory()
+    {
+        DoUnderstoryWaterBalance();
+        DoUnderstoryGrowth();
+        DoUnderstoryNBalance();
+
+        // Now add today's growth to the soil - ie assume plants are in steady state.
+        BiomassRemovedType BiomassRemovedData = new BiomassRemovedType();
+        BiomassRemovedData.crop_type = "OilPalmUnderstory";
+        BiomassRemovedData.dm_type = new string[1] { "litter" };
+        BiomassRemovedData.dlt_crop_dm = new float[1] { (float)(UnderstoryDltDM * 10) };
+        BiomassRemovedData.dlt_dm_n = new float[1] { (float)(UnderstoryNFixation + MathUtility.Sum(UnderstoryNUptake)) };
+        BiomassRemovedData.dlt_dm_p = new float[1] { 0 };
+        BiomassRemovedData.fraction_to_residue = new float[1] { 1 };
+        BiomassRemoved.Invoke(BiomassRemovedData);
+
+    }
+    private void DoUnderstoryGrowth()
+    {
+        double RUE = 1.3;
+        UnderstoryDltDM = RUE * Radn * UnderstoryCoverGreen * (1 - cover_green) * FW;
+    }
+
+    private void DoUnderstoryWaterBalance()
+    {
+        UnderstoryCoverGreen = 0.40 * (1 - cover_green);
+        UnderstoryPEP = eo * UnderstoryCoverGreen * (1 - cover_green);
+
+        MyPaddock.Get("Soil Water.sw_dep", out sw_dep);  //need to get latest copy of swdep because OP will have taken water up.
+
+        for (int j = 0; j < ll15_dep.Length; j++)
+            UnderstoryPotSWUptake[j] = Math.Max(0.0, RootProportion(j, UnderstoryRootDepth) * UnderstoryKL * (sw_dep[j] - ll15_dep[j]));
+
+        double TotUnderstoryPotSWUptake = MathUtility.Sum(UnderstoryPotSWUptake);
+
+        UnderstoryEP = 0.0;
+        for (int j = 0; j < ll15_dep.Length; j++)
+        {
+            UnderstorySWUptake[j] = UnderstoryPotSWUptake[j] * Math.Min(1.0, PEP / TotUnderstoryPotSWUptake);
+            UnderstoryEP += UnderstorySWUptake[j];
+            sw_dep[j] = sw_dep[j] - UnderstorySWUptake[j];
+
+        }
+        if (!MyPaddock.Set("Soil Water.sw_dep", sw_dep))
+            throw new Exception("Unable to set sw_dep");
+        if (UnderstoryPEP > 0.0)
+            UnderstoryFW = UnderstoryEP / UnderstoryPEP;
+        else
+            UnderstoryFW = 1.0;
+
+    }
+    private void DoUnderstoryNBalance()
+    {
+        double UnderstoryNdemand = UnderstoryDltDM * 10 * 0.021;
+        UnderstoryNFixation = Math.Max(0.0, UnderstoryNdemand * .44);
+
+        MyPaddock.Get("Soil Nitrogen.no3", out no3);
+
+        for (int j = 0; j < ll15_dep.Length; j++)
+        {
+            UnderstoryPotNUptake[j] = Math.Max(0.0, RootProportion(j, UnderstoryRootDepth) * no3[j]);
+        }
+
+        double TotUnderstoryPotNUptake = MathUtility.Sum(UnderstoryPotNUptake);
+        double Fr = Math.Min(1.0, (UnderstoryNdemand - UnderstoryNFixation) / TotUnderstoryPotNUptake);
+
+        for (int j = 0; j < ll15_dep.Length; j++)
+        {
+            UnderstoryNUptake[j] = UnderstoryPotNUptake[j] * Fr;
+            no3[j] = no3[j] - UnderstoryNUptake[j];
+
+        }
+        if (!MyPaddock.Set("Soil Nitrogen.no3", no3))
+            throw new Exception("Unable to set no3");
+
+        //NFixation = Math.Max(0.0, Ndemand - MathUtility.Sum(NUptake));
+
     }
 
 }

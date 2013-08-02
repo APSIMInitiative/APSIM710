@@ -25,7 +25,6 @@ Paddock:
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
    Component                      "OilPalm" = %apsim%\Model\Plant2.dll
-   Component            "OilPalmUnderstory" = %apsim%\Model\Plant2.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -125,9 +124,6 @@ Paddock:
      
      SECTION:- start_of_day
      ppsm = 140/10000
-     if (oilpalmunderstory.plant_status = 'out') then
-     oilpalmunderstory sow population = 0, depth = 0, cultivar = dummy, maxcover = 1.0, budnumber = 1, row_spacing = 0, crop_class = plant
-     endif
      if today = date('01/02/1996') then
          oilpalm sow population = ppsm, depth = 200, cultivar = dami, maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant
      endif
@@ -344,7 +340,6 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
      Manager creating a new local real variable : ppsm = 0.01400
-     Manager sending message :- oilpalmunderstory sow  population = 0, depth = 0, cultivar = dummy, maxcover = 1.0, budnumber = 1, row_spacing = 0, crop_class = plant
      Manager sending message :- oilpalm sow  population = 0.01400, depth = 200, cultivar = dami, maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant
 1 January 1997(Day of year=1), operations: 
       Sending apply message to fertiliser
@@ -370,14 +365,13 @@ Paddock:
       Sending apply message to fertiliser
 1 January 2008(Day of year=1), operations: 
       Sending apply message to fertiliser
-1 January 2009(Day of year=1), operations: 
-      Sending apply message to fertiliser
-1 January 2010(Day of year=1): 
+17 May 2008(Day of year=138): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM  Fatal  Error
                       -------------------
-     Cannot find data in INPUT file for date 2010-Jan-01
-     Component name: met
+     Unable to read double precision value from string :-
+     -1.#IND0092
+     Component name: paddock.Calculations
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      

@@ -1,4 +1,4 @@
-<folder version="36" name="simulations">
+<folder version="36" creator="Apsim 7.5-r3090" name="simulations">
   <folder name="Expt324">
     <simulation name="Expt324N0">
       <metfile name="met">
@@ -6,12 +6,11 @@
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">01/03/1996</start_date>
-        <end_date type="date" description="Enter the end date of the simulation">30/09/2010</end_date>
+        <end_date type="date" description="Enter the end date of the simulation">29/09/2010</end_date>
       </clock>
       <summaryfile />
       <area name="paddock">
         <OilPalm />
-        <OilPalmUnderstory />
         <fertiliser />
         <surfaceom name="surface organic matter">
           <PoolName type="text" description="Organic Matter pool name">oilpalm</PoolName>
@@ -103,8 +102,6 @@ Overall N% = 0.533% = C:N 75</memo>
             </ui>
             <script>
               <text>ppsm = [population]/10000
-if (OilPalmUnderstory.plant_status = 'out') then
-OilPalmUnderstory sow population = 0, depth = 0, cultivar = dummy, maxcover = 1.0, budnumber = 1, row_spacing = 0, crop_class = plant  
 
 ! Add Trunk from previous plantation
 !'surface organic matter' add_surfaceom type=OilPalm, name=trunk, mass=63000, cnr=133, cpr=200
@@ -533,7 +530,7 @@ endif
             <variable>no3()</variable>
             <variable>dnit()</variable>
             <variable>leach_no3</variable>
-            <variable>OilPalmUnderstory.NFixation</variable>
+            <variable>UnderstoryNFixation</variable>
             <variable>FrondArea</variable>
             <variable>ExcessDM</variable>
             <variable>FrondMaxAreaValue</variable>
@@ -615,7 +612,6 @@ endif
       <summaryfile shortcut="/simulations/Expt324/Expt324N0/summaryfile" />
       <area name="paddock" shortcut="/simulations/Expt324/Expt324N0/paddock">
         <OilPalm shortcut="/simulations/Expt324/Expt324N0/paddock/OilPalm" />
-        <OilPalmUnderstory shortcut="/simulations/Expt324/Expt324N0/paddock/OilPalmUnderstory" />
         <fertiliser shortcut="/simulations/Expt324/Expt324N0/paddock/fertiliser" />
         <surfaceom name="surface organic matter" shortcut="/simulations/Expt324/Expt324N0/paddock/surface organic matter" />
         <folder name="Manager folder" shortcut="/simulations/Expt324/Expt324N0/paddock/Manager folder">
@@ -739,7 +735,6 @@ endif
       <summaryfile shortcut="/simulations/Expt324/Expt324N0/summaryfile" />
       <area name="paddock" shortcut="/simulations/Expt324/Expt324N0/paddock">
         <OilPalm shortcut="/simulations/Expt324/Expt324N0/paddock/OilPalm" />
-        <OilPalmUnderstory shortcut="/simulations/Expt324/Expt324N0/paddock/OilPalmUnderstory" />
         <fertiliser shortcut="/simulations/Expt324/Expt324N0/paddock/fertiliser" />
         <surfaceom name="surface organic matter" shortcut="/simulations/Expt324/Expt324N0/paddock/surface organic matter" />
         <folder name="Manager folder" shortcut="/simulations/Expt324/Expt324N0/paddock/Manager folder">
@@ -863,7 +858,6 @@ endif
       <summaryfile shortcut="/simulations/Expt324/Expt324N0/summaryfile" />
       <area name="paddock" shortcut="/simulations/Expt324/Expt324N0/paddock">
         <OilPalm shortcut="/simulations/Expt324/Expt324N0/paddock/OilPalm" />
-        <OilPalmUnderstory shortcut="/simulations/Expt324/Expt324N0/paddock/OilPalmUnderstory" />
         <fertiliser shortcut="/simulations/Expt324/Expt324N0/paddock/fertiliser" />
         <surfaceom name="surface organic matter" shortcut="/simulations/Expt324/Expt324N0/paddock/surface organic matter" />
         <folder name="Manager folder" shortcut="/simulations/Expt324/Expt324N0/paddock/Manager folder">
@@ -1018,7 +1012,6 @@ endif
     <Graph name="LAI">
       <Legend>
         <CheckedTitles>Predicted, LAI,Expt324N0</CheckedTitles>
-        <CheckedTitles>Predicted, LAI,{Checkpoint} Expt324N0</CheckedTitles>
         <CheckedTitles>Predicted, LAI,Expt324N1</CheckedTitles>
         <CheckedTitles>Predicted, LAI,Expt324N2</CheckedTitles>
         <CheckedTitles>Predicted, LAI,Expt324N3</CheckedTitles>
@@ -1053,8 +1046,12 @@ endif
     <Graph name="FrondAppearance">
       <Legend>
         <CheckedTitles>Predicted, CumFronds,Expt324N0</CheckedTitles>
+        <CheckedTitles>Predicted, CumFronds,Expt324N1</CheckedTitles>
+        <CheckedTitles>Predicted, CumFronds,Expt324N2</CheckedTitles>
         <CheckedTitles>Predicted, CumFronds,Expt324N3</CheckedTitles>
         <CheckedTitles>Observed, CumFrontCount,Expt324N0</CheckedTitles>
+        <CheckedTitles>Observed, CumFrontCount,Expt324N1</CheckedTitles>
+        <CheckedTitles>Observed, CumFrontCount,Expt324N2</CheckedTitles>
         <CheckedTitles>Observed, CumFrontCount,Expt324N3</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
@@ -1592,7 +1589,6 @@ endif
       <summaryfile />
       <area name="paddock">
         <OilPalm />
-        <OilPalmUnderstory />
         <fertiliser />
         <surfaceom name="surface organic matter">
           <PoolName type="text" description="Organic Matter pool name">OilPalm</PoolName>
@@ -1697,9 +1693,7 @@ endif
             </ui>
             <script>
               <text>ppsm = [population]/10000
-if (OilPalmUnderstory.plant_status = 'out') then
-OilPalmUnderstory sow population = 0, depth = 0, cultivar = dummy, maxcover = 1.0, budnumber = 1, row_spacing = 0, crop_class = plant  
-endif
+
 if today = date('[sowing_date]') then
     OilPalm sow population = ppsm, depth = [sowing_depth], cultivar = [cultivar], maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant  
 endif
@@ -2190,7 +2184,6 @@ endif</text>
           <variables name="Variables" shortcut="/simulations/Expt504/Expt504N0/paddock/Outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/Expt504/Expt504N0/paddock/Outputfile/Reporting Frequency" />
         </outputfile>
-        <OilPalmUnderstory shortcut="/simulations/Expt504/Expt504N0/paddock/OilPalmUnderstory" />
       </area>
     </simulation>
     <simulation name="Expt504N2" shortcut="/simulations/Expt504/Expt504N0">
@@ -2288,7 +2281,6 @@ endif</text>
           <variables name="Variables" shortcut="/simulations/Expt504/Expt504N0/paddock/Outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/Expt504/Expt504N0/paddock/Outputfile/Reporting Frequency" />
         </outputfile>
-        <OilPalmUnderstory shortcut="/simulations/Expt504/Expt504N0/paddock/OilPalmUnderstory" />
       </area>
     </simulation>
     <simulation name="Expt504N3" shortcut="/simulations/Expt504/Expt504N0">
@@ -2386,7 +2378,6 @@ endif</text>
           <variables name="Variables" shortcut="/simulations/Expt504/Expt504N0/paddock/Outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/Expt504/Expt504N0/paddock/Outputfile/Reporting Frequency" />
         </outputfile>
-        <OilPalmUnderstory shortcut="/simulations/Expt504/Expt504N0/paddock/OilPalmUnderstory" />
       </area>
     </simulation>
     <Graph name="StemWt">
@@ -3537,7 +3528,9 @@ endif</text>
     </simulation>
     <Graph name="StemWt">
       <Legend>
-        <CheckedTitles>Predicted, StemMass,Expt324N3</CheckedTitles>
+        <CheckedTitles>Predicted, StemMass,Expt601N0</CheckedTitles>
+        <CheckedTitles>Predicted, StemMass,Expt601N1</CheckedTitles>
+        <CheckedTitles>Predicted, StemMass,Expt601N2</CheckedTitles>
         <CheckedTitles>Observed, StemWt,Expt324N0</CheckedTitles>
         <CheckedTitles>Observed, StemWt,Expt324N1</CheckedTitles>
         <CheckedTitles>Observed, StemWt,Expt324N2</CheckedTitles>
@@ -3973,7 +3966,6 @@ endif</text>
       <summaryfile />
       <area name="paddock">
         <OilPalm />
-        <OilPalmUnderstory />
         <fertiliser />
         <surfaceom name="surface organic matter">
           <PoolName type="text" description="Organic Matter pool name">OilPalm</PoolName>
@@ -4078,9 +4070,6 @@ endif</text>
             </ui>
             <script>
               <text>ppsm = [population]/10000
-if (OilPalmUnderstory.plant_status = 'out') then
-OilPalmUnderstory sow population = 0, depth = 0, cultivar = dummy, maxcover = 1.0, budnumber = 1, row_spacing = 0, crop_class = plant  
-endif
 
 if today = date('[sowing_date]') then
     OilPalm sow population = ppsm, depth = [sowing_depth], cultivar = [cultivar], maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant  
@@ -4558,7 +4547,6 @@ endif</text>
           <variables name="Variables" shortcut="/simulations/Expt212/Expt212N0/paddock/Outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/Expt212/Expt212N0/paddock/Outputfile/Reporting Frequency" />
         </outputfile>
-        <OilPalmUnderstory shortcut="/simulations/Expt212/Expt212N0/paddock/OilPalmUnderstory" />
       </area>
     </simulation>
     <simulation name="Expt212N2" shortcut="/simulations/Expt212/Expt212N0">
@@ -4658,7 +4646,6 @@ endif</text>
           <variables name="Variables" shortcut="/simulations/Expt212/Expt212N0/paddock/Outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/Expt212/Expt212N0/paddock/Outputfile/Reporting Frequency" />
         </outputfile>
-        <OilPalmUnderstory shortcut="/simulations/Expt212/Expt212N0/paddock/OilPalmUnderstory" />
       </area>
     </simulation>
     <Graph name="StemWt">
