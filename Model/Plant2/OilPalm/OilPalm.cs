@@ -122,6 +122,8 @@ public class OilPalm
     [Link]
     public Function FrondAppRate = null;
     [Link]
+    public Function RelativeDevelopmentalRate = null;
+    [Link]
     public Function FrondMaxArea = null;
     [Link]
     public Function ExtinctionCoeff = null;
@@ -885,7 +887,7 @@ public class OilPalm
         get
         {
             //return Math.Min(Math.Pow(Fn,0.5),1.0);
-            return Math.Min(1.4*Fn, 1.0);
+            return Math.Min(1.4 * Fn, RelativeDevelopmentalRate.Value);
         }
     }
 
