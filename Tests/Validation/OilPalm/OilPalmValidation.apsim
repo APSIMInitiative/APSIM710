@@ -577,12 +577,16 @@ endif
           <filename output="yes">Expt324N0 MonthlyOutput.out</filename>
           <title>Expt324N0 MonthlyOutput</title>
           <variables name="Variables">
+            <variable>year</variable>
             <variable>dd/mm/yyyy as Date</variable>
             <variable>Age</variable>
             <variable>Month</variable>
             <variable>MonthlyPalmBunches</variable>
             <variable>MonthlyPalmYield</variable>
             <variable>MonthlyPalmBunchSize</variable>
+            <variable>LAI</variable>
+            <variable>Stemmass</variable>
+            <variable>CumulativeFrondNumber</variable>
           </variables>
           <events name="Reporting Frequency">
             <event>end_month</event>
@@ -1461,10 +1465,14 @@ endif
     </Graph>
     <Graph name="Stress">
       <Legend>
-        <CheckedTitles> Expt324N0</CheckedTitles>
-        <CheckedTitles> Expt324N1</CheckedTitles>
-        <CheckedTitles> Expt324N2</CheckedTitles>
-        <CheckedTitles> Expt324N3</CheckedTitles>
+        <CheckedTitles> FW, Expt324N0</CheckedTitles>
+        <CheckedTitles> FW, Expt324N1</CheckedTitles>
+        <CheckedTitles> FW, Expt324N2</CheckedTitles>
+        <CheckedTitles> FW, Expt324N3</CheckedTitles>
+        <CheckedTitles> Fn, Expt324N0</CheckedTitles>
+        <CheckedTitles> Fn, Expt324N1</CheckedTitles>
+        <CheckedTitles> Fn, Expt324N2</CheckedTitles>
+        <CheckedTitles> Fn, Expt324N3</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -1507,7 +1515,7 @@ endif
         <colour>
         </colour>
         <X>Date</X>
-        <Y>Cumulative NFixation</Y>
+        <Y>Cumulative UnderstoryNFixation</Y>
         <GDApsimFileReader name="ApsimFileReader" />
       </Plot>
     </Graph>
@@ -1584,7 +1592,7 @@ endif
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">01/03/1991</start_date>
-        <end_date type="date" description="Enter the end date of the simulation">31/01/2009</end_date>
+        <end_date type="date" description="Enter the end date of the simulation">31/12/2008</end_date>
       </clock>
       <summaryfile />
       <area name="paddock">
@@ -2890,7 +2898,7 @@ endif</text>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">01/01/2003</start_date>
-        <end_date type="date" description="Enter the end date of the simulation">31/07/2007</end_date>
+        <end_date type="date" description="Enter the end date of the simulation">09/07/2007</end_date>
       </clock>
       <summaryfile />
       <area name="paddock">
@@ -3961,7 +3969,7 @@ endif</text>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">01/02/1996</start_date>
-        <end_date type="date" description="Enter the end date of the simulation">31/01/2010</end_date>
+        <end_date type="date" description="Enter the end date of the simulation">31/12/2009</end_date>
       </clock>
       <summaryfile />
       <area name="paddock">
@@ -4439,7 +4447,7 @@ endif</text>
             <variable>surfaceom_wt</variable>
             <variable>surfaceom_cover</variable>
             <variable>oc(1)</variable>
-            <variable>NFixation</variable>
+            <variable>UnderstoryNFixation</variable>
             <variable>NO3()</variable>
             <variable>NH4()</variable>
             <variable>FrondArea</variable>
@@ -4894,7 +4902,7 @@ endif</text>
         <colour>
         </colour>
         <X>Date</X>
-        <Y>OilPalm.dltdm</Y>
+        <Y>DltDM</Y>
         <GDApsimFileReader name="ApsimFileReader" />
       </Plot>
     </Graph>
@@ -4990,10 +4998,18 @@ endif</text>
     </Graph>
     <Graph name="NConc">
       <Legend>
-        <CheckedTitles> RootNConc</CheckedTitles>
-        <CheckedTitles> FrondNConc</CheckedTitles>
-        <CheckedTitles> StemNConc</CheckedTitles>
-        <CheckedTitles> BunchNConc</CheckedTitles>
+        <CheckedTitles> RootNConc, Expt212N0</CheckedTitles>
+        <CheckedTitles> RootNConc, Expt212N1</CheckedTitles>
+        <CheckedTitles> RootNConc, Expt212N2</CheckedTitles>
+        <CheckedTitles> FrondNConc, Expt212N0</CheckedTitles>
+        <CheckedTitles> FrondNConc, Expt212N1</CheckedTitles>
+        <CheckedTitles> FrondNConc, Expt212N2</CheckedTitles>
+        <CheckedTitles> StemNConc, Expt212N0</CheckedTitles>
+        <CheckedTitles> StemNConc, Expt212N1</CheckedTitles>
+        <CheckedTitles> StemNConc, Expt212N2</CheckedTitles>
+        <CheckedTitles> BunchNConc, Expt212N0</CheckedTitles>
+        <CheckedTitles> BunchNConc, Expt212N1</CheckedTitles>
+        <CheckedTitles> BunchNConc, Expt212N2</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -5032,9 +5048,15 @@ endif</text>
     </Graph>
     <Graph name="PlantDM">
       <Legend>
-        <CheckedTitles> StemMass</CheckedTitles>
-        <CheckedTitles> FrondMass</CheckedTitles>
-        <CheckedTitles> RootMass</CheckedTitles>
+        <CheckedTitles> StemMass, Expt212N0</CheckedTitles>
+        <CheckedTitles> StemMass, Expt212N1</CheckedTitles>
+        <CheckedTitles> StemMass, Expt212N2</CheckedTitles>
+        <CheckedTitles> FrondMass, Expt212N0</CheckedTitles>
+        <CheckedTitles> FrondMass, Expt212N1</CheckedTitles>
+        <CheckedTitles> FrondMass, Expt212N2</CheckedTitles>
+        <CheckedTitles> RootMass, Expt212N0</CheckedTitles>
+        <CheckedTitles> RootMass, Expt212N1</CheckedTitles>
+        <CheckedTitles> RootMass, Expt212N2</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -5092,18 +5114,15 @@ endif</text>
         <colour>
         </colour>
         <X>Date</X>
-        <Y>Cumulative NFixation</Y>
+        <Y>Cumulative UnderstoryNFixation</Y>
         <GDApsimFileReader name="ApsimFileReader" />
       </Plot>
     </Graph>
     <Graph name="Fn and Fw">
       <Legend>
-        <CheckedTitles> OilPalm.fw, Expt212N0</CheckedTitles>
-        <CheckedTitles> OilPalm.fw, Expt212N1</CheckedTitles>
-        <CheckedTitles> OilPalm.fw, Expt212N2</CheckedTitles>
-        <CheckedTitles> Fn, Expt212N0</CheckedTitles>
-        <CheckedTitles> Fn, Expt212N1</CheckedTitles>
-        <CheckedTitles> Fn, Expt212N2</CheckedTitles>
+        <CheckedTitles> Expt212N0</CheckedTitles>
+        <CheckedTitles> Expt212N1</CheckedTitles>
+        <CheckedTitles> Expt212N2</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>

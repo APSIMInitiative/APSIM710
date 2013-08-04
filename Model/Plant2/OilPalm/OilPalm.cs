@@ -484,7 +484,10 @@ public class OilPalm
 
         for (int i = 0; i < 2; i++)
             Bunches[i].Mass += BunchDMD[i] * Fr / Population / BunchOilConversionFactor.Value;
-        ReproductiveGrowthFraction = TotBunchDMD * Fr / DltDM;
+        if (DltDM > 0)
+           ReproductiveGrowthFraction = TotBunchDMD * Fr / DltDM;
+        else
+           ReproductiveGrowthFraction = 0;
 
         for (int i = 0; i < Fronds.Count; i++)
         {
