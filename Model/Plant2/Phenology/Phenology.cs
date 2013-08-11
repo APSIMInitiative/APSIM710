@@ -15,10 +15,6 @@ public class Phenology
     [Link]
     private Paddock MyPaddock = null;
     [Link(IsOptional = true)]
-    VernalisationSIRIUS VernalisationSIRIUS = null;
-    [Link(IsOptional = true)]
-    FacultativeVernalisationPhase FacultativeVernalisationPhase = null;
-    [Link(IsOptional = true)]
     Function RewindDueToBiomassRemoved = null;
     [Link(IsOptional = true)]
     Function AboveGroundPeriod = null;
@@ -101,26 +97,26 @@ public class Phenology
     /// </summary>
     public Phenology() { }
 
-    public double JuvenileDevelopmentIndex
-    {
-        get
-        {
-            if (FacultativeVernalisationPhase != null)
-                return FacultativeVernalisationPhase.JuvenileDevelopmentIndex;
-            else
-                return 0;
-        }
-    }
-    public double AccumulatedVernalisation
-    {
-        get
-        {
-            if (VernalisationSIRIUS != null)
-                return VernalisationSIRIUS.AccumulatedVernalisation;
-            else
-                return 0;
-        }
-    }
+    /* HEB  redundant functions public double JuvenileDevelopmentIndex
+     {
+         get
+         {
+             if (FacultativeVernalisationPhase != null)
+                 return FacultativeVernalisationPhase.JuvenileDevelopmentIndex;
+             else
+                 return 0;
+         }
+     }
+     public double AccumulatedVernalisation
+     {
+         get
+         {
+             if (VernalisationSIRIUS != null)
+                 return VernalisationSIRIUS.AccumulatedVernalisation;
+             else
+                 return 0;
+         }
+     }*/
 
     [Output("DaysAfterSowing")]
     public int DaysAfterSowing

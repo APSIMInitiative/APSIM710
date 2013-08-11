@@ -1,4 +1,4 @@
-<Type version="32" name="Oat2">
+<Type version="36" name="Oat2">
   <MetaData>
     <UItype type="text" description="UItype">CSUserInterface.EmptyUI</UItype>
     <IsCrop type="text" description="IsCrop">Yes</IsCrop>
@@ -28,7 +28,6 @@
   <Model>
     <Cultivar name="Drummond">
       <Construct type="text" description="Construct">Plant</Construct>
-      <Override name="Structure.MainStemFinalNodeNumber.MaximumMainStemNodeNumber">20</Override>
     </Cultivar>
     <Cultivar name="Hokonui">
       <Construct type="text" description="Construct">Plant</Construct>
@@ -93,29 +92,6 @@
             </MultiplyFunction>
           </AddFunction>
         </MultiplyFunction>
-        <VernalisationSIRIUS>
-          <VernalisationType type="text" description="VernalisationType">1</VernalisationType>
-          <PhaseLookup name="Vernalisation">
-            <PhaseLookupValue name="SoilTemperature">
-              <Start type="text" description="Start">Sowing</Start>
-              <End type="text" description="End">FloralInitiation</End>
-              <SoilTemperatureFunction name="ThermalTime">
-                <XYPairs>
-                  <XY>0 0.012</XY>
-                  <XY>11 0.0307</XY>
-                  <XY>15 0</XY>
-                </XYPairs>
-              </SoilTemperatureFunction>
-            </PhaseLookupValue>
-            <PhaseLookupValue name="AirTemperature">
-              <Start type="text" description="Start">FloralInitiation</Start>
-              <End type="text" description="End">HarvestRipe</End>
-              <AirTemperatureFunction name="ThermalTime">
-                <XYPairs shortcut="/Oat2/Model/Plant/Phenology/VernalisationSIRIUS/Vernalisation/SoilTemperature/ThermalTime/XYPairs" />
-              </AirTemperatureFunction>
-            </PhaseLookupValue>
-          </PhaseLookup>
-        </VernalisationSIRIUS>
         <GerminatingPhase name="Germinating">
           <Start>Sowing</Start>
           <End>Germination</End>
@@ -127,12 +103,19 @@
           <ShootRate type="text" description="Growing deg day increase with depth for coleoptile">4</ShootRate>
           <AirTemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
         </EmergingPhase>
-        <FacultativeVernalisationPhase name="Inductive">
-          <Start>Emergence</Start>
-          <End>FloralInitiation</End>
-          <Constant name="Target">
-            <Value>1.0</Value>
-          </Constant>
+        <GenericPhase name="Inductive">
+          <Start type="text" description="Start stage name">Emergence</Start>
+          <End type="text" description="End stage name">FloralInitiation</End>
+          <LinearInterpolationFunction name="Target">
+            <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+            <XYPairs>
+              <XY>0 100</XY>
+              <XY>10 100</XY>
+              <XY>16 300</XY>
+              <XY>24 300</XY>
+            </XYPairs>
+            <Memo>Takes the current value of the XProperty and returns the corresponding y value from the XY maxtix specified</Memo>
+          </LinearInterpolationFunction>
           <MultiplyFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime">
             <PhaseLookup shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/PhaseLookup">
               <PhaseLookupValue name="SoilTemperature" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/PhaseLookup/SoilTemperature">
@@ -158,7 +141,7 @@
               </MultiplyFunction>
             </AddFunction>
           </MultiplyFunction>
-        </FacultativeVernalisationPhase>
+        </GenericPhase>
         <LeafAppearancePhase name="FloralInitiationToFlagLeaf">
           <Start>FloralInitiation</Start>
           <End>FlagLeaf</End>
@@ -223,6 +206,9 @@
           <End>Unused</End>
           <AirTemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
         </EndPhase>
+        <PhotoperiodFunction name="Photoperiod">
+          <Twilight type="text" description="Twilight">-6</Twilight>
+        </PhotoperiodFunction>
       </Phenology>
       <Structure>
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
@@ -230,7 +216,7 @@
         <PhaseLookup name="MainStemPrimordiaInitiationRate">
           <PhaseLookupValue name="MainStemPrimordiaInitiationRate">
             <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">FlagLeaf</End>
+            <End type="text" description="End">FloralInitiation</End>
             <DivideFunction name="NodeInitiationRateFunction">
               <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values </Memo>
               <VariableReference name="Phyllochron">
@@ -259,26 +245,9 @@
             <Value type="text" description="Value">80</Value>
           </Constant>
         </MultiplyFunction>
-        <CerealFinalNodeNumber name="MainStemFinalNodeNumber">
-          <PhotoperiodSensitivity type="text" description="Number of additional leaves added per hour reduction in photoperiod">.4</PhotoperiodSensitivity>
-          <SaturationPhotoperiod type="text" description="Photoperiod that minimises leaf number">16</SaturationPhotoperiod>
-          <MaximumMainStemNodeNumber type="text" description="Maximum mainstem node number">26</MaximumMainStemNodeNumber>
-          <MinimumMainStemNodeNumber type="text" description="Minimum mainstem node number">7</MinimumMainStemNodeNumber>
-          <PhotoperiodFunction name="Photoperiod">
-            <Twilight type="text" description="Twilight">-6</Twilight>
-          </PhotoperiodFunction>
-          <Memo> 
-			This Function calculates the final mainstem leaf number using the approaches outlined by Jamieson and Brooking and implemented in the SIRIUS wheat model.
-			Note:  This function is dependent on the FacultativeVernalisationPhase
-			It works something like this:  
-			- The crop will not comitt to a final leaf number until the crop complets its juvinle phase.  Juvinalisy ends in 3 ways.
-			   1. Spring crop types are "borne" vernalised and end their juvinle phase at leaf number 3.
-			   2. Winter crop types will end their juvinle phase when their vernalisation requirement is fully saturated.
-			   3. Winter crop types may also end their juvenile phase when the number of primordia accumulated exceeds the attainable leaf number which starts at a maximum and decreases as the crop progresses toward saturation of its vernalisation requirement.  Thus a crop will eventually end its juvinele phase even if it is not vernalised and partial vernalisation will shorten this phase.
-		    - Once the Juvenile phase is complete the final leaf number responds to photo period with shorter photoperiods increasing leaf number.  
-			- Final leaf number will change daily in response to photoperiod until primordia number equals the final leaf number + 4.  At this point final leaf number is fixed and will not change.
-			</Memo>
-        </CerealFinalNodeNumber>
+        <Constant name="MainStemFinalNodeNumber">
+          <Value type="text" description="Value">40</Value>
+        </Constant>
         <HeightFunction name="Height">
           <Memo> 
 			This Function takes potential height increment for the day from the PotentialHeight function then multiplies it by the smallest of any other childern (stress) functions and returns this number
