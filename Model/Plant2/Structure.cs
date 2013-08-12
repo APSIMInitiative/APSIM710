@@ -41,6 +41,7 @@ public class Structure
 
     #region Class Members
     double _CurrentPopulation = 0;
+    double _CurrentTotalStemPopn = 0;
     public double MaximumNodeNumber = 0;
 
     [Output]
@@ -84,10 +85,15 @@ public class Structure
     {
         get
         {
-            double n = 0;
-            foreach (LeafCohort L in Leaf.Leaves)
-                n = Math.Max(n, L._Population);
-            return n;
+            //double n = 0;
+            //foreach (LeafCohort L in Leaf.Leaves)
+            //    n = Math.Max(n, L._Population);
+            //return n;
+            return _CurrentTotalStemPopn;
+        }
+        set
+        {
+            _CurrentTotalStemPopn = value;
         }
     }
     [Output]
@@ -101,7 +107,7 @@ public class Structure
     [Output]
     [Units("/plant")]
     [Description("Number of leaves appeared per plant including all main stem and branch leaves")]
-    public double PlantMainStemNodeNo
+    public double PlantMainStemNodeNo  //Fixme.  This is named wrong and should be called PlantTotalNodeNo
     {
         get
         {
@@ -140,13 +146,13 @@ public class Structure
     [Output]
     [Description("Number of leaves yet to appear")]
     public double RemainingNodeNo { get { return MainStemFinalNodeNo - MainStemNodeNo; } }
-    public double AttainableFinalNodeNumber
+   /* public double AttainableFinalNodeNumber
     {
         get
         {
             return MainStemFinalNodeNumber.AttainableFinalNodeNumber;
         }
-    }
+    }*/
     
     //Structural Variables
     public double Height 
@@ -181,6 +187,8 @@ public class Structure
             MainStemPrimordiaNo += ThermalTime.Value / MainStemPrimordiaInitiationRate.Value;
             }
        
+            double StartOfDayMainStemNodeNo = (int)MainStemNodeNo;
+            
             MainStemFinalNodeNumber.UpdateVariables();
             MainStemPrimordiaNo = Math.Min(MainStemPrimordiaNo, MaximumNodeNumber);
             
@@ -192,8 +200,32 @@ public class Structure
                MainStemNodeNo += DeltaNodeNumber;
                MainStemNodeNo = Math.Min(MainStemNodeNo, MainStemFinalNodeNo);
             }
+
+            //Set stem population at emergence
+            if (Phenology.OnDayOf(InitialiseStage))
+            {
+                _CurrentTotalStemPopn = MainStemPopn;
+            }
+
+            //Increment total stem number if main-stem node number has increased by one.
+            if ((MainStemNodeNo - StartOfDayMainStemNodeNo) >= 1.0)
+            {
+                _CurrentTotalStemPopn += BranchingRate * MainStemPopn;
+            }
+
+            //Reduce stem number incase of mortality
+            if (ProportionStemMortality > 0)
+            {
+                double DeltaPopn = Math.Min(ProportionStemMortality * (TotalStemPopn - MainStemPopn), TotalStemPopn - Population);
+                _CurrentTotalStemPopn -= DeltaPopn;
+            }
     }
-   
+
+    public void ResetStemPopn()
+    {
+        _CurrentTotalStemPopn = MainStemPopn;
+    }
+
     [EventHandler]
     public void OnNewMet(NewMetType NewMet)
     {
@@ -208,6 +240,7 @@ public class Structure
     {
         MainStemNodeNo = 0;
         MainStemPrimordiaNo = 0;
+        _CurrentTotalStemPopn = 0;
     }
 
     [EventHandler]

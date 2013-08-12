@@ -574,17 +574,17 @@ public class Leaf : BaseOrgan, AboveGround
                 FinalLeafAppeared = true;
             int AppearingNode = (int)(Structure.MainStemNodeNo + (1 - FinalLeafFraction));
             double CohortAge = (Structure.MainStemNodeNo - AppearingNode) * Structure.MainStemNodeAppearanceRate.Value * FinalLeafFraction;
-           double BranchNumber = Structure.MainStemPopn;
-            if (Leaves.Count > 0)
-            {
-                int j = (int)AppearedCohortNo - 1;
-                BranchNumber = Leaves[j]._Population; //Retrive the branch number of the previous cohort so this can be appended with additional branching
-            }
-            BranchNumber += Structure.BranchingRate * Structure.MainStemPopn;
+           //double BranchNumber = Structure.MainStemPopn;
+           // if (Leaves.Count > 0)
+           // {
+           //     int j = (int)AppearedCohortNo - 1;
+           //     BranchNumber = Leaves[j]._Population; //Retrive the branch number of the previous cohort so this can be appended with additional branching
+           // }
+           // BranchNumber += Structure.BranchingRate * Structure.MainStemPopn;
             //Set the properties of the appearing cohort so it begins growing 
             int i = AppearingNode -1;
             Leaves[i].Rank = AppearingNode;
-            Leaves[i]._Population = BranchNumber;
+            Leaves[i]._Population = Structure.TotalStemPopn;//BranchNumber;
             Leaves[i].Age = CohortAge; 
             Leaves[i].DoAppearance(FinalLeafFraction);
             if (NewLeaf != null)
@@ -621,7 +621,7 @@ public class Leaf : BaseOrgan, AboveGround
             CohortsInitialised = true;
             if (Leaf.Area > 0)//If initial cohorts have an area set the are considered to be appeared on day of emergence so we do appearance and count up the appeared nodes on the first day
             {
-                Leaf._Population = Structure.MainStemPopn;
+                Leaf._Population = Structure.TotalStemPopn;
 
                 Leaf.DoInitialisation();
                 Structure.MainStemNodeNo += 1.0;
@@ -1100,6 +1100,7 @@ public class Leaf : BaseOrgan, AboveGround
         Dead.Clear();
         Leaves.Clear();
         InitialiseCohorts();
+        Structure.ResetStemPopn();
     }
     protected virtual void PublishNewCanopyEvent()
     {
