@@ -13,8 +13,6 @@ public class Structure
     Leaf Leaf = null;
     [Link]
     public Phenology Phenology = null;
-    [Link]
-    public Population Population = null;
     [Param]
     [Output]
     [Description("Primary Bud")]

@@ -103,8 +103,6 @@ public class LeafCohort
     public Paddock MyPaddock;
     [Link]
     public Leaf Leaf = null;
-    //[Link(NamePath = "Population")]
-    //public Population PopulationFunction = null;
     [Link(NamePath = "MaxArea")]
     public Function MaxAreaFunction;
     [Link(NamePath = "GrowthDuration")]
