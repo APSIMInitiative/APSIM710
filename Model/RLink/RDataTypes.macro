@@ -14,6 +14,7 @@
   #endif
 #else
   #define DLLEXPORT
+  #define STDCALL 
 #endif
 
 #define max_array_size 100
@@ -49,11 +50,9 @@ extern "C" void DLLEXPORT onApsim[type.name]Event(const char *handler, R[type.na
 struct R[type.name]Type *MStoGCC(struct [type.name]Type *);
 void GCCToMS(struct R[type.name]Type *payload, struct [type.name]Type *converted);
 
-#ifndef __WIN32__
 extern "C" void DLLEXPORT STDCALL apsimPublish[type.name](const char *e, R[type.name]Type *payload);
 extern "C" void DLLEXPORT STDCALL apsimSet[type.name](const char *e, R[type.name]Type *payload);
 extern "C" void DLLEXPORT * STDCALL apsimGet[type.name](const char *e);
-#endif
 [endfor]
 
 extern "C" void DLLEXPORT STDCALL apsimGetNumeric(const char *e, int *numReturned, double**returned) ;
@@ -85,19 +84,15 @@ extern "C" void DLLEXPORT STDCALL apsimFree(void *a);
 #include "RComponent.h"
 #include "RDataTypes.h"
 
-#ifdef __WIN32__
 extern void *RDLLHandle;
-#endif
 
 // Handlers for subscribed events. These take a "MS" XXX structure (with std::XXX bits), unpack them into RXXX structures
 // and call the embedded (gcc compiled) R routine that has no std:XXX arguments.
 void myApsimNullEvent(const std::string &handler)
 {
-#ifdef __WIN32__
    typedef void (*EVT_HDLR)(const char* );
    EVT_HDLR onApsimNullEvent = (EVT_HDLR) dllProcAddress(RDLLHandle, "onApsimNullEvent");
    if (onApsimNullEvent == NULL)  throw std::runtime_error(std::string("missing symbol onApsimNullEvent in REmbed"));
-#endif
    onApsimNullEvent(handler.c_str());
 }
 
@@ -106,11 +101,9 @@ void myApsimNullEvent(const std::string &handler)
 void myApsim[type.name]Event(const std::string &handler, struct [type.name]Type &data)
 {
  struct R[type.name]Type * rdata = MStoGCC(&data);
-#ifdef __WIN32__
    typedef void (*EVT_HDLR)(const char*, R[type.name]Type *);
    EVT_HDLR onApsim[type.name]Event = (EVT_HDLR) dllProcAddress(RDLLHandle, "onApsim[type.name]Event");
    if (onApsim[type.name]Event == NULL)  throw std::runtime_error(std::string("missing symbol onApsim[type.name]Event in REmbed"));
-#endif
    onApsim[type.name]Event(handler.c_str(), rdata );
    delete rdata;
 }
@@ -237,7 +230,7 @@ extern "C" void DLLEXPORT STDCALL apsimFree(void *a) {
 }
 
 extern "C" void DLLEXPORT STDCALL apsimFatalErrorRaw(const char *msg) {
-   throw std::runtime_error(std::string(msg));
+   if (currentRComponent) currentRComponent->fatal(std::string(msg));
 }
 
 extern "C" void DLLEXPORT STDCALL apsimSubscribeRaw(const char *e, const char *t, const char *h) {

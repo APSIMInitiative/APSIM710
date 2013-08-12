@@ -1,10 +1,13 @@
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
 
 #ifdef __WIN32__
 #include <windows.h>
 #include <ShlObj.h>
+#else
+#include <dlfcn.h>
 #endif
 
 #include <General/platform.h>
@@ -17,7 +20,6 @@
 #include <ComponentInterface2/ScienceAPI2.h>
 
 #include "RComponent.h"
-#include "RDataTypes.h"
 
 using namespace std;
 
@@ -35,17 +37,7 @@ extern "C" void EXPORT STDCALL deleteComponent(RComponent* component)
      delete component;
    }
 
-#ifdef __WIN32__
-HMODULE GetCurrentModule()
-{ // NB: XP+ solution!
-  HMODULE hModule = NULL;
-  GetModuleHandleEx(
-    GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
-    (LPCTSTR)GetCurrentModule,
-    &hModule);
 
-  return hModule;
-}
 //--------------------------- R Embedder DLL initialisation
 void *RDLLHandle = NULL;
 void *MyDLLHandle = NULL;
@@ -61,41 +53,42 @@ B_CHAR_FN    R_EvalCharFn;
 B_VEC_FN     R_GetVecFn;
 B_2CHAR_FN   R_EvalCharSimpleFn;
 
-// Load and initialise the dll. Call once.
-bool StartR (const char *R_Home, const char *UserLibs, const char *exeName)
-   {
-    MyDLLHandle = (void*)GetCurrentModule();
+#ifdef __WIN32__
+HMODULE GetCurrentModule()
+{ // NB: XP+ solution!
+  HMODULE hModule = NULL;
+  GetModuleHandleEx(
+    GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
+    (LPCTSTR)GetCurrentModule,
+    &hModule);
 
-    RDLLHandle = loadDLL(exeName);
-    if (RDLLHandle == NULL)
-      throw std::runtime_error(string("Can't load R DLL ") + exeName);
-
-    R_StartFn = (B_CHAR2_FN) dllProcAddress(RDLLHandle, "EmbeddedR_Start");
-    if (R_StartFn == NULL)
-       goto baddll;
-
-    if (!R_StartFn(MyDLLHandle, R_Home, UserLibs ))
-       throw std::runtime_error(string("R_Start failed in ") + exeName);
-
-    if (NULL == (R_EvalCharFn = (B_CHAR_FN) dllProcAddress(RDLLHandle, "EmbeddedR_Eval"))) goto baddll;
-    if (NULL == (R_GetVecFn = (B_VEC_FN) dllProcAddress(RDLLHandle, "EmbeddedR_GetVector"))) goto baddll;
-    if (NULL == (R_EvalCharSimpleFn = (B_2CHAR_FN) dllProcAddress(RDLLHandle, "EmbeddedR_SimpleCharEval"))) goto baddll;
-
-	return 1;
-baddll:
-    throw std::runtime_error(string("DLL missing symbol in ") + exeName);
-    }
-
-// Delete an interpreter
-void StopR(void)
-   {
-   if (RDLLHandle != NULL)
-       {
-       B_VOID_FN R_StopFn;
-       R_StopFn = (B_VOID_FN) dllProcAddress(RDLLHandle, "EmbeddedR_Stop");
-       if (R_StopFn != NULL) R_StopFn();
-       }
-   }
+  return hModule;
+}
+bool GetStringRegKey(const std::string &strKeyName,const std::string &strValueName, std::string &strValue)
+{
+   strValue = "";
+   HKEY  keys[] = {HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER};
+   for (int i = 0; i < 2; i++)
+     {
+     HKEY CurrentKey = keys[i];
+     HKEY hKey;
+     LONG lRes = RegOpenKeyEx(CurrentKey, strKeyName.c_str(), 0, KEY_READ, &hKey);
+     if (lRes == ERROR_SUCCESS)
+        {
+        char szBuffer[1024];
+        DWORD dwBufferSize = sizeof(szBuffer);
+        ULONG nError;
+        nError = RegQueryValueEx(hKey, strValueName.c_str(), 0, NULL, (LPBYTE)szBuffer, &dwBufferSize);
+        if (ERROR_SUCCESS == nError)
+	      {
+          strValue = szBuffer;
+	      return true;
+	      }
+        }
+     }
+   return false;
+}
+#endif
 
 // Quietly evaluate something
 void REvalQ(const char *s)
@@ -130,21 +123,6 @@ std::string SimpleREval(const char *s)
    return (std::string(buffer));
 }
 
-#else
-// unix/gcc equivalents
-void REvalQ(const char *s) ;
-void StopR(void);
-extern "C" bool EmbeddedR_Start(const char *R_Home, const char *UserLibs);
-bool StartR (const char *R_Home, const char *UserLibs, const char *)
-{
-  return (EmbeddedR_Start(R_Home, UserLibs));
-}
-
-void RGetVector(const char *s, std::vector<std::string> &result);
-std::string SimpleREval(const char *s);
-
-#endif
-
 bool isNumeric(const std::string &s)
 {
   char * p;
@@ -165,72 +143,55 @@ RComponent::RComponent(ScienceAPI2 & api) : apsimAPI(api)
 
 RComponent::~RComponent(void)
    {
-#ifdef __WIN32__
-   if (RDLLHandle != NULL) StopR();
+   if (RDLLHandle != NULL) 
+   	   {
+       B_VOID_FN R_StopFn;
+       R_StopFn = (B_VOID_FN) dllProcAddress(RDLLHandle, "EmbeddedR_Stop");
+       if (R_StopFn != NULL) R_StopFn();
+       }
    RDLLHandle = NULL;
-#else
-   StopR();
-#endif
    }
-
-#ifdef __WIN32__
-bool GetStringRegKey(const std::string &strKeyName,const std::string &strValueName, std::string &strValue)
-{
-   strValue = "";
-   HKEY  keys[] = {HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER};
-   for (int i = 0; i < 2; i++)
-     {
-     HKEY CurrentKey = keys[i];
-     HKEY hKey;
-     LONG lRes = RegOpenKeyEx(CurrentKey, strKeyName.c_str(), 0, KEY_READ, &hKey);
-     if (lRes == ERROR_SUCCESS)
-        {
-        char szBuffer[1024];
-        DWORD dwBufferSize = sizeof(szBuffer);
-        ULONG nError;
-        nError = RegQueryValueEx(hKey, strValueName.c_str(), 0, NULL, (LPBYTE)szBuffer, &dwBufferSize);
-        if (ERROR_SUCCESS == nError)
-	      {
-          strValue = szBuffer;
-	      return true;
-	      }
-        }
-     }
-   return false;
-}
-#endif
-
 
 
 void RComponent::oneTimeInit(void)
 {
     apsimAPI.write("RLink Initialisation\n");
 
+    string installPath = "";
+    string versionString = "";
+    char *r_home = getenv("R_HOME");
+    if (r_home != NULL) {
+    	 installPath = r_home;
+    } else {
 #ifdef __WIN32__
-    string installPath, userlibs;
-    // Load R.dll first so that the embedder dll resolves to the loaded version and not something unknown
-    string versionString;
-    if (!GetStringRegKey("Software\\R-core\\R", "Current Version", versionString))
-        if (!GetStringRegKey("Software\\R-core\\R32", "Current Version", versionString))
-            throw std::runtime_error("No R version info");
-
-    string installPathKey = "Software\\R-core\\R\\" + versionString ;
-    if (!GetStringRegKey(installPathKey, "InstallPath", installPath))
-    {
-        installPathKey = "Software\\R-core\\R32\\" + versionString ;
-        if (!GetStringRegKey(installPathKey, "InstallPath", installPath))
-            throw std::runtime_error("No R install info in " + installPathKey);
+       if (!GetStringRegKey("Software\\R-core\\R", "Current Version", versionString))
+           if (!GetStringRegKey("Software\\R-core\\R32", "Current Version", versionString))
+               throw std::runtime_error("No R version info");
+   
+       string installPathKey = "Software\\R-core\\R\\" + versionString ;
+       if (!GetStringRegKey(installPathKey, "InstallPath", installPath))
+       {
+           installPathKey = "Software\\R-core\\R32\\" + versionString ;
+           if (!GetStringRegKey(installPathKey, "InstallPath", installPath))
+               throw std::runtime_error("No R install info in " + installPathKey);
+       }
+       replace(installPath.begin(), installPath.end(), '\\', '/');
+#else
+       installPath = "/usr/lib/R";
+#endif
     }
+// Load R.dll first so that the embedder dll resolves to the loaded version and not something unknown
+#ifdef __WIN32__
+    string dll = installPath + "/bin/i386/R.dll";
+#else
+    string dll = installPath + "/lib/libR.so";
+#endif
 
-    replace(installPath.begin(), installPath.end(), '\\', '/');
     apsimAPI.write("Loading R from " + installPath + "\n");
-    string Rdll = installPath + "/bin/i386/R.dll";
-    if (loadDLL(Rdll) == NULL) throw std::runtime_error("Can't load R DLL " + Rdll);
+    loadDLL(dll);
 
-    string apsimDLL = apsimAPI.getExecutableFileName();
-    replaceAll(apsimDLL, "\\", "/");
-    string EXE = fileDirName(apsimDLL) + "/REmbed.dll";
-
+    string userlibs = "";
+#ifdef __WIN32__
     // We need to find the user's "My Docments" directory
     // Microsoft hasn't made this simple, and the rules change with different versions of Windows
     // The function used here has been superseded, but still works and is simpler than the
@@ -239,28 +200,79 @@ void RComponent::oneTimeInit(void)
     char docPath[MAX_PATH + 1];
     if (SHGetSpecialFolderPath(0, docPath, CSIDL_PERSONAL, false))
     {
-        userlibs = docPath;
         // Now see if the user has an R win-library directory
-        replace(userlibs.begin(), userlibs.end(), '\\', '/');
-        string testDir = userlibs + "/R/win-library/";
-        if (DirectoryExists(testDir)) {
-            userlibs = testDir;
-            vector<string> vnums;
-            split(versionString, ".", vnums);
-            userlibs += vnums[0];
-            userlibs += ".";
-            userlibs += vnums[1];
-            apsimAPI.write("Userlibs = " + userlibs + "\n");
-        }
+        string testDir = string(docPath) + "/R/win-library/";
+        replace(testDir.begin(), testDir.end(), '\\', '/');
+        vector<string> vnums;
+        split(versionString, ".", vnums);
+        if (vnums.size() >= 2) 
+            {
+                testDir += vnums[0];
+                testDir += ".";
+                testDir += vnums[1];
+                if (DirectoryExists(testDir)) 
+                   userlibs = testDir;
+            }
+    }
+#else
+    char *home = getenv("HOME");
+    if (home != NULL) {userlibs = string(home) + "/R/" ; } //??? FIXME
+#endif    
+    if (userlibs != "") 
+        apsimAPI.write("Userlibs = " + userlibs + "\n");
+
+    // Preload each dll. Hopefully any inter-dependancies will sort themselves out. 
+    string libs[] = {"Rcpp", "RInside"};
+    vector<string> paths;
+
+    paths.push_back(installPath + "/library");                       // /usr/lib/R/library
+#ifndef __WIN32__
+    paths.push_back("/usr/local/lib/R/site-library");
+#endif
+    // FIXME userlibs ...
+    for (unsigned int lib = 0; lib < 2; lib++) 
+    {
+    RDLLHandle = NULL;
+    for (unsigned  int path = 0; path < paths.size(); path++) 
+       {
+       dll = paths[path] + "/" + libs[lib] ;
+#ifndef __WIN32__
+       dll +=  "/lib/lib"+ libs[lib] + ".so";
+#else
+       dll +=  "/libs/i386/" + libs[lib] + ".dll";
+#endif
+       //apsimAPI.write("Trying to load " +  dll + "\n");
+       if (fileExists(dll) && (RDLLHandle = loadDLL(dll)) != NULL)
+       	  break;
+       } /* for path ...*/
+    if (RDLLHandle == NULL)
+       apsimAPI.write("Warning: couldnt load R library " +  libs[lib] + "\n");
     }
 
-    if (!StartR(installPath.c_str(),
-        userlibs.c_str(),
-        EXE.c_str()))
-        throw std::runtime_error("Cant Start R");
+    dll = fileDirName(apsimAPI.getExecutableFileName()) + "/REmbed";
+    replaceAll(dll, "\\", "/");
+#ifdef __WIN32__
+    dll += ".dll";
 #else
-    StartR(NULL, NULL, NULL);
+    dll += ".so";
 #endif
+
+    RDLLHandle = loadDLL(dll);
+
+    R_StartFn = (B_CHAR2_FN) dllProcAddress(RDLLHandle, "EmbeddedR_Start");
+    if (R_StartFn == NULL) throw runtime_error("R Embedding DLL missing symbol EmbeddedR_Start");
+
+#ifdef __WIN32__
+    MyDLLHandle = (void*)GetCurrentModule();
+#else
+    MyDLLHandle = RTLD_DEFAULT;
+#endif
+    if (!R_StartFn(MyDLLHandle, installPath.c_str(), userlibs.c_str()))
+       throw runtime_error("R Embedding DLL R_Start() failed");
+
+    if (NULL == (R_EvalCharFn = (B_CHAR_FN) dllProcAddress(RDLLHandle, "EmbeddedR_Eval"))) throw runtime_error("R Embedding DLL missing symbol EmbeddedR_Eval");
+    if (NULL == (R_GetVecFn = (B_VEC_FN) dllProcAddress(RDLLHandle, "EmbeddedR_GetVector"))) throw runtime_error("R Embedding DLL missing symbol EmbeddedR_GetVector");
+    if (NULL == (R_EvalCharSimpleFn = (B_2CHAR_FN) dllProcAddress(RDLLHandle, "EmbeddedR_SimpleCharEval"))) throw runtime_error("R Embedding DLL missing symbol EmbeddedR_SimpleCharEval");
 
     // write copyright notice(s).
     apsimAPI.write(SimpleREval("R.version.string") + "\n");
@@ -440,3 +452,9 @@ void RComponent::importVariables(void)
 	    respondToSet(p->second, resultArray);
 	 }
 }
+
+void RComponent::fatal(const std::string &message) 
+    {
+    throw std::runtime_error(message);
+    }
+    

@@ -19,6 +19,7 @@
 // difficult.
 //
 // On unix, everything is built with gcc, and the calls from apsim -> RInside are simpler.
+// It still loads in two parts - allowing the user to specify which R dll to load.
 // ------------------------------------------------------------------
 typedef std::map<std::string, std::string >   Name2RuleMap;
 
@@ -35,6 +36,7 @@ class RComponent
 
       void respondToGet(const std::string &variableName, std::vector<std::string> &result);
       void respondToSet(const std::string &variableName, std::vector<std::string> &value);
+      void fatal(const std::string &message);
 
       ScienceAPI2& apsimAPI;
    private:

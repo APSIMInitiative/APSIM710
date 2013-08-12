@@ -64,9 +64,9 @@ extern "C" bool DLLEXPORT EmbeddedR_Start(void *handle, const char *R_Home, cons
 {
    int argc = 0;
    char **argv = NULL;
-#ifdef WIN32
    RLinkDLLHandle = handle;
      
+#ifdef WIN32
    std::string newPath = getenv("PATH");
    std::replace(newPath.begin(), newPath.end(), '\\', '/');
    newPath = std::string(R_Home) + "/bin/i386;" + newPath;
@@ -175,14 +175,6 @@ extern "C" bool DLLEXPORT EmbeddedR_SimpleCharEval(const char *cmd, char *buf, i
 }
 
 #ifndef WIN32
-// for gcc builds under unix
-void StopR(void) {EmbeddedR_Stop();}
-
-void REvalQ(const char *s)
-  {
-  if (ptrR != NULL)
-     ptrR->parseEval(s);
-  }
 
 void RGetVector(const char *variable, std::vector<std::string> &result)
   {
