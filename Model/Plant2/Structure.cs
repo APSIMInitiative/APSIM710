@@ -13,30 +13,22 @@ public class Structure
     Leaf Leaf = null;
     [Link]
     public Phenology Phenology = null;
-    [Param]
-    [Output]
-    [Description("Primary Bud")]
-    public double PrimaryBudNo = 1;
-    public double MaximumNodeNumber = 0;
-
+    
     [Output]
     [Param]
     [Description("The stage name that leaves get initialised.")]
     public string InitialiseStage = "";
-    
+    public double DeltaNodeNumber = 0;
+    public double _ThermalTime = 0;    
+
     [Link(NamePath = "MainStemPrimordiaInitiationRate")]
     public Function MainStemPrimordiaInitiationRate = null;
     [Link(NamePath = "MainStemNodeAppearanceRate")]
     public Function MainStemNodeAppearanceRate = null;
     [Link(NamePath = "MainStemFinalNodeNumber")]
     public Function MainStemFinalNodeNumber = null;
-    
-    public double DeltaNodeNumber = 0;
-    public double _ThermalTime = 0;
-        
     [Link(NamePath = "Height")]
     public Function HeightModel = null;
-
     [Link(NamePath = "BranchingRate")]
     public Function Branching = null;
     [Link(NamePath = "ShadeInducedBranchMortality")]
@@ -45,18 +37,20 @@ public class Structure
     public Function DroughtInducedBranchMortality = null;
     [Link(NamePath = "DensityFactor", IsOptional = true)]
     public Function DensityFactor = null;
-
     #endregion
 
-    #region Output Variables
+    #region Class Members
     double _CurrentPopulation = 0;
-    [Output("Population")]
-    public double Density
+    public double MaximumNodeNumber = 0;
+
+    [Output]
+    [Description("Number of plants per meter2")]
+    [Units("/m2")]
+    public double Population
     {
         get
         {
             return _CurrentPopulation;
-            //   Plant.SowingData.Population;
         }
         set
         {
@@ -66,21 +60,26 @@ public class Structure
     }
     
     [Output]
+    [Description("Number of mainstem units per plant")]
+    [Units("/plant")]
+    public double PrimaryBudNo = 1;
+    
+    [Output("Number of mainstems per meter")]
     [Units("/m2")]
-    [Description("Number of mainstems per meter")]
     public double MainStemPopn
     {
         get {
-            double OrigPop = Density * PrimaryBudNo;
+            double OrigPop = Population * PrimaryBudNo;
             if (DensityFactor == null)
              return OrigPop;
             else
                 return OrigPop *(1- DensityFactor.Value);
         }
     }
+    
     [Output]
+    [Description("Number of stems per meter including main and branch stems")] 
     [Units("/m2")]
-    [Description("Number of stems per meter including main and branch stems")]
     public double TotalStemPopn
     {
         get
@@ -110,7 +109,7 @@ public class Structure
             foreach (LeafCohort L in Leaf.Leaves)
                 if (L.IsAppeared)
                     n += L._Population;
-            return n / Density;
+            return n / Population;
         }
     }
     [Output]
@@ -224,7 +223,7 @@ public class Structure
             throw new Exception("MaxCover must exceed zero in a Sow event.");
         PrimaryBudNo = Sow.BudNumber;
         //MaxNodeNo = MaximumNodeNumber;
-        Density = Sow.Population;
+        Population = Sow.Population;
 
     }
     #endregion

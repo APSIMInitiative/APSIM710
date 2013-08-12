@@ -224,7 +224,7 @@ public class Leaf : BaseOrgan, AboveGround
             foreach (LeafCohort L in Leaves)
                 if ((L.IsAppeared) && (!L.Finished))
                     n += L._Population;
-            return n / Structure.Density;
+            return n / Structure.Population;
         }
     } 
     

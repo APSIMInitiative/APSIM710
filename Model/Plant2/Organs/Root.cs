@@ -108,8 +108,8 @@ public class Root : BaseOrgan, BelowGround
         
         if (Live.Wt == 0)
         {
-            LayerLive[0].StructuralWt = InitialDM * Structure.Density;
-            LayerLive[0].StructuralN = InitialDM * MaxNconc * Structure.Density;
+            LayerLive[0].StructuralWt = InitialDM * Structure.Population;
+            LayerLive[0].StructuralN = InitialDM * MaxNconc * Structure.Population;
             Depth = SowingInfo.Depth;
         }
 
