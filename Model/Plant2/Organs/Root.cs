@@ -15,7 +15,7 @@ public class Root : BaseOrgan, BelowGround
     protected Function SenescenceRate = null;
 
     [Link]
-    Population Population = null;
+    Structure Structure = null;
 
     [Link]
     Function TemperatureEffect = null;
@@ -108,8 +108,8 @@ public class Root : BaseOrgan, BelowGround
         
         if (Live.Wt == 0)
         {
-            LayerLive[0].StructuralWt = InitialDM * Population.Density;
-            LayerLive[0].StructuralN = InitialDM * MaxNconc * Population.Density;
+            LayerLive[0].StructuralWt = InitialDM * Structure.Density;
+            LayerLive[0].StructuralN = InitialDM * MaxNconc * Structure.Density;
             Depth = SowingInfo.Depth;
         }
 

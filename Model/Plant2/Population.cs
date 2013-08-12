@@ -10,7 +10,7 @@ public class Population
     Plant Plant = null;
 
 
-    double _CurrentPopulation = 0;
+   /* double _CurrentPopulation = 0;
     [Output("Population")]
     public double Density
     {
@@ -25,7 +25,7 @@ public class Population
         }
           
     }
-
+    */
  
 }
 

@@ -35,8 +35,8 @@ public class Leaf : BaseOrgan, AboveGround
     //Child Functions
     [Link]
     public Function ThermalTime = null;
-    [Link]
-    public Population Population = null;
+    //[Link]
+    //public Population Population = null;
     [Link]
     public Function ExtinctionCoeff = null;
     [Link]
@@ -226,7 +226,7 @@ public class Leaf : BaseOrgan, AboveGround
             foreach (LeafCohort L in Leaves)
                 if ((L.IsAppeared) && (!L.Finished))
                     n += L._Population;
-            return n / Population.Density;
+            return n / Structure.Density;
         }
     } 
     
@@ -1058,9 +1058,9 @@ public class Leaf : BaseOrgan, AboveGround
         if (Sow.MaxCover <= 0.0)
            throw new Exception("MaxCover must exceed zero in a Sow event.");
         MaxCover = Sow.MaxCover;
-        Structure.PrimaryBudNo = Sow.BudNumber;
+        //Structure.PrimaryBudNo = Sow.BudNumber;
         MaxNodeNo = Structure.MaximumNodeNumber;
-        Population.Density = Sow.Population;
+        //Structure.Density = Sow.Population;
 
     }
     [EventHandler]

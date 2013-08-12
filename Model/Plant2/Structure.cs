@@ -51,13 +51,29 @@ public class Structure
     #endregion
 
     #region Output Variables
+    double _CurrentPopulation = 0;
+    [Output("Population")]
+    public double Density
+    {
+        get
+        {
+            return _CurrentPopulation;
+            //   Plant.SowingData.Population;
+        }
+        set
+        {
+            _CurrentPopulation = value;
+        }
+
+    }
+    
     [Output]
     [Units("/m2")]
     [Description("Number of mainstems per meter")]
     public double MainStemPopn
     {
         get {
-            double OrigPop = Population.Density * PrimaryBudNo;
+            double OrigPop = Density * PrimaryBudNo;
             if (DensityFactor == null)
              return OrigPop;
             else
@@ -96,7 +112,7 @@ public class Structure
             foreach (LeafCohort L in Leaf.Leaves)
                 if (L.IsAppeared)
                     n += L._Population;
-            return n / Population.Density;
+            return n / Density;
         }
     }
     [Output]
@@ -202,6 +218,16 @@ public class Structure
     {
         MainStemFinalNodeNumber.SetFinalNodeNumber();
         MaximumNodeNumber = MainStemFinalNodeNumber.Value;
+    }
+    [EventHandler]
+    public void OnSow(SowPlant2Type Sow)
+    {
+        if (Sow.MaxCover <= 0.0)
+            throw new Exception("MaxCover must exceed zero in a Sow event.");
+        PrimaryBudNo = Sow.BudNumber;
+        //MaxNodeNo = MaximumNodeNumber;
+        Density = Sow.Population;
+
     }
     #endregion
 }
