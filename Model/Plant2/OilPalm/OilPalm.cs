@@ -887,7 +887,9 @@ public class OilPalm
         get
         {
             //return Math.Min(Math.Pow(Fn,0.5),1.0);
-            return Math.Min(1.4 * Fn, RelativeDevelopmentalRate.Value);
+            //return Math.Min(1.4 * Fn, RelativeDevelopmentalRate.Value);
+            //return Math.Min(1.0 * Fn, RelativeDevelopmentalRate.Value);
+            return Math.Min(1.25 * Fn,1.0) * RelativeDevelopmentalRate.Value;
         }
     }
 
