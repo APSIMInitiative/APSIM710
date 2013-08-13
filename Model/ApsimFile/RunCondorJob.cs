@@ -285,7 +285,7 @@ namespace ApsimFile
 					exeWriter.WriteLine ("$APSIM/Model/Apsim.x \"" + simFileName + "\" > \"" + summaryFileName + "\"");
                     exeWriter.WriteLine("rm -f \"" + simFileName + "\"");
 				} else {
-					exeWriter.WriteLine ("\"%APSIM%\\Model\\Apsim.exe\" \"" + simFileName);
+					exeWriter.WriteLine ("\"%APSIM%\\Model\\Apsim.exe\" \"" + simFileName + "\"");
                     exeWriter.WriteLine("del /f /q  \"" + simFileName + "\"");
                 }
 				numSims++;
