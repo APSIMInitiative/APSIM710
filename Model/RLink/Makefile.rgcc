@@ -3,9 +3,6 @@
 # NB. You will need RTools, Rcpp and RInside from CRAN (http://cran.r-project.org/mirrors.html.)
 #     to build this dll. Don't forget to copy it to the runtime dll directory.
 
-# May be necessary. 
-APSIM = d:/apsim
-CXXFLAGS :=
 
 ## include headers and libraries for R
 RRCPPFLAGS := 		$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config --cppflags)
@@ -19,24 +16,27 @@ RCPPLIBS := 		$(shell echo 'Rcpp:::LdFlags()'  | $(R_HOME)/bin/R $(R_ARCH) --van
 RINSIDEINCL := 		$(shell echo 'RInside:::CxxFlags()' | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
 RINSIDELIBS := 		$(shell echo 'RInside:::LdFlags()'  | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
 RCPPFLAGS := 		-Wall $(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CPPFLAGS)
-RCXXFLAGS := 		$(RCPPFLAGS) $(RRCPPFLAGS) "$(RCPPINCL)" "$(RINSIDEINCL)" -I $(APSIM)/Model $(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXXFLAGS)
+RCXXFLAGS := 		$(RCP.\RMakeCmd.batPFLAGS) $(RRCPPFLAGS) "$(RCPPINCL)" "$(RINSIDEINCL)" -I $(APSIM)/Model $(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXXFLAGS)
 RLDFLAGS = $(RRLDFLAGS) 
 RLDLIBS :=  $(RINSIDELIBS) "$(RCPPLIBS)" $(RRCPPLIBS)
 RCXX := 			$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXX)
+RLD := 			$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config SHLIB_LD)
 
 # Stuff for REmbedder.cpp here
 ../REmbed.dll: REmbedder.o RDataTypesEmbedded.o dllProcAddressWrapper.o libRLink.a
-	$(RCXX) $(CXXFLAGS) -shared -s -static-libgcc -o $@ REmbedder.o  RDataTypesEmbedded.o dllProcAddressWrapper.o $(RLDFLAGS) libRLink.a $(RLDLIBS)
+	$(RLD) $(RLDFLAGS) -shared -s -static-libgcc -o $@ REmbedder.o  RDataTypesEmbedded.o dllProcAddressWrapper.o $(RLDFLAGS) libRLink.a $(RLDLIBS)
+
+../REmbed.so: REmbedder.o RDataTypesEmbedded.o 
+	$(RLD) $(RLDFLAGS) -shared -s -o $@ REmbedder.o  RDataTypesEmbedded.o $(RLDLIBS)
 
 REmbedder.o: REmbedder.cpp 
-	$(RCXX) -c $(CXXFLAGS) $(RCXXFLAGS)  REmbedder.cpp 
+	$(RCXX) -fPIC -c $(RCXXFLAGS) $(RCXXFLAGS)  REmbedder.cpp 
 
 RDataTypesEmbedded.o: RDataTypesEmbedded.cpp
-	$(RCXX) -c $(CXXFLAGS) $(RCXXFLAGS)  RDataTypesEmbedded.cpp 
+	$(RCXX) -fPIC -c $(RCXXFLAGS) $(RCXXFLAGS)  RDataTypesEmbedded.cpp 
 
 dllProcAddressWrapper.o: dllProcAddressWrapper.cpp
 	$(RCXX) -c $(CXXFLAGS) dllProcAddressWrapper.cpp
 
 libRLink.a: RLink.def
 	dlltool -d RLink.def -l libRLink.a
-    

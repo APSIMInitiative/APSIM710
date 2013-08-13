@@ -218,18 +218,22 @@ void RComponent::oneTimeInit(void)
     char *home = getenv("HOME");
     if (home != NULL) {userlibs = string(home) + "/R/" ; } //??? FIXME
 #endif    
+    vector<string> paths;
     if (userlibs != "") 
-        apsimAPI.write("Userlibs = " + userlibs + "\n");
+    {
+       apsimAPI.write("Userlibs = " + userlibs + "\n");
+       paths.push_back(userlibs);
+    }
 
     // Preload each dll. Hopefully any inter-dependancies will sort themselves out. 
     string libs[] = {"Rcpp", "RInside"};
-    vector<string> paths;
 
-    paths.push_back(installPath + "/library");                       // /usr/lib/R/library
 #ifndef __WIN32__
     paths.push_back("/usr/local/lib/R/site-library");
+    paths.push_back("/usr/lib/R/site-library");
 #endif
-    // FIXME userlibs ...
+    paths.push_back(installPath + "/library");              // /usr/lib/R/library
+
     for (unsigned int lib = 0; lib < 2; lib++) 
     {
     RDLLHandle = NULL;
