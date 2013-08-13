@@ -46,7 +46,7 @@ public class Apsim
             for (int i = 0; i < args.Length; i++)
 			{
                 string[] x = realNamesOfFiles(args[i]);
-                if (x != null)
+                if (x != null && x.Length > 0)
                 {
                     for (int j = 0; j < x.Length; ++j)
                     {
