@@ -84,6 +84,7 @@ public class Phenology
         }
     }
 
+    [Output]
     public double FractionInCurrentPhase
     {
         get

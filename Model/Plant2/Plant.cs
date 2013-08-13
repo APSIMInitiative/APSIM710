@@ -212,6 +212,11 @@ public class Plant
         // tell all our children about sow
         foreach (Organ Child in Organs)
             Child.OnHarvest();
+
+   // I cannot end call end crop, however can call onharvest?
+   // temp
+   //     OnEndCrop();
+
     }
     [EventHandler]
     public void OnEndCrop()

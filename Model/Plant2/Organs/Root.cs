@@ -14,10 +14,11 @@ public class Root : BaseOrgan, BelowGround
     [Link(IsOptional=true)]
     protected Function SenescenceRate = null;
 
-    [Link]
+    [Link(IsOptional = true)]
     Structure Structure = null;
 
-    [Link]
+
+    [Link(IsOptional = true)]
     Function TemperatureEffect = null;
 
     [Link]
@@ -48,7 +49,9 @@ public class Root : BaseOrgan, BelowGround
     private double[] Uptake = null;
     private double[] DeltaNH4;
     private double[] DeltaNO3;
-    
+
+    private bool isGrowing { get { return (Plant.SowingData.Depth < this.Depth); } }
+
     [Output]
     public Biomass[] LayerLive;
 
@@ -108,8 +111,11 @@ public class Root : BaseOrgan, BelowGround
         
         if (Live.Wt == 0)
         {
-            LayerLive[0].StructuralWt = InitialDM * Structure.Population;
-            LayerLive[0].StructuralN = InitialDM * MaxNconc * Structure.Population;
+            LayerLive[0].StructuralWt = (Structure == null)? InitialDM:InitialDM * Structure.Population;
+            LayerLive[0].StructuralN = (Structure == null) ? InitialDM*MaxNconc : InitialDM * MaxNconc * Structure.Population;
+            if (SowingInfo.Depth <= 0)
+                throw new Exception("No sowing depth info provided");
+
             Depth = SowingInfo.Depth;
         }
 
@@ -131,7 +137,8 @@ public class Root : BaseOrgan, BelowGround
 
         // Do Root Front Advance
         int RootLayer = LayerIndex(Depth);
-        Depth = Depth + RootFrontVelocity.Value * xf[RootLayer] * TemperatureEffect.Value;
+        double TEM = (TemperatureEffect == null)? 1: TemperatureEffect.Value;
+        Depth = Depth + RootFrontVelocity.Value * xf[RootLayer] * TEM;
         double MaxDepth = 0;
         for (int i = 0; i < dlayer.Length; i++)
             if (xf[i] > 0)
@@ -318,13 +325,18 @@ public class Root : BaseOrgan, BelowGround
     {
         get
         {
-            return Arbitrator.DMSupply * PartitionFraction.Value;
+            if (isGrowing)
+             return Arbitrator.DMSupply * PartitionFraction.Value;
+            return 0;
         }
     }
     public override double DMPotentialAllocation
     {
         set
         {
+            if (Depth <= 0)
+                return; //cannot allocate growth where no length
+
             if (DMDemand == 0)
                 if (value < 0.000000000001) { }//All OK
                 else
@@ -372,7 +384,7 @@ public class Root : BaseOrgan, BelowGround
                     LayerLive[layer].PotentialDMAllocation = value * RAw[layer] / TotalRAw;
                 else if (value > 0)
                     throw new Exception("Error trying to partition potential root biomass");
-                allocated += value * RAw[layer] / TotalRAw;
+                allocated += (TotalRAw > 0) ? value * RAw[layer] / TotalRAw : 0;
             }
         }
     }
@@ -386,6 +398,8 @@ public class Root : BaseOrgan, BelowGround
             double TotalRAw = 0;
             double TotalRAn = 0;
 
+            if (Depth <= 0)
+                return; // cannot do anything with no depth
             for (int layer = 0; layer < dlayer.Length; layer++)
             {
                 if (layer <= LayerIndex(Depth))
@@ -423,7 +437,7 @@ public class Root : BaseOrgan, BelowGround
                     LayerLive[layer].StructuralWt += value.Allocation * RAw[layer] / TotalRAw;
                 else if (value.Allocation > 0)
                     throw new Exception("Error trying to partition root biomass");
-                allocated += value.Allocation * RAw[layer] / TotalRAw;
+                allocated += (TotalRAw > 0) ? value.Allocation * RAw[layer] / TotalRAw : 0;
             }
         }
     }

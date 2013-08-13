@@ -7,7 +7,11 @@ class SimpleLeaf : BaseOrgan
 {
     [Link]
     Plant Plant = null;
+    [Link(IsOptional = true)]
+    Structure structure = null;
 
+ 
+ 
     private double _WaterAllocation;
     private double EP = 0;
     private double PEP = 0;
@@ -36,6 +40,9 @@ class SimpleLeaf : BaseOrgan
     public Function PotentialBiomass = null;
     [Link(IsOptional = true)]
     public Function DMDemandFunction = null;
+    [Link(IsOptional = true)]
+    public Function CoverFunction = null;
+
     [Param]
     private double K = 0;                      // Extinction Coefficient (Green)
     [Param]
@@ -130,7 +137,11 @@ class SimpleLeaf : BaseOrgan
     [Output]
     public double LAI
     {
-        get { return _LAI; }
+        get { 
+             if (CoverFunction == null)
+             return _LAI;
+             return (Math.Log(1 - CoverGreen) / -K);
+        }
         set
         {
             _LAI = value;
@@ -161,7 +172,12 @@ class SimpleLeaf : BaseOrgan
     [Output("Cover_green")]
     public double CoverGreen
     {
-        get { return 1.0 - Math.Exp(-K * LAI); }
+        get { 
+            
+            if (CoverFunction == null)            
+               return 1.0 - Math.Exp(-K * LAI);
+            return Math.Min(Math.Max(CoverFunction.Value,0),1);       
+        }
     }
     [Output("Cover_tot")]
     public double CoverTot
@@ -176,9 +192,12 @@ class SimpleLeaf : BaseOrgan
 
     public override void OnSow(SowPlant2Type Data)
     {
+      if (structure != null) //could be optional ?
+        structure.Population = Data.Population;
         PublishNewPotentialGrowth();
         PublishNewCanopyEvent();
     }
+
     [EventHandler]
     public void OnPrepare()
     {
@@ -233,6 +252,8 @@ class SimpleLeaf : BaseOrgan
             New_Canopy.Invoke(Canopy);
         }
     }
+
+   
 
 }
    

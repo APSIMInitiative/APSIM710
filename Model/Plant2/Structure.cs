@@ -37,6 +37,7 @@ public class Structure
     public Function DroughtInducedBranchMortality = null;
     [Link(NamePath = "DensityFactor", IsOptional = true)]
     public Function DensityFactor = null;
+
     #endregion
 
     #region Class Members
