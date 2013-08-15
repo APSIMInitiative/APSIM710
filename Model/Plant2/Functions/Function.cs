@@ -10,13 +10,13 @@ abstract public class Function
     virtual public string ValueString { get { return Value.ToString(); } }
     virtual public double[] Values { get { return new double[1] { Value }; } }
 
-    virtual public void UpdateVariables() { }
-    virtual public double AttainableFinalNodeNumber { get { return 0; } }
-    virtual public double VernalisationFinalNodeNumber { get { return 0; } }
-    virtual public double PhotoperiodFinalNodeNumber { get { return 0; } }
-    virtual public double TerminatedFinalNodeNumber { get { return 0; } }
-    virtual public double CommitHaunStage { get { return 0; } }
-    virtual public double TargetFinalNodeNumber { get { return 0; } }
+    virtual public void UpdateVariables(string initial) { }
+   // virtual public double AttainableFinalNodeNumber { get { return 0; } }
+   // virtual public double VernalisationFinalNodeNumber { get { return 0; } }
+  //  virtual public double PhotoperiodFinalNodeNumber { get { return 0; } }
+  //  virtual public double TerminatedFinalNodeNumber { get { return 0; } }
+   // virtual public double CommitHaunStage { get { return 0; } }
+   // virtual public double TargetFinalNodeNumber { get { return 0; } }
     virtual public void SetFinalNodeNumber() { }
 
     public double _VernalisationIndex = 0;

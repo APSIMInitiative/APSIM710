@@ -574,14 +574,8 @@ public class Leaf : BaseOrgan, AboveGround
                 FinalLeafAppeared = true;
             int AppearingNode = (int)(Structure.MainStemNodeNo + (1 - FinalLeafFraction));
             double CohortAge = (Structure.MainStemNodeNo - AppearingNode) * Structure.MainStemNodeAppearanceRate.Value * FinalLeafFraction;
-           //double BranchNumber = Structure.MainStemPopn;
-           // if (Leaves.Count > 0)
-           // {
-           //     int j = (int)AppearedCohortNo - 1;
-           //     BranchNumber = Leaves[j]._Population; //Retrive the branch number of the previous cohort so this can be appended with additional branching
-           // }
-           // BranchNumber += Structure.BranchingRate * Structure.MainStemPopn;
-            //Set the properties of the appearing cohort so it begins growing 
+            if (AppearingNode > InitialisedCohortNo)
+                throw new Exception("MainStemNodeNumber exceeds the number of leaf cohorts initialised.  Check primordia parameters to make sure primordia are being initiated fast enough and for long enough");
             int i = AppearingNode -1;
             Leaves[i].Rank = AppearingNode;
             Leaves[i]._Population = Structure.TotalStemPopn;//BranchNumber;

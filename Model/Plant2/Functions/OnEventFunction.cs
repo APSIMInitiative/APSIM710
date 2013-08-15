@@ -27,6 +27,7 @@ class OnEventFunction : Function
     {
         MyPaddock.Subscribe(SetEvent, OnSetEvent);
         MyPaddock.Subscribe(ReSetEvent, OnReSetEvent);
+        _Value = PreEventValue.Value;
     }
 
     [EventHandler]

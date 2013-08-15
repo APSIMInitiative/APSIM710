@@ -12,7 +12,7 @@ class MaximumFunction : Function
       {
       get
          {
-         double ReturnValue = 999999999;
+         double ReturnValue = -999999999;
          foreach (Function F in My.ChildrenAsObjects)
             {
                 ReturnValue = Math.Max(ReturnValue, F.Value);

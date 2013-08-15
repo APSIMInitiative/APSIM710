@@ -1,4 +1,4 @@
-<Type version="36" name="Oat2">
+<Type version="36" creator="Apsim 7.5-r3106" name="Oat2">
   <MetaData>
     <UItype type="text" description="UItype">CSUserInterface.EmptyUI</UItype>
     <IsCrop type="text" description="IsCrop">Yes</IsCrop>
@@ -111,8 +111,8 @@
             <XYPairs>
               <XY>0 100</XY>
               <XY>10 100</XY>
-              <XY>16 300</XY>
-              <XY>24 300</XY>
+              <XY>16 500</XY>
+              <XY>24 500</XY>
             </XYPairs>
             <Memo>Takes the current value of the XProperty and returns the corresponding y value from the XY maxtix specified</Memo>
           </LinearInterpolationFunction>
@@ -225,7 +225,7 @@
                  </Memo>
               </VariableReference>
               <Constant name="PrimordiaPerMainstemNode">
-                <Value type="text" description="Value">2</Value>
+                <Value type="text" description="Value">4</Value>
               </Constant>
             </DivideFunction>
           </PhaseLookupValue>
@@ -245,9 +245,6 @@
             <Value type="text" description="Value">80</Value>
           </Constant>
         </MultiplyFunction>
-        <Constant name="MainStemFinalNodeNumber">
-          <Value type="text" description="Value">40</Value>
-        </Constant>
         <HeightFunction name="Height">
           <Memo> 
 			This Function takes potential height increment for the day from the PotentialHeight function then multiplies it by the smallest of any other childern (stress) functions and returns this number
@@ -344,6 +341,47 @@
             </MultiplyFunction>
           </AddFunction>
         </MultiplyFunction>
+        <PhaseLengthFinalNodeNumber name="MainStemFinalNodeNumber">
+          <MaximumMainStemNodeNumber type="text" description="Maximum number of mainstem leaves that the plant can produce">40</MaximumMainStemNodeNumber>
+          <Memo> 
+			This Function allows final node number to increase as primordia are initiated and it is fixed at the value or primordia that are initiated when initiation finishes.  
+			</Memo>
+          <MinimumFunction name="FinalLeafNumber">
+            <Memo>Returns the minimum value of all children functions.  Drop on nodes as appropriate</Memo>
+            <MaximumFunction name="IncreasingDuringVegetativePhase">
+              <Memo>Returns the maximum value of all children functions.  Drop on nodes as appropriate</Memo>
+              <Constant name="MinimumFLN">
+                <Value type="text" description="Value">7</Value>
+              </Constant>
+              <LinearInterpolationFunction>
+                <XProperty type="text" description="XProperty">MainStemNodeNo</XProperty>
+                <XYPairs>
+                  <XY>0 7</XY>
+                  <XY>4.16 7</XY>
+                  <XY>7.28 20</XY>
+                  <XY>20 20</XY>
+                </XYPairs>
+                <Memo>Takes the current value of the XProperty and returns the corresponding y value from the XY maxtix specified</Memo>
+              </LinearInterpolationFunction>
+            </MaximumFunction>
+            <OnEventFunction name="AtTerminalSpikelet">
+              <SetEvent type="text" description="SetEvent">FloralInitiation</SetEvent>
+              <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
+              <Constant name="PreEventValue">
+                <Value type="text" description="Value">20</Value>
+              </Constant>
+              <LinearInterpolationFunction name="PostEventValue">
+                <XProperty type="text" description="XProperty">MainStemNodeNo</XProperty>
+                <XYPairs>
+                  <XY>4.16 7</XY>
+                  <XY>7.28 20</XY>
+                  <XY>20 20</XY>
+                </XYPairs>
+                <Memo>Takes the current value of the XProperty and returns the corresponding y value from the XY maxtix specified</Memo>
+              </LinearInterpolationFunction>
+            </OnEventFunction>
+          </MinimumFunction>
+        </PhaseLengthFinalNodeNumber>
       </Structure>
       <ReproductiveOrgan name="Grain">
         <MaximumSize type="text" description="MaximumSize">0.042</MaximumSize>

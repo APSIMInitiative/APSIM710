@@ -6,9 +6,14 @@ using System.Reflection;
 [Description("This Function uses the Jamieson and Brooking phenology model to determine the final main-stem leaf number of a cereal plant")]
 public class PhaseLengthFinalNodeNumber : Function
 {
- #region Setup
+ //Fixme.  This class needs to be given a better name
+    
+    #region Setup
     [Link]
     Structure Structure = null;
+    
+    [Link(IsOptional = true)]
+    protected Function FinalLeafNumber = null;
 
     double _FinalNodeNumber = 0;
     
@@ -16,22 +21,36 @@ public class PhaseLengthFinalNodeNumber : Function
     [Param]
     public double MaximumMainStemNodeNumber = 0;
 
-    [EventHandler]
-    public void OnInitialised()
-    {
-        _FinalNodeNumber = MaximumMainStemNodeNumber;
-    }
+   // [EventHandler]
+   // public void OnInitialised()
+   // {
+        //if (FinalLeafNumber == null)
+        //    _FinalNodeNumber = MaximumMainStemNodeNumber;
+        //else
+        //    _FinalNodeNumber = FinalLeafNumber.Value;
+   // }
 
-   public override void SetFinalNodeNumber()
-    {
-        _FinalNodeNumber = MaximumMainStemNodeNumber;
-    }
+  // public override void SetFinalNodeNumber()
+   // {
+        //if (FinalLeafNumber == null)
+   //         _FinalNodeNumber = MaximumMainStemNodeNumber;
+       // else
+       //     _FinalNodeNumber = FinalLeafNumber.Value;
+   // }
 
     
     
-    public override void UpdateVariables()
+    public override void UpdateVariables(string initial)
     {
-        _FinalNodeNumber = Math.Min(MaximumMainStemNodeNumber, Structure.MainStemPrimordiaNo);
+        if (initial == "yes")
+                _FinalNodeNumber = MaximumMainStemNodeNumber; 
+        else
+        {
+           if (FinalLeafNumber == null)
+            _FinalNodeNumber = Math.Min(MaximumMainStemNodeNumber, Structure.MainStemPrimordiaNo);
+           else
+                _FinalNodeNumber = FinalLeafNumber.Value;
+        }
     } 
 
  #endregion

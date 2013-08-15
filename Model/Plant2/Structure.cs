@@ -147,13 +147,6 @@ public class Structure
     [Output]
     [Description("Number of leaves yet to appear")]
     public double RemainingNodeNo { get { return MainStemFinalNodeNo - MainStemNodeNo; } }
-   /* public double AttainableFinalNodeNumber
-    {
-        get
-        {
-            return MainStemFinalNodeNumber.AttainableFinalNodeNumber;
-        }
-    }*/
     
     //Structural Variables
     public double Height 
@@ -190,7 +183,7 @@ public class Structure
        
             double StartOfDayMainStemNodeNo = (int)MainStemNodeNo;
             
-            MainStemFinalNodeNumber.UpdateVariables();
+            MainStemFinalNodeNumber.UpdateVariables("");
             MainStemPrimordiaNo = Math.Min(MainStemPrimordiaNo, MaximumNodeNumber);
             
             if (MainStemNodeNo > 0)  //If statement needs to go
@@ -247,7 +240,9 @@ public class Structure
     [EventHandler]
     public void OnInitialised()
     {
-        MainStemFinalNodeNumber.SetFinalNodeNumber();
+       // MainStemFinalNodeNumber.SetFinalNodeNumber();
+        string initial = "yes";
+        MainStemFinalNodeNumber.UpdateVariables(initial);
         MaximumNodeNumber = MainStemFinalNodeNumber.Value;
     }
     [EventHandler]
@@ -256,7 +251,6 @@ public class Structure
         if (Sow.MaxCover <= 0.0)
             throw new Exception("MaxCover must exceed zero in a Sow event.");
         PrimaryBudNo = Sow.BudNumber;
-        //MaxNodeNo = MaximumNodeNumber;
         Population = Sow.Population;
 
     }
