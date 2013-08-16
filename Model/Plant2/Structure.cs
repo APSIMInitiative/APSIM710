@@ -29,7 +29,6 @@ public class Structure
     public Function DroughtInducedBranchMortality = null;
     [Link(NamePath = "DensityFactor", IsOptional = true)]
     public Function DensityFactor = null;
-
     #endregion
 
     #region Class Fields
@@ -39,10 +38,9 @@ public class Structure
     public string InitialiseStage = "";
     public double DeltaNodeNumber = 0;
     public double _ThermalTime = 0;  
-    double _CurrentPopulation = 0;
-    double _CurrentTotalStemPopn = 0;
+    double _Population = 0;
+    double _TotalStemPopn = 0;
     public double MaximumNodeNumber = 0;
-
     #endregion
 
     #region Class Properties
@@ -54,11 +52,11 @@ public class Structure
     {
         get
         {
-            return _CurrentPopulation;
+            return _Population;
         }
         set
         {
-            _CurrentPopulation = value;
+            _Population = value;
         }
 
     }
@@ -70,7 +68,8 @@ public class Structure
     [Units("/m2")]
     public double MainStemPopn
     {
-        get {
+        get 
+        {
             double OrigPop = Population * PrimaryBudNo;
             if (DensityFactor == null)
              return OrigPop;
@@ -89,11 +88,11 @@ public class Structure
             //foreach (LeafCohort L in Leaf.Leaves)
             //    n = Math.Max(n, L._Population);
             //return n;
-            return _CurrentTotalStemPopn;
+            return _TotalStemPopn;
         }
         set
         {
-            _CurrentTotalStemPopn = value;
+            _TotalStemPopn = value;
         }
     }
 
@@ -207,26 +206,29 @@ public class Structure
             //Set stem population at emergence
             if (Phenology.OnDayOf(InitialiseStage))
             {
-                _CurrentTotalStemPopn = MainStemPopn;
+                _TotalStemPopn = MainStemPopn;
             }
 
             //Increment total stem number if main-stem node number has increased by one.
             if ((MainStemNodeNo - StartOfDayMainStemNodeNo) >= 1.0)
             {
-                _CurrentTotalStemPopn += BranchingRate * MainStemPopn;
+                _TotalStemPopn += BranchingRate * MainStemPopn;
             }
 
             //Reduce stem number incase of mortality
             if (ProportionStemMortality > 0)
             {
                 double DeltaPopn = Math.Min(ProportionStemMortality * (TotalStemPopn - MainStemPopn), TotalStemPopn - Population);
-                _CurrentTotalStemPopn -= DeltaPopn;
+                _TotalStemPopn -= DeltaPopn;
             }
     }
     public void ResetStemPopn()
     {
-        _CurrentTotalStemPopn = MainStemPopn;
+        _TotalStemPopn = MainStemPopn;
     }
+    #endregion
+
+    #region Event Handlers
     [EventHandler]
     public void OnNewMet(NewMetType NewMet)
     {
@@ -240,7 +242,7 @@ public class Structure
     {
         MainStemNodeNo = 0;
         MainStemPrimordiaNo = 0;
-        _CurrentTotalStemPopn = 0;
+        _TotalStemPopn = 0;
     }
     [EventHandler]
     public void OnInitialised()

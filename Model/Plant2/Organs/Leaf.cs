@@ -7,18 +7,10 @@ using ModelFramework;
 [Description("Leaf Class")]
 public class Leaf : BaseOrgan, AboveGround
 {
- #region Class inputs
+ #region Parameter Input classes
     //Input Parameters
     [Link]
     public LeafCohort[] InitialLeaves;
-    [Param]
-    [Output]
-    [Description("Max cover")]
-    [Units("max units")]
-    public double MaxCover;
-    [Param]
-    [Description("Extinction Coefficient (Dead)")]
-    public double KDead = 0;
     [Input]
     public NewMetType MetData;
     //Class Links
@@ -53,17 +45,14 @@ public class Leaf : BaseOrgan, AboveGround
     public Function StructuralFraction = null;
     [Link(IsOptional = true)]
     public Function DMDemandFunction = null;
-  
- 
- #endregion
-
- #region Class Data Members
-    [Event]
-    public event NewCanopyDelegate New_Canopy;
-    [Event]
-    public event NullTypeDelegate NewLeaf;
     [Output]
     public List<LeafCohort> Leaves = new List<LeafCohort>();
+ #endregion
+
+ #region Class Fields
+    [Param]
+    [Description("Extinction Coefficient (Dead)")]
+    public double KDead = 0;
     public double ExpansionStressValue //This property is necessary so the leaf class can update Expansion stress value each day an pass it down to cohorts
     {
         get
@@ -92,8 +81,7 @@ public class Leaf : BaseOrgan, AboveGround
     public bool FinalLeafAppeared = false;
  #endregion
 
- #region Outputs
-    //population state variables
+ #region Class Properties
     /// <summary>
     ///Note on naming convention.  
     ///Variables that represent the number of units per meter of area these are called population (Popn suffix) variables 
@@ -101,10 +89,11 @@ public class Leaf : BaseOrgan, AboveGround
     ///Variables that represent the number of primordia or nodes (double) in a particular state on an individual mainstem are called number variables (e.g NodeNo or PrimordiaNo suffix)
     ///Variables that the number of leaves on a plant or a primary bud have Plant or Primary bud prefixes
     /// </summary>
-    //Mainstem unit (nodes or cohorts) state variables
+    [Param]
     [Output]
-    [Description("Number of primordia initiated on each main stem")] //Note: PrimordiaNo is a double that increase gradually each day
-    public double PrimordiaNo { get { return Structure.MainStemPrimordiaNo; } }
+    [Description("Max cover")]
+    [Units("max units")]
+    public double MaxCover;
     [Output]
     [Description("Number of leaf cohort objects that have been initialised")] //Note:  InitialisedCohortNo is an interger of Primordia Number, increasing every time primordia increses by one and a new cohort is initialised
     public double InitialisedCohortNo 
@@ -187,7 +176,6 @@ public class Leaf : BaseOrgan, AboveGround
          }
     }
     [Output]
-
     [Description("Number of leaf cohorts that are Senescing")]
     public double SenescingCohortNo
     {
@@ -527,7 +515,7 @@ public class Leaf : BaseOrgan, AboveGround
     }
  #endregion
 
- #region Leaf functions
+ #region Functions
     public void CopyLeaves(LeafCohort[] From, List<LeafCohort> To)
     {
         foreach (LeafCohort Leaf in From)
@@ -605,7 +593,6 @@ public class Leaf : BaseOrgan, AboveGround
         _ExpandedNodeNo = ExpandedCohortNo + FractionNextleafExpanded;
 
   }
-    
     public virtual void InitialiseCohorts() //This sets up cohorts on the day growth starts (eg at emergence)
     {
         Leaves.Clear();
@@ -626,7 +613,6 @@ public class Leaf : BaseOrgan, AboveGround
             Structure.MainStemPrimordiaNo += 1.0;
         }
     }
-
     public override void DoActualGrowth()
     {
         foreach (LeafCohort L in Leaves)
@@ -664,6 +650,7 @@ public class Leaf : BaseOrgan, AboveGround
             LAIabove += Leaves[i].LiveArea / MM2ToM2;
         return 1 - Math.Exp(-ExtinctionCoeff.Value * LAIabove);
     }
+
  #endregion
 
  #region Arbitrator methods
@@ -1027,6 +1014,10 @@ public class Leaf : BaseOrgan, AboveGround
  #endregion 
 
  #region Event handlers and publishers
+    [Event]
+    public event NewCanopyDelegate New_Canopy;
+    [Event]
+    public event NullTypeDelegate NewLeaf;
     [EventHandler]
     public void OnPrune(PruneType Prune)
     {

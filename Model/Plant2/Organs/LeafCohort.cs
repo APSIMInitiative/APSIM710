@@ -6,95 +6,7 @@ using ModelFramework;
 
 public class LeafCohort
 {
- #region Class Data Members
-    public Biomass Live = new Biomass();
-    public Biomass Dead = new Biomass();
-    private Biomass LiveStart = null;
-
-    //Leaf coefficients
-    public double Age = 0;
-    private double NReallocationFactor = 0;
-    private double DMReallocationFactor = 0;
-    private double NRetranslocationFactor = 0;
-    private double DMRetranslocationFactor = 0;
-    private double FunctionalNConc = 0;
-    private double LuxaryNConc = 0;
-    public double StructuralFraction = 0;
-    public double NonStructuralFraction = 0;
-    public double MaxLiveArea = 0;
-    public double GrowthDuration = 0;
-    public double LagDuration = 0;
-    public double SenescenceDuration = 0;
-    public double DetachmentLagDuration = 0;
-    public double DetachmentDuration = 0;
-    public double SpecificLeafAreaMax = 0;
-    public double SpecificLeafAreaMin = 0;
-    public double MaximumNConc = 0;
-    public double MinimumNConc = 0;
-    public double InitialNConc = 0;
- 
-    public double LiveArea = 0;
-    public double DeadArea = 0;
-    public double MaxArea = 0;
-    public double CoverAbove = 0;
-    private double ShadeInducedSenRate = 0;
-    private double SenescedFrac = 0;
-    private double DetachedFrac = 0;
-    private double _ExpansionStress = 0;
-    public double _Population = 0;
-    public double CellDivisionStressFactor = 1;
-    public double CellDivisionStressAccumulation = 0;
-    public double CellDivisionStressDays = 0;
-    //Leaf Initial status paramaters
-    public double LeafStartNRetranslocationSupply = 0;
-    public double LeafStartNReallocationSupply = 0;
-    public double LeafStartDMRetranslocationSupply = 0;
-    public double LeafStartDMReallocationSupply = 0;
-
-    public double LeafStartArea = 0;
-    public double LeafStartMetabolicNReallocationSupply = 0;
-    public double LeafStartNonStructuralNReallocationSupply = 0;
-    public double LeafStartMetabolicNRetranslocationSupply = 0;
-    public double LeafStartNonStructuralNRetranslocationSupply = 0;
-    
-    public double LeafStartMetabolicDMReallocationSupply = 0;
-    public double LeafStartNonStructuralDMReallocationSupply = 0;
-    public double LeafStartMetabolicDMRetranslocationSupply = 0;
-    public double LeafStartNonStructuralDMRetranslocationSupply = 0;
-    
-    
-    
-    //variables used in calculating daily supplies and deltas
-    public double DeltaWt = 0;
-    public double StructuralNDemand = 0;
-    public double MetabolicNDemand = 0;
-    public double NonStructuralNDemand = 0;
-    public double PotentialAreaGrowth = 0;
-    private double DeltaPotentialArea = 0;
-    private double DeltaWaterConstrainedArea = 0;
-    private double StructuralDMDemand = 0;
-    private double MetabolicDMDemand = 0;
-    private double PotentialStructuralDMAllocation = 0;
-    private double PotentialMetabolicDMAllocation = 0;
-    private double MetabolicNReallocated = 0;
-    private double MetabolicWtReallocated = 0;
-    private double NonStructuralNReallocated = 0;
-    private double NonStructuralWtReallocated = 0;
-    private double MetabolicNRetranslocated = 0;
-    private double NonStructuralNRetrasnlocated = 0;
-    private double DMRetranslocated = 0;
-    private double StructuralNAllocation = 0;
-    private double MetabolicNAllocation = 0;
-    private double StructuralDMAllocation = 0;
-    private double MetabolicDMAllocation = 0;
-  
-#endregion
-
- #region Class Parameters and Functions
-    [Param]
-    public double Rank = 0;
-    [Param]
-    public double Area = 0;
+ #region Paramater Input Classes
     [Link]
     public Plant Plant = null;
     [Link]
@@ -131,7 +43,7 @@ public class LeafCohort
     public Function InitialNConcFunction;
     [Link(NamePath = "NReallocationFactor")]
     public Function NReallocationFactorFunction = null;
-    [Link(NamePath = "DMReallocationFactor",IsOptional = true)]
+    [Link(NamePath = "DMReallocationFactor", IsOptional = true)]
     public Function DMReallocationFactorFunction = null;
     [Link(NamePath = "NRetranslocationFactor")]
     public Function NRetranslocationFactorFunction = null;
@@ -148,13 +60,212 @@ public class LeafCohort
     [Link(NamePath = "NonStructuralFraction", IsOptional = true)]
     public Function NonStructuralFractionFunction = null;
     [Link(NamePath = "CellDivisionStress", IsOptional = true)]
-    public Function CellDivisionStress = null;
+    public Function CellDivisionStress = null; public Biomass Live = new Biomass();
+    public Biomass Dead = new Biomass();
+    private Biomass LiveStart = null;
+ #endregion
 
-    [Event]
-    public event BiomassRemovedDelegate BiomassRemoved;
+ #region Class Fields
+    [Param]
+    public double Rank = 0;
+    [Param]
+    public double Area = 0;
+    //Leaf coefficients
+    public double Age = 0;
+    private double NReallocationFactor = 0;
+    private double DMReallocationFactor = 0;
+    private double NRetranslocationFactor = 0;
+    private double DMRetranslocationFactor = 0;
+    private double FunctionalNConc = 0;
+    private double LuxaryNConc = 0;
+    public double StructuralFraction = 0;
+    public double NonStructuralFraction = 0;
+    public double MaxLiveArea = 0;
+    public double GrowthDuration = 0;
+    public double LagDuration = 0;
+    public double SenescenceDuration = 0;
+    public double DetachmentLagDuration = 0;
+    public double DetachmentDuration = 0;
+    public double SpecificLeafAreaMax = 0;
+    public double SpecificLeafAreaMin = 0;
+    public double MaximumNConc = 0;
+    public double MinimumNConc = 0;
+    public double InitialNConc = 0;
+    public double LiveArea = 0;
+    public double DeadArea = 0;
+    public double MaxArea = 0;
+    public double CoverAbove = 0;
+    private double ShadeInducedSenRate = 0;
+    private double SenescedFrac = 0;
+    private double DetachedFrac = 0;
+    private double _ExpansionStress = 0;
+    public double _Population = 0;
+    public double CellDivisionStressFactor = 1;
+    public double CellDivisionStressAccumulation = 0;
+    public double CellDivisionStressDays = 0;
+    //Leaf Initial status paramaters
+    public double LeafStartNRetranslocationSupply = 0;
+    public double LeafStartNReallocationSupply = 0;
+    public double LeafStartDMRetranslocationSupply = 0;
+    public double LeafStartDMReallocationSupply = 0;
+    public double LeafStartArea = 0;
+    public double LeafStartMetabolicNReallocationSupply = 0;
+    public double LeafStartNonStructuralNReallocationSupply = 0;
+    public double LeafStartMetabolicNRetranslocationSupply = 0;
+    public double LeafStartNonStructuralNRetranslocationSupply = 0;
+    public double LeafStartMetabolicDMReallocationSupply = 0;
+    public double LeafStartNonStructuralDMReallocationSupply = 0;
+    public double LeafStartMetabolicDMRetranslocationSupply = 0;
+    public double LeafStartNonStructuralDMRetranslocationSupply = 0;
+    //variables used in calculating daily supplies and deltas
+    public double DeltaWt = 0;
+    public double StructuralNDemand = 0;
+    public double MetabolicNDemand = 0;
+    public double NonStructuralNDemand = 0;
+    public double PotentialAreaGrowth = 0;
+    private double DeltaPotentialArea = 0;
+    private double DeltaWaterConstrainedArea = 0;
+    private double StructuralDMDemand = 0;
+    private double MetabolicDMDemand = 0;
+    private double PotentialStructuralDMAllocation = 0;
+    private double PotentialMetabolicDMAllocation = 0;
+    private double MetabolicNReallocated = 0;
+    private double MetabolicWtReallocated = 0;
+    private double NonStructuralNReallocated = 0;
+    private double NonStructuralWtReallocated = 0;
+    private double MetabolicNRetranslocated = 0;
+    private double NonStructuralNRetrasnlocated = 0;
+    private double DMRetranslocated = 0;
+    private double StructuralNAllocation = 0;
+    private double MetabolicNAllocation = 0;
+    private double StructuralDMAllocation = 0;
+    private double MetabolicDMAllocation = 0;
 #endregion
-    
- #region arbitration methods
+
+ #region Class Properties
+    public double NodeAge
+    {
+        get { return Age; }
+    }
+    public bool IsInitialised = false;
+    public bool IsNotAppeared
+    {
+        get
+        {
+            return (IsInitialised && Age == 0);
+        }
+    }
+    public bool IsGrowing
+    {
+        get { return (Age < GrowthDuration); }
+    }
+    public bool IsAppeared = false;
+    public bool IsFullyExpanded
+    {
+        get
+        {
+            return (IsAppeared && Age > GrowthDuration);
+        }
+    }
+    public bool IsGreen
+    {
+        get { return (Age < (GrowthDuration + LagDuration + SenescenceDuration)); }
+    }
+    public bool IsSenescing
+    {
+        get { return IsGreen && (Age > (GrowthDuration + LagDuration)); }
+    }
+    public bool IsNotSenescing
+    {
+        get { return (Age < (GrowthDuration + LagDuration)); }
+    }
+    public bool ShouldBeDead
+    {
+        get { return !IsGreen; }
+    }
+    public bool Finished
+    {
+        get
+        {
+            return IsAppeared && !IsGreen;
+        }
+    }
+    public bool IsAlive
+    {
+        get { return ((Age >= 0) && (Age < (GrowthDuration + LagDuration + SenescenceDuration))); }
+    }
+    public bool IsDead
+    {
+        get
+        {
+            return MathUtility.FloatsAreEqual(LiveArea, 0.0) && !MathUtility.FloatsAreEqual(DeadArea, 0.0);
+        }
+    }
+    public double MaxSize
+    {
+        get
+        {
+            if (MaxLiveArea == 0)
+                return 0;
+            else
+                //Fixme.  This function is not returning the correct values.  Use commented out line
+                //return MaxArea / Population;
+                return MaxLiveArea / _Population;
+        }
+    }
+    public double LivePopulation
+    {
+        get
+        {
+            return _Population;
+        }
+    }
+    public double Size
+    {
+        get
+        {
+            if (IsAppeared)
+                return LiveArea / _Population;
+            else
+                return 0;
+        }
+    }
+    public double FractionExpanded
+    {
+        get
+        {
+            if (Age == 0)
+                return 0;
+            else if (Age >= GrowthDuration)
+                return 1;
+            else
+                return Age / GrowthDuration;
+        }
+    }
+    private double NFac()
+    {
+        if (IsAppeared)
+        {
+            double Nconc = Live.NConc;
+            double value = Math.Min(1.0, Math.Max(0.0, (Nconc - MinimumNConc) / (MaximumNConc - MinimumNConc)));
+            return value;
+        }
+        else
+            return 0;
+    }
+    public double SpecificArea
+    {
+        get
+        {
+            if (Live.Wt > 0)
+                return LiveArea / Live.Wt;
+            else
+                return 0;
+        }
+    }
+ #endregion
+
+ #region Arbitration methods
     virtual public double DMDemand
     {
         get
@@ -256,9 +367,6 @@ public class LeafCohort
             return LeafStartNonStructuralNRetranslocationSupply + LeafStartMetabolicNRetranslocationSupply;
         }
     }
- 
-    
-    
     virtual public double NRetranslocation
     {
         set
@@ -290,7 +398,6 @@ public class LeafCohort
             return LeafStartNonStructuralNReallocationSupply + LeafStartMetabolicNReallocationSupply;
         }
     }
-
     public double DMReallocationSupply
     {
         get
@@ -298,9 +405,6 @@ public class LeafCohort
             return LeafStartNonStructuralDMReallocationSupply + LeafStartMetabolicDMReallocationSupply;
         }
     }
-
-
-    //Set Methods to change Cohort Status
     public double DMPotentialAllocation
     {
         set
@@ -348,7 +452,6 @@ public class LeafCohort
             }
         }
     }
-   
     public double DMReallocation
     {
         set
@@ -366,71 +469,9 @@ public class LeafCohort
             }
         }
     }
-
  #endregion
 
- #region Cohort phenology
-    public double NodeAge
-    {
-        get { return Age; }
-    }
-    public bool IsInitialised = false;
-    public bool IsNotAppeared
-    {
-        get
-        {
-            return (IsInitialised && Age == 0);
-        }
-    }
-    public bool IsGrowing
-    {
-        get { return (Age < GrowthDuration); }
-    }
-    public bool IsAppeared = false;
-    public bool IsFullyExpanded
-    {
-        get
-        {
-            return (IsAppeared && Age > GrowthDuration);
-        }
-    }
-    public bool IsGreen
-    {
-        get { return (Age < (GrowthDuration + LagDuration + SenescenceDuration)); }
-    }
-    public bool IsSenescing
-    {
-        get { return IsGreen && (Age > (GrowthDuration + LagDuration)); }
-    }
-    public bool IsNotSenescing
-    {
-        get { return (Age < (GrowthDuration + LagDuration)); }
-    }
-    public bool ShouldBeDead
-    {
-        get { return ! IsGreen; }
-    }
-    public bool Finished
-    {
-        get
-        {
-            return IsAppeared && ! IsGreen;
-        }
-    }
-    public bool IsAlive
-    {
-        get { return ((Age >= 0) && (Age < (GrowthDuration + LagDuration + SenescenceDuration))); }
-    }
-    public bool IsDead
-    {
-        get
-        {
-            return MathUtility.FloatsAreEqual(LiveArea, 0.0) && !MathUtility.FloatsAreEqual(DeadArea, 0.0);
-        }
-    }
- #endregion
-
- #region Leaf cohort functions
+ #region Functions
     /// <summary>
     /// The default constuctor that will be called by the APSIM infrastructure.
     /// </summary>
@@ -848,69 +889,12 @@ public class LeafCohort
     {
         //MyPaddock.Subscribe(Structure.InitialiseStage, DoInitialisation);
     }
-    //Leaf Status variabules
-    public double MaxSize
-    {
-        get
-        {
-            if (MaxLiveArea == 0)
-                return 0;
-            else
-                //Fixme.  This function is not returning the correct values.  Use commented out line
-                //return MaxArea / Population;
-                return MaxLiveArea / _Population;
-        }
-    }
-    public double LivePopulation
-    {
-        get
-        {
-            return _Population;
-        }
-    }
-    public double Size
-    {
-        get
-        {
-            if (IsAppeared)
-                return LiveArea / _Population;
-            else
-                return 0;
-        }
-    }
-    public double FractionExpanded
-    {
-        get
-        {
-            if (Age == 0)
-                return 0;
-            else if (Age >= GrowthDuration)
-                return 1;
-            else
-                return Age / GrowthDuration;
-        }
-    }
-    private double NFac()
-    {
-        if (IsAppeared)
-        {
-            double Nconc = Live.NConc;
-            double value = Math.Min(1.0, Math.Max(0.0, (Nconc - MinimumNConc) / (MaximumNConc - MinimumNConc)));
-            return value;
-        }
-        else
-            return 0;
-    }
-    public double SpecificArea
-    {
-        get
-        {
-            if (Live.Wt > 0)
-                return LiveArea / Live.Wt;
-            else
-                return 0;
-        }
-    }
+ #endregion
+
+ #region Event Handelers
+    [Event]
+    public event BiomassRemovedDelegate BiomassRemoved;
  #endregion
 }
+
    

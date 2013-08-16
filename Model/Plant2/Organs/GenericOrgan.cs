@@ -5,7 +5,7 @@ using CSGeneral;
 
 public class GenericOrgan : BaseOrgan
 {
-    #region Links
+    #region Input Clases
     [Link(IsOptional = true)]
     protected Function SenescenceRateFunction = null;
     [Link(IsOptional = true)]
@@ -38,19 +38,22 @@ public class GenericOrgan : BaseOrgan
     protected Arbitrator Arbitrator = null;
     [Input]
     public DateTime Today;
+    private Biomass StartLive = new Biomass();
+   
     #endregion
 
-    #region Class data members
+    #region Class Fields
     private double SenescenceRate = 0;
     double _StructuralFraction = 1;
-    private Biomass StartLive = new Biomass();
     private double StartNRetranslocationSupply = 0;
     private double StartNReallocationSupply = 0;
     protected double PotentialDMAllocation = 0;
     protected double StructuralDMDemand = 0;
     protected double InitialWt = 0;
     private double InitStutFraction = 1;
+    #endregion
 
+    #region Class properties
     [Output]
     [Units("g/m^2")]
     public double LiveFWt
@@ -181,8 +184,6 @@ public class GenericOrgan : BaseOrgan
             return Supply;
         }
     }
-
-    //Set Methods to change Cohort Status
     public override DMAllocationType DMAllocation
     {
         set
@@ -233,7 +234,6 @@ public class GenericOrgan : BaseOrgan
 
         }
     }
-    //
     public override double MaxNconc
     {
         get

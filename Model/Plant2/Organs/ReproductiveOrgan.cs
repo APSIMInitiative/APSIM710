@@ -4,58 +4,45 @@ using System.Text;
 
 class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
 {
-    #region Class data members
+ #region Parameter Input Classes
     [Link]
     protected Plant Plant = null;
-
     [Link]
     protected Phenology Phenology = null;
-
     [Link]
     protected Function WaterContent = null;
-
     [Link]
     protected Function FillingRate = null;
-
     [Link]
     protected Function NumberFunction = null;
-
     [Link]
     protected Function NFillingRate = null;
-
     [Link]
     protected Function MaxNConcDailyGrowth = null;
-
     [Input]
     public DateTime Today = DateTime.Now;  // assigned a value to stop warning msg.
-
-    [Param]
-    protected double MaximumSize = 0;
-
-    [Param]
-    protected string RipeStage = "";
-
-    protected bool _ReadyForHarvest = false;
-    protected double DailyGrowth = 0;
-
     [Link(IsOptional = true)]
     protected Function NitrogenDemandSwitch = null;
-
     [Link]
     protected Function MaximumNConc = null;
-
     [Link]
     protected Function MinimumNConc = null;
+ #endregion
 
+ #region Class Fields
+    [Param]
+    protected double MaximumSize = 0;
+    [Param]
+    protected string RipeStage = "";
+    protected bool _ReadyForHarvest = false;
+    protected double DailyGrowth = 0;
     private double PotentialDMAllocation = 0;
+ #endregion
 
-    #endregion
-
-    #region Outputs
+ #region Class Properties
     [Output]
     [Units("/m^2")]
     public double Number = 0;
-
     [Output]
     [Units("g/m^2")]
     public double LiveFWt
@@ -68,7 +55,6 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
                 return 0.0;
         }
     }
-
     [Output]
     [Units("g")]
     private double Size
@@ -81,7 +67,6 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
                 return 0;
         }
     }
-
     [Output]
     [Units("g")]
     private double FSize
@@ -99,7 +84,6 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
                 return 0;
         }
     }
-
     [Output]
     public int ReadyForHarvest
     {
@@ -111,12 +95,9 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
                 return 0;
         }
     }
-    #endregion
+ #endregion
 
-    #region Event handlers
-    [Event]
-    public event NullTypeDelegate Harvesting;
-
+ #region Functions
     public override void OnHarvest()
     {
         if (Harvesting != null)
@@ -140,7 +121,11 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
         Number = 0;
         _ReadyForHarvest = false;
     }
+ #endregion
 
+ #region Event handlers
+    [Event]
+    public event NullTypeDelegate Harvesting;
     [EventHandler]
     public void OnCut()
     {
@@ -155,9 +140,9 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
         Number = 0;
         _ReadyForHarvest = false;
     }
-    #endregion
+ #endregion
 
-    #region Arbitrator methods
+ #region Arbitrator methods
     public override void DoActualGrowth()
     {
         base.DoActualGrowth();
@@ -168,11 +153,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     {
         get
         {
-            //if (Number == 0 && FillingRate.Value > 0)
-            //{
-                // We must be on the first day of filling
                 Number = NumberFunction.Value;
-            //}
             if (Number > 0)
             {
                 double demand = Number * FillingRate.Value;
@@ -181,8 +162,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
             }
             else
                 return 0;
-        }
-
+       }
     }
     public override double DMPotentialAllocation
     {
@@ -195,7 +175,6 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
             PotentialDMAllocation = value;
         }
     }
-
     public override DMAllocationType DMAllocation
     { set { Live.StructuralWt += value.Allocation; DailyGrowth = value.Allocation; } }
     public override double NDemand
@@ -217,7 +196,6 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
             Live.StructuralN += value.Allocation;
         }
     }
-
     public override double MaxNconc
     {
         get
@@ -232,7 +210,6 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
             return MinimumNConc.Value;
         }
     }
-
-    #endregion
+ #endregion
 }
 

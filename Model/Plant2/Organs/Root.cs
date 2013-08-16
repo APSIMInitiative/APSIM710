@@ -5,73 +5,49 @@ using CSGeneral;
 
 public class Root : BaseOrgan, BelowGround
 {
+ #region Parameter Input Classes
+    [Output]
+    public Biomass[] LayerLive;
+    [Output]
+    public Biomass[] LayerDead;
+    public Biomass[] LayerLengthDensity;
+    private SowPlant2Type SowingInfo = null;
     [Link]
     Plant Plant = null;
-
     [Link(IsOptional=true)]
     protected Function NitrogenDemandSwitch = null;
-
     [Link(IsOptional=true)]
     protected Function SenescenceRate = null;
-
     [Link(IsOptional = true)]
     Structure Structure = null;
-
-
     [Link(IsOptional = true)]
     Function TemperatureEffect = null;
-
     [Link]
     Function RootFrontVelocity = null;
-
     [Link]
     Arbitrator Arbitrator = null;
-
     [Link]
     Function PartitionFraction = null;
-
     [Link]
     Function MaximumNConc = null;
-
     [Link]
     Function MaxDailyNUptake = null;
-
     [Link]
     Function MinimumNConc = null;
-
     [Link]
     Function KLModifier = null;
+ #endregion
 
-
- #region Class Data Members
+ #region Class Fields
     const double kgha2gsm = 0.1;
     private double[] SWSupply = null;
     private double[] Uptake = null;
     private double[] DeltaNH4;
     private double[] DeltaNO3;
-
     private bool isGrowing { get { return (Plant.SowingData.Depth < this.Depth); } }
-
-    [Output]
-    public Biomass[] LayerLive;
-
-    [Output]
-    public Biomass[] LayerDead;
-    public Biomass[] LayerLengthDensity;
-    private SowPlant2Type SowingInfo = null;
     private double _SenescenceRate = 0;
     private double _Nuptake = 0;
     public double Length = 0;
-    
-    [Output]
-    [Units("kg/ha")]
-    public double NUptake
-    {
-        get
-        {
-            return _Nuptake / kgha2gsm;
-        }
-    }
     [Input]
     public double[] sw_dep = null;
     [Input]
@@ -100,9 +76,57 @@ public class Root : BaseOrgan, BelowGround
     private double KNO3 = 0;
     [Param]
     private double KNH4 = 0;
+    [Output]
+    [Units("mm")]
+    public double Depth = 0;
  #endregion
 
- #region Root functions and events
+ #region Class Properties
+    [Output]
+    [Units("kg/ha")]
+    public double NUptake
+    {
+        get
+        {
+            return _Nuptake / kgha2gsm;
+        }
+    }
+    [Output]
+    [Units("mm")]
+    double[] LLdep
+    {
+        get
+        {
+            double[] value = new double[dlayer.Length];
+            for (int i = 0; i < dlayer.Length; i++)
+                value[i] = ll[i] * dlayer[i];
+            return value;
+        }
+    }
+    [Output]
+    [Units("??mm/mm3")]
+    double[] LengthDensity
+    {
+        get
+        {
+            double[] value = new double[dlayer.Length];
+            for (int i = 0; i < dlayer.Length; i++)
+                value[i] = LayerLive[i].Wt * SpecificRootLength / 1000000 / dlayer[i];
+           return value;
+        }
+    }
+    [Output("rlv")]
+    [Units("??km/mm3")]
+    double[] rlv
+    {
+        get
+        {
+            return LengthDensity;
+        }
+    }
+ #endregion
+
+ #region Functions
     public override void DoPotentialGrowth()
     {
         _SenescenceRate = 0;
@@ -246,13 +270,6 @@ public class Root : BaseOrgan, BelowGround
             }
         }
     }
-    [Event]
-    public event FOMLayerDelegate IncorpFOM;
-    [Event]
-    public event WaterChangedDelegate WaterChanged;
-    [Event]
-    public event NitrogenChangedDelegate NitrogenChanged;
-
     public override void OnSow(SowPlant2Type Sow)
     {
         SowingInfo = Sow;
@@ -268,26 +285,6 @@ public class Root : BaseOrgan, BelowGround
         }
         DeltaNO3 = new double[dlayer.Length];
         DeltaNH4 = new double[dlayer.Length];
-    }
-    [EventHandler]
-    public void OnWaterUptakesCalculated(WaterUptakesCalculatedType SoilWater)
-    {
-        // Gets the water uptake for each layer as calculated by an external module (SWIM)
-
-        Uptake = new double[dlayer.Length];
-
-        for (int i = 0; i != SoilWater.Uptakes.Length; i++)
-        {
-            string UName = SoilWater.Uptakes[i].Name;
-            if (UName == Plant.Name)
-            {
-                int length = SoilWater.Uptakes[i].Amount.Length;
-                for (int layer = 0; layer < length; layer++)
-                {
-                    Uptake[layer] = -(float)SoilWater.Uptakes[i].Amount[layer];
-                }
-            }
-        }
     }
     public override void OnEndCrop()
     {
@@ -319,14 +316,14 @@ public class Root : BaseOrgan, BelowGround
 
     }
  #endregion
-
+ 
  #region Arbitrator method calls
     public override double DMDemand
     {
         get
         {
             if (isGrowing)
-             return Arbitrator.DMSupply * PartitionFraction.Value;
+                return Arbitrator.DMSupply * PartitionFraction.Value;
             return 0;
         }
     }
@@ -368,11 +365,11 @@ public class Root : BaseOrgan, BelowGround
                         RAw[layer] = RAw[layer - 1];
                         RAn[layer] = RAn[layer - 1];
                     }
-                else
-                {
-                    RAw[layer] = 0;
-                    RAn[layer] = 0;
-                }
+                    else
+                    {
+                        RAw[layer] = 0;
+                        RAn[layer] = 0;
+                    }
                 TotalRAw += RAw[layer];
                 TotalRAn += RAn[layer];
             }
@@ -421,11 +418,11 @@ public class Root : BaseOrgan, BelowGround
                         RAw[layer] = RAw[layer - 1];
                         RAn[layer] = RAn[layer - 1];
                     }
-                else
-                {
-                    RAw[layer] = 0;
-                    RAn[layer] = 0;
-                }
+                    else
+                    {
+                        RAw[layer] = 0;
+                        RAn[layer] = 0;
+                    }
                 TotalRAw += RAw[layer];
                 TotalRAn += RAn[layer];
             }
@@ -460,7 +457,6 @@ public class Root : BaseOrgan, BelowGround
             return TotalDeficit * _NitrogenDemandSwitch;
         }
     }
-
     public override NSupplyType NSupply
     {
         get
@@ -583,58 +579,36 @@ public class Root : BaseOrgan, BelowGround
     }
  #endregion
 
- #region Output Variables
-    [Output]
-    [Units("mm")]
-    double[] LLdep
+ #region Event handlers
+    [EventHandler]
+    public void OnWaterUptakesCalculated(WaterUptakesCalculatedType SoilWater)
     {
-        get
-        {
-            double[] value = new double[dlayer.Length];
-            for (int i = 0; i < dlayer.Length; i++)
-                value[i] = ll[i] * dlayer[i];
-            return value;
-        }
-    }
-    [Output]
-    [Units("??mm/mm3")]
-    double[] LengthDensity
-    {
-        get
-        {
-            double[] value = new double[dlayer.Length];
-            for (int i = 0; i < dlayer.Length; i++)
-                value[i] = LayerLive[i].Wt * SpecificRootLength / 1000000 / dlayer[i];
-           return value;
-        }
-    }
-    [Output("rlv")]
-    [Units("??km/mm3")]
-    double[] rlv
-    {
-        get
-        {
-            return LengthDensity;
-        }
-    }
-    [Output]
-    [Units("mm")]
-    public double Depth = 0;
-    //[Output]
-    //[Units("mm")]
-   /* public double Length
-    {
-        get
-        {
-            double lengthSum = 0;
-            for (int layer = 0; layer < dlayer.Length; layer++)
-                lengthSum += LengthDensity[layer];
-            return lengthSum;
-        }
-    } */
+        // Gets the water uptake for each layer as calculated by an external module (SWIM)
 
+        Uptake = new double[dlayer.Length];
 
+        for (int i = 0; i != SoilWater.Uptakes.Length; i++)
+        {
+            string UName = SoilWater.Uptakes[i].Name;
+            if (UName == Plant.Name)
+            {
+                int length = SoilWater.Uptakes[i].Amount.Length;
+                for (int layer = 0; layer < length; layer++)
+                {
+                    Uptake[layer] = -(float)SoilWater.Uptakes[i].Amount[layer];
+                }
+            }
+        }
+    }
+    [Event]
+    public event FOMLayerDelegate IncorpFOM;
+    [Event]
+    public event WaterChangedDelegate WaterChanged;
+    [Event]
+    public event NitrogenChangedDelegate NitrogenChanged;
  #endregion
+
+
 
 }
 

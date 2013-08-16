@@ -5,30 +5,26 @@ using CSGeneral;
 
 public class Nodule : GenericOrgan, BelowGround
 {
-  #region Class Data Members
+ #region Paramater Input Classes
+    [Link]
+    Function FixationMetabolicCost = null;
+    [Link]
+    Function SpecificNitrogenaseActivity = null;
+    [Link]
+    Function FT = null;
+    [Link]
+    Function FW = null;
+    [Link]
+    Function FWlog = null;
+ #endregion
+
+ #region Class Fields
     public double RespiredWt = 0;
     public double PropFixationDemand = 0;
     public double _NFixed = 0;
+ #endregion
 
-    [Link]
-    Function FixationMetabolicCost = null;
-
-    [Link]
-    Function SpecificNitrogenaseActivity = null;
-
-    [Link]
-    Function FT = null;
-
-    [Link]
-    Function FW = null;
-
-    [Link]
-    Function FWlog = null;
-
-  #endregion
-        
- #region Fixation methods
-
+ #region Arbitrator methods
     public override double NFixationCost
     {
         get
