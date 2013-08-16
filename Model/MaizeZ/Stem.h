@@ -25,6 +25,10 @@ namespace Maize {
       double dilnNInt;
       double retransRate;           // rate that stem biomass can be retranslocated to grain
 
+		double dmPlantMax;				// stem cannot get any bigger than its value at startGrainFill
+	   double dmPlantMaxTT;          // period  after anthesis to calculate dmPlantMax
+
+
       //  Variables  -----------------------------------------------------
 
       double density;
@@ -62,7 +66,7 @@ namespace Maize {
          double calcPDemand(void);
 
          // biomass
-         void  partitionDM(double dltDM){dltDmGreen = dltDM;}
+			double  partitionDM(double dltDM);
          double dmRetransAvailable(void);
          void  dmRetrans(double dltDm){dmRetranslocate = dltDm;}
 

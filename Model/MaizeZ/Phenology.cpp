@@ -92,7 +92,9 @@ void Phenology::readParams (void)
 
    // report
    char msg[120];
-   sprintf(msg, "    tt_emerg_to_endjuv       =  %6.2f\n",ttEndJuvInit);        scienceAPI.write(msg);
+   sprintf(msg, "    tt_emerg_to_endjuv       =  %6.2f\n",ttTarget[emergence]); scienceAPI.write(msg);
+   sprintf(msg, "    tt_endjuv_to_init        =  %6.2f\n",ttEndJuvInit);        scienceAPI.write(msg);
+   sprintf(msg, "    tt_init_to_flower        =  %6.2f\n",ttTarget[fi]);        scienceAPI.write(msg);
    sprintf(msg, "    tt_flower_to_maturity    =  %6.2f\n",ttFlowerMaturity);    scienceAPI.write(msg);
    sprintf(msg, "    tt_flag_to_flower        =  %6.2f\n",ttTarget[flag]);      scienceAPI.write(msg);
    sprintf(msg, "    tt_flower_to_start_grain =  %6.2f\n",ttTarget[flowering]); scienceAPI.write(msg);

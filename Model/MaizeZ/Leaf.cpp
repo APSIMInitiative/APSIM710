@@ -62,6 +62,8 @@ void Leaf::initialize(void)
    waterStressLaiLoss = 0.0;
    sLai = 0.0;
    dltSlai = 0.0;
+   tpla = 0.0;
+   spla= 0.0;
    tplaMax = 0.0;
    tplaPot = 0.0;
    dltSlaiN = 0.0;
@@ -123,7 +125,8 @@ void Leaf::readParams (void)
    // leaf area individual leaf
    //Birch, Hammer bell shaped curve parameters
    scienceAPI.read("aX0"       ,"", false, aX0);    // Eqn 14
-   scienceAPI.read("aMaxA"       ,"", false, aMaxA); // Eqn 13
+   scienceAPI.read("largestLeafParams"       ,"", false, largestLeafParams); // Eqn 13
+   scienceAPI.read("bellCurveParams","", false,bellCurveParams); // Eqn 18,19
    scienceAPI.read("leaf_no_correction"       ,"", false, leafNoCorrection); //
 
 
@@ -599,17 +602,24 @@ double Leaf::calcIndividualLeafSize(double leafNo)
    // Eqn 5 from Improved methods for predicting individual leaf area and leaf senescence in maize
    // (Zea mays) C.J. Birch, G.L. Hammer and K.G. Ricket. Aust. J Agric. Res., 1998, 49, 249-62
 	// TODO	externalise these variables
-   double a0 = -0.009, a1 = -0.2;
-   double b0 = 0.0006, b1 = -0.43;
+	   
+   double a0 = bellCurveParams[0];
+   double a1 = bellCurveParams[1];
+   double b0 = bellCurveParams[2];
+   double b1 = bellCurveParams[3];
 
-   double a = a0 - exp(a1 * finalLeafNo);
-   double b = b0 - exp(b1 * finalLeafNo);
+	double aMaxA = largestLeafParams[0];
+   double aMaxB = largestLeafParams[1];
+	double aMaxC = largestLeafParams[2];
 
-   double aMaxB = 0.4, aMaxC = 13.95; 
-   double aMax = aMaxA * (1 - exp(-aMaxB * (finalLeafNo - aMaxC)));  // maximum individual leaf area
-   double x0 = aX0 * finalLeafNo;
+   double a = a0 - exp(a1 * finalLeafNo);						// Eqn 18
+   double b = b0 - exp(b1 * finalLeafNo);						// Eqn 19
 
-   return aMax * exp(a * pow((leafNo - x0),2) + b * pow((leafNo - x0),3)) * 100;
+   double aMax = aMaxA *exp(aMaxB + aMaxC * finalLeafNo);			// Eqn 13
+
+	double x0 = aX0 * finalLeafNo;											// Eqn 14
+
+	return aMax * exp(a * pow((leafNo - x0),2) + b * pow((leafNo - x0),3)) * 100;  // Eqn 5
    }
 //------------------------------------------------------------------------------------------------
 
@@ -692,6 +702,7 @@ void Leaf::calcCover()
    double skipRow = plant->getSkipRow();
    coverGreen = divide(1.0 - exp(-extinctionCoef * lai * skipRow), skipRow,0.0);
    coverSen = divide(1.0 - exp(-extinctionCoef * sLai * skipRow), skipRow,0.0);
+	coverTot = 1.0 - (1.0 - coverGreen) * (1 - coverSen);
    }
 //------------------------------------------------------------------------------------------------
 double Leaf::calcEmergFlagTT(void)

@@ -187,22 +187,22 @@ double Grain::calcTempFactor(void)
 
    // then see if we are in the pre flag or post-flag window window
    // if not return 0                                      (grainTempWindow[0] is -ve)
-   float targetTT = plant->phenology->sumTTtarget (fi, flag) + grainTempWindow[0];
-   float eTT = plant->phenology->sumTTtotal (fi, flag);
+   double targetTT = plant->phenology->sumTTtarget (fi, flag) + grainTempWindow[0];
+   double eTT = plant->phenology->sumTTtotal (fi, flag);
    if(eTT < targetTT)return 0.0;
    // see if in the post flag window
-   float eTTpostFlag = plant->phenology->sumTTtotal (flag, flowering);
+   double eTTpostFlag = plant->phenology->sumTTtotal (flag, flowering);
    if(eTTpostFlag > grainTempWindow[1]) return 0.0;
 
-   float dltTT = plant->phenology->getDltTT();
-   float ttContrib;
+   double dltTT = plant->phenology->getDltTT();
+   double ttContrib;
    // check  window
    if(eTTpostFlag > 0.0)  // post flag
       ttContrib = Min(grainTempWindow[1] - eTTpostFlag, dltTT);      // allow for overlap
    else                   // pre flag
       ttContrib = Min(eTT - targetTT, dltTT);      // allow for overlap
 
-   float dayFract = ttContrib / (-grainTempWindow[0] + grainTempWindow[1]);
+   double dayFract = ttContrib / (-grainTempWindow[0] + grainTempWindow[1]);
    return dayFract * grainTempTable.value(plant->today.maxT);
    }
 //------------------------------------------------------------------------------------------------

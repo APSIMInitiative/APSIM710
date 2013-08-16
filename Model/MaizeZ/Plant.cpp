@@ -30,6 +30,7 @@ void Plant::initialize(void)
    frIntcRadn = 0.0;
    dltDeadPlants = 0.0;
 	initialized = false;
+	transpEff = 0.0;
    }
 //------------------------------------------------------------------------------------------------
 //------------ read the crop and cultivar parameters

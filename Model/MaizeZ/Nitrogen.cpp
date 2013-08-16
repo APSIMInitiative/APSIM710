@@ -180,14 +180,16 @@ void Nitrogen::updateVars(void)
    {
    // calc stress factors
    double SLN = plant->leaf->getSLN();
+	if(SLN > 0)
+		{
+		phenoStress = (1.0/0.7) * SLN * 1.25 - (3.0/7.0);
+		phenoStress = bound(phenoStress,0.0,1.0);
 
-   phenoStress = (1.0/0.7) * SLN * 1.25 - (3.0/7.0);
-   phenoStress = bound(phenoStress,0.0,1.0);
-
-   //   photoStress = (2.0/(1.0 + exp(-2.89*(SLN-0.34)))-1.0);
-   photoStress = (2.0/(1.0 + exp(-3.34*(SLN-0.37)))-1.0);
-   photoStress = Max(photoStress,0.0);
-   accumulate(photoStress, photoStressTotal, plant->phenology->currentStage(), plant->phenology->getDltStage());
+		//   photoStress = (2.0/(1.0 + exp(-2.89*(SLN-0.34)))-1.0);
+		photoStress = (2.0/(1.0 + exp(-3.34*(SLN-0.37)))-1.0);
+		photoStress = Max(photoStress,0.0);
+		}
+	accumulate(photoStress, photoStressTotal, plant->phenology->currentStage(), plant->phenology->getDltStage());
 
    //Hammer, G.L. and Muchow, R.C. (1994).  Assessing climatic risk to sorghum production
    // in water-limited subtropical environments. I. Development and testing of a simulation model.
@@ -349,7 +351,7 @@ void Nitrogen::uptake(void)
       dltNo3.push_back(-layerUptake);
       }
 
-   supplyDemandRatio = 0.0;
+   supplyDemandRatio = 1.0;
    //   double totalUptake = sumVector(dltNo3);
    nSupply = actualMassFlow + actualDiffusion;
 

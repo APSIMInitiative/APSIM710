@@ -46,8 +46,9 @@ namespace Maize {
 
          double leafNoCorrection;       //corrects for other growing leaves
          //Birch, Hammer bell shaped curve parameters
-         double aX0;                    // Eqn 14 calc x0 - position of largest leaf
-         double aMaxA;                  // Eqn 13 calc aMax - area of largest leaf
+         double aX0;                       // Eqn 14 calc x0 - position of largest leaf
+         vector<double> largestLeafParams; // Eqn 13 calc aMax - area of largest leaf
+		   vector<double> bellCurveParams;   // Eqn 18,19
          // sla
          TableFn slaMin;
          TableFn slaMax;

@@ -34,6 +34,7 @@ void Stem::initialize(void)
    canopyHeight    = 0.0;
    dmGreenStem     = 0.0;
    dltCanopyHeight = 0.0;
+	dmPlantMax = 9999;
 
    PlantPart::initialize();
    }
@@ -61,6 +62,10 @@ void Stem::readParams (void)
    scienceAPI.read("p_conc_init_stem", "", 0, initialPConc);
 
    density = plant->getPlantDensity();
+
+	dmPlantMax = 9999;
+	scienceAPI.read("PGRt1", "", 0, dmPlantMaxTT);
+
    }
 
 //------------------------------------------------------------------------------------------------
@@ -92,6 +97,7 @@ void Stem::updateVars(void)
 void Stem::phenologyEvent(int iStage)
    {
    ExternalMassFlowType EMF;
+	double dmPlantStem;
    switch (iStage)
       {
    case emergence :
@@ -109,8 +115,9 @@ void Stem::phenologyEvent(int iStage)
       break;
    case flowering :
       //set the minimum weight of stem; used for translocation to grain and stem
-      double dmPlantStem = divide (dmGreen, density);
+      dmPlantStem = divide (dmGreen, density);
       dmPlantMin = dmPlantStem * (1.0 - translocFrac);
+		
       break;
       }
    }
@@ -191,6 +198,19 @@ double Stem::dmRetransAvailable(void)
    double stemWtAvail = (stemWt - (dmPlantMin * density)) * retransRate;
    return Max(stemWtAvail,0.0);
    }
+//------------------------------------------------------------------------------------------------
+double  Stem::partitionDM(double dltDM)
+	{
+	// calculate maximum stem size at flowering + dmPlantMaxTT
+	double ttNow = plant->phenology->sumTTtotal(sowing,maturity);
+
+	if(dmPlantMax >  9990 && ttNow > dmPlantMaxTT + plant->phenology->sumTTtotal  (sowing,flowering))		// not yet calculated - do once
+		dmPlantMax = dmGreen;		// maximum stem size /m2
+
+	double dmAvailable =  Min(dmPlantMax - dmGreen , dltDM);
+	dltDmGreen = Max(dmAvailable,0.0);
+	return dltDmGreen;
+	}
 //------------------------------------------------------------------------------------------------
 double Stem::calcPDemand(void)
    {

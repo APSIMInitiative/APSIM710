@@ -64,6 +64,9 @@ void Water::initialize(void)
    AccTotalSupply = 0.0;
    ep = 0.0;
    swDemand = 0.0;
+   totalSupply = 0.0;      
+   dltUptake = 0.0;
+//   supplyType = "";
 
    //Init Accumulation Vars
    phenoStressTotal.assign(nStages,0.0);
@@ -298,18 +301,24 @@ void Water::calcSupply(void)
 //------------------------------------------------------------------------------------------------
 double Water::calcSwDefPhoto(void)
    {
+	if(swDemand == 0)
+		return 1.0;
    return bound(divide(totalSupply,swDemand,1.0),0.0,1.0);
    }
 //------------------------------------------------------------------------------------------------
 double Water::calcSwDefPheno(void)
    {
-   double swAvailRatio = divide(totalAvail,totalAvailPot,1.0);
+   double swAvailRatio = 1;
+	if(totalAvailPot > 0)
+		swAvailRatio = divide(totalAvail,totalAvailPot,1.0);
    swAvailRatio = bound(swAvailRatio,0.0,1.0);
    return swPhenoTable.value(swAvailRatio);
    }
 //------------------------------------------------------------------------------------------------
 double Water::calcSwDefExpansion(void)
    {
+	if(swDemand == 0)
+		return 1.0;
    double sdRatio = divide(totalSupply,swDemand,10.0);
    return swExpansionTable.value(sdRatio);
    }

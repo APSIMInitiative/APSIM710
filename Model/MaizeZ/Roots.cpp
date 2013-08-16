@@ -186,8 +186,8 @@ double Roots::layerProportion(void)
 void Roots::calcInitialLength(void)
    {
    // initial root depth
-   dltRootDepth = initialRootDepth;
-   dltRootFront = initialRootDepth;
+   rootDepth = initialRootDepth;
+   rootFront = initialRootDepth;
    }
 //------------------------------------------------------------------------------------------------
 void Roots::calcSenLength(void)
