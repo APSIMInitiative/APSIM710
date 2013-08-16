@@ -6,21 +6,13 @@ using ModelFramework;
 [Description("Keeps Track of Plants Structural Development")]
 public class Structure
 {
-    #region Inputs
+    #region Paramater Input Classes
     [Link]
     protected Function ThermalTime = null;
     [Link]
     Leaf Leaf = null;
     [Link]
     public Phenology Phenology = null;
-    
-    [Output]
-    [Param]
-    [Description("The stage name that leaves get initialised.")]
-    public string InitialiseStage = "";
-    public double DeltaNodeNumber = 0;
-    public double _ThermalTime = 0;    
-
     [Link(NamePath = "MainStemPrimordiaInitiationRate")]
     public Function MainStemPrimordiaInitiationRate = null;
     [Link(NamePath = "MainStemNodeAppearanceRate")]
@@ -40,11 +32,21 @@ public class Structure
 
     #endregion
 
-    #region Class Members
+    #region Class Fields
+    [Output]
+    [Param]
+    [Description("The stage name that leaves get initialised.")]
+    public string InitialiseStage = "";
+    public double DeltaNodeNumber = 0;
+    public double _ThermalTime = 0;  
     double _CurrentPopulation = 0;
     double _CurrentTotalStemPopn = 0;
     public double MaximumNodeNumber = 0;
 
+    #endregion
+
+    #region Class Properties
+    //Population state variables
     [Output]
     [Description("Number of plants per meter2")]
     [Units("/m2")]
@@ -60,12 +62,10 @@ public class Structure
         }
 
     }
-    
     [Output]
     [Description("Number of mainstem units per plant")]
     [Units("/plant")]
     public double PrimaryBudNo = 1;
-    
     [Output("Number of mainstems per meter")]
     [Units("/m2")]
     public double MainStemPopn
@@ -78,7 +78,6 @@ public class Structure
                 return OrigPop *(1- DensityFactor.Value);
         }
     }
-    
     [Output]
     [Description("Number of stems per meter including main and branch stems")] 
     [Units("/m2")]
@@ -97,18 +96,18 @@ public class Structure
             _CurrentTotalStemPopn = value;
         }
     }
+
+    //Plant leaf number state variables
     [Output]
     [Description("Number of mainstem primordia initiated")] 
     public double MainStemPrimordiaNo = 0;
     [Output]
     [Description("Number of mainstem nodes appeared")] 
     public double MainStemNodeNo = 0;
-
-    //Plant leaf number state variables
     [Output]
     [Units("/plant")]
     [Description("Number of leaves appeared per plant including all main stem and branch leaves")]
-    public double PlantMainStemNodeNo  //Fixme.  This is named wrong and should be called PlantTotalNodeNo
+    public double PlantTotalNodeNo  
     {
         get
         {
@@ -122,15 +121,19 @@ public class Structure
     [Output]
     [Units("/PrimaryBud")]
     [Description("Number of appeared leaves per primary bud unit including all main stem and branch leaves")]
-    public double PrimaryBudMainStemNodeNo
+    public double PrimaryBudTotalNodeNo
     {
-        get { return PlantMainStemNodeNo / PrimaryBudNo; }
+        get { return PlantTotalNodeNo / PrimaryBudNo; }
     }
-    
-    //Leaf State Variables regarding final leaf number
     [Output]
     [Description("Number of leaves that will appear on the mainstem before it terminates")]
-    public double MainStemFinalNodeNo { get { return MainStemFinalNodeNumber.Value; } } //FIXME  For consistency with the naming convention FinalLeafNumber should be called FinalNodeNumber but this will require renaming the finalNodeNumber Object which is a job for another day
+    public double MainStemFinalNodeNo 
+    { 
+        get 
+        { 
+            return MainStemFinalNodeNumber.Value; 
+        } 
+    } 
     [Output]
     [Units("0-1")]
     [Description("Relative progress toward final leaf")]
@@ -146,9 +149,15 @@ public class Structure
     }
     [Output]
     [Description("Number of leaves yet to appear")]
-    public double RemainingNodeNo { get { return MainStemFinalNodeNo - MainStemNodeNo; } }
+    public double RemainingNodeNo 
+    { 
+        get 
+        { 
+            return MainStemFinalNodeNo - MainStemNodeNo; 
+        } 
+    }
     
-    //Structural Variables
+    //Utility Variables
     public double Height 
     {
         get
@@ -214,12 +223,10 @@ public class Structure
                 _CurrentTotalStemPopn -= DeltaPopn;
             }
     }
-
     public void ResetStemPopn()
     {
         _CurrentTotalStemPopn = MainStemPopn;
     }
-
     [EventHandler]
     public void OnNewMet(NewMetType NewMet)
     {
@@ -228,7 +235,6 @@ public class Structure
             _ThermalTime = ThermalTime.Value * Leaf.DroughtInducedSenAcceleration.Value;
         else _ThermalTime = ThermalTime.Value;
     }
-
     [EventHandler]
     public void Clear()
     {
@@ -236,11 +242,9 @@ public class Structure
         MainStemPrimordiaNo = 0;
         _CurrentTotalStemPopn = 0;
     }
-
     [EventHandler]
     public void OnInitialised()
     {
-       // MainStemFinalNodeNumber.SetFinalNodeNumber();
         string initial = "yes";
         MainStemFinalNodeNumber.UpdateVariables(initial);
         MaximumNodeNumber = MainStemFinalNodeNumber.Value;
@@ -252,7 +256,6 @@ public class Structure
             throw new Exception("MaxCover must exceed zero in a Sow event.");
         PrimaryBudNo = Sow.BudNumber;
         Population = Sow.Population;
-
     }
     #endregion
 }
