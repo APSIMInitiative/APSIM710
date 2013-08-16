@@ -29,7 +29,7 @@ namespace CSUserInterface
 			// Fill the property grid.
 			XmlNode UINode = XmlHelper.Find(Data, "ui");
 			string UIXml = "<ui/>";
-			if ((UINode == null)) {
+			if ((UINode == null) || UINode.InnerXml == "") {
 				TabControl.TabPages.Remove(Properties);
 
 			} else {
@@ -94,7 +94,7 @@ namespace CSUserInterface
 
 			Data.RemoveAll();
 
-			if (!string.IsNullOrEmpty(Contents) && PropertiesMenuItem.Checked) {
+			if (!string.IsNullOrEmpty(Contents)) {
 				XmlDocument Doc = new XmlDocument();
 				Doc.LoadXml(Contents);
 				Data.AppendChild(Data.OwnerDocument.ImportNode(Doc.DocumentElement, true));
@@ -118,10 +118,33 @@ namespace CSUserInterface
 		{
 			if (TabControl.TabPages.Count == 1) {
 				TabControl.TabPages.Insert(0, Properties);
-				GenericUI.OnLoad(Controller, NodePath, "<ui/>");
-				GenericUI.OnRefresh();
-			} else {
-				TabControl.TabPages.Remove(Properties);
+                
+                // Fill the property grid.
+                string UIXml = "<ui/>";
+                XmlNode UINode = XmlHelper.Find(Data, "ui");
+                if ((UINode != null))
+                {
+                    UIXml = UINode.OuterXml;
+                }
+                GenericUI.OnLoad(Controller, NodePath, UIXml);
+                GenericUI.OnRefresh();
+
+                PropertiesMenuItem.Checked = TabControl.TabPages.Count == 2;
+                TabControl.SelectedIndex = 0;
+            }
+            else
+            {
+                // Save the current contents of the grid
+                GenericUI.OnSave();
+                string Contents = GenericUI.GetData();
+                if (!string.IsNullOrEmpty(Contents) && PropertiesMenuItem.Checked)
+                {
+                    XmlDocument Doc = new XmlDocument();
+                    Doc.LoadXml(Contents);
+                    XmlNode UINode = XmlHelper.Find(Data, "ui");
+                    UINode.InnerXml = Doc.FirstChild.InnerXml;
+                }
+                TabControl.TabPages.Remove(Properties);
 			}
 			PropertiesMenuItem.Checked = TabControl.TabPages.Count == 2;
 		}
