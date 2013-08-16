@@ -54,6 +54,7 @@ public class OilPalmUnderstory
     double DltDM = 0.0;
     [Output]
     double FW = 0.0;
+
     double[] PotNUptake;
     double[] NUptake;
     [Output]
@@ -151,9 +152,13 @@ public class OilPalmUnderstory
         if (!MyPaddock.Set("Soil Water.sw_dep", sw_dep))
             throw new Exception("Unable to set sw_dep");
         if (PEP > 0.0)
+        {
             FW = EP / PEP;
+        }
         else
+        {
             FW = 1.0;
+        }
 
     }
 

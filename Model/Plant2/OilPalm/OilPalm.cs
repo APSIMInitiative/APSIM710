@@ -82,6 +82,8 @@ public class OilPalm
     [Output]
     double FW = 0.0;
     [Output]
+    double FWexpan = 0.0;
+    [Output]
     double Fn = 1.0;
     [Output]
     double CumulativeFrondNumber = 0.0;
@@ -341,9 +343,10 @@ public class OilPalm
         int B = Fronds.Count - 11;
         if (B > 0)
         {
-            Bunches[B - 1].FemaleFraction *= (1.0 - FlowerAbortionFraction.Value);
-            Bunches[B].FemaleFraction *= (1.0 - FlowerAbortionFraction.Value);
-            Bunches[B + 1].FemaleFraction *= (1.0 - FlowerAbortionFraction.Value);
+            double AF = (1 - FlowerAbortionFraction.Value);
+            Bunches[B - 1].FemaleFraction *= AF;
+            Bunches[B].FemaleFraction *= AF;
+            Bunches[B + 1].FemaleFraction *= AF;
         }
 
     }
@@ -578,10 +581,19 @@ public class OilPalm
         }
         if (!MyPaddock.Set("Soil Water.sw_dep", sw_dep))
             throw new Exception("Unable to set sw_dep");
+
         if (PEP > 0.0)
+        {
             FW = EP / PEP;
+            //FWexpan = Math.Max(0.0, Math.Min(1.0, (TotPotSWUptake / PEP - 0.5) / 0.6));
+            FWexpan = Math.Max(0.0, Math.Min(1.0, (TotPotSWUptake / PEP - 0.5) / 1.0));
+
+        }
         else
+        {
             FW = 1.0;
+            FWexpan = 1.0;
+        }
 
     }
 
