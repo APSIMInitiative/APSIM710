@@ -425,6 +425,17 @@ public partial class SoilNitrogen
 
 		#region Amounts in various pools
 
+        [Output]
+        [Description("relative area of each CN patch")]
+        public double patch_area
+        { get { return RelativeArea; } }
+
+        [Output]
+        [Description("humus C in each CN patch")]
+        public double[] patch_hum_c
+        { get { return hum_c; } }
+
+
 		public double[] fom_n         // nitrogen in FOM
 		{
 			get
@@ -2885,7 +2896,7 @@ public partial class SoilNitrogen
 		/// <param name="index">Parameter indication whether pond exists</param>
 		/// <param name="Parameters">Parameter data</param>
 		/// <returns>Temperature limiting factor (0-1)</returns>
-		private double SoilTempFactor(int layer, int index, BendingStickData Parameters)
+		private double SoilTempFactor(int layer, int index, BentStickData Parameters)
 		{
 			// + Assumptions
 			//     index = 0 for aerobic conditions, 1 for anaerobic

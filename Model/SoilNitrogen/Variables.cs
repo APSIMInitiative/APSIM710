@@ -502,7 +502,7 @@ public partial class SoilNitrogen
 	/// <summary>
 	/// Data for calculating the temperature effect on FOM mineralisation
 	/// </summary>
-	private BendingStickData TempFactorData_MinerFOM = new BendingStickData();
+	private BentStickData TempFactorData_MinerFOM = new BentStickData();
 
 
 	/// <summary>
@@ -626,7 +626,7 @@ public partial class SoilNitrogen
 	/// <summary>
 	/// Data to calculate the temperature effect on SOM mineralisation
 	/// </summary>
-	private BendingStickData TempFactorData_MinerSOM = new BendingStickData();
+	private BentStickData TempFactorData_MinerSOM = new BentStickData();
 
 	/// <summary>
 	/// Optimum temperature for OM mineralisation
@@ -693,7 +693,7 @@ public partial class SoilNitrogen
 	/// <summary>
 	/// Parameters to calculate the temperature effects on mineralisation - humus
 	/// </summary>
-	private BendingStickData TempFactorData_MinerSOM_Hum = new BendingStickData();
+	private BentStickData TempFactorData_MinerSOM_Hum = new BentStickData();
 
 	/// <summary>
 	/// Optimum temperature for mineralisation of humus
@@ -757,7 +757,7 @@ public partial class SoilNitrogen
 	/// <summary>
 	/// Parameters to calculate the temperature effects on mineralisation - biom
 	/// </summary>
-	private BendingStickData TempFactorData_MinerSOM_Biom = new BendingStickData();
+	private BentStickData TempFactorData_MinerSOM_Biom = new BentStickData();
 
 	/// <summary>
 	/// Optimum temperature for mineralisation of biom
@@ -828,7 +828,7 @@ public partial class SoilNitrogen
 	/// <summary>
 	/// Parameters to calculate the temperature effect on urea hydrolysis
 	/// </summary>
-	private BendingStickData TempFactorData_UHydrol = new BendingStickData();
+	private BentStickData TempFactorData_UHydrol = new BentStickData();
 
 	/// <summary>
 	/// Optimum temperature for urea hydrolisys
@@ -973,7 +973,7 @@ public partial class SoilNitrogen
 	/// <summary>
 	/// Parameters to calculate the temperature effect on nitrification
 	/// </summary>
-	private BendingStickData TempFactorData_Nitrif = new BendingStickData();
+	private BentStickData TempFactorData_Nitrif = new BentStickData();
 
 	/// <summary>
 	/// Optimum temperature for nitrification
@@ -1118,7 +1118,7 @@ public partial class SoilNitrogen
 	/// <summary>
 	/// Parameters to calculate the temperature effect on denitrification
 	/// </summary>
-	private BendingStickData TempFactorData_Denit = new BendingStickData();
+	private BentStickData TempFactorData_Denit = new BentStickData();
 
 	/// <summary>
 	/// Optimum temperature for denitrification
@@ -3312,6 +3312,48 @@ public partial class SoilNitrogen
 	}
 
 
+    private Dictionary<string, double[]> PatchesData = new Dictionary<string, double[]>();
+    
+    /// <summary>
+    /// Relative area of each internal patch
+    /// </summary>
+    [Output]
+    [Description("Data from internal CN patches")]
+    public double[][] CNPatch_no3
+    {
+        get
+        {
+            double[][] result = new double[Patch.Count][];
+            for (int k = 0; k < Patch.Count; k++)
+            {
+                //result[k] = new double[2];
+                result[k] = Patch[k].no3;
+//                result[k][1] = Patch[k].hum_c;
+            }
+            return result;
+        }
+    }
+
+    /// <summary>
+    /// Relative area of each internal patch
+    /// </summary>
+    [Output]
+    [Description("Data from internal CN patches")]
+    public double[][] CNPatch_hum_c
+    {
+        get
+        {
+            double[][] result = new double[Patch.Count][];
+            for (int k = 0; k < Patch.Count; k++)
+            {
+                //result[k] = new double[2];
+                result[k] = Patch[k].hum_c;
+                //                result[k][1] = Patch[k].hum_c;
+            }
+            return result;
+        }
+    }
+
 	#endregion
 
 	#endregion
@@ -3438,7 +3480,7 @@ public partial class SoilNitrogen
 	/// <summary>
 	/// The parameters to compute a exponential type function (used for example for temperature factor)
 	/// </summary>
-	private struct BendingStickData
+	private struct BentStickData
 	{
 		// this is a bending stick type data
 

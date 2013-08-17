@@ -746,7 +746,7 @@ public partial class SoilNitrogen
 
 		// Starting with the minimalist version. To be updated by Val's group to include a urine patch algorithm
 
-		// test for adding urine patches
+		// test for adding urine patches  -RCichota
 		// if VolumePerUrination = 0.0 then no patch will be added, otherwise a patch will be added (based on 'base' patch)
 		// assuming new PatchArea is passed as a fraction and this will be subtracted from original
 		// urea will be added to the top layer for now
@@ -760,7 +760,7 @@ public partial class SoilNitrogen
 			double oldArea = Patch[0].RelativeArea;
 			double newArea = oldArea * (1 - UrineAdded.AreaPerUrination);
 			Patch[0].RelativeArea = newArea;
-			int k = Patch.Count - 1;  // make it explicit for now to ease reading
+			int k = Patch.Count - 1;
 			Patch[k].RelativeArea = oldArea * UrineAdded.AreaPerUrination;
 			Patch[k].PatchName = "Patch" + k.ToString();
 			if (UrineAdded.Urea > EPSILON)
@@ -772,126 +772,101 @@ public partial class SoilNitrogen
 	}
 
 	/// <summary>
-	/// Get the information about new patch and add to patches
+	/// Gets and handles the information about new patch and add it to patch list
 	/// </summary>
 	/// <param name="PatchtoAdd">Patch data</param>
 	[EventHandler]
 	public void OnAddSoilCNPatch(AddSoilCNPatchType PatchtoAdd)
 	{
-		// +  Purpose: Handling the addition of patches
-
 		// data passed with this event:
 		//.Sender: the name of the module that raised this event
 		//.DepositionType: the type of deposition:
-		//  - ToAllPaddock: No patch is created, add N as given to all patches (homogeneous). It is the default;
-		//  - ToSpecificPatch: No patch is created, add N to given patches;
+        //  - Homogeneous: No patch is created, add stuff as given to all patches. It is the default;
+        //  - ToSpecificPatch: No patch is created, add stuff to given patches;
 		//		(recipient patch is given using its index or name; if not supplied, defaults to homogeneous)
-		//  - ToNewPatch: create new patch(es) based on existing patches;
+        //  - NewSinglePatch: create new patch based on an existing patch, add stuff to created patch;
 		//		(recipient or base patch is given using index or name; if not supplied, new patch will be based on the base/Patch[0])
-		//  - NewOverlappingPatch: create new patch(es), overlaps with all existing patches;
+        //  - NewOverlappingPatch: create new patches base on a series of existing patches, add stuff to created patches;
+        //      (recipient patches are given using index or name; patches are only created is area is larger than a minimum (minPatchArea);
+        //        new areas are propertional to existing patches; if existing area (sum of all recipient patches) is smaller than new patch area, and error is raised)
+        //  - OverlapAllPatches: create new patch(es), overlaps with all existing patches, add stuff to created patches;
 		//		(new patches are created only if their area is larger than a minimum (minPatchArea))
-		//.AddToPatches_id (AddToPatchesByIndex): the index of the existing patches to which urine will be added
-		//.AddToPatches_nm (AddToPatchesByName): the name of the existing patches to which urine will be added
+		//.AffectedPatches_id (AffectedPatchesByIndex): the index of the existing patches to which urine will be added
+		//.AffectedPatches_nm (AffectedPatchesByName): the name of the existing patches to which urine will be added
 		//.PatchArea: the relative area of the patch (0-1)
-		//.UrineWater: amount of water to add (per layer), not handled here
-		//.Urea: amount of urea to add (per layer) - Do we need other N forms?
-		// need to add name of patch...
+        //.PatchName: the name(s) of the patch)es) being created
+		//.Water: amount of water to add per layer (mm), not handled here
+		//.Urea: amount of urea to add per layer (kgN/ha)
+        //.Urea: amount of urea to add (per layer) - Do we need other N forms?
+        //.NH4: amount of ammonium to add per layer (kgN/ha)
+        //.NO3: amount of nitrate to add per layer (kgN/ha)
+        //.POX: amount of POx to add per layer (kgP/ha)
+        //.SO4: amount of SO4 to add per layer (kgS/ha)
+        //.Ashalk: ash amount to add per layer (mol/ha)
+        //.FOM_C.Pool1: amount of carbon in fom_pool1 to add per layer (kgC/ha)
+        //.FOM_C.Pool2: amount of carbon in fom_pool2 to add per layer (kgC/ha)
+        //.FOM_C.Pool3: amount of carbon in fom_pool3 to add per layer (kgC/ha)
+        //.FOM_N.Pool1: amount of nitrogen in fom_pool1 to add per layer (kgN/ha)
+        //.FOM_N.Pool2: amount of nitrogen in fom_pool2 to add per layer (kgN/ha)
+        //.FOM_N.Pool3: amount of nitrogen in fom_pool3 to add per layer (kgN/ha)
 
-		//double[] deltaUrea = new double[PatchtoAdd.Urea.Length];
 		double totalUrea = SumDoubleArray(PatchtoAdd.Urea);
-		List<int> PatchesToDelete = new List<int>();
+		List<int> PatchesToAddStuff = new List<int>();
 
-		if ((PatchtoAdd.DepositionType.ToLower() == "ToNewPatch".ToLower()) || (PatchtoAdd.DepositionType.ToLower() == "NewOverlappingPatch".ToLower()))
-		{
-			// get the list of patch id's to which urine will be added, and the area affected
-			int[] PatchIDs;
-			double AreaAffected = 0;
-			if (PatchtoAdd.DepositionType.ToLower() == "NewOverlappingPatch".ToLower())
-			{
-				PatchIDs = new int[Patch.Count - 1];
-				for (int k = 0; k < Patch.Count; k++)
-					PatchIDs[k] = k;
-				AreaAffected = 1.0;
-			}
-			else
-			{
-				PatchIDs = CheckPatchIDs(PatchtoAdd.AddToPatches_id, PatchtoAdd.AddToPatches_nm);
-				for (int i = 0; i < PatchIDs.Length; i++)
-					AreaAffected += Patch[PatchIDs[i]].RelativeArea;
-			}
+        if ((PatchtoAdd.DepositionType.ToLower() == "NewSinglePatch".ToLower()) ||
+            (PatchtoAdd.DepositionType.ToLower() == "NewOverlappingPatch".ToLower()) ||
+            (PatchtoAdd.DepositionType.ToLower() == "OverlapAllPatches".ToLower()))
+        { // New patch(es) will be added
+            AddNewCNPatch(PatchtoAdd); 
+        }
+        else if (PatchtoAdd.DepositionType.ToLower() == "ToSpecificPatch".ToLower())
+        {  // add stuff to selected patches, no new patch will be created
+           
+            // 1. get the list of patch id's to which stuff will be added
+                int[] PatchIDs = CheckPatchIDs(PatchtoAdd.AffectedPatches_id, PatchtoAdd.AffectedPatches_nm);
+                // 2. create the list of patches receiving stuff
+                for (int i = 0; i < PatchIDs.Length; i++)
+                    PatchesToAddStuff.Add(PatchIDs[i]);
+                // 3. add the stuff to patches listed
+                AddStuffToPatches(PatchesToAddStuff, PatchtoAdd);
+        }
+        else
+            // add urine to all existing patches, no new patch will be created
+            // 1. check whether N is being added, if not skip this
+            if (totalUrea > EPSILON)
+            {
+                // 2. Add deltaUrea to each patch
+                for (int k = 0; k < Patch.Count; k++)
+                    Patch[k].dlt_urea = PatchtoAdd.Urea;
 
-			for (int i = 0; i < PatchIDs.Length; i++)
-			{
-				// check the areas:
-				double OldPatch_oldArea = Patch[PatchIDs[i]].RelativeArea;
-				double NewPatch_area = (OldPatch_oldArea / AreaAffected) * PatchtoAdd.PatchArea;
-				double OldPatch_newArea = OldPatch_oldArea - NewPatch_area;
-				if (NewPatch_area < minPatchArea)
-				{  // area to create is too small, patch will not be created
-					Console.WriteLine(Clock.Today.ToString("dd MMMM yyyy") + "(Day of year=" 
-						+ Clock.Today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
-					Console.WriteLine("   attempt to create a new patch with area too small or negative (" 
-						+ NewPatch_area.ToString("#0.00#") + "). The patch will not be created");
-				}
-				else if (OldPatch_newArea < minPatchArea)
-				{  // negative or too small area, patch will be created but old one will be deleted
-					Console.WriteLine(Clock.Today.ToString("dd MMMM yyyy") + "(Day of year=" 
-						+ Clock.Today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
-					Console.WriteLine(" attempt to set the area of existing patch(" + PatchIDs[i].ToString() 
-						+ ") to a value too small or negative (" + OldPatch_newArea.ToString("#0.00#") 
-						+ "). The patch will be eliminated");
-
-					// mark old patch for deletion
-					PatchesToDelete.Add(PatchIDs[i]);
-
-					// create new patch by re-using the old one
-					soilCNPatch OldPatch = Patch[PatchIDs[i]];
-					Patch.Add(OldPatch);
-					int k = Patch.Count - 1;
-					Patch[k].PatchName = "Patch" + k.ToString();
-					Patch[k].dlt_urea = PatchtoAdd.Urea;
-					Console.WriteLine(" create new patch, with area = " + OldPatch_oldArea.ToString("#0.00#") + ", based on extint patch(" 
-						+ PatchIDs[i].ToString() + "), area = " + OldPatch_oldArea.ToString("#0.00#"));
-				}
-				else
-				{  // create new patch by spliting an existing one
-					SplitPatch(PatchIDs[i]);
-					Patch[PatchIDs[i]].RelativeArea = OldPatch_newArea;
-					int k = Patch.Count - 1;
-					Patch[k].RelativeArea = NewPatch_area;
-					Patch[k].PatchName = "Patch" + k.ToString();
-					Patch[k].dlt_urea = PatchtoAdd.Urea;
-					Console.WriteLine(Clock.Today.ToString("dd MMMM yyyy") + "(Day of year=" + Clock.Today.DayOfYear.ToString() 
-						+ "), SoilNitrogen.AddPatch:");
-					Console.WriteLine(" create new patch, with area = " + NewPatch_area.ToString("#0.00#") + ", based on existing patch(" 
-						+ PatchIDs[i].ToString() + ") - Old area = " + NewPatch_area.ToString("#0.00#") + ", new area = " 
-						+ NewPatch_area.ToString("#0.00#"));
-				}
-			}
-		}
-		else if (PatchtoAdd.DepositionType.ToLower() == "ToSpecificPatch".ToLower())
-		{
-			// add urine to selected patches, no new patch will be created
-			// 1. check whether N is being added, if not skip this
-			if (totalUrea > EPSILON)
-			{
-				// 2. get the list of patch id's to which urine will be added
-				int[] PatchIDs = CheckPatchIDs(PatchtoAdd.AddToPatches_id, PatchtoAdd.AddToPatches_nm);
-				// 3. Add deltaUrea to each patch
-				for (int i = 0; i < PatchIDs.Length; i++)
-					Patch[i].dlt_urea = PatchtoAdd.Urea;
-			}
-		}
-		else
-			// add urine to all existing patches, no new patch will be created
-			// 1. check whether N is being added, if not skip this
-			if (totalUrea > EPSILON)
-			{
-				// 2. Add deltaUrea to each patch
-				for (int k = 0; k < Patch.Count; k++)
-					Patch[k].dlt_urea = PatchtoAdd.Urea;
-			}
+                // 1. create the list of patches receiving stuff (all)
+                for (int k = 0; k < Patch.Count; k++)
+                    PatchesToAddStuff.Add(k);
+                // 2. add the stuff to patches listed
+                AddStuffToPatches(PatchesToAddStuff, PatchtoAdd);
+            }
 	}
+
+
+    /// <summary>
+    /// Gets the list of patches that will be merge into one, as defined by user
+    /// </summary>
+    /// <param name="MergeCNPatch">The list of CNPatches to merge</param>
+    [EventHandler]
+    public void OnMergeSoilCNPatch(MergeSoilCNPatchType MergeCNPatch)
+    {
+        if ((MergeCNPatch.AffectedPatches_id.Length > 1) | (MergeCNPatch.AffectedPatches_nm.Length > 1))
+        {
+            // get the list of patch id's to which stuff will be added
+            List<int> PatchesToMerge = new List<int>();
+            int[] PatchIDs = CheckPatchIDs(MergeCNPatch.AffectedPatches_id, MergeCNPatch.AffectedPatches_nm);
+            for (int i = 0; i < PatchIDs.Length; i++)
+                PatchesToMerge.Add(PatchIDs[i]);
+
+            // send the list to merger
+            AmalgamatePatches(PatchesToMerge);
+        }
+    }
 
 	/// <summary>
 	/// Comunicate other components that N amount in the soil has changed
