@@ -8,7 +8,6 @@ public class HeightFunction : Function
 {
     [Link(NamePath = "PotentialHeight")]
     public Function PotentialHeight = null;
-    bool ValueIncremented = false;
     double PotentialHeightYesterday = 0;
     double Height = 0;
     [Output]

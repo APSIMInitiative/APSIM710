@@ -1,4 +1,4 @@
-<Type version="31" name="Broccoli">
+<Type version="36" creator="Apsim 7.5-r3113" name="Broccoli">
   <MetaData>
     <UItype>CSUserInterface.EmptyUI</UItype>
     <IsCrop>Yes</IsCrop>
@@ -35,7 +35,6 @@
     </Cultivar>
     <Plant>
       <CropType type="text" description="CropType">Broccoli</CropType>
-      <Population />
       <Arbitrator>
         <ArbitrationOption type="text" description="ArbitrationOption">RelativeAllocation</ArbitrationOption>
         <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
@@ -150,6 +149,12 @@
       <Structure>
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <InitialiseStage type="text" description="InitialiseStage">Transplanting</InitialiseStage>
+        <MainStemFinalNodeNumberFunction name="MainStemFinalNodeNumber">
+          <MaximumMainStemNodeNumber type="text" description="Maximum number of mainstem leaves that the plant can produce">40</MaximumMainStemNodeNumber>
+          <Memo> 
+			This Function allows final node number to increase as primordia are initiated and it is fixed at the value or primordia that are initiated when initiation finishes.  
+			</Memo>
+        </MainStemFinalNodeNumberFunction>
         <PhaseLookupValue name="MainStemPrimordiaInitiationRate">
           <Start type="text" description="Start">Transplanting</Start>
           <End type="text" description="End">FloralInitiation</End>
@@ -194,12 +199,6 @@
         <AirTemperatureFunction name="ThermalTime" shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime">
           <XYPairs shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime/XYPairs" />
         </AirTemperatureFunction>
-        <PhaseLengthFinalNodeNumber name="MainStemFinalNodeNumber">
-          <MaximumMainStemNodeNumber type="text" description="Maximum number of mainstem leaves that the plant can produce">40</MaximumMainStemNodeNumber>
-          <Memo> 
-			This Function allows final node number to increase as primordia are initiated and it is fixed at the value or primordia that are initiated when initiation finishes.  
-			</Memo>
-        </PhaseLengthFinalNodeNumber>
       </Structure>
       <Leaf>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>

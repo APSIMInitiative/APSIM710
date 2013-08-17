@@ -18,7 +18,7 @@ public class Structure
     [Link(NamePath = "MainStemNodeAppearanceRate")]
     public Function MainStemNodeAppearanceRate = null;
     [Link(NamePath = "MainStemFinalNodeNumber")]
-    public Function MainStemFinalNodeNumber = null;
+    public Function MainStemFinalNodeNumberFunction = null;
     [Link(NamePath = "Height")]
     public Function HeightModel = null;
     [Link(NamePath = "BranchingRate")]
@@ -58,7 +58,6 @@ public class Structure
         {
             _Population = value;
         }
-
     }
     [Output]
     [Description("Number of mainstem units per plant")]
@@ -70,11 +69,7 @@ public class Structure
     {
         get 
         {
-            double OrigPop = Population * PrimaryBudNo;
-            if (DensityFactor == null)
-             return OrigPop;
-            else
-                return OrigPop *(1- DensityFactor.Value);
+           return Population * PrimaryBudNo;
         }
     }
     [Output]
@@ -84,11 +79,7 @@ public class Structure
     {
         get
         {
-            //double n = 0;
-            //foreach (LeafCohort L in Leaf.Leaves)
-            //    n = Math.Max(n, L._Population);
-            //return n;
-            return _TotalStemPopn;
+             return _TotalStemPopn;
         }
         set
         {
@@ -130,7 +121,7 @@ public class Structure
     { 
         get 
         { 
-            return MainStemFinalNodeNumber.Value; 
+            return MainStemFinalNodeNumberFunction.Value; 
         } 
     } 
     [Output]
@@ -193,7 +184,7 @@ public class Structure
        
             double StartOfDayMainStemNodeNo = (int)MainStemNodeNo;
             
-            MainStemFinalNodeNumber.UpdateVariables("");
+            MainStemFinalNodeNumberFunction.UpdateVariables("");
             MainStemPrimordiaNo = Math.Min(MainStemPrimordiaNo, MaximumNodeNumber);
             
             if (MainStemNodeNo > 0)  //If statement needs to go
@@ -211,7 +202,13 @@ public class Structure
                 _TotalStemPopn = MainStemPopn;
             }
 
-            //Increment total stem number if main-stem node number has increased by one.
+            //Change plant population if density function is present
+            if (DensityFactor != null)
+            {
+                Population *= DensityFactor.Value;
+            }
+
+            //Increment total stem population if main-stem node number has increased by one.
             if ((MainStemNodeNo - StartOfDayMainStemNodeNo) >= 1.0)
             {
                 _TotalStemPopn += BranchingRate * MainStemPopn;
@@ -254,8 +251,8 @@ public class Structure
     public void OnInitialised()
     {
         string initial = "yes";
-        MainStemFinalNodeNumber.UpdateVariables(initial);
-        MaximumNodeNumber = MainStemFinalNodeNumber.Value;
+        MainStemFinalNodeNumberFunction.UpdateVariables(initial);
+        MaximumNodeNumber = MainStemFinalNodeNumberFunction.Value;
     }
     [EventHandler]
     public void OnSow(SowPlant2Type Sow)

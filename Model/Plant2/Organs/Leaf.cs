@@ -217,9 +217,6 @@ public class Leaf : BaseOrgan, AboveGround
     } 
     
     //Canopy State variables
-    //[Output("Height")]
-    //[Units("mm")]
-   // protected double Height = 0;
     [Output]
     [Units("m^2/m^2")]
     public double LAI

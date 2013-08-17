@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-[Description("Returns the curreent InPhase tempature accumulation")]
+[Description("Returns the thermal time accumulation from the current phase in phenology")]
 
-public   class InPhaseTemperatureFunction: Function
+public   class InPhaseTtFunction: Function
 {
     [Link]
     Phenology Phenology = null;

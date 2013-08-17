@@ -1,4 +1,4 @@
-<Type version="36" creator="Apsim 7.5-r3106" name="Oat2">
+<Type version="36" creator="Apsim 7.5-r3113" name="Oat2">
   <MetaData>
     <UItype type="text" description="UItype">CSUserInterface.EmptyUI</UItype>
     <IsCrop type="text" description="IsCrop">Yes</IsCrop>
@@ -37,7 +37,6 @@
     </Cultivar>
     <Plant>
       <CropType type="text" description="CropType">Oats</CropType>
-      <Population />
       <Arbitrator>
         <ArbitrationOption type="text" description="ArbitrationOption">PrioritythenRelativeAllocation</ArbitrationOption>
         <Memo> This arbitrator uses paritioning rules based on the SIRUS type models.
@@ -51,7 +50,7 @@
           <PhaseLookup>
             <PhaseLookupValue name="SoilTemperature">
               <Start type="text" description="Start">Sowing</Start>
-              <End type="text" description="End">FloralInitiation</End>
+              <End type="text" description="End">TerminalSpikelet</End>
               <SoilTemperatureFunction name="ThermalTime">
                 <XYPairs>
                   <XY>0 0</XY>
@@ -61,7 +60,7 @@
               </SoilTemperatureFunction>
             </PhaseLookupValue>
             <PhaseLookupValue name="AirTemperature">
-              <Start type="text" description="Start">FloralInitiation</Start>
+              <Start type="text" description="Start">TerminalSpikelet</Start>
               <End type="text" description="End">HarvestRipe</End>
               <AirTemperatureFunction name="ThermalTime">
                 <XYPairs>
@@ -103,9 +102,41 @@
           <ShootRate type="text" description="Growing deg day increase with depth for coleoptile">4</ShootRate>
           <AirTemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
         </EmergingPhase>
-        <GenericPhase name="Inductive">
+        <GenericPhase name="Vegetative">
           <Start type="text" description="Start stage name">Emergence</Start>
-          <End type="text" description="End stage name">FloralInitiation</End>
+          <End type="text" description="End stage name">VernalisationSaturation</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">1</Value>
+          </Constant>
+          <MultiplyFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime">
+            <PhaseLookup shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/PhaseLookup">
+              <PhaseLookupValue name="SoilTemperature" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/PhaseLookup/SoilTemperature">
+                <SoilTemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/PhaseLookup/SoilTemperature/ThermalTime">
+                  <XYPairs shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/PhaseLookup/SoilTemperature/ThermalTime/XYPairs" />
+                </SoilTemperatureFunction>
+              </PhaseLookupValue>
+              <PhaseLookupValue name="AirTemperature" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/PhaseLookup/AirTemperature">
+                <AirTemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/PhaseLookup/AirTemperature/ThermalTime">
+                  <XYPairs shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/PhaseLookup/AirTemperature/ThermalTime/XYPairs" />
+                </AirTemperatureFunction>
+              </PhaseLookupValue>
+            </PhaseLookup>
+            <AddFunction name="DroughtPhenologyAcelleration" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration">
+              <Memo shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Memo" />
+              <Constant name="One" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/One" />
+              <MultiplyFunction name="Stress" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress">
+                <Memo shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/Memo" />
+                <Constant name="StressResponseCoefficient" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/StressResponseCoefficient" />
+                <LinearInterpolationFunction name="StressFactor" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/StressFactor">
+                  <XYPairs shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/StressFactor/XYPairs" />
+                </LinearInterpolationFunction>
+              </MultiplyFunction>
+            </AddFunction>
+          </MultiplyFunction>
+        </GenericPhase>
+        <GenericPhase name="EarlyReproductive">
+          <Start type="text" description="Start stage name">VernalisationSaturation</Start>
+          <End type="text" description="End stage name">TerminalSpikelet</End>
           <LinearInterpolationFunction name="Target">
             <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
             <XYPairs>
@@ -142,13 +173,13 @@
             </AddFunction>
           </MultiplyFunction>
         </GenericPhase>
-        <LeafAppearancePhase name="FloralInitiationToFlagLeaf">
-          <Start>FloralInitiation</Start>
+        <LeafAppearancePhase name="PseudoStemExtension">
+          <Start>TerminalSpikelet</Start>
           <End>FlagLeaf</End>
           <RemainingLeaves type="text" description="RemainingLeaves">0</RemainingLeaves>
           <AirTemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
         </LeafAppearancePhase>
-        <GenericPhase name="FlagLeafToFlowering">
+        <GenericPhase name="EarDevelopment">
           <Start>FlagLeaf</Start>
           <End>Flowering</End>
           <Constant name="Target">
@@ -156,7 +187,7 @@
           </Constant>
           <AirTemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
-        <GenericPhase name="FloweringToGrainFilling">
+        <GenericPhase name="EarlyGrainFilling">
           <Start>Flowering</Start>
           <End>StartGrainFill</End>
           <Constant name="Target">
@@ -193,7 +224,7 @@
           </Constant>
           <AirTemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
-        <GenericPhase name="MaturityToHarvestRipe">
+        <GenericPhase name="Ripening">
           <Start>Maturity</Start>
           <End>HarvestRipe</End>
           <Constant name="Target">
@@ -216,7 +247,7 @@
         <PhaseLookup name="MainStemPrimordiaInitiationRate">
           <PhaseLookupValue name="MainStemPrimordiaInitiationRate">
             <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">FloralInitiation</End>
+            <End type="text" description="End">TerminalSpikelet</End>
             <DivideFunction name="NodeInitiationRateFunction">
               <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values </Memo>
               <VariableReference name="Phyllochron">
@@ -265,9 +296,6 @@
               <XY>1 1</XY>
             </XYPairs>
           </LinearInterpolationFunction>
-          <Constant name="MainStemFinalNodeNumber">
-            <Value type="text" description="Value">34</Value>
-          </Constant>
         </HeightFunction>
         <MultiplyFunction name="BranchingRate">
           <Memo>Multiplies the values of the children of this node</Memo>
@@ -341,7 +369,7 @@
             </MultiplyFunction>
           </AddFunction>
         </MultiplyFunction>
-        <PhaseLengthFinalNodeNumber name="MainStemFinalNodeNumber">
+        <MainStemFinalNodeNumberFunction name="MainStemFinalNodeNumber">
           <MaximumMainStemNodeNumber type="text" description="Maximum number of mainstem leaves that the plant can produce">40</MaximumMainStemNodeNumber>
           <Memo> 
 			This Function allows final node number to increase as primordia are initiated and it is fixed at the value or primordia that are initiated when initiation finishes.  
@@ -365,7 +393,7 @@
               </LinearInterpolationFunction>
             </MaximumFunction>
             <OnEventFunction name="AtTerminalSpikelet">
-              <SetEvent type="text" description="SetEvent">FloralInitiation</SetEvent>
+              <SetEvent type="text" description="SetEvent">TerminalSpikelet</SetEvent>
               <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
               <Constant name="PreEventValue">
                 <Value type="text" description="Value">20</Value>
@@ -381,7 +409,7 @@
               </LinearInterpolationFunction>
             </OnEventFunction>
           </MinimumFunction>
-        </PhaseLengthFinalNodeNumber>
+        </MainStemFinalNodeNumberFunction>
       </Structure>
       <ReproductiveOrgan name="Grain">
         <MaximumSize type="text" description="MaximumSize">0.042</MaximumSize>
@@ -402,12 +430,12 @@
           <Value>0.12</Value>
         </Constant>
         <StageBasedInterpolation name="MinimumNConc">
-          <Stages type="text" description="Stages">Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe</Stages>
-          <Values type="text" description="Values">0.006           0.006          0.006             0.006      0.006       0.006            0.006          0.006    0.006</Values>
+          <Stages type="text" description="Stages">Germination Emergence VernalisationSaturation TerminalSpikelet FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe</Stages>
+          <Values type="text" description="Values">0.006           0.006          0.006                             0.006             0.006      0.006       0.006            0.006          0.006    0.006</Values>
         </StageBasedInterpolation>
         <StageBasedInterpolation name="MaximumNConc">
-          <Stages type="text" description="Stages">Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe</Stages>
-          <Values type="text" description="Values">0.022           0.022          0.022             0.022      0.022       0.022            0.022          0.022    0.022</Values>
+          <Stages type="text" description="Stages">Germination Emergence VernalisationSaturation TerminalSpikelet FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe</Stages>
+          <Values type="text" description="Values">0.022           0.022          0.022                             0.022             0.022      0.022       0.022            0.022          0.022    0.022</Values>
         </StageBasedInterpolation>
         <PhaseLookup name="NFillingRate">
           <PhaseLookupValue name="EarlyGrainGrowth">
@@ -921,7 +949,7 @@
           <PhaseLookup name="ThermalTime">
             <PhaseLookupValue name="SoilTemperature">
               <Start type="text" description="Start">Sowing</Start>
-              <End type="text" description="End">FloralInitiation</End>
+              <End type="text" description="End">TerminalSpikelet</End>
               <SoilTemperatureFunction name="ThermalTime">
                 <XYPairs>
                   <XY>0 0</XY>
@@ -931,7 +959,7 @@
               </SoilTemperatureFunction>
             </PhaseLookupValue>
             <PhaseLookupValue name="AirTemperature">
-              <Start type="text" description="Start">FloralInitiation</Start>
+              <Start type="text" description="Start">TerminalSpikelet</Start>
               <End type="text" description="End">HarvestRipe</End>
               <AirTemperatureFunction name="ThermalTime">
                 <XYPairs>
@@ -984,7 +1012,7 @@
           <PhaseLookup name="ThermalTime">
             <PhaseLookupValue name="SoilTemperature">
               <Start type="text" description="Start">Sowing</Start>
-              <End type="text" description="End">FloralInitiation</End>
+              <End type="text" description="End">TerminalSpikelet</End>
               <SoilTemperatureFunction name="ThermalTime">
                 <XYPairs>
                   <XY>0 0</XY>
@@ -994,7 +1022,7 @@
               </SoilTemperatureFunction>
             </PhaseLookupValue>
             <PhaseLookupValue name="AirTemperature">
-              <Start type="text" description="Start">FloralInitiation</Start>
+              <Start type="text" description="Start">TerminalSpikelet</Start>
               <End type="text" description="End">HarvestRipe</End>
               <AirTemperatureFunction name="ThermalTime">
                 <XYPairs>
@@ -1054,7 +1082,7 @@
           <PhaseLookup name="ThermalTime">
             <PhaseLookupValue name="SoilTemperature">
               <Start type="text" description="Start">Sowing</Start>
-              <End type="text" description="End">FloralInitiation</End>
+              <End type="text" description="End">TerminalSpikelet</End>
               <SoilTemperatureFunction name="ThermalTime">
                 <XYPairs>
                   <XY>0 0</XY>
@@ -1064,7 +1092,7 @@
               </SoilTemperatureFunction>
             </PhaseLookupValue>
             <PhaseLookupValue name="AirTemperature">
-              <Start type="text" description="Start">FloralInitiation</Start>
+              <Start type="text" description="Start">TerminalSpikelet</Start>
               <End type="text" description="End">HarvestRipe</End>
               <AirTemperatureFunction name="ThermalTime">
                 <XYPairs>
@@ -1225,12 +1253,12 @@
       </GenericAboveGroundOrgan>
       <Summary />
       <StageBasedInterpolation name="StageCode">
-        <Stages>Sowing      Germination     Emergence  FloralInitiation FlagLeaf Flowering  StartGrainFill EndGrainFill   Maturity  HarvestRipe </Stages>
-        <Values>   1               2              3            4             5            6            7             8           9      10</Values>
+        <Stages>Sowing      Germination     Emergence  VernalisationSaturation TerminalSpikelet FlagLeaf Flowering  StartGrainFill EndGrainFill   Maturity  HarvestRipe </Stages>
+        <Values>   1               2              3            4                       5            6            7             8           9      10</Values>
       </StageBasedInterpolation>
       <StageBasedInterpolation name="ZadokStage">
-        <Stages>Sowing      Germination     Emergence  FloralInitiation FlagLeaf Flowering  StartGrainFill EndGrainFill   Maturity  HarvestRipe </Stages>
-        <Values>   0               5              10            30             37       65          70             85           90      90</Values>
+        <Stages>Sowing      Germination     Emergence  VernalisationSaturation TerminalSpikelet FlagLeaf Flowering  StartGrainFill EndGrainFill   Maturity  HarvestRipe </Stages>
+        <Values>   0               5              10            25                    30             37       65          70             85           90      90</Values>
       </StageBasedInterpolation>
       <CompositeBiomass name="AboveGround">
         <Property>Organs[AboveGround].Live</Property>

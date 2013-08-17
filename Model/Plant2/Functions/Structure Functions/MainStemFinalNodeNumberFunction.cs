@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 
-[Description("This Function uses the Jamieson and Brooking phenology model to determine the final main-stem leaf number of a cereal plant")]
-public class PhaseLengthFinalNodeNumber : Function
+[Description("This Function determines final leaf number for a crop.  If no childern are present final leaf number will be the same as primordia number, increasing at the same rate and reaching a fixed value when primordia initiation stops or when maximum leaf number is reached.  However, if a child function called 'FinalLeafNumber' is present that function will determine the increase and fixing of final leaf number")]
+public class MainStemFinalNodeNumberFunction : Function
 {
- //Fixme.  This class needs to be given a better name
-    
-    #region Setup
     [Link]
     Structure Structure = null;
     
@@ -17,11 +14,9 @@ public class PhaseLengthFinalNodeNumber : Function
 
     double _FinalNodeNumber = 0;
     
-    //Class Parameters
     [Param]
     public double MaximumMainStemNodeNumber = 0;
 
-    
     public override void UpdateVariables(string initial)
     {
         if (initial == "yes")
@@ -35,15 +30,10 @@ public class PhaseLengthFinalNodeNumber : Function
         }
     } 
 
- #endregion
-    
-
     public void Clear()
     {
         _FinalNodeNumber = 0;
     }
-
-
 
     [Output]
     public override double Value
@@ -53,5 +43,4 @@ public class PhaseLengthFinalNodeNumber : Function
             return _FinalNodeNumber;
         }
     }
-    
 }
