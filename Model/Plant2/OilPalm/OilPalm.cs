@@ -359,7 +359,7 @@ public class OilPalm
         Bunches[B-3].FemaleFraction *= (1.0 - FFFStressImpact.Value);
         Bunches[B-2].FemaleFraction *= (1.0 - FFFStressImpact.Value);
         Bunches[B-1].FemaleFraction *= (1.0 - FFFStressImpact.Value);
-        Bunches[B].FemaleFraction *= (1.0 - FFFStressImpact.Value);
+        Bunches[B+0].FemaleFraction *= (1.0 - FFFStressImpact.Value);
         Bunches[B+1].FemaleFraction *= (1.0 - FFFStressImpact.Value);
         Bunches[B+2].FemaleFraction *= (1.0 - FFFStressImpact.Value);
         Bunches[B+3].FemaleFraction *= (1.0 - FFFStressImpact.Value);
