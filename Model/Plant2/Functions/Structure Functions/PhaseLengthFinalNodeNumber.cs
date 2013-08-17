@@ -21,24 +21,6 @@ public class PhaseLengthFinalNodeNumber : Function
     [Param]
     public double MaximumMainStemNodeNumber = 0;
 
-   // [EventHandler]
-   // public void OnInitialised()
-   // {
-        //if (FinalLeafNumber == null)
-        //    _FinalNodeNumber = MaximumMainStemNodeNumber;
-        //else
-        //    _FinalNodeNumber = FinalLeafNumber.Value;
-   // }
-
-  // public override void SetFinalNodeNumber()
-   // {
-        //if (FinalLeafNumber == null)
-   //         _FinalNodeNumber = MaximumMainStemNodeNumber;
-       // else
-       //     _FinalNodeNumber = FinalLeafNumber.Value;
-   // }
-
-    
     
     public override void UpdateVariables(string initial)
     {

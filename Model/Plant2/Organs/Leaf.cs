@@ -217,9 +217,9 @@ public class Leaf : BaseOrgan, AboveGround
     } 
     
     //Canopy State variables
-    [Output("Height")]
-    [Units("mm")]
-    protected double Height = 0;
+    //[Output("Height")]
+    //[Units("mm")]
+   // protected double Height = 0;
     [Output]
     [Units("m^2/m^2")]
     public double LAI
@@ -618,7 +618,7 @@ public class Leaf : BaseOrgan, AboveGround
         foreach (LeafCohort L in Leaves)
             L.DoActualGrowth(_ThermalTime);
 
-        Height = Structure.Height;
+        Structure.UpdateHeight();
 
         PublishNewCanopyEvent();
 
@@ -1095,8 +1095,8 @@ public class Leaf : BaseOrgan, AboveGround
             Canopy.sender = Plant.Name;
             Canopy.lai = (float)LAI;
             Canopy.lai_tot = (float)(LAI + LAIDead);
-            Canopy.height = (float)Height;
-            Canopy.depth = (float)Height;
+            Canopy.height = (float)Structure.Height;
+            Canopy.depth = (float)Structure.Height;
             Canopy.cover = (float)CoverGreen;
             Canopy.cover_tot = (float)CoverTot;
             New_Canopy.Invoke(Canopy);

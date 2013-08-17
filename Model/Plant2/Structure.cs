@@ -157,6 +157,8 @@ public class Structure
     }
     
     //Utility Variables
+    [Output("Height")]
+    [Units("mm")]
     public double Height 
     {
         get
@@ -221,6 +223,10 @@ public class Structure
                 double DeltaPopn = Math.Min(ProportionStemMortality * (TotalStemPopn - MainStemPopn), TotalStemPopn - Population);
                 _TotalStemPopn -= DeltaPopn;
             }
+    }
+    public void UpdateHeight()
+    {
+        HeightModel.UpdateVariables("");
     }
     public void ResetStemPopn()
     {
