@@ -99,7 +99,7 @@ public class LeafCohort
     private double SenescedFrac = 0;
     private double DetachedFrac = 0;
     private double _ExpansionStress = 0;
-    public double _Population = 0;
+    public double CohortPopulation = 0; //Number of leaves in this cohort
     public double CellDivisionStressFactor = 1;
     public double CellDivisionStressAccumulation = 0;
     public double CellDivisionStressDays = 0;
@@ -210,14 +210,14 @@ public class LeafCohort
             else
                 //Fixme.  This function is not returning the correct values.  Use commented out line
                 //return MaxArea / Population;
-                return MaxLiveArea / _Population;
+                return MaxLiveArea / CohortPopulation;
         }
     }
     public double LivePopulation
     {
         get
         {
-            return _Population;
+            return CohortPopulation;
         }
     }
     public double Size
@@ -225,7 +225,7 @@ public class LeafCohort
         get
         {
             if (IsAppeared)
-                return LiveArea / _Population;
+                return LiveArea / CohortPopulation;
             else
                 return 0;
         }
@@ -495,13 +495,9 @@ public class LeafCohort
     }
     public void DoAppearance(double LeafFraction)
     {
-        // _Population will equal 0 when the APSIM infrastructure creates this object.
-        // It will already be set if PLANT creates this object and population is passed
-        // in as an argument in the constructor below. Confusing isn't it?
         IsAppeared = true;
-        if (_Population == 0)
-            //_Population = Structure.Population * Structure.PrimaryBudNo;
-            _Population = Structure.MainStemPopn;
+        if (CohortPopulation == 0)
+            CohortPopulation = Structure.TotalStemPopn;
         MaxArea = MaxAreaFunction.Value * CellDivisionStressFactor * LeafFraction;//Reduce potential leaf area due to the effects of stress prior to appearance on cell number 
         GrowthDuration = GrowthDurationFunction.Value * LeafFraction;
         LagDuration = LagDurationFunction.Value;
@@ -520,10 +516,9 @@ public class LeafCohort
         //if (Area > MaxArea)  FIXMEE HEB  This error trap should be activated but throws errors in chickpea so that needs to be fixed first.
         //    throw new Exception("Initial Leaf area is greater that the Maximum Leaf Area.  Check set up of initial leaf area values to make sure they are not to large and check MaxArea function and CellDivisionStressFactor Function to make sure the values they are returning will not be too small.");
         Age = Area / MaxArea * GrowthDuration;
-        LiveArea = Area * _Population;
+        LiveArea = Area * CohortPopulation;
         Live.StructuralWt = LiveArea / ((SpecificLeafAreaMax + SpecificLeafAreaMin)/2) * StructuralFraction;
         Live.StructuralN = Live.StructuralWt * InitialNConc;
-        //SpecificLeafAreaMax = SpecificLeafAreaMaxFunction.Value;
         FunctionalNConc = (CriticalNConcFunction.Value - (MinimumNConcFunction.Value * StructuralFraction)) * (1 / (1 - StructuralFraction));
         LuxaryNConc = (MaximumNConcFunction.Value - CriticalNConcFunction.Value);
         Live.MetabolicWt = (Live.StructuralWt * 1 / StructuralFraction) - Live.StructuralWt;
@@ -539,16 +534,21 @@ public class LeafCohort
             DMRetranslocationFactor = DMRetranslocationFactorFunction.Value;
         else DMRetranslocationFactor = 0;
     }
-    virtual public void DoPotentialGrowth(double TT, double StemMortality)
+    virtual public void DoPotentialGrowth(double TT)
     {
-        //Reduce StemNumber
-            double FractionStemMortality = 0;
-            if (StemMortality > 0)
+        //Reduce leaf Population in Cohort due to plant mortality
+        double StartPopulation = CohortPopulation;
+        if (Structure.ProportionPlantMortality > 0)
             {
-            double DeltaPopn = Math.Min(StemMortality * (_Population - Structure.MainStemPopn), _Population - Structure.Population);
-            FractionStemMortality = DeltaPopn / _Population;
-            _Population -= DeltaPopn;
+                CohortPopulation -= CohortPopulation * Structure.ProportionPlantMortality;
             }
+        //Reduce leaf Population in Cohort  due to branch mortality
+        if ((Structure.ProportionBranchMortality > 0) && (CohortPopulation > Structure.MainStemPopn))  //Ensure we there are some branches.
+            {
+                double deltaPopn = Math.Min(CohortPopulation * Structure.ProportionBranchMortality, CohortPopulation - Structure.MainStemPopn); //Ensure we are not killing more branches that the cohort has.
+                CohortPopulation -= CohortPopulation * Structure.ProportionBranchMortality;
+            }
+        double PropnStemMortality = (StartPopulation - CohortPopulation) / StartPopulation;
                     
         //Calculate Accumulated Stress Factor for reducing potential leaf size
         if (IsNotAppeared && (CellDivisionStress != null))
@@ -577,18 +577,14 @@ public class LeafCohort
 
             CoverAbove = Leaf.CoverAboveCohort(Rank); // Calculate cover above leaf cohort (unit??? FIXME-EIT)
             ShadeInducedSenRate = ShadeInducedSenescenceRateFunction.Value;
-            SenescedFrac = FractionSenescing(_ThermalTime, FractionStemMortality);
+            SenescedFrac = FractionSenescing(_ThermalTime, PropnStemMortality);
   
             // Doing leaf mass growth in the cohort
             Biomass LiveBiomass = new Biomass(Live);
 
             //Set initial leaf status values
             LeafStartArea = LiveArea;
-           
-            //RFZ I think here Hamish wants a copy of the initial values at start, however all this is doing is assigning a reference
-            //LiveStart = Live;
             LiveStart = new Biomass(Live);
-
 
             //If the model allows reallocation of senescent DM do it.
             if ((DMReallocationFactor > 0) && (SenescedFrac > 0))
@@ -608,9 +604,6 @@ public class LeafCohort
                 LeafStartMetabolicDMReallocationSupply = LeafStartNonStructuralDMReallocationSupply = LeafStartDMReallocationSupply = 0;
             }
 
-
-
-
             LeafStartDMRetranslocationSupply = LiveBiomass.NonStructuralWt * DMRetranslocationFactor;
             //Nretranslocation is that which occurs before uptake (senessed metabolic N and all non-structuralN)
             LeafStartMetabolicNReallocationSupply = SenescedFrac * LiveBiomass.MetabolicN * NReallocationFactor;
@@ -620,8 +613,6 @@ public class LeafCohort
             LeafStartNonStructuralNRetranslocationSupply = Math.Max(0.0, (LiveBiomass.NonStructuralN * NRetranslocationFactor) - LeafStartNonStructuralNReallocationSupply);
             LeafStartNReallocationSupply = NReallocationSupply;
             LeafStartNRetranslocationSupply = NRetranslocationSupply;
-
-        
 
             //zero locals variables
             StructuralDMDemand = 0;
@@ -807,7 +798,7 @@ public class LeafCohort
     {
         double BranchNo = Structure.TotalStemPopn - Structure.MainStemPopn;
         double leafSizeDelta = SizeFunction(Age + TT) - SizeFunction(Age); //mm2 of leaf expanded in one day at this cohort (Today's minus yesterday's Area/cohort)
-        double growth = _Population * leafSizeDelta; // Daily increase in leaf area for that cohort position in a per m2 basis (mm2/m2/day)
+        double growth = CohortPopulation * leafSizeDelta; // Daily increase in leaf area for that cohort position in a per m2 basis (mm2/m2/day)
         return growth;                              // FIXME-EIT Unit conversion to m2/m2 could happen here and population could be considered at higher level only (?)
     }
     /// <summary>

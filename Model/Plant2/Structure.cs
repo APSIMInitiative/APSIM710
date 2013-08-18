@@ -27,8 +27,8 @@ public class Structure
     public Function ShadeInducedBranchMortality = null;
     [Link(NamePath = "DroughtInducedBranchMortality")]
     public Function DroughtInducedBranchMortality = null;
-    [Link(NamePath = "DensityFactor", IsOptional = true)]
-    public Function DensityFactor = null;
+    [Link(NamePath = "PlantMortality", IsOptional = true)]
+    public Function PlantMortality = null;
     #endregion
 
     #region Class Fields
@@ -40,6 +40,9 @@ public class Structure
     public double _ThermalTime = 0;  
     double _Population = 0;
     double _TotalStemPopn = 0;
+    double _ProportionPlantMortality = 0;
+    double _ProportionStemMortality = 0;
+    double _ProportionTotalStemMortality = 0;
     public double MaximumNodeNumber = 0;
     #endregion
 
@@ -104,7 +107,7 @@ public class Structure
             double n = 0;
             foreach (LeafCohort L in Leaf.Leaves)
                 if (L.IsAppeared)
-                    n += L._Population;
+                    n += L.CohortPopulation;
             return n / Population;
         }
     }
@@ -164,14 +167,40 @@ public class Structure
             return Branching.Value;
         }
     }
-    public double ProportionStemMortality
+    public double ProportionBranchMortality
     {
         get
         {
-            return DroughtInducedBranchMortality.Value + ShadeInducedBranchMortality.Value;
+            return _ProportionStemMortality;
+        }
+        set
+        {
+            _ProportionStemMortality = value;
         }
     }
-   #endregion
+    public double ProportionPlantMortality
+    {
+        get
+        {
+            return _ProportionPlantMortality;
+        }
+        set
+        {
+            _ProportionPlantMortality = value;
+        }
+    }
+   /* public double ProportionTotalStemMortality
+    {
+        get
+        {
+            return _ProportionTotalStemMortality;
+        }
+        set
+        {
+            _ProportionTotalStemMortality = value;
+        }
+    }*/
+    #endregion
 
     #region Functions
     public void DoPotentialGrowth()
@@ -196,30 +225,42 @@ public class Structure
                MainStemNodeNo = Math.Min(MainStemNodeNo, MainStemFinalNodeNo);
             }
 
+        //Fixme  This is redundant now and could be removed
             //Set stem population at emergence
             if (Phenology.OnDayOf(InitialiseStage))
             {
-                _TotalStemPopn = MainStemPopn;
+                TotalStemPopn = MainStemPopn;
             }
 
-            //Change plant population if density function is present
-            if (DensityFactor != null)
-            {
-                Population *= DensityFactor.Value;
-            }
+            double InitialStemPopn = TotalStemPopn;
 
             //Increment total stem population if main-stem node number has increased by one.
             if ((MainStemNodeNo - StartOfDayMainStemNodeNo) >= 1.0)
             {
-                _TotalStemPopn += BranchingRate * MainStemPopn;
+                TotalStemPopn += BranchingRate * MainStemPopn;
             }
 
-            //Reduce stem number incase of mortality
-            if (ProportionStemMortality > 0)
+            //Reduce plant population incase of mortality
+            if (PlantMortality != null)
             {
-                double DeltaPopn = Math.Min(ProportionStemMortality * (TotalStemPopn - MainStemPopn), TotalStemPopn - Population);
-                _TotalStemPopn -= DeltaPopn;
+                double DeltaPopn = Population * PlantMortality.Value;
+                Population -= DeltaPopn;
+                TotalStemPopn -= DeltaPopn;
+                ProportionPlantMortality = PlantMortality.Value;
             }
+        
+            //Reduce stem number incase of mortality
+            double PropnMortality = 0;
+            if (DroughtInducedBranchMortality != null)
+                PropnMortality = DroughtInducedBranchMortality.Value;
+            if (ShadeInducedBranchMortality != null)
+                PropnMortality += ShadeInducedBranchMortality.Value;
+            {
+                double DeltaPopn = Math.Min(PropnMortality * (TotalStemPopn - MainStemPopn), TotalStemPopn - Population);
+                TotalStemPopn -= DeltaPopn;
+                ProportionBranchMortality = PropnMortality;
+            }
+            //ProportionTotalStemMortality = (InitialStemPopn - TotalStemPopn) / InitialStemPopn;
     }
     public void UpdateHeight()
     {
@@ -227,7 +268,7 @@ public class Structure
     }
     public void ResetStemPopn()
     {
-        _TotalStemPopn = MainStemPopn;
+        TotalStemPopn = MainStemPopn;
     }
     #endregion
 
@@ -245,7 +286,7 @@ public class Structure
     {
         MainStemNodeNo = 0;
         MainStemPrimordiaNo = 0;
-        _TotalStemPopn = 0;
+        TotalStemPopn = 0;
     }
     [EventHandler]
     public void OnInitialised()

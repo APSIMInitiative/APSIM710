@@ -20,11 +20,14 @@ public class StageBasedInterpolation : Function
     [Param(IsOptional=true)]
     bool Proportional = true;
 
+
     [Output]
     public override double Value
     {
         get
         {
+
+            
             if (StageCodes == null)
             {
                 StageCodes = new int[Stages.Length];
@@ -33,8 +36,14 @@ public class StageBasedInterpolation : Function
                     Phase p = Phenology.PhaseStartingWith(Stages[i]);
                     StageCodes[i] = Phenology.IndexOfPhase(p.Name) + 1;
                 }
-            }
+           }
 
+            //Fixme.  For some reason this error message won't cast properly??
+            if (Values.Length != StageCodes.Length)
+            {
+                throw new Exception("Something is a miss here.  Specifically, the number of values in your StageCode function don't match the number of stage names.  Sort it out numb nuts!!");
+            }
+       
             for (int i = 0; i < StageCodes.Length; i++)
             {
                 if (Phenology.Stage <= StageCodes[i])

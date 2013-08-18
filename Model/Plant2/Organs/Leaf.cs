@@ -211,7 +211,7 @@ public class Leaf : BaseOrgan, AboveGround
             double n = 0;
             foreach (LeafCohort L in Leaves)
                 if ((L.IsAppeared) && (!L.Finished))
-                    n += L._Population;
+                    n += L.CohortPopulation;
             return n / Structure.Population;
         }
     } 
@@ -542,7 +542,7 @@ public class Leaf : BaseOrgan, AboveGround
                 throw new Exception("Trying to initialse new cohorts prior to InitialStage.  Check the InitialStage parameter on the leaf object and the parameterisation of NodeInitiationRate.  Your NodeInitiationRate is triggering a new leaf cohort before leaves have been initialised.");
 
             LeafCohort NewLeaf = InitialLeaves[0].Clone();
-            NewLeaf._Population = 0;
+            NewLeaf.CohortPopulation = 0;
             NewLeaf.Age = 0;
             NewLeaf.Rank = Math.Truncate(Structure.MainStemNodeNo);
             NewLeaf.Area = 0.0;
@@ -563,7 +563,7 @@ public class Leaf : BaseOrgan, AboveGround
                 throw new Exception("MainStemNodeNumber exceeds the number of leaf cohorts initialised.  Check primordia parameters to make sure primordia are being initiated fast enough and for long enough");
             int i = AppearingNode -1;
             Leaves[i].Rank = AppearingNode;
-            Leaves[i]._Population = Structure.TotalStemPopn;//BranchNumber;
+            Leaves[i].CohortPopulation = Structure.TotalStemPopn;
             Leaves[i].Age = CohortAge; 
             Leaves[i].DoAppearance(FinalLeafFraction);
             if (NewLeaf != null)
@@ -575,7 +575,7 @@ public class Leaf : BaseOrgan, AboveGround
         
         foreach (LeafCohort L in Leaves)
         {
-            L.DoPotentialGrowth(_ThermalTime, Structure.ProportionStemMortality);
+            L.DoPotentialGrowth(_ThermalTime);
             if ((L.IsFullyExpanded == false) && (NextExpandingLeaf == false))
             {
                 NextExpandingLeaf = true;
@@ -599,7 +599,7 @@ public class Leaf : BaseOrgan, AboveGround
             CohortsInitialised = true;
             if (Leaf.Area > 0)//If initial cohorts have an area set the are considered to be appeared on day of emergence so we do appearance and count up the appeared nodes on the first day
             {
-                Leaf._Population = Structure.TotalStemPopn;
+                Leaf.CohortPopulation = Structure.TotalStemPopn;
 
                 Leaf.DoInitialisation();
                 Structure.MainStemNodeNo += 1.0;
@@ -1081,8 +1081,9 @@ public class Leaf : BaseOrgan, AboveGround
         Live.Clear();
         Dead.Clear();
         Leaves.Clear();
-        InitialiseCohorts();
         Structure.ResetStemPopn();
+        InitialiseCohorts();
+        //Structure.ResetStemPopn();
     }
     protected virtual void PublishNewCanopyEvent()
     {
