@@ -156,8 +156,13 @@ void SimCreator::ConvertConModule(std::string RunTitle,
                                   ApsimControlFile::ModuleInstance& moduleInstance,
                                   ostream& out)
    {
+   // quick hack for add class types to the xml header for a component.
+   string classType;
+   if (Str_i_Eq(moduleInstance.moduleName, "input") && Str_i_Eq(moduleInstance.instanceName, "met"))
+      classType = " class=\"Input.Metfile\"";   
+   
    out << "   <component name=\"" << moduleInstance.instanceName << "\"";
-   out << " executable = \"" << moduleInstance.dllFileName << "\">\n";
+   out << " executable = \"" << moduleInstance.dllFileName << "\"" << classType << ">\n";
    ApsimSettings settings;
    string st;
    settings.read("DotNetcomponents|" + moduleInstance.moduleName, st);
