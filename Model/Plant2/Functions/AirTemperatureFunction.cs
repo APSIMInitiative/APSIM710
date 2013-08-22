@@ -9,8 +9,6 @@ public class AirTemperatureFunction : Function
     [Link]
     private XYPairs XYPairs = null;   // Temperature effect on Growth Interpolation Set
 
-    [Input]
-    public NewMetType MetData;
     #endregion
 
     [Output]
@@ -20,7 +18,7 @@ public class AirTemperatureFunction : Function
         
         get
         {
-            return Linint3hrlyTemp(MetData.maxt, MetData.mint, XYPairs);
+            return Linint3hrlyTemp(MetData.MaxT, MetData.MinT, XYPairs);
         }
     }
     static public double Linint3hrlyTemp(double tmax, double tmin, XYPairs ttFn)

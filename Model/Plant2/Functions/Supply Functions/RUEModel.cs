@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using CSGeneral;
+using ModelFramework;
 
 public class RUEModel
 {
@@ -26,10 +27,13 @@ public class RUEModel
     [Link]
     Function Fvpd = null;
 
+    [Link]
+    public MetFile MetData = null;
+
 
     #region Class Data Members
-    [Input]
-    public NewMetType MetData;
+    //[Input]
+    //public NewMetType MetData;
 
     [Event]
     public event NewPotentialGrowthDelegate NewPotentialGrowth;
@@ -43,10 +47,10 @@ public class RUEModel
         {
             const double SVPfrac = 0.66;
 
-            double VPDmint = MetUtility.svp((float)MetData.mint) - MetData.vp;
+            double VPDmint = MetUtility.svp((float)MetData.MinT) - MetData.vp;
             VPDmint = Math.Max(VPDmint, 0.0);
 
-            double VPDmaxt = MetUtility.svp((float)MetData.maxt) - MetData.vp;
+            double VPDmaxt = MetUtility.svp((float)MetData.MaxT) - MetData.vp;
             VPDmaxt = Math.Max(VPDmaxt, 0.0);
 
             return SVPfrac * VPDmaxt + (1 - SVPfrac) * VPDmint;

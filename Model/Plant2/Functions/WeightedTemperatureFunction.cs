@@ -12,8 +12,8 @@ public class WeightedTemperatureFunction : Function
     [Param]
     private double MaximumTemperatureWeighting = 0.0;
 
-    [Input]
-    public NewMetType MetData;
+    //[Input]
+    //public NewMetType MetData;
 
     #endregion
 
@@ -23,7 +23,7 @@ public class WeightedTemperatureFunction : Function
     {
         get
         {
-            double Tav = MaximumTemperatureWeighting * MetData.maxt + (1 - MaximumTemperatureWeighting) * MetData.mint;
+            double Tav = MaximumTemperatureWeighting * MetData.MaxT + (1 - MaximumTemperatureWeighting) * MetData.MinT;
             return XYPairs.ValueIndexed(Tav);
         }
     }

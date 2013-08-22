@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+using ModelFramework;
 
 class Summary
 {
@@ -14,14 +14,13 @@ class Summary
     [Link(IsOptional=true)]
     Leaf Leaf = null;
 
-
-    [Input]
-    private DateTime Today = DateTime.Now;  // assigned a value to stop warning msg.
+    [Link]
+    Clock Clock = null;
 
     [EventHandler]
     public void OnPhaseChanged(PhaseChangedType PhaseChange)
     {
-        Console.WriteLine(Today.ToString("d MMMM yyyy") + " - " + Phenology.CurrentPhase.Start);
+        Console.WriteLine(Clock.Today.ToString("d MMMM yyyy") + " - " + Phenology.CurrentPhase.Start);
         if (Leaf != null)
         {
             Console.WriteLine("                            LAI = " + Leaf.LAI.ToString("f2") + " (m^2/m^2)");

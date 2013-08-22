@@ -19,7 +19,7 @@ abstract public class Phase
     public Phenology Phenology = null;
 
     [Link(IsOptional = true)]
-    public Function ThermalTime = null;
+    public Function ThermalTime = null;  //FIXME this should be called something to represent rate of progress as it is sometimes used to represent other things that are not thermal time.
 
     [Link(IsOptional = true)]
     public Function Stress = null;

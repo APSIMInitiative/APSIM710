@@ -8,18 +8,13 @@ class PhotoperiodDeltaFunction : Function
 {
     [Param]
     private double Twilight = 0;
-    [Input]
-    private double Latitude = 0;
-    [Input]
-    public double Day = 0;
-
     [Output]
     public override double Value
     {
         get
         {
-            double PhotoperiodToday = MathUtility.DayLength(Day, Twilight, Latitude);
-            double PhotoperiodYesterday = MathUtility.DayLength(Day - 1, Twilight, Latitude);
+            double PhotoperiodToday = MathUtility.DayLength(Clock.day, Twilight, MetData.Latitude);
+            double PhotoperiodYesterday = MathUtility.DayLength(Clock.day - 1, Twilight, MetData.Latitude);
             double PhotoperiodDelta = PhotoperiodToday - PhotoperiodYesterday;
             return PhotoperiodDelta;
         }

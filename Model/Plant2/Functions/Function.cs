@@ -15,5 +15,11 @@ abstract public class Function
     [Link]
     public Component My = null;
 
+    [Link]
+    public MetFile MetData = null;
+
+    [Link]
+    public Clock Clock = null;
+
     public string Name { get { return My.Name; } }
 }

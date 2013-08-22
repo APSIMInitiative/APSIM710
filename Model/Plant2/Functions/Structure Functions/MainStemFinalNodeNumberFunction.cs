@@ -26,7 +26,7 @@ public class MainStemFinalNodeNumberFunction : Function
            if (FinalLeafNumber == null)
             _FinalNodeNumber = Math.Min(MaximumMainStemNodeNumber, Structure.MainStemPrimordiaNo);
            else
-                _FinalNodeNumber = FinalLeafNumber.Value;
+                _FinalNodeNumber = Math.Min(FinalLeafNumber.Value, MaximumMainStemNodeNumber);
         }
     } 
 

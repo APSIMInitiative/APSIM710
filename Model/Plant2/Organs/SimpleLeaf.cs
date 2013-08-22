@@ -10,8 +10,6 @@ class SimpleLeaf : BaseOrgan
     [Link(IsOptional = true)]
     Structure structure = null;
 
- 
- 
     private double _WaterAllocation;
     private double EP = 0;
     private double PEP = 0;
@@ -21,8 +19,8 @@ class SimpleLeaf : BaseOrgan
     [Event]
     public event NewCanopyDelegate New_Canopy;
 
-    [Input]
-    public NewMetType MetData = null;
+    //[Input]
+    //public NewMetType MetData = null;
 
     [Param(Name = "Height")]
     private double _Height;         // Height of the canopy (mm) 
@@ -99,7 +97,7 @@ class SimpleLeaf : BaseOrgan
     {
         get
         {
-            double Tav = (MetData.maxt + MetData.mint) / 2.0;
+            double Tav = (MetData.MaxT + MetData.MinT) / 2.0;
             return FT.ValueIndexed(Tav);
         }
     }
@@ -110,10 +108,10 @@ class SimpleLeaf : BaseOrgan
         {
             const double SVPfrac = 0.66;
 
-            double VPDmint = MetUtility.svp(MetData.mint) - MetData.vp;
+            double VPDmint = MetUtility.svp(MetData.MinT) - MetData.vp;
             VPDmint = Math.Max(VPDmint, 0.0);
 
-            double VPDmaxt = MetUtility.svp(MetData.maxt) - MetData.vp;
+            double VPDmaxt = MetUtility.svp(MetData.MaxT) - MetData.vp;
             VPDmaxt = Math.Max(VPDmaxt, 0.0);
 
             double VPD = SVPfrac * VPDmaxt + (1.0 - SVPfrac) * VPDmint;

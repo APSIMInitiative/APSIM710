@@ -42,8 +42,10 @@ public class Phenology
     [Output]
     public double Stage = 1;
 
-    [Input]
-    public DateTime Today;
+    //[Input]
+    //public DateTime Today;
+    [Link]
+    Clock Clock = null;
 
     private DateTime SowDate;
 
@@ -127,7 +129,7 @@ public class Phenology
             if (SowDate == null)
                 return 0;
             else
-                return (Today - SowDate).Days;
+                return (Clock.Today - SowDate).Days;
         }
     }
 
@@ -136,7 +138,7 @@ public class Phenology
     {
         Phases.Clear();
         JustInitialised = true;
-        SowDate = Today;
+        SowDate = Clock.Today;
         CurrentlyOnFirstDayOfPhase = "";
         CurrentPhaseIndex = 0;
         foreach (object ChildObject in My.ChildrenAsObjects)

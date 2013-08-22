@@ -9,11 +9,7 @@ class PhotoperiodFunction : Function
 {
     [Param]
     private double Twilight = 0;
-    [Input]
-    private double Latitude = 0;
-    [Input]
-    public DateTime Today = DateTime.Now;  // assigned a value to stop warning msg.
-
+   
     [Link]
     private Paddock MyPaddock = null;
 
@@ -30,10 +26,10 @@ class PhotoperiodFunction : Function
                 if (CCPP > 0.0)
                     return Convert.ToDouble(val);
                 else
-                    return MathUtility.DayLength(Today.DayOfYear, Twilight, Latitude);
+                    return MathUtility.DayLength(Clock.day_of_year, Twilight, MetData.Latitude);
             }
             else
-                return MathUtility.DayLength(Today.DayOfYear, Twilight, Latitude);
+                return MathUtility.DayLength(Clock.day_of_year, Twilight, MetData.Latitude);
         }
     }
 

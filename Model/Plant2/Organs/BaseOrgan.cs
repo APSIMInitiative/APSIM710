@@ -1,10 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ModelFramework;
 
 
 public class BaseOrgan : Organ
 {
+    [Link]
+    public Clock Clock = null;
+
+    [Link]
+    public MetFile MetData = null;
+    
     public override double DMDemand { get { return 0; } }
     public override DMSupplyType DMSupply { get { return new DMSupplyType(); } }
     public override double DMSinkCapacity { get { return 0; } }
@@ -35,9 +42,11 @@ public class BaseOrgan : Organ
     public override double MaxNconc { get { return 0; } }
     public override double MinNconc { get { return 0; } }
 
+    
+    
     // Provide some variables for output until we get a better REPORT component that
     // can do structures e.g. NSupply.Fixation
-
+    
     [Output]
     [Units("g/m^2")]
     public double DMSupplyPhotosynthesis { get { return DMSupply.Photosynthesis; } }

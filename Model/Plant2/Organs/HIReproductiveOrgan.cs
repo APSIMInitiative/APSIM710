@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ModelFramework;
 
 class HIReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
 {
@@ -19,11 +20,6 @@ class HIReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     [Link]
     Function NConc = null;
 
-    [Input]
-    private int Day = 0;
-
-    [Input]
-    private int Year = 0;
     private double DailyGrowth = 0;
 
     [Output]
@@ -45,8 +41,8 @@ class HIReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     {
         Harvesting.Invoke();
 
-        DateTime Today = new DateTime(Year, 1, 1);
-        Today = Today.AddDays(Day - 1);
+        DateTime Today = new DateTime(Clock.year, 1, 1);
+        Today = Today.AddDays(Clock.day - 1);
         string Indent = "     ";
         string Title = Indent + Today.ToString("d MMMM yyyy") + "  - Harvesting " + Name + " from " + Plant.Name;
         double YieldDW = (Live.Wt + Dead.Wt);

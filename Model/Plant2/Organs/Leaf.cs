@@ -11,8 +11,7 @@ public class Leaf : BaseOrgan, AboveGround
     //Input Parameters
     [Link]
     public LeafCohort[] InitialLeaves;
-    [Input]
-    public NewMetType MetData;
+
     //Class Links
     [Link]
     public Plant Plant = null;
@@ -270,7 +269,7 @@ public class Leaf : BaseOrgan, AboveGround
     {
         get
         {
-            return CoverGreen * MetData.radn;
+            return CoverGreen * MetData.Radn;
         }
     }
     [Output]
@@ -1055,9 +1054,9 @@ public class Leaf : BaseOrgan, AboveGround
     [EventHandler]
     public void OnKillLeaf(KillLeafType KillLeaf)
     {
-        DateTime Today = DateUtility.JulianDayNumberToDateTime(Convert.ToInt32(MetData.today));
+        //DateTime Today = DateUtility.JulianDayNumberToDateTime(Convert.ToInt32(MetData.today));
         string Indent = "     ";
-        string Title = Indent + Today.ToString("d MMMM yyyy") + "  - Killing " + KillLeaf.KillFraction + " of leaves on " + Plant.Name;
+        string Title = Indent + Clock.Today.ToString("d MMMM yyyy") + "  - Killing " + KillLeaf.KillFraction + " of leaves on " + Plant.Name;
         Console.WriteLine("");
         Console.WriteLine(Title);
         Console.WriteLine(Indent + new string('-', Title.Length));
@@ -1069,9 +1068,9 @@ public class Leaf : BaseOrgan, AboveGround
     [EventHandler]
     public void OnCut()
     {
-        DateTime Today = DateUtility.JulianDayNumberToDateTime(Convert.ToInt32(MetData.today));
+        //DateTime Today = DateUtility.JulianDayNumberToDateTime(Convert.ToInt32(MetData.today));
         string Indent = "     ";
-        string Title = Indent + Today.ToString("d MMMM yyyy") + "  - Cutting " + Name + " from " + Plant.Name;
+        string Title = Indent + Clock.Today.ToString("d MMMM yyyy") + "  - Cutting " + Name + " from " + Plant.Name;
         Console.WriteLine("");
         Console.WriteLine(Title);
         Console.WriteLine(Indent + new string('-', Title.Length));

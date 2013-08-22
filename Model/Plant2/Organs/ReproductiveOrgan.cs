@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ModelFramework;
 
 class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
 {
@@ -19,8 +20,6 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     protected Function NFillingRate = null;
     [Link]
     protected Function MaxNConcDailyGrowth = null;
-    [Input]
-    public DateTime Today = DateTime.Now;  // assigned a value to stop warning msg.
     [Link(IsOptional = true)]
     protected Function NitrogenDemandSwitch = null;
     [Link]
@@ -104,7 +103,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
             Harvesting.Invoke();
 
         string Indent = "     ";
-        string Title = Indent + Today.ToString("d MMMM yyyy") + "  - Harvesting " + Name + " from " + Plant.Name;
+        string Title = Indent + Clock.Today.ToString("d MMMM yyyy") + "  - Harvesting " + Name + " from " + Plant.Name;
         double YieldDW = (Live.Wt + Dead.Wt);
 
         Console.WriteLine("");
@@ -130,7 +129,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     public void OnCut()
     {
         string Indent = "     ";
-        string Title = Indent + Today.ToString("d MMMM yyyy") + "  - Cutting " + Name + " from " + Plant.Name;
+        string Title = Indent + Clock.Today.ToString("d MMMM yyyy") + "  - Cutting " + Name + " from " + Plant.Name;
         Console.WriteLine("");
         Console.WriteLine(Title);
         Console.WriteLine(Indent + new string('-', Title.Length));
