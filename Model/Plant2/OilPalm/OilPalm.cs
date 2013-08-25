@@ -712,6 +712,20 @@ public class OilPalm
         }
 
     }
+    [Output]
+    public double Frond17Area
+    {
+        get
+        {
+            //note frond 17 is 18th frond because they ignore the spear leaf
+            if (Fronds.Count > 18)
+                return Fronds[Fronds.Count - 18].Area;
+            else
+                return 0;
+
+        }
+
+    }
 
     [Output]
     public double FrondMass

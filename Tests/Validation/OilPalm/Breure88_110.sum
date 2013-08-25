@@ -1,0 +1,1198 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.5
+Title                  = Breure88_110
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component              "Palm Management" = %apsim%\Model\Manager.dll
+   Component                 "Calculations" = %apsim%\Model\Manager.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                      "OilPalm" = %apsim%\Model\Plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/02/1996
+     Simulation end date   = 31/12/2009
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\Validation\OilPalm\Hargy.met
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        Age
+        year
+        Plant_Status
+        StemMass
+        FrondMass
+        LAI
+        CumFronds
+        FrondNumber
+        CumulativeFrondNumber
+        StructureMainStemNodeNo
+        Interception
+        cover_green
+        PEP
+        EP
+        sw_dep()
+        PotSWUptake()
+        SWUptake()
+        FW
+        Fn
+        DltDM
+        RootDepth
+        CumulativeBunchNumber
+        CumBunches
+        CumulativeYield
+        CumYield
+        SLA
+        ReproductiveGrowthFraction
+        CarbonStress
+        RootMass
+        FrondNConc
+        RootNConc
+        StemNConc
+        BunchNConc
+        PlantN
+        FrondN
+        StemN
+        RootN
+        BunchN
+        surfaceom_wt
+        surfaceom_cover
+        UnderstoryNFixation
+        NO3()
+        NH4()
+        FrondArea
+        RelativeDevelopmentalRateValue
+        nit_tot()
+        oc(1)
+        oc(2)
+        oc(3)
+        biom_c(1)
+        DiffuseLightFraction
+
+     Output file = Breure88_110.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     trouble with date format in file
+     Component name: paddock.operations
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+           1-apr  Prepare      fertiliser apply amount= 36.7 (kg/ha), type= urea_N (), depth= 10 (mm)
+           1-jun  Prepare      fertiliser apply amount= 36.7 (kg/ha), type= urea_N (), depth= 10 (mm)
+          1/1/01  Prepare      apply amount= 36.7 (kg/ha), type= urea_N (), depth= 10 (mm)
+           1-apr  Prepare      fertiliser apply amount= 36.7 (kg/ha), type= urea_N (), depth= 10 (mm)
+           1-apr  Prepare      fertiliser apply amount= 36.7 (kg/ha), type= urea_N (), depth= 10 (mm)
+           1-apr  Prepare      fertiliser apply amount= 36.7 (kg/ha), type= urea_N (), depth= 10 (mm)
+           1-apr  Prepare      fertiliser apply amount= 36.7 (kg/ha), type= urea_N (), depth= 10 (mm)
+           1-apr  Prepare      fertiliser apply amount= 36.7 (kg/ha), type= urea_N (), depth= 10 (mm)
+           1-apr  Prepare      fertiliser apply amount= 36.7 (kg/ha), type= urea_N (), depth= 10 (mm)
+           1-apr  Prepare      fertiliser apply amount= 36.7 (kg/ha), type= urea_N (), depth= 10 (mm)
+           1-apr  Prepare      fertiliser apply amount= 36.7 (kg/ha), type= urea_N (), depth= 10 (mm)
+           1-apr  Prepare      fertiliser apply amount= 36.7 (kg/ha), type= urea_N (), depth= 10 (mm)
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.95
+           depth for calculating available soil water =    1000.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Palm Management Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     ppsm = 110/10000
+     if today = date('01/02/1996') then
+         oilpalm sow population = ppsm, depth = 200, cultivar = dami, maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant
+     endif
+     
+     SECTION:- init
+     plant_population = 0
+     END of rules
+     
+     Manager creating a new local real variable : plant_population = 0.00000
+
+------- Calculations Initialisation -------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     offset = 0
+     cumfronds = 0
+     cumbunches = 0
+     bunchoffset = 0
+     cumyield = 0
+     yieldoffset = 0
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     if oilpalm.plant_status = 'alive' then
+     if today < date('01/11/2004') then
+        offset = oilpalm.cumulativefrondnumber
+     endif
+     cumfronds = oilpalm.cumulativefrondnumber - offset
+     if today < date('01/04/2002') then
+        bunchoffset = oilpalm.cumulativebunchnumber
+        yieldoffset = oilpalm.cumulativeyield
+     endif
+     cumbunches = oilpalm.cumulativebunchnumber - bunchoffset
+     cumyield = oilpalm.cumulativeyield - yieldoffset
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : offset = 0.00000
+     Manager creating a new local real variable : cumfronds = 0.00000
+     Manager creating a new local real variable : cumbunches = 0.00000
+     Manager creating a new local real variable : bunchoffset = 0.00000
+     Manager creating a new local real variable : cumyield = 0.00000
+     Manager creating a new local real variable : yieldoffset = 0.00000
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.050  0.300  0.540  0.620  0.540  0.700  0.613  0.800
+          100.-  300.  0.050  0.400  0.610  0.670  0.610  0.750  0.340  0.800
+          300.-  600.  0.050  0.230  0.430  0.520  0.430  1.200  0.048  0.800
+          600.-  900.  0.050  0.230  0.430  0.520  0.430  1.200  0.000  0.800
+          900.- 1200.  0.050  0.230  0.430  0.520  0.430  1.200  0.000  0.800
+         1200.- 2000.  0.050  0.230  0.430  0.520  0.430  1.200  0.000  0.300
+         2000.- 2500.  0.050  0.230  0.430  0.520  0.430  1.200  0.000  0.000
+         2500.- 3000.  0.050  0.230  0.430  0.520  0.430  1.200  0.000  0.000
+         3000.- 3500.  0.050  0.230  0.430  0.520  0.430  1.200  0.000  0.000
+         3500.- 4000.  0.050  0.230  0.430  0.520  0.430  1.200  0.000  0.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      30.00      24.00      24.00       8.00
+          100.-  300.      80.00      42.00      42.00      12.00
+          300.-  600.      69.00      60.00      60.00      27.00
+          600.-  900.      69.00      60.00      60.00      27.00
+          900.- 1200.      69.00      60.00      60.00      27.00
+         1200.- 2000.     184.00     160.00     160.00      72.00
+         2000.- 2500.     115.00     100.00     100.00      45.00
+         2500.- 3000.     115.00     100.00     100.00      45.00
+         3000.- 3500.     115.00     100.00     100.00      45.00
+         3500.- 4000.     115.00     100.00     100.00      45.00
+          ---------------------------------------------------------
+               Totals     961.00     806.00     806.00     353.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.18       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              68.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            5.00 (mm^0.5)
+            CONA:                     5.00 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     mass =     24000.00
+             exceeds upper limit of    20000.00
+     Component name: paddock.surface organic matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          OilPalm   Oilpalm      24000.0 10560.0   301.7     0.0   1.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   1.0
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     no3ppm =     310.0000
+             exceeds upper limit of    300.0000
+     Component name: paddock.Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.30  3.80  217.00    0.00    0.00
+             2     6.55  2.40   30.00    0.00    0.00
+             3     6.80  0.35    5.00    0.00    0.00
+             4     6.80  0.25    5.00    0.00    0.00
+             5     6.80  0.25    0.00    0.00    0.00
+             6     6.80  0.25    6.00    1.20    0.00
+             7     6.80  0.25    6.00    1.20    0.00
+             8     6.80  0.25    6.00    1.20    0.00
+             9     6.80  0.25    6.00    1.20    0.00
+            10     6.80  0.25    6.00    1.20    0.00
+          ------------------------------------------------
+           Totals              287.00    6.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      24826.7  2482.7  1773.3   221.7   286.7     9.6
+             2      35453.7  3545.4   546.3    68.3   246.7     8.2
+             3      12575.0  1257.5    25.0     3.1   197.0     6.6
+             4       8999.1   899.9     0.9     0.1   157.3     5.2
+             5       8999.1   899.9     0.9     0.1   125.6     4.2
+             6      23997.6  2399.8     2.4     0.3    68.9     2.3
+             7      14998.5  1499.9     1.5     0.2    47.4     1.6
+             8      14998.5  1499.9     1.5     0.2    32.6     1.1
+             9      14998.5  1499.9     1.5     0.2    22.4     0.7
+            10      14998.5  1499.9     1.5     0.2    15.4     0.5
+          ---------------------------------------------------------
+           Totals  174845.3 17484.5  2354.7   294.3  1200.0    40.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : ppsm = 0.01100
+     Manager sending message :- oilpalm sow  population = 0.01100, depth = 200, cultivar = dami, maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant
+1 April 1996(Day of year=92), operations: 
+      Sending apply message to fertiliser
+1 April 1996(Day of year=92), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 June 1996(Day of year=153), operations: 
+      Sending apply message to fertiliser
+1 June 1996(Day of year=153), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 April 1997(Day of year=91), operations: 
+      Sending apply message to fertiliser
+1 April 1997(Day of year=91), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 June 1997(Day of year=152), operations: 
+      Sending apply message to fertiliser
+1 June 1997(Day of year=152), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 April 1998(Day of year=91), operations: 
+      Sending apply message to fertiliser
+1 April 1998(Day of year=91), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 June 1998(Day of year=152), operations: 
+      Sending apply message to fertiliser
+1 June 1998(Day of year=152), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 April 1999(Day of year=91), operations: 
+      Sending apply message to fertiliser
+1 April 1999(Day of year=91), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 June 1999(Day of year=152), operations: 
+      Sending apply message to fertiliser
+1 June 1999(Day of year=152), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 April 2000(Day of year=92), operations: 
+      Sending apply message to fertiliser
+1 April 2000(Day of year=92), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 June 2000(Day of year=153), operations: 
+      Sending apply message to fertiliser
+1 June 2000(Day of year=153), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 April 2001(Day of year=91), operations: 
+      Sending apply message to fertiliser
+1 April 2001(Day of year=91), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 June 2001(Day of year=152), operations: 
+      Sending apply message to fertiliser
+1 June 2001(Day of year=152), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 April 2002(Day of year=91), operations: 
+      Sending apply message to fertiliser
+1 April 2002(Day of year=91), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 June 2002(Day of year=152), operations: 
+      Sending apply message to fertiliser
+1 June 2002(Day of year=152), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 April 2003(Day of year=91), operations: 
+      Sending apply message to fertiliser
+1 April 2003(Day of year=91), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 June 2003(Day of year=152), operations: 
+      Sending apply message to fertiliser
+1 June 2003(Day of year=152), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 April 2004(Day of year=92), operations: 
+      Sending apply message to fertiliser
+1 April 2004(Day of year=92), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 June 2004(Day of year=153), operations: 
+      Sending apply message to fertiliser
+1 June 2004(Day of year=153), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 April 2005(Day of year=91), operations: 
+      Sending apply message to fertiliser
+1 April 2005(Day of year=91), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 June 2005(Day of year=152), operations: 
+      Sending apply message to fertiliser
+1 June 2005(Day of year=152), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 April 2006(Day of year=91), operations: 
+      Sending apply message to fertiliser
+1 April 2006(Day of year=91), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 June 2006(Day of year=152), operations: 
+      Sending apply message to fertiliser
+1 June 2006(Day of year=152), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 April 2007(Day of year=91), operations: 
+      Sending apply message to fertiliser
+1 April 2007(Day of year=91), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 June 2007(Day of year=152), operations: 
+      Sending apply message to fertiliser
+1 June 2007(Day of year=152), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 April 2008(Day of year=92), operations: 
+      Sending apply message to fertiliser
+1 April 2008(Day of year=92), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 June 2008(Day of year=153), operations: 
+      Sending apply message to fertiliser
+1 June 2008(Day of year=153), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 April 2009(Day of year=91), operations: 
+      Sending apply message to fertiliser
+1 April 2009(Day of year=91), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+1 June 2009(Day of year=152), operations: 
+      Sending apply message to fertiliser
+1 June 2009(Day of year=152), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        36.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+31 December 2009(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.
+
