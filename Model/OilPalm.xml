@@ -196,11 +196,11 @@
           </XYPairs>
           <Memo></Memo>
         </LinearInterpolationFunction>        
-        <LinearInterpolationFunction name="ExtinctionCoeff">
+        <LinearInterpolationFunction name="DirectExtinctionCoeff">
          <XProperty type="text" description="XProperty">Population</XProperty>
          <XYPairs>
-           <XY>0.0056 0.2</XY>
-           <XY>0.0186 0.4</XY>
+           <XY>0.0056 0.175</XY>
+           <XY>0.0186 0.35</XY>
          </XYPairs>
          <Memo>Extinction coefficient is derived from data found in
          Breure CJ (1988) The effect of different planting densities
@@ -210,10 +210,18 @@
          span the range of the data measured from the density
          trial.</Memo>
        </LinearInterpolationFunction>
-       
+        <LinearInterpolationFunction name="DiffuseExtinctionCoeff">
+         <XProperty type="text" description="XProperty">Population</XProperty>
+         <XYPairs>
+           <XY>0.0056 0.225</XY>
+           <XY>0.0186 0.45</XY>
+         </XYPairs>
+         <Memo>Diffuse K value is 33% higher for diffuse light as calculated using data from OPSIM paper (fig 1)</Memo>
+       </LinearInterpolationFunction>       
        <Constant name="RUE">
-         <Value type="text" description="Value">1.35</Value>
-       </Constant>
+         <Value type="text" description="Value">1.22</Value>
+         <Memo>Assume RUE = 1.35 for clear sky and sky is usually 30% diffuse and so = 1.35 * (1-0.33*(1-0.66))</Memo>
+         </Constant>
        <Constant name="RootFrontVelocity">
          <Value type="text" description="Value">30.0</Value>
          <Memo>From Carr, M.K.V.(2011) The water relations and irrigation requirements of oil palm (elaeis guineensis): a review. Experimental Agriculture 47(4):629-652.</Memo>

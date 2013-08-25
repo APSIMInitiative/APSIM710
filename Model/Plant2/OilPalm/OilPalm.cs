@@ -61,6 +61,8 @@ public class OilPalm
     double[] dlayer = null;
     [Input]
     double[] no3 = null;
+    [Input] double latitude = 0.0;
+    [Input] int day = 0;
     [Input]
     double rain = 0.0;
     [Input]
@@ -128,7 +130,9 @@ public class OilPalm
     [Link]
     public Function FrondMaxArea = null;
     [Link]
-    public Function ExtinctionCoeff = null;
+    public Function DirectExtinctionCoeff = null;
+    [Link]
+    public Function DiffuseExtinctionCoeff = null;
     [Link]
     public Function ExpandingFronds = null;
     [Link]
@@ -458,7 +462,12 @@ public class OilPalm
     }
     private void DoGrowth()
     {
-        DltDM = RUE.Value * Fn * Radn * cover_green*FW;
+        double RUEclear = RUE.Value;
+        double RUEcloud = RUE.Value * (1 + 0.33 * cover_green);
+        double WF = DiffuseLightFraction;
+        double RUEadj = WF*WF*RUEcloud+(1-WF*WF)*RUEclear;
+        DltDM = RUEadj * Fn * Radn * cover_green*FW;
+
         double DMAvailable = DltDM;
 
         RootGrowth = (DltDM * RootFraction.Value);
@@ -847,7 +856,10 @@ public class OilPalm
     {
         get
         {
-            return 1.0 - Math.Exp(-ExtinctionCoeff.Value * LAI);
+            double DF = DiffuseLightFraction;
+            double DirectCover =1.0 - Math.Exp(-DirectExtinctionCoeff.Value * LAI);
+            double DiffuseCover = 1.0 - Math.Exp(-DiffuseExtinctionCoeff.Value * LAI);
+            return DF * DiffuseCover + (1 - DF) * DirectCover;
         }
     }
     [Output]
@@ -985,4 +997,30 @@ public class OilPalm
 
     }
 
+        [Output]
+    public double DiffuseLightFraction       // This was originally in the RUEModel class inside "Potential" function (PFR)
+    {
+        get
+        {
+
+   double Q = Q0(latitude, day);
+   double T = Radn/Q;
+   double X1 = (0.80 - 0.0017 * latitude + 0.000044*latitude*latitude);
+   double A1 = ((0.05 - 0.96) / (X1 - 0.26));
+   double A0 = (0.05 - A1*X1);
+
+   return Math.Min(Math.Max(0.0, A0 + A1*T), 1.0);  //Taken from Roderick paper Ag For Met(?)
+   
+   }
+        }
+
+            private double Q0(double lat, int day) 						// (PFR)
+   {
+   double DEC = (23.45 * Math.Sin(2.0 * 3.14159265 / 365.25 * (day - 79.25)));
+   double DECr = (DEC * 2.0 * 3.14159265 / 360.0);
+   double LATr =    (lat * 2.0 * 3.14159265 / 360.0);
+   double HS = Math.Acos(-Math.Tan(LATr) * Math.Tan(DECr));
+
+   return  86400.0 * 1360.0 * (HS * Math.Sin(LATr) * Math.Sin(DECr) + Math.Cos(LATr) * Math.Cos(DECr) * Math.Sin(HS)) / 3.14159265 / 1000000.0;
+   }
 }

@@ -1,4 +1,4 @@
-<folder version="36" creator="Apsim 7.5-r3121" name="simulations">
+<folder version="36" creator="Apsim 7.5-r3127" name="simulations">
   <folder name="Expt324">
     <simulation name="Expt324N0">
       <metfile name="met">
@@ -538,6 +538,7 @@ endif
             <variable>Surfaceom_wt_trunk</variable>
             <variable>Surfaceom_wt_oilpalm</variable>
             <variable>RelativeDevelopmentalRateValue</variable>
+            <variable>DiffuseLightFraction</variable>
           </variables>
           <events name="Reporting Frequency">
             <event>Daily</event>
@@ -2071,6 +2072,7 @@ endif</text>
             <variable>FFF</variable>
             <variable>NFixation</variable>
             <variable>esw</variable>
+            <variable>DiffuseLightFraction</variable>
           </variables>
           <events name="Reporting Frequency">
             <event>Daily</event>
@@ -3349,6 +3351,7 @@ endif</text>
           <variables name="Variables">
             <variable>dd/mm/yyyy as Date</variable>
             <variable>Age</variable>
+            <variable>year</variable>
             <variable>Plant_Status</variable>
             <variable>StemMass</variable>
             <variable>FrondMass</variable>
@@ -3397,6 +3400,7 @@ endif</text>
             <variable>oc(2)</variable>
             <variable>oc(3)</variable>
             <variable>biom_c(1)</variable>
+            <variable>DiffuseLightFraction</variable>
           </variables>
           <events name="Reporting Frequency">
             <event>Daily</event>
@@ -3984,8 +3988,18 @@ endif</text>
     </Graph>
     <Graph name="RootMass">
       <Legend>
-        <CheckedTitles> RootMass, Expt324N3</CheckedTitles>
-        <CheckedTitles> RootN, Expt324N3</CheckedTitles>
+        <CheckedTitles> RootMass, Expt212N0</CheckedTitles>
+        <CheckedTitles> RootMass, {Checkpoint} Expt212N0</CheckedTitles>
+        <CheckedTitles> RootMass, Expt212N1</CheckedTitles>
+        <CheckedTitles> RootMass, {Checkpoint} Expt212N1</CheckedTitles>
+        <CheckedTitles> RootMass, Expt212N2</CheckedTitles>
+        <CheckedTitles> RootMass, {Checkpoint} Expt212N2</CheckedTitles>
+        <CheckedTitles> RootN, Expt212N0</CheckedTitles>
+        <CheckedTitles> RootN, {Checkpoint} Expt212N0</CheckedTitles>
+        <CheckedTitles> RootN, Expt212N1</CheckedTitles>
+        <CheckedTitles> RootN, {Checkpoint} Expt212N1</CheckedTitles>
+        <CheckedTitles> RootN, Expt212N2</CheckedTitles>
+        <CheckedTitles> RootN, {Checkpoint} Expt212N2</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -4163,9 +4177,8 @@ endif</text>
     </Graph>
     <Graph name="Fn and Fw">
       <Legend>
-        <CheckedTitles> Expt212N0</CheckedTitles>
-        <CheckedTitles> Expt212N1</CheckedTitles>
-        <CheckedTitles> Expt212N2</CheckedTitles>
+        <CheckedTitles> Fn, Expt212N2</CheckedTitles>
+        <CheckedTitles> FW, Expt212N2</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -4173,8 +4186,8 @@ endif</text>
         <colour>
         </colour>
         <X>Date</X>
-        <Y>OilPalm.fw</Y>
         <Y>Fn</Y>
+        <Y>FW</Y>
         <GDApsimFileReader name="ApsimFileReader" />
       </Plot>
     </Graph>
@@ -5355,6 +5368,44 @@ endif</text>
       <GDApsimFileReader name="ApsimFileReader">
         <FileName>%apsim%\Tests\Validation\OilPalm\Expt212N2.out</FileName>
         <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N3.out</FileName>
+      </GDApsimFileReader>
+    </Plot>
+  </Graph>
+  <Graph name="Diffuse Light Fraction">
+    <Legend>
+      <CheckedTitles> Expt324N3</CheckedTitles>
+    </Legend>
+    <Plot name="Predicted">
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <colour>
+      </colour>
+      <X>Date</X>
+      <Y>DiffuseLightFraction</Y>
+      <GDApsimFileReader name="ApsimFileReader">
+        <FileName>%apsim%\Tests\Validation\OilPalm\Expt212N2.out</FileName>
+        <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N3.out</FileName>
+        <FileName>%apsim%\Tests\Validation\OilPalm\Expt504N3.out</FileName>
+      </GDApsimFileReader>
+    </Plot>
+  </Graph>
+  <Graph name="Cumulative Photosynthesis">
+    <Legend>
+      <CheckedTitles> Expt212N2</CheckedTitles>
+      <CheckedTitles> Expt324N3</CheckedTitles>
+      <CheckedTitles> Expt504N3</CheckedTitles>
+    </Legend>
+    <Plot name="Predicted">
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <colour>
+      </colour>
+      <X>Date</X>
+      <Y>Cumulative DltDM</Y>
+      <GDApsimFileReader name="ApsimFileReader">
+        <FileName>%apsim%\Tests\Validation\OilPalm\Expt212N2.out</FileName>
+        <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N3.out</FileName>
+        <FileName>%apsim%\Tests\Validation\OilPalm\Expt504N3.out</FileName>
       </GDApsimFileReader>
     </Plot>
   </Graph>
