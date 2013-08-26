@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CSGeneral;
 
-class SimpleLeaf : BaseOrgan
+class SimpleLeaf : BaseOrgan, AboveGround
 {
     [Link]
     Plant Plant = null;
@@ -30,7 +30,7 @@ class SimpleLeaf : BaseOrgan
     private double _LAIDead;        // Leaf Area Index (Dead)
     [Param(Name = "Frgr")]
     private double _Frgr;           // Relative Growth Rate Factor
-    [Link]
+    [Link(IsOptional = true)]
     private XYPairs FT = null;     // Temperature effect on Growth Interpolation Set
     [Link]
     private XYPairs FVPD = null;   // VPD effect on Growth Interpolation Set
@@ -40,6 +40,12 @@ class SimpleLeaf : BaseOrgan
     public Function DMDemandFunction = null;
     [Link(IsOptional = true)]
     public Function CoverFunction = null;
+    [Link(IsOptional = true)]
+    public Function LaiFunction = null;
+    [Link(IsOptional = true)]
+    public RUEModel Photosynthesis = null;
+
+
 
     [Param]
     private double K = 0;                      // Extinction Coefficient (Green)
@@ -57,8 +63,12 @@ class SimpleLeaf : BaseOrgan
              }
     }
     public override DMSupplyType DMSupply
-    {
-          get { return new DMSupplyType { Photosynthesis = DeltaBiomass, Retranslocation = 0,Reallocation = 0 } ; }
+    {        
+        get {
+            if (Photosynthesis != null)
+            DeltaBiomass = Photosynthesis.Growth(RadIntTot);
+            return new DMSupplyType { Photosynthesis = DeltaBiomass, Retranslocation = 0,Reallocation = 0 } ; 
+        }
     }
     public override DMAllocationType DMAllocation
     {
@@ -132,13 +142,19 @@ class SimpleLeaf : BaseOrgan
             return F;
         }
     }
+    public double Fn
+    {
+        get { return 1; } //FIXME: Nitrogen stress factor should be implemented in simple leaf.
+    }
+ 
+
+
     [Output]
     public double LAI
     {
         get { 
-             if (CoverFunction == null)
+             
              return _LAI;
-             return (Math.Log(1 - CoverGreen) / -K);
         }
         set
         {
@@ -187,7 +203,16 @@ class SimpleLeaf : BaseOrgan
     {
         get { return 1.0 - Math.Exp(-KDead * LAIDead); }
     }
-
+    [Output("RadIntTot")]
+    [Units("MJ/m^2/day")]
+    [Description("This is the intercepted radiation value that is passed to the RUE class to calculate DM supply")]
+    public double RadIntTot
+    {
+        get
+        {
+            return CoverGreen * MetData.Radn;
+        }
+    }
     public override void OnSow(SowPlant2Type Data)
     {
       if (structure != null) //could be optional ?
@@ -251,7 +276,26 @@ class SimpleLeaf : BaseOrgan
         }
     }
 
-   
+    public override void DoPotentialGrowth()
+    {
+        if (CoverFunction != null)
+             // return _LAI;
+            _LAI = (Math.Log(1 - CoverGreen) / -K);
+             if (LaiFunction != null)
+             _LAI = LaiFunction.Value;
+    }
+    [EventHandler]
+    public void OnCut()
+    {
+        string Indent = "     ";
+        string Title = Indent + Clock.Today.ToString("d MMMM yyyy") + "  - Cutting " + Name + " from " + Plant.Name;
+        Console.WriteLine("");
+        Console.WriteLine(Title);
+        Console.WriteLine(Indent + new string('-', Title.Length));
+
+        Live.Clear();
+        Dead.Clear();
+    }
 
 }
    

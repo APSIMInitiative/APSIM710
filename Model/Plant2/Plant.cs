@@ -148,6 +148,8 @@ public class Plant
     }
     public void DoActualGrowth()
     {
+        if (Structure != null)
+            Structure.DoActualGrowth();
         foreach (Organ o in Organs)
             o.DoActualGrowth();
     }

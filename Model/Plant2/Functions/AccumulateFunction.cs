@@ -19,6 +19,9 @@ public class AccumulateFunction : Function
     [Param]
     private string EndStageName = "";
 
+    [Param(IsOptional = true)]
+    private double FractionRemovedOnCut = 0; //FIXME: This should be passed from teh manager when "cut event" is called. Must be made general to other events.
+
     [EventHandler]
     public void OnNewMet(NewMetType NewMet)
     {
@@ -41,6 +44,12 @@ public class AccumulateFunction : Function
         {
             return AccumulatedValue;
         }
+    }
+
+    [EventHandler]
+    public void OnCut()
+    {
+        AccumulatedValue -= FractionRemovedOnCut * AccumulatedValue;
     }
 
 }

@@ -11,20 +11,20 @@ public class BaseOrgan : Organ
 
     [Link]
     public MetFile MetData = null;
-    
-    public override double DMDemand { get { return 0; } }
-    public override DMSupplyType DMSupply { get { return new DMSupplyType(); } }
-    public override double DMSinkCapacity { get { return 0; } }
+
+    public override double DMDemand { get { return 0; } set{} }
+    public override DMSupplyType DMSupply { get { return new DMSupplyType(); } set { } }
+    public override double DMSinkCapacity { get { return 0; } set { } }
     public override double DMPotentialAllocation { set { } }
     public override DMAllocationType DMAllocation { set { } }
 
-    public override double NDemand { get { return 0; } }
-    public override NSupplyType NSupply { get { return new NSupplyType(); } }
+    public override double NDemand { get { return 0; } set { } }
+    public override NSupplyType NSupply { get { return new NSupplyType(); } set { } }
     public override NAllocationType NAllocation { set {  } }
-    public override double NFixationCost { get { return 0; } }
+    public override double NFixationCost { get { return 0; } set { } }
 
-    public override double WaterDemand { get { return 0; } }
-    public override double WaterSupply { get { return 0; } }
+    public override double WaterDemand { get { return 0; } set { } }
+    public override double WaterSupply { get { return 0; } set { } }
     public override double WaterUptake
     {
         get { return 0; }
@@ -39,8 +39,8 @@ public class BaseOrgan : Organ
     public override void DoPotentialGrowth() { }
     public override void DoActualGrowth() { }
 
-    public override double MaxNconc { get { return 0; } }
-    public override double MinNconc { get { return 0; } }
+    public override double MaxNconc { get { return 0; } set { } }
+    public override double MinNconc { get { return 0; } set { } }
 
     
     

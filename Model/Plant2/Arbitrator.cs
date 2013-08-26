@@ -123,27 +123,36 @@ public class Arbitrator
 
     public void DoArbitrator(List<Organ> Organs)
     {
-        //Work out how much each organ would grow in the absence of nutirent limitaiton
+        //Work out how much each organ will grow in the absence of nutrient stress, and how much DM they can supply.
         DoDMSetup(Organs);
+        //Reallocate DM from senescing organs to growing organs
         DoDMReallocation(Organs);
+        //Set potential growth of each organ, assuming adequate nutrient supply.
         DoPotentialDMAllocation(Organs);
-        //Work out how much nutrient can be allocated to each organ
+        //Work out how much nutrient each organ needs and how much the supplying organs can provide
         DoNutrientSetup(Organs);
+        //ReAllocate nutrient from senescing organs to growing organs
         DoNutrientReAllocation(Organs);
+        //If nutruent demands of growing organs not met then take up nutrient from the soil
         DoNutrientUptake(Organs);
+        //If nutrient demands of growing organs still not met then retranslocate non-structural N from live organs
         DoNutrientRetranslocation(Organs);
+        //For the nodule organ (legume crops) if N demand is still not met then fix N to meet organ N demands
         DoNutrientFixation(Organs);
-        //Work out how much DM can be assimilated based on the most limiting nutrient
-        DoActualDMAllocation(Organs);
-        //Work out how much nutrient is allocated to each organ based on Actual DM allocation according to most limiting nutrient
-        if (PAware || KAware)
+        //Where modules are made N or K aware repeat nutrient allocation steps for these also.  Note, no code is written to Set supplies or demands for P or k in other organs yet
+        //Work out how much DM can be assimilated by each organ based on the most limiting nutrient
+        DoActualDMAllocation(Organs);       
+        if (PAware || KAware) //Fixme.  This K and P response needs considerably more work before it does anything useful
         {   //Repeat nutrient allocation routines using actual DM allocation 
             DoNutrientSetup(Organs);
             DoNutrientReAllocation(Organs);
             DoNutrientUptake(Organs);
             DoNutrientRetranslocation(Organs);
             DoNutrientFixation(Organs);  //Note for legumes the cost of N fixiation will be over predicted if growth is limited by another nutrient.  Need to check this cost is not being counted twice and over estimating the effect of nutrient shortage on DM pdn
+
         }
+
+        //Tell each organ how much nutrient they are getting following allocaition
         DoNutrientAllocation(Organs);
     }
 
@@ -519,7 +528,10 @@ public class Arbitrator
             if (NAllocated[i] >= NDemandOrgan[i])
                 NLimitedGrowth[i] = 100000000; //given high value so where there is no N deficit in organ and N limitation to growth  
             else
-                NLimitedGrowth[i] = NAllocated[i] / Organs[i].MinNconc;
+                if (NAllocated[i] == 0)
+                    NLimitedGrowth[i] = 0;
+                else
+                    NLimitedGrowth[i] = NAllocated[i] / Organs[i].MinNconc;
         }
 
         // Reduce DM allocation below potential if insufficient N to reach Min n Conc or if DM was allocated to fixation

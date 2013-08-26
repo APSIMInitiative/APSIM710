@@ -2,10 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using CSGeneral;
+using ModelFramework;
 
 public class GenericOrgan : BaseOrgan
 {
-    #region Input Clases
+    #region Class Dependency Links and Structures
+    [Link]
+    protected Plant Plant = null;
+    [Link]
+    protected Arbitrator Arbitrator = null;
+    #endregion
+
+    #region Class Structures
+    private Biomass StartLive = new Biomass();
+    #endregion
+
+    #region Class Parameter Function Links
     [Link(IsOptional = true)]
     protected Function SenescenceRateFunction = null;
     [Link(IsOptional = true)]
@@ -32,14 +44,6 @@ public class GenericOrgan : BaseOrgan
     protected Function MaximumNConc = null;
     [Link]
     protected Function MinimumNConc = null;
-    [Link]
-    protected Plant Plant = null;
-    [Link]
-    protected Arbitrator Arbitrator = null;
-    [Input]
-    public DateTime Today;
-    private Biomass StartLive = new Biomass();
-   
     #endregion
 
     #region Class Fields
@@ -56,16 +60,7 @@ public class GenericOrgan : BaseOrgan
     #region Class properties
     [Output]
     [Units("g/m^2")]
-    public double LiveFWt
-    {
-        get
-        {
-            if (WaterContent != null)
-                return Live.Wt / (1 - WaterContent.Value);
-            else
-                return 0.0;
-        }
-    }
+    public double LiveFWt {get; set;}
     #endregion
 
     #region Organ functions
@@ -105,6 +100,9 @@ public class GenericOrgan : BaseOrgan
         Live.NonStructuralWt *= (1.0 - SenescenceRate);
         Live.StructuralN *= (1.0 - SenescenceRate);
         Live.NonStructuralN *= (1.0 - SenescenceRate);
+
+        if (WaterContent != null)
+            LiveFWt = Live.Wt / (1 - WaterContent.Value);
     }
     #endregion
 

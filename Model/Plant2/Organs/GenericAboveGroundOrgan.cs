@@ -10,7 +10,7 @@ public class GenericAboveGroundOrgan : GenericOrgan, AboveGround
     public void OnPrune(PruneType Prune)
     {
         string Indent = "     ";
-        string Title = Indent + Today.ToString("d MMMM yyyy") + "  - Pruning " + Name + " from " + Plant.Name;
+        string Title = Indent + Clock.Today.ToString("d MMMM yyyy") + "  - Pruning " + Name + " from " + Plant.Name;
         Console.WriteLine("");
         Console.WriteLine(Title);
         Console.WriteLine(Indent + new string('-', Title.Length));
@@ -22,7 +22,7 @@ public class GenericAboveGroundOrgan : GenericOrgan, AboveGround
     public void OnCut()
     {
         string Indent = "     ";
-        string Title = Indent + Today.ToString("d MMMM yyyy") + "  - Cutting " + Name + " from " + Plant.Name;
+        string Title = Indent + Clock.Today.ToString("d MMMM yyyy") + "  - Cutting " + Name + " from " + Plant.Name;
         Console.WriteLine("");
         Console.WriteLine(Title);
         Console.WriteLine(Indent + new string('-', Title.Length));

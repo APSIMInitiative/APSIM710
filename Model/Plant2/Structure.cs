@@ -6,13 +6,16 @@ using ModelFramework;
 [Description("Keeps Track of Plants Structural Development")]
 public class Structure
 {
-    #region Paramater Input Classes
+    #region Class Dependency Links
     [Link]
     protected Function ThermalTime = null;
     [Link]
     Leaf Leaf = null;
     [Link]
     public Phenology Phenology = null;
+    #endregion
+
+    #region Class Parameter Function Links
     [Link(NamePath = "MainStemPrimordiaInitiationRate")]
     public Function MainStemPrimordiaInitiationRate = null;
     [Link(NamePath = "MainStemNodeAppearanceRate")]
@@ -31,19 +34,11 @@ public class Structure
     public Function PlantMortality = null;
     #endregion
 
-    #region Class Fields
+    #region Class Parameter Fields
     [Output]
     [Param]
     [Description("The stage name that leaves get initialised.")]
     public string InitialiseStage = "";
-    public double DeltaNodeNumber = 0;
-    public double _ThermalTime = 0;  
-    double _Population = 0;
-    double _TotalStemPopn = 0;
-    double _ProportionPlantMortality = 0;
-    double _ProportionStemMortality = 0;
-    double _ProportionTotalStemMortality = 0;
-    public double MaximumNodeNumber = 0;
     #endregion
 
     #region Class Properties
@@ -51,82 +46,38 @@ public class Structure
     [Output]
     [Description("Number of plants per meter2")]
     [Units("/m2")]
-    public double Population
-    {
-        get
-        {
-            return _Population;
-        }
-        set
-        {
-            _Population = value;
-        }
-    }
+    public double Population { get; set;}
     [Output]
     [Description("Number of mainstem units per plant")]
     [Units("/plant")]
     public double PrimaryBudNo = 1;
     [Output("Number of mainstems per meter")]
+    [Description("Number of mainstems per meter")]
     [Units("/m2")]
-    public double MainStemPopn
-    {
-        get 
-        {
-           return Population * PrimaryBudNo;
-        }
-    }
+    public double MainStemPopn { get {return Population * PrimaryBudNo;}}
     [Output]
     [Description("Number of stems per meter including main and branch stems")] 
     [Units("/m2")]
-    public double TotalStemPopn
-    {
-        get
-        {
-             return _TotalStemPopn;
-        }
-        set
-        {
-            _TotalStemPopn = value;
-        }
-    }
+    public double TotalStemPopn { get; set;}
 
     //Plant leaf number state variables
     [Output]
-    [Description("Number of mainstem primordia initiated")] 
-    public double MainStemPrimordiaNo = 0;
+    [Description("Number of mainstem primordia initiated")]
+    public double MainStemPrimordiaNo { get; set; }
     [Output]
     [Description("Number of mainstem nodes appeared")] 
-    public double MainStemNodeNo = 0;
+    public double MainStemNodeNo { get; set; }
     [Output]
     [Units("/plant")]
     [Description("Number of leaves appeared per plant including all main stem and branch leaves")]
-    public double PlantTotalNodeNo  
-    {
-        get
-        {
-            double n = 0;
-            foreach (LeafCohort L in Leaf.Leaves)
-                if (L.IsAppeared)
-                    n += L.CohortPopulation;
-            return n / Population;
-        }
-    }
+    public double PlantTotalNodeNo { get; set; } 
     [Output]
     [Units("/PrimaryBud")]
     [Description("Number of appeared leaves per primary bud unit including all main stem and branch leaves")]
-    public double PrimaryBudTotalNodeNo
-    {
-        get { return PlantTotalNodeNo / PrimaryBudNo; }
-    }
+    public double PrimaryBudTotalNodeNo { get { return PlantTotalNodeNo / PrimaryBudNo; } }
     [Output]
     [Description("Number of leaves that will appear on the mainstem before it terminates")]
-    public double MainStemFinalNodeNo 
-    { 
-        get 
-        { 
-            return MainStemFinalNodeNumberFunction.Value; 
-        } 
-    } 
+    public double MainStemFinalNodeNo { get { return MainStemFinalNodeNumberFunction.Value;}} //Fixme.  this property is not needed as this value can be obtained dirrect from the function.  Not protocole compliant.  Remove.
     [Output]
     [Units("0-1")]
     [Description("Relative progress toward final leaf")]
@@ -142,67 +93,20 @@ public class Structure
     }
     [Output]
     [Description("Number of leaves yet to appear")]
-    public double RemainingNodeNo 
-    { 
-        get 
-        { 
-            return MainStemFinalNodeNo - MainStemNodeNo; 
-        } 
-    }
+    public double RemainingNodeNo {get {return MainStemFinalNodeNo - MainStemNodeNo;}}
     
     //Utility Variables
     [Output("Height")]
     [Units("mm")]
-    public double Height 
-    {
-        get
-        {
-            return HeightModel.Value;
-        }
-    }
-    public double BranchingRate
-    {
-        get
-        {
-            return Branching.Value;
-        }
-    }
-    public double ProportionBranchMortality
-    {
-        get
-        {
-            return _ProportionStemMortality;
-        }
-        set
-        {
-            _ProportionStemMortality = value;
-        }
-    }
-    public double ProportionPlantMortality
-    {
-        get
-        {
-            return _ProportionPlantMortality;
-        }
-        set
-        {
-            _ProportionPlantMortality = value;
-        }
-    }
-   /* public double ProportionTotalStemMortality
-    {
-        get
-        {
-            return _ProportionTotalStemMortality;
-        }
-        set
-        {
-            _ProportionTotalStemMortality = value;
-        }
-    }*/
+    //public double Height { get; set; }
+    public double Height { get { return HeightModel.Value; } } //This is not protocole compliant.  needs to be changed to a blank get set and hight needs to be set in do potential growth 
+    public double ProportionBranchMortality {get; set;}
+    public double ProportionPlantMortality { get; set;}
+    public double MaximumNodeNumber { get; set; }
+    public double DeltaNodeNumber { get; set; }
     #endregion
 
-    #region Functions
+    #region Top level timestep Functions
     public void DoPotentialGrowth()
     {
         if (Phenology.OnDayOf(InitialiseStage) == false) // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
@@ -216,7 +120,7 @@ public class Structure
             MainStemFinalNodeNumberFunction.UpdateVariables("");
             MainStemPrimordiaNo = Math.Min(MainStemPrimordiaNo, MaximumNodeNumber);
             
-            if (MainStemNodeNo > 0)  //If statement needs to go
+            if (MainStemNodeNo > 0)  
             {
                DeltaNodeNumber = 0;
                if (MainStemNodeAppearanceRate.Value > 0)
@@ -237,7 +141,7 @@ public class Structure
             //Increment total stem population if main-stem node number has increased by one.
             if ((MainStemNodeNo - StartOfDayMainStemNodeNo) >= 1.0)
             {
-                TotalStemPopn += BranchingRate * MainStemPopn;
+                TotalStemPopn += Branching.Value * MainStemPopn;
             }
 
             //Reduce plant population incase of mortality
@@ -260,8 +164,19 @@ public class Structure
                 TotalStemPopn -= DeltaPopn;
                 ProportionBranchMortality = PropnMortality;
             }
-            //ProportionTotalStemMortality = (InitialStemPopn - TotalStemPopn) / InitialStemPopn;
     }
+    public void DoActualGrowth()
+    {
+        //Set PlantTotalNodeNo    
+        double n = 0;
+        foreach (LeafCohort L in Leaf.Leaves)
+           if (L.IsAppeared)
+              n += L.CohortPopulation;
+        PlantTotalNodeNo = n / Population;
+    }
+    #endregion
+
+    #region Component Process Functions
     public void UpdateHeight()
     {
         HeightModel.UpdateVariables("");
@@ -273,14 +188,6 @@ public class Structure
     #endregion
 
     #region Event Handlers
-    [EventHandler]
-    public void OnNewMet(NewMetType NewMet)
-    {
-        //This is a fudge until we get around to making canopy temperature drive phenology dirrectly.
-        if ((Leaf.DroughtInducedSenAcceleration != null) && (Leaf.DroughtInducedSenAcceleration.Value > 1.0))
-            _ThermalTime = ThermalTime.Value * Leaf.DroughtInducedSenAcceleration.Value;
-        else _ThermalTime = ThermalTime.Value;
-    }
     [EventHandler]
     public void Clear()
     {
@@ -302,6 +209,8 @@ public class Structure
             throw new Exception("MaxCover must exceed zero in a Sow event.");
         PrimaryBudNo = Sow.BudNumber;
         Population = Sow.Population;
+        TotalStemPopn = Population * PrimaryBudNo;
+
     }
     #endregion
 }
