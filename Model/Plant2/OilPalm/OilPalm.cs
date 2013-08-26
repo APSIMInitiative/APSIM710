@@ -358,6 +358,7 @@ public class OilPalm
     private void DoGenderDetermination()
     {
         // Main abortion stage occurs 25 plastochroons before spear leaf over 9 plastochrons
+        // NH Try 20 as this allows for 26 per year and harvest at 32 - ie 26*2 - 32
         int B = Fronds.Count + 25;
         Bunches[B-4].FemaleFraction *= (1.0 - FFFStressImpact.Value);
         Bunches[B-3].FemaleFraction *= (1.0 - FFFStressImpact.Value);
