@@ -416,13 +416,6 @@
         <RipeStage type="text" description="RipeStage">Ripe</RipeStage>
         <Biomass name="Live" />
         <Biomass name="Dead" />
-        <LinearInterpolationFunction name="yNumberFunction">
-          <XProperty type="text" description="XProperty">StemLive.Wt</XProperty>
-          <XYPairs>
-            <XY>0 0</XY>
-            <XY>1000 40000</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
         <Constant name="MaxNConcDailyGrowth">
           <Value>0.03</Value>
         </Constant>
@@ -677,13 +670,6 @@
             <Value type="text" description="Value">80</Value>
           </Constant>
         </MultiplyFunction>
-        <LinearInterpolationFunction name="xExtinctionCoeff">
-          <XProperty>Leaf.LAI</XProperty>
-          <XYPairs>
-            <XY>0 0.45</XY>
-            <XY>0.45 0.55</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
         <MultiplyFunction name="ExtinctionCoeff">
           <Memo>Multiplies the values of the children of this node</Memo>
           <LinearInterpolationFunction name="PotentialExtinctionCoeff">
@@ -701,41 +687,6 @@
             </XYPairs>
           </LinearInterpolationFunction>
         </MultiplyFunction>
-        <BellCurveFunction name="xMaxArea">
-          <Constant name="FirstLeafArea">
-            <Value type="text" description="Value">300</Value>
-          </Constant>
-          <SubtractFunction name="LargestLeafPosition">
-            <Memo>From the first child value of this node subtract the values of the subsequent children</Memo>
-            <VariableReference>
-              <VariableName type="text" description="Variable Name">Structure.MainStemFinalNodeNo</VariableName>
-              <Memo>Returns the value of a nominated internal Plant2 numerical variable
-</Memo>
-            </VariableReference>
-            <Constant>
-              <Value type="text" description="Value">1</Value>
-            </Constant>
-          </SubtractFunction>
-          <LinearInterpolationFunction name="AreaMax">
-            <XProperty type="text" description="XProperty">Structure.MainStemFinalNodeNo</XProperty>
-            <XYPairs>
-              <XY>6 3000</XY>
-              <XY>9 4500</XY>
-            </XYPairs>
-          </LinearInterpolationFunction>
-          <LinearInterpolationFunction name="Breadth">
-            <XProperty type="text" description="XProperty">Structure.MainStemFinalNodeNo</XProperty>
-            <XYPairs>
-              <XY>6 -0.22</XY>
-              <XY>9 -0.09</XY>
-              <XY>13 -0.035</XY>
-              <XY>21 -0.02</XY>
-            </XYPairs>
-          </LinearInterpolationFunction>
-          <Constant name="Skewness">
-            <Value type="text" description="Value">-.0005</Value>
-          </Constant>
-        </BellCurveFunction>
         <LinearInterpolationFunction name="MaxArea">
           <XProperty type="text" description="XProperty">Leaf.AppearedCohortNo</XProperty>
           <XYPairs>
@@ -786,9 +737,6 @@
             <XY>7 1000</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <Constant name="xLagDuration">
-          <Value type="text" description="Value">1000</Value>
-        </Constant>
         <Constant name="SenescenceDuration">
           <Value type="text" description="Value">600</Value>
         </Constant>
@@ -798,32 +746,6 @@
         <Constant name="DetachmentDuration">
           <Value type="text" description="Value">1e6</Value>
         </Constant>
-        <LinearInterpolationFunction name="ySenescenceDuration">
-          <XProperty type="text" description="XProperty">Leaf.AppearedCohortNo</XProperty>
-          <XYPairs>
-            <XY>5 100</XY>
-            <XY>6 600</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
-        <MultiplyFunction name="xBranchingRate">
-          <Memo>Multiplies the values of the children of this node</Memo>
-          <LinearInterpolationFunction name="PotentialBranchingRate">
-            <XProperty type="text" description="XProperty">Leaf.AppearedCohortNo</XProperty>
-            <XYPairs>
-              <XY>3 0</XY>
-              <XY>4 0.7</XY>
-              <XY>5 0.7</XY>
-              <XY>6 0</XY>
-            </XYPairs>
-          </LinearInterpolationFunction>
-          <LinearInterpolationFunction name="WaterStress">
-            <XProperty>WaterSupplyDemandRatio</XProperty>
-            <XYPairs>
-              <XY>0 0</XY>
-              <XY>1 1</XY>
-            </XYPairs>
-          </LinearInterpolationFunction>
-        </MultiplyFunction>
         <Constant name="RelativeBranchLeafSize">
           <Value type="text" description="Value">1</Value>
         </Constant>
@@ -875,22 +797,6 @@
         <Constant name="NonStructuralFraction">
           <Value type="text" description="Value">0</Value>
         </Constant>
-        <LinearInterpolationFunction name="yHeight">
-          <XProperty>StageCode.Value</XProperty>
-          <XYPairs>
-            <XY>3 20</XY>
-            <XY>4.2 100</XY>
-            <XY>5 1100</XY>
-            <XY>6 1200</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
-        <LinearInterpolationFunction name="yHeightExpansionStress">
-          <XProperty>WaterSupplyDemandRatio</XProperty>
-          <XYPairs>
-            <XY>0.3 0</XY>
-            <XY>1 1</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
         <LinearInterpolationFunction name="FrostFraction">
           <XProperty>Met.MinT</XProperty>
           <XYPairs>
@@ -909,34 +815,6 @@
           </XYPairs>
         </LinearInterpolationFunction>
         <AirTemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
-        <PhaseLookup name="xShadeInducedBranchMortality">
-          <PhaseLookupValue>
-            <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">StartGrainFill</End>
-            <LinearInterpolationFunction name="ShadeInducedBranchMortality">
-              <XProperty type="text" description="XProperty">Leaf.CoverGreen</XProperty>
-              <XYPairs>
-                <XY>0 0</XY>
-                <XY>0.98 0</XY>
-                <XY>0.99 0.04</XY>
-                <XY>1 0.04</XY>
-              </XYPairs>
-            </LinearInterpolationFunction>
-          </PhaseLookupValue>
-        </PhaseLookup>
-        <PhaseLookup name="xDroughtInducedBranchMortality">
-          <PhaseLookupValue>
-            <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">EndGrainFill</End>
-            <LinearInterpolationFunction name="DroughtInducedBranchMortality">
-              <XProperty type="text" description="XProperty">WaterSupplyDemandRatio</XProperty>
-              <XYPairs>
-                <XY>0.1 0.1</XY>
-                <XY>0.6 0</XY>
-              </XYPairs>
-            </LinearInterpolationFunction>
-          </PhaseLookupValue>
-        </PhaseLookup>
         <Constant name="InitialNConc">
           <Value type="text" description="Value">0</Value>
         </Constant>
@@ -1192,16 +1070,11 @@
         </Constant>
         <MinimumFunction name="DMDemandFunction">
           <MultiplyFunction name="PotentialDMAccumulation">
-            <Memo>Multiplies the values of the children of this node</Memo>
             <VariableReference name="NodesAppearing">
               <VariableName type="text" description="Variable Name">Structure.DeltaNodeNumber</VariableName>
-              <Memo>Returns the value of a nominated internal Plant2 numerical variable
-</Memo>
             </VariableReference>
             <VariableReference name="Branches">
               <VariableName type="text" description="Variable Name">Structure.TotalStemPopn</VariableName>
-              <Memo>Returns the value of a nominated internal Plant2 numerical variable
-</Memo>
             </VariableReference>
             <LinearInterpolationFunction name="PotentialInternodeWt">
               <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
@@ -1213,43 +1086,17 @@
             </LinearInterpolationFunction>
           </MultiplyFunction>
           <MultiplyFunction name="MaximumSpecificStemLength">
-            <Memo>Multiplies the values of the children of this node</Memo>
             <Constant name="SpecificStemLengthMax">
               <Value type="text" description="Value">.0022</Value>
             </Constant>
             <VariableReference name="Branches">
               <VariableName type="text" description="Variable Name">Structure.TotalStemPopn</VariableName>
-              <Memo>Returns the value of a nominated internal Plant2 numerical variable
-</Memo>
             </VariableReference>
             <VariableReference name="DeltaHeight">
               <VariableName type="text" description="Variable Name">Structure.Height.DeltaHeight</VariableName>
-              <Memo>Returns the value of a nominated internal Plant2 numerical variable
-</Memo>
             </VariableReference>
           </MultiplyFunction>
         </MinimumFunction>
-        <MultiplyFunction name="yDMDemandFunction">
-          <Memo>Multiplies the values of the children of this node</Memo>
-          <VariableReference name="NodesAppearing">
-            <VariableName type="text" description="Variable Name">Structure.DeltaNodeNumber</VariableName>
-            <Memo>Returns the value of a nominated internal Plant2 numerical variable
-</Memo>
-          </VariableReference>
-          <VariableReference name="Branches">
-            <VariableName type="text" description="Variable Name">Structure.TotalStemPopn</VariableName>
-            <Memo>Returns the value of a nominated internal Plant2 numerical variable
-</Memo>
-          </VariableReference>
-          <LinearInterpolationFunction name="PotentialInternodeWt">
-            <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
-            <XYPairs>
-              <XY>3 0</XY>
-              <XY>4 0.0005</XY>
-              <XY>5 0.4</XY>
-            </XYPairs>
-          </LinearInterpolationFunction>
-        </MultiplyFunction>
       </GenericAboveGroundOrgan>
       <Summary />
       <StageBasedInterpolation name="StageCode">
