@@ -4848,6 +4848,7 @@ c  dsg   070302  added runon
 
       ! Send a NitrogenChanged event to the system
       NchgData%Sender = 'SoilWat'
+      NchgData%SenderType = ''
       call publish_NitrogenChanged(ID%NitrogenChanged, NchgData)
 
       ! Send a runoff event to the system

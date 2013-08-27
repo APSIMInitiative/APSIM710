@@ -5447,6 +5447,7 @@ c                     p%beta(solnum,node) = table_beta(solnum2)
 
       ! Send a NitrogenChanged event to the system
       !NchgData%Sender = 'SWIM'
+      !NchgData%SenderType = ''
       !call publish_NitrogenChanged(ID%NitrogenChanged, NchgData)
 
       return
